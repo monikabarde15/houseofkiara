@@ -1,0 +1,151 @@
+.how-section{
+  background:#f7f3ee;
+  padding:80px 0;
+  border-top: 1px solid var(--border);
+}
+
+/* HEADER */
+.how-header{
+  margin-bottom:40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+/* TITLE */
+.section-title{
+  font-family:'Cormorant Garamond', serif;
+  font-size:42px;
+  color:#1a1612;
+}
+
+.section-title em{
+  color:#c9a96e;
+}
+
+/* EYEBROW */
+.eyebrow{
+  font-size:11px;
+  letter-spacing:.25em;
+  color:#c9a96e;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.line{
+  width:30px;
+  height:1px;
+  background:#c9a96e;
+}
+
+/* TOGGLE */
+.toggle{
+  display:flex;
+  border:1px solid #e5ddd3;
+}
+
+.toggle button{
+  padding:10px 20px;
+  border:none;
+  background:#f7f3ee;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.toggle button.active{
+  background:#1a1612;
+  color:#fff;
+}
+
+/* GRID */
+.steps-row{
+  border:1px solid #e5ddd3;
+}
+
+/* CARD */
+.step-card{
+  padding:40px 30px;
+  background:var(--cream);
+  height:100%;
+
+  border-right:1px solid #e5ddd3;
+  border-bottom:1px solid #e5ddd3;
+
+  transition: all 0.35s ease;
+}
+
+/* remove last border */
+.steps-row > div:nth-child(4) .step-card{
+  border-right:none;
+}
+
+/* HOVER */
+.step-card:hover{
+  background:#f1ebe3;
+}
+
+/* NUMBER */
+.step-number{
+  font-family:'Cormorant Garamond', serif;
+  font-size:34px;
+  color:#c9a96e;
+  margin-bottom:15px;
+  transition:.3s;
+}
+
+.step-card:hover .step-number{
+  opacity:0.7;
+}
+
+/* ICON */
+.step-icon{
+  width:40px;
+  height:40px;
+  border:1px solid #e5ddd3;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:15px;
+  transition:.3s;
+}
+
+.step-card:hover .step-icon{
+  border-color:#c9a96e;
+  transform:scale(1.05);
+}
+
+/* TEXT */
+.step-title{
+  font-size:16px;
+  font-weight:600;
+}
+
+.step-desc{
+  font-size:14px;
+  color:#7a6f63;
+}
+
+/* RESPONSIVE */
+@media(max-width:992px){
+
+  .step-card{
+    border-right:none;
+  }
+
+  .steps-row > div:nth-child(2n) .step-card{
+    border-right:none;
+  }
+}
+
+@media(max-width:768px){
+
+  .how-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:15px;
+  }
+}

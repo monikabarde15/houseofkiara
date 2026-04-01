@@ -1,0 +1,194 @@
+/* ================= SECTION ================= */
+.categories-section{
+  padding:80px 0;
+  border-top: 1px solid var(--border);
+  /* border-bottom: 1px solid var(--border); */
+}
+
+/* ================= CONTAINER (CENTER FIX) ================= */
+.custom-container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 20px;
+}
+
+/* ================= HEADER ================= */
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;   /* ✅ FIXED */
+  margin-bottom:40px;
+}
+
+/* LEFT SIDE */
+.heading-left{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start; /* ✅ FORCE LEFT */
+  text-align:left;
+}
+
+/* EYEBROW */
+.eyebrow-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+}
+
+.line{
+  width:30px;
+  height:1px;
+  background:#c9a96e;
+}
+
+.eyebrow{
+  font-size:11px;
+  letter-spacing:.25em;
+  color:#c9a96e;
+  margin:0;
+}
+
+/* TITLE */
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:42px;
+  margin:0;
+  color:#1a1a1a;
+}
+
+.section-title em{
+  color:#c9a96e;
+}
+
+/* VIEW ALL */
+.view-all{
+  font-size:12px;
+  letter-spacing:.2em;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+/* ================= GRID ================= */
+
+/* remove unwanted center shift */
+.row{
+  margin:0;
+}
+
+/* CARD */
+.cat-card{
+  position:relative;
+  overflow:hidden;
+  width:100%;
+}
+
+/* HEIGHTS */
+.big{
+  height:420px;
+}
+
+.small{
+  height:260px;
+}
+
+/* IMAGE */
+.cat-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:.6s ease;
+}
+
+.cat-card:hover img{
+  transform:scale(1.05);
+}
+
+/* OVERLAY */
+.overlay{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  padding:16px;
+  color:#fff;
+  background:linear-gradient(transparent, rgba(0,0,0,0.75));
+}
+
+.overlay h4{
+  font-size:14px;
+  letter-spacing:.15em;
+  margin-bottom:4px;
+}
+
+.overlay span{
+  font-size:10px;
+  letter-spacing:.2em;
+  opacity:.9;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* LARGE */
+@media(max-width:1200px){
+  .big{ height:360px; }
+}
+
+/* TABLET */
+@media(max-width:992px){
+
+  .categories-section{
+    padding:70px 0;
+  }
+
+  .big{
+    height:300px;
+  }
+
+  .small{
+    height:200px;
+  }
+
+  .section-title{
+    font-size:34px;
+  }
+}
+
+/* MOBILE */
+@media(max-width:576px){
+
+  .custom-container{
+    padding:0 16px;
+  }
+
+  .section-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .section-title{
+    font-size:28px;
+  }
+
+  .line{
+    width:24px;
+  }
+}
+/* FORCE REMOVE CENTER */
+.categories-section{
+  text-align:left !important;
+}
+.section-header{
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:center !important;
+  text-align:left !important;
+}
+.heading-left{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start !important;
+}
+.view-all{
+  margin-left:auto;  /* 🔥 pushes to right */
+}

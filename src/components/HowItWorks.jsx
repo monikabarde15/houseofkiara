@@ -1,70 +1,45 @@
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
-import { Search, MapPin, Package, Heart, Upload, Tag, Truck, Wallet } from "lucide-react";
+import {
+  Search, MapPin, Package, Heart,
+  Upload, Tag, Truck, Wallet
+} from "lucide-react";
+import "../styles/howitswork.css";
 
 export default function HowItWorks() {
+
   const [active, setActive] = useState("shop");
 
-  // 🛍️ SHOP DATA
   const shopSteps = [
-    {
-      icon: <Search size={18} />,
-      title: "Browse & Discover",
-      desc: "Explore thousands of designer pieces across rent, preloved, and new categories."
-    },
-    {
-      icon: <MapPin size={18} />,
-      title: "Pick Your Path",
-      desc: "Choose to rent, buy preloved, or invest in something brand new."
-    },
-    {
-      icon: <Package size={18} />,
-      title: "Doorstep Delivery",
-      desc: "Delivered dry-cleaned, pressed, and ready to wear."
-    },
-    {
-      icon: <Heart size={18} />,
-      title: "Wear, Love, Repeat",
-      desc: "Enjoy your look. We handle pickup after use."
-    }
+    { icon: <Search size={18} />, title: "Browse & Discover", desc: "Explore thousands of designer pieces." },
+    { icon: <MapPin size={18} />, title: "Pick Your Path", desc: "Choose rent, preloved or new." },
+    { icon: <Package size={18} />, title: "Delivery", desc: "Delivered ready-to-wear." },
+    { icon: <Heart size={18} />, title: "Wear & Return", desc: "Enjoy & we handle pickup." }
   ];
 
-  // 💰 SELL DATA
   const sellSteps = [
-    {
-      icon: <Upload size={18} />,
-      title: "Upload Product",
-      desc: "List your fashion items with images and details."
-    },
-    {
-      icon: <Tag size={18} />,
-      title: "Set Your Price",
-      desc: "Choose selling or rental price for your product."
-    },
-    {
-      icon: <Truck size={18} />,
-      title: "We Handle Delivery",
-      desc: "We take care of logistics and delivery."
-    },
-    {
-      icon: <Wallet size={18} />,
-      title: "Earn Money",
-      desc: "Get paid directly once your item is sold or rented."
-    }
+    { icon: <Upload size={18} />, title: "Upload", desc: "List your items easily." },
+    { icon: <Tag size={18} />, title: "Set Price", desc: "Choose pricing." },
+    { icon: <Truck size={18} />, title: "We Deliver", desc: "We manage delivery." },
+    { icon: <Wallet size={18} />, title: "Earn", desc: "Get paid directly." }
   ];
 
-  // 🔁 Dynamic steps based on toggle
   const steps = active === "shop" ? shopSteps : sellSteps;
 
   return (
-    <section className="section-padding how-section">
-      <Container>
+    <section className="how-section">
+
+      <Container fluid="xl">
 
         {/* HEADER */}
         <div className="how-header">
+
           <div>
-            <p className="how-eyebrow">SIMPLE BY DESIGN</p>
+            <p className="eyebrow">
+              <span className="line"></span> SIMPLE BY DESIGN
+            </p>
+
             <h2 className="section-title">
               How House of Kaira <em>works</em>
             </h2>
@@ -86,30 +61,54 @@ export default function HowItWorks() {
               I WANT TO SELL
             </button>
           </div>
+
         </div>
 
         {/* STEPS */}
-        <Row className="g-0 mt-5">
-          {steps.map((step, i) => (
-            <Col lg={3} md={6} key={i}>
-              <motion.div className="step-card">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={{
+            hidden: {},
+            show: { transition: { staggerChildren: 0.15 } }
+          }}
+        >
+          <Row className="g-0 steps-row">
 
-                <h1 className="step-number">0{i + 1}</h1>
+            {steps.map((step, i) => (
+              <Col lg={3} md={6} key={i}>
 
-                <div className="step-icon">
-                  {step.icon}
-                </div>
+                <motion.div
+                  className="step-card"
+                  variants={{
+                    hidden: { opacity: 0, y: 40 },
+                    show: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.5 }
+                    }
+                  }}
+                >
 
-                <h4 className="step-title">{step.title}</h4>
+                  <div className="step-number">0{i + 1}</div>
 
-                <p className="step-desc">{step.desc}</p>
+                  <div className="step-icon">{step.icon}</div>
 
-              </motion.div>
-            </Col>
-          ))}
-        </Row>
+                  <h5 className="step-title">{step.title}</h5>
+
+                  <p className="step-desc">{step.desc}</p>
+
+                </motion.div>
+
+              </Col>
+            ))}
+
+          </Row>
+        </motion.div>
 
       </Container>
+
     </section>
   );
 }

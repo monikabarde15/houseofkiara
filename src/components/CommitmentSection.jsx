@@ -1,70 +1,95 @@
 import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import { motion } from "framer-motion";
 import { Heart, ShieldCheck, Repeat, Sparkles } from "lucide-react";
+import "../styles/commitment.css";
 
 export default function CommitmentSection() {
+
   const cards = [
     {
       icon: <ShieldCheck size={18} />,
-      title: `"Every piece resold is one less outfit the world needs to make."`,
-      desc: "At HOK, choosing to rent isn't a compromise — it's a quiet act of intention. Wear beautifully, tread lightly.",
+      title: "Every piece resold is one less outfit the world needs to make.",
+      desc: "Choosing to rent is a quiet act of intention."
     },
     {
       icon: <Heart size={18} />,
-      title: `"Designer craftsmanship should be experienced, not just owned."`,
-      desc: "A Sabyasachi lehenga worn once and loved deeply is worth more than one that sits untouched in a box.",
+      title: "Designer craftsmanship should be experienced, not just owned.",
+      desc: "Luxury is meant to be lived in."
     },
     {
       icon: <Repeat size={18} />,
-      title: `"Your wardrobe is an asset. It's time it started acting like one."`,
-      desc: "The pieces you wore once still carry value. Sell or rent them out — and let that value come back to you.",
+      title: "Your wardrobe is an asset.",
+      desc: "Let it generate value back to you."
     },
     {
       icon: <Sparkles size={18} />,
-      title: `"Occasion wear that outlives the occasion."`,
-      desc: "Every outfit on HOK has a story before you, and a story after. We believe that's not a compromise — that's the point.",
-    },
+      title: "Occasion wear that outlives the occasion.",
+      desc: "Every outfit carries stories."
+    }
   ];
 
   return (
-    <section className="commitment">
-      <div className="container">
-        <div className="commitment-wrapper">
-          
-          {/* LEFT CONTENT */}
-          <div className="left">
-            <p className="eyebrow">OUR COMMITMENT</p>
+    <section className="commitment-section">
 
-            <h2>
-              Fashion that gives <span>back</span>
-            </h2>
+      <Container fluid="xl">
 
-            <p className="desc">
-              Every outfit rented or resold keeps textile waste out of landfill.
-              House of Kaira is building India’s most loved circular fashion
-              economy — one outfit at a time.
-            </p>
+        <Row className="align-items-center g-4">
 
-            <div className="buttons">
-              <button>Rent</button>
-              <button>Buy Preloved</button>
-              <button>Buy New</button>
-              <button>List & Sell</button>
-            </div>
-          </div>
+          {/* LEFT */}
+          <Col lg={6}>
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <p className="eyebrow">
+                <span className="line"></span> OUR COMMITMENT
+              </p>
 
-          {/* RIGHT CARDS */}
-          <div className="right">
-            {cards.map((card, i) => (
-              <div className="card" key={i}>
-                <div className="icon">{card.icon}</div>
-                <h4>{card.title}</h4>
-                <p>{card.desc}</p>
+              <h2 className="title">
+                Fashion that gives <span>back</span>
+              </h2>
+
+              <p className="desc">
+                Every outfit rented or resold keeps textile waste out of landfill.
+                Building India’s most loved circular fashion economy.
+              </p>
+
+              <div className="btn-group-custom mt-4">
+                {["Rent","Buy Preloved","Buy New","List & Sell"].map((b,i)=>(
+                  <button key={i} className="btn-pill">{b}</button>
+                ))}
               </div>
-            ))}
-          </div>
+            </motion.div>
+          </Col>
 
-        </div>
-      </div>
+          {/* RIGHT */}
+          <Col lg={6}>
+            <Row className="g-3">
+
+              {cards.map((card, i) => (
+                <Col md={6} key={i}>
+                  <motion.div
+                    className="commit-card"
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                  >
+                    <div className="icon">{card.icon}</div>
+                    <h4>{card.title}</h4>
+                    <p>{card.desc}</p>
+                  </motion.div>
+                </Col>
+              ))}
+
+            </Row>
+          </Col>
+
+        </Row>
+
+      </Container>
+
     </section>
   );
 }

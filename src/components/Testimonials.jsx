@@ -1,21 +1,25 @@
 import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import { motion } from "framer-motion";
+import "../styles/testimonials.css";
 
 export default function Testimonials() {
+
   const data = [
     {
-      text: "I wore a Sabyasachi lehenga to my sister’s wedding for a fraction of the retail price. The quality, the packaging — everything felt completely premium. HOK changed how I think about occasion dressing.",
+      text: "I wore a Sabyasachi lehenga to my sister’s wedding for a fraction of the retail price. The quality, the packaging — everything felt completely premium.",
       name: "Priya Rathore",
       detail: "Mumbai · Rented for a Wedding",
       initials: "PR",
     },
     {
-      text: "Listed my wedding lehenga and sold it in 3 days. The process was so smooth and I got a great price — it now lives with someone who’ll love it as much as I did.",
+      text: "Listed my wedding lehenga and sold it in 3 days. The process was so smooth and I got a great price.",
       name: "Aishwarya Sharma",
       detail: "Delhi · Sold her Bridal Lehenga",
       initials: "AS",
     },
     {
-      text: "As someone who attends 6–8 weddings a year, HOK is a revelation. I’ve stopped buying outfits I’ll wear once. The curation is impeccable and delivery is always on time.",
+      text: "As someone who attends 6–8 weddings a year, HOK is a revelation. The curation is impeccable and delivery is always on time.",
       name: "Neha Kulkarni",
       detail: "Pune · Regular Renter",
       initials: "NK",
@@ -23,49 +27,93 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="testimonials">
-      <div className="container">
+    <section className="testimonials-section">
 
-        {/* TOP TEXT */}
-        <div className="testimonial-header">
-          <p className="eyebrow">
-            <span className="line"></span>
-            WORN, LOVED & SHARED ACROSS INDIA
-            <span className="line"></span>
-          </p>
+      <Container fluid="xl">
 
-          <h2>
+        {/* HEADER */}
+        <motion.div
+          className="section-header"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+
+          <div className="eyebrow-wrap">
+            <span className="line"></span>
+            <p className="eyebrow-text">
+              WORN, LOVED & SHARED ACROSS INDIA
+            </p>
+            <span className="line"></span>
+          </div>
+
+          <h2 className="title">
             What our customers <span>say</span>
           </h2>
-        </div>
+
+        </motion.div>
 
         {/* CARDS */}
-        <div className="testimonial-grid">
-          {data.map((item, i) => (
-            <div className="testimonial-card" key={i}>
-              
-              {/* Stars */}
-              <div className="stars">★★★★★</div>
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{
+            hidden: {},
+            show: {
+              transition: { staggerChildren: 0.2 }
+            }
+          }}
+        >
+          <Row className="g-4 testimonials-row">
 
-              {/* Quote */}
-              <div className="quote">“</div>
+            {data.map((item, i) => (
+              <Col xl={4} lg={4} md={6} xs={12} key={i}>
 
-              <p className="text">{item.text}</p>
+                <motion.div
+                  className="testimonial-card"
+                  variants={{
+                    hidden: {
+                      opacity: 0,
+                      y: 80,
+                      scale: 0.95
+                    },
+                    show: {
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                      transition: {
+                        duration: 0.7,
+                        ease: [0.22, 1, 0.36, 1]
+                      }
+                    }
+                  }}
+                >
 
-              {/* User */}
-              <div className="user">
-                <div className="avatar">{item.initials}</div>
-                <div>
-                  <h4>{item.name}</h4>
-                  <p>{item.detail}</p>
-                </div>
-              </div>
+                  <div className="stars">★★★★★</div>
+                  <div className="quote">“</div>
 
-            </div>
-          ))}
-        </div>
+                  <p className="text">{item.text}</p>
 
-      </div>
+                  <div className="user">
+                    <div className="avatar">{item.initials}</div>
+                    <div>
+                      <h4>{item.name}</h4>
+                      <p>{item.detail}</p>
+                    </div>
+                  </div>
+
+                </motion.div>
+
+              </Col>
+            ))}
+
+          </Row>
+        </motion.div>
+
+      </Container>
+
     </section>
   );
 }

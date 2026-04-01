@@ -1,0 +1,147 @@
+/* SECTION */
+.designers-section{
+  padding:80px 0;
+  background:var(--cream);
+  margin-top:0px;
+}
+
+/* HEADER */
+.section-header{
+  max-width:1200px;
+  margin:0 auto 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  flex-wrap:wrap;
+}
+
+/* EYEBROW */
+.eyebrow{
+  font-size:11px;
+  letter-spacing:.25em;
+  color:#c9a96e;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.line{
+  width:30px;
+  height:1px;
+  background:#c9a96e;
+}
+
+/* TITLE */
+.title{
+  font-family:'Cormorant Garamond', serif;
+  font-size:42px;
+}
+
+.title span{
+  color:#c9a96e;
+  font-style:italic;
+}
+
+/* VIEW ALL */
+.view-all{
+  font-size:12px;
+  letter-spacing:.18em;
+  text-decoration:none;
+  color:#333;
+  transition:.3s;
+}
+
+.view-all:hover{
+  transform:translateX(4px);
+}
+
+/* GRID */
+.designers-row{
+  max-width:1200px;
+  margin:0 auto;
+}
+
+/* CARD */
+.designer-card{
+  height:260px;
+  border-radius:6px;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  transition:all .4s ease;
+}
+
+/* HOVER */
+.designer-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* OVERLAY */
+.overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to top,
+    rgba(0,0,0,0.75),
+    rgba(0,0,0,0.2),
+    transparent
+  );
+}
+
+/* CONTENT */
+.content{
+  position:absolute;
+  bottom:20px;
+  left:20px;
+  color:#fff;
+  transform:translateY(10px);
+  opacity:0.9;
+  transition:.3s;
+}
+
+.designer-card:hover .content{
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* TEXT */
+.content h4{
+  font-size:16px;
+  margin-bottom:4px;
+}
+
+.content p{
+  font-size:12px;
+  opacity:.8;
+}
+
+.content span{
+  font-size:11px;
+  letter-spacing:.15em;
+  margin-top:6px;
+  display:inline-block;
+}
+
+/* RESPONSIVE */
+@media(max-width:992px){
+  .title{ font-size:34px; }
+}
+
+@media(max-width:768px){
+
+  .section-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .title{
+    font-size:28px;
+  }
+
+  .designer-card{
+    height:220px;
+  }
+
+}

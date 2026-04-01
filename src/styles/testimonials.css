@@ -1,0 +1,160 @@
+/* SECTION */
+.testimonials-section{
+  padding:90px 0;
+  background:var(--cream);
+}
+
+/* HEADER */
+.section-header{
+  max-width:1100px;
+  margin:0 auto 60px;
+
+  display:flex;
+  flex-direction:column; /* 🔥 fix line issue */
+  align-items:center;
+  text-align:center;
+}
+
+/* TOP LINE */
+.eyebrow-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  margin-bottom:16px;
+  width:100%;
+}
+
+.eyebrow-text{
+  font-size:10px;
+  letter-spacing:.35em;
+  color:#c9a96e;
+  margin:0;
+}
+
+.line{
+  width:40px;
+  height:1px;
+  background:#d8c7a6;
+}
+
+/* TITLE */
+.title{
+  width:100%;
+  font-family:'Cormorant Garamond', serif;
+  font-size:44px;
+  color:#1a1612;
+  margin:0;
+}
+
+.title span{
+  color:#c9a96e;
+  font-style:italic;
+}
+
+/* GRID CENTER FIX */
+.testimonials-row{
+  max-width:1200px;
+  margin:0 auto;
+  justify-content:center; /* 🔥 center fix */
+}
+
+/* CARD */
+.testimonial-card{
+  background:#fbf8f3;
+  padding:32px;
+  border-radius:6px;
+  border:1px solid #eee4d6;
+  height:100%;
+  max-width:360px;
+  margin:0 auto;
+
+  position:relative;
+  transition:all .4s ease;
+}
+
+/* HOVER */
+.testimonial-card:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 18px 40px rgba(0,0,0,0.06);
+}
+
+/* GLOW EFFECT */
+.testimonial-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:6px;
+  background:linear-gradient(120deg, transparent, rgba(201,169,110,0.08), transparent);
+  opacity:0;
+  transition:.5s;
+}
+
+.testimonial-card:hover::after{
+  opacity:1;
+}
+
+/* STARS */
+.stars{
+  color:#c9a96e;
+  font-size:11px;
+  margin-bottom:8px;
+}
+
+/* QUOTE */
+.quote{
+  font-size:26px;
+  color:#d4b98c;
+  margin-bottom:10px;
+}
+
+/* TEXT */
+.text{
+  font-size:14px;
+  color:#5f564c;
+  line-height:1.8;
+  margin-bottom:26px;
+}
+
+/* USER */
+.user{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+/* AVATAR */
+.avatar{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#f3ede4;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  color:#9b8c74;
+}
+
+/* USER TEXT */
+.user h4{
+  font-size:13px;
+  color:#1a1612;
+  margin:0;
+}
+
+.user p{
+  font-size:11px;
+  color:#9b8c74;
+  margin:0;
+}
+
+/* RESPONSIVE */
+@media(max-width:992px){
+  .title{ font-size:34px; }
+}
+
+@media(max-width:768px){
+  .title{ font-size:28px; }
+  .testimonial-card{ max-width:100%; }
+}
