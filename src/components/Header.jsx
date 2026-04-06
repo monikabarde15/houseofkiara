@@ -135,7 +135,7 @@ export default function Header() {
               </li>
 
               <li className="nav-item">
-                <a className="nav-link">Shop New</a>
+                <a className="nav-link active-new">Shop New</a>
               </li>
 
 

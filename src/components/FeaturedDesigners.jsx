@@ -26,7 +26,7 @@ export default function FeaturedDesigners() {
       <Container fluid="xl">
 
         {/* HEADER */}
-        <div className="featured-header">
+        <div className="section-header-fd">
           <div className="heading-block">
             <div className="eyebrow-row">
               <div className="heading-line"></div>
@@ -38,7 +38,7 @@ export default function FeaturedDesigners() {
             </h2>
           </div>
 
-          <div className="view-all">VIEW ALL →</div>
+          <div className="view-all-d">VIEW ALL →</div>
         </div>
 
         {/* SLIDER */}

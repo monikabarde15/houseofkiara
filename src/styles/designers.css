@@ -43,7 +43,7 @@
 }
 
 /* VIEW ALL */
-.view-all{
+.view-all-d{
   font-size:12px;
   letter-spacing:.18em;
   text-decoration:none;
@@ -51,7 +51,7 @@
   transition:.3s;
 }
 
-.view-all:hover{
+.view-all-d:hover{
   transform:translateX(4px);
 }
 

@@ -30,6 +30,7 @@ export default function Products() {
 
   return (
     <>
+    <br/>
       <ProductSection
         subtitle="FROM THE SAME HOUSE"
         title="More by"

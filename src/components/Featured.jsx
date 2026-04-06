@@ -36,58 +36,68 @@ const products = [
   }
 ];
 
+// helper (clean way)
+const formatPrice = (price) => {
+  const [main, sub] = price.split(" /");
+  return { main, sub };
+};
+
 export default function Featured() {
   return (
     <section className="featured">
-
       <div className="container-custom">
 
         {/* HEADER */}
         <div className="featured-header">
-
           <div className="heading-block">
-          <div className="eyebrow-row">
-            <div className="heading-line"></div>
-            <p className="eyebrow">HANDPICKED FOR YOU</p>
+            <div className="eyebrow-row">
+              <div className="heading-line"></div>
+              <p className="eyebrow">HANDPICKED FOR YOU</p>
+            </div>
+
+            <h2 className="title">
+              Featured <em>Pieces</em>
+            </h2>
           </div>
 
-          <h2 className="title">
-            Featured <em>Pieces</em>
-          </h2>
-
+          <div className="view-all-f">VIEW ALL →</div>
         </div>
 
-          <div className="view-all">VIEW ALL →</div>
-
-        </div>
-
-        {/* GRID */}
+        {/* GRID (IMPORTANT) */}
         <div className="featured-grid">
-          {products.map((item, i) => (
-            <div className="card" key={i}>
+          {products.map((item, i) => {
+            const { main, sub } = formatPrice(item.price);
 
-              <div className="image-box">
-                <img src={item.image} alt="" />
+            return (
+              <div className="card" key={i}>
+                {/* IMAGE */}
+                <div className="image-box">
+                  <img src={item.image} alt={item.name} />
 
-                <div className="tags">
-                  <span className={`tag ${item.tagClass}`}>
-                    {item.tag}
-                  </span>
+                  {/* TAG */}
+                  <div className="tags">
+                    <span className={`tag ${item.tagClass}`}>
+                      {item.tag}
+                    </span>
+                  </div>
+
+                  {/* WISHLIST */}
+                  <div className="wishlist">♡</div>
                 </div>
 
-                <div className="wishlist">♡</div>
+                {/* TEXT */}
+                <p className="brand">{item.brand}</p>
+                <h4 className="name">{item.name}</h4>
+
+                <p className="price">
+                  {main} {sub && <span>/ {sub}</span>}
+                </p>
               </div>
-
-              <p className="brand">{item.brand}</p>
-              <h4 className="name">{item.name}</h4>
-              <p className="price">{item.price}</p>
-
-            </div>
-          ))}
+            );
+          })}
         </div>
 
       </div>
-
     </section>
   );
 }

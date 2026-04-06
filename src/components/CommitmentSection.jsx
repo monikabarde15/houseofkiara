@@ -72,9 +72,9 @@ export default function CommitmentSection() {
                 <Col md={6} key={i}>
                   <motion.div
                     className="commit-card"
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                   initial={{ opacity: 0 }}
+whileInView={{ opacity: 1 }}
+transition={{ duration: 0.4, delay: i * 0.08 }}
                   >
                     <div className="icon">{card.icon}</div>
                     <h4>{card.title}</h4>

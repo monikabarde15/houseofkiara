@@ -77,7 +77,7 @@ export default function Hero() {
               animate="show"
             >
 
-              <motion.p className="eyebrow" variants={fadeUp}>
+              <motion.p className="eyebrow hero-eyebrow">
                 <span className="line"></span>
                 INDIA'S PREMIER CIRCULAR FASHION PLATFORM
               </motion.p>
@@ -85,7 +85,7 @@ export default function Hero() {
               <motion.h1 className="hero-title" variants={fadeUp}>
                 Wear it <br />
                 with <em>love</em>. <br />
-                Pass it on.
+               Pass it on<span className="dot">.</span>
               </motion.h1>
 
               <motion.p className="hero-sub" variants={fadeUp}>
@@ -93,11 +93,11 @@ export default function Hero() {
                 all in one curated destination for India's most discerning occasions.
               </motion.p>
 
-              <motion.div className="hero-btns" variants={fadeUp}>
-                <button className="btn-dark magnetic">EXPLORE COLLECTION</button>
-                <button className="btn-light magnetic">HOW IT WORKS</button>
-              </motion.div>
-
+              <div className="hero-btns">
+                <button className="btn-dark">Shop Now</button>
+                <button className="btn-light">View Collection</button>
+                <button className="btn-light">I Want to Sell</button> {/* ADD */}
+              </div>
             </motion.div>
 
           </Col>
@@ -114,9 +114,9 @@ export default function Hero() {
               <motion.img
                 src="https://i.pinimg.com/1200x/85/e3/d7/85e3d75810dcad9df6c8dd082615705d.jpg"
                 className="hero-img"
-                style={{ y: imgY, scale: 1.1 }}
+                style={{ y: imgY }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 1.2 }}
+                transition={{ duration: 0.9 }}
               />
             </motion.div>
 
