@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { motion, useScroll, useTransform } from "framer-motion";
 import "../styles/hero.css";
+import MediaGrid from "./MediaGrid";
 
 export default function Hero() {
 
@@ -77,9 +78,9 @@ export default function Hero() {
               animate="show"
             >
 
-              <motion.p className="eyebrow hero-eyebrow">
+              <motion.p className="section-label">
                 <span className="line"></span>
-                INDIA'S PREMIER CIRCULAR FASHION PLATFORM
+                <p className="label-text">INDIA'S PREMIER CIRCULAR FASHION PLATFORM</p>
               </motion.p>
 
               <motion.h1 className="hero-title" variants={fadeUp}>
@@ -94,9 +95,8 @@ export default function Hero() {
               </motion.p>
 
               <div className="hero-btns">
-                <button className="btn-dark">Shop Now</button>
-                <button className="btn-light">View Collection</button>
-                <button className="btn-light">I Want to Sell</button> {/* ADD */}
+                <button className="btn-primary">Explore Collection</button>
+                <button className="btn-outline">How It Works</button>
               </div>
             </motion.div>
 
@@ -105,21 +105,15 @@ export default function Hero() {
           {/* RIGHT */}
           <Col lg={7} md={12} className="hero-right">
 
-            <motion.div
+            {/* <div
               className="img-wrapper"
-              initial={{ clipPath: "inset(0 0 100% 0)" }}
-              animate={{ clipPath: "inset(0 0 0% 0)" }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
             >
-              <motion.img
+              <img
                 src="https://i.pinimg.com/1200x/85/e3/d7/85e3d75810dcad9df6c8dd082615705d.jpg"
-                className="hero-img"
-                style={{ y: imgY }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.9 }}
-              />
-            </motion.div>
-
+                className="hero-img"/>
+            </div> */}
+           
+              <MediaGrid />
           </Col>
 
         </Row>

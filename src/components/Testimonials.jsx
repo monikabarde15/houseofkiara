@@ -74,20 +74,8 @@ export default function Testimonials() {
                 <motion.div
                   className="testimonial-card"
                   variants={{
-                    hidden: {
-                      opacity: 0,
-                      y: 80,
-                      scale: 0.95
-                    },
-                    show: {
-                      opacity: 1,
-                      y: 0,
-                      scale: 1,
-                      transition: {
-                        duration: 0.7,
-                        ease: [0.22, 1, 0.36, 1]
-                      }
-                    }
+                   hidden: { opacity: 0, y: 40 },
+show: { opacity: 1, y: 0 }
                   }}
                 >
 

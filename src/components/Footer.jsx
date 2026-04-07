@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { FaInstagram, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import "../styles/footer.css";
 
@@ -10,12 +10,12 @@ export default function Footer() {
       <Container fluid="xl">
 
         {/* TOP */}
-        <Row className="g-4 footer-row">
+        <div className="footer-row">
 
           {/* BRAND */}
-          <Col xl={3} lg={3} md={12} className="footer-brand">
-            <h3 className="logo">HOUSE OF KAIRA</h3>
-            <p className="sub">CIRCULAR LUXURY FASHION</p>
+          <div className="footer-brand">
+            <h3 className="logo">House of Kaira</h3>
+            <p className="sub">Circular Luxury Fashion</p>
 
             <p className="tagline">
               "Every outfit has a story. We make sure it's never the last chapter."
@@ -26,65 +26,65 @@ export default function Footer() {
               <span><FaFacebookF /></span>
               <span><FaLinkedinIn /></span>
             </div>
-          </Col>
+          </div>
 
           {/* COLS */}
-          <Col xl={2} lg={2} md={4} sm={6} xs={6} className="footer-col">
+          <div className="footer-col">
             <h4>SHOP</h4>
             <ul>
               <li>Rent</li>
               <li>Buy Preloved</li>
               <li>Buy New</li>
-              <li>Occasion</li>
-              <li>Category</li>
-              <li>Designers</li>
+              <li>Shop by Occasion</li>
+              <li>Shop by Category</li>
+              <li>All Designers</li>
             </ul>
-          </Col>
+          </div>
 
-          <Col xl={2} lg={2} md={4} sm={6} xs={6} className="footer-col">
+          <div className="footer-col">
             <h4>SELL WITH US</h4>
             <ul>
               <li>List Your Piece</li>
               <li>How It Works</li>
-              <li>Guidelines</li>
-              <li>Pricing</li>
-              <li>Partners</li>
+              <li>Seller Guidelines</li>
+              <li>Pricing & Fees</li>
+              <li>Designer Partners</li>
             </ul>
-          </Col>
+          </div>
 
-          <Col xl={2} lg={2} md={4} sm={6} xs={6} className="footer-col">
+          <div className="footer-col">
             <h4>SUPPORT</h4>
             <ul>
               <li>FAQs</li>
-              <li>Care</li>
-              <li>Deposit</li>
-              <li>Refunds</li>
-              <li>Contact</li>
+              <li>Care, Cleaning & Damage</li>
+              <li>Deposit Policy</li>
+              <li>Refunds & Cancellations</li>
+              <li>Contact Us</li>
             </ul>
-          </Col>
+          </div>
 
-          <Col xl={3} lg={3} md={6} sm={6} xs={6} className="footer-col">
+          <div className="footer-col">
             <h4>COMPANY</h4>
             <ul>
-              <li>About</li>
+              <li>About HOK</li>
               <li>Sustainability</li>
               <li>Careers</li>
               <li>Press</li>
               <li>Blog</li>
             </ul>
-          </Col>
+          </div>
 
-        </Row>
+        </div>
 
-        {/* MIDDLE */}
+        {/* POLICY LINKS */}
         <div className="footer-middle">
           <div className="footer-links">
-            <span>Terms</span>
-            <span>Privacy</span>
-            <span>Refund Policy</span>
-            <span>Deposit</span>
-            <span>Care Policy</span>
-            <span>Cookies</span>
+            <span>Terms & Conditions</span>
+            <span>Privacy Policy</span>
+            <span>Refund & Cancellation Policy</span>
+            <span>Deposit Policy</span>
+            <span>Care, Cleaning & Damage Policy</span>
+            <span>Cookie Policy</span>
           </div>
         </div>
 
@@ -92,12 +92,12 @@ export default function Footer() {
         <div className="footer-bottom">
 
           <p>
-            © 2025 House of Kaira. All rights reserved.
+            © 2025 House of Kaira. All rights reserved. Indore, India.
           </p>
 
           <div className="footer-buttons">
-            <button>SECURE PAYMENTS</button>
-            <button>CIRCULAR FASHION</button>
+            <span>SECURE PAYMENTS</span>
+            <span>CIRCULAR FASHION</span>
           </div>
 
         </div>

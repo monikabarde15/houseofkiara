@@ -1,90 +1,62 @@
 import React from "react";
 import { Container } from "react-bootstrap";
-import { motion } from "framer-motion";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
-
-import "swiper/css";
-import "swiper/css/navigation";
-
 import "../styles/designers.css";
 
 export default function FeaturedDesigners() {
 
   const designers = [
-    { name: "Sabyasachi", pieces: "210 Pieces", color: "#5a1d0c" },
-    { name: "Manish Malhotra", pieces: "98 Pieces", color: "#1c1a3a" },
-    { name: "Tarun Tahiliani", pieces: "88 Pieces", color: "#0f2e1c" },
-    { name: "Anita Dongre", pieces: "84 Pieces", color: "#3a240f" },
-    { name: "Anita Dongre", pieces: "84 Pieces", color: "#3a240f" },
-    
+    { name: "Sabyasachi", pieces: "214 pieces", image: "https://i.pinimg.com/736x/73/3c/67/733c67cc088a9b04c9495a64104eaa46.jpg" },
+    { name: "Manish Malhotra", pieces: "187 pieces", image: "https://i.pinimg.com/736x/06/e4/47/06e447550bc57e1226507591a9b847e5.jpg" },
+    { name: "Tarun Tahiliani", pieces: "143 pieces", image: "https://i.pinimg.com/736x/64/4d/ad/644dada7a4300ff468edc48628985f49.jpg" },
+    { name: "Anita Dongre", pieces: "118 pieces", image: "https://i.pinimg.com/736x/52/82/d5/5282d56768cba6255a3c8eeb3c015c78.jpg" },
   ];
 
   return (
-    <section className="designers-section">
+    <section className="fd">
 
       <Container fluid="xl">
 
         {/* HEADER */}
-        <div className="section-header-fd">
-          <div className="heading-block">
-            <div className="eyebrow-row">
-              <div className="heading-line"></div>
-              <p className="eyebrow">TRUSTED CREATORS</p>
+        <div className="fd__header">
+
+          <div>
+            <div className="fd__eyebrowRow">
+              <span className="fd__line"></span>
+              <p className="fd__eyebrow">TRUSTED CREATORS</p>
             </div>
 
-            <h2 className="title">
+            <h2 className="fd__title">
               Featured <em>Designers</em>
             </h2>
           </div>
 
-          <div className="view-all-d">VIEW ALL →</div>
+          <div className="fd__viewAll">VIEW ALL</div>
         </div>
 
-        {/* SLIDER */}
-        <Swiper
-          modules={[Autoplay, Navigation]}
-          spaceBetween={20}
-          slidesPerView={4}
-          loop={true}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false
-          }}
-          navigation={true}
-          breakpoints={{
-            0: { slidesPerView: 1 },
-            576: { slidesPerView: 2 },
-            768: { slidesPerView: 3 },
-            992: { slidesPerView: 4 }
-          }}
-        >
+        {/* GRID */}
+        <div className="fd__grid">
           {designers.map((d, i) => (
-            <SwiperSlide key={i}>
+            <div key={i} className="fd__card">
 
-              <motion.div
-                className="designer-card"
-                style={{ background: d.color }}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1]
-                }}
-              >
-                <div className="overlay"></div>
+             <img
+              src={d.image || "/images/placeholder.jpg"}
+              alt={d.name}
+              onError={(e) => {
+                e.target.src = "/images/placeholder.jpg";
+              }}
+            />
 
-                <div className="content">
-                  <h4>{d.name}</h4>
-                  <p>{d.pieces}</p>
-                  <span>SHOP NOW</span>
-                </div>
+              <div className="fd__overlay"></div>
 
-              </motion.div>
+              <div className="fd__content">
+                <h4>{d.name}</h4>
+                <p>{d.pieces}</p>
+                <span>SHOP NOW</span>
+              </div>
 
-            </SwiperSlide>
+            </div>
           ))}
-        </Swiper>
+        </div>
 
       </Container>
 

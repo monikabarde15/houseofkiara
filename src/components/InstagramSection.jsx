@@ -18,8 +18,6 @@ export default function InstagramSection() {
     "#3b240f",
     "#3a1320",
     "#102531",
-    "#4b1f0f",
-    "#1f1c3b"
   ];
 
   return (
@@ -45,44 +43,21 @@ export default function InstagramSection() {
           </a>
         </div>
 
-        {/* SLIDER */}
-        <Swiper
-          modules={[Autoplay, Navigation]}
-          spaceBetween={20}
-          slidesPerView={4}
-          loop={true}
-          autoplay={{
-            delay: 2000,
-            disableOnInteraction: false
-          }}
-          navigation={true}
-          breakpoints={{
-            0: { slidesPerView: 1 },
-            576: { slidesPerView: 2 },
-            768: { slidesPerView: 3 },
-            992: { slidesPerView: 4 }
-          }}
-        >
+        <div className="hok-insta-grid">
           {posts.map((color, i) => (
-            <SwiperSlide key={i}>
+            <div key={i} className="hok-insta-card" style={{ background: color }}>
+              <div className="hok-insta-overlay"></div>
 
-              <motion.div
-                className="hok-insta-card"
-                style={{ background: color }}
-                initial={{ opacity: 0, y: 60, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{
-                  duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1]
-                }}
-              >
-                <div className="hok-insta-overlay"></div>
-                <div className="hok-insta-icon">⌁</div>
-              </motion.div>
-
-            </SwiperSlide>
+              <div className="hok-insta-icon">
+                <svg width="28" height="28" fill="none" stroke="white" strokeWidth="1.4">
+                  <rect x="3" y="3" width="22" height="22" rx="6"/>
+                  <circle cx="14" cy="14" r="5"/>
+                  <circle cx="19" cy="8" r="1"/>
+                </svg>
+              </div>
+            </div>
           ))}
-        </Swiper>
+        </div>
 
         {/* FOOTER */}
         <div className="hok-insta-footer">

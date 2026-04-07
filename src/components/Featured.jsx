@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/featured.css";
+import { Heart } from "lucide-react";
 
 const products = [
   {
@@ -8,7 +9,8 @@ const products = [
     name: "Gulabi Silk Bridal Lehenga",
     brand: "SABYASACHI",
     price: "₹12,000 / 4 days",
-    image: "https://i.pinimg.com/736x/91/41/da/9141da71db6df4508b2a41f53957969a.jpg"
+    image: "https://i.pinimg.com/736x/91/41/da/9141da71db6df4508b2a41f53957969a.jpg",
+    original: "₹1,80,000"
   },
   {
     tag: "PRELOVED",
@@ -16,7 +18,8 @@ const products = [
     name: "Ivory Embroidered Sherwani",
     brand: "MANISH MALHOTRA",
     price: "₹38,000",
-    image: "https://i.pinimg.com/736x/09/0f/48/090f48f8c93ab1203c9d00ade5f38554.jpg"
+    image: "https://i.pinimg.com/736x/09/0f/48/090f48f8c93ab1203c9d00ade5f38554.jpg",
+    original: "₹1,80,000"
   },
   {
     tag: "NEW",
@@ -24,7 +27,8 @@ const products = [
     name: "Midnight Blue Crepe Saree",
     brand: "TARUN TAHILIANI",
     price: "₹68,000",
-    image: "https://i.pinimg.com/1200x/18/cf/0f/18cf0f3223c943c6b6fd6206ef63e489.jpg"
+    image: "https://i.pinimg.com/1200x/18/cf/0f/18cf0f3223c943c6b6fd6206ef63e489.jpg",
+    original: "₹1,80,000"
   },
   {
     tag: "RENT",
@@ -32,7 +36,8 @@ const products = [
     name: "Rose Georgette Anarkali",
     brand: "ANITA DONGRE",
     price: "₹6,500 / 4 days",
-    image: "https://i.pinimg.com/736x/53/7f/c9/537fc9352c9f704ec1b2457005fbd6d4.jpg"
+    image: "https://i.pinimg.com/736x/53/7f/c9/537fc9352c9f704ec1b2457005fbd6d4.jpg",
+    original: "₹1,80,000"
   }
 ];
 
@@ -52,7 +57,7 @@ export default function Featured() {
           <div className="heading-block">
             <div className="eyebrow-row">
               <div className="heading-line"></div>
-              <p className="eyebrow">HANDPICKED FOR YOU</p>
+            <p className="eyebrow">Handpicked for You</p>
             </div>
 
             <h2 className="title">
@@ -82,16 +87,22 @@ export default function Featured() {
                   </div>
 
                   {/* WISHLIST */}
-                  <div className="wishlist">♡</div>
+                  <div className="wishlist">
+                  <Heart size={14} strokeWidth={1.5} />
+                </div>
                 </div>
 
                 {/* TEXT */}
                 <p className="brand">{item.brand}</p>
                 <h4 className="name">{item.name}</h4>
 
-                <p className="price">
-                  {main} {sub && <span>/ {sub}</span>}
-                </p>
+               <p className="price">
+                {main} {sub && <span>/ {sub}</span>}
+              </p>
+
+              {item.original && (
+                <p className="price-old">{item.original} retail</p>
+              )}
               </div>
             );
           })}

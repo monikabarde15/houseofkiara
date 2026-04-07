@@ -1,13 +1,14 @@
 /* SECTION */
 .hok-insta-section{
-  padding:90px 0;
+  padding:80px 0;
+  background:var(--cream);
   /* background:#f7f3ee; */
 }
 
 /* HEADER */
 .hok-insta-header{
   max-width:1200px;
-  margin:0 auto 40px;
+  margin:0 auto 48px;
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
@@ -16,8 +17,8 @@
 
 /* EYEBROW */
 .hok-insta-eyebrow{
-  font-size:11px;
-  letter-spacing:.25em;
+  font-size:10px;
+  letter-spacing:.28em;
   color:#c9a96e;
   display:flex;
   align-items:center;
@@ -25,15 +26,18 @@
 }
 
 .hok-insta-line{
-  width:30px;
+  width:24px;
   height:1px;
   background:#c9a96e;
+   flex:1;
+  max-width:80px;
 }
 
 /* TITLE */
 .hok-insta-title{
   font-family:'Cormorant Garamond', serif;
   font-size:42px;
+  margin-top:4px;
 }
 
 .hok-insta-title span{
@@ -43,15 +47,27 @@
 
 /* BUTTON */
 .hok-insta-btn{
-  font-size:12px;
-  letter-spacing:.18em;
-  text-decoration:none;
-  color:#333;
-  transition:.3s;
+    /* border-bottom:1px solid #1A1612; */
+
+ font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #1A1612;
+    padding-bottom: 2px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.hok-insta-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:3px;
+  margin-top:40px;
 }
 
 .hok-insta-btn:hover{
-  transform:translateX(5px);
+  color:#C9A96E;
+  border-color:#C9A96E;
+  transform:none;
 }
 
 /* GRID */
@@ -63,56 +79,43 @@
 
 /* CARD */
 .hok-insta-card{
+   will-change: transform;
   position:relative;
   width:100%;
   aspect-ratio:1/1;
-  border-radius:6px;
+  border-radius:4px;
   overflow:hidden;
   cursor:pointer;
-  border:1px solid #e5ddd3;
+  border:none;
   transition:.5s ease;
 }
-
+.hok-insta-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
 /* ZOOM */
 .hok-insta-card:hover{
+  transform:none;
+  box-shadow:none;
+}
+.hok-insta-card:hover img{
   transform:scale(1.05);
-  box-shadow:0 15px 40px rgba(0,0,0,0.1);
 }
-
 /* IMAGE EFFECT */
-.hok-insta-card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.25),
-    transparent
-  );
-  transform:translateX(-100%);
-  transition:0.8s;
-}
 
-.hok-insta-card:hover::before{
-  transform:translateX(100%);
-}
 
 /* OVERLAY */
 .hok-insta-overlay{
   position:absolute;
   inset:0;
-  background:linear-gradient(
-    to top,
-    rgba(0,0,0,0.6),
-    transparent
-  );
-  opacity:.5;
-  transition:.4s;
+  background:rgba(26,22,18,0.55);
+  opacity:0;
+  transition:0.25s;
 }
 
 .hok-insta-card:hover .hok-insta-overlay{
-  opacity:.2;
+  opacity:1;
 }
 
 /* ICON (REEL FEEL) */
@@ -142,12 +145,14 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:14px;
+  gap:20px;
 }
 
 .hok-insta-footer p{
-  font-size:12px;
-  color:#8a7e72;
+  font-family:'Cormorant Garamond', serif;
+  font-size:18px;
+  font-style:italic;
+  color:#8A7E72;
 }
 
 /* RESPONSIVE */
@@ -162,20 +167,26 @@
   .hok-insta-header{
     flex-direction:column;
     align-items:flex-start;
-    gap:10px;
+    gap:12px;
+    margin-bottom:12px;
   }
 
 }
-.swiper {
-  padding-bottom: 30px;
+
+@media(max-width:992px){
+  .hok-insta-grid{
+    grid-template-columns:repeat(4,1fr);
+  }
 }
 
-.swiper-button-next,
-.swiper-button-prev {
-  color: #c5a47e;
+@media(max-width:768px){
+  .hok-insta-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
 }
 
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
-  color: #000;
+@media(max-width:480px){
+  .hok-insta-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 }

@@ -1,6 +1,6 @@
 /* ================= SECTION ================= */
 .categories-section{
-  padding:80px 0;
+  padding:80px;
   background:#FFFEFB;
 }
 
@@ -9,12 +9,22 @@
   margin:0 auto;
   padding:0 20px;
 }
+.category-card {
+  position: relative;
+}
 
+.category-text {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: #fff;
+}
 /* ================= HEADER ================= */
 .section-header-cat{
+  display:flex;
+  justify-content:space-between;
   position:relative; /* MUST */
   /* display:flex; */
-  justify-content:center; /* center everything */
   align-items:center;
   margin-bottom:40px;
 }
@@ -95,10 +105,11 @@
   object-fit:cover;
   object-position:center top;
   transition:transform 0.4s ease-out;
+  transition:transform 0.55s ease;
 }
 
 .cat-card:hover img{
-  transform:scale(1.03);
+  transform:scale(1.04);
 }
 
 /* ================= OVERLAY ================= */
@@ -108,20 +119,15 @@
   display:flex;
   flex-direction:column;
   justify-content:flex-end;
-  padding:24px;
-  color:#fff;
 
-  /* hidden initially */
-  opacity:0;
+  padding:32px 28px;
 
   background:linear-gradient(
     to top,
-    rgba(0,0,0,0.85),
-    rgba(0,0,0,0.3),
-    transparent
+    rgba(0,0,0,0.78) 0%,
+    rgba(0,0,0,0.2) 60%,
+    transparent 100%
   );
-
-  transition:opacity 0.35s ease;
 }
 
 /* TEXT INITIAL (hidden + down) */
@@ -131,13 +137,15 @@
   transform:translateY(8px);
   transition:all 0.35s ease;
 }
-
+.small .overlay h4{
+  font-size:13px;
+}
 /* TITLE */
 .overlay h4{
   font-family:'Cormorant Garamond', serif;
+  letter-spacing:0.22em;
   font-size:14px;
   font-weight:400;
-  letter-spacing:0.18em;
   text-transform:uppercase;
   margin-bottom:6px;
   color:#fff;
@@ -149,7 +157,8 @@
   font-size:9px;
   letter-spacing:0.18em;
   text-transform:uppercase;
-  color:#d8c5a0;
+  color:rgba(255,255,255,0.65);
+  transition:color 0.2s;
 }
 
 /* ================= HOVER EFFECT ================= */
@@ -161,6 +170,7 @@
 .cat-card:hover .overlay span{
   opacity:1;
   transform:translateY(0);
+  color:#E8D5B0;
 }
 
 .cat-card:hover .overlay span{
@@ -187,4 +197,24 @@
   .custom-container{
     padding:0 16px;
   }
+}
+.cat-grid{
+  margin-top:40px;
+  display:grid;
+  gap:3px;
+}
+
+/* row 1 */
+.cat-row-1{
+  display:grid;
+  grid-template-columns:1.7fr 1fr;
+  gap:3px;
+}
+
+/* row 2 */
+.cat-row-2{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:3px;
+  margin-top:3px;
 }

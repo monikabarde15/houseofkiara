@@ -1,147 +1,194 @@
 /* SECTION */
-.designers-section{
+.fd{
   padding:80px 0;
-  background:var(--cream);
-  margin-top:0px;
+   background:#FAF7F2;
 }
 
 /* HEADER */
-.section-header{
-  max-width:1200px;
-  margin:0 auto 40px;
+.fd__header{
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
+  margin-bottom:48px;
   flex-wrap:wrap;
 }
 
 /* EYEBROW */
-.eyebrow{
-  font-size:11px;
-  letter-spacing:.25em;
-  color:#c9a96e;
+.fd__eyebrowRow{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:12px;
+  margin-bottom:12px;
 }
 
-.line{
-  width:30px;
+.fd__line{
+  width:24px;
   height:1px;
-  background:#c9a96e;
+  background:#C9A96E;
+}
+
+.fd__eyebrow{
+  font-size:10px;
+  letter-spacing:0.28em;
+  color:#C9A96E;
+  font-family:'DM Sans', sans-serif;
 }
 
 /* TITLE */
-.title{
+.fd__title{
   font-family:'Cormorant Garamond', serif;
   font-size:42px;
+  color:#1A1612;
 }
 
-.title span{
-  color:#c9a96e;
+.fd__title em{
+  color:#C9A96E;
   font-style:italic;
 }
 
 /* VIEW ALL */
-.view-all-d{
-  font-size:12px;
-  letter-spacing:.18em;
-  text-decoration:none;
-  color:#333;
-  transition:.3s;
+.fd__viewAll{
+  font-size:9px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  border-bottom:1px solid #1A1612;
+  padding-bottom:2px;
+  cursor:pointer;
+  transition:0.2s;
 }
 
-.view-all-d:hover{
-  transform:translateX(4px);
+.fd__viewAll:hover{
+  color:#C9A96E;
+  border-color:#C9A96E;
 }
 
 /* GRID */
-.designers-row{
-  max-width:1200px;
-  margin:0 auto;
+.fd__grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
 }
 
 /* CARD */
-.designer-card{
-  height:260px;
-  border-radius:6px;
+.fd__card{
   position:relative;
+  aspect-ratio:2/3;
   overflow:hidden;
-  cursor:pointer;
-  transition:all .4s ease;
 }
 
-/* HOVER */
-.designer-card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+/* IMAGE */
+.fd__card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:0.5s ease;
+}
+
+/* IMAGE ZOOM ONLY */
+.fd__card:hover img{
+  transform:scale(1.05);
 }
 
 /* OVERLAY */
-.overlay{
+.fd__overlay{
   position:absolute;
   inset:0;
   background:linear-gradient(
     to top,
-    rgba(0,0,0,0.75),
-    rgba(0,0,0,0.2),
+    rgba(26,22,18,0.65),
+    rgba(26,22,18,0.2),
     transparent
   );
 }
 
 /* CONTENT */
-.content{
+.fd__content{
   position:absolute;
   bottom:20px;
   left:20px;
   color:#fff;
-  transform:translateY(10px);
-  opacity:0.9;
-  transition:.3s;
-}
-
-.designer-card:hover .content{
-  transform:translateY(0);
-  opacity:1;
 }
 
 /* TEXT */
-.content h4{
-  font-size:16px;
-  margin-bottom:4px;
+.fd__content h4{
+  font-family:'Cormorant Garamond', serif;
+  font-size:15px;
+  margin-bottom:3px;
 }
 
-.content p{
-  font-size:12px;
-  opacity:.8;
+.fd__content p{
+  font-size:9px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.6);
+  margin-bottom:8px;
 }
 
-.content span{
-  font-size:11px;
-  letter-spacing:.15em;
-  margin-top:6px;
-  display:inline-block;
+.fd__content span{
+  font-size:9px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.7);
 }
 
 /* RESPONSIVE */
 @media(max-width:992px){
-  .title{ font-size:34px; }
+  .fd__grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .fd__title{
+    font-size:34px;
+  }
 }
 
 @media(max-width:768px){
+  .fd__grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-  .section-header{
+  .fd__header{
     flex-direction:column;
     align-items:flex-start;
-    gap:10px;
+    gap:12px;
   }
 
-  .title{
+  .fd__title{
     font-size:28px;
   }
+}
 
-  .designer-card{
-    height:220px;
+@media(max-width:480px){
+  .fd__grid{
+    grid-template-columns:1fr;
   }
+}
+.fd__card{
+  position:relative;
+  aspect-ratio:2/3;
+  overflow:hidden;
+  background:#EDE6DC; /* 🔥 fallback neutral */
+}
+.fd__card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+/* DEFAULT */
+.fd__content p{
+  color:rgba(255,255,255,0.5);
+}
 
+.fd__content span{
+  color:rgba(255,255,255,0.6);
+}
+
+/* 🔥 HOVER EFFECT */
+.fd__card:hover .fd__content p{
+  color:rgba(255,255,255,0.8);
+}
+
+.fd__card:hover .fd__content span{
+  color:#E8D5B0; /* luxury gold */
 }

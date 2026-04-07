@@ -1,54 +1,57 @@
 import React, { useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { motion } from "framer-motion";
 import {
   Search, MapPin, Package, Heart,
   Upload, Tag, Truck
 } from "lucide-react";
+
 import "../styles/howitswork.css";
 
 export default function HowItWorks() {
 
   const [active, setActive] = useState("shop");
 
+  /* SHOP CONTENT */
   const shopSteps = [
     {
-      icon: <Search size={16} strokeWidth={1.5} />,
+      icon: <Search />,
       title: "Browse & Discover",
-      desc: "Explore a curated selection of designer pieces, handpicked for every occasion."
+      desc: "Explore thousands of designer pieces across rent, preloved, and new categories — filtered by occasion, budget, and aesthetic."
     },
     {
-      icon: <MapPin size={16} strokeWidth={1.5} />,
-      title: "Choose Your Style",
-      desc: "Select from rental, preloved, or new — tailored to your preference."
+      icon: <MapPin />,
+      title: "Pick Your Path",
+      desc: "Choose to rent for the occasion, buy preloved at a fraction of retail, or invest in something brand new — your occasion, your decision."
     },
     {
-      icon: <Package size={16} strokeWidth={1.5} />,
-      title: "Delivered to You",
-      desc: "Receive your outfit, perfectly prepared and ready to wear."
+      icon: <Package />,
+      title: "Doorstep Delivery",
+      desc: "Your look arrives dry-cleaned, pressed, and ready to wear — delivered straight to your door before your event."
     },
     {
-      icon: <Heart size={16} strokeWidth={1.5} />,
-      title: "Wear & Return",
-      desc: "Enjoy your look and return it effortlessly — we handle the rest."
+      icon: <Heart />,
+      title: "Wear, Love, Repeat",
+      desc: "Enjoy your look. For rentals, we collect it back after your event — cleaned, simple, and hassle-free. Fashion is more beautiful when it keeps moving."
     }
   ];
 
+  /* SELL CONTENT */
   const sellSteps = [
     {
-      icon: <Upload size={16} strokeWidth={1.5} />,
-      title: "List Your Piece",
-      desc: "Upload your designer items with ease in just a few simple steps."
+      icon: <Upload />,
+      title: "Photograph & List",
+      desc: "Upload a few photos of your piece, set your price, and go live in under 10 minutes."
     },
     {
-      icon: <Tag size={16} strokeWidth={1.5} />,
-      title: "Set Your Price",
-      desc: "Choose your pricing and let your piece find the right audience."
+      icon: <Tag />,
+      title: "We Review & Feature",
+      desc: "Our team reviews your listing and promotes it to the right buyers on the platform."
     },
     {
-      icon: <Truck size={16} strokeWidth={1.5} />,
-      title: "We Handle Delivery",
-      desc: "From pickup to delivery, we take care of the entire process."
+      icon: <Truck />,
+      title: "Ship & Get Paid",
+      desc: "Once sold, ship it out. Payment lands in your account within 3 working days — no chasing required."
     }
   ];
 
@@ -63,8 +66,9 @@ export default function HowItWorks() {
         <div className="how-header">
 
           <div>
-            <p className="eyebrow">
-              <span className="line"></span> SIMPLE BY DESIGN
+            <p className="section-label">
+              <span className="line"></span>
+              <span className="label-text">Simple by Design</span>
             </p>
 
             <h2 className="section-title">
@@ -91,71 +95,60 @@ export default function HowItWorks() {
 
         </div>
 
-        {/* STEPS */}
+        {/* GRID */}
         <motion.div
-          key={active}   // 🔥 IMPORTANT FIX
+          key={active}
+          className={`steps-grid ${active === "sell" ? "sell" : ""}`}
           initial="hidden"
           animate="show"
           variants={{
             hidden: {},
-            show: {
-              transition: { staggerChildren: 0.12 }
-            }
+            show: { transition: { staggerChildren: 0.12 } }
           }}
         >
-          <Row className="steps-row g-4">
 
-            {steps.map((step, i) => (
-              <Col lg={3} md={6} sm={12} key={i}>
+          {steps.map((step, i) => (
+            <motion.div
+              key={i}
+              className="step-card"
+              variants={{
+                hidden: { opacity: 0, y: 20, filter: "blur(4px)" },
+                show: {
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                  transition: { duration: 0.6 }
+                }
+              }}
+            >
+              <div className="step-number">0{i + 1}</div>
+              <div className="step-icon">{step.icon}</div>
+              <h5 className="step-title">{step.title}</h5>
+              <p className="step-desc">{step.desc}</p>
+            </motion.div>
+          ))}
 
-                <motion.div
-                  className="step-card"
-                  variants={{
-                    hidden: {
-                      opacity: 0,
-                      y: 20,
-                      filter: "blur(4px)"
-                    },
-                    show: {
-                      opacity: 1,
-                      y: 0,
-                      filter: "blur(0px)",
-                      transition: {
-                        duration: 0.6,
-                        ease: [0.25, 0.1, 0.25, 1]
-                      }
-                    }
-                  }}
-                >
-                  <div className="step-number">0{i + 1}</div>
-                  <div className="step-icon">{step.icon}</div>
-                  <h5 className="step-title">{step.title}</h5>
-                  <p className="step-desc">{step.desc}</p>
-                </motion.div>
+          {/* CTA CARD (SELL ONLY) */}
+          {active === "sell" && (
+            <div className="cta-card">
+              <h4 className="cta-title">
+                The hours of <em>craftsmanship</em> on that piece deserve more than a dark wardrobe shelf.
+              </h4>
 
-              </Col>
-            ))}
+              <p className="cta-desc">
+                Give your occasion wear another life. Let someone else fall in love with it — and earn while you do.
+              </p>
 
-            {/* ✅ SELL CTA CARD */}
-            {active === "sell" && (
-              <Col lg={3} md={6} sm={12}>
-                <div className="cta-card">
-                  <h4 className="cta-title">
-                    The hours of <em>craftsmanship</em> on that piece deserve more than a dark wardrobe shelf.
-                  </h4>
+              <p className="cta-quote">
+                "Every piece has a story. Don't let it end with you."
+              </p>
 
-                  <p className="cta-desc">
-                    Give your occasion wear another life. Let someone else fall in love with it — and earn while you do.
-                  </p>
+              <button className="cta-btn">
+                LIST YOUR PIECE →
+              </button>
+            </div>
+          )}
 
-                  <button className="cta-btn">
-                    LIST YOUR PIECE →
-                  </button>
-                </div>
-              </Col>
-            )}
-
-          </Row>
         </motion.div>
 
       </Container>
