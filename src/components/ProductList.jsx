@@ -12,6 +12,7 @@ export  const products = [
     designer: "RAHUL MISHRA",
     name: "Blush Zardosi Anarkali",
     price: "₹2,40,000",
+     oldPrice: "₹3,00,000",
     tag: "RENT",
      colors: [
       {
@@ -121,6 +122,7 @@ amazonData: {
     designer: "RAHUL MISHRA",
     name: "Midnight Sharara",
     price: "₹3,10,000",
+     oldPrice: "₹3,00,000",
     tag: "NEW",
      colors: [
         {
@@ -229,6 +231,7 @@ amazonData: {
     designer: "RAHUL MISHRA",
     name: "Elegant Purple Sari",
     price: "₹3,10,000",
+     oldPrice: "₹3,00,000",
     tag: "NEW",
      colors: [
       {
@@ -338,6 +341,7 @@ amazonData: {
     designer: "RAHUL MISHRA",
     name: "Elegant Purple Sari",
     price: "₹3,10,000",
+     oldPrice: "₹3,00,000",
     tag: "NEW",
      colors: [
         {
@@ -450,25 +454,41 @@ export const makeProductDetail = (item) => ({
 
   title: item.name,
   subTitle: "Anarkali Set",
-  category: "Anarkali Set",
-  reviews: "3 reviews",
 
-  // ✅ images (fallback)
+  // ✅ ADD THIS (MISSING DATA FIX)
+  description:
+    "Pure silk georgette • Ivory & antique gold • Hand-done chikankari & zardozi threadwork",
+
+  rating: 5,
+  reviews: 3,
+
+  delivery:
+    "Ready to ship • Dispatches in 2–3 days • Standard delivery 4–6 days • Express available",
+
+  note:
+    item.sizeNote ||
+    "This piece is unstitched. It runs true to size — Need help choosing?",
+
+  features: [
+    "AUTHENTICATED",
+    "DIRECT FROM DESIGNER",
+    "READY TO SHIP"
+  ],
+
+  // ✅ IMPORTANT
   images: item.image || [],
 
-  // ✅ colors with mapping (IMPORTANT)
-  colors: item.colors?.map((c, i) => {
-    // agar object already hai (correct case)
-    if (typeof c === "object") return c;
+  colors:
+    item.colors?.map((c, i) => ({
+      code: c.code,
+      name: c.name || `Color ${i + 1}`,
+      images: c.images || [item.image?.[0]]
+    })) || [],
 
-    // agar sirf color code hai (fallback case)
-    return {
-      code: c,
-      images: [item.image?.[i] || item.image?.[0]]
-    };
-  }) || [],
+  sizes: ["XS", "S", "M", "L", "XL"],
 
-  sizes: ["S", "M", "L"],
+  shipping: item.shipping || [],
+  care: item.care || [],
 });
 /* ================= COMPONENT ================= */
 export default function ProductList() {
@@ -478,7 +498,7 @@ export default function ProductList() {
       <Container>
 
         {/* HEADER */}
-        <div className="lux-header d-flex justify-content-between align-items-center">
+        <div className="lux-header">
           <div>
             <p className="sub">FROM THE SAME HOUSE</p>
             <h2>
@@ -486,13 +506,13 @@ export default function ProductList() {
             </h2>
           </div>
 
-          <Link to="/products" className="view-all">
-            VIEW ALL →
+          <Link to="/products" className="p-view-all">
+            VIEW ALL
           </Link>
         </div>
 
         {/* GRID */}
-        <Row className="g-4">
+        <Row className="g-4 justify-content-start">
           {products.map((item, index) => (
             <Col lg={3} md={4} sm={6} xs={6} key={item.id}>
 
@@ -516,28 +536,28 @@ export default function ProductList() {
   {/* IMAGE */}
   <div className="img-box">
     <img
-      src={
-        hoveredId === item.id
-          ? item.image?.[1] || item.image?.[0]
-          : item.image?.[0]
-      }
-      alt={item.name}
-      loading="lazy"
-    />
+  src={
+    hoveredId === item.id && item.image?.[1]
+      ? item.image[1]
+      : item.image?.[0]
+  }
+  alt={item.name}
+/>
 
     <span className={`badge-${item.tag.toLowerCase()}`}>
       {item.tag}
     </span>
 
-    <button
-      className="wishlist"
-      onClick={(e) => {
-        e.preventDefault();
-        console.log("Wishlist clicked:", item.id);
-      }}
-    >
-      <Heart size={16} />
-    </button>
+   <button
+  className="wishlist"
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation(); // 🔥 IMPORTANT
+    console.log("Wishlist clicked:", item.id);
+  }}
+>
+  <Heart size={16} />
+</button>
 
     <div className="overlay"></div>
   </div>
@@ -546,8 +566,14 @@ export default function ProductList() {
   <div className="info">
     <p className="designer">{item.designer}</p>
     <h6 className="product-name">{item.name}</h6>
-    <p className="price">{item.price}</p>
+    <div className="price-wrap">
+      <span className="price">{item.price}</span>
+      {item.oldPrice && (
+        <span className="old-price">{item.oldPrice}</span>
+      )}
+    </div>
   </div>
+  
 
 </div>
                 </Link>

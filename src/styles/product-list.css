@@ -1,179 +1,137 @@
+/* ================= PRODUCT LIST ================= */
+.products-section {
+  padding: 80px 0;
+  background: var(--warm-white);
+}
 
-/* ================= ROOT (ADD THIS) ================= */
-:root {
-  --cream: #FAF7F2;
-  --warm-white: #FFFEFB;
-  --charcoal: #1A1612;
-  --gold: #C9A96E;
-  --gold-pale: #F5EDD8;
-  --terracotta: #B85C38;
-  --sage: #6B7E5A;
-  --muted: #8A7E72;
-  --border: #E8E0D4;
-  --border-light: #F0EAE0;
+/* GRID GAP FIX */
+.row {
+  row-gap: 40px;
 }
 
 /* ================= CARD ================= */
 .lux-card {
   cursor: pointer;
-  transition: transform 0.4s ease;
+  transition: transform 0.35s ease;
 }
 
 .lux-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-6px);
 }
 
-/* ================= IMAGE BOX ================= */
+/* ================= IMAGE ================= */
 .img-box {
   position: relative;
   overflow: hidden;
-  border-radius: 2px;
   border: 1px solid var(--border-light);
   background: var(--cream);
 }
 
-/* IMAGE */
 .img-box img {
   width: 100%;
   height: 380px;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  transition: transform 0.6s ease, opacity 0.4s ease;
 }
 
-/* ZOOM */
+/* IMAGE HOVER */
 .lux-card:hover img {
-  transform: scale(1.03); /* reduce */
+  transform: scale(1.04);
+  opacity: 0.9;
 }
 
 /* ================= OVERLAY ================= */
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0,0,0,0.35),
-    rgba(0,0,0,0)
-  );
+  background: linear-gradient(to top, rgba(0,0,0,0.35), transparent);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: 0.4s ease;
 }
 
 .lux-card:hover .overlay {
   opacity: 1;
 }
 
-/* ================= BADGES ================= */
+/* ================= BADGE ================= */
 .img-box span {
   position: absolute;
   top: 12px;
   left: 12px;
-  font-family: "DM Sans", sans-serif;
-  font-size: 8px;
-  font-weight: 500;
+  font-size: 9px;
   padding: 4px 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  border-radius: 2px;
 }
-.img-box span {
-  border-radius: 2px; /* not pill */
-}
-/* CLIENT COLORS */
-.badge-rent { background: var(--charcoal); color: #D4C5B0; }
-.badge-preloved { background: var(--terracotta); color: #fff; }
+
+.badge-rent { background: #1A1612; color: #D4C5B0; }
+.badge-new { background: #6B7E5A; color: #fff; }
+.badge-preloved { background: #B85C38; color: #fff; }
 
 /* ================= WISHLIST ================= */
 .wishlist {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  border-radius: 50%;
   backdrop-filter: blur(4px);
-  background: rgba(255,254,251,0.92);
-  border: 1px solid #E8E0D4;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--border);
+
+  transition: 0.3s ease;
 }
 
-.wishlist.active {
-  background: #B85C38;
-  color: #fff;
-  border-color: #B85C38;
-}
-
-/* SHOW ON HOVER */
+/* SHOW ONLY ON HOVER */
 .lux-card:hover .wishlist {
   opacity: 1;
 }
 
-/* HOVER EFFECT */
+/* HOVER */
 .wishlist:hover {
   background: var(--gold-pale);
-  border-color: var(--gold);
-  transform: scale(1.08);
+  transform: scale(1.1);
 }
 
-/* ACTIVE STATE */
+/* ACTIVE */
 .wishlist.active {
   background: var(--terracotta);
   color: #fff;
-  border-color: var(--terracotta);
 }
 
 /* ================= TEXT ================= */
 .info {
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
-/* DESIGNER */
 .designer {
-  font-family: "DM Sans", sans-serif;
   font-size: 9px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 4px;
 }
 
-/* PRODUCT NAME */
-.info h6 {
+.product-name {
+  font-size: 14px;
   margin: 6px 0;
   color: var(--charcoal);
-  transition: color 0.3s ease;
+  transition: 0.3s;
 }
 
-/* HOVER TITLE */
-.lux-card:hover h6 {
+.lux-card:hover .product-name {
   color: var(--gold);
 }
 
-/* PRICE */
 .price {
-  font-family: "DM Sans", sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: var(--charcoal);
-}
-
-/* SUB PRICE */
-.price span {
-  font-size: 11px;
-  color: var(--muted);
-  margin-left: 4px;
-}
-
-/* ================= SHINE EFFECT ================= */
-.shine {
-  position: absolute;
-  top: -120%;
-  left: -50%;
-  width: 200%;
-  height: 300%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.2),
-    transparent
-  );
-  transform: rotate(25deg);
-  transition: 0.7s;
-}
-
-.lux-card:hover .shine {
-  top: 100%;
 }
 
 /* ================= MOBILE ================= */
@@ -182,254 +140,112 @@
     height: 250px;
   }
 }
-.lux-card {
-  cursor: pointer;
-  transition: all 0.3s ease;
+.lux-header {
+  margin-bottom: 40px;
 }
 
-/* CARD HOVER LIFT */
-.lux-card:hover {
-  transform: translateY(-8px);
-}
-
-/* IMAGE BOX */
-.img-box {
-  position: relative;
-  overflow: hidden;
-}
-.img-box {
-  border: 1px solid #EEE7DC;
-}
-/* IMAGE */
-.img-box img {
-  width: 100%;
-  height: 380px;
-  object-fit: cover;
-  transition: 0.5s ease;
-}
-
-/* ZOOM EFFECT */
-.lux-card:hover img {
-  transform: scale(1.03); /* reduce */
-}
-.products-section {
-  padding: 100px 0;
-}
-/* OVERLAY (premium dark fade) */
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0,0,0,0.4),
-    rgba(0,0,0,0)
-  );
-  opacity: 0;
-  transition: 0.4s;
-}
-
-.lux-card:hover .overlay {
-  opacity: 1;
-}
-
-/* BADGES */
-.img-box span {
-  position: absolute;
-  top: 12px;
-  left: 12px;
+/* small top text */
+.lux-header .sub {
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
-  padding: 5px 12px;
-  color: #fff;
-  border-radius: 20px;
-  letter-spacing: 1px;
-}
-
-.badge-new { background: #6c7b5a; }
-.badge-rent { background: #000; }
-.badge-preloved { background: #c46a3a; }
-
-/* WISHLIST */
-.wishlist {
-  backdrop-filter: blur(4px);
-  background: rgba(255,254,251,0.92);
-  border: 1px solid #E8E0D4;
-}
-
-.wishlist.active {
-  background: #B85C38;
-  color: #fff;
-  border-color: #B85C38;
-}
-/* HEART HOVER */
-.wishlist:hover {
-  background: #000;
-  color: #fff;
-  transform: scale(1.1);
-}
-
-/* TEXT */
-.info {
-  margin-top: 10px;
-}
-
-.designer {
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: #9a8f7a;
-}
-
-
-/* TEXT HOVER */
-.lux-card:hover h6 {
-  color: #c2a97e;
-}
-
-.price {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .img-box img {
-    height: 250px;
-  }
-}
-
-
-/* CARD */
-.lux-card {
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.lux-card:hover {
-  transform: translateY(-10px);
-}
-
-/* COLOR CARD */
-.color-card {
-  height: 380px;
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-  transition: 0.4s;
-}
-
-/* GLOW EFFECT */
-.lux-card:hover .color-card {
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-}
-
-/* SHINE ANIMATION */
-.shine {
-  position: absolute;
-  top: -100%;
-  left: -50%;
-  width: 200%;
-  height: 300%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.2),
-    transparent
-  );
-  transform: rotate(25deg);
-  transition: 0.6s;
-}
-
-.lux-card:hover .shine {
-  top: 100%;
-}
-
-/* BADGES */
-.img-box span {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  font-size: 10px;
-  padding: 5px 12px;
-  color: #fff;
-  border-radius: 20px;
-  letter-spacing: 1px;
-}
-
-.badge-new {
-  background: #6B7E5A; /* sage */
-  color: #fff;
-  letter-spacing: 0.16em;
-}
-/* WISHLIST */
-.wishlist {
-  backdrop-filter: blur(4px);
-  background: rgba(255,254,251,0.92);
-  border: 1px solid #E8E0D4;
-}
-
-.wishlist.active {
-  background: #B85C38;
-  color: #fff;
-  border-color: #B85C38;
-}
-
-/* HEART HOVER */
-.wishlist:hover {
-  background: #000;
-  color: #fff;
-  transform: scale(1.15);
-}
-
-/* TEXT */
-.info {
-  margin-top: 12px;
-}
-
-.designer {
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: #9a8f7a;
-}
-
-.info h6 {
-  font-size: 14px;
-  transition: 0.3s;
-}
-.info h6 {
-  margin-top: 8px;
+  letter-spacing: 0.25em;
+  color: var(--muted);
   margin-bottom: 6px;
 }
 
-.lux-card:hover h6 {
-  color: #c2a97e;
+/* main heading */
+.lux-header h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--charcoal);
+}
+
+/* designer highlight */
+.lux-header h2 span {
+  font-style: italic;
+}
+.designer {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.product-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 16px;
+  font-weight: 400;
 }
 
 .price {
+  font-family: "DM Sans", sans-serif;
   font-size: 14px;
-  font-weight: 600;
+}
+.lux-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
-/* MOBILE */
-@media (max-width: 768px) {
-  .color-card {
-    height: 250px;
-  }
-}
-.section-header h2 {
-  font-family: "Cormorant Garamond", serif;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-}
-.eyebrow {
-  color: #BFA37A; /* softer gold (more luxury) */
+.lux-header h2 {
+  margin: 0;
 }
 
-.img-box img {
-  transition: transform 0.6s ease, opacity 0.4s ease;
-}
-.img-box img {
-  transition: opacity 0.4s ease;
+.lux-header .sub {
+  margin: 0;
 }
 
-.lux-card:hover img {
-  opacity: 0.85;
+.p-view-all {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  text-decoration: none;
+  position: relative;
+  transition: 0.3s ease;
+}
+
+.price-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* MAIN PRICE */
+.price {
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--charcoal);
+}
+
+/* OLD PRICE */
+.old-price {
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+/* underline animation */
+.p-view-all::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 1px;
+  background: var(--gold);
+  transition: 0.3s ease;
+}
+
+.p-view-all:hover {
+  color: var(--gold);
+}
+
+.p-view-all:hover::after {
+  width: 100%;
 }
