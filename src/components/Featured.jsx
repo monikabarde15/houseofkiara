@@ -54,16 +54,18 @@ export default function Featured() {
 
         {/* HEADER */}
         <div className="featured-header">
-          <div className="heading-block">
-            <div className="eyebrow-row">
-              <div className="heading-line"></div>
-            <p className="eyebrow">Handpicked for You</p>
-            </div>
+          <div>
+              
+            <p className="featured-section-label">
+              <span className="featured-line"></span>
+              <span className="label-text">Simple by Design</span>
+            </p>
 
-            <h2 className="title">
+            <h2 className="section-title">
               Featured <em>Pieces</em>
             </h2>
           </div>
+           
 
           <div className="view-all-f">VIEW ALL →</div>
         </div>
@@ -87,7 +89,7 @@ export default function Featured() {
                   </div>
 
                   {/* WISHLIST */}
-                  <div className="wishlist">
+                  <div className="hok-wishlist">
                   <Heart size={14} strokeWidth={1.5} />
                 </div>
                 </div>

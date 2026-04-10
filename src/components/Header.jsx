@@ -1,4 +1,4 @@
-import logo from "../assets/logo/logo.png";
+import logo from "../assets/logo/logo1.png";
 
 export default function Header() {
   return (
@@ -6,13 +6,13 @@ export default function Header() {
 
       {/* TOP BAR */}
       <div className="top-bar">
-        Every story deserves a second chapter
+        A New Standard of Luxury - Curated, Circulated, Conscious.
       </div>
 
 
       {/* MAIN HEADER */}
-      <div className="header">
-        <div className="container header-middle d-none d-xl-block">
+      <div className="header ">
+        <div className="container  header-middle d-none d-xl-block">
           <div className="row align-items-center gx-0 header-row">
 
             {/* SEARCH */}
@@ -33,7 +33,7 @@ export default function Header() {
             {/* LOGO */}
             <div className="col-lg-4 text-center header-center">
               <img src={logo} alt="House of Kaira" className="main-logo" />
-              <div className="logo-subtext">HOUSE OF KAIRA</div>
+              {/* <div className="logo-subtext">HOUSE OF KAIRA</div> */}
             </div>
 
             {/* ICONS */}
@@ -49,93 +49,93 @@ export default function Header() {
 
 
       {/* NAVBAR */}
-      <nav className="navbar navbar-expand-xl navbar-custom">
-        <div className="container d-flex align-items-center justify-content-between">
+     <nav className="navbar navbar-expand-xl navbar-custom">
+  <div className="navbar-container d-flex align-items-center justify-content-between">
 
-          {/* MOBILE TOGGLE */}
-          <button
-            className="navbar-toggler border-0"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#mainNavbar"
-          >
-            <i className="bi bi-list" style={{ fontSize: "24px" }}></i>
-          </button>
+    {/* MOBILE TOGGLE */}
+    <button
+      className="navbar-toggler border-0"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mainNavbar"
+    >
+      <i className="bi bi-list" style={{ fontSize: "24px" }}></i>
+    </button>
 
-          {/* MOBILE LOGO */}
-          <div className="mobile-logo-wrap d-xl-none text-center">
-            <img src={logo} alt="logo" className="mobile-logo" />
-          </div>
+    {/* MOBILE LOGO */}
+    <div className="mobile-logo-wrap d-xl-none text-center">
+      <img src={logo} alt="logo" className="mobile-logo" />
+    </div>
 
-          {/* MOBILE ICONS */}
-          <div className="mobile-icons d-xl-none">
-            <i className="bi bi-heart icon-btn"></i>
-            <i className="bi bi-bag icon-btn"></i>
-          </div>
+    {/* MOBILE ICONS */}
+    <div className="mobile-icons d-xl-none">
+      <i className="bi bi-heart icon-btn"></i>
+      <i className="bi bi-bag icon-btn"></i>
+    </div>
 
-          {/* NAV MENU */}
-          <div
-            className="collapse navbar-collapse justify-content-center"
-            id="mainNavbar"
-          >
-            <ul className="navbar-nav text-uppercase">
+    {/* NAV MENU */}
+    <div className="collapse navbar-collapse justify-content-center" id="mainNavbar">
+      <ul className="navbar-nav text-uppercase">
 
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  Rent
-                </a>
-                <ul className="dropdown-menu">
-                  <li><a className="dropdown-item">Lehenga</a></li>
-                  <li><a className="dropdown-item">Saree</a></li>
-                </ul>
-              </li>
+        {/* RENT */}
+        <li className="nav-item dropdown">
+          <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+            Rent <span className="nav-arrow"><i className="bi bi-chevron-down nav-arrow-icon"></i></span>
+          </a>
+          <ul className="dropdown-menu">
+            <li><a className="dropdown-item">Lehenga</a></li>
+            <li><a className="dropdown-item">Saree</a></li>
+          </ul>
+        </li>
 
-              <li className="nav-item">
-                <a className="nav-link" href="/products">Shop Preloved</a>
-              </li>
+        <li className="nav-item">
+          <a className="nav-link nav-cu active-new" href="/products">Shop Preloved</a>
+        </li>
 
-              <li className="nav-item">
-                <a className="nav-link active-new">Shop New</a>
-              </li>
+        <li className="nav-item">
+          <a className="nav-link nav-cu ">Shop New</a>
+        </li>
 
-              <li className="nav-item">
-                <a className="nav-link">Women</a>
-              </li>
+        <li className="nav-item">
+          <a className="nav-link nav-cu">Women</a>
+        </li>
 
-              <li className="nav-item">
-                <a className="nav-link">Men</a>
-              </li>
+        <li className="nav-item">
+          <a className="nav-link nav-cu">Men</a>
+        </li>
 
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  Occasion
-                </a>
-              </li>
+        {/* OCCASION */}
+        <li className="nav-item dropdown">
+          <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+            Occasion <span className="nav-arrow"><i className="bi bi-chevron-down nav-arrow-icon"></i></span>
+          </a>
+        </li>
 
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  Designers
-                </a>
-              </li>
+        {/* DESIGNERS */}
+        <li className="nav-item dropdown">
+          <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+            Designers <span className="nav-arrow"><i className="bi bi-chevron-down nav-arrow-icon"></i></span>
+          </a>
+        </li>
 
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  Shop by Category
-                </a>
-              </li>
+        {/* CATEGORY */}
+        <li className="nav-item dropdown">
+          <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+            Shop by Category <span className="nav-arrow"><i className="bi bi-chevron-down nav-arrow-icon"></i></span>
+          </a>
+        </li>
 
-              <li className="nav-item">
-                <a className="nav-link">
-                  New Arrivals <span className="new-badge">New</span>
-                </a>
-              </li>
+        <li className="nav-item">
+          <a className="nav-link nav-cu">
+            New Arrivals <span className="new-badge">New</span>
+          </a>
+        </li>
 
-            </ul>
-          </div>
+      </ul>
+    </div>
 
-        </div>
-      </nav>
-
+  </div>
+</nav>
     </header>
   );
 }

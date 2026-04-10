@@ -66,8 +66,8 @@ export default function HowItWorks() {
         <div className="how-header">
 
           <div>
-            <p className="section-label">
-              <span className="line"></span>
+            <p className="hows-section-label">
+              <span className="hows-line"></span>
               <span className="label-text">Simple by Design</span>
             </p>
 

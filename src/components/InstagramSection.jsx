@@ -3,6 +3,7 @@ import { Container } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
+import { ArrowRight } from "lucide-react";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -29,7 +30,7 @@ export default function InstagramSection() {
         <div className="hok-insta-header">
           <div>
             <p className="hok-insta-eyebrow">
-              <span className="hok-insta-line"></span>
+              <span className="fd__line"></span>
               OUR COMMUNITY
             </p>
 
@@ -38,9 +39,11 @@ export default function InstagramSection() {
             </h2>
           </div>
 
-          <a href="#" className="hok-insta-btn">
-            FOLLOW US →
-          </a>
+         
+          <div className="fd__viewAll-new">
+              FOLLOW US  <ArrowRight size={14} className="fd__arrowIcon" />
+          </div>
+          
         </div>
 
         <div className="hok-insta-grid">
@@ -64,9 +67,18 @@ export default function InstagramSection() {
           <div className="hok-insta-footer-line">
             <span className="hok-insta-line"></span>
 
-            <p>
-              Follow our story at <strong>@houseofkaira</strong>
+           <p className="follow-text">
+              Follow our story at{" "}
+              <a
+                href="https://instagram.com/houseofkaira"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="insta-link"
+              >
+                @houseofkaira
+              </a>
             </p>
+
 
             <span className="hok-insta-line"></span>
           </div>

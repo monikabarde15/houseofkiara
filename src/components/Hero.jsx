@@ -69,24 +69,18 @@ export default function Hero() {
           <Col lg={5} md={12} className="hero-left">
 
             <motion.div
-              style={{ opacity, y: yText }}
-              variants={{
-                hidden: {},
-                show: { transition: { staggerChildren: 0.2 } }
-              }}
-              initial="hidden"
-              animate="show"
+              
             >
 
               <motion.p className="section-label">
-                <span className="line"></span>
+                <span className="line"></span> &nbsp;
                 <p className="label-text">INDIA'S PREMIER CIRCULAR FASHION PLATFORM</p>
               </motion.p>
 
               <motion.h1 className="hero-title" variants={fadeUp}>
                 Wear it <br />
-                with <em>love</em>. <br />
-               Pass it on<span className="dot">.</span>
+                with <em>love</em><span className="dot">.</span> <br />
+               Pass it on .
               </motion.h1>
 
               <motion.p className="hero-sub" variants={fadeUp}>

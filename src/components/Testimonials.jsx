@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
 import "../styles/testimonials.css";
+import { Star } from "lucide-react";
 
 export default function Testimonials() {
 
@@ -28,8 +29,8 @@ export default function Testimonials() {
 
   return (
     <section className="testimonials-section">
-
-      <Container fluid="xl">
+<div className="testimonials-inner">
+      <Container>
 
         {/* HEADER */}
         <motion.div
@@ -53,7 +54,7 @@ export default function Testimonials() {
           </h2>
 
         </motion.div>
-
+        <br/>
         {/* CARDS */}
         <motion.div
           initial="hidden"
@@ -69,7 +70,7 @@ export default function Testimonials() {
           <Row className="g-4 testimonials-row">
 
             {data.map((item, i) => (
-              <Col xl={4} lg={4} md={6} xs={12} key={i}>
+              <Col lg={4} md={6} xs={12} className="d-flex" key={i}>
 
                 <motion.div
                   className="testimonial-card"
@@ -79,8 +80,12 @@ show: { opacity: 1, y: 0 }
                   }}
                 >
 
-                  <div className="stars">★★★★★</div>
-                  <div className="quote">“</div>
+                  <div className="stars">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={12} fill="#C9A96E" stroke="none" />
+                    ))}
+                  </div>
+                  <div className="quote">"</div>
 
                   <p className="text">{item.text}</p>
 
@@ -101,7 +106,7 @@ show: { opacity: 1, y: 0 }
         </motion.div>
 
       </Container>
-
+</div>
     </section>
   );
 }
