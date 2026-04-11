@@ -1,66 +1,90 @@
 import React from "react";
 import "../styles/categories.css";
 
-export default function CategoriesNew() {
+export default function DesignersSection() {
+
+  const data = [
+    {
+      title: "SAAKSHA & KINNI",
+      img: "https://img.perniaspopupshop.com/HOMEPAGE_IMAGES/WOMEN/10_Apr_26/Saaksha-&-Kinni-desk-best-10-04-2026.jpg"
+    },
+    {
+      title: "QUENCH A THIRST",
+      img: "https://img.perniaspopupshop.com/HOMEPAGE_IMAGES/WOMEN/10_Apr_26/Quench-A-Thirst-desk-best-10-04-2026.jpg"
+    },
+    {
+      title: "BASIL LEAF",
+      img: "https://img.perniaspopupshop.com/HOMEPAGE_IMAGES/WOMEN/10_Apr_26/Basil-Leaf-desk-best-10-04-2026.jpg"
+    },
+    {
+      title: "SAFAA",
+      img: "https://img.perniaspopupshop.com/HOMEPAGE_IMAGES/WOMEN/10_Apr_26/Safaa-desk-best-10-04-2026.jpg"
+    },
+    {
+      title: "RAJDEEP RANAWAT",
+      img: "https://img.perniaspopupshop.com/HOMEPAGE_IMAGES/WOMEN/10_Apr_26/Rajdeep-Ranawat-desk-best-10-04-2026.jpg"
+    }
+  ];
+
   return (
-    <section className="hok-cat-section">
- <div className="hok-container">  
-      {/* HEADER */}
-      <div className="hok-cat-header">
-        <div>
-          <div className="hok-cat-label">
-            <span className="hok-line"></span>
-            <span>CURATED FOR EVERY OCCASION</span>
-          </div>
+    <section className="designer-section">
 
-          <h2 className="hok-cat-title">
-            Shop by <em>Category</em>
-          </h2>
-        </div>
+      <div className="designer-inner">
 
-        <div className="hok-view">VIEW ALL →</div>
-      </div>
+        {/* HEADER */}
+       <div className="designer-header">
 
-      {/* GRID */}
-      <div className="hok-cat-grid">
+  {/* LEFT */}
+  <div className="designer-left">
 
-        {/* TOP */}
-        <div className="hok-row-top">
-          <div className="hok-card">
-            <img src="https://i.pinimg.com/736x/88/c4/72/88c47272ed16ee684e43bfb1914bc5aa.jpg" />
-            <div className="hok-overlay">
-              <h4>BRIDAL LEHENGAS</h4>
-              <span>SHOP NOW</span>
-            </div>
-          </div>
+    <div className="designer-label">
+      <span className="designer-cat-line"></span>
+      <span className="label-text">CURATED FOR EVERY OCCASION</span>
+    </div>
 
-          <div className="hok-card">
-            <img src="https://i.pinimg.com/736x/d0/bd/db/d0bddb788a66ba992c1cbf463933763f.jpg" />
-            <div className="hok-overlay">
-              <h4>SHERWANIS</h4>
-              <span>SHOP NOW</span>
-            </div>
-          </div>
-        </div>
+    <h2 className="section-title">
+      Shop by <em>Category</em>
+    </h2>
 
-        {/* BOTTOM */}
-        <div className="hok-row-bottom">
-          {[
-            "SAREES",
-            "ANARKALIS",
-            "INDO-WESTERN"
-          ].map((title, i) => (
-            <div className="hok-card" key={i}>
-              <img src="https://i.pinimg.com/736x/b0/57/8d/b0578d57080464cf62be53fe40234b92.jpg" />
-              <div className="hok-overlay">
-                <h4>{title}</h4>
-                <span>SHOP NOW</span>
+  </div>
+
+  {/* RIGHT */}
+  <div className="designer-view">
+    VIEW ALL <span className="arrow">→</span>
+  </div>
+
+</div>
+        {/* GRID */}
+        <div className="designer-grid">
+
+          {/* TOP */}
+          <div className="designer-top">
+            {data.slice(0,2).map((item, i) => (
+              <div className="designer-card" key={i}>
+                <img src={item.img} alt={item.title} />
+                <div className="designer-overlay">
+                  <h4>{item.title}</h4>
+                  <span>SHOP NOW</span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          {/* BOTTOM */}
+          <div className="designer-bottom">
+            {data.slice(2).map((item, i) => (
+              <div className="designer-card" key={i}>
+                <img src={item.img} alt={item.title} />
+                <div className="designer-overlay">
+                  <h4>{item.title}</h4>
+                  <span>SHOP NOW</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
 
-      </div>
       </div>
     </section>
   );
