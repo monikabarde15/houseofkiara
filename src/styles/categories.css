@@ -5,20 +5,20 @@
    /* padding:17px 0; */
    padding-bottom: 70px;
   background:#FFFEFB;
-  border-top: 1px solid #E8E0D4;
+  
 }
 .hok-container{
   max-width:1200px;
   margin:0 auto;
-  padding:0 clamp(16px, 3vw, 24px);
+  padding:0 clamp(20px, 4vw, 32px); /* 👈 increase */
 }
 /* ================= HEADER ================= */
 .hok-cat-header{
-  display:flex;
+   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:30px;
-  margin-left: -61px;
+  padding-right:4px;   
 }
 
 .hok-cat-label{
@@ -29,7 +29,7 @@
   letter-spacing:0.28em;
   color:#C9A96E;
   margin-bottom:8px;
-  margin-left: -61px;
+  margin-left:0;
 }
 
 .hok-line{
@@ -42,7 +42,7 @@
   font-family:'Cormorant Garamond', serif;
   font-size:42px;
   font-weight:400;
-  margin-left: -61px;
+  margin-left:0;
 }
 
 .hok-cat-title em{
@@ -53,7 +53,8 @@
   font-size:10px;
   letter-spacing:.2em;
   border-bottom:1px solid #000;
-  margin-right: -131px;
+  margin-right:0;
+  white-space:nowrap;
 }
 
 .hok-view:hover{
@@ -63,17 +64,17 @@
 
 /* ================= GRID ================= */
 .hok-cat-grid{
-  width: 106%;
-  margin-left: -69px;
+  width:100%;
+  margin:0 auto;   /* 👈 important */
 }
 
 /* TOP ROW */
 .hok-row-top{
   display:grid;
-  grid-template-columns:2.3fr 1fr; /* 👈 PDF exact feel */
-  gap:6px;
-  width: 115%;
-  margin-left: -57px;
+  grid-template-columns:2.3fr 1fr;
+  gap:20PX;          /* 👈 clean spacing */
+  width:100%;
+  margin:0;
 }
 .hok-row-top .hok-card{
   height: clamp(260px, 30vw, 380px);
@@ -86,10 +87,8 @@
 .hok-row-bottom{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:6px;
-  margin-top:6px;
-  width: 115%;
-  margin-left: -57px;
+  gap:20px;
+  margin-top:20px;
 }
 
 /* ================= CARD ================= */
@@ -100,13 +99,11 @@
 
 /* HEIGHT */
 .hok-row-top .hok-card{
-  height:380px;
+  height:clamp(260px, 28vw, 360px);
 }
-
 .hok-row-bottom .hok-card{
-  height:220px;
+  height:clamp(180px, 16vw, 220px);
 }
-
 /* IMAGE */
 .hok-card img{
   width:100%;
@@ -182,5 +179,10 @@
 
   .hok-card{
     height:240px !important;
+  }
+}
+@media(min-width:1400px){
+  .hok-container{
+    max-width:1250px;
   }
 }

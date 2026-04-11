@@ -58,7 +58,7 @@ export default function Featured() {
               
             <p className="featured-section-label">
               <span className="featured-line"></span>
-              <span className="label-text">Simple by Design</span>
+              <span className="label-text">Hand picked for you</span>
             </p>
 
             <h2 className="section-title">

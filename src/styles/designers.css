@@ -10,7 +10,7 @@
 .fd__container{
   max-width:1200px;
   margin:0 auto;
-  padding:0 40px;
+  padding:0 clamp(20px,4vw,32px);
 }
 
 @media(max-width:992px){
@@ -114,15 +114,15 @@
   align-items:flex-end;
   margin-bottom:48px;
   flex-wrap:wrap;
+  gap:20px;
 }
-
 /* EYEBROW */
 .fd__eyebrowRow{
   display:flex;
   align-items:center;
   gap:12px;
   margin-bottom:12px;
-  margin-left: -73px;
+  margin-left:0;   /* ❌ remove negative */
 }
 
 .fd__line{
@@ -141,10 +141,10 @@
 /* TITLE */
 .fd__title{
   font-family:'Cormorant Garamond', serif;
-  font-size:42px;
+  font-size:clamp(28px,3vw,42px);
   letter-spacing:-0.02em;
   color:#1A1612;
-  margin-left: -80px;
+  margin-left:0;   /* ❌ remove */
 }
 
 .fd__title em{
@@ -164,7 +164,8 @@
   display:inline-flex;
   align-items:center;
   gap:6px;
-  margin-right: -125px;
+  margin-right:0;  /* ❌ remove */
+  white-space:nowrap;
 }
 
 /* Arrow */
@@ -184,9 +185,10 @@
 }
 /* GRID */
 .fd__grid{
+  width:100%;
   display:grid;
-  grid-template-columns:repeat(6,1fr); /* FIXED */
-  gap:88px; /* FIXED */
+  grid-template-columns:repeat(6,1fr);
+  gap:20px;   /* 👈 balanced spacing */
   margin-top:48px;
 }
 
@@ -195,6 +197,10 @@
   position:relative;
   aspect-ratio:2/3;
   overflow:hidden;
+  background:#EDE6DC;
+
+  width:100%;        /* ❌ remove fixed width */
+  margin-left:0;
 }
 
 /* IMAGE */
@@ -289,9 +295,10 @@
   position:relative;
   aspect-ratio:2/3;
   overflow:hidden;
-  background:#EDE6DC; /* 🔥 fallback neutral */
-  width: 227px;
-    margin-left: -82px
+  background:#EDE6DC;
+
+  width:100%;     /* ✅ responsive */
+  margin:0;       /* ✅ no shift */
 }
 .fd__card img{
   width:100%;

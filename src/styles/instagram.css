@@ -8,10 +8,12 @@
 .hok-insta-header{
   max-width:1200px;
   margin:0 auto 48px;
+  padding:0 clamp(20px,4vw,40px); /* 👈 spacing */
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
   flex-wrap:wrap;
+  gap:20px;
 }
 
 /* EYEBROW */
@@ -23,15 +25,14 @@
   align-items:center;
   gap:10px;
   margin-bottom: 14px;
-  margin-left: -67px !important;
+ margin-left:0;
 }
 
 .hok-insta-line{
-  width:24px;
+ width:441px;
   height:1px;
   background:#c9a96e;
-   flex:1;
-  margin-right: -68px !important;
+  flex-shrink:0; 
 }
 .fd__viewAll-new{
   font-size: 9px;
@@ -44,7 +45,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-right: -110px;
+    margin-right:0;
 }
 .fd__viewAll-new:hover {
     color: #C9A96E;
@@ -55,7 +56,7 @@
   font-family:'Cormorant Garamond', serif;
   font-size:42px;
   margin-top:4px;
-  margin-left: -67px;
+  margin-left:0;  
 }
 
 .hok-insta-title span{
@@ -78,10 +79,9 @@
 .hok-insta-grid{
   display:grid;
   grid-template-columns:repeat(6,1fr);
-  gap:3px;
-  margin-top:40px;
-  width: 1381px;
-  margin-left: -17px;
+  gap:12px;          
+  width:100%;       
+  margin:40px 0 0; 
 }
 
 .hok-insta-btn:hover{
@@ -94,7 +94,7 @@
 .hok-insta-row{
   max-width:1200px;
   margin:0 auto;
-  justify-content:center;
+  padding:0 clamp(20px,4vw,40px);
 }
 
 /* CARD */
@@ -166,8 +166,8 @@
   align-items:center;
   justify-content:center;
   gap:10px;
-  margin-top: -27px !important;
-  margin-left: -16px;
+  margin-top:0;
+  margin-left:0;
 }
 /* Text styling */
 .follow-text {
@@ -209,6 +209,24 @@
     margin-bottom:12px;
   }
 
+}
+
+@media(max-width:992px){
+  .hok-insta-grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+}
+
+@media(max-width:768px){
+  .hok-insta-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:480px){
+  .hok-insta-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 }
 
 @media(max-width:992px){

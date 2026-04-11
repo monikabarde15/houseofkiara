@@ -1,16 +1,16 @@
 /* ===== CONTAINER (CENTER ALIGN ALL SECTIONS SAME) ===== */
 .container-custom{
-   max-width:1300px;
+  max-width:1200px;
   margin:0 auto;
-  padding:0;  
+  padding:0 20px;   /* 👈 equal left-right spacing */
 }
-
+.heading-block{
+  padding-left:0;
+}
 /* ===== SECTION ===== */
 .featured{
-  
   width:100%;
-  max-width:100%;
-  padding:60px 0;
+  padding:80px 0;
   background:#FFFEFB;
 }
 .featured-section-label{
@@ -20,13 +20,18 @@
   font-size:11px;
   letter-spacing:.25em;
   color:#C9A96E;
-  margin-bottom: 23px;
-  margin-left: -61px;
+  margin-bottom:23px;
+  margin-left:0;   /* ✅ ONLY THIS */
+  text-transform:uppercase;
+}
+.label-text{
+  white-space:nowrap;   /* 👈 zoom par break nahi hoga */
 }
 .featured-line{
   width:20px;
   height:1px;
   background:#C9A96E;
+  flex-shrink:0;   /* 👈 important */
 }
 
 /* ===== HEADER ===== */
@@ -77,26 +82,13 @@
   font-weight:400;
   letter-spacing:-0.01em;
   margin-bottom:0;
-  margin-top: -31px !important;
+  margin-top: 0 !important;
 }
-.featured-section-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 11px;
-    letter-spacing: .25em;
-    color: #C9A96E;
-    margin-bottom: 23px;
-    margin-left: -61px;
-}
+
 .title em{
   color:#C9A96E;
 }
-.featured-line{
-  width:20px;
-  height:1px;
-  background:#C9A96E;
-}
+
 .view-all-f{
   font-size:10px;
   letter-spacing:.2em;
@@ -107,7 +99,7 @@
   transition:.2s;
   transition:color .2s ease, border-color .2s ease;
   display:inline-block;
-  margin-right: -46px;
+  margin-right: 0;
 }
 .view-all-f:hover{
   color:#C9A96E;
@@ -115,13 +107,14 @@
 }
 /* ===== GRID (DESKTOP = 25%) ===== */
 .featured-grid{
-  width: 103%;
-    padding: 0 10px;
-    margin-top: 48px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 107px;
-    margin-left: -24px;
+ width:100%;              /* ❌ remove 103% */
+  margin-left:0;
+  padding:0;
+  margin-top:48px;
+
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:24px; 
 }
 
 /* ===== CARD ===== */
@@ -258,8 +251,8 @@
   background:#FFFEFB;
   border:none !important;
   padding:0;
-  margin-left: -46px;
-  margin-right: -45px;
+   margin-left: 0;
+  margin-right: 0;
 }
 
 .card > p,
@@ -354,5 +347,16 @@
 
   .eyebrow-row{
     gap:8px;
+  }
+}
+@media(min-width:1400px){
+  .container-custom{
+    max-width:1300px;
+  }
+}
+
+@media(min-width:1600px){
+  .container-custom{
+    max-width:1400px;
   }
 }
