@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import logo from "../assets/logo/logo1.png";
+import { Link } from "react-router-dom";
 
 export default function Header() {
 
@@ -24,18 +25,83 @@ export default function Header() {
     };
   }, []);
 
-  const menu = [
-    { title: "Rent",link: "/rent/bridal-lehengas", items: ["Lehengas", "Sarees", "Gowns"] },
-    { title: "Shop Preloved",link: "/rent/bridal-lehengas", active: true, items: ["All Products", "Trending"] },
-    { title: "Shop New",link: "/rent/bridal-lehengas", items: ["New Arrivals", "Festive"] },
-    { title: "Women",link: "/rent/bridal-lehengas", items: ["Lehengas", "Sarees"] },
-    { title: "Men",link: "/rent/bridal-lehengas", items: ["Sherwanis", "Kurtas"] },
-    { title: "Occasion",link: "/rent/bridal-lehengas", items: ["Wedding", "Mehendi"] },
-    { title: "Designers",link: "/rent/bridal-lehengas", items: ["Sabyasachi", "Manish"] },
-    { title: "Shop by Category",link: "/rent/bridal-lehengas", items: ["Ethnic", "Fusion"] },
-    { title: "New Arrivals",link: "/rent/bridal-lehengas", items: ["Latest", "Trending"] },
-  ];
-
+const menu = [
+  {
+    title: "Rent",
+    link: "/rent",
+    items: [
+      { name: "Lehengas", link: "/rent/bridal-lehengas" },
+      { name: "Sarees", link: "/products" },
+      { name: "Gowns", link: "/rent/gowns" }
+    ]
+  },
+  {
+    title: "Shop Preloved",
+    link: "/shop/preloved",
+    active: true,
+    items: [
+      { name: "All Products", link: "/shop/preloved/all" },
+      { name: "Trending", link: "/shop/preloved/trending" }
+    ]
+  },
+  {
+    title: "Shop New",
+    link: "/shop/new",
+    items: [
+      { name: "New Arrivals", link: "/shop/new/arrivals" },
+      { name: "Festive", link: "/shop/new/festive" }
+    ]
+  },
+  {
+    title: "Women",
+    link: "/women",
+    items: [
+      { name: "Lehengas", link: "/women/lehengas" },
+      { name: "Sarees", link: "/women/sarees" }
+    ]
+  },
+  {
+    title: "Men",
+    link: "/men",
+    items: [
+      { name: "Sherwanis", link: "/men/sherwanis" },
+      { name: "Kurtas", link: "/men/kurtas" }
+    ]
+  },
+  {
+    title: "Occasion",
+    link: "/occasion",
+    items: [
+      { name: "Wedding", link: "/occasion/wedding" },
+      { name: "Mehendi", link: "/occasion/mehendi" }
+    ]
+  },
+  {
+    title: "Designers",
+    link: "/designers",
+    items: [
+      { name: "Sabyasachi", link: "/designers/sabyasachi" },
+      { name: "Manish", link: "/designers/manish" }
+    ]
+  },
+  {
+    title: "Shop by Category",
+    link: "/category",
+    items: [
+      { name: "Ethnic", link: "/category/ethnic" },
+      { name: "Fusion", link: "/category/fusion" }
+    ]
+  },
+  {
+    title: "New Arrivals",
+    link: "/new-arrivals",
+    items: [
+      { name: "Latest", link: "/new-arrivals/latest" },
+      { name: "Trending", link: "/new-arrivals/trending" }
+    ]
+  }
+];
+  
   return (
     <header>
 
@@ -86,35 +152,41 @@ export default function Header() {
           {/* NAV */}
           <div className="collapse navbar-collapse" id="mainNavbar">
             <ul className="navbar-nav">
+  {menu.map((m, i) => (
+    <li className="nav-item dropdown" key={i}>
 
-              {menu.map((m, i) => (
-                <li className="nav-item dropdown" key={i}>
-                  <a href="#" onClick={(e)=>e.preventDefault()}
-                     className={`nav-link ${m.active ? "" : ""}`}>
-                    {m.title}
-                    <i className="bi bi-chevron-down nav-arrow"></i>
-                  </a>
+      {/* ✅ Parent Nav */}
+      <Link
+        to={m.link}
+        className={`nav-link ${m.active ? "active" : ""}`}
+        onClick={(e) => {
+          if (window.innerWidth < 1200) {
+            e.preventDefault(); // mobile pe dropdown open karega
+          }
+        }}
+      >
+        {m.title}
+        <i className="bi bi-chevron-down nav-arrow"></i>
+      </Link>
 
-                  <ul className="dropdown-menu">
-                    {m.items.map((item, idx) => (
-                      <li key={idx}>
-                        <a
-                          className="dropdown-item"
-                          href="#"
-                          onClick={(e) => {
-                            e.stopPropagation();   // ✅ IMPORTANT
-                            console.log(item);     // ya navigation logic
-                          }}
-                        >
-                          {item}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
+      {/* ✅ Dropdown */}
+      <ul className="dropdown-menu">
+        {m.items.map((item, idx) => (
+          <li key={idx}>
+            <Link
+              to={item.link}
+              className="dropdown-item"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {item.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
 
-            </ul>
+    </li>
+  ))}
+</ul>
           </div>
 
         </div>
