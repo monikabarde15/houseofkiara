@@ -30,8 +30,8 @@ const menu = [
     title: "Rent",
     link: "/rent",
     items: [
-      { name: "Lehengas", link: "/rent/bridal-lehengas" },
-      { name: "Sarees", link: "/products" },
+      { name: "Filter", link: "/rent/bridal-lehengas" },
+      { name: "Products", link: "/products" },
       { name: "Gowns", link: "/rent/gowns" }
     ]
   },
