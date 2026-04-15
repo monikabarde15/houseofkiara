@@ -462,6 +462,11 @@ export const makeProductDetail = (item) => ({
   rating: 5,
   reviews: 3,
 
+  badges: [
+    item.tag === "NEW" ? "BUY NEW" : null,
+    "NEVER WORN"
+  ].filter(Boolean),
+
   delivery:
     "Ready to ship • Dispatches in 2–3 days • Standard delivery 4–6 days • Express available",
 

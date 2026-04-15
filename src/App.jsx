@@ -18,6 +18,7 @@ import ProductDetail from "./components/ProductDetail";
 
 // Pages
 import ProductList from "./components/Products";
+import BridalLehenga from "./components/BridalLehenga";
 
 
 // ✅ Home Page Component
@@ -46,6 +47,7 @@ export default function App() {
         {/* Products Page */}
         <Route path="/products" element={<ProductList />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/rent/bridal-lehengas" element={<BridalLehenga />} />
       </Routes>
 
       <Footer />

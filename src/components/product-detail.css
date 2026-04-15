@@ -477,21 +477,26 @@ h3 {
 
 
 /* ===== SWATCH GRID ===== */
-
-.swatches-details {
+.swatches {
   display: flex;
-  flex-direction: row;     /* 👈 horizontal */
-  align-items: flex-start; /* 👈 left align */
-  gap: 16px;               /* 👈 spacing between colors */
+  flex-wrap: wrap;
+  gap: 10px;
 }
-.swatches-details > div {
+
+
+/* ===== SINGLE SWATCH ===== */
+.swatch {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
+  cursor: pointer;
 }
+
+
 /* ===== CIRCLE ===== */
-.swatch-circle-details {
- width: 32px;
+.swatch-circle {
+  width: 32px;
   height: 32px;
   border-radius: 50%;
   position: relative;
@@ -502,13 +507,13 @@ h3 {
 
 
 /* ===== ACTIVE STATE (OUTER BORDER) ===== */
-.swatches-details.active .swatch-circle-details {
+.swatch.active .swatch-circle {
   border: 2px solid #1A1612;
 }
 
 
 /* ===== INNER RING ===== */
-.swatches-details.active .swatch-circle-details::after {
+.swatch.active .swatch-circle::after {
   content: "";
   position: absolute;
   inset: 3px;
@@ -523,7 +528,6 @@ h3 {
   letter-spacing: 0.06em;
   color: #8A7E72;
   text-align: center;
-  margin-top: 4px; /* 👈 halka sa space */
 }
 
 /* TAG */
@@ -616,8 +620,6 @@ h3 {
 /* hover */
 .sizes span:hover {
   border-color: #C9A96E;
-  background: #1A1612;
-  color: #fff;
 }
 
 /* active */

@@ -1,0 +1,285 @@
+html, body {
+  overflow-anchor: none;
+}
+/* ===== ROOT CONTAINER ===== */
+.clp {
+  background: #FFFEFB;
+  font-family: Arial, sans-serif;
+  color: #2c2c2c;
+}
+
+
+/* ===== BREADCRUMB SECTION ===== */
+.clp .breadcrumb{
+    display: flex;
+    background: #FFFEFB;
+    align-items: center;
+    gap:8px;
+    padding: 14px 48px;
+    border-bottom: 1px solid #F0EAE0;
+    margin-bottom: 0px;
+}
+
+.clp .breadcrumb .link{
+    font-family:'DM Sans';
+    color: #8A7E72 ;
+    font-size: 11px;
+    cursor:pointer;
+    letter-spacing: 0.06em;
+}
+
+.clp .breadcrumb .link:hover{
+    color: #1A1612;
+    transition: 0.15s;
+}
+
+.clp .breadcrumb .separator {
+  font-family: 'DM sans';
+  font-size: 10px;
+  color:  #E8E0D4 ;
+}
+
+.clp .breadcrumb .current {
+    font-family: 'DM Sans';
+    font-size: 11px;
+    font-weight: 500;
+    color: #1A1612;
+    letter-spacing: 0.06em;
+}
+
+
+/* ===== MAIN LAYOUT ===== */
+.clp__container {
+  display: flex;
+}
+
+.clp__main {
+  flex: 1;
+  padding: 24px 32px;
+}
+
+
+/* ===== HEADER ===== */
+.clp__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  /* margin-top: -20px; */
+}
+
+
+/* ===== HEADER LEFT ===== */
+.clp__headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.clp__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  color: #1A1612;
+}
+
+.clp__title em {
+  font-style: italic;
+  color: #BFA37A;
+}
+
+.clp__count {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: #8A7E72;
+  letter-spacing: 0.06em;
+}
+
+
+/* ===== HEADER RIGHT ===== */
+.clp__headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 8px;
+}
+
+.clp__sortLabel {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #8A7E72;
+}
+
+.clp__sortSelect {
+  height: 36px;
+
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+
+  padding: 8px 32px 8px 12px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  color: #1A1612;
+
+  background: #FAF7F2;
+
+  appearance: none;
+  cursor: pointer;
+
+  /*
+  background-image: url("data:image/svg+xml,...");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  */
+}
+
+
+/* ===== ACTIVE FILTER BAR ===== */
+.clp__activeFilters {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+  background: #FAF7F2;
+}
+
+.clp__activeLabel {
+  font-family: "DM Sans";
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #8A7E72;
+  white-space: nowrap;
+  padding-top: 5px;
+}
+
+.clp__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+  align-items: center;
+}
+
+.clp__tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: #1A1612;
+  background: #FFFEFB;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.clp__tag:hover {
+  border-color: #B85C38;
+  color: #B85C38;
+  background: #FDF4F1;
+}
+
+.clp__tagClose {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.clp__clearAll {
+  padding: 4px 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #B85C38;
+  border: 1px solid rgba(184, 92, 56, 0.3);
+  background: rgba(184, 92, 56, 0.04);
+  border-radius: 1px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.clp__clearAll:hover {
+  background: rgba(184, 92, 56, 0.1);
+  border-color: #B85C38;
+}
+
+
+/* ===== PRODUCT GRID ===== */
+.clp__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+/* ===== RESPONSIVE TABLET ===== */
+@media (max-width: 1279px) {
+  .clp__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media (max-width: 767px) {
+  .clp__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+/* PAGINATION */
+
+/* ===== PAGINATION ===== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 48px;
+}
+
+/* BUTTON BASE */
+.pagination button {
+  width: 36px;
+  height: 36px;
+
+  border: 1px solid #E8E0D4;
+  background: #fff;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* ACTIVE */
+.pagination button.active {
+  background: #1A1612;
+  color: #fff;
+  border-color: #1A1612;
+}
+
+/* HOVER */
+.pagination button:hover:not(:disabled) {
+  border-color: #C9A96E;
+}
+
+/* DISABLED */
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+

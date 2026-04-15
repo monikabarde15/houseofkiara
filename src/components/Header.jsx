@@ -7,11 +7,15 @@ export default function Header() {
     const items = document.querySelectorAll(".nav-item");
 
     const handleClick = function (e) {
-      if (window.innerWidth < 1200) {
-        e.stopPropagation();
-        this.classList.toggle("open");
-      }
-    };
+  if (window.innerWidth < 1200) {
+
+    // ❌ agar dropdown item click hai to skip karo
+    if (e.target.closest(".dropdown-menu")) return;
+
+    e.stopPropagation();
+    this.classList.toggle("open");
+  }
+};
 
     items.forEach(item => item.addEventListener("click", handleClick));
 
@@ -21,15 +25,15 @@ export default function Header() {
   }, []);
 
   const menu = [
-    { title: "Rent", items: ["Lehengas", "Sarees", "Gowns"] },
-    { title: "Shop Preloved", active: true, items: ["All Products", "Trending"] },
-    { title: "Shop New", items: ["New Arrivals", "Festive"] },
-    { title: "Women", items: ["Lehengas", "Sarees"] },
-    { title: "Men", items: ["Sherwanis", "Kurtas"] },
-    { title: "Occasion", items: ["Wedding", "Mehendi"] },
-    { title: "Designers", items: ["Sabyasachi", "Manish"] },
-    { title: "Shop by Category", items: ["Ethnic", "Fusion"] },
-    { title: "New Arrivals", items: ["Latest", "Trending"] },
+    { title: "Rent",link: "/rent/bridal-lehengas", items: ["Lehengas", "Sarees", "Gowns"] },
+    { title: "Shop Preloved",link: "/rent/bridal-lehengas", active: true, items: ["All Products", "Trending"] },
+    { title: "Shop New",link: "/rent/bridal-lehengas", items: ["New Arrivals", "Festive"] },
+    { title: "Women",link: "/rent/bridal-lehengas", items: ["Lehengas", "Sarees"] },
+    { title: "Men",link: "/rent/bridal-lehengas", items: ["Sherwanis", "Kurtas"] },
+    { title: "Occasion",link: "/rent/bridal-lehengas", items: ["Wedding", "Mehendi"] },
+    { title: "Designers",link: "/rent/bridal-lehengas", items: ["Sabyasachi", "Manish"] },
+    { title: "Shop by Category",link: "/rent/bridal-lehengas", items: ["Ethnic", "Fusion"] },
+    { title: "New Arrivals",link: "/rent/bridal-lehengas", items: ["Latest", "Trending"] },
   ];
 
   return (
@@ -94,7 +98,16 @@ export default function Header() {
                   <ul className="dropdown-menu">
                     {m.items.map((item, idx) => (
                       <li key={idx}>
-                        <a className="dropdown-item">{item}</a>
+                        <a
+                          className="dropdown-item"
+                          href="#"
+                          onClick={(e) => {
+                            e.stopPropagation();   // ✅ IMPORTANT
+                            console.log(item);     // ya navigation logic
+                          }}
+                        >
+                          {item}
+                        </a>
                       </li>
                     ))}
                   </ul>
