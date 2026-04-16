@@ -1,6 +1,17 @@
 import "../styles/productcard.css"
 import { Heart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 const ProductCard = ({ item }) => {
+
+
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        if (item.badge?.includes("new")) {
+            navigate(`/product/${item.id}`);
+            console.log(item)
+        }
+    };
 
     // dynamic discount
     const discount =
@@ -14,7 +25,7 @@ const ProductCard = ({ item }) => {
             : null;
 
     return (
-        <div className="product-card">
+        <div className="product-card" onClick={handleClick}>
 
             {/* IMAGE AREA */}
             <div className="product-image">

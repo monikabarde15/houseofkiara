@@ -3,8 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { Heart, Star, Truck, Shield, User, Box, Plus, X } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import "../styles/product-detail.css";
-import ProductSection from "./ProductList";
-import MoreAnarkalis from "./MoreAnarkalis";
+import RelatedProduct from "./RelatedProduct";
 
 export default function ProductDetail() {
   const location = useLocation();
@@ -497,36 +496,17 @@ export default function ProductDetail() {
                 </div>
 
               </div>
-
-
             </div>
           </Col>
 
         </Row>
       </Container>
 
-      {/* ================= MORE SECTION ================= */}
-      <div className="more-section">
+      {/* ================= RELATED PRODUCT SECTION ================= */}
+      <RelatedProduct/>
 
-        <div className="more-block">
-          <ProductSection
-            subtitle="FROM THE SAME HOUSE"
-            title="More by"
-            highlight="Rahul Mishra"
-            isImage={true}
-          />
-        </div>
-
-        <div className="more-block">
-          <MoreAnarkalis
-            subtitle="SAME SILHOUETTE"
-            title="More"
-            highlight="Anarkalis"
-            isImage={true}
-          />
-        </div>
-
-      </div>
+      
+      
     </section>
   );
 }

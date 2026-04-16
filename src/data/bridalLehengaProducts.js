@@ -169,7 +169,111 @@ const bridalLehengaProducts = [
     occasion: "Mehendi",
     size: ["XS", "L"],
     color: ["red", "gold"]
-  }
+  },
+  {
+  id: 13,
+  name: "Blush Zardozi Anarkali",
+  designer: "Rahul Mishra",
+  image: ["https://i.pinimg.com/736x/aa/41/2c/aa412c6c6b4d4f4b8c3d78e6c6fef8e5.jpg"],
+  isNew: true,
+  buyPrice: "2,40,000",
+  gender: "Women",
+  category: "Anarkalis",
+  occasion: "Wedding",
+  size: ["S", "M"],
+  color: ["pink"]
+},
+{
+  id: 14,
+  name: "Midnight Threadwork Sharara Set",
+  designer: "Rahul Mishra",
+  image: ["https://i.pinimg.com/736x/2b/0d/5e/2b0d5e7c86d9f80c9c9d3f4e4d4a43f0.jpg"],
+  isNew: true,
+  buyPrice: "3,10,000",
+  gender: "Women",
+  category: "Anarkalis",
+  occasion: "Reception",
+  size: ["M"],
+  color: ["black"]
+},
+{
+  id: 15,
+  name: "Crimson Embroidered Lehenga",
+  designer: "Rahul Mishra",
+  image: ["https://i.pinimg.com/736x/0d/47/ae/0d47ae5b5d4a7f7c6e2b8c3a6c8e7f4f.jpg"],
+  isNew: true,
+  buyPrice: "4,20,000",
+  gender: "Women",
+  category: "Bridal Lehengas",
+  occasion: "Wedding",
+  size: ["L"],
+  color: ["red"]
+},
+{
+  id: 16,
+  name: "Ivory Resham Kurta Set",
+  designer: "Rahul Mishra",
+  image: ["https://i.pinimg.com/736x/cc/55/2a/cc552a6d0cbb5c8d3f0a2f5d9f7c6b3e.jpg"],
+  isNew: true,
+  buyPrice: "1,65,000",
+  gender: "Women",
+  category: "Anarkalis",
+  occasion: "Festive",
+  size: ["S"],
+  color: ["ivory"]
+},
+{
+  id: 17,
+  name: "Rose Gold Draped Anarkali",
+  designer: "Tarun Tahiliani",
+  image: ["https://i.pinimg.com/736x/4c/7f/2b/4c7f2b9e7f9c8b2c4e6a3d8f7a9b6c2d.jpg"],
+  isNew: true,
+  buyPrice: "3,60,000",
+  gender: "Women",
+  category: "Anarkalis",
+  occasion: "Wedding",
+  size: ["M"],
+  color: ["gold"]
+},
+{
+  id: 18,
+  name: "Sage Floral Anarkali Set",
+  designer: "Anita Dongre",
+  image: ["https://i.pinimg.com/736x/7e/5d/3a/7e5d3a2f4c6b9e8d1a2c3f4e5b6a7c8d.jpg"],
+  rent: true,
+  rentPrice: "6,500",
+  buyPrice: "1,20,000",
+  gender: "Women",
+  category: "Anarkalis",
+  occasion: "Festive",
+  size: ["S"],
+  color: ["green"]
+},
+{
+  id: 19,
+  name: "Forest Green Structured Anarkali",
+  designer: "Gaurav Gupta",
+  image: ["https://i.pinimg.com/736x/9d/3a/1f/9d3a1f6b7c8d9e0f2a3b4c5d6e7f8a9b.jpg"],
+  buyPrice: "2,80,000",
+  gender: "Women",
+  category: "Anarkalis",
+  occasion: "Reception",
+  size: ["L"],
+  color: ["green"]
+},
+{
+  id: 20,
+  name: "Deep Burgundy Sequin Anarkali",
+  designer: "Manish Malhotra",
+  image: ["https://i.pinimg.com/736x/8b/6c/2d/8b6c2d4e5f7a8c9b1d2e3f4a5b6c7d8e.jpg"],
+  preloved: true,
+  buyPrice: "68,000",
+  gender: "Women",
+  category: "Anarkalis",
+  occasion: "Sangeet",
+  size: ["M"],
+  color: ["burgundy"]
+}
 ];
 
 export default bridalLehengaProducts;

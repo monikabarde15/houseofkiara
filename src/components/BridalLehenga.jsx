@@ -21,6 +21,13 @@ function BridalLehenga() {
     },
   });
   const [sortBy, setSortBy] = useState("recommended");
+  const [sortOpen, setSortOpen] = useState(false);
+
+
+  const handleSort = (value) => {
+    setSortBy(value);
+    setSortOpen(false);
+  };
   
    
   const getPrice = (price) => {
@@ -39,6 +46,7 @@ function BridalLehenga() {
     "Rahul Mishra",
   ];
 
+  // DETAIL FILTER LOGIC
   const filteredProducts = products.filter((item) => {
 
 
