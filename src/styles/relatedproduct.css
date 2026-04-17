@@ -21,7 +21,7 @@
 }
 
 /* HEADER */
-.header {
+.header-rental {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -271,7 +271,7 @@
   }
 
   /* HEADER STACK */
-  .header {
+  .header-rental {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;

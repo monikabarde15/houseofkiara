@@ -78,7 +78,7 @@ function RelatedProduct() {
 
                 {/* SECTION 1 */}
                 <div className="block">
-                    <div className="header">
+                    <div className="header-rental">
                         <div>
                             <p className="eyebrow">FROM THE SAME HOUSE</p>
                             <h2 className="title">
@@ -100,7 +100,7 @@ function RelatedProduct() {
 
                 {/* SECTION 2 */}
                 <div className="block">
-                    <div className="header">
+                    <div className="header-rental">
                         <div>
                             <p className="eyebrow">SAME SILHOUETTE</p>
                             <h2 className="title">

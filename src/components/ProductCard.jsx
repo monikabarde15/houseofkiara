@@ -25,6 +25,7 @@ const ProductCard = ({ item }) => {
             : null;
 
     return (
+        <a href="/rental/1">
         <div className="product-card" onClick={handleClick}>
 
             {/* IMAGE AREA */}
@@ -105,6 +106,7 @@ const ProductCard = ({ item }) => {
             </div>
 
         </div>
+        </a>
     );
 };
 
