@@ -27,6 +27,7 @@ h1, h2, h3 {
 ========================= */
 .pdp-breadcrumb-wrapper {
   position: relative;
+  
 }
 
 .pdp-breadcrumb-wrapper::after {
@@ -141,6 +142,14 @@ h1, h2, h3 {
   z-index: 5;
 }
 
+.gallery-badge.rent {
+  background: #B85C38;
+}
+
+.gallery-badge.buy {
+  background: #1A1612;
+}
+
 /* ===== WISHLIST ===== */
 .wishlist-icon-btn {
   position: absolute;
@@ -201,31 +210,37 @@ h1, h2, h3 {
 }
 
 /* ===== EYEBROW Top Tag ===== */
-.eyebrow {
+
+.pdp-toggle {
   display: flex;
-  align-items: center;
-  gap: 12px;
   margin-bottom: 24px;
-  /* margin-top: 20px; */
-
+  margin-top: 12px;
+  width: 270px;
 }
 
-.eyebrow .line {
-  width: 24px;
-  height: 2px;
-  background: #B85C38;
-  margin-top: 36px;
-}
-
-.eyebrow-text {
+.toggle-btn {
+  flex: 1;
+  padding: 8px;
   font-family: 'DM Sans';
-  font-size: 10px;
-  letter-spacing: 0.28em;
-  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #B85C38 ;
-  line-height: 1;
-  margin-top: 36px;
+  border: 1px solid #E8E0D4;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* active state */
+.toggle-btn.active {
+  background: #1A1612;
+  color: #fff;
+  border-color: #1A1612;
+}
+
+/* hover */
+.toggle-btn:hover {
+  border-color: #C9A96E;
 }
 
 
@@ -351,24 +366,24 @@ h1, h2, h3 {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #C9A96E ;
+  background: green;
 }
 
-.rented-count {
-  font-family: 'DM Sans', sans-serif;
+.rent-count{
+  font-family: 'DM Sans';
   font-size: 11px;
   color: #8A7E72;
-  margin-left: 10px;
 }
 
+
 /* =========================
-   PRICE BLOCK
+   PRICE BLOCK FOR RENTAL BLOCK
 ========================= */
 
+/* ===== PRICE BLOCK ===== */
 .price-block {
   margin-bottom: 28px;
 }
-
 
 /* label */
 .price-label {
@@ -377,44 +392,53 @@ h1, h2, h3 {
   text-transform: uppercase;
   letter-spacing: 0.22em;
   color: #8A7E72;
-  margin: 0 0 2px 0;
+  margin-bottom: 0px;
 }
 
 /* main price */
 .main-price {
+  margin-top: -6px;
   font-family: 'Cormorant Garamond';
   font-size: 36px;
   font-weight: 400;
   color: #1A1612;
-  margin: 0;
-  line-height: 0.95;
+  line-height: 1.05; 
+  margin-bottom: 0px; 
 }
 
-.main-price .duration{
-    font-family: 'DM Sans';
-    font-size: 18px;
-    font-weight: 300;
-    color: #8A7E72;
+/* duration */
+.main-price .duration {
+  font-family: 'DM Sans';
+  font-size: 18px;
+  font-weight: 300;
+  color: #8A7E72;
 }
 
-.price-subline{
-    font-family: 'DM Sans';
-    font-weight: 300;
-    color: #8A7E72;
+/* subline */
+.price-subline {
+  font-family: 'DM Sans';
+  font-size: 12px;
+  font-weight: 300;
+  color: #8A7E72;
+  margin-top: -6px; 
+  margin-bottom: 6px;
 }
 
 /* ===== RENTAL WINDOW ===== */
-
 .rental-window {
   display: flex;
   gap: 12px;
-  margin-top: 12px;
+  margin-top: 0px;
+  
+  
 }
 
+/* card */
 .rental-block {
   flex: 1;
   border: 1px solid #E8E0D4;
-  padding: 12px 16px;
+  padding: 8px 14px;
+  padding-bottom: 0px;
   border-radius: 1px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -438,7 +462,7 @@ h1, h2, h3 {
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: #8A7E72;
-  margin-bottom: 4px;
+  margin-bottom: 4px; 
 }
 
 /* amount */
@@ -447,6 +471,7 @@ h1, h2, h3 {
   font-size: 20px;
   font-weight: 400;
   color: #1A1612;
+  margin-bottom: 2px;
 }
 
 /* days */
@@ -455,150 +480,585 @@ h1, h2, h3 {
   font-size: 10px;
   font-weight: 300;
   color: #8A7E72;
+  
 }
 
-/* ===== PRICE ===== */
-
-.main-price .duration {
-  font-family: 'DM Sans';
-  font-size: 18px;
-  font-weight: 300;
-  color: #8A7E72;
-}
-
-/* subline */
-.price-subline {
-  font-family: 'DM Sans';
-  font-size: 12px;
-  font-weight: 300;
-  color: #8A7E72;
-  margin-top: 4px;
-}
-
-/* ===== DEPOSIT ===== */
-
+/* ===== DEPOSIT BLOCK ===== */
 .deposit-block {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: #F5EDD8;
   border: 1px solid #E8D5B0;
-  padding: 10px 14px;
+  padding: 10px 16px; 
   border-radius: 1px;
-  margin-top: 12px;
+  margin-top: 14px; 
+  padding-bottom: 0px;
 }
+
+/* icon */
 .deposit-icon {
   width: 14px;
   height: 14px;
   stroke: #C9A96E;
   stroke-width: 1.5;
-  fill: none;
   flex-shrink: 0;
-  margin-top: 2px; 
 }
 
+/* text */
 .deposit-text {
   font-family: 'DM Sans';
   font-size: 11px;
   font-weight: 300;
   color: #1A1612;
   line-height: 1.5;
+  padding-top: 10px;
 }
 
+/* bold */
 .deposit-bold {
   font-weight: 500;
 }
 
-/* ===== DELIVERY ===== */
-.delivery-row {
+
+/* =========================
+   FOR BUY toggle PRICE BLOCK
+========================= */
+
+.buy-authenticity-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: linear-gradient(90deg, #2B2620, #1A1612);
+  padding: 8px 14px;
+  margin-top: 16px;
+  border-radius: 2px;
+  padding-bottom:0px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* ICON */
+.buy-deposit-icon {
+  width: 16px;
+  height: 16px;
+  stroke: #C9A96E;
+  stroke-width: 1.5;
+  flex-shrink: 0;
+  margin-top: -12px;
+  
+}
+
+/* TEXT */
+.buy-deposit-text {
+  font-family: "DM Sans";
+  font-size: 10px;
+  color: #EDE6DA;
+  line-height: 1.5;
+  
+}
+
+/* BOLD TEXT */
+.buy-deposit-bold {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.buy-authenticity-block:hover {
+  background: linear-gradient(90deg, #322c25, #1f1a15);
+}
+
+
+
+
+/* =========================
+   SIZE BLOCK FOR RENTAL 
+========================= */
+.size-block {
+  margin: 24px 0;
+}
+
+.size-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.size-label {
+  font-family: 'DM Sans';
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #8A7E72;
+}
+.size-guide {
+  font-family: 'DM Sans';
+  font-size: 9px;
+  color: #C9A96E;
+  border-bottom: 1px solid #E8D5B0;
+  cursor: pointer;
+}
+.size-options {
   display: flex;
   gap: 8px;
-  padding: 10px;
-  background: #f9f7f2;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.size-pill {
+  padding: 9px 18px;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+
+  background: transparent;
+  color: #1A1612;
+
+  font-family: 'DM Sans';
+  font-size: 11px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.size-pill:hover {
+  border-color: #C9A96E;
+}
+.size-pill.active {
+  background: #1A1612;
+  color: #fff;
+  border-color: #1A1612;
+}
+.size-pill.unavailable {
+  opacity: 0.35;
+  cursor: not-allowed;
+  text-decoration: line-through;
 }
 
-/* ===== COLORS ===== */
-.color-section {
-  margin-bottom: 20px;
+
+/* =========================
+   CTA SECTION for rental
+========================= */
+.rental-cta {
+  margin-top: 28px;
 }
 
-.swatches-details {
-  display: flex;
-  gap: 10px;
-}
-
-.swatch-circle-details {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-}
-
-/* ===== CTA ===== */
-.cta-section {
-  margin-top: 20px;
-}
-
-.add-btn {
+.rental-cta button {
   width: 100%;
-  padding: 12px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font-family: 'DM Sans';
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+
+.cta-primary {
   background: #1A1612;
   color: #fff;
   border: none;
-  cursor: pointer;
-  margin-bottom: 10px;
 }
 
-.wishlist-btn {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
+/* disabled */
+.cta-primary.disabled {
+  background: #E8E0D4;
+  color: #8A7E72;
+  cursor: not-allowed;
 }
+
+/* active hover */
+.cta-primary.active:hover {
+  opacity: 0.9;
+}
+.cta-wishlist {
+  margin-top: 12px;
+
+  border: 1px solid #1A1612;
+  background: transparent;
+  color: #1A1612;
+}
+
+/* hover */
+.cta-wishlist:hover {
+  background: #1A1612;
+  color: #fff;
+}
+
+.cta-whatsapp {
+  margin-top: 12px;
+
+  border: 1px solid #25D366;
+  background: transparent;
+  color: #25D366;
+}
+
+/* hover */
+.cta-whatsapp:hover {
+  background: #25D366;
+  color: #fff;
+}
+
+.cta-icon {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
 
 /* =========================
-   RENTAL SPECIFIC
+{TRUST BADAGE} 
 ========================= */
 
-/* date inputs */
-input[type="date"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #E8E0D4;
-  border-radius: 6px;
-  font-size: 12px;
-  margin-top: 4px;
+.trust-badages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 55px;
+  margin-top: 30px;
 }
 
-/* labels */
-label {
-  font-size: 10px;
+.trust-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: 1px solid #F0EAE0;
+  border-radius: 1px;
+  background: #FAF7F2;
+  text-align: center;
+}
+
+.trust-item svg {
+  height: 18px;
+  width: 18px;
+  stroke: #C9A96E;
+  fill: none;
+  stroke-width: 1.4;
+}
+
+.trust-item span {
+  font-family: 'DM Sans';
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #1A1612;
+  line-height: 1.4;
+  text-align: center;
+}
+
+
+
+/* =========================
+   PDP ACCORDANCE 
+========================= */
+
+/* PRODUCT PAGE DETAILS */
+/* ================= ROOT ================= */
+
+/* ROOT */
+.pdp-accordion {
+  border-top: 1px solid #e8e0d4;
+}
+
+.pdp-item {
+  border-bottom: 1px solid #e8e0d4;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+/* HEADER */
+.pdp-header {
+  padding: 18px 0 0;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: "DM Sans";
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #1a1612;
+}
+
+.pdp-header:hover {
+  color: #c9a96e;
+}
+
+/* ICON */
+.icon {
+  width: 16px;
+  height: 16px;
+  stroke: #8A7E72;
+  stroke-width: 1.5;
+  transition: all 0.2s ease;
+}
+
+.pdp-header:hover .icon {
+  stroke: #C9A96E;
+}
+
+.icon.open {
+  transform: rotate(45deg);
+}
+
+/* CONTENT */
+.pdp-content {
+  padding: 0 0 20px;
+}
+
+/* GRID */
+.pdp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+
+.pdp-label {
+  font-family: 'DM Sans';
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: #8A7E72;
-  margin-top: 10px;
-  display: block;
+  margin-bottom: 3px;
 }
 
+.pdp-row p {
+  font-family: 'DM Sans';
+  font-size: 13px;
+  font-weight: 300;
+  color: #1A1612;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* CRAFT */
+.craft-text {
+  font-family: "Cormorant Garamond";
+  font-size: 16px;
+  font-style: italic;
+  color: #8A7E72;
+  line-height: 1.9;
+}
+
+.craft-text em {
+  font-style: normal;
+  color: #1a1612;
+}
+
+/* SIZE */
+.size-intro {
+  font-size: 12px;
+  color: #8A7E72;
+  margin-bottom: 14px;
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+.size-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.size-table th {
+  font-family: 'DM Sans';
+  font-size: 9px;
+  text-transform: uppercase;
+  background: #FAF7F2;
+  letter-spacing: 0.14em;
+  color: #8A7E72;
+  padding: 8PX 12PX;
+  border: 1px solid #F0EAE0;
+}
+
+.size-table td {
+  font-size: 12px;
+  padding: 9px 12px;
+  font-weight: 300;
+  color: #1A1612;
+  padding: 9px 12px;
+  border: 1px solid #F0EAE0;
+}
+
+.active-row {
+  font-weight: 400;
+  background: #F5EDD8;
+}
+
+/* CARE */
+.care-list {
+  list-style: none;
+  padding: 0;
+}
+
+.care-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-family: 'DM Sans';
+  font-size: 13px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.6;
+}
+
+.dash {
+  color: #c9a96e;
+  flex-shrink: 0;
+}
+
+/* SHIPPING */
+.shipping-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.shipping-table th {
+  font-family: 'DM Sans';
+  background: #FAF7F2;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #8A7E72;
+  padding: 8px 12px;
+  border: 1px solid #F0EAE0;
+}
+
+.shipping-table td {
+  font-family: 'DM Sans';
+  font-size: 12px;
+  font-weight: 300;
+  color: #1A1612;
+  padding: 9px 12px;
+  border: 1px solid #F0EAE0;
+
+}
+
+.cost {
+  color: #6B7E5A;
+  font-weight: 400;
+}
 
 
 /* =========================
    RESPONSIVE
 ========================= */
 
-@media (max-width: 992px) {
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 767px) {
+
+  /* STACK LAYOUT */
   .pdp-left-wrap {
     flex-direction: column;
+    gap: 10px;
   }
 
+  .pdp-info {
+    border-left: none;
+    padding-left: 0;
+    padding-top: 20px;
+  }
+
+  /* IMAGE */
   .main-img {
-    height: 400px;
+    height: 320px;
+    margin-top: 20px;
   }
-}
 
-@media (max-width: 576px) {
+  .thumbs {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .thumbs img {
+    width: 60px;
+  }
+
+  /* TITLE */
   .product-title {
     font-size: 24px;
   }
 
-  .main-img {
-    height: 300px;
+  /* PRICE */
+  .main-price {
+    font-size: 28px;
+  }
+
+  .main-price .duration {
+    font-size: 14px;
+  }
+
+  /* RENTAL WINDOW STACK */
+  .rental-window {
+    flex-direction: column;
+  }
+
+  /* SIZE */
+  .size-options {
+    gap: 6px;
+  }
+
+  .size-pill {
+    padding: 8px 12px;
+    font-size: 10px;
+  }
+
+  /* CTA */
+  .rental-cta button {
+    height: 44px;
+    font-size: 11px;
+  }
+
+  /* TRUST BADGES */
+  .trust-badages {
+    grid-template-columns: 1fr;
+  }
+
+  /* ACCORDION GRID */
+  .pdp-grid {
+    grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   TABLET
+========================= */
+@media (min-width: 768px) and (max-width: 1279px) {
+
+  .pdp-left-wrap {
+    flex-direction: column;
+  }
+
+  .pdp-info {
+    border-left: none;
+    padding-left: 0;
+    margin-top: 20px;
+  }
+
+  .main-img {
+    height: 450px;
+  }
+
+  .product-title {
+    font-size: 30px;
+  }
+
+  .main-price {
+    font-size: 32px;
+  }
+
+  /* TRUST */
+  .trust-badages {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
