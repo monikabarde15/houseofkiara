@@ -1057,12 +1057,15 @@ h1, h2, h3 {
   align-items: center;
   padding: 18px 0;
   cursor: pointer;
-
   font-family: 'DM Sans';
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #1A1612;
+}
+
+.preloved-accordion-header:hover{
+  color: #C9A96E;
 }
 
 /* ===== ICON ===== */
@@ -1070,6 +1073,7 @@ h1, h2, h3 {
   width: 16px;
   height: 16px;
   transition: transform 0.2s ease;
+  stroke-width: 1.5;
 }
 
 .preloved-accordion-icon.open {
@@ -1280,4 +1284,81 @@ h1, h2, h3 {
   font-size: 12px;
   color: #8A7E72;
   line-height: 1.6;
+}
+
+
+/* =========================
+   MOBILE (320–767)
+========================= */
+@media (max-width: 767px) {
+
+  .pdp-left-wrap {
+    flex-direction: column;
+  }
+
+  /* THUMBS BELOW IMAGE */
+  .thumbs {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    order: 2;
+  }
+
+  .thumbs img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+  }
+
+  /* MAIN IMAGE */
+  .main-img {
+    order: 1;
+    margin-top: 0;
+    border-radius: 0;
+  }
+
+  /* RIGHT SECTION */
+  .pdp-preloved-info {
+    border-left: none; /* ❌ remove divider */
+    padding-left: 0;
+    margin-top: 20px;
+  }
+
+  .preloved-product-title {
+    font-size: 26px;
+  }
+
+  .preloved-main-price {
+    font-size: 28px;
+  }
+.preloved-btn {
+  font-size: 11px;
+  padding: 12px;
+}
+.preloved-contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+   .preloved-trust-badges {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .preloved-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (max-width: 1279px) {
+
+  .pdp-preloved-info {
+    padding-left: 24px;
+  }
+
+  .main-img {
+    height: auto;
+    aspect-ratio: 3 / 4;
+  }
+
 }

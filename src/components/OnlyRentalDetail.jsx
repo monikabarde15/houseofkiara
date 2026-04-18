@@ -315,18 +315,14 @@ export default function RentalProductDetail() {
 
                 {/*  RENTAL PAGE ACCORDANCE*/}
 
-                <div className="pdp-accordion">
+                <div className="pdp-rental-accordion">
 
                   {/* ================= PRODUCT DETAILS ================= */}
-                  <div className="pdp-item">
-                    <div className="pdp-header" onClick={() => toggle("details")}>
+                  <div className="pdp-rental-item">
+                    <div className="pdp-rental-header" onClick={() => toggle("details")}>
                       <span>PRODUCT DETAILS</span>
 
-                      {isOpen("details") ? (
-                        <X className="icon" />
-                      ) : (
-                        <Plus className="icon" />
-                      )}
+                      <Plus className={`onlyrental-icon ${isOpen("details") ? "open" : ""}`} />
                     </div>
 
                     {isOpen("details") && (
@@ -355,15 +351,11 @@ export default function RentalProductDetail() {
                   </div>
 
                   {/* ================= THE CRAFT ================= */}
-                  <div className="pdp-item">
-                    <div className="pdp-header" onClick={() => toggle("craft")}>
+                  <div className="pdp-rental-item">
+                    <div className="pdp-rental-header" onClick={() => toggle("craft")}>
                       <span>THE CRAFT</span>
 
-                      {isOpen("craft") ? (
-                        <X className="icon" />
-                      ) : (
-                        <Plus className="icon" />
-                      )}
+                      <Plus className={`onlyrental-icon ${isOpen("craft") ? "open" : ""}`} />
                     </div>
 
                     {isOpen("craft") && (
@@ -376,15 +368,11 @@ export default function RentalProductDetail() {
                   </div>
 
                   {/* ================= SIZE & FIT ================= */}
-                  <div className="pdp-item">
-                    <div className="pdp-header" onClick={() => toggle("size")}>
+                  <div className="pdp-rental-item">
+                    <div className="pdp-rental-header" onClick={() => toggle("size")}>
                       <span>SIZE & FIT</span>
 
-                      {isOpen("size") ? (
-                        <X className="icon" />
-                      ) : (
-                        <Plus className="icon" />
-                      )}
+                      <Plus className={`onlyrental-icon ${isOpen("size") ? "open" : ""}`} />
                     </div>
 
                     {isOpen("size") && (
@@ -421,15 +409,11 @@ export default function RentalProductDetail() {
                   </div>
 
                   {/* ================= CARE ================= */}
-                  <div className="pdp-item">
-                    <div className="pdp-header" onClick={() => toggle("care")}>
+                  <div className="pdp-rental-item">
+                    <div className="pdp-rental-header" onClick={() => toggle("care")}>
                       <span>CARE INSTRUCTIONS</span>
 
-                      {isOpen("care") ? (
-                        <X className="icon" />
-                      ) : (
-                        <Plus className="icon" />
-                      )}
+                      <Plus className={`onlyrental-icon ${isOpen("care") ? "open" : ""}`} />
                     </div>
 
                     {isOpen("care") && (
@@ -447,15 +431,11 @@ export default function RentalProductDetail() {
                   </div>
 
                   {/* ================= SHIPPING ================= */}
-                  <div className="pdp-item">
-                    <div className="pdp-header" onClick={() => toggle("shipping")}>
+                  <div className="pdp-rental-item">
+                    <div className="pdp-rental-header" onClick={() => toggle("shipping")}>
                       <span>SHIPPING & DELIVERY</span>
 
-                      {isOpen("shipping") ? (
-                        <X className="icon" />
-                      ) : (
-                        <Plus className="icon" />
-                      )}
+                      <Plus className={`onlyrental-icon ${isOpen("shipping") ? "open" : ""}`} />
                     </div>
 
                     {isOpen("shipping") && (

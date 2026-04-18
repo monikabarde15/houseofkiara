@@ -332,11 +332,7 @@ export default function ProductDetail() {
                   <div className="pdp-header" onClick={() => toggle("details")}>
                     <span>PRODUCT DETAILS</span>
 
-                    {isOpen("details") ? (
-                      <X className="icon" />
-                    ) : (
-                      <Plus className="icon" />
-                    )}
+                    <Plus className={`pdp-icon ${isOpen("details") ? "open" : ""}`} />
                   </div>
 
                   {isOpen("details") && (
@@ -369,11 +365,7 @@ export default function ProductDetail() {
                   <div className="pdp-header" onClick={() => toggle("craft")}>
                     <span>THE CRAFT</span>
 
-                    {isOpen("craft") ? (
-                      <X className="icon" />
-                    ) : (
-                      <Plus className="icon" />
-                    )}
+                    <Plus className={`pdp-icon ${isOpen("craft") ? "open" : ""}`} />
                   </div>
 
                   {isOpen("craft") && (
@@ -390,11 +382,7 @@ export default function ProductDetail() {
                   <div className="pdp-header" onClick={() => toggle("size")}>
                     <span>SIZE & FIT</span>
 
-                    {isOpen("size") ? (
-                      <X className="icon" />
-                    ) : (
-                      <Plus className="icon" />
-                    )}
+                    <Plus className={`pdp-icon ${isOpen("size") ? "open" : ""}`} />
                   </div>
 
                   {isOpen("size") && (
@@ -435,11 +423,7 @@ export default function ProductDetail() {
                   <div className="pdp-header" onClick={() => toggle("care")}>
                     <span>CARE INSTRUCTIONS</span>
 
-                    {isOpen("care") ? (
-                      <X className="icon" />
-                    ) : (
-                      <Plus className="icon" />
-                    )}
+                    <Plus className={`pdp-icon ${isOpen("care") ? "open" : ""}`} />
                   </div>
 
                   {isOpen("care") && (
@@ -461,11 +445,7 @@ export default function ProductDetail() {
                   <div className="pdp-header" onClick={() => toggle("shipping")}>
                     <span>SHIPPING & DELIVERY</span>
 
-                    {isOpen("shipping") ? (
-                      <X className="icon" />
-                    ) : (
-                      <Plus className="icon" />
-                    )}
+                    <Plus className={`pdp-icon ${isOpen("shipping") ? "open" : ""}`} />
                   </div>
 
                   {isOpen("shipping") && (
