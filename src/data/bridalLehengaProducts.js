@@ -14,7 +14,8 @@ const bridalLehengaProducts = [
     category: "Bridal Lehengas",
     occasion: "Wedding",
     size: ["S", "M"],
-    color: ["red", "gold"]
+    color: ["red", "gold"],
+    video: "https://your-video-url.mp4"
   },
   {
     id: 2,

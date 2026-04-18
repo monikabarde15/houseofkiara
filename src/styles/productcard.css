@@ -12,7 +12,9 @@
   aspect-ratio: 3 / 4;
   margin-bottom: 16px;
 }
-
+a {
+    text-decoration: none !important;
+}
 /* IMAGE INNER */
 .product-img-inner {
   width: 100%;

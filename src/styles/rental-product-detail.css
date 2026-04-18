@@ -1062,3 +1062,34 @@ h1, h2, h3 {
   }
 }
 
+.video-thumb {
+  width: 60px;
+  height: 60px;
+  background: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.product-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/*==========image vedio==============*/
+.main-img {
+  width: 100%;
+  height: 890px;
+  overflow: hidden;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 🔥 FULL WIDTH */
+  object-position: top; /* 👈 TOP CUT FIX */
+}
