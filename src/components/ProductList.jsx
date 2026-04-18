@@ -71,6 +71,8 @@ export const products = [
         care: "Dry Clean Only"
       }
     },
+    color: ["red", "gold"],
+    video: "https://www.w3schools.com/html/mov_bbb.mp4",
     // 🔥 UNIQUE DATA
     craft: `
     Each Rahul Mishra anarkali begins as a sketch and becomes a conversation between designer and artisan. 

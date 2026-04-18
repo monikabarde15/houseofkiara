@@ -64,7 +64,13 @@ export default function RentalProductDetail() {
         rentData?.pricing?.windows?.find((w) => w.id === selectedWindow) ||
         rentData?.pricing?.windows?.[0];
 
-    
+    // ===== STATES =====
+
+// ✅ CHANGE (image + video support)
+const [activeMedia, setActiveMedia] = useState({
+    type: "image",
+    src: product.images?.[0],
+});
     return (
         <>
         <section className="pdp">
@@ -86,17 +92,46 @@ export default function RentalProductDetail() {
                     {/* LEFT */}
                     <Col md={6} className="pdp-left-wrap">
                         <div className="thumbs">
-                            {product.images?.map((img, i) => (
-                                <img key={i} src={img} onClick={() => setActiveImage(img)} />
+                           {product.images?.map((img, i) => (
+                                <img
+                                    key={i}
+                                    src={img}
+                                    onClick={() =>
+                                        setActiveMedia({ type: "image", src: img })
+                                    }
+                                />
                             ))}
+                            {product.video && (
+                                <div
+                                    className="video-thumb"
+                                    onClick={() =>
+                                        setActiveMedia({
+                                            type: "video",
+                                            src: product.video,
+                                        })
+                                    }
+                                >
+                                    ▶
+                                </div>
+                            )}
                         </div>
 
                         <div
                             className="main-img"
-                            style={{ backgroundImage: `url(${activeImage})` }}
                         >
-                            <img src={activeImage} alt={product.title} />
-
+                          {activeMedia.type === "image" ? (
+                                <img
+                                src={activeMedia.src}
+                                alt={product.title}
+                                className="product-image"
+                                />
+                            ) : (
+                                <video
+                                src={activeMedia.src}
+                                controls
+                                className="product-video"
+                                />
+                            )}
                             <div className={`gallery-badge ${mode}`}>
                                 {mode === "rent" ? "FOR RENT" : "BUY NEW"}
                             </div>

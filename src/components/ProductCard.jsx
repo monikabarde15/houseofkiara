@@ -8,7 +8,7 @@ const ProductCard = ({ item }) => {
 
     const handleClick = () => {
         if (item.badge?.includes("new")) {
-            navigate(`/product/${item.id}`);
+            navigate(`/rental/${item.id}`);
             console.log(item)
         }
     };
