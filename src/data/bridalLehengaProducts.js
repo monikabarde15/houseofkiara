@@ -1,3 +1,4 @@
+// src\data\bridalLehengaProducts.js
 const bridalLehengaProducts = [
   {
     id: 1,
@@ -277,4 +278,16 @@ const bridalLehengaProducts = [
 }
 ];
 
-export default bridalLehengaProducts;
+const formattedProducts = bridalLehengaProducts.map((item) => ({
+  ...item,
+  type: item.preloved
+    ? "preloved"
+    : item.rent
+    ? "rent"
+    : item.isNew
+    ? "new"
+    : "new"
+}));
+
+export default formattedProducts;
+
