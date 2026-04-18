@@ -20,8 +20,11 @@ import ProductDetail from "./components/ProductDetail";
 import ProductList from "./components/Products";
 import BridalLehenga from "./components/BridalLehenga";
 import RentalProductDetail from "./components/RentalProductDetail";
+import OnlyRentalDetail from "./components/OnlyRentalDetail";
+import Preloved from "./components/Preloved";
 
 import DummyGowns from "./components/DummyGowns";
+
 
 // ✅ Home Page Component
 function Home() {
@@ -52,6 +55,8 @@ export default function App() {
         <Route path="/rent/bridal-lehengas" element={<BridalLehenga />} />
         <Route path="/rent/gowns" element={<DummyGowns />} />
         <Route path="/rental/:id" element={<RentalProductDetail />} />
+        <Route path="/onlyrental/:id" element={<OnlyRentalDetail />} />
+        <Route path="/preloved/:id" element={<Preloved />} />
       </Routes>
 
       <Footer />

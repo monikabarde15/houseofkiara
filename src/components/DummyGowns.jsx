@@ -1,5 +1,3 @@
-// pages/DummyGowns.jsx
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { products, makeProductDetail } from "./ProductList";
@@ -7,43 +5,76 @@ import { products, makeProductDetail } from "./ProductList";
 const DummyGowns = () => {
   const navigate = useNavigate();
 
-  // 👉 only rental products
-  const rentalProducts = products.filter((p) => p.tag === "RENT");
-
-  const handleClick = (item) => {
-    navigate(`/rental/${item.id}`, {
-      state: { product: makeProductDetail(item) },
-    });
-  };
+  // 👉 just pick ONE product
+  const item = products[0];
+  const product = makeProductDetail(item);
 
   return (
     <div style={{ padding: "40px" }}>
-      <h2>Rental Gowns</h2>
+      <h2>Dummy Gown (Test Page)</h2>
 
-      <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
-        {rentalProducts.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => handleClick(item)}
-            style={{
-              width: "220px",
-              border: "1px solid #eee",
-              borderRadius: "12px",
-              cursor: "pointer",
-            }}
+      <div
+        style={{
+          border: "1px solid #eee",
+          borderRadius: "12px",
+          padding: "20px",
+          width: "300px",
+        }}
+      >
+        {/* IMAGE */}
+        <img
+          src={item.image?.[0]}
+          alt={item.name}
+          style={{
+            width: "100%",
+            height: "250px",
+            objectFit: "cover",
+            borderRadius: "8px",
+          }}
+        />
+
+        {/* NAME */}
+        <h3 style={{ marginTop: "10px" }}>{item.name}</h3>
+
+        {/* BUTTONS */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            marginTop: "15px",
+          }}
+        >
+          <button
+            onClick={() =>
+              navigate(`/rental/${item.id}`, {
+                state: { product },
+              })
+            }
           >
-            <img
-              src={item.image?.[0]}
-              alt={item.name}
-              style={{ width: "100%", height: "200px", objectFit: "cover" }}
-            />
+            Rental + Buy
+          </button>
 
-            <div style={{ padding: "10px" }}>
-              <h4>{item.name}</h4>
-              <p>{item.price} / day</p>
-            </div>
-          </div>
-        ))}
+          <button
+            onClick={() =>
+              navigate(`/onlyrental/${item.id}`, {
+                state: { product },
+              })
+            }
+          >
+            Only Rental
+          </button>
+
+          <button
+            onClick={() =>
+              navigate(`/preloved/${item.id}`, {
+                state: { product },
+              })
+            }
+          >
+            Preloved
+          </button>
+        </div>
       </div>
     </div>
   );

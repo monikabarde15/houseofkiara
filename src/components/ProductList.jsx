@@ -1,3 +1,4 @@
+// src\components\ProductList.jsx
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Heart } from "lucide-react";
@@ -14,6 +15,10 @@ export const products = [
     price: "₹2,40,000",
     oldPrice: "₹3,00,000",
     tag: "RENT",
+    condition: {
+      grade: "excellent"   // or "pristine" or "good"
+    },
+    prelovedSize: `S (fitted · 32" bust · 26" waist)`,
     colors: [
       {
         code: "#f5d0c5",
@@ -105,6 +110,10 @@ export const products = [
       { method: "Same-day (Indore only)", time: "Within 6 hours", cost: "₹299" }
     ],
 
+    packaging:[
+    "Piece is packed in archival tissue within its original garment bag, placed in a rigid protective box."
+    ],
+
     details: {
       fabric: "Silk Georgette",
       technique: "Zardozi",
@@ -115,6 +124,16 @@ export const products = [
       occasion: "Wedding",
       origin: "India"
     },
+
+    disclosure: `
+Worn once for a full-day wedding in Udaipur, November 2023.
+Professionally dry-cleaned twice. No alterations, no bead loss, no staining.
+Minor settling of embroidery at the hem — photographed in image 4.
+The dupatta is pristine. The blouse fits a 32" bust; the skirt waist is adjustable to 26–28".
+`,
+
+
+
 
     // ========================= MODES // =========================//
     modes: {
@@ -239,6 +258,7 @@ export const products = [
     price: "₹3,10,000",
     oldPrice: "₹3,00,000",
     tag: "NEW",
+    condition: { grade: "pristine" },
     colors: [
       {
         code: "#f5d0c5",
@@ -348,6 +368,7 @@ export const products = [
     price: "₹3,10,000",
     oldPrice: "₹3,00,000",
     tag: "NEW",
+    condition: { grade: "good" },
     colors: [
       {
         code: "#f5d0c5",
@@ -458,6 +479,7 @@ export const products = [
     price: "₹3,10,000",
     oldPrice: "₹3,00,000",
     tag: "PRELOVED",
+    condition: { grade: "excellent" },
     colors: [
       {
         code: "#f5d0c5",
@@ -562,14 +584,16 @@ export const products = [
     }
   }
 ];
-
 /* ================= FINAL HELPER ================= */
 export const makeProductDetail = (item) => ({
   ...item,
-
+  type: item.tag?.toLowerCase(),
   title: item.name,
   subTitle: "Anarkali Set",
-  modes: item.modes || {},
+  rent: item.modes?.rent || null,
+  preloved: item.modes?.preloved || null,
+  buy: item.modes?.buy || null,
+
 
   // ✅ ADD THIS (MISSING DATA FIX)
   description:
@@ -577,6 +601,14 @@ export const makeProductDetail = (item) => ({
 
   rating: 5,
   reviews: 3,
+
+  condition: {
+    grade: item.condition?.grade || "pristine"
+  },
+
+  rentInfo: {
+    rentedCount: item.modes?.rent?.availability?.rentedCount || 0
+  },
 
   badges: [
     item.tag === "NEW" ? "BUY NEW" : null,
@@ -607,7 +639,7 @@ export const makeProductDetail = (item) => ({
     })) || [],
 
   sizes: ["XS", "S", "M", "L", "XL"],
-  
+
 
   shipping: item.shipping || [],
   care: item.care || [],
