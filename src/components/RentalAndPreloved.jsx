@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { Heart, Star, TrendingUp, Calendar, MessageCircleCheck, Shield, ArrowRight, X, Plus ,Truck} from "lucide-react";
-import { useLocation, useParams } from "react-router-dom";
-import "../styles/rental-product-detail.css";
+import { useParams } from "react-router-dom";
+import { Heart, Star, TrendingUp, Gift, User, Calendar, CreditCard, MessageCircleCheck, Shield, CircleAlert, ArrowRight, ShoppingBag, X, Plus, Truck } from "lucide-react";
 import { products, makeProductDetail } from "./ProductList";
+import GalleryColumn from "./GalleryColumn";
+import '../styles/rental-and-preloved.css'
 import RentalCalendar from "./RentalCalendar";
 import RelatedProduct from "./RelatedProduct";
+
 const tempSizes = [
     { label: "XS", available: true },
     { label: "S", available: true },
@@ -13,32 +15,63 @@ const tempSizes = [
     { label: "L", available: false },
     { label: "XL", available: false }
 ];
-export default function RentalProductDetail() {
-    const location = useLocation();
+
+const gradeDotColor = {
+    pristine: "#6B7E5A",
+    excellent: "#C9A96E",
+    good: "#B85C38"
+};
+
+const gradeLabel = {
+    pristine: "PRISTINE CONDITION",
+    excellent: "EXCELLENT CONDITION",
+    good: "GOOD CONDITION"
+};
+
+const gradeConfig = {
+    pristine: {
+        label: "PRISTINE",
+        color: "#6B7E5A",
+        desc: "Unworn or worn once for a short photoshoot. Tags may be attached. No visible wear whatsoever."
+    },
+    excellent: {
+        label: "EXCELLENT",
+        color: "#C9A96E",
+        desc: "Worn once for a full-day event. Professionally cleaned. No visible damage, alteration, or significant bead loss. Any minor imperfections are fully disclosed and photographed above."
+    },
+    good: {
+        label: "GOOD",
+        color: "#B85C38",
+        desc: "Worn 2–3 times. Any minor imperfections clearly photographed and disclosed in listing notes."
+    }
+};
+
+
+export default function RentalAndPreloved() {
     const { id } = useParams();
 
-    // ===== PRODUCT FETCH =====
-    let product = location.state?.product;
+    const found = products.find((p) => p.id === Number(id));
+    const product = found ? makeProductDetail(found) : null;
 
-    if (!product) {
-        const found = products.find((p) => p.id === Number(id));
-        if (found) product = makeProductDetail(found);
-    }
-
-    if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
-
-    // ===== STATES =====
-    const [wish, setWish] = useState(false);
-    const [activeImage, setActiveImage] = useState(product.images?.[0]);
     const [mode, setMode] = useState(
-        product.modes?.rent?.enabled ? "rent" : "buy"
+        product?.modes?.rent?.enabled ? "rent" : "buy"
     );
-    const [selectedWindow, setSelectedWindow] = useState("standard");
 
+    const [wish, setWish] = useState(false);
+    const [selectedWindow, setSelectedWindow] = useState("standard");
     const [selectedStart, setSelectedStart] = useState(null);
     const [selectedEnd, setSelectedEnd] = useState(null);
     const [selectedSize, setSelectedSize] = useState(null);
     const [openSections, setOpenSections] = useState(["details"]);
+
+    const [isOfferOpen, setIsOfferOpen] = useState(false);
+
+    if (!product) return <h2>Product not found</h2>;
+
+    // ===== DATA =====
+    const rentData = product.modes?.rent || null;
+    const buyData = product.modes?.buy || null;
+    const sizes = product?.modes?.rent?.sizes || [];
 
     const isOpen = (key) => openSections.includes(key);
 
@@ -52,186 +85,189 @@ export default function RentalProductDetail() {
         });
     };
 
-
-    const isCTAEnabled = selectedStart && selectedEnd;
-    // ===== DATA =====
-    const rentData = product.modes?.rent || null;
-    const buyData = product.modes?.buy || null;
-    const sizes = product?.modes?.rent?.sizes || [];
-
     // ===== SELECTED WINDOW =====
     const selectedWindowData =
         rentData?.pricing?.windows?.find((w) => w.id === selectedWindow) ||
         rentData?.pricing?.windows?.[0];
 
-    // ===== STATES =====
 
-// ✅ CHANGE (image + video support)
-const [activeMedia, setActiveMedia] = useState({
-    type: "image",
-    src: product.images?.[0],
-});
+    // for dot color
+    const grade = product.condition?.grade || "pristine";
+
+
+    // ===============PRELOVED======================//
+
+    // FOR DISCOUNT - 
+    const price = product.preloved?.pricing?.price || 185000;
+    const retail = 420000;
+    const discount = Math.round(((retail - price) / retail) * 100);
+
+    // MINIMUM AND MAXIMUM OFFER PRICE
+
+    const minOffer = Math.round(price * 0.54 / 5000) * 5000;
+    const maxOffer = price;
+
+    const [offer, setOffer] = useState(minOffer);      // number (slider)
+    const [inputValue, setInputValue] = useState(minOffer); // (typing)
+
+
+    // CALCULATION ON TOP
+    const savings = maxOffer - offer;
+    const savingsPercent = Math.round((savings / maxOffer) * 100);
+
+    // Golden Progress Bar
+    const progress = ((offer - minOffer) / (maxOffer - minOffer)) * 100;
+
+    // FOR INPUT AND NOTES
+    const [note, setNote] = useState("");
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+
+    // Offer submitted 
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
     return (
-        <>
-        <section className="pdp">
+        <section className={`rap-root ${mode === "buy" ? "buy-mode" : "rent-mode"}`}>
             <Container>
 
                 {/* BREADCRUMB */}
-                <div className="pdp-breadcrumb-wrapper">
-                    <div className="breadcrumb">
-                        <span className="crumb">Home r+p</span>
-                        <span className="sep">›</span>
-                        <span className="crumb">Rent</span>
-                        <span className="sep">›</span>
-                        <span className="crumb current">{product.title}</span>
+                <div className="rap-pdp-breadcrumb-wrapper">
+                    <div className="rap-breadcrumb">
+                        <span className="rap-crumb">Home</span>
+                        <span className="rap-sep">›</span>
+                        <span className="rap-crumb">Buy Preloved</span>
+                        <span className="rap-sep">›</span>
+                        <span className="rap-crumb">Bridal Lehengas</span>
+                        <span className="rap-sep">›</span>
+                        <span className="rap-crumb current">Sabyasachi</span>
+                        <span className="rap-sep">›</span>
+                        <span className="rap-crumb current">{product.title}</span>
                     </div>
                 </div>
 
                 <Row>
 
-                    {/* LEFT */}
-                    <Col md={6} className="pdp-left-wrap">
-                        <div className="thumbs">
-                           {product.images?.map((img, i) => (
-                                <img
-                                    key={i}
-                                    src={img}
-                                    onClick={() =>
-                                        setActiveMedia({ type: "image", src: img })
-                                    }
-                                />
-                            ))}
-                            {product.video && (
-                                <div
-                                    className="video-thumb"
-                                    onClick={() =>
-                                        setActiveMedia({
-                                            type: "video",
-                                            src: product.video,
-                                        })
-                                    }
-                                >
-                                    ▶
-                                </div>
-                            )}
-                        </div>
+                    {/* ================= LEFT (COPY SAME) ================= */}
+                    <Col md={6} className="rap-left">
 
-                        <div
-                            className="main-img"
-                        >
-                          {activeMedia.type === "image" ? (
-                                <img
-                                src={activeMedia.src}
-                                alt={product.title}
-                                className="product-image"
-                                />
-                            ) : (
-                                <video
-                                src={activeMedia.src}
-                                controls
-                                className="product-video"
-                                />
-                            )}
-                            <div className={`gallery-badge ${mode}`}>
-                                {mode === "rent" ? "FOR RENT" : "BUY NEW"}
-                            </div>
+                        <GalleryColumn
+                            images={product.images}
+                            video={product.video}
+                            mode={mode}          // 🔥 for badge (rent/buy)
+                            wish={wish}
+                            setWish={setWish}
+                        />
 
-                            <button
-                                className="wishlist-icon-btn"
-                                onClick={() => setWish(!wish)}
-                            >
-                                <Heart className={wish ? "active" : ""} />
-                            </button>
-
-                            <div className="zoom-hint">ZOOM</div>
-                        </div>
                     </Col>
 
-                    {/* RIGHT */}
+                    {/* ================= RIGHT ================= */}
                     <Col md={6}>
-                        <div className="pdp-info">
+                        <div className="rap-right">
 
-                            {/* TOGGLE */}
-                            <div className="pdp-toggle">
-                                {rentData?.enabled && (
+                            {/* ================= TOGGLE ================= */}
+                            <div className="rap-toggle">
+
+                                {product.modes?.rent?.enabled && (
                                     <button
-                                        className={`toggle-btn ${mode === "rent" ? "active" : ""}`}
+                                        className={`rap-toggle-btn ${mode === "rent" ? "active" : ""}`}
                                         onClick={() => setMode("rent")}
                                     >
                                         RENT THIS PIECE
                                     </button>
                                 )}
 
-                                {buyData?.enabled && (
+                                {product.modes?.buy?.enabled && (
                                     <button
-                                        className={`toggle-btn ${mode === "buy" ? "active" : ""}`}
+                                        className={`rap-toggle-btn ${mode === "buy" ? "active" : ""}`}
                                         onClick={() => setMode("buy")}
                                     >
                                         BUY NEW
                                     </button>
                                 )}
+
                             </div>
 
-                            <p className="designer-name">{product.designer}</p>
+                            {/* ================= COMMON PRODUCT INFO ================= */}
 
-                            <h1 className="product-title">
+                            <p className="rap-rental-designer-name">{product.designer}</p>
+
+                            <h1 className="rap-rental-product-title">
                                 {product.title} <em>{product.subTitle}</em>
                             </h1>
 
-                            <p className="product-desc">{product.description}</p>
+                            <p className="rap-rental-product-desc">{product.description}</p>
 
                             {/* RATING */}
-                            <div className="rating-row">
+                            <div className="rap-rental-rating-row">
+
                                 {[1, 2, 3, 4, 5].map((s) => (
                                     <Star
+                                        className="rap-rental-star-icon"
                                         key={s}
                                         size={16}
                                         fill={product.rating >= s ? "#c5a46d" : "none"}
                                         stroke="#c5a46d"
                                     />
                                 ))}
-                                <span className="rating-text">{product.rating}.0</span>
-                                <span className="reviews">{product.reviews} reviews</span>
-                                <span className="never-worn-soft">{mode === "rent" ? "AVAILABLE FOR RENT" : "IN STOCK"}</span>
-                                <span className="rent-count">
-                                    {mode === "rent" ? "Rented " + rentData.availability.rentedCount + "×" : ""}
+
+                                <span className="rap-rental-rating-text">{product.rating}.0</span>
+
+                                <span className="rap-rental-rating-separator" />
+
+                                <span className="rap-rental-reviews">{product.reviews} reviews</span>
+
+                                <span className="rap-rental-rating-separator" />
+
+                                <span
+                                    className="rap-rental-never-worn-soft"
+                                    style={{ "--dot-color": "#6B7E5A" }}
+                                >
+                                    {mode === "rent" ? "AVAILABLE FOR RENT" : "IN STOCK"}
                                 </span>
+
+                                {/* <span className="rap-rental-rating-separator" /> */}
+
+
+
                             </div>
 
                             {/* ================= RENT MODE ================= */}
-                            {mode === "rent" && rentData && (
+                            {mode === "rent" && (
+                                <div className="rap-rent">
 
-                                <>
-                                    {/* Price Block */}
-                                    <div className="price-block">
 
-                                        <p className="price-label">Rental Price</p>
 
-                                        <h2 className="main-price">
+                                    {/* 1. PRICE BLOCK */}
+                                    <div className="rap-rental-price-block">
+
+                                        <p className="rap-rental-price-label">Rental Price</p>
+
+                                        <h2 className="rap-rental-main-price">
                                             ₹{selectedWindowData?.price}
-                                            <span className="duration">
+                                            <span className="rap-onlyduration">
                                                 {" "}
                                                 / {selectedWindowData?.days} days
                                             </span>
                                         </h2>
 
-                                        <p className="price-subline">
+                                        <p className="rap-rental-price-subline">
                                             ₹{rentData.pricing.pricePerDay} per day • Minimum{" "}
                                             {rentData.pricing.minDays} days
                                         </p>
 
+                                        {/* 2. RENTAL WINDOWS */}
                                         {/* WINDOWS */}
-                                        <div className="rental-window">
+                                        <div className="rap-rental-rental-window">
                                             {rentData.pricing.windows.map((w) => (
                                                 <div
                                                     key={w.id}
-                                                    className={`rental-block ${selectedWindow === w.id ? "selected" : ""
+                                                    className={`rap-rental-rental-block ${selectedWindow === w.id ? "selected" : ""
                                                         }`}
                                                     onClick={() => setSelectedWindow(w.id)}
                                                 >
-                                                    <p className="option-label">{w.label}</p>
-                                                    <h3 className="option-amount">₹{w.price}</h3>
-                                                    <p className="option-days">
+                                                    <p className="rap-rental-option-label">{w.label}</p>
+                                                    <h3 className="rap-rental-option-amount">₹{w.price}</h3>
+                                                    <p className="rap-rental-option-days">
                                                         {w.days} days — {
                                                             w.tag || (w.id === "standard"
                                                                 ? "most popular"
@@ -242,11 +278,12 @@ const [activeMedia, setActiveMedia] = useState({
                                             ))}
                                         </div>
 
+                                        {/* 3. DEPOSIT */}
                                         {/* DEPOSIT */}
-                                        <div className="deposit-block">
-                                            <Shield className="deposit-icon" />
-                                            <p className="deposit-text">
-                                                <b className="deposit-bold">
+                                        <div className="rap-rental-deposit-block">
+                                            <Shield className="rap-rental-deposit-icon" />
+                                            <p className="rap-rental-deposit-text">
+                                                <b className="rap-rental-deposit-bold">
                                                     ₹{rentData.deposit.amount} refundable deposit
                                                 </b>{" "}
                                                 required • Returned within 3 -{" "}
@@ -254,23 +291,26 @@ const [activeMedia, setActiveMedia] = useState({
                                             </p>
                                         </div>
                                     </div>
-                                    {/* SIZE BLOCK */}
-                                    <div className="size-block">
+
+
+
+                                    {/* 4. SIZE */}
+                                    <div className="rap-rental-size-block">
 
                                         {/* HEADER */}
-                                        <div className="size-header">
-                                            <span className="size-label">Select Size</span>
-                                            <span className="size-guide">Size & Measurement Guide</span>
+                                        <div className="rap-rental-size-header">
+                                            <span className="rap-rental-size-label">Select Size</span>
+                                            <span className="rap-rental-size-guide">Size & Measurement Guide</span>
                                         </div>
 
                                         {/* SIZE PILLS */}
-                                        <div className="size-options">
+                                        <div className="rap-rental-size-options">
                                             {tempSizes.map((size, i) => (
                                                 <button
                                                     key={i}
                                                     disabled={!size.available}
                                                     onClick={() => size.available && setSelectedSize(size.label)}
-                                                    className={`size-pill
+                                                    className={`rap-rental-size-pill
         ${!size.available ? "unavailable" : ""}
         ${selectedSize === size.label ? "active" : ""}
       `}
@@ -282,8 +322,7 @@ const [activeMedia, setActiveMedia] = useState({
 
                                     </div>
 
-
-                                    {/* // RENTAL CALENDAR */}
+                                    {/* 5. CALENDAR */}
                                     <RentalCalendar
                                         rentData={rentData}
                                         selectedStart={selectedStart}
@@ -292,28 +331,27 @@ const [activeMedia, setActiveMedia] = useState({
                                         setSelectedEnd={setSelectedEnd}
                                     />
 
-                                    {/* CTA BUTTONS  */}
-
-                                    <div className="rental-cta">
+                                    {/* 6. CTA */}
+                                    <div className="rap-rental-rental-cta">
 
                                         {/* PRIMARY CTA */}
                                         <button
-                                            className={`cta-primary ${selectedStart && selectedEnd ? "active" : "disabled"}`}
+                                            className={`rap-rental-cta-primary ${selectedStart && selectedEnd ? "active" : "disabled"}`}
                                             disabled={!(selectedStart && selectedEnd)}
                                         >
-                                            <span className="cta-icon"><Calendar /></span>
+                                            <span className="rap-rental-cta-icon"><Calendar /></span>
                                             CONFIRM BOOKING
                                         </button>
 
                                         {/* WISHLIST */}
-                                        <button className="cta-wishlist">
-                                            <span className="cta-icon"><Heart /></span>
+                                        <button className="rap-rental-cta-wishlist">
+                                            <span className="rap-rental-cta-icon"><Heart /></span>
                                             SAVE TO WISHLIST
                                         </button>
 
                                         {/* WHATSAPP */}
-                                        <button className="cta-whatsapp">
-                                            <span className="cta-icon">
+                                        <button className="rap-rental-cta-whatsapp">
+                                            <span className="rap-rental-cta-icon">
                                                 <MessageCircleCheck />
                                             </span>
                                             ASK ON WHATSAPP
@@ -321,58 +359,53 @@ const [activeMedia, setActiveMedia] = useState({
 
                                     </div>
 
-                                    {/* TRUST BADAGE */}
-
-                                    <div className="trust-badages">
-                                        <div className="trust-item">
+                                    {/* 7. TRUST BADGES */}
+                                    <div className="rap-rental-trust-badages">
+                                        <div className="rap-rental-trust-item">
                                             <ArrowRight />
                                             <span>DRY-CLEANED & DELIVERED </span>
                                         </div>
-                                        <div className="trust-item">
+                                        <div className="rap-rental-trust-item">
                                             <Shield />
                                             <span>SECURE PAYMENT VIA RAZORPAY</span>
                                         </div>
-                                        <div className="trust-item">
+                                        <div className="rap-rental-trust-item">
                                             <TrendingUp />
                                             <span>DEPOSIT REFUND IN 3-5 DAYS</span>
                                         </div>
                                     </div>
 
-
+                                    {/* 8. ACCORDION */}
                                     {/*  RENTAL PAGE ACCORDANCE*/}
 
-                                    <div className="pdp-accordion">
+                                    <div className="rap-pdp-rental-accordion">
 
                                         {/* ================= PRODUCT DETAILS ================= */}
-                                        <div className="pdp-item">
-                                            <div className="pdp-header" onClick={() => toggle("details")}>
+                                        <div className="rap-pdp-rental-item">
+                                            <div className="rap-pdp-rental-header" onClick={() => toggle("details")}>
                                                 <span>PRODUCT DETAILS</span>
 
-                                                {isOpen("details") ? (
-                                                    <X className="icon" />
-                                                ) : (
-                                                    <Plus className="icon" />
-                                                )}
+                                                <Plus className={`rap-onlyrental-icon ${isOpen("details") ? "open" : ""}`} />
                                             </div>
 
                                             {isOpen("details") && (
-                                                <div className="pdp-content">
-                                                    <div className="pdp-grid">
+                                                <div className="rap-rental-pdp-content">
+                                                    <div className="rap-rental-pdp-grid">
 
                                                         <div>
-                                                            <div className="pdp-row"><span className="pdp-label">Designer</span><p>{product.designer}</p></div>
-                                                            <div className="pdp-row"><span className="pdp-label">Fabric</span><p>{product.details?.fabric}</p></div>
-                                                            <div className="pdp-row"><span className="pdp-label">Craft Technique</span><p>{product.details?.technique}</p></div>
-                                                            <div className="pdp-row"><span className="pdp-label">Includes</span><p>{product.details?.includes}</p></div>
-                                                            <div className="pdp-row"><span className="pdp-label">Delivery Time</span><p>{product.details?.delivery}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Designer</span><p>{product.designer}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Fabric</span><p>{product.details?.fabric}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Craft Technique</span><p>{product.details?.technique}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Includes</span><p>{product.details?.includes}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Delivery Time</span><p>{product.details?.delivery}</p></div>
                                                         </div>
 
                                                         <div>
-                                                            <div className="pdp-row"><span className="pdp-label">Category</span><p>{product.subTitle}</p></div>
-                                                            <div className="pdp-row"><span className="pdp-label">Colour</span><p>{product.details?.color}</p></div>
-                                                            <div className="pdp-row"><span className="pdp-label">Thread</span><p>{product.details?.thread}</p></div>
-                                                            <div className="pdp-row"><span className="pdp-label">Occasion</span><p>{product.details?.occasion}</p></div>
-                                                            <div className="pdp-row"><span className="pdp-label">Origin</span><p>{product.details?.origin}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Category</span><p>{product.subTitle}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Colour</span><p>{product.details?.color}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Thread</span><p>{product.details?.thread}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Occasion</span><p>{product.details?.occasion}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Origin</span><p>{product.details?.origin}</p></div>
                                                         </div>
 
                                                     </div>
@@ -381,20 +414,16 @@ const [activeMedia, setActiveMedia] = useState({
                                         </div>
 
                                         {/* ================= THE CRAFT ================= */}
-                                        <div className="pdp-item">
-                                            <div className="pdp-header" onClick={() => toggle("craft")}>
+                                        <div className="rap-pdp-rental-item">
+                                            <div className="rap-pdp-rental-header" onClick={() => toggle("craft")}>
                                                 <span>THE CRAFT</span>
 
-                                                {isOpen("craft") ? (
-                                                    <X className="icon" />
-                                                ) : (
-                                                    <Plus className="icon" />
-                                                )}
+                                                <Plus className={`rap-onlyrental-icon ${isOpen("craft") ? "open" : ""}`} />
                                             </div>
 
                                             {isOpen("craft") && (
-                                                <div className="pdp-content">
-                                                    <p className="craft-text">
+                                                <div className="rap-rental-pdp-content">
+                                                    <p className="rap-rental-craft-text">
                                                         {product.craft}
                                                     </p>
                                                 </div>
@@ -402,23 +431,19 @@ const [activeMedia, setActiveMedia] = useState({
                                         </div>
 
                                         {/* ================= SIZE & FIT ================= */}
-                                        <div className="pdp-item">
-                                            <div className="pdp-header" onClick={() => toggle("size")}>
+                                        <div className="rap-pdp-rental-item">
+                                            <div className="rap-pdp-rental-header" onClick={() => toggle("size")}>
                                                 <span>SIZE & FIT</span>
 
-                                                {isOpen("size") ? (
-                                                    <X className="icon" />
-                                                ) : (
-                                                    <Plus className="icon" />
-                                                )}
+                                                <Plus className={`rap-onlyrental-icon ${isOpen("size") ? "open" : ""}`} />
                                             </div>
 
                                             {isOpen("size") && (
-                                                <div className="pdp-content">
+                                                <div className="rap-rental-pdp-content">
 
-                                                    <p className="size-intro">{product.sizeNote}</p>
+                                                    <p className="rap-rental-size-intro">{product.sizeNote}</p>
 
-                                                    <table className="size-table">
+                                                    <table className="rap-rental-size-table">
                                                         <thead>
                                                             <tr>
                                                                 <th>Size</th>
@@ -431,7 +456,7 @@ const [activeMedia, setActiveMedia] = useState({
 
                                                         <tbody>
                                                             {product.sizeTable?.map((row, i) => (
-                                                                <tr key={i} className={row.recommended ? "active-row" : ""}>
+                                                                <tr key={i} className={row.recommended ? "rap-rental-active-row" : ""}>
                                                                     <td>{row.size}</td>
                                                                     <td>{row.bust}</td>
                                                                     <td>{row.waist}</td>
@@ -447,23 +472,19 @@ const [activeMedia, setActiveMedia] = useState({
                                         </div>
 
                                         {/* ================= CARE ================= */}
-                                        <div className="pdp-item">
-                                            <div className="pdp-header" onClick={() => toggle("care")}>
+                                        <div className="rap-pdp-rental-item">
+                                            <div className="rap-pdp-rental-header" onClick={() => toggle("care")}>
                                                 <span>CARE INSTRUCTIONS</span>
 
-                                                {isOpen("care") ? (
-                                                    <X className="icon" />
-                                                ) : (
-                                                    <Plus className="icon" />
-                                                )}
+                                                <Plus className={`rap-onlyrental-icon ${isOpen("care") ? "open" : ""}`} />
                                             </div>
 
                                             {isOpen("care") && (
-                                                <div className="pdp-content">
-                                                    <ul className="care-list">
+                                                <div className="rap-rental-pdp-content">
+                                                    <ul className="rap-rental-care-list">
                                                         {product.care?.map((item, i) => (
                                                             <li key={i}>
-                                                                <span className="dash">—</span>
+                                                                <span className="rap-rental-dash">—</span>
                                                                 <span>{item}</span>
                                                             </li>
                                                         ))}
@@ -473,21 +494,17 @@ const [activeMedia, setActiveMedia] = useState({
                                         </div>
 
                                         {/* ================= SHIPPING ================= */}
-                                        <div className="pdp-item">
-                                            <div className="pdp-header" onClick={() => toggle("shipping")}>
+                                        <div className="rap-pdp-rental-item">
+                                            <div className="rap-pdp-rental-header" onClick={() => toggle("shipping")}>
                                                 <span>SHIPPING & DELIVERY</span>
 
-                                                {isOpen("shipping") ? (
-                                                    <X className="icon" />
-                                                ) : (
-                                                    <Plus className="icon" />
-                                                )}
+                                                <Plus className={`rap-onlyrental-icon ${isOpen("shipping") ? "open" : ""}`} />
                                             </div>
 
                                             {isOpen("shipping") && (
-                                                <div className="pdp-content">
+                                                <div className="rap-rental-pdp-content">
 
-                                                    <table className="shipping-table">
+                                                    <table className="rap-rental-shipping-table">
                                                         <thead>
                                                             <tr>
                                                                 <th>Method</th>
@@ -501,7 +518,7 @@ const [activeMedia, setActiveMedia] = useState({
                                                                 <tr key={i}>
                                                                     <td>{item.method}</td>
                                                                     <td>{item.time}</td>
-                                                                    <td className="cost">{item.cost}</td>
+                                                                    <td className="rap-rental-cost">{item.cost}</td>
                                                                 </tr>
                                                             ))}
                                                         </tbody>
@@ -513,48 +530,642 @@ const [activeMedia, setActiveMedia] = useState({
 
                                     </div>
 
-                                </>
-
-
+                                </div>
                             )}
 
-
                             {/* ================= BUY MODE ================= */}
-                            {mode === "buy" && buyData && (
-                                <>
-                                    {/* Authenticity Block */}
-                                    <div className="buy-authenticity-block">
-                                        <Shield className="buy-deposit-icon" />
-                                        <p className="buy-deposit-text">
-                                            <b className="buy-deposit-bold">
-                                                Brand New, Never Worn
-                                            </b>{" "}
-                                            — Delivered with Orginal {product.designer} packaging with dust bag,
-                                            care card and the certificate of authenticity
-                                        </p>
-                                    </div>
-                                    {/* Buy Price Block */}
-                                    <div className="price-block">
+                            {mode === "buy" && (
+                                <div className="rap-buy">
 
-                                        <p className="price-label">Rental Price</p>
-                                        <h2 className="main-price">{product.price}</h2>
-                                        <p className="price-meta">
-                                            Inclusive of all taxes · Free delivery above ₹2,999
+
+
+                                    {/* 1. PRICE */}
+                                    <div className="rap-preloved-price-block">
+
+                                        <p className="rap-preloved-price-label">
+                                            LISTED RESALE PRICE
                                         </p>
 
-                                    </div>
+                                        <h2 className="rap-preloved-main-price">
+                                            ₹{price.toLocaleString()}
+                                        </h2>
 
-                                    <div className="delivery-row">
-                                        <div className="delivery-icon">
-                                            <Truck />
+                                        <div className="rap-preloved-price-row">
+                                            <span className="rap-preloved-retail-price">
+                                                ₹{retail.toLocaleString()} retail
+                                            </span>
+
+                                            <span className="rap-preloved-discount-badge">
+                                                {discount}% OFF RETAIL
+                                            </span>
                                         </div>
 
-                                        <p className="delivery-text">
-                                            <span className="strong">Ready to ship</span> · Dispatches in 2–3 days · Standard delivery 4–6 days
-                                        </p>
                                     </div>
-                                </>
 
+                                    {/* 2. DISCLOSURE */}
+                                    <div className="rap-preloved-disclosure">
+
+                                        <p className="rap-preloved-disclosure-label">
+                                            HONEST DISCLOSURE
+                                        </p>
+
+                                        <p className="rap-preloved-disclosure-text">
+                                            {product.disclosure}
+                                        </p>
+
+                                    </div>
+
+                                    {/* 3. SIZE */}
+                                    <div className="rap-preloved-size-block">
+
+                                        <p className="rap-preloved-size-label">
+                                            SIZE
+                                        </p>
+
+                                        <div className="rap-preloved-size-pills">
+                                            <span className="rap-preloved-size-pill active">
+                                                <span className="rap-preloved-size-pill active">
+                                                    {product.prelovedSize}
+                                                </span>
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    {/* 4. CTA */}
+                                    <div className="rap-preloved-cta-group">
+
+                                        {/* BUY NOW */}
+                                        <button className="rap-preloved-btn primary">
+                                            <span className="rap-preloved-icon"><ShoppingBag /></span>
+                                            BUY NOW — ₹{price.toLocaleString()}
+                                        </button>
+
+                                        {/* WISHLIST */}
+                                        <button className="rap-preloved-btn outline">
+                                            <span className="rap-preloved-icon"><Heart /></span>
+                                            SAVE TO WISHLIST
+                                        </button>
+
+                                    </div>
+
+                                    {/* 5. MAKE AN OFFER */}
+
+                                    {/* ===== PRELOVED OFFER DIVIDER ===== */}
+                                    <div className="rap-preloved-offer-divider">
+                                        <span className="rap-preloved-offer-line"></span>
+                                        <span className="rap-preloved-offer-text">OR MAKE AN OFFER</span>
+                                        <span className="rap-preloved-offer-line"></span>
+                                    </div>
+
+                                    {/* ===== PRELOVED OFFER TRIGGER ===== */}
+                                    <div
+                                        className={`rap-preloved-offer-trigger ${isOfferOpen ? "open" : ""}`}
+                                        onClick={() => setIsOfferOpen(!isOfferOpen)}
+                                    >
+
+                                        <div className="rap-preloved-offer-left">
+                                            <span className="rap-preloved-offer-icon"><Gift /></span>
+
+                                            <div>
+                                                <p className="rap-preloved-offer-title">Name Your Price</p>
+                                                <p className="rap-preloved-offer-sub">
+                                                    Submit a quote — our team responds within 24 hours
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <span className={`rap-preloved-offer-arrow ${isOfferOpen ? "rotate" : ""}`}>
+                                            ›
+                                        </span>
+
+                                    </div>
+
+                                    {/* Now triggered */}
+                                    {isOfferOpen && (
+                                        <div className="rap-preloved-offer-panel">
+                                            <div className="rap-preloved-offer-price-row">
+
+                                                {/* LEFT - LISTED PRICE */}
+                                                <div className="rap-preloved-offer-col">
+                                                    <p className="rap-preloved-offer-label">LISTED AT</p>
+                                                    <h3 className="rap-preloved-offer-amount">
+                                                        ₹{price.toLocaleString()}
+                                                    </h3>
+                                                </div>
+
+                                                {/* ARROW */}
+                                                <div className="rap-preloved-offer-arrow-icon">→</div>
+
+                                                {/* RIGHT - YOUR OFFER */}
+                                                <div className="rap-preloved-offer-col">
+                                                    <p className="rap-preloved-offer-label">YOUR OFFER</p>
+                                                    <h3 className="rap-preloved-offer-amount highlight">
+                                                        ₹{offer.toLocaleString()}
+                                                    </h3>
+                                                </div>
+
+                                            </div>
+
+                                            <div className="rap-preloved-offer-slider-wrap">
+
+                                                {/* LABELS */}
+                                                <div className="rap-preloved-slider-labels">
+                                                    <span>₹{minOffer.toLocaleString()}</span>
+                                                    <span>₹{maxOffer.toLocaleString()}</span>
+                                                </div>
+
+                                                {/* SLIDER */}
+                                                <input
+                                                    type="range"
+                                                    min={minOffer}
+                                                    max={maxOffer}
+                                                    step={5000}
+                                                    value={offer}
+                                                    onChange={(e) => {
+                                                        const val = Number(e.target.value);
+                                                        setOffer(val);
+                                                        setInputValue(val.toString());
+                                                    }}
+                                                    className="rap-preloved-slider"
+                                                    style={{
+                                                        background: `linear-gradient(
+      to right,
+      #C9A96E 0%,
+      #C9A96E ${((offer - minOffer) / (maxOffer - minOffer)) * 100}%,
+      #E8E0D4 ${((offer - minOffer) / (maxOffer - minOffer)) * 100}%,
+      #E8E0D4 100%
+    )`
+                                                    }}
+                                                />
+
+                                                {/* HINT */}
+                                                <p className="rap-preloved-slider-hint">
+                                                    Slide to set your offer · Min ₹{minOffer.toLocaleString()}
+                                                </p>
+                                            </div>
+
+                                            {/* INPUT ROW */}
+                                            <div className="rap-preloved-offer-input-row">
+
+                                                <div className="rap-preloved-offer-input-wrap">
+                                                    <span className="rap-preloved-rupee">₹</span>
+
+                                                    <input
+                                                        type="text"
+                                                        value={inputValue}
+                                                        onChange={(e) => {
+                                                            const val = e.target.value;
+
+                                                            // allow typing freely
+                                                            setInputValue(val);
+
+                                                            const num = Number(val);
+
+                                                            if (!isNaN(num)) {
+                                                                if (num >= minOffer && num <= maxOffer) {
+                                                                    setOffer(num);
+                                                                }
+                                                            }
+                                                        }}
+                                                        className="rap-preloved-offer-input"
+                                                    />
+                                                </div>
+
+                                                {/* SAVINGS */}
+                                                {maxOffer - offer > 0 && (
+                                                    <div className="rap-preloved-offer-savings-pill">
+                                                        Save ₹{(maxOffer - offer).toLocaleString()}
+                                                    </div>
+                                                )}
+
+                                            </div>
+
+                                            {!isSubmitted ? (
+                                                <>
+
+                                                    {/* ===== NOTE ===== */}
+                                                    <textarea
+                                                        className="rap-preloved-note"
+                                                        placeholder='Add a note (optional) — e.g. "Available for immediate pickup..."'
+                                                        value={note}
+                                                        onChange={(e) => setNote(e.target.value)}
+                                                    />
+
+                                                    {/* ===== CONTACT ===== */}
+                                                    <div className="rap-preloved-contact-grid">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Your name"
+                                                            value={name}
+                                                            onChange={(e) => setName(e.target.value)}
+                                                        />
+
+                                                        <input
+                                                            type="text"
+                                                            placeholder="WhatsApp number"
+                                                            value={phone}
+                                                            onChange={(e) => setPhone(e.target.value)}
+                                                        />
+                                                    </div>
+
+                                                    {/* ===== TERMS ===== */}
+                                                    <div className="rap-preloved-terms-row">
+                                                        <CircleAlert className="preloved-terms-icon" />
+
+                                                        <p className="preloved-terms-text">
+                                                            Submitting an offer does not reserve the piece. The listing remains active until a purchase is completed.
+                                                        </p>
+                                                    </div>
+                                                    <button
+                                                        className="rap-preloved-submit-btn"
+                                                        onClick={() => {
+                                                            if (!name || !phone) {
+                                                                alert("Please fill name and phone");
+                                                                return;
+                                                            }
+
+                                                            if (offer < minOffer) {
+                                                                alert("Offer too low");
+                                                                return;
+                                                            }
+
+                                                            setIsSubmitted(true);
+                                                        }}
+                                                    >
+                                                        SUBMIT OFFER →
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <div className="rap-preloved-success">
+                                                    <div className="preloved-success-icon">✓</div>
+
+                                                    <h3>Offer submitted</h3>
+
+                                                    <p>
+                                                        Our team will review your quote of ₹{offer.toLocaleString()} and get back to you within 24 hours.
+                                                    </p>
+
+                                                    <button
+                                                        className="rap-preloved-reset-btn"
+                                                        onClick={() => setIsSubmitted(false)}
+                                                    >
+                                                        Submit another offer
+                                                    </button>
+                                                </div>
+                                            )}
+
+                                        </div>
+                                    )}
+
+                                    {/* 6. WHATSAPP */}
+                                    <div className="rap-preloved-whatsapp-btn">
+                                        <MessageCircleCheck className="rap-whatsapp-icon" />
+                                        ENQUIRE ON WHATSAPP
+                                    </div>
+
+                                    {/* 7.  CONSULT A STYSLISH */}
+
+                                    <div className="rap-preloved-consult-box">
+
+                                        <div className="rap-preloved-consult-left">
+
+                                            <div className="rap-preloved-consult-icon">
+                                                <User />
+                                            </div>
+
+                                            <div>
+                                                <p className="rap-preloved-consult-title">
+                                                    Not sure if this is the one?
+                                                </p>
+
+                                                <p className="rap-preloved-consult-subtitle">
+                                                    Our stylist can help you find the right piece for your occasion, size, and budget.
+                                                </p>
+                                            </div>
+
+                                        </div>
+
+                                        <button className="rap-preloved-consult-btn">
+                                            Consult a stylist
+                                        </button>
+
+                                    </div>
+
+
+                                    {/* TRUST BADAGES */}
+
+                                    <div className="rap-preloved-trust-badges">
+
+                                        <div className="rap-preloved-trust-item">
+                                            <Shield className="rap-preloved-trust-icon" />
+                                            <span>AUTHENTICATED BY HOK</span>
+                                        </div>
+
+                                        <div className="rap-preloved-trust-item">
+                                            <Shield className="rap-preloved-trust-icon" />
+                                            <span>SECURE PAYMENT VIA RAZORPAY</span>
+                                        </div>
+
+                                        <div className="rap-preloved-trust-item">
+                                            <CreditCard className="rap-preloved-trust-icon" />
+                                            <span>SECURE CHECKOUT</span>
+                                        </div>
+
+                                    </div>
+
+                                    {/* 8.PRELOVED PAGE ACCORDANCE* */}
+
+                                    <div className="rap-preloved-accordion">
+
+                                        <div className="rap-preloved-accordion-item">
+
+                                            <div
+                                                className="rap-preloved-accordion-header"
+                                                onClick={() => toggle("details")}
+                                            >
+                                                <span>PRODUCT DETAILS</span>
+
+                                                <Plus
+                                                    className={`rap-preloved-accordion-icon ${isOpen("details") ? "open" : ""
+                                                        }`}
+                                                />
+                                            </div>
+
+                                            {isOpen("details") && (
+                                                <div className="rap-preloved-accordion-content">
+
+                                                    <div className="rap-preloved-details-grid">
+
+                                                        <div>
+                                                            <div className="rap-preloved-details-row">
+                                                                <span className="rap-preloved-details-label">Designer</span>
+                                                                <p>{product.designer}</p>
+                                                            </div>
+
+                                                            <div className="rap-preloved-details-row">
+                                                                <span className="rap-preloved-details-label">Fabric</span>
+                                                                <p>{product.details?.fabric}</p>
+                                                            </div>
+
+                                                            <div className="rap-preloved-details-row">
+                                                                <span className="rap-preloved-details-label">Embroidery</span>
+                                                                <p>{product.details?.technique}</p>
+                                                            </div>
+
+                                                            <div className="rap-preloved-details-row">
+                                                                <span className="rap-preloved-details-label">Includes</span>
+                                                                <p>{product.details?.includes}</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <div className="rap-preloved-details-row">
+                                                                <span className="rap-preloved-details-label">Category</span>
+                                                                <p>{product.subTitle}</p>
+                                                            </div>
+
+                                                            <div className="rap-preloved-details-row">
+                                                                <span className="rap-preloved-details-label">Colour</span>
+                                                                <p>{product.details?.color}</p>
+                                                            </div>
+
+                                                            <div className="rap-preloved-details-row">
+                                                                <span className="rap-preloved-details-label">Occasion</span>
+                                                                <p>{product.details?.occasion}</p>
+                                                            </div>
+
+                                                            <div className="rap-preloved-details-row">
+                                                                <span className="rap-preloved-details-label">Origin</span>
+                                                                <p>{product.details?.origin}</p>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+                                    {/* ================= THE CRAFT ================= */}
+                                    <div className="rap-preloved-accordion-item">
+
+                                        <div
+                                            className="rap-preloved-accordion-header"
+                                            onClick={() => toggle("story")}
+                                        >
+                                            <span>THE STORY OF THIS PIECE</span>
+
+                                            <Plus
+                                                className={`rap-preloved-accordion-icon ${isOpen("story") ? "open" : ""
+                                                    }`}
+                                            />
+                                        </div>
+
+                                        {isOpen("story") && (
+                                            <div className="rap-preloved-accordion-content">
+
+                                                <p className="rap-preloved-story-text">
+                                                    {product.story ||
+                                                        "Worn once for a wedding celebration, this piece carries delicate handwork and timeless elegance. Carefully preserved and professionally cleaned, it remains in excellent condition with no visible damage."}
+                                                </p>
+
+                                                {product.stylingNote && (
+                                                    <p className="rap-preloved-story-note">
+                                                        {product.stylingNote}
+                                                    </p>
+                                                )}
+
+                                            </div>
+                                        )}
+
+                                    </div>
+
+                                    {/* ================= SIZE & FIT ================= */}
+                                    <div className="rap-preloved-accordion-item">
+
+                                        <div
+                                            className="rap-preloved-accordion-header"
+                                            onClick={() => toggle("size")}
+                                        >
+                                            <span>SIZE & FIT</span>
+
+                                            <Plus
+                                                className={`rap-preloved-accordion-icon ${isOpen("size") ? "open" : ""
+                                                    }`}
+                                            />
+                                        </div>
+
+                                        {isOpen("size") && (
+                                            <div className="rap-preloved-accordion-content">
+
+                                                {/* INTRO */}
+                                                <p className="rap-preloved-size-intro">
+                                                    {product.sizeNote || "Fits true to size. Blouse tailored for a 32\" bust with adjustable waist."}
+                                                </p>
+
+                                                {/* TABLE */}
+                                                <table className="rap-preloved-size-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Size</th>
+                                                            <th>Bust</th>
+                                                            <th>Waist</th>
+                                                            <th>Hips</th>
+                                                            <th>Height</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        {product.sizeTable?.map((row, i) => (
+                                                            <tr
+                                                                key={i}
+                                                                className={row.recommended ? "active-row" : ""}
+                                                            >
+                                                                <td>{row.size}</td>
+                                                                <td>{row.bust}</td>
+                                                                <td>{row.waist}</td>
+                                                                <td>{row.hips}</td>
+                                                                <td>{row.height}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        )}
+
+                                    </div>
+
+                                    {/* ====================CONDITION GRADE========================== */}
+
+                                    <div className="rap-preloved-accordion-item">
+
+                                        <div
+                                            className="rap-preloved-accordion-header"
+                                            onClick={() => toggle("condition")}
+                                        >
+                                            <span>CONDITION GRADE</span>
+
+                                            <Plus
+                                                className={`rap-preloved-accordion-icon ${isOpen("condition") ? "open" : ""
+                                                    }`}
+                                            />
+                                        </div>
+
+                                        {isOpen("condition") && (
+                                            <div className="rap-preloved-accordion-content">
+
+                                                {Object.keys(gradeConfig).map((key) => {
+                                                    const item = gradeConfig[key];
+                                                    const isActive = product.condition?.grade === key;
+
+                                                    return (
+                                                        <div
+                                                            key={key}
+                                                            className={`rap-preloved-grade-item ${isActive ? "active" : ""
+                                                                }`}
+                                                        >
+                                                            <div className="rap-preloved-grade-header">
+
+                                                                <span
+                                                                    className="rap-preloved-grade-dot"
+                                                                    style={{ background: item.color }}
+                                                                />
+
+                                                                <span className="rap-preloved-grade-name">
+                                                                    {item.label}
+                                                                    {isActive && " ← THIS PIECE"}
+                                                                </span>
+
+                                                            </div>
+
+                                                            <p className="rap-preloved-grade-desc">
+                                                                {item.desc}
+                                                            </p>
+                                                        </div>
+                                                    );
+                                                })}
+
+                                            </div>
+                                        )}
+
+                                    </div>
+
+
+                                    {/* ================= CARE ================= */}
+                                    <div className="rap-preloved-accordion-item">
+
+                                        <div
+                                            className="rap-preloved-accordion-header"
+                                            onClick={() => toggle("care")}
+                                        >
+                                            <span>CARE INSTRUCTIONS</span>
+
+                                            <Plus
+                                                className={`rap-preloved-accordion-icon ${isOpen("care") ? "open" : ""
+                                                    }`}
+                                            />
+                                        </div>
+
+                                        {isOpen("care") && (
+                                            <div className="rap-preloved-accordion-content">
+
+                                                {product.care?.map((item, i) => (
+                                                    <p key={i} className="rap-preloved-care-item">
+                                                        <span className="rap-preloved-care-dash">—</span>
+                                                        {item}
+                                                    </p>
+                                                ))}
+
+                                            </div>
+                                        )}
+
+                                    </div>
+
+                                    {/* ================= SHIPPING ================= */}
+                                    <div className="rap-preloved-accordion-item">
+
+                                        <div
+                                            className="rap-preloved-accordion-header"
+                                            onClick={() => toggle("shipping")}
+                                        >
+                                            <span>SHIPPING & DELIVERY</span>
+
+                                            <Plus
+                                                className={`rap-preloved-accordion-icon ${isOpen("shipping") ? "open" : ""
+                                                    }`}
+                                            />
+                                        </div>
+
+                                        {isOpen("shipping") && (
+                                            <div className="rap-preloved-accordion-content">
+
+                                                {/* DELIVERY METHODS */}
+                                                {product.shipping?.map((item, i) => (
+                                                    <p key={i} className="rap-preloved-shipping-item">
+                                                        <span className="rap-preloved-shipping-dash">—</span>
+                                                        {item.method}: {item.time}, {item.cost}
+                                                    </p>
+                                                ))}
+
+                                                {/* PACKAGING */}
+                                                {product.packaging?.map((text, i) => (
+                                                    <p key={i} className="rap-preloved-shipping-packaging">
+                                                        {text}
+                                                    </p>
+                                                ))}
+
+                                            </div>
+                                        )}
+
+                                    </div>
+
+
+                                </div>
                             )}
 
                         </div>
@@ -562,8 +1173,7 @@ const [activeMedia, setActiveMedia] = useState({
 
                 </Row>
             </Container>
+            <RelatedProduct />
         </section>
-        <RelatedProduct/>
-        </>
     );
 }
