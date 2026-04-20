@@ -6,7 +6,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { products, makeProductDetail } from "./ProductList";
 import '../styles/preloved.css'
 import RelatedProduct from "./RelatedProduct";
-
+import GalleryColumn from "./GalleryColumn";
 const gradeDotColor = {
   pristine: "#6B7E5A",
   excellent: "#C9A96E",
@@ -52,7 +52,6 @@ export default function Preloved() {
 
   // ===== STATES =====
   const [wish, setWish] = useState(false);
-  const [activeImage, setActiveImage] = useState(product.images?.[0]);
   const [selectedWindow, setSelectedWindow] = useState("standard");
   const [openSections, setOpenSections] = useState(["details"]);
   const [isOfferOpen, setIsOfferOpen] = useState(false);
@@ -124,32 +123,13 @@ export default function Preloved() {
         <Row>
 
           {/* LEFT */}
-          <Col md={6} className="pdp-left-wrap">
-            <div className="thumbs">
-              {product.images?.map((img, i) => (
-                <img key={i} src={img} onClick={() => setActiveImage(img)} />
-              ))}
-            </div>
-
-            <div
-              className="main-img"
-              style={{ backgroundImage: `url(${activeImage})` }}
-            >
-              <img src={activeImage} alt={product.title} />
-
-              <div className="gallery-badge preloved">
-                PRELOVED
-              </div>
-
-              <button
-                className="wishlist-icon-btn"
-                onClick={() => setWish(!wish)}
-              >
-                <Heart className={wish ? "active" : ""} />
-              </button>
-
-              <div className="zoom-hint">ZOOM</div>
-            </div>
+          <Col md={6} className="preloved-pdp-left-wrap">
+            
+            <GalleryColumn
+              images={product.images}
+              video={product.video}
+              variant="preloved"  
+            />
           </Col>
 
           {/* RIGHT */}

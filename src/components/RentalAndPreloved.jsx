@@ -79,7 +79,7 @@ const [activeMedia, setActiveMedia] = useState({
                 {/* BREADCRUMB */}
                 <div className="pdp-breadcrumb-wrapper">
                     <div className="breadcrumb">
-                        <span className="crumb">Home</span>
+                        <span className="crumb">Home r+p</span>
                         <span className="sep">›</span>
                         <span className="crumb">Rent</span>
                         <span className="sep">›</span>
