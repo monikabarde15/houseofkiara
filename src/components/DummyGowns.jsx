@@ -45,7 +45,7 @@ const DummyGowns = () => {
             marginTop: "15px",
           }}
         >
-          <button
+          {/* <button
             onClick={() =>
               navigate(`/rental/${item.id}`, {
                 state: { product },
@@ -53,7 +53,7 @@ const DummyGowns = () => {
             }
           >
             Rental + Buy
-          </button>
+          </button> */}
 
           <button
             onClick={() =>

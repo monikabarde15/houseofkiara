@@ -25,12 +25,12 @@ h1, h2, h3 {
 /* =========================
    BREADCRUMB
 ========================= */
-.pdp-breadcrumb-wrapper {
+.rental-pdp-breadcrumb-wrapper {
   position: relative;
   
 }
 
-.pdp-breadcrumb-wrapper::after {
+.rental-pdp-breadcrumb-wrapper::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -41,7 +41,7 @@ h1, h2, h3 {
   bottom: 0;
 }
 
-.pdp .breadcrumb {
+.rental-breadcrumb {
   padding: 16px 0;
   font-family: 'DM Sans';
   font-size: 11px;
@@ -54,18 +54,18 @@ h1, h2, h3 {
 }
 
 /* normal items */
-.crumb {
+.rental-crumb {
   color: #8A7E72;
   font-weight: 400;
 
 }
 
 /* separator */
-.breadcrumb .sep {
+.rental-sep {
   color: #EDE0D4;
 }
 
-.pdp .breadcrumb .crumb.current {
+.rental-current {
   color: #1A1612;
   font-weight: 400;
   font-family: 'DM Sans';
@@ -74,135 +74,14 @@ h1, h2, h3 {
 
 /* ===== GRID LAYOUT ===== */
 /* ===== LEFT SIDE ===== */
-.pdp-left-wrap {
+.rental-pdp-left-wrap {
   display: flex;
   gap: 15px;
-}
-
-
-/* THUMBNAILS */
-.thumbs {
-  width: 70px;
-  margin-top: 40px;
-}
-
-.thumbs img {
-  width: 100%;
-  margin-bottom: 10px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: 0.3s;
-
-}
-
-.thumbs img:hover {
-  transform: scale(1.05);
-}
-
-/* MAIN IMAGE */
-.main-img {
-  flex: 1;
-  height: 550px;
-  background-size: 140%;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 10px;
-  overflow: hidden;
-  transition: 0.3s;
-  position: relative;
-  margin-top: 40px;
-}
-
-.main-img:hover {
-  background-size: 160%;
-}
-
-.main-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: relative;
-  z-index: 1;
-
-}
-
-/* ===== GALLERY BADGE ===== */
-.gallery-badge {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: #B85C38 ;
-  /* sage */
-  color: #fff;
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  padding: 5px 12px;
-  border-radius: 1px;
-  z-index: 5;
-}
-
-.gallery-badge.rent {
-  background: #B85C38;
-}
-
-.gallery-badge.buy {
-  background: #1A1612;
-}
-
-/* ===== WISHLIST ===== */
-.wishlist-icon-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 251, 0.92);
-  border: 1px solid #E8E0D4;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 2;
-}
-
-.wishlist-icon-btn:hover {
-  border-color: #C9A96E;
-  background-color: #F5EDD8;
-}
-
-/* ===== ZOOM HINT ===== */
-.zoom-hint {
-  font-family: 'DM Sans';
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
-  background: rgba(255, 255, 251, 0.88);
-  border: 1px solid #E8E0D4;
-  padding: 4px 8px;
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #8A7E72;
-  backdrop-filter: blur(4px);
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* ZOOM ICON SVG */
-.zoom-hint svg {
-  height: 11px;
-  width: 11px;
-  stroke: #8A7E72;
-  stroke-width: 1.5;
-  fill: none;
+  
 }
 
 /* {INFO} */
-.pdp-info {
+.rental-pdp-info {
   border-left: 1px solid #E8E0D4;
   padding-left: 40px;
   padding-bottom: 60px;
@@ -211,7 +90,7 @@ h1, h2, h3 {
 
 
 /* ===== EYEBROW Top Tag ===== */
-.eyebrow-strip {
+.rental-eyebrow-strip {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -220,14 +99,14 @@ h1, h2, h3 {
 
 }
 
-.eyebrow-line {
+.rental-eyebrow-line {
   width: 24px;
   height: 1px;
   background: #B85C38;
   margin-top: 36px;
 }
 
-.eyebrow-text {
+.rental-eyebrow-text {
   font-family: 'DM Sans';
   font-size: 10px;
   letter-spacing: 0.28em;
@@ -238,7 +117,7 @@ h1, h2, h3 {
 }
 
 
-.designer-name {
+.rental-designer-name {
   font-family: 'DM Sans';
   font-size: 10px;
   text-transform: uppercase;
@@ -247,7 +126,7 @@ h1, h2, h3 {
   margin-bottom: 8px;
 }
 
-.product-title {
+.rental-product-title {
   font-family: 'Cormorant Garamond';
   font-size: 38px;
   font-weight: 400;
@@ -259,7 +138,7 @@ h1, h2, h3 {
   flex-direction: column;
 }
 
-.product-title em {
+.rental-product-title em {
   font-style: italic;
   color: #C9A96E;
 }
@@ -273,7 +152,7 @@ h1, h2, h3 {
   margin-bottom: 20px;
 }
 
-.product-desc {
+.rental-product-desc {
   font-family: 'DM Sans';
   font-size: 13px;
   font-weight: 400;
@@ -287,7 +166,7 @@ h1, h2, h3 {
    RATING ROW
 ========================= */
 
-.rating-row {
+.rental-rating-row {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -297,25 +176,25 @@ h1, h2, h3 {
 }
 
 
-.rating-row svg {
+.rental-star-icon{
   width: 12px;
   height: 12px;
 }
 
-.rating-text {
+.rental-rating-text {
   font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   font-weight: 400;
   color: #1A1612;
 }
 
-.reviews {
+.rental-reviews {
   font-family: 'DM Sans', sans-serif;
   font-size: 11px;
   color: #8A7E72;
 }
 
-.rating-separator {
+.rental-rating-separator {
   width: 4px;
   height: 4px;
   background: #E8E0D4;
@@ -329,7 +208,7 @@ h1, h2, h3 {
    NEVER WORN (SOFT BADGE)
 ========================= */
 
-.never-worn-soft {
+.rental-never-worn-soft {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -353,7 +232,7 @@ h1, h2, h3 {
 
 
 /* dot inside badge */
-.never-worn-soft::before {
+.rental-never-worn-soft::before {
   content: "";
   width: 6px;
   height: 6px;
@@ -364,7 +243,7 @@ h1, h2, h3 {
 }
 
 
-.rent-count{
+.rental-rent-count{
   font-family: 'DM Sans';
   font-size: 11px;
   color: #8A7E72;
@@ -376,12 +255,12 @@ h1, h2, h3 {
 ========================= */
 
 /* ===== PRICE BLOCK ===== */
-.price-block {
+.rental-price-block {
   margin-bottom: 28px;
 }
 
 /* label */
-.price-label {
+.rental-price-label {
   font-family: 'DM Sans';
   font-size: 9px;
   text-transform: uppercase;
@@ -391,8 +270,8 @@ h1, h2, h3 {
 }
 
 /* main price */
-.main-price {
-  margin-top: -6px;
+.rental-main-price {
+  /* margin-top: 0px; */
   font-family: 'Cormorant Garamond';
   font-size: 36px;
   font-weight: 400;
@@ -402,7 +281,7 @@ h1, h2, h3 {
 }
 
 /* duration */
-.main-price .duration {
+.rental-main-price .onlyduration {
   font-family: 'DM Sans';
   font-size: 18px;
   font-weight: 300;
@@ -410,17 +289,17 @@ h1, h2, h3 {
 }
 
 /* subline */
-.price-subline {
+.rental-price-subline {
   font-family: 'DM Sans';
   font-size: 12px;
   font-weight: 300;
   color: #8A7E72;
-  margin-top: -6px; 
-  margin-bottom: 6px;
+  /* margin-top: -6px;  */
+  /* margin-bottom: 6px; */
 }
 
 /* ===== RENTAL WINDOW ===== */
-.rental-window {
+.rental-rental-window {
   display: flex;
   gap: 12px;
   margin-top: 0px;
@@ -429,7 +308,7 @@ h1, h2, h3 {
 }
 
 /* card */
-.rental-block {
+.rental-rental-block {
   flex: 1;
   border: 1px solid #E8E0D4;
   padding: 8px 14px;
@@ -440,18 +319,18 @@ h1, h2, h3 {
 }
 
 /* hover */
-.rental-block:hover {
+.rental-rental-block:hover {
   border-color: #C9A96E;
 }
 
 /* selected */
-.rental-block.selected {
+.rental-rental-block.selected {
   border-color: #1A1612;
   background: #FAF7F2;
 }
 
 /* label */
-.option-label {
+.rental-option-label {
   font-family: 'DM Sans';
   font-size: 9px;
   text-transform: uppercase;
@@ -461,7 +340,7 @@ h1, h2, h3 {
 }
 
 /* amount */
-.option-amount {
+.rental-option-amount {
   font-family: "Cormorant Garamond";
   font-size: 20px;
   font-weight: 400;
@@ -470,7 +349,7 @@ h1, h2, h3 {
 }
 
 /* days */
-.option-days {
+.rental-option-days {
   font-family: 'DM Sans';
   font-size: 10px;
   font-weight: 300;
@@ -479,7 +358,7 @@ h1, h2, h3 {
 }
 
 /* ===== DEPOSIT BLOCK ===== */
-.deposit-block {
+.rental-deposit-block {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -492,7 +371,7 @@ h1, h2, h3 {
 }
 
 /* icon */
-.deposit-icon {
+.rental-deposit-icon {
   width: 14px;
   height: 14px;
   stroke: #C9A96E;
@@ -501,7 +380,7 @@ h1, h2, h3 {
 }
 
 /* text */
-.deposit-text {
+.rental-deposit-text {
   font-family: 'DM Sans';
   font-size: 11px;
   font-weight: 300;
@@ -511,7 +390,7 @@ h1, h2, h3 {
 }
 
 /* bold */
-.deposit-bold {
+.rental-deposit-bold {
   font-weight: 500;
 }
 
@@ -520,36 +399,36 @@ h1, h2, h3 {
 /* =========================
    SIZE BLOCK FOR RENTAL 
 ========================= */
-.size-block {
+.rental-size-block {
   margin: 24px 0;
 }
 
-.size-header {
+.rental-size-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
-.size-label {
+.rental-size-label {
   font-family: 'DM Sans';
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.22em;
   color: #8A7E72;
 }
-.size-guide {
+.rental-size-guide {
   font-family: 'DM Sans';
   font-size: 9px;
   color: #C9A96E;
   border-bottom: 1px solid #E8D5B0;
   cursor: pointer;
 }
-.size-options {
+.rental-size-options {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
-.size-pill {
+.rental-size-pill {
   padding: 9px 18px;
   border: 1px solid #E8E0D4;
   border-radius: 1px;
@@ -563,15 +442,15 @@ h1, h2, h3 {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.size-pill:hover {
+.rental-size-pill:hover {
   border-color: #C9A96E;
 }
-.size-pill.active {
+.rental-size-pill.active {
   background: #1A1612;
   color: #fff;
   border-color: #1A1612;
 }
-.size-pill.unavailable {
+.rental-size-pill.unavailable {
   opacity: 0.35;
   cursor: not-allowed;
   text-decoration: line-through;
@@ -581,11 +460,11 @@ h1, h2, h3 {
 /* =========================
    CTA SECTION for rental
 ========================= */
-.rental-cta {
+.rental-rental-cta {
   margin-top: 28px;
 }
 
-.rental-cta button {
+.rental-rental-cta button {
   width: 100%;
   height: 48px;
 
@@ -604,24 +483,24 @@ h1, h2, h3 {
 }
 
 
-.cta-primary {
+.rental-cta-primary {
   background: #1A1612;
   color: #fff;
   border: none;
 }
 
 /* disabled */
-.cta-primary.disabled {
+.rental-cta-primary.disabled {
   background: #E8E0D4;
   color: #8A7E72;
   cursor: not-allowed;
 }
 
 /* active hover */
-.cta-primary.active:hover {
+.rental-cta-primary.active:hover {
   opacity: 0.9;
 }
-.cta-wishlist {
+.rental-cta-wishlist {
   margin-top: 12px;
 
   border: 1px solid #1A1612;
@@ -630,12 +509,12 @@ h1, h2, h3 {
 }
 
 /* hover */
-.cta-wishlist:hover {
+.rental-cta-wishlist:hover {
   background: #1A1612;
   color: #fff;
 }
 
-.cta-whatsapp {
+.rental-cta-whatsapp {
   margin-top: 12px;
 
   border: 1px solid #25D366;
@@ -644,12 +523,12 @@ h1, h2, h3 {
 }
 
 /* hover */
-.cta-whatsapp:hover {
+.rental-cta-whatsapp:hover {
   background: #25D366;
   color: #fff;
 }
 
-.cta-icon {
+.rental-cta-icon {
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -660,7 +539,7 @@ h1, h2, h3 {
 {TRUST BADAGE} 
 ========================= */
 
-.trust-badages {
+.rental-trust-badages {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
@@ -668,7 +547,7 @@ h1, h2, h3 {
   margin-top: 30px;
 }
 
-.trust-item {
+.rental-trust-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -680,7 +559,7 @@ h1, h2, h3 {
   text-align: center;
 }
 
-.trust-item svg {
+.rental-trust-item svg {
   height: 18px;
   width: 18px;
   stroke: #C9A96E;
@@ -688,7 +567,7 @@ h1, h2, h3 {
   stroke-width: 1.4;
 }
 
-.trust-item span {
+.rental-trust-item span {
   font-family: 'DM Sans';
   font-size: 9px;
   text-transform: uppercase;
@@ -754,18 +633,18 @@ h1, h2, h3 {
 }
 
 /* CONTENT */
-.pdp-content {
+.rental-pdp-content {
   padding: 0 0 20px;
 }
 
 /* GRID */
-.pdp-grid {
+.rental-pdp-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px 24px;
 }
 
-.pdp-label {
+.rental-pdp-label {
   font-family: 'DM Sans';
   font-size: 9px;
   letter-spacing: 0.16em;
@@ -774,7 +653,7 @@ h1, h2, h3 {
   margin-bottom: 3px;
 }
 
-.pdp-row p {
+.rental-pdp-row p {
   font-family: 'DM Sans';
   font-size: 13px;
   font-weight: 300;
@@ -784,7 +663,7 @@ h1, h2, h3 {
 }
 
 /* CRAFT */
-.craft-text {
+.rental-craft-text {
   font-family: "Cormorant Garamond";
   font-size: 16px;
   font-style: italic;
@@ -798,7 +677,7 @@ h1, h2, h3 {
 }
 
 /* SIZE */
-.size-intro {
+.rental-size-intro {
   font-size: 12px;
   color: #8A7E72;
   margin-bottom: 14px;
@@ -806,12 +685,12 @@ h1, h2, h3 {
   font-weight: 300;
 }
 
-.size-table {
+.rental-size-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.size-table th {
+.rental-size-table th {
   font-family: 'DM Sans';
   font-size: 9px;
   text-transform: uppercase;
@@ -822,7 +701,7 @@ h1, h2, h3 {
   border: 1px solid #F0EAE0;
 }
 
-.size-table td {
+.rental-size-table td {
   font-size: 12px;
   padding: 9px 12px;
   font-weight: 300;
@@ -831,18 +710,18 @@ h1, h2, h3 {
   border: 1px solid #F0EAE0;
 }
 
-.active-row {
+.rental-active-row {
   font-weight: 400;
   background: #F5EDD8;
 }
 
 /* CARE */
-.care-list {
+.rental-care-list {
   list-style: none;
   padding: 0;
 }
 
-.care-list li {
+.rental-care-list li {
   display: flex;
   gap: 10px;
   align-items: flex-start;
@@ -853,18 +732,18 @@ h1, h2, h3 {
   line-height: 1.6;
 }
 
-.dash {
+.rental-dash {
   color: #c9a96e;
   flex-shrink: 0;
 }
 
 /* SHIPPING */
-.shipping-table {
+.rental-shipping-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.shipping-table th {
+.rental-shipping-table th {
   font-family: 'DM Sans';
   background: #FAF7F2;
   font-size: 9px;
@@ -875,7 +754,7 @@ h1, h2, h3 {
   border: 1px solid #F0EAE0;
 }
 
-.shipping-table td {
+.rental-shipping-table td {
   font-family: 'DM Sans';
   font-size: 12px;
   font-weight: 300;
@@ -885,7 +764,7 @@ h1, h2, h3 {
 
 }
 
-.cost {
+.rental-shipping-table .rental-cost {
   color: #6B7E5A;
   font-weight: 400;
 }
@@ -895,116 +774,96 @@ h1, h2, h3 {
    RESPONSIVE
 ========================= */
 
-/* =========================
-   MOBILE
-========================= */
 @media (max-width: 767px) {
 
-  /* STACK LAYOUT */
-  .pdp-left-wrap {
+  .rental-pdp-left-wrap {
     flex-direction: column;
-    gap: 10px;
+    padding: 12px 16px;
+    position: static;
   }
 
-  .pdp-info {
+  .rental-pdp-info {
     border-left: none;
     padding-left: 0;
     padding-top: 20px;
   }
 
-  /* IMAGE */
-  .main-img {
-    height: 320px;
-    margin-top: 20px;
-  }
-
-  .thumbs {
-    width: 100%;
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .thumbs img {
-    width: 60px;
-  }
-
-  /* TITLE */
-  .product-title {
+  /* typography */
+  .rental-product-title {
     font-size: 24px;
   }
 
-  /* PRICE */
-  .main-price {
+  .rental-main-price {
     font-size: 28px;
   }
 
-  .main-price .duration {
+  .onlyduration {
     font-size: 14px;
   }
 
-  /* RENTAL WINDOW STACK */
-  .rental-window {
+  /* layout blocks */
+  .rental-rental-window {
     flex-direction: column;
   }
 
-  /* SIZE */
-  .size-options {
+  .rental-size-options {
     gap: 6px;
   }
 
-  .size-pill {
+  .rental-size-pill {
     padding: 8px 12px;
     font-size: 10px;
   }
 
-  /* CTA */
-  .rental-cta button {
+  .rental-rental-cta button {
     height: 44px;
     font-size: 11px;
   }
 
-  /* TRUST BADGES */
-  .trust-badages {
+  .rental-trust-badages {
     grid-template-columns: 1fr;
   }
 
-  /* ACCORDION GRID */
-  .pdp-grid {
+  .rental-pdp-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* =========================
-   TABLET
-========================= */
+
 @media (min-width: 768px) and (max-width: 1279px) {
 
-  .pdp-left-wrap {
+  .rental-pdp-left-wrap {
     flex-direction: column;
+    padding: 16px 20px;
+    position: static;
   }
 
-  .pdp-info {
+  .rental-pdp-info {
     border-left: none;
     padding-left: 0;
     margin-top: 20px;
   }
 
-  .main-img {
-    height: 450px;
-  }
-
-  .product-title {
+  .rental-product-title {
     font-size: 30px;
   }
 
-  .main-price {
+  .rental-main-price {
     font-size: 32px;
   }
 
-  /* TRUST */
-  .trust-badages {
+  .rental-trust-badages {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
+@media (min-width: 1280px) {
+
+  .rental-pdp-left-wrap {
+    padding: 0px 24px 40px 32px;
+    position: sticky;
+    /* top: 120px; */
+    top: 0px;
+    align-self: flex-start;
+  }
+}

@@ -19,7 +19,7 @@ import ProductDetail from "./components/ProductDetail";
 // Pages
 import ProductList from "./components/Products";
 import BridalLehenga from "./components/BridalLehenga";
-import RentalProductDetail from "./components/RentalProductDetail";
+import RentalAndPreloved from "./components/RentalAndPreloved";
 import OnlyRentalDetail from "./components/OnlyRentalDetail";
 import Preloved from "./components/Preloved";
 
@@ -54,7 +54,7 @@ export default function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/rent/bridal-lehengas" element={<BridalLehenga />} />
         <Route path="/rent/gowns" element={<DummyGowns />} />
-        <Route path="/rental/:id" element={<RentalProductDetail />} />
+        <Route path="/rental/:id" element={<RentalAndPreloved />} />
         <Route path="/onlyrental/:id" element={<OnlyRentalDetail />} />
         <Route path="/preloved/:id" element={<Preloved />} />
       </Routes>

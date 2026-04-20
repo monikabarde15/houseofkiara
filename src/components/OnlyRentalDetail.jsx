@@ -7,6 +7,7 @@ import "../styles/onlyrentaldetail.css";
 import { products, makeProductDetail } from "./ProductList";
 import RentalCalendar from "./RentalCalendar";
 import RelatedProduct from "./RelatedProduct";
+import GalleryColumn from "./GalleryColumn";
 const tempSizes = [
   { label: "XS", available: true },
   { label: "S", available: true },
@@ -83,69 +84,54 @@ export default function RentalProductDetail() {
         <Container>
 
           {/* BREADCRUMB */}
-          <div className="pdp-breadcrumb-wrapper">
-            <div className="breadcrumb">
-              <span className="crumb">Home</span>
-              <span className="sep">›</span>
-              <span className="crumb">Rent</span>
-              <span className="sep">›</span>
-              <span className="crumb current">{product.title}</span>
+          <div className="rental-pdp-breadcrumb-wrapper">
+            <div className="rental-breadcrumb">
+              <span className="rental-crumb">Home</span>
+              <span className="rental-sep">›</span>
+              <span className="rental-crumb">Rent</span>
+              <span className="rental-sep">›</span>
+              <span className="rental-crumb rental-current">
+                {product.title}
+              </span>
             </div>
           </div>
 
           <Row>
 
             {/* LEFT */}
-            <Col md={6} className="pdp-left-wrap">
-              <div className="thumbs">
-                {product.images?.map((img, i) => (
-                  <img key={i} src={img} onClick={() => setActiveImage(img)} />
-                ))}
-              </div>
+            <Col md={6} className="rental-pdp-left-wrap">
+      
+              <GalleryColumn
+                images={product.images}
+                variant="rent"
+                video={product.video} 
+              />
 
-              <div
-                className="main-img"
-                style={{ backgroundImage: `url(${activeImage})` }}
-              >
-                <img src={activeImage} alt={product.title} />
-
-                <div className="gallery-badge rent">
-                  FOR RENT
-                </div>
-
-                <button
-                  className="wishlist-icon-btn"
-                  onClick={() => setWish(!wish)}
-                >
-                  <Heart className={wish ? "active" : ""} />
-                </button>
-
-                <div className="zoom-hint">ZOOM</div>
-              </div>
             </Col>
 
             {/* RIGHT */}
             <Col md={6}>
-              <div className="pdp-info">
+              <div className="rental-pdp-info">
 
-                <div className="eyebrow-strip">
-                  <span className="eyebrow-line"></span>
-                  <span className="eyebrow-text">Rental Piece</span>
+                <div className="rental-eyebrow-strip">
+                  <span className="rental-eyebrow-line"></span>
+                  <span className="rental-eyebrow-text">Rental Piece</span>
                 </div>
 
-                <p className="designer-name">{product.designer}</p>
+                <p className="rental-designer-name">{product.designer}</p>
 
-                <h1 className="product-title">
+                <h1 className="rental-product-title">
                   {product.title} <em>{product.subTitle}</em>
                 </h1>
 
-                <p className="product-desc">{product.description}</p>
+                <p className="rental-product-desc">{product.description}</p>
 
                 {/* RATING */}
-                <div className="rating-row">
+                <div className="rental-rating-row">
 
                   {[1, 2, 3, 4, 5].map((s) => (
                     <Star
+                    className="rental-star-icon"
                       key={s}
                       size={16}
                       fill={product.rating >= s ? "#c5a46d" : "none"}
@@ -153,16 +139,16 @@ export default function RentalProductDetail() {
                     />
                   ))}
 
-                  <span className="rating-text">{product.rating}.0</span>
+                  <span className="rental-rating-text">{product.rating}.0</span>
 
-                  <span className="rating-separator" />
+                  <span className="rental-rating-separator" />
 
-                  <span className="reviews">{product.reviews} reviews</span>
+                  <span className="rental-reviews">{product.reviews} reviews</span>
 
                   <span className="rating-separator" />
 
                   <span
-                    className="never-worn-soft"
+                    className="rental-never-worn-soft"
                     style={{ "--dot-color": gradeDotColor[grade] }}
                   >
                     {gradeLabel[grade]}
@@ -170,42 +156,42 @@ export default function RentalProductDetail() {
 
                   <span className="rating-separator" />
 
-                  <span className="rent-count">
+                  <span className="rental-rent-count">
                     Rented {product.rentInfo.rentedCount}×
                   </span>
 
                 </div>
 
                 {/* Price Block */}
-                <div className="price-block">
+                <div className="rental-price-block">
 
-                  <p className="price-label">Rental Price</p>
+                  <p className="rental-price-label">Rental Price</p>
 
-                  <h2 className="main-price">
+                  <h2 className="rental-main-price">
                     ₹{selectedWindowData?.price}
-                    <span className="duration">
+                    <span className="onlyduration">
                       {" "}
                       / {selectedWindowData?.days} days
                     </span>
                   </h2>
 
-                  <p className="price-subline">
+                  <p className="rental-price-subline">
                     ₹{rentData.pricing.pricePerDay} per day • Minimum{" "}
                     {rentData.pricing.minDays} days
                   </p>
 
                   {/* WINDOWS */}
-                  <div className="rental-window">
+                  <div className="rental-rental-window">
                     {rentData.pricing.windows.map((w) => (
                       <div
                         key={w.id}
-                        className={`rental-block ${selectedWindow === w.id ? "selected" : ""
+                        className={`rental-rental-block ${selectedWindow === w.id ? "selected" : ""
                           }`}
                         onClick={() => setSelectedWindow(w.id)}
                       >
-                        <p className="option-label">{w.label}</p>
-                        <h3 className="option-amount">₹{w.price}</h3>
-                        <p className="option-days">
+                        <p className="rental-option-label">{w.label}</p>
+                        <h3 className="rental-option-amount">₹{w.price}</h3>
+                        <p className="rental-option-days">
                           {w.days} days — {
                             w.tag || (w.id === "standard"
                               ? "most popular"
@@ -217,10 +203,10 @@ export default function RentalProductDetail() {
                   </div>
 
                   {/* DEPOSIT */}
-                  <div className="deposit-block">
-                    <Shield className="deposit-icon" />
-                    <p className="deposit-text">
-                      <b className="deposit-bold">
+                  <div className="rental-deposit-block">
+                    <Shield className="rental-deposit-icon" />
+                    <p className="rental-deposit-text">
+                      <b className="rental-deposit-bold">
                         ₹{rentData.deposit.amount} refundable deposit
                       </b>{" "}
                       required • Returned within 3 -{" "}
@@ -229,22 +215,22 @@ export default function RentalProductDetail() {
                   </div>
                 </div>
                 {/* SIZE BLOCK */}
-                <div className="size-block">
+                <div className="rental-size-block">
 
                   {/* HEADER */}
-                  <div className="size-header">
-                    <span className="size-label">Select Size</span>
-                    <span className="size-guide">Size & Measurement Guide</span>
+                  <div className="rental-size-header">
+                    <span className="rental-size-label">Select Size</span>
+                    <span className="rental-size-guide">Size & Measurement Guide</span>
                   </div>
 
                   {/* SIZE PILLS */}
-                  <div className="size-options">
+                  <div className="rental-size-options">
                     {tempSizes.map((size, i) => (
                       <button
                         key={i}
                         disabled={!size.available}
                         onClick={() => size.available && setSelectedSize(size.label)}
-                        className={`size-pill
+                        className={`rental-size-pill
         ${!size.available ? "unavailable" : ""}
         ${selectedSize === size.label ? "active" : ""}
       `}
@@ -268,26 +254,26 @@ export default function RentalProductDetail() {
 
                 {/* CTA BUTTONS  */}
 
-                <div className="rental-cta">
+                <div className="rental-rental-cta">
 
                   {/* PRIMARY CTA */}
                   <button
-                    className={`cta-primary ${selectedStart && selectedEnd ? "active" : "disabled"}`}
+                    className={`rental-cta-primary ${selectedStart && selectedEnd ? "active" : "disabled"}`}
                     disabled={!(selectedStart && selectedEnd)}
                   >
-                    <span className="cta-icon"><Calendar /></span>
+                    <span className="rental-cta-icon"><Calendar /></span>
                     CONFIRM BOOKING
                   </button>
 
                   {/* WISHLIST */}
-                  <button className="cta-wishlist">
-                    <span className="cta-icon"><Heart /></span>
+                  <button className="rental-cta-wishlist">
+                    <span className="rental-cta-icon"><Heart /></span>
                     SAVE TO WISHLIST
                   </button>
 
                   {/* WHATSAPP */}
-                  <button className="cta-whatsapp">
-                    <span className="cta-icon">
+                  <button className="rental-cta-whatsapp">
+                    <span className="rental-cta-icon">
                       <MessageCircleCheck />
                     </span>
                     ASK ON WHATSAPP
@@ -297,16 +283,16 @@ export default function RentalProductDetail() {
 
                 {/* TRUST BADAGE */}
 
-                <div className="trust-badages">
-                  <div className="trust-item">
+                <div className="rental-trust-badages">
+                  <div className="rental-trust-item">
                     <ArrowRight />
                     <span>DRY-CLEANED & DELIVERED </span>
                   </div>
-                  <div className="trust-item">
+                  <div className="rental-trust-item">
                     <Shield />
                     <span>SECURE PAYMENT VIA RAZORPAY</span>
                   </div>
-                  <div className="trust-item">
+                  <div className="rental-trust-item">
                     <TrendingUp />
                     <span>DEPOSIT REFUND IN 3-5 DAYS</span>
                   </div>
@@ -326,23 +312,23 @@ export default function RentalProductDetail() {
                     </div>
 
                     {isOpen("details") && (
-                      <div className="pdp-content">
-                        <div className="pdp-grid">
+                      <div className="rental-pdp-content">
+                        <div className="rental-pdp-grid">
 
                           <div>
-                            <div className="pdp-row"><span className="pdp-label">Designer</span><p>{product.designer}</p></div>
-                            <div className="pdp-row"><span className="pdp-label">Fabric</span><p>{product.details?.fabric}</p></div>
-                            <div className="pdp-row"><span className="pdp-label">Craft Technique</span><p>{product.details?.technique}</p></div>
-                            <div className="pdp-row"><span className="pdp-label">Includes</span><p>{product.details?.includes}</p></div>
-                            <div className="pdp-row"><span className="pdp-label">Delivery Time</span><p>{product.details?.delivery}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Designer</span><p>{product.designer}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Fabric</span><p>{product.details?.fabric}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Craft Technique</span><p>{product.details?.technique}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Includes</span><p>{product.details?.includes}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Delivery Time</span><p>{product.details?.delivery}</p></div>
                           </div>
 
                           <div>
-                            <div className="pdp-row"><span className="pdp-label">Category</span><p>{product.subTitle}</p></div>
-                            <div className="pdp-row"><span className="pdp-label">Colour</span><p>{product.details?.color}</p></div>
-                            <div className="pdp-row"><span className="pdp-label">Thread</span><p>{product.details?.thread}</p></div>
-                            <div className="pdp-row"><span className="pdp-label">Occasion</span><p>{product.details?.occasion}</p></div>
-                            <div className="pdp-row"><span className="pdp-label">Origin</span><p>{product.details?.origin}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Category</span><p>{product.subTitle}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Colour</span><p>{product.details?.color}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Thread</span><p>{product.details?.thread}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Occasion</span><p>{product.details?.occasion}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Origin</span><p>{product.details?.origin}</p></div>
                           </div>
 
                         </div>
@@ -359,8 +345,8 @@ export default function RentalProductDetail() {
                     </div>
 
                     {isOpen("craft") && (
-                      <div className="pdp-content">
-                        <p className="craft-text">
+                      <div className="rental-pdp-content">
+                        <p className="rental-craft-text">
                           {product.craft}
                         </p>
                       </div>
@@ -376,11 +362,11 @@ export default function RentalProductDetail() {
                     </div>
 
                     {isOpen("size") && (
-                      <div className="pdp-content">
+                      <div className="rental-pdp-content">
 
-                        <p className="size-intro">{product.sizeNote}</p>
+                        <p className="rental-size-intro">{product.sizeNote}</p>
 
-                        <table className="size-table">
+                        <table className="rental-size-table">
                           <thead>
                             <tr>
                               <th>Size</th>
@@ -393,7 +379,7 @@ export default function RentalProductDetail() {
 
                           <tbody>
                             {product.sizeTable?.map((row, i) => (
-                              <tr key={i} className={row.recommended ? "active-row" : ""}>
+                              <tr key={i} className={row.recommended ? "rental-active-row" : ""}>
                                 <td>{row.size}</td>
                                 <td>{row.bust}</td>
                                 <td>{row.waist}</td>
@@ -417,11 +403,11 @@ export default function RentalProductDetail() {
                     </div>
 
                     {isOpen("care") && (
-                      <div className="pdp-content">
-                        <ul className="care-list">
+                      <div className="rental-pdp-content">
+                        <ul className="rental-care-list">
                           {product.care?.map((item, i) => (
                             <li key={i}>
-                              <span className="dash">—</span>
+                              <span className="rental-dash">—</span>
                               <span>{item}</span>
                             </li>
                           ))}
@@ -439,9 +425,9 @@ export default function RentalProductDetail() {
                     </div>
 
                     {isOpen("shipping") && (
-                      <div className="pdp-content">
+                      <div className="rental-pdp-content">
 
-                        <table className="shipping-table">
+                        <table className="rental-shipping-table">
                           <thead>
                             <tr>
                               <th>Method</th>
@@ -455,7 +441,7 @@ export default function RentalProductDetail() {
                               <tr key={i}>
                                 <td>{item.method}</td>
                                 <td>{item.time}</td>
-                                <td className="cost">{item.cost}</td>
+                                <td className="rental-cost">{item.cost}</td>
                               </tr>
                             ))}
                           </tbody>
