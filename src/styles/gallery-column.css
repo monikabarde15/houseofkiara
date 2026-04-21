@@ -128,7 +128,7 @@
   font-size: 18px;
 }
 
-.wishlist-icon-btn {
+.gallery-wishlist-icon-btn {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -143,6 +143,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.gallery-wishlist-icon-btn:hover{
+  border-color: #C9A96E ;
+  background: #F5EDD8 ;
 }
 
 .zoom-hint {

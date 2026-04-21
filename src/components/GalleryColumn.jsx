@@ -84,7 +84,7 @@ export default function GalleryColumn({ images = [], variant = "rent", video = n
 
                 {/* WISHLIST */}
                 <button
-                    className="wishlist-icon-btn"
+                    className="gallery-wishlist-icon-btn"
                     onClick={() => setWish(!wish)}
                 >
                     <Heart className={wish ? "active" : ""} />
