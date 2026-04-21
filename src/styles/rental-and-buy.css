@@ -116,7 +116,7 @@
   margin-top: 10px;
 }
 
-.rap-buy {
+.rab-buy {
   margin-top: 10px;
 }
 
@@ -770,583 +770,405 @@
 
 
 /* =========================================================================================================== */
-/* ============================================= PRELOVED BUY MODE ============================================ */
+/* ============================================= BUY MODE ============================================ */
 /* ============================================================================================================ */
 
-/* ------------------------- */
-/* PRELOVED PRICE BLOCK */
-/* -------------------------- */
 
-.rap-preloved-price-block {
-  margin-bottom: 28px;
+/* =========================
+   PRICE BLOCK
+========================= */
+
+.rab-price-block {
+  margin-bottom: 24px;
 }
 
-.rap-preloved-price-label {
+
+/* label */
+.rab-price-label {
   font-family: 'DM Sans';
   font-size: 9px;
-  letter-spacing: 0.22em;
   text-transform: uppercase;
+  letter-spacing: 0.22em;
   color: #8A7E72;
-  margin-bottom: 6px;
+  margin: 0 0 2px 0;
 }
 
-.rap-preloved-main-price {
+/* main price */
+.rab-main-price {
   font-family: 'Cormorant Garamond';
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 400;
   color: #1A1612;
-  line-height: 1;
-  margin-bottom: 4px;
+  margin: 0;
+  line-height: 0.95;
 }
 
-.rap-preloved-price-row {
+
+/* meta text */
+.rab-price-meta {
+  font-family: 'DM Sans';
+  font-size: 11px;
+  font-weight: 300;
+  color: #8A7E72;
+  margin: 2px 0 0 0;
+}
+
+/* =========================
+   DELIVERY ROW 
+========================= */
+
+.rab-delivery-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.rap-preloved-retail-price {
-  font-family: 'DM Sans';
-  font-size: 12px;
-  font-weight: 300;
-  text-decoration: line-through;
-  color: #E8E0D4;
-}
-
-.rap-preloved-discount-badge {
-  background: #6B7E5A;
-  color: #fff;
-  font-family: 'DM Sans';
-  font-size: 9px;
-  padding: 2px 8px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border-radius: 1px;
-}
-
-
-/* ---------------------------- */
-/* HONEST DISCLOUSRE */
-/* --------------------------- */
-
-.rap-preloved-disclosure {
-  background: #FAF7F2;
-  border: 1px solid #F0EAE0;
-  border-left: 3px solid #C9A96E;
-  padding: 12px 16px;
-  padding-bottom: 0px;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(107, 126, 90, 0.02);
+  border: 1px solid rgba(107, 126, 90, 0.12);
   border-radius: 1px;
   margin-bottom: 24px;
 }
 
-.rap-preloved-disclosure-label {
-  font-family: 'DM Sans';
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-weight: 500;
-  color: #C9A96E;
-  margin-bottom: 5px;
-}
-
-.rap-preloved-disclosure-text {
-  font-family: 'DM Sans';
-  font-size: 12px;
-  font-weight: 300;
-  color: #8A7E72;
-  line-height: 1.7;
-}
-
-/* -------------------------- */
-/* SIZE BLOCK */
-/* -------------------------- */
-
-.rap-preloved-size-block {
-  margin-bottom: 28px;
-}
-
-.rap-preloved-size-label {
-  font-family: 'DM Sans';
-  font-size: 9px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #8A7E72;
-  margin-bottom: 12px;
-}
-
-.rap-preloved-size-pills {
+/* icon wrapper */
+.rab-delivery-icon {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
-.rap-preloved-size-pill {
-  padding: 9px 10px;
-  border: 1px solid #E8E0D4;
-  border-radius: 1px;
+/* truck icon */
+.rab-delivery-icon svg {
+  width: 12px;
+  height: 12px;
+  stroke: #6B7E5A;
+  stroke-width: 1;
+  opacity: 0.8;
+  display: block;
+  transform: translateY(1px);
+}
+
+/* text */
+.rab-delivery-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: #1A1612;
+  white-space: nowrap;
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* highlight */
+.rab-delivery-text .buynew-strong {
+  color: #6B7E5A;
+  font-weight: 500;
+}
+
+
+/* =========================
+   COLOR SECTION
+========================= */
+
+.rab-color-section {
+  margin-bottom: 24px;
+}
+
+
+/* ===== LABEL ===== */
+.rab-section-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #8A7E72;
+  margin-bottom: 10px;
+}
+
+
+/* ===== SWATCH GRID ===== */
+
+.rab-swatches-details {
+  display: flex;
+  flex-direction: row;     
+  align-items: flex-start;
+  gap: 16px;               
+}
+.rab-swatches-details > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* ===== CIRCLE ===== */
+.rab-swatch-circle-details {
+ width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 2px solid transparent;
+}
+
+
+/* ===== ACTIVE STATE (OUTER BORDER) ===== */
+.rab-swatches-details.active .rab-swatch-circle-details {
+  border: 2px solid #1A1612;
+}
+
+
+/* ===== INNER RING ===== */
+.swatches-details.active .swatch-circle-details::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* ===== SWATCH NAME ===== */
+.rab-swatch-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: #8A7E72;
+  text-align: center;
+  margin-top: 0px; 
+}
+
+/* TAG */
+.rab-buy-tag {
+  background: #e8efe6;
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+/* =========================
+   SIZE SECTION
+========================= */
+
+.rab-size-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -8px;
+}
+
+/* Size label  */
+.rab-size-label {
+  font-family: 'DM Sans';
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #8A7E72;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* size guide link */
+.rab-size-guide {
+  font-family: 'DM Sans';
+  font-size: 11px;
+  color: #C9A96E;
+  border-bottom: 1px solid #E8D5B0;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+
+/* =========================
+   SIZE PILLS
+========================= */
+
+.rab-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  /* spec */
+  margin-bottom: 8px;
+}
+
+.rab-sizes span {
   font-family: 'DM Sans';
   font-size: 11px;
   color: #1A1612;
-  cursor: default;
+
+  padding: 9px 18px;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-/* active state */
-.rap-preloved-size-pill.active {
+/* hover */
+.rab-sizes span:hover {
+  border-color: #C9A96E;
+  background: #1A1612;
+  color: #fff;
+}
+
+/* active */
+.rab-sizes span.active {
   background: #1A1612;
   color: #fff;
   border-color: #1A1612;
 }
 
+/* disabled
+.rab-sizes span.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  text-decoration: line-through;
+} */
 
-/*-----------------------*/
-/* CTA BUTTOMS */
-/* --------------------- */
 
-.rap-preloved-cta-group {
+.rab-size-note {
+  font-family: 'DM Sans';
+  font-size: 10px;
+  line-height: 1.6;
+  color: #8A7E72;
+  margin-top: 16px;
+}
+
+/* help link */
+.rab-size-help {
+  color: #1A1612;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ----------------------------------- */
+/*------------- CTA SECTION==== -----------*/
+/* ------------------------------------ */
+.rab-pdp-cta {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 0; /* important */
+  margin-bottom: 28px;
 }
 
-.rap-preloved-btn {
-  width: 100%;
-  padding: 14px;
-  font-family: 'DM Sans';
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-}
-/* .preloved-icon {
-  width: 16px;
-  height: 16px;
-  stroke-width: 1.5;
-} */
-
-/* PRIMARY */
-.rap-preloved-btn.primary {
-  background: #1A1612;
-  color: #fff;
-  border: none;
-}
-
-/* OUTLINE */
-.rap-preloved-btn.outline {
-  background: transparent;
-  border: 1px solid #1A1612;
-  color: #1A1612;
-}
-
-/* hover */
-.rap-preloved-btn.outline:hover {
-  background: #1A1612;
-  color: #fff;
-}
-
-
-
-/* -------------------------- */
-/* SIZE BLOCK */
-/* -------------------------- */
-
-/* ===== DIVIDER ===== */
-.rap-preloved-offer-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 24px 0 16px;
-}
-
-.rap-preloved-offer-line {
-  flex: 1;
-  height: 1px;
-  background: #E8E0D4;
-}
-
-.rap-preloved-offer-text {
-  font-family: 'DM Sans';
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: #8A7E72;
-}
-
-
-/* ===== TRIGGER ===== */
-.rap-preloved-offer-trigger {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 16px;
-  border: 1px solid #E8E0D4;
-  border-radius: 1px;
-  cursor: pointer;
-}
-
-.rap-preloved-offer-left {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.rap-preloved-offer-icon {
-  font-size: 18px;
-  color: #C9A96E;
-}
-
-.rap-preloved-offer-title {
-  font-family: 'DM Sans';
-  font-size: 12px;
-  font-weight: 500;
-  color: #1A1612;
-  margin: 0;
-}
-
-.rap-preloved-offer-sub {
-  font-family: 'DM Sans';
-  font-size: 10px;
-  color: #8A7E72;
-  margin: 0;
-  font-weight: 300;
-}
-
-.rap-preloved-offer-arrow {
-  /* height: 14px;
-  width: 14px;
-  stroke: #8A7E72;
-  fill: none;
-  stroke-width: 2;
-  transition: transform 0.2s; */
-  font-size: 18px;
-  color: #8A7E72;
-  transition: transform 0.2s ease;
-}
-
-.rap-preloved-offer-arrow.rotate {
-  transform: rotate(90deg);
-}
-
-/* ===== PANEL ===== */
-.rap-preloved-offer-panel {
-  border: 1px solid #E8E0D4;
-  border-top: none;
-  border-radius: 0 0 1px 1px;
-  padding: 20px;
-}
-
-/* ===== TRIGGER OPEN STATE ===== */
-.rap-preloved-offer-trigger.open {
-  background: #F5EED8;
-  border-color: #C9A96E;
-}
-
-/* ===== PRICE CONTEXT ROW ===== */
-.rap-preloved-offer-price-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.rap-preloved-offer-col {
-  flex: 1;
-  text-align: center;
-}
-
-.rap-preloved-offer-label {
-  font-family: 'DM Sans';
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #8A7E72;
-  margin-bottom: 4px;
-}
-
-.rap-preloved-offer-amount {
-  font-family: 'Cormorant Garamond';
-  font-size: 22px;
-  color: #1A1612;
-  margin: 0;
-}
-
-/* highlight (your offer) */
-.rap-preloved-offer-amount.highlight {
-  color: #B85C38; /* terracotta */
-}
-
-/* arrow */
-.rap-preloved-offer-arrow-icon {
-  font-size: 18px;
-  color: #E8E0D4;
-}
-
-/* ===== SLIDER WRAP ===== */
-.rap-preloved-offer-slider-wrap {
-  margin-bottom: 16px;
-}
-
-/* labels */
-.rap-preloved-slider-labels {
-  display: flex;
-  justify-content: space-between;
-  font-family: 'DM Sans';
-  font-size: 10px;
-  color: #8A7E72;
-  margin-bottom: 6px;
-}
-
-/* ===== SLIDER ===== */
-.rap-preloved-slider {
-  width: 100%;
-  appearance: none;
-  height: 3px;
-  border-radius: 2px;
-  outline: none;
-}
-
-/* ===== THUMB ===== */
-.rap-preloved-slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #1A1612;
-  border: 2px solid #FFFEEB;
-  box-shadow: 0 0 0 1px #1A1612;
-  cursor: pointer;
-  margin-top: -6px; /* aligns center */
-}
-
-/* firefox */
-.rap-preloved-slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #1A1612;
-  border: 2px solid #FFFEEB;
-  cursor: pointer;
-}
-
-/* hint */
-.rap-preloved-slider-hint {
-  font-family: 'DM Sans';
-  font-size: 10px;
-  color: #8A7E72;
-  text-align: center;
-  margin-top: 6px;
-}
-
-/* ===== INPUT ROW ===== */
-/* ===== INPUT ROW ===== */
-.rap-preloved-offer-input-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-/* wrapper */
-.rap-preloved-offer-input-wrap {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  border: 1px solid #E8E0D4;
-  background: #FAF7F2;
-  padding: 0 12px;
-  border-radius: 1px;
-}
-
-/* ₹ prefix */
-.rap-preloved-rupee {
-  font-family: 'Cormorant Garamond';
-  font-size: 18px;
-  color: #8A7E72;
-  margin-right: 6px;
-}
-
-/* input */
-.rap-preloved-offer-input {
-  flex: 1;
-  border: none;
-  background: none;
-  font-family: 'Cormorant Garamond';
-  font-size: 20px;
-  color: #1A1612;
-  outline: none;
-  padding: 10px 8px; /* FIXED */
-}
-
-/* ===== SAVINGS PILL ===== */
-.rap-preloved-offer-savings-pill {
-  background: rgba(107,126,90,0.12);
-  color: #6B7E5A;
-  font-family: 'DM Sans';
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  padding: 4px 10px;
-  border-radius: 1px;
-  border: 1px solid rgba(107,126,90,0.3);
-  white-space: nowrap;
-}
-
-/* ===== NOTE ===== */
-.rap-preloved-note {
-  width: 100%;
-  border: 1px solid #E8E0D4;
-  border-radius: 1px;
-  padding: 10px 12px;
-  font-family: 'DM Sans';
-  font-size: 12px;
-  background: #FAF7F2;
-  resize: vertical;
-  margin-bottom: 12px;
-}
-
-.rap-preloved-note:focus {
-  outline: none;
-  border-color: #C9A96E;
-}
-
-/* ===== CONTACT GRID ===== */
-.rap-preloved-contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.rap-preloved-contact-grid input {
-  border: 1px solid #E8E0D4;
-  border-radius: 1px;
-  padding: 9px 12px;
-  font-family: 'DM Sans';
-  font-size: 12px;
-  background: #FAF7F2;
-}
-
-.rap-preloved-contact-grid input:focus {
-  outline: none;
-  border-color: #C9A96E;
-}
-
-/* ===== TERMS ===== */
-/* ===== TERMS ROW ===== */
-.rap-preloved-terms-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-
-/* icon */
-.rap-preloved-terms-icon {
-  width: 13px;
-  height: 13px;
-  stroke: #8A7E72;
-  margin-top: 2px;
-  flex-shrink: 0;
-}
-
-/* text */
-.rap-preloved-terms-text {
-  font-family: 'DM Sans';
-  font-size: 10px;
-  color: #8A7E72;
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* ===== SUBMIT ===== */
-.rap-preloved-submit-btn {
+/* ===== PRIMARY ===== */
+.rab-pdp-btn-primary {
   width: 100%;
   padding: 14px;
   background: #1A1612;
   color: #fff;
+  border: none;
+
   font-family: 'DM Sans';
   font-size: 10px;
+  text-transform: uppercase;
   letter-spacing: 0.2em;
-  text-transform: uppercase;
-  border: none;
+
   cursor: pointer;
 }
 
-.rap-preloved-submit-btn:hover {
-  background: #2E2520;
+/* ===== OUTLINE ===== */
+.rab-pdp-btn-outline {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #1A1612;
+  background: transparent;
+  color: #1A1612;
+
+  font-family: 'DM Sans';
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+
+  cursor: pointer;
 }
 
-/* ---------------------------- */
-/*--- WHATSAPP ENQUIERY----------- */
-/* ----------------------------------- */
-
-.rap-preloved-whatsapp-btn {
-  margin-top: 16px;
-  border: 1px solid #25D366;
-  color: #25D366;
-  background: transparent;
-
+/* ===== WHATSAPP ===== */
+.rab-pdp-btn-whatsapp {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
+  border: 1px solid #25D366;
+  background: transparent;
+  color: #25D366;
 
   font-family: 'DM Sans';
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
   cursor: pointer;
 }
 
-/* icon */
-.rap-whatsapp-icon {
-  width: 14px;
-  height: 14px;
-  stroke: currentColor;
-}
-
-/* hover */
-.rap-preloved-whatsapp-btn:hover {
+/* HOVER */
+.rab-pdp-btn-whatsapp:hover {
   background: #25D366;
   color: #fff;
 }
 
-/* ----------------------------------- */
-/*---------- CONSULT A STYLISH-------- */
-/* ----------------------------------- */
 
-/* ===== CONTAINER ===== */
-.rap-preloved-consult-box {
+/* ----------------------------------- */
+/*---------- Trust Section -----------*/
+/* ------------------------------------ */
+
+.rab-trust-badages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 55px;
+}
+
+.rab-trust-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: 1px solid #F0EAE0;
+  border-radius: 1px;
+  background: #FAF7F2;
+  text-align: center;
+}
+
+.rab-trust-item svg {
+  height: 18px;
+  width: 18px;
+  stroke: #C9A96E;
+  fill: none;
+  stroke-width: 1.4;
+}
+
+.rab-trust-item span {
+  font-family: 'DM Sans';
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #1A1612;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* =========================
+   CONSULT BOX
+========================= */
+
+.rab-consult-box {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 14px 20px;
+  padding: 18px 20px;
   background: #F5EDD8;
   border: 1px solid #E8D5B0;
   border-radius: 1px;
-  margin: 20px 0;
-  padding-bottom: 4px;
+  margin-bottom: 28px;
 }
 
-/* LEFT */
-.rap-preloved-consult-left {
+
+/* LEFT SIDE */
+.rab-consult-left {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-/* ICON */
-.rap-preloved-consult-icon {
+
+/* ICON BOX */
+.rab-consult-icon {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -1358,7 +1180,7 @@
   flex-shrink: 0;
 }
 
-.rap-preloved-consult-icon svg {
+.rab-consult-icon svg {
   width: 18px;
   height: 18px;
   stroke: #C9A96E;
@@ -1366,8 +1188,9 @@
   fill: none;
 }
 
+
 /* TEXT */
-.rap-preloved-consult-title {
+.rab-consult-title {
   font-family: 'DM Sans';
   font-size: 12px;
   font-weight: 500;
@@ -1375,7 +1198,7 @@
   margin-bottom: 3px;
 }
 
-.rap-preloved-consult-subtitle {
+.rab-consult-subtitle {
   font-family: 'DM Sans';
   font-size: 11px;
   font-weight: 300;
@@ -1383,8 +1206,9 @@
   line-height: 1.5;
 }
 
+
 /* BUTTON */
-.rap-preloved-consult-btn {
+.rab-consult-btn {
   background: #1A1612;
   color: #fff;
   border: none;
@@ -1398,71 +1222,31 @@
   white-space: nowrap;
 }
 
-.rap-preloved-consult-btn:hover {
+.rab-consult-btn:hover {
   background: #2E2520;
+  transition: background 0.2s;
 }
 
+/* -------------------------------------------- */
+/* ------------BUY NEW PDP ACCORDION---------------- */
+/* --------------------------------------------- */
 
-/*---------------------------------*/
-/* ------------TRUST BADAGES------*/
-/* ------------------------------- */
 
-/* ===== GRID ===== */
-.rap-preloved-trust-badges {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 28px;
-  margin-bottom: 32px;
+/*---------- PRODUCT PAGE DETAILS---------- */
+/* ================= ROOT ================= */
+
+/* ROOT */
+.rab-pdp-accordion {
+  border-top: 1px solid #e8e0d4;
 }
 
-/* ===== ITEM ===== */
-.rap-preloved-trust-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 8px;
-  border: 1px solid #F0EAE0;
-  border-radius: 1px;
-  background: #FAF7F2;
-  text-align: center;
+.rab-pdp-item {
+  border-bottom: 1px solid #e8e0d4;
+  
 }
 
-/* ===== ICON ===== */
-.rap-preloved-trust-icon {
-  width: 18px;
-  height: 18px;
-  stroke: #C9A96E;
-  stroke-width: 1.4;
-}
-
-/* ===== TEXT ===== */
-.rap-preloved-trust-item span {
-  font-family: 'DM Sans';
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #1A1612;
-  line-height: 1.4;
-}
-
-
-/* ---------------------------------- */
-/* ----------------ACCORDANCE SECTION------- */
-/* ------------------------------------------ */
-
-/* ===== ACCORDION ===== */
-.rap-preloved-accordion {
-  border-top: 1px solid #E8E0D4;
-}
-
-.rap-preloved-accordion-item {
-  border-bottom: 1px solid #E8E0D4;
-}
-
-/* ===== HEADER ===== */
-.rap-preloved-accordion-header {
+/* HEADER */
+ .rab-pdp-header{
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1475,186 +1259,120 @@
   color: #1A1612;
 }
 
-.rap-preloved-accordion-header:hover{
-  color: #C9A96E;
+.rab-pdp-header:hover {
+  color: #c9a96e;
 }
 
-/* ===== ICON ===== */
-.rap-preloved-accordion-icon {
+/* ICON */
+.rab-pdp-icon {
   width: 16px;
   height: 16px;
   transition: transform 0.2s ease;
   stroke-width: 1.5;
 }
 
-.rap-preloved-accordion-icon.open {
+/* ROTATE ON OPEN */
+.rab-pdp-icon.open {
   transform: rotate(45deg);
 }
 
-/* ===== CONTENT ===== */
-.rap-preloved-accordion-content {
-  padding-bottom: 24px;
+.rab-pdp-header:hover .icon {
+  stroke: #C9A96E;
 }
 
-/* ===== GRID ===== */
-.rap-preloved-details-grid {
+/* CONTENT */
+.rab-pdp-content {
+  padding: 0 0 20px;
+}
+
+/* GRID */
+.rab-pdp-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px 24px;
 }
 
-/* ===== ROW ===== */
-.rap-preloved-details-row {
-  margin-bottom: 10px;
-}
-
-/* ===== LABEL ===== */
-.rap-preloved-details-label {
-  display: block;
-  margin-bottom: 3px;
-
+.rab-pdp-label {
   font-family: 'DM Sans';
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #8A7E72;
+  margin-bottom: 3px;
 }
 
-/* ===== VALUE ===== */
-.rap-preloved-details-row p {
-  margin: 0;
-
+.rab-pdp-row p {
   font-family: 'DM Sans';
   font-size: 13px;
   font-weight: 300;
   color: #1A1612;
-  line-height: 1.5;
+  margin: 0;
+  line-height: 1.55;
 }
 
-/* ===== STORY TEXT ===== */
-.rap-preloved-story-text {
-  font-family: 'Cormorant Garamond';
+/* CRAFT */
+.rab-craft-text {
+  font-family: "Cormorant Garamond";
   font-size: 16px;
-  font-weight: 300;
   font-style: italic;
   color: #8A7E72;
   line-height: 1.9;
-  margin: 0;
 }
 
-/* ===== EMPHASIS ===== */
-.rap-preloved-story-text strong {
+.rab-craft-text em {
   font-style: normal;
-  color: #1A1612;
+  color: #1a1612;
 }
 
-/* ===== STYLING NOTE ===== */
-.rap-preloved-story-note {
-  margin-top: 14px;
-
-  font-family: 'DM Sans';
-  font-size: 11px;
-  font-weight: 300;
-  color: #8A7E72;
-  line-height: 1.6;
-}
-
-/* ===== INTRO TEXT ===== */
-.rap-preloved-size-intro {
-  font-family: 'DM Sans';
+/* SIZE */
+.rab-size-intro {
   font-size: 12px;
-  font-weight: 300;
   color: #8A7E72;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+  line-height: 1.8;
+  font-weight: 300;
 }
 
-/* ===== TABLE ===== */
-.rap-preloved-size-table {
+.rab-size-table {
   width: 100%;
   border-collapse: collapse;
+}
+
+.rab-size-table th {
   font-family: 'DM Sans';
-}
-
-/* HEADER */
-.rap-preloved-size-table th {
-  text-align: left;
-  font-size: 10px;
-  letter-spacing: 0.12em;
+  font-size: 9px;
   text-transform: uppercase;
-  color: #8A7E72;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #E8E0D4;
-}
-
-/* ROW */
-.rap-preloved-size-table td {
-  font-size: 12px;
-  color: #1A1612;
-  padding: 10px 0;
-  border-bottom: 1px solid #F2ECE4;
-}
-
-/* ===== HIGHLIGHT ROW ===== */
-.rap-preloved-size-table tr.active-row {
   background: #FAF7F2;
+  letter-spacing: 0.14em;
+  color: #8A7E72;
+  padding: 8PX 12PX;
+  border: 1px solid #F0EAE0;
 }
 
-/* ===== CONTAINER ===== */
-.rap-preloved-grade-item {
-  border: 1px solid #E8E0D4;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 1px;
-}
-
-/* ACTIVE */
-.rap-preloved-grade-item.active {
-  background: #F5EDD8;
-  border-color: #E8D5B0;
-}
-
-/* HEADER */
-.rap-preloved-grade-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-
-/* DOT */
-.rap-preloved-grade-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-top: 4px;
-  flex-shrink: 0;
-}
-
-/* NAME */
-.rap-preloved-grade-name {
-  font-family: 'DM Sans';
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+.rab-size-table td {
+  font-size: 12px;
+  padding: 9px 12px;
+  font-weight: 300;
   color: #1A1612;
-  font-weight: 500;
+  padding: 9px 12px;
+  border: 1px solid #F0EAE0;
 }
 
-/* DESCRIPTION */
-.rap-preloved-grade-desc {
-  font-family: 'DM Sans';
-  font-size: 11px;
-  color: #8A7E72;
-  line-height: 1.5;
-  margin: 0;
+.rab-active-row {
+  font-weight: 400;
+  background: #F5EDD8;
 }
 
-/* ===== CARE ITEM ===== */
-.rap-preloved-care-item {
+/* CARE */
+.rab-care-list {
+  list-style: none;
+  padding: 0;
+}
+
+.rab-care-list li {
   display: flex;
   gap: 10px;
-  margin-bottom: 8px;
-
+  align-items: flex-start;
   font-family: 'DM Sans';
   font-size: 13px;
   font-weight: 300;
@@ -1662,39 +1380,41 @@
   line-height: 1.6;
 }
 
-/* DASH */
-.rap-preloved-care-dash {
-  color: #C9A96E;
+.rab-dash {
+  color: #c9a96e;
   flex-shrink: 0;
 }
 
-/* ===== SHIPPING ITEM ===== */
-.rap-preloved-shipping-item {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 8px;
+/* SHIPPING */
+.rab-shipping-table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
+.rab-shipping-table th {
   font-family: 'DM Sans';
-  font-size: 13px;
-  font-weight: 300;
+  background: #FAF7F2;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
   color: #8A7E72;
-  line-height: 1.6;
+  padding: 8px 12px;
+  border: 1px solid #F0EAE0;
 }
 
-/* DASH */
-.rap-preloved-shipping-dash {
-  color: #C9A96E;
-  flex-shrink: 0;
-}
-
-/* ===== PACKAGING NOTE ===== */
-.rap-preloved-shipping-packaging {
-  margin-top: 12px;
-
+.rab-shipping-table td {
   font-family: 'DM Sans';
   font-size: 12px;
-  color: #8A7E72;
-  line-height: 1.6;
+  font-weight: 300;
+  color: #1A1612;
+  padding: 9px 12px;
+  border: 1px solid #F0EAE0;
+
+}
+
+.rab-shipping-table .buynew-cost {
+  color: #6B7E5A;
+  font-weight: 400;
 }
 
 
@@ -1722,40 +1442,53 @@
 
 @media (min-width: 1280px) {
 
-  .rap-left {
-    display: flex;
-    gap: 15px;
+  /* Slight premium scaling */
+  .rab-main-price {
+    font-size: 42px;
+  }
 
-    position: sticky;
-    top: 0; /* same as preloved */
-    align-self: flex-start;
+  .rab-delivery-row {
+    padding: 8px 14px;
+  }
+
+  .rab-consult-box {
+    padding: 20px 24px;
   }
 
 }
 
 @media (min-width: 768px) and (max-width: 1279px) {
 
-  .rap-left {
-    flex-direction: column;
+  /* PRICE */
+  .rab-main-price {
+    font-size: 34px;
   }
 
-  .rap-right {
-    border-left: none;
-    padding-left: 0;
-    margin-top: 20px;
+  /* DELIVERY */
+  .rab-delivery-text {
+    white-space: normal;
   }
 
-  .rap-toggle {
-    width: 100%;
+  /* COLORS */
+  .rab-swatches-details {
+    gap: 14px;
   }
 
-  .rap-rental-product-title {
-    font-size: 30px;
+  /* SIZE */
+  .rab-sizes span {
+    padding: 8px 16px;
   }
 
-  .rap-rental-main-price,
-  .rap-preloved-main-price {
-    font-size: 30px;
+  /* CTA */
+  .rab-pdp-btn-primary,
+  .rab-pdp-btn-outline,
+  .rab-pdp-btn-whatsapp {
+    font-size: 10px;
+  }
+
+  /* TRUST */
+  .rab-trust-badages {
+    grid-template-columns: repeat(3, 1fr);
   }
 
 }
@@ -1763,46 +1496,79 @@
 
 @media (max-width: 767px) {
 
-  .rap-left {
-    flex-direction: column;
-    gap: 10px;
+  /* ===== BUY SECTION ===== */
+  .rab-main-price {
+    font-size: 30px;
   }
 
-  .rap-right {
-    border-left: none;
-    padding-left: 0;
-    margin-top: 20px;
-  }
-
-  .rap-toggle {
-    width: 100%;
-  }
-
-  .rap-toggle-btn {
+  .rab-price-meta {
     font-size: 10px;
+  }
+
+  /* DELIVERY */
+  .rab-delivery-row {
+    flex-direction: row;
+    align-items: flex-start;
     padding: 10px;
   }
 
-  .rap-rental-product-title {
-    font-size: 26px;
+  .rab-delivery-text {
+    white-space: normal;
+    line-height: 1.4;
   }
 
-  .rap-rental-main-price,
-  .rap-preloved-main-price {
-    font-size: 28px;
+  /* COLORS */
+  .rab-swatches-details {
+    gap: 12px;
+    flex-wrap: wrap;
   }
 
-  .rap-rental-rental-window {
-    flex-direction: column;
+  .rab-swatch-circle-details {
+    width: 26px;
+    height: 26px;
   }
 
-  .rap-rental-trust-badages,
-  .rap-preloved-trust-badges {
+  /* SIZE */
+  .rab-sizes {
+    gap: 6px;
+  }
+
+  .rab-sizes span {
+    padding: 8px 14px;
+    font-size: 10px;
+  }
+
+  .rab-size-note {
+    font-size: 9px;
+  }
+
+  /* CTA */
+  .rab-pdp-btn-primary,
+  .rab-pdp-btn-outline,
+  .rab-pdp-btn-whatsapp {
+    padding: 12px;
+    font-size: 9px;
+  }
+
+  /* TRUST */
+  .rab-trust-badages {
     grid-template-columns: 1fr 1fr;
   }
 
-  .rap-rental-pdp-grid,
-  .rap-preloved-details-grid {
+  /* CONSULT */
+  .rab-consult-box {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .rab-consult-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ACCORDION */
+  .rab-pdp-grid {
     grid-template-columns: 1fr;
   }
 

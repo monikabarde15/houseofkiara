@@ -153,7 +153,7 @@ export default function RentalAndPreloved() {
                         <GalleryColumn
                             images={product.images}
                             video={product.video}
-                            mode={mode}          // 🔥 for badge (rent/buy)
+                            variant={mode === "rent" ? "rent" : "preloved"}
                             wish={wish}
                             setWish={setWish}
                         />
@@ -181,7 +181,7 @@ export default function RentalAndPreloved() {
                                         className={`rap-toggle-btn ${mode === "buy" ? "active" : ""}`}
                                         onClick={() => setMode("buy")}
                                     >
-                                        BUY NEW
+                                        PRELOVED
                                     </button>
                                 )}
 

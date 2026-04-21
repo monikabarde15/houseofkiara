@@ -52,6 +52,15 @@ const DummyGowns = () => {
               })
             }
           >
+            Rental + Preloved
+          </button>
+          <button
+            onClick={() =>
+              navigate(`/rentalandbuy/${item.id}`, {
+                state: { product },
+              })
+            }
+          >
             Rental + Buy
           </button>
 

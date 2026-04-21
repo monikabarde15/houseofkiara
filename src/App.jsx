@@ -22,6 +22,7 @@ import BridalLehenga from "./components/BridalLehenga";
 import RentalAndPreloved from "./components/RentalAndPreloved";
 import OnlyRentalDetail from "./components/OnlyRentalDetail";
 import Preloved from "./components/Preloved";
+import RentalAndBuy from "./components/RentalAndBuy";
 
 import DummyGowns from "./components/DummyGowns";
 
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="/rentalandpreloved/:id" element={<RentalAndPreloved />} />
         <Route path="/onlyrental/:id" element={<OnlyRentalDetail />} />
         <Route path="/preloved/:id" element={<Preloved />} />
+        <Route path="/rentalandbuy/:id" element = {<RentalAndBuy/>} />
       </Routes>
 
       <Footer />
