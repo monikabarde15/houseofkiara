@@ -1,0 +1,193 @@
+/* ================= ROOT ================= */
+
+.lyp-wizard {
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* ================= STEP TABS ================= */
+/* ================= WIZARD HEADER ================= */
+
+.lyp-wizard-header {
+  position: sticky;
+  /* top: 120px; */
+  top: 0px;
+  background: var(--warm-white);
+  z-index: 100;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* ---------- TABS ROW ---------- */
+
+.lyp-wizard-tabs {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  padding: 0 80px;
+}
+
+/* ---------- TAB ITEM ---------- */
+
+.lyp-tab-item {
+  /* flex: 1; */
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-bottom: 16px;
+  
+}
+
+.lyp-tab-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------- CIRCLE ---------- */
+
+.lyp-tab-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+
+  background: var(--cream);
+  border: 1px solid var(--border-light);
+  color: #CCC5BB;
+
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.lyp-tab-item.active .lyp-tab-circle {
+  box-shadow: 0 0 5px rgba(26,22,18,0.07);
+}
+
+.lyp-tab-circle.done::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--sage);
+  opacity: 0.3;
+  transform: scale(1);
+  animation: lyp-ripple 0.5s ease-out;
+}
+
+@keyframes lyp-ripple {
+  to {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+/* ---------- TEXT ---------- */
+
+.lyp-tab-step {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.lyp-tab-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* ================= STATES ================= */
+
+/* ACTIVE */
+
+.lyp-tab-item.active .lyp-tab-circle {
+  background: var(--charcoal);
+  color: var(--warm-white);
+  border-color: var(--charcoal);
+  transform: scale(1.07);
+}
+
+.lyp-tab-item.active .lyp-tab-label {
+  color: var(--charcoal);
+}
+
+/* underline */
+.lyp-tab-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--charcoal);
+}
+
+/* DONE */
+
+.lyp-tab-item.done .lyp-tab-circle {
+  background: var(--sage);
+  color: var(--warm-white);
+  border-color: var(--sage);
+}
+
+.lyp-tab-item.done .lyp-tab-label {
+  color: var(--sage);
+}
+
+/* LOCKED */
+
+.lyp-tab-item.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ================= PROGRESS LINE ================= */
+
+.lyp-tab-line {
+  height: 3px;
+  background: var(--border-light);
+  margin: 0 80px;
+}
+
+.lyp-tab-line-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--sage), var(--gold));
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+/* ================= GRID ================= */
+
+.lyp-wizard__grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  align-items: stretch;
+}
+
+/* LEFT */
+
+.lyp-wizard__left {
+  border-right: 1px solid var(--border-light);
+}
+
+/* PANEL */
+
+.lyp-wizard__panel {
+  padding: 56px 80px 80px;
+  min-height: 600px;
+}
+
+/* RIGHT */
+
+.lyp-wizard__right {
+  padding: 48px 40px 64px;
+}
+
+.lyp-tab-item:not(.active):not(.done):not(.locked):hover .lyp-tab-circle {
+  background: rgba(250,247,242,0.6);
+}
+
+.lyp-tab-item.locked .lyp-tab-label {
+  color: #CCC5BB;
+}

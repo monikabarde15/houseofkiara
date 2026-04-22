@@ -1,16 +1,29 @@
 /* RESET */
 :root {
-  --cream: #FAF7F2;
-  --warm-white: #FFFEFB;
+  /* COLORS */
   --charcoal: #1A1612;
+  --deep: #0E0C0A;
+
+  --warm-white: #FFFEFB;
+  --cream: #FAF7F2;
+
   --gold: #C9A96E;
   --gold-light: #E8D5B0;
   --gold-pale: #F5EDD8;
+
   --terracotta: #B85C38;
+
   --sage: #6B7E5A;
+  --sage-light: #EEF2EA;
+
   --muted: #8A7E72;
+
   --border: #E8E0D4;
   --border-light: #F0EAE0;
+
+  /* TYPOGRAPHY */
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "DM Sans", sans-serif;
 }
 * {
   margin: 0;
@@ -20,7 +33,7 @@
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--sans);
   background: var(--warm-white);
   color: var(--charcoal);
   overflow-x: hidden;

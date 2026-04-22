@@ -1,0 +1,125 @@
+/* ROOT */
+.lyp-hero {
+  position: relative;
+  background: var(--charcoal);
+  padding: 64px 80px 56px 80px;
+  overflow: hidden;
+}
+
+/* WATERMARK */
+.lyp-hero::before {
+  content: "LIST";
+  position: absolute;
+  right: -20px;
+  bottom: -40px;
+  font-family: var(--serif);
+  font-size: 240px;
+  font-weight: 600;
+  color: rgba(201,169,110,0.04);
+  pointer-events: none;
+}
+
+/* GRID */
+.lyp-hero__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+/* LEFT */
+.lyp-hero__eyebrow {
+  font-family: var(--sans);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  gap: 12px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 10px;
+  color: var(--gold);
+}
+
+.lyp-hero__eyebrow-line {
+  width: 32px;
+  height: 1px;
+  background: var(--gold);
+  /* background: red; */
+  opacity: 0.5;
+}
+
+.lyp-hero__title {
+  font-family: var(--serif);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.12;
+  color: var(--warm-white);
+  margin-bottom: 20px;
+}
+
+.lyp-hero__title em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.lyp-hero__desc {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 300;
+  color: #BFB5A8;
+  line-height: 1.75;
+  max-width: 420px;
+}
+
+/* RIGHT */
+.lyp-hero__right {
+  display: flex;
+  flex-direction: column;
+}
+
+.lyp-hero__prop {
+  display: flex;
+  gap: 16px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  align-items: flex-start;
+}
+
+.lyp-hero__prop:first-child {
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.lyp-hero__icon {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(201,169,110,0.3);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lyp-hero__icon svg {
+  width: 15px;
+  height: 15px;
+  stroke:var(--gold);
+  stroke-width: 1.4;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.lyp-hero__prop-title {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--warm-white);
+  margin-bottom: 3px;
+}
+
+.lyp-hero__prop-desc {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 300;
+  color: #A89E94;
+  line-height: 1.55;
+}

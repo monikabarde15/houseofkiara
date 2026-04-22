@@ -8,15 +8,15 @@ export default function Header() {
     const items = document.querySelectorAll(".nav-item");
 
     const handleClick = function (e) {
-  if (window.innerWidth < 1200) {
+      if (window.innerWidth < 1200) {
 
-    // ❌ agar dropdown item click hai to skip karo
-    if (e.target.closest(".dropdown-menu")) return;
+        // ❌ agar dropdown item click hai to skip karo
+        if (e.target.closest(".dropdown-menu")) return;
 
-    e.stopPropagation();
-    this.classList.toggle("open");
-  }
-};
+        e.stopPropagation();
+        this.classList.toggle("open");
+      }
+    };
 
     items.forEach(item => item.addEventListener("click", handleClick));
 
@@ -25,83 +25,83 @@ export default function Header() {
     };
   }, []);
 
-const menu = [
-  {
-    title: "Rent",
-    link: "/rent",
-    items: [
-      { name: "Filter", link: "/rent/bridal-lehengas" },
-      { name: "Products", link: "/products" },
-      { name: "Gowns", link: "/rent/gowns" }
-    ]
-  },
-  {
-    title: "Shop Preloved",
-    link: "/shop/preloved",
-    active: true,
-    items: [
-      { name: "All Products", link: "/shop/preloved/all" },
-      { name: "Trending", link: "/shop/preloved/trending" }
-    ]
-  },
-  {
-    title: "Shop New",
-    link: "/shop/new",
-    items: [
-      { name: "New Arrivals", link: "/shop/new/arrivals" },
-      { name: "Festive", link: "/shop/new/festive" }
-    ]
-  },
-  {
-    title: "Women",
-    link: "/women",
-    items: [
-      { name: "Lehengas", link: "/women/lehengas" },
-      { name: "Sarees", link: "/women/sarees" }
-    ]
-  },
-  {
-    title: "Men",
-    link: "/men",
-    items: [
-      { name: "Sherwanis", link: "/men/sherwanis" },
-      { name: "Kurtas", link: "/men/kurtas" }
-    ]
-  },
-  {
-    title: "Occasion",
-    link: "/occasion",
-    items: [
-      { name: "Wedding", link: "/occasion/wedding" },
-      { name: "Mehendi", link: "/occasion/mehendi" }
-    ]
-  },
-  {
-    title: "Designers",
-    link: "/designers",
-    items: [
-      { name: "Sabyasachi", link: "/designers/sabyasachi" },
-      { name: "Manish", link: "/designers/manish" }
-    ]
-  },
-  {
-    title: "Shop by Category",
-    link: "/category",
-    items: [
-      { name: "Ethnic", link: "/category/ethnic" },
-      { name: "Fusion", link: "/category/fusion" }
-    ]
-  },
-  {
-    title: "New Arrivals",
-    link: "/new-arrivals",
-    items: [
-      { name: "Latest", link: "/new-arrivals/latest" },
-      { name: "Trending", link: "/new-arrivals/trending" }
-    ]
-  }
-];
-  
+  const menu = [
+    {
+      title: "Rent",
+      link: "/rent",
+      items: [
+        { name: "Filter", link: "/rent/bridal-lehengas" },
+        { name: "Products", link: "/products" },
+        { name: "Gowns", link: "/rent/gowns" }
+      ]
+    },
+    {
+      title: "Shop Preloved",
+      link: "/shop/preloved",
+      active: true,
+      items: [
+        { name: "All Products", link: "/shop/preloved/all" },
+        { name: "Trending", link: "/shop/preloved/trending" }
+      ]
+    },
+    {
+      title: "Shop New",
+      link: "/shop/new",
+      items: [
+        { name: "New Arrivals", link: "/shop/new/arrivals" },
+        { name: "Festive", link: "/shop/new/festive" }
+      ]
+    },
+    {
+      title: "Women",
+      link: "/women",
+      items: [
+        { name: "Lehengas", link: "/women/lehengas" },
+        { name: "Sarees", link: "/women/sarees" }
+      ]
+    },
+    {
+      title: "Men",
+      link: "/men",
+      items: [
+        { name: "Sherwanis", link: "/men/sherwanis" },
+        { name: "Kurtas", link: "/men/kurtas" }
+      ]
+    },
+    {
+      title: "Occasion",
+      link: "/occasion",
+      items: [
+        { name: "Wedding", link: "/occasion/wedding" },
+        { name: "Mehendi", link: "/occasion/mehendi" }
+      ]
+    },
+    {
+      title: "Designers",
+      link: "/designers",
+      items: [
+        { name: "Sabyasachi", link: "/designers/sabyasachi" },
+        { name: "Manish", link: "/designers/manish" }
+      ]
+    },
+    {
+      title: "Shop by Category",
+      link: "/category",
+      items: [
+        { name: "Ethnic", link: "/category/ethnic" },
+        { name: "Fusion", link: "/category/fusion" }
+      ]
+    },
+    {
+      title: "New Arrivals",
+      link: "/new-arrivals",
+      items: [
+        { name: "Latest", link: "/new-arrivals/latest" },
+        { name: "Trending", link: "/new-arrivals/trending" }
+      ]
+    }
+  ];
+
   return (
     <header>
 
@@ -152,41 +152,41 @@ const menu = [
           {/* NAV */}
           <div className="collapse navbar-collapse" id="mainNavbar">
             <ul className="navbar-nav">
-  {menu.map((m, i) => (
-    <li className="nav-item dropdown" key={i}>
+              {menu.map((m, i) => (
+                <li className="nav-item dropdown" key={i}>
 
-      {/* ✅ Parent Nav */}
-      <Link
-        to={m.link}
-        className={`nav-link ${m.active ? "active" : ""}`}
-        onClick={(e) => {
-          if (window.innerWidth < 1200) {
-            e.preventDefault(); // mobile pe dropdown open karega
-          }
-        }}
-      >
-        {m.title}
-        <i className="bi bi-chevron-down nav-arrow"></i>
-      </Link>
+                  {/* ✅ Parent Nav */}
+                  <Link
+                    to={m.link}
+                    className={`nav-link ${m.active ? "active" : ""}`}
+                    onClick={(e) => {
+                      if (window.innerWidth < 1200) {
+                        e.preventDefault(); // mobile pe dropdown open karega
+                      }
+                    }}
+                  >
+                    {m.title}
+                    <i className="bi bi-chevron-down nav-arrow"></i>
+                  </Link>
 
-      {/* ✅ Dropdown */}
-      <ul className="dropdown-menu">
-        {m.items.map((item, idx) => (
-          <li key={idx}>
-            <Link
-              to={item.link}
-              className="dropdown-item"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {item.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+                  {/* ✅ Dropdown */}
+                  <ul className="dropdown-menu">
+                    {m.items.map((item, idx) => (
+                      <li key={idx}>
+                        <Link
+                          to={item.link}
+                          className="dropdown-item"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {item.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
 
-    </li>
-  ))}
-</ul>
+                </li>
+              ))}
+            </ul>
           </div>
 
         </div>

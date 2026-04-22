@@ -1,3 +1,4 @@
+// src\App.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
@@ -25,6 +26,10 @@ import Preloved from "./components/Preloved";
 import RentalAndBuy from "./components/RentalAndBuy";
 
 import DummyGowns from "./components/DummyGowns";
+
+// LYP
+
+import LypMain from "./components/LYP/LypMain";
 
 
 // ✅ Home Page Component
@@ -59,6 +64,7 @@ export default function App() {
         <Route path="/onlyrental/:id" element={<OnlyRentalDetail />} />
         <Route path="/preloved/:id" element={<Preloved />} />
         <Route path="/rentalandbuy/:id" element = {<RentalAndBuy/>} />
+        <Route path="/list-your-piece/" element={<LypMain />} />
       </Routes>
 
       <Footer />
