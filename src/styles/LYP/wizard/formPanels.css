@@ -1,0 +1,645 @@
+/* src\styles\LYP\wizard\formPanels.css */
+/* ================= COMMON FORM STYLES ================= */
+
+/* Grid */
+.lyp-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Full width */
+.lyp-field--full {
+  margin-bottom: 20px;
+}
+
+/* Label */
+.lyp-label {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.lyp-label span {
+  color: var(--terracotta);
+}
+
+/* Input */
+.lyp-input {
+  font-family: var(--sans);
+  width: 100%;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--charcoal);
+  appearance: none;
+}
+
+/* PLACEHOLDER */
+.lyp-input::placeholder {
+  color: #C0B4A8;
+}
+
+/* Focus */
+.lyp-input:focus {
+  outline: none;
+  background: var(--warm-white);
+  border-color: var(--charcoal);
+  box-shadow: 0 0 0 3px rgba(26,22,18,0.04);
+}
+
+/* Error */
+.lyp-error {
+  font-size: 11px;
+  color: var(--terracotta);
+  margin-top: 6px;
+}
+
+/* Error border */
+.lyp-input--error {
+  border-color: var(--terracotta);
+}
+
+/* Hint */
+.lyp-hint {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--muted);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ================= SELECT ================= */
+
+.lyp-field select {
+  background-image: none;
+}
+
+.lyp-field--select {
+  position: relative;
+}
+
+.lyp-field--select::after {
+  content: "";
+  position: absolute;
+  right: 14px;
+  top: 70%;
+  transform: translateY(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--muted);
+  
+}
+
+/* ================= PHONE ================= */
+
+.lyp-phone {
+  position: relative;
+}
+
+.lyp-phone__prefix {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  color: var(--muted);
+
+  padding-right: 10px;
+  border-right: 1px solid var(--border);
+}
+
+.lyp-phone input {
+  padding-left: 74px;
+}
+
+/* ================= CTA ================= */
+
+.lyp-step__cta {
+  display: flex;
+  align-items: center; /* 🔥 IMPORTANT */
+  justify-content: space-between;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-light);
+}
+
+.lyp-step__progress {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.lyp-btn-primary {
+  background: var(--charcoal);
+  color: var(--warm-white);
+
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  padding: 12px 35px;
+  border: none;
+  border-radius: 2px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.lyp-btn-primary:hover {
+  background: var(--deep);
+}
+
+.lyp-btn-arrow {
+  font-size: 14px;
+  line-height: 1;
+}
+
+
+/* ================= STEP 1 HEADER ================= */
+
+.lyp-step__eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.lyp-step__title {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 400;
+  color: var(--charcoal);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.lyp-step__subtitle {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+
+/* ========================= STEP - 2 ======================= */
+
+.lyp-input optgroup {
+  font-weight: 500;
+  color: var(--charcoal);
+}
+
+.lyp-input option {
+  font-weight: 400;
+}
+
+/* ------------------------ */
+/* Condition cards Section */
+
+
+.lyp-condition { /*-STEP2.JSX-*/
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 24px 0;
+}
+
+.lyp-condition-card {  /*Conditioncard.JSX-*/
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px;
+
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lyp-condition-card:hover {
+  border-color: var(--gold);
+}
+
+.lyp-condition-card--selected {
+  border-color: var(--charcoal);
+  background: var(--warm-white);
+  box-shadow: 0 0 3px rgba(26,22,18,0.04);
+}
+
+.lyp-condition-card__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 5px;
+}
+
+.lyp-condition-card__title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--charcoal);
+  margin-bottom: 2px;
+}
+
+.lyp-condition-card__desc {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+
+/* ------------------------ */
+/* Outcome Card Section */
+.lyp-outcome {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0 24px;
+}
+
+.lyp-outcome-card {
+  flex: 1;
+  text-align: center;
+
+  padding: 16px 12px;
+  border-radius: 3px;
+
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lyp-outcome-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+.lyp-outcome-card__icon svg{
+  height: 18px;
+  width: 18px;
+  margin-bottom: 8px;
+}
+
+.lyp-outcome-card--active-dark .lyp-outcome-card__icon svg {
+  stroke: var(--warm-white);
+}
+
+.lyp-outcome-card--active-sage .lyp-outcome-card__icon svg {
+  stroke: var(--sage);
+}
+
+.lyp-outcome-card__title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--charcoal);
+  margin-bottom: 4px;
+}
+
+.lyp-outcome-card__desc {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.lyp-outcome-card--active-dark {
+  background: var(--charcoal);
+  border-color: var(--charcoal);
+}
+
+.lyp-outcome-card--active-dark .lyp-outcome-card__title {
+  color: var(--warm-white);
+}
+
+.lyp-outcome-card--active-dark .lyp-outcome-card__desc {
+  color: #D8CFC5;
+}
+
+.lyp-outcome-card--active-sage {
+  background: var(--sage-light);
+  border-color: var(--sage);
+}
+
+.lyp-outcome-card--active-sage .lyp-outcome-card__title {
+  color: #3D5230;
+}
+
+/* ================= TEXTAREA ================= */
+
+.lyp-textarea {
+  min-height: 96px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* ================= BACK BUTTON ================= */
+
+.lyp-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 24px;
+
+  background: var(--cream);
+  border: 1px solid var(--border);
+
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  color: var(--muted);
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* icon */
+
+.lyp-btn-back-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* hover */
+
+.lyp-btn-back:hover {
+  border-color: var(--charcoal);
+  color: var(--charcoal);
+}
+
+/* =================================== */
+/* ============== Form STEP - 3 =========== */
+/* =================================== */
+
+
+/* Upload Progress Bar */
+
+.lyp-upload {
+  margin-top: 16px;
+}
+
+.lyp-upload__text {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.lyp-upload__bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.lyp-upload__fill {
+  height: 100%;
+  background: var(--sage);
+  width: 0%;
+}
+
+.lyp-upload__warning {
+  font-size: 11px;
+  color: var(--terracotta);
+  margin-top: 6px;
+}
+
+/* Drop Zone Section */
+
+/* ================= DROPZONE ================= */
+
+.lyp-dropzone {
+  border: 1.5px dashed var(--border);
+  background: var(--cream);
+
+  padding: 40px 24px;
+  text-align: center;
+
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.lyp-dropzone:hover {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+/* invisible input */
+.lyp-dropzone input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* inner */
+
+.lyp-dropzone__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* icon box */
+
+.lyp-dropzone__icon-box {
+  width: 48px;
+  height: 48px;
+
+  border: 1px solid var(--border);
+  background: var(--warm-white);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 16px;
+}
+
+.lyp-dropzone__icon {
+  font-size: 20px;
+  color: var(--muted);
+}
+
+/* title */
+
+.lyp-dropzone__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--charcoal);
+  margin-bottom: 4px;
+}
+
+/* subtitle */
+
+.lyp-dropzone__subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.lyp-dropzone.drag {
+  border-color: var(--charcoal);
+  background: var(--gold-pale);
+}
+
+/* button spacing */
+/* ================= DROPZONE BUTTON ================= */
+
+.lyp-dropzone__select {
+  padding: 10px 22px;
+
+  background: transparent;
+  border: 1.5px solid var(--charcoal);
+
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  color: var(--charcoal);
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* hover */
+
+.lyp-dropzone__select:hover {
+  background: var(--charcoal);
+  color: var(--warm-white);
+}
+
+/* Photo Grid */
+.lyp-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
+
+
+.lyp-photo-item {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 3 / 4;   
+
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.lyp-photo-item img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;   /* 🔥 prevents stretching */
+  display: block;
+}
+
+.lyp-photo-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+
+  width: 22px;
+  height: 22px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: rgba(26, 22, 18, 0.72);
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  cursor: pointer;
+
+  z-index: 2;
+}
+
+.lyp-photo-remove {
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.lyp-photo-item:hover .lyp-photo-remove {
+  opacity: 1;
+}
+
+/* ================= TIPS ================= */
+
+.lyp-photo-tips {
+  margin-top: 24px;
+
+  background: var(--cream);
+  padding: 16px;
+
+  border-left: 3px solid var(--gold);
+}
+
+/* title */
+
+.lyp-photo-tips__title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+
+  color: var(--charcoal);
+  margin-bottom: 10px;
+}
+
+/* list */
+
+.lyp-photo-tips__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lyp-photo-tips__list li {
+  font-size: 13px;
+  color: var(--muted);
+
+  margin-bottom: 6px;
+  position: relative;
+  padding-left: 14px;
+}
+
+/* dash bullet */
+
+.lyp-photo-tips__list li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+}
+
+.lyp-upload__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 6px;
+}
+
+
+.lyp-upload__error {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--terracotta);
+}
