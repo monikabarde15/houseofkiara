@@ -7,6 +7,7 @@ import WizardLayout from "./Wizard/WizardLayout";
 
 // CSS 
 import "../../styles/LYP/lypMain.css";
+import LypPromises from "./Promises/LypPromises";
 
 const LypMain = () => {
   return (
@@ -22,6 +23,9 @@ const LypMain = () => {
       <WizardLayout/>
 
       {/* Promises */}
+
+      <LypPromises/>
+      
       {/* HowItWorks */}
       {/* Calculator */}
 

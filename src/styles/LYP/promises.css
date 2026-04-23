@@ -1,0 +1,191 @@
+/* Section */
+
+.lyp-promises {
+  background: #FAF7F2;
+  padding: 80px;
+}
+
+/* EYEBROW */
+
+.lyp-promises-eyebrow {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.lyp-promises-eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+/* TITLE */
+
+.lyp-promises-title {
+  font-family: var(--serif);
+  font-size: 40px;
+  font-weight: 400;
+  color: var(--charcoal);
+
+  margin-bottom: 12px;
+}
+
+.lyp-promises-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* SUBTITLE */
+
+.lyp-promises-sub {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+
+  max-width: 600px;
+  line-height: 1.75;
+
+  margin-bottom: 40px;
+}
+
+/* GRID */
+
+.lyp-promises-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* CARD */
+
+.lyp-promise-card {
+  background: var(--warm-white);
+  border: 1px solid var(--border-light);
+
+  padding: 40px 36px;
+
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+/* Card HOVER EFFECT */
+
+.lyp-promise-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201,169,110,0.4);
+  box-shadow: 0 20px 40px -20px rgba(26,22,18,0.1);
+}
+
+/* TOP ACCENT STRIPE */
+
+.lyp-promise-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 2px;
+
+  background: linear-gradient(90deg, var(--gold), #C86B4A);
+  opacity: 0;
+
+  transition: opacity 0.3s ease;
+}
+
+.lyp-promise-card:hover::before {
+  opacity: 1;
+}
+
+/* Number on Caard */
+
+.lyp-promise-number {
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 20px;
+}
+
+.lyp-promise-number::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(201,169,110,0.3);
+}
+
+/* ICON */
+
+.lyp-promise-icon {
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
+  border: 1px solid rgba(201,169,110,0.35);
+  background: #F5EDEB;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 20px;
+
+  color: var(--gold);
+}
+
+
+/* TITLE + BODY */
+
+.lyp-promise-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--charcoal);
+
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+/* EM TEXT */
+.lyp-promise-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.lyp-promise-body {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+
+  line-height: 1.85;
+}
+
+@media (max-width: 960px) {
+  .lyp-promises {
+    padding: 40px 20px;
+  }
+
+  .lyp-promises-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

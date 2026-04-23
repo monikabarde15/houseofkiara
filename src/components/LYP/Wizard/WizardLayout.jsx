@@ -7,10 +7,17 @@ import Step3 from "./FormPanels/Step3";
 import Step4 from "./FormPanels/Step4";
 import SuccessPanel from "./SuccessPanel";
 
+// SIDEBAR
+
+import Timeline from "./Sidebar/Timeline";
+import CommissionCard from "./Sidebar/CommissionCard";
+import Testimonial from "./Sidebar/Testimonial";
+import FAQ from "./Sidebar/FAQ";
+
 const WizardLayout = () => {
 
   // const DEV_MODE = 4;
-  const [step, setStep] = useState(4);
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     full_name: "",
     city: "",
@@ -69,6 +76,8 @@ const WizardLayout = () => {
                   ${isDone ? "done" : ""} 
                   ${isLocked ? "locked" : ""}
                 `}
+
+                    onClick={() => goToStep(s.id)} // Go back on step click
                   >
                     <div className="lyp-tab-left">
                       <div className="lyp-tab-circle">
@@ -146,9 +155,26 @@ const WizardLayout = () => {
           </div>
         </div>
 
-        {/* RIGHT */}
+        {/* RIGHT SIDEBAR*/}
         <div className="lyp-wizard__right">
-          Sidebar (Timeline + cards will come here)
+          <div className="lyp-sidebar">
+
+            
+
+              {/* Block 1 — Timeline */}
+              <Timeline submitted={submitted} />
+
+              {/* Block 2 — Commission */}
+              <CommissionCard />
+
+              {/* Block 3 — Testimonial */}
+              <Testimonial />
+
+              {/* Block 4 — FAQ */}
+              <FAQ />
+            </div>
+
+          
         </div>
 
       </div>

@@ -1,0 +1,428 @@
+/* =========================================
+   SIDEBAR CONTAINER (SPEC 10.1)
+========================================= */
+
+.lyp-wizard__right {
+  position: relative;
+}
+
+/* Main sidebar */
+.lyp-sidebar {
+  position: sticky;
+  /* top: 120px;  */
+  top: 0px;
+
+  width: 100%;
+  max-height: calc(100vh - 120px);
+
+  overflow-y: auto;
+
+  padding: 48px 40px 64px 40px;
+
+  align-self: flex-start; 
+
+  
+  scroll-behavior: smooth;
+}
+
+
+
+/* =========================================
+   CUSTOM SCROLLBAR (SPEC)
+========================================= */
+
+.lyp-sidebar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.lyp-sidebar::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+.lyp-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox */
+.lyp-sidebar {
+  scrollbar-width: thin;
+}
+
+
+
+
+
+
+/* ========================================================================
+ -- --- ---------------------------TIMELINE CSS-----------------------------
+=====================================================----------============ */
+
+
+
+/* TIMELINE EYEBROW */
+
+.lyp-sidebar-eyebrow {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+
+  margin-bottom: 24px;
+}
+
+
+/*   TIMELINE LAYOUT */
+.lyp-timeline-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.lyp-timeline-item {
+  display: flex;
+  gap: 14px;
+  padding-bottom: 22px;
+}
+
+.lyp-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.lyp-timeline-left {
+  width: 28px;
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/*---------- DOT BASE----------- */
+
+.lyp-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  border: 1.5px solid;
+
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* line comes from dot itself */
+.lyp-dot::after {
+  content: "";
+  position: absolute;
+
+  top: 100%;          /* start from bottom of dot */
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 1.5px;
+  height: calc(100% + 22px); /* matches spacing */
+
+  background: repeating-linear-gradient(
+    to bottom,
+    #DDD5CC 0px,
+    #DDD5CC 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+/* remove line for last item */
+.lyp-timeline-item:last-child .lyp-dot::after {
+  display: none;
+}
+
+/* DONE state → solid line */
+.lyp-dot-done::after {
+  background: var(--sage);
+}
+
+/* ACTIVE */
+.lyp-dot-active {
+  background: var(--charcoal);
+  color: var(--warm-white);
+  border-color: var(--charcoal);
+}
+
+/* FUTURE */
+.lyp-dot-future {
+  background: transparent;
+  color: #C0B8B0;
+  border-color: #E0D8D0;
+}
+
+/* DONE */
+.lyp-dot-done {
+  background: var(--sage);
+  color: var(--warm-white);
+  border-color: var(--sage);
+}
+
+
+@keyframes tlPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+/* for the first circle line */
+.lyp-timeline-item:first-child .lyp-dot::after {
+  top: 110%; /* start from center instead of bottom */
+  
+}
+
+
+/* ================== TEXT STATES================ */
+.lyp-tl-title {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.lyp-tl-body {
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* ACTIVE / DONE */
+.lyp-tl-title.active,
+.lyp-tl-title.done {
+  color: var(--charcoal);
+}
+
+.lyp-tl-body.active,
+.lyp-tl-body.done {
+  color: var(--muted);
+}
+
+/* FUTURE */
+.lyp-tl-title.future {
+  color: #C0B8B0;
+}
+
+.lyp-tl-body.future {
+  color: #D0C8C0;
+}
+
+
+
+
+/* ========================================================================
+ -- --- ---------------------------COMISSION CARD CSS----------------------
+=====================================================----------============ */
+
+/*------Wrapper -----------*/
+.lyp-commission {
+  margin-top: 32px;
+  
+}
+
+
+/*--------------Card ------------*/
+
+.lyp-commission-card {
+  background: var(--charcoal);
+  padding: 20px;
+  margin-bottom: 10px;
+}
+
+/* ----------Label----------- */
+.lyp-commission-label {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+
+  color: #A89E94;
+
+  margin-bottom: 12px;
+}
+
+/* ------Row Layout (CRITICAL)--------- */
+.lyp-commission-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.lyp-commission-row.last {
+  border-bottom: none;
+}
+
+/* --------------Left Content----------- */
+
+.lyp-commission-left {
+  max-width: 70%;
+}
+
+/* --------------Type + Subtext---------------- */
+
+.lyp-commission-type {
+  font-size: 11px;
+  color: var(--gold-light);
+}
+
+.lyp-commission-sub {
+  font-size: 10px;
+  color: #A89E94;
+  font-weight: 300;
+}
+
+/* -------Percentage------- */
+.lyp-commission-value {
+  font-family:var(--sans);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--warm-white);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* -------------Footer Note---------------- */
+
+.lyp-commission-foot {
+  font-family:var(--sans);
+  font-size: 11px;
+  color: #A89E94;
+  font-weight: 300;
+  margin-top: 12px;
+  line-height: 1.5;
+}
+
+.lyp-commission-foot span {
+  color: var(--gold);
+}
+
+
+
+
+/* ========================================================================
+ -- --- ---------------------------Testimonials Card CSS----------------------
+=====================================================----------============ */
+
+/* Wrapper */
+.lyp-testimonial {
+  margin-top: 24px;
+}
+
+
+/*------------- Card---------- */
+.lyp-testimonial-card {
+  background: #F5EDD8;
+  border: 1px solid rgba(201,169,110,0.3);
+  padding: 18px;
+}
+
+/*--------- Quote-------------- */
+.lyp-testimonial-quote {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.65;
+  color: var(--charcoal);
+  margin-bottom: 12px;
+}
+
+/*-------------- Author ------------*/
+
+.lyp-testimonial-author {
+  font-family: var(--sans);
+
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  color: #A89E94;
+}
+
+.lyp-testimonial-author span {
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+
+
+/* ========================================================================
+ -- --- ---------------------------FAQ -----------------------------------
+=====================================================----------============ */
+
+
+/* Wrapper */
+.lyp-faq {
+  margin-top: 24px;
+}
+
+/* Question Row */
+
+.lyp-faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px 0;
+
+  cursor: pointer;
+
+  border-bottom: 1px solid var(--border-light);
+
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--charcoal);
+}
+
+.lyp-faq-icon {
+  transition: transform 0.2s ease;
+  stroke: #A89E94;
+}
+
+.lyp-faq-icon.open {
+  transform: rotate(180deg);
+}
+
+.lyp-faq-answer {
+  font-size: 12px;
+  font-weight: 300;
+
+  color: #A89E94;
+
+  line-height: 1.65;
+
+  padding-bottom: 12px;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================
+   MOBILE (SPEC ≤960px → HIDE SIDEBAR)
+========================================= */
+
+@media (max-width: 960px) {
+  .lyp-wizard__right {
+    display: none;
+  }
+}

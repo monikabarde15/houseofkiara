@@ -6,7 +6,9 @@
 }
 
 /* ================= STEP TABS ================= */
-/* ================= WIZARD HEADER ================= */
+/* =========================================================
+   WIZARD HEADER (STICKY)
+========================================================= */
 
 .lyp-wizard-header {
   position: sticky;
@@ -17,7 +19,7 @@
   /* border-bottom: 1px solid var(--border-light); */
 }
 
-/* ---------- TABS ROW ---------- */
+/* ----------  STEP TABS ROW ---------- */
 
 .lyp-wizard-tabs {
   display: flex;
@@ -28,7 +30,7 @@
   height: 72px;
 }
 
-/* ---------- TAB ITEM ---------- */
+/* ---------- INDIVIDUAL TAB ITEM ---------- */
 
 
 .lyp-tab-item {
@@ -39,13 +41,15 @@
   padding-bottom: 0;
 }
 
+/*  LEFT PART OF TAB (CIRCLE + TEXT) */
+
 .lyp-tab-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-/* TAB ------------TEXT */
+/* TEXT STACK (STEP + LABEL) */
 
 .lyp-tab-text {
   display: flex;
@@ -53,7 +57,7 @@
   gap: 2px;   /* 🔥 add */
 }
 
-/* ---------- CIRCLE ---------- */
+/* ----------  STEP CIRCLE (DEFAULT STATE) ---------- */
 
 .lyp-tab-circle {
   width: 34px;
@@ -76,7 +80,7 @@
 .lyp-tab-item.active .lyp-tab-circle {
   box-shadow: 0 0 5px rgba(26,22,18,0.07);
 }
-
+/*  active underline (moves per step) */ 
 .lyp-tab-circle.done::after {
   content: "";
   position: absolute;
@@ -113,7 +117,7 @@
 
 /* ================= STATES ================= */
 
-/* ACTIVE */
+/* ACTIVE STATE (CURRENT STEP) */
 
 .lyp-tab-item.active .lyp-tab-circle {
   background: var(--charcoal);
@@ -137,7 +141,7 @@
   background: var(--charcoal);
 }
 
-/* DONE */
+/*  DONE STATE (COMPLETED STEPS) */
 
 .lyp-tab-item.done .lyp-tab-circle {
   background: var(--sage);
@@ -158,33 +162,28 @@
 
 /* ================= PROGRESS LINE ================= */
 
+
+/* BASE LINE */
 .lyp-tab-line {
   height: 3px;
-  background: var(--gold); 
-  /* margin: 0 80px; */
+  background: var(--border-light); /* 🔥 NOT gold */
   position: relative;
   overflow: hidden;
-  
-  
 }
 
-/* .lyp-tab-line-fill {
+/* PROGRESS FILL */
+.lyp-tab-line-fill {
   height: 100%;
-  background: linear-gradient(to right, var(--sage), var(--gold));
+  width: 0%;
+
+  background: linear-gradient(
+    to right,
+    var(--sage),
+    var(--gold)
+  );
+
   transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-} */
-
- .lyp-tab-line-fill {
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  height: 2px;
-  /* margin-top: -2px; */
-
-  background: var(--sage);  
-  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-  } 
+}
 
 
 /* ================= GRID ================= */
@@ -209,11 +208,7 @@
   min-height: 600px;
 }
 
-/* RIGHT */
 
-.lyp-wizard__right {
-  padding: 48px 40px 64px;
-}
 
 .lyp-tab-item:not(.active):not(.done):not(.locked):hover .lyp-tab-circle {
   background: rgba(250,247,242,0.6);
@@ -227,9 +222,29 @@
   display: none;
 }
 
+
+
+
 .lyp-success {
   padding: 80px 0;
   max-width: 680px;
   margin: 0 auto;
   text-align: center;
+}
+
+
+
+.lyp-tab-item.done {
+  cursor: pointer;
+}
+
+.lyp-tab-item.active {
+  cursor: default;
+}
+
+
+/* RIGHT SECTION SIDEBAR */
+
+.lyp-wizard__right {
+  padding: 48px 0px 64px;
 }
