@@ -643,3 +643,201 @@
   font-size: 12px;
   color: var(--terracotta);
 }
+
+/* ================================================================ */
+/* ======================STEP 4 ==================================== */
+/* ================================================================= */
+
+.lyp-review-block {
+  border-bottom: 1px solid var(--border-light);
+  padding: 7px 0;
+}
+
+.lyp-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.lyp-edit-btn {
+  font-size: 11px;
+  color: var(--gold);
+  background: none;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.12em;
+}
+
+.lyp-review-title {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: var(--gold);
+}
+
+.lyp-review-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 10px 0;
+  border-top: 1px solid var(--border-light);
+
+  font-size: 13px;
+}
+
+.lyp-review-row span:first-child {
+  color: var(--muted);
+}
+
+.lyp-review-row span:last-child {
+  color: var(--charcoal);
+  font-weight: 500;
+}
+
+.lyp-review-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.lyp-review-photo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.lyp-review-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lyp-before-submit {
+  margin-top: 24px;
+  padding: 22px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+}
+
+.lyp-before-title {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  margin-bottom: 14px;
+}
+
+.lyp-before-item {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+
+/* ===== CHECKBOX ROW (SPEC) ===== */
+.lyp-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-top: 18px;
+  padding: 14px;
+
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+
+  transition: border 0.2s ease;
+}
+
+/* hover */
+.lyp-checkbox-row:hover {
+  border-color: var(--charcoal);
+}
+
+/* ===== CHECKBOX BOX ===== */
+.lyp-checkbox {
+  width: 18px;
+  height: 18px;
+
+  border: 1.5px solid var(--border);
+  border-radius: 2px;
+
+  background: var(--cream);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+}
+
+/* checked */
+.lyp-checkbox.checked {
+  background: var(--charcoal);
+  border-color: var(--charcoal);
+  color: white;
+}
+
+/* ===== LABEL ===== */
+.lyp-checkbox-label {
+  font-size: 13px;
+  color: var(--charcoal);
+  line-height: 1.6;
+}
+
+/* ===== LINKS ===== */
+.lyp-link {
+  color: var(--terracotta);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.lyp-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.lyp-error-text {
+  color: var(--terracotta);
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+
+
+/* ===== SUBMIT BUTTON ===== */
+.lyp-btn-submit {
+  background: #6B7E5A; /* sage (spec) */
+  color: #ffffff;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 14px 20px;
+  border-radius: 3px;
+
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  transition: background 0.2s ease;
+}
+
+/* hover */
+.lyp-btn-submit:hover {
+  background: #5A6B4A;
+}
+
+/* icon */
+.lyp-btn-icon {
+  stroke-width: 1.8;
+  color: #ffffff;
+}

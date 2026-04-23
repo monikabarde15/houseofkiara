@@ -2,10 +2,13 @@
 
 .lyp-wizard {
   border-bottom: 1px solid var(--border-light);
+  
 }
 
 /* ================= STEP TABS ================= */
-/* ================= WIZARD HEADER ================= */
+/* =========================================================
+   WIZARD HEADER (STICKY)
+========================================================= */
 
 .lyp-wizard-header {
   position: sticky;
@@ -13,47 +16,59 @@
   top: 0px;
   background: var(--warm-white);
   z-index: 100;
-  border-bottom: 1px solid var(--border-light);
+  /* border-bottom: 1px solid var(--border-light); */
 }
 
-/* ---------- TABS ROW ---------- */
+/* ----------  STEP TABS ROW ---------- */
 
 .lyp-wizard-tabs {
   display: flex;
   align-items: center;
-  gap: 48px;
+  /* gap: 48px; */
   padding: 0 80px;
+  justify-content: space-between;
+  height: 72px;
 }
 
-/* ---------- TAB ITEM ---------- */
+/* ---------- INDIVIDUAL TAB ITEM ---------- */
+
 
 .lyp-tab-item {
-  /* flex: 1; */
   display: flex;
   align-items: center;
   position: relative;
-  padding-bottom: 16px;
-  
+  height: 100%;
+  padding-bottom: 0;
 }
+
+/*  LEFT PART OF TAB (CIRCLE + TEXT) */
 
 .lyp-tab-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-/* ---------- CIRCLE ---------- */
+/* TEXT STACK (STEP + LABEL) */
+
+.lyp-tab-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;   /* 🔥 add */
+}
+
+/* ----------  STEP CIRCLE (DEFAULT STATE) ---------- */
 
 .lyp-tab-circle {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 12px;
+  font-size: 13px;
 
   background: var(--cream);
   border: 1px solid var(--border-light);
@@ -65,7 +80,7 @@
 .lyp-tab-item.active .lyp-tab-circle {
   box-shadow: 0 0 5px rgba(26,22,18,0.07);
 }
-
+/*  active underline (moves per step) */ 
 .lyp-tab-circle.done::after {
   content: "";
   position: absolute;
@@ -88,7 +103,7 @@
 
 .lyp-tab-step {
   font-size: 9px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -97,11 +112,12 @@
   font-size: 12px;
   font-weight: 500;
   color: var(--muted);
+  line-height: 1.2;
 }
 
 /* ================= STATES ================= */
 
-/* ACTIVE */
+/* ACTIVE STATE (CURRENT STEP) */
 
 .lyp-tab-item.active .lyp-tab-circle {
   background: var(--charcoal);
@@ -118,14 +134,14 @@
 .lyp-tab-item.active::after {
   content: "";
   position: absolute;
-  bottom: 0;
+  bottom: 0px;
   left: 0;
   width: 100%;
   height: 2px;
   background: var(--charcoal);
 }
 
-/* DONE */
+/*  DONE STATE (COMPLETED STEPS) */
 
 .lyp-tab-item.done .lyp-tab-circle {
   background: var(--sage);
@@ -146,23 +162,37 @@
 
 /* ================= PROGRESS LINE ================= */
 
+
+/* BASE LINE */
 .lyp-tab-line {
   height: 3px;
-  background: var(--border-light);
-  margin: 0 80px;
+  background: var(--border-light); /* 🔥 NOT gold */
+  position: relative;
+  overflow: hidden;
 }
 
+/* PROGRESS FILL */
 .lyp-tab-line-fill {
   height: 100%;
-  background: linear-gradient(to right, var(--sage), var(--gold));
+  width: 0%;
+
+  background: linear-gradient(
+    to right,
+    var(--sage),
+    var(--gold)
+  );
+
   transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
 }
+
+
 /* ================= GRID ================= */
 
 .lyp-wizard__grid {
   display: grid;
   grid-template-columns: 1fr 340px;
   align-items: stretch;
+  
 }
 
 /* LEFT */
@@ -178,11 +208,7 @@
   min-height: 600px;
 }
 
-/* RIGHT */
 
-.lyp-wizard__right {
-  padding: 48px 40px 64px;
-}
 
 .lyp-tab-item:not(.active):not(.done):not(.locked):hover .lyp-tab-circle {
   background: rgba(250,247,242,0.6);
@@ -190,4 +216,35 @@
 
 .lyp-tab-item.locked .lyp-tab-label {
   color: #CCC5BB;
+}
+
+.lyp-wizard.submitted .lyp-tab-item.active::after {
+  display: none;
+}
+
+
+
+
+.lyp-success {
+  padding: 80px 0;
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+
+
+.lyp-tab-item.done {
+  cursor: pointer;
+}
+
+.lyp-tab-item.active {
+  cursor: default;
+}
+
+
+/* RIGHT SECTION SIDEBAR */
+
+.lyp-wizard__right {
+  padding: 48px 0px 64px;
 }
