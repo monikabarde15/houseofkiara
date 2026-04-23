@@ -2,36 +2,30 @@ import React from "react";
 import { useState } from "react";
 import "../../../../styles/LYP/wizard/formPanels.css";
 
-const Step1 = ({ onNext }) => {
+const Step1 = ({ onNext, formData, setFormData }) => {
 
     const [errors, setErrors] = useState({});
 
     const validate = () => {
         const newErrors = {};
 
-        const name = document.getElementById("full_name").value.trim();
-        const city = document.getElementById("city").value;
-        const email = document.getElementById("email").value.trim();
-        const mobile = document.getElementById("mobile").value.trim();
-
-        if (name.length < 2) {
+        if (formData.full_name.trim().length < 2) {
             newErrors.full_name = "Please enter your full name";
         }
 
-        if (!city) {
+        if (!formData.city) {
             newErrors.city = "Please select your city";
         }
 
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
             newErrors.email = "Please enter a valid email";
         }
 
-        if (!/^[0-9]{10}$/.test(mobile)) {
+        if (!/^[0-9]{10}$/.test(formData.mobile)) {
             newErrors.mobile = "Please enter a valid 10-digit number";
         }
 
         setErrors(newErrors);
-
         return Object.keys(newErrors).length === 0;
     };
 
@@ -63,10 +57,15 @@ const Step1 = ({ onNext }) => {
                             FULL NAME <span>*</span>
                         </label>
                         <input
-                            required
                             id="full_name"
                             type="text"
-                            minLength={2}
+                            value={formData.full_name}
+                            onChange={(e) =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    full_name: e.target.value
+                                }))
+                            }
                             placeholder="As on your bank account"
                             className="lyp-input"
                         />
@@ -80,7 +79,17 @@ const Step1 = ({ onNext }) => {
                         <label className="lyp-label">
                             CITY <span>*</span>
                         </label>
-                        <select id="city" className="lyp-input" required defaultValue="">
+                        <select
+                            id="city"
+                            value={formData.city}
+                            onChange={(e) =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    city: e.target.value
+                                }))
+                            }
+                            className="lyp-input"
+                        >
                             <option value="" disabled>Select your city</option>
 
                             <option>Indore</option>
@@ -109,11 +118,18 @@ const Step1 = ({ onNext }) => {
                         <label className="lyp-label">
                             EMAIL ADDRESS <span>*</span>
                         </label>
-                        <input required
+                        <input 
                             id="email"
                             type="email"
-                            placeholder="your@email.com"
+                            value={formData.email}
+                            onChange={(e) =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    email: e.target.value
+                                }))
+                            }
                             className="lyp-input"
+                            placeholder="your@email.com"
                         />
 
                         <div className="lyp-hint">
@@ -125,7 +141,7 @@ const Step1 = ({ onNext }) => {
                     </div>
 
 
-
+                        {/* PHONE */}
                     <div className="lyp-field">
                         <label className="lyp-label">
                             WHATSAPP NUMBER <span>*</span>
@@ -134,10 +150,15 @@ const Step1 = ({ onNext }) => {
                         <div className="lyp-phone">
                             <div className="lyp-phone__prefix">IN +91</div>
                             <input
-                                required
                                 id="mobile"
                                 type="tel"
-                                pattern="[0-9]{10}"
+                                value={formData.mobile}
+                                onChange={(e) =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        mobile: e.target.value
+                                    }))
+                                }
                                 placeholder="98765 43210"
                                 className="lyp-input"
                             />
@@ -157,7 +178,17 @@ const Step1 = ({ onNext }) => {
                     <label className="lyp-label">
                         YOU ARE LISTING AS
                     </label>
-                    <select defaultValue="" id="lister_type" className="lyp-input">
+                    <select
+                        id="lister_type"
+                        value={formData.lister_type || ""}
+                        onChange={(e) =>
+                            setFormData(prev => ({
+                                ...prev,
+                                lister_type: e.target.value
+                            }))
+                        }
+                        className="lyp-input"
+                    >
                         <option disabled >Select one</option>
 
                         <option>Individual</option>

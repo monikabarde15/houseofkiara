@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import "../../../../styles/LYP/wizard/formPanels.css";
 import { Image } from 'lucide-react';
 
-const Step3 = ({ onNext, onBack }) => {
-    const [photos, setPhotos] = useState([]);
+const Step3 = ({ onNext, onBack, photos, setPhotos }) => {
+    
     const [dragActive, setDragActive] = useState(false);
     const [error, setError] = useState("");
 
@@ -39,7 +39,12 @@ const Step3 = ({ onNext, onBack }) => {
             newFiles = newFiles.slice(0, 15 - photos.length);
         }
 
-        const updated = [...photos, ...newFiles];
+        const mappedFiles = newFiles.map(file => ({
+            file,
+            preview: URL.createObjectURL(file)
+        }));
+
+        const updated = [...photos, ...mappedFiles];
         setPhotos(updated);
     };
 
@@ -123,11 +128,11 @@ const Step3 = ({ onNext, onBack }) => {
             {photos.length > 0 && (
                 <div className="lyp-photo-grid">
 
-                    {photos.map((file, index) => (
+                    {photos.map((photo, index) => (
                         <div key={index} className="lyp-photo-item">
 
                             <img
-                                src={URL.createObjectURL(file)}
+                                src={photo.preview}
                                 alt=""
                             />
 
@@ -210,7 +215,7 @@ const Step3 = ({ onNext, onBack }) => {
             {/* CTA  */}
             <div className="lyp-step__cta">
 
-                <button className="lyp-btn-back">
+                <button className="lyp-btn-back" onClick={onBack}>
                     <span className="lyp-btn-back-icon">‹</span>
                     BACK
                 </button>

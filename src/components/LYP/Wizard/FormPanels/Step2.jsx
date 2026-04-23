@@ -4,24 +4,20 @@ import ConditionCard from "./components/ConditionCard";
 import OutcomeCard from "./components/OutcomeCard";
 import { Sparkle, Diamond, Circle } from "lucide-react";
 
-const Step2 = ({ onNext, onBack }) => {
+const Step2 = ({ onNext, onBack, formData, setFormData }) => {
 
     const validate = () => {
         const newErrors = {};
 
-        const pieceType = document.getElementById("piece_type").value;
-        const designer = document.getElementById("designer").value.trim();
-        const price = document.getElementById("price").value;
-
-        if (!pieceType) {
+        if (!formData.piece_type) {
             newErrors.piece_type = "Please select piece type";
         }
 
-        if (designer.length < 1) {
+        if (!formData.designer || formData.designer.trim().length < 1) {
             newErrors.designer = "Please enter designer or brand";
         }
 
-        if (!price || Number(price) <= 0) {
+        if (!formData.original_price || Number(formData.original_price) <= 0) {
             newErrors.price = "Please enter a valid price";
         }
 
@@ -37,8 +33,8 @@ const Step2 = ({ onNext, onBack }) => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const [condition, setCondition] = useState("");
-    const [outcome, setOutcome] = useState("");
+    const condition = formData.condition || "";
+    const outcome = formData.outcome || "";
     const [errors, setErrors] = useState({});
 
     return (
@@ -70,10 +66,14 @@ const Step2 = ({ onNext, onBack }) => {
                             </label>
 
                             <select
-                                id="piece_type"
+                                value={formData.piece_type}
+                                onChange={(e) =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        piece_type: e.target.value
+                                    }))
+                                }
                                 className="lyp-input"
-                                defaultValue=""
-                                required
                             >
                                 <option value="" disabled>Select piece type</option>
 
@@ -111,7 +111,16 @@ const Step2 = ({ onNext, onBack }) => {
                     {/* Deisgner Brand Selection */}
                     <div className="lyp-field">
                         <label className="lyp-label">DESIGNER / BRAND <span>*</span></label>
-                        <input id="designer" className="lyp-input" />
+                        <input
+                            className="lyp-input"
+                            value={formData.designer}
+                            onChange={(e) =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    designer: e.target.value
+                                }))
+                            }
+                        />
                         {errors.designer && (
                             <div className="lyp-error">{errors.designer}</div>
                         )}
@@ -124,7 +133,16 @@ const Step2 = ({ onNext, onBack }) => {
                     {/* Color Selection */}
                     <div className="lyp-field">
                         <label className="lyp-label">COLOUR</label>
-                        <input className="lyp-input" />
+                        <input
+                            className="lyp-input"
+                            value={formData.color || ""}
+                            onChange={(e) =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    color: e.target.value
+                                }))
+                            }
+                        />
                     </div>
 
                     {/* SIZE */}
@@ -132,9 +150,14 @@ const Step2 = ({ onNext, onBack }) => {
                         <label className="lyp-label">SIZE</label>
 
                         <select
-                            id="size"
+                            value={formData.size || ""}
+                            onChange={(e) =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    size: e.target.value
+                                }))
+                            }
                             className="lyp-input"
-                            defaultValue=""
                         >
                             <option value="" disabled>Select size</option>
 
@@ -158,7 +181,17 @@ const Step2 = ({ onNext, onBack }) => {
 
                     <div className="lyp-field">
                         <label className="lyp-label">ORIGINAL PURCHASE PRICE (₹) *</label>
-                        <input id="price" type="number" className="lyp-input" />
+                        <input
+                            type="number"
+                            className="lyp-input"
+                            value={formData.original_price}
+                            onChange={(e) =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    original_price: e.target.value
+                                }))
+                            }
+                        />
                         {errors.price && (
                             <div className="lyp-error">{errors.price}</div>
                         )}
@@ -169,9 +202,14 @@ const Step2 = ({ onNext, onBack }) => {
                         <label className="lyp-label">YEAR OF PURCHASE</label>
 
                         <select
-                            id="year_purchased"
+                            value={formData.year_purchased || ""}
+                            onChange={(e) =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    year_purchased: e.target.value
+                                }))
+                            }
                             className="lyp-input"
-                            defaultValue=""
                         >
                             <option value="" disabled>Select year</option>
 
@@ -196,29 +234,46 @@ const Step2 = ({ onNext, onBack }) => {
                     SELF-ASSESSED CONDITION <span>*</span>
                 </label>
 
-                    <ConditionCard
-                        label="Pristine"
-                        desc="Unworn or worn once for fittings only. All original tags / packaging intact."
-                        color="var(--sage)"
-                        selected={condition === "pristine"}
-                        onClick={() => setCondition("pristine")}
-                    />
+                <ConditionCard
+                    label="Pristine"
+                    desc="Unworn or worn once for fittings only. All original tags / packaging intact."
+                    color="var(--sage)"
+                    selected={condition === "pristine"}
+                    onClick={() =>
+                        setFormData(prev => ({
+                            ...prev,
+                            condition: "pristine"
+                        }))
+                    }
+                />
 
-                    <ConditionCard
-                        label="Excellent"
-                        desc="Worn once for an event. No visible flaws or alterations. Professionally cleaned."
-                        color="var(--gold)"
-                        selected={condition === "excellent"}
-                        onClick={() => setCondition("excellent")}
-                    />
+                <ConditionCard
+                    label="Excellent"
+                    desc="Worn once for an event. No visible flaws or alterations. Professionally cleaned."
+                    color="var(--gold)"
+                    selected={condition === "excellent"}
 
-                    <ConditionCard
-                        label="Good"
-                        desc="Worn 2–3 times. Minor wear visible. Any alterations or repairs noted below."
-                        color="var(--terracotta)"
-                        selected={condition === "good"}
-                        onClick={() => setCondition("good")}
-                    />
+                    onClick={() =>
+                        setFormData(prev => ({
+                            ...prev,
+                            condition: "excellent"
+                        }))
+                    }
+                />
+
+                <ConditionCard
+                    label="Good"
+                    desc="Worn 2–3 times. Minor wear visible. Any alterations or repairs noted below."
+                    color="var(--terracotta)"
+                    selected={condition === "good"}
+                    onClick={() =>
+                        setFormData(prev => ({
+                            ...prev,
+                            condition: "good"
+                        }))
+                    }
+
+                />
 
                 {errors.condition && (
                     <div className="lyp-error">{errors.condition}</div>
@@ -241,7 +296,12 @@ const Step2 = ({ onNext, onBack }) => {
                         desc="Earn on every booking"
                         variant="dark"
                         selected={outcome === "rent"}
-                        onClick={() => setOutcome("rent")}
+                        onClick={() =>
+                            setFormData(prev => ({
+                                ...prev,
+                                outcome: "rent"
+                            }))
+                        }
                     />
 
                     <OutcomeCard
@@ -250,7 +310,13 @@ const Step2 = ({ onNext, onBack }) => {
                         desc="One-time payout"
                         variant="dark"
                         selected={outcome === "sell"}
-                        onClick={() => setOutcome("sell")}
+
+                        onClick={() =>
+                            setFormData(prev => ({
+                                ...prev,
+                                outcome: "sell"
+                            }))
+                        }
                     />
 
                     <OutcomeCard
@@ -259,7 +325,13 @@ const Step2 = ({ onNext, onBack }) => {
                         desc="Let's discuss what's best"
                         variant="sage"
                         selected={outcome === "both"}
-                        onClick={() => setOutcome("both")}
+
+                        onClick={() =>
+                            setFormData(prev => ({
+                                ...prev,
+                                outcome: "both"
+                            }))
+                        }
                     />
                 </div>
 
@@ -274,8 +346,14 @@ const Step2 = ({ onNext, onBack }) => {
                 <label className="lyp-label">ADDITIONAL NOTES</label>
 
                 <textarea
-                    id="notes"
                     className="lyp-input lyp-textarea"
+                    value={formData.notes || ""}
+                    onChange={(e) =>
+                        setFormData(prev => ({
+                            ...prev,
+                            notes: e.target.value
+                        }))
+                    }
                     rows={4}
                     placeholder="Add any details about wear, alterations, or measurements..."
                 ></textarea>
