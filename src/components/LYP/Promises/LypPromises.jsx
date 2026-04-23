@@ -6,7 +6,7 @@ const promises = [
         number: "01",
         icon: DollarSign,
         title: <>Your piece <em>earns</em> while you own it.</>,
-        body: "Revenue share on every rental. Your lehenga doesn't have to sit in a box to remain yours. List it here and earn every time it goes to a new celebration - with full transparency and a reliable payout cycle"
+        body: "Revenue share on every rental. Your lehenga doesn't have to sit in a box to remain yours. List it here and earn every time it goes to a new celebration - with full transparency and a reliable payout cycle."
     },
     {
         number: "02",
@@ -18,7 +18,7 @@ const promises = [
         number: "03",
         icon: Briefcase,
         title: <>You list it. We handle <em>everything else</em>.</>,
-        body: "House of Kaira manages pickup, photography, listing, quality inspection, packaging, delivery, and returns. Your only job is to say yes. We do the rest - professionally, carefully, with the same standard we promise every renter"
+        body: "House of Kaira manages pickup, photography, listing, quality inspection, packaging, delivery, and returns. Your only job is to say yes. We do the rest - professionally, carefully, with the same standard we promise every renter."
     }
 ];
 
