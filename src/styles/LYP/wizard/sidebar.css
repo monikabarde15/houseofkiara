@@ -127,7 +127,7 @@
   transform: translateX(-50%);
 
   width: 1.5px;
-  height: calc(100% + 22px); /* matches spacing */
+  height: calc(100% + 4px); /* matches spacing for dot line */
 
   background: repeating-linear-gradient(
     to bottom,
