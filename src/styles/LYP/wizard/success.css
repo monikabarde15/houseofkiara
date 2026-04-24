@@ -142,3 +142,88 @@
   background: var(--deep);
   transform: translateY(-1px);
 }
+
+
+/* =========================================
+   SUCCESS — MOBILE (≤768px)
+========================================= */
+@media (max-width: 768px) {
+
+  /* ---------- Container ---------- */
+
+  .lyp-success {
+    padding: 48px 18px;
+    gap: 20px;
+  }
+
+  /* ---------- Icon ---------- */
+
+  .lyp-success__icon {
+    width: 80px;
+    height: 80px;
+
+    font-size: 26px;
+
+    animation: sucPop 0.5s cubic-bezier(.22,1.2,.36,1) both;
+  }
+
+  @keyframes sucPop {
+    0%   { transform: scale(0.6); }
+    60%  { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  /* ---------- Tag ---------- */
+
+  .lyp-success__tag {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+  }
+
+  /* ---------- Title ---------- */
+
+  .lyp-success__title {
+    font-size: 28px;
+    line-height: 1.2;
+  }
+
+  /* ---------- Description ---------- */
+
+  .lyp-success__desc {
+    font-size: 12px;
+    line-height: 1.75;
+  }
+
+  /* ---------- Cards (STACK) ---------- */
+
+  .lyp-success__cards {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .lyp-success__card {
+    padding: 18px;
+  }
+
+  /* ---------- Card Typography ---------- */
+
+  .lyp-success__card-eyebrow {
+    font-size: 9px;
+  }
+
+  .lyp-success__card-title {
+    font-size: 13px;
+  }
+
+  .lyp-success__card-body {
+    font-size: 11px;
+  }
+
+  /* ---------- CTA ---------- */
+
+  .lyp-success__cta {
+    width: 100%;
+    text-align: center;
+  }
+
+}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../../../styles/LYP/wizard/formPanels.css";
-import { Send } from 'lucide-react';
+import { Send,Check  } from 'lucide-react';
 
 const Step4 = ({ formData, photos, onBack , setStep,setSubmitted}) => {
     const [agreed, setAgreed] = useState(false);
@@ -199,7 +199,8 @@ const Step4 = ({ formData, photos, onBack , setStep,setSubmitted}) => {
                 <div
                     className={`lyp-checkbox ${agreed ? "checked" : ""}`}
                 >
-                    {agreed && "✓"}
+                    {/* {agreed && "✓"} */}
+                    {agreed && <Check size={12} />}
                 </div>
 
                 {/* Label */}

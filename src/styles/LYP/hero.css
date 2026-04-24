@@ -123,3 +123,56 @@
   color: #A89E94;
   line-height: 1.55;
 }
+
+/* =========================================
+   HERO — MOBILE (≤768px)
+========================================= */
+@media (max-width: 768px) {
+
+  /* ROOT */
+  .lyp-hero {
+    padding: 36px 18px 32px; 
+  }
+
+  /* GRID → SINGLE COLUMN */
+  .lyp-hero__inner {
+    display: block;
+  }
+
+  /* HIDE RIGHT SECTION */
+  .lyp-hero__right {
+    display: none;
+  }
+
+  /* WATERMARK */
+  .lyp-hero::before {
+    font-size: 100px; 
+    right: -10px;
+    bottom: -40px;
+  }
+
+  /* EYEBROW */
+  .lyp-hero__eyebrow {
+    font-size: 9px; 
+    margin-bottom: 10px;
+  }
+
+  .lyp-hero__eyebrow-line {
+    width: 32px;
+  }
+
+  /* TITLE */
+  .lyp-hero__title {
+    font-size: 26px; 
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
+  /* BODY */
+  .lyp-hero__desc {
+    font-size: 12px;
+    line-height: 1.7;
+    max-width: 100%; 
+  }
+
+}

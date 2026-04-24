@@ -248,3 +248,93 @@
 .lyp-wizard__right {
   padding: 48px 0px 64px;
 }
+
+
+
+
+/* =========================================
+   WIZARD STEP TABS — MOBILE (≤768px)
+========================================= */
+@media (max-width: 768px) {
+
+  /* HEADER — NOT STICKY */
+  .lyp-wizard-header {
+    position: relative; /* remove sticky */
+    top: auto;
+  }
+
+  /* TABS CONTAINER */
+  .lyp-wizard-tabs {
+    padding: 0 18px; 
+    height: auto;
+  }
+
+  /* EACH TAB = EQUAL WIDTH */
+  .lyp-tab-item {
+    flex: 1;
+    justify-content: center;
+    padding: 12px 6px 10px; 
+  }
+
+  /* HIDE TEXT (IMPORTANT) */
+  .lyp-tab-text {
+    display: none;
+  }
+
+  /* CIRCLE SIZE FIX */
+  .lyp-tab-circle {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  /* LOCKED STATE */
+  .lyp-tab-item.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ACTIVE UNDERLINE */
+  .lyp-tab-item.active::after {
+    height: 2px;
+    bottom: 0;
+    background: var(--charcoal);
+  }
+
+  /* DONE UNDERLINE */
+  .lyp-tab-item.done::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--sage);
+  }
+
+  /* PROGRESS LINE (UNDER TABS) */
+  .lyp-tab-line {
+    height: 2px;
+  }
+
+  /* GRID → SINGLE COLUMN */
+  .lyp-wizard__grid {
+    display: block;
+  }
+
+  /* HIDE SIDEBAR COMPLETELY */
+  .lyp-wizard__right {
+    display: none;
+  }
+
+  /* REMOVE RIGHT BORDER */
+  .lyp-wizard__left {
+    border-right: none;
+  }
+
+  .lyp-wizard__panel {
+    padding: 28px 18px 52px;
+    min-height: auto; /* remove desktop height */
+  }
+
+}

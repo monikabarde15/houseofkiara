@@ -145,3 +145,94 @@
 .lyp-how-primary-btn:active {
   transform: translateY(0);
 }
+
+
+
+/* =========================================
+   HOW IT WORKS — MOBILE (≤768px)
+========================================= */
+@media (max-width: 768px) {
+
+  /* ---------- Section ---------- */
+
+  .lyp-how {
+    padding: 48px 18px;
+  }
+
+  /* ---------- Eyebrow ---------- */
+
+  .lyp-how-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    margin-bottom: 10px;
+  }
+
+  /* ---------- Title ---------- */
+
+  .lyp-how-title {
+    font-size: 28px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  /* ---------- Subtitle ---------- */
+
+  .lyp-how-sub {
+    font-size: 13px;
+    line-height: 1.75;
+    margin-bottom: 32px;
+  }
+
+  /* ---------- GRID → STACK ---------- */
+
+  .lyp-how-grid {
+    grid-template-columns: 1fr; /* 🔥 key change */
+    gap: 24px;
+  }
+
+  .lyp-how-step {
+    padding: 0;
+  }
+
+  /* ---------- NUMERAL ---------- */
+
+  .lyp-how-num {
+    font-size: 40px; /* spec */
+    margin-bottom: 18px;
+  }
+
+  /* ---------- DASH ---------- */
+
+  .lyp-how-dash {
+    width: 24px;
+    height: 1px;
+    margin-bottom: 14px;
+  }
+
+  /* ---------- STEP TITLE ---------- */
+
+  .lyp-how-step-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  /* ---------- STEP BODY ---------- */
+
+  .lyp-how-step-body {
+    font-size: 12px;
+    line-height: 1.75;
+  }
+
+  /* ---------- CTA ---------- */
+
+  .lyp-how-cta {
+    margin-top: 48px;
+  }
+
+  .lyp-how-primary-btn {
+    width: 100%;
+    max-width: none; /* full width on mobile */
+    font-size: 10px;
+  }
+
+}

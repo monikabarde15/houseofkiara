@@ -1,5 +1,7 @@
 import React from "react";
 import "../../../styles/LYP/wizard/success.css";
+import { Check } from "lucide-react";
+
 
 const SuccessPanel = () => {
   return (
@@ -7,7 +9,7 @@ const SuccessPanel = () => {
 
       {/* Icon */}
       <div className="lyp-success__icon">
-        ✓
+        <Check size={28} />
       </div>
 
       {/* Tag */}

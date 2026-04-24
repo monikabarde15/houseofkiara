@@ -295,7 +295,7 @@
 }
 
 .lyp-outcome-card--active-dark .lyp-outcome-card__icon svg {
-  stroke: var(--warm-white);
+  /* stroke: var(--warm-white); */
 }
 
 .lyp-outcome-card--active-sage .lyp-outcome-card__icon svg {
@@ -841,3 +841,391 @@
   stroke-width: 1.8;
   color: #ffffff;
 }
+
+
+
+
+/* =========================================
+   STEP 1 FORM — MOBILE (≤768px)
+========================================= */
+@media (max-width: 768px) {
+
+  /* FORM GRID → SINGLE COLUMN */
+  .lyp-form__row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  /* FULL WIDTH FIELD SPACING */
+  .lyp-field--full {
+    margin-bottom: 16px;
+  }
+
+  /* LABEL */
+  .lyp-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    margin-bottom: 6px;
+  }
+
+  /* INPUT (VERY IMPORTANT) */
+  .lyp-input {
+    padding: 12px 14px;
+    font-size: 16px; /*  prevents iOS zoom */
+  }
+
+  /* PHONE PREFIX */
+  .lyp-phone__prefix {
+    font-size: 10px;
+    left: 10px;
+  }
+
+  .lyp-phone input {
+    padding-left: 68px;
+  }
+
+  /* HINT */
+  .lyp-hint {
+    font-size: 10px;
+    margin-top: 4px;
+  }
+
+  /* ERROR */
+  .lyp-error {
+    font-size: 10px;
+  }
+
+  /* HEADER TYPOGRAPHY */
+  .lyp-step__title {
+    font-size: 26px;
+  }
+
+  .lyp-step__subtitle {
+    font-size: 12px;
+    margin-bottom: 24px;
+  }
+
+  /* CTA → STACKED */
+  .lyp-step__cta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  /* BUTTON FULL WIDTH */
+  .lyp-btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+}
+
+
+
+/* =========================================
+   STEP 2 — MOBILE (≤768px)
+========================================= */
+@media (max-width: 768px) {
+
+  /* ================= CONDITION CARDS ================= */
+
+  .lyp-condition {
+    gap: 8px; /* spec */
+    margin: 20px 0;
+  }
+
+  .lyp-condition-card {
+    padding: 12px 14px; /* spec */
+    border-radius: 3px;
+  }
+
+  .lyp-condition-card__dot {
+    width: 10px;
+    height: 10px;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .lyp-condition-card__title {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-bottom: 3px;
+  }
+
+  .lyp-condition-card__desc {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  /* ================= OUTCOME  ================= */
+
+  .lyp-outcome {
+    flex-direction: column; 
+    gap: 8px;
+  }
+
+  .lyp-outcome-card {
+    display: flex;            
+    align-items: center;
+    text-align: left;
+
+    padding: 14px 16px;
+    gap: 12px;
+
+    border-radius: 3px;
+  }
+
+  /* ICON LEFT */
+  .lyp-outcome-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lyp-outcome-card__icon svg {
+    width: 16px; /* spec */
+    height: 16px;
+  }
+
+  /* TEXT BLOCK */
+  .lyp-outcome-card__title {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+
+  .lyp-outcome-card__desc {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+
+  /* ================= CTA ================= */
+  .lyp-step__cta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  /* REORDER WITHOUT TOUCHING JSX */
+
+  .lyp-btn-primary {
+    order: 1;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .lyp-btn-back {
+    order: 2;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .lyp-step__progress {
+    order: 3;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+
+}
+
+
+/* =========================================
+   STEP 3 — MOBILE (≤768px)
+========================================= */
+@media (max-width: 768px) {
+
+  /* ================= PHOTO GRID ================= */
+
+  .lyp-photo-grid {
+    grid-template-columns: repeat(3, 1fr); /* spec */
+    gap: 8px;
+  }
+
+  /* ================= REMOVE BUTTON ================= */
+
+  .lyp-photo-remove {
+    opacity: 1; /* 🔥 ALWAYS visible */
+    
+    width: 26px;
+    height: 26px;
+
+    top: 5px;
+    right: 5px;
+
+    background: rgba(250,247,242,0.92); /* warm cream */
+    border: 1px solid rgba(26,22,18,0.12);
+
+    color: var(--charcoal);
+    font-size: 14px;
+  }
+
+  /* REMOVE hover dependency */
+  .lyp-photo-item:hover .lyp-photo-remove {
+    opacity: 1;
+  }
+
+  /* ================= DROPZONE ================= */
+
+  .lyp-dropzone {
+    padding: 28px 16px; /* spec */
+    margin-bottom: 16px;
+  }
+
+  .lyp-dropzone__icon-box {
+    width: 48px;
+    height: 48px;
+  }
+
+  .lyp-dropzone__title {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .lyp-dropzone__subtitle {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+
+  /* ================= UPLOAD BAR ================= */
+
+  .lyp-upload__text {
+    font-size: 11px;
+  }
+
+  .lyp-upload__bar {
+    height: 4px;
+  }
+
+  .lyp-upload__fill {
+    transition: width 0.3s ease; /* spec */
+  }
+
+  .lyp-upload__warning {
+    font-size: 11px;
+  }
+
+  /* ================= TIPS ================= */
+
+  .lyp-photo-tips {
+    padding: 16px;
+  }
+
+  .lyp-photo-tips__title {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+
+  .lyp-photo-tips__list li {
+    font-size: 12px;
+    padding-left: 16px;
+  }
+
+  /* ================= CTA ================= */
+
+  .lyp-step__cta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .lyp-btn-primary {
+    order: 1;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .lyp-btn-back {
+    order: 2;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .lyp-step__progress {
+    order: 3;
+    text-align: center;
+  }
+
+}
+
+
+/* =========================================
+   STEP 4 — MOBILE (≤768px)
+========================================= */
+@media (max-width: 768px) {
+
+  /* ---------- Review Layout ---------- */
+
+  .lyp-review-block {
+    padding: 12px 0;
+  }
+
+  .lyp-review-row {
+    padding: 7px 0;
+    font-size: 12px;
+  }
+
+  .lyp-review-row span:first-child {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .lyp-review-row span:last-child {
+    font-size: 12px;
+    text-align: right;
+    font-weight: 500;
+  }
+
+  /* ---------- Photos (hidden on mobile) ---------- */
+
+  .lyp-review-photos-grid {
+    display: none;
+  }
+
+  /* ---------- Before Submit Section ---------- */
+
+  .lyp-before-submit {
+    padding: 16px;
+    margin-top: 20px;
+  }
+
+  .lyp-before-title {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+
+  .lyp-before-item {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  /* ---------- Checkbox ---------- */
+
+  .lyp-checkbox-row {
+    padding: 14px;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .lyp-checkbox {
+    width: 18px;
+    height: 18px;
+
+    min-width: 18px;
+    min-height: 18px;
+
+    flex-shrink: 0;
+    aspect-ratio: 1 / 1;
+
+    margin-top: 2px;
+  }
+
+  .lyp-checkbox-label {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+}
+

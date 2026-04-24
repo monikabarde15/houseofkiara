@@ -273,3 +273,123 @@ input[type="range"]::-webkit-slider-thumb {
 
 
 
+/* =========================================
+   CALCULATOR — MOBILE (≤768px)
+========================================= */
+@media (max-width: 768px) {
+
+  /* ---------- Section ---------- */
+
+  .lyp-calc {
+    padding: 48px 18px;
+  }
+
+  /* ---------- GRID → STACK ---------- */
+
+  .lyp-calc-grid {
+    grid-template-columns: 1fr; /* 🔥 key change */
+    gap: 24px;
+  }
+
+  .lyp-calc-left {
+    max-width: 100%;
+  }
+
+  /* ---------- Eyebrow ---------- */
+
+  .lyp-calc-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    margin-bottom: 10px;
+  }
+
+  /* ---------- Title ---------- */
+
+  .lyp-calc-title {
+    font-size: 28px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  /* ---------- Subtitle ---------- */
+
+  .lyp-calc-sub {
+    font-size: 13px;
+    line-height: 1.75;
+    margin-bottom: 14px;
+  }
+
+  /* ---------- Disclaimer ---------- */
+
+  .lyp-calc-note {
+    font-size: 11px;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+
+  /* ---------- Card ---------- */
+
+  .lyp-calc-card {
+    padding: 22px 18px; /* spec */
+  }
+
+  /* ---------- Price Row ---------- */
+
+  .lyp-calc-row-left {
+    font-size: 10px;
+  }
+
+  .lyp-calc-row-right {
+    font-size: 18px;
+  }
+
+  /* ---------- Slider ---------- */
+
+  input[type="range"] {
+    height: 4px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* ---------- Path Label ---------- */
+
+  .lyp-calc-path-label {
+    font-size: 10px;
+    margin: 14px 0 8px;
+  }
+
+  /* ---------- Mode Buttons ---------- */
+
+  .lyp-calc-mode {
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .lyp-calc-mode button {
+    font-size: 10px;
+    padding: 10px;
+  }
+
+  /* ---------- Results → STACK ---------- */
+
+  .lyp-calc-results {
+    grid-template-columns: 1fr; /* 🔥 key change */
+    gap: 12px;
+  }
+
+  .box {
+    padding: 18px;
+  }
+
+  .box .value {
+    font-size: 22px;
+  }
+
+  .box .sub {
+    font-size: 10px;
+  }
+
+}

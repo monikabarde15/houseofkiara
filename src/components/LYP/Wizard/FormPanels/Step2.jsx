@@ -60,7 +60,7 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                 <div className="lyp-form__row">
                     {/* Select your Piece */}
                     <div className="lyp-field lyp-field--select">
-                        <div className="lyp-field lyp-field--select">
+                        
                             <label className="lyp-label">
                                 PIECE TYPE <span>*</span>
                             </label>
@@ -105,7 +105,7 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                             {errors.piece_type && (
                                 <div className="lyp-error">{errors.piece_type}</div>
                             )}
-                        </div>
+                        
                     </div>
 
                     {/* Deisgner Brand Selection */}
