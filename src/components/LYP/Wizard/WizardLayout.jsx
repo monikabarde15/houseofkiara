@@ -51,7 +51,7 @@ const WizardLayout = () => {
   };
 
   return (
-    <section className={`lyp-wizard ${submitted ? "submitted" : ""}`}>
+    <section id="progWrap" className={`lyp-wizard ${submitted ? "submitted" : ""}`}>
 
       {/* ================= GRID ================= */}
       <div className="lyp-wizard__grid">

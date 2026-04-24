@@ -8,6 +8,8 @@ import WizardLayout from "./Wizard/WizardLayout";
 // CSS 
 import "../../styles/LYP/lypMain.css";
 import LypPromises from "./Promises/LypPromises";
+import LypHowItWorks from "./HowItWorks/LypHowItWorks";
+import LypCalculator from "./Calculator/LypCalculator";
 
 const LypMain = () => {
   return (
@@ -27,7 +29,11 @@ const LypMain = () => {
       <LypPromises/>
       
       {/* HowItWorks */}
+
+      <LypHowItWorks/>
+
       {/* Calculator */}
+      <LypCalculator/>
 
     </div>
   );

@@ -39,7 +39,7 @@ export default function LypPromises() {
             {/* Subtitle */}
             <p className="lyp-promises-sub">
                 The lister is the commercial engine of House of Kaira. These are not marketing lines - they are
-                operational commitments, built into every piece we onboard
+                operational commitments, built into every piece we onboard.
             </p>
 
             {/* Grid */}
@@ -57,7 +57,7 @@ export default function LypPromises() {
 
                             {/* Icon */}
                             <div className="lyp-promise-icon">
-                                <Icon size={18} strokeWidth={1.5} />
+                                <Icon  />
                             </div>
 
                             {/* Title */}

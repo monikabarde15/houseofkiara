@@ -137,18 +137,21 @@
 .lyp-promise-icon {
   width: 40px;
   height: 40px;
-
   border-radius: 50%;
-  border: 1px solid rgba(201,169,110,0.35);
-  background: #F5EDEB;
+  border: 1px solid rgba(201,169,110,0.3);
+  background:var(--gold-pale);
 
   display: flex;
   align-items: center;
   justify-content: center;
-
   margin-bottom: 20px;
+}
 
-  color: var(--gold);
+.lyp-promise-icon svg{
+  height: 18px;
+  width: 18px;
+  stroke: var(--gold);
+
 }
 
 
