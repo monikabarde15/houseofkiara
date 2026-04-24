@@ -14,10 +14,9 @@ import CommissionCard from "./Sidebar/CommissionCard";
 import Testimonial from "./Sidebar/Testimonial";
 import FAQ from "./Sidebar/FAQ";
 
-const WizardLayout = () => {
+const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
 
-  // const DEV_MODE = 4;
-  const [step, setStep] = useState(1);
+  
   const [formData, setFormData] = useState({
     full_name: "",
     city: "",
@@ -33,7 +32,7 @@ const WizardLayout = () => {
   });
 
   const [photos, setPhotos] = useState([]);
-  const [submitted, setSubmitted] = useState(false);
+  
 
 
   const steps = [
