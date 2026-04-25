@@ -115,13 +115,18 @@ html, body {
   color: #8A7E72;
 }
 
+.clp__sortWrapper {
+  position: relative;
+  display: inline-block;
+}
+
 .clp__sortSelect {
   height: 36px;
 
   border: 1px solid #E8E0D4;
   border-radius: 1px;
 
-  padding: 8px 32px 8px 12px;
+  padding: 8px 32px 8px 12px; /* space for icon */
 
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
@@ -131,12 +136,17 @@ html, body {
 
   appearance: none;
   cursor: pointer;
+}
 
-  /*
-  background-image: url("data:image/svg+xml,...");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  */
+/* 🔥 Icon positioning */
+.clp__sortIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  pointer-events: none; /* IMPORTANT */
+  color: #8A7E72;
 }
 
 

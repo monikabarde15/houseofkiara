@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Heart, Star, Truck, Shield, User, Box, Plus, X } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { useLocation,useParams } from "react-router-dom";
 import "../styles/product-detail.css";
 import RelatedProduct from "./RelatedProduct";
 import GalleryColumn from "./GalleryColumn";
+import products from "../data/bridalLehengaProducts"; 
 
 export default function ProductDetail() {
   const location = useLocation();
-  const product = location.state?.product;
+  const { id } = useParams();
+
+  // Try from state first
+  let product = location.state?.product;
+
+  // Fallback: find from data
+  if (!product) {
+    product = products.find(p => p.id === Number(id));
+}
 
   const [wish, setWish] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);

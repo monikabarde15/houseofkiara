@@ -1,17 +1,74 @@
 import "../styles/productcard.css"
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { makeProductDetail } from "./ProductList";
+
 const ProductCard = ({ item }) => {
 
 
     const navigate = useNavigate();
 
+
     const handleClick = () => {
-        if (item.badge?.includes("new")) {
-            navigate(`/rental/${item.id}`);
-            console.log(item)
+        const { rent, preloved, isNew } = item;
+
+        const productData = makeProductDetail(item); // 🔥 IMPORTANT
+
+        /*
+        ⚠️ TEMP FIX STILL APPLIES FOR ID
+        */
+
+        if (rent && preloved) {
+            navigate(`/rentalandpreloved/1`, { state: { product: productData } });
+        }
+        else if (rent && isNew) {
+            navigate(`/rentalandbuy/1`, { state: { product: productData } });
+        }
+        else if (rent) {
+            navigate(`/onlyrental/1`, { state: { product: productData } });
+        }
+        else if (preloved) {
+            navigate(`/preloved/1`, { state: { product: productData } });
+        }
+        else {
+            navigate(`/product/1`, { state: { product: productData } });
         }
     };
+
+    // const handleClick = () => {
+    //     const { rent, preloved, isNew, } = item;
+
+    //                 /*
+    //         ⚠️ TEMPORARY FIX:
+    //         Currently we have only static pages like:
+    //         /onlyrental/1, /preloved/1, /buy/1 etc.
+
+    //         But product cards are dynamic (id: 1–30),
+    //         so routes like /onlyrental/20 will break.
+
+    //         👉 For now, always redirect to `/1`
+
+    //         ✅ FUTURE:
+    //         Replace `/1` with `/${item.id}` once dynamic routing
+    //         and product detail pages are implemented, pass id to to the item.
+    //         */
+
+    //     if (rent && preloved) {
+    //         navigate(`/rentalandpreloved/1`);
+    //     }
+    //     else if (rent && isNew) {
+    //         navigate(`/rentalandbuy/1`);
+    //     }
+    //     else if (rent) {
+    //         navigate(`/onlyrental/1`);
+    //     }
+    //     else if (preloved) {
+    //         navigate(`/preloved/1`);
+    //     }
+    //     else {
+    //         navigate(`/product/1`);
+    //     }
+    // };
 
     // dynamic discount
     const discount =
@@ -25,7 +82,7 @@ const ProductCard = ({ item }) => {
             : null;
 
     return (
-        <a href="/rental/1">
+
         <div className="product-card" onClick={handleClick}>
 
             {/* IMAGE AREA */}
@@ -106,7 +163,6 @@ const ProductCard = ({ item }) => {
             </div>
 
         </div>
-        </a>
     );
 };
 

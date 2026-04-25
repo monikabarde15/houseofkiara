@@ -3,6 +3,7 @@ import Filters from "./Filters"
 import products from "../data/bridalLehengaProducts";
 import ProductCard from "./ProductCard";
 import { useEffect, useState} from "react";
+import { ChevronDown } from "lucide-react";
 
 
 function BridalLehenga() {
@@ -31,7 +32,17 @@ function BridalLehenga() {
   
    
   const getPrice = (price) => {
-    return parseInt(price?.replace(/,/g, "")) || 0;
+    if (!price) return 0;
+
+    // If already number
+    if (typeof price === "number") return price;
+
+    // If string → clean and convert
+    if (typeof price === "string") {
+      return parseInt(price.replace(/,/g, ""), 10) || 0;
+    }
+
+    return 0;
   };
 
   const ITEMS_PER_PAGE = 9;
@@ -135,6 +146,12 @@ function BridalLehenga() {
     const priceA = getPrice(a.buyPrice);
     const priceB = getPrice(b.buyPrice);
 
+    const originalA = getPrice(a.originalPrice || a.mrp || 0);
+    const originalB = getPrice(b.originalPrice || b.mrp || 0);
+
+    const discountA = originalA ? ((originalA - priceA) / originalA) * 100 : 0;
+    const discountB = originalB ? ((originalB - priceB) / originalB) * 100 : 0;
+
     switch (sortBy) {
 
       case "low":
@@ -144,13 +161,25 @@ function BridalLehenga() {
         return priceB - priceA;
 
       case "newest":
-        return b.id - a.id; // assuming higher id = newer
+        return b.id - a.id;
 
       case "popular":
         return (b.popularity || 0) - (a.popularity || 0);
 
+      case "discount": // ✅ NEW
+        return discountB - discountA;
+
+      case "recommended": // ✅ IMPROVED
+        return (
+          (b.popularity || 0) * 0.6 +
+          (b.id || 0) * 0.4
+        ) - (
+            (a.popularity || 0) * 0.6 +
+            (a.id || 0) * 0.4
+          );
+
       default:
-        return 0; // recommended
+        return 0;
     }
   });
 
@@ -208,17 +237,22 @@ function BridalLehenga() {
             {/* RIGHT */}
             <div className="clp__headerRight">
               <span className="clp__sortLabel">SORT BY</span>
+              <div className="clp__sortWrapper">
+                <select
+                  className="clp__sortSelect"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="recommended">Recommended</option>
+                  <option value="low">Price Low to High</option>
+                  <option value="high">Price High to Low</option>
+                  <option value="newest">Newest First</option>
+                  <option value="popular">Most Popular</option>
+                  <option value="discount">Discount</option>
+                </select>
 
-              <select 
-                className="clp__sortSelect"
-                value={sortBy}
-                onChange={(e)=> setSortBy(e.target.value)}>
-                <option value="recommended">Recommended</option>
-                <option value="low">Price Low to High</option>
-                <option value="high">Price High to Low</option>
-                <option value="newest">Newest First</option>
-                <option value="popular">Most Popular</option>
-              </select>
+                <ChevronDown className="clp__sortIcon" size={16} />
+              </div>
             </div>
 
           </div>
