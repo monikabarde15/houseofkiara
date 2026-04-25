@@ -15,7 +15,7 @@ const Step3 = ({ onNext, onBack, photos, setPhotos }) => {
         // reset error
         setError("");
 
-        // ✅ filter only images
+        //  filter only images
         newFiles = newFiles.filter(file => {
             if (!file.type.startsWith("image/")) {
                 setError("Only image files are allowed");
@@ -24,7 +24,7 @@ const Step3 = ({ onNext, onBack, photos, setPhotos }) => {
             return true;
         });
 
-        // ✅ file size check (20MB)
+        //  file size check (20MB)
         newFiles = newFiles.filter(file => {
             if (file.size > 20 * 1024 * 1024) {
                 setError("Each file must be under 20MB");
@@ -33,7 +33,7 @@ const Step3 = ({ onNext, onBack, photos, setPhotos }) => {
             return true;
         });
 
-        // ✅ limit total = 15
+        //  limit total = 15
         if (photos.length + newFiles.length > 15) {
             setError("Maximum 15 photos allowed");
             newFiles = newFiles.slice(0, 15 - photos.length);
@@ -46,6 +46,12 @@ const Step3 = ({ onNext, onBack, photos, setPhotos }) => {
 
         const updated = [...photos, ...mappedFiles];
         setPhotos(updated);
+
+        if (updated.length >= 3) {
+            setError(""); // clear error when valid
+        } else if (newError) {
+            setError(newError);
+        }
     };
 
     const handleChange = (e) => {
@@ -70,8 +76,18 @@ const Step3 = ({ onNext, onBack, photos, setPhotos }) => {
     const removePhoto = (index) => {
         const updated = photos.filter((_, i) => i !== index);
         setPhotos(updated);
+
+        // 🔥 validate again after removal
+        if (updated.length < 3) {
+            setError("Please upload at least 3 photos to continue");
+        } else {
+            setError("");
+        }
+        
     };
 
+
+    // SUBMIT AND VALIDATION
     const handleSubmit = () => {
         if (photos.length < 3) {
             setError("Please upload at least 3 photos to continue");

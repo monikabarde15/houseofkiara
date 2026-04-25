@@ -846,9 +846,9 @@
 
 
 /* =========================================
-   STEP 1 FORM — MOBILE (≤768px)
+   STEP 1 FORM — MOBILE 
 ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 960px){
 
   /* FORM GRID → SINGLE COLUMN */
   .lyp-form__row {
@@ -924,9 +924,9 @@
 
 
 /* =========================================
-   STEP 2 — MOBILE (≤768px)
+   STEP 2 — MOBILE 
 ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 960px){
 
   /* ================= CONDITION CARDS ================= */
 
@@ -1033,9 +1033,9 @@
 
 
 /* =========================================
-   STEP 3 — MOBILE (≤768px)
+   STEP 3 — MOBILE 
 ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 960px){
 
   /* ================= PHOTO GRID ================= */
 
@@ -1152,9 +1152,9 @@
 
 
 /* =========================================
-   STEP 4 — MOBILE (≤768px)
+   STEP 4 — MOBILE 
 ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 960px){
 
   /* ---------- Review Layout ---------- */
 

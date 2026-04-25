@@ -6,6 +6,8 @@ const Step4 = ({ formData, photos, onBack , setStep,setSubmitted}) => {
     const [agreed, setAgreed] = useState(false);
     const [error, setError] = useState("");
 
+
+    // Submit and Validation
     const handleSubmit = async () => {
         if (!agreed) {
             setError("Please agree to the terms to submit");
@@ -34,7 +36,7 @@ const Step4 = ({ formData, photos, onBack , setStep,setSubmitted}) => {
             });
 
             setSubmitted(true);
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            // window.scrollTo({ top: 0, behavior: "smooth" });
 
         } catch (err) {
             setError("Something went wrong. Please try again.");
@@ -66,7 +68,7 @@ const Step4 = ({ formData, photos, onBack , setStep,setSubmitted}) => {
 
                     <div className="lyp-review-header">
                         <div className="lyp-review-title">YOUR DETAILS</div>
-                        <button className = "lyp-edit-btn" onClick={() => setStep(1)}>EDIT</button>
+                        <button className = "lyp-edit-btn" onClick={() => onBack(1)}>EDIT</button>
                     </div>
 
                     <div className="lyp-review-row">
@@ -96,7 +98,7 @@ const Step4 = ({ formData, photos, onBack , setStep,setSubmitted}) => {
 
                     <div className="lyp-review-header">
                     <div className="lyp-review-title">PIECE DETAILS</div>
-                    <button className = "lyp-edit-btn" onClick={() => setStep(2)}>EDIT</button>
+                    <button className = "lyp-edit-btn" onClick={() => onBack(2)}>EDIT</button>
                     </div>
                     <div className="lyp-review-row">
                         <span>Type</span>
@@ -154,7 +156,7 @@ const Step4 = ({ formData, photos, onBack , setStep,setSubmitted}) => {
 
                     <div className="lyp-review-header">
                         <div className="lyp-review-title">PHOTOS</div>
-                        <button className="lyp-edit-btn" onClick={() => setStep(3)}>EDIT</button>
+                        <button className="lyp-edit-btn" onClick={() => onBack(3)}>EDIT</button>
                     </div>
 
                     <div className="lyp-review-row">
@@ -192,7 +194,15 @@ const Step4 = ({ formData, photos, onBack , setStep,setSubmitted}) => {
 
             <div
                 className="lyp-checkbox-row"
-                onClick={() => setAgreed(!agreed)}
+                onClick={() => {
+                    const newValue = !agreed;
+                    setAgreed(newValue);
+
+                    // 🔥 clear error when user fixes it
+                    if (newValue && error) {
+                        setError("");
+                    }
+                }}
             >
 
                 {/* Checkbox */}

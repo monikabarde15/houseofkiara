@@ -16,7 +16,7 @@ import FAQ from "./Sidebar/FAQ";
 
 const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
 
-  
+
   const [formData, setFormData] = useState({
     full_name: "",
     city: "",
@@ -32,8 +32,7 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
   });
 
   const [photos, setPhotos] = useState([]);
-  
-
+  const [direction, setDirection] = useState("forward"); // DIRECTION STATE
 
   const steps = [
     { id: 1, label: "Your Details" },
@@ -46,11 +45,22 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
     if (targetStep === step) return;       // no-op
     if (targetStep > step) return;         // locked → block
 
+    setDirection("backward");
     setStep(targetStep);                   // allow backward
   };
 
 
- 
+  //  Going Forward and Backward 
+  const goNext = (nextStep) => {
+    setDirection("forward");
+    setStep(nextStep);
+  };
+
+  const goBack = (prevStep) => {
+    setDirection("backward");
+    setStep(prevStep);
+  };
+
 
   return (
     <section id="progWrap" className={`lyp-wizard ${submitted ? "submitted" : ""}`}>
@@ -111,49 +121,52 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
 
           {/* PANEL */}
           <div className="lyp-wizard__panel">
+            <div className={`step-container direction-${direction}`}>
+              <div key={submitted ? "success" : step} className="step-panel">
 
-            {!submitted ? (
-              <>
-                {step === 1 && (
-                  <Step1
-                    formData={formData}
-                    setFormData={setFormData}
-                    onNext={() => setStep(2)}
-                  />
+                {!submitted ? (
+                  <>
+                    {step === 1 && (
+                      <Step1
+                        formData={formData}
+                        setFormData={setFormData}
+                        onNext={() => goNext(2)}
+                      />
+                    )}
+
+                    {step === 2 && (
+                      <Step2
+                        formData={formData}
+                        setFormData={setFormData}
+                        onNext={() => goNext(3)}
+                        onBack={() => goBack(1)}
+                      />
+                    )}
+
+                    {step === 3 && (
+                      <Step3
+                        photos={photos}
+                        setPhotos={setPhotos}
+                        onNext={() => goNext(4)}
+                        onBack={() => goBack(2)}
+                      />
+                    )}
+
+                    {step === 4 && (
+                      <Step4
+                        formData={formData}
+                        photos={photos}
+                        onBack={(targetStep) => goBack(targetStep)}
+                        setSubmitted={setSubmitted}
+                      />
+                    )}
+                  </>
+                ) : (
+                  <SuccessPanel />
                 )}
 
-                {step === 2 && (
-                  <Step2
-                    formData={formData}
-                    setFormData={setFormData}
-                    onNext={() => setStep(3)}
-                    onBack={() => setStep(1)}
-                  />
-                )}
-
-                {step === 3 && (
-                  <Step3
-                    photos={photos}
-                    setPhotos={setPhotos}
-                    onNext={() => setStep(4)}
-                    onBack={() => setStep(2)}
-                  />
-                )}
-
-                {step === 4 && (
-                  <Step4
-                    formData={formData}
-                    photos={photos}
-                    setStep={setStep}
-                    onBack={() => setStep(3)}
-                    setSubmitted={setSubmitted}
-                  />
-                )}
-              </>
-            ) : (
-              <SuccessPanel />
-            )}
-
+              </div>
+            </div>
           </div>
         </div>
 
@@ -161,22 +174,20 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
         <div className="lyp-wizard__right">
           <div className="lyp-sidebar">
 
-            
 
-              {/* Block 1 — Timeline */}
-              <Timeline submitted={submitted} />
 
-              {/* Block 2 — Commission */}
-              <CommissionCard />
+            {/* Block 1 — Timeline */}
+            <Timeline submitted={submitted} />
 
-              {/* Block 3 — Testimonial */}
-              <Testimonial />
+            {/* Block 2 — Commission */}
+            <CommissionCard />
 
-              {/* Block 4 — FAQ */}
-              <FAQ />
-            </div>
+            {/* Block 3 — Testimonial */}
+            <Testimonial />
 
-          
+            {/* Block 4 — FAQ */}
+            <FAQ />
+          </div>
         </div>
 
       </div>

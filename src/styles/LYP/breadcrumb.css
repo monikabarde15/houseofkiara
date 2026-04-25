@@ -40,9 +40,9 @@
 
 
 /* =========================================
-   BREADCRUMB — MOBILE (≤768px)
+   BREADCRUMB — MOBILE 
 ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 960px){
 
   .lyp-breadcrumb-inner {
     padding: 10px 18px; 
@@ -51,7 +51,7 @@
     gap: 6px; 
 
     font-size: 10px; 
-    letter-spacing: 0.06em; 
+    letter-spacing: 0.08em; 
   }
 
   .crumb-separator {

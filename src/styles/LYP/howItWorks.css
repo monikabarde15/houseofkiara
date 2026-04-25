@@ -149,9 +149,9 @@
 
 
 /* =========================================
-   HOW IT WORKS — MOBILE (≤768px)
+   HOW IT WORKS — MOBILE 
 ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 960px){
 
   /* ---------- Section ---------- */
 

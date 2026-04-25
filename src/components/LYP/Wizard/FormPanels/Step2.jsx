@@ -18,7 +18,7 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
         }
 
         if (!formData.original_price || Number(formData.original_price) <= 0) {
-            newErrors.price = "Please enter a valid price";
+            newErrors.original_price = "Please enter a valid price";
         }
 
         if (!condition) {
@@ -67,12 +67,19 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
 
                             <select
                                 value={formData.piece_type}
-                                onChange={(e) =>
-                                    setFormData(prev => ({
-                                        ...prev,
-                                        piece_type: e.target.value
-                                    }))
+                            onChange={(e) => {
+                                const value = e.target.value;
+
+                                setFormData(prev => ({
+                                    ...prev,
+                                    piece_type: value
+                                }));
+
+                                if (errors.piece_type) {
+                                    setErrors(prev => ({ ...prev, piece_type: "" }));
                                 }
+                            }}
+                            className={`lyp-input ${errors.piece_type ? "lyp-input--error" : ""}`}
                                 className="lyp-input"
                             >
                                 <option value="" disabled>Select piece type</option>
@@ -114,12 +121,19 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                         <input
                             className="lyp-input"
                             value={formData.designer}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                                const value = e.target.value;
+
                                 setFormData(prev => ({
                                     ...prev,
-                                    designer: e.target.value
-                                }))
-                            }
+                                    designer: value
+                                }));
+
+                                if (errors.designer) {
+                                    setErrors(prev => ({ ...prev, designer: "" }));
+                                }
+                            }}
+                            className={`lyp-input ${errors.designer ? "lyp-input--error" : ""}`}
                         />
                         {errors.designer && (
                             <div className="lyp-error">{errors.designer}</div>
@@ -185,15 +199,22 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                             type="number"
                             className="lyp-input"
                             value={formData.original_price}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                                const value = e.target.value;
+
                                 setFormData(prev => ({
                                     ...prev,
-                                    original_price: e.target.value
-                                }))
-                            }
+                                    original_price: value
+                                }));
+
+                                if (errors.original_price) {
+                                    setErrors(prev => ({ ...prev, original_price: "" }));
+                                }
+                            }}
+                            className={`lyp-input ${errors.original_price ? "lyp-input--error" : ""}`}
                         />
-                        {errors.price && (
-                            <div className="lyp-error">{errors.price}</div>
+                        {errors.original_price && (
+                            <div className="lyp-error">{errors.original_price}</div>
                         )}
                     </div>
 
@@ -239,12 +260,16 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                     desc="Unworn or worn once for fittings only. All original tags / packaging intact."
                     color="var(--sage)"
                     selected={condition === "pristine"}
-                    onClick={() =>
+                    onClick={() => {
                         setFormData(prev => ({
                             ...prev,
                             condition: "pristine"
-                        }))
-                    }
+                        }));
+
+                        if (errors.condition) {
+                            setErrors(prev => ({ ...prev, condition: "" }));
+                        }
+                    }}
                 />
 
                 <ConditionCard
@@ -253,12 +278,16 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                     color="var(--gold)"
                     selected={condition === "excellent"}
 
-                    onClick={() =>
+                    onClick={() => {
                         setFormData(prev => ({
                             ...prev,
                             condition: "excellent"
-                        }))
-                    }
+                        }));
+
+                        if (errors.condition) {
+                            setErrors(prev => ({ ...prev, condition: "" }));
+                        }
+                    }}
                 />
 
                 <ConditionCard
@@ -266,12 +295,16 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                     desc="Worn 2–3 times. Minor wear visible. Any alterations or repairs noted below."
                     color="var(--terracotta)"
                     selected={condition === "good"}
-                    onClick={() =>
+                    onClick={() => {
                         setFormData(prev => ({
                             ...prev,
                             condition: "good"
-                        }))
-                    }
+                        }));
+
+                        if (errors.condition) {
+                            setErrors(prev => ({ ...prev, condition: "" }));
+                        }
+                    }}
 
                 />
 
@@ -296,12 +329,16 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                         desc="Earn on every booking"
                         variant="dark"
                         selected={outcome === "rent"}
-                        onClick={() =>
+                        onClick={() => {
                             setFormData(prev => ({
                                 ...prev,
                                 outcome: "rent"
-                            }))
-                        }
+                            }));
+
+                            if (errors.outcome) {
+                                setErrors(prev => ({ ...prev, outcome: "" }));
+                            }
+                        }}
                     />
 
                     <OutcomeCard
@@ -311,12 +348,16 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                         variant="dark"
                         selected={outcome === "sell"}
 
-                        onClick={() =>
+                        onClick={() => {
                             setFormData(prev => ({
                                 ...prev,
                                 outcome: "sell"
-                            }))
-                        }
+                            }));
+
+                            if (errors.outcome) {
+                                setErrors(prev => ({ ...prev, outcome: "" }));
+                            }
+                        }}
                     />
 
                     <OutcomeCard
@@ -326,12 +367,16 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                         variant="sage"
                         selected={outcome === "both"}
 
-                        onClick={() =>
+                        onClick={() => {
                             setFormData(prev => ({
                                 ...prev,
                                 outcome: "both"
-                            }))
-                        }
+                            }));
+
+                            if (errors.outcome) {
+                                setErrors(prev => ({ ...prev, outcome: "" }));
+                            }
+                        }}
                     />
                 </div>
 

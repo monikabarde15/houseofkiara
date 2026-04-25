@@ -60,6 +60,10 @@
 /* ----------  STEP CIRCLE (DEFAULT STATE) ---------- */
 
 .lyp-tab-circle {
+
+  position: relative; /* required for ripple */
+  overflow: hidden;
+
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -81,7 +85,7 @@
   box-shadow: 0 0 5px rgba(26,22,18,0.07);
 }
 /*  active underline (moves per step) */ 
-.lyp-tab-circle.done::after {
+/* .lyp-tab-circle.done::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -91,14 +95,34 @@
   opacity: 0.3;
   transform: scale(1);
   animation: lyp-ripple 0.5s ease-out;
+} */
+
+/* Ripple trigger */
+.lyp-tab-item.done:not(.active) .lyp-tab-circle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--sage);
+  opacity: 0.3;
+
+  transform: scale(1);
+  animation: lyp-ripple 0.5s ease-out;
 }
 
+/* Ripple animation */
 @keyframes lyp-ripple {
+  from {
+    transform: scale(1);
+    opacity: 0.3;
+  }
   to {
     transform: scale(2.2);
     opacity: 0;
   }
 }
+
+
 /* ---------- TEXT ---------- */
 
 .lyp-tab-step {
@@ -249,13 +273,59 @@
   padding: 48px 0px 64px;
 }
 
+/* =========================================
+   STEP TRANSITION
+========================================= */
 
+.step-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.step-panel {
+  width: 100%;
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+/* FORWARD (Next) */
+.direction-forward .step-panel {
+  animation-name: slideForward;
+}
+
+/* BACKWARD (Back) */
+.direction-backward .step-panel {
+  animation-name: slideBackward;
+}
+
+@keyframes slideForward {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideBackward {
+  from {
+    transform: translateX(-24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
 
 
 /* =========================================
-   WIZARD STEP TABS — MOBILE (≤768px)
+   WIZARD STEP TABS — MOBILE 
 ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 960px){
 
   /* HEADER — NOT STICKY */
   .lyp-wizard-header {

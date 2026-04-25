@@ -78,7 +78,7 @@
   overflow: hidden;
   cursor: pointer;
 
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Card HOVER EFFECT */
@@ -103,7 +103,7 @@
   background: linear-gradient(90deg, var(--gold), #C86B4A);
   opacity: 0;
 
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .lyp-promise-card:hover::before {
@@ -194,9 +194,9 @@
 }
 
 /* =========================================
-   PROMISES — MOBILE (≤768px)
+   PROMISES — MOBILE 
 ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 960px){
 
   /* ---------- Section ---------- */
 

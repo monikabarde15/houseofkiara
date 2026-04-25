@@ -17,11 +17,11 @@ const LypMain = () => {
   const [step, setStep] = React.useState(1);
   const [submitted, setSubmitted] = React.useState(false);
 
-  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 960);
 
   React.useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 960);
     };
 
     window.addEventListener("resize", handleResize);

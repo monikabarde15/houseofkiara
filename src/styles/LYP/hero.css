@@ -125,9 +125,9 @@
 }
 
 /* =========================================
-   HERO — MOBILE (≤768px)
+   HERO — MOBILE 
 ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 960px){
 
   /* ROOT */
   .lyp-hero {

@@ -60,14 +60,23 @@ const Step1 = ({ onNext, formData, setFormData }) => {
                             id="full_name"
                             type="text"
                             value={formData.full_name}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                                const value = e.target.value;
+
                                 setFormData(prev => ({
                                     ...prev,
-                                    full_name: e.target.value
-                                }))
-                            }
+                                    full_name: value
+                                }));
+
+                                if (errors.full_name) {
+                                    setErrors(prev => ({
+                                        ...prev,
+                                        full_name: ""
+                                    }));
+                                }
+                            }}
                             placeholder="As on your bank account"
-                            className="lyp-input"
+                            className={`lyp-input ${errors.full_name ? "lyp-input--error" : ""}`}
                         />
                         {errors.full_name && (
                             <div className="lyp-error">{errors.full_name}</div>
@@ -82,13 +91,22 @@ const Step1 = ({ onNext, formData, setFormData }) => {
                         <select
                             id="city"
                             value={formData.city}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                                const value = e.target.value;
+
                                 setFormData(prev => ({
                                     ...prev,
-                                    city: e.target.value
-                                }))
-                            }
-                            className="lyp-input"
+                                    city: value
+                                }));
+
+                                if (errors.city) {
+                                    setErrors(prev => ({
+                                        ...prev,
+                                        city: ""
+                                    }));
+                                }
+                            }}
+                            className={`lyp-input ${errors.city ? "lyp-input--error" : ""}`}
                         >
                             <option value="" disabled>Select your city</option>
 
@@ -118,17 +136,26 @@ const Step1 = ({ onNext, formData, setFormData }) => {
                         <label className="lyp-label">
                             EMAIL ADDRESS <span>*</span>
                         </label>
-                        <input 
+                        <input
                             id="email"
                             type="email"
                             value={formData.email}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                                const value = e.target.value;
+
                                 setFormData(prev => ({
                                     ...prev,
-                                    email: e.target.value
-                                }))
-                            }
-                            className="lyp-input"
+                                    email: value
+                                }));
+
+                                if (errors.email) {
+                                    setErrors(prev => ({
+                                        ...prev,
+                                        email: ""
+                                    }));
+                                }
+                            }}
+                            className={`lyp-input ${errors.email ? "lyp-input--error" : ""}`}
                             placeholder="your@email.com"
                         />
 
@@ -141,7 +168,7 @@ const Step1 = ({ onNext, formData, setFormData }) => {
                     </div>
 
 
-                        {/* PHONE */}
+                    {/* PHONE */}
                     <div className="lyp-field">
                         <label className="lyp-label">
                             WHATSAPP NUMBER <span>*</span>
@@ -153,14 +180,23 @@ const Step1 = ({ onNext, formData, setFormData }) => {
                                 id="mobile"
                                 type="tel"
                                 value={formData.mobile}
-                                onChange={(e) =>
+                                onChange={(e) => {
+                                    const value = e.target.value;
+
                                     setFormData(prev => ({
                                         ...prev,
-                                        mobile: e.target.value
-                                    }))
-                                }
+                                        mobile: value
+                                    }));
+
+                                    if (errors.mobile) {
+                                        setErrors(prev => ({
+                                            ...prev,
+                                            mobile: ""
+                                        }));
+                                    }
+                                }}
                                 placeholder="98765 43210"
-                                className="lyp-input"
+                                className={`lyp-input ${errors.mobile ? "lyp-input--error" : ""}`}
                             />
                         </div>
 

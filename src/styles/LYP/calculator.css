@@ -274,9 +274,9 @@ input[type="range"]::-webkit-slider-thumb {
 
 
 /* =========================================
-   CALCULATOR — MOBILE (≤768px)
+   CALCULATOR — MOBILE 
 ========================================= */
-@media (max-width: 768px) {
+@media (max-width: 960px){
 
   /* ---------- Section ---------- */
 

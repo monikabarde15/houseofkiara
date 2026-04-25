@@ -1,5 +1,5 @@
 /* =========================================
-   SIDEBAR CONTAINER (SPEC 10.1)
+   SIDEBAR CONTAINER 
 ========================================= */
 
 .lyp-wizard__right {
@@ -20,16 +20,14 @@
   padding: 48px 40px 64px 40px;
 
   align-self: flex-start; 
-
-  
   scroll-behavior: smooth;
+
+  scroll-padding-top: 24px;
+  scroll-padding-bottom: 24px;
 }
 
+/* -------------CUSTOM SCROLLBAR (SPEC)----------- */
 
-
-/* =========================================
-   CUSTOM SCROLLBAR (SPEC)
-========================================= */
 
 .lyp-sidebar::-webkit-scrollbar {
   width: 3px;
@@ -37,10 +35,12 @@
 
 .lyp-sidebar::-webkit-scrollbar-thumb {
   background: var(--border);
+  transition: background 0.2s ease;
 }
 
 .lyp-sidebar::-webkit-scrollbar-track {
   background: transparent;
+
 }
 
 /* Firefox */
@@ -48,6 +48,13 @@
   scrollbar-width: thin;
 }
 
+
+/*================ SIDEBAR SCROLL INTERACTION POLISH ======*/
+
+
+.lyp-sidebar:hover::-webkit-scrollbar-thumb {
+  background: var(--muted);
+}
 
 
 
