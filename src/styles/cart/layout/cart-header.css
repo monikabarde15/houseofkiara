@@ -1,0 +1,44 @@
+/* ============================= */
+/* CART HEADER */
+/* ============================= */
+
+.cart-header-wrapper {
+  padding-top: 96px;
+  padding-bottom: 64px;
+  border-bottom: 1px solid #D8D0C4;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+/* ============================= */
+/* TITLE */
+/* ============================= */
+
+.cart-title {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: clamp(48px, 5.5vw, 72px);
+  letter-spacing: -0.015em;
+  color: #18140F;
+}
+
+.cart-title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* ============================= */
+/* COUNT */
+/* ============================= */
+
+.cart-count {
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}

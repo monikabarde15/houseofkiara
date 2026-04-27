@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "../../../styles/LYP/wizard/wizardLayout.css";
 
 import Step1 from "./FormPanels/Step1";
@@ -15,8 +15,8 @@ import Testimonial from "./Sidebar/Testimonial";
 import FAQ from "./Sidebar/FAQ";
 
 const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
-
-
+  
+  const [isEditMode, setIsEditMode] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
     city: "",
@@ -42,11 +42,20 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
   ];
 
   const goToStep = (targetStep) => {
-    if (targetStep === step) return;       // no-op
-    if (targetStep > step) return;         // locked → block
+    if (targetStep === step) return;
+
+    // 🔓 EDIT MODE → free navigation
+    if (isEditMode) {
+      setDirection(targetStep > step ? "forward" : "backward");
+      setStep(targetStep);
+      return;
+    }
+
+    // 🧱 FLOW MODE → only backward allowed
+    if (targetStep > step) return;
 
     setDirection("backward");
-    setStep(targetStep);                   // allow backward
+    setStep(targetStep);
   };
 
 
@@ -54,6 +63,11 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
   const goNext = (nextStep) => {
     setDirection("forward");
     setStep(nextStep);
+
+    // 🔥 Activate edit mode when reaching Step 4
+    if (nextStep === 4) {
+      setIsEditMode(true);
+    }
   };
 
   const goBack = (prevStep) => {
@@ -61,6 +75,30 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
     setStep(prevStep);
   };
 
+
+  // scroll function 
+  const scrollToWizardTop = (isSuccess = false) => {
+    const el = document.getElementById("progWrap");
+
+    if (el) {
+      const yOffset = isSuccess ? -20 : -120;
+
+      const y =
+        el.getBoundingClientRect().top +
+        window.pageYOffset +
+        yOffset;
+
+      window.scrollTo({
+        top: y,
+        behavior: "smooth",
+      });
+    }
+  };
+
+
+  useEffect(() => {
+    scrollToWizardTop(submitted); // ✅ THIS is important
+  }, [step, submitted]);
 
   return (
     <section id="progWrap" className={`lyp-wizard ${submitted ? "submitted" : ""}`}>
@@ -77,8 +115,8 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
             <div className="lyp-wizard-tabs">
               {steps.map((s) => {
                 const isActive = !submitted && step === s.id;
-                const isDone = submitted || step > s.id;
-                const isLocked = !submitted && step < s.id;
+                const isDone = isEditMode || step > s.id;
+                const isLocked = !isEditMode && step < s.id;
 
                 return (
                   <div

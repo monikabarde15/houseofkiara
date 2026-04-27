@@ -257,7 +257,7 @@ const Step4 = ({ formData, photos, onBack , setStep,setSubmitted}) => {
 
                 
 
-                <button className="lyp-btn-back" onClick={onBack}>
+                <button className="lyp-btn-back" onClick={() => onBack(3)}>
                     <span className="lyp-btn-back-icon">‹</span>
                     BACK
                 </button>

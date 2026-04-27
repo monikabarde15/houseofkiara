@@ -1,0 +1,122 @@
+/* ============================= */
+/* TIMELINE WRAPPER */
+/* ============================= */
+
+.cart-timeline {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+}
+
+/* ============================= */
+/* CONNECTING LINE (SPEC: ::before) */
+/* ============================= */
+
+.cart-timeline::before {
+  content: "";
+  position: absolute;
+  top: 68px;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: #F0EAE0;
+}
+
+/* ============================= */
+/* NODE */
+/* ============================= */
+
+.cart-timeline__node {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ============================= */
+/* HEADER (FIXED HEIGHT — CRITICAL) */
+/* ============================= */
+
+.cart-timeline__header {
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* ============================= */
+/* WINDOW LABEL */
+/* ============================= */
+
+.cart-timeline__window {
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6B7E5A;
+
+  margin-bottom: 10px;
+
+  background: #FFFEFB; /* masks line */
+  padding: 0 6px;
+}
+
+/* ============================= */
+/* NODE LABEL */
+/* ============================= */
+
+.cart-timeline__node-label {
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 300;
+  color: #8A7E72;
+
+  margin-bottom: 12px; /* gap label → circle */
+}
+
+/* ============================= */
+/* CIRCLE */
+/* ============================= */
+
+.cart-timeline__circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 12px;
+  border: 1.5px solid #D8D0C4;
+  background: #FFFEFB;
+}
+
+/* FILLED (Delivery + Event) */
+
+.cart-timeline__circle--filled {
+  background: #6B7E5A;
+  border-color: #6B7E5A;
+}
+
+/* ============================= */
+/* DATE */
+/* ============================= */
+
+.cart-timeline__date {
+  margin-top: 14px; /* gap circle → date */
+  font-family: "Cormorant Garamond", serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #18140F;
+}
+
+/* ============================= */
+/* DAY (SUB LABEL) */
+/* ============================= */
+
+.cart-timeline__sub {
+  margin-top: 5px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #8A7E72;
+}

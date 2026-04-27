@@ -1,0 +1,39 @@
+/* ============================= */
+/* CART PAGE */
+/* ============================= */
+
+.cart-page {
+  background: #FFFEFB; /* warm white */
+  min-height: 100vh;
+}
+
+/* ============================= */
+/* CONTAINER */
+/* ============================= */
+
+.cart-container {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 0 64px;
+}
+
+/* ============================= */
+/* PAGE TITLE ZONE */
+/* ============================= */
+
+.cart-header-wrapper {
+  padding-top: 96px;
+  padding-bottom: 64px;
+  border-bottom: 1px solid #D8D0C4;
+}
+
+/* ============================= */
+/* MAIN GRID */
+/* ============================= */
+
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 96px;
+  padding-top: 64px;
+}

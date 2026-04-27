@@ -1,0 +1,12 @@
+/* ============================= */
+/* CART LAYOUT */
+/* ============================= */
+
+.cart-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-right {
+  position: relative;
+}

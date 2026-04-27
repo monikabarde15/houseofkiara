@@ -1,0 +1,30 @@
+/* ============================= */
+/* RENTAL PRICE */
+/* ============================= */
+
+.cart-price--rental {}
+
+.cart-price__eyebrow {
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #B0A898;
+  margin-bottom: 6px;
+}
+
+.cart-price__value {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 38px;
+  color: #18140F;
+}
+
+.cart-price__value sup {
+  font-size: 18px;
+}
+
+.cart-price__note {
+  font-size: 10.5px;
+  font-weight: 300;
+  color: #8A7E72;
+  margin-top: 6px;
+}

@@ -1,0 +1,50 @@
+/* ============================= */
+/* MODE SEPARATOR */
+/* ============================= */
+
+.mode-separator {
+  display: flex;
+  align-items: center;
+
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+
+  border-bottom: 1px solid #F0EAE0;
+}
+
+/* DOT */
+
+.mode-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 18px;
+}
+
+/* LABEL */
+
+.mode-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+
+/* colors based on type: */
+/* Rental */
+.mode-separator[data-type="rental"] .mode-dot {
+  background: #6B7E5A;
+}
+
+/* Preloved */
+.mode-separator[data-type="preloved"] .mode-dot {
+  background: #893860;
+}
+
+/* New */
+.mode-separator[data-type="new"] .mode-dot {
+  background: #2A4466;
+}
