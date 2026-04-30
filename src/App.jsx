@@ -29,7 +29,7 @@ import DummyGowns from "./components/DummyGowns";
 
 // LYP
 
-import LypMain from "./components/LYP/LypMain";
+import LypMain from "./components/LYP/LypMain.jsx";
 import CartPage from "./pages/Cart/CartPage";
 
 
