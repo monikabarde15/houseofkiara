@@ -64,7 +64,6 @@ export default function App() {
         <Route path="/onlyrental/:id" element={<OnlyRentalDetail />} />
         <Route path="/preloved/:id" element={<Preloved />} />
         <Route path="/rentalandbuy/:id" element = {<RentalAndBuy/>} />
-        {/* <Route path="/list-your-piece/" element={<LypMain />} /> */}
         <Route path="/cart" element={<CartPage/>} />
       </Routes>
 
