@@ -24,7 +24,7 @@ const PrelovedPriceBlock = ({ product }) => {
       <div className="preloved-price__row">
 
         <span className="preloved-price__main">
-          ₹{resale.toLocaleString()}
+          <sup>₹</sup>{resale.toLocaleString()}
         </span>
 
         {retail > 0 && (

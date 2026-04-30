@@ -1,114 +1,109 @@
 /* ============================= */
-/* RENTAL PRICE */
+/* COMMON PRICE SYSTEM */
 /* ============================= */
 
-.cart-price--rental {}
+.cart-price__value,
+.preloved-price__main,
+.new-price__main {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 38px;
+  font-weight: 300;
+  line-height: 1; /* REQUIRED */
+  color: #18140F;
+}
+
+.cart-price__value sup,
+.preloved-price__main sup,
+.new-price__main sup {
+  font-size: 18px;
+}
+
+
+/* ============================= */
+/* RENTAL */
+/* ============================= */
 
 .cart-price__eyebrow {
+  font-family: "DM Sans", sans-serif;
   font-size: 8.5px;
-  letter-spacing: 0.28em;
+  font-weight: 300;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: #B0A898;
   margin-bottom: 6px;
 }
 
-.cart-price__value {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 38px;
-  color: #18140F;
-}
-
-.cart-price__value sup {
-  font-size: 18px;
-}
-
 .cart-price__note {
+  font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #B0A898; /* FIXED */
   margin-top: 6px;
 }
 
 
 /* ============================= */
-/* PRELOVED PRICE BLOCK */
+/* PRELOVED */
 /* ============================= */
+
 .preloved-price {
-  margin-top: 32px;
+  margin-top: 32px; /* --s4 */
 }
 
-/* Eyebrow */
 .preloved-price__label {
+  font-family: "DM Sans", sans-serif;
   font-size: 8.5px;
+  font-weight: 300;
   letter-spacing: 0.22em;
-  color: #8a7e72;
-  margin-bottom: 10px;
   text-transform: uppercase;
+  color: #B0A898;
+  margin-bottom: 6px;
 }
 
-/* Row */
 .preloved-price__row {
   display: flex;
   align-items: baseline;
   gap: 10px;
 }
 
-/* Main price */
-.preloved-price__main {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 38px;
-  font-weight: 300;
-  color: #18140F;
-}
-
-/* Strike */
 .preloved-price__strike {
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
-  color: #8a7e72;
+  color: #B0A898; /* FIXED */
   text-decoration: line-through;
 }
 
-/* Savings */
 .preloved-price__savings {
   margin-top: 5px;
+  font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
-  color: #6f7d5c; /* sage */
+  font-weight: 400;
+  color: #6B7E5A; /* EXACT SAGE */
 }
 
 
 /* ============================= */
-/* NEW PRICE BLOCK */
+/* NEW */
 /* ============================= */
 
-
-/* Container */
 .new-price {
   margin-top: 32px;
 }
 
-/* Eyebrow */
 .new-price__label {
   font-family: "DM Sans", sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: #8a7e72;
-  margin-bottom: 10px;
-}
-
-/* Main Price */
-.new-price__main {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 38px;
+  font-size: 8.5px; /* FIXED */
   font-weight: 300;
-  color: #1c1c1c;
+  letter-spacing: 0.22em; /* FIXED */
+  text-transform: uppercase;
+  color: #B0A898;
+  margin-bottom: 6px;
 }
 
-/* Note */
 .new-price__note {
-  margin-top: 8px;
+  margin-top: 6px;
   font-family: "DM Sans", sans-serif;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 300;
-  color: #8a7e72;
+  color: #B0A898;
 }

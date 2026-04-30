@@ -12,14 +12,13 @@ const DepositNotice = ({ product }) => {
   return (
     <div className="cart-deposit">
 
-          <p className="cart-deposit__text">
-
-              <strong className="cart-deposit__amount">
-                  ₹{amount} refundable security deposit
-              </strong>
-
-              {" "}— not collected at checkout. Our team will reach out via WhatsApp before dispatch. Refunded in full within 3–5 business days of return inspection.
-          </p>
+      <p className="cart-deposit__text">
+        <span className="cart-deposit__amount">
+          ₹{amount} refundable security deposit
+        </span>
+        {" "}
+        — not collected at checkout. Our team will reach out via WhatsApp before dispatch. Refunded in full within 3–5 business days of return inspection.
+      </p>
 
     </div>
   );

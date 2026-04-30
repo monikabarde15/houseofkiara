@@ -9,15 +9,14 @@ const PrelovedFinalNote = ({ product }) => {
 
   return (
     <div className="preloved-final-note">
-
-      <span className="preloved-final-note__label">
-        Final sale.
-      </span>
-
-      <span className="preloved-final-note__body">
-        {note}
-      </span>
-
+      <p className="preloved-final-note__text">
+        <span className="preloved-final-note__label">
+          Final sale.
+        </span>{" "}
+        <span className="preloved-final-note__body">
+          {note}
+        </span>
+      </p>
     </div>
   );
 };

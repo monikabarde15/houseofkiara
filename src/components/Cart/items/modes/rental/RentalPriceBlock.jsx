@@ -24,17 +24,17 @@ const RentalPriceBlock = ({ product, booking }) => {
 
       {/* EYEBROW */}
       <div className="cart-price__eyebrow">
-        Rental fee · {days}-DAY WINDOW
+        Rental fee · {days}-day window
       </div>
 
       {/* PRICE */}
       <div className="cart-price__value">
-        ₹{formatPrice(totalPrice)}
+         <sup>₹</sup>{formatPrice(totalPrice)}
       </div>
 
       {/* NOTE */}
       <div className="cart-price__note">
-        ₹{formatPrice(perDay)} / day
+        ₹{formatPrice(perDay)} per day
       </div>
 
     </div>

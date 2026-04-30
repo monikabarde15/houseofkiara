@@ -8,15 +8,14 @@ const PrelovedDisclosure = ({ product }) => {
 
   return (
     <div className="preloved-disclosure">
-
-      <span className="preloved-disclosure__label">
-        Condition disclosure:
-      </span>
-
-      <span className="preloved-disclosure__body">
-        {disclosure}
-      </span>
-
+      <p className="preloved-disclosure__text">
+        <span className="preloved-disclosure__label">
+          Condition disclosure:
+        </span>{" "}
+        <span className="preloved-disclosure__body">
+          {disclosure}
+        </span>
+      </p>
     </div>
   );
 };

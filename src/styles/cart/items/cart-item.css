@@ -194,10 +194,9 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-
   margin-top: 48px;
   padding-top: 24px;
-
+  width: 100%;
   border-top: 1px dashed #D8D0C4;
 }
 
@@ -227,7 +226,7 @@
 .cart-item__price-note {
   font-size: 10.5px;
    font-weight: 300;
-   color: #8A7E72;
+   color: #B0A898;
 }
 
 /* ============================= */
@@ -239,6 +238,7 @@
   flex-direction: column;
   gap: 10px;
   align-items: flex-end;
+  margin-left: auto; 
 }
 
 .cart-item__action {

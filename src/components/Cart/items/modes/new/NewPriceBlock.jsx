@@ -11,12 +11,12 @@ const NewPriceBlock = ({ product }) => {
 
       {/* EYEBROW */}
       <div className="new-price__label">
-        PRICE · GST INCLUDED
+        Price · GST inclusive
       </div>
 
       {/* PRICE */}
       <div className="new-price__main">
-        ₹{price.toLocaleString()}
+       <sup>₹</sup>{price.toLocaleString()}
       </div>
 
       {/* NOTE */}

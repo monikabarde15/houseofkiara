@@ -3,10 +3,9 @@
 /* ============================= */
 
 .cart-deposit {
-  margin-top: 32px;
+  margin-top: 32px; /* --s4 */
   border-left: 2px solid #C2A040;
   padding: 14px 0 14px 18px;
-  background: transparent;
 }
 
 .cart-deposit__text {
@@ -14,66 +13,65 @@
   font-size: 11px;
   font-weight: 300;
   line-height: 1.8;
-  color: #3C3529;
+  color: #3C3529; /* --ink-3 */
+
+  
 }
 
 .cart-deposit__amount {
   font-weight: 400;
-  color: #8A6010;
+  color: #8A6010; /* warm amber */
 }
 
 /* ============================= */
 /* PRELOVED DISCLOSURE */
 /* ============================= */
 
-/* Margin-top: 32px */
 .preloved-disclosure {
-  margin-top: 32px;
+  margin-top: 32px; /* --s4 */
+  border-left: 2px solid #893860;
+  padding: 14px 0 0 18px; /* 👈 FIX: same vertical rhythm as deposit */
+}
 
-  border-left: 2px solid #893860; /* mulberry */
-  padding-left: 18px;
-
+.preloved-disclosure__text {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   line-height: 1.8;
-  padding-bottom: 12px;
+  color: #3C3529;
+  /* max-width: 420px; */
 }
 
-/* Bold label */
 .preloved-disclosure__label {
   font-weight: 400;
   color: #893860;
-  margin-right: 6px;
 }
 
-/* Body text */
 .preloved-disclosure__body {
   font-weight: 300;
-  color: #3C3529;; /* ink-3 */
 }
 
 /* ============================= */
 /* PRELOVED FINAL NOTE */
 /* ============================= */
 
-/* Margin-top: 8px */
 .preloved-final-note {
-  margin-top: 8px;
-  border-left: 2px solid #E8E0D4;
-  padding-left: 18px;
+  margin-top: 8px; /* spec */
+  border-left: 2px solid #F0EAE0; /* 👈 FIXED (was wrong earlier) */
+  padding: 14px 0 0 18px;
+}
 
+.preloved-final-note__text {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   line-height: 1.8;
+  color: #3C3529;
 }
 
 .preloved-final-note__label {
   font-weight: 400;
   color: #3C3529;
-  margin-right: 6px;
 }
 
 .preloved-final-note__body {
   font-weight: 300;
-  color: #3C3529;
 }
