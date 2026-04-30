@@ -1,6 +1,6 @@
 import React from "react";
 
-// Components1
+// Components
 import LypBreadcrumb from "./Breadcrumb/LypBreadcrumb";
 import LypHero from "./Hero/LypHero";
 import WizardLayout from "./Wizard/WizardLayout";
