@@ -1,0 +1,67 @@
+.lyp-breadcrumb {
+  background: var(--warm-white);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.lyp-breadcrumb-inner {
+  padding: 14px 80px;
+  display: flex;
+  align-items: center;
+
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+/* Links */
+.crumb-link {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.crumb-link:hover {
+  color: var(--charcoal);
+}
+
+/* Separator */
+.crumb-separator {
+  margin: 0 8px;
+  font-size: 10px;
+  color: var(--border);
+}
+
+/* Current page */
+.crumb-current {
+  color: var(--charcoal);
+  font-weight: 500;
+}
+
+
+
+/* =========================================
+   BREADCRUMB — MOBILE 
+========================================= */
+@media (max-width: 960px){
+
+  .lyp-breadcrumb-inner {
+    padding: 10px 18px; 
+    display: flex;
+    align-items: center;
+    gap: 6px; 
+
+    font-size: 10px; 
+    letter-spacing: 0.08em; 
+  }
+
+  .crumb-separator {
+    margin: 0; 
+    font-size: 10px;
+  }
+
+  .crumb-link,
+  .crumb-current {
+    text-transform: none; 
+  }
+
+}

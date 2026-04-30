@@ -1,0 +1,238 @@
+/* Section */
+.lyp-how{
+    background: #FFFEFB;
+    padding: 80px;
+    text-align: left;
+}
+
+/* eyebrow */
+.lyp-how-eyebrow{
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+/* eyebrow-line */
+.lyp-how-eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+/* title */
+.lyp-how-title{
+    font-family: var(--serif);
+    font-size: 40px;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 12px;
+}
+
+.lyp-how-title em{
+    font-style: italic;
+    color: var(--gold);
+}
+
+/* Subtitle */
+
+.lyp-how-sub{
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.75;
+
+    max-width: 600px;
+    margin-bottom: 40px;
+}
+
+/* GRID */
+
+.lyp-how-grid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    max-width: 1200px;
+}
+
+.lyp-how-step{
+    padding: 0 16px;
+}
+
+.lyp-how-num{
+    font-family: var(--serif);
+    font-size: 52px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 18px;
+}
+
+.lyp-how-dash{
+    width: 24px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.5;
+    margin-bottom: 14px;
+}
+
+.lyp-how-step-title{
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 10px;
+    line-height: 1.25;
+}
+
+.lyp-how-step-body{
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.75;
+}
+
+.lyp-how-cta{
+    display: flex;
+    justify-content: center;
+    margin-top: 48px;
+}
+
+.lyp-how-primary-btn {
+  width: 100%;
+  max-width: 420px; /* keeps it elegant, not stretched too much */
+
+  background: var(--charcoal);
+  color: var(--warm-white);
+
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  padding: 14px 24px;
+
+  border: none;
+  border-radius: 2px;
+
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+
+.lyp-how-primary-btn:hover {
+  transform: translateY(-1px);
+  background: #14110F;
+}
+
+.lyp-how-primary-btn:active {
+  transform: translateY(0);
+}
+
+
+
+/* =========================================
+   HOW IT WORKS — MOBILE 
+========================================= */
+@media (max-width: 960px){
+
+  /* ---------- Section ---------- */
+
+  .lyp-how {
+    padding: 48px 18px;
+  }
+
+  /* ---------- Eyebrow ---------- */
+
+  .lyp-how-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    margin-bottom: 10px;
+  }
+
+  /* ---------- Title ---------- */
+
+  .lyp-how-title {
+    font-size: 28px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  /* ---------- Subtitle ---------- */
+
+  .lyp-how-sub {
+    font-size: 13px;
+    line-height: 1.75;
+    margin-bottom: 32px;
+  }
+
+  /* ---------- GRID → STACK ---------- */
+
+  .lyp-how-grid {
+    grid-template-columns: 1fr; /* 🔥 key change */
+    gap: 24px;
+  }
+
+  .lyp-how-step {
+    padding: 0;
+  }
+
+  /* ---------- NUMERAL ---------- */
+
+  .lyp-how-num {
+    font-size: 40px; /* spec */
+    margin-bottom: 18px;
+  }
+
+  /* ---------- DASH ---------- */
+
+  .lyp-how-dash {
+    width: 24px;
+    height: 1px;
+    margin-bottom: 14px;
+  }
+
+  /* ---------- STEP TITLE ---------- */
+
+  .lyp-how-step-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  /* ---------- STEP BODY ---------- */
+
+  .lyp-how-step-body {
+    font-size: 12px;
+    line-height: 1.75;
+  }
+
+  /* ---------- CTA ---------- */
+
+  .lyp-how-cta {
+    margin-top: 48px;
+  }
+
+  .lyp-how-primary-btn {
+    width: 100%;
+    max-width: none; /* full width on mobile */
+    font-size: 10px;
+  }
+
+}
