@@ -1,89 +1,70 @@
-import React from "react";
+import React, { useState } from "react"; 
 import "../../../styles/cart/items/cart-item.css";
 import RentalTimeline from "./modes/rental/RentalTimeline";
 import RentalDepositNotice from "./modes/rental/RentalDepositNotice";
 import RentalPriceBlock from "./modes/rental/RentalPriceBlock";
+import PrelovedDisclosure from "./modes/preloved/PrelovedDisclosure";
+import PrelovedPriceBlock from "./modes/preloved/PrelovedPriceBlock";
+import NewPriceBlock from "./modes/new/NewPriceBlock";
+import { useNavigate } from "react-router-dom";
+import PrelovedFinalNote from "./modes/preloved/PrelovedFinalNote";
+import { X } from "lucide-react";
 
-
-
-const CartItem = ({ item }) => {
+const CartItem = ({ item,onRemove  }) => {
   const { product, booking, type } = item;
+  const [saved, setSaved] = useState(false);
 
-  // ===== SAFE DATA =====
+  // ===== BASIC DATA =====
   const brand = product?.designer || "";
   const name = product?.title || "";
   const desc = product?.description || "";
   const condition = product?.condition?.grade || "";
 
-  // ===== PRICE LOGIC (BASIC FOR NOW) =====
-  let price = "";
-  let priceNote = "";
-  let eyebrow = "";
+  const navigate = useNavigate();
 
-  if (type === "rental") {
-    const rent = product?.rent;
-    const window = rent?.pricing?.windows?.[0] ;
+  // ===== EDIT DATE HANDLER (ONLY FOR RENTAL) =====
+  const handleEditDates = () => {
+    if (type !== "rental") return;
 
-    price = window?.price || 0;
-    priceNote = rent?.pricing?.pricePerDay
-      ? `₹${rent.pricing.pricePerDay} per day`
-      : "";
-    eyebrow = `${window?.days || ""}-day window`;
-  }
-
-  if (type === "new") {
-    price = product?.buy?.pricing?.discountPrice || product?.buy?.pricing?.price;
-    eyebrow = "Purchase";
-  }
-
-  if (type === "preloved") {
-    price = product?.preloved?.pricing?.price;
-    eyebrow = "Preloved";
-  }
-
-  // MODE-AWARE
-  const MODE_COMPONENTS = {
-    rental: {
-      timeline: RentalTimeline,
-      notice: RentalDepositNotice,
-      price: RentalPriceBlock,
-    },
-    preloved: {},
-    new: {},
+    navigate(`/onlyrental/${product.id}`, {
+      state: {
+        booking: {
+          deliveryDate: booking?.deliveryDate,
+          eventDate: booking?.eventDate,
+          returnDate: booking?.returnDate,
+          rentalWindowDays: booking?.rentalWindowDays
+        }
+      }
+    });
   };
 
-  const modeConfig = MODE_COMPONENTS[type];
-
-  const TimelineComponent = modeConfig?.timeline;
-  const NoticeComponent = modeConfig?.notice;
-  const PriceComponent = modeConfig?.price;
-
   return (
-    <div className="cart-item" data-item-id={type}>
+    <div
+      className={`cart-item ${item.removing ? "removing" : ""}`}
+      data-item-id={type}
+    >
 
-      {/* IMAGE */}
+      {/* ================= IMAGE ================= */}
       <div className="cart-item__image">
         <div className="cart-item__thumb">
-
-          {/* REAL PRODUCT IMAGE */}
           <img
-            src={product?.images?.[0]}
-            alt={product?.title}
+            src={product?.images?.[0] || "/placeholder.jpg"}
+            alt={product?.title || "Product image"}
             className="cart-item__img"
           />
 
           {/* MODE TAG */}
           <span className="cart-item__mode-tag">
-            {type}
+            {/* {type} */}
+            {type === "rental" ? "Rent" : type === "preloved" ? "Preloved" : "New"}
           </span>
-
         </div>
       </div>
 
-      {/* CONTENT */}
+      {/* ================= CONTENT ================= */}
       <div className="cart-item__content">
 
-        {/* HEADER */}
+        {/* ================= HEADER ================= */}
         <div className="cart-item__header">
 
           <div className="cart-item__info">
@@ -118,51 +99,87 @@ const CartItem = ({ item }) => {
 
           </div>
 
-          {/* REMOVE // TODO: replace with SVG icon*/}
+          {/* REMOVE BUTTON */}
           <button
             className="cart-item__remove"
-            onClick={() => console.log("open remove dialog")}
+            onClick={() => onRemove(item)}
           >
-            ×
+            <X size={12} strokeWidth={1.8} />
           </button>
 
         </div>
 
-        {/* TIMELINE */}
-        {TimelineComponent && (
-          <div className="cart-item__timeline">
-            <TimelineComponent booking={booking} product={product} />
-          </div>
+        {/* ================= RENTAL MODE ================= */}
+        {type === "rental" && (
+          <>
+            <div className="cart-item__timeline">
+              <RentalTimeline booking={booking} product={product} />
+            </div>
+
+            <RentalDepositNotice product={product} />
+
+            <div className="cart-item__footer">
+              <RentalPriceBlock product={product} booking={booking} />
+
+              <div className="cart-item__actions">
+                <span
+                  className={`cart-item__action ${saved ? "saved" : ""}`}
+                  onClick={() => setSaved(true)}
+                >
+                  {saved ? "Saved ✓" : "Save to wishlist"}
+                </span>
+
+                <span
+                  className="cart-item__action"
+                  onClick={handleEditDates}
+                >
+                  Edit dates
+                </span>
+              </div>
+            </div>
+          </>
         )}
 
-        {/* NOTICE */}
-        {NoticeComponent && (
-          <NoticeComponent product={product} />
+        {/* ================= PRELOVED MODE ================= */}
+        {type === "preloved" && (
+          <>
+            <PrelovedDisclosure product={product} />
+            <PrelovedFinalNote product={product} />
+
+            <div className="cart-item__footer">
+              <PrelovedPriceBlock product={product} />
+
+              <div className="cart-item__actions">
+                <span
+                  className={`cart-item__action ${saved ? "saved" : ""}`}
+                  onClick={() => setSaved(true)}
+                >
+                  {saved ? "Saved ✓" : "Save to wishlist"}
+                </span>
+              </div>
+            </div>
+          </>
         )}
 
-        {/* FOOTER */}
-        <div className="cart-item__footer">
+        {/* ================= NEW MODE ================= */}
+        {type === "new" && (
+          <>
+            <div className="cart-item__footer">
+              <NewPriceBlock product={product} />
 
-          {/* PRICE-BLOCK */}
-          {PriceComponent && (
-            <PriceComponent product={product} booking={booking} />
-          )}
-
-          <div className="cart-item__actions">
-            <span className="cart-item__action">Save to wishlist</span>
-
-            <span
-              className="cart-item__action"
-              onClick={() => console.log("open calendar")}
-            >
-              Edit dates
-            </span>
-          </div>
-
-        </div>
+              <div className="cart-item__actions">
+                <span
+                  className={`cart-item__action ${saved ? "saved" : ""}`}
+                  onClick={() => setSaved(true)}
+                >
+                  {saved ? "Saved ✓" : "Save to wishlist"}
+                </span>
+              </div>
+            </div>
+          </>
+        )}
 
       </div>
-
     </div>
   );
 };

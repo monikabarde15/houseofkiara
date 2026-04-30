@@ -1,0 +1,507 @@
+/* =========================
+   ORDER SUMMARY CONTAINER
+   ========================= */
+
+.order-summary {
+
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+/* =========================
+   SUMMARY SECTION 
+   ========================= */
+
+.summary-section-head {
+  display: flex;
+  align-items: center;
+
+  /* font-size: 8px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #B0A898; */
+
+  padding-top: 32px;
+  margin-bottom: 16px;
+
+  position: relative;
+}
+
+.summary-section-head::after {
+  content: "";
+  /* flex: 1; */
+
+  height: 1px;
+  background: #F0EAE0;
+
+  margin-left: 10px;
+}
+
+.summary-dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.summary-label {
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 400;
+
+  color: #B0A898;
+}
+
+
+/* Rental */
+.summary-section-head.rental .summary-dot {
+  background: #6B7E5A;
+}
+
+/* Preloved */
+.summary-section-head.preloved .summary-dot {
+  background: #893860;
+}
+
+/* New */
+.summary-section-head.new .summary-dot {
+  background: #2A4466;
+}
+
+
+/* =========================
+   SUMMARY ROW
+   ========================= */
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+   padding: 16px 0;
+
+  border-top: 1px solid #F0EAE0;
+}
+
+.summary-left {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+  max-width: 70%;
+}
+
+.summary-title {
+  font-size: 14px;
+  line-height: 1.5;
+
+  color: #3C3529;
+
+  /* prevents overflow */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-sub {
+  font-size: 10px;
+  line-height: 1.4;
+
+  color: #B0A898;
+}
+
+.summary-value {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  font-weight: 400;
+
+  color: #18140F;
+
+  text-align: right;
+}
+
+
+/* =========================
+   ROW VARIANTS
+   ========================= */
+
+   /* DISCOUNT (green) */
+.summary-row.discount .summary-value {
+  color: #6B7E5A;
+}
+
+/* DEPOSIT (amber) */
+.summary-row.deposit .summary-value {
+  color: #9A7010;
+}
+
+.summary-row.deposit .summary-title {
+  color: #B0A898;
+}
+
+.summary-row.dim .summary-title {
+  color: #B0A898;
+}
+.summary-row.deposit .summary-sub {
+  color: #B0A898;
+}
+
+/*  */
+
+/* =========================
+DELIVERY BREAKDOWN
+========================= */
+
+
+.summary-row.dim .summary-value {
+  color: #B0A898;
+}
+
+
+
+/* =========================
+   GST BREAKDOWN
+   ========================= */
+
+/* GST ROW */
+.gst-row {
+  cursor: pointer;
+}
+
+.gst-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gst-title {
+  font-size: 13px;
+}
+.gst-icon {
+  width: 12px;
+  height: 12px;
+  stroke-width: 1.5;
+  color: #B0A898;
+}
+
+.gst-inline-note {
+  font-size: 10px;
+  color: #B0A898;
+  margin-left: 4px;
+}
+.gst-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* CARET */
+.gst-caret {
+  margin-left: 6px;
+  font-size: 9px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 12px;
+  height: 12px;
+  stroke-width: 1.5;
+}
+
+.gst-caret.open {
+  transform: rotate(180deg);
+}
+
+/* WRAPPER */
+.gst-wrapper {
+  margin-top: 4px;
+}
+
+/* DETAIL CONTAINER */
+.gst-detail {
+  margin-top: 8px;
+  max-height: 0;
+    overflow: visible;
+  
+    opacity: 0;
+    transform: translateY(-4px);
+  
+    transition:
+      max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.2s ease,
+      transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gst-detail.vis {
+  max-height: 500px; /* enough to fit content */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* GST ITEM */
+.gst-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 8px 0;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+
+
+/* =========================
+   GST BADGES (SPEC EXACT)
+   ========================= */
+
+.gst-badge {
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+
+  border-radius: 100px;
+  padding: 2px 8px;
+
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Rental */
+.gst-badge.rental {
+  background: rgba(90, 117, 83, 0.1);
+  color: #6B7E5A;
+}
+
+/* Preloved */
+.gst-badge.preloved {
+  background: rgba(137, 56, 96, 0.1);
+  color: #893860;
+}
+
+/* New */
+.gst-badge.new {
+  background: rgba(42, 68, 102, 0.1);
+  color: #2A4466;
+}
+
+/* TEXT */
+.gst-text {
+  font-size: 10px;
+  color: #6F675A;;
+}
+
+/* INFO ICON */
+.gst-info {
+  width: 14px;
+  height: 14px;
+
+  border-radius: 50%;
+  border: 1px solid #F0EAE0;
+
+  font-size: 7.5px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #B0A898;
+
+  position: relative;
+  cursor: pointer;
+  z-index: 10;
+}
+.gst-info-icon {
+  width: 12px;
+  height: 12px;
+  stroke-width: 1.5;
+  color: #B0A898;
+}
+/* VALUE */
+.gst-value {
+  font-size: 10.5px;
+  color: #18140F;
+}
+
+/* NOTE */
+.gst-note {
+  font-size: 10px;
+  line-height: 1.75;
+  color: #3C3529;;
+
+  padding: 16px 0 8px;
+}
+
+
+/* TOOLTIP */
+
+.gst-tooltip {
+  position: absolute;
+
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 220px;
+
+  background: #18140F;
+  color: #C8C0B4;
+
+  font-size: 9.5px;
+  line-height: 1.4;
+
+  padding: 10px 12px;
+  border-radius: 5px;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.2s ease;
+
+  z-index: 999;
+}
+
+.gst-tooltip::after {
+  content: "";
+
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border-width: 6px;
+  border-style: solid;
+
+  border-color: #18140F transparent transparent transparent;
+}
+.gst-info:hover .gst-tooltip {
+  opacity: 1;
+}
+
+.gst-embedded {
+  margin-left: 2px;
+}
+
+
+/* =========================
+   GRAND TOTAL
+   ========================= */
+
+
+.grand-total {
+  margin-top: 32px;
+  padding-top: 32px;
+
+  border-top: 1px solid #18140F;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.grand-total > div:first-child {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  color: #18140F;
+}
+
+.grand-total > div:nth-child(2) {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 44px;
+  font-weight: 300;
+  color: #18140F;
+}
+
+.grand-sub {
+  font-size: 9.5px;
+  color: #B0A898;
+}
+
+
+/* SUMMARY FINAL NOTES */
+
+.summary-notes {
+  margin-top: 20px;
+}
+
+.summary-notes P strong{
+    color: #C2A040 ;
+}
+
+.summary-notes p {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #B0A898;
+
+  margin-bottom: 10px;
+}
+
+/* CTA BUTTON */
+
+.checkout-btn {
+  margin-top: 16px;
+
+  width: 100%;
+  padding: 14px;
+
+  background: linear-gradient(
+    90deg,
+    #18140F,
+    #2B2118
+  );
+
+  color: #C8C0B4;
+
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+
+  border: none;
+  cursor: pointer;
+  position: relative;
+    overflow: hidden;
+}
+
+/* SHIMMER */
+.checkout-btn::after {
+  content: "";
+  position: absolute;
+
+  top: 0;
+  left: -80%;   
+
+  width: 100%;
+  height: 100%;
+
+  background: linear-gradient(
+    105deg,
+    transparent,
+    rgba(255, 255, 255, 0.18),
+    transparent
+  );
+
+  transition: left 0.6s linear;  
+}
+
+.checkout-btn:hover::after {
+  left: 130%;   
+}
+
+/* SSL NOTES */
+.ssl-note {
+  margin-top: 10px;
+
+  font-size: 9px;
+  color: #B0A898;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.ssl-icon {
+  opacity: 0.7;
+  height: 12px;
+  width: 12px;
+  stroke-width: 1.5;
+}
+

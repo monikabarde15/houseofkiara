@@ -13,6 +13,15 @@
   border-bottom: 1px solid #F0EAE0;
 }
 
+
+/* cart item removing */
+.cart-item.removing {
+  opacity: 0;
+  transform: translateX(-14px);
+  transition: all 0.3s ease;
+}
+
+
 /* ============================= */
 /* IMAGE */
 /* ============================= */
@@ -44,7 +53,7 @@
   padding: 7px 0;
 
   font-size: 6.5px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   font-weight: 500;
 
@@ -75,6 +84,9 @@
 
 .cart-item__info {
   max-width: 520px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 /* BRAND */
@@ -84,6 +96,7 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: #C9A96E;
+  margin-bottom: 6px;
 }
 
 /* NAME */
@@ -93,6 +106,7 @@
   font-size: 22px;
   margin: 6px 0;
   color: #18140F;
+  margin-bottom: 5px;
 }
 
 /* DESCRIPTION */
@@ -100,7 +114,8 @@
 .cart-item__desc {
   font-size: 11.5px;
   color: #B0A898;
-  line-height: 1.5;
+  line-height: 1.6;
+  margin-bottom: 10px;
 }
 
 /* ============================= */
@@ -111,7 +126,7 @@
   margin-top: 18px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 
   font-size: 11px;
   font-weight: 400;
@@ -119,8 +134,8 @@
 }
 
 .cart-item__meta-dot {
-  font-size: 10px;
-  color: #F0EAE0;
+  color: #D8D0C4;
+  font-size: 9px;
 }
 
 /* condition states */
@@ -162,6 +177,10 @@
   border-color: #B85C38;
 }
 
+.cart-item__remove:hover svg {
+  stroke: #B85C38;
+}
+
 /* Timeline */
 .cart-item__timeline {
   margin-top: 32px;
@@ -174,12 +193,12 @@
 .cart-item__footer {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: baseline;
 
   margin-top: 48px;
   padding-top: 24px;
 
-  /* border-top: 1px dashed #D8D0C4; */
+  border-top: 1px dashed #D8D0C4;
 }
 
 /* ============================= */
@@ -224,17 +243,22 @@
 
 .cart-item__action {
   font-size: 10px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #8A7E72;
-    border-bottom: 1px solid transparent;
+  border-bottom: 1px solid transparent;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .cart-item__action:hover {
-  color: #C9A96E;
-  border-bottom: 1px solid #18140F;
+  color: #3C3529;
+  border-bottom: 1px solid #B0A898;
+}
+
+
+.cart-item__action.saved {
+  color: #6B7E5A;   /* sage */
 }
 
 /* ========MODE-BASED BACKGROUND========= */

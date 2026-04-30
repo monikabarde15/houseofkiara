@@ -9,7 +9,9 @@ export default function RentalCalendar({
   setSelectedEnd
 }) {
 
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [currentDate, setCurrentDate] = useState(
+        selectedStart || new Date()
+    );
 
    
     const year = currentDate.getFullYear();
@@ -89,18 +91,30 @@ export default function RentalCalendar({
 
         const date = new Date(year, month, day);
 
-        return date > selectedStart && date < selectedEnd;
+        const start = new Date(selectedStart);
+        start.setHours(0, 0, 0, 0);
+
+        const end = new Date(selectedEnd);
+        end.setHours(0, 0, 0, 0);
+
+        return date > start && date < end;
     };
 
-    const isStart = (day) =>
-        selectedStart &&
-        day === selectedStart.getDate() &&
-        month === selectedStart.getMonth();
+    const isStart = (day) => {
+        if (!selectedStart || !day) return false;
 
-    const isEnd = (day) =>
-        selectedEnd &&
-        day === selectedEnd.getDate() &&
-        month === selectedEnd.getMonth();
+        const date = new Date(year, month, day);
+
+        return date.toDateString() === selectedStart.toDateString();
+    };
+
+    const isEnd = (day) => {
+        if (!selectedEnd || !day) return false;
+
+        const date = new Date(year, month, day);
+
+        return date.toDateString() === selectedEnd.toDateString();
+    };
 
     // COUNT THE DAYS
     const getDays = () => {

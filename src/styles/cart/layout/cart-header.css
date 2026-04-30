@@ -11,7 +11,8 @@
 .cart-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: baseline;
+  
 }
 
 /* ============================= */
@@ -23,12 +24,12 @@
   font-weight: 300;
   font-size: clamp(48px, 5.5vw, 72px);
   letter-spacing: -0.015em;
-  color: #18140F;
+  color: var(--ink);
 }
 
 .cart-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: var(--gold);
 }
 
 /* ============================= */
@@ -37,8 +38,8 @@
 
 .cart-count {
   font-family: "DM Sans", sans-serif;
-  font-size: 12px;
-  letter-spacing: 0.2em;
+  font-size: 8.5px;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: var(--ink-4); 
 }

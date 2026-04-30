@@ -1,0 +1,33 @@
+/* =========================
+   BASE TYPOGRAPHY
+   ========================= */
+
+body {
+  font-family: "DM Sans", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--warm-white);
+}
+
+/* =========================
+   DISPLAY FONT
+   ========================= */
+
+.display-font {
+  font-family: "Cormorant Garamond", Georgia, serif;
+}
+
+/* =========================
+   TEXT STYLES
+   ========================= */
+
+.text-muted {
+  color: var(--ink-4);
+}
+
+.text-secondary {
+  color: var(--ink-2);
+}
+
+.text-gold {
+  color: var(--gold);
+}

@@ -1,4 +1,4 @@
-const cartItems = [
+ const cartItems = [
   {
     id: 1,
     type: "rental",
@@ -18,3 +18,5 @@ const cartItems = [
     price: 18500
   }
 ];
+
+export default cartItems;

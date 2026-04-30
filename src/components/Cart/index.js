@@ -6,7 +6,6 @@ export { default as CartHeader } from "./layout/CartHeader";
 export { default as CartItem } from "./items/CartItem";
 export { default as RentalTimeline } from "./items/modes/rental/RentalTimeline";
 export { default as RentalDepositNotice } from "./items/modes/rental//RentalDepositNotice";
-export { default as PriceBlock } from "./items/common/PriceBlock";
 
 export { default as OrderSummary } from "./summary/OrderSummary";
 export { default as GSTBreakdown } from "./summary/GSTBreakdown";

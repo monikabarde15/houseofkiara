@@ -208,6 +208,24 @@ The dupatta is pristine. The blouse fits a 32" bust; the skirt waist is adjustab
         ]
       },
 
+       // ===== PRELOVED =====
+      preloved: {
+        enabled: true,
+
+        pricing: {
+          price: 120000,
+          originalPrice: 240000
+        },
+
+        condition: {
+          label: "Excellent Condition",
+          rating: 4.5
+        },
+        disclosure: "Worn once for a reception. No alterations made. Minor organza pull on pallu border — photographed and disclosed. Blouse fabric unstitched, included.",
+        finalSaleNote:"Final sale. Pre-loved pieces cannot be returned once dispatched. Please review all condition notes and photographs before purchasing.",
+
+      },
+
       // ===== BUY =====
       buy: {
         enabled: true,
@@ -223,20 +241,7 @@ The dupatta is pristine. The blouse fits a 32" bust; the skirt waist is adjustab
         }
       },
 
-      // ===== PRELOVED =====
-      preloved: {
-        enabled: false,
-
-        pricing: {
-          price: 120000,
-          originalPrice: 240000
-        },
-
-        condition: {
-          label: "Excellent Condition",
-          rating: 4.5
-        }
-      },
+     
 
       // ===== TRY (FUTURE) =====
       try: {
@@ -589,12 +594,20 @@ The dupatta is pristine. The blouse fits a 32" bust; the skirt waist is adjustab
 /* ================= FINAL HELPER ================= */
 export const makeProductDetail = (item) => ({
   ...item,
-  type: item.tag?.toLowerCase(),
+  type:
+    item.tag === "RENT"
+      ? "rental"
+      : item.tag === "PRELOVED"
+        ? "preloved"
+        : item.tag === "NEW"
+          ? "new"
+          : "rental",
   title: item.name,
   subTitle: "Anarkali Set",
   rent: item.modes?.rent || null,
   preloved: item.modes?.preloved || null,
   buy: item.modes?.buy || null,
+  new: item.modes?.buy || null,
 
 
   // ✅ ADD THIS (MISSING DATA FIX)

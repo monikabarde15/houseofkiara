@@ -1,0 +1,96 @@
+
+/* ================= SEPARATOR ================= */
+.items-end-sep {
+  height: 1px;
+  background: #f0eae0;
+  margin: 48px 0;
+}
+
+/* ================= CONTAINER ================= */
+.promo-zone {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* ================= LABEL ================= */
+.promo-label {
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  color: #3f3a36;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ================= INPUT ================= */
+.promo-input {
+  flex: 1;
+  border: none;
+  border-bottom: 1px solid #f0eae0;
+  background: transparent;
+  padding: 8px 0;
+
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Placeholder (non-uppercase) */
+.promo-input::placeholder {
+  text-transform: none;
+  color: #e8e0d4;
+}
+
+/* Focus (gold) */
+.promo-input:focus {
+  outline: none;
+  border-bottom-color: #c9a96e;
+}
+
+/* Success */
+.promo-input.success {
+  border-bottom-color: #6b7e5a;
+}
+
+/* Error */
+.promo-input.error {
+  border-bottom-color: #b85c38;
+}
+
+/* Disabled */
+.promo-input:disabled {
+  opacity: 0.6;
+}
+
+/* ================= BUTTON ================= */
+.promo-btn {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 400;
+
+  background: none;
+  border: none;
+  /* border-bottom: 1px solid #3f3a36; */
+  cursor: pointer;
+}
+
+/* ================= FEEDBACK ================= */
+.promo-feedback {
+  margin-top: 12px;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+/* Success */
+.promo-feedback.success {
+  color: #6B7E5A;
+}
+
+/* Error */
+.promo-feedback.error {
+  color: #B85C38;
+}

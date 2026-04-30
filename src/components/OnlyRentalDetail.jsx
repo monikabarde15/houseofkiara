@@ -1,5 +1,6 @@
 // src\components\OnlyRentalDetail.jsx
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { Heart, Star, TrendingUp, Calendar, MessageCircleCheck, Shield, ArrowRight, X, Plus, Truck } from "lucide-react";
 import { useLocation, useParams } from "react-router-dom";
@@ -30,8 +31,11 @@ const gradeLabel = {
 
 
 export default function RentalProductDetail() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+
+  const incomingBooking = location.state?.booking || null; // if coming from cart page
 
   // ===== PRODUCT FETCH =====
   let product;
@@ -46,8 +50,25 @@ export default function RentalProductDetail() {
   const [activeImage, setActiveImage] = useState(product.images?.[0]);
   const [selectedWindow, setSelectedWindow] = useState("standard");
 
-  const [selectedStart, setSelectedStart] = useState(null);
-  const [selectedEnd, setSelectedEnd] = useState(null);
+  const parseLocalDate = (dateStr) => {
+    const [year, month, day] = dateStr.split("-");
+    return new Date(year, month - 1, day);
+  };
+
+  // Both logic of reset everytime and if comming from cart to pdp page
+  const [selectedStart, setSelectedStart] = useState(
+    incomingBooking?.deliveryDate
+      ? parseLocalDate(incomingBooking.deliveryDate)
+      : null
+  );
+
+  // Both logic of reset everytime and if comming from cart to pdp page
+  const [selectedEnd, setSelectedEnd] = useState(
+    incomingBooking?.returnDate
+      ? parseLocalDate(incomingBooking.returnDate)
+      : null
+  );
+
   const [selectedSize, setSelectedSize] = useState(null);
   const [openSections, setOpenSections] = useState(["details"]);
 
@@ -78,6 +99,46 @@ export default function RentalProductDetail() {
   // for Dot color
   const grade = product.condition?.grade || "pristine";
 
+  const formatDate = (date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
+
+  const eventDate = new Date(selectedStart);
+  eventDate.setDate(eventDate.getDate() + 2); // delivery → event
+
+  const handleConfirmBooking = () => {
+    if (!selectedStart || !selectedEnd) return;
+
+    const newItem = {
+      id: Date.now(),
+      type: "rental",
+
+      product,
+
+      booking: {
+        size: selectedSize || "M",
+
+        deliveryDate: formatDate(selectedStart),
+
+        eventDate: formatDate(eventDate),
+
+        returnDate: formatDate(selectedEnd),
+
+        rentalWindowDays:
+          Math.ceil((selectedEnd - selectedStart) / (1000 * 60 * 60 * 24)) + 1
+      }
+    };
+
+    navigate("/cart", {
+      state: {
+        newItem
+      }
+    });
+  };
+
   return (
     <>
       <section className="pdp">
@@ -100,11 +161,11 @@ export default function RentalProductDetail() {
 
             {/* LEFT */}
             <Col md={6} className="rental-pdp-left-wrap">
-      
+
               <GalleryColumn
                 images={product.images}
                 variant="rent"
-                video={product.video} 
+                video={product.video}
               />
 
             </Col>
@@ -131,7 +192,7 @@ export default function RentalProductDetail() {
 
                   {[1, 2, 3, 4, 5].map((s) => (
                     <Star
-                    className="rental-star-icon"
+                      className="rental-star-icon"
                       key={s}
                       size={16}
                       fill={product.rating >= s ? "#c5a46d" : "none"}
@@ -260,6 +321,7 @@ export default function RentalProductDetail() {
                   <button
                     className={`rental-cta-primary ${selectedStart && selectedEnd ? "active" : "disabled"}`}
                     disabled={!(selectedStart && selectedEnd)}
+                    onClick={handleConfirmBooking}
                   >
                     <span className="rental-cta-icon"><Calendar /></span>
                     CONFIRM BOOKING

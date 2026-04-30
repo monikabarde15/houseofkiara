@@ -8,5 +8,26 @@
 }
 
 .cart-right {
-  position: relative;
+  position: sticky;
+  top: 104px;
+  align-self: start;
+}
+
+
+[data-rise] {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: riseUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-rise="1"] { animation-delay: 0ms; }
+[data-rise="2"] { animation-delay: 80ms; }
+[data-rise="3"] { animation-delay: 160ms; }
+[data-rise="4"] { animation-delay: 240ms; }
+
+@keyframes riseUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

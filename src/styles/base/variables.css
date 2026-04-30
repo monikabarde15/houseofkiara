@@ -1,0 +1,48 @@
+/* =========================
+   COLOR TOKENS (HOK SPEC)
+   ========================= */
+
+:root {
+  --warm-white: #FFFEFB;
+  --cream: #FAF7F2;
+
+  --ink: #18140F;
+  --ink-2: #3C3529;
+  --ink-3: #8A7E72;
+  --ink-4: #B0A898;
+
+  --border: #E8E0D4;
+  --border-light: #F0EAE0;
+
+  --gold: #C9A96E;
+  --gold-light: #E8D5B0;
+
+  --terracotta: #B85C38;
+
+  --sage: #6B7E5A;
+  --sage-bg: #EFF4EC;
+
+  --mulberry: #893860;
+  --mulberry-bg: #F5EEF2;
+
+  --navy: #2A4466;
+  --navy-bg: #EEF1F7;
+
+  --amber: #C2A040;
+  --amber-bg: #FDF8EE;
+}
+
+/* =========================
+   SPACING TOKENS
+   ========================= */
+
+:root {
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 64px;
+  --s7: 96px;
+  --s8: 128px;
+}

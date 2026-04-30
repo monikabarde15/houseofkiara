@@ -1,0 +1,62 @@
+/* =========================
+   POLICY STRIP CONTAINER
+   ========================= */
+
+.policy-strip {
+  padding-top: 48px;
+  border-top: 1px solid #F0EAE0;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 96px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 72px;
+}
+
+/* =========================
+   ITEM
+   ========================= */
+
+.policy-item {
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================
+   NUMBER
+   ========================= */
+
+.policy-number {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: #C9A96E ;
+  margin-bottom: 24px;
+}
+
+/* =========================
+   TITLE
+   ========================= */
+
+.policy-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #18140F;
+  margin-bottom: 16px;
+}
+
+/* =========================
+   TEXT
+   ========================= */
+
+.policy-text {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 300;
+
+  line-height: 1.9;
+
+  color: #B0A898 ;
+}

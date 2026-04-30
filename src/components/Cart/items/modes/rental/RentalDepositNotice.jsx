@@ -1,5 +1,5 @@
 import React from "react";
-import "../../../../../styles/cart/items/deposit-notice.css";
+import "../../../../../styles/cart/items/disclosure-notice.css";
 
 const DepositNotice = ({ product }) => {
 
@@ -18,7 +18,7 @@ const DepositNotice = ({ product }) => {
                   ₹{amount} refundable security deposit
               </strong>
 
-              {" "}— not collected at checkout. Our team will reach out via WhatsApp before dispatch. Refunded in full within {returnDays}–5 business days of return inspection.
+              {" "}— not collected at checkout. Our team will reach out via WhatsApp before dispatch. Refunded in full within 3–5 business days of return inspection.
           </p>
 
     </div>

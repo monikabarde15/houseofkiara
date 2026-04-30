@@ -7,28 +7,34 @@ const formatPrice = (num) =>
 const RentalPriceBlock = ({ product, booking }) => {
   const rent = product?.rent;
 
-  const window = rent?.pricing?.windows?.[0];
+  // SOURCE OF TRUTH
+  const days = booking?.rentalWindowDays || 0;
 
-  const totalPrice = window?.price || 0;
+  // PER DAY PRICE
   const perDay = rent?.pricing?.pricePerDay || 0;
-  const days = window?.days || 0;
+
+  // TOTAL PRICE (MAIN CALCULATION)
+  const totalPrice = days * perDay;
+
+  //  Safety fallback (avoid showing ₹0 UI)
+  if (!days || !perDay) return null;
 
   return (
     <div className="cart-price cart-price--rental">
 
       {/* EYEBROW */}
       <div className="cart-price__eyebrow">
-        Rental fee · {days}-day window
+        Rental fee · {days}-DAY WINDOW
       </div>
 
       {/* PRICE */}
       <div className="cart-price__value">
-        <sup>₹</sup>{formatPrice(totalPrice)}
+        ₹{formatPrice(totalPrice)}
       </div>
 
       {/* NOTE */}
       <div className="cart-price__note">
-        ₹{formatPrice(perDay)} per day
+        ₹{formatPrice(perDay)} / day
       </div>
 
     </div>

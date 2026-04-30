@@ -1,3 +1,6 @@
+@import "../base/variables.css";
+@import "../base/typography.css";
+
 /* ============================= */
 /* CART PAGE */
 /* ============================= */
@@ -5,6 +8,8 @@
 .cart-page {
   background: #FFFEFB; /* warm white */
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ============================= */
@@ -13,6 +18,7 @@
 
 .cart-container {
   max-width: 1380px;
+  width: 100%; 
   margin: 0 auto;
   padding: 0 64px;
 }
@@ -36,4 +42,5 @@
   grid-template-columns: 1fr 340px;
   gap: 96px;
   padding-top: 64px;
+  margin-bottom: 96px;
 }

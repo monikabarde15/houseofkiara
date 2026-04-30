@@ -1,10 +1,11 @@
+// src\pages\Cart\CartPage.jsx
+
 import React from "react";
 import "../../styles/pages/cart.css";
 
 // Components
 import {
   CartLayout,
-  CartHeader,
   PolicyStrip
 } from "../../components/Cart";
 
@@ -14,7 +15,7 @@ const CartPage = () => {
     <div className="cart-page">
 
       {/* Page Header */}
-      <CartHeader />
+      {/* <CartHeader /> */}
 
       {/* Main Layout */}
       <CartLayout />

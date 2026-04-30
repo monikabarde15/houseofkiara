@@ -6,11 +6,13 @@ import "../../../../../styles/cart/items/rental-timeline.css";
 /* ============================= */
 
 const formatDate = (date) => {
-    if (!date) return "";
-    return new Date(date).toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short"
-    });
+  if (!date) return "";
+
+  const d = new Date(date);
+  const day = d.getDate();
+  const month = d.toLocaleString("en-IN", { month: "short" });
+
+  return `${day} ${month}`;
 };
 
 const formatDay = (date) => {
