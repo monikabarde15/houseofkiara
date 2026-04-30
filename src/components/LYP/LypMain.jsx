@@ -1,4 +1,3 @@
-// src\components\LYP\LypMain.jsx
 import React from "react";
 
 // Components
