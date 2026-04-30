@@ -2,8 +2,8 @@ import React from "react";
 
 // Components
 import LypBreadcrumb from "./Breadcrumb/LypBreadcrumb";
-import LypHero from "../LYP/hero/LypHero";
-import WizardLayout from "../LYP/Wizard/WizardLayout";
+import LypHero from "./Hero/LypHero";
+import WizardLayout from "./Wizard/WizardLayout";
 
 // CSS 
 import "../../styles/LYP/lypMain.css";
