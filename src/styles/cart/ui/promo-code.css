@@ -1,11 +1,10 @@
 
-/* ================= SEPARATOR ================= */
-.items-end-sep {
-  height: 1px;
-  background: #f0eae0;
-  margin: 48px 0;
-}
 
+/* .items-end-sep {
+  height: 1px;
+  background: #F0EAE0;
+  margin: 48px 0;
+} */
 /* ================= CONTAINER ================= */
 .promo-zone {
   display: flex;
@@ -30,11 +29,11 @@
   border-bottom: 1px solid #f0eae0;
   background: transparent;
   padding: 8px 0;
-
+  font-weight: 300;
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-
+  color: #18140F;
   transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -53,11 +52,13 @@
 /* Success */
 .promo-input.success {
   border-bottom-color: #6b7e5a;
+  border-bottom: 2px solid #6B7E5A;
 }
 
 /* Error */
 .promo-input.error {
   border-bottom-color: #b85c38;
+  border-bottom: 2px solid #B85C38;
 }
 
 /* Disabled */
@@ -74,23 +75,39 @@
 
   background: none;
   border: none;
-  /* border-bottom: 1px solid #3f3a36; */
   cursor: pointer;
+
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.promo-btn:hover {
+  color: #18140F;
+  border-bottom: 1px solid #3C3529;
 }
 
 /* ================= FEEDBACK ================= */
 .promo-feedback {
   margin-top: 12px;
   font-size: 11px;
-  line-height: 1.8;
+  line-height: 1.6;
+  padding-left: 12px;
+  border-left: 2px solid transparent;
+  display: none;
 }
 
 /* Success */
 .promo-feedback.success {
   color: #6B7E5A;
+  border-left-color: #6B7E5A;
 }
 
 /* Error */
 .promo-feedback.error {
   color: #B85C38;
+  border-left-color: #B85C38;
+}
+
+.promo-feedback.show {
+  display: block;
 }

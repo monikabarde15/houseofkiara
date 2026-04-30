@@ -41,7 +41,7 @@ const PromoCode = ({ onApply }) => {
     <div className="promo-wrapper">
 
       {/* Separator (SPEC) */}
-      <div className="items-end-sep"></div>
+      {/* <div className="items-end-sep"></div> */}
 
       <div className="promo-zone">
 
@@ -71,28 +71,38 @@ const PromoCode = ({ onApply }) => {
 
         {/* Button */}
         <button
-          className="promo-btn"
-          onClick={applied ? handleRemove : handleApply}
+          className="promo-btn apply-btn"
+          onClick={handleApply}
+          style={{ display: applied ? "none" : "block" }}
         >
-          {applied ? "REMOVE" : "APPLY"}
+          APPLY
         </button>
 
-      <GoldParticles trigger={celebrate} />
+        <button
+          className="promo-btn remove-btn"
+          onClick={handleRemove}
+          style={{ display: applied ? "block" : "none" }}
+        >
+          REMOVE
+        </button>
+
+
       </div>
 
 
       {/* Feedback */}
       {(applied || error) && (
-        <div
-          className={`promo-feedback ${
-            applied ? "success" : "error"
-          }`}
+        <div className={`promo-feedback 
+  ${applied ? "success show" : ""} 
+  ${error ? "error show" : ""}`}
         >
           {applied
             ? `${applied.code} applied — ${applied.label}`
             : error}
         </div>
       )}
+
+      <GoldParticles trigger={celebrate} />
 
     </div>
   );

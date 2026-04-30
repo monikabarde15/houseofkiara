@@ -16,7 +16,7 @@
 .cart-timeline::before {
   content: "";
   position: absolute;
-  top: 74px; 
+  top: 68px; 
   left: 20px;
   right: 20px;
   height: 1px;
@@ -40,7 +40,7 @@
 /* ============================= */
 
 .cart-timeline__header {
-  height: 54px;
+  height: 64px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,7 +57,7 @@
   text-transform: uppercase;
   color: #6B7E5A;
 
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 
   background: #FFFEFB; /* masks line */
   padding: 0 6px;
@@ -73,8 +73,6 @@
   text-transform: uppercase;
   font-weight: 300;
   color: #8A7E72;
-
-  margin-bottom: 12px; /* gap label → circle */
 }
 
 /* ============================= */
@@ -85,7 +83,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  margin-top: 8px;
+  margin-top: 12px;
   border: 1.5px solid #D8D0C4;
   background: #FFFEFB;
 }
@@ -102,7 +100,7 @@
 /* ============================= */
 
 .cart-timeline__date {
-  margin-top: 12px; 
+  margin-top: 14px; 
   font-family: "Cormorant Garamond", serif;
   font-size: 16px;
   font-weight: 400;

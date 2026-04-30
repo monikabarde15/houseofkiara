@@ -5,10 +5,8 @@
 .mode-separator {
   display: flex;
   align-items: center;
-
   padding-bottom: 24px;
   margin-bottom: 32px;
-
   border-bottom: 1px solid #F0EAE0;
 }
 
@@ -19,6 +17,7 @@
   height: 6px;
   border-radius: 50%;
   margin-right: 18px;
+  transform: translateY(1px);
 }
 
 /* LABEL */
@@ -30,6 +29,8 @@
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: #B0A898;
+  line-height: 1;              
+  transform: translateY(1px);
 }
 
 

@@ -21,7 +21,9 @@ const CartPage = () => {
       <CartLayout />
 
       {/* Bottom Policy Section */}
-      <PolicyStrip />
+      <div className="cart-container">
+        <PolicyStrip />
+      </div>
 
     </div>
   );
