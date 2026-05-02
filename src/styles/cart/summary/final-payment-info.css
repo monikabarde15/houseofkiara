@@ -62,3 +62,83 @@
   border: 1px solid #F0EAE0;
   color: #B0A898;
 }
+
+
+
+@media (max-width: 430px) {
+
+  /* =========================
+     CONTAINER
+  ========================= */
+  .final-payment {
+    margin-top: 24px;
+  }
+
+  /* =========================
+     DIVIDER (ALIGN WITH SYSTEM)
+  ========================= */
+  .final-divider {
+    height: 1px;
+    background: var(--border-light);
+
+    margin-top: 16px;     /* FIX */
+    margin-bottom: 16px;  /* FIX */
+  }
+
+  /* =========================
+     TRUST LIST
+  ========================= */
+  .final-trust-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .final-trust-item {
+    display: flex;
+    align-items: flex-start;   /* FIX (better multi-line alignment) */
+    gap: 8px;
+
+    font-size: 10px;
+    line-height: 1.6;
+
+    color: var(--ink-4);       /* FIX */
+  }
+
+  /* =========================
+     ICON
+  ========================= */
+  .final-icon {
+    width: 12px;
+    height: 12px;
+
+    stroke-width: 1.5;
+    color: var(--gold);        /* FIX */
+
+    opacity: 0.85;
+    flex-shrink: 0;
+    margin-top: 2px;           /* FIX: vertical alignment */
+  }
+
+  /* =========================
+     PAYMENT METHODS
+  ========================= */
+  .final-payments {
+    margin-top: 16px;          /* FIX */
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;                  /* FIX */
+  }
+
+  .final-payments span {
+    font-size: 7.5px;          /* FIX */
+    letter-spacing: 0.08em;
+
+    padding: 4px 7px;          /* FIX */
+
+    border: 1px solid var(--border-light); /* FIX */
+    color: var(--ink-4);       /* FIX */
+  }
+
+}

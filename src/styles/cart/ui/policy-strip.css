@@ -68,3 +68,62 @@
 
   color: #B0A898 ;
 }
+
+
+
+/* ============================= */
+/* MOBILE — POLICY STRIP (SCROLL) */
+/* ============================= */
+
+@media (max-width: 430px) {
+
+  .policy-strip {
+    display: flex;
+    flex-direction: row;
+
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+
+    gap: 20px;
+
+    margin-top: 48px;
+    padding: 24px 20px 32px;
+
+    border-top: 1px solid #F0EAE0;
+
+    /* smooth scroll feel */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* EACH CARD */
+  .policy-item {
+    flex: 0 0 260px;              /* 🔥 fixed card width */
+    scroll-snap-align: start;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* NUMBER */
+  .policy-number {
+    font-size: 9px;
+    margin-bottom: 8px;
+  }
+
+  /* TITLE */
+  .policy-title {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  /* TEXT */
+  .policy-text {
+    font-size: 10.5px;
+    line-height: 1.7;
+  }
+
+  /* OPTIONAL — hide scrollbar (clean UI) */
+  .policy-strip::-webkit-scrollbar {
+    display: none;
+  }
+}

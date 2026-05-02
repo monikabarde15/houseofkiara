@@ -21,7 +21,7 @@ const PromoCode = ({ onApply }) => {
     const appliedData = { code, ...promo };
 
     setApplied(appliedData);
-    onApply(appliedData); // 🔥 important
+    onApply(appliedData); 
     setError("");
 
     // 🔥 trigger animation
@@ -59,7 +59,7 @@ const PromoCode = ({ onApply }) => {
           value={code}
           onChange={(e) => {
             setCode(e.target.value.toUpperCase());
-            if (error) setError("");   // ✅ FIX 2 also here
+            if (error) setError("");   
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !applied) {

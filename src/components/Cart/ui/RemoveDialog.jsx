@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Heart } from "lucide-react";
+import { Heart,X } from "lucide-react";
 import '../../../styles/cart/ui/remove-dialog.css'
 const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
 
@@ -24,12 +24,10 @@ const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
   // Restore focus on close:
 
   useEffect(() => {
-  return () => {
-    if (lastFocusedRef.current) {
+    if (!open && lastFocusedRef.current) {
       lastFocusedRef.current.focus();
     }
-  };
-}, []);
+  }, [open]);
 
 
   // 🔒 Scroll lock (SPEC)
@@ -62,6 +60,7 @@ const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
 
   if (!open) return null;
 
+
   return (
     <div
       className="remove-overlay"
@@ -83,7 +82,7 @@ const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
           onClick={onClose}
           aria-label="Close"
         >
-          ×
+          <X size={14} strokeWidth={1.5} />
         </button>
 
         {/* ITEM PREVIEW STRIP */}
@@ -120,7 +119,7 @@ const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
           <button  ref={primaryBtnRef} className="dialog-btn-primary"
           onClick={onWishlist}>
 
-            <Heart size={13} strokeWidth={1.5} />
+            <Heart className="remove-dialog-icon-wishlist"/>
             Add to Wishlist
           </button>
 

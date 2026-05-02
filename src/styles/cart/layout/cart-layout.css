@@ -31,3 +31,34 @@
     transform: translateY(0);
   }
 }
+
+
+
+/* ============================= */
+/* MOBILE — SINGLE SCROLL LAYOUT */
+/* ============================= */
+
+@media (max-width: 430px) {
+
+  /* 1. Collapse layout into single column */
+  .cart-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 2. Left section takes full width */
+  .cart-left {
+    width: 100%;
+  }
+
+  /* 3. Right section becomes normal flow (NO sticky) */
+  .cart-right {
+    position: static !important;   /* override sticky safely */
+    top: auto;
+    align-self: stretch;
+
+    width: 100%;
+    margin-top: 32px;              /* spacing before summary */
+  }
+
+}

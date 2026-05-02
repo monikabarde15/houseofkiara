@@ -3,8 +3,8 @@ import "../../../styles/cart/ui/mode-separator.css";
 
 const LABEL_MAP = {
   rental: "Rental Booking",
-  preloved: "Preloved Purchase",
-  new: "New Purchase",
+  preloved: "Preloved • Buy to own",
+  new: "Buy New",
 };
 
 const ModeSeparator = ({ type }) => {

@@ -23,7 +23,28 @@ const truncate = (text = "", max = 30) => {
 
 const getSubtitle = (item) => {
     if (item.type === "rental") {
-        return `${item.windowDays}-day window · ${item.startDate}–${item.endDate}`;
+
+        const start = new Date(item.startDate);
+        const end = new Date(item.endDate);
+
+        //  SAFE WINDOW CALCULATION
+        const windowDays =
+            item.windowDays ||
+            Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
+        // FORMAT DATE RANGE (SPEC STYLE)
+        const startMonth = start.toLocaleString("en-IN", { month: "short" });
+        const endMonth = end.toLocaleString("en-IN", { month: "short" });
+
+        const startDay = start.getDate();
+        const endDay = end.getDate();
+
+        const dateRange =
+            startMonth === endMonth
+                ? `${startMonth} ${startDay}–${endDay}`
+                : `${startMonth} ${startDay}–${endMonth} ${endDay}`;
+
+        return `${windowDays}-day window · ${dateRange}`;
     }
 
     if (item.type === "preloved") {

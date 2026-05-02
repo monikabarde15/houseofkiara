@@ -1,3 +1,4 @@
+/* src\styles\pages\cart.css */
 @import "../base/variables.css";
 @import "../base/typography.css";
 
@@ -6,7 +7,8 @@
 /* ============================= */
 
 .cart-page {
-  background: #FFFEFB; /* warm white */
+  background: #FFFEFB;
+  /* warm white */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -18,7 +20,7 @@
 
 .cart-container {
   max-width: 1380px;
-  width: 100%; 
+  width: 100%;
   margin: 0 auto;
   padding: 0 64px;
 }
@@ -43,4 +45,74 @@
   gap: 96px;
   padding-top: 64px;
   margin-bottom: 96px;
+}
+
+
+
+
+
+@media (max-width: 430px) {
+
+  /* ============================= */
+  /* PAGE BASE FIX */
+  /* ============================= */
+
+  .cart-page {
+    display: block;
+  }
+
+  /* ============================= */
+  /* CONTAINER — FIX BOXING ISSUE */
+  /* ============================= */
+
+  .cart-container {
+    max-width: none;        
+    width: 100%;
+    margin: 0;              
+    padding: 0;             
+  }
+
+  /* ============================= */
+  /* MAIN LAYOUT — SINGLE COLUMN */
+  /* ============================= */
+
+  .cart-layout {
+    display: flex;
+    flex-direction: column;
+
+    padding-top: 0;         
+    gap: 0;                 
+    margin-bottom: 0;
+  }
+
+  /* ============================= */
+  /* LEFT SECTION */
+  /* ============================= */
+
+  .cart-left {
+    width: 100%;
+  }
+
+  /* ============================= */
+  /* RIGHT SECTION (SUMMARY) */
+  /* ============================= */
+
+  .cart-right {
+    position: static !important;
+    top: auto;
+    align-self: stretch;
+
+    width: 100%;
+    margin-top: 0;          
+  }
+
+  .cart-header-wrapper,
+  .cart-left,
+  .order-summary {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+
+
 }

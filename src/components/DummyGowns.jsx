@@ -138,7 +138,7 @@ const DummyGowns = () => {
             >
               LYP MAIN
             </button>
-            <button
+            {/* <button
               onClick={() =>
                 navigate(`/cart/`, {
                   state: { product },
@@ -146,7 +146,7 @@ const DummyGowns = () => {
               }
             >
               CART
-            </button>
+            </button> */}
 
           </div>
         </div>

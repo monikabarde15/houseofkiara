@@ -8,7 +8,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 38px;
   font-weight: 300;
-  line-height: 1; /* REQUIRED */
+  line-height: 1; 
   color: #18140F;
 }
 
@@ -37,7 +37,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
   font-weight: 300;
-  color: #B0A898; /* FIXED */
+  color: #B0A898; 
   margin-top: 6px;
 }
 
@@ -69,7 +69,7 @@
 .preloved-price__strike {
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
-  color: #B0A898; /* FIXED */
+  color: #B0A898; 
   text-decoration: line-through;
 }
 
@@ -78,7 +78,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
   font-weight: 400;
-  color: #6B7E5A; /* EXACT SAGE */
+  color: #6B7E5A; 
 }
 
 
@@ -92,9 +92,9 @@
 
 .new-price__label {
   font-family: "DM Sans", sans-serif;
-  font-size: 8.5px; /* FIXED */
+  font-size: 8.5px; 
   font-weight: 300;
-  letter-spacing: 0.22em; /* FIXED */
+  letter-spacing: 0.22em; 
   text-transform: uppercase;
   color: #B0A898;
   margin-bottom: 6px;
@@ -106,4 +106,93 @@
   font-size: 10.5px;
   font-weight: 300;
   color: #B0A898;
+}
+
+
+
+
+/* ============================= */
+/* MOBILE — PRICE BLOCK */
+/* ============================= */
+
+@media (max-width: 430px) {
+
+  /* ============================= */
+  /* FOOTER CONTAINER (IMPORTANT) */
+  /* ============================= */
+
+  .cart-item__footer {
+    display: flex;
+    align-items: flex-end;     
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  /* ============================= */
+  /* EYEBROW (ALL TYPES) */
+  /* ============================= */
+
+  .cart-price__eyebrow,
+  .preloved-price__label,
+  .new-price__label {
+    font-size: 7.5px;          
+    letter-spacing: 0.2em;     
+    text-transform: uppercase;
+    font-weight: 300;
+    color: var(--ink-4);
+    margin-bottom: 4px;
+  }
+
+  /* ============================= */
+  /* MAIN PRICE */
+  /* ============================= */
+
+  .cart-price__value,
+  .preloved-price__main,
+  .new-price__main {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--charcoal);    
+  }
+
+  .cart-price__value sup,
+  .preloved-price__main sup,
+  .new-price__main sup {
+    font-size: 14px;
+    vertical-align: super;
+  }
+
+  /* ============================= */
+  /* PRICE NOTES */
+  /* ============================= */
+
+  .cart-price__note,
+  .new-price__note {
+    font-size: 9.5px;          
+    color: var(--ink-4);
+    margin-top: 4px;
+    font-weight: 300;
+  }
+
+  /* ============================= */
+  /* PRELOVED */
+  /* ============================= */
+
+  .preloved-price__strike {
+    font-size: 11px;
+    color: var(--border);
+    text-decoration: line-through;
+    margin-left: 6px;
+  }
+
+  .preloved-price__savings {
+    font-size: 9.5px;         
+    color: var(--sage);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
 }

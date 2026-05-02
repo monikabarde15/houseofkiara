@@ -118,3 +118,116 @@
   font-weight: 300;
   color: #8A7E72;
 }
+
+
+
+/* ========================= */
+/* MOBILE — RENTAL TIMELINE */
+/* ========================= */
+
+@media (max-width: 430px) {
+
+  /* ============================= */
+  /* TIMELINE CONTAINER */
+  /* ============================= */
+
+  .cart-timeline {
+    margin-top: 20px;
+    display: flex;
+    align-items: flex-start; 
+    position: relative;
+  }
+
+  /* ============================= */
+  /* CONNECTOR LINE */
+  /* ============================= */
+
+  .cart-timeline::before {
+    top: 52px;
+    left: 14px;
+    right: 14px;
+    height: 1px;
+    background: var(--border-light); 
+  }
+
+  /* ============================= */
+  /* NODE HEADER */
+  /* ============================= */
+
+  .cart-timeline__header {
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* ============================= */
+  /* WINDOW LABEL */
+  /* ============================= */
+
+  .cart-timeline__window {
+    font-size: 7px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+
+    color: var(--sage);
+
+    margin-bottom: 7px;
+
+    padding: 0 4px;              
+    background: var(--warm-white);
+  }
+
+  /* ============================= */
+  /* NODE LABEL */
+  /* ============================= */
+
+  .cart-timeline__node-label {
+    font-size: 7.5px;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+  }
+
+  /* ============================= */
+  /* CIRCLE */
+  /* ============================= */
+
+  .cart-timeline__circle {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+
+    margin: 9px 0 11px;
+
+    border: 1.5px solid var(--border);
+    background: var(--warm-white);
+  }
+
+  .cart-timeline__circle--filled {
+    background: var(--sage);
+    border-color: var(--sage);
+  }
+
+  /* ============================= */
+  /* DATE */
+  /* ============================= */
+
+  .cart-timeline__date {
+    font-size: 14px;
+    line-height: 1.2;
+    margin-top: 0;              
+  }
+
+  /* ============================= */
+  /* DAY */
+  /* ============================= */
+
+  .cart-timeline__sub {
+    font-size: 9px;
+    margin-top: 3px;
+    color: var(--ink-4);
+  }
+
+}

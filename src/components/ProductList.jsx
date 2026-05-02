@@ -16,7 +16,7 @@ export const products = [
     oldPrice: "₹3,00,000",
     tag: "RENT",
     condition: {
-      grade: "excellent"   // or "pristine" or "good"
+      grade: "excellent"   // "excellent" or "pristine" or "good"
     },
     prelovedSize: `S (fitted · 32" bust · 26" waist)`,
     colors: [

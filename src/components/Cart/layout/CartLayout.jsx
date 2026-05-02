@@ -1,3 +1,4 @@
+// src\components\Cart\layout\CartLayout.jsx
 import React from "react";
 import "../../../styles/cart/layout/cart-layout.css";
 import { products, makeProductDetail } from "../../ProductList";
@@ -161,6 +162,7 @@ const CartLayout = () => {
         <div className="cart-right" data-rise="2">
           <OrderSummary
             cartItems={activeItems}
+            activePromo={activePromo}
           />
         </div>
 

@@ -1,3 +1,4 @@
+// src\utils\cart\promo.js
 export const PROMO_CODES = {
   KAIRA10: {
     type: "percent",

@@ -49,3 +49,35 @@
 .mode-separator[data-type="new"] .mode-dot {
   background: #2A4466;
 }
+
+
+/* ========================= */
+/* MOBILE — MODE SEPARATOR */
+/* ========================= */
+
+@media (max-width: 430px) {
+
+  .mode-separator {
+    display: flex;
+    align-items: center;
+    gap: 12px;                        /* FIX: use gap instead of margin */
+
+    padding-bottom: 16px;
+    margin-bottom: 20px;              /* FIX: exact spec value */
+    /* padding-top: 12px; */
+    border-bottom: 1px solid var(--border-light); /* FIX: correct token */
+  }
+
+  .mode-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .mode-label {
+    font-size: 8px;
+    letter-spacing: 0.26em;           /* FIX: exact spec */
+    text-transform: uppercase;
+  }
+
+}

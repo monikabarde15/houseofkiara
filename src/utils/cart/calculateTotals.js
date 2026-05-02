@@ -1,3 +1,4 @@
+// src\utils\cart\calculateTotals.js
 import { calculateGST } from "./gstCalculator";
 import { applyPromoDiscount } from "./applyPromo";
 
@@ -102,7 +103,7 @@ export const calculateTotals = (cartItems, activePromo) => {
 
   const grandTotal = Math.max(
     0,
-    subtotal - discount + rentalGST + prelovedGST
+    subtotal - discount + rentalGST + prelovedGST + newGST
   );
 
   return {

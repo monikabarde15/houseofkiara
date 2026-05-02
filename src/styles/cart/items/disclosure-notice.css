@@ -23,6 +23,7 @@
   color: #8A6010; /* warm amber */
 }
 
+
 /* ============================= */
 /* PRELOVED DISCLOSURE */
 /* ============================= */
@@ -50,6 +51,7 @@
   font-weight: 300;
 }
 
+
 /* ============================= */
 /* PRELOVED FINAL NOTE */
 /* ============================= */
@@ -74,4 +76,72 @@
 
 .preloved-final-note__body {
   font-weight: 300;
+}
+
+
+
+@media (max-width: 430px) {
+
+  /* ============================= */
+  /* BASE NOTICE (ALL TYPES) */
+  /* ============================= */
+
+  .cart-deposit,
+  .preloved-disclosure,
+  .preloved-final-note {
+    margin-top: 16px;
+    padding: 12px 0 12px 14px;
+
+    border-left: 2px solid;
+
+    font-size: 10.5px;
+    line-height: 1.75;
+    font-weight: 300;
+
+    color: var(--muted);
+  }
+
+  /* ============================= */
+  /* STACKED NOTICES FIX */
+  /* ============================= */
+
+  .cart-deposit + .preloved-disclosure,
+  .preloved-disclosure + .preloved-final-note {
+    margin-top: 10px; /* FIX: stacked spacing */
+  }
+
+  /* ============================= */
+  /* VARIANTS */
+  /* ============================= */
+
+  /* AMBER (Deposit) */
+  .cart-deposit {
+    border-left-color: var(--amber-notice); 
+  }
+
+  .cart-deposit__amount {
+    font-weight: 400;
+    color: var(--amber-notice-text); 
+  }
+
+  /* ROSE (Disclosure) */
+  .preloved-disclosure {
+    border-left-color: var(--mulberry); 
+  }
+
+  .preloved-disclosure__label {
+    font-weight: 400;
+    color: var(--mulberry);
+  }
+
+  /* SLATE (Final Note) */
+  .preloved-final-note {
+    border-left-color: var(--border-light);
+  }
+
+  .preloved-final-note__label {
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+
 }
