@@ -54,65 +54,50 @@
 @media (max-width: 430px) {
 
   /* ============================= */
-  /* PAGE BASE FIX */
+  /* PAGE BASE */
   /* ============================= */
-
   .cart-page {
     display: block;
   }
 
   /* ============================= */
-  /* CONTAINER — FIX BOXING ISSUE */
+  /* CONTAINER — FULL WIDTH */
   /* ============================= */
-
   .cart-container {
-    max-width: none;        
+    max-width: none;
     width: 100%;
-    margin: 0;              
-    padding: 0;             
+    margin: 0;
+    padding: 0; /* 🔥 no boxing */
   }
 
   /* ============================= */
-  /* MAIN LAYOUT — SINGLE COLUMN */
+  /* MAIN LAYOUT */
   /* ============================= */
-
   .cart-layout {
     display: flex;
     flex-direction: column;
 
-    padding-top: 0;         
-    gap: 0;                 
+    padding-top: 0;
+    gap: 0;
     margin-bottom: 0;
   }
 
-  /* ============================= */
-  /* LEFT SECTION */
-  /* ============================= */
-
-  .cart-left {
+  .cart-left,
+  .cart-right {
     width: 100%;
   }
-
-  /* ============================= */
-  /* RIGHT SECTION (SUMMARY) */
-  /* ============================= */
 
   .cart-right {
     position: static !important;
-    top: auto;
-    align-self: stretch;
-
-    width: 100%;
-    margin-top: 0;          
+    margin-top: 0;
   }
 
+  
   .cart-header-wrapper,
   .cart-left,
   .order-summary {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 0;
+    padding-right: 0;
   }
-
-
 
 }
