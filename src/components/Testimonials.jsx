@@ -28,28 +28,28 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="testimonials-section">
-<div className="testimonials-inner">
+    <section className="hp-testimonials-section">
+<div className="hp-testimonials-inner">
       <Container>
 
         {/* HEADER */}
         <motion.div
-          className="section-header"
+          className="hp-section-header"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
 
-          <div className="eyebrow-wrap">
-            <span className="line"></span>
-            <p className="eyebrow-text">
+          <div className="hp-eyebrow-wrap">
+            <span className="hp-line"></span>
+            <p className="hp-eyebrow-text">
               WORN, LOVED & SHARED ACROSS INDIA
             </p>
-            <span className="line"></span>
+            <span className="hp-line"></span>
           </div>
 
-          <h2 className="title">
+          <h2 className="hp-testimonials-title">
             What our customers <span>say</span>
           </h2>
 
@@ -67,30 +67,30 @@ export default function Testimonials() {
             }
           }}
         >
-          <Row className="g-4 testimonials-row">
+          <Row className="g-4 hp-testimonials-row">
 
             {data.map((item, i) => (
               <Col lg={4} md={6} xs={12} className="d-flex" key={i}>
 
                 <motion.div
-                  className="testimonial-card"
+                  className="hp-testimonial-card"
                   variants={{
                    hidden: { opacity: 0, y: 40 },
 show: { opacity: 1, y: 0 }
                   }}
                 >
 
-                  <div className="stars">
+                  <div className="hp-testimonials-stars">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} size={12} fill="#C9A96E" stroke="none" />
                     ))}
                   </div>
-                  <div className="quote">"</div>
+                  <div className="hp-testimonials-quote">"</div>
 
-                  <p className="text">{item.text}</p>
+                  <p className="hp-testimonials-text">{item.text}</p>
 
-                  <div className="user">
-                    <div className="avatar">{item.initials}</div>
+                  <div className="hp-testimonials-user">
+                    <div className="hp-testimonials-avatar">{item.initials}</div>
                     <div>
                       <h4>{item.name}</h4>
                       <p>{item.detail}</p>

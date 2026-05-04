@@ -8,13 +8,14 @@
   font-weight: 300;
   color: #B0A898;
 
-  margin-bottom: 48px;  
+  margin-bottom: 48px;
 }
+
 .order-summary {
 
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
 }
 
 /* =========================
@@ -41,7 +42,7 @@
   flex: 1;
   height: 1px;
   /* background: transparent; */
-  
+
   margin-left: 8px;
 }
 
@@ -136,7 +137,7 @@
    ROW VARIANTS
    ========================= */
 
-   /* DISCOUNT (green) */
+/* DISCOUNT (green) */
 .summary-row.discount .summary-value {
   color: #6B7E5A;
 }
@@ -154,6 +155,7 @@
 .summary-row.dim .summary-title {
   color: #B0A898;
 }
+
 .summary-row.deposit .summary-sub {
   color: #B0A898;
 }
@@ -168,6 +170,7 @@ DELIVERY BREAKDOWN
 .summary-row.dim .summary-value {
   color: #B0A898;
 }
+
 /* =========================
    CUSTOM DELIVERY ROW
 ========================= */
@@ -221,6 +224,7 @@ DELIVERY BREAKDOWN
   white-space: nowrap;
   opacity: 0.4;
 }
+
 /* fix spacing between title + note */
 .summary-left.row .summary-sub {
   margin-left: 4px;
@@ -246,19 +250,20 @@ DELIVERY BREAKDOWN
 .gst-detail {
   margin-top: 8px;
   max-height: 0;
-    overflow: visible;
-  
-    opacity: 0;
-    transform: translateY(-4px);
-  
-    transition:
-      max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-      opacity 0.2s ease,
-      transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: visible;
+
+  opacity: 0;
+  transform: translateY(-4px);
+
+  transition:
+    max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.2s ease,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .gst-detail.vis {
-  max-height: 500px; /* enough to fit content */
+  max-height: 500px;
+  /* enough to fit content */
   opacity: 1;
   transform: translateY(0);
 }
@@ -312,7 +317,8 @@ DELIVERY BREAKDOWN
 /* TEXT */
 .gst-text {
   font-size: 10px;
-  color: #6F675A;;
+  color: #6F675A;
+  ;
 }
 
 /* INFO ICON */
@@ -335,12 +341,14 @@ DELIVERY BREAKDOWN
   cursor: pointer;
   z-index: 10;
 }
+
 .gst-info-icon {
   width: 12px;
   height: 12px;
   stroke-width: 1.5;
   color: #B0A898;
 }
+
 /* VALUE */
 .gst-value {
   font-size: 10.5px;
@@ -351,7 +359,8 @@ DELIVERY BREAKDOWN
 .gst-note {
   font-size: 10px;
   line-height: 1.6;
-  color: #3C3529;;
+  color: #3C3529;
+  ;
 
   padding: 12px 0 6px;
 }
@@ -398,6 +407,7 @@ DELIVERY BREAKDOWN
 
   border-color: #18140F transparent transparent transparent;
 }
+
 .gst-info:hover .gst-tooltip {
   opacity: 1;
 }
@@ -438,11 +448,11 @@ DELIVERY BREAKDOWN
 
 .summary-total-value {
   font-family: "Cormorant Garamond", serif;
-  font-size: 44px;        
+  font-size: 44px;
   font-weight: 300;
   color: #18140F;
-  letter-spacing: -0.5px; 
-  
+  letter-spacing: -0.5px;
+
 }
 
 .summary-total-sub {
@@ -455,7 +465,7 @@ DELIVERY BREAKDOWN
   height: 1px;
   background: #F0EAE0;
   margin-top: 16px;
-  
+
 }
 
 
@@ -473,7 +483,7 @@ DELIVERY BREAKDOWN
 }
 
 .summary-notes strong {
-  color: #C9A96E ;
+  color: #C9A96E;
 }
 
 /* CTA BUTTON */
@@ -484,11 +494,9 @@ DELIVERY BREAKDOWN
   width: 100%;
   padding: 14px;
 
-  background: linear-gradient(
-    90deg,
-    #18140F,
-    #2B2118
-  );
+  background: linear-gradient(90deg,
+      #18140F,
+      #2B2118);
 
   color: #C8C0B4;
 
@@ -499,7 +507,7 @@ DELIVERY BREAKDOWN
   border: none;
   cursor: pointer;
   position: relative;
-    overflow: hidden;
+  overflow: hidden;
 }
 
 /* SHIMMER */
@@ -508,23 +516,21 @@ DELIVERY BREAKDOWN
   position: absolute;
 
   top: 0;
-  left: -80%;   
+  left: -80%;
 
   width: 100%;
   height: 100%;
 
-  background: linear-gradient(
-    105deg,
-    transparent,
-    rgba(255, 255, 255, 0.18),
-    transparent
-  );
+  background: linear-gradient(105deg,
+      transparent,
+      rgba(255, 255, 255, 0.18),
+      transparent);
 
-  transition: left 0.6s linear;  
+  transition: left 0.6s linear;
 }
 
 .checkout-btn:hover::after {
-  left: 130%;   
+  left: 130%;
 }
 
 /* SSL NOTES */
@@ -532,7 +538,7 @@ DELIVERY BREAKDOWN
   margin-top: 10px;
 
   font-size: 9px;
-  
+
   color: #D8D0C4;
 
 
@@ -577,17 +583,17 @@ DELIVERY BREAKDOWN
   ========================= */
 
   .summary-section-head {
-    padding-top: 16px;
-    margin-bottom: 8px;
-
     display: flex;
     align-items: center;
-    gap: 8px;
+    padding-top: 16px;
+    margin-bottom: 8px;
   }
 
+  /* LEFT GROUP (DOT + TEXT) */
   .summary-dot {
     width: 5px;
     height: 5px;
+    margin-right: 6px;
   }
 
   .summary-label {
@@ -596,8 +602,12 @@ DELIVERY BREAKDOWN
     color: var(--ink-4);
   }
 
+  /* LINE */
   .summary-line {
+    flex: 1;
+    height: 1px;
     background: var(--border-light);
+    margin-left: 8px;
   }
 
   /* =========================
@@ -616,8 +626,8 @@ DELIVERY BREAKDOWN
   }
 
   .summary-left {
-    max-width: 75%;
-    gap: 2px;
+    flex: 1;
+    max-width: none;
   }
 
   /* FIX: allow wrapping */
@@ -641,6 +651,7 @@ DELIVERY BREAKDOWN
     font-size: 14px;
     color: var(--charcoal);
     white-space: nowrap;
+
   }
 
   /* =========================
@@ -667,12 +678,21 @@ DELIVERY BREAKDOWN
   ========================= */
 
   .gst-row {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    padding: 10px 0;
   }
 
   .gst-title {
     font-size: 11.5px;
     color: var(--ink-4);
+  }
+
+  .gst-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .gst-note-inline {
@@ -706,6 +726,8 @@ DELIVERY BREAKDOWN
     font-size: 10.5px;
     color: var(--charcoal);
   }
+
+  
 
   /* =========================
      GST BADGES
@@ -751,50 +773,63 @@ DELIVERY BREAKDOWN
      TOTAL
   ========================= */
 
-  .summary-total {
-    padding: 20px 0 16px;
-    gap: 4px;
-  }
+    .summary-total {
+      padding: 16px 0 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
 
   .summary-total-label {
-    font-size: 15px;
-    color: var(--charcoal);
-  }
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  color: var(--charcoal);
+}
 
-  .summary-total-value {
-    font-size: 38px;
-    font-weight: 300;
-    color: var(--charcoal);
-  }
+  .summary-total-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
 
-  .summary-total-sub {
-    font-size: 8.5px;
-    color: var(--ink-4);
-  }
+ .summary-total-value {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 36px;   
+  font-weight: 300;
+  letter-spacing: -0.4px;
+  color: var(--charcoal);
+}
+
+    .summary-total-sub {
+      font-size: 8.5px;
+      color: var(--ink-4);
+      margin-top: 2px;
+    }
 
   /* =========================
      SUB DIVIDER
   ========================= */
 
-  .summary-sub-divider {
-    background: var(--border-light);
-    margin-top: 16px;
-  }
+ .summary-sub-divider {
+  margin-top: 14px;
+  height: 1px;
+  background: var(--border-light);
+}
 
   /* =========================
      NOTES
   ========================= */
 
-  .summary-notes {
-    margin-top: 16px;
-  }
+ .summary-notes {
+  margin-top: 14px;
+}
 
-  .summary-notes p {
-    font-size: 10px;
-    line-height: 1.8;
-    margin-bottom: 10px;
-    color: var(--ink-4);
-  }
+.summary-notes p {
+  font-size: 10px;
+  line-height: 1.8;
+  margin-bottom: 10px;
+  color: var(--ink-4);
+}
 
   .summary-notes strong {
     color: var(--gold);
@@ -804,25 +839,16 @@ DELIVERY BREAKDOWN
      CTA
   ========================= */
 
-  .checkout-btn {
-    margin-top: 24px;
-
-    padding: 16px 20px;
-
-    font-size: 10px;
-    letter-spacing: 0.28em;
+   .checkout-btn {
+    display: none;
   }
 
   /* =========================
      SSL
   ========================= */
 
-  .ssl-note {
-    margin-top: 7px;
-    font-size: 8.5px;
-    color: var(--ink-4);
-  }
+    .ssl-note {
+      display: none;
+    }
 
 }
-
-

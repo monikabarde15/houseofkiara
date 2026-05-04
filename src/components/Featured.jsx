@@ -1,3 +1,4 @@
+// HpFeaturedSection.jsx
 import React from "react";
 import "../styles/featured.css";
 import { Heart } from "lucide-react";
@@ -19,7 +20,7 @@ const products = [
     brand: "MANISH MALHOTRA",
     price: "₹38,000",
     image: "https://i.pinimg.com/736x/09/0f/48/090f48f8c93ab1203c9d00ade5f38554.jpg",
-    original: "₹1,80,000"
+    original: "₹95,000"
   },
   {
     tag: "NEW",
@@ -27,8 +28,7 @@ const products = [
     name: "Midnight Blue Crepe Saree",
     brand: "TARUN TAHILIANI",
     price: "₹68,000",
-    image: "https://i.pinimg.com/1200x/18/cf/0f/18cf0f3223c943c6b6fd6206ef63e489.jpg",
-    original: "₹1,80,000"
+    image: "https://i.pinimg.com/1200x/18/cf/0f/18cf0f3223c943c6b6fd6206ef63e489.jpg"
   },
   {
     tag: "RENT",
@@ -37,74 +37,73 @@ const products = [
     brand: "ANITA DONGRE",
     price: "₹6,500 / 4 days",
     image: "https://i.pinimg.com/736x/53/7f/c9/537fc9352c9f704ec1b2457005fbd6d4.jpg",
-    original: "₹1,80,000"
+    original: "₹72,000"
   }
 ];
 
-// helper (clean way)
 const formatPrice = (price) => {
   const [main, sub] = price.split(" /");
   return { main, sub };
 };
 
-export default function Featured() {
+export default function HpFeaturedSection() {
   return (
-    <section className="featured">
-      <div className="container-custom">
+    <section className="hp-featured">
+      <div className="hp-featured__container">
 
         {/* HEADER */}
-        <div className="featured-header">
-          <div>
-              
-            <p className="featured-section-label">
-              <span className="featured-line"></span>
-              <span className="label-text">Hand picked for you</span>
-            </p>
+        <div className="hp-featured__header">
 
-            <h2 className="section-title">
+          <div className="hp-featured__heading">
+
+            <div className="hp-featured__eyebrow-row">
+              <span className="hp-featured__line"></span>
+              <p className="hp-featured__eyebrow">Handpicked for You</p>
+            </div>
+
+            <h2 className="hp-featured__title">
               Featured <em>Pieces</em>
             </h2>
-          </div>
-           
 
-          <div className="view-all-f">VIEW ALL →</div>
+          </div>
+
+          <div className="hp-featured__cta">VIEW ALL →</div>
         </div>
 
-        {/* GRID (IMPORTANT) */}
-        <div className="featured-grid">
+        {/* GRID */}
+        <div className="hp-featured__grid">
           {products.map((item, i) => {
             const { main, sub } = formatPrice(item.price);
 
             return (
-              <div className="card" key={i}>
-                {/* IMAGE */}
-                <div className="image-box">
+              <div className="hp-featured__card" key={i}>
+
+                <div className="hp-featured__image">
                   <img src={item.image} alt={item.name} />
 
-                  {/* TAG */}
-                  <div className="tags">
-                    <span className={`tag ${item.tagClass}`}>
-                      {item.tag}
-                    </span>
+                  <span className={`hp-featured__tag hp-featured__tag--${item.tagClass}`}>
+                    {item.tag}
+                  </span>
+
+                  <div className="hp-featured__wishlist">
+                    <Heart size={14} strokeWidth={1.5} />
                   </div>
-
-                  {/* WISHLIST */}
-                  <div className="hok-wishlist">
-                  <Heart size={14} strokeWidth={1.5} />
-                </div>
                 </div>
 
-                {/* TEXT */}
-                <p className="brand">{item.brand}</p>
-                <h4 className="name">{item.name}</h4>
+                <p className="hp-featured__brand">{item.brand}</p>
 
-               <p className="price">
-                {main} {sub && <span>/ {sub}</span>}
-              </p>
+                <h4 className="hp-featured__name">{item.name}</h4>
 
-              {item.original && (
-                <p className="price-old">{item.original} retail</p>
-              )}
+                <p className="hp-featured__price">
+                  {main} {sub && <span>/ {sub}</span>}
+                </p>
+
+                {item.original && (
+                  <p className="hp-featured__price-old">
+                    {item.original} retail
+                  </p>
+                )}
+
               </div>
             );
           })}

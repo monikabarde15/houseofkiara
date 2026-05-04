@@ -27,42 +27,42 @@ export default function DesignersSection() {
   ];
 
   return (
-    <section className="designer-section">
+    <section className="hp-designer-section">
 
-      <div className="designer-inner">
+      <div className="hp-designer-inner">
 
         {/* HEADER */}
-       <div className="designer-header">
+        <div className="hp-designer-header">
 
-  {/* LEFT */}
-  <div className="designer-left">
+          {/* LEFT */}
+          <div className="hp-designer-left">
 
-    <div className="designer-label">
-      <span className="designer-cat-line"></span>
-      <span className="label-text">CURATED FOR EVERY OCCASION</span>
-    </div>
+            <div className="hp-designer-label">
+              <span className="hp-designer-cat-line"></span>
+              <span className="hp-label-text">CURATED FOR EVERY OCCASION</span>
+            </div>
 
-    <h2 className="section-title">
-      Shop by <em>Category</em>
-    </h2>
+            <h2 className="hp-section-title">
+              Shop by <em>Category</em>
+            </h2>
 
-  </div>
+          </div>
 
-  {/* RIGHT */}
-  <div className="designer-view">
-    VIEW ALL <span className="arrow">→</span>
-  </div>
+          {/* RIGHT */}
+          <div className="hp-designer-view">
+            VIEW ALL <span className="arrow">→</span>
+          </div>
 
-</div>
+        </div>
         {/* GRID */}
-        <div className="designer-grid">
+        <div className="hp-designer-grid">
 
           {/* TOP */}
-          <div className="designer-top">
-            {data.slice(0,2).map((item, i) => (
-              <div className="designer-card" key={i}>
+          <div className="hp-designer-top">
+            {data.slice(0, 2).map((item, i) => (
+              <div className="hp-designer-card" key={i}>
                 <img src={item.img} alt={item.title} />
-                <div className="designer-overlay">
+                <div className="hp-designer-overlay">
                   <h4>{item.title}</h4>
                   <span>SHOP NOW</span>
                 </div>
@@ -71,11 +71,11 @@ export default function DesignersSection() {
           </div>
 
           {/* BOTTOM */}
-          <div className="designer-bottom">
+          <div className="hp-designer-bottom">
             {data.slice(2).map((item, i) => (
-              <div className="designer-card" key={i}>
+              <div className="hp-designer-card" key={i}>
                 <img src={item.img} alt={item.title} />
-                <div className="designer-overlay">
+                <div className="hp-designer-overlay">
                   <h4>{item.title}</h4>
                   <span>SHOP NOW</span>
                 </div>

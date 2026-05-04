@@ -67,7 +67,7 @@
     max-width: none;
     width: 100%;
     margin: 0;
-    padding: 0; /* 🔥 no boxing */
+    padding: 24px; 
   }
 
   /* ============================= */
@@ -99,5 +99,7 @@
     padding-left: 0;
     padding-right: 0;
   }
+
+  
 
 }

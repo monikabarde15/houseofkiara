@@ -6,7 +6,7 @@ import "../../styles/pages/cart.css";
 // Components
 import {
   CartLayout,
-  PolicyStrip
+
 } from "../../components/Cart";
 
 
@@ -21,9 +21,9 @@ const CartPage = () => {
       <CartLayout />
 
       {/* Bottom Policy Section */}
-      <div className="cart-container">
+      {/* <div className="cart-container">
         <PolicyStrip />
-      </div>
+      </div> */}
 
     </div>
   );

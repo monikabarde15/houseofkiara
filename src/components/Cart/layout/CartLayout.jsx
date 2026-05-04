@@ -4,13 +4,15 @@ import "../../../styles/cart/layout/cart-layout.css";
 import { products, makeProductDetail } from "../../ProductList";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { Lock } from "lucide-react";
 import {
   CartItem,
   OrderSummary,
   PromoCode,
   ModeSeparator,
   RemoveDialog,
-  CartHeader
+  CartHeader,
+  PolicyStrip
 } from "../index";
 
 const CartLayout = () => {
@@ -131,8 +133,33 @@ const CartLayout = () => {
   // visibleItems
   const visibleItems = cartItemsState.filter(item => item.active !== false);
 
+useEffect(() => {
+  const footer = document.querySelector(".policy-wrapper");
+  const cta = document.getElementById("cta-bar");
+
+  if (!footer || !cta) return;
+
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting && entry.boundingClientRect.top < window.innerHeight) {
+        cta.classList.add("docked");
+        document.body.classList.add("cta-docked");
+      } else {
+        cta.classList.remove("docked");
+        document.body.classList.remove("cta-docked");
+      }
+    },
+    { threshold: 0.1 }
+  );
+
+  observer.observe(footer);
+
+  return () => observer.disconnect();
+}, []);
+
   return (
-    <div className="cart-container">
+    
+    <div className="cart-container cart-page-body">
       <CartHeader cartItems={cartItemsState} />
       <div className="cart-layout">
 
@@ -176,7 +203,36 @@ const CartLayout = () => {
         />
 
       </div>
+
+      <div className="policy-wrapper">
+        <PolicyStrip />
+      </div>
+
+      {/* CTA BUTTOM STICKY */}
+      {/* MOBILE CTA BAR */}
+      <div id="cta-bar" className="cta-outer">
+        <div className="cta-inner">
+
+          <div className="cta-summary">
+            <span className="cta-label">Total at checkout</span>
+            <span className="cta-amount">₹41,600</span>
+          </div>
+
+          <button className="cta-btn-mobile">
+            PROCEED TO CHECKOUT
+          </button>
+
+          <div className="cta-secure">
+            <Lock className="cta-secure-icon" />
+             SSL encrypted · Secured by Razorpay
+          </div>
+
+        </div>
+      </div>
+
     </div>
+      
+    
   );
 };
 
