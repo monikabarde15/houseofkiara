@@ -58,6 +58,20 @@
   background: #EEF1F7;
 }
 
+/* CONDITION COLOR */
+
+.cart-item__condition-mobile {
+  font-weight: 400;
+}
+
+.cart-item__condition-mobile[data-grade="pristine"] {
+  color: #5A7549;
+}
+
+/* EXCELLENT → mulberry */
+.cart-item__condition-mobile[data-grade="excellent"] {
+  color: #893860;
+}
 
 /* =========================
    MODE TAG (badge on image)

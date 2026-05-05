@@ -1,10 +1,6 @@
 
 
-/* .items-end-sep {
-  height: 1px;
-  background: #F0EAE0;
-  margin: 48px 0;
-} */
+
 /* ================= CONTAINER ================= */
 .promo-zone {
   display: flex;
@@ -123,13 +119,13 @@
   /* SEPARATOR (FOR PROMO START) */
   /* ============================= */
 
-  .promo-wrapper::before {
+  /* .promo-wrapper::before {
     content: "";
     display: block;
     height: 1px;
     background: var(--border-light);
-    margin: 20px 0;
-  }
+    margin: 10px 0;
+  } */
 
   /* ============================= */
   /* ROW */
@@ -196,7 +192,7 @@
   }
 
   .promo-input:disabled {
-    opacity: 1; /* spec does not dim */
+    opacity: 1; 
   }
 
   /* ============================= */

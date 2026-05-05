@@ -116,12 +116,12 @@
 
   /* AMBER (Deposit) */
   .cart-deposit {
-    border-left-color: var(--amber-notice); 
+    border-left-color: var(--amber); 
   }
 
   .cart-deposit__amount {
     font-weight: 400;
-    color: var(--amber-notice-text); 
+    color: var(--amber); 
   }
 
   /* ROSE (Disclosure) */

@@ -4,6 +4,7 @@ import "../../../styles/cart/layout/cart-layout.css";
 import "../../../styles/cart/ui/mode-separator.mobile.css";
 import "../../../styles/cart/ui/mode-separator.desktop.css";
 import { products, makeProductDetail } from "../../ProductList";
+import { calculateTotals } from "../../../utils/cart/calculateTotals";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Lock } from "lucide-react";
@@ -65,6 +66,8 @@ const CartLayout = () => {
   const [cartItemsState, setCartItemsState] = useState(cartItems);
   const activeItems = cartItemsState.filter(item => item.active !== false);
 
+  const totals = calculateTotals(activeItems, activePromo);
+  const { grandTotal } = totals;
 
   // Remove cart item
   const handleRemoveItem = (id) => {
@@ -135,30 +138,42 @@ const CartLayout = () => {
   // visibleItems
   const visibleItems = cartItemsState.filter(item => item.active !== false);
 
-  useEffect(() => {
-    const footer = document.querySelector(".policy-wrapper");
-    const cta = document.getElementById("cta-bar");
+  // For sticky behaviour of the button
+useEffect(() => {
+  const footer = document.querySelector(".hok-footer");
+  const cta = document.getElementById("cta-bar");
 
-    if (!footer || !cta) return;
+  if (!footer || !cta) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && entry.boundingClientRect.top < window.innerHeight) {
-          cta.classList.add("docked");
-          document.body.classList.add("cta-docked");
-        } else {
-          cta.classList.remove("docked");
-          document.body.classList.remove("cta-docked");
-        }
-      },
-      { threshold: 0.1 }
-    );
+  const handleScroll = () => {
+    const footerRect = footer.getBoundingClientRect();
+    const ctaHeight = cta.offsetHeight;
 
-    observer.observe(footer);
+    const viewportHeight = window.innerHeight;
 
-    return () => observer.disconnect();
-  }, []);
+    //  check if CTA would overlap footer
+    const shouldDock = footerRect.top <= viewportHeight - ctaHeight;
 
+    if (shouldDock) {
+      cta.classList.add("docked");
+      document.body.classList.add("cta-docked");
+    } else {
+      cta.classList.remove("docked");
+      document.body.classList.remove("cta-docked");
+    }
+  };
+
+  // run on scroll + initial
+  window.addEventListener("scroll", handleScroll);
+  window.addEventListener("resize", handleScroll);
+
+  handleScroll(); // initial check
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener("resize", handleScroll);
+  };
+}, []);
 
   // FOR DECTECTING MOBILE
 
@@ -185,25 +200,16 @@ const CartLayout = () => {
           {isMobile ? (
 
             // 📱 MOBILE RENDER
-            ["rental", "preloved", "new"].map((type) => {
+            ["rental", "preloved", "new"].flatMap((type, i) => {
               const items = visibleItems.filter(item => item.type === type);
-              if (!items.length) return null;
+              if (!items.length) return [];
 
-              return (
-                <div key={type}>
-
-                  <ModeSeparator type={type} variant="m" />
-
-                  {items.map(item => (
-                    <CartItem
-                      key={item.id}
-                      item={item}
-                      onRemove={handleOpenRemove}
-                    />
-                  ))}
-
-                </div>
-              );
+              return [
+                <ModeSeparator key={`sep-${type}`} type={type} variant="m" dataRise={i + 2} />,
+                ...items.map(item => (
+                  <CartItem key={item.id} item={item} onRemove={handleOpenRemove} />
+                ))
+              ];
             })
 
           ) : (
@@ -230,7 +236,10 @@ const CartLayout = () => {
 
           )}
 
-          <div data-rise="3">
+          {/* SECTION DIVIDER (IMPORTANT) */}
+          {/* <div className="items-end-sep"></div> */}
+
+          <div data-rise="5">
             <PromoCode onApply={setActivePromo} />
           </div>
 
@@ -266,7 +275,9 @@ const CartLayout = () => {
 
           <div className="cta-summary">
             <span className="cta-label">Total at checkout</span>
-            <span className="cta-amount">₹41,600</span>
+            <span className="cta-amount">
+              ₹{grandTotal.toLocaleString()}
+            </span>
           </div>
 
           <button className="cta-btn-mobile">
@@ -282,8 +293,6 @@ const CartLayout = () => {
       </div>
 
     </div>
-
-
   );
 };
 

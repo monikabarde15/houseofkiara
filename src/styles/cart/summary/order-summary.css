@@ -569,6 +569,9 @@ DELIVERY BREAKDOWN
     display: flex;
     flex-direction: column;
     margin-bottom: 0;
+     border-top: 2px solid var(--charcoal); /* IMPORTANT */
+  /* margin-top: 32px; */
+  padding-top: 28px;
   }
 
   .summary-eyebrow {
