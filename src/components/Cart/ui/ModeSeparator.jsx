@@ -1,5 +1,4 @@
 import React from "react";
-import "../../../styles/cart/ui/mode-separator.css";
 
 const LABEL_MAP = {
   rental: "Rental Booking",
@@ -7,15 +6,17 @@ const LABEL_MAP = {
   new: "Buy New",
 };
 
-const ModeSeparator = ({ type }) => {
+const ModeSeparator = ({ type, variant = "d" }) => {
   const label = LABEL_MAP[type] || "";
-
-  if (!label) return null; // safety
+  if (!label) return null;
 
   return (
-    <div className="mode-separator" data-type={type}>
-      <span className="mode-dot"></span>
-      <span className="mode-label">{label}</span>
+    <div
+      className={`mode-separator-${variant}`}
+      data-type={type}
+    >
+      <span className={`mode-dot-${variant}`}></span>
+      <span className={`mode-label-${variant}`}>{label}</span>
     </div>
   );
 };

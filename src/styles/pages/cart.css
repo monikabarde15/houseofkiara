@@ -42,7 +42,8 @@
 .cart-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
-  gap: 96px;
+  column-gap: 96px;
+  row-gap: 0;
   padding-top: 64px;
   margin-bottom: 96px;
 }

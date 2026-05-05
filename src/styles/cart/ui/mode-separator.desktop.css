@@ -1,0 +1,50 @@
+/* src\styles\cart\ui\mode-separator.desktop.css */
+/* ============================= */
+/* MODE SEPARATOR */
+/* ============================= */
+
+/* mode-separator.desktop.css */
+
+.mode-separator-d {
+  display: flex;
+  align-items: center;
+
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+
+  border-bottom: 1px solid #F0EAE0;
+}
+
+/* DOT */
+.mode-dot-d {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 18px;
+  transform: translateY(1px);
+}
+
+/* LABEL */
+.mode-label-d {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #B0A898;
+  line-height: 1;
+  transform: translateY(1px);
+}
+
+/* COLORS */
+.mode-separator-d[data-type="rental"] .mode-dot-d {
+  background: #6B7E5A;
+}
+
+.mode-separator-d[data-type="preloved"] .mode-dot-d {
+  background: #893860;
+}
+
+.mode-separator-d[data-type="new"] .mode-dot-d {
+  background: #2A4466;
+}

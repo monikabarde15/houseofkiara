@@ -61,6 +61,7 @@
   .cart-header-wrapper {
     padding: 28px 16px 20px;   /* FIX: add horizontal padding */
     border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
   }
 
   /* ============================= */

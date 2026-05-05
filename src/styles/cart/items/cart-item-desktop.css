@@ -6,18 +6,18 @@
   grid-template-columns: 140px 1fr;
   column-gap: 32px;
 
+  align-items: start; /* 🔥 ADD THIS */
+
   padding-bottom: 64px;
   margin-bottom: 48px;
   border-bottom: 1px solid #F0EAE0;
 }
 
-.cart-item__top-row {
-  display: contents;
-}
 
 /* IMAGE */
 .cart-item__image {
   width: 140px;
+  flex-shrink: 0;
 }
 
 .cart-item__thumb {
@@ -49,10 +49,23 @@
   text-transform: uppercase;
   font-weight: 500;
   color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+.cart-item__label {
+  color: #B0A898;
+}
+
+.cart-item__value {
+  color: #3C3529;
 }
 
 .cart-item__meta .separator {
   color: #B8B1A6;
+}
+
+.cart-item__condition {
+  font-weight: 400;
 }
 
 .cart-item__condition[data-grade="pristine"] {
@@ -101,18 +114,21 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  width: 100%;
 }
 
 /* HEADER */
 .cart-item__header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 20px;
 }
 
 /* INFO */
 .cart-item__info {
-  max-width: 520px;
+  flex: 1;
+  min-width: 0;
 }
 
 /* BRAND (DESIGNER) */
@@ -203,6 +219,7 @@
 
 
 
+
 /* META DOT */
 .cart-item__meta-dot {
   font-size: 9px;
@@ -270,74 +287,3 @@
 }
 
 /* =================================Mobile================================ */
-
-@media (max-width: 430px) {
-
-  .cart-item {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-
-    padding-bottom: 32px;
-    margin-bottom: 28px;
-    border-bottom: 1px solid #F0EAE0;
-  }
-  .cart-item__image,
-  .cart-item__content {
-    display: inline-block;
-    vertical-align: top;
-  }
-  .cart-item__top-row {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-  }
-
-  .cart-item__image {
-    width: 96px;
-    flex-shrink: 0;
-    margin-right: 14px;
-  }
-
-  .cart-item__thumb {
-    width: 96px;
-  }
-
-  .cart-item__brand {
-    font-size: 8px;
-    margin-bottom: 5px;
-  }
-
-  .cart-item__name {
-    font-size: 17px;
-    margin-bottom: 4px;
-  }
-
-  .cart-item__desc {
-    font-size: 10.5px;
-  }
-
-  .cart-item__remove {
-    width: 28px;
-    height: 28px;
-  }
-
-   .cart-item__meta {
-    margin-top: 14px;
-    gap: 8px;
-    font-size: 10.5px;
-  }
-
-  .cart-item__content {
-    width: calc(100% - 110px); /* 96 + 14 gap */
-  }
-
-  
-  .cart-item__notice-wrap,
-  .cart-item__footer {
-    width: 100%;
-  }
-
- 
-
-}

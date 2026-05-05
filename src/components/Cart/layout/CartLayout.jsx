@@ -1,6 +1,8 @@
 // src\components\Cart\layout\CartLayout.jsx
 import React from "react";
 import "../../../styles/cart/layout/cart-layout.css";
+import "../../../styles/cart/ui/mode-separator.mobile.css";
+import "../../../styles/cart/ui/mode-separator.desktop.css";
 import { products, makeProductDetail } from "../../ProductList";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -133,32 +135,46 @@ const CartLayout = () => {
   // visibleItems
   const visibleItems = cartItemsState.filter(item => item.active !== false);
 
-useEffect(() => {
-  const footer = document.querySelector(".policy-wrapper");
-  const cta = document.getElementById("cta-bar");
+  useEffect(() => {
+    const footer = document.querySelector(".policy-wrapper");
+    const cta = document.getElementById("cta-bar");
 
-  if (!footer || !cta) return;
+    if (!footer || !cta) return;
 
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting && entry.boundingClientRect.top < window.innerHeight) {
-        cta.classList.add("docked");
-        document.body.classList.add("cta-docked");
-      } else {
-        cta.classList.remove("docked");
-        document.body.classList.remove("cta-docked");
-      }
-    },
-    { threshold: 0.1 }
-  );
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.boundingClientRect.top < window.innerHeight) {
+          cta.classList.add("docked");
+          document.body.classList.add("cta-docked");
+        } else {
+          cta.classList.remove("docked");
+          document.body.classList.remove("cta-docked");
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-  observer.observe(footer);
+    observer.observe(footer);
 
-  return () => observer.disconnect();
-}, []);
+    return () => observer.disconnect();
+  }, []);
+
+
+  // FOR DECTECTING MOBILE
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 430);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 430);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    
+
     <div className="cart-container cart-page-body">
       <CartHeader cartItems={cartItemsState} />
       <div className="cart-layout">
@@ -166,18 +182,53 @@ useEffect(() => {
         {/* LEFT SIDE */}
         <div className="cart-left" data-rise="1">
 
-          {visibleItems.map((item, index) => {
-            const prevItem = visibleItems[index - 1];
-            const isNewSection = index === 0 || prevItem?.type !== item.type;
+          {isMobile ? (
 
-            return (
-              <React.Fragment key={item.id}>
-                {isNewSection && <ModeSeparator type={item.type} />}
+            // 📱 MOBILE RENDER
+            ["rental", "preloved", "new"].map((type) => {
+              const items = visibleItems.filter(item => item.type === type);
+              if (!items.length) return null;
 
-                <CartItem item={item} onRemove={handleOpenRemove} />
-              </React.Fragment>
-            );
-          })}
+              return (
+                <div key={type}>
+
+                  <ModeSeparator type={type} variant="m" />
+
+                  {items.map(item => (
+                    <CartItem
+                      key={item.id}
+                      item={item}
+                      onRemove={handleOpenRemove}
+                    />
+                  ))}
+
+                </div>
+              );
+            })
+
+          ) : (
+
+            // 🖥️ DESKTOP RENDER (your existing logic)
+            visibleItems.map((item, index) => {
+              const prevItem = visibleItems[index - 1];
+              const isNewSection =
+                index === 0 || prevItem?.type !== item.type;
+
+              return (
+                <React.Fragment key={item.id}>
+                  {isNewSection && (
+                    <ModeSeparator type={item.type} variant="d" />
+                  )}
+
+                  <CartItem
+                    item={item}
+                    onRemove={handleOpenRemove}
+                  />
+                </React.Fragment>
+              );
+            })
+
+          )}
 
           <div data-rise="3">
             <PromoCode onApply={setActivePromo} />
@@ -224,15 +275,15 @@ useEffect(() => {
 
           <div className="cta-secure">
             <Lock className="cta-secure-icon" />
-             SSL encrypted · Secured by Razorpay
+            SSL encrypted · Secured by Razorpay
           </div>
 
         </div>
       </div>
 
     </div>
-      
-    
+
+
   );
 };
 

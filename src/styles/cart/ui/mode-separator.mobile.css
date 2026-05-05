@@ -1,0 +1,49 @@
+
+/* src\styles\cart\ui\mode-separator.mobile.css */
+/* ========================= */
+/* MOBILE — MODE SEPARATOR */
+/* ========================= */
+
+
+
+  /* mode-separator.mobile.css */
+
+.mode-separator-m {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+
+  border-bottom: 1px solid #F0EAE0;
+}
+
+/* DOT */
+.mode-dot-m {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* LABEL */
+.mode-label-m {
+  font-size: 8px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #B0A898;
+  font-weight: 400;
+}
+
+/* COLORS */
+.mode-separator-m[data-type="rental"] .mode-dot-m {
+  background: #6B7E5A;
+}
+
+.mode-separator-m[data-type="preloved"] .mode-dot-m {
+  background: #893860;
+}
+
+.mode-separator-m[data-type="new"] .mode-dot-m {
+  background: #2A4466;
+}
