@@ -1,0 +1,33 @@
+/* =========================
+   SECTION HEADER (GLOBAL)
+========================= */
+
+.checkout-section-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.checkout-section-number {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #C9A96E;
+}
+
+.checkout-section-title {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1;
+  color: #1A1612;
+}
+
+.checkout-section-title em {
+  font-style: italic;
+  color: #C9A96E;
+}

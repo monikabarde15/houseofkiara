@@ -31,12 +31,24 @@
   --navy: #2A4466;
   --navy-bg: #EEF1F7;
 
-  /* Sage background variant (keep your existing --sage-light as-is) */
+  /* Sage background variant */
   --sage-bg: #EFF4EC;
 
   /* Special (Deposit / Notices) */
   --amber: #C2A040;
   --amber-bg: #FDF8EE;
+
+  /* Aliases (Design system mapping) */
+--ink-3: var(--muted);        /* muted / secondary text */
+--ink-5: var(--border);       /* border */
+--ink-6: var(--border-light); /* light dividers */
+
+/* Surface tokens */
+--paper: var(--warm-white);
+--paper-off: var(--cream);
+
+/* Accent alias */
+--clay: var(--terracotta);
 
   /* TYPOGRAPHY */
   --serif: "Cormorant Garamond", Georgia, serif;

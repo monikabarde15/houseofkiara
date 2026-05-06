@@ -1,0 +1,70 @@
+
+/* src\styles\checkout\sections\address-section.css */
+/* OPTIONAL LABEL SPAN */
+.checkout-label-optional {
+  font-size: 8px;
+  color: #B0A898;
+  text-transform: none;
+  letter-spacing: normal;
+  margin-left: 6px;
+}
+/* =========================
+   ADDRESS SECTION (SCOPED)
+========================= */
+
+.address-section .checkout-label-optional {
+  font-size: 8px;
+  color: #B0A898;
+  margin-left: 6px;
+}
+
+/* TEXTAREA (SCOPED OVERRIDE IF NEEDED) */
+.address-section .checkout-field textarea {
+  height: 68px;
+}
+
+/* TOGGLE BLOCK */
+.address-section .checkout-toggle-block {
+  border-top: 1px solid #F0EAE0;
+  margin-top: 32px;
+  padding-top: 32px;
+}
+
+/* CHECKBOX ROW */
+.address-section .checkout-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  font-size: 12px;
+  color: #3C3529;
+  cursor: pointer;
+}
+
+.address-section .checkout-checkbox input {
+  display: none;
+}
+
+.address-section .checkout-checkbox-box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #3C3529;
+}
+
+/* GST TEXT */
+.address-section .checkout-gst-sub {
+  margin-left: 6px;
+  font-size: 11px;
+  color: #B0A898;
+}
+
+/* SLIDE PANEL */
+.address-section .checkout-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* PANEL OPEN STATE */
+.address-section .checkout-panel.open {
+  max-height: 300px;
+}

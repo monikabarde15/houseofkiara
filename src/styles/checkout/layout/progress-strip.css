@@ -1,0 +1,116 @@
+/* progress-strip.css */
+
+.progress-strip {
+  background: #FFFEFB;
+  border-bottom: 1px solid #F0EAE0;
+  padding: 0 48px;
+}
+
+.progress-inner {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  max-width: 540px;
+  margin: 0 auto;
+  height: 44px;
+}
+
+/* BASE STEP */
+.prog-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* =========================
+   INACTIVE (DEFAULT)
+========================= */
+.prog-step.inactive {
+  color: #B0A898;
+}
+
+/* =========================
+   DONE
+========================= */
+.prog-step.done {
+  color: #6B7E5A;
+  cursor: pointer;
+}
+
+.prog-step.done:hover {
+  color: #3C3529;
+}
+
+/* =========================
+   ACTIVE
+========================= */
+.prog-step.active {
+  color: #1A1612;
+  border-bottom: 2px solid #1A1612;
+}
+
+/* =========================
+   CIRCLE BASE
+========================= */
+.prog-circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 500;
+  background: transparent;
+}
+
+/* =========================
+   INACTIVE CIRCLE
+========================= */
+.prog-step.inactive .prog-circle {
+  background: transparent;
+  border: 1px solid #B0A898;
+  color: #B0A898;
+}
+
+/* =========================
+   DONE CIRCLE
+========================= */
+.prog-circle.done {
+  background: #6B7E5A;
+  border: none;
+  color: #fff;
+}
+
+.prog-circle.done svg {
+  height: 8px;
+  width: 8px;
+  stroke: white;
+  stroke-width: 1.6;
+}
+
+/* =========================
+   ACTIVE CIRCLE
+========================= */
+.prog-circle.active {
+  background: #1A1612;
+  border: 1px solid #1A1612;
+  color: #E8D5B0;
+}
+
+/* =========================
+   SEPARATOR
+========================= */
+.prog-sep {
+  width: 1px;
+  height: 14px;
+  background: #E8E0D4;
+  align-self: center;
+  margin: 0 12px;
+}

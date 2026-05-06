@@ -1,0 +1,53 @@
+/* page-title.css */
+
+.page-title {
+  display: flex;
+  align-items: flex-end;                
+  justify-content: space-between;
+
+  padding: 96px 0 64px;                
+  border-bottom: 1px solid #E8E0D4;     
+}
+
+/* =========================
+   H1
+========================= */
+.page-title__heading {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+
+  font-size: clamp(48px, 5.5vw, 72px);
+  line-height: 1;
+  letter-spacing: -0.015em;
+
+  color: #1A1612;
+}
+
+/* EM PART (Checkout) */
+.page-title__heading em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* =========================
+   RIGHT NOTE
+========================= */
+.page-title__note {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 300;
+
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #B0A898;
+  padding-bottom: 8px;  
+}
+
+/* SUB NOTE */
+.page-title__note-sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  color: #E8E0D4;
+}

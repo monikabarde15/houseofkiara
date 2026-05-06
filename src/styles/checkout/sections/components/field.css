@@ -1,0 +1,105 @@
+/* =========================
+   FIELD SYSTEM (GLOBAL SAFE)
+========================= */
+
+/* GRID */
+.checkout-fg {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+/* 2 COLUMN */
+.checkout-fg--c2 {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+/* 3 COLUMN (FIXED — YOU MISSED RESPONSIBILITY SPLIT) */
+.checkout-fg--c3 {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+/* FIELD WRAPPER */
+.checkout-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* LABEL */
+.checkout-field label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+/* REQUIRED */
+.checkout-field label.req::after {
+  content: " *";
+  color: #B85C38;
+  font-size: 9px;
+}
+
+/* OPTIONAL */
+.checkout-label-optional {
+  font-size: 8px;
+  color: #B0A898;
+  letter-spacing: normal;
+  text-transform: none;
+  margin-left: 6px;
+}
+
+/* INPUT + SELECT + TEXTAREA BASE */
+.checkout-field input,
+.checkout-field textarea,
+.checkout-field select {
+  border: none;
+  border-bottom: 1px solid #E8E0D4;
+  background: transparent;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: #1A1612;
+
+  padding: 10px 0 6px;
+  outline: none;
+
+  transition: border-color 0.25s;
+}
+
+/* TEXTAREA SPEC */
+.checkout-field textarea {
+  height: 68px;
+  resize: none;
+  line-height: 1.7;
+  padding-top: 8px;
+}
+
+/* SELECT CHEVRON */
+.checkout-field select {
+  appearance: none;
+  padding-right: 18px;
+  background-image: url("data:image/svg+xml;utf8,<svg width='10' height='6' ... />");
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+/* FOCUS */
+.checkout-field input:focus,
+.checkout-field textarea:focus,
+.checkout-field select:focus {
+  border-bottom-color: #C9A96E;
+}
+
+/* HINT */
+.checkout-fhint {
+  font-size: 10px;
+  color: #B0A898;
+  margin-top: -4px;
+}

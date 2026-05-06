@@ -1,0 +1,31 @@
+/* checkout-layout.css */
+
+/* =========================
+   4.2 Two-Column Grid
+========================= */
+
+.checkout-layout__grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 96px;
+  align-items: start;
+  padding-top: 64px;
+}
+
+/* =========================
+   LEFT COLUMN (Fluid)
+========================= */
+
+.checkout-layout__left {
+  width: 100%;
+}
+
+/* =========================
+   RIGHT COLUMN (Sticky)
+========================= */
+
+.checkout-layout__summary {
+  width: 340px;
+  position: sticky;
+  top: 104px;
+}

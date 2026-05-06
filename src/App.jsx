@@ -31,9 +31,10 @@ import DummyGowns from "./components/DummyGowns";
 
 import LypMain from "./components/LYP/LypMain";
 import CartPage from "./pages/Cart/CartPage";
+import CheckoutPage from "./pages/Checkout/CheckoutPage";
 
 
-// ✅ Home Page Component
+//  Home Page Component
 function Home() {
   return (
     <>
@@ -67,6 +68,7 @@ export default function App() {
         <Route path="/rentalandbuy/:id" element = {<RentalAndBuy/>} />
         <Route path="/list-your-piece/" element={<LypMain />} />
         <Route path="/cart" element={<CartPage/>} />
+        <Route path="/checkout" element={<CheckoutPage/>}/>
       </Routes>
 
       <Footer />

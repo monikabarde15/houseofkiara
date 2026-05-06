@@ -1,0 +1,16 @@
+/* checkout-page.css */
+
+.checkout-page {
+  background: #FFFEFB;
+  min-height: 100vh;
+}
+
+/* MAIN CONTAINER */
+.checkout-container {
+  max-width: 1380px;
+  margin: 0 auto;
+
+  padding-left: 64px;
+  padding-right: 64px;
+  padding-bottom: 128px;
+}

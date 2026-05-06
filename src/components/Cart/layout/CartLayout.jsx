@@ -141,38 +141,25 @@ const CartLayout = () => {
   // For sticky behaviour of the button
 useEffect(() => {
   const footer = document.querySelector(".hok-footer");
-  const cta = document.getElementById("cta-bar");
+  const ctaBar = document.getElementById("cta-bar");
 
-  if (!footer || !cta) return;
+  if (!footer || !ctaBar) return;
 
-  const handleScroll = () => {
-    const footerRect = footer.getBoundingClientRect();
-    const ctaHeight = cta.offsetHeight;
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      const shouldDock = entry.isIntersecting;
 
-    const viewportHeight = window.innerHeight;
-
-    //  check if CTA would overlap footer
-    const shouldDock = footerRect.top <= viewportHeight - ctaHeight;
-
-    if (shouldDock) {
-      cta.classList.add("docked");
-      document.body.classList.add("cta-docked");
-    } else {
-      cta.classList.remove("docked");
-      document.body.classList.remove("cta-docked");
+      ctaBar.classList.toggle("docked", shouldDock);
+      document.body.classList.toggle("cta-docked", shouldDock);
+    },
+    {
+      threshold: 0.01,
     }
-  };
+  );
 
-  // run on scroll + initial
-  window.addEventListener("scroll", handleScroll);
-  window.addEventListener("resize", handleScroll);
+  observer.observe(footer);
 
-  handleScroll(); // initial check
-
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-    window.removeEventListener("resize", handleScroll);
-  };
+  return () => observer.disconnect();
 }, []);
 
   // FOR DECTECTING MOBILE
