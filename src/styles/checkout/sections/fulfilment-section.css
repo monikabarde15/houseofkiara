@@ -1,0 +1,214 @@
+/* src\styles\checkout\sections\fulfilment-section.css */
+.checkout-section-status {
+  margin-left: auto;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+/* =========================
+   5.7.1 Order Piece Layout
+   ========================= */
+
+.checkout-order-fulfilment-piece {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 32px;
+
+  padding-bottom: 64px;
+  margin-bottom: 48px;
+
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.checkout-order-fulfilment-piece:last-child {
+  border-bottom: none;
+}
+
+
+/* =========================
+   Thumbnail
+   ========================= */
+
+.checkout-order-fulfilment-piece-thumb {
+  width: 140px;
+  aspect-ratio: 3 / 4;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.checkout-order-fulfilment-piece-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* =========================
+   Mode strip (STRICT)
+   ========================= */
+
+.checkout-order-fulfilment-piece-tag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  padding: 7px 0;
+  text-align: center;
+
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  font-size: 6.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+
+  color: #ffffff;
+}
+
+
+
+/* =========================
+   Content Column
+   ========================= */
+
+.checkout-order-fulfilment-piece-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+
+/* =========================
+   Designer
+   ========================= */
+
+.checkout-order-fulfilment-piece-designer {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #C9A96E;
+
+  margin-bottom: 6px;
+}
+
+
+/* =========================
+   Title
+   ========================= */
+
+.checkout-order-fulfilment-piece-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #18140F;
+
+  margin-bottom: 6px;
+}
+
+
+/* =========================
+   Description
+   ========================= */
+
+.checkout-order-fulfilment-piece-desc {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: #B0A898;
+
+  margin-bottom: 16px;
+}
+
+
+/* =========================
+   Meta (Size + Condition)
+   ========================= */
+
+.checkout-order-fulfilment-piece-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: #4A453E;
+}
+
+
+/* Dot separator */
+.meta-dot {
+  font-size: 9px;
+  color: #D8D0C4;
+}
+
+
+/* Condition colors */
+.meta-condition--pristine {
+  color: #5A7549;
+}
+
+.meta-condition--excellent {
+  color: #893860;
+}
+
+
+/* =========================
+   Price Block (Rental)
+   ========================= */
+
+.checkout-order-fulfilment-price {
+  margin-top: 20px;
+  margin-bottom: 24px;
+}
+
+/* Label */
+.checkout-rental-price-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #B0A898;
+
+  margin-bottom: 6px;
+}
+
+/* Price */
+.checkout-rental-price-value {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: #18140F;
+
+  margin-bottom: 6px;
+}
+
+/* Subtext */
+.checkout-rental-price-sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: #B0A898;
+}
+
+/* =========================
+   Internal Divider (Spec)
+   ========================= */
+
+.checkout-order-fulfilment-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #F0EAE0;
+  margin: 32px 0;
+}
+

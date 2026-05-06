@@ -1,0 +1,286 @@
+/* OPTION GROUP */
+.checkout-payment-option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* OPTION CARD */
+.checkout-payment-option-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  padding: 18px 20px;
+  border: 1px solid #F0EAE0;
+  background: transparent;
+  position: relative;
+}
+
+/* SELECTED */
+.checkout-payment-option-card.selected {
+  border-color: #1A1612;
+  background: #FAF7F2;
+}
+
+/* LEFT */
+.checkout-payment-option-left {
+  display: flex;
+  gap: 16px;
+}
+
+/* RADIO */
+.checkout-payment-opt-radio {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid #E8E0D4;
+  position: relative;
+}
+
+/* SELECTED DOT */
+.checkout-payment-option-card.selected
+.checkout-payment-opt-radio::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: #1A1612;
+  border-radius: 50%;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* TEXT */
+.checkout-payment-option-title {
+  font-size: 14px;
+  color: #1A1612;
+}
+
+.checkout-payment-option-desc {
+  font-size: 12px;
+  color: #8A8376;
+  margin-top: 4px;
+}
+
+/* TAG */
+.checkout-payment-tag {
+  font-size: 10px;
+  padding: 6px 10px;
+  letter-spacing: 0.08em;
+}
+
+/* INSTANT TAG */
+.checkout-payment-tag-instant {
+  background: #E6EFE8;
+  color: #5F7A65;
+}
+
+/* PANEL */
+.checkout-payment-option-panel {
+  border: 1px solid #F0EAE0;
+  border-top: none;
+  background: #FAF7F2;
+
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+}
+
+/* OPEN PANEL */
+.checkout-payment-option-panel.open {
+  padding: 20px;
+  max-height: 200px;
+}
+
+/* FIELD */
+.checkout-payment-field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* LABEL */
+.checkout-payment-field-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #8A8376;
+  margin-bottom: 8px;
+}
+
+/* INPUT */
+.checkout-payment-field-input {
+  border: none;
+  border-bottom: 1px solid #E8E0D4;
+  padding: 8px 0;
+  font-size: 13px;
+  background: transparent;
+  outline: none;
+}
+
+/* HINT */
+.checkout-payment-field-hint {
+  font-size: 11px;
+  color: #8A8376;
+  margin-top: 8px;
+}
+
+/* NO COST EMI POPULAR TAG */
+.checkout-payment-tag-popular {
+  background: #F3E8D2;
+  color: #9A7010;
+}
+
+/* ======================================== */
+/* CREDIT CARD / DEBIT CARD PANEL - OPEN  */
+/* ======================================== */
+
+/* PANNEL WRAPPER */
+.checkout-payment-option-panel {
+  border: 1px solid var(--ink-6);
+  border-top: none;
+  background: var(--cream);
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: max-height 0.38s cubic-bezier(0.16,1,0.3,1), padding 0.3s ease;
+}
+
+.checkout-payment-option-panel.open {
+  padding: 24px 32px 32px;
+  max-height: 420px;
+}
+
+/* Panel Fields Container */
+.checkout-payment-panel-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Field */
+.checkout-payment-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Label */
+
+.checkout-payment-field label {
+  font-family: var(--sans);
+  font-size: 8.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+/* Input */
+
+.checkout-payment-field input {
+  border: none;
+  border-bottom: 1px solid var(--ink-6);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink);
+  padding: 6px 0;
+  outline: none;
+}
+
+.checkout-payment-field input::placeholder {
+  color: var(--ink-5);
+}
+
+.checkout-payment-field input:focus {
+  border-bottom-color: var(--gold);
+}
+
+/* Grid (3 column row) */
+.checkout-payment-field-grid.c3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* Hint Text */
+.checkout-payment-field-hint {
+  font-size: 10px;
+  color: var(--ink-4);
+  margin-top: -4px;
+}
+
+/* ======================================== */
+/*  NET BANKING METHOD PANEL- OPEN   */
+/* ======================================== */
+
+/* Select Styling */
+.checkout-payment-select {
+  border: none;
+  border-bottom: 1px solid var(--ink-6);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink);
+  padding: 6px 0;
+  outline: none;
+
+  /* Remove default */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* Arrow */
+  background-image: url("data:image/svg+xml;utf8,<svg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M1 1L5 5L9 1' stroke='%23B0A898' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 2px center;
+  padding-right: 18px;
+}
+
+/* Focus State */
+
+.checkout-payment-select:focus {
+  border-bottom-color: var(--gold);
+}
+
+/* ======================================== */
+/*  EMI METHOD PANEL- OPEN   */
+/* ======================================== */
+
+.checkout-payment-row.pf-c3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .checkout-payment-row.pf-c3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.checkout-payment-option-panel.open {
+  padding-top: 16px;
+}
+
+/* ======================================== */
+/*  CHECKOUT PAYMENT NOTICE  */
+/* ======================================== */
+
+.checkout-payment-notice {
+  margin-top: 32px; /* var(--s4) */
+  padding: 12px 0 12px 14px;
+
+  font-size: 10.5px;
+  line-height: 1.75;
+  font-weight: 300;
+
+  color: var(--ink-4);
+  border-left: 2px solid var(--border-light);
+}
+
+.checkout-payment-notice b {
+  font-weight: 400;
+  color: var(--ink-2);
+}

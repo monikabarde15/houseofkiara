@@ -6,7 +6,7 @@ import "../../../styles/cart/ui/mode-separator.desktop.css";
 import { products, makeProductDetail } from "../../ProductList";
 import { calculateTotals } from "../../../utils/cart/calculateTotals";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Lock } from "lucide-react";
 import {
   CartItem,
@@ -21,12 +21,15 @@ import {
 const CartLayout = () => {
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const incomingItem = location.state?.newItem;
 
   const [appliedPromo, setAppliedPromo] = useState(null);
   const [activePromo, setActivePromo] = useState(null);
   const [removeTarget, setRemoveTarget] = useState(null);
+
+
 
   // DEFAULT DATA (KEEP IT)
   const defaultItems = [
@@ -139,28 +142,28 @@ const CartLayout = () => {
   const visibleItems = cartItemsState.filter(item => item.active !== false);
 
   // For sticky behaviour of the button
-useEffect(() => {
-  const footer = document.querySelector(".hok-footer");
-  const ctaBar = document.getElementById("cta-bar");
+  useEffect(() => {
+    const footer = document.querySelector(".hok-footer");
+    const ctaBar = document.getElementById("cta-bar");
 
-  if (!footer || !ctaBar) return;
+    if (!footer || !ctaBar) return;
 
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      const shouldDock = entry.isIntersecting;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const shouldDock = entry.isIntersecting;
 
-      ctaBar.classList.toggle("docked", shouldDock);
-      document.body.classList.toggle("cta-docked", shouldDock);
-    },
-    {
-      threshold: 0.01,
-    }
-  );
+        ctaBar.classList.toggle("docked", shouldDock);
+        document.body.classList.toggle("cta-docked", shouldDock);
+      },
+      {
+        threshold: 0.01,
+      }
+    );
 
-  observer.observe(footer);
+    observer.observe(footer);
 
-  return () => observer.disconnect();
-}, []);
+    return () => observer.disconnect();
+  }, []);
 
   // FOR DECTECTING MOBILE
 
@@ -174,6 +177,14 @@ useEffect(() => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+
+  // To handle checkout from the cartpage
+  const handleCheckout = () => {
+    navigate("/checkout", {
+      state: { items: activeItems }
+    });
+  };
 
   return (
 
@@ -237,6 +248,7 @@ useEffect(() => {
           <OrderSummary
             cartItems={activeItems}
             activePromo={activePromo}
+            onCheckout={handleCheckout}
           />
         </div>
 
@@ -267,7 +279,8 @@ useEffect(() => {
             </span>
           </div>
 
-          <button className="cta-btn-mobile">
+          <button className="cta-btn-mobile"
+          onClick={handleCheckout}>
             PROCEED TO CHECKOUT
           </button>
 

@@ -53,10 +53,19 @@ export default function DeliveryAddress() {
 
           <div className="checkout-field">
             <label className="req">STATE</label>
-            <select defaultValue="">
-              <option value="">Select state</option>
-              <option>Delhi</option>
-            </select>
+            <select defaultValue="Madhya Pradesh">
+                  <option value="">Select state</option>
+                  <option>Andhra Pradesh</option>
+                  <option>Delhi</option>
+                  <option>Gujarat</option>
+                  <option>Karnataka</option>
+                  <option>Madhya Pradesh</option>
+                  <option>Rajasthan</option>
+                  <option>Tamil Nadu</option>
+                  <option>Telangana</option>
+                  <option>Uttar Pradesh</option>
+                  <option>West Bengal</option>
+                </select>
           </div>
 
           <div className="checkout-field">
@@ -89,13 +98,45 @@ export default function DeliveryAddress() {
             <span>Billing address is the same as delivery address</span>
           </label>
 
-          {/* PANEL */}
+          {/* Billing PANEL */}
           <div className={`checkout-panel ${!sameBilling ? "open" : ""}`}>
+
+            {/* Address line 1 */}
             <div className="checkout-fg">
               <div className="checkout-field">
-                <input placeholder="Billing address line 1" />
+                <input placeholder="Address line 1" />
               </div>
             </div>
+
+            {/* City + State + PIN */}
+            <div className="checkout-fg checkout-fg--c3">
+
+              <div className="checkout-field">
+                <input placeholder="City" />
+              </div>
+
+              <div className="checkout-field">
+                <select defaultValue="Madhya Pradesh">
+                  <option value="">Select state</option>
+                  <option>Andhra Pradesh</option>
+                  <option>Delhi</option>
+                  <option>Gujarat</option>
+                  <option>Karnataka</option>
+                  <option>Madhya Pradesh</option>
+                  <option>Rajasthan</option>
+                  <option>Tamil Nadu</option>
+                  <option>Telangana</option>
+                  <option>Uttar Pradesh</option>
+                  <option>West Bengal</option>
+                </select>
+              </div>
+
+              <div className="checkout-field">
+                <input maxLength={6} />
+              </div>
+
+            </div>
+
           </div>
 
         </div>
@@ -119,11 +160,24 @@ export default function DeliveryAddress() {
             </span>
           </label>
 
-          <div className={`checkout-panel ${gstEnabled ? "open" : ""}`}>
+          {/* GST SECTION */}
+          <div className={`checkout-panel gst ${gstEnabled ? "open" : ""}`}>
+
             <div className="checkout-fg checkout-fg--c2">
-              <input placeholder="Business / Company Name" />
-              <input placeholder="GSTIN" maxLength={15} />
+
+              <div className="checkout-field">
+                <input placeholder="Business / Company Name" />
+              </div>
+
+              <div className="checkout-field">
+                <input placeholder="22AAAAA0000A1Z5" maxLength={15} />
+                <div className="checkout-fhint">
+                  15-character GST Identification Number
+                </div>
+              </div>
+
             </div>
+
           </div>
 
         </div>

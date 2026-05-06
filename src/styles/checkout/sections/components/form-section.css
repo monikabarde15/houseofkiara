@@ -1,4 +1,19 @@
 /* =========================
+   FORM SECTION WRAPPER
+========================= */
+
+.checkout-form-section {
+  padding-bottom: 64px;
+  margin-bottom: 48px;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.checkout-form-section:last-child {
+  border-bottom: none;
+}
+
+
+/* =========================
    SECTION HEADER (GLOBAL)
 ========================= */
 
@@ -31,3 +46,4 @@
   font-style: italic;
   color: #C9A96E;
 }
+

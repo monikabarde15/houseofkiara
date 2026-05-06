@@ -11,7 +11,7 @@ import SummaryRow from "./SummaryRow";
 import GSTBreakdown from "./GSTBreakdown";
 import FinalPaymentInfo from "./FinalPaymentInfo";
 
-const OrderSummary = ({ cartItems, activePromo }) => {
+const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
 
   const totals = calculateTotals(cartItems, activePromo);
 
@@ -155,7 +155,8 @@ const OrderSummary = ({ cartItems, activePromo }) => {
       {/* =========================
           CTA
       ========================= */}
-      <button className="checkout-btn">
+      <button className="checkout-btn"
+        onClick={onCheckout}>
         Proceed to Checkout
       </button>
 

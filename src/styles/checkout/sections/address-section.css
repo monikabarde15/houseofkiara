@@ -45,10 +45,37 @@
   display: none;
 }
 
+/* CHECKBOX BOX */
 .address-section .checkout-checkbox-box {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   border: 1px solid #3C3529;
+  position: relative;
+}
+
+/* CHECKED STATE (DEFAULT) */
+.address-section .checkout-checkbox input:checked + .checkout-checkbox-box {
+  background: #1A1612;
+  border-color: #1A1612;
+}
+
+/* CHECKMARK */
+.address-section .checkout-checkbox input:checked + .checkout-checkbox-box::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 8px;
+  border: 1.5px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+  top: 2px;
+  left: 5px;
+}
+
+/* Billing Adress PANEL OPEN STATE */
+.address-section .checkout-panel.open {
+  max-height: 300px;
 }
 
 /* GST TEXT */
@@ -64,7 +91,8 @@
   overflow: hidden;
   transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
-/* PANEL OPEN STATE */
-.address-section .checkout-panel.open {
-  max-height: 300px;
+
+/* GST PANEL OPEN STATE*/
+.address-section .checkout-panel.gst.open {
+  max-height: 200px;
 }

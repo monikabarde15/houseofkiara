@@ -58,7 +58,7 @@
 
 .preloved-final-note {
   margin-top: 8px; /* spec */
-  border-left: 2px solid #F0EAE0; /* 👈 FIXED (was wrong earlier) */
+  border-left: 2px solid #F0EAE0; 
   padding: 14px 0 0 18px;
 }
 
