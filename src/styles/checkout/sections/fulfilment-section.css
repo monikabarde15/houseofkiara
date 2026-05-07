@@ -1,4 +1,8 @@
 /* src\styles\checkout\sections\fulfilment-section.css */
+/* =========================
+   SECTION STATUS
+========================= */
+
 .checkout-section-status {
   margin-left: auto;
   font-family: "DM Sans", sans-serif;
@@ -9,40 +13,100 @@
   color: #B0A898;
 }
 
+
 /* =========================
-   5.7.1 Order Piece Layout
-   ========================= */
+   GROUP WRAPPER
+========================= */
 
-.checkout-order-fulfilment-piece {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 32px;
+.checkout-order-group {
+  margin-top: 32px;
+}
 
-  padding-bottom: 64px;
-  margin-bottom: 48px;
+
+/* =========================
+   GROUP LABEL
+========================= */
+
+.checkout-mode-separator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 24px;
+  padding-bottom: 16px;
 
   border-bottom: 1px solid #F0EAE0;
 }
 
-.checkout-order-fulfilment-piece:last-child {
+/* dot */
+.checkout-mode-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5A7549; 
+}
+
+/* text */
+.checkout-mode-text {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+.checkout-mode-separator--rental .checkout-mode-dot {
+  background: #5A7549;
+}
+
+.checkout-mode-separator--preloved .checkout-mode-dot {
+  background: #893860;
+}
+
+.checkout-mode-separator--new .checkout-mode-dot {
+  background: #2E3A59;
+}
+
+
+/* =========================
+   ORDER PIECE
+========================= */
+
+.checkout-piece {
+  padding-bottom: 64px;
+  margin-bottom: 48px;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.checkout-piece:last-child {
   border-bottom: none;
 }
 
 
 /* =========================
-   Thumbnail
-   ========================= */
+   TOP ROW GRID
+========================= */
 
-.checkout-order-fulfilment-piece-thumb {
+.checkout-piece-top {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 32px;
+}
+
+
+/* =========================
+   THUMB
+========================= */
+
+.checkout-piece-thumb {
   width: 140px;
   aspect-ratio: 3 / 4;
   border-radius: 3px;
   overflow: hidden;
   position: relative;
-  flex-shrink: 0;
 }
 
-.checkout-order-fulfilment-piece-thumb img {
+.checkout-piece-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -50,10 +114,10 @@
 
 
 /* =========================
-   Mode strip (STRICT)
-   ========================= */
+   MODE TAG (STRICT)
+========================= */
 
-.checkout-order-fulfilment-piece-tag {
+.checkout-piece-tag {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -71,13 +135,26 @@
   color: #ffffff;
 }
 
+/* Mode Colors */
+
+.checkout-piece-tag--rental {
+  background: #5A7549;
+}
+
+.checkout-piece-tag--preloved {
+  background: #893860;
+}
+
+.checkout-piece-tag--new {
+  background: #2E3A59;
+}
 
 
 /* =========================
-   Content Column
-   ========================= */
+   CONTENT COLUMN
+========================= */
 
-.checkout-order-fulfilment-piece-content {
+.checkout-piece-content {
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -85,10 +162,10 @@
 
 
 /* =========================
-   Designer
-   ========================= */
+   DESIGNER
+========================= */
 
-.checkout-order-fulfilment-piece-designer {
+.checkout-piece-designer {
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 400;
@@ -101,10 +178,10 @@
 
 
 /* =========================
-   Title
-   ========================= */
+   TITLE
+========================= */
 
-.checkout-order-fulfilment-piece-title {
+.checkout-piece-title {
   font-family: "Cormorant Garamond", serif;
   font-size: 22px;
   font-weight: 400;
@@ -116,10 +193,10 @@
 
 
 /* =========================
-   Description
-   ========================= */
+   DESCRIPTION
+========================= */
 
-.checkout-order-fulfilment-piece-desc {
+.checkout-piece-desc {
   font-family: "DM Sans", sans-serif;
   font-size: 11.5px;
   font-weight: 300;
@@ -128,32 +205,40 @@
 
   margin-bottom: 16px;
 }
-
-
 /* =========================
-   Meta (Size + Condition)
-   ========================= */
+   META (SIZE + CONDITION)
+========================= */
 
-.checkout-order-fulfilment-piece-meta {
+.checkout-piece-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   color: #4A453E;
+
+  margin-bottom: 12px;
 }
 
-
-/* Dot separator */
+/* dot */
 .meta-dot {
   font-size: 9px;
   color: #D8D0C4;
 }
 
+/* size */
+.meta-size {
+  color: #4A453E;
+}
 
-/* Condition colors */
+/* condition base */
+.meta-condition {
+  font-weight: 500;
+}
+
+/* condition colors (from spec tone) */
 .meta-condition--pristine {
   color: #5A7549;
 }
@@ -162,17 +247,19 @@
   color: #893860;
 }
 
-
+.meta-condition--good {
+  color: #B0A898;
+}
 /* =========================
-   Price Block (Rental)
-   ========================= */
+   RENTAL PRICE BLOCK
+========================= */
 
-.checkout-order-fulfilment-price {
+.checkout-rental-price {
   margin-top: 20px;
   margin-bottom: 24px;
 }
 
-/* Label */
+/* label */
 .checkout-rental-price-label {
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
@@ -183,7 +270,7 @@
   margin-bottom: 6px;
 }
 
-/* Price */
+/* main price */
 .checkout-rental-price-value {
   font-family: "Cormorant Garamond", serif;
   font-size: 36px;
@@ -194,7 +281,7 @@
   margin-bottom: 6px;
 }
 
-/* Subtext */
+/* sub text */
 .checkout-rental-price-sub {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
@@ -202,13 +289,79 @@
 }
 
 /* =========================
-   Internal Divider (Spec)
-   ========================= */
+   COMMON PRICE LABEL
+========================= */
 
-.checkout-order-fulfilment-divider {
-  width: 100%;
-  height: 1px;
-  background-color: #F0EAE0;
-  margin: 32px 0;
+.checkout-price-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #B0A898;
+
+  margin-bottom: 6px;
 }
 
+
+/* =========================
+   MAIN PRICE
+========================= */
+
+.checkout-price-main {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: #18140F;
+
+  margin-bottom: 6px;
+}
+
+
+/* =========================
+   STRIKE PRICE (PRELOVED)
+========================= */
+
+.checkout-price-strike {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: #B0A898;
+  text-decoration: line-through;
+}
+
+
+/* =========================
+   WRAPPERS
+========================= */
+
+.checkout-preloved-price,
+.checkout-new-price {
+  margin-top: 20px;
+  margin-bottom: 24px;
+}
+
+/* =========================
+   EXTRA PRICE INFO (PRELOVED)
+========================= */
+
+.checkout-price-extra {
+  margin-top: 8px;
+}
+
+.checkout-price-save {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: #5A7549;
+}
+
+.checkout-price-discount {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: #5A7549;
+}
+
+.checkout-price-gst {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: #B0A898;
+}
