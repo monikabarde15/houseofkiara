@@ -181,6 +181,9 @@ const CartLayout = () => {
 
   // To handle checkout from the cartpage
   const handleCheckout = () => {
+    // ✅ backup (dev only safety)
+    localStorage.setItem("checkoutItems", JSON.stringify(activeItems));
+
     navigate("/checkout", {
       state: { items: activeItems }
     });

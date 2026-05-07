@@ -3,14 +3,30 @@ import "../../../styles/checkout/sections/components/field.css";
 import "../../../styles/checkout/sections/components/form-section.css";
 import "../../../styles/checkout/sections/fulfilment-section.css";
 import { useLocation } from "react-router-dom";
-import ModeSeparator from "../../Cart/ui/ModeSeparator";
-import RentalTimeline from "../../Cart/items/modes/rental/RentalTimeline";
+// import ModeSeparator from "../../Cart/ui/ModeSeparator";
+// import RentalTimeline from "../../Cart/items/modes/rental/RentalTimeline";
+
+import RentalPriceBlock from "../../Cart/items/modes/rental/RentalPriceBlock";
+import PrelovedPriceBlock from "../../Cart/items/modes/preloved/PrelovedPriceBlock";
+import NewPriceBlock from "../../Cart/items/modes/new/NewPriceBlock";
 
 const OrderFulfilmentSection = () => {
 
   const location = useLocation();
-  const items = location.state?.items || [];
+  let items = location.state?.items;
 
+  // ✅ fallback (dev + refresh safe)
+  if (!items || items.length === 0) {
+    const stored = localStorage.getItem("checkoutItems");
+    if (stored) {
+      items = JSON.parse(stored);
+    }
+  }
+
+  items = items || [];
+
+
+  console.log("CHECKOUT ITEMS:", items);
 
   return (
     <FormSection>
@@ -34,121 +50,124 @@ const OrderFulfilmentSection = () => {
 
         {/* Items  */}
 
-        {
-          ["rental", "preloved", "new"].map((type) => {
-            const groupItems = items.filter(item => item.type === type);
+        {["rental", "preloved", "new"].map((type) => {
+          const groupItems = items.filter(item => item.type === type);
 
-            if (!groupItems.length) return null;
+          if (!groupItems.length) return null;
 
-            return (
-              <div key={type} className="checkout-order-group">
+          return (
+            <div key={type} className="checkout-order-group">
 
-                <ModeSeparator type={type} variant="d" />
+              {/* GROUP LABEL (we'll style later) */}
+              <div className={`checkout-mode-separator checkout-mode-separator--${type}`}>
+                <span className="checkout-mode-dot"></span>
+                <span className="checkout-mode-text">
+                  {type === "rental"
+                    ? "Rental Booking"
+                    : type === "preloved"
+                      ? "Preloved · Buy to Own"
+                      : "Buy New"}
+                </span>
+              </div>
 
-                {groupItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="checkout-order-fulfilment-piece"
-                  >
+              {groupItems.map(item => {
+                const condition = item.product?.condition?.grade;
 
-                    
+                return (
+                  <div key={item.id} className="checkout-piece">
 
-                    {/* THUMB - LEFT */}
-                    <div className="checkout-order-fulfilment-piece-thumb">
-                      <img
-                        src={item.product.images?.[0]}
-                        alt={item.product.title}
-                      />
+                    <div className="checkout-piece-top">
 
-                      <div className={`checkout-order-fulfilment-piece-tag checkout-order-fulfilment-piece-tag--${item.type}`}>
-                        {item.type === "rental"
-                          ? "RENT"
-                          : item.type === "preloved"
-                            ? "PRELOVED"
-                            : "NEW"}
-                      </div>
-                    </div>
-
-                    {/* CONTENT - RIGHT */}
-                    <div className="checkout-order-fulfilment-piece-content">
-
-                      <div className="checkout-order-fulfilment-piece-designer">
-                        {item.product.designer}
-                      </div>
-
-                      <div className="checkout-order-fulfilment-piece-title">
-                        {item.product.title}
-                      </div>
-
-                      {/* DESCRIPTION */}
-                      <div className="checkout-order-fulfilment-piece-desc">
-                        {item.product.description}
-                      </div>
-
-                      {/* META */}
-                      <div className="checkout-order-fulfilment-piece-meta">
-
-                        <span className="meta-size">
-                          Size {item.booking?.size || "-"}
+                      {/* IMAGE */}
+                      <div className="checkout-piece-thumb">
+                        <img
+                          src={item.product?.images?.[0]}
+                          alt={item.product?.title}
+                        />
+                        <span className={`checkout-piece-tag checkout-piece-tag--${item.type}`}>
+                          {item.type === "rental"
+                            ? "Rent"
+                            : item.type === "preloved"
+                              ? "Preloved"
+                              : "New"}
                         </span>
+                      </div>
 
-                        {(item.type === "rental" || item.type === "preloved") && item.product?.condition?.grade && (
-                          <>
-                            <span className="meta-dot">•</span>
+                      {/* CONTENT */}
+                      <div className="checkout-piece-content">
 
-                            <span
-                              className={`meta-condition meta-condition--${item.product.condition.grade}`}
-                            >
-                              {item.product.condition.grade === "pristine"
-                                ? "Pristine condition"
-                                : "Excellent condition"}
-                            </span>
-                          </>
+                        <div className="checkout-piece-designer">
+                          {item.product?.designer}
+                        </div>
+
+                        <div className="checkout-piece-title">
+                          {item.product?.title}
+                        </div>
+
+                        <div className="checkout-piece-desc">
+                          {item.product?.description}
+                        </div>
+
+                        {/* META FIXED (SIZE + CONDITION) */}
+                        {(item.booking?.size || condition) && (
+                          <div className="checkout-piece-meta">
+
+                            {item.booking?.size && (
+                              <span className="meta-size">
+                                Size {item.booking.size}
+                              </span>
+                            )}
+
+                            {item.booking?.size && condition && (
+                              <span className="meta-dot">•</span>
+                            )}
+
+                            {condition && (
+                              <span className={`meta-condition meta-condition--${condition}`}>
+                                {condition === "pristine"
+                                  ? "Pristine condition"
+                                  : condition === "excellent"
+                                    ? "Excellent condition"
+                                    : condition}
+                              </span>
+                            )}
+
+                          </div>
                         )}
 
-                      </div>
+                        <div className="checkout-piece-price">
 
-                      {/* PRICE BLOCK */}
-                      {item.type === "rental" && (
-                        <div className="checkout-order-fulfilment-price">
+                          {item.type === "rental" && (
+                            <RentalPriceBlock
+                              product={item.product}
+                              booking={item.booking}
+                            />
+                          )}
 
-                          <div className="checkout-rental-price-label">
-                            RENTAL FEE · {item.booking?.duration || 5}-DAY WINDOW
-                          </div>
+                          {item.type === "preloved" && (
+                            <PrelovedPriceBlock
+                              product={item.product}
+                            />
+                          )}
 
-                          <div className="checkout-rental-price-value">
-                            ₹{item.pricing?.rentalTotal?.toLocaleString?.() || item.pricing?.rental || 0}
-                          </div>
-
-                          <div className="checkout-rental-price-sub">
-                            ₹{item.pricing?.perDay || 0} per day · 18% GST (₹{item.pricing?.gst || 0}) added at total
-                          </div>
+                          {item.type === "new" && (
+                            <NewPriceBlock
+                              product={item.product}
+                            />
+                          )}
 
                         </div>
-                      )}
+
+                      </div>
                     </div>
 
-                     
-
-                    {/* INTERNAL DIVIDER (SPEC) */}
-                    <div className="checkout-order-fulfilment-divider" />
-
-                    {/* RENTAL TIMELINE */}
-                    {item.type === "rental" && item.booking && (
-                      <div className="checkout-order-fulfilment-piece-timeline">
-                        <RentalTimeline booking={item.booking} />
-                      </div>
-                    )}
-
-
-
                   </div>
-                ))}
+                );
+              })}
 
-              </div>
-            );
-          })
-        }
+            </div>
+          );
+        })}
 
       </div>
     </FormSection>
