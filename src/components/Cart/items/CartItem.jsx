@@ -1,3 +1,4 @@
+// src\components\Cart\items\CartItem.jsx
 import { useEffect, useState } from "react";
 import CartItemDesktop from "./CartItemDesktop";
 import CartItemMobile from "./CartItemMobile";

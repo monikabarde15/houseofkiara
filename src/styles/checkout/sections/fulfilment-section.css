@@ -22,6 +22,11 @@
   margin-top: 32px;
 }
 
+.checkout-mode-separator--preloved,
+.checkout-mode-separator--new {
+  margin-top: 64px;
+}
+
 
 /* =========================
    GROUP LABEL
@@ -198,95 +203,32 @@
 
 .checkout-piece-desc {
   font-family: "DM Sans", sans-serif;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 300;
-  line-height: 1.6;
+  line-height: 1.7;
   color: #B0A898;
 
-  margin-bottom: 16px;
+  /* margin-bottom: 28px; */
+
+  max-width: 92%;
 }
+
 /* =========================
-   META (SIZE + CONDITION)
+   CHECKOUT PRICE WRAPPERS
 ========================= */
 
-.checkout-piece-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+/* rental needs more breathing room */
 
-  font-family: "DM Sans", sans-serif;
-  font-size: 11px;
-  color: #4A453E;
-
-  margin-bottom: 12px;
+.checkout-piece-price--rental{
+  margin-top: 32px;
 }
 
-/* dot */
-.meta-dot {
-  font-size: 9px;
-  color: #D8D0C4;
+/* preloved + new are tighter in spec */
+.checkout-piece-price--preloved,
+.checkout-piece-price--new {
+  margin-top: 0px;
 }
 
-/* size */
-.meta-size {
-  color: #4A453E;
-}
-
-/* condition base */
-.meta-condition {
-  font-weight: 500;
-}
-
-/* condition colors (from spec tone) */
-.meta-condition--pristine {
-  color: #5A7549;
-}
-
-.meta-condition--excellent {
-  color: #893860;
-}
-
-.meta-condition--good {
-  color: #B0A898;
-}
-/* =========================
-   RENTAL PRICE BLOCK
-========================= */
-
-.checkout-rental-price {
-  margin-top: 20px;
-  margin-bottom: 24px;
-}
-
-/* label */
-.checkout-rental-price-label {
-  font-family: "DM Sans", sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #B0A898;
-
-  margin-bottom: 6px;
-}
-
-/* main price */
-.checkout-rental-price-value {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 36px;
-  font-weight: 400;
-  line-height: 1.1;
-  color: #18140F;
-
-  margin-bottom: 6px;
-}
-
-/* sub text */
-.checkout-rental-price-sub {
-  font-family: "DM Sans", sans-serif;
-  font-size: 11px;
-  color: #B0A898;
-}
 
 /* =========================
    COMMON PRICE LABEL
@@ -309,7 +251,7 @@
 
 .checkout-price-main {
   font-family: "Cormorant Garamond", serif;
-  font-size: 32px;
+  font-size: 38px;
   font-weight: 400;
   line-height: 1.1;
   color: #18140F;
@@ -329,16 +271,6 @@
   text-decoration: line-through;
 }
 
-
-/* =========================
-   WRAPPERS
-========================= */
-
-.checkout-preloved-price,
-.checkout-new-price {
-  margin-top: 20px;
-  margin-bottom: 24px;
-}
 
 /* =========================
    EXTRA PRICE INFO (PRELOVED)
@@ -364,4 +296,41 @@
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   color: #B0A898;
+}
+
+
+/* -------------------------------- */
+/* RENTAL DIVIDER */
+/* -------------------------------- */
+
+.checkout-piece-divider {
+  margin-top: 64px;
+  margin-bottom: 48px;
+  border-top: 1px solid #F0EAE0;
+}
+
+
+/* -------------------------------- */
+/* TIMELINE WRAPPER */
+/* -------------------------------- */
+
+.checkout-piece-timeline {
+  width: 100%;
+}
+
+
+/* STRICT checkout alignment */
+.checkout-piece-timeline .rental-timeline {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* -------------------------------- */
+/* NOTICE */
+/* -------------------------------- */
+
+.checkout-piece-notices {
+  margin-top: 48px;
 }

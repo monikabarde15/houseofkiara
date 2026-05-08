@@ -1,0 +1,84 @@
+/* ========================================
+   TRUST WRAPPER
+======================================== */
+
+.trust-wrapper {
+  margin-top: 48px;
+}
+
+
+/* ========================================
+   TRUST LIST
+======================================== */
+
+.trust-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  padding-top: 32px;
+
+  border-top: 1px solid #F0EAE0;
+}
+
+
+/* ========================================
+   TRUST ITEM
+======================================== */
+
+.trust-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: #8A7E72;
+}
+
+
+/* icon */
+.trust-item__icon {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  stroke: #C9A96E;
+  stroke-linecap: round;
+}
+
+
+/* text */
+.trust-item__text {
+  margin: 0;
+}
+
+
+/* ========================================
+   PAYMENT MARKS
+======================================== */
+
+.pay-marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+
+  margin-top: 32px;
+}
+
+
+/* individual mark */
+.pay-mark {
+  padding: 3px 9px;
+
+  border: 1px solid #F0EAE0;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #E8E0D4;
+}

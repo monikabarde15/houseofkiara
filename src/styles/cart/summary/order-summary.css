@@ -138,6 +138,9 @@
    ========================= */
 
 /* DISCOUNT (green) */
+.summary-row.discount .summary-title {
+  color: #6B7E5A;
+}
 .summary-row.discount .summary-value {
   color: #6B7E5A;
 }

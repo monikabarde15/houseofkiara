@@ -1,3 +1,4 @@
+// src\components\Cart\ui\PromoCode.jsx
 import React, { useState } from "react";
 import "../../../styles/cart/ui/promo-code.css";
 import { PROMO_CODES } from "../../../utils/cart/promo";
@@ -24,7 +25,7 @@ const PromoCode = ({ onApply }) => {
     onApply(appliedData); 
     setError("");
 
-    // 🔥 trigger animation
+    //  trigger animation
     setCelebrate(true);
 
     // reset after animation

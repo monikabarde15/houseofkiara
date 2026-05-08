@@ -58,7 +58,7 @@ const CartLayout = () => {
   ];
 
 
-  // 🔥 MAIN LOGIC
+  // MAIN LOGIC
   const cartItems = incomingItem
     ? [
       incomingItem,
@@ -181,11 +181,20 @@ const CartLayout = () => {
 
   // To handle checkout from the cartpage
   const handleCheckout = () => {
-    // ✅ backup (dev only safety)
-    localStorage.setItem("checkoutItems", JSON.stringify(activeItems));
+    //  backup (dev only safety)
+    localStorage.setItem(
+      "checkoutData",
+      JSON.stringify({
+        items: activeItems,
+        activePromo
+      })
+    );
 
     navigate("/checkout", {
-      state: { items: activeItems }
+      state: {
+        items: activeItems,
+        activePromo
+      }
     });
   };
 

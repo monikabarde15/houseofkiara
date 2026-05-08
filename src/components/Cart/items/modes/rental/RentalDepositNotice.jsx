@@ -1,3 +1,4 @@
+// src\components\Cart\items\modes\rental\RentalDepositNotice.jsx
 import React from "react";
 import "../../../../../styles/cart/items/disclosure-notice.css";
 

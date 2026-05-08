@@ -1,0 +1,39 @@
+/* ======================================== */
+/* CHECKOUT NOTICE */
+/* ======================================== */
+
+.checkout-notice {
+  margin-top: 32px;
+  padding: 14px 0 14px 18px;
+  border-left: 2px solid #2A4466;
+}
+
+
+/* stacked notices */
+.checkout-notice + .checkout-notice {
+  margin-top: 16px;
+}
+
+
+/* paragraph */
+.checkout-notice__text {
+  font-family: var(--font-dm-sans);
+  font-size: 11px;
+  line-height: 1.8;
+  color: #8A7E72;
+}
+
+
+/* bold highlight */
+.checkout-notice__highlight {
+  font-weight: 400;
+}
+
+
+/* ======================================== */
+/* NEW PURCHASE */
+/* ======================================== */
+
+.checkout-notice--new .checkout-notice__highlight {
+  color: #2A4466;
+}

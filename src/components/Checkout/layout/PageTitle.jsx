@@ -1,9 +1,14 @@
-// PageTitle.jsx
-// PageTitle.jsx
-
+// src\components\Checkout\layout\PageTitle.jsx
 import "../../../styles/checkout/layout/page-title.css";
 
-const PageTitle = () => {
+const PageTitle = ({
+  cartItems = [],
+  grandTotal = 0,
+  deliveryType = "standard",
+}) => {
+
+  const pieceCount = cartItems.length;
+
   return (
     <div className="page-title">
 
@@ -14,10 +19,20 @@ const PageTitle = () => {
 
       {/* RIGHT NOTE */}
       <div className="page-title__note">
-        3 pieces · ₹46,730 due today ·{" "}
+
+        {pieceCount} {pieceCount === 1 ? "piece" : "pieces"}
+        {" · "}
+
+        ₹{grandTotal.toLocaleString()} due today ·{" "}
+
         <span className="page-title__note-sub">
-          incl. free standard delivery
+
+          {deliveryType === "express"
+            ? "incl. express delivery"
+            : "incl. free standard delivery"}
+
         </span>
+
       </div>
 
     </div>

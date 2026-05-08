@@ -1,0 +1,284 @@
+/* =========================
+   CHECKOUT SUMMARY CONTAINER
+   ========================= */
+.checkout-summary-eyebrow {
+  font-size: 8.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 300;
+  color: #B0A898;
+
+  margin-bottom: 48px;
+}
+
+
+/* ========================================
+          TOTAL DUE
+      ======================================== */
+.checkout-summary-divider {
+  height: 1px;
+  background: #18140F;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.checkout-summary-total {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkout-summary-total-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  letter-spacing: 0.2px;
+}
+
+.checkout-summary-total-label {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  color: #18140F;
+}
+
+.checkout-summary-total-value {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 44px;
+  font-weight: 300;
+  color: #18140F;
+  letter-spacing: -0.5px;
+
+}
+
+.checkout-summary-total-sub {
+  font-size: 9.5px;
+  color: #B0A898;
+}
+
+
+/* DIVIDER BELOW TOTAL
+.checkout-summary-sub-divider {
+  height: 1px;
+  background: #F0EAE0;
+  margin-top: 16px;
+
+} */
+
+/* ========================================
+         CHECKOUT SUMMARY
+      ======================================== */
+
+
+.checkout-summary-note {
+  margin-top: 24px;
+}
+
+.checkout-summary-note p {
+  font-family: 'DM Sans';
+  font-family: 300;
+  font-size: 10.5px;
+  line-height: 1.8;
+  color: #B0A898;
+  padding-top: 24px;
+  border-top: 1px solid #F0EAE0;
+}
+
+.checkout-summary-note strong {
+  color: #C9A96E;
+}
+
+/* ========================================
+   ESTIMATED DELIVERY
+======================================== */
+
+.checkout-est-delivery {
+  margin-top: 24px;
+  padding: 14px 16px;
+  padding-bottom: 0px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  background: #FAF7F2;
+  border: 1px solid #F0EAE0;
+}
+
+
+/* icon */
+.checkout-est-delivery__icon {
+  color: #6B7E5A;
+  flex-shrink: 0;
+
+  margin-top: 1px;
+}
+
+
+/* content wrapper */
+.checkout-est-delivery__content {
+  flex: 1;
+}
+
+
+/* heading */
+.checkout-est-delivery__label {
+  display: block;
+  margin-bottom: 2px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #3C3529;
+}
+
+
+/* body text */
+.checkout-est-delivery__text {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: #8A7E72;
+}
+
+/* ========================================
+   PRIMARY CTA BUTTON
+======================================== */
+
+.checkout-cta-btn {
+  position: relative;
+  overflow: hidden;
+
+  display: block;
+  width: 100%;
+
+  margin-top: 32px;
+  padding: 17px 24px;
+
+  border: none;
+  outline: none;
+
+  background: #1A1612;
+  cursor: pointer;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #E8D5B0;
+
+  transition: opacity 0.2s;
+}
+
+
+/* hover */
+.checkout-cta-btn:hover {
+  opacity: 0.87;
+}
+
+
+/* shimmer overlay */
+.checkout-cta-btn__shimmer {
+  position: absolute;
+  inset: 0;
+
+  overflow: hidden;
+  pointer-events: none;
+}
+
+
+.checkout-cta-btn__shimmer::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+  left: -100%;
+
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(201, 160, 90, 0.08) 50%,
+    transparent 60%
+  );
+
+  animation: checkoutShimmer 4s linear infinite;
+}
+
+
+@keyframes checkoutShimmer {
+  from {
+    left: -100%;
+  }
+
+  to {
+    left: 200%;
+  }
+}
+
+
+/* ========================================
+   RETURN TO CART BUTTON
+======================================== */
+
+.checkout-cta-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 100%;
+
+  margin-top: 24px;
+  padding: 13px 24px;
+
+  border: 1px solid #E8E0D4;
+  background: transparent;
+
+  text-decoration: none;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #3C3529;
+
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background 0.2s;
+}
+
+
+/* hover */
+.checkout-cta-back:hover {
+  border-color: #3C3529;
+  background: #FAF7F2;
+  color: #1A1612;
+}
+
+
+/* ========================================
+   SECURE NOTE
+======================================== */
+
+.checkout-secure-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  margin-top: 8px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: #E8E0D4;
+}
+
+
+/* lock icon */
+.checkout-secure-note__icon {
+  flex-shrink: 0;
+}

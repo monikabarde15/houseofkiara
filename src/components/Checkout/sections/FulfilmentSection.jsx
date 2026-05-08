@@ -9,13 +9,20 @@ import { useLocation } from "react-router-dom";
 import RentalPriceBlock from "../../Cart/items/modes/rental/RentalPriceBlock";
 import PrelovedPriceBlock from "../../Cart/items/modes/preloved/PrelovedPriceBlock";
 import NewPriceBlock from "../../Cart/items/modes/new/NewPriceBlock";
+import RentalTimeline from "../../Cart/items/modes/rental/RentalTimeline";
+
+import RentalDepositNotice from "../../Cart/items/modes/rental/RentalDepositNotice";
+import PrelovedDisclosure from "../../Cart/items/modes/preloved/PrelovedDisclosure";
+import PrelovedFinalNote from "../../Cart/items/modes/preloved/PrelovedFinalNote";
+import NewPurchaseNotice from "../notices/NewPurchaseNotice";
+
 
 const OrderFulfilmentSection = () => {
 
   const location = useLocation();
   let items = location.state?.items;
 
-  // ✅ fallback (dev + refresh safe)
+  //  fallback (dev + refresh safe)
   if (!items || items.length === 0) {
     const stored = localStorage.getItem("checkoutItems");
     if (stored) {
@@ -26,7 +33,16 @@ const OrderFulfilmentSection = () => {
   items = items || [];
 
 
-  console.log("CHECKOUT ITEMS:", items);
+  const getRentalDays = (booking) => {
+    if (!booking?.deliveryDate || !booking?.returnDate) return 0;
+
+    const start = new Date(booking.deliveryDate);
+    const end = new Date(booking.returnDate);
+
+    const diff = end - start;
+
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  };
 
   return (
     <FormSection>
@@ -105,42 +121,40 @@ const OrderFulfilmentSection = () => {
                         </div>
 
                         <div className="checkout-piece-desc">
-                          {item.product?.description}
+
+                          {[
+                            item.product?.description,
+
+                            item.booking?.size
+                              ? `Size ${item.booking.size}`
+                              : null,
+
+                            condition
+                              ? condition === "pristine"
+                                ? "Pristine condition"
+                                : condition === "excellent"
+                                  ? "Excellent condition"
+                                  : `${condition} condition`
+                              : null
+
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
+
                         </div>
 
-                        {/* META FIXED (SIZE + CONDITION) */}
-                        {(item.booking?.size || condition) && (
-                          <div className="checkout-piece-meta">
-
-                            {item.booking?.size && (
-                              <span className="meta-size">
-                                Size {item.booking.size}
-                              </span>
-                            )}
-
-                            {item.booking?.size && condition && (
-                              <span className="meta-dot">•</span>
-                            )}
-
-                            {condition && (
-                              <span className={`meta-condition meta-condition--${condition}`}>
-                                {condition === "pristine"
-                                  ? "Pristine condition"
-                                  : condition === "excellent"
-                                    ? "Excellent condition"
-                                    : condition}
-                              </span>
-                            )}
-
-                          </div>
-                        )}
-
-                        <div className="checkout-piece-price">
+                        <div
+                          className={`checkout-piece-price checkout-piece-price--${item.type}`}
+                        >
 
                           {item.type === "rental" && (
                             <RentalPriceBlock
                               product={item.product}
-                              booking={item.booking}
+
+                              booking={{
+                                ...item.booking,
+                                rentalWindowDays: getRentalDays(item.booking)
+                              }}
                             />
                           )}
 
@@ -159,7 +173,63 @@ const OrderFulfilmentSection = () => {
                         </div>
 
                       </div>
+
                     </div>
+
+                    {/* DIVIDER */}
+                    <div className="checkout-piece-divider" />
+
+
+                    {/* RENTAL TIMELINE */}
+                    {item.type === "rental" && (
+                      <div className="checkout-piece-timeline">
+
+                        <RentalTimeline
+                          booking={{
+                            ...item.booking,
+                            rentalWindowDays: getRentalDays(item.booking)
+                          }}
+                        />
+
+                      </div>
+                    )}
+
+                    {/* RENTAL NOTICE */}
+                    {item.type === "rental" && (
+                      <div className="checkout-piece-notices">
+
+                        <RentalDepositNotice
+                          product={item.product}
+                        />
+
+                      </div>
+                    )}
+
+                    
+                    {/* PRELOVED */}
+                    {item.type === "preloved" && (
+                      <div className="checkout-piece-notices">
+
+                        <PrelovedDisclosure
+                          product={item.product}
+                        />
+
+                        <PrelovedFinalNote
+                          product={item.product}
+                        />
+
+                      </div>
+                    )}
+
+                    {/* NEW */}
+                    {item.type === "new" && (
+                      <div className="checkout-piece-notices">
+
+                        <NewPurchaseNotice />
+
+                      </div>
+                    )}
+
 
                   </div>
                 );

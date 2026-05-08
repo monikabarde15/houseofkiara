@@ -222,7 +222,7 @@ The dupatta is pristine. The blouse fits a 32" bust; the skirt waist is adjustab
           rating: 4.5
         },
         disclosure: "Worn once for a reception. No alterations made. Minor organza pull on pallu border — photographed and disclosed. Blouse fabric unstitched, included.",
-        finalSaleNote:"Final sale. Pre-loved pieces cannot be returned once dispatched. Please review all condition notes and photographs before purchasing.",
+        finalSaleNote:"Pre-loved pieces cannot be returned once dispatched. Please review all condition notes and photographs before purchasing. Reach us on Whatsapp before placing your order",
 
       },
 
