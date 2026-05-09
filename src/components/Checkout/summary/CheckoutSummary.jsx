@@ -13,7 +13,10 @@ import TrustList from "../ui/TrustList";
 const CheckoutSummary = ({
     cartItems,
     activePromo,
-    deliveryType = "standard"
+    deliveryType = "standard",
+    onPlaceOrder,
+    errorCount,
+     fieldErrors,
 }) => {
 
 
@@ -209,12 +212,40 @@ const CheckoutSummary = ({
             </div>
 
             {/* ========================================
+    FORM ERROR SUMMARY
+======================================== */}
+
+            {errorCount > 0 && (
+                <div className="checkout-form-error-summary visible">
+
+                    <div className="checkout-form-error-summary__title">
+                        Please complete the following required fields.
+                    </div>
+
+                    <ul className="checkout-fes-list">
+
+                        {fieldErrors.map((item) => (
+                            <li
+                                key={item}
+                                className="checkout-fes-item"
+                            >
+                                {item}
+                            </li>
+                        ))}
+
+                    </ul>
+
+                </div>
+            )}
+
+            {/* ========================================
     CHECKOUT CTA ACTIONS
 ======================================== */}
 
             <button
                 type="button"
                 className="checkout-cta-btn"
+                onClick={onPlaceOrder}
 
             >
                 <span className="checkout-cta-btn__shimmer"></span>

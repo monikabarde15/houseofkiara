@@ -29,7 +29,23 @@ const CartLayout = () => {
   const [activePromo, setActivePromo] = useState(null);
   const [removeTarget, setRemoveTarget] = useState(null);
 
+  const [autoDialogHandled, setAutoDialogHandled] = useState(false);
 
+  const removeItemType =
+    location.state?.removeItemType;
+
+  const openRemoveDialog =
+    location.state?.openRemoveDialog;
+
+
+  // RESET WHEN NORMAL CART VISIT
+  useEffect(() => {
+
+    if (!openRemoveDialog) {
+      setAutoDialogHandled(false);
+    }
+
+  }, [openRemoveDialog]);
 
   // DEFAULT DATA (KEEP IT)
   const defaultItems = [
@@ -179,6 +195,55 @@ const CartLayout = () => {
   }, []);
 
 
+
+  // AUTO OPEN DIALOG
+  useEffect(() => {
+
+    /*
+      stop if:
+      - no checkout trigger
+      - no item type
+      - already handled
+    */
+    if (
+      !openRemoveDialog ||
+      !removeItemType ||
+      autoDialogHandled
+    ) return;
+
+    const targetItem =
+      cartItemsState.find(
+        item =>
+          item.type === removeItemType &&
+          item.active !== false
+      );
+
+    if (!targetItem) return;
+
+    requestAnimationFrame(() => {
+
+      setRemoveTarget(targetItem);
+
+      /*
+        prevent reopening
+      */
+      setAutoDialogHandled(true);
+
+      /*
+        clear nav state
+      */
+      window.history.replaceState({}, "");
+
+    });
+
+  }, [
+    openRemoveDialog,
+    removeItemType,
+    cartItemsState,
+    autoDialogHandled,
+  ]);
+
+
   // To handle checkout from the cartpage
   const handleCheckout = () => {
     //  backup (dev only safety)
@@ -292,7 +357,7 @@ const CartLayout = () => {
           </div>
 
           <button className="cta-btn-mobile"
-          onClick={handleCheckout}>
+            onClick={handleCheckout}>
             PROCEED TO CHECKOUT
           </button>
 

@@ -1,54 +1,172 @@
+// src\components\Checkout\sections\ReviewSection.jsx
 import FormSection from "./components/FormSection";
 import "../../../styles/checkout/sections/components/form-section.css";
 import "../../../styles/checkout/sections/review-section.css";
 import "../../../styles/checkout/sections/components/field.css";
+import ConsentErrorBanner from "../ui/ConsentErrorBanner";
 import { useLocation } from "react-router-dom";
-import { useState, useMemo,useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 
-const ReviewSection = ({ onValidityChange }) => {
+const ReviewSection = ({
+  onValidityChange,
+  submitCount,
+  checkoutItems = [],
+}) => {
 
-  const location = useLocation();
-  const checkoutItems = location.state?.checkoutItems || [];
+
+  // const location = useLocation();
+  // const checkoutItems = location.state?.checkoutItems || [];
 
   //  separate items by mode
-  const rentalItems = checkoutItems.filter(i => i.mode === "rental");
-  const prelovedItems = checkoutItems.filter(i => i.mode === "preloved");
+  const rentalItems =
+    checkoutItems.filter(i => i.type === "rental");
+
+  const prelovedItems =
+    checkoutItems.filter(i => i.type === "preloved");
 
   //  pick first item (as per spec text usage)
   const rentalItem = rentalItems[0];
   const prelovedItem = prelovedItems[0];
 
   //  safe values
-  const rentalName = rentalItem?.title || "your rental item";
-  const prelovedName = prelovedItem?.title || "this Preloved item";
+  const rentalName =
+    rentalItem?.product?.title ||
+    rentalItem?.title ||
+    "your rental item";
+
+  const prelovedName =
+    prelovedItem?.product?.title ||
+    prelovedItem?.title ||
+    "this preloved item";
 
   //  return date (you must confirm field name)
-  const returnDate = rentalItem?.returnDate || "selected date";
+  const returnDateRaw =
+    rentalItem?.booking?.returnDate;
 
 
-  // 1–4 required → true by default, 5 optional → false
-  const [consents, setConsents] = useState({
-    1: true,
-    2: true,
-    3: true,
-    4: true,
-    5: false,
+  /* formatted date */
+  const returnDate = returnDateRaw
+    ? new Date(returnDateRaw).toLocaleDateString(
+      "en-IN",
+      {
+        day: "numeric",
+        month: "long",
+      }
+    )
+    : "selected date";
+
+
+  /* weekday */
+  const returnDay = returnDateRaw
+    ? new Date(returnDateRaw).toLocaleDateString(
+      "en-IN",
+      {
+        weekday: "long",
+      }
+    )
+    : "";
+
+  // CREATE CONSENT_META
+  const CONSENT_META = [
+
+    {
+      id: 1,
+      required: true,
+      type: "legal",
+    },
+
+    prelovedItem && {
+      id: 2,
+      required: true,
+      type: "preloved",
+      itemName: prelovedName,
+    },
+
+    rentalItem && {
+      id: 3,
+      required: true,
+      type: "rental-return",
+      itemName: rentalName,
+    },
+
+    rentalItem && {
+      id: 4,
+      required: true,
+      type: "rental-return",
+      itemName: rentalName,
+      returnDate,
+    },
+
+    {
+      id: 5,
+      required: false,
+      type: "marketing",
+    },
+
+  ].filter(Boolean);
+
+  // DYNAMIC INITIAL STATE 1–4 required → true by default, 5 optional → false
+  const initialConsents = {};
+
+  CONSENT_META.forEach((item) => {
+    initialConsents[item.id] = item.required;
   });
+
+  /* marketing optional */
+  initialConsents[5] = false;
+
+  const [consents, setConsents] =
+    useState(initialConsents);
+
+  const [consentErrors, setConsentErrors] = useState([]);
 
   // toggle handler
   const toggleConsent = (id) => {
+
     setConsents((prev) => ({
       ...prev,
       [id]: !prev[id],
     }));
+
+    /* live clear */
+    setConsentErrors((prev) =>
+      prev.filter((item) => item !== id)
+    );
   };
 
   // validation: all required must be true
   const isValid = useMemo(() => {
-    return consents[1] && consents[2] && consents[3] && consents[4];
+    return CONSENT_META
+      .filter((item) => item.required)
+      .every((item) => consents[item.id]);
   }, [consents]);
 
-  
+  // VALIDATION EFFECT
+
+  useEffect(() => {
+
+    const nextErrors = [];
+
+    CONSENT_META.forEach((item) => {
+
+      if (
+        item.required &&
+        !consents[item.id]
+      ) {
+        nextErrors.push(item.id);
+      }
+
+    });
+
+    setConsentErrors(nextErrors);
+
+  }, [
+    consents,
+    // CONSENT_META,
+  ]);
+
+
+
   useEffect(() => {
     if (typeof onValidityChange === "function") {
       onValidityChange(isValid);
@@ -70,12 +188,15 @@ const ReviewSection = ({ onValidityChange }) => {
         </div>
 
         {/* CONSENT GROUP  */}
-        <div className="checkout-consent-group">
+        <div id="consent-group" className="checkout-consent-group">
 
           {/* CONSENT 1 */}
-          <label className="checkout-consent-row" data-consent-id="1" onClick={() => toggleConsent(1)}>
+          <label className={`
+  checkout-consent-row
+  ${consentErrors.includes(1) ? "has-error" : ""}
+`} data-consent-id="1" onClick={() => toggleConsent(1)}>
 
-            <span  className={`checkout-c-box ${consents[1] ? "on" : ""}`}></span>
+            <span className={`checkout-c-box ${consents[1] ? "on" : ""}`}></span>
 
             <span className="checkout-consent-req">*</span>
 
@@ -91,71 +212,89 @@ const ReviewSection = ({ onValidityChange }) => {
 
 
           {/* CONSENT 2 (PRELOVED) */}
-          <label
-            className="checkout-consent-row"
-            data-consent-id="2"
-            data-consent-item="preloved"
-            onClick={() => toggleConsent(2)}
-          >
+          {prelovedItem && (
+            <label
+              className={`
+  checkout-consent-row
+  ${consentErrors.includes(2) ? "has-error" : ""}
+`}
+              data-consent-id="2"
+              data-consent-item="preloved"
+              onClick={() => toggleConsent(2)}
+            >
 
-            {/* checkbox visual */}
-            <span
-              className={`checkout-c-box ${consents[2] ? "on" : ""}`}
-            ></span>
+              {/* checkbox visual */}
+              <span
+                className={`checkout-c-box ${consents[2] ? "on" : ""}`}
+              ></span>
 
-            <span className="checkout-consent-req">*</span>
+              <span className="checkout-consent-req">*</span>
 
-            <span className="checkout-consent-text">
-              I understand that the <strong>{prelovedName}</strong> is a final sale preloved item and cannot be returned once dispatched. I have reviewed all condition disclosures and photographs.
-            </span>
+              <span className="checkout-consent-text">
+                I understand that the <strong>{prelovedName}</strong> is a final sale preloved item and cannot be returned once dispatched. I have reviewed all condition disclosures and photographs.
+              </span>
 
-          </label>
+            </label>
+
+          )}
 
 
           {/* CONSENT 3 (RENTAL) */}
-          <label
-            className="checkout-consent-row"
-            data-consent-id="3"
-            data-consent-item="rental"
-            onClick={() => toggleConsent(3)}
-          >
+          {rentalItem && (
+            <label
+              className={`
+  checkout-consent-row
+  ${consentErrors.includes(3) ? "has-error" : ""}
+`}
+              data-consent-id="3"
+              data-consent-item="rental"
+              onClick={() => toggleConsent(3)}
+            >
 
-            {/* checkbox visual */}
-            <span
-              className={`checkout-c-box ${consents[3] ? "on" : ""}`}
-            ></span>
+              {/* checkbox visual */}
+              <span
+                className={`checkout-c-box ${consents[3] ? "on" : ""}`}
+              ></span>
 
-            <span className="checkout-consent-req">*</span>
+              <span className="checkout-consent-req">*</span>
 
-            <span className="checkout-consent-text">
-              I confirm the contact and delivery details above are accurate. I understand the{" "}
-              <strong>₹15,000 security deposit</strong> for my rental will be collected separately by the HOK ops team via WhatsApp before dispatch — it is not charged today.
-            </span>
+              <span className="checkout-consent-text">
+                I confirm the contact and delivery details above are accurate. I understand the{" "}
+                <strong>₹15,000 security deposit</strong> for my rental will be collected separately by the HOK ops team via WhatsApp before dispatch — it is not charged today.
+              </span>
 
-          </label>
-
+            </label>
+          )}
 
           {/* CONSENT 4 (RENTAL RETURN) */}
-          <label
-            className="checkout-consent-row"
-            data-consent-id="4"
-            data-consent-item="rental"
-            onClick={() => toggleConsent(4)}
-          >
+          {rentalItem && (
+            <label
+              className={`
+  checkout-consent-row
+  ${consentErrors.includes(4) ? "has-error" : ""}
+`}
+              data-consent-id="4"
+              data-consent-item="rental"
+              onClick={() => toggleConsent(4)}
+            >
 
-            {/* checkbox visual */}
-            <span
-              className={`checkout-c-box ${consents[4] ? "on" : ""}`}
-            ></span>
+              {/* checkbox visual */}
+              <span
+                className={`checkout-c-box ${consents[4] ? "on" : ""}`}
+              ></span>
 
-            <span className="checkout-consent-req">*</span>
+              <span className="checkout-consent-req">*</span>
 
-            <span className="checkout-consent-text">
-              I acknowledge the <strong>{rentalName}</strong> must be returned by{" "}
-              <strong>{returnDate}</strong> using the prepaid label included in the packaging, and I have read the late return and damage policy.
-            </span>
+              <span className="checkout-consent-text">
+                I acknowledge the <strong>{rentalName}</strong> must be returned by{" "}
+                <strong>
+                  {returnDate}
+                  {returnDay ? ` (${returnDay})` : ""}
+                </strong> using the prepaid label included in the packaging, and I have read the late return and damage policy.
+              </span>
 
-          </label>
+            </label>
+          )}
 
 
           {/* CONSENT 5 (OPTIONAL) */}
@@ -180,6 +319,12 @@ const ReviewSection = ({ onValidityChange }) => {
           </label>
 
         </div>
+
+        <ConsentErrorBanner
+          consentErrors={consentErrors}
+          consentMeta={CONSENT_META}
+        />
+
 
       </div>
 

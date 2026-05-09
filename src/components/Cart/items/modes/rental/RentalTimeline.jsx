@@ -1,3 +1,4 @@
+// src\components\Cart\items\modes\rental\RentalTimeline.jsx
 import React from "react";
 import "../../../../../styles/cart/items/rental-timeline.css";
 
@@ -31,7 +32,7 @@ const RentalTimeline = ({ booking }) => {
 
     if (!booking) return null;
 
-    const windowDays = booking?.rentalWindowDays || 5;
+    const windowDays = booking?.rentalWindowDays||5;
     const windowLabel = `${windowDays}-Day Window`;
 
     return (

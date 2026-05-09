@@ -1,3 +1,4 @@
+// src\components\Cart\items\CartItemDesktop.jsx
 import React, { useState } from "react";
 import "../../../styles/cart/items/cart-item-desktop.css";
 

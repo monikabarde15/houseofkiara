@@ -80,3 +80,28 @@
 
 
 
+/* ========================================
+   CONSENT ERROR STATE
+======================================== */
+
+.checkout-consent-row.has-error .checkout-c-box {
+  border-color: #B85C38;
+
+  box-shadow:
+    0 0 0 2px rgba(184, 92, 56, 0.12);
+}
+
+
+.checkout-consent-row.has-error
+.checkout-consent-text {
+
+  color: #3C3529;
+}
+
+/* ========================================
+   CONSENT SCROLL OFFSET
+======================================== */
+
+.checkout-consent-group {
+  scroll-margin-top: 104px;
+}

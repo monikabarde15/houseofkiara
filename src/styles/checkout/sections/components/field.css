@@ -130,3 +130,71 @@
   top: 1px;
   left: 4px;
 }
+
+
+/* ========================================
+   REQUIRED ASTERISK
+======================================== */
+
+.req {
+  margin-left: 3px;
+
+  color: #B85C38;
+
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0;
+
+  line-height: 1;
+
+  position: relative;
+  top: -1px;
+}
+
+
+/* ========================================
+   OPTIONAL LABEL
+======================================== */
+
+.checkout-field-optional {
+  margin-left: 6px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 300;
+  color: #B0A898;
+}
+
+
+/* ========================================
+   FIELD ERROR
+======================================== */
+
+.checkout-ferror {
+  margin-top: 6px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  line-height: 1.5;
+
+  color: #B85C38;
+}
+
+
+/* ========================================
+   ERROR STATE
+======================================== */
+
+.checkout-field.has-error input,
+.checkout-field.has-error textarea,
+.checkout-field.has-error select {
+  border-color: #B85C38;
+}
+
+/* ========================================
+   VALIDATION SCROLL OFFSET
+======================================== */
+
+.checkout-field {
+  scroll-margin-top: 104px;
+}
