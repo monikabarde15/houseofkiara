@@ -142,7 +142,9 @@
 }
 
 .dialog-btn-primary:hover{
-
+background: #3a312c; /* screenshot wala dark brown */
+    color: #E8D5B0;
+    border-color: #3a312c;
 }
 
 /* ICON */
