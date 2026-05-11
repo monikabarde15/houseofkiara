@@ -51,7 +51,8 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
 
     // PRELOVED
     if (type === "preloved") {
-      basePrice = cleanPrice(product?.price);
+      // basePrice = cleanPrice(product?.price);
+      basePrice = cleanPrice(product?.preloved?.pricing?.price);
     }
 
     // NEW

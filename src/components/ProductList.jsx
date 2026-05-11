@@ -12,8 +12,8 @@ export const products = [
     id: 1,
     designer: "RAHUL MISHRA",
     name: "Blush Zardosi Anarkali",
-    price: "₹2,40,000",
-    oldPrice: "₹3,00,000",
+    price: "₹2,40,00",
+    oldPrice: "₹3,00,00",
     tag: "RENT",
     condition: {
       grade: "excellent"   // "excellent" or "pristine" or "good"
@@ -213,8 +213,8 @@ The dupatta is pristine. The blouse fits a 32" bust; the skirt waist is adjustab
         enabled: true,
 
         pricing: {
-          price: 130000,
-          originalPrice: 240000
+          price: 13000,
+          originalPrice: 24000
         },
 
         condition: {
@@ -231,8 +231,8 @@ The dupatta is pristine. The blouse fits a 32" bust; the skirt waist is adjustab
         enabled: true,
 
         pricing: {
-          price: 240000,
-          discountPrice: 200000
+          price: 140000,
+          discountPrice: 12000
         },
 
         stock: {
