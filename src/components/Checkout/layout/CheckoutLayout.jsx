@@ -17,14 +17,15 @@ import { OrderSummary, PolicyStrip } from "../../Cart";
 import CheckoutSummary from "../summary/CheckoutSummary";
 import { useState, useEffect } from "react";
 import { calculateTotals } from "../../../utils/cart/calculateTotals";
+import OrderConfirmedOverlay from "../overlay/OrderConfirmedOverlay";
 
 
 
 const CheckoutLayout = () => {
 
   const [submitCount, setSubmitCount] = useState(0);
-
   const [fieldErrors, setFieldErrors] = useState({});
+  const [isOrderConfirmed, setIsOrderConfirmed] = useState(false);
 
   const location = useLocation();
 
@@ -190,6 +191,9 @@ const CheckoutLayout = () => {
 
 
       </div>
+      <OrderConfirmedOverlay
+        isOpen={isOrderConfirmed}
+      />
       <PolicyStrip />
 
     </div>

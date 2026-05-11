@@ -1,0 +1,76 @@
+/* ========================================
+   7.1 OVERLAY CONTAINER
+======================================== */
+
+.confirmed-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #FFFEFB;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition:
+    opacity 0.5s cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
+}
+
+
+/* active */
+.confirmed-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+
+/* ========================================
+   7.2 INNER CONTAINER
+======================================== */
+
+.confirmed-inner {
+  width: 100%;
+  max-width: 480px;
+
+  padding: 0 40px;
+
+  text-align: center;
+}
+
+/* ========================================
+   7.3 CHECKMARK ICON
+======================================== */
+
+.confirmed-mark {
+  width: 56px;
+  height: 56px;
+
+  margin:
+    0 auto
+    48px;
+
+  border-radius: 999px;
+  border: 1px solid #E8E0D4;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* icon */
+.confirmed-mark__icon {
+  color: #6B7E5A;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
