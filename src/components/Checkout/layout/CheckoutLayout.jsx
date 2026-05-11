@@ -36,6 +36,11 @@ const CheckoutLayout = () => {
     {};
 
   const checkoutItems = checkoutData.items || [];
+
+  const hasRentalItem = checkoutItems.some(
+    item => item.type === "rental"
+  );
+
   const activePromo = checkoutData.activePromo || null;
 
   const [deliveryType, setDeliveryType] = useState("standard");
@@ -262,7 +267,9 @@ const CheckoutLayout = () => {
           setIsOrderConfirmed(false)
         }
       />
-      <PolicyStrip />
+      {hasRentalItem && (
+        <PolicyStrip />
+      )}
 
     </div>
   );

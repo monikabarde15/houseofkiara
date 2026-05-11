@@ -85,6 +85,10 @@ const CartLayout = () => {
   const [cartItemsState, setCartItemsState] = useState(cartItems);
   const activeItems = cartItemsState.filter(item => item.active !== false);
 
+  const hasRentalItem = activeItems.some(
+    item => item.type === "rental"
+  );
+
   const totals = calculateTotals(activeItems, activePromo);
   const { grandTotal } = totals;
 
@@ -340,9 +344,11 @@ const CartLayout = () => {
 
       </div>
 
-      <div className="policy-wrapper">
-        <PolicyStrip />
-      </div>
+      {hasRentalItem && (
+        <div className="policy-wrapper">
+          <PolicyStrip />
+        </div>
+      )}
 
       {/* CTA BUTTOM STICKY */}
       {/* MOBILE CTA BAR */}
