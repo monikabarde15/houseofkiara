@@ -331,6 +331,11 @@
   color: #1A1612;
 }
 
+/* processing state */
+.checkout-cta-btn.is-processing {
+  opacity: 0.55;
+  pointer-events: none;
+}
 
 /* ========================================
    SECURE NOTE

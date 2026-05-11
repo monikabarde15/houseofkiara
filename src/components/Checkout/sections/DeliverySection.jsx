@@ -3,10 +3,55 @@ import FormSection from "./components/FormSection";
 import "../../../styles/checkout/sections/delivery-section.css";
 import "../../../styles/checkout/sections/components/field.css";
 
-import { useState } from "react";
 
-export default function DeliverySection() {
-  const [selected, setSelected] = useState("std");
+
+export default function DeliverySection({
+  deliveryType,
+  setDeliveryType,
+  checkoutItems = [],
+}) {
+
+  // RENTAL ITEM
+  const rentalItem =
+    checkoutItems.find(
+      (item) => item.type === "rental"
+    );
+
+  //  PRODUCT NAME
+  const rentalName =
+    rentalItem?.product?.title ||
+    rentalItem?.title ||
+    "your rental piece";
+
+  // CREATE DATE
+  const arrivalDateRaw =
+    rentalItem?.booking?.deliveryDate;
+
+  // FORMAT DATE
+  const arrivalDate =
+    arrivalDateRaw
+      ? new Date(arrivalDateRaw)
+        .toLocaleDateString(
+          "en-IN",
+          {
+            day: "numeric",
+            month: "short",
+          }
+        )
+      : "your selected date";
+
+
+  // FORMAT WEEKDAY
+  const arrivalDay =
+    arrivalDateRaw
+      ? new Date(arrivalDateRaw)
+        .toLocaleDateString(
+          "en-IN",
+          {
+            weekday: "long",
+          }
+        )
+      : "";
 
   return (
     <FormSection>
@@ -25,12 +70,12 @@ export default function DeliverySection() {
 
           {/* STANDARD */}
           <div
-            className={`checkout-option-card ${selected === "std" ? "selected" : ""
+            className={`checkout-option-card ${deliveryType === "standard" ? "selected" : ""
               }`}
-            onClick={() => setSelected("std")}
+            onClick={() => setDeliveryType("standard")}
           >
             <div
-              className={`checkout-option-radio ${selected === "std" ? "selected" : ""
+              className={`checkout-option-radio ${deliveryType === "standard" ? "selected" : ""
                 }`}
             ></div>
 
@@ -53,12 +98,12 @@ export default function DeliverySection() {
 
           {/* EXPRESS */}
           <div
-            className={`checkout-option-card ${selected === "exp" ? "selected" : ""
+            className={`checkout-option-card ${deliveryType === "express" ? "selected" : ""
               }`}
-            onClick={() => setSelected("exp")}
+            onClick={() => setDeliveryType("express")}
           >
             <div
-              className={`checkout-option-radio ${selected === "exp" ? "selected" : ""
+              className={`checkout-option-radio ${deliveryType === "express" ? "selected" : ""
                 }`}
             ></div>
 
@@ -90,11 +135,19 @@ export default function DeliverySection() {
             <span className="checkout-delivery-notice-body">
               Regardless of shipping method, your{" "}
               <span className="checkout-delivery-notice-strong">
-                Crimson Zardozi Bridal Lehenga
-              </span>{" "}
-              will be dispatched to arrive by{" "}
+                {rentalName}
+              </span>
+
+              {" "}will be dispatched to arrive by{" "}
+
               <span className="checkout-delivery-notice-strong">
-                14 Nov (Friday)
+
+                {arrivalDate}
+
+                {arrivalDay
+                  ? ` (${arrivalDay})`
+                  : ""}
+
               </span>{" "}
               — two days before your event. Rental dispatch timelines are fixed to the booking window and cannot be accelerated.
             </span>

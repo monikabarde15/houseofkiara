@@ -16,11 +16,16 @@ const CheckoutSummary = ({
     deliveryType = "standard",
     onPlaceOrder,
     errorCount,
-     fieldErrors,
+    fieldErrors,
+    isProcessingOrder,
 }) => {
 
 
-    const totals = calculateTotals(cartItems, activePromo);
+    const totals = calculateTotals(
+        cartItems,
+        activePromo,
+        deliveryType
+    );
 
     const {
         subtotal,
@@ -32,7 +37,83 @@ const CheckoutSummary = ({
         grandTotal,
         hasRental,
         itemsGrouped,
+        deliveryCharge,
     } = totals;
+
+    const formatShortDate = (date) => {
+
+        if (!date) return "";
+
+        const d = new Date(date);
+
+        return d.toLocaleDateString(
+            "en-IN",
+            {
+                day: "numeric",
+                month: "short",
+            }
+        );
+
+    };
+
+    const deliveryMessages = [];
+
+
+    /* RENTAL */
+    if (itemsGrouped.rental.length > 0) {
+
+        const rentalItem =
+            itemsGrouped.rental[0];
+
+        deliveryMessages.push(
+
+            `${rentalItem.productName} arrives by ${formatShortDate(
+                rentalItem.startDate
+            )}`
+
+        );
+
+    }
+
+
+    /* PRELOVED */
+    if (itemsGrouped.preloved.length > 0) {
+
+        const prelovedItem =
+            itemsGrouped.preloved[0];
+
+        deliveryMessages.push(
+
+            `${prelovedItem.productName} ships within ${deliveryType === "express"
+                ? "1 day"
+                : "2 days"
+            } of confirmation`
+
+        );
+
+    }
+
+
+    /* NEW */
+    if (itemsGrouped.new.length > 0) {
+
+        const newItem =
+            itemsGrouped.new[0];
+
+        deliveryMessages.push(
+
+            `${newItem.productName} ships within ${deliveryType === "express"
+                ? "1–2 days"
+                : "3–5 days"
+            }`
+
+        );
+
+    }
+
+
+    const estimatedDeliveryText =
+        deliveryMessages.join(" · ");
 
     return (
 
@@ -110,8 +191,8 @@ const CheckoutSummary = ({
                             : "Standard · 3–5 business days"
                     }
                     value={
-                        deliveryType === "express"
-                            ? "₹1,500"
+                        deliveryCharge > 0
+                            ? `₹${deliveryCharge.toLocaleString()}`
                             : "Free"
                     }
                     type="dim"
@@ -147,7 +228,14 @@ const CheckoutSummary = ({
                         </div>
 
                         <div className="checkout-summary-total-sub">
-                            Incl. free standard delivery · Excl. ₹15,000 deposit
+
+                            {deliveryType === "express"
+                                ? "Incl. express delivery"
+                                : "Incl. free standard delivery"}
+
+                            {" · "}
+                            Excl. ₹15,000 deposit
+
                         </div>
 
                     </div>
@@ -203,8 +291,9 @@ const CheckoutSummary = ({
                     </span>
 
                     <p className="checkout-est-delivery__text">
-                        Rental arrives 14 Nov · Preloved ships within 2 days
-                        of confirmation · Sherwani ships within 3–5 days
+
+                        {estimatedDeliveryText}
+
                     </p>
 
                 </div>
@@ -244,18 +333,27 @@ const CheckoutSummary = ({
 
             <button
                 type="button"
-                className="checkout-cta-btn"
+                className={`
+    checkout-cta-btn
+    ${isProcessingOrder
+                        ? "is-processing"
+                        : ""
+                    }
+  `}
                 onClick={onPlaceOrder}
-
+                disabled={isProcessingOrder}
             >
                 <span className="checkout-cta-btn__shimmer"></span>
 
-                Place order · ₹{grandTotal.toLocaleString()}
+                {isProcessingOrder
+                    ? "Processing payment..."
+                    : `Place order · ₹${grandTotal.toLocaleString()}`
+                }
             </button>
 
 
             <a
-                href="#cart"
+                href="/cart"
                 className="checkout-cta-back"
             >
                 <ChevronLeft size={10} strokeWidth={1.7} />

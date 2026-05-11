@@ -5,6 +5,47 @@ import "../../../styles/checkout/sections/components/field.css";
 import Field from "./components/Field";
 import { useState, useEffect } from "react";
 
+// All Indian States and Union Territories
+const INDIAN_STATES_AND_UTS = [
+
+  "Andaman and Nicobar Islands",
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chandigarh",
+  "Chhattisgarh",
+  "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jammu and Kashmir",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Ladakh",
+  "Lakshadweep",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Puducherry",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+
+];
 
 export default function DeliveryAddress({
   submitCount,
@@ -181,7 +222,7 @@ export default function DeliveryAddress({
             error={errors.city}
           >
             <input
-             id="city"
+              id="city"
               placeholder="City"
               value={formData.city}
               onChange={(e) =>
@@ -206,16 +247,16 @@ export default function DeliveryAddress({
 
             >
               <option value="">Select state</option>
-              <option>Andhra Pradesh</option>
-              <option>Delhi</option>
-              <option>Gujarat</option>
-              <option>Karnataka</option>
-              <option>Madhya Pradesh</option>
-              <option>Rajasthan</option>
-              <option>Tamil Nadu</option>
-              <option>Telangana</option>
-              <option>Uttar Pradesh</option>
-              <option>West Bengal</option>
+              {INDIAN_STATES_AND_UTS.map((state) => (
+
+                <option
+                  key={state}
+                  value={state}
+                >
+                  {state}
+                </option>
+
+              ))}
             </select>
           </Field>
 
@@ -228,13 +269,26 @@ export default function DeliveryAddress({
           >
             <input
               id="pin-code"
+              inputMode="numeric"
+              autoComplete="postal-code"
+              pattern="[0-9]*"
               maxLength={6}
               value={formData.pin}
               onChange={(e) => {
 
-                let value = e.target.value.replace(/\D/g, "");
+                /*
+                  allow digits only
+                */
+                const numeric =
+                  e.target.value
+                    .replace(/\D/g, "")
+                    .slice(0, 6);
 
-                handleChange("pin", value);
+                handleChange(
+                  "pin",
+                  numeric
+                );
+
               }}
             />
           </Field>
@@ -284,17 +338,16 @@ export default function DeliveryAddress({
 
               <div className="checkout-field">
                 <select defaultValue="Madhya Pradesh">
-                  <option value="">Select state</option>
-                  <option>Andhra Pradesh</option>
-                  <option>Delhi</option>
-                  <option>Gujarat</option>
-                  <option>Karnataka</option>
-                  <option>Madhya Pradesh</option>
-                  <option>Rajasthan</option>
-                  <option>Tamil Nadu</option>
-                  <option>Telangana</option>
-                  <option>Uttar Pradesh</option>
-                  <option>West Bengal</option>
+                  {INDIAN_STATES_AND_UTS.map((state) => (
+
+                    <option
+                      key={state}
+                      value={state}
+                    >
+                      {state}
+                    </option>
+
+                  ))}
                 </select>
               </div>
 

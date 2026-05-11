@@ -213,7 +213,7 @@ The dupatta is pristine. The blouse fits a 32" bust; the skirt waist is adjustab
         enabled: true,
 
         pricing: {
-          price: 120000,
+          price: 130000,
           originalPrice: 240000
         },
 

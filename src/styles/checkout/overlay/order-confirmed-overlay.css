@@ -6,16 +6,17 @@
   position: fixed;
   inset: 0;
   z-index: 600;
-
+    overflow-y: auto;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
+  align-items: flex-start;
   justify-content: center;
 
   background: #FFFEFB;
 
   opacity: 0;
   pointer-events: none;
-
+ /* padding: 80px 0; */
   transition:
     opacity 0.5s cubic-bezier(
       0.16,
@@ -73,4 +74,323 @@
 
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+
+/* ========================================
+   7.4 OVERLAY TEXT CONTENT
+======================================== */
+
+/* eyebrow */
+.confirmed-eyebrow {
+  margin-bottom: 24px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+
+  color: #6B7E5A;
+}
+
+
+/* heading */
+.confirmed-heading {
+  margin-bottom: 24px;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:
+    clamp(40px, 5vw, 60px);
+
+  font-weight: 300;
+  line-height: 1.1;
+
+  color: #1A1612;
+}
+
+
+/* italic word */
+.confirmed-heading em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+
+/* body */
+.confirmed-body {
+  margin-bottom: 48px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.85;
+
+  color: #8A7E72;
+}
+
+
+/* bold email */
+.confirmed-body strong {
+  font-weight: 400;
+  color: #3C3529;
+}
+
+
+/* order reference */
+.confirmed-reference {
+  margin-bottom: 48px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 300;
+
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+
+  color: #B0A898;
+}
+
+
+/* bold order id */
+.confirmed-reference strong {
+  font-weight: 400;
+  color: #3C3529;
+}
+
+/* ========================================
+   7.5 ORDER BREAKDOWN BOX
+======================================== */
+
+.confirmed-breakdown {
+  margin-bottom: 48px;
+  padding: 24px 32px;
+
+  border: 1px solid #E8E0D4;
+
+  text-align: left;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 2;
+
+  color: #8A7E72;
+}
+
+
+/* rows */
+.confirmed-breakdown__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+
+  border-bottom: 1px solid #F0EAE0;
+}
+
+
+/* left side */
+.confirmed-breakdown__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  flex-wrap: wrap;
+}
+
+
+/* mode badge */
+.confirmed-breakdown__badge {
+  font-size: 8.5px;
+  font-weight: 400;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+
+/* rental */
+.confirmed-breakdown__badge--rental {
+  color: #6B7E5A;
+}
+
+
+/* preloved */
+.confirmed-breakdown__badge--preloved {
+  color: #893860;
+}
+
+
+/* new */
+.confirmed-breakdown__badge--new {
+  color: #2A4466;
+}
+
+
+/* price */
+.confirmed-breakdown__value {
+  flex-shrink: 0;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 14px;
+
+  color: #1A1612;
+}
+
+
+/* promo */
+.confirmed-breakdown__promo {
+  color: #6B7E5A;
+}
+
+
+/* total row */
+.confirmed-breakdown__row--total {
+  margin-bottom: 0;
+  padding-bottom: 0;
+
+  border-bottom: none;
+}
+
+
+/* total label */
+.confirmed-breakdown__total-label {
+  font-weight: 400;
+  color: #3C3529;
+}
+
+
+/* total value */
+.confirmed-breakdown__total-value {
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: 16px;
+  color: #1A1612;
+}
+
+
+/* ========================================
+   7.6 ACTION BUTTONS
+======================================== */
+
+.confirmed-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* base button */
+.confirmed-btn {
+  position: relative;
+
+  width: 100%;
+  overflow: hidden;
+
+  transition:
+    all 0.15s ease;
+
+  cursor: pointer;
+}
+
+
+/* shimmer */
+.confirmed-btn__shimmer {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255,255,255,0.06) 50%,
+      transparent 100%
+    );
+
+  transform: translateX(-100%);
+}
+
+
+/* primary */
+.confirmed-btn--primary {
+  padding: 17px 24px;
+
+  border: none;
+
+  background: #1A1612;
+  color: #E8D5B0;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+
+.confirmed-btn--primary:hover {
+  opacity: 0.85;
+}
+
+
+/* ghost */
+.confirmed-btn--ghost {
+  padding: 14px 24px;
+
+  border: 1px solid #E8E0D4;
+
+  background: transparent;
+  color: #8A7E72;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+
+.confirmed-btn--ghost:hover {
+  border-color: #1A1612;
+  color: #1A1612;
+}
+
+
+/* ========================================
+   7.7 WHATSAPP NOTE
+======================================== */
+
+.confirmed-whatsapp-note {
+  margin-top: 48px;
+  padding-top: 32px;
+
+  border-top: 1px solid #F0EAE0;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.8;
+
+  color: #B0A898;
+}
+
+
+/* bold spans */
+.confirmed-whatsapp-note strong {
+  font-weight: 400;
+  color: #3C3529;
 }

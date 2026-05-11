@@ -7,7 +7,7 @@ const cleanPrice = (price) => {
   return Number(String(price).replace(/[^\d]/g, ""));
 };
 
-export const calculateTotals = (cartItems, activePromo) => {
+export const calculateTotals = (cartItems, activePromo,deliveryType = "standard",) => {
   let subtotal = 0;
 
   const itemsGrouped = {
@@ -99,11 +99,23 @@ export const calculateTotals = (cartItems, activePromo) => {
     newGST += calculateGST(item.basePrice, "new");
   });
 
-  const totalGST = rentalGST + prelovedGST + newGST;
+  /* DELIVERY */
+  const deliveryCharge =
+    deliveryType === "express"
+      ? 299
+      : 0;
+
+  /* DELIVERY GST */
+  const deliveryGST =
+    deliveryCharge > 0
+      ? Math.round(deliveryCharge * 0.18)
+      : 0;
+
+  const totalGST = rentalGST + prelovedGST + newGST + deliveryGST ;
 
   const grandTotal = Math.max(
     0,
-    subtotal - discount + rentalGST + prelovedGST + newGST
+    subtotal - discount + rentalGST + prelovedGST + newGST + deliveryCharge + deliveryGST
   );
 
   return {
@@ -116,5 +128,7 @@ export const calculateTotals = (cartItems, activePromo) => {
     grandTotal,
     hasRental: itemsGrouped.rental.length > 0,
     itemsGrouped,
+    deliveryCharge,
+    deliveryGST,
   };
 };

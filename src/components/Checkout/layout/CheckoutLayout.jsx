@@ -26,6 +26,7 @@ const CheckoutLayout = () => {
   const [submitCount, setSubmitCount] = useState(0);
   const [fieldErrors, setFieldErrors] = useState({});
   const [isOrderConfirmed, setIsOrderConfirmed] = useState(false);
+  const [isProcessingOrder, setIsProcessingOrder] = useState(false);
 
   const location = useLocation();
 
@@ -37,16 +38,71 @@ const CheckoutLayout = () => {
   const checkoutItems = checkoutData.items || [];
   const activePromo = checkoutData.activePromo || null;
 
-  const deliveryType = "standard";
+  const [deliveryType, setDeliveryType] = useState("standard");
 
   const totals = calculateTotals(
     checkoutItems,
-    activePromo
+    activePromo,
+    deliveryType
   );
 
   const handlePlaceOrder = () => {
 
+    /* trigger validation */
     setSubmitCount(prev => prev + 1);
+
+    /*
+      wait for validation states
+      to update before checking
+    */
+    setTimeout(() => {
+
+      const hasFieldErrors =
+        Object.values(fieldErrors)
+          .some(Boolean);
+
+      /*
+        CONSENT ERRORS
+      */
+      const consentErrors =
+        document.querySelectorAll(
+          ".checkout-consent-row.has-error"
+        );
+
+      const hasConsentErrors =
+        consentErrors.length > 0;
+
+      /*
+        STOP FLOW
+      */
+      if (
+        hasFieldErrors ||
+        hasConsentErrors
+      ) {
+        return;
+      }
+
+      /*
+        PROCESSING STATE
+      */
+      setIsProcessingOrder(true);
+
+      /*
+        FAKE PAYMENT DELAY
+      */
+      setTimeout(() => {
+
+        setIsProcessingOrder(false);
+
+        /*
+          OPEN SUCCESS OVERLAY
+        */
+        setIsOrderConfirmed(true);
+
+      }, 2000);
+
+    }, 0);
+
   };
 
   const summaryErrors = Object.entries(fieldErrors)
@@ -172,7 +228,11 @@ const CheckoutLayout = () => {
             submitCount={submitCount}
             setFieldErrors={setFieldErrors}
           />
-          <DeliverySection />
+          <DeliverySection
+            deliveryType={deliveryType}
+            setDeliveryType={setDeliveryType}
+            checkoutItems={checkoutItems}
+          />
           <FulfilmentSection />
           <PaymentSection />
           <ReviewSection checkoutItems={checkoutItems} />
@@ -186,6 +246,8 @@ const CheckoutLayout = () => {
             onPlaceOrder={handlePlaceOrder}
             errorCount={errorCount}
             fieldErrors={summaryErrors}
+            isProcessingOrder={isProcessingOrder}
+            deliveryType={deliveryType}
           />
         </div>
 
@@ -193,6 +255,12 @@ const CheckoutLayout = () => {
       </div>
       <OrderConfirmedOverlay
         isOpen={isOrderConfirmed}
+        cartItems={checkoutItems}
+        activePromo={activePromo}
+        totals={totals}
+        onClose={() =>
+          setIsOrderConfirmed(false)
+        }
       />
       <PolicyStrip />
 
