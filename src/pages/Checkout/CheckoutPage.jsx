@@ -1,5 +1,4 @@
-// CheckoutPage.jsx
-
+// src\pages\Checkout\CheckoutPage.jsx
 import CheckoutLayout from "../../components/Checkout/layout/CheckoutLayout";
 import "../../styles/checkout/checkout-page.css";
 

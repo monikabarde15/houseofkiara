@@ -30,7 +30,7 @@ const getSubtitle = (item) => {
         //  SAFE WINDOW CALCULATION
         const windowDays =
             item.windowDays ||
-            Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+            Math.round((end - start) / (1000 * 60 * 60 * 24))+1;
 
         // FORMAT DATE RANGE (SPEC STYLE)
         const startMonth = start.toLocaleString("en-IN", { month: "short" });

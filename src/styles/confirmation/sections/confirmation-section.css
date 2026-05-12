@@ -1,0 +1,15 @@
+.confirmation-section {
+  padding-bottom: 64px;
+
+  margin-bottom: 48px;
+
+  border-bottom: 1px solid var(--ink-6);
+}
+
+.confirmation-section-last {
+  padding-bottom: 0;
+
+  margin-bottom: 0;
+
+  border-bottom: none;
+}

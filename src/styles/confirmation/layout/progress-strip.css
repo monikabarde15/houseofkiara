@@ -1,0 +1,113 @@
+.confirmation-progress-strip {
+  background: var(--warm-white);
+
+  border-bottom: 1px solid var(--ink-6);
+
+  padding: 0 48px;
+}
+
+.confirmation-progress-strip-inner {
+  display: flex;
+
+  align-items: stretch;
+
+  justify-content: center;
+
+  max-width: 540px;
+
+  height: 44px;
+
+  margin: 0 auto;
+}
+
+.confirmation-progress-step {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  text-decoration: none;
+
+  height: 100%;
+
+  padding: 0 4px;
+
+  border-bottom: 2px solid transparent;
+
+  flex-shrink: 0;
+}
+
+.confirmation-progress-label {
+  font-family: var(--sans);
+
+  font-size: 9px;
+
+  font-weight: 300;
+
+  line-height: 1;
+
+  letter-spacing: 0.2em;
+
+  text-transform: uppercase;
+}
+
+.confirmation-progress-step-done {
+  color: var(--sage);
+}
+
+.confirmation-progress-step-active {
+  color: var(--ink);
+
+  border-bottom: 2px solid var(--ink);
+}
+
+.confirmation-progress-circle {
+  width: 18px;
+
+  height: 18px;
+
+  border-radius: 999px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.confirmation-progress-circle-done {
+  background: var(--sage);
+
+  color: #ffffff;
+}
+
+.confirmation-progress-circle-active {
+  background: var(--ink);
+
+  color: var(--gold-light);
+
+  font-family: var(--sans);
+
+  font-size: 9px;
+
+  font-weight: 400;
+
+  letter-spacing: 0.02em;
+}
+
+.confirmation-progress-separator {
+  width: 1px;
+
+  height: 14px;
+
+  background: var(--border);
+
+  align-self: center;
+
+  margin: 0 22px;
+
+  flex-shrink: 0;
+}

@@ -1,0 +1,411 @@
+.confirmation-hero {
+  position: relative;
+  overflow: hidden;
+
+  padding: 96px 64px 64px;
+
+  background: var(--warm-white);
+
+  border-bottom: 1px solid #E8E0D4;
+
+  text-align: center;
+}
+
+.confirmation-hero::before {
+  content: "";
+
+  position: absolute;
+  top: -60px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 600px;
+  height: 300px;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(201, 169, 110, 0.07) 0%,
+      transparent 70%
+    );
+
+  pointer-events: none;
+}
+
+
+/* =========================
+   4.2 Animated Checkmark
+========================= */
+
+.confirmation-hero-check-ring {
+  position: relative;
+
+  width: 80px;
+  height: 80px;
+
+  margin: 0 auto 32px;
+
+  border-radius: 50%;
+
+  border: 1.5px solid #E8E0D4;
+
+  background: var(--warm-white);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  animation:
+    confirmationCirclePulse 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.confirmation-hero-check-ring::after {
+  content: "";
+
+  position: absolute;
+  inset: -8px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(201, 169, 110, 0.18);
+}
+
+.confirmation-hero-check-icon {
+  width: 22px;
+  height: 22px;
+
+  color: var(--sage);
+
+  stroke-width: 1.5;
+  fill: none;
+
+  stroke-dasharray: 36;
+  stroke-dashoffset: 36;
+
+  animation:
+    confirmationCheckDraw 0.5s ease 0.75s forwards;
+}
+
+/* =========================
+   4.3 Eyebrow
+========================= */
+
+.confirmation-hero-eyebrow {
+  margin-bottom: 16px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+
+  color: var(--sage);
+
+  animation:
+    confirmationFadeIn 0.6s ease 0.4s both;
+}
+
+/* =========================
+   4.4 H1 Heading
+========================= */
+
+.confirmation-hero-heading {
+  margin-bottom: 24px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(52px, 6vw, 84px);
+  font-weight: 300;
+  line-height: 1.05;
+
+  letter-spacing: -0.015em;
+
+  color: var(--ink);
+
+  animation:
+    confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+}
+
+.confirmation-hero-heading em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+
+/* =========================
+   4.5 Gold Rule
+========================= */
+
+.confirmation-hero-gold-rule {
+  width: 0;
+  max-width: 100%;
+  height: 1px;
+
+  margin: 0 auto 32px;
+
+  background: var(--gold);
+
+  opacity: 0;
+
+  animation:
+    confirmationGoldLine 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+}
+
+/* =========================
+   4.6 Sub-copy Paragraph
+========================= */
+
+.confirmation-hero-subcopy {
+  max-width: 480px;
+
+  margin: 0 auto 32px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+
+  color: var(--ink-3);
+
+  animation:
+    confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+}
+
+.confirmation-hero-subcopy strong {
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+/* =========================
+   4.7 Order Reference Pill
+========================= */
+
+.confirmation-hero-order-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 20px;
+
+  margin-bottom: 32px;
+
+  border: 1px solid var(--border);
+
+  background: var(--cream);
+
+  animation:
+    confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
+}
+
+.confirmation-hero-order-pill-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+
+  color: var(--ink-4);
+}
+
+.confirmation-hero-order-pill-value {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 16px;
+  font-weight: 400;
+
+  color: var(--ink);
+}
+
+.confirmation-hero-order-pill-date {
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+
+  color: var(--ink-3);
+}
+
+.confirmation-hero-order-pill-separator {
+  width: 1px;
+  height: 16px;
+
+  background: var(--border);
+}
+
+/* =========================
+   4.8 Hero CTA Row
+========================= */
+
+.confirmation-hero-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  animation:
+    confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.75s both;
+}
+
+.confirmation-hero-btn {
+  position: relative;
+  overflow: hidden;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  text-decoration: none;
+
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background 0.2s,
+    opacity 0.2s;
+}
+
+.confirmation-hero-btn-primary {
+  border: none;
+
+  padding: 15px 28px;
+
+  background: var(--ink);
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+
+  color: var(--gold-light);
+
+  cursor: pointer;
+}
+
+.confirmation-hero-btn-primary:hover {
+  opacity: 0.87;
+}
+
+.confirmation-hero-btn-ghost {
+  border: 1px solid var(--border);
+
+  padding: 14px 28px;
+
+  background: transparent;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+
+  color: var(--ink-2);
+}
+
+.confirmation-hero-btn-ghost:hover {
+  border-color: var(--ink-2);
+
+  background: var(--cream);
+
+  color: var(--ink);
+}
+
+.confirmation-hero-btn-icon {
+  width: 12px;
+  height: 12px;
+
+  flex-shrink: 0;
+
+  stroke-width: 1.5;
+}
+
+.confirmation-hero-btn-shimmer {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(201, 160, 90, 0.08) 50%,
+      transparent 60%
+    );
+
+  animation: confirmationShimmer 4s linear infinite;
+
+  transform: translateX(-100%);
+}
+
+/* =========================
+   Animations
+========================= */
+
+@keyframes confirmationFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+/* 4.2 Animated Checkmark */
+@keyframes confirmationCheckDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes confirmationCirclePulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+/* 4.4 H1 Heading */
+@keyframes confirmationHeroRise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 4.5 Gold Rule */
+@keyframes confirmationGoldLine {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+ /* 4.8 Hero CTA Row */
+
+ @keyframes confirmationShimmer {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(200%);
+  }
+}

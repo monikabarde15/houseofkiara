@@ -32,6 +32,7 @@ import DummyGowns from "./components/DummyGowns";
 import LypMain from "./components/LYP/LypMain";
 import CartPage from "./pages/Cart/CartPage";
 import CheckoutPage from "./pages/Checkout/CheckoutPage";
+import ConfirmationPage from "./pages/Confirmation/ConfirmationPage";
 
 
 //  Home Page Component
@@ -69,6 +70,7 @@ export default function App() {
         <Route path="/list-your-piece/" element={<LypMain />} />
         <Route path="/cart" element={<CartPage/>} />
         <Route path="/checkout" element={<CheckoutPage/>}/>
+        <Route path="/confirmation" element={<ConfirmationPage />} />
       </Routes>
 
       <Footer />

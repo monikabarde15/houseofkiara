@@ -1,0 +1,179 @@
+/* src\styles\confirmation\sections\confirmation-piece-card.css */
+/* src/styles/confirmation/sections/confirmation-piece-card.css */
+
+.confirmation-piece-card {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 32px;
+
+  width: 100%;
+
+  padding-bottom: 48px;
+  margin-bottom: 32px;
+
+  border-bottom: 1px solid red;
+}
+
+.confirmation-piece-card-last {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+/* =========================
+   THUMB
+========================= */
+
+.confirmation-piece-card-thumb {
+  width: 120px;
+
+  aspect-ratio: 3 / 4;
+
+  position: relative;
+
+  overflow: hidden;
+
+  border-radius: 3px;
+}
+
+.confirmation-piece-card-thumb img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+.confirmation-piece-card-thumb-rental {
+  background: #EFF4EC;
+}
+
+.confirmation-piece-card-thumb-preloved {
+  background: #F5EEF2;
+}
+
+.confirmation-piece-card-thumb-new {
+  background: #EEF1F7;
+}
+
+/* =========================
+   MODE STRIP
+========================= */
+
+.confirmation-piece-card-mode-strip {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  padding: 6px 0;
+
+  text-align: center;
+
+  font-family: var(--sans);
+  font-size: 6.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+
+  color: #FFFFFF;
+}
+
+.confirmation-piece-card-mode-strip-rental {
+  background: rgba(90, 117, 73, 0.82);
+}
+
+.confirmation-piece-card-mode-strip-preloved {
+  background: rgba(137, 56, 96, 0.82);
+}
+
+.confirmation-piece-card-mode-strip-new {
+  background: rgba(42, 68, 102, 0.82);
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.confirmation-piece-card-status {
+  position: absolute;
+
+  top: 8px;
+  right: 8px;
+
+  padding: 3px 8px;
+
+  border-radius: 1px;
+
+  background: var(--warm-white);
+
+  font-family: var(--sans);
+  font-size: 6.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.confirmation-piece-card-status-confirmed {
+  color: var(--sage);
+}
+
+.confirmation-piece-card-status-pending {
+  color: #9A7010;
+}
+
+/* =========================
+   BODY
+========================= */
+
+.confirmation-piece-card-body {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.confirmation-piece-card-brand {
+  margin-bottom: 5px;
+
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+
+  color: var(--gold);
+}
+
+.confirmation-piece-card-name {
+  margin-bottom: 4px;
+
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+
+  color: var(--ink);
+}
+
+.confirmation-piece-card-description {
+  margin-bottom: 24px;
+
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.6;
+
+  color: var(--ink-4);
+}
+
+.confirmation-piece-card-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+
+  margin-bottom: 24px;
+}

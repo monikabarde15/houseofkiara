@@ -1,3 +1,4 @@
+// src\components\Checkout\notices\NewPurchaseNotice.jsx
 import React from "react";
 import "../../../styles/checkout/notices/new-purchase-section.css"
 const NewPurchaseNotice = () => {

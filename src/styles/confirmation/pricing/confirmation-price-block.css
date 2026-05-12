@@ -1,0 +1,31 @@
+/* src\styles\confirmation\pricing\confirmation-price-block.css */
+/* src/styles/confirmation/pricing/confirmation-price-block.css */
+
+.confirmation-price-block {
+  display: contents;
+}
+
+.confirmation-price-block-price {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
+
+  color: var(--ink);
+}
+
+.confirmation-price-block-price sup {
+  font-size: 13px;
+  line-height: 1;
+
+  /* vertical-align: super; */
+}
+
+.confirmation-price-block-note {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1;
+
+  color: var(--sage);
+}

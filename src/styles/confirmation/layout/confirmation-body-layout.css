@@ -1,0 +1,22 @@
+.confirmation-body-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+
+  gap: 96px;
+
+  align-items: start;
+
+  padding-top: 64px;
+}
+
+.confirmation-body-layout-left {
+  min-width: 0;
+}
+
+.confirmation-body-layout-right {
+  position: sticky;
+  top: 104px;
+
+  min-width: 0;
+  background: red;
+}

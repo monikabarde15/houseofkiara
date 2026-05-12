@@ -39,20 +39,34 @@
   --amber-bg: #FDF8EE;
 
   /* Aliases (Design system mapping) */
---ink-3: var(--muted);        /* muted / secondary text */
---ink-5: var(--border);       /* border */
---ink-6: var(--border-light); /* light dividers */
+  --ink-3: var(--muted);
+  /* muted / secondary text */
+  --ink-5: var(--border);
+  /* border */
+  --ink-6: var(--border-light);
+  /* light dividers */
 
-/* Surface tokens */
---paper: var(--warm-white);
---paper-off: var(--cream);
+  /* Surface tokens */
+  --paper: var(--warm-white);
+  --paper-off: var(--cream);
 
-/* Accent alias */
---clay: var(--terracotta);
+  /* Accent alias */
+  --clay: var(--terracotta);
 
   /* TYPOGRAPHY */
   --serif: "Cormorant Garamond", Georgia, serif;
   --sans: "DM Sans", sans-serif;
+
+
+  /* SPACING SCALE */
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 64px;
+  --s7: 96px;
+  --s8: 128px;
 }
 
 * {

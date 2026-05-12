@@ -1,0 +1,13 @@
+/* src\styles\confirmation\layout\confirmation-layout.css */
+.confirmation-layout {
+  min-height: 100vh;
+  
+}
+
+.confirmation-layout-container {
+  width: 100%;
+  max-width: 1380px;
+
+  margin: 0 auto;
+  padding: 0 64px 128px;
+}
