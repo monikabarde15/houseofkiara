@@ -1,5 +1,5 @@
 // src\components\Confirmation\layout\ConfirmationLayout.jsx
-
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { calculateTotals } from "../../../utils/cart/calculateTotals";
 
@@ -8,6 +8,8 @@ import "../../../styles/confirmation/layout/confirmation-layout.css";
 import ProgressStrip from "./ProgressStrip";
 import ConfirmationHero from "../hero/ConfirmationHero";
 import ConfirmationBodyLayout from "./ConfirmationBodyLayout";
+
+import OrderStatusModal from "../modal/OrderStatusModal";
 
 
 import {
@@ -21,10 +23,17 @@ import Notice from "../../shared/Notice/Notice";
 import RentalReturnGuide from "../sections/RentalReturnGuide";
 import ConfirmationNextStepsSection from "../sections/ConfirmationNextStepsSection";
 import ConfirmationPaymentConfirmed from "../sidebar/ConfirmationPaymentConfirmed";
+import ConfirmationWhatsNextTimeline from "../sidebar/ConfirmationWhatsNextTimeline";
+import DepositCallout from "../sidebar/DepositCallout";
+import ReturnReminder from "../sidebar/ReturnReminder";
+import SidebarActions from "../sidebar/SidebarActions";
+import ConfirmationTrustList from "../sidebar/ConfirmationTrustList";
+import DiscoveryStrip from "../discovery/DiscoveryStrip";
+import ConfirmationPolicyStrip from "../policy/ConfirmationPolicyStrip";
 
 
 const ConfirmationLayout = () => {
-
+  const [isOrderStatusOpen, setIsOrderStatusOpen] = useState(false);
   const location = useLocation();
 
   const confirmationData =
@@ -109,13 +118,22 @@ const ConfirmationLayout = () => {
     return `${windowDays}-Day Window`;
   };
 
+  const hasRentalItems =
+    confirmationItems.some(
+        item => item.type === "rental"
+    );
+
 
   return (
     <div className="confirmation-layout">
 
       <ProgressStrip />
 
-      <ConfirmationHero />
+      <ConfirmationHero
+        onOpenOrderStatus={() =>
+          setIsOrderStatusOpen(true)
+        }
+      />
 
       <div className="confirmation-layout-container">
         <ConfirmationBodyLayout
@@ -278,10 +296,42 @@ const ConfirmationLayout = () => {
                 paymentMethod="Razorpay"
                 paymentDate="14 Oct 2024"
               />
+
+              <ConfirmationWhatsNextTimeline/>
+
+              <DepositCallout/>
+
+              <ReturnReminder/>
+
+              <SidebarActions
+                onOpenOrderStatus={() =>
+                  setIsOrderStatusOpen(true)
+                }
+              />
+
+              <ConfirmationTrustList/>
+
+              
             </>
+            
+          }
+          
+        />
+        <OrderStatusModal
+          isOpen={isOrderStatusOpen}
+          onCloseOrderStatus={() =>
+            setIsOrderStatusOpen(false)
           }
         />
+      <DiscoveryStrip/>
+
+        {
+          hasRentalItems && (
+            <ConfirmationPolicyStrip />
+          )
+        }
       </div>
+
 
     </div>
   );

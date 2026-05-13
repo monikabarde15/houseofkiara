@@ -1,0 +1,492 @@
+.hok-order-status-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(26, 22, 18, 0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.hok-order-status-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.hok-order-status-modal {
+    width: 100%;
+    max-width: 660px;
+    max-height: 88vh;
+    overflow-y: auto;
+    background: #FFFEFB;
+    transform: translateY(20px);
+    transition:
+        transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hok-order-status-modal.open {
+    transform: translateY(0);
+}
+
+
+
+/* ========================================
+   8.3 MODAL HEADER
+======================================== */
+
+/* HEADER WRAPPER */
+
+.hok-order-status-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: var(--s4) var(--s5);
+    background: #FFFEFB;
+    border-bottom: 1px solid var(--ink-6);
+}
+
+
+/* HEADER CONTENT */
+
+.hok-order-status-header-content {
+    min-width: 0;
+}
+
+
+/* EYEBROW */
+
+.hok-order-status-eyebrow {
+    margin-bottom: 6px;
+    color: var(--ink-4);
+    font-family: var(--sans);
+    font-size: 8px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+}
+
+
+/* TITLE */
+
+.hok-order-status-title {
+    /* margin: 0; */
+    /* margin-bottom: 6px; */
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1;
+}
+
+
+/* TITLE EMPHASIS */
+
+.hok-order-status-title em {
+    font-style: italic;
+    color: #C9A96E;
+}
+
+
+/* ORDER REFERENCE */
+
+.hok-order-status-reference {
+    color: var(--ink-4);
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 300;
+    line-height: 1.5;
+    margin-top: 6px;
+}
+
+
+/* ORDER REFERENCE BOLD */
+
+.hok-order-status-reference strong {
+    font-weight: 400;
+    color: var(--ink-2);
+}
+
+
+/* CLOSE BUTTON */
+
+.hok-order-status-close {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #E8E0D4;
+    background: transparent;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4px;
+    cursor: pointer;
+    
+    transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+
+    border-radius: 50%;
+}
+
+
+/* CLOSE BUTTON HOVER */
+
+.hok-order-status-close:hover {
+    border-color: #3C3529;
+    background: #FAF7F2;
+}
+
+
+/* CLOSE ICON */
+
+.hok-order-status-close svg {
+    height: 12px;
+    width: 12px;
+    stroke-width: 1.6;
+    color: var(--ink-4);
+    stroke-linecap: round;
+}
+
+
+/* ========================================
+   8.4 MODAL BODY
+======================================== */
+
+
+/* MODAL BODY */
+
+.hok-order-status-body {
+    padding:
+        var(--s4) var(--s5) var(--s5);
+}
+
+
+/* ========================================
+   8.4.1 CONTEXT NOTE
+======================================== */
+
+
+/* CONTEXT NOTE WRAPPER */
+
+.hok-order-status-note {
+    margin-bottom: var(--s5);
+    padding: 14px 18px;
+    background: rgba(201, 169, 110, 0.05);
+    border: 1px solid rgba(201, 169, 110, 0.2);
+    border-left: 3px solid #C9A96E;
+}
+
+
+/* CONTEXT NOTE TEXT */
+
+.hok-order-status-note-text {
+    margin: 0;
+    color: var(--ink-3);
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 300;
+    line-height: 1.8;
+}
+
+/* CONTEXT NOTE EMPHASIS */
+
+.hok-order-status-note-text strong {
+    font-weight: 400;
+    color: var(--ink-2);
+}
+
+
+/* ========================================
+   8.4.2 PIECE LIST
+======================================== */
+
+
+/* PIECE LIST CONTAINER */
+
+.hok-order-status-pieces {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+
+/* SINGLE PIECE */
+
+.hok-order-status-piece {
+    padding: var(--s3) 0;
+    border-bottom: 1px solid var(--ink-6);
+}
+
+
+/* LAST PIECE */
+
+.hok-order-status-piece-last {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+
+/* ========================================
+   8.4.3 PIECE HEADER
+======================================== */
+
+
+/* PIECE HEADER */
+
+.hok-order-status-piece-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: var(--s3);
+}
+
+
+/* PIECE DOT */
+
+.hok-order-status-piece-dot {
+    width: 5px;
+    height: 5px;
+    flex-shrink: 0;
+    margin-top: 5px;
+    border-radius: 50%;
+}
+
+
+/* RENTAL DOT */
+.hok-order-status-piece-dot-rental {
+    background: #6B7E5A;
+}
+
+/* PRELOVED DOT */
+.hok-order-status-piece-dot-preloved {
+    background: #893860;
+}
+
+/* NEW DOT */
+.hok-order-status-piece-dot-new {
+    background: #2A4466;
+}
+
+
+/* PIECE NAME */
+.hok-order-status-piece-name {
+    flex: 1;
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+
+/* MODE TAG */
+
+.hok-order-status-piece-mode {
+    flex-shrink: 0;
+    padding: 3px 10px;
+    border-radius: 1px;
+    white-space: nowrap;
+    font-family: var(--sans);
+    font-size: 8px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+
+/* RENTAL MODE TAG */
+
+.hok-order-status-piece-mode-rental {
+    background: rgba(107, 126, 90, 0.1);
+    color: #6B7E5A;
+}
+
+
+/* PRELOVED MODE TAG */
+
+.hok-order-status-piece-mode-preloved {
+    background: rgba(137, 56, 96, 0.1);
+    color: #893860;
+}
+
+
+/* NEW MODE TAG */
+
+.hok-order-status-piece-mode-new {
+    background: rgba(42, 68, 102, 0.1);
+    color: #2A4466;
+}
+
+
+/* =========================================================
+   8.5 MODAL FOOTER
+========================================================= */
+
+.hok-order-status-footer {
+
+    position: sticky;
+
+    bottom: 0;
+
+    z-index: 2;
+
+    display: flex;
+
+    gap: 10px;
+
+    padding:
+        var(--s3)
+        var(--s5)
+        var(--s4);
+
+    border-top: 1px solid #F0EAE0;
+
+    background: #FFFEFB;
+
+}
+
+/* =========================================================
+   BASE BUTTON
+========================================================= */
+
+.hok-order-status-footer-button {
+
+    position: relative;
+
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 13px 20px;
+
+    overflow: hidden;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    font-family: "DM Sans", sans-serif;
+
+    font-size: 10px;
+
+    letter-spacing: 0.2em;
+
+    text-transform: uppercase;
+
+    transition:
+        opacity 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+
+}
+
+/* =========================================================
+   SECONDARY BUTTON
+========================================================= */
+
+.hok-order-status-footer-button-secondary {
+
+    border: 1px solid #E8E0D4;
+
+    background: transparent;
+
+    color: #3C3529;
+
+}
+
+.hok-order-status-footer-button-secondary:hover {
+
+    border-color: #3C3529;
+
+    color: #1A1612;
+
+}
+
+/* =========================================================
+   PRIMARY BUTTON
+========================================================= */
+
+.hok-order-status-footer-button-primary {
+
+    border: none;
+
+    background: #1A1612;
+
+    color: #E8D5B0;
+
+}
+
+.hok-order-status-footer-button-primary:hover {
+
+    opacity: 0.87;
+
+}
+
+/* =========================================================
+   SHIMMER OVERLAY
+========================================================= */
+
+.hok-order-status-footer-button-shimmer {
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            120deg,
+            transparent 0%,
+            rgba(255,255,255,0.06) 50%,
+            transparent 100%
+        );
+
+    animation:
+        hokOrderStatusFooterShimmer
+        4s linear infinite;
+
+    pointer-events: none;
+
+}
+/* =========================================================
+   PRIMARY BUTTON LABEL
+========================================================= */
+
+.hok-order-status-footer-button-label {
+
+    position: relative;
+
+    z-index: 1;
+
+}
+/* =========================================================
+   SHIMMER ANIMATION
+========================================================= */
+
+@keyframes hokOrderStatusFooterShimmer {
+
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(200%);
+    }
+
+}

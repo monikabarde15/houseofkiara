@@ -2,7 +2,9 @@ import {ArrowDown,Clock3,MessageCircle,Check, } from "lucide-react";
 
 import "../../../styles/confirmation/hero/confirmation-hero.css";
 
-const ConfirmationHero = () => {
+const ConfirmationHero = ({
+    onOpenOrderStatus,
+}) => {
     return (
         <section className="confirmation-hero">
 
@@ -59,6 +61,7 @@ const ConfirmationHero = () => {
                 <button
                     type="button"
                     className="confirmation-hero-btn confirmation-hero-btn-primary"
+                    onClick={onOpenOrderStatus}
                 >
                     <span className="confirmation-hero-btn-shimmer" />
 

@@ -1,0 +1,42 @@
+.confirmation-trust-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  margin-top: var(--s5);
+
+  padding-top: var(--s4);
+
+  border-top: 1px solid var(--ink-6);
+}
+
+.confirmation-trust-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  color: var(--ink-3);
+
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.confirmation-trust-list-icon {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+}
+
+.confirmation-trust-list-icon svg {
+  color: #C9A96E;
+
+  fill: none;
+
+  stroke-linecap: round;
+}
+
+.confirmation-trust-list-text {
+  margin: 0;
+}
