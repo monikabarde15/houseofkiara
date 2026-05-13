@@ -1,4 +1,5 @@
 
+// src\components\Confirmation\layout\ProgressStrip.jsx
 import { Check } from "lucide-react";
 import "../../../styles/confirmation/layout/progress-strip.css";
 

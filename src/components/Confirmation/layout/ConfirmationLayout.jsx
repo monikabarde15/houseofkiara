@@ -17,6 +17,11 @@ import {
   ConfirmationPieceCard,
 } from "../../Confirmation";
 import ConfirmationTimeline from "../sections/ConfirmationTimeline";
+import Notice from "../../shared/Notice/Notice";
+import RentalReturnGuide from "../sections/RentalReturnGuide";
+import ConfirmationNextStepsSection from "../sections/ConfirmationNextStepsSection";
+import ConfirmationPaymentConfirmed from "../sidebar/ConfirmationPaymentConfirmed";
+
 
 const ConfirmationLayout = () => {
 
@@ -163,34 +168,117 @@ const ConfirmationLayout = () => {
                     />
 
                     {/* Confirmation Piece Card */}
+                    <div className="confirmation-piece-group">
+                      {group.items.map((item, itemIndex) => (
+                        <ConfirmationPieceCard
+                          key={item.id}
+                          item={item}
+                          isLast={
+                            itemIndex === group.items.length - 1
+                          }
+                        />
+                      ))}
 
-                    {group.items.map((item, itemIndex) => (
-                      <ConfirmationPieceCard
-                        key={item.id}
-                        item={item}
-                        isLast={
-                          itemIndex === group.items.length - 1
-                        }
-                      />
-                    ))}
+                    </div>
+                    {/* PRELOVED notice */}
+                    {group.type === "preloved" && (
+                      <Notice variant="rose">
 
+                        <b>
+                          Final sale reminder:
+                        </b>{" "}
+                        The Ivory Tissue Organza Saree is a
+                        preloved item sold on a non-returnable
+                        basis. You accepted this condition at
+                        checkout. If you have any concerns
+                        about the piece on arrival, please
+                        contact us on WhatsApp within 24 hours
+                        of delivery and we will do our best to
+                        assist.
+
+                      </Notice>
+                    )}
+
+                    {/* NEW notice */}
+                    {group.type === "new" && (
+                      <Notice variant="navy">
+                        <b>
+                          Brand dispatch note:
+                        </b>{" "}
+                        This piece ships directly from
+                        Manyavar's fulfilment centre. If you
+                        have any size concerns, please contact
+                        us before the item dispatches. Once
+                        dispatched, returns follow the standard
+                        7-day policy — contact HOK on WhatsApp
+                        to initiate.
+                      </Notice>
+                    )}
+
+                    {/* RENTAL DATE TIMELINE */}
                     {/* RENTAL DATE TIMELINE */}
                     {group.type === "rental" &&
                       group.items.length > 0 && (
-                        <ConfirmationTimeline
-                          item={group.items[0]}
-                        />
+                        <>
+                          <ConfirmationTimeline
+                            item={group.items[0]}
+                          />
+
+                          <Notice variant="amber">
+
+                            <b>
+                              Security deposit — not yet due.
+                            </b>{" "}
+                            Our team will reach out on WhatsApp
+                            within 24 hours of this confirmation
+                            to arrange the ₹15,000 deposit via
+                            UPI or bank transfer. Your item will
+                            not be dispatched until the deposit
+                            is received. The deposit is fully
+                            refundable within 3–5 business days
+                            of a clean return inspection.
+                          </Notice>
+
+                          <Notice variant="slate">
+                            <b>
+                              Return instructions:
+                            </b>{" "}
+                            A prepaid Blue Dart return label is
+                            included in the packaging. Please
+                            drop off the garment at any Blue
+                            Dart service centre by 18 November
+                            (Tuesday). Late returns attract
+                            ₹1,700 per additional day. The
+                            garment must be returned in the
+                            same condition it was received —
+                            we inspect every piece within
+                            24 hours of receiving it.
+
+                          </Notice>
+
+                          <RentalReturnGuide />
+                        </>
                       )}
-
                     
-
                   </ConfirmationSection>
                 )
               )}
+
+              <ConfirmationNextStepsSection />
+
             </>
+
           }
+
+          // RIGHT SECTION
           rightContent={
-            <div />
+            <>
+              <ConfirmationPaymentConfirmed
+                amount={`₹${totals.grandTotal.toLocaleString("en-IN")}`}
+                paymentMethod="Razorpay"
+                paymentDate="14 Oct 2024"
+              />
+            </>
           }
         />
       </div>

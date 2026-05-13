@@ -1,3 +1,4 @@
+// src\components\Confirmation\layout\ConfirmationBodyLayout.jsx
 import "../../../styles/confirmation/layout/confirmation-body-layout.css";
 
 const ConfirmationBodyLayout = ({
@@ -13,7 +14,6 @@ const ConfirmationBodyLayout = ({
 
       <aside className="confirmation-body-layout-right">
         {rightContent}
-        Right content
       </aside>
 
     </div>

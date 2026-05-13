@@ -5,7 +5,7 @@
 .cart-deposit {
   margin-top: 32px;
   border-left: 2px solid var(--amber);
-  padding: 14px 16px 14px 18px;
+  padding: 14px 0 14px 18px;
 }
 
 .cart-deposit__text {
@@ -28,7 +28,7 @@
 .preloved-disclosure {
   margin-top: 32px;
   border-left: 2px solid var(--mulberry);
-  padding: 14px 0 0 18px;
+  padding: 14px 0 14px 18px;
 }
 
 .preloved-disclosure__text {
@@ -56,7 +56,7 @@
 .preloved-final-note {
   margin-top: 8px;
   border-left: 2px solid var(--border-light);
-  padding: 14px 0 0 18px;
+  padding: 14px 0 14px 18px;
 }
 
 .preloved-final-note__text {

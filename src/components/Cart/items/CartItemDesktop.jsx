@@ -3,17 +3,18 @@ import React, { useState } from "react";
 import "../../../styles/cart/items/cart-item-desktop.css";
 
 import RentalTimeline from "./modes/rental/RentalTimeline";
-import RentalDepositNotice from "./modes/rental/RentalDepositNotice";
+// import RentalDepositNotice from "./modes/rental/RentalDepositNotice";
 import RentalPriceBlock from "./modes/rental/RentalPriceBlock";
 
-import PrelovedDisclosure from "./modes/preloved/PrelovedDisclosure";
+// import PrelovedDisclosure from "./modes/preloved/PrelovedDisclosure";
 import PrelovedPriceBlock from "./modes/preloved/PrelovedPriceBlock";
-import PrelovedFinalNote from "./modes/preloved/PrelovedFinalNote";
+// import PrelovedFinalNote from "./modes/preloved/PrelovedFinalNote";
 
 import NewPriceBlock from "./modes/new/NewPriceBlock";
 
 import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
+import Notice from "../../shared/Notice/Notice";
 
 const CartItemDesktop = ({ item, onRemove }) => {
   const { product, booking, type } = item;
@@ -113,7 +114,7 @@ const CartItemDesktop = ({ item, onRemove }) => {
         )}
 
         {/* NOTICES */}
-        {(type === "rental" || type === "preloved") && (
+        {/* {(type === "rental" || type === "preloved") && (
           <div className="cart-item__notice-wrap">
 
             {type === "rental" && (
@@ -128,7 +129,61 @@ const CartItemDesktop = ({ item, onRemove }) => {
             )}
 
           </div>
+        )} */}
+
+        {/* NOTICES */}
+{(type === "rental" || type === "preloved") && (
+  <div className="cart-item__notice-wrap">
+
+    {/* RENTAL */}
+    {type === "rental" && (() => {
+
+      const deposit = product?.rent?.deposit;
+
+      const amount = deposit?.amount;
+      const returnDays = deposit?.returnDays;
+
+      return (
+        <Notice
+          variant="amber"
+          title={`₹${amount} refundable security deposit`}
+        >
+          — not collected at checkout. Our team will reach
+          out via WhatsApp before dispatch. Refunded in full
+          within {returnDays - 2}-{returnDays} business days
+          of return inspection.
+        </Notice>
+      );
+
+    })()}
+
+    {/* PRELOVED */}
+    {type === "preloved" && (
+      <>
+
+        {product?.preloved?.disclosure && (
+          <Notice
+            variant="rose"
+            title="Condition disclosure:"
+          >
+            {product?.preloved?.disclosure}
+          </Notice>
         )}
+
+        {product?.preloved?.finalSaleNote && (
+          <Notice
+            variant="slate"
+            title="Final sale."
+          >
+            {product?.preloved?.finalSaleNote}
+          </Notice>
+        )}
+
+      </>
+    )}
+
+  </div>
+)}
 
         {/* FOOTER */}
         <div className="cart-item__footer">

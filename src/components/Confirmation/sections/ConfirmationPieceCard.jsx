@@ -76,19 +76,19 @@ const ConfirmationPieceCard = ({
               : "New"}
         </div>
 
-              <div
-                  className={`
+        <div
+          className={`
     confirmation-piece-card-status
     ${item.type === "rental"
-                          ? "confirmation-piece-card-status-pending"
-                          : "confirmation-piece-card-status-confirmed"
-                      }
+              ? "confirmation-piece-card-status-pending"
+              : "confirmation-piece-card-status-confirmed"
+            }
   `}
-              >
-                  {item.type === "rental"
-                      ? "Pending dispatch"
-                      : "Confirmed"}
-              </div>
+        >
+          {item.type === "rental"
+            ? "Pending dispatch"
+            : "Confirmed"}
+        </div>
 
       </div>
 
@@ -154,7 +154,7 @@ const ConfirmationPieceCard = ({
         </div>
 
         <ConfirmationDispatchRow item={item} />
-        
+
 
 
       </div>

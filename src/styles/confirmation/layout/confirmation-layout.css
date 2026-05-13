@@ -11,3 +11,9 @@
   margin: 0 auto;
   padding: 0 64px 128px;
 }
+
+.confirmation-piece-group {
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+  border-bottom: 1px solid #F0EAE0;
+}

@@ -1,0 +1,96 @@
+.confirmation-next-steps-section {
+  padding-bottom: var(--s6);
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--ink-6);
+}
+
+
+/* =========================================
+   NEXT STEPS CONTAINER
+========================================= */
+
+.confirmation-next-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* =========================================
+   EACH STEP
+========================================= */
+
+.confirmation-next-step {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: var(--s3);
+
+  padding: var(--s3) 0;
+
+  border-bottom: 1px solid var(--ink-6);
+}
+
+.confirmation-next-step:last-child {
+  border-bottom: none;
+}
+
+/* =========================================
+   NUMBER
+========================================= */
+
+.confirmation-next-step-number {
+  padding-top: 2px;
+
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 28px;
+  line-height: 1;
+
+  color: var(--gold);
+}
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.confirmation-next-step-content {
+  min-width: 0;
+}
+
+/* =========================================
+   TITLE
+========================================= */
+
+.confirmation-next-step-title {
+  margin-bottom: 6px;
+
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.2;
+
+  color: var(--ink);
+}
+
+.confirmation-next-step-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* =========================================
+   TEXT
+========================================= */
+
+.confirmation-next-step-text {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 11.5px;
+  line-height: 1.8;
+
+  color: var(--ink-3);
+}
+
+.confirmation-next-step-text b {
+  font-weight: 400;
+  color: var(--ink-2);
+}

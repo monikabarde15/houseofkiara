@@ -12,10 +12,11 @@ import PrelovedPriceBlock from "../../Cart/items/modes/preloved/PrelovedPriceBlo
 import NewPriceBlock from "../../Cart/items/modes/new/NewPriceBlock";
 import RentalTimeline from "../../Cart/items/modes/rental/RentalTimeline";
 
-import RentalDepositNotice from "../../Cart/items/modes/rental/RentalDepositNotice";
-import PrelovedDisclosure from "../../Cart/items/modes/preloved/PrelovedDisclosure";
-import PrelovedFinalNote from "../../Cart/items/modes/preloved/PrelovedFinalNote";
-import NewPurchaseNotice from "../notices/NewPurchaseNotice";
+// import RentalDepositNotice from "../../Cart/items/modes/rental/RentalDepositNotice";
+// import PrelovedDisclosure from "../../Cart/items/modes/preloved/PrelovedDisclosure";
+// import PrelovedFinalNote from "../../Cart/items/modes/preloved/PrelovedFinalNote";
+// import NewPurchaseNotice from "../notices/NewPurchaseNotice";
+import Notice from "../../shared/Notice/Notice";
 
 
 const OrderFulfilmentSection = () => {
@@ -199,9 +200,20 @@ const OrderFulfilmentSection = () => {
                     {item.type === "rental" && (
                       <div className="checkout-piece-notices">
 
-                        <RentalDepositNotice
-                          product={item.product}
-                        />
+                        <Notice variant="amber">
+
+                          <strong>
+                            ₹15,000 refundable security deposit
+                          </strong>{" "}
+                          — not collected at checkout. Our team will
+                          contact you on WhatsApp within 24 hours of
+                          order confirmation to arrange this via UPI or
+                          bank transfer before dispatch. Refunded in
+                          full within 3–5 business days of a clean
+                          return inspection. Late returns attract
+                          ₹1,700 per additional day.
+
+                        </Notice>
 
                       </div>
                     )}
@@ -211,13 +223,32 @@ const OrderFulfilmentSection = () => {
                     {item.type === "preloved" && (
                       <div className="checkout-piece-notices">
 
-                        <PrelovedDisclosure
-                          product={item.product}
-                        />
+                        <Notice variant="rose">
 
-                        <PrelovedFinalNote
-                          product={item.product}
-                        />
+                          <strong>
+                            Final sale reminder:
+                          </strong>{" "}
+                          The Ivory Tissue Organza Saree is a preloved
+                          item sold on a non-returnable basis. You
+                          accepted this condition at checkout. If you
+                          have any concerns about the piece on arrival,
+                          please contact us on WhatsApp within 24 hours
+                          of delivery and we will do our best to assist.
+
+                        </Notice>
+
+                        <Notice variant="slate">
+
+                          <strong>
+                            Final sale.
+                          </strong>{" "}
+                          Pre-loved pieces cannot be returned once
+                          dispatched. Please review all condition notes
+                          and photographs before confirming. Any
+                          questions? Reach us on WhatsApp before
+                          placing your order.
+
+                        </Notice>
 
                       </div>
                     )}
@@ -226,7 +257,28 @@ const OrderFulfilmentSection = () => {
                     {item.type === "new" && (
                       <div className="checkout-piece-notices">
 
-                        <NewPurchaseNotice />
+                        {/* NEW */}
+                        {item.type === "new" && (
+                          <div className="checkout-piece-notices">
+
+                            <Notice variant="navy">
+
+                              <strong>
+                                Dispatch timeline:
+                              </strong>{" "}
+                              Ships within 3–5 business days of order
+                              confirmation from Manyavar's fulfilment
+                              centre. Eligible for a 7-day return from
+                              the date of delivery. Price is GST-inclusive
+                              at <strong>18%</strong> (GST 2.0 rate,
+                              effective 22 Sep 2025 — garments priced
+                              above ₹2,500). Tracking details shared on
+                              WhatsApp and email.
+
+                            </Notice>
+
+                          </div>
+                        )}
 
                       </div>
                     )}

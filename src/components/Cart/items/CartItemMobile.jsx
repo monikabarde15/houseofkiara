@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import "../../../styles/cart/items/cart-item-mobile.css";
 
 import RentalTimeline from "./modes/rental/RentalTimeline";
-import RentalDepositNotice from "./modes/rental/RentalDepositNotice";
+// import RentalDepositNotice from "./modes/rental/RentalDepositNotice";
 import RentalPriceBlock from "./modes/rental/RentalPriceBlock";
 
-import PrelovedDisclosure from "./modes/preloved/PrelovedDisclosure";
-import PrelovedFinalNote from "./modes/preloved/PrelovedFinalNote";
+// import PrelovedDisclosure from "./modes/preloved/PrelovedDisclosure";
+// import PrelovedFinalNote from "./modes/preloved/PrelovedFinalNote";
 import PrelovedPriceBlock from "./modes/preloved/PrelovedPriceBlock";
 
 import NewPriceBlock from "./modes/new/NewPriceBlock";
 
 import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
+import Notice from "../../shared/Notice/Notice";
 
 const CartItemMobile = ({ item, onRemove }) => {
   const { product, booking, type } = item;
@@ -109,7 +110,7 @@ const CartItemMobile = ({ item, onRemove }) => {
       {type === "rental" && <RentalTimeline booking={booking} />}
 
       {/* 🔹 NOTICES */}
-      {(type === "rental" || type === "preloved") && (
+      {/* {(type === "rental" || type === "preloved") && (
         <div className="cart-item__notice-wrap-mobile">
 
           {type === "rental" && (
@@ -120,6 +121,60 @@ const CartItemMobile = ({ item, onRemove }) => {
             <>
               <PrelovedDisclosure product={product} />
               <PrelovedFinalNote product={product} />
+            </>
+          )}
+
+        </div>
+      )} */}
+
+      {/* 🔹 NOTICES */}
+{(type === "rental" || type === "preloved") && (
+  <div className="cart-item__notice-wrap-mobile">
+
+    {/* RENTAL */}
+    {type === "rental" && (() => {
+
+      const deposit = product?.rent?.deposit;
+
+      const amount = deposit?.amount;
+      const returnDays = deposit?.returnDays;
+
+      return (
+        <Notice
+          variant="amber"
+          title={`₹${amount} refundable security deposit`}
+        >
+          — not collected at checkout. Our team will reach
+          out via WhatsApp before dispatch. Refunded in full
+          within {returnDays - 2}-{returnDays} business days
+          of return inspection.
+        </Notice>
+      );
+
+    })()}
+
+    {/* PRELOVED */}
+          {type === "preloved" && (
+            <>
+
+              {product?.preloved?.disclosure && (
+                <Notice
+                  variant="rose"
+                  title="Condition disclosure:"
+                >
+                  {product?.preloved?.disclosure}
+                </Notice>
+              )}
+
+              {product?.preloved?.finalSaleNote && (
+                <Notice
+                  variant="slate"
+                  title="Final sale."
+                >
+                  {product?.preloved?.finalSaleNote}
+                </Notice>
+              )}
+
             </>
           )}
 
