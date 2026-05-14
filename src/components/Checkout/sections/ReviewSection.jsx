@@ -325,6 +325,8 @@ const ReviewSection = ({
           consentMeta={CONSENT_META}
         />
 
+        {/* CTA Sentinel - for docking behavior */}
+        <div id="cta-sentinel" style={{ height: "1px", pointerEvents: "none" }} />
 
       </div>
 

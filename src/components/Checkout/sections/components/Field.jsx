@@ -6,6 +6,7 @@ const Field = ({
   required = false,
   optional = false,
   hint,
+  labelBadge = null,
   error,
   children,
   className = "",
@@ -38,6 +39,10 @@ const Field = ({
           <span className="checkout-field-optional">
             (Optional)
           </span>
+        )}
+
+        {labelBadge && (
+          <span className="checkout-field-label-badge">{labelBadge}</span>
         )}
 
       </label>

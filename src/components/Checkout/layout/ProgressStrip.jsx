@@ -13,7 +13,7 @@ const ProgressStrip = () => {
           <span className="prog-circle done">
             <Check/>
           </span>
-          <span className="prog-text">Cart</span>
+          <span className="prog-text prog-lbl">Cart</span>
         </a>
 
         <div className="prog-sep" />
@@ -29,7 +29,7 @@ const ProgressStrip = () => {
         {/* Step 3 */}
         <div className="prog-step inactive">
           <span className="prog-circle">3</span>
-          <span className="prog-text">Confirmation</span>
+          <span className="prog-text prog-lbl">Confirmation</span>
         </div>
 
       </div>

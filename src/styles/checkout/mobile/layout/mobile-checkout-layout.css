@@ -1,0 +1,38 @@
+/* src\styles\checkout\mobile\layout\mobile-checkout-layout.css */
+/* .mobile-checkout-layout {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  background: #FFFFFB;
+  min-height: 100vh;
+} */
+
+
+/* =========================================================
+   MOBILE CHECKOUT LAYOUT
+========================================================= */
+
+.mobile-checkout-layout {
+  display: block;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  background: #FFFFFB;
+  min-height: 100vh;
+  padding: 0 16px 140px 16px; 
+}
+
+/* When CTA is docked, remove bottom padding */
+.hok-mobile-checkout.cta-docked {
+  padding-bottom: 0;
+}
+
+/* =========================================================
+   DESKTOP: HIDE MOBILE LAYOUT
+========================================================= */
+
+@media (min-width: 431px) {
+  .mobile-checkout-layout {
+    display: none;
+  }
+}

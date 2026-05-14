@@ -218,25 +218,24 @@ const ContactSection = ({
 
         </div>
 
-        {/* ROW 3 — WhatsApp */}
+        {/* // ROW 3 — WhatsApp */}
+
         <div className="checkout-fg">
 
           <Field
             label="WHATSAPP NUMBER"
             required
+            labelBadge="Required — rental coordination"
             error={errors.whatsapp}
             hint="Our ops team uses this number to coordinate rental dispatch, security deposit collection, and return logistics."
           >
+            {/* Add inline badge inside label via custom label prop */}
             <input
               id="whatsapp-number"
               value={formData.whatsapp}
               onChange={(e) => {
-
-                const value =
-                  e.target.value.replace(/[^\d+\s]/g, "");
-
+                const value = e.target.value.replace(/[^\d+\s]/g, "");
                 handleChange("whatsapp", value);
-
               }}
             />
           </Field>

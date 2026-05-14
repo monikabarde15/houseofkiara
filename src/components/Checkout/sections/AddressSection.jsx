@@ -1,7 +1,7 @@
 // src\components\Checkout\sections\AddressSection.jsx
 import FormSection from "./components/FormSection";
-import "../../../styles/checkout/sections/address-section.css";
 import "../../../styles/checkout/sections/components/field.css";
+import "../../../styles/checkout/sections/address-section.css";
 import Field from "./components/Field";
 import { useState, useEffect } from "react";
 
@@ -302,7 +302,7 @@ export default function DeliveryAddress({
               DELIVERY INSTRUCTIONS
               <span className="checkout-label-optional">(Optional)</span>
             </label>
-            <textarea />
+            <textarea placeholder="Eg. Leave with Security, Call before delivery.." />
           </div>
         </div>
 

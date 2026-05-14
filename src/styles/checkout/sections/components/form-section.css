@@ -1,3 +1,4 @@
+/* src\styles\checkout\sections\components\form-section.css */
 /* =========================
    FORM SECTION WRAPPER
 ========================= */
@@ -47,3 +48,35 @@
   color: #C9A96E;
 }
 
+
+/* =========================================================
+   MOBILE OVERRIDES (max-width: 430px)
+   Spec: Mobile Checkout v1.0 (Page 15)
+========================================================= */
+
+@media (max-width: 430px) {
+  /* Section wrapper */
+  .checkout-form-section {
+    padding-bottom: 32px;
+    margin-bottom: 28px;
+  }
+
+  /* Section header */
+  .checkout-section-header {
+    gap: 12px;
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+  }
+
+  /* Section number */
+  .checkout-section-number {
+    letter-spacing: 0.12em;
+  }
+
+  /* Section title */
+  .checkout-section-title {
+    /* padding-top: 12px; */
+    font-size: 22px;
+    
+  }
+}
