@@ -1,3 +1,4 @@
+/* src\styles\confirmation\policy\confirmation-policy-strip.css */
 /* =========================================================
    SECTION 10 — POLICY STRIP
 ========================================================= */
@@ -85,4 +86,61 @@
         gap: 48px;
     }
 
+}
+/* =========================================================
+   MOBILE: Policy Strip - Horizontal Scroll (Spec Pages 30-31)
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .hok-confirmation-policy-strip {
+    margin-top: 28px;
+    padding-top: 20px;
+  }
+
+  .hok-confirmation-policy-grid {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: 0;
+  }
+
+  .hok-confirmation-policy-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hok-confirmation-policy-item {
+    width: 78vw;
+    max-width: 280px;
+    flex-shrink: 0;
+    padding-right: 16px;
+    margin-right: 16px;
+    border-right: 1px solid #F0EAE0;
+    scroll-snap-align: start;
+  }
+
+  .hok-confirmation-policy-item:last-child {
+    padding-right: 0;
+    margin-right: 0;
+    border-right: none;
+  }
+
+  .hok-confirmation-policy-number {
+    margin-bottom: 8px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
+  .hok-confirmation-policy-heading {
+    margin-bottom: 7px;
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  .hok-confirmation-policy-body {
+    font-size: 10.5px;
+    line-height: 1.85;
+  }
 }

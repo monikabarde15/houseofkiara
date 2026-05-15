@@ -1,5 +1,4 @@
 /* src\styles\confirmation\sections\confirmation-piece-card.css */
-/* src/styles/confirmation/sections/confirmation-piece-card.css */
 
 .confirmation-piece-card {
   display: grid;
@@ -175,4 +174,69 @@
   gap: 12px;
 
   margin-bottom: 24px;
+}
+
+
+/* =========================================================
+   MOBILE: Piece Card 
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .confirmation-piece-card {
+    grid-template-columns: 88px 1fr;
+    gap: 13px;
+  }
+
+  .confirmation-piece-card-thumb {
+    width: 88px;
+  }
+
+  .confirmation-piece-card-mode-strip {
+    padding: 5px 0;
+    font-size: 6px;
+    letter-spacing: 0.18em;
+  }
+
+  .confirmation-piece-card-status {
+    top: 7px;
+    right: 7px;
+    padding: 2px 7px;
+    font-size: 6px;
+  }
+
+  .confirmation-piece-card-brand {
+    margin-bottom: 4px;
+    font-size: 7.5px;
+    letter-spacing: 0.18em;
+  }
+
+  .confirmation-piece-card-name {
+    margin-bottom: 3px;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .confirmation-piece-card-description {
+    margin-bottom: 10px;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .confirmation-piece-card-price-row {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .confirmation-price-block-price {
+    font-size: 24px;
+  }
+
+  .confirmation-price-block-price sup {
+    font-size: 12px;
+  }
+
+  .confirmation-price-block-note {
+    font-size: 9px;
+  }
 }

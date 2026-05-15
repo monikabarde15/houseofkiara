@@ -1,3 +1,4 @@
+/* src\styles\confirmation\sidebar\confirmation-trust-list.css */
 .confirmation-trust-list {
   display: flex;
   flex-direction: column;
@@ -39,4 +40,30 @@
 
 .confirmation-trust-list-text {
   margin: 0;
+}
+
+
+/* =========================================================
+   MOBILE: Trust List
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .confirmation-trust-list {
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 18px;
+  }
+
+  .confirmation-trust-list-item {
+    gap: 10px;
+    font-size: 10.5px;
+    line-height: 1.45;
+  }
+
+  .confirmation-trust-list-icon svg {
+    width: 13px;
+    height: 13px;
+    stroke-width: 1.3;
+  }
 }

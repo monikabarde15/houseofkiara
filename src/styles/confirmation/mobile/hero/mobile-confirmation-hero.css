@@ -1,0 +1,339 @@
+/* =========================================================
+   MOBILE CONFIRMATION HERO
+========================================================= */
+
+.mobile-confirmation-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 36px 24px 28px;
+    background: #FFFFFB;
+    border-bottom: 1px solid #E8E0D4;
+    text-align: center;
+}
+
+/* Radial glow */
+.mobile-confirmation-hero::before {
+    content: "";
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    height: 200px;
+    background: radial-gradient(ellipse at center, rgba(201, 169, 110, 0.07) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* =========================================================
+   Check Ring (Spec 5.2)
+========================================================= */
+
+.mobile-confirmation-hero-check-ring {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    border: 1.5px solid #E8E0D4;
+    background: #FFFFFB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: mobileRingPop 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.mobile-confirmation-hero-check-ring::after {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 169, 110, 0.18);
+}
+
+.mobile-confirmation-hero-check-icon {
+    width: 20px;
+    height: 20px;
+    color: #6B7E5A;
+    stroke-width: 1.6;
+    fill: none;
+    stroke-dasharray: 36;
+    stroke-dashoffset: 36;
+    animation: mobileCheckDraw 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.75s forwards;
+}
+
+/* =========================================================
+   Eyebrow (Spec 5.3)
+========================================================= */
+
+.mobile-confirmation-hero-eyebrow {
+    margin-bottom: 12px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 8.5px;
+    font-weight: 400;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: #6B7E5A;
+    animation: mobileFadeIn 0.6s ease 0.4s both;
+}
+
+/* =========================================================
+   H1 Heading (Spec 5.3)
+========================================================= */
+
+.mobile-confirmation-hero-heading {
+    margin-bottom: 16px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(40px, 11vw, 56px);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    color: #1A1612;
+    animation: mobileHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+}
+
+.mobile-confirmation-hero-heading em {
+    font-style: italic;
+    color: #C9A96E;
+}
+
+/* =========================================================
+   Gold Rule (Spec 5.3)
+========================================================= */
+
+.mobile-confirmation-hero-gold-rule {
+    width: 0;
+    height: 1px;
+    margin: 0 auto 16px;
+    background: #C9A96E;
+    opacity: 0;
+    animation: mobileGoldLine 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+}
+
+/* =========================================================
+   Sub-copy (Spec 5.3)
+========================================================= */
+
+.mobile-confirmation-hero-subcopy {
+    max-width: 340px;
+    margin: 0 auto 18px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: #8A7E72;
+    animation: mobileHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+}
+
+.mobile-confirmation-hero-subcopy strong {
+    font-weight: 400;
+    color: #3C3529;
+}
+
+/* =========================================================
+   Order Reference Pill (Spec 5.4)
+========================================================= */
+
+.mobile-confirmation-hero-order-pill {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    border: 1px solid #E8E0D4;
+    background: #FAF7F2;
+    animation: mobileHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
+}
+
+.mobile-confirmation-hero-order-pill-label {
+    font-family: "DM Sans", sans-serif;
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #B0A898;
+}
+
+.mobile-confirmation-hero-order-pill-value {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #1A1612;
+}
+
+.mobile-confirmation-hero-order-pill-date {
+    font-family: "DM Sans", sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    color: #8A7E72;
+}
+
+.mobile-confirmation-hero-order-pill-separator {
+    width: 1px;
+    height: 14px;
+    background: #E8E0D4;
+    flex-shrink: 0;
+}
+
+/* =========================================================
+   CTA Stack (Spec 5.5)
+========================================================= */
+
+.mobile-confirmation-hero-cta-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: mobileHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.75s both;
+}
+
+.mobile-confirmation-hero-cta-ghost-row {
+    display: flex;
+    gap: 8px;
+}
+
+/* Buttons */
+.mobile-confirmation-hero-btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, opacity 0.2s;
+    cursor: pointer;
+    min-height: 44px;
+}
+
+/* Primary Button */
+.mobile-confirmation-hero-btn-primary {
+    width: 100%;
+    border: none;
+    padding: 14px 20px;
+    background: #1A1612;
+    font-family: "DM Sans", sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: #E8D5B0;
+}
+
+.mobile-confirmation-hero-btn-primary:active {
+    opacity: 0.85;
+}
+
+/* Ghost Button */
+.mobile-confirmation-hero-btn-ghost {
+    flex: 1;
+    border: 1px solid #E8E0D4;
+    padding: 12px 14px;
+    background: transparent;
+    font-family: "DM Sans", sans-serif;
+    font-size: 9.5px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #3C3529;
+}
+
+.mobile-confirmation-hero-btn-ghost:active {
+    border-color: #3C3529;
+}
+
+/* Icons */
+.mobile-confirmation-hero-btn-icon-order {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    stroke-width: 1.5;
+}
+
+.mobile-confirmation-hero-btn-icon {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+    stroke-width: 1.5;
+}
+
+/* Shimmer Effect */
+.mobile-confirmation-hero-btn-shimmer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 40%, rgba(201, 160, 90, 0.08) 50%, transparent 60%);
+    animation: mobileShimmer 4s linear infinite;
+    transform: translateX(-100%);
+}
+
+/* =========================================================
+   Keyframe Animations
+========================================================= */
+
+@keyframes mobileFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes mobileCheckDraw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes mobileRingPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    60% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes mobileHeroRise {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes mobileGoldLine {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+
+    to {
+        width: 80px;
+        opacity: 1;
+    }
+}
+
+@keyframes mobileShimmer {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(200%);
+    }
+}

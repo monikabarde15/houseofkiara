@@ -1,3 +1,4 @@
+// src\components\Confirmation\pricing\ConfirmationNewPriceBlock.jsx
 import "../../../styles/confirmation/pricing/confirmation-price-block.css";
 
 const formatPrice = (num) =>

@@ -1,3 +1,4 @@
+// src\components\Confirmation\hero\ConfirmationHero.jsx
 import {ArrowDown,Clock3,MessageCircle,Check, } from "lucide-react";
 
 import "../../../styles/confirmation/hero/confirmation-hero.css";

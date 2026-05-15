@@ -1,0 +1,196 @@
+/* =========================================================
+   MOBILE WHAT HAPPENS NEXT PANEL
+   Following spec: Pages 17-18
+========================================================= */
+
+.mobile-whats-next-panel {
+  border: 1px solid #F0EAE0;
+  margin-bottom: 24px;
+  overflow: hidden;
+  background: #FFFEFB;
+}
+
+/* =========================================================
+   Panel Header
+========================================================= */
+
+.mobile-wn-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  background: #FFFEFB;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.mobile-wn-header-text {
+  flex: 1;
+}
+
+.mobile-wn-eyebrow {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #B0A898;
+  margin-bottom: 5px;
+}
+
+.mobile-wn-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  color: #1A1612;
+}
+
+.mobile-wn-title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.mobile-wn-toggle-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid #E8E0D4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-wn-toggle-icon svg {
+  width: 10px;
+  height: 10px;
+  stroke: #8A7E72;
+  stroke-width: 1.8;
+}
+
+/* Rotate icon when panel is open */
+.mobile-whats-next-panel.open .mobile-wn-toggle-icon {
+  transform: rotate(180deg);
+}
+
+/* =========================================================
+   Panel Body - Collapsible
+========================================================= */
+
+.mobile-wn-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #FAF7F2;
+}
+
+.mobile-whats-next-panel.open .mobile-wn-body {
+  max-height: 500px;
+}
+
+.mobile-wn-body-inner {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* =========================================================
+   Timeline Steps
+========================================================= */
+
+.mobile-wn-step {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 12px;
+}
+
+.mobile-wn-step-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-wn-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  border-radius: 50%;
+}
+
+.mobile-wn-dot-amber {
+  background: #C2A040;
+}
+
+.mobile-wn-dot-muted {
+  background: transparent;
+  border: 1.5px solid #B0A898;
+}
+
+.mobile-wn-line {
+  width: 1px;
+  flex: 1;
+  min-height: 20px;
+  margin: 4px 0;
+  background: #F0EAE0;
+}
+
+.mobile-wn-step-last .mobile-wn-line {
+  display: none;
+}
+
+.mobile-wn-step-body {
+  padding-bottom: 18px;
+}
+
+.mobile-wn-step-last .mobile-wn-step-body {
+  padding-bottom: 0;
+}
+
+.mobile-wn-step-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #3C3529;
+}
+
+.mobile-wn-badge-soon {
+  padding: 2px 7px;
+  background: rgba(194, 160, 64, 0.12);
+  color: #8A6010;
+  font-family: "DM Sans", sans-serif;
+  font-size: 7px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 1px;
+}
+
+.mobile-wn-urgent {
+  color: #B85C38;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.mobile-wn-step-text {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: #B0A898;
+}
+
+.mobile-wn-step-text b {
+  font-weight: 400;
+  color: #8A7E72;
+}

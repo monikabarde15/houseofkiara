@@ -1,9 +1,10 @@
+// src\components\Confirmation\sections\ConfirmationNextStepsSection.jsx
 import "../../../styles/confirmation/sections/confirmation-next-steps-section.css";
 import ConfirmationSectionHeader from "../layout/ConfirmationSectionHeader";
 
 const ConfirmationNextStepsSection = () => {
     return (
-        <section className="confirmation-next-steps-section">
+        <section className="confirmation-next-steps-section" data-rise="5">
             <ConfirmationSectionHeader
                 number="04"
                 title="What Happens"

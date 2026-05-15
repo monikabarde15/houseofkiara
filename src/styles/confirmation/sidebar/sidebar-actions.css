@@ -1,3 +1,4 @@
+/* src\styles\confirmation\sidebar\sidebar-actions.css */
 .confirmation-sidebar-actions {
   display: flex;
   flex-direction: column;
@@ -120,4 +121,31 @@
   border-radius: 50%;
 
   background: #25D366;
+}
+
+
+/* =========================================================
+   MOBILE: Action Strip 
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .confirmation-sidebar-actions {
+    padding: 20px 0;
+    margin-top: 24px;
+    border-top: 2px solid #1A1612;
+  }
+
+  .confirmation-sidebar-action-button-primary {
+    padding: 15px 20px;
+    letter-spacing: 0.26em;
+    min-height: 44px;
+  }
+
+  .confirmation-sidebar-action-button-secondary,
+  .confirmation-sidebar-action-button-whatsapp {
+    padding: 13px 20px;
+    letter-spacing: 0.22em;
+    min-height: 44px;
+  }
 }

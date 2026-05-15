@@ -1,3 +1,4 @@
+/* src\styles\confirmation\sidebar\return-reminder.css */
 .confirmation-return-reminder {
   display: flex;
   align-items: flex-start;
@@ -53,4 +54,36 @@
   font-size: 10.5px;
   font-weight: 300;
   line-height: 1.7;
+}
+
+
+/* =========================================================
+   MOBILE: Return Reminder 
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .confirmation-return-reminder {
+    gap: 9px;
+    margin: 16px 0;
+    padding: 12px 14px;
+  }
+
+  .confirmation-return-reminder-icon svg {
+    width: 12px;
+    height: 12px;
+    stroke-width: 1.5;
+  }
+
+  .confirmation-return-reminder-title {
+    font-size: 11px;
+    font-weight: 400;
+    color: #B85C38;
+  }
+
+  .confirmation-return-reminder-text {
+    font-size: 10.5px;
+    line-height: 1.65;
+    color: #8A7E72;
+  }
 }

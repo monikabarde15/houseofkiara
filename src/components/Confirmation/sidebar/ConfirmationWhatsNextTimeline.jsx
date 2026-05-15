@@ -1,3 +1,4 @@
+// src\components\Confirmation\sidebar\ConfirmationWhatsNextTimeline.jsx
 import "../../../styles/confirmation/sidebar/confirmation-whats-next-timeline.css";
 
 const ConfirmationWhatsNextTimeline = () => {

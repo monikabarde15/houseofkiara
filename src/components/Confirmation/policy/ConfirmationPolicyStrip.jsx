@@ -1,3 +1,4 @@
+// src\components\Confirmation\policy\ConfirmationPolicyStrip.jsx
 import "../../../styles/confirmation/policy/confirmation-policy-strip.css";
 
 /* =========================================================

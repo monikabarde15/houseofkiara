@@ -1,3 +1,4 @@
+/* src\styles\confirmation\sections\confirmation-next-steps-section.css */
 .confirmation-next-steps-section {
   padding-bottom: var(--s6);
   margin-top: 48px;
@@ -93,4 +94,45 @@
 .confirmation-next-step-text b {
   font-weight: 400;
   color: var(--ink-2);
+}
+
+
+
+/* =========================================================
+   MOBILE: Section 04 What Happens Next 
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .confirmation-next-steps-section {
+    padding-bottom: 28px;
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+
+  .confirmation-next-step {
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+    padding: 18px 0;
+  }
+
+
+  .confirmation-next-step-number {
+    font-size: 24px;
+    padding-top: 2px;
+  }
+
+  .confirmation-next-step-title {
+    margin-bottom: 5px;
+    font-size: 17px;
+  }
+
+  .confirmation-next-step-text {
+    font-size: 11px;
+    line-height: 1.75;
+  }
+
+  .confirmation-next-step:last-child {
+    border-bottom: 1px solid var(--ink-6);
+  }
 }

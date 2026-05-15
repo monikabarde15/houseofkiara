@@ -1,3 +1,4 @@
+// src\components\Confirmation\modal\OrderStatusDetailRows.jsx
 import "../../../styles/confirmation/modal/order-status-detail-rows.css";
 
 const DETAIL_ROWS = {

@@ -1,3 +1,6 @@
+// src\components\Confirmation\sidebar\SidebarActions.jsx
+import { useState, useEffect } from "react";
+
 import {
   ChevronLeft,
   Clock4,
@@ -9,10 +12,22 @@ import "../../../styles/confirmation/sidebar/sidebar-actions.css";
 const SidebarActions = ({
   onOpenOrderStatus,
 }) => {
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 430px)");
+    setIsMobile(mediaQuery.matches);
+    
+    const handleChange = (e) => setIsMobile(e.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
   return (
     <div
       className="confirmation-sidebar-actions"
-      data-rise="3"
+      data-rise={isMobile ? "5" : "3"}
     >
 
       {/* BUTTON 1 */}

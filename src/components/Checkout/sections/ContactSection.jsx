@@ -229,7 +229,7 @@ const ContactSection = ({
             error={errors.whatsapp}
             hint="Our ops team uses this number to coordinate rental dispatch, security deposit collection, and return logistics."
           >
-            {/* Add inline badge inside label via custom label prop */}
+            
             <input
               id="whatsapp-number"
               value={formData.whatsapp}

@@ -1,3 +1,4 @@
+// src\components\Confirmation\layout\ConfirmationSectionHeader.jsx
 import "../../../styles/confirmation/layout/confirmation-section-header.css";
 
 const ConfirmationSectionHeader = ({

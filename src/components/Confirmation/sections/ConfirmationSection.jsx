@@ -1,3 +1,4 @@
+// src\components\Confirmation\sections\ConfirmationSection.jsx
 import "../../../styles/confirmation/sections/confirmation-section.css";
 
 const ConfirmationSection = ({

@@ -1,3 +1,4 @@
+// src\components\Confirmation\sidebar\ConfirmationPaymentConfirmed.jsx
 import {
   Check,
 } from "lucide-react";
@@ -10,7 +11,7 @@ const ConfirmationPaymentConfirmed = ({
   paymentDate = "14 Oct 2024",
 }) => {
   return (
-    <div className="paid-confirm-block">
+    <div className="paid-confirm-block" data-rise="1">
 
       <div className="pcb-check">
         <Check

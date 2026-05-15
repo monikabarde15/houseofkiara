@@ -1,0 +1,17 @@
+/* MOBILE CONFIRMATION LAYOUT - BASE */
+.mobile-confirmation-layout {
+  display: block;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  background: #FFFFFB;
+  min-height: 100vh;
+  padding: 0 16px 40px 16px;
+}
+
+/* Desktop: Hide mobile layout */
+@media (min-width: 431px) {
+  .mobile-confirmation-layout {
+    display: none;
+  }
+}

@@ -1,3 +1,6 @@
+// src\components\Confirmation\sidebar\ConfirmationTrustList.jsx
+
+import { useState, useEffect } from "react";
 import {
   Shield,
   Phone,
@@ -7,10 +10,21 @@ import {
 import "../../../styles/confirmation/sidebar/confirmation-trust-list.css";
 
 const ConfirmationTrustList = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 430px)");
+    setIsMobile(mediaQuery.matches);
+    
+    const handleChange = (e) => setIsMobile(e.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+  
   return (
     <div
       className="confirmation-trust-list"
-      data-rise="4"
+      data-rise={isMobile ? "5" : "4"}
     >
 
       {/* ITEM 1 */}

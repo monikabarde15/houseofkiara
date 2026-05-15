@@ -1,3 +1,4 @@
+/* src\styles\confirmation\sections\confirmation-mode-separator.css */
 .confirmation-mode-separator {
   display: flex;
   align-items: center;
@@ -40,4 +41,23 @@
   text-transform: uppercase;
 
   color: var(--ink-4);
+}
+
+
+/* =========================================================
+   MOBILE: Mode Separator 
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .confirmation-mode-separator {
+    gap: 10px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+  }
+
+  .confirmation-mode-separator-label {
+    font-size: 7.5px;
+    letter-spacing: 0.24em;
+  }
 }

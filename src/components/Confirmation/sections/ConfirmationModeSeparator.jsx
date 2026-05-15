@@ -1,3 +1,4 @@
+// src\components\Confirmation\sections\ConfirmationModeSeparator.jsx
 import "../../../styles/confirmation/sections/confirmation-mode-separator.css";
 
 const ConfirmationModeSeparator = ({

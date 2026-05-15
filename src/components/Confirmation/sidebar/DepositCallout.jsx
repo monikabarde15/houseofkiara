@@ -1,3 +1,4 @@
+// src\components\Confirmation\sidebar\DepositCallout.jsx
 import "../../../styles/confirmation/sidebar/deposit-callout.css";
 
 const DepositCallout = () => {

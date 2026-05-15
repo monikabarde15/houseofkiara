@@ -1,3 +1,5 @@
+// src\components\Confirmation\sections\ConfirmationPieceCard.jsx
+import { useState, useEffect } from "react";
 import ConfirmationRentalPriceBlock from "../pricing/ConfirmationRentalPriceBlock";
 import ConfirmationPrelovedPriceBlock from "../pricing/ConfirmationPrelovedPriceBlock";
 import ConfirmationNewPriceBlock from "../pricing/ConfirmationNewPriceBlock";
@@ -11,6 +13,23 @@ const ConfirmationPieceCard = ({
   item,
   isLast = false,
 }) => {
+
+
+  // viewport
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 430px)");
+    setIsMobile(mediaQuery.matches);
+
+    const handleChange = (e) => setIsMobile(e.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  const getRentalStatusText = () => {
+    return isMobile ? "Pending" : "Pending dispatch";
+  };
 
   const getRentalDays = (booking) => {
 
@@ -86,7 +105,7 @@ const ConfirmationPieceCard = ({
   `}
         >
           {item.type === "rental"
-            ? "Pending dispatch"
+            ? getRentalStatusText()
             : "Confirmed"}
         </div>
 

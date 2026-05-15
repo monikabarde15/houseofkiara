@@ -1,3 +1,4 @@
+// src\components\Confirmation\pricing\ConfirmationRentalPriceBlock.jsx
 import { calculateGST }
   from "../../../utils/cart/gstCalculator";
 

@@ -1,3 +1,4 @@
+/* src\styles\confirmation\layout\confirmation-section-header.css */
 .confirmation-section-header {
   display: flex;
   align-items: center;
@@ -63,4 +64,32 @@
   background: rgba(42, 68, 102, 0.1);
 
   color: #2A4466;
+}
+
+
+/* =========================================================
+   MOBILE: Section Header 
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .confirmation-section-header {
+    gap: 10px;
+    padding-bottom: 16px;
+    margin-bottom: 18px;
+  }
+
+  .confirmation-section-header-number {
+    font-size: 10px;
+  }
+
+  .confirmation-section-header-title {
+    font-size: 20px;
+  }
+
+  .confirmation-section-tag {
+    padding: 3px 8px;
+    font-size: 7.5px;
+    letter-spacing: 0.14em;
+  }
 }

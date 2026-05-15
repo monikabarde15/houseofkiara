@@ -167,3 +167,54 @@
 
   color: var(--ink-4);
 }
+
+
+
+/* =========================================================
+   MOBILE: Rental Timeline
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .confirmation-timeline {
+    margin: 14px 0;
+  }
+
+  .confirmation-timeline::before {
+    top: 50px;
+    left: 12px;
+    right: 12px;
+  }
+
+  .confirmation-timeline__header {
+    height: 46px;
+  }
+
+  .confirmation-timeline__window {
+    padding: 0 4px;
+    margin-bottom: 6px;
+    font-size: 7px;
+    letter-spacing: 0.12em;
+    background: #FFFFFB;
+  }
+
+  .confirmation-timeline__label {
+    font-size: 7px;
+    letter-spacing: 0.15em;
+  }
+
+  .confirmation-timeline__circle {
+    width: 9px;
+    height: 9px;
+    margin: 8px 0 10px;
+  }
+
+  .confirmation-timeline__date {
+    font-size: 13px;
+  }
+
+  .confirmation-timeline__day {
+    margin-top: 3px;
+    font-size: 8.5px;
+  }
+}

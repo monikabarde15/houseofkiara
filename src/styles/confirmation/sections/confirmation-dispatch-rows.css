@@ -70,3 +70,28 @@
   font-weight: 400;
   color: #8A6010;
 }
+
+
+
+/* =========================================================
+   MOBILE: Dispatch Rows
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .confirmation-dispatch-row {
+    gap: 8px;
+    padding: 8px 0;
+  }
+
+  .confirmation-dispatch-row-key {
+    min-width: 82px;
+    font-size: 7.5px;
+    letter-spacing: 0.16em;
+  }
+
+  .confirmation-dispatch-row-value {
+    font-size: 10.5px;
+    line-height: 1.5;
+  }
+}
