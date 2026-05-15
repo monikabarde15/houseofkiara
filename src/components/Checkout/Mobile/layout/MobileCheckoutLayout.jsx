@@ -14,6 +14,11 @@ import ReviewSection from "../../sections/ReviewSection";
 import { calculateTotals } from "../../../../utils/cart/calculateTotals";
 import "../../../../styles/checkout/mobile/layout/mobile-checkout-layout.css";
 import MobileCtaBar from "../cta/MobileCtaBar";
+import MobileErrorSummary from "../cta/MobileErrorSummary";
+
+import MobileSummaryDrawer from "../drawer/MobileSummaryDrawer";
+import OrderConfirmedOverlay from "../../overlay/OrderConfirmedOverlay";
+import { PolicyStrip } from "../../../Cart";
 
 const MobileCheckoutLayout = () => {
     // ========================================
@@ -21,14 +26,15 @@ const MobileCheckoutLayout = () => {
     // ========================================
     const location = useLocation();
     const pageRef = useRef(null);
-  const ctaBarRef = useRef(null);
-  const [isDocked, setIsDocked] = useState(false);
+    const ctaBarRef = useRef(null);
+    const [isDocked, setIsDocked] = useState(false);
 
     const [submitCount, setSubmitCount] = useState(0);
     const [fieldErrors, setFieldErrors] = useState({});
     const [isOrderConfirmed, setIsOrderConfirmed] = useState(false);
     const [isProcessingOrder, setIsProcessingOrder] = useState(false);
     const [deliveryType, setDeliveryType] = useState("standard");
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const checkoutData =
         location.state ||
@@ -67,8 +73,13 @@ const MobileCheckoutLayout = () => {
     const errorCount = summaryErrors.length;
 
     useEffect(() => {
+        /* only after first submit */
         if (submitCount === 0) return;
 
+        /*
+          FIELD ERRORS
+          take priority over consent errors
+        */
         if (summaryErrors.length > 0) {
             const fieldMap = {
                 "First name (Contact & Account)": "first-name",
@@ -90,16 +101,25 @@ const MobileCheckoutLayout = () => {
             )[0];
 
             if (firstInvalidField) {
-                firstInvalidField.scrollIntoView({ behavior: "smooth", block: "center" });
+                firstInvalidField.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
             }
             return;
         }
 
+        /*
+          CONSENT ERRORS ONLY
+        */
         const consentGroup = document.getElementById("consent-group");
         if (consentGroup) {
-            consentGroup.scrollIntoView({ behavior: "smooth", block: "start" });
+            consentGroup.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
         }
-    }, [submitCount, summaryErrors]);
+    }, [submitCount]);  // ← ONLY submitCount
 
 
 
@@ -149,9 +169,15 @@ const MobileCheckoutLayout = () => {
         };
     }, [isDocked]);
 
-    // Temporary handler for drawer (will be implemented in Step 5)
+    // handler for drawer 
     const handleOpenDrawer = () => {
-        console.log("Open drawer - will be implemented in next step");
+        setIsDrawerOpen(true);
+        document.body.style.overflow = "hidden";
+    };
+
+    const handleCloseDrawer = () => {
+        setIsDrawerOpen(false);
+        document.body.style.overflow = "";
     };
 
     return (
@@ -183,13 +209,16 @@ const MobileCheckoutLayout = () => {
             <FulfilmentSection />
 
             {/* Payment Section - Reused from desktop */}
-            <PaymentSection/>
+            <PaymentSection />
 
             {/* Payment Section - Reused from desktop */}
             <ReviewSection
                 checkoutItems={checkoutItems}
                 submitCount={submitCount}
             />
+
+            {/* ERROR SUMMARY BANNER */}
+            <MobileErrorSummary errors={summaryErrors} />
 
             {/* CTA Bar - New one for Mobile*/}
             <MobileCtaBar
@@ -200,7 +229,30 @@ const MobileCheckoutLayout = () => {
                 isProcessingOrder={isProcessingOrder}
                 onOpenDrawer={handleOpenDrawer}
             />
-            
+
+            {/* Order Summary Drawer */}
+            <MobileSummaryDrawer
+                isOpen={isDrawerOpen}
+                onClose={handleCloseDrawer}
+                cartItems={checkoutItems}
+                activePromo={activePromo}
+                deliveryType={deliveryType}
+                totals={totals}  
+            />
+
+            <OrderConfirmedOverlay
+                isOpen={isOrderConfirmed}
+                cartItems={checkoutItems}
+                activePromo={activePromo}
+                totals={totals}
+                onClose={() =>
+                    setIsOrderConfirmed(false)
+                }
+            />
+
+            {/* Policy Strip - only show if rental exists */}
+            {hasRentalItem && <PolicyStrip />}
+
         </div>
     );
 };

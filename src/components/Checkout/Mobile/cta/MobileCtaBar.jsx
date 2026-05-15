@@ -39,7 +39,7 @@ const MobileCtaBar = forwardRef(({
         disabled={isProcessingOrder}
       >
         <span className="mobile-cta-button-shimmer"></span>
-        {isProcessingOrder ? "Processing payment..." : `Place order · ₹${grandTotal.toLocaleString()}`}
+        {isProcessingOrder ? "Processing payment..." : `Place order`}
       </button>
 
       {/* ========================================
