@@ -5,16 +5,14 @@
   min-height: 100vh;
 }
 
-/* MAIN CONTAINER */
+/* MAIN CONTAINER - now ONLY for the form content */
 .checkout-container {
   max-width: 1380px;
   margin: 0 auto;
-
   padding-left: 64px;
   padding-right: 64px;
   padding-bottom: 128px;
 }
-
 
 /* Mobile: Remove desktop padding */
 @media (max-width: 430px) {

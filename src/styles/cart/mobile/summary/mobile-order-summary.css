@@ -1,0 +1,367 @@
+/* =========================================================
+   MOBILE ORDER SUMMARY
+   Following spec: Pages 16-19
+========================================================= */
+
+.mobile-order-summary {
+  margin-top: 32px;
+}
+
+.summary-container {
+  border-top: 2px solid #1A1612;
+  padding-top: 28px;
+}
+
+.summary-eyebrow {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #B0A898;
+  margin-bottom: 20px;
+}
+
+/* Section Heads */
+.summary-section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 16px;
+  margin-bottom: 6px;
+}
+
+.summary-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.summary-dot-rental { background: #6B7E5A; }
+.summary-dot-preloved { background: #893860; }
+.summary-dot-new { background: #2A4466; }
+
+.summary-section-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 7.5px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+/* Summary Rows */
+.summary-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid #F0EAE0;
+}
+
+.summary-row-name {
+  flex: 1;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 300;
+  color: #3C3529;
+  line-height: 1.4;
+}
+
+.summary-row-name small {
+  display: block;
+  font-size: 9.5px;
+  color: #B0A898;
+  margin-top: 2px;
+}
+
+.summary-row-value {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1A1612;
+  white-space: nowrap;
+}
+
+.summary-row-value.deposit {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: #9A7010;
+}
+
+.summary-row-value.dim {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #B0A898;
+  font-style: italic;
+}
+
+.summary-row.subtotal {
+  font-weight: 400;
+  border-top-color: #E8E0D4;
+}
+
+.summary-row.promo {
+  color: #6B7E5A;
+}
+
+.promo-code {
+  font-weight: 500;
+  letter-spacing: 0.07em;
+}
+
+.summary-row-value.promo-value {
+  color: #6B7E5A;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+}
+
+/* GST Accordion */
+.gst-accordion {
+  cursor: pointer;
+  user-select: none;
+}
+
+.gst-accordion-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid #F0EAE0;
+}
+
+.gst-accordion-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 300;
+  color: #8A7E72;
+}
+
+.gst-accordion-left svg {
+  stroke: #B0A898;
+}
+
+.gst-incl {
+  font-size: 9px;
+  color: #E8E0D4;
+  font-weight: 300;
+  margin-left: 3px;
+}
+
+.gst-accordion-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gst-total {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  color: #1A1612;
+}
+
+.gst-caret {
+  stroke: #E8E0D4;
+  stroke-width: 1.5;
+  transition: transform 0.3s;
+}
+
+.gst-caret.open {
+  transform: rotate(180deg);
+}
+
+/* GST Detail Panel */
+.gst-detail-panel {
+  display: none;
+  padding: 0 0 14px;
+  border-top: 1px solid #F0EAE0;
+}
+
+.gst-detail-panel.vis {
+  display: block;
+}
+
+.gst-line {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid #F0EAE0;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #B0A898;
+}
+
+.gst-line:last-child {
+  border-bottom: none;
+}
+
+.gst-line-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.gst-badge {
+  padding: 1.5px 6px;
+  border-radius: 100px;
+  font-size: 7px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gst-badge.rental {
+  background: rgba(107, 126, 90, 0.1);
+  color: #6B7E5A;
+}
+
+.gst-badge.preloved {
+  background: rgba(137, 56, 96, 0.1);
+  color: #893860;
+}
+
+.gst-badge.new {
+  background: rgba(42, 68, 102, 0.1);
+  color: #2A4466;
+}
+
+.gst-badge.delivery {
+  background: #FAF7F2;
+  color: #B0A898;
+}
+
+.gst-line-value {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 13px;
+  color: #1A1612;
+  white-space: nowrap;
+}
+
+.gst-line-value.dim {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  color: #B0A898;
+}
+
+.gst-footnote {
+  font-size: 9.5px;
+  color: #3C3529;
+  line-height: 1.7;
+  padding: 10px 0 4px;
+}
+
+/* Grand Total */
+.grand-total-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 0 16px;
+  border-top: 1px solid #1A1612;
+  margin-top: 8px;
+}
+
+.grand-total-label {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #1A1612;
+  line-height: 1.2;
+}
+
+.grand-total-sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 300;
+  color: #B0A898;
+  margin-top: 4px;
+}
+
+.grand-total-amount {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 38px;
+  font-weight: 300;
+  color: #1A1612;
+  line-height: 1;
+}
+
+.grand-total-amount sup {
+  font-size: 17px;
+  vertical-align: super;
+}
+
+/* Deposit & Delivery Note */
+.deposit-delivery-note {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #B0A898;
+  line-height: 1.8;
+  padding-top: 16px;
+  border-top: 1px solid #F0EAE0;
+}
+
+.deposit-delivery-note p {
+  margin: 0;
+}
+
+.deposit-delivery-note b {
+  font-weight: 400;
+  color: #8A6010;
+}
+
+/* Trust Signals */
+.trust-signals {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #F0EAE0;
+}
+
+.trust-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.5;
+}
+
+.trust-item svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  stroke: #C9A96E;
+}
+
+/* Payment Marks */
+.payment-marks {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.payment-marks span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 7.5px;
+  font-weight: 400;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #E8E0D4;
+  border: 1px solid #F0EAE0;
+  padding: 2.5px 7px;
+}

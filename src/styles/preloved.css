@@ -748,6 +748,82 @@ h1, h2, h3 {
   background: #2E2520;
 }
 
+/* =========================
+   Offer Success State
+========================= */
+
+.preloved-success {
+  text-align: center;
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.preloved-success-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(107, 126, 90, 0.1);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 16px;
+}
+
+.preloved-success-icon svg {
+  color: #6b7e5a;
+}
+
+.preloved-success h3 {
+  margin: 0 0 12px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #1a1612;
+}
+
+.preloved-success p {
+  margin: 0 0 24px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: #8a7e72;
+
+  max-width: 280px;
+}
+
+.preloved-reset-btn {
+  height: 40px;
+  padding: 0 18px;
+
+  border: 1px solid #e8e0d4;
+  background: transparent;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  color: #8a7e72;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preloved-reset-btn:hover {
+  border-color: #1a1612;
+  color: #1a1612;
+}
+
+
 /* ---------------------------- */
 /*--- WHATSAPP ENQUIERY----------- */
 /* ----------------------------------- */

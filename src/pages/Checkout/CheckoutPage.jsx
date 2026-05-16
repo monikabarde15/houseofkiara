@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import CheckoutLayout from "../../components/Checkout/layout/CheckoutLayout";
 import MobileCheckoutLayout from "../../components/Checkout/Mobile/layout/MobileCheckoutLayout";
+import ProgressStrip from "../../components/Checkout/layout/ProgressStrip";  // ← ADD THIS
 import "../../styles/checkout/checkout-page.css";
 
 const CheckoutPage = () => {
@@ -14,21 +15,26 @@ const CheckoutPage = () => {
       setIsMobile(e.matches);
     };
     
-    // Set initial value
     setIsMobile(mediaQuery.matches);
-    
-    // Add listener
     mediaQuery.addEventListener("change", handleChange);
     
-    // Cleanup
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
   return (
     <div className="checkout-page">
-      <div className="checkout-container">
-        {isMobile ? <MobileCheckoutLayout /> : <CheckoutLayout />}
-      </div>
+      {isMobile ? (
+        <MobileCheckoutLayout />
+      ) : (
+        <>
+          {/* Progress strip - OUTSIDE container, matches confirmation page pattern */}
+          <ProgressStrip />
+          
+          <div className="checkout-container">
+            <CheckoutLayout />
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -2,7 +2,6 @@
 
 import PageTitle from "./PageTitle";
 // import CheckoutSummary from "../summary/CheckoutSummary";
-import ProgressStrip from "./ProgressStrip";
 import "../../../styles/checkout/layout/checkout-layout.css";
 import { useLocation } from "react-router-dom";
 
@@ -211,8 +210,6 @@ const CheckoutLayout = () => {
 
   return (
     <div className="checkout-layout">
-
-      <ProgressStrip />
 
       <PageTitle
         cartItems={checkoutItems}

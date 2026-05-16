@@ -1,30 +1,28 @@
 // src\pages\Cart\CartPage.jsx
-
-import React from "react";
+import { useState, useEffect } from "react";
+import CartLayout from "../../components/Cart/layout/CartLayout";
+import MobileCartLayout from "../../components/Cart/Mobile/layout/MobileCartLayout";
 import "../../styles/pages/cart.css";
 
-// Components
-import {
-  CartLayout,
-
-} from "../../components/Cart";
-
-
 const CartPage = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 430px)");
+    
+    const handleChange = (e) => {
+      setIsMobile(e.matches);
+    };
+    
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
   return (
     <div className="cart-page">
-
-      {/* Page Header */}
-      {/* <CartHeader /> */}
-
-      {/* Main Layout */}
-      <CartLayout />
-
-      {/* Bottom Policy Section */}
-      {/* <div className="cart-container">
-        <PolicyStrip />
-      </div> */}
-
+      {isMobile ? <MobileCartLayout /> : <CartLayout />}
     </div>
   );
 };

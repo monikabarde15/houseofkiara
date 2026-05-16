@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { ShoppingBag, Heart, Star, TrendingUp, Calendar, MessageCircleCheck, Shield, ArrowRight, X, Plus, Truck, Gift, ChevronRight, CircleAlert, User, CreditCard } from "lucide-react";
+import { ShoppingBag, Heart, Star,Check, TrendingUp, Calendar, MessageCircleCheck, Shield, ArrowRight, X, Plus, Truck, Gift, ChevronRight, CircleAlert, User, CreditCard } from "lucide-react";
 import { useLocation, useParams } from "react-router-dom";
 import { products, makeProductDetail } from "./ProductList";
 import '../styles/preloved.css'
@@ -124,11 +124,11 @@ export default function Preloved() {
 
           {/* LEFT */}
           <Col md={6} className="preloved-pdp-left-wrap">
-            
+
             <GalleryColumn
               images={product.images}
               video={product.video}
-              variant="preloved"  
+              variant="preloved"
             />
           </Col>
 
@@ -445,12 +445,16 @@ export default function Preloved() {
                     </>
                   ) : (
                     <div className="preloved-success">
-                      <div className="preloved-success-icon">✓</div>
+                      <div className="preloved-success-icon">
+                        <Check size={22} strokeWidth={2.2} />
+                      </div>
 
                       <h3>Offer submitted</h3>
 
                       <p>
-                        Our team will review your quote of ₹{offer.toLocaleString()} and get back to you within 24 hours.
+                        Our team will review your quote of ₹
+                        {offer.toLocaleString()} and get back to you within 24
+                        hours via WhatsApp or email.
                       </p>
 
                       <button

@@ -1,0 +1,77 @@
+/* =========================================================
+   MOBILE CART LAYOUT
+   Following spec: Pages 1-31
+   Viewport: max-width 430px
+========================================================= */
+
+.mobile-cart-layout {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  background: #FFFFFB;
+  min-height: 100vh;
+}
+
+/* Page Content - clears fixed CTA bar (Spec 9.1) */
+.mobile-cart-content {
+  padding: 0 16px 120px;
+}
+
+/* When CTA is docked, reduce padding */
+body.cta-docked .mobile-cart-content {
+  padding-bottom: 16px;
+}
+
+/* =========================================================
+   Page Title (Spec Page 8)
+========================================================= */
+
+.mobile-cart-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 28px 0 20px;
+  border-bottom: 1px solid #E8E0D4;
+}
+
+.mobile-cart-title-h1 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #1A1612;
+  margin: 0;
+}
+
+.mobile-cart-title-h1 em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.mobile-cart-piece-count {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #B0A898;
+  padding-bottom: 5px;
+}
+
+/* =========================================================
+   Cart Items Column (Spec Page 9)
+========================================================= */
+
+.mobile-cart-items {
+  display: flex;
+  flex-direction: column;
+  padding-top: 24px;
+}
+
+/* Desktop: Hide mobile layout */
+@media (min-width: 431px) {
+  .mobile-cart-layout {
+    display: none;
+  }
+}
