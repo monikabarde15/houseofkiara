@@ -1,5 +1,4 @@
-// src\components\Cart\ui\PromoCode.jsx
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../../../styles/cart/ui/promo-code.css";
 import { PROMO_CODES } from "../../../utils/cart/promo";
 import GoldParticles from "./GoldParticles";
@@ -9,6 +8,7 @@ const PromoCode = ({ onApply }) => {
   const [applied, setApplied] = useState(null);
   const [error, setError] = useState("");
   const [celebrate, setCelebrate] = useState(false);
+  const feedbackRef = useRef(null); // Add ref for anchor element
 
   const handleApply = () => {
     const promo = PROMO_CODES[code];
@@ -22,30 +22,25 @@ const PromoCode = ({ onApply }) => {
     const appliedData = { code, ...promo };
 
     setApplied(appliedData);
-    onApply(appliedData); 
+    onApply(appliedData);
     setError("");
 
-    //  trigger animation
-    setCelebrate(true);
-
-    // reset after animation
-    setTimeout(() => setCelebrate(false), 2000);
+    // Delay animation to ensure feedback element is rendered
+    setTimeout(() => {
+      setCelebrate(true);
+      setTimeout(() => setCelebrate(false), 2000);
+    }, 50);
   };
 
   const handleRemove = () => {
     setApplied(null);
     setCode("");
-    onApply(null); // 🔥 reset
+    onApply(null);
   };
 
   return (
     <div className="promo-wrapper">
-
-      {/* Separator (SPEC) */}
-      {/* <div className="items-end-sep"></div> */}
-
       <div className="promo-zone">
-
         {/* Label */}
         <div className="promo-label">
           Promo code
@@ -60,7 +55,7 @@ const PromoCode = ({ onApply }) => {
           value={code}
           onChange={(e) => {
             setCode(e.target.value.toUpperCase());
-            if (error) setError("");   
+            if (error) setError("");
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !applied) {
@@ -86,14 +81,13 @@ const PromoCode = ({ onApply }) => {
         >
           REMOVE
         </button>
-
-
       </div>
 
-
-      {/* Feedback */}
+      {/* Feedback with ref */}
       {(applied || error) && (
-        <div className={`promo-feedback 
+        <div
+          ref={feedbackRef}
+          className={`promo-feedback 
   ${applied ? "success show" : ""} 
   ${error ? "error show" : ""}`}
         >
@@ -103,8 +97,8 @@ const PromoCode = ({ onApply }) => {
         </div>
       )}
 
-      <GoldParticles trigger={celebrate} />
-
+      {/*  GoldParticles */}
+      <GoldParticles trigger={celebrate} anchorElement={feedbackRef.current} />
     </div>
   );
 };

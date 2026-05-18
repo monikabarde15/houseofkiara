@@ -1,4 +1,3 @@
-/* src\styles\pages\cart.css */
 @import "../base/variables.css";
 @import "../base/typography.css";
 
@@ -8,7 +7,6 @@
 
 .cart-page {
   background: #FFFEFB;
-  /* warm white */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -26,16 +24,6 @@
 }
 
 /* ============================= */
-/* PAGE TITLE ZONE */
-/* ============================= */
-
-.cart-header-wrapper {
-  padding-top: 96px;
-  padding-bottom: 64px;
-  border-bottom: 1px solid #D8D0C4;
-}
-
-/* ============================= */
 /* MAIN GRID */
 /* ============================= */
 
@@ -48,36 +36,21 @@
   margin-bottom: 96px;
 }
 
-
-
-
-
 @media (max-width: 430px) {
-
-  /* ============================= */
-  /* PAGE BASE */
-  /* ============================= */
   .cart-page {
     display: block;
   }
 
-  /* ============================= */
-  /* CONTAINER — FULL WIDTH */
-  /* ============================= */
   .cart-container {
     max-width: none;
     width: 100%;
     margin: 0;
-    padding: 24px; 
+    padding: 24px;
   }
 
-  /* ============================= */
-  /* MAIN LAYOUT */
-  /* ============================= */
   .cart-layout {
     display: flex;
     flex-direction: column;
-
     padding-top: 0;
     gap: 0;
     margin-bottom: 0;
@@ -93,14 +66,10 @@
     margin-top: 0;
   }
 
-  
   .cart-header-wrapper,
   .cart-left,
   .order-summary {
     padding-left: 0;
     padding-right: 0;
   }
-
-  
-
 }

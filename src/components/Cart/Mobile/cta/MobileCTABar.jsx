@@ -5,13 +5,12 @@ import "../../../../styles/cart/mobile/cta/mobile-cta-bar.css";
 const MobileCTABar = ({ grandTotal, onCheckout, isCartEmpty = false }) => {
   const ctaRef = useRef(null);
 
-  // Docking logic - IntersectionObserver watching footer (Spec 9.2)
   useEffect(() => {
     const footer = document.querySelector(".hok-footer, footer");
     const ctaBar = ctaRef.current;
-    const page = document.querySelector(".mobile-cart-content");
+    let timeoutId = null;
 
-    if (!footer || !ctaBar || !page) return;
+    if (!footer || !ctaBar) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -19,46 +18,47 @@ const MobileCTABar = ({ grandTotal, onCheckout, isCartEmpty = false }) => {
 
         if (shouldDock) {
           ctaBar.classList.add("docked");
-          document.body.classList.add("cta-docked");
+          document.body.classList.add("cart-mobile-cta-docked");
         } else {
           ctaBar.classList.remove("docked");
-          document.body.classList.remove("cta-docked");
+          document.body.classList.remove("cart-mobile-cta-docked");
         }
       },
-      {
-        threshold: 0.01, // 1% of footer visible (Spec 9.2)
-      }
+      { threshold: 0.01 }
     );
 
     observer.observe(footer);
-
-    return () => observer.disconnect();
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      observer.disconnect();
+    };
   }, []);
 
+
   return (
-    <div id="cta-bar" className="mobile-cta-bar" ref={ctaRef}>
-      <div className="cta-inner">
-        
+    <div id="cart-mobile-cta-bar" className="cart-mobile-cta-bar" ref={ctaRef}>
+      <div className="cart-mobile-cta-inner">
+
         {/* Summary Line - Spec 9.3 */}
-        <div className="cta-summary-line">
-          <span className="cta-label">Total at checkout</span>
-          <span className="cta-amount">
+        <div className="cart-mobile-cta-summary-line">
+          <span className="cart-mobile-cta-label">Total at checkout</span>
+          <span className="cart-mobile-cta-amount">
             <sup>₹</sup>{grandTotal.toLocaleString("en-IN")}
           </span>
         </div>
 
         {/* CTA Button - Spec 9.3 */}
-        <button 
-          className="cta-button" 
+        <button
+          className="cart-mobile-cta-button"
           onClick={onCheckout}
           disabled={isCartEmpty}
         >
-          <span className="cta-shimmer" />
+          <span className="cart-mobile-cta-shimmer" />
           <span>Proceed to Checkout</span>
         </button>
 
         {/* Secure Note - Spec 9.3 */}
-        <div className="cta-secure-note">
+        <div className="cart-mobile-cta-secure-note">
           <Lock size={10} strokeWidth={1.5} />
           <span>SSL encrypted · Secured by Razorpay</span>
         </div>

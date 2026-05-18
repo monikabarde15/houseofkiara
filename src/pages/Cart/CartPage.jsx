@@ -1,8 +1,7 @@
-// src\pages\Cart\CartPage.jsx
 import { useState, useEffect } from "react";
 import CartLayout from "../../components/Cart/layout/CartLayout";
 import MobileCartLayout from "../../components/Cart/Mobile/layout/MobileCartLayout";
-import "../../styles/pages/cart.css";
+import "../../styles/cart/cart.css";
 
 const CartPage = () => {
   const [isMobile, setIsMobile] = useState(false);

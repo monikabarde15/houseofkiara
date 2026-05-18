@@ -1,7 +1,7 @@
 // src/components/Cart/summary/SummaryRow.jsx
 
 import React from "react";
-import "../../../styles/cart/summary/order-summary.css";
+import "../../../styles/cart/summary/summary-row.css";
 
 const SummaryRow = ({
   title,

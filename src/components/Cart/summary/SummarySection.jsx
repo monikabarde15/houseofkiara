@@ -2,7 +2,7 @@
 
 import React from "react";
 import SummaryRow from "./SummaryRow";
-import "../../../styles/cart/summary/order-summary.css"
+import "../../../styles/cart/summary/summary-section.css";
 
 const getModeClass = (title) => {
     if (title === "Rental") return "rental";

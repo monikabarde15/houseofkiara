@@ -1,10 +1,10 @@
 /* =========================================================
    MOBILE CTA BAR
    Following spec: Pages 21-22
-   Fixed state → Docked state via IntersectionObserver
 ========================================================= */
 
-.mobile-cta-bar {
+/* Fixed State (Spec 9.1) */
+.cart-mobile-cta-bar {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -16,43 +16,40 @@
   border-top: 1px solid #E8E0D4;
   padding: 12px 16px 20px;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06);
-  transition: box-shadow 0.3s ease;
 }
 
-/* Docked State - when footer is visible (Spec 9.2) */
-.mobile-cta-bar.docked {
+/* Docked State (Spec 9.2) */
+.cart-mobile-cta-bar.docked {
   position: static;
   box-shadow: none;
   max-width: 100%;
-  margin: 0;
-  border-top: 2px solid #1A1612;
   padding: 20px 16px 24px;
 }
 
-/* Page clearance when CTA is fixed (Spec 9.1) */
-body:not(.cta-docked) .mobile-cart-content {
+/* Page clearance when CTA is fixed */
+body:not(.cart-mobile-cta-docked) .mobile-cart-content {
   padding-bottom: 120px;
 }
 
 /* When docked, reduce clearance */
-body.cta-docked .mobile-cart-content {
+body.cart-mobile-cta-docked .mobile-cart-content {
   padding-bottom: 16px;
 }
 
 /* CTA Inner Container */
-.cta-inner {
+.cart-mobile-cta-inner {
   width: 100%;
 }
 
 /* Summary Line (Spec 9.3) */
-.cta-summary-line {
+.cart-mobile-cta-summary-line {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 10px;
 }
 
-.cta-label {
+.cart-mobile-cta-label {
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 300;
@@ -61,7 +58,7 @@ body.cta-docked .mobile-cart-content {
   color: #B0A898;
 }
 
-.cta-amount {
+.cart-mobile-cta-amount {
   font-family: "Cormorant Garamond", serif;
   font-size: 22px;
   font-weight: 300;
@@ -69,13 +66,13 @@ body.cta-docked .mobile-cart-content {
   line-height: 1;
 }
 
-.cta-amount sup {
+.cart-mobile-cta-amount sup {
   font-size: 11px;
   vertical-align: super;
 }
 
 /* CTA Button (Spec 9.3) */
-.cta-button {
+.cart-mobile-cta-button {
   display: block;
   width: 100%;
   padding: 16px 20px;
@@ -90,20 +87,19 @@ body.cta-docked .mobile-cart-content {
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  transition: opacity 0.2s;
 }
 
-.cta-button:active {
+.cart-mobile-cta-button:active {
   opacity: 0.85;
 }
 
-.cta-button:disabled {
+.cart-mobile-cta-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* Shimmer Overlay (Spec 1.5) */
-.cta-shimmer {
+.cart-mobile-cta-shimmer {
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -112,11 +108,11 @@ body.cta-docked .mobile-cart-content {
     rgba(201, 160, 90, 0.08) 50%,
     transparent 60%
   );
-  animation: shimmer 4s linear infinite;
+  animation: cartMobileShimmer 4s linear infinite;
   pointer-events: none;
 }
 
-@keyframes shimmer {
+@keyframes cartMobileShimmer {
   from {
     transform: translateX(-100%);
   }
@@ -126,7 +122,7 @@ body.cta-docked .mobile-cart-content {
 }
 
 /* Secure Note (Spec 9.3) */
-.cta-secure-note {
+.cart-mobile-cta-secure-note {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,7 +135,7 @@ body.cta-docked .mobile-cart-content {
   color: #E8E0D4;
 }
 
-.cta-secure-note svg {
+.cart-mobile-cta-secure-note svg {
   stroke: currentColor;
   stroke-width: 1.5;
 }

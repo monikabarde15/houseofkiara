@@ -1,3 +1,4 @@
+// src\components\Cart\ui\PolicyStrip.jsx
 import React from "react";
 import '../../../styles/cart/ui/policy-strip.css'
 
