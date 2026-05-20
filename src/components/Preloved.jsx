@@ -101,6 +101,41 @@ export default function Preloved() {
   };
 
 
+  //  function for adding to cart and redirecting to checkout
+  const handleBuyNow = () => {
+    // Create cart item
+    const cartItem = {
+      id: product.id,
+      title: product.title,
+      price: price,
+      size: product.prelovedSize,
+      image: product.images?.[0],
+      designer: product.designer,
+      type: "preloved",
+      condition: product.condition?.grade,
+      quantity: 1
+    };
+
+    // Get existing cart
+    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    // Check for duplicate
+    const existingIndex = existingCart.findIndex(item => item.id === cartItem.id);
+
+    if (existingIndex > -1) {
+      existingCart[existingIndex].quantity += 1;
+    } else {
+      existingCart.push(cartItem);
+    }
+
+    // Save to localStorage
+    localStorage.setItem('cart', JSON.stringify(existingCart));
+
+    // Redirect to checkout flow (per spec)
+    window.location.href = '/checkout';
+  };
+
+
   return (
     <section className="pdp">
       <Container>
@@ -241,7 +276,10 @@ export default function Preloved() {
               <div className="preloved-cta-group">
 
                 {/* BUY NOW */}
-                <button className="preloved-btn primary">
+                <button
+                  className="preloved-btn primary"
+                  onClick={handleBuyNow}
+                >
                   <span className="preloved-icon"><ShoppingBag /></span>
                   BUY NOW — ₹{price.toLocaleString()}
                 </button>

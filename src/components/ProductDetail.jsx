@@ -59,10 +59,46 @@ export default function ProductDetail() {
     setPrice(`₹${base.toLocaleString()}`);
   };
 
+  // Function to add item in cart 
   const handleAddToCart = () => {
-    if (!selectedSize) return alert("Please select size");
+    // if (!selectedSize) return alert("Please select size");
+
+    // Create cart item
+    const cartItem = {
+      id: product.id,
+      title: product.title,
+      price: price,
+      size: selectedSize,
+      color: selectedColor,
+      image: product.images?.[0],
+      quantity: 1,
+      designer: product.designer,
+      type: "buy-new"
+    };
+
+    // Get existing cart
+    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    // Check for duplicate
+    const existingIndex = existingCart.findIndex(item =>
+      item.id === cartItem.id && item.size === cartItem.size && item.color === cartItem.color
+    );
+
+    if (existingIndex > -1) {
+      existingCart[existingIndex].quantity += 1;
+    } else {
+      existingCart.push(cartItem);
+    }
+
+    // Save to localStorage
+    localStorage.setItem('cart', JSON.stringify(existingCart));
+
     setAdded(true);
-    setTimeout(() => setAdded(false), 1200);
+
+    // Navigate to cart page
+    setTimeout(() => {
+      window.location.href = '/cart';
+    }, 300);
   };
 
   return (
@@ -245,8 +281,11 @@ export default function ProductDetail() {
 
               <div className="buynew-pdp-cta">
 
-                <button className="buynew-pdp-btn-primary">
-                  ADD TO BAG — {price}
+                <button
+                  className="buynew-pdp-btn-primary"
+                  onClick={handleAddToCart}
+                >
+                  {added ? "ADDED!" : `ADD TO BAG — ${price}`}
                 </button>
 
                 <button className="buynew-pdp-btn-outline">
