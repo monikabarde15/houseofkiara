@@ -33,6 +33,8 @@ import LypMain from "./components/LYP/LypMain";
 import CartPage from "./pages/Cart/CartPage";
 import CheckoutPage from "./pages/Checkout/CheckoutPage";
 import ConfirmationPage from "./pages/Confirmation/ConfirmationPage";
+import ProfilePage from "./pages/Profile/ProfilePage";
+
 
 
 //  Home Page Component
@@ -71,6 +73,8 @@ export default function App() {
         <Route path="/cart" element={<CartPage/>} />
         <Route path="/checkout" element={<CheckoutPage/>}/>
         <Route path="/confirmation" element={<ConfirmationPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+
       </Routes>
 
       <Footer />

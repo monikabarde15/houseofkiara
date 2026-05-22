@@ -1,0 +1,112 @@
+/* src/styles/Profile/sections/ActiveRentalAlert.css */
+
+.profile-active-rental-alert {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 14px 18px;
+  margin-bottom: 44px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(107, 126, 90, 0.07),
+    rgba(107, 126, 90, 0.03)
+  );
+
+  border: 1px solid rgba(107, 126, 90, 0.3);
+  border-radius: 11px;
+
+  cursor: pointer;
+
+  transition: border-color 0.2s;
+}
+
+.profile-active-rental-alert:hover {
+  border-color: var(--sage);
+}
+
+/* Pulsing Dot */
+
+.profile-alert-pulse-dot {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+  background: var(--sage);
+
+  box-shadow: 0 0 0 3px rgba(107, 126, 90, 0.2);
+
+  animation: profile-alert-pulse 2s infinite;
+}
+
+@keyframes profile-alert-pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Text Block */
+
+.profile-alert-text-block {
+  flex: 1;
+}
+
+.profile-alert-title {
+  margin-bottom: 2px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #3C3529;
+}
+
+.profile-alert-subtitle {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: #8A7E72;
+}
+
+/* CTA */
+
+.profile-alert-cta {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  background: none;
+  border: none;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  color: #6B7E5A;
+
+  cursor: pointer;
+}
+
+.profile-alert-cta svg {
+  width: 12px;
+  height: 12px;
+
+  stroke: currentColor;
+  fill: none;
+
+  stroke-width: 1.5;
+}

@@ -1,0 +1,233 @@
+/* src\styles\Profile\cards\RentalCard.css */
+/* ============================================
+   Section 7.1 - Product Card (.pc)
+   ============================================ */
+
+/* Card Container */
+
+.profile-rental-pc {
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    border-color 0.2s;
+}
+
+.profile-rental-pc:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(26, 22, 18, 0.08);
+  border-color: #E8D5B0;
+}
+
+.profile-rental-pc.profile-rental-active-card {
+  border-color: #A8844A;
+  box-shadow: 0 8px 28px rgba(26, 22, 18, 0.1);
+}
+
+/* Card Image */
+
+.profile-rental-pc-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #F0EAE0, #E8E0D4);
+}
+
+.profile-rental-pc-placeholder {
+  width: 32px;
+  height: 32px;
+  opacity: 0.2;
+  stroke: #1A1612;
+}
+
+/* Card Body */
+.profile-rental-pc-body {
+  padding: 12px 13px 14px;
+}
+
+/* Status Badge Base */
+
+.profile-rental-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-bottom: 7px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Dot */
+
+.profile-rental-bdot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Variants */
+
+.profile-rental-b-dis {
+  background: rgba(107, 126, 90, 0.12);
+  color: #6B7E5A;
+}
+
+.profile-rental-b-con {
+  background: rgba(201, 169, 110, 0.15);
+  color: #A8844A;
+}
+
+.profile-rental-b-com {
+  background: rgba(26, 22, 18, 0.06);
+  color: #8A7E72;
+}
+
+.profile-rental-b-ret {
+  background: rgba(176, 168, 152, 0.18);
+  color: #8A7E72;
+}
+
+.profile-rental-b-del {
+  background: rgba(107, 126, 90, 0.12);
+  color: #6B7E5A;
+}
+
+.profile-rental-b-pro {
+  background: rgba(184, 92, 56, 0.1);
+  color: #B85C38;
+}
+
+.profile-rental-b-lst {
+  background: rgba(201, 169, 110, 0.15);
+  color: #A8844A;
+}
+
+.profile-rental-b-ren {
+  background: rgba(42, 68, 102, 0.1);
+  color: #2A4466;
+}
+
+.profile-rental-b-can {
+  background: rgba(138, 126, 114, 0.12);
+  color: #8A7E72;
+}
+
+/* Card Name */
+
+.profile-rental-pc-name {
+  margin-bottom: 3px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #1A1612;
+}
+
+/* Meta */
+
+.profile-rental-pc-designer,
+.profile-rental-pc-meta {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: #8A7E72;
+}
+
+/* Deposit Pill */
+
+.profile-rental-dpill {
+  display: inline-flex;
+  align-items: center;
+
+  margin-top: 3px;
+
+  padding: 2px 7px;
+
+  border-radius: 9px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 7.5px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.profile-rental-dpill-p {
+  background: rgba(201, 169, 110, 0.12);
+  color: #A8844A;
+}
+
+.profile-rental-dpill-r {
+  background: rgba(107, 126, 90, 0.1);
+  color: #6B7E5A;
+}
+
+/* Footer */
+
+.profile-rental-pc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 8px;
+  padding-top: 8px;
+
+  border-top: 1px solid var(--border-light);
+}
+
+/* Price */
+
+.profile-rental-pc-price {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #3C3529;
+}
+
+/* Details Button */
+
+.profile-rental-pc-details {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+
+  color: #A8844A;
+
+  cursor: pointer;
+
+  transition: color 0.2s;
+}
+
+.profile-rental-pc-details:hover {
+  color: #1A1612;
+}
+
+.profile-rental-pc-details svg {
+  width: 10px;
+  height: 10px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+}

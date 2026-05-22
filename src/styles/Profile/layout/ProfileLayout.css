@@ -1,0 +1,17 @@
+/* src/styles/Profile/layout/ProfileLayout.css */
+
+.profile-layout {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-two-column {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  overflow: hidden;
+}

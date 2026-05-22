@@ -1,0 +1,169 @@
+/* ============================================
+   Section 8.2 - View All (fv-purchases) (V2) DOC
+   ============================================ */
+
+.profile-fv-purchases {
+  width: 100%;
+}
+
+/* View All Bar */
+.profile-fv-purchases-bar {
+  padding: 0 0 16px;
+  border-bottom: 1px solid #E8E0D4;
+  background: #FFFFFB;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Back Button */
+.profile-fv-purchases-back {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.profile-fv-purchases-back:hover {
+  color: #1A1612;
+}
+
+/* Title */
+.profile-fv-purchases-bar-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  font-weight: 400;
+  color: #1A1612;
+}
+
+/* Count */
+.profile-fv-purchases-bar-count {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #B0A898;
+  margin-left: auto;
+}
+
+/* Grid - 3 columns */
+.profile-fv-purchases-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+
+/* ============================================
+   Section 7.5 - View All Purchases (V1 DOC)
+   ============================================ */
+
+.profile-fv-purchases {
+  width: 100%;
+}
+
+/* ============================================
+   Header Bar
+   ============================================ */
+
+.profile-fv-purchases-bar {
+  display: flex;
+  align-items: center;
+
+  padding: 0;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+
+  border-bottom: 1px solid #E8E0D4;
+}
+
+/* ============================================
+   Back Button
+   ============================================ */
+
+.profile-fv-purchases-back {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  background: none;
+  border: none;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+
+  color: #8A7E72;
+
+  cursor: pointer;
+
+  transition: color 0.2s;
+}
+
+.profile-fv-purchases-back:hover {
+  color: #1A1612;
+}
+
+.profile-fv-purchases-back svg {
+  width: 14px;
+  height: 14px;
+
+  stroke: currentColor;
+  fill: none;
+
+  stroke-width: 1.5;
+}
+
+/* ============================================
+   Title
+   ============================================ */
+
+.profile-fv-purchases-bar-title {
+  flex: 1;
+
+  margin-left: 16px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  font-weight: 400;
+
+  color: #1A1612;
+}
+
+/* ============================================
+   Count
+   ============================================ */
+
+.profile-fv-purchases-bar-count {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+
+  color: #B0A898;
+}
+
+/* ============================================
+   Purchases Grid
+   ============================================ */
+
+.profile-fv-purchases-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 12px;
+}

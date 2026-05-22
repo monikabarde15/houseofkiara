@@ -1,0 +1,61 @@
+/* src/styles/Profile/ui/SectionLabel.css */
+
+.profile-section-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+
+  border-bottom: 1px solid #F0EAE0;
+}
+
+/* Left */
+
+.profile-section-label-left {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+.profile-section-label-count {
+  font-weight: 300;
+  letter-spacing: 0;
+  color: #B0A898;
+}
+
+/* Right Link */
+
+.profile-section-label-link {
+  padding: 0;
+
+  background: none;
+  border: none;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  color: #A8844A;
+
+  text-decoration: none;
+  cursor: pointer;
+
+  transition: color 0.2s;
+}
+
+.profile-section-label-link:hover {
+  color: #1A1612;
+}
+
+.profile-section-label-link svg {
+  width: 10px;
+  height: 10px;
+
+  stroke: currentColor;
+  fill: none;
+
+  stroke-width: 1.5;
+}
