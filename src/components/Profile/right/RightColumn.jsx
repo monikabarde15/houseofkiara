@@ -7,19 +7,35 @@ import SectionLabel from '../ui/SectionLabel';
 
 import MyRentalsSection from '../sections/MyRentalsSection';
 import MyPurchasesSection from '../sections/MyPurchasesSection';
+import SavedPiecesSection from '../sections/SavedPiecesSection';
 
 import ViewRentals from './ViewRentals';
 import ViewPurchases from './ViewPurchases';
+import ViewWishlist from './ViewWishlist';
+import MyListedPiecesSection from '../sections/MyListedPiecesSection';
+import SavedAddressesSection from '../sections/SavedAddressesSection';
 
 const RightColumn = () => {
   const [activeView, setActiveView] = useState('overview');
 
+  // For viewing all the rental items
   const handleViewAllRentals = () => {
     setActiveView('rentals');
   };
 
+  // For viewing all the Purchases items
   const handleViewAllPurchases = () => {
     setActiveView('purchases');
+  };
+
+  // For viewing all the Wishlist items
+  const handleViewAllWishlist = () => {
+    setActiveView('wishlist');
+  };
+
+  // For listing another piece
+  const handleListAnotherPiece = () => {
+    console.log("Redirecting to List Your Piece form...");
   };
 
   const handleBackToOverview = () => {
@@ -61,6 +77,36 @@ const RightColumn = () => {
           />
           <MyPurchasesSection />
 
+          {/* WISHLIST SECTION */}
+          <SectionLabel
+            title="SAVED PIECES"
+            count={7}
+            countLabel="SAVED"
+            linkText="View all"
+            onLinkClick={handleViewAllWishlist}
+          />
+          <SavedPiecesSection />
+
+          {/* Listed Piece Section */}
+          <SectionLabel
+            title="MY LISTED PIECES"
+            count={3}
+            countLabel="ACTIVE LISTINGS"
+            linkText="+ List another piece"
+            onLinkClick={handleListAnotherPiece}
+          />
+          <MyListedPiecesSection />
+
+
+          {/* Saved Addresses Section */}
+          <SectionLabel
+            title="SAVED ADDRESSES"
+            count={2}
+            countLabel=""
+            linkText=""
+          />
+          <SavedAddressesSection />
+
           {/*Other sections will go here */}
         </div>
         
@@ -76,8 +122,8 @@ const RightColumn = () => {
         </div>
         
         {/* Full view wishlist */}
-        <div id="profile-fv-right-wishlist" className="profile-right-view">
-          {/* All saved pieces with hover CTAs */}
+        <div id="profile-fv-right-wishlist" className={`profile-right-view ${activeView === 'wishlist' ? 'profile-right-active' : ''}`}>
+          <ViewWishlist onBack={handleBackToOverview} />
         </div>
 
       </div>

@@ -1,0 +1,227 @@
+/* ============================================
+   Section 9.2 - Attribute Selector Modal
+   ============================================ */
+
+/* ============================================
+   Product Summary Row
+   ============================================ */
+
+.profile-attr-product-row {
+  display: flex;
+  gap: 14px;
+  padding: 18px 0;
+  border-bottom: 1px solid #F0EAE0;
+  margin-bottom: 18px;
+}
+
+.profile-attr-product-img {
+  width: 52px;
+  height: 66px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #F0EAE0, #E8E0D4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-attr-product-img svg {
+  width: 18px;
+  height: 18px;
+  opacity: 0.25;
+  stroke: #1A1612;
+}
+
+.profile-attr-product-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #1A1612;
+  margin-bottom: 3px;
+}
+
+.profile-attr-product-meta {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: #8A7E72;
+}
+/* Section common styles */
+.profile-attr-section {
+  margin-bottom: 18px;
+}
+
+.profile-attr-section-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #B0A898;
+  margin-bottom: 10px;
+}
+
+/* ============================================
+   Size Selector
+   ============================================ */
+
+.profile-attr-section-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #B0A898;
+  margin-bottom: 10px;
+}
+
+.profile-attr-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile-attr-pill {
+  padding: 7px 14px;
+  border: 1px solid #E8E0D4;
+  border-radius: 6px;
+  background: #FFFFFB;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  color: #3C3529;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-attr-pill:hover {
+  border-color: #E8D5B0;
+  background: #FAF7F2;
+}
+
+.profile-attr-pill.selected {
+  border-color: #1A1612;
+  background: #1A1612;
+  color: #E8D5B0;
+}
+
+/* Unavailable pill - disabled state */
+.profile-attr-pill.unavailable {
+  opacity: 0.35;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.profile-attr-pill.unavailable:hover {
+  border-color: #E8E0D4;
+  background: #FFFFFB;
+}
+
+/* ============================================
+   Colour Selector
+   ============================================ */
+
+.profile-attr-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile-attr-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.profile-attr-swatch:hover {
+  transform: scale(1.1);
+}
+
+.profile-attr-swatch.selected {
+  border-color: #1A1612;
+  box-shadow: 0 0 0 2px #FFFFEB, 0 0 0 4px #1A1612;
+}
+
+.profile-attr-dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.profile-attr-date-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-attr-date-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #B0A898;
+  margin-bottom: 6px;
+}
+
+.profile-attr-date-input {
+  height: 40px;
+  border: 1px solid #E8E0D4;
+  border-radius: 7px;
+  padding: 0 12px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  color: #1A1612;
+  background: #FFFFFB;
+  transition: border-color 0.2s;
+}
+
+.profile-attr-date-input:focus {
+  outline: none;
+  border-color: #C9A96E;
+}
+
+/* Add to Bag Button */
+.profile-attr-add-btn {
+  width: 100%;
+  height: 48px;
+  background: #E8E0D4;
+  color: #B0A898;
+  border-radius: 8px;
+  border: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: not-allowed;
+  margin-top: 4px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.profile-attr-add-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.profile-attr-add-btn.active {
+  background: #1A1612;
+  color: #E8D5B0;
+  cursor: pointer;
+}
+
+.profile-attr-add-btn.active:hover {
+  background: #3C3529;
+}
+
+/* Validation Message */
+.profile-attr-validation {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  color: #B85C38;
+  text-align: center;
+  margin-top: 8px;
+  min-height: 16px;
+}

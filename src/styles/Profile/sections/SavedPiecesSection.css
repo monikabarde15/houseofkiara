@@ -1,0 +1,14 @@
+/* ============================================
+   Section 9 - Saved Pieces (Wishlist)
+   ============================================ */
+
+.profile-saved-pieces-section {
+  margin-bottom: 52px;
+  scroll-margin-top: 20px;
+}
+
+.profile-wl-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}

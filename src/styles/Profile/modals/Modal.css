@@ -1,0 +1,124 @@
+/* ============================================
+   Modal Container (#modal-attr)
+   ============================================ */
+
+/* Backdrop (.mbk-attr) */
+
+.profile-attr-mbk {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(26, 22, 18, 0.55);
+
+  z-index: 500;
+
+  opacity: 1;
+
+  backdrop-filter: blur(3px);
+}
+
+/* ============================================
+   Modal (.modal)
+   ============================================ */
+
+.profile-attr-modal {
+  position: fixed;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -54%);
+
+  width: min(520px, calc(100vw - 48px));
+  max-width: 480px;
+
+  background: #FFFEFB;
+
+  border-radius: 14px;
+
+  z-index: 501;
+
+  opacity: 0;
+
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s;
+
+  box-shadow: 0 28px 72px rgba(26, 22, 18, 0.22);
+
+  pointer-events: none;
+}
+
+/* Open State */
+
+.profile-attr-modal.open {
+  opacity: 1;
+
+  pointer-events: auto;
+
+  transform: translate(-50%, -50%);
+}
+
+/* ============================================
+    Modal Header (.mhdr)
+   ============================================ */
+
+.profile-attr-mhdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 20px 24px 16px;
+
+  border-bottom: 1px solid #F0EAE0;
+}
+
+/* Title (.mtit) */
+
+.profile-attr-mtit {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-weight: 500;
+
+  color: #1A1612;
+}
+
+/* Close Button (.mcls) */
+
+.profile-attr-mcls {
+  width: 28px;
+  height: 28px;
+
+  background: #FAF7F2;
+
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+}
+
+/* Hover */
+
+.profile-attr-mcls:hover {
+  background: #E8E0D4;
+}
+
+/* X Icon */
+
+.profile-attr-mcls svg {
+  width: 13px;
+  height: 13px;
+
+  stroke: #3C3529;
+  stroke-width: 2;
+
+  /* fill: none; */
+}
+
+/* ============================================
+   Modal Body
+   ============================================ */
+
+.profile-attr-mbdy {
+  padding: 24px;
+}

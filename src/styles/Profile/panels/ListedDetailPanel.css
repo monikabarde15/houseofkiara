@@ -1,0 +1,300 @@
+/* ============================================
+   Section 15.4 - Listed Piece Detail Panel
+   ============================================ */
+
+.profile-lc-dpane {
+  display: none;
+  margin-top: 16px;
+  border: 1px solid #E8E0D4;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.profile-lc-dpane.open {
+  display: block;
+  animation: profile-lc-panel-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes profile-lc-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Panel Header */
+.profile-lc-dpn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: #FAF7F2;
+  border-bottom: 1px solid #E8E0D4;
+}
+
+.profile-lc-dpn-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #1A1612;
+}
+
+/* ============================================
+   DETAIL PANEL CLOSE BUTTON
+   ============================================ */
+
+.profile-lc-dpn-close {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 0;
+
+  background: none;
+  border: none;
+
+  cursor: pointer;
+
+  font-family: var(--sans);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  color: #8A7E72;
+
+  transition: color 0.2s;
+}
+
+.profile-lc-dpn-close:hover {
+  color: #3C3529;
+}
+
+.profile-lc-dpn-close svg {
+  stroke: currentColor;
+  fill: none;
+}
+
+/* Panel Body */
+.profile-lc-dpb {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 0;
+}
+
+/* Image Cell */
+.profile-lc-dp-img-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 3 / 4;
+  border-right: 1px solid #E8E0D4;
+}
+
+.profile-lc-dp-img-cell svg {
+  width: 36px;
+  height: 36px;
+  opacity: 0.18;
+}
+
+/* Info Area */
+.profile-lc-dp-info {
+  padding: 18px 22px;
+  overflow-y: auto;
+}
+
+/* Badge Row */
+.profile-lc-dp-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+/* Reuse badge styles from card */
+.profile-lc-badge {
+  display: inline-block;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.profile-lc-badge-lst {
+  background: rgba(201, 169, 110, 0.15);
+  color: #A8844A;
+}
+
+.profile-lc-badge-ren {
+  background: rgba(42, 68, 102, 0.1);
+  color: #2A4466;
+}
+
+.profile-lc-badge-resale {
+  background: rgba(107, 126, 90, 0.12);
+  color: #6B7E5A;
+}
+
+/* Name */
+.profile-lc-dp-name {
+  margin-bottom: 4px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #1A1612;
+}
+
+/* Description */
+.profile-lc-dp-des {
+  margin-bottom: 16px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}
+
+/* Detail Rows */
+.profile-lc-dp-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.profile-lc-dp-row:last-of-type {
+  border-bottom: none;
+}
+
+.profile-lc-dp-rl {
+  flex-shrink: 0;
+  margin-right: 20px;
+  white-space: nowrap;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+.profile-lc-dp-rv {
+  text-align: right;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #3C3529;
+}
+
+.profile-lc-dp-rv-gold {
+  color: #A8844A;
+}
+
+.profile-lc-dp-rv-sage {
+  color: #6B7E5A;
+}
+
+/* Separator for Dual mode sections */
+.profile-lc-dp-separator {
+  border-top: 2px solid #F0EAE0;
+  margin-top: 4px;
+  padding-top: 12px;
+}
+
+.profile-lc-dp-rl-bold {
+  font-weight: 500;
+  color: #3C3529;
+}
+
+/* Info Note */
+.profile-lc-dp-note {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(107, 126, 90, 0.05);
+  border: 1px solid rgba(107, 126, 90, 0.2);
+  border-radius: 8px;
+}
+
+.profile-lc-dp-note.gold {
+  background: rgba(201, 169, 110, 0.06);
+  border-color: rgba(201, 169, 110, 0.25);
+}
+
+.profile-lc-dp-note-h {
+  margin-bottom: 5px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6B7E5A;
+}
+
+.profile-lc-dp-note.gold .profile-lc-dp-note-h {
+  color: #A8844A;
+}
+
+.profile-lc-dp-note-t {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: #3C3529;
+}
+
+/* Action Buttons */
+.profile-lc-dp-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* Primary Button */
+.profile-lc-btn-p {
+  padding: 10px 18px;
+  background: #1A1612;
+  color: #E8D5B0;
+  border: none;
+  border-radius: 7px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-lc-btn-p:hover {
+  background: #3C3529;
+}
+
+/* Secondary Button */
+.profile-lc-btn-s {
+  padding: 10px 18px;
+  background: none;
+  color: #3C3529;
+  border: 1px solid #E8E0D4;
+  border-radius: 7px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.profile-lc-btn-s:hover {
+  border-color: #E8D5B0;
+  background: #FAF7F2;
+}
+

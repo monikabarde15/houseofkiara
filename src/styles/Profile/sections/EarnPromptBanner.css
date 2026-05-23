@@ -1,0 +1,121 @@
+/* ============================================
+   Earn Prompt Banner - Page 30
+   ============================================ */
+
+.profile-earn-banner {
+  background: linear-gradient(135deg, #1A1612 0%, #2C2520 100%);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 52px;
+  transition: box-shadow 0.3s;
+}
+
+.profile-earn-banner:hover {
+  box-shadow: 0 10px 36px rgba(26, 22, 18, 0.15);
+}
+
+/* Decorative HOK watermark */
+.profile-earn-banner::before {
+  content: "HOK";
+  position: absolute;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 160px;
+  font-weight: 600;
+  color: rgba(201, 169, 110, 0.04);
+  bottom: -30px;
+  right: -10px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.profile-earn-inner {
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.profile-earn-eyebrow {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #C9A96E;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.profile-earn-heading {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 26px;
+  font-weight: 300;
+  font-style: italic;
+  color: #FFFFFB;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.profile-earn-body {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  color: rgba(255, 254, 251, 0.42);
+  font-weight: 300;
+  line-height: 1.7;
+  max-width: 440px;
+}
+
+.profile-earn-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.profile-earn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #C9A96E;
+  color: #1A1612;
+  padding: 11px 18px;
+  border-radius: 5px;
+  border: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-earn-primary:hover {
+  background: #E8D5B0;
+}
+
+.profile-earn-primary svg {
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.profile-earn-secondary {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  color: rgba(255, 254, 251, 0.32);
+  background: none;
+  border: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.profile-earn-secondary:hover {
+  color: #E8D5B0;
+}

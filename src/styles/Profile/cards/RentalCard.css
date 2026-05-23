@@ -193,7 +193,7 @@
 /* Price */
 
 .profile-rental-pc-price {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--serif);
   font-size: 12.5px;
   font-weight: 500;
   color: #3C3529;

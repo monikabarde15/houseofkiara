@@ -1,0 +1,187 @@
+/* ============================================
+   Section 16.3 - Add New Address Form (.addr-form)
+   ============================================ */
+
+.profile-addr-form {
+  background: #FAF7F2;
+  border: 1px solid #E8E0D4;
+  border-radius: 11px;
+  padding: 20px;
+  margin-top: 13px;
+  animation: profile-af-rise 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes profile-af-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-af-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #1A1612;
+  margin-bottom: 16px;
+}
+
+/* Two-column row */
+.profile-af-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+/* Full width field */
+.profile-af-field-full {
+  margin-bottom: 13px;
+}
+
+.profile-af-field {
+  margin-bottom: 13px;
+}
+
+/* Labels */
+.profile-af-label {
+  display: block;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.profile-af-required {
+  color: #B85C38;
+  margin-left: 2px;
+}
+
+/* Inputs */
+.profile-af-input,
+.profile-af-select {
+  width: 100%;
+  height: 42px;
+  border: 1px solid #E8E0D4;
+  border-radius: 7px;
+  padding: 0 12px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  color: #1A1612;
+  background: #FFFFFB;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.profile-af-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A7E72' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.profile-af-input:focus,
+.profile-af-select:focus {
+  border-color: #C9A96E;
+}
+
+/* Error state */
+.profile-af-has-error .profile-af-label {
+  color: #B85C38;
+}
+
+.profile-af-has-error .profile-af-input,
+.profile-af-has-error .profile-af-select {
+  border-color: #B85C38;
+}
+
+.profile-af-error {
+  display: block;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  color: #B85C38;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Checkbox Row */
+.profile-af-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.profile-af-checkbox {
+  width: 15px;
+  height: 15px;
+  accent-color: #1A1612;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.profile-af-checkbox-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #3C3529;
+  cursor: pointer;
+}
+
+/* Form Buttons */
+.profile-af-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.profile-af-btn-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #1A1612;
+  color: #E8D5B0;
+  border: none;
+  border-radius: 7px;
+  padding: 10px 18px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-af-btn-save:hover {
+  background: #3C3529;
+}
+
+.profile-af-btn-save svg {
+  stroke: currentColor;
+}
+
+.profile-af-btn-cancel {
+  background: none;
+  color: #3C3529;
+  border: 1px solid #E8E0D4;
+  border-radius: 7px;
+  padding: 10px 18px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-transform: uppercase;
+}
+
+.profile-af-btn-cancel:hover {
+  border-color: #E8D5B0;
+  background: #FAF7F2;
+}
