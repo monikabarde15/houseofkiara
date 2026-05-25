@@ -74,7 +74,8 @@ const RightColumn = () => {
             linkText="View all" 
             onLinkClick={handleViewAllRentals}
           />
-          <MyRentalsSection />
+          <MyRentalsSection openDetailId={openRentalDetailId} setOpenDetailId={setOpenRentalDetailId} />
+          {/* <MyRentalsSection /> */}
 
           {/* My Purchases Section */}
           <SectionLabel 
@@ -84,7 +85,8 @@ const RightColumn = () => {
             linkText="View all" 
             onLinkClick={handleViewAllPurchases}
           />
-          <MyRentalsSection openDetailId={openRentalDetailId} setOpenDetailId={setOpenRentalDetailId} />
+
+          <MyPurchasesSection />
 
           {/* WISHLIST SECTION */}
           <SectionLabel
