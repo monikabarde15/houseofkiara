@@ -21,6 +21,11 @@ import HelpSupportSection from '../sections/HelpSupportSection';
 
 const RightColumn = () => {
   const [activeView, setActiveView] = useState('overview');
+  const [openRentalDetailId, setOpenRentalDetailId] = useState(null);
+
+  const handleAlertBarClick = () => {
+    setOpenRentalDetailId('HOK-240524-001');
+  };
 
   // For viewing all the rental items
   const handleViewAllRentals = () => {
@@ -59,7 +64,7 @@ const RightColumn = () => {
         <div id="profile-rc-right-overview" className={`profile-right-view ${activeView === 'overview' ? 'profile-right-active' : ''}`}>
 
           {/* Active Rental Alert */}
-          <ActiveRentalAlert />
+          <ActiveRentalAlert onAlertClick={handleAlertBarClick} />
 
           {/* My Rentals Section */}
           <SectionLabel 
@@ -79,7 +84,7 @@ const RightColumn = () => {
             linkText="View all" 
             onLinkClick={handleViewAllPurchases}
           />
-          <MyPurchasesSection />
+          <MyRentalsSection openDetailId={openRentalDetailId} setOpenDetailId={setOpenRentalDetailId} />
 
           {/* WISHLIST SECTION */}
           <SectionLabel

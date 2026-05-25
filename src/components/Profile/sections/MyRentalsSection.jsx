@@ -3,11 +3,19 @@ import RentalCard from '../cards/RentalCard';
 import RentalDetailPanel from '../panels/RentalDetailPanel';
 import "../../../styles/Profile/sections/MyRentalsSection.css";
 
-const MyRentalsSection = () => {
+const MyRentalsSection = ({ openDetailId, setOpenDetailId }) => {
   const [activeCardId, setActiveCardId] = useState(null);
   const panelRef = useRef(null);
   const cardRefs = useRef({});
   const scrollTimeoutRef = useRef(null);
+
+  // Open detail panel for active rental
+  useEffect(() => {
+    if (openDetailId) {
+      handleDetailsClick(openDetailId);
+      setOpenDetailId(null);
+    }
+  }, [openDetailId, setOpenDetailId]);
 
   // Cleanup timeout on unmount
   useEffect(() => {

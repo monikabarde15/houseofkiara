@@ -1,12 +1,12 @@
-// src\components\Profile\sections\ActiveRentalAlert.jsx
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import "../../../styles/Profile/sections/ActiveRentalAlert.css";
 
-const ActiveRentalAlert = () => {
+const ActiveRentalAlert = ({ onAlertClick }) => {
   const handleClick = () => {
-    // Will open detail panel for Ivory Tissue Lehenga
-    console.log("Open detail panel for lehenga");
+    if (onAlertClick) {
+      onAlertClick();
+    }
   };
 
   return (
