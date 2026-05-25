@@ -1,0 +1,37 @@
+/* ============================================
+   Toggle Button 
+   ============================================ */
+
+.profile-account-tog {
+  width: 34px;
+  height: 20px;
+  border-radius: 10px;
+  background: #6B7E5A;
+  position: relative;
+  cursor: pointer;
+  border: none;
+  flex-shrink: 0;
+  transition: background 0.25s;
+}
+
+.profile-account-tog::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s;
+}
+
+/* OFF state */
+.profile-account-tog-off {
+  background: #E8E0D4;
+}
+
+.profile-account-tog-off::after {
+  transform: translateX(-14px);
+}

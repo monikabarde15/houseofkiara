@@ -2,9 +2,26 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import "../../../styles/Profile/panels/RentalDetailPanel.css";
+import { useState } from 'react';
+import CancelBookingModal from '../modals/CancelBookingModal';
+import Toast from '../ui/Toast';
 
 const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
     if (!booking) return null;
+
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [showToast, setShowToast] = useState(false);
+
+    const handleCancelBooking = () => {
+        setIsCancelModalOpen(true);
+    };
+
+    const handleConfirmCancel = () => {
+        setIsCancelModalOpen(false);
+        setToastMessage("Cancellation request submitted — our team will be in touch");
+        setShowToast(true);
+    };
 
     return (
         <div className={`profile-rental-dpane ${isOpen ? 'open' : ''}`}>
@@ -25,45 +42,45 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
 
                 <div className="profile-rental-dp-info">
                     <div className="profile-rental-dp-badge-row">
-                            {/* Dispatched Status Badage*/}
-                            {booking.status === 'Dispatched' && (
-                                <div className="profile-rental-badge profile-rental-b-dis">
-                                    <span className="profile-rental-bdot"></span>
-                                    Dispatched
-                                </div>
-                            )}
+                        {/* Dispatched Status Badage*/}
+                        {booking.status === 'Dispatched' && (
+                            <div className="profile-rental-badge profile-rental-b-dis">
+                                <span className="profile-rental-bdot"></span>
+                                Dispatched
+                            </div>
+                        )}
 
-                            {/* Confirmed Status Badage*/}
-                            {booking.status === 'Confirmed' && (
-                                <div className="profile-rental-badge profile-rental-b-con">
-                                    <span className="profile-rental-bdot"></span>
-                                    Confirmed
-                                </div>
-                            )}
+                        {/* Confirmed Status Badage*/}
+                        {booking.status === 'Confirmed' && (
+                            <div className="profile-rental-badge profile-rental-b-con">
+                                <span className="profile-rental-bdot"></span>
+                                Confirmed
+                            </div>
+                        )}
 
-                            {/* Completed Status Badage*/}
-                            {booking.status === 'Completed' && (
-                                <div className="profile-rental-badge profile-rental-b-com">
-                                    <span className="profile-rental-bdot"></span>
-                                    Completed
-                                </div>
-                            )}
+                        {/* Completed Status Badage*/}
+                        {booking.status === 'Completed' && (
+                            <div className="profile-rental-badge profile-rental-b-com">
+                                <span className="profile-rental-bdot"></span>
+                                Completed
+                            </div>
+                        )}
 
-                            {/* Returned Status Badage*/}
-                            {booking.status === 'Returned' && (
-                                <div className="profile-rental-badge profile-rental-b-ret">
-                                    <span className="profile-rental-bdot"></span>
-                                    Returned
-                                </div>
-                            )}
+                        {/* Returned Status Badage*/}
+                        {booking.status === 'Returned' && (
+                            <div className="profile-rental-badge profile-rental-b-ret">
+                                <span className="profile-rental-bdot"></span>
+                                Returned
+                            </div>
+                        )}
 
-                            {/* Cancelled Status Badage  */}
-                            {booking.status === 'Cancelled' && (
-                                <div className="profile-rental-badge profile-rental-b-can">
-                                    <span className="profile-rental-bdot"></span>
-                                    Cancelled
-                                </div>
-                            )}
+                        {/* Cancelled Status Badage  */}
+                        {booking.status === 'Cancelled' && (
+                            <div className="profile-rental-badge profile-rental-b-can">
+                                <span className="profile-rental-bdot"></span>
+                                Cancelled
+                            </div>
+                        )}
 
                     </div>
 
@@ -105,7 +122,7 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
                             <div className="profile-rental-dp-note">
                                 <div className="profile-rental-dp-note-h">Return Instructions</div>
                                 <div className="profile-rental-dp-note-t">
-                                   Pack in the original dust bag and Whatsapp us to schedule a pickup. Deposit refunded within 3-5 business days after inspection.
+                                    Pack in the original dust bag and Whatsapp us to schedule a pickup. Deposit refunded within 3-5 business days after inspection.
                                 </div>
                             </div>
 
@@ -153,8 +170,21 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
 
                             <div className="profile-rental-dp-btns">
                                 <button className="profile-rental-btn-p">Contact Us</button>
-                                <button className="profile-rental-btn-s">Cancel Booking</button>
+                                <button className="profile-rental-btn-s" onClick={handleCancelBooking}>Cancel Booking</button>
                             </div>
+
+                            <CancelBookingModal
+                                isOpen={isCancelModalOpen}
+                                onClose={() => setIsCancelModalOpen(false)}
+                                onConfirm={handleConfirmCancel}
+                                bookingDetails={{ fee: booking.fee }}
+                            />
+
+                            <Toast
+                                message={toastMessage}
+                                isVisible={showToast}
+                                onClose={() => setShowToast(false)}
+                            />
                         </>
                     )}
 

@@ -2,8 +2,34 @@
 import React from 'react';
 import { SquarePen } from 'lucide-react';
 import "../../../styles/Profile/left/IdentityCard.css";
+import { useState } from 'react';
+import EditProfileModal from '../modals/EditProfileModal';
+import Toast from '../ui/Toast';
 
 const IdentityCard = () => {
+
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [showToast, setShowToast] = useState(false);
+
+    const handleEditProfile = () => {
+        setIsEditModalOpen(true);
+    };
+
+    const handleSaveEditProfile = (data) => {
+        console.log("Save profile data:", data);
+        setIsEditModalOpen(false);
+        setToastMessage("Profile updated successfully");
+        setShowToast(true);
+    };
+
+    const userData = {
+        firstName: "Priya",
+        lastName: "Varma",
+        email: "priya.varma@gmail.com",
+        mobile: "+91 98765 43210",
+        city: "Indore"
+    };
     return (
         <div className="profile-identity-card">
             <div className="profile-identity-card-inner">
@@ -48,11 +74,24 @@ const IdentityCard = () => {
                 </div>
 
                 {/* Edit Profile Button */}
-                <button className="profile-edit-btn">
+                <button className="profile-edit-btn" onClick={handleEditProfile}>
                     <SquarePen size={10} />
                     <span>Edit Profile</span>
                 </button>
             </div>
+
+            <EditProfileModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onSave={handleSaveEditProfile}
+                userData={userData}
+            />
+
+            <Toast
+                message={toastMessage}
+                isVisible={showToast}
+                onClose={() => setShowToast(false)}
+            />
         </div>
     );
 };

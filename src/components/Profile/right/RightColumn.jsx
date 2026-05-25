@@ -14,6 +14,10 @@ import ViewPurchases from './ViewPurchases';
 import ViewWishlist from './ViewWishlist';
 import MyListedPiecesSection from '../sections/MyListedPiecesSection';
 import SavedAddressesSection from '../sections/SavedAddressesSection';
+import MySubmissionsSection from '../sections/MySubmissionsSection';
+import EarnPromptBanner from '../sections/EarnPromptBanner';
+import AccountSettingsSection from '../sections/AccountSettingsSection';
+import HelpSupportSection from '../sections/HelpSupportSection';
 
 const RightColumn = () => {
   const [activeView, setActiveView] = useState('overview');
@@ -106,6 +110,36 @@ const RightColumn = () => {
             linkText=""
           />
           <SavedAddressesSection />
+
+          {/* My Submissions Section */}
+          <SectionLabel
+            title="MY SUBMISSIONS"
+            count={null}
+            countLabel=""
+            linkText=""
+          />
+          <MySubmissionsSection />
+
+          {/* Earn Prompt Banner */}
+          <EarnPromptBanner />
+
+          {/* Account Settings Section */}
+          <SectionLabel
+            title="ACCOUNT SETTINGS"
+            count={null}
+            countLabel=""
+            linkText=""
+          />
+          <AccountSettingsSection />
+
+          {/* Help & Support Section */}
+          <SectionLabel
+            title="HELP & SUPPORT"
+            count={null}
+            countLabel=""
+            linkText=""
+          />
+          <HelpSupportSection />
 
           {/*Other sections will go here */}
         </div>

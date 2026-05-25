@@ -170,8 +170,6 @@ const AttributeSelectorModal = ({ isOpen, onClose, piece, onConfirm }) => {
                 </div>
             )}
 
-            {/* Validation Message */}
-            <div className="profile-attr-validation">{validationMessage}</div>
 
             {/* Add to Bag Button */}
             <button
@@ -182,6 +180,10 @@ const AttributeSelectorModal = ({ isOpen, onClose, piece, onConfirm }) => {
                 <ShoppingBag size={14} strokeWidth={1.5} />
                 Add to Bag
             </button>
+
+            {/* Validation Message */}
+            <div className="profile-attr-validation">{validationMessage}</div>
+            
         </Modal>
     );
 };

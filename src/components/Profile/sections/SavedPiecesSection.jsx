@@ -64,11 +64,11 @@ const SavedPiecesSection = () => {
   };
 
   const handleViewProduct = (pieceId) => {
-    console.log("View product:", pieceId);
+    showToastMessage("Redirecting to product page...");
   };
 
   const handleRemove = (pieceId) => {
-    console.log("Remove from saved:", pieceId);
+    showToastMessage("Removed from wishlist");
   };
 
   return (

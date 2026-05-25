@@ -24,7 +24,7 @@ const WishlistCard = ({ piece, onAddToBag, onViewProduct, onRemove }) => {
       onAddToBag(piece);
     } else {
       // Direct add - only one size, no colors, not rental
-      console.log("Direct add to bag:", piece);
+      showToastMessage(`${piece.name} added to your bag`);
       // Show toast notification
     }
   };

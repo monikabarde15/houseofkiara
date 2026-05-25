@@ -1,0 +1,282 @@
+/* ============================================
+   Section 17.2 - Submission Detail Panel
+   ============================================ */
+
+.profile-sub-dpane {
+  display: none;
+  margin-top: 12px;
+  border: 1px solid #E8E0D4;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.profile-sub-dpane.open {
+  display: block;
+  animation: profile-sub-panel-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes profile-sub-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Panel Header */
+.profile-sub-dpn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: #FAF7F2;
+  border-bottom: 1px solid #E8E0D4;
+}
+
+.profile-sub-dpn-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #1A1612;
+}
+
+.profile-sub-dpn-close {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.profile-sub-dpn-close:hover {
+  color: #3C3529;
+}
+
+.profile-sub-dpn-close svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+}
+
+/* Panel Body */
+.profile-sub-dpb {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 0;
+}
+
+/* Image Cell */
+.profile-sub-dp-img-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 3 / 4;
+  border-right: 1px solid #E8E0D4;
+}
+
+.profile-sub-dp-img-cell svg {
+  width: 36px;
+  height: 36px;
+  opacity: 0.18;
+}
+
+/* Info Area */
+.profile-sub-dp-info {
+  padding: 18px 22px;
+  overflow-y: auto;
+}
+
+/* Badge Row */
+.profile-sub-dp-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.profile-sub-dp-date {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #B0A898;
+}
+
+/* Reuse badge styles from card */
+.profile-sub-badge {
+  display: inline-block;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 9px;
+}
+
+.profile-sb-rev {
+  background: rgba(201, 169, 110, 0.15);
+  color: #A8844A;
+}
+
+.profile-sb-app {
+  background: rgba(107, 126, 90, 0.12);
+  color: #6B7E5A;
+}
+
+.profile-sb-lst {
+  background: rgba(26, 22, 18, 0.06);
+  color: #3C3529;
+}
+
+.profile-sb-rej {
+  background: rgba(184, 92, 56, 0.1);
+  color: #B85C38;
+}
+
+/* Name */
+.profile-sub-dp-name {
+  margin-bottom: 4px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #1A1612;
+  
+}
+
+/* Description */
+.profile-sub-dp-des {
+  margin-bottom: 16px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #B0A898;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+/* Detail Rows */
+.profile-sub-dp-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.profile-sub-dp-row:last-of-type {
+  border-bottom: none;
+}
+
+.profile-sub-dp-rl {
+  flex-shrink: 0;
+  margin-right: 20px;
+  white-space: nowrap;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+.profile-sub-dp-rv {
+  text-align: right;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #3C3529;
+}
+
+.profile-sub-dp-rv-gold {
+  color: #A8844A;
+}
+
+/* Info Note */
+.profile-sub-dp-note {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(107, 126, 90, 0.05);
+  border: 1px solid rgba(107, 126, 90, 0.2);
+  border-radius: 8px;
+}
+
+.profile-sub-dp-note-h {
+  margin-bottom: 5px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6B7E5A;
+}
+
+.profile-sub-dp-note-t {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: #3C3529;
+}
+
+/* Action Buttons */
+.profile-sub-dp-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* Primary Button */
+.profile-sub-btn-p {
+  padding: 10px 18px;
+  background: #1A1612;
+  color: #E8D5B0;
+  border: none;
+  border-radius: 7px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-sub-btn-p:hover {
+  background: #3C3529;
+}
+
+/* Secondary Button */
+.profile-sub-btn-s {
+  padding: 10px 18px;
+  background: none;
+  color: #3C3529;
+  border: 1px solid #E8E0D4;
+  border-radius: 7px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.profile-sub-btn-s:hover {
+  border-color: #E8D5B0;
+  background: #FAF7F2;
+}
+

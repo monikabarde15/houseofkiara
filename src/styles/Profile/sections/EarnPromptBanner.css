@@ -92,8 +92,7 @@
   text-transform: uppercase;
   font-weight: 500;
   white-space: nowrap;
-  cursor: pointer;
-  transition: background 0.2s;
+  
 }
 
 .profile-earn-primary:hover {
