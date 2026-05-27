@@ -1,0 +1,23 @@
+/* ============================================
+   Section 5
+   Purchases Section
+   ============================================ */
+
+.profile-mobile-purchases-section {
+  padding-top: 24px;
+}
+
+/* ============================================
+   Item Block
+   ============================================ */
+
+.profile-mobile-purchases-section
+.profile-mobile-item-block {
+  background: #FFFEFB;
+
+  border-top:
+    1px solid #F0EAE0;
+
+  border-bottom:
+    1px solid #F0EAE0;
+}

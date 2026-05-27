@@ -1,0 +1,246 @@
+/* ============================================
+   Section 12.5 - Add New Address
+   ============================================ */
+
+.profile-mobile-addaddr-form {
+  background: #FFFEFB;
+  border-top: 1px solid #F0EAE0;
+}
+
+.profile-mobile-addaddr-trigger {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: none;
+  background: #FFFEFB;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profile-mobile-addaddr-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border: 1px solid #E8E0D4;
+  background: #F0EAE0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-mobile-addaddr-icon svg {
+  stroke: #1A1612;
+}
+
+.profile-mobile-addaddr-copy {
+  min-width: 0;
+}
+
+.profile-mobile-addaddr-trigger-title {
+  margin-bottom: 2px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #3C3529;
+}
+
+.profile-mobile-addaddr-trigger-subtitle {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  line-height: 1.4;
+  color: #B0A898;
+}
+
+.profile-mobile-addaddr-body {
+  padding: 18px 20px 28px;
+  border-top: 1px solid #F0EAE0;
+  animation: profile-mobile-addaddr-rise 0.28s ease;
+}
+
+@keyframes profile-mobile-addaddr-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-mobile-addaddr-heading {
+  margin-bottom: 26px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #1A1612;
+}
+
+.profile-mobile-addaddr-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.profile-mobile-addaddr-fi {
+  min-width: 0;
+  margin-bottom: 22px;
+}
+
+.profile-mobile-addaddr-label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+.profile-mobile-addaddr-required {
+  margin-left: 2px;
+  color: #B85C38;
+}
+
+.profile-mobile-addaddr-input {
+  width: 100%;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid #E8E0D4;
+  background: transparent;
+  outline: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  color: #1A1612;
+  transition: border-color 0.2s ease;
+}
+
+.profile-mobile-addaddr-input::placeholder {
+  color: #8A7E72;
+  font-weight: 300;
+}
+
+.profile-mobile-addaddr-input:focus {
+  border-bottom-color: #C9A96E;
+}
+
+.profile-mobile-addaddr-select-wrap {
+  position: relative;
+}
+
+.profile-mobile-addaddr-select {
+  width: 100%;
+  height: 44px;
+  padding: 0 22px 0 0;
+  border: none;
+  border-bottom: 1px solid #E8E0D4;
+  background: transparent;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  color: #1A1612;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.profile-mobile-addaddr-select:focus {
+  border-bottom-color: #C9A96E;
+}
+
+.profile-mobile-addaddr-chevron {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  stroke: #B0A898;
+  pointer-events: none;
+}
+
+.profile-mobile-addaddr-fi.has-error .profile-mobile-addaddr-label {
+  color: #B85C38;
+}
+
+.profile-mobile-addaddr-fi.has-error .profile-mobile-addaddr-input,
+.profile-mobile-addaddr-fi.has-error .profile-mobile-addaddr-select {
+  border-bottom-color: #B85C38;
+}
+
+.profile-mobile-addaddr-error {
+  margin-top: 4px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  line-height: 1.4;
+  color: #B85C38;
+}
+
+.profile-mobile-addaddr-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0 12px;
+}
+
+.profile-mobile-addaddr-checkbox-input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #1A1612;
+}
+
+.profile-mobile-addaddr-checkbox-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #3C3529;
+}
+
+.profile-mobile-addaddr-buttons {
+  padding-top: 8px;
+}
+
+.profile-mobile-addaddr-btn-save {
+  width: 100%;
+  height: 54px;
+  border: none;
+  background: #1A1612;
+  color: #E8D5B0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease;
+}
+
+.profile-mobile-addaddr-btn-save:active {
+  background: #2C2520;
+}
+
+.profile-mobile-addaddr-btn-cancel {
+  width: 100%;
+  margin-top: 18px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}

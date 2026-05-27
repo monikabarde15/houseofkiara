@@ -1,0 +1,18 @@
+/* ============================================
+   Section 5.2 - Purchase Product Row
+   ============================================ */
+
+.profile-mobile-b-del {
+  background: rgba(107, 126, 90, 0.12);
+  color: #6B7E5A;
+}
+
+.profile-mobile-b-pro {
+  background: rgba(184, 92, 56, 0.1);
+  color: #B85C38;
+}
+
+.profile-mobile-b-can {
+  background: rgba(138, 126, 114, 0.12);
+  color: #8A7E72;
+}

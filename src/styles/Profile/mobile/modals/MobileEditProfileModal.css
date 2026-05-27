@@ -1,0 +1,234 @@
+/* ============================================
+   Section 15
+   Edit Profile Modal
+   ============================================ */
+
+.profile-mobile-editprof-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.4);
+  z-index: 6000;
+}
+
+/* ============================================
+   Modal
+   ============================================ */
+
+.profile-mobile-editprof-modal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 430px;
+  max-height: 92vh;
+  margin: 0 auto;
+  overflow-y: auto;
+  background: #FFFEFB;
+  border-top: 2px solid #1A1612;
+  z-index: 6001;
+  animation: profile-mobile-editprof-rise 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes profile-mobile-editprof-rise {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   Header
+   ============================================ */
+
+.profile-mobile-editprof-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px 8px;
+  background: #FFFEFB;
+}
+
+/* ============================================
+   Title
+   ============================================ */
+
+.profile-mobile-editprof-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: #1A1612;
+}
+
+/* ============================================
+   Close Button
+   ============================================ */
+
+.profile-mobile-editprof-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid #E8E0D4;
+  background: #FFFEFB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.profile-mobile-editprof-close svg {
+  stroke: #8A7E72;
+}
+
+/* ============================================
+   Form
+   ============================================ */
+
+.profile-mobile-editprof-form {
+  padding: 0 16px 0;
+}
+
+/* ============================================
+   2 Column Grid
+   ============================================ */
+
+.profile-mobile-editprof-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ============================================
+   mfi Wrapper
+   ============================================ */
+
+.profile-mobile-mfi {
+  min-width: 0;
+  margin-bottom: 22px;
+}
+
+/* ============================================
+   Label
+   ============================================ */
+
+.profile-mobile-mfi-label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}
+
+/* ============================================
+   Required
+   ============================================ */
+
+.profile-mobile-mfi-required {
+  margin-left: 2px;
+  color: #B85C38;
+}
+
+/* ============================================
+   Input
+   ============================================ */
+
+.profile-mobile-mfi-input {
+  width: 100%;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid #E8E0D4;
+  border-radius: 0;
+  background: transparent;
+  outline: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  color: #1A1612;
+  transition: border-color 0.2s ease;
+}
+
+.profile-mobile-mfi-input:focus {
+  border-bottom-color: #C9A96E;
+}
+
+/* ============================================
+   Error State
+   ============================================ */
+
+.profile-mobile-mfi.has-error .profile-mobile-mfi-label {
+  color: #B85C38;
+}
+
+.profile-mobile-mfi.has-error .profile-mobile-mfi-input {
+  border-bottom-color: #B85C38;
+}
+
+/* ============================================
+   Error Message
+   ============================================ */
+
+.profile-mobile-mfi-err {
+  margin-top: 3px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  line-height: 1.4;
+  color: #B85C38;
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+
+.profile-mobile-editprof-footer {
+  padding: 0 0 24px;
+}
+
+/* ============================================
+   Primary Button
+   ============================================ */
+
+.profile-mobile-sbtn-p {
+  width: 100%;
+  height: 54px;
+  border: none;
+  background: #1A1612;
+  color: #E8D5B0;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease;
+}
+
+.profile-mobile-sbtn-p:active {
+  background: #2C2520;
+}
+
+/* ============================================
+   Secondary Button
+   ============================================ */
+
+.profile-mobile-sbtn-s {
+  width: 100%;
+  height: 44px;
+  margin-top: 12px;
+  border: none;
+  border-top: 1px solid #F0EAE0;
+  background: transparent;
+  color: #8A7E72;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}

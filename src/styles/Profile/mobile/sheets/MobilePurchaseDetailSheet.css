@@ -1,0 +1,40 @@
+/* ============================================
+   Section 10
+   Purchase Detail Sheet Overrides
+   ============================================ */
+
+/* ============================================
+   Status Values
+   ============================================ */
+
+.profile-mobile-dv-sage {
+  color: #6B7E5A;
+
+  font-weight: 500;
+}
+
+.profile-mobile-dv-terracotta {
+  color: #B85C38;
+
+  font-weight: 500;
+}
+
+.profile-mobile-dv-muted {
+  color: #8A7E72;
+}
+
+/* ============================================
+   Product Image Background
+   ============================================ */
+
+.profile-mobile-sheet-product-img {
+  background: var(--sheet-bg);
+}
+
+/* ============================================
+   Detail Value Overflow Protection
+   ============================================ */
+
+.profile-mobile-dv {
+  overflow-wrap: break-word;
+}

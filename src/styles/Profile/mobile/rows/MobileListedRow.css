@@ -1,0 +1,209 @@
+/* ============================================
+   Section 5.3 - Listed Piece Row (lrow)
+   ============================================ */
+
+.profile-mobile-lrow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.12s;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.profile-mobile-lrow:last-child {
+  border-bottom: none;
+}
+
+.profile-mobile-lrow:active {
+  background: #FAF7F2;
+}
+
+/* Image Container */
+.profile-mobile-lrow-img {
+  position: relative;
+  width: 64px;
+  height: 84px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-mobile-lrow-img svg {
+  width: 20px;
+  height: 20px;
+  opacity: 0.18;
+  stroke: #1A1612;
+}
+
+/* Ribbon - Section 5.3.1 */
+.profile-mobile-lrow-ribbon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(0deg, rgba(26, 22, 18, 0.8) 0%, transparent 100%);
+  padding: 6px 5px 4px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.profile-mobile-lrow-earned-n {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: #E8D5B0;
+  line-height: 1;
+}
+
+.profile-mobile-lrow-earned-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 6px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(232, 213, 176, 0.55);
+  margin-top: 2px;
+}
+
+.profile-mobile-lrow-times {
+  text-align: right;
+}
+
+.profile-mobile-lrow-times-n {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: #FFFFFB;
+  line-height: 1;
+}
+
+.profile-mobile-lrow-times-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 6px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 254, 251, 0.4);
+  margin-top: 2px;
+}
+
+/* Body */
+.profile-mobile-lrow-body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Mode Badges - Section 5.3.2 */
+.profile-mobile-lrow-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.profile-mobile-b-lst {
+  background: rgba(201, 169, 110, 0.15);
+  color: #A8844A;
+}
+
+.profile-mobile-b-ren {
+  background: rgba(42, 68, 102, 0.1);
+  color: #2A4466;
+}
+
+.profile-mobile-b-resale {
+  background: rgba(107, 126, 90, 0.12);
+  color: #6B7E5A;
+}
+
+.profile-mobile-lrow-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #1A1612;
+  line-height: 1.25;
+  margin-bottom: 2px;
+}
+
+.profile-mobile-lrow-meta {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  font-weight: 300;
+  color: #B0A898;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+/* Pricing - inline for dual mode */
+.profile-mobile-lrow-price {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  font-weight: 300;
+  color: #B0A898;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+/* Payout Line */
+.profile-mobile-lrow-payout {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #6B7E5A;
+  margin-top: 2px;
+}
+
+.profile-mobile-lrow-payout span {
+  color: #B0A898;
+  font-size: 9.5px;
+  font-weight: 300;
+}
+
+.profile-mobile-lrow-no-bookings {
+  color: #8A7E72;
+  font-size: 11px;
+}
+
+/* Arrow */
+.profile-mobile-lrow-arrow {
+  flex-shrink: 0;
+  stroke: #E8E0D4;
+  stroke-width: 1.5;
+  align-self: center;
+  margin-top: -40px;
+}
+
+
+/* ============================================
+   Section 5.3.3 - Earn Note Banner
+   ============================================ */
+
+.profile-mobile-earn-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(201, 169, 110, 0.05);
+  border-bottom: 1px solid rgba(201, 169, 110, 0.18);
+}
+
+.profile-mobile-earn-note-icon {
+  flex-shrink: 0;
+  stroke: #A8844A;
+  margin-top: 2px;
+}
+
+.profile-mobile-earn-note-text {
+  flex: 1;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.65;
+}

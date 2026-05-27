@@ -1,0 +1,14 @@
+/* ============================================
+   Mobile Profile Layout
+   ============================================ */
+
+.profile-mobile-main {
+  max-width: 430px;
+  margin: 0 auto;
+  background: #FAF7F2;
+  min-height: 100vh;
+}
+
+.profile-mobile-section {
+  scroll-margin-top: 98px;
+}

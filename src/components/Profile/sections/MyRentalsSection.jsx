@@ -1,3 +1,4 @@
+// src\components\Profile\sections\MyRentalsSection.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import RentalCard from '../cards/RentalCard';
 import RentalDetailPanel from '../panels/RentalDetailPanel';

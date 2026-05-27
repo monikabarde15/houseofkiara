@@ -1,0 +1,12 @@
+/* ============================================
+   Section 6.5 - Purchases Full View
+   ============================================ */
+
+.profile-mobile-fv-container {
+  background: #FFFFFB;
+  min-height: 100vh;
+}
+
+.profile-mobile-fv-content {
+  padding-top: 0;
+}

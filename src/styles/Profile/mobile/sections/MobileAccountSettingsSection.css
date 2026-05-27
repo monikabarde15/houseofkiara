@@ -1,0 +1,135 @@
+/* ============================================
+   Section 14
+   Account Settings
+   ============================================ */
+
+.profile-mobile-account-section {
+  padding-top: 24px;
+}
+
+/* ============================================
+   Settings List
+   ============================================ */
+
+.profile-mobile-settings-list {
+  background: #FFFEFB;
+  border-top: 1px solid #F0EAE0;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+/* ============================================
+   Shared Subsection
+   ============================================ */
+
+.profile-mobile-subsec {
+  border-top: 1px solid #F0EAE0;
+}
+
+.profile-mobile-subsec-label {
+  padding: 14px 16px 8px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+/* ============================================
+   Deposit Row
+   ============================================ */
+
+.profile-mobile-deposit-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: none;
+  border-bottom: 1px solid #F0EAE0;
+  background: #FFFEFB;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profile-mobile-deposit-row:active {
+  background: #FAF7F2;
+}
+
+.profile-mobile-deposit-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-mobile-deposit-name {
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #3C3529;
+}
+
+/* ============================================
+   Deposit Pills
+   ============================================ */
+
+.profile-mobile-dpill-p,
+.profile-mobile-dpill-r {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 4px;
+  padding: 2px 7px;
+  border-radius: 9px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 7.5px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.profile-mobile-dpill-p {
+  background: rgba(201, 169, 110, 0.12);
+  color: #A8844A;
+}
+
+.profile-mobile-dpill-r {
+  background: rgba(107, 126, 90, 0.10);
+  color: #6B7E5A;
+}
+
+/* ============================================
+   Notification Rows
+   ============================================ */
+
+.profile-mobile-noti-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #F0EAE0;
+  background: #FFFEFB;
+}
+
+.profile-mobile-noti-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-mobile-noti-title {
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #3C3529;
+}
+
+.profile-mobile-noti-sub {
+  margin-top: 1px;
+  overflow-wrap: break-word;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: #B0A898;
+}

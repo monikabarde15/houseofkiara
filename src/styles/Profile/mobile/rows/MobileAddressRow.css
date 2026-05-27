@@ -1,0 +1,118 @@
+/* ============================================
+   Section 12.1 - Address Card Anatomy
+   ============================================ */
+
+.profile-mobile-addr-item {
+  background: #FFFEFB;
+  padding: 14px 16px;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+/* Label / Type Row */
+.profile-mobile-addr-type-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.profile-mobile-addr-type {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #A8844A;
+}
+
+.profile-mobile-addr-default-badge {
+  font-family: "DM Sans", sans-serif;
+  font-size: 7.5px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6B7E5A;
+  background: rgba(107, 126, 90, 0.08);
+  padding: 2px 7px;
+  border-radius: 9px;
+}
+
+/* Recipient Name */
+.profile-mobile-addr-recipient {
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3C3529;
+  margin-bottom: 3px;
+}
+
+/* Address Lines */
+.profile-mobile-addr-lines {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.65;
+  overflow-wrap: break-word;
+}
+
+/* Action Row */
+.profile-mobile-addr-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #F0EAE0;
+}
+
+.profile-mobile-addr-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: none;
+  border: 1px solid #E8E0D4;
+  /* border-radius: 6px; */
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.profile-mobile-addr-btn:active {
+  background: #FAF7F2;
+  color: #3C3529;
+}
+
+.profile-mobile-addr-btn svg {
+  stroke: currentColor;
+  height: 11px;
+  width: 11px;
+  stroke-width: 1.5;
+}
+
+/* Set as Default Link - Section 12.2 */
+.profile-mobile-addr-set-default {
+  display: block;
+  margin-top: 8px;
+  background: none;
+  border: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: #A8844A;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.profile-mobile-addr-set-default:active {
+  color: #3C3529;
+}

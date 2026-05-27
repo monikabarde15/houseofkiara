@@ -1,0 +1,110 @@
+/* ============================================
+   Section 2.3 - Navigation Drawer
+   ============================================ */
+
+.profile-mobile-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.4);
+  z-index: 700;
+}
+
+.profile-mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100%;
+  background: #FFFFFB;
+  border-right: 1px solid #E8E0D4;
+  z-index: 701;
+  display: flex;
+  flex-direction: column;
+  animation: profile-mobile-drawer-slide-in 0.3s ease;
+}
+
+@keyframes profile-mobile-drawer-slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.profile-mobile-drawer-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid #F0EAE0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-mobile-drawer-logo {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #1A1612;
+}
+
+.profile-mobile-drawer-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #E8E0D4;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.profile-mobile-drawer-close svg {
+  stroke: #8A7E72;
+}
+
+.profile-mobile-drawer-section {
+  margin-bottom: 8px;
+}
+
+.profile-mobile-drawer-section-label {
+  padding: 16px 20px 8px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 7.5px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+.profile-mobile-drawer-link {
+  display: block;
+  height: 44px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #3C3529;
+  text-decoration: none;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.profile-mobile-drawer-link.active {
+  color: #A8844A;
+  font-weight: 500;
+}
+
+.profile-mobile-drawer-footer {
+  margin-top: auto;
+  padding: 16px 20px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 300;
+  color: #B0A898;
+  line-height: 1.7;
+  border-top: 1px solid #F0EAE0;
+}

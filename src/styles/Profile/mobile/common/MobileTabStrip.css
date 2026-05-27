@@ -1,0 +1,72 @@
+/* ============================================
+   Section 2.2 - Sticky Tab Strip
+   Section 2.2.2 - Tab Badges
+   Section 2.2.3 - Tab Scroll-Spy Behaviour
+   ============================================ */
+
+.profile-mobile-tab-strip {
+  position: sticky;
+  /* top: 56px; */
+  z-index: 190;
+  background: #FFFFFB;
+  border-bottom: 1px solid #F0EAE0;
+  height: 42px;
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  white-space: nowrap;
+  padding: 0 12px;
+}
+
+.profile-mobile-tab-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.profile-mobile-tab {
+  flex-shrink: 0;
+  height: 42px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #B0A898;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.profile-mobile-tab.active {
+  font-weight: 500;
+  color: #3C3529;
+  border-bottom-color: #1A1612;
+}
+
+.profile-mobile-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 7px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+
+.profile-mobile-tab-badge.red {
+  background: #B85C38;
+}
+
+.profile-mobile-tab-badge.gold {
+  background: #A8844A;
+}

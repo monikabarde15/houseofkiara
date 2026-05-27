@@ -1,0 +1,134 @@
+/* ============================================
+   Section 14.1
+   Settings Row Anatomy
+   ============================================ */
+
+.profile-mobile-set-row {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px 16px;
+
+  border: none;
+  border-bottom: 1px solid #F0EAE0;
+
+  background: #FFFEFB;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease;
+}
+
+/* ============================================
+   Active State
+   ============================================ */
+
+.profile-mobile-set-row:active {
+  background: #FAF7F2;
+}
+
+/* ============================================
+   Icon Square
+   ============================================ */
+
+.profile-mobile-set-icon {
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  border-radius: 6px;
+
+  border:
+    1px solid #F0EAE0;
+
+  background: #FAF7F2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================
+   Icon
+   ============================================ */
+
+.profile-mobile-set-icon svg {
+  width: 13px;
+  height: 13px;
+
+  stroke: #8A7E72;
+
+  stroke-width: 1.5;
+
+  fill: none;
+}
+
+/* ============================================
+   Text Block
+   ============================================ */
+
+.profile-mobile-set-text {
+  flex: 1;
+
+  min-width: 0;
+}
+
+/* ============================================
+   Main Label
+   ============================================ */
+
+.profile-mobile-set-label {
+  font-family:
+    "DM Sans",
+    sans-serif;
+
+  font-size: 13px;
+
+  font-weight: 400;
+
+  line-height: 1.4;
+
+  color: #3C3529;
+}
+
+/* ============================================
+   Sub Label
+   ============================================ */
+
+.profile-mobile-set-sub {
+  margin-top: 1px;
+
+  overflow-wrap: break-word;
+
+  font-family:
+    "DM Sans",
+    sans-serif;
+
+  font-size: 10px;
+
+  font-weight: 300;
+
+  line-height: 1.5;
+
+  color: #B0A898;
+}
+
+/* ============================================
+   Chevron
+   ============================================ */
+
+.profile-mobile-set-chevron {
+  flex-shrink: 0;
+
+  stroke: #E8E0D4;
+
+  stroke-width: 1.5;
+}

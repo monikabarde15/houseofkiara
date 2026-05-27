@@ -17,9 +17,12 @@ const SectionLabel = ({ title, count, countLabel, linkText, onLinkClick }) => {
           className="profile-section-label-link"
           onClick={onLinkClick}
         >
-          {linkText.includes("View all")
-            ? `${linkText} →`
-            : linkText}
+          <span>{linkText}</span>
+
+          <ArrowRight
+            className="profile-section-label-arrow"
+            strokeWidth={1.5}
+          />
         </button>
       )}
     </div>
