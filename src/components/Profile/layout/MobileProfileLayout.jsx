@@ -94,6 +94,7 @@ const MobileProfileLayout = () => {
         activeTab={activeTab} 
         onTabChange={setActiveTab}
         onTabClick={handleTabClick}
+        isFullViewOpen={activeView !== 'overview'}
       />
       <MobileNavDrawer 
         isOpen={isDrawerOpen} 

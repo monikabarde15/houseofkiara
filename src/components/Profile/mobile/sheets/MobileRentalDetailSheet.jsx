@@ -1,12 +1,45 @@
+import { useState, useEffect } from 'react';
 import MobileBottomSheet from "./MobileBottomSheet";
-
+import MobileCancelBookingModal from '../modals/MobileCancelBookingModal';
 import "../../../../styles/Profile/mobile/sheets/MobileRentalDetailSheet.css";
-
+import Toast from '../../ui/Toast';
 const MobileRentalDetailSheet = ({
   isOpen,
   onClose,
   booking
 }) => {
+
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
+  const handleCancelBooking = () => {
+    setIsCancelModalOpen(true);
+  };
+
+  const handleConfirmCancel = () => {
+    setIsCancelModalOpen(false);
+
+    onClose?.();
+
+    setToastMessage(
+      "Cancellation request submitted — our team will be in touch"
+    );
+
+    setShowToast(true);
+  };
+
+  useEffect(() => {
+    if (!showToast) {
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setShowToast(false);
+    }, 3200);
+
+    return () =>
+      clearTimeout(timeout);
+  }, [showToast]);
   /* =========================================
      Guard
      ========================================= */
@@ -65,9 +98,8 @@ const MobileRentalDetailSheet = ({
       },
       {
         label: "Security Deposit",
-        value: `₹${
-          booking.depositAmount || 15000
-        } — Pending refund`,
+        value: `₹${booking.depositAmount || 15000
+          } — Pending refund`,
         valueClass:
           "profile-mobile-dv-gold"
       },
@@ -102,9 +134,8 @@ const MobileRentalDetailSheet = ({
       },
       {
         label: "Deposit Due",
-        value: `₹${
-          booking.depositAmount || 8000
-        } — Due at pickup`,
+        value: `₹${booking.depositAmount || 8000
+          } — Due at pickup`,
         valueClass:
           "profile-mobile-dv-gold"
       },
@@ -130,9 +161,8 @@ const MobileRentalDetailSheet = ({
       },
       {
         label: "Security Deposit",
-        value: `₹${
-          booking.depositAmount || 10000
-        } — Refunded 20 Feb 2025`,
+        value: `₹${booking.depositAmount || 10000
+          } — Refunded 20 Feb 2025`,
         valueClass:
           "profile-mobile-dv-sage"
       },
@@ -158,9 +188,8 @@ const MobileRentalDetailSheet = ({
       },
       {
         label: "Security Deposit",
-        value: `₹${
-          booking.depositAmount || 6000
-        } — Refunded`,
+        value: `₹${booking.depositAmount || 6000
+          } — Refunded`,
         valueClass:
           "profile-mobile-dv-sage"
       },
@@ -284,132 +313,157 @@ const MobileRentalDetailSheet = ({
     actions[booking.status];
 
   return (
-    <MobileBottomSheet
-      isOpen={isOpen}
-      onClose={onClose}
-      title={booking.piece}
-    >
-      {/* =====================================
+    <>
+      <MobileBottomSheet
+        isOpen={isOpen}
+        onClose={onClose}
+        title={booking.piece}
+      >
+        {/* =====================================
           Product Header Block
           Section 8.2
          ===================================== */}
 
-      <div className="profile-mobile-sheet-product">
-        <div
-          className="profile-mobile-sheet-product-img"
-          style={{
-            "--sheet-bg":
-              booking.imageGradient ||
-              "linear-gradient(160deg, #F0EAE0, #E8E0D4)"
-          }}
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-          >
-            <rect
-              x="4"
-              y="4"
-              width="16"
-              height="16"
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-          </svg>
-        </div>
-
-        <div className="profile-mobile-sheet-product-info">
+        <div className="profile-mobile-sheet-product">
           <div
-            className={`profile-mobile-badge ${getBadgeClass(
-              booking.status
-            )}`}
+            className="profile-mobile-sheet-product-img"
+            style={{
+              "--sheet-bg":
+                booking.imageGradient ||
+                "linear-gradient(160deg, #F0EAE0, #E8E0D4)"
+            }}
           >
-            <span className="profile-mobile-bdot" />
-
-            {booking.status}
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <rect
+                x="4"
+                y="4"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                strokeWidth="1"
+              />
+            </svg>
           </div>
 
-          <div className="profile-mobile-sheet-product-name">
-            {booking.piece}
-          </div>
+          <div className="profile-mobile-sheet-product-info">
+            <div
+              className={`profile-mobile-badge ${getBadgeClass(
+                booking.status
+              )}`}
+            >
+              <span className="profile-mobile-bdot" />
 
-          <div className="profile-mobile-sheet-product-meta">
-            {booking.designer}
+              {booking.status}
+            </div>
+
+            <div className="profile-mobile-sheet-product-name">
+              {booking.piece}
+            </div>
+
+            <div className="profile-mobile-sheet-product-meta">
+              {booking.designer}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* =====================================
+        {/* =====================================
           Detail Body
           Section 8.3
          ===================================== */}
 
-      <div className="profile-mobile-sheet-detail-body">
-        {currentRows.map((row) => (
-          <div
-            key={row.label}
-            className="profile-mobile-drow"
-          >
-            <div className="profile-mobile-dl">
-              {row.label}
-            </div>
-
+        <div className="profile-mobile-sheet-detail-body">
+          {currentRows.map((row) => (
             <div
-              className={`profile-mobile-dv ${
-                row.valueClass || ""
-              }`}
+              key={row.label}
+              className="profile-mobile-drow"
             >
-              {row.value}
-            </div>
-          </div>
-        ))}
+              <div className="profile-mobile-dl">
+                {row.label}
+              </div>
 
-        {/* =================================
+              <div
+                className={`profile-mobile-dv ${row.valueClass || ""
+                  }`}
+              >
+                {row.value}
+              </div>
+            </div>
+          ))}
+
+          {/* =================================
             Note Block
             Section 8.4
            ================================= */}
 
-        {currentNote && (
-          <div
-            className={`profile-mobile-note ${currentNote.variant}`}
-          >
-            <div className="profile-mobile-note-title">
-              {currentNote.title}
-            </div>
+          {currentNote && (
+            <div
+              className={`profile-mobile-note ${currentNote.variant}`}
+            >
+              <div className="profile-mobile-note-title">
+                {currentNote.title}
+              </div>
 
-            <div className="profile-mobile-note-text">
-              {currentNote.text}
+              <div className="profile-mobile-note-text">
+                {currentNote.text}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* =================================
+          {/* =================================
             Sheet Action Buttons
             Section 8.5
            ================================= */}
 
-        {currentActions?.primary && (
-          <button
-            type="button"
-            className="profile-mobile-sbtn-p active"
-          >
-            {currentActions.primary}
-          </button>
-        )}
+          {currentActions?.primary && (
+            <button
+              type="button"
+              className="profile-mobile-sbtn-p active"
+            >
+              {currentActions.primary}
+            </button>
+          )}
 
-        {currentActions?.secondary && (
-          <button
-            type="button"
-            className="profile-mobile-sbtn-s"
-          >
-            {currentActions.secondary}
-          </button>
-        )}
-      </div>
-    </MobileBottomSheet>
+          {currentActions?.secondary && (
+            <button
+              type="button"
+              className="profile-mobile-sbtn-s"
+              onClick={() => {
+                if (
+                  currentActions.secondary ===
+                  "Cancel Booking"
+                ) {
+                  handleCancelBooking();
+
+                  return;
+                }
+
+                console.log(
+                  currentActions.secondary
+                );
+              }}
+            >
+              {currentActions.secondary}
+            </button>
+          )}
+        </div>
+      </MobileBottomSheet>
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
+      <MobileCancelBookingModal
+        isOpen={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        onConfirm={handleConfirmCancel}
+      />
+    </>
   );
 };
 

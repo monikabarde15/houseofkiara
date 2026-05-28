@@ -6,7 +6,7 @@
 
 .profile-mobile-tab-strip {
   position: sticky;
-  /* top: 56px; */
+  top: 56px;
   z-index: 190;
   background: #FFFFFB;
   border-bottom: 1px solid #F0EAE0;

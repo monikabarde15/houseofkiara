@@ -5,6 +5,7 @@ const MobileTabStrip = ({
   activeTab,
   onTabChange,
   onTabClick,
+  isFullViewOpen = false  // ← Add this prop
 }) => {
   const tabs = [
     { id: "rentals", label: "Rentals" },
@@ -25,6 +26,9 @@ const MobileTabStrip = ({
     let ticking = false;
 
     const handleScroll = () => {
+      // Skip scroll-spy if full-view overlay is open
+      if (isFullViewOpen) return;
+
       if (ticking) return;
 
       ticking = true;
@@ -72,32 +76,32 @@ const MobileTabStrip = ({
         handleScroll
       );
     };
-  }, [activeTab]);
+  }, [activeTab, isFullViewOpen]);  // ← Add isFullViewOpen to dependency array
 
   // Scroll active tab into view when it changes
   useEffect(() => {
-  if (
-    !scrollContainerRef.current ||
-    !activeTabRef.current
-  ) {
-    return;
-  }
+    if (
+      !scrollContainerRef.current ||
+      !activeTabRef.current
+    ) {
+      return;
+    }
 
-  const container = scrollContainerRef.current;
-  const activeTabEl = activeTabRef.current;
+    const container = scrollContainerRef.current;
+    const activeTabEl = activeTabRef.current;
 
-  const containerWidth = container.offsetWidth;
+    const containerWidth = container.offsetWidth;
 
-  const scrollLeft =
-    activeTabEl.offsetLeft -
-    containerWidth / 2 +
-    activeTabEl.offsetWidth / 2;
+    const scrollLeft =
+      activeTabEl.offsetLeft -
+      containerWidth / 2 +
+      activeTabEl.offsetWidth / 2;
 
-  container.scrollTo({
-    left: scrollLeft,
-    behavior: "smooth"
-  });
-}, [activeTab]);
+    container.scrollTo({
+      left: scrollLeft,
+      behavior: "smooth"
+    });
+  }, [activeTab]);
 
   return (
     <div className="profile-mobile-tab-strip" ref={scrollContainerRef}>
