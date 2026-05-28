@@ -1,0 +1,17 @@
+/* src/styles/wishlist/sections/wishlist-grid.css */
+/* Section 7: 4-column grid */
+/* Section 8.1: Grid Layout Change */
+
+/* Grid view - 4 columns, gap: 36px vertical, 28px horizontal */
+.desk-wishlist-grid-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 36px 28px;
+}
+
+/* List view - single column, no gap */
+.desk-wishlist-grid-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}

@@ -1,0 +1,19 @@
+/* src/styles/wishlist/layout/wishlist-layout.css */
+/* Section 5: Toolbar */
+
+/* Page background */
+.desk-wishlist-layout {
+  background-color: #FFFFFB;
+  overflow-x: hidden;
+}
+
+/* Max content width */
+.desk-wishlist-container {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding-left: 80px;
+  padding-right: 80px;
+  padding-bottom: 100px;
+  box-sizing: border-box;
+}
+

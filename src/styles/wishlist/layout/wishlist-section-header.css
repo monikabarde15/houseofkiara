@@ -1,0 +1,36 @@
+/* src/styles/wishlist/layout/wishlist-section-header.css */
+
+.desk-wishlist-section-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #F0EAE0;
+  margin-bottom: 36px;
+}
+
+.desk-wishlist-section-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.desk-wishlist-section-mode-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  font-weight: 400;
+}
+
+.desk-wishlist-section-piece-count {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+  color: #8A7E72;
+  font-weight: 300;
+  margin-left: auto;
+}

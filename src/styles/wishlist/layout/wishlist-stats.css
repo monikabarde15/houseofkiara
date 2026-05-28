@@ -1,0 +1,45 @@
+/* src/styles/wishlist/layout/wishlist-stats.css */
+
+/* Stats Container */
+.desk-wishlist-page-stats-right {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 36px;
+  padding-bottom: 4px;
+}
+
+/* Individual stat block */
+.desk-wishlist-stat-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+/* Stat number */
+.desk-wishlist-stat-number {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+  color: #1A1612;
+}
+
+/* Stat label */
+.desk-wishlist-stat-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #8A7E72;
+}
+
+/* Separator between stats */
+.desk-wishlist-stat-separator {
+  width: 1px;
+  height: 38px;
+  background-color: #E8E0D4;
+  align-self: center;
+}

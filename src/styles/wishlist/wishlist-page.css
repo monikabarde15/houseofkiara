@@ -1,0 +1,8 @@
+/* src/styles/wishlist/wishlist-page.css */
+
+.wishlist-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #FFFEFB;
+  overflow-x: hidden;
+}
