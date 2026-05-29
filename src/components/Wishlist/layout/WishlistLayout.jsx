@@ -7,11 +7,22 @@ import RentWishlistSection from "../sections/RentWishlistSection";
 import PrelovedWishlistSection from "../sections/PrelovedWishlistSection";
 import NewWishlistSection from "../sections/NewWishlistSection";
 import "../../../styles/wishlist/layout/wishlist-layout.css";
+import WishlistRecommendations from "../sections/WishlistRecommendations";
 
 const WishlistLayout = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [viewMode, setViewMode] = useState('grid');
+
+  // Add state for general toast
+  const [showGeneralToast, setShowGeneralToast] = useState(false);
+  const [generalToastMessage, setGeneralToastMessage] = useState("");
+
+const showGeneralToastMessage = (message) => {
+  setGeneralToastMessage(message);
+  setShowGeneralToast(true);
+  setTimeout(() => setShowGeneralToast(false), 3000);
+};
 
   const tabCounts = {
     all: 11,
@@ -54,17 +65,20 @@ const WishlistLayout = () => {
           onShareClick={handleShareClick}
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
+          showGeneralToastMessage={showGeneralToastMessage}
         />
         
         {/* Rent Section - contains its own header + notice + cards */}
-        {showRentSection && <RentWishlistSection viewMode={viewMode} />}
+        {showRentSection && <RentWishlistSection viewMode={viewMode} showGeneralToastMessage={showGeneralToastMessage} />}
         
         {/* Preloved Section */}
         {showPrelovedSection && <PrelovedWishlistSection viewMode={viewMode} />}
         
         {/* New Section */}
         {showNewSection && <NewWishlistSection viewMode={viewMode} />}
+
       </div>
+        <WishlistRecommendations onShowToast={showGeneralToastMessage} />
     </div>
   );
 };

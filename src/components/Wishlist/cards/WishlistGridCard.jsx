@@ -1,35 +1,33 @@
 
 // src/components/Wishlist/cards/WishlistGridCard.jsx
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import "../../../styles/wishlist/cards/wishlist-grid-card.css";
 
-const WishlistGridCard = ({
-  product,
-  type,
-  index,
-}) => {
+const WishlistGridCard = ({ product, type, index, onRemove, onShowToast,onShowGeneralToast,
+  onOpenModal, isRestored }) => {
+
   const [isHeartAnimating, setIsHeartAnimating] = useState(false);
+
+  //for removal animation
+  const [isRemoving, setIsRemoving] = useState(false);
+  const cardRef = useRef(null);
+  const [isCollapsing, setIsCollapsing] = useState(false);
+
+// Handle Add to Bag click (for quick-add bar and primary CTA)
+  const handleAddToBagClick = (e) => {
+    e.stopPropagation();
+    if (onOpenModal) {
+      onOpenModal(product, type);
+    }
+  };
 
   /* ====================================================== */
   /* SECTION 7.1 — CARD ENTRY ANIMATION */
   /* ====================================================== */
 
-  const staggerDelays = [
-    0.04,
-    0.10,
-    0.16,
-    0.22,
-    0.28,
-    0.34,
-    0.40,
-    0.46,
-  ];
-
-  const animationDelay =
-    index < 8
-      ? `${staggerDelays[index]}s`
-      : "0s";
+  const staggerDelays = [0.04, 0.10, 0.16, 0.22, 0.28, 0.34, 0.40, 0.46,];
+  const animationDelay = index < 8 ? `${staggerDelays[index]}s` : "0s";
 
   /* ====================================================== */
   /* SECTION 7.2 — CARD IMAGE AREA */
@@ -149,19 +147,61 @@ const WishlistGridCard = ({
 
   const handleRemoveClick = (e) => {
     e.stopPropagation();
+
+    /* STEP 1: Heart pop animation */
     setIsHeartAnimating(true);
+
+    /* STEP 7: Show undo toast immediately (call parent) */
+    if (onShowToast) {
+      onShowToast();
+    }
+
+    /* STEP 2: After 150ms delay, card begins to animate out */
+    setTimeout(() => {
+      setIsRemoving(true);
+
+      /* STEP 3: After 280ms, collapse height */
+      setTimeout(() => {
+        if (!cardRef.current) return;
+
+        const height = cardRef.current.offsetHeight;
+        cardRef.current.style.maxHeight = `${height}px`;
+        cardRef.current.offsetHeight;
+        setIsCollapsing(true);
+        cardRef.current.style.maxHeight = "0";
+        cardRef.current.style.paddingTop = "0";
+        cardRef.current.style.paddingBottom = "0";
+        cardRef.current.style.marginTop = "0";
+        cardRef.current.style.marginBottom = "0";
+
+      }, 280);
+
+    }, 150);
+
+    /* STEP 4: After 710ms (150+280+280), remove from DOM */
+    setTimeout(() => {
+      if (onRemove) {
+        onRemove(product.id, product);
+      }
+    }, 710);
+
+    /* Remove heart animation class */
     setTimeout(() => {
       setIsHeartAnimating(false);
     }, 350);
   };
 
+
   return (
     <div
-      className="desk-wishlist-grid-card"
-      style={{
-        animationDelay,
-      }}
-    >
+  ref={cardRef}
+  className={`desk-wishlist-grid-card
+    ${isRemoving ? "desk-wishlist-card-removing" : ""}
+    ${isCollapsing ? "desk-wishlist-card-collapsing" : ""}
+    ${isRestored ? "desk-wishlist-card-restore" : ""}
+  `}
+  style={{ animationDelay }}
+>
       {/* ====================================================== */}
       {/* SECTION 7.2 — CARD IMAGE AREA */}
       {/* ====================================================== */}
@@ -228,8 +268,6 @@ const WishlistGridCard = ({
 
           </div>
 
-
-
           {/* ====================================================== */}
           {/* SECTION 7.4 — UNAVAILABILITY VEIL */}
           {/* ====================================================== */}
@@ -275,7 +313,7 @@ const WishlistGridCard = ({
 
           {!isUnavailable && (
             <div className="desk-wishlist-quick-add-bar">
-              <button className="desk-wishlist-quick-add-btn">
+              <button className="desk-wishlist-quick-add-btn" onClick={handleAddToBagClick}>
                 <svg
                   width="12"
                   height="12"
@@ -423,6 +461,7 @@ const WishlistGridCard = ({
               ? "desk-wishlist-primary-cta-disabled"
               : ""
               }`}
+              onClick={!product.unavailable ? handleAddToBagClick : undefined}
           >
             {product.unavailable
               ? "Notify Me"
@@ -460,7 +499,7 @@ const WishlistGridCard = ({
         {/* REMOVE LINK */}
         {/* ====================================================== */}
 
-        <button className="desk-wishlist-remove-link">
+        <button className="desk-wishlist-remove-link" onClick={handleRemoveClick}>
           <svg
             width="10"
             height="10"
@@ -477,6 +516,7 @@ const WishlistGridCard = ({
         </button>
       </div>
     </div>
+
   );
 };
 

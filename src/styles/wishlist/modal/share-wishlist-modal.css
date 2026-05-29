@@ -1,0 +1,202 @@
+/* src/styles/wishlist/modal/share-wishlist-modal.css */
+/* Section 12.1: Overlay */
+/* Section 12.2: Modal Panel */
+/* Section 12.3: Modal Content */
+
+/* ====================================================== */
+/* Section 12.1: Overlay */
+/* ====================================================== */
+
+.desk-wishlist-share-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.62);
+  backdrop-filter: blur(5px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Default state */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+/* Open state */
+.desk-wishlist-share-overlay-open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ====================================================== */
+/* Section 12.2: Modal Panel */
+/* ====================================================== */
+
+.desk-wishlist-share-modal {
+  width: 460px;
+  max-width: 90vw;
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
+  padding: 44px 44px 40px;
+  position: relative;
+  
+  /* Default state */
+  transform: translateY(14px);
+  transition: transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Open state */
+.desk-wishlist-share-overlay-open .desk-wishlist-share-modal {
+  transform: translateY(0);
+}
+
+/* Close button */
+.desk-wishlist-share-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #FAF7F2;
+  border: 1px solid #E8E0D4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.desk-wishlist-share-close-btn svg {
+  stroke: #8A7E72;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.desk-wishlist-share-close-btn:hover {
+  border: 1px solid #1A1612;
+}
+
+/* ====================================================== */
+/* Section 12.3: Modal Content */
+/* ====================================================== */
+
+.desk-wishlist-share-content {
+  text-align: center;
+}
+
+/* Eyebrow Text */
+.desk-wishlist-share-eyebrow {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #C9A96E;
+  margin-bottom: 10px;
+}
+
+/* Title */
+.desk-wishlist-share-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: #1A1612;
+  margin: 0 0 7px 0;
+}
+
+/* Body Copy */
+.desk-wishlist-share-body {
+  font-family: "DM Sans", sans-serif;
+  font-size: 12.5px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: #8A7E72;
+  margin: 0 0 26px 0;
+}
+
+
+/* ====================================================== */
+/* Section 12.4: Share Link Row */
+/* ====================================================== */
+
+.desk-wishlist-share-link-row {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+.desk-wishlist-share-input {
+  flex: 1;
+  padding: 11px 14px;
+  border: 1px solid #E8E0D4;
+  border-right: none;
+  background: #FAF7F2;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: #8A7E72;
+  outline: none;
+}
+
+.desk-wishlist-share-copy-btn {
+  padding: 11px 18px;
+  background: #1A1612;
+  border: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.desk-wishlist-share-copy-btn:hover {
+  background: #2E2520;
+}
+
+/* ====================================================== */
+/* Section 12.5: Share Options */
+/* ====================================================== */
+
+.desk-wishlist-share-options {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.desk-wishlist-share-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 10px;
+  border: 1px solid #E8E0D4;
+  background: #FAF7F2;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.desk-wishlist-share-option svg {
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.4;
+}
+
+.desk-wishlist-share-option:hover {
+  border: 1px solid #C9A96E;
+  background: #F5EDD8;
+  color: #1A1612;
+}

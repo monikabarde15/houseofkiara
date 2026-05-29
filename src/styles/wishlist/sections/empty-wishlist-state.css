@@ -1,0 +1,98 @@
+/* src/styles/wishlist/sections/empty-wishlist-state.css */
+/* Section 10: Empty State */
+
+/* Container */
+.desk-wishlist-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 0;
+  
+  /* Entry animation */
+  animation: desk-wishlist-empty-fadeIn 0.4s ease forwards;
+}
+
+/* Ring Icon */
+.desk-wishlist-empty-ring {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid #E8E0D4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+/* Heart SVG */
+.desk-wishlist-empty-heart {
+  width: 24px;
+  height: 24px;
+  stroke: #E8E0D4;
+  fill: none;
+  stroke-width: 1.3;  
+}
+
+/* Eyebrow Text */
+.desk-wishlist-empty-eyebrow {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #C9A96E;
+  margin-bottom: 10px;
+}
+
+/* Title */
+.desk-wishlist-empty-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 34px;
+  font-weight: 300;
+  color: #1A1612;
+  margin-bottom: 8px;
+}
+
+/* Italic  */
+.desk-wishlist-empty-title-italic {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* Subtitle */
+.desk-wishlist-empty-subtitle {
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  color: #8A7E72;
+  font-weight: 300;
+  line-height: 1.8;
+  max-width: 280px;
+  margin-bottom: 28px;
+}
+
+/* CTA Button */
+.desk-wishlist-empty-cta {
+  background: #1A1612;
+  color: #FFFFFF;
+  padding: 12px 32px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Hover state */
+.desk-wishlist-empty-cta:hover {
+  background: #2E2520;
+}
+
+/* Entry Animation  */
+@keyframes desk-wishlist-empty-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

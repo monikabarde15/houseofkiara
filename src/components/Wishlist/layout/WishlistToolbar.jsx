@@ -1,7 +1,8 @@
 // src/components/Wishlist/layout/WishlistToolbar.jsx
 
 import "../../../styles/wishlist/layout/wishlist-toolbar.css";
-
+import { useState } from "react";
+import ShareWishlistModal from "../modal/ShareWishlistModal";
 const WishlistToolbar = ({
   activeTab,
   onTabChange,
@@ -11,6 +12,7 @@ const WishlistToolbar = ({
   onShareClick,
   viewMode,
   onViewModeChange,
+  showGeneralToastMessage,
 }) => {
   const tabs = [
     { id: "all", label: "All", count: tabCounts?.all || 0 },
@@ -27,7 +29,18 @@ const WishlistToolbar = ({
     { value: "designerAZ", label: "Designer A–Z" },
   ];
 
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  // Update handleShareClick
+  const handleShareClick = () => {
+    setIsShareModalOpen(true);
+  };
+
+  
+
   return (
+
+    <>
     <div className="desk-wishlist-toolbar">
 
       {/* LEFT */}
@@ -94,7 +107,7 @@ const WishlistToolbar = ({
         {/* SHARE */}
         <button
           className="desk-wishlist-share-button"
-          onClick={onShareClick}
+          onClick={handleShareClick}
         >
           <svg
             width="13"
@@ -257,6 +270,18 @@ const WishlistToolbar = ({
         </div>
       </div>
     </div>
+
+  {
+    isShareModalOpen && (
+      <ShareWishlistModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        onShowToast={showGeneralToastMessage}
+      />
+    )
+  }
+
+    </>
   );
 };
 
