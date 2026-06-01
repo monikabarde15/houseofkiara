@@ -1,0 +1,103 @@
+/* Section 9.1: Backdrop */
+
+
+.wishlist-mobile-bottom-sheet__backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 22, 18, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 400;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* Section 9.2: Sheet Container */
+
+
+.wishlist-mobile-bottom-sheet {
+    background: #FFFEFB;
+    border-top: 1px solid #E8E0D4;
+    border-radius: 14px 14px 0 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 430px;
+  left: 50%;
+  z-index: 401;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateX(-50%);
+  width: 100%;
+  animation: sheetSlideUp 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Section 9.2: Entry animation */
+@keyframes sheetSlideUp {
+  from {
+    transform: translateX(-50%) translateY(100%);
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Section 9.3: Drag Handle */
+
+
+.wishlist-mobile-bottom-sheet__drag-handle {
+  width: 36px;
+  height: 4px;
+  background: #E8E0D4;
+  border-radius: 2px;
+  margin: 12px auto 0;
+}
+
+/* Section 9.4: Sheet Header */
+
+.wishlist-mobile-bottom-sheet__header {
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid #F0EAE0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Title:  */
+.wishlist-mobile-bottom-sheet__title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: #1A1612;
+  margin: 0;
+}
+
+/* Close button:  */
+.wishlist-mobile-bottom-sheet__close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #FAF7F2;
+  border: 1px solid #E8E0D4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.wishlist-mobile-bottom-sheet__close:hover {
+  border: 1px solid #1A1612;
+}
+
+/* Section 9.5: Sheet Body */
+
+.wishlist-mobile-bottom-sheet__body {
+  padding: 16px 20px 20px;
+}

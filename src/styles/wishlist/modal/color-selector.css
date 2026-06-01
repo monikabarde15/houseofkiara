@@ -6,38 +6,37 @@
 }
 
 .desk-wishlist-color-label {
-  display: block;
-  margin-bottom: 12px;
   font-family: "DM Sans", sans-serif;
-  font-size: 10px;
-  font-weight: 400;
+  font-size: 8.5px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #8A7E72;
+  margin-bottom: 10px;
 }
 
 .desk-wishlist-color-options {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
+  align-items: center;
 }
 
 .desk-wishlist-color-swatch {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 2px solid #E8E0D4;
   cursor: pointer;
-  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  transition: all 0.18s ease;
 }
 
 .desk-wishlist-color-swatch:hover {
-  transform: scale(1.05);
-  border-color: #C9A96E;
+  transform: scale(1.1);
+  /* border-color: #C9A96E; */
 }
 
 .desk-wishlist-color-selected {
-  border-color: #C9A96E;
+  border: 2px solid #C9A96E;
   box-shadow: 0 0 0 2px #FFFFFB, 0 0 0 4px #C9A96E;
 }

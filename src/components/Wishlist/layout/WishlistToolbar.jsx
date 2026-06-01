@@ -277,6 +277,8 @@ const WishlistToolbar = ({
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
         onShowToast={showGeneralToastMessage}
+        // showGeneralToastMessage={showToast}
+
       />
     )
   }

@@ -1,7 +1,5 @@
 /* src/styles/wishlist/modal/share-wishlist-modal.css */
-/* Section 12.1: Overlay */
-/* Section 12.2: Modal Panel */
-/* Section 12.3: Modal Content */
+
 
 /* ====================================================== */
 /* Section 12.1: Overlay */
@@ -11,11 +9,11 @@
   position: fixed;
   inset: 0;
   background: rgba(26, 22, 18, 0.62);
-  backdrop-filter: blur(5px);
   z-index: 200;
   display: flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(5px);
   
   /* Default state */
   opacity: 0;
@@ -39,7 +37,7 @@
   background: #FFFFFB;
   border: 1px solid #E8E0D4;
   padding: 44px 44px 40px;
-  position: relative;
+  /* position: relative; */
   
   /* Default state */
   transform: translateY(14px);
@@ -71,7 +69,7 @@
 .desk-wishlist-share-close-btn svg {
   stroke: #8A7E72;
   stroke-width: 2;
-  stroke-linecap: round;
+  /* stroke-linecap: round; */
 }
 
 .desk-wishlist-share-close-btn:hover {
@@ -90,7 +88,7 @@
 .desk-wishlist-share-eyebrow {
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
-  font-weight: 400;
+  /* font-weight: 400; */
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: #C9A96E;
@@ -132,27 +130,27 @@
   padding: 11px 14px;
   border: 1px solid #E8E0D4;
   border-right: none;
-  background: #FAF7F2;
   font-family: "DM Sans", sans-serif;
   font-size: 11.5px;
-  font-weight: 400;
   color: #8A7E72;
+  background: #FAF7F2;
   outline: none;
+  font-weight: 400;
 }
 
 .desk-wishlist-share-copy-btn {
   padding: 11px 18px;
   background: #1A1612;
+  color: #FFFFFF;
   border: none;
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #FFFFFF;
   cursor: pointer;
   transition: background 0.2s;
-  white-space: nowrap;
+  /* white-space: nowrap; */
 }
 
 .desk-wishlist-share-copy-btn:hover {
@@ -181,7 +179,6 @@
   background: #FAF7F2;
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
-  font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #8A7E72;

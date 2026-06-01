@@ -1,0 +1,32 @@
+/* Section 6.2: Mode Strip (Image Bottom) */
+
+
+.wishlist-mobile-mode-strip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wishlist-mobile-mode-strip__text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 6.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Secondary tag */
+.wishlist-mobile-mode-strip__tag {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 6.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.80;
+}

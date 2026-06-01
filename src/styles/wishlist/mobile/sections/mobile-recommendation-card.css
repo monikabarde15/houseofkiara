@@ -1,0 +1,141 @@
+/* Section 12.3: Recommendation Card Anatomy */
+
+
+.wishlist-mobile-recommendation-card {
+  width: 150px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* Image:  */
+.wishlist-mobile-recommendation-card__image {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border: 1px solid #F0EAE0;
+  overflow: hidden;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Garment silhouette */
+.wishlist-mobile-recommendation-card__garment {
+  width: 38px;
+  height: 50px;
+  margin-bottom: 8px;
+}
+
+/* Designer label on image */
+.wishlist-mobile-recommendation-card__designer-label {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* Heart button: */
+/* Background:*/
+
+.wishlist-mobile-recommendation-card__heart {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 254, 251, 0.88);
+  border: 1px solid #E8E0D4;
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.15s;
+}
+
+.wishlist-mobile-recommendation-card__heart:hover {
+  border-color: #C9A96E;
+}
+
+/* Heart icon*/
+.wishlist-mobile-recommendation-card__heart-icon {
+  width: 12px;
+  height: 12px;
+}
+
+/* Content */
+.wishlist-mobile-recommendation-card__content {
+  padding: 0 2px;
+}
+
+/* Mode label*/
+.wishlist-mobile-recommendation-card__mode {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  margin-bottom: 4px;
+}
+
+/* Designer */
+.wishlist-mobile-recommendation-card__designer {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #A8844A;
+  margin-bottom: 3px;
+}
+
+/* Product name*/
+.wishlist-mobile-recommendation-card__name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #1A1612;
+  margin-bottom: 6px;
+}
+
+/* Price row */
+.wishlist-mobile-recommendation-card__price-row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+/* Price label */
+.wishlist-mobile-recommendation-card__price-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 7.5px;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}
+
+/* Price*/
+.wishlist-mobile-recommendation-card__price {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: #1A1612;
+}
+
+/* Rent suffix*/
+.wishlist-mobile-recommendation-card__rent-suffix {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #8A7E72;
+}

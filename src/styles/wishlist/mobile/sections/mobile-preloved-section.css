@@ -1,0 +1,8 @@
+.wishlist-mobile-preloved-section {
+  margin-bottom: 8px;
+}
+
+.wishlist-mobile-preloved-section__cards {
+  display: flex;
+  flex-direction: column;
+}

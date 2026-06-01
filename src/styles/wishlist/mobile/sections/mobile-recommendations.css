@@ -1,0 +1,94 @@
+/* Section 12: Recommendations Section */
+
+.wishlist-mobile-recommendations {
+  background: #F5EFE6;
+  padding: 36px 16px 48px;
+  margin-top: 20px;
+}
+
+/* Section 12.1: Section Header */
+/* Layout:  */
+
+.wishlist-mobile-recommendations__header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.wishlist-mobile-recommendations__header-left {
+  flex: 1;
+}
+
+/* Eyebrow*/
+.wishlist-mobile-recommendations__eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #A8844A;
+  margin-bottom: 6px;
+}
+
+/* Title */
+.wishlist-mobile-recommendations__title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+  color: #1A1612;
+  margin: 0;
+}
+
+/* "love" in italic*/
+.wishlist-mobile-recommendations__title-italic {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* Explore link */
+.wishlist-mobile-recommendations__explore {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1A1612;
+  background: none;
+  border: none;
+  padding-bottom: 2px;
+  cursor: pointer;
+  transition: color 0.15s, border-bottom 0.15s;
+  border-bottom: 1px solid transparent;
+}
+
+.wishlist-mobile-recommendations__explore:hover {
+  color: #C9A96E;
+  border-bottom-color: #C9A96E;
+}
+
+/* Section 12.2: Recommendation Cards Scroll */
+
+
+.wishlist-mobile-recommendations__scroll {
+  margin: 0 -16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.wishlist-mobile-recommendations__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.wishlist-mobile-recommendations__cards {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 4px;
+}

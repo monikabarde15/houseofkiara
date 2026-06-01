@@ -1,0 +1,89 @@
+/* Section 6.9: CTAs Row */
+
+.wishlist-mobile-card-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+  align-items: stretch;
+  margin-top: auto;
+}
+
+/* Primary Button ("Add to Bag" / "Notify Me") */
+
+
+.wishlist-mobile-card-actions__primary {
+  flex: 1;
+  height: 36px;
+  background: #1A1612;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(232, 213, 176, 0.90);
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.wishlist-mobile-card-actions__primary:hover {
+  background: #2E2520;
+}
+
+/* Disabled state (Notify Me) */
+
+.wishlist-mobile-card-actions__primary--disabled {
+  background: #FAF7F2;
+  color: #8A7E72;
+  border: 1px solid #E8E0D4;
+}
+
+.wishlist-mobile-card-actions__primary--disabled:hover {
+  background: #FAF7F2;
+}
+
+/* Secondary icon button (View Piece) */
+
+.wishlist-mobile-card-actions__secondary {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  background: #FAF7F2;
+  border: 1px solid #E8E0D4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+/* Active state */
+.wishlist-mobile-card-actions__secondary:hover {
+  border-color: #C9A96E;
+  background: #F5EDD8;
+}
+
+/* Eye icon */
+.wishlist-mobile-card-actions__eye-icon {
+  width: 12px;
+  height: 12px;
+  stroke: #8A7E72;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+
+/* Section 8: Notify Me Button (Unavailable Items) */
+
+
+.wishlist-mobile-card-actions__primary--notify {
+  background: #FAF7F2;
+  color: #8A7E72;
+  border: 1px solid #E8E0D4;
+  cursor: pointer;
+}
+
+.wishlist-mobile-card-actions__primary--notify:hover {
+  background: #FAF7F2;
+  opacity: 0.8;
+}

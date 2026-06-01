@@ -1,0 +1,14 @@
+/* Mobile Wishlist Layout */
+
+.wishlist-mobile {
+  max-width: 430px;
+  margin: 0 auto;
+  background: #FFFFFB;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.wishlist-mobile__content {
+  padding-bottom: 80px;
+}

@@ -1,9 +1,5 @@
 // src/components/Wishlist/modal/ShareWishlistModal.jsx
-// Section 12.1: Overlay
-// Section 12.2: Modal Panel
-// Section 12.3: Modal Content
-// Section 12.4: Share Link Row
-// Section 12.5: Share Options
+
 
 import { useEffect, useState } from "react";
 import "../../../styles/wishlist/modal/share-wishlist-modal.css";
@@ -37,6 +33,7 @@ const ShareWishlistModal = ({ isOpen, onClose, onShowToast }) => {
     try {
       await navigator.clipboard.writeText(shareUrl);
       setIsCopied(true);
+      console.log("Toast callback:", onShowToast);
       if (onShowToast) {
         onShowToast("Link copied to clipboard");
       }

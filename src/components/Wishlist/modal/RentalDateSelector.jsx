@@ -1,5 +1,4 @@
 // src/components/Wishlist/modal/RentalDateSelector.jsx
-// Section 11.4: Modal Body - Rental Date Selector
 
 import "../../../styles/wishlist/modal/rental-date-selector.css";
 
@@ -13,11 +12,21 @@ const RentalDateSelector = ({
 
   return (
     <div className="desk-wishlist-date-selector">
-      <label className="desk-wishlist-date-label">Select Rental Dates</label>
+      <label className="desk-wishlist-date-label">
+        Select Rental Dates
+      </label>
+
       <div className="desk-wishlist-date-inputs">
         <div className="desk-wishlist-date-field">
-          <span className="desk-wishlist-date-field-label">From</span>
+          <label
+            htmlFor="rental-start-date"
+            className="desk-wishlist-date-field-label"
+          >
+            From
+          </label>
+
           <input
+            id="rental-start-date"
             type="date"
             className="desk-wishlist-date-input"
             value={startDate}
@@ -25,13 +34,21 @@ const RentalDateSelector = ({
             onChange={(e) => onStartDateChange(e.target.value)}
           />
         </div>
+
         <div className="desk-wishlist-date-field">
-          <span className="desk-wishlist-date-field-label">To</span>
+          <label
+            htmlFor="rental-end-date"
+            className="desk-wishlist-date-field-label"
+          >
+            To
+          </label>
+
           <input
+            id="rental-end-date"
             type="date"
             className="desk-wishlist-date-input"
             value={endDate}
-            min={startDate || today}
+            min={today}
             onChange={(e) => onEndDateChange(e.target.value)}
           />
         </div>

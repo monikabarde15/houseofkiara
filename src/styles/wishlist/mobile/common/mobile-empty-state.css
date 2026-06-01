@@ -1,0 +1,92 @@
+/* Section 11: Empty State */
+
+
+.wishlist-mobile-empty-state {
+  display: none;
+  background: #FFFFFB;
+  padding: 72px 32px 80px;
+  margin-top: 8px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.wishlist-mobile-empty-state.show {
+  display: flex;
+}
+
+/* Icon ring */
+.wishlist-mobile-empty-state__icon-ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid #E8E0D4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* Filled heart icon inside*/
+.wishlist-mobile-empty-state__heart-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Eyebrow*/
+.wishlist-mobile-empty-state__eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  margin-bottom: 10px;
+}
+
+/* Headline*/
+.wishlist-mobile-empty-state__headline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: #1A1612;
+  margin: 0 0 10px 0;
+}
+
+/* "edit" is italic */
+.wishlist-mobile-empty-state__headline-italic {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* Body text*/
+.wishlist-mobile-empty-state__body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.7;
+  margin: 0 0 28px 0;
+  max-width: 280px;
+}
+
+/* CTA button: */
+
+.wishlist-mobile-empty-state__button {
+  height: 44px;
+  padding: 0 28px;
+  background: #1A1612;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9.5px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #E8D5B0;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.wishlist-mobile-empty-state__button:hover {
+  background: #2E2520;
+}

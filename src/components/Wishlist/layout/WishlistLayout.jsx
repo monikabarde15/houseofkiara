@@ -18,11 +18,11 @@ const WishlistLayout = () => {
   const [showGeneralToast, setShowGeneralToast] = useState(false);
   const [generalToastMessage, setGeneralToastMessage] = useState("");
 
-const showGeneralToastMessage = (message) => {
-  setGeneralToastMessage(message);
-  setShowGeneralToast(true);
-  setTimeout(() => setShowGeneralToast(false), 3000);
-};
+  const showGeneralToastMessage = (message) => {
+    setGeneralToastMessage(message);
+    setShowGeneralToast(true);
+    setTimeout(() => setShowGeneralToast(false), 3000);
+  };
 
   const tabCounts = {
     all: 11,
@@ -55,8 +55,8 @@ const showGeneralToastMessage = (message) => {
     <div className="desk-wishlist-layout">
       <div className="desk-wishlist-container">
         <WishlistHeader />
-        
-        <WishlistToolbar 
+
+        <WishlistToolbar
           activeTab={activeTab}
           onTabChange={handleTabChange}
           tabCounts={tabCounts}
@@ -67,18 +67,24 @@ const showGeneralToastMessage = (message) => {
           onViewModeChange={handleViewModeChange}
           showGeneralToastMessage={showGeneralToastMessage}
         />
-        
+
         {/* Rent Section - contains its own header + notice + cards */}
         {showRentSection && <RentWishlistSection viewMode={viewMode} showGeneralToastMessage={showGeneralToastMessage} />}
-        
+
         {/* Preloved Section */}
         {showPrelovedSection && <PrelovedWishlistSection viewMode={viewMode} />}
-        
+
         {/* New Section */}
         {showNewSection && <NewWishlistSection viewMode={viewMode} />}
 
       </div>
-        <WishlistRecommendations onShowToast={showGeneralToastMessage} />
+      <WishlistRecommendations onShowToast={showGeneralToastMessage} />
+
+      {showGeneralToast && (
+        <div className="desk-wishlist-toast">
+          {generalToastMessage}
+        </div>
+      )}
     </div>
   );
 };

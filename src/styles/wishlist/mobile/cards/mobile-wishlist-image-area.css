@@ -1,0 +1,86 @@
+/* Section 6.1: Product Image Area */
+
+
+.wishlist-mobile-image-area {
+  position: relative;
+  width: 108px;
+  height: 144px;
+  flex-shrink: 0;
+  border: 1px solid #F0EAE0;
+  overflow: hidden;
+  margin-right: 14px;
+}
+
+/* Inner container */
+.wishlist-mobile-image-area__inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Garment SVG icon */
+.wishlist-mobile-image-area__garment {
+  width: 38px;
+  height: 50px;
+  margin-bottom: 8px;
+}
+
+/* Designer label on image */
+.wishlist-mobile-image-area__designer-label {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* Section 6.3: Remove Heart Button */
+
+
+.wishlist-mobile-image-area__heart {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  z-index: 3;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 254, 251, 0.90);
+  border: 1px solid #E8E0D4;
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+/* Heart icon */
+.wishlist-mobile-image-area__heart-icon {
+  width: 13px;
+  height: 13px;
+}
+
+/* Section 7.1*/
+@keyframes mobileHeartPop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.45);
+  }
+  65% {
+    transform: scale(0.88);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.wishlist-mobile-image-area__heart.pop {
+  animation: mobileHeartPop 0.35s ease;
+}

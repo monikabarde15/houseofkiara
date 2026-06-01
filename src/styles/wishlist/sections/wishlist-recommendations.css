@@ -4,9 +4,8 @@
 
 .desk-wishlist-recommendations {
   background: #F5EDD8  ;
-
+  /* background: #F5EFE6; */
   border-top: 1px solid #e8e0d4;
-
   padding: 72px 80px 80px;
 }
 
@@ -18,7 +17,6 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-
   margin-bottom: 44px;
 }
 
@@ -27,55 +25,42 @@
 }
 
 .desk-wishlist-rec-eyebrow {
-  margin-bottom: 10px;
-
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
-  font-weight: 400;
-
   letter-spacing: 0.28em;
   text-transform: uppercase;
-
   color: #c9a96e;
+  margin-bottom: 10px;
+  /* font-weight: 400; */
 }
 
 .desk-wishlist-rec-title {
-  margin: 0;
-
   font-family: "Cormorant Garamond", serif;
   font-size: 38px;
   font-weight: 300;
-  line-height: 1;
-
   color: #1a1612;
+  /* margin: 0; */
+  /* line-height: 1; */
 }
 
 .desk-wishlist-rec-title-italic {
   font-style: italic;
+  color: #c9a96e;
 }
 
 .desk-wishlist-rec-explore-link {
-  background: transparent;
-
-  border: none;
-  border-bottom: 1px solid #1a1612;
-
-  padding: 0 0 1px;
-
-  cursor: pointer;
-
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
-  font-weight: 400;
-
   letter-spacing: 0.16em;
+  background: transparent;
   text-transform: uppercase;
-
   color: #1a1612;
-
-  transition:
-    color 0.15s,
-    border-color 0.15s;
+  border-bottom: 1px solid #1a1612;
+  padding: 0 0 1px;
+  border: none;
+  /* cursor: pointer;
+  font-weight: 400; */
+  transition:color 0.15s, border-color 0.15s;
 }
 
 .desk-wishlist-rec-explore-link:hover {

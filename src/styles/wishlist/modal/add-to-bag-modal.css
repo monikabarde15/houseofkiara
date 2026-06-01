@@ -62,22 +62,21 @@
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 22px;
   font-weight: 400;
-  line-height: 1;
   color: #1A1612;
 }
 
 .desk-wishlist-modal-close-btn {
   width: 28px;
   height: 28px;
+  border-radius: 50%;
+  background: #FAF7F2;
+  border: 1px solid #E8E0D4;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  border: 1px solid #E8E0D4;
-  border-radius: 50%;
-  background: #FAF7F2;
-  color: #8A7E72;
   cursor: pointer;
+  flex-shrink: 0;
+  color: #8A7E72;
   transition: border-color 0.15s ease;
 }
 
@@ -112,7 +111,6 @@
 .desk-wishlist-modal-thumbnail {
   width: 52px;
   height: 66px;
-  flex-shrink: 0;
   border: 1px solid #F0EAE0;
   display: flex;
   align-items: center;
@@ -152,15 +150,15 @@
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 17px;
   font-weight: 400;
-  line-height: 1.2;
   color: #1A1612;
+  line-height: 1.2;
+  margin-bottom: 3px;
 }
 
 .desk-wishlist-modal-meta-line {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 300;
-  line-height: 1.4;
   color: #8A7E72;
 }
 
@@ -171,15 +169,15 @@
 .desk-wishlist-modal-add-btn {
   width: 100%;
   height: 48px;
-  margin-top: 4px;
-  border: none;
   background: #1A1612;
   color: #E8D5B0;
+  margin-top: 4px;
+  /* border: none; */
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
-  font-weight: 400;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  font-weight: 400;
   cursor: pointer;
   transition: background 0.2s ease;
 }
@@ -194,12 +192,13 @@
   cursor: not-allowed;
 }
 
+/* Validation Message */
 .desk-wishlist-modal-validation {
-  min-height: 16px;
-  margin-top: 9px;
-  text-align: center;
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
-  font-weight: 300;
   color: #B85C38;
+  text-align: center;
+  margin-top: 9px;
+  font-weight: 300;
+  min-height: 16px;
 }

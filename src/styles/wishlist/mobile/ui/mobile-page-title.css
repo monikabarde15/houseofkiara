@@ -1,0 +1,93 @@
+/* ==========================================================
+   Section 3: Page Title Section
+   ========================================================== */
+
+.wishlist-mobile-page-title {
+  background: #FFFEFB;
+  padding: 28px 16px 22px;
+  border-bottom: 1px solid #E8E0D4;
+}
+
+/* ==========================================================
+   3.1 Heading
+   ========================================================== */
+
+.wishlist-mobile-page-title__heading {
+  margin: 0 0 8px;
+
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 38px;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #1A1612;
+}
+
+.wishlist-mobile-page-title__normal {
+  color: #1A1612;
+}
+
+.wishlist-mobile-page-title__italic {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* ==========================================================
+   3.2 Subheading
+   ========================================================== */
+
+.wishlist-mobile-page-title__subheading {
+  margin: 0 0 20px;
+
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.65;
+  color: #8A7E72;
+}
+
+/* ==========================================================
+   3.3 Stats Row
+   ========================================================== */
+
+.wishlist-mobile-stats-row {
+  display: flex;
+  align-items: center;
+
+  border-top: 1px solid #F0EAE0;
+  padding-top: 16px;
+}
+
+.wishlist-mobile-stats-row__stat {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.wishlist-mobile-stats-row__divider {
+  width: 1px;
+  height: 28px;
+  background: #E8E0D4;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.wishlist-mobile-stats-row__number {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+  color: #1A1612;
+}
+
+.wishlist-mobile-stats-row__label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 7.5px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}

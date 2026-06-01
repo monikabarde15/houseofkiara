@@ -1,0 +1,11 @@
+/* Section 5: Content Area — Structure Overview */
+/* Gap of 8px separates consecutive mode sections (margin-bottom: 8px on each section) */
+
+.wishlist-mobile-rent-section {
+  margin-bottom: 8px;
+}
+
+.wishlist-mobile-rent-section__cards {
+  display: flex;
+  flex-direction: column;
+}
