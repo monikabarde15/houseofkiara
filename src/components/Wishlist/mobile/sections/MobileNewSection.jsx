@@ -1,11 +1,9 @@
 import MobileSectionHeader from './MobileSectionHeader';
 import MobileWishlistCard from '../cards/MobileWishlistCard';
-import { wishlistItems } from '../../data/wishlistData';
 import '../../../../styles/wishlist/mobile/sections/mobile-new-section.css';
 
-const MobileNewSection = ({ viewMode, showToast,onRemoveCard  }) => {
-  const newItems = wishlistItems.new;
-  const pieceCount = newItems.length;
+const MobileNewSection = ({ viewMode, showToast, products, onRemoveCard, onOpenAddToBagSheet }) => {
+  const pieceCount = products.length;
 
   if (pieceCount === 0) return null;
 
@@ -14,7 +12,7 @@ const MobileNewSection = ({ viewMode, showToast,onRemoveCard  }) => {
       <MobileSectionHeader mode="new" pieceCount={pieceCount} />
       
       <div className="wishlist-mobile-new-section__cards">
-        {newItems.map((item, index) => (
+        {products.map((item, index) => (
           <MobileWishlistCard 
             key={item.id} 
             item={item} 
@@ -22,6 +20,7 @@ const MobileNewSection = ({ viewMode, showToast,onRemoveCard  }) => {
             index={index}
             showToast={showToast}
             onRemoveCard={onRemoveCard}
+            onOpenAddToBagSheet={onOpenAddToBagSheet}
           />
         ))}
       </div>

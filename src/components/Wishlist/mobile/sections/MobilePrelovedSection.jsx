@@ -1,11 +1,9 @@
 import MobileSectionHeader from './MobileSectionHeader';
 import MobileWishlistCard from '../cards/MobileWishlistCard';
-import { wishlistItems } from '../../data/wishlistData';
 import '../../../../styles/wishlist/mobile/sections/mobile-preloved-section.css';
 
-const MobilePrelovedSection = ({ viewMode, showToast,onRemoveCard }) => {
-  const prelovedItems = wishlistItems.preloved;
-  const pieceCount = prelovedItems.length;
+const MobilePrelovedSection = ({ viewMode, showToast, products, onRemoveCard, onOpenAddToBagSheet }) => {
+  const pieceCount = products.length;
 
   if (pieceCount === 0) return null;
 
@@ -14,7 +12,7 @@ const MobilePrelovedSection = ({ viewMode, showToast,onRemoveCard }) => {
       <MobileSectionHeader mode="preloved" pieceCount={pieceCount} />
       
       <div className="wishlist-mobile-preloved-section__cards">
-        {prelovedItems.map((item, index) => (
+        {products.map((item, index) => (
           <MobileWishlistCard 
             key={item.id} 
             item={item} 
@@ -22,6 +20,7 @@ const MobilePrelovedSection = ({ viewMode, showToast,onRemoveCard }) => {
             index={index}
             showToast={showToast}
             onRemoveCard={onRemoveCard}
+            onOpenAddToBagSheet={onOpenAddToBagSheet}
           />
         ))}
       </div>

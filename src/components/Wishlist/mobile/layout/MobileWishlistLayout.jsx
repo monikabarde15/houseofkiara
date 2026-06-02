@@ -9,19 +9,15 @@ import MobileBottomSheet from '../sheets/MobileBottomSheet';
 import MobileAddToBagSheet from '../sheets/MobileAddToBagSheet';
 import MobileShareSheet from '../sheets/MobileShareSheet';
 import MobileEmptyState from '../common/MobileEmptyState';
-import { wishlistItems, wishlistStats } from '../../data/wishlistData';
-import '../../../../styles/wishlist/mobile/layout/mobile-wishlist-layout.css';
 import MobileRecommendations from '../sections/MobileRecommendations';
+import { useMobileWishlistProducts } from '../hooks/useMobileWishlistProducts';
+import '../../../../styles/wishlist/mobile/layout/mobile-wishlist-layout.css';
 
 const MobileWishlistLayout = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [toastMessage, setToastMessage] = useState(null);
   const [toastWithUndo, setToastWithUndo] = useState(false);
-  const [pendingRemoval, setPendingRemoval] = useState(null);
-  const [removedCardRef, setRemovedCardRef] = useState(null);
-  const [removedCardParent, setRemovedCardParent] = useState(null);
-  const [removedCardNextSibling, setRemovedCardNextSibling] = useState(null);
   const [showEmptyState, setShowEmptyState] = useState(false);
   
   // Section 9: Add to Bag sheet state
@@ -33,23 +29,34 @@ const MobileWishlistLayout = () => {
   const [isShareSheetOpen, setIsShareSheetOpen] = useState(false);
   
   const toastTimeoutRef = useRef(null);
+  
+  // Use the mobile products hook
+  const { removeProduct, undoRemove, getProductsByMode, getCounts, pendingRemoval } = useMobileWishlistProducts();
+  
+  // Get current counts
+  const counts = getCounts();
+  const totalCount = counts.total;
+  const rentCount = counts.rent;
+  const prelovedCount = counts.preloved;
+  const newCount = counts.new;
+  const uniqueDesigners = counts.uniqueDesigners;
+  const toRentCount = counts.toRent;
 
-  // Get counts based on active tab
-  const getRentCardsCount = () => document.querySelectorAll('.wishlist-mobile-rent-section .wishlist-mobile-card').length;
-  const getPrelovedCardsCount = () => document.querySelectorAll('.wishlist-mobile-preloved-section .wishlist-mobile-card').length;
-  const getNewCardsCount = () => document.querySelectorAll('.wishlist-mobile-new-section .wishlist-mobile-card').length;
-  const getAllCardsCount = () => document.querySelectorAll('.wishlist-mobile-card').length;
+  // Get products for each section
+  const rentProducts = getProductsByMode("rent");
+  const prelovedProducts = getProductsByMode("preloved");
+  const newProducts = getProductsByMode("new");
 
   const getActiveSectionCardsCount = () => {
     switch (activeTab) {
       case 'rent':
-        return getRentCardsCount();
+        return rentProducts.length;
       case 'preloved':
-        return getPrelovedCardsCount();
+        return prelovedProducts.length;
       case 'new':
-        return getNewCardsCount();
+        return newProducts.length;
       default:
-        return getAllCardsCount();
+        return totalCount;
     }
   };
 
@@ -59,14 +66,9 @@ const MobileWishlistLayout = () => {
     setShowEmptyState(count === 0);
   };
 
-  // Check empty state on tab change and initial load
   useEffect(() => {
-    // Small delay to ensure DOM is updated
-    const timer = setTimeout(() => {
-      updateEmptyState();
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [activeTab]);
+    updateEmptyState();
+  }, [activeTab, rentProducts.length, prelovedProducts.length, newProducts.length, totalCount]);
 
   // Section 9: Open Add to Bag sheet
   const handleOpenAddToBagSheet = (item, mode) => {
@@ -93,103 +95,29 @@ const MobileWishlistLayout = () => {
   };
 
   // Section 7.1: Remove sequence
-  const removeCard = (item, cardElement) => {
-    const parent = cardElement.parentElement;
-    const nextSibling = cardElement.nextSibling;
-    setRemovedCardRef(cardElement);
-    setRemovedCardParent(parent);
-    setRemovedCardNextSibling(nextSibling);
+  const handleRemoveCard = (item, cardElement) => {
+    removeProduct(item.id, item, showToast);
     
     setTimeout(() => {
       if (cardElement && cardElement.remove) {
         cardElement.remove();
       }
-      
-      updateAllCounts();
-      showToast('Removed from your wishlist', true, item);
-      
-      // Update empty state after removal
       updateEmptyState();
     }, 180);
   };
 
   // Section 7.3: Undo action
   const handleUndo = () => {
-    if (removedCardRef && removedCardParent) {
-      if (removedCardNextSibling) {
-        removedCardParent.insertBefore(removedCardRef, removedCardNextSibling);
-      } else {
-        removedCardParent.appendChild(removedCardRef);
-      }
-      
-      updateAllCounts();
-      
-      setRemovedCardRef(null);
-      setRemovedCardParent(null);
-      setRemovedCardNextSibling(null);
-      setPendingRemoval(null);
-      
-      // Update empty state after undo
-      updateEmptyState();
-    }
-    
+    undoRemove();
     if (toastTimeoutRef.current) {
       clearTimeout(toastTimeoutRef.current);
       toastTimeoutRef.current = null;
     }
     setToastMessage(null);
     setToastWithUndo(false);
+    updateEmptyState();
   };
 
-  // Section 17: Live count update logic
-  const updateAllCounts = () => {
-    const allCards = document.querySelectorAll('.wishlist-mobile-card');
-    const rentCards = document.querySelectorAll('.wishlist-mobile-card[data-mode="rent"]');
-    const prelovedCards = document.querySelectorAll('.wishlist-mobile-card[data-mode="preloved"]');
-    const newCards = document.querySelectorAll('.wishlist-mobile-card[data-mode="new"]');
-    
-    const totalCount = allCards.length;
-    const rentCount = rentCards.length;
-    const prelovedCount = prelovedCards.length;
-    const newCount = newCards.length;
-    
-    const designers = new Set();
-    allCards.forEach(card => {
-      const designer = card.getAttribute('data-designer');
-      if (designer) designers.add(designer);
-    });
-    const uniqueDesigners = designers.size;
-    
-    const savedNumber = document.querySelector('.wishlist-mobile-stats-row__stat:first-child .wishlist-mobile-stats-row__number');
-    const designersNumber = document.querySelector('.wishlist-mobile-stats-row__stat:nth-child(3) .wishlist-mobile-stats-row__number');
-    const toRentNumber = document.querySelector('.wishlist-mobile-stats-row__stat:last-child .wishlist-mobile-stats-row__number');
-    
-    if (savedNumber) savedNumber.textContent = totalCount;
-    if (designersNumber) designersNumber.textContent = uniqueDesigners;
-    if (toRentNumber) toRentNumber.textContent = rentCount;
-    
-    const allBadge = document.querySelector('.wishlist-mobile-tab-strip__tab:first-child .wishlist-mobile-tab-strip__badge');
-    const rentBadge = document.querySelector('.wishlist-mobile-tab-strip__tab:nth-child(2) .wishlist-mobile-tab-strip__badge');
-    const prelovedBadge = document.querySelector('.wishlist-mobile-tab-strip__tab:nth-child(3) .wishlist-mobile-tab-strip__badge');
-    const newBadge = document.querySelector('.wishlist-mobile-tab-strip__tab:last-child .wishlist-mobile-tab-strip__badge');
-    
-    if (allBadge) allBadge.textContent = totalCount;
-    if (rentBadge) rentBadge.textContent = rentCount;
-    if (prelovedBadge) prelovedBadge.textContent = prelovedCount;
-    if (newBadge) newBadge.textContent = newCount;
-    
-    const rentSectionCount = document.querySelector('.wishlist-mobile-rent-section .wishlist-mobile-section-header__count');
-    const prelovedSectionCount = document.querySelector('.wishlist-mobile-preloved-section .wishlist-mobile-section-header__count');
-    const newSectionCount = document.querySelector('.wishlist-mobile-new-section .wishlist-mobile-section-header__count');
-    
-    if (rentSectionCount) rentSectionCount.textContent = rentCount === 1 ? '1 piece' : `${rentCount} pieces`;
-    if (prelovedSectionCount) prelovedSectionCount.textContent = prelovedCount === 1 ? '1 piece' : `${prelovedCount} pieces`;
-    if (newSectionCount) newSectionCount.textContent = newCount === 1 ? '1 piece' : `${newCount} pieces`;
-    
-    const headerBadge = document.querySelector('.wishlist-mobile-header__badge');
-    if (headerBadge) headerBadge.textContent = totalCount;
-  };
-  
   const showToast = (message, withUndo = false, removalData = null) => {
     if (toastTimeoutRef.current) {
       clearTimeout(toastTimeoutRef.current);
@@ -197,23 +125,14 @@ const MobileWishlistLayout = () => {
     
     setToastMessage(message);
     setToastWithUndo(withUndo);
-    setPendingRemoval(removalData);
     
     const duration = withUndo ? 4000 : 3000;
     toastTimeoutRef.current = setTimeout(() => {
       setToastMessage(null);
       setToastWithUndo(false);
-      setPendingRemoval(null);
       toastTimeoutRef.current = null;
     }, duration);
   };
-
-  const totalCount = wishlistStats.totalPieces;
-  const rentCount = wishlistItems.rent.length;
-  const prelovedCount = wishlistItems.preloved.length;
-  const newCount = wishlistItems.new.length;
-  const uniqueDesigners = wishlistStats.totalDesigners;
-  const toRentCount = wishlistStats.toRent;
 
   const tabCounts = {
     all: totalCount,
@@ -247,7 +166,8 @@ const MobileWishlistLayout = () => {
             viewMode="list" 
             showToast={showToast} 
             activeTab={activeTab}
-            onRemoveCard={removeCard}
+            products={rentProducts}
+            onRemoveCard={handleRemoveCard}
             onOpenAddToBagSheet={handleOpenAddToBagSheet}
           />
         )}
@@ -256,7 +176,8 @@ const MobileWishlistLayout = () => {
           <MobilePrelovedSection 
             viewMode="list" 
             showToast={showToast}
-            onRemoveCard={removeCard}
+            products={prelovedProducts}
+            onRemoveCard={handleRemoveCard}
             onOpenAddToBagSheet={handleOpenAddToBagSheet}
           />
         )}
@@ -265,19 +186,18 @@ const MobileWishlistLayout = () => {
           <MobileNewSection 
             viewMode="list" 
             showToast={showToast}
-            onRemoveCard={removeCard}
+            products={newProducts}
+            onRemoveCard={handleRemoveCard}
             onOpenAddToBagSheet={handleOpenAddToBagSheet}
           />
         )}
         
-        {/* Section 11: Empty State - Always render, visibility controlled by isVisible prop */}
         <MobileEmptyState 
           isVisible={showEmptyState}
           onBrowseClick={() => showToast('Opening collection...')}
         />
       </div>
       
-      {/* Section 9: Add to Bag Bottom Sheet */}
       <MobileBottomSheet 
         isOpen={isAddToBagSheetOpen}
         onClose={handleCloseAddToBagSheet}
@@ -291,14 +211,12 @@ const MobileWishlistLayout = () => {
         />
       </MobileBottomSheet>
       
-      {/* Section 10: Share Wishlist Bottom Sheet */}
       <MobileShareSheet 
         isOpen={isShareSheetOpen}
         onClose={handleCloseShareSheet}
         showToast={showToast}
       />
 
-      {/* Section 12: Recommendations */}
       <MobileRecommendations showToast={showToast} />
       
       {toastMessage && (
@@ -313,7 +231,6 @@ const MobileWishlistLayout = () => {
             }
             setToastMessage(null);
             setToastWithUndo(false);
-            setPendingRemoval(null);
           }}
         />
       )}
