@@ -1,0 +1,70 @@
+/* Section 5.1: Tabs */
+
+
+.desktop-tab-strip {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: flex-end;
+}
+
+/* Tab button */
+.desktop-tab-strip__button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 24px 18px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1.5px solid transparent;
+  transition: color 0.22s, border-color 0.22s;
+}
+
+.desktop-tab-strip__button:first-child {
+  padding-left: 0;
+}
+
+/* Tab label */
+.desktop-tab-strip__label {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #B0A498;
+  transition: color 0.22s;
+}
+
+.desktop-tab-strip__button:hover .desktop-tab-strip__label {
+  color: #1A1612;
+}
+
+/* Active tab: gold underline, active colour */
+.desktop-tab-strip__button--active {
+  border-bottom: 1.5px solid #C9A96E;
+}
+
+.desktop-tab-strip__button--active .desktop-tab-strip__label {
+  color: #1A1612;
+}
+
+/* Section 5.2: Tab Count Badges */
+.desktop-tab-strip__badge {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  background: transparent;
+  color: #8A7E72;
+  border: 1px solid #E8E0D4;
+  border-radius: 20px;
+  padding: 2px 7px;
+  transition: all 0.22s;
+}
+
+.desktop-tab-strip__badge--active {
+  background: #F5EDD8;
+  color: #A8844A;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+}
