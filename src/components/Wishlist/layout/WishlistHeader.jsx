@@ -1,16 +1,7 @@
-// src/components/Wishlist/layout/WishlistHeader.jsx
-
-
 import WishlistStats from "./WishlistStats";
 import "../../../styles/wishlist/layout/wishlist-header.css";
 
-const WishlistHeader = () => {
-  // TODO: Replace with actual data from wishlist store/context
-  
-  const piecesSaved = 11;
-  const designers = 9;
-  const toRent = 7;
-
+const WishlistHeader = ({ piecesSaved, designers, toRent }) => {
   return (
     <div className="desk-wishlist-page-title-section">
       {/* Section 4.1: Left - Title */}

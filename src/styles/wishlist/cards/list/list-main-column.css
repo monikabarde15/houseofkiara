@@ -1,0 +1,87 @@
+/* Section 8.4: Main Content Column */
+.desk-wishlist-list-main-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-right: 24px;
+  border-right: 1px solid #F0EAE0;
+}
+
+/* Designer Label */
+.desk-wishlist-list-designer-label {
+  display: block;
+  margin-bottom: 5px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #A8844A;
+}
+
+/* Product Name */
+.desk-wishlist-list-product-name {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #1A1612;
+  margin-bottom: 10px;
+}
+
+/* Condition Badge */
+.desk-wishlist-list-condition-badge {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+.desk-wishlist-list-condition-pristine {
+  color: #6B7E5A;
+}
+
+.desk-wishlist-list-condition-excellent {
+  color: #A8844A;
+}
+
+.desk-wishlist-list-condition-good {
+  color: #8A7E72;
+}
+
+/* Bottom Meta */
+.desk-wishlist-list-bottom-meta {
+  margin-top: auto;
+}
+
+/* Saved Date */
+.desk-wishlist-list-saved-date {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 300;
+  color: #8A7E72;
+  margin-bottom: 8px;
+}
+
+/* Remove Link */
+.desk-wishlist-list-remove-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}
+
+.desk-wishlist-list-remove-link svg {
+  width: 10px;
+  height: 10px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+}

@@ -2,8 +2,7 @@ import WishlistSectionHeader from "../layout/WishlistSectionHeader";
 import WishlistGrid from "./WishlistGrid";
 import "../../../styles/wishlist/sections/preloved-wishlist-section.css";
 
-const PrelovedWishlistSection = ({ viewMode }) => {
-  const pieceCount = 3;
+const PrelovedWishlistSection = ({ viewMode, showGeneralToastMessage, onRemoveCard, onOpenModal, pieceCount, products }) => {
   const dotColor = "#C9A96E";
   const modeLabel = "BUY PRELOVED";
 
@@ -14,7 +13,13 @@ const PrelovedWishlistSection = ({ viewMode }) => {
         pieceCount={pieceCount}
         dotColor={dotColor}
       />
-      <WishlistGrid viewMode={viewMode} type="preloved" />
+      <WishlistGrid 
+        viewMode={viewMode} 
+        type="preloved"
+        products={products}
+        onRemoveCard={onRemoveCard}
+        onOpenModal={onOpenModal}
+      />
     </div>
   );
 };

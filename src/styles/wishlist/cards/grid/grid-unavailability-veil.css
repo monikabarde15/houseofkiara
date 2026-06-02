@@ -1,0 +1,19 @@
+/* Section 7.4: Unavailability Veil */
+
+.desk-wishlist-unavailability-veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.desk-wishlist-unavailability-text {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(255, 254, 251, 0.75);
+  letter-spacing: 0.05em;
+}

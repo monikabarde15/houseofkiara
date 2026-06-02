@@ -1,0 +1,91 @@
+/* Section 8.5: Aside / Pricing Column */
+.desk-wishlist-list-aside-column {
+  width: 300px;
+  min-width: 300px;
+  flex-shrink: 0;
+  padding-left: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.desk-wishlist-list-aside-top {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Condition in aside */
+.desk-wishlist-list-aside-condition {
+  margin-bottom: 22px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  font-weight: 400;
+}
+
+/* Price Label */
+.desk-wishlist-list-price-label {
+  margin-bottom: 14px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}
+
+/* Price */
+.desk-wishlist-list-price {
+  margin-bottom: 18px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
+  color: #1A1612;
+}
+
+/* Price Note */
+.desk-wishlist-list-price-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: #8A7E72;
+}
+
+.desk-wishlist-list-price-note-label {
+  color: #8A7E72;
+}
+
+.desk-wishlist-list-struck-price {
+  color: #F0EAE0;
+  text-decoration: line-through;
+}
+
+.desk-wishlist-list-save-badge {
+  color: #6B7E5A;
+  font-weight: 400;
+}
+
+/* New Note */
+.desk-wishlist-list-new-note {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: #8A7E72;
+}
+
+/* Unavailability Note */
+.desk-wishlist-list-unavailability-note {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 11.5px;
+  font-style: italic;
+  color: #8A7E72;
+}
+
+/* CTA Container */
+.desk-wishlist-list-cta-container {
+  width: 100%;
+}
