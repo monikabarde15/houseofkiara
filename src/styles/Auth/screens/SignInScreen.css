@@ -1,0 +1,9 @@
+/* Section 7 - Screen 1: Sign In */
+.hok-auth-signin-screen {
+  width: 100%;
+}
+
+/* Section 6.3 - Override margin for register screen */
+.hok-auth-screen#screen-register .hok-auth-form-sub-text {
+  margin-bottom: 24px;
+}

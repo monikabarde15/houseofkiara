@@ -1,0 +1,31 @@
+/* Section 6 - Right Form Panel Shared Elements */
+.hok-auth-right-panel {
+  background: var(--warm-white, #FFFEFB);
+  padding: 60px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+/* Form wrap - max-width: 400px as per Section 6 */
+.hok-auth-form-wrap {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Section 2.3 - Responsive Breakpoints */
+
+/* Tablet / Large Mobile (≤860px) */
+@media (max-width: 860px) {
+  .hok-auth-right-panel {
+    padding: 48px 32px;
+  }
+}
+
+/* Small Mobile (≤500px) */
+@media (max-width: 500px) {
+  .hok-auth-right-panel {
+    padding: 40px 20px;
+  }
+}

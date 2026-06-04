@@ -35,6 +35,7 @@ import CheckoutPage from "./pages/Checkout/CheckoutPage";
 import ConfirmationPage from "./pages/Confirmation/ConfirmationPage";
 import ProfilePage from "./pages/Profile/ProfilePage";
 import WishlistPage from "./pages/Wishlist/WishlistPage";
+import AuthPage from "./pages/Auth/AuthPage";
 
 
 
@@ -76,6 +77,7 @@ export default function App() {
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
+        <Route path="/auth" element={<AuthPage />} />
 
       </Routes>
 

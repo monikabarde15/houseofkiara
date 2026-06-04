@@ -1,0 +1,144 @@
+/* Section 9 - OTP Verification Screen */
+.hok-auth-otp-screen {
+  width: 100%;
+}
+
+/* Section 9.1 - Method hint */
+.hok-auth-otp-method-hint {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--muted, #8A7E72);
+  margin: 0 0 32px 0;
+}
+
+.hok-auth-otp-method-hint strong {
+  color: var(--charcoal, #1A1612);
+  font-weight: 500;
+}
+
+/* Section 9.2 - OTP Input Grid (6 columns) */
+.hok-auth-otp-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+/* Section 9.2 - Each OTP input box */
+.hok-auth-otp-input {
+  width: 100%;
+  min-width: 0;
+  height: 52px;
+  text-align: center;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  
+  /* Empty state */
+  background: var(--cream, #FAF7F2);
+  border: 1px solid var(--border, #E8E0D4);
+  border-radius: 1px;
+  
+  /* Remove number spinner */
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.hok-auth-otp-input:focus {
+  outline: none;
+  border-color: var(--gold, #C9A96E);
+  background: var(--warm-white, #FFFEFB);
+}
+
+/* Section 9.2 - Filled state */
+.hok-auth-otp-input.filled {
+  border-color: var(--gold, #C9A96E);
+  background: var(--gold-pale, #F5EDD8);
+}
+
+/* Section 9.2 & 9.5 - Error state (applied to all 6 boxes) */
+.hok-auth-otp-input.error {
+  border-color: var(--error, #C0392B);
+  background: var(--error-bg, #FDF3F2);
+}
+
+/* Remove number spinner */
+.hok-auth-otp-input::-webkit-outer-spin-button,
+.hok-auth-otp-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Section 9.5 - Field-level error message */
+.hok-auth-otp-error {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  color: var(--error, #C0392B);
+  line-height: 1.4;
+  margin-top: 5px;
+  margin-bottom: 18px;
+}
+
+/* Section 9.4 - OTP Footer Row */
+.hok-auth-otp-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 18px;
+}
+
+.hok-auth-otp-footer-left {
+  flex: 1;
+  text-align: left;
+}
+
+.hok-auth-timer {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11.5px;
+  color: var(--muted, #8A7E72);
+}
+
+.hok-auth-resend-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11.5px;
+  color: var(--charcoal, #1A1612);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hok-auth-resend-btn:hover {
+  text-decoration: underline;
+}
+
+.hok-auth-otp-footer-right {
+  flex: 1;
+  text-align: right;
+}
+
+.hok-auth-demo-hint {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10.5px;
+  color: #C4B9B0;
+}
+
+/* Section 2.3 - Small Mobile (≤500px) */
+@media (max-width: 500px) {
+  .hok-auth-otp-grid {
+    gap: 6px;
+  }
+  
+  .hok-auth-otp-input {
+    height: 46px;
+    font-size: 18px;
+  }
+}

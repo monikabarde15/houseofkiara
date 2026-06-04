@@ -1,0 +1,21 @@
+/* Section 6.2 - Form Heading */
+.hok-auth-form-heading {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--charcoal, #1A1612);
+  margin: 0 0 6px 0;
+}
+
+.hok-auth-form-heading em {
+  font-style: italic;
+  color: var(--gold, #C9A96E);
+}
+
+/* Section 2.3 - Small Mobile (≤500px) */
+@media (max-width: 500px) {
+  .hok-auth-form-heading {
+    font-size: 30px;
+  }
+}

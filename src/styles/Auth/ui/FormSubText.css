@@ -1,0 +1,22 @@
+/* Section 6.3 - Sub-text / Description */
+.hok-auth-form-sub-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--muted, #8A7E72);
+  margin: 0 0 32px 0;
+}
+
+/* Link style for span elements */
+.hok-auth-form-sub-text .hok-auth-link {
+  color: var(--charcoal, #1A1612);
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.hok-auth-form-sub-text .hok-auth-link:hover {
+  text-decoration: underline;
+}

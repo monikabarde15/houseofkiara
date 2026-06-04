@@ -1,0 +1,62 @@
+/* Section 6.8 - Phone Number Field */
+.hok-auth-phone-wrapper {
+  display: flex;
+  border: 1px solid var(--border, #E8E0D4);
+  border-radius: 1px;
+  background: var(--cream, #FAF7F2);
+  overflow: hidden;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+/* Focus state on wrapper (when input is focused) */
+.hok-auth-phone-wrapper:focus-within {
+  border-color: var(--gold, #C9A96E);
+  background: var(--warm-white, #FFFEFB);
+}
+
+/* Error state */
+.hok-auth-phone-wrapper.hok-auth-phone-error {
+  border-color: var(--error, #C0392B);
+  background: var(--error-bg, #FDF3F2);
+}
+
+/* Success state */
+/* .hok-auth-phone-wrapper.hok-auth-phone-success {
+  border-color: #B5D5C0;
+  background: var(--success-bg, #F0F7F3);
+} */
+
+.hok-auth-phone-prefix {
+  background: rgba(201, 169, 110, 0.06);
+  padding: 0 12px;
+  border-right: 1px solid var(--border, #E8E0D4);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.hok-auth-phone-country-code {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--charcoal, #1A1612);
+}
+
+.hok-auth-phone-input {
+  flex: 1;
+  height: 46px;
+  padding: 0 14px;
+  background: transparent;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--charcoal, #1A1612);
+  outline: none;
+}
+
+.hok-auth-phone-input::placeholder {
+  color: #C4B9B0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+}

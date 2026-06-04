@@ -1,0 +1,28 @@
+/* Section 6.9 - Form Alert Boxes */
+.hok-auth-form-alert {
+  padding: 12px 14px;
+  border-radius: 1px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin-bottom: 18px;
+  display: none;
+}
+
+.hok-auth-form-alert.show {
+  display: block;
+}
+
+/* Error variant */
+.hok-auth-alert-error {
+  background: var(--error-bg, #FDF3F2);
+  border: 1px solid #F5C6C2;
+  color: var(--error, #C0392B);
+}
+
+/* Success variant */
+.hok-auth-alert-success {
+  background: var(--success-bg, #F0F7F3);
+  border: 1px solid #B5D5C0;
+  color: var(--success, #2E7D52);
+}

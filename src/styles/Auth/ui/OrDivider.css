@@ -1,0 +1,22 @@
+/* Section 6.12 - "OR" Divider */
+.hok-auth-or-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.hok-auth-or-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border, #E8E0D4);
+}
+
+.hok-auth-or-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #C4B9B0;
+}

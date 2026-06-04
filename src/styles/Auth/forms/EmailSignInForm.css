@@ -1,0 +1,25 @@
+/* Section 7.3 - Email Sign-In Sub-View */
+.hok-auth-email-signin-form {
+  width: 100%;
+}
+
+/* Forgot password link - Section 7.3 */
+.hok-auth-forgot-link {
+  text-align: right;
+  margin-top: -10px;
+  margin-bottom: 18px;
+}
+
+.hok-auth-forgot-link a {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  color: var(--muted, #8A7E72);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.hok-auth-forgot-link a:hover {
+  color: var(--charcoal, #1A1612);
+  text-decoration: underline;
+}

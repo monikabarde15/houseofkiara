@@ -1,0 +1,44 @@
+/* Section 6.15 - Checkbox Fields */
+.hok-auth-checkbox-container {
+  margin-bottom: 18px;
+}
+
+.hok-auth-checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hok-auth-checkbox {
+  width: 16px;
+  height: 16px;
+  margin: 1px 0 0 0;
+  accent-color: var(--gold, #C9A96E);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.hok-auth-checkbox-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--muted, #8A7E72);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.hok-auth-checkbox-label a {
+  color: var(--charcoal, #1A1612);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+/* Section 8.4 - Terms checkbox error positioning */
+.hok-auth-checkbox-error {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  color: var(--error, #C0392B);
+  margin-top: -12px;
+  margin-bottom: 14px;
+  padding-left: 26px;
+}

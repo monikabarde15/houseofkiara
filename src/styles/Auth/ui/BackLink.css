@@ -1,0 +1,28 @@
+/* Section 6.13 - Back Link */
+.hok-auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 8px 0;
+  margin-bottom: 28px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted, #8A7E72);
+  transition: color 0.2s ease;
+}
+
+.hok-auth-back-link:hover {
+  color: var(--charcoal, #1A1612);
+}
+
+.hok-auth-back-link svg {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+}

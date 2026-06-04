@@ -1,0 +1,38 @@
+/* Section 8 - Screen 2: Create Account */
+.hok-auth-register-screen {
+  width: 100%;
+}
+
+/* Section 8.1 - (different from sign-in) */
+.hok-auth-register-screen .hok-auth-form-sub-text {
+  margin-bottom: 24px;
+}
+
+/* Section 8.2  */
+.hok-auth-name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 0;
+}
+
+/* Custom link style for register screen */
+.hok-auth-register-screen .hok-auth-link {
+  color: var(--charcoal, #1A1612);
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.hok-auth-register-screen .hok-auth-link:hover {
+  text-decoration: underline;
+}
+
+/* Section 2.3 Name row stacks vertically */
+@media (max-width: 500px) {
+  .hok-auth-name-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

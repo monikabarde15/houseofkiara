@@ -1,0 +1,23 @@
+/* Section 6.14 - Bottom Toggle Note */
+.hok-auth-form-toggle-note {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--muted, #8A7E72);
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light, #F0EAE0);
+}
+
+/* Link style for span elements */
+.hok-auth-form-toggle-note .hok-auth-link {
+  color: var(--charcoal, #1A1612);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.hok-auth-form-toggle-note .hok-auth-link:hover {
+  text-decoration: underline;
+}

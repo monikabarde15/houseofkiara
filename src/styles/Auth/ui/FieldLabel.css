@@ -1,0 +1,16 @@
+/* Section 6.4 - Field Labels */
+.hok-auth-field-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--charcoal, #1A1612);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.hok-auth-required-asterisk {
+  color: var(--terracotta, #B85C38);
+  margin-left: 2px;
+}

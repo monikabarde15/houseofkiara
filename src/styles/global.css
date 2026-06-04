@@ -38,6 +38,13 @@
   --amber: #C2A040;
   --amber-bg: #FDF8EE;
 
+  /* Status Colors */
+  --error: #C0392B;
+  --error-bg: #FDF3F2;
+
+  --success: #2E7D52;
+  --success-bg: #F0F7F3;
+
   /* Aliases (Design system mapping) */
   --ink-3: var(--muted);
   /* muted / secondary text */
