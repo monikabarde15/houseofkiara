@@ -42,3 +42,14 @@
   margin-bottom: 14px;
   padding-left: 26px;
 }
+
+@media (max-width: 430px) {
+  .hok-auth-checkbox-container {
+    margin-bottom: 16px;
+  }
+  
+  .hok-auth-checkbox {
+    width: 18px;
+    height: 18px;
+  }
+}

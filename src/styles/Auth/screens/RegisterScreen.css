@@ -36,3 +36,10 @@
     gap: 0;
   }
 }
+
+@media (max-width: 430px) {
+  .hok-auth-name-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

@@ -21,3 +21,11 @@
 .hok-auth-form-toggle-note .hok-auth-link:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 430px) {
+  .hok-auth-form-toggle-note {
+    font-size: 12.5px;
+    margin-top: 18px;
+    padding-top: 18px;
+  }
+}

@@ -14,3 +14,10 @@
   color: var(--terracotta, #B85C38);
   margin-left: 2px;
 }
+
+@media (max-width: 430px) {
+  .hok-auth-field-label {
+    font-size: 9.5px;
+    letter-spacing: 0.15em;
+  }
+}

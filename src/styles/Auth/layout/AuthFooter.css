@@ -77,3 +77,32 @@
     justify-content: center;
   }
 }
+
+@media (max-width: 430px) {
+  .hok-auth-footer {
+    padding: 24px 20px;
+    margin-top: 8px;
+  }
+  
+  .hok-auth-footer-content {
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .hok-auth-footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 16px;
+  }
+  
+  .hok-auth-footer-link {
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+  }
+  
+  .hok-auth-footer-copyright {
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+}

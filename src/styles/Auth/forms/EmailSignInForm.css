@@ -23,3 +23,14 @@
   color: var(--charcoal, #1A1612);
   text-decoration: underline;
 }
+
+@media (max-width: 430px) {
+  .hok-auth-forgot-link {
+    margin-top: -8px;
+    margin-bottom: 16px;
+  }
+  
+  .hok-auth-forgot-link a {
+    font-size: 11.5px;
+  }
+}

@@ -19,3 +19,10 @@
     font-size: 30px;
   }
 }
+
+@media (max-width: 430px) {
+  .hok-auth-form-heading {
+    font-size: 32px;
+    letter-spacing:0.30;
+  }
+}

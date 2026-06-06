@@ -20,3 +20,9 @@
 .hok-auth-form-sub-text .hok-auth-link:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 430px) {
+  .hok-auth-form-sub-text {
+    margin-bottom: 24px;
+  }
+}

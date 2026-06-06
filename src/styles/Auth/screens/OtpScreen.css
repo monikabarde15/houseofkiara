@@ -142,3 +142,20 @@
     font-size: 18px;
   }
 }
+
+@media (max-width: 430px) {
+  .hok-auth-timer {
+    font-size: 12px;
+  }
+  
+  .hok-auth-resend-btn {
+    font-size: 12px;
+  }
+}
+
+
+@media (max-width: 430px) {
+  .hok-auth-otp-method-hint {
+    margin-bottom: 22px;
+  }
+}

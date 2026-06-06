@@ -20,3 +20,14 @@
   text-transform: uppercase;
   color: #C4B9B0;
 }
+
+@media (max-width: 430px) {
+  .hok-auth-or-divider {
+    gap: 12px;
+    margin: 22px 0;
+  }
+  
+  .hok-auth-or-text {
+    font-size: 9.5px;
+  }
+}

@@ -31,3 +31,22 @@
   color: var(--charcoal, #1A1612);
   border-bottom: 2px solid var(--gold, #C9A96E);
 }
+
+@media (max-width: 430px) {
+  .hok-auth-tab-row {
+    margin-bottom: 24px;
+  }
+  
+  .hok-auth-tab {
+    padding: 13px 8px;
+    font-size: 10px;
+    letter-spacing: 0.13em;
+  }
+
+  .hok-auth-tab:hover {
+    color: var(--muted, #8A7E72);
+  }
+  .hok-auth-tab:active {
+    color: var(--charcoal, #1A1612);
+  }
+}

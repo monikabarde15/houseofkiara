@@ -59,3 +59,17 @@
   0% { transform: translateY(-50%) rotate(0deg); }
   100% { transform: translateY(-50%) rotate(360deg); }
 }
+
+@media (max-width: 430px) {
+  .hok-auth-btn-primary {
+    height: 52px;
+  }
+
+  .hok-auth-btn-primary:hover {
+    transform: none;
+    background: var(--charcoal, #1A1612);
+  }
+  .hok-auth-btn-primary:active {
+    background: #2E2520;
+  }
+}

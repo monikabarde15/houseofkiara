@@ -8,3 +8,11 @@
   color:  #C9A96E;
   margin-bottom: 10px;
 }
+
+@media (max-width: 430px) {
+  .hok-auth-form-eyebrow {
+    font-size: 9.5px;
+    letter-spacing: 0.26em;
+    margin-bottom: 8px;
+  }
+}
