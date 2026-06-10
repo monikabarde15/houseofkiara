@@ -1,0 +1,30 @@
+.hok-product-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 10px;
+
+  border-radius: 1px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 500;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hok-product-badge-rent {
+  background: #1a1612;
+  color: #d4c5b0;
+}
+
+.hok-product-badge-preloved {
+  background: #b85c38;
+  color: #ffffff;
+}
+
+.hok-product-badge-new {
+  background: #6b7e5a;
+  color: #ffffff;
+}

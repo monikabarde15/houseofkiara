@@ -1,0 +1,345 @@
+.dropdown {
+  position: fixed;
+  left: 0;
+  width: 100vw;
+
+  background: #fffefb;
+
+  border-top: 2px solid #1a1612;
+  border-bottom: 1px solid #e8e0d4;
+
+  box-shadow:
+    0 20px 60px rgba(26, 22, 18, 0.09),
+    0 4px 16px rgba(26, 22, 18, 0.05);
+
+  z-index: 1000;
+
+  opacity: 1;
+}
+
+.dropdown-inner {
+  display: grid;
+
+  grid-template-columns:
+    210px
+    210px
+    1fr;
+
+  max-width: 1400px;
+
+  margin: 0 auto;
+
+  padding: 0 48px;
+
+  min-height: 340px;
+}
+
+.dd-col-left {
+  padding: 36px 32px 36px 0;
+  border-right: 1px solid #f0eae0;
+}
+
+.dd-col-mid {
+  padding: 36px 32px;
+  border-right: 1px solid #f0eae0;
+}
+
+.dd-col-right {
+  padding: 36px 0 36px 36px;
+}
+
+.dd-label {
+  display: block;
+
+  margin-bottom: 18px;
+
+  font-family: "DM Sans", sans-serif;
+
+  font-size: 8.5px;
+
+  letter-spacing: 0.3em;
+
+  text-transform: uppercase;
+
+  color: #c9a96e;
+}
+
+.dd-cat {
+  display: block;
+
+  width: 100%;
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 18px;
+
+  color: #1a1612;
+
+  text-decoration: none;
+
+  margin-bottom: 12px;
+
+  transition:
+    color 0.14s,
+    padding-left 0.14s;
+}
+
+.dd-cat:hover {
+  color: #c9a96e;
+  padding-left: 8px;
+}
+
+.dd-link {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-family: "DM Sans", sans-serif;
+
+  font-size: 12.5px;
+
+  color: #5a4f46;
+
+  text-decoration: none;
+}
+
+.dd-divider {
+  height: 1px;
+
+  background: #f0eae0;
+
+  margin: 12px 0;
+}
+
+
+.dd-link.bold {
+  font-weight: 500;
+  color: #1a1612;
+}
+
+.dd-sub {
+  display: inline-block;
+
+  margin-top: 2px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+
+  color: #8a7e72;
+
+  text-decoration: none;
+
+  transition:
+    color 0.13s,
+    padding-left 0.12s;
+}
+
+.dd-sub:hover {
+  color: #1a1612;
+  padding-left: 4px;
+}
+
+.dd-cards-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+
+  margin-bottom: 22px;
+}
+
+.dd-cards-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 21px;
+  font-weight: 400;
+  color: #1a1612;
+}
+
+.dd-cards-title em {
+  color: #c9a96e;
+  font-style: italic;
+}
+
+.dd-view-all {
+  background: none;
+  border: none;
+  border-bottom: 1px solid #e8e0d4;
+
+  padding-bottom: 1px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  color: #8a7e72;
+
+  cursor: pointer;
+}
+
+.dd-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.dd-card {
+  cursor: pointer;
+}
+
+.dd-card-img {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.dd-card-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s ease;
+}
+
+.dd-card:hover .dd-card-inner {
+  transform: scale(1.04);
+}
+
+.dd-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+
+  padding: 3px 8px;
+
+  font-size: 7px;
+  font-weight: 500;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.b-rent {
+  background: #1a1612;
+  color: #d4c5b0;
+}
+
+.b-pre {
+  background: #b85c38;
+  color: #fff;
+}
+
+.b-new {
+  background: #6b7e5a;
+  color: #fff;
+}
+
+.dd-card-designer {
+  margin-bottom: 3px;
+
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+
+  color: #c9a96e;
+
+  text-transform: uppercase;
+}
+
+.dd-card-name {
+  margin-bottom: 4px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  font-weight: 400;
+
+  color: #1a1612;
+}
+
+.dd-card-price {
+  font-size: 11px;
+  color: #8a7e72;
+}
+
+.ci-a {
+  background: linear-gradient(
+    160deg,
+    #3c2410,
+    #1c0e06
+  );
+}
+
+.ci-b {
+  background: linear-gradient(
+    160deg,
+    #28203c,
+    #10101c
+  );
+}
+
+.ci-c {
+  background: linear-gradient(
+    160deg,
+    #1a2c16,
+    #0a1408
+  );
+}
+
+.ci-d {
+  background: linear-gradient(
+    160deg,
+    #2c1e28,
+    #160c14
+  );
+}
+
+.ci-e {
+  background: linear-gradient(
+    160deg,
+    #1e2c2a,
+    #0a1412
+  );
+}
+
+.ci-f {
+  background: linear-gradient(
+    160deg,
+    #2a1e14,
+    #140e08
+  );
+}
+
+
+/* ==========================================
+   SECTION 8.2 — TABLET DROPDOWN
+   768px–1023px
+   ========================================== */
+
+@media (max-width: 1023px) {
+  .dropdown-inner {
+    grid-template-columns: 280px 1fr;
+
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .dd-col-left {
+    padding-right: 24px;
+  }
+
+  .dd-col-mid {
+    padding-left: 24px;
+    padding-right: 24px;
+
+    border-right: none;
+  }
+
+  .dd-col-right {
+    grid-column: 1 / -1;
+
+    padding-top: 0;
+    padding-left: 0;
+  }
+
+  .dd-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

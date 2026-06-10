@@ -1,0 +1,124 @@
+.desk-featured-designers {
+  background: #faf7f2;
+  padding: 80px;
+}
+
+.desk-featured-designers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.desk-featured-designers-header .hok-section-eyebrow {
+  margin-bottom: 12px;
+}
+
+.desk-designers-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+
+  gap: 3px;
+
+  margin-top: 48px;
+}
+
+/* CARD */
+
+.desk-designer-card {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.desk-designer-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transition: transform 0.5s ease;
+  z-index: 0;
+}
+
+.desk-designer-card:hover::before {
+  transform: scale(1.04);
+}
+
+.desk-designer-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.82),
+    transparent
+  );
+  z-index: 1;
+}
+
+.desk-designer-content {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 24px;
+  z-index: 2;
+}
+
+.desk-designer-content h3 {
+  margin: 0 0 3px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.desk-designer-count {
+  display: block;
+  margin-bottom: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.desk-designer-cta {
+  display: block;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.2s;
+}
+
+.desk-designer-card:hover .desk-designer-cta {
+  color: #e8d5b0;
+}
+
+/* Placeholder backgrounds */
+
+.desk-designer-sabyasachi::before {
+  background: linear-gradient(180deg,#5a2418 0%,#23100a 100%);
+}
+
+.desk-designer-manish::before {
+  background: linear-gradient(180deg,#2d1e3f 0%,#16101f 100%);
+}
+
+.desk-designer-tarun::before {
+  background: linear-gradient(180deg,#24394f 0%,#111b26 100%);
+}
+
+.desk-designer-anita::before {
+  background: linear-gradient(180deg,#3e2d20 0%,#1d140d 100%);
+}
+
+.desk-designer-ritu::before {
+  background: linear-gradient(180deg,#3f3024 0%,#1b120d 100%);
+}
+
+.desk-designer-rahul::before {
+  background: linear-gradient(180deg,#1f3a34 0%,#0d1916 100%);
+}

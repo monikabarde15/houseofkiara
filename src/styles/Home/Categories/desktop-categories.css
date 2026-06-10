@@ -1,0 +1,189 @@
+/* ==========================================
+   SHOP BY CATEGORY
+========================================== */
+
+.desk-categories {
+  background: #fffefb;
+  padding: 80px;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.desk-categories-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.desk-categories-header-left .hok-section-eyebrow {
+  margin-bottom: 12px;
+}
+
+/* ==========================================
+   GRID
+========================================== */
+
+.desk-categories-grid {
+  margin-top: 40px;
+}
+
+.desk-categories-row-one {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 3px;
+}
+
+.desk-categories-row-two {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 3px;
+  margin-top: 3px;
+}
+
+/* ==========================================
+   TILE
+========================================== */
+
+.desk-category-tile {
+  position: relative;
+
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.desk-categories-row-one .desk-category-tile {
+  height: 520px;
+}
+
+.desk-categories-row-two .desk-category-tile {
+  height: 380px;
+}
+
+/* ==========================================
+   OVERLAY
+========================================== */
+
+.desk-category-overlay {
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.78) 0%,
+    rgba(0, 0, 0, 0.2) 60%,
+    transparent 100%
+  );
+
+  z-index: 1;
+}
+
+/* ==========================================
+   CONTENT
+========================================== */
+
+.desk-category-content {
+  position: absolute;
+
+  left: 28px;
+  right: 28px;
+  bottom: 32px;
+
+  z-index: 2;
+}
+
+.desk-category-title-large {
+  margin: 0 0 6px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  font-weight: 400;
+
+  color: #ffffff;
+
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.desk-category-title-small {
+  margin: 0 0 6px;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: 13px;
+  font-weight: 400;
+
+  color: #ffffff;
+
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.desk-category-cta {
+  display: inline-block;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  transition: color 0.2s;
+}
+
+/* ==========================================
+   HOVER
+========================================== */
+
+.desk-category-tile:hover .desk-category-cta {
+  color: #e8d5b0;
+}
+
+/* ==========================================
+   PLACEHOLDER BACKGROUNDS
+   SPEC 08.4
+========================================== */
+
+.desk-category-bridal {
+  background: linear-gradient(
+    180deg,
+    #3c2010 0%,
+    #1c0e06 100%
+  );
+}
+
+.desk-category-sherwanis {
+  background: linear-gradient(
+    180deg,
+    #28203c 0%,
+    #12101c 100%
+  );
+}
+
+.desk-category-sarees {
+  background: linear-gradient(
+    180deg,
+    #1c2c1a 0%,
+    #0c160a 100%
+  );
+}
+
+.desk-category-anarkalis {
+  background: linear-gradient(
+    180deg,
+    #2c2218 0%,
+    #160e08 100%
+  );
+}
+
+.desk-category-indo-western {
+  background: linear-gradient(
+    180deg,
+    #301828 0%,
+    #180c14 100%
+  );
+}

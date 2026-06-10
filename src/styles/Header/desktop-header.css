@@ -1,0 +1,224 @@
+/* src\styles\Header\desktop-header.css */
+.hok-header {
+  position: sticky;
+  top: 0px;
+  z-index: 250;
+  background: rgba(255, 254, 251, 0.98);
+  border-bottom: 1px solid #e8e0d4;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.hok-header-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  column-gap: 16px;
+
+  height: 72px;
+  padding: 0 48px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+/* ======================
+   SEARCH TRIGGER
+====================== */
+
+.header-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  max-width: 280px;
+
+  padding: 9px 16px;
+
+  background: #faf7f2;
+  border: 1px solid #e8e0d4;
+  border-radius: 1px;
+
+  cursor: text;
+
+  transition: border-color 0.2s;
+}
+
+.header-search:hover {
+  border-color: #c9a96e;
+}
+
+.header-search.search-active {
+  border-color: #c9a96e;
+  background: #f5edd8;
+}
+
+.header-search-icon {
+  width: 14px;
+  height: 14px;
+
+  fill: none;
+  stroke: #8a7e72;
+  stroke-width: 1.5;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  flex-shrink: 0;
+}
+
+.header-search-placeholder {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+
+  color: #b0a394;
+}
+
+/* ======================
+   LOGO
+====================== */
+
+.header-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  padding: 4px 24px 6px;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition: opacity 0.2s;
+}
+
+.header-logo:hover {
+  opacity: 0.75;
+}
+
+.logo-img {
+  width: 36px;
+  height: 36px;
+
+  object-fit: contain;
+  display: block;
+}
+
+.logo-wordmark {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 11.5px;
+  font-weight: 500;
+
+  line-height: 1;
+
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+
+  color: #1a1612;
+  white-space: nowrap;
+}
+
+/* ======================
+   ICON BUTTONS
+====================== */
+
+.hdr-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+
+  padding: 8px 10px;
+
+  background: none;
+  border: none;
+
+  cursor: pointer;
+
+  border-radius: 2px;
+
+  transition: background 0.15s;
+}
+
+.hdr-btn:hover {
+  background: #faf7f2;
+}
+
+.hdr-btn svg {
+  width: 18px;
+  height: 18px;
+
+  fill: none;
+  stroke: #1a1612;
+  stroke-width: 1.4;
+}
+
+.hdr-btn span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+
+  color: #8a7e72;
+}
+
+/* ======================
+   BAG DOT
+====================== */
+
+.cart-wrap {
+  position: relative;
+}
+
+.cart-dot {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #b85c38;
+  border: 1.5px solid #fffefb;
+}
+
+
+/* ==========================================
+   SECTION 8.2 — TABLET HEADER
+   ========================================== */
+
+@media (max-width: 1023px) {
+  .hok-header-inner {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .header-search {
+    max-width: 200px;
+  }
+}
+
+
+@media (max-width: 767px) {
+  .hok-mobile-header {
+    backdrop-filter: none;
+  }
+}

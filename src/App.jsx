@@ -3,19 +3,10 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Layout
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
 
-// Home Sections
-import Hero from "./components/Hero";
-import HowItWorks from "./components/HowItWorks";
-import Featured from "./components/Featured";
-import Categories from "./components/Categories";
-import CommitmentSection from "./components/CommitmentSection";
-import FeaturedDesigners from "./components/FeaturedDesigners";
-import Testimonials from "./components/Testimonials";
-import InstagramSection from "./components/InstagramSection";
-import ProductDetail from "./components/ProductDetail";
+
 
 // Pages
 import ProductList from "./components/Products";
@@ -24,11 +15,12 @@ import RentalAndPreloved from "./components/RentalAndPreloved";
 import OnlyRentalDetail from "./components/OnlyRentalDetail";
 import Preloved from "./components/Preloved";
 import RentalAndBuy from "./components/RentalAndBuy";
-
+import ProductDetail from "./components/ProductDetail";
 import DummyGowns from "./components/DummyGowns";
 
 // LYP
 
+import HomePage from "./pages/HomePage/HomePage";
 import LypMain from "./components/LYP/LypMain";
 import CartPage from "./pages/Cart/CartPage";
 import CheckoutPage from "./pages/Checkout/CheckoutPage";
@@ -39,29 +31,13 @@ import AuthPage from "./pages/Auth/AuthPage";
 
 
 
-//  Home Page Component
-function Home() {
-  return (
-    <>
-      <Hero />
-      <HowItWorks />
-      <Featured />
-      <Categories />
-      <CommitmentSection />
-      <FeaturedDesigners />
-      <Testimonials />
-      <InstagramSection />
-    </>
-  );
-}
-
 export default function App() {
   return (
     <>
       <Header />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<HomePage />} />
         {/* Products Page */}
         <Route path="/products" element={<ProductList />} />
         <Route path="/product/:id" element={<ProductDetail />} />

@@ -1,0 +1,205 @@
+/* ====================================
+   OVERLAY
+==================================== */
+
+.hok-mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(26, 22, 18, 0.5);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition: opacity 0.3s ease;
+
+  z-index: 398;
+}
+
+.hok-mobile-menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ====================================
+   DRAWER
+==================================== */
+
+.hok-mobile-menu {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 85vw;
+  max-width: 320px;
+
+  height: 100vh;
+
+  background: #fffefb;
+
+  transform: translateX(-100%);
+
+  transition: transform 0.3s ease;
+
+  overflow-y: auto;
+
+  z-index: 399;
+}
+
+.hok-mobile-menu.active {
+  transform: translateX(0);
+}
+
+/* ====================================
+   HEADER
+==================================== */
+
+.hok-mobile-menu-header {
+  height: 56px;
+
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #e8e0d4;
+}
+
+.hok-mobile-menu-title {
+  margin: 0;
+
+  font-family: "Cormorant Garamond",
+    serif;
+
+  font-size: 18px;
+  font-weight: 500;
+
+  color: #1a1612;
+}
+
+.hok-mobile-menu-close {
+  width: 36px;
+  height: 36px;
+
+  border: none;
+  background: none;
+
+  cursor: pointer;
+
+  font-size: 28px;
+  line-height: 1;
+
+  color: #1a1612;
+}
+
+/* ====================================
+   CONTENT
+==================================== */
+
+.hok-mobile-menu-section {
+  padding: 24px 20px;
+}
+
+.hok-mobile-menu-section:not(
+    :last-child
+  ) {
+  border-bottom: 1px solid #e8e0d4;
+}
+
+.hok-mobile-menu-heading {
+  margin-bottom: 16px;
+
+  font-family: "DM Sans",
+    sans-serif;
+
+  font-size: 10px;
+  font-weight: 500;
+
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  color: #c9a96e;
+}
+
+/* ====================================
+   LINKS
+==================================== */
+
+.hok-mobile-menu-link {
+  width: 100%;
+
+  min-height: 44px;
+
+  padding: 14px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: none;
+  border-bottom: 1px solid #f3eee6;
+
+  background: none;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  font-family: "DM Sans",
+    sans-serif;
+
+  font-size: 14px;
+  font-weight: 300;
+
+  color: #1a1612;
+}
+
+.hok-mobile-menu-link:last-child {
+  border-bottom: none;
+}
+
+.hok-mobile-menu-link span {
+  color: #c9a96e;
+}
+
+/* ====================================
+   ACCORDION
+==================================== */
+
+.hok-mobile-accordion {
+  width: 100%;
+}
+
+.hok-mobile-submenu {
+  padding: 8px 0 16px 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.hok-mobile-submenu a {
+  text-decoration: none;
+
+  font-family: "DM Sans",
+    sans-serif;
+
+  font-size: 13px;
+  font-weight: 300;
+
+  color: #8a7e72;
+}
+
+/* ====================================
+   DESKTOP HIDE
+==================================== */
+
+@media (min-width: 768px) {
+  .hok-mobile-menu,
+  .hok-mobile-menu-overlay {
+    display: none;
+  }
+}

@@ -1,0 +1,21 @@
+.hok-categories {
+  width: 100%;
+}
+
+.hok-categories-desktop {
+  display: block;
+}
+
+.hok-categories-mobile {
+  display: none;
+}
+
+@media (max-width: 430px) {
+  .hok-categories-desktop {
+    display: none;
+  }
+
+  .hok-categories-mobile {
+    display: block;
+  }
+}

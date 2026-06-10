@@ -1,0 +1,144 @@
+.hok-navigation {
+  position: relative;
+  z-index: 240;
+
+  background: #fffefb;
+
+  border-top: 1px solid #f0eae0;
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 48px;
+}
+
+.nav-group {
+  position: relative;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background: none;
+  border: none;
+
+  padding: 13px 16px;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  font-weight: 400;
+
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+
+  color: #5a4f46;
+
+  border-bottom: 2px solid transparent;
+
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.nav-item:hover {
+  color: #1a1612;
+  border-bottom-color: #c9a96e;
+}
+
+.nav-item.accent {
+  color: #b85c38;
+}
+
+.nav-item.accent:hover {
+  border-bottom-color: #b85c38;
+}
+
+.nav-item.green {
+  color: #6b7e5a;
+}
+
+.nav-item.green:hover {
+  border-bottom-color: #6b7e5a;
+}
+
+.nav-item.standalone:hover {
+  color: #1a1612;
+  border-bottom-color: #c9a96e;
+}
+
+/* ======================
+   CHEVRON
+====================== */
+
+.nav-chev {
+  width: 9px;
+  height: 9px;
+
+  fill: none;
+  stroke: currentColor;
+
+  stroke-width: 2;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  transition: transform 0.22s ease;
+}
+
+.dd-open .nav-chev {
+  transform: rotate(180deg);
+}
+
+/* ======================
+   NEW BADGE
+====================== */
+
+.nav-pill {
+  margin-left: 4px;
+
+  padding: 2px 6px;
+
+  background: #b85c38;
+  color: #ffffff;
+
+  border-radius: 2px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 7px;
+  font-weight: 500;
+
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+
+/* ==========================================
+   SECTION 8.2 — TABLET NAVIGATION
+   768px–1023px
+   ========================================== */
+
+@media (max-width: 1023px) {
+  .nav-inner {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .nav-item {
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .hok-navigation {
+    display: none;
+  }
+}

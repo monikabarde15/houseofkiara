@@ -1,0 +1,45 @@
+/* src/styles/Header/header.css */
+
+.hok-header-desktop {
+  position: sticky;
+  /* top: 36px; */
+  z-index: 250;
+}
+
+.hok-header-mobile {
+  position: relative;
+  z-index: 250;
+}
+
+.hok-announcement-bar {
+  position: relative;
+  z-index: 260;
+}
+
+/* ==========================================
+   DESKTOP
+========================================== */
+
+@media (min-width: 768px) {
+  .hok-header-desktop {
+    display: block;
+  }
+
+  .hok-header-mobile {
+    display: none;
+  }
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 767px) {
+  .hok-header-desktop {
+    display: none;
+  }
+
+  .hok-header-mobile {
+    display: block;
+  }
+}

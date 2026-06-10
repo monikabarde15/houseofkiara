@@ -1,0 +1,158 @@
+/* src/styles/Header/mobile-header.css */
+
+.hok-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 56px;
+  position: fixed;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 390px;
+  z-index: 300;
+  transition: background 0.3s, border-color 0.3s;
+
+}
+
+/* Dark Mode */
+.hok-mobile-header.dark {
+  background: linear-gradient(to bottom, rgba(26, 22, 18, 0.72) 0%, rgba(26, 22, 18, 0) 100%);
+  border-bottom: none;
+}
+
+.hok-mobile-header.dark .hok-mob-burger-line {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.hok-mobile-header.dark .hok-mob-logo-text {
+  color: #FFFFFF;
+}
+
+.hok-mobile-header.dark .hok-mob-icon-btn svg {
+  stroke: rgba(255, 255, 255, 0.9);
+}
+
+.hok-mobile-header.dark .hok-mob-cart-dot {
+  border: 1.5px solid rgba(26, 22, 18, 0.6);
+}
+
+/* Light Mode */
+.hok-mobile-header.light {
+  background: rgba(255, 254, 251, 0.97);
+  border-bottom: 1px solid #E8E0D4;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.hok-mobile-header.light .hok-mob-burger-line {
+  background: #1A1612;
+}
+
+.hok-mobile-header.light .hok-mob-logo-text {
+  color: #1A1612;
+}
+
+.hok-mobile-header.light .hok-mob-icon-btn svg {
+  stroke: #1A1612;
+}
+
+.hok-mobile-header.light .hok-mob-cart-dot {
+  border: 1.5px solid #FFFFFB;
+}
+
+/* Hamburger Button */
+.hok-mob-burger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.hok-mob-burger-line {
+  width: 20px;
+  height: 1.5px;
+  border-radius: 1px;
+  transition: background 0.3s;
+}
+
+/* Logo */
+.hok-mob-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  cursor: pointer;
+}
+
+.hok-mob-logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.hok-mob-logo-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+/* Right Icons */
+.hok-mob-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.hok-mob-icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+
+  width: 44px;
+  height: 44px;
+
+  padding: 0;
+
+  background: none;
+  border: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+}
+
+.hok-mob-icon-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke-width: 1.4;
+  transition: stroke 0.3s;
+}
+
+/* Cart Wrap with Dot */
+.hok-mob-cart-wrap {
+  position: relative;
+}
+
+.hok-mob-cart-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #B85C38;
+}
+

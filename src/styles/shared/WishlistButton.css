@@ -1,0 +1,27 @@
+.hok-wishlist-btn {
+  width: 32px;
+  height: 32px;
+
+  border-radius: 50%;
+
+  border: 1px solid #e8e0d4;
+
+  background: rgba(255, 255, 255, 0.9);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  opacity: 0;
+
+  transition: opacity 0.2s;
+}
+
+.hok-wishlist-btn svg {
+  width: 14px;
+  height: 14px;
+
+  stroke: #1a1612;
+}

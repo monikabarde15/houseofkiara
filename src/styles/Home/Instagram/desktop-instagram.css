@@ -1,0 +1,104 @@
+/* ==========================================
+   INSTAGRAM SECTION
+========================================== */
+
+.desk-instagram {
+  background: #fffefb;
+  padding: 80px;
+}
+
+/* ==========================================
+   GRID
+========================================== */
+
+.desk-instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 3px;
+  margin-top: 40px;
+}
+
+/* ==========================================
+   TILE
+========================================== */
+
+.desk-instagram-tile {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  display: block;
+}
+
+.desk-instagram-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.desk-instagram-tile:hover img {
+  transform: scale(1.05);
+}
+
+/* ==========================================
+   OVERLAY
+========================================== */
+
+.desk-instagram-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.25s;
+  z-index: 2;
+}
+
+.desk-instagram-tile:hover
+  .desk-instagram-overlay {
+  opacity: 1;
+}
+
+.desk-instagram-overlay svg {
+  width: 28px;
+  height: 28px;
+  color: #ffffff;
+}
+
+/* ==========================================
+   FOLLOW ROW
+========================================== */
+
+.desk-instagram-follow-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.desk-instagram-line {
+  flex: 1;
+  height: 1px;
+  background: #e8e0d4;
+}
+
+.desk-instagram-follow-text {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 400;
+  color: #8a7e72;
+}
+
+.desk-instagram-follow-text a {
+  text-decoration: none;
+  color: #1a1612;
+  transition: color 0.2s;
+}
+
+.desk-instagram-follow-text a:hover {
+  color: #c9a96e;
+}
