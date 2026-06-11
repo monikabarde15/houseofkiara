@@ -233,7 +233,7 @@ export const dropdownData = {
       "Buy New",
     ],
 
-    cardsTitle: "New in Womenswear",
+    cardsTitle: "Featured Womenswear",
 
     cards: [
       {

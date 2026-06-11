@@ -6,7 +6,7 @@ import { useEffect, useState} from "react";
 import { ChevronDown } from "lucide-react";
 
 
-function BridalLehenga() {
+function MainCategoryPage() {
 
   const [filters, setFilters] = useState({
     rentType: [],
@@ -482,4 +482,4 @@ function BridalLehenga() {
     </div>
   )
 }
-export default BridalLehenga
+export default MainCategoryPage

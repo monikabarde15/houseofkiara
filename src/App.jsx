@@ -10,7 +10,7 @@ import Footer from "./components/Footer/Footer";
 
 // Pages
 import ProductList from "./components/Products";
-import BridalLehenga from "./components/BridalLehenga";
+import MainCategoryPage from "./components/MainCategoryPage";
 import RentalAndPreloved from "./components/RentalAndPreloved";
 import OnlyRentalDetail from "./components/OnlyRentalDetail";
 import Preloved from "./components/Preloved";
@@ -41,7 +41,7 @@ export default function App() {
         {/* Products Page */}
         <Route path="/products" element={<ProductList />} />
         <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/rent/bridal-lehengas" element={<BridalLehenga />} />
+        <Route path="/main-page" element={<MainCategoryPage/>} />
         <Route path="/rent/gowns" element={<DummyGowns />} />
         <Route path="/rentalandpreloved/:id" element={<RentalAndPreloved />} />
         <Route path="/onlyrental/:id" element={<OnlyRentalDetail />} />
