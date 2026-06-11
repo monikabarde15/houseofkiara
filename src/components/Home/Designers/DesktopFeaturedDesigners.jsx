@@ -28,7 +28,10 @@ const DesktopFeaturedDesigners = () => {
           (designer) => (
             <article
               key={designer.id}
-              className={`desk-designer-card desk-designer-${designer.variant}`}
+              className="desk-designer-card"
+              style={{
+                backgroundImage: `url(${designer.image})`,
+              }}
             >
               <div className="desk-designer-overlay" />
 

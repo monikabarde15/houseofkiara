@@ -1,0 +1,181 @@
+.hok-desktop-footer {
+  background: #f5efe6;
+  border-top: 1px solid #e8e0d4;
+
+  padding: 72px 80px 36px;
+}
+
+.hok-footer-top {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+
+  gap: 48px;
+
+  padding-bottom: 56px;
+
+  border-bottom: 1px solid #e8e0d4;
+}
+
+.hok-footer-brand h3 {
+  margin: 0;
+
+  font-family: "Cormorant Garamond";
+  font-size: 17px;
+  font-weight: 500;
+
+  color: #1a1612;
+}
+
+.hok-footer-brand span {
+  display: block;
+
+  margin-top: 4px;
+
+  font-family: "DM Sans";
+  font-size: 8px;
+
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+
+  color: #8a7e72;
+}
+
+.hok-footer-brand p {
+  max-width: 240px;
+
+  margin-top: 20px;
+
+  font-family: "Cormorant Garamond";
+  font-size: 14px;
+  font-style: italic;
+
+  line-height: 1.9;
+
+  color: #8a7e72;
+}
+
+.hok-footer-socials {
+  display: flex;
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+.hok-footer-socials button {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  border: 1px solid #e8e0d4;
+
+  background: #fffefb;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+.hok-footer-socials svg {
+  stroke: #8a7e72;
+}
+
+.hok-footer-column h4 {
+  margin: 0 0 20px;
+
+  font-family: "DM Sans";
+  font-size: 9px;
+  font-weight: 500;
+
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+
+  color: #1a1612;
+}
+
+.hok-footer-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.hok-footer-column a {
+  margin-bottom: 13px;
+
+  text-decoration: none;
+
+  font-family: "DM Sans";
+  font-size: 13px;
+  font-weight: 300;
+
+  color: #8a7e72;
+}
+
+.hok-footer-policy-row {
+  display: flex;
+  flex-wrap: wrap;
+
+  padding: 20px 0;
+
+  border-bottom: 1px solid #e8e0d4;
+}
+
+.hok-footer-policy-row a {
+  padding-right: 16px;
+  margin-right: 16px;
+
+  border-right: 1px solid #e8e0d4;
+
+  text-decoration: none;
+
+  font-family: "DM Sans";
+  font-size: 11px;
+  font-weight: 300;
+
+  color: #8a7e72;
+}
+
+.hok-footer-policy-row a.last {
+  border-right: none;
+  margin-right: 0;
+}
+
+.hok-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-top: 24px;
+}
+
+.hok-footer-bottom p {
+  margin: 0;
+
+  font-family: "DM Sans";
+  font-size: 11px;
+  font-weight: 300;
+
+  color: #8a7e72;
+}
+
+.hok-footer-badges {
+  display: flex;
+  gap: 10px;
+}
+
+.hok-footer-badges span {
+  border: 1px solid #e8e0d4;
+
+  background: #fffefb;
+
+  padding: 6px 14px;
+
+  font-family: "DM Sans";
+  font-size: 9px;
+
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+
+  color: #8a7e72;
+}

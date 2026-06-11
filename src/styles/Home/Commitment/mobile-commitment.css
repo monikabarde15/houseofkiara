@@ -1,0 +1,124 @@
+.mobile-commitment {
+  position: relative;
+
+  padding: 76px 20px 48px;
+
+  background: #faf7f2;
+
+  overflow: hidden;
+}
+
+.mobile-commitment-description {
+  margin: 12px 0 24px;
+
+  font-family: "DM Sans";
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.8;
+
+  color: #8a7e72;
+}
+
+.mobile-commitment-pills {
+  display: flex;
+  gap: 8px;
+
+  overflow-x: auto;
+
+  margin-bottom: 24px;
+
+  scrollbar-width: none;
+}
+
+.mobile-commitment-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-commitment-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  flex-shrink: 0;
+
+  padding: 10px 16px;
+
+  border: 1px solid #e8e0d4;
+  border-radius: 999px;
+
+  background: #fffefb;
+
+  font-family: "DM Sans";
+  font-size: 11px;
+  font-weight: 300;
+
+  color: #1a1612;
+}
+
+.mobile-commitment-pill-dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #c9a96e;
+}
+
+.mobile-commitment-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-commitment-card {
+  background: #fffefb;
+
+  border: 1px solid #e8e0d4;
+
+  padding: 22px 18px;
+}
+
+.mobile-commitment-icon-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  margin-bottom: 14px;
+
+  border: 1px solid #e8e0d4;
+  border-radius: 50%;
+}
+
+.mobile-commitment-icon-circle svg {
+  width: 16px;
+  height: 16px;
+
+  stroke: #c9a96e;
+  stroke-width: 1.4;
+}
+
+.mobile-commitment-card-title {
+  margin: 0 0 10px;
+
+  font-family: "Cormorant Garamond";
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.45;
+
+  color: #1a1612;
+}
+
+.mobile-commitment-card-body {
+  margin: 0;
+
+  font-family: "DM Sans";
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.8;
+
+  color: #8a7e72;
+}

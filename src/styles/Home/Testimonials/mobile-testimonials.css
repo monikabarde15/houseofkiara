@@ -1,0 +1,148 @@
+.mobile-testimonials {
+  padding: 76px 20px 48px;
+  background: #fffefb;
+}
+
+.mobile-testimonials-header {
+  text-align: center;
+}
+
+.mobile-testimonials-header .hok-section-eyebrow {
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.mobile-testimonials-header .hok-section-title {
+  text-align: center;
+}
+
+.mobile-testimonials-track {
+  position: relative;
+
+  min-height: 360px;
+
+  margin-top: 32px;
+}
+
+.mobile-testimonial-card {
+  position: absolute;
+  inset: 0;
+
+  opacity: 0;
+  pointer-events: none;
+
+  padding: 28px 22px;
+
+  border: 1px solid #e8e0d4;
+
+  background: #faf7f2;
+
+  transition: opacity 0.3s ease;
+}
+
+.mobile-testimonial-card-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-testimonial-stars {
+  display: flex;
+  gap: 4px;
+
+  margin-bottom: 18px;
+}
+
+.mobile-testimonial-star {
+  width: 14px;
+  height: 14px;
+
+  color: #c9a96e;
+}
+
+.mobile-testimonial-quote {
+  margin-bottom: 12px;
+
+  font-family: "Cormorant Garamond";
+  font-size: 42px;
+  line-height: 1;
+
+  color: #c9a96e;
+}
+
+.mobile-testimonial-review {
+  margin: 0 0 24px;
+
+  font-family: "DM Sans";
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.9;
+
+  color: #1a1612;
+}
+
+.mobile-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-testimonial-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+
+  border-radius: 50%;
+
+  background: #e8d5b0;
+
+  font-family: "DM Sans";
+  font-size: 12px;
+  font-weight: 500;
+
+  color: #1a1612;
+}
+
+.mobile-testimonial-author-info h4 {
+  margin: 0 0 2px;
+
+  font-family: "Cormorant Garamond";
+  font-size: 18px;
+  font-weight: 500;
+
+  color: #1a1612;
+}
+
+.mobile-testimonial-author-info span {
+  font-family: "DM Sans";
+  font-size: 11px;
+  font-weight: 300;
+
+  color: #8a7e72;
+}
+
+.mobile-testimonial-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+
+  margin-top: 24px;
+}
+
+.mobile-testimonial-dot {
+  width: 6px;
+  height: 6px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #d7cec0;
+
+  cursor: pointer;
+}
+
+.mobile-testimonial-dot-active {
+  background: #c9a96e;
+}

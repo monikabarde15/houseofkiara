@@ -1,0 +1,186 @@
+.mobile-hiw {
+  padding: 76px 20px 48px;
+  background: #FAF7F2;
+}
+
+.mobile-hiw-toggle {
+  display: flex;
+
+  margin: 16px 0 24px;
+
+  border: 1px solid #E8E0D4;
+
+  overflow: hidden;
+}
+
+.mobile-hiw-toggle-btn {
+  flex: 1;
+
+  padding: 10px 8px;
+
+  border: none;
+
+  background: transparent;
+
+  font-family: "DM Sans";
+  font-size: 10px;
+  font-weight: 400;
+
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+
+  color: #8A7E72;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.mobile-hiw-toggle-btn-active {
+  background: #1A1612;
+  color: #FAF7F2;
+}
+
+.mobile-hiw-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  padding: 18px 0;
+
+  border-bottom: 1px solid #E8E0D4;
+}
+
+.mobile-hiw-step:first-child {
+  border-top: 1px solid #E8E0D4;
+}
+
+.mobile-hiw-step-number {
+  width: 34px;
+
+  flex-shrink: 0;
+
+  font-family: "Cormorant Garamond";
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+
+  color: #E8D5B0;
+}
+
+.mobile-hiw-step-body {
+  flex: 1;
+
+  padding-top: 4px;
+}
+
+.mobile-hiw-step-icon-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  margin-bottom: 10px;
+
+  border: 1px solid #E8E0D4;
+  border-radius: 50%;
+}
+
+.mobile-hiw-step-icon {
+  width: 15px;
+  height: 15px;
+
+  stroke: #1A1612;
+  stroke-width: 1.3;
+}
+
+.mobile-hiw-step-title {
+  margin: 0 0 5px;
+
+  font-family: "Cormorant Garamond";
+  font-size: 18px;
+  font-weight: 500;
+
+  color: #1A1612;
+}
+
+.mobile-hiw-step-description {
+  margin: 0;
+
+  font-family: "DM Sans";
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.7;
+
+  color: #8A7E72;
+}
+
+.mobile-hiw-sell-cta {
+  margin-top: 20px;
+
+  padding: 22px 18px;
+
+  background: #F5EDD8;
+
+  border: 1px solid #E8D5B0;
+}
+
+.mobile-hiw-sell-title {
+  margin: 0 0 12px;
+
+  font-family: "Cormorant Garamond";
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.35;
+
+  color: #1A1612;
+}
+
+.mobile-hiw-sell-title em {
+  color: #C9A96E;
+  font-style: italic;
+}
+
+.mobile-hiw-sell-body {
+  margin: 0 0 6px;
+
+  font-family: "DM Sans";
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.7;
+
+  color: #8A7E72;
+}
+
+.mobile-hiw-sell-quote {
+  margin: 0 0 18px;
+
+  font-family: "DM Sans";
+  font-size: 12px;
+  font-style: italic;
+
+  color: #C9A96E;
+}
+
+.mobile-hiw-sell-btn {
+  width: 100%;
+
+  padding: 13px;
+
+  border: none;
+
+  background: #1A1612;
+
+  font-family: "DM Sans";
+  font-size: 10px;
+  font-weight: 400;
+
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+
+  color: #FFFFFF;
+
+  cursor: pointer;
+}

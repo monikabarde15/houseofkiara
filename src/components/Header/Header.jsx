@@ -1,4 +1,3 @@
-// src\components\Header\Header.jsx
 import { useDropdown } from "../../hooks/useDropdown";
 import { useSearch } from "../../hooks/useSearch";
 
@@ -8,54 +7,58 @@ import DesktopNavigation from "./DesktopNavigation";
 import Dropdown from "./Dropdown/Dropdown";
 import SearchOverlay from "./Search/SearchOverlay";
 import MobileHeader from "./MobileHeader";
-import '../../styles/Header/header.css'
+
+import "../../styles/Header/header.css";
 
 const Header = () => {
   const dropdown = useDropdown();
-
   const search = useSearch();
 
   return (
     <>
-      <AnnouncementBar />
-
       {/* Desktop Header */}
 
-      <div
-        className="hok-header-desktop"
-        onMouseEnter={() => {
-          dropdown.inHeader.current = true;
-        }}
-        onMouseLeave={() => {
-          dropdown.inHeader.current = false;
-          dropdown.scheduleClose();
-        }}
-      >
-        <DesktopHeader
-          onSearchOpen={
-            search.openSearch
-          }
-        />
+      <div className="hok-desktop-header-wrapper">
+        <AnnouncementBar />
 
-        <DesktopNavigation
-          activeDropdown={
-            dropdown.activeDropdown
-          }
-          openDropdown={
-            dropdown.openDropdown
-          }
-        />
+        <div
+          className="hok-header-desktop"
+          onMouseEnter={() => {
+            dropdown.inHeader.current = true;
+          }}
+          onMouseLeave={() => {
+            dropdown.inHeader.current = false;
+            dropdown.scheduleClose();
+          }}
+        >
+          <DesktopHeader
+            onSearchOpen={search.openSearch}
+          />
+
+          <DesktopNavigation
+            activeDropdown={
+              dropdown.activeDropdown
+            }
+            openDropdown={
+              dropdown.openDropdown
+            }
+          />
+        </div>
       </div>
 
       {/* Mobile Header */}
 
-      <div className="hok-header-mobile">
-        <MobileHeader
-          theme="light"
-          onSearchOpen={
-            search.openSearch
-          }
-        />
+      <div className="hok-mobile-sticky-wrapper">
+        <AnnouncementBar />
+
+        <div className="hok-header-mobile">
+          <MobileHeader
+            theme="light"
+            onSearchOpen={
+              search.openSearch
+            }
+          />
+        </div>
       </div>
 
       <Dropdown

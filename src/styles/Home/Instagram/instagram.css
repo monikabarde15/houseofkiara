@@ -1,3 +1,21 @@
 .hok-instagram {
   width: 100%;
 }
+
+.hok-instagram-desktop {
+  display: block;
+}
+
+.hok-instagram-mobile {
+  display: none;
+}
+
+@media (max-width: 430px) {
+  .hok-instagram-desktop {
+    display: none;
+  }
+
+  .hok-instagram-mobile {
+    display: block;
+  }
+}

@@ -29,6 +29,10 @@
   aspect-ratio: 2 / 3;
   overflow: hidden;
   cursor: pointer;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .desk-designer-card::before {
@@ -99,7 +103,7 @@
 
 /* Placeholder backgrounds */
 
-.desk-designer-sabyasachi::before {
+/* .desk-designer-sabyasachi::before {
   background: linear-gradient(180deg,#5a2418 0%,#23100a 100%);
 }
 
@@ -121,4 +125,4 @@
 
 .desk-designer-rahul::before {
   background: linear-gradient(180deg,#1f3a34 0%,#0d1916 100%);
-}
+} */

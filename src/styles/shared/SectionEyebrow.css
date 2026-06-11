@@ -33,3 +33,23 @@
 
   margin: 0 auto;
 }
+
+
+@media (max-width: 430px) {
+  .hok-section-eyebrow {
+    gap: 10px;
+  }
+
+  .hok-section-eyebrow-line {
+    width: 18px;
+  }
+
+  .hok-section-eyebrow-text {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+  }
+
+  .hok-section-eyebrow-centered {
+    gap: 10px;
+  }
+}

@@ -1,3 +1,21 @@
 .hok-featured {
   width: 100%;
 }
+
+.hok-featured-desktop {
+  display: block;
+}
+
+.hok-featured-mobile {
+  display: none;
+}
+
+@media (max-width: 430px) {
+  .hok-featured-desktop {
+    display: none;
+  }
+
+  .hok-featured-mobile {
+    display: block;
+  }
+}
