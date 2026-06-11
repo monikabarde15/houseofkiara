@@ -9,7 +9,10 @@ import "../../../styles/Home/Hero/mobile-hero.css";
 
 const HokHero = () => {
   return (
-    <section className="hok-hero">
+    <section
+      className="hok-hero"
+      data-header-theme="dark"
+    >
       <div className="hok-hero-desktop">
         <DesktopHero />
       </div>

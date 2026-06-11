@@ -1,3 +1,4 @@
+// src\components\Home\Hero\MobileHero.jsx
 import React from "react";
 
 import heroData from "../../../data/home/heroData";

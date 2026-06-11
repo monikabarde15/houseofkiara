@@ -9,7 +9,10 @@ import "../../../styles/Home/Categories/mobile-categories.css";
 
 const Categories = () => {
   return (
-    <section className="hok-categories">
+    <section
+      className="hok-categories"
+      data-header-theme="dark"
+    >
       <div className="hok-categories-desktop">
         <DesktopCategories />
       </div>

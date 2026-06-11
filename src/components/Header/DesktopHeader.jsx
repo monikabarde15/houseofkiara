@@ -1,59 +1,57 @@
-// src\components\Header\DesktopHeader.jsx
 import logo from "../../assets/logo/logo.png";
 import "../../styles/Header/desktop-header.css";
 
 const DesktopHeader = ({ onSearchOpen }) => {
   return (
-    <header className="hok-header">
-      <div className="hok-header-inner">
+    <header className="hok-desktop-header">
+      <div className="hok-desktop-header-inner">
 
         {/* Left */}
-        <div className="header-left">
+        <div className="hok-desktop-header-left">
           <div
-            className="header-search"
+            className="hok-desktop-header-search"
             id="header-search-trigger"
             role="search"
             onClick={onSearchOpen}
           >
             <svg
               viewBox="0 0 24 24"
-              className="header-search-icon"
+              className="hok-desktop-header-search-icon"
               aria-hidden="true"
             >
               <circle cx="11" cy="11" r="7" />
               <line x1="16.5" y1="16.5" x2="20" y2="20" />
             </svg>
 
-            <span className="header-search-placeholder">
+            <span className="hok-desktop-header-search-placeholder">
               Search lehengas, designers, occasions...
             </span>
           </div>
         </div>
 
-        {/* Center Logo */}
+        {/* Center */}
         <div
-          className="header-logo"
+          className="hok-desktop-header-logo"
           role="button"
           tabIndex={0}
           aria-label="House of Kaira — home"
-          onClick={() => navigate("/")}
         >
           <img
             src={logo}
             alt="House of Kaira"
-            className="logo-img"
+            className="hok-desktop-header-logo-img"
           />
 
-          <span className="logo-wordmark">
+          <span className="hok-desktop-header-wordmark">
             House of Kaira
           </span>
         </div>
 
         {/* Right */}
-        <div className="header-right">
+        <div className="hok-desktop-header-right">
 
           <button
-            className="hdr-btn"
+            className="hok-desktop-header-btn"
             aria-label="Wishlist"
           >
             <svg viewBox="0 0 24 24">
@@ -64,10 +62,10 @@ const DesktopHeader = ({ onSearchOpen }) => {
           </button>
 
           <button
-            className="hdr-btn cart-wrap"
+            className="hok-desktop-header-btn hok-desktop-header-cart-wrap"
             aria-label="Bag"
           >
-            <span className="cart-dot" />
+            <span className="hok-desktop-header-cart-dot" />
 
             <svg viewBox="0 0 24 24">
               <path d="M6 2h12l3 4v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6l3-4z" />
@@ -79,7 +77,7 @@ const DesktopHeader = ({ onSearchOpen }) => {
           </button>
 
           <button
-            className="hdr-btn"
+            className="hok-desktop-header-btn"
             aria-label="Account"
           >
             <svg viewBox="0 0 24 24">

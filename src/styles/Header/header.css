@@ -1,3 +1,4 @@
+/* src\styles\Header\header.css */
 /* ==========================================
    DESKTOP
 ========================================== */
@@ -8,20 +9,22 @@
 
 .hok-header-desktop {
   position: sticky;
+  top: 0;
   z-index: 250;
+
+  background: rgba(255,254,251,0.98);
 }
 
 /* ==========================================
    MOBILE
 ========================================== */
 
-.hok-mobile-sticky-wrapper {
-  display: none;
-}
+/* ==========================================
+   MOBILE
+========================================== */
 
-.hok-header-mobile {
-  position: relative;
-  z-index: 250;
+.hok-header-mobile-wrapper {
+  display: none;
 }
 
 @media (max-width: 767px) {
@@ -29,12 +32,7 @@
     display: none;
   }
 
-  .hok-mobile-sticky-wrapper {
+  .hok-header-mobile-wrapper {
     display: block;
-
-    position: sticky;
-    top: 0;
-
-    z-index: 500;
   }
 }

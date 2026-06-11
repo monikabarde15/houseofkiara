@@ -1,5 +1,8 @@
+// src\components\Header\Header.jsx
 import { useDropdown } from "../../hooks/useDropdown";
 import { useSearch } from "../../hooks/useSearch";
+import { useEffect, useState } from "react";
+
 
 import AnnouncementBar from "./AnnouncementBar";
 import DesktopHeader from "./DesktopHeader";
@@ -7,12 +10,31 @@ import DesktopNavigation from "./DesktopNavigation";
 import Dropdown from "./Dropdown/Dropdown";
 import SearchOverlay from "./Search/SearchOverlay";
 import MobileHeader from "./MobileHeader";
-
+import useHeaderTheme from "../../hooks/useHeaderTheme";
 import "../../styles/Header/header.css";
 
 const Header = () => {
   const dropdown = useDropdown();
   const search = useSearch();
+  const theme = useHeaderTheme();
+
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
+    };
+  }, []);
 
   return (
     <>
@@ -48,15 +70,16 @@ const Header = () => {
 
       {/* Mobile Header */}
 
-      <div className="hok-mobile-sticky-wrapper">
+      {/* Mobile Header */}
+
+      <div className="hok-header-mobile-wrapper">
         <AnnouncementBar />
 
         <div className="hok-header-mobile">
           <MobileHeader
-            theme="light"
-            onSearchOpen={
-              search.openSearch
-            }
+            theme={theme}
+            isScrolled={isScrolled}
+            onSearchOpen={search.openSearch}
           />
         </div>
       </div>

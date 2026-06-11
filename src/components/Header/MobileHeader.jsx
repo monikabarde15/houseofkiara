@@ -7,7 +7,7 @@ import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 
 
-export default function MobileHeader({ theme = 'light', onMenuOpen, onSearchOpen, onBagClick, onAccountClick }) {
+export default function MobileHeader({ theme = 'light',isScrolled, onMenuOpen, onSearchOpen, onBagClick, onAccountClick }) {
   // Theme-based colors
   const isDark = theme === 'dark';
 
@@ -15,7 +15,13 @@ export default function MobileHeader({ theme = 'light', onMenuOpen, onSearchOpen
 
   return (
     <>
-      <div className={`hok-mobile-header ${isDark ? 'dark' : 'light'}`}>
+      <div
+        className={`hok-mobile-header ${isDark ? "dark" : "light"
+          } ${isScrolled
+            ? "hok-mobile-header--scrolled"
+            : ""
+          }`}
+      >
         {/* Left: Hamburger Menu */}
         <button
           className="hok-mob-burger"

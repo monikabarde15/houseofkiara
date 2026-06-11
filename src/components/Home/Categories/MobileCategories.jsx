@@ -1,3 +1,4 @@
+// src\components\Home\Categories\MobileCategories.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
