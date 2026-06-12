@@ -1,9 +1,14 @@
+// src\components\Header\DesktopNavigation.jsx
 import "../../styles/Header/desktop-navigation.css";
 import { navigationItems } from "../../data/navigationData";
+import { useNavigate } from "react-router-dom";
+
 const DesktopNavigation = ({
   activeDropdown,
   openDropdown,
 }) => {
+
+  const navigate = useNavigate();
   return (
     <nav
       className="hok-navigation"
@@ -19,14 +24,26 @@ const DesktopNavigation = ({
                 ? "dd-open"
                 : ""
             }`}
-            onMouseEnter={() =>
-              openDropdown(item.id)
-            }
+            // onMouseEnter={() =>
+            //   openDropdown(item.id)
+            // }
+            onMouseEnter={() => {
+              if (!item.standalone) {
+                openDropdown(item.id);
+              }
+            }}
           >
             <button
-              className={`nav-item ${
-                item.variant || ""
-              }`}
+              className={`nav-item ${item.variant || ""
+                }`}
+              onClick={() => {
+                if (
+                  item.standalone &&
+                  item.route
+                ) {
+                  navigate(item.route);
+                }
+              }}
             >
               {item.label}
 

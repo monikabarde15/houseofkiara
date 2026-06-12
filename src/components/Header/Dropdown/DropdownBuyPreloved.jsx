@@ -1,8 +1,11 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { useNavigate } from "react-router-dom";
+
 
 const DropdownBuyPreloved = () => {
   const data = dropdownData.buyPreloved;
+  const navigate = useNavigate();
 
   return (
     <>
@@ -12,11 +15,19 @@ const DropdownBuyPreloved = () => {
           {data.leftLabel}
         </span>
 
+        {/* Categeory */}
         {data.categories.map(
           (category) => (
             <a
               key={category}
               className="dd-cat"
+              onClick={() =>
+                navigate(
+                  `/main-page?section=preloved&category=${encodeURIComponent(
+                    category
+                  )}`
+                )
+              }
             >
               {category}
             </a>
@@ -30,6 +41,13 @@ const DropdownBuyPreloved = () => {
             <a
               key={item}
               className="dd-link"
+              onClick={() =>
+                navigate(
+                  `/main-page?section=preloved&condition=${encodeURIComponent(
+                    item
+                  )}`
+                )
+              }
             >
               {item}
             </a>
@@ -43,15 +61,22 @@ const DropdownBuyPreloved = () => {
           {data.middleLabel}
         </span>
 
+        {/* Designers */}
         {data.designers.map(
           (designer) => (
             <a
               key={designer.label}
-              className={`dd-link ${
-                designer.featured
-                  ? "bold"
-                  : ""
-              }`}
+              className={`dd-link ${designer.featured
+                ? "bold"
+                : ""
+                }`}
+              onClick={() =>
+                navigate(
+                  `/main-page?section=preloved&designer=${encodeURIComponent(
+                    designer.label
+                  )}`
+                )
+              }
             >
               {designer.label}
             </a>
@@ -63,10 +88,38 @@ const DropdownBuyPreloved = () => {
         {data.priceLinks.map(
           (price) => (
             <a
-              key={price}
+              key={price.label}
               className="dd-link"
+              onClick={() => {
+                const params =
+                  new URLSearchParams({
+                    section: "preloved",
+                  });
+
+                if (
+                  price.min !== null
+                ) {
+                  params.set(
+                    "minPrice",
+                    price.min
+                  );
+                }
+
+                if (
+                  price.max !== null
+                ) {
+                  params.set(
+                    "maxPrice",
+                    price.max
+                  );
+                }
+
+                navigate(
+                  `/main-page?${params.toString()}`
+                );
+              }}
             >
-              {price}
+              {price.label}
             </a>
           )
         )}
@@ -89,7 +142,14 @@ const DropdownBuyPreloved = () => {
             </em>
           </h3>
 
-          <button className="dd-view-all">
+          <button
+            className="dd-view-all"
+            onClick={() =>
+              navigate(
+                "/main-page?section=preloved"
+              )
+            }
+          >
             View all →
           </button>
         </div>

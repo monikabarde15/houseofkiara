@@ -1,53 +1,144 @@
-import "../styles/bridallehenga.css"
-import Filters from "./Filters"
-import products from "../data/bridalLehengaProducts";
-import ProductCard from "./ProductCard";
-import { useEffect, useState} from "react";
-import { ChevronDown } from "lucide-react";
+import "../styles/main-category-page.css";
 
+import { useEffect, useState } from "react";
+
+import Filters from "./Filters";
+import ProductCard from "./ProductCard";
+
+import Breadcrumbs from "./MainCategory/Breadcrumbs";
+import ListingHeader from "./MainCategory/ListingHeader";
+import ActiveFilters from "./MainCategory/ActiveFilters";
+
+import products from "../data/bridalLehengaProducts";
+
+// For dropdown nav
+import { buildHeading } from "./MainCategory/utils/buildHeading"
+import { buildBreadcrumb } from "./MainCategory/utils/buildBreadcrumb";
+import { useSearchParams } from "react-router-dom";
 
 function MainCategoryPage() {
-
   const [filters, setFilters] = useState({
     rentType: [],
-    gender:[],
-    category:[],
+    gender: [],
+    category: [],
     designer: [],
-    occasion:[],
+    occasion: [],
     size: [],
-    color:[],
+    color: [],
+    condition: [],
     budget: {
       min: 0,
       max: Infinity,
     },
   });
+
+
+
   const [sortBy, setSortBy] = useState("recommended");
-  const [sortOpen, setSortOpen] = useState(false);
-
-
-  const handleSort = (value) => {
-    setSortBy(value);
-    setSortOpen(false);
-  };
-  
-   
-  const getPrice = (price) => {
-    if (!price) return 0;
-
-    // If already number
-    if (typeof price === "number") return price;
-
-    // If string → clean and convert
-    if (typeof price === "string") {
-      return parseInt(price.replace(/,/g, ""), 10) || 0;
-    }
-
-    return 0;
-  };
 
   const ITEMS_PER_PAGE = 9;
   const [currentPage, setCurrentPage] = useState(1);
-  
+
+  // dropdown nav
+  const [searchParams] = useSearchParams();
+
+  const section = searchParams.get("section");
+  const mode = searchParams.get("mode");
+  const category = searchParams.get("category");
+  const designer = searchParams.get("designer");
+  const occasion = searchParams.get("occasion");
+  const gender = searchParams.get("gender");
+
+  const condition = searchParams.get("condition");
+
+  const minPrice = searchParams.get("minPrice");
+  const maxPrice = searchParams.get("maxPrice");
+
+  const heading = buildHeading({
+    section,
+    category,
+    designer,
+    occasion,
+  });
+
+  const breadcrumb =
+    buildBreadcrumb({
+      section,
+      category,
+      designer,
+      occasion,
+    });
+  useEffect(() => {
+    const nextFilters = {
+      rentType: [],
+      gender: [],
+      category: [],
+      designer: [],
+      occasion: [],
+      size: [],
+      color: [],
+      budget: {
+        min: 0,
+        max: Infinity,
+      },
+
+      
+    };
+
+    // if (mode) {
+    //   nextFilters.rentType = [mode];
+    // }
+
+    if (
+      section === "rent" ||
+      section === "preloved" ||
+      section === "new"
+    ) {
+      nextFilters.rentType = [section];
+    }
+
+    if (gender) {
+      nextFilters.gender = [gender];
+    }
+
+    if (category) {
+      nextFilters.category = [category];
+    }
+
+    if (designer) {
+      nextFilters.designer = [designer];
+    }
+
+    if (occasion) {
+      nextFilters.occasion = [occasion];
+    }
+
+    if (condition) {
+      nextFilters.condition = [condition];
+    }
+
+    if (minPrice || maxPrice) {
+      nextFilters.budget = {
+        min: Number(minPrice) || 0,
+        max: maxPrice
+          ? Number(maxPrice)
+          : Infinity,
+      };
+    }
+
+    setFilters(nextFilters);
+
+  }, [
+    section,
+    gender,
+    category,
+    designer,
+    occasion,
+    condition,
+    minPrice,
+  maxPrice,
+  ]);
+
   const mainDesigners = [
     "Sabyasachi",
     "Manish Malhotra",
@@ -57,103 +148,204 @@ function MainCategoryPage() {
     "Rahul Mishra",
   ];
 
-  // DETAIL FILTER LOGIC
-  const filteredProducts = products.filter((item) => {
+  const getPrice = (price) => {
+    if (!price) return 0;
 
+    if (typeof price === "number") return price;
 
-    // Designer filter logic
-    if (filters.designer.length) {
+    if (typeof price === "string") {
+      return (
+        parseInt(price.replace(/,/g, ""), 10) || 0
+      );
+    }
 
-      const isOtherSelected = filters.designer.includes("Other Designers");
-      const isExactMatch = filters.designer.includes(item.designer);
-      const isOtherMatch =
-        isOtherSelected && !mainDesigners.includes(item.designer);
+    return 0;
+  };
 
-      if (!isExactMatch && !isOtherMatch) {
-        return false;
+  // FILTERING
+
+  const filteredProducts = products.filter(
+    (item) => {
+      // DESIGNER
+
+      if (filters.designer.length) {
+        const isOtherSelected =
+          filters.designer.includes(
+            "Other Designers"
+          );
+
+        const isExactMatch =
+          filters.designer.includes(
+            item.designer
+          );
+
+        const isOtherMatch =
+          isOtherSelected &&
+          !mainDesigners.includes(
+            item.designer
+          );
+
+        if (
+          !isExactMatch &&
+          !isOtherMatch
+        ) {
+          return false;
+        }
       }
-    }
 
-    // Shop by Filter
-    if(filters.rentType.length){
-      const match = filters.rentType.some((type)=>{
-        if (type === "rent") return item.rent;
-        if (type === "preloved") return item.preloved;
-        if (type == "new") return item.isNew;
+      // RENT TYPE
 
-        return false;
-      })
-      if(!match) return false;
-    }
+      if (filters.rentType.length) {
+        const match =
+          filters.rentType.some(
+            (type) => {
+              if (type === "rent")
+                return item.rent;
 
-    // gender filter
-    if (filters.gender.length) {
-      if (!filters.gender.includes(item.gender)) {
-        return false;
+              if (
+                type === "preloved"
+              )
+                return item.preloved;
+
+              if (type === "new")
+                return item.isNew;
+
+              return false;
+            }
+          );
+
+        if (!match) return false;
       }
-    }
 
-    // CATEGORY FILTER
-    if (filters.category.length) {
-      if (!filters.category.includes(item.category)) {
-        return false;
+      // GENDER
+
+      if (filters.gender.length) {
+        if (
+          !filters.gender.includes(
+            item.gender
+          )
+        ) {
+          return false;
+        }
       }
-    }
 
-    // OCCASION FILTER
-    if (filters.occasion.length){
-      if(!filters.occasion.includes(item.occasion)){
-        return false;
+      // CATEGORY
+
+      if (filters.category.length) {
+        if (
+          !filters.category.includes(
+            item.category
+          )
+        ) {
+          return false;
+        }
       }
-    }
 
-    // BUDGET FILTER
-    const price = getPrice(item.buyPrice);
+      // OCCASION
 
-    if (
-      price < filters.budget.min ||
-      price > filters.budget.max
-    ) {
-      return false;
-    }
+      if (filters.occasion.length) {
+        if (
+          !filters.occasion.includes(
+            item.occasion
+          )
+        ) {
+          return false;
+        }
+      }
 
-    // SIZE FILTER
+      // CONDITION
 
-    if (filters.size.length) {
-      const match = filters.size.some((s) =>
-        item.size?.includes(s)
+      // if (filters.condition.length) {
+      //   if (
+      //     !filters.condition.includes(
+      //       item.condition
+      //     )
+      //   ) {
+      //     return false;
+      //   }
+      // }
+
+      // BUDGET
+
+      const price = getPrice(
+        item.buyPrice
       );
 
-      if (!match) return false;
+      if (
+        price <
+        filters.budget.min ||
+        price >
+        filters.budget.max
+      ) {
+        return false;
+      }
+
+      // SIZE
+
+      if (filters.size.length) {
+        const match =
+          filters.size.some((s) =>
+            item.size?.includes(s)
+          );
+
+        if (!match) return false;
+      }
+
+      // COLOR
+
+      if (filters.color.length) {
+        const match =
+          filters.color.some((c) =>
+            item.color?.includes(c)
+          );
+
+        if (!match) return false;
+      }
+
+      return true;
     }
+  );
 
-    //Color Filter
+  // SORTING
 
-    if (filters.color.length) {
-      const match = filters.color.some((c) =>
-        item.color?.includes(c)
-      );
+  const sortedProducts = [
+    ...filteredProducts,
+  ].sort((a, b) => {
+    const priceA = getPrice(
+      a.buyPrice
+    );
 
-      if (!match) return false;
-    }
+    const priceB = getPrice(
+      b.buyPrice
+    );
 
-    return true;
-  });
+    const originalA = getPrice(
+      a.originalPrice ||
+      a.mrp ||
+      0
+    );
 
-  // SORT BY 
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const originalB = getPrice(
+      b.originalPrice ||
+      b.mrp ||
+      0
+    );
 
-    const priceA = getPrice(a.buyPrice);
-    const priceB = getPrice(b.buyPrice);
+    const discountA =
+      originalA
+        ? ((originalA - priceA) /
+          originalA) *
+        100
+        : 0;
 
-    const originalA = getPrice(a.originalPrice || a.mrp || 0);
-    const originalB = getPrice(b.originalPrice || b.mrp || 0);
-
-    const discountA = originalA ? ((originalA - priceA) / originalA) * 100 : 0;
-    const discountB = originalB ? ((originalB - priceB) / originalB) * 100 : 0;
+    const discountB =
+      originalB
+        ? ((originalB - priceB) /
+          originalB) *
+        100
+        : 0;
 
     switch (sortBy) {
-
       case "low":
         return priceA - priceB;
 
@@ -164,19 +356,25 @@ function MainCategoryPage() {
         return b.id - a.id;
 
       case "popular":
-        return (b.popularity || 0) - (a.popularity || 0);
-
-      case "discount": // ✅ NEW
-        return discountB - discountA;
-
-      case "recommended": // ✅ IMPROVED
         return (
-          (b.popularity || 0) * 0.6 +
-          (b.id || 0) * 0.4
-        ) - (
-            (a.popularity || 0) * 0.6 +
-            (a.id || 0) * 0.4
-          );
+          (b.popularity || 0) -
+          (a.popularity || 0)
+        );
+
+      case "discount":
+        return (
+          discountB - discountA
+        );
+
+      case "recommended":
+        return (
+          (b.popularity || 0) *
+          0.6 +
+          (b.id || 0) * 0.4 -
+          ((a.popularity || 0) *
+            0.6 +
+            (a.id || 0) * 0.4)
+        );
 
       default:
         return 0;
@@ -184,302 +382,128 @@ function MainCategoryPage() {
   });
 
   // PAGINATION
-  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
 
-  // SLICE PRODUCTS
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  const currentProducts = sortedProducts.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
+  const totalPages = Math.ceil(
+    filteredProducts.length /
+    ITEMS_PER_PAGE
   );
 
-  useEffect(()=>{
-    setCurrentPage(1)
-  }, [filters])
+  const startIndex =
+    (currentPage - 1) *
+    ITEMS_PER_PAGE;
+
+  const currentProducts =
+    sortedProducts.slice(
+      startIndex,
+      startIndex +
+      ITEMS_PER_PAGE
+    );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
 
   return (
     <div className="clp">
 
-      {/* Breadcrumb heading */}
-      <div className="breadcrumb">
-        <span className="link">Home</span>
-        <span className="separator">›</span>
-
-        <span className="link">Rent</span>
-        <span className="separator">›</span>
-
-        <span className="current">Bridal Lehengas</span>
-      </div>
+      <Breadcrumbs
+        parent={breadcrumb.parent}
+        current={breadcrumb.current}
+      />
 
       <div className="clp__container">
 
-        {/* Filter section */}
-        
-          <Filters filters={filters} setFilters={setFilters} />
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+        />
 
-        {/* Main container Section */}
         <div className="clp__main">
 
-          {/* Header  */}
-          <div className="clp__header">
+          <ListingHeader
+            heading={heading}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            totalProducts={filteredProducts.length}
+          />
 
-            {/* LEFT */}
-            <div className="clp__headerLeft">
-              <h1 className="clp__title">
-                Bridal <em>Lehengas</em>
-              </h1>
-              <p className="clp__count">
-                Showing 480 pieces
-              </p>
-            </div>
+          <ActiveFilters
+            filters={filters}
+            setFilters={setFilters}
+          />
 
-            {/* RIGHT */}
-            <div className="clp__headerRight">
-              <span className="clp__sortLabel">SORT BY</span>
-              <div className="clp__sortWrapper">
-                <select
-                  className="clp__sortSelect"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                >
-                  <option value="recommended">Recommended</option>
-                  <option value="low">Price Low to High</option>
-                  <option value="high">Price High to Low</option>
-                  <option value="newest">Newest First</option>
-                  <option value="popular">Most Popular</option>
-                  <option value="discount">Discount</option>
-                </select>
-
-                <ChevronDown className="clp__sortIcon" size={16} />
-              </div>
-            </div>
-
-          </div>
-
-          {/* Active filter */}
-          <div className="clp__activeFilters">
-
-            <span className="clp__activeLabel">ACTIVE FILTERS</span>
-
-            <div className="clp__tags">
-
-              {/* SHOP BY */}
-              {filters.rentType.map((type) => (
-                <div className="clp__tag" key={type}>
-                  {type}
-                  <span
-                    className="clp__tagClose"
-                    onClick={() => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        rentType: prev.rentType.filter((t) => t !== type),
-                      }));
-                    }}
-                  >
-                    ×
-                  </span>
-                </div>
-              ))}
-
-              {/* DESIGNER */}
-              {filters.designer.map((d) => (
-                <div className="clp__tag" key={d}>
-                  {d}
-                  <span
-                    className="clp__tagClose"
-                    onClick={() => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        designer: prev.designer.filter((x) => x !== d),
-                      }));
-                    }}
-                  >
-                    ×
-                  </span>
-                </div>
-              ))}
-
-              {/* GENDER */}
-              {filters.gender.map((g) => (
-                <div className="clp__tag" key={g}>
-                  {g}
-                  <span
-                    className="clp__tagClose"
-                    onClick={() => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        gender: prev.gender.filter((x) => x !== g),
-                      }));
-                    }}
-                  >
-                    ×
-                  </span>
-                </div>
-              ))}
-
-              {/* CATEGORY */}
-              {filters.category.map((c) => (
-                <div className="clp__tag" key={c}>
-                  {c}
-                  <span
-                    className="clp__tagClose"
-                    onClick={() => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        category: prev.category.filter((x) => x !== c),
-                      }));
-                    }}
-                  >
-                    ×
-                  </span>
-                </div>
-              ))}
-
-              {/* OCCASION */}
-              {filters.occasion.map((o) => (
-                <div className="clp__tag" key={o}>
-                  {o}
-                  <span
-                    className="clp__tagClose"
-                    onClick={() => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        occasion: prev.occasion.filter((x) => x !== o),
-                      }));
-                    }}
-                  >
-                    ×
-                  </span>
-                </div>
-              ))}
-
-              {/* SIZE */}
-              {filters.size.map((s) => (
-                <div className="clp__tag" key={s}>
-                  {s}
-                  <span
-                    className="clp__tagClose"
-                    onClick={() => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        size: prev.size.filter((x) => x !== s),
-                      }));
-                    }}
-                  >
-                    ×
-                  </span>
-                </div>
-              ))}
-
-              {/* COLOR */}
-              {filters.color.map((c) => (
-                <div className="clp__tag" key={c}>
-                  {c}
-                  <span
-                    className="clp__tagClose"
-                    onClick={() => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        color: prev.color.filter((x) => x !== c),
-                      }));
-                    }}
-                  >
-                    ×
-                  </span>
-                </div>
-              ))}
-
-              {/* BUDGET */}
-              {(filters.budget.min !== 0 || filters.budget.max !== Infinity) && (
-                <div className="clp__tag">
-                  ₹{filters.budget.min} - ₹{filters.budget.max}
-                  <span
-                    className="clp__tagClose"
-                    onClick={() => {
-                      setFilters((prev) => ({
-                        ...prev,
-                        budget: { min: 0, max: Infinity },
-                      }));
-                    }}
-                  >
-                    ×
-                  </span>
-                </div>
-              )}
-
-            </div>
-
-            <button
-              type="button"
-              className="clp__clearAll"
-              onClick={() => {
-                setFilters({
-                  rentType: [],
-                  gender: [],
-                  category: [],
-                  designer: [],
-                  occasion: [],
-                  size: [],
-                  color: [],
-                  budget: {
-                    min: 0,
-                    max: Infinity,
-                  },
-                });
-              }}
-            >
-              Clear All
-            </button>
-
-          </div>
-
-
-          {/* Product Card Grid*/}
           <div className="clp__grid">
-            {currentProducts.map(item => (
-              <ProductCard key={item.id} item={item} />
-            ))}
+            {currentProducts.map(
+              (item) => (
+                <ProductCard
+                  key={item.id}
+                  item={item}
+                />
+              )
+            )}
           </div>
-           
-           {/* Pagination */}
+
           <div className="pagination">
 
-            {/* PREV */}
             <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(prev => prev - 1)}
+              disabled={
+                currentPage === 1
+              }
+              onClick={() =>
+                setCurrentPage(
+                  (prev) =>
+                    prev - 1
+                )
+              }
             >
               ‹
             </button>
 
-            {/* PAGE NUMBERS */}
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i}
-                className={currentPage === i + 1 ? "active" : ""}
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
+            {[...Array(totalPages)].map(
+              (_, i) => (
+                <button
+                  key={i}
+                  className={
+                    currentPage ===
+                      i + 1
+                      ? "active"
+                      : ""
+                  }
+                  onClick={() =>
+                    setCurrentPage(
+                      i + 1
+                    )
+                  }
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
 
-            {/* NEXT */}
             <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(prev => prev + 1)}
+              disabled={
+                currentPage ===
+                totalPages
+              }
+              onClick={() =>
+                setCurrentPage(
+                  (prev) =>
+                    prev + 1
+                )
+              }
             >
               ›
             </button>
 
           </div>
 
-
         </div>
 
       </div>
 
     </div>
-  )
+  );
 }
-export default MainCategoryPage
+
+export default MainCategoryPage;
+

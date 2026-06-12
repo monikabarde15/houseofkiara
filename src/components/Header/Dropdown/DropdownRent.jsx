@@ -1,9 +1,9 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
-
+import { useNavigate } from "react-router-dom";
 const DropdownRent = () => {
   const data = dropdownData.rent;
-
+const navigate = useNavigate();
   return (
     <>
       {/* Left Column */}
@@ -11,12 +11,19 @@ const DropdownRent = () => {
         <span className="dd-label">
           {data.leftLabel}
         </span>
-
+        {/* Categories */}
         {data.categories.map(
           (category) => (
             <a
               key={category}
               className="dd-cat"
+              onClick={() =>
+                navigate(
+                  `/main-page?section=rent&mode=rent&category=${encodeURIComponent(
+                    category
+                  )}`
+                )
+              }
             >
               {category}
             </a>
@@ -25,7 +32,12 @@ const DropdownRent = () => {
 
         <div className="dd-divider" />
 
-        <a className="dd-sub">
+        <a
+          className="dd-sub"
+          onClick={() =>
+            navigate("/main-page?section=rent&mode=rent")
+          }
+        >
           {data.leftFooter}
         </a>
       </div>
@@ -36,15 +48,22 @@ const DropdownRent = () => {
           {data.middleLabel}
         </span>
 
+        {/* Designers */}
         {data.designers.map(
           (designer) => (
             <a
               key={designer.label}
-              className={`dd-link ${
-                designer.featured
+              className={`dd-link ${designer.featured
                   ? "bold"
                   : ""
-              }`}
+                }`}
+              onClick={() =>
+                navigate(
+                  `/main-page?section=rent&mode=rent&designer=${encodeURIComponent(
+                    designer.label
+                  )}`
+                )
+              }
             >
               {designer.label}
             </a>
@@ -53,7 +72,12 @@ const DropdownRent = () => {
 
         <div className="dd-divider" />
 
-        <a className="dd-sub">
+        <a
+          className="dd-sub"
+          onClick={() =>
+            navigate("/main-page?section=rent")
+          }
+        >
           {data.middleFooter}
         </a>
       </div>
@@ -75,7 +99,12 @@ const DropdownRent = () => {
             </em>
           </h3>
 
-          <button className="dd-view-all">
+          <button
+            className="dd-view-all"
+            onClick={() =>
+              navigate("/main-page?section=rent")
+            }
+          >
             View all →
           </button>
         </div>

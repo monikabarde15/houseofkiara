@@ -27,6 +27,20 @@ const FilterGroup = ({title , children, defaultOpen = true}) =>{
 function Filters({ filters, setFilters }) {
   const [min, setMin] = useState("");
   const [max, setMax] = useState("");
+
+  useEffect(() => {
+  setMin(
+    filters.budget.min > 0
+      ? String(filters.budget.min)
+      : ""
+  );
+
+  setMax(
+    filters.budget.max !== Infinity
+      ? String(filters.budget.max)
+      : ""
+  );
+}, [filters.budget]);
   
   return (
     <aside className="clp__sidebar">

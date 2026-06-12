@@ -1,8 +1,10 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { useNavigate } from "react-router-dom";
 
 const DropdownDesigners = () => {
   const data = dropdownData.designers;
+  const navigate = useNavigate();
 
   return (
     <>
@@ -17,6 +19,13 @@ const DropdownDesigners = () => {
             <a
               key={designer}
               className="dd-cat"
+              onClick={() =>
+                navigate(
+                  `/main-page?section=designers&designer=${encodeURIComponent(
+                    designer
+                  )}`
+                )
+              }
             >
               {designer}
             </a>
@@ -24,8 +33,15 @@ const DropdownDesigners = () => {
         )}
 
         <div className="dd-divider" />
-
-        <a className="dd-sub">
+        {/* A–Z Index */}
+        <a
+          className="dd-sub"
+          onClick={() =>
+            navigate(
+              "/main-page?section=designers"
+            )
+          }
+        >
           {data.leftFooter}
         </a>
       </div>
@@ -41,6 +57,11 @@ const DropdownDesigners = () => {
             <a
               key={link}
               className="dd-link"
+              onClick={() =>
+                navigate(
+                  "/main-page?section=designers"
+                )
+              }
             >
               {link}
             </a>
@@ -58,6 +79,13 @@ const DropdownDesigners = () => {
             <a
               key={designer}
               className="dd-link bold"
+              onClick={() =>
+                navigate(
+                  `/main-page?section=designers&designer=${encodeURIComponent(
+                    designer
+                  )}`
+                )
+              }
             >
               {designer}
             </a>
@@ -66,7 +94,15 @@ const DropdownDesigners = () => {
 
         <div className="dd-divider" />
 
-        <a className="dd-sub">
+        {/* Partner With HOK */}
+        <a
+          className="dd-sub"
+          onClick={() =>
+            navigate(
+              "/main-page?section=designers"
+            )
+          }
+        >
           {data.middleFooter}
         </a>
       </div>

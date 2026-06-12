@@ -1,8 +1,11 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { useNavigate } from "react-router-dom";
+
 
 const DropdownOccasions = () => {
   const data = dropdownData.occasions;
+  const navigate = useNavigate();
 
   return (
     <>
@@ -17,6 +20,13 @@ const DropdownOccasions = () => {
             <a
               key={category}
               className="dd-cat"
+              onClick={() =>
+                navigate(
+                  `/main-page?section=occasions&occasion=${encodeURIComponent(
+                    category
+                  )}`
+                )
+              }
             >
               {category}
             </a>
@@ -35,6 +45,29 @@ const DropdownOccasions = () => {
             <a
               key={mode}
               className="dd-link"
+              onClick={() => {
+
+                if (mode === "Rent for the Occasion") {
+                  navigate(
+                    "/main-page?section=rent"
+                  );
+                  return;
+                }
+
+                if (mode === "Buy Preloved") {
+                  navigate(
+                    "/main-page?section=preloved"
+                  );
+                  return;
+                }
+
+                if (mode === "Buy New") {
+                  navigate(
+                    "/main-page?section=new"
+                  );
+                }
+
+              }}
             >
               {mode}
             </a>
@@ -52,6 +85,11 @@ const DropdownOccasions = () => {
             <a
               key={filter}
               className="dd-link"
+              onClick={() =>
+                navigate(
+                  "/main-page?section=occasions"
+                )
+              }
             >
               {filter}
             </a>
@@ -76,7 +114,14 @@ const DropdownOccasions = () => {
             </em>
           </h3>
 
-          <button className="dd-view-all">
+          <button
+            className="dd-view-all"
+            onClick={() =>
+              navigate(
+                "/main-page?section=occasions"
+              )
+            }
+          >
             View all →
           </button>
         </div>

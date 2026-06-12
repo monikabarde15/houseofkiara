@@ -1,8 +1,10 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { useNavigate } from "react-router-dom";
 
 const DropdownWomen = () => {
   const data = dropdownData.women;
+  const navigate = useNavigate();
 
   return (
     <>
@@ -17,6 +19,13 @@ const DropdownWomen = () => {
             <a
               key={category}
               className="dd-cat"
+              onClick={() =>
+                navigate(
+                  `/main-page?section=women&gender=Women&category=${encodeURIComponent(
+                    category
+                  )}`
+                )
+              }
             >
               {category}
             </a>
@@ -25,7 +34,14 @@ const DropdownWomen = () => {
 
         <div className="dd-divider" />
 
-        <a className="dd-sub">
+        <a
+          className="dd-sub"
+          onClick={() =>
+            navigate(
+              "/main-page?section=women&gender=Women"
+            )
+          }
+        >
           {data.leftFooter}
         </a>
       </div>
@@ -41,6 +57,13 @@ const DropdownWomen = () => {
             <a
               key={occasion}
               className="dd-link"
+              onClick={() =>
+                navigate(
+                  `/main-page?section=women&gender=Women&occasion=${encodeURIComponent(
+                    occasion
+                  )}`
+                )
+              }
             >
               {occasion}
             </a>
@@ -58,6 +81,28 @@ const DropdownWomen = () => {
             <a
               key={mode}
               className="dd-link"
+              onClick={() => {
+
+                if (mode === "Rent") {
+                  navigate(
+                    "/main-page?section=rent&gender=Women"
+                  );
+                  return;
+                }
+
+                if (mode === "Buy Preloved") {
+                  navigate(
+                    "/main-page?section=preloved&gender=Women"
+                  );
+                  return;
+                }
+
+                if (mode === "Buy New") {
+                  navigate(
+                    "/main-page?section=new&gender=Women"
+                  );
+                }
+              }}
             >
               {mode}
             </a>
@@ -82,7 +127,14 @@ const DropdownWomen = () => {
             </em>
           </h3>
 
-          <button className="dd-view-all">
+          <button
+            className="dd-view-all"
+            onClick={() =>
+              navigate(
+                "/main-page?section=women&gender=Women"
+              )
+            }
+          >
             View all →
           </button>
         </div>

@@ -1,3 +1,4 @@
+// src\data\dropdownData.js
 export const dropdownData = {
   rent: {
     leftLabel: "Shop by Category",
@@ -93,10 +94,28 @@ export const dropdownData = {
       { label: "Tarun Tahiliani" },
     ],
 
+    // priceLinks: [
+    //   "Under ₹15,000",
+    //   "₹15,000–₹50,000",
+    //   "₹50,000 & above",
+    // ],
+
     priceLinks: [
-      "Under ₹15,000",
-      "₹15,000–₹50,000",
-      "₹50,000 & above",
+      {
+        label: "Under ₹15,000",
+        min: 0,
+        max: 15000,
+      },
+      {
+        label: "₹15,000–₹50,000",
+        min: 15000,
+        max: 50000,
+      },
+      {
+        label: "₹50,000 & above",
+        min: 50000,
+        max: null,
+      },
     ],
 
     cardsTitle: "Recently Listed",

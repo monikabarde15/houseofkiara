@@ -1,8 +1,11 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { useNavigate } from "react-router-dom";
+
 
 const DropdownBuyNew = () => {
   const data = dropdownData.buyNew;
+  const navigate = useNavigate();
 
   return (
     <>
@@ -17,15 +20,28 @@ const DropdownBuyNew = () => {
             <a
               key={category}
               className="dd-cat"
+              onClick={() =>
+                navigate(
+                  `/main-page?section=new&category=${encodeURIComponent(
+                    category
+                  )}`
+                )
+              }
             >
               {category}
             </a>
           )
         )}
-
         <div className="dd-divider" />
 
-        <a className="dd-sub">
+        <a
+          className="dd-sub"
+          onClick={() =>
+            navigate(
+              "/main-page?section=new"
+            )
+          }
+        >
           {data.leftFooter}
         </a>
       </div>
@@ -40,11 +56,17 @@ const DropdownBuyNew = () => {
           (designer) => (
             <a
               key={designer.label}
-              className={`dd-link ${
-                designer.featured
+              className={`dd-link ${designer.featured
                   ? "bold"
                   : ""
-              }`}
+                }`}
+              onClick={() =>
+                navigate(
+                  `/main-page?section=new&designer=${encodeURIComponent(
+                    designer.label
+                  )}`
+                )
+              }
             >
               {designer.label}
             </a>
@@ -53,7 +75,14 @@ const DropdownBuyNew = () => {
 
         <div className="dd-divider" />
 
-        <a className="dd-sub">
+        <a
+          className="dd-sub"
+          onClick={() =>
+            navigate(
+              "/main-page?section=new"
+            )
+          }
+        >
           {data.middleFooter}
         </a>
       </div>
@@ -75,7 +104,14 @@ const DropdownBuyNew = () => {
             </em>
           </h3>
 
-          <button className="dd-view-all">
+          <button
+            className="dd-view-all"
+            onClick={() =>
+              navigate(
+                "/main-page?section=new"
+              )
+            }
+          >
             View all →
           </button>
         </div>

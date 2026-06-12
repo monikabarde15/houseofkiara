@@ -48,6 +48,7 @@ export const navigationItems = [
     label: "New Arrivals",
     badge: "New",
     standalone: true,
+    route: "/main-page?section=new",
   },
 
   {
@@ -55,5 +56,6 @@ export const navigationItems = [
     label: "List Your Piece",
     variant: "green",
     standalone: true,
+    route: "/list-your-piece",
   },
 ];

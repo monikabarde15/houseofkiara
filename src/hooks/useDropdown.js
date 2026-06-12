@@ -1,9 +1,11 @@
+// src\hooks\useDropdown.js
 import { useCallback, useEffect, useRef, useState } from "react";
-
+import { useLocation } from "react-router-dom";
 const CLOSE_DELAY = 80;
 
 export const useDropdown = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const location = useLocation();
 
   const closeTimer = useRef(null);
 
@@ -59,6 +61,15 @@ export const useDropdown = () => {
       );
     };
   }, [closeDropdown]);
+
+  useEffect(() => {
+  setActiveDropdown(null);
+
+  inHeader.current = false;
+  inDropdown.current = false;
+
+  clearCloseTimer();
+}, [location.pathname, location.search]);
 
   return {
     activeDropdown,
