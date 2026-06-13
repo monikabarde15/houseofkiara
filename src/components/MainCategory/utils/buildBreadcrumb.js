@@ -1,3 +1,4 @@
+// src\components\MainCategory\utils\buildBreadcrumb.js
 export const buildBreadcrumb = ({
   section,
   category,

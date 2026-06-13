@@ -1,3 +1,4 @@
+// src\components\MainCategory\Breadcrumbs.jsx
 function Breadcrumbs({
   home = "Home",
   parent,

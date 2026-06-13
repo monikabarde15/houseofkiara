@@ -5,7 +5,7 @@ import { useLocation,useParams } from "react-router-dom";
 import "../styles/product-detail.css";
 import RelatedProduct from "./RelatedProduct";
 import GalleryColumn from "./GalleryColumn";
-import products from "../data/bridalLehengaProducts"; 
+import products from "../data/mainCategoryPageData"; 
 
 export default function ProductDetail() {
   const location = useLocation();

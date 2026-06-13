@@ -10,7 +10,6 @@ import Footer from "./components/Footer/Footer";
 
 // Pages
 import ProductList from "./components/Products";
-import MainCategoryPage from "./components/MainCategoryPage";
 import RentalAndPreloved from "./components/RentalAndPreloved";
 import OnlyRentalDetail from "./components/OnlyRentalDetail";
 import Preloved from "./components/Preloved";
@@ -28,6 +27,7 @@ import ConfirmationPage from "./pages/Confirmation/ConfirmationPage";
 import ProfilePage from "./pages/Profile/ProfilePage";
 import WishlistPage from "./pages/Wishlist/WishlistPage";
 import AuthPage from "./pages/Auth/AuthPage";
+import MainCategoryPage from "./pages/MainCategoryPage/MainCategoryPage";
 
 
 

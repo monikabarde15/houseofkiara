@@ -1,3 +1,4 @@
+// src\components\MainCategory\ActiveFilters.jsx
 function ActiveFilters({
   filters,
   setFilters,

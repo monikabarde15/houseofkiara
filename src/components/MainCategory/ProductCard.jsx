@@ -1,7 +1,8 @@
-import "../styles/productcard.css"
+// src\components\MainCategory\ProductCard.jsx
+import "../../styles/maincategorypage/productcard.css"
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { makeProductDetail } from "./ProductList";
+import { makeProductDetail } from "../ProductList";
 
 const ProductCard = ({ item }) => {
 

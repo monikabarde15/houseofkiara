@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import "../styles/filters.css"
+import "../../styles/maincategorypage/filters.css"
 
 
 const FilterGroup = ({title , children, defaultOpen = true}) =>{

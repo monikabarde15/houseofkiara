@@ -1,19 +1,20 @@
-import "../styles/main-category-page.css";
+// src\pages\MainCategoryPage\MainCategoryPage.jsx
+import "../../styles/maincategorypage/main-category-page.css";
 
 import { useEffect, useState } from "react";
 
-import Filters from "./Filters";
-import ProductCard from "./ProductCard";
+import Filters from "../../components/MainCategory/Filters";
+import ProductCard from "../../components/MainCategory/ProductCard";
 
-import Breadcrumbs from "./MainCategory/Breadcrumbs";
-import ListingHeader from "./MainCategory/ListingHeader";
-import ActiveFilters from "./MainCategory/ActiveFilters";
+import Breadcrumbs from "../../components/MainCategory/Breadcrumbs";
+import ListingHeader from "../../components/MainCategory/ListingHeader";
+import ActiveFilters from "../../components/MainCategory/ActiveFilters";
 
-import products from "../data/bridalLehengaProducts";
+import products from "../../data/mainCategoryPageData";
 
 // For dropdown nav
-import { buildHeading } from "./MainCategory/utils/buildHeading"
-import { buildBreadcrumb } from "./MainCategory/utils/buildBreadcrumb";
+import { buildHeading } from "../../components/MainCategory/utils/buildHeading"
+import { buildBreadcrumb } from "../../components/MainCategory/utils/buildBreadcrumb";
 import { useSearchParams } from "react-router-dom";
 
 function MainCategoryPage() {
