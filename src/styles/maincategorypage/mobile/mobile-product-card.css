@@ -1,0 +1,212 @@
+/* ===== MOBILE PRODUCT CARD - Spec 16 ===== */
+/* Complete mobile card specification */
+
+/* ===== CARD CONTAINER - Spec 16.2 ===== */
+.mob-card {
+  background: #FFFEFB; 
+  border: 1px solid #F0EAE0; 
+  border-radius: 1px;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s ease;
+}
+
+/* Pressed state animation - Spec 16.2 */
+.mob-card:active .mob-card__image-inner {
+  transform: scale(1.02);
+  transition: transform 0.4s ease;
+}
+
+/* ===== IMAGE ZONE - Spec 16.3 ===== */
+.mob-card__image-zone {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  position: relative;
+  background: #FAF7F2; 
+}
+
+/* ===== MODE BADGES - Spec 16.4 ===== */
+.mob-card__badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+
+.mob-card__badge {
+  font-family: "DM Sans", sans-serif;
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 1px;
+  display: inline-block;
+}
+
+.mob-card__badge--rent {
+  background: #1A1612; /* --charcoal */
+  color: #D4C5B0;
+}
+
+.mob-card__badge--preloved {
+  background: #B85C38; /* --terracotta */
+  color: #FFFFFF;
+}
+
+.mob-card__badge--new {
+  background: #6B7E5A; /* --sage */
+  color: #FFFFFF;
+}
+
+/* ===== WISHLIST BUTTON - Spec §16.5 ===== */
+.mob-card__wishlist-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #E8E0D4; /* --border */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.mob-card__wishlist-btn:active {
+  transform: scale(0.95);
+}
+
+/* Wishlist Icon - 13x13 px */
+.mob-card__wishlist-icon {
+  width: 13px;
+  height: 13px;
+  stroke: #1A1612; 
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Active/Saved State */
+.mob-card__wishlist-btn.active .mob-card__wishlist-icon {
+  fill: #B85C38; /* --terracotta */
+  stroke: #B85C38;
+}
+
+/* ===== IMAGE INNER & PLACEHOLDER ===== */
+.mob-card__image-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s ease;
+}
+
+.mob-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* Placeholder Gradients - Spec §16.3 */
+.mob-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.mob-card__placeholder.ci-a {
+  background: linear-gradient(160deg, #3C2410, #1C0E06);
+}
+.mob-card__placeholder.ci-b {
+  background: linear-gradient(160deg, #28203C, #10101C);
+}
+.mob-card__placeholder.ci-c {
+  background: linear-gradient(160deg, #1A2C16, #0A1408);
+}
+.mob-card__placeholder.ci-d {
+  background: linear-gradient(160deg, #2C1E28, #160C14);
+}
+.mob-card__placeholder.ci-e {
+  background: linear-gradient(160deg, #1E2C2A, #0A1412);
+}
+.mob-card__placeholder.ci-f {
+  background: linear-gradient(160deg, #2A1E14, #140E08);
+}
+
+.mob-card__placeholder-icon {
+  width: 32px;
+  height: 32px;
+  stroke: #C9A96E; 
+  opacity: 0.15;
+}
+
+/* ===== INFO ZONE - Spec 16.6 ===== */
+.mob-card__info {
+  padding: 12px 12px 20px;
+}
+
+/* Designer Label */
+.mob-card__designer {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #C9A96E; /* --gold */
+  margin-bottom: 6px;
+}
+
+/* Product Name */
+.mob-card__name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1A1612; /* --charcoal */
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+/* Price Block */
+.mob-card__price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mob-card__price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Price Main */
+.mob-card__price-main {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #1A1612; /* --charcoal */
+}
+
+/* Price Sub */
+.mob-card__price-sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #8A7E72; /* --muted */
+  line-height: 1.4;
+}

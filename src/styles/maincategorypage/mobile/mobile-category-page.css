@@ -1,0 +1,79 @@
+/* ===== MOBILE CATEGORY PAGE - Root Container ===== */
+/* Spec §20: Safe Area, Viewport & Responsive Behaviour */
+
+.mob-category-page {
+  background: #FFFFFB;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding-top: 60px;
+}
+
+/* ===== iOS SPECIFIC PROTECTIONS ===== */
+
+/* Prevent iOS zoom on input focus - all inputs must be 16px */
+.mob-category-page input,
+.mob-category-page select,
+.mob-category-page textarea {
+  font-size: 16px;
+}
+
+/* Remove tap highlight on iOS */
+.mob-category-page button,
+.mob-category-page .mob-card,
+.mob-category-page .mob-active-tags-row__tag,
+.mob-category-page .mob-control-bar__filter-btn,
+.mob-category-page .mob-filter-chip,
+.mob-category-page .mob-size-chip,
+.mob-category-page .mob-swatch {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Momentum scrolling for iOS */
+.mob-category-page .mob-active-tags-row__scroll,
+.mob-category-page .mob-filter-sheet__body {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent text selection on interactive elements */
+.mob-category-page .mob-filter-group__header,
+.mob-category-page .mob-active-tags-row__tag,
+.mob-category-page .mob-control-bar__filter-btn {
+  user-select: none;
+}
+
+/* ===== HEADING ZONE ===== */
+.mob-heading-zone {
+  padding: 20px 16px 0;
+  width: 100%;
+}
+
+.mob-heading-zone__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #1A1612;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.mob-heading-zone__title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.mob-heading-zone__count {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #8A7E72;
+  letter-spacing: 0.04em;
+  margin: 4px 0 0 0;
+}
+
+/* ===== CONTROL BAR WRAPPER ===== */
+.mob-control-bar-wrapper {
+  padding: 0 16px;
+}

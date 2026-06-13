@@ -1,0 +1,39 @@
+/* ===== MOBILE CONTINUE BROWSING BUTTON - Spec 13 ===== */
+/* Full-width load more button */
+
+/* Button Wrapper - Spec 13.1 */
+.mob-continue-browsing__wrap {
+  padding: 24px 16px 40px;
+  width: 100%;
+}
+
+/* Button - Spec 13.2 */
+.mob-continue-browsing__btn {
+  width: 100%;
+  padding: 14px;
+  min-height: 48px;
+  border: 1px solid #E8E0D4; /* --border */
+  border-radius: 1px;
+  background: transparent;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #1A1612; /* --charcoal */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Pressed state */
+.mob-continue-browsing__btn:active {
+  background: #FAF7F2; 
+  border-color: #C9A96E; 
+}
+
+/* Disabled/Loading state */
+.mob-continue-browsing__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -1,0 +1,192 @@
+/* ===== MOBILE PRODUCT GRID - Spec 7 & 16 ===== */
+/*  2-column grid + Card styles */
+
+/* ===== GRID CONTAINER - Spec 7.1 ===== */
+.mob-product-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 12px;
+  padding: 16px 16px 0;
+  margin: 12px 0 0;
+  background: transparent;
+}
+
+/* ===== EMPTY STATE ===== */
+.mob-product-grid__empty {
+  padding: 48px 16px;
+  text-align: center;
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  color: #8A7E72;
+}
+
+/* ===== PRODUCT CARD OVERRIDES FOR MOBILE ===== */
+/* Reusing existing ProductCard component with mobile adjustments */
+
+.mob-product-grid .product-card {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Pressed state animation - Spec §16.2 */
+.mob-product-grid .product-card:active .product-img-inner {
+  transform: scale(1.02);
+  transition: transform 0.4s ease;
+}
+
+/* ===== IMAGE ZONE - Spec §16.3 ===== */
+.mob-product-grid .product-image {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #FAF7F2;
+  border: 1px solid #F0EAE0;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+/* ===== MODE BADGES - Spec §16.4 ===== */
+.mob-product-grid .product-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+
+.mob-product-grid .badge {
+  font-family: "DM Sans", sans-serif;
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 1px;
+  font-weight: 500;
+}
+
+.mob-product-grid .badge.rent {
+  background: #1A1612;
+  color: #D4C5B0;
+}
+
+.mob-product-grid .badge.preloved {
+  background: #B85C38;
+  color: #FFFFFF;
+}
+
+.mob-product-grid .badge.new {
+  background: #6B7E5A;
+  color: #FFFFFF;
+}
+
+/* ===== WISHLIST BUTTON - Spec §16.5 ===== */
+.mob-product-grid .wishlist-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #E8E0D4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mob-product-grid .wishlist-icon {
+  width: 13px;
+  height: 13px;
+  stroke: #1A1612;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Wishlist saved state (to be toggled) */
+.mob-product-grid .wishlist-btn.active .wishlist-icon {
+  fill: #B85C38;
+  stroke: #B85C38;
+}
+
+/* ===== PRODUCT INFO ZONE - Spec §16.6 ===== */
+.mob-product-grid .product-info {
+  padding: 0 4px 16px;
+}
+
+.mob-product-grid .designer {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #C9A96E;
+  margin-bottom: 6px;
+}
+
+.mob-product-grid .product-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1A1612;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.mob-product-grid .price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mob-product-grid .price-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mob-product-grid .price-type {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}
+
+.mob-product-grid .price-main {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #1A1612;
+}
+
+.mob-product-grid .price-sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.4;
+}
+
+.mob-product-grid .price-orignal {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  color: #8A7E72;
+  text-decoration: line-through;
+}
+
+.mob-product-grid .price-save {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  color: #6B7E5A;
+  margin-top: 2px;
+}
+
+/* Hide quick-add on mobile (not in spec) */
+.mob-product-grid .quick-add {
+  display: none;
+}

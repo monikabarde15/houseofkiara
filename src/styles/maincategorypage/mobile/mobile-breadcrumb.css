@@ -1,0 +1,54 @@
+/* ===== MOBILE BREADCRUMB - Spec 3 ===== */
+/* Pages 7-8: Horizontally scrollable path strip */
+
+.mob-breadcrumb {
+    padding: 12px 16px;
+    border-bottom: 1px solid #F0EAE0; /* --border-light */
+    background: #FFFEFB; /* --warm-white */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none; /* Firefox */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar for Chrome/Safari */
+.mob-breadcrumb::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ancestor Link - 3.2 */
+.mob-breadcrumb__link {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #8A7E72; /* --muted */
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.mob-breadcrumb__link:active {
+  color: #1A1612; /* --charcoal */
+}
+
+/* Separator - 3.3 */
+.mob-breadcrumb__separator {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  color: #E8E0D4; /* --border */
+  white-space: nowrap;
+}
+
+/* Current Page - 3.4 */
+.mob-breadcrumb__current {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #1A1612; /* --charcoal */
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}

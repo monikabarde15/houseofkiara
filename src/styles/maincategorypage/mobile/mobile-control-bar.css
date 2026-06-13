@@ -1,0 +1,86 @@
+/* ===== MOBILE CONTROL BAR - Spec 5 ===== */
+/* Pages 33-34: Filter Button + Sort Dropdown */
+
+.mob-control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #F0EAE0; 
+}
+
+/* ===== FILTER BUTTON - Spec 5.2 ===== */
+.mob-control-bar__filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border: 1px solid #E8E0D4; /* --border */
+  border-radius: 1px;
+  background: transparent;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #1A1612; /* --charcoal */
+  min-height: 34px;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease;
+}
+
+.mob-control-bar__filter-btn:active {
+  background: #FAF7F2; 
+}
+
+/* Filter Icon - 13x13 px */
+.mob-control-bar__filter-icon {
+  width: 13px;
+  height: 13px;
+  stroke: #1A1612;
+  fill: none;
+}
+
+/* ===== SORT DROPDOWN - Spec 5.3 ===== */
+.mob-control-bar__sort-wrapper {
+  position: relative;
+}
+
+.mob-control-bar__sort-select {
+  border: 1px solid #E8E0D4; 
+  border-radius: 1px;
+  padding: 6px 28px 6px 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #1A1612; 
+  background: #FAF7F2; 
+  min-height: 34px;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom Chevron */
+.mob-control-bar__sort-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 6px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%238A7E72' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+}
+
+.mob-control-bar__sort-select:focus {
+  border-color: #C9A96E; /* --gold */
+}
