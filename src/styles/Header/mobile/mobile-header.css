@@ -1,0 +1,192 @@
+/* src/styles/Header/mobile/mobile-header.css */
+
+/* Section 3: Sticky Header - sticks at top: 0 */
+.hok-mobile-header {
+  /* position: sticky; */
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 200;
+  height: 58px;
+  background: rgba(255, 254, 251, 0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid #E8E0D4;
+}
+
+.hok-mobile-only {
+  display: block;
+  /* No overflow: hidden */
+  /* No position: relative that breaks sticky */
+}
+
+.hok-header-inner {
+  display: grid;
+  grid-template-columns: 44px 1fr 132px;
+  align-items: center;
+  height: 100%;
+  padding: 0 16px;
+  gap: 0;
+}
+
+/* Light mode */
+.hok-mobile-header.light {
+  background: rgba(255, 254, 251, 0.97);
+  border-bottom: 1px solid #E8E0D4;
+}
+
+.hok-mobile-header.light .burger-bar {
+  background: #1A1612;
+}
+
+.hok-mobile-header.light .logo-wordmark {
+  color: #1A1612;
+}
+
+.hok-mobile-header.light .hdr-btn svg {
+  stroke: #1A1612;
+}
+
+/* Dark mode */
+.hok-mobile-header.dark {
+  background: linear-gradient(to bottom, rgba(26, 22, 18, 0.72) 0%, rgba(26, 22, 18, 0) 100%);
+  border-bottom: none;
+}
+
+.hok-mobile-header.dark .burger-bar {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.hok-mobile-header.dark .logo-wordmark {
+  color: #FFFFFF;
+}
+
+.hok-mobile-header.dark .hdr-btn svg {
+  stroke: rgba(255, 255, 255, 0.9);
+}
+
+/* Burger Button */
+.burger-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.burger-bar {
+  height: 1.5px;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+.burger-bar:nth-child(1) { width: 20px; }
+.burger-bar:nth-child(2) { width: 16px; }
+.burger-bar:nth-child(3) { width: 12px; }
+
+/* Open state - morph to X */
+.burger-btn.open .burger-bar:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+  width: 20px;
+}
+
+.burger-btn.open .burger-bar:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.burger-btn.open .burger-bar:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+  width: 20px;
+}
+
+/* Logo */
+.header-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  justify-self: center;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.logo-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.logo-wordmark {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+/* Icon Cluster */
+.header-icons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
+  width: 132px;
+}
+
+.hdr-btn {
+  width: 36px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hdr-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s ease;
+}
+
+/* Cart Dot */
+.cart-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-dot {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #B85C38;
+  border: 1.5px solid #FFFFFB;
+}
+
+/* Hide on desktop */
+@media (min-width: 768px) {
+  .hok-mobile-header {
+    display: none;
+  }
+}

@@ -1,11 +1,12 @@
-/* src\styles\Header\header.css */
+
+/* src/styles/Header/header.css */
+
 /* ==========================================
    DESKTOP
 ========================================== */
 
 .hok-desktop-header-wrapper {
   display: block;
-
 }
 
 .hok-header-desktop {
@@ -16,19 +17,14 @@
   border-bottom: 1px solid #e8e0d4;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  /* background: red; */
-
 }
 
 /* ==========================================
    MOBILE
 ========================================== */
 
-/* ==========================================
-   MOBILE
-========================================== */
-
-.hok-header-mobile-wrapper {
+/* Hide mobile on desktop */
+.hok-mobile-only {
   display: none;
 }
 
@@ -36,8 +32,8 @@
   .hok-desktop-header-wrapper {
     display: none;
   }
-
-  .hok-header-mobile-wrapper {
+  
+  .hok-mobile-only {
     display: block;
   }
 }

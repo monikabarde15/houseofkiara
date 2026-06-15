@@ -1,3 +1,4 @@
+// src\components\Header\Search\SearchOverlay.jsx
 import SearchInput from "./SearchInput";
 import SearchTrending from "./SearchTrending";
 import SearchSuggestions from "./SearchSuggestions";

@@ -1,0 +1,93 @@
+/* src/styles/Header/mobile/mobile-announcement-bar.css */
+
+/* Section 2: Announce Bar - scrolls away (NOT sticky) */
+.mobile-announce-bar {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  background: #1A1612;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  z-index: 300;
+}
+
+.mobile-announce-track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: hokMobileMarquee 28s linear infinite;
+}
+
+.mobile-announce-bar:hover .mobile-announce-track {
+  animation-play-state: paused;
+}
+
+.mobile-announce-content {
+  display: flex;
+  align-items: center;
+}
+
+/* Plain text */
+.mobile-announce-item {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: rgba(212, 197, 176, 0.72);
+  letter-spacing: 0.16em;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+
+/* Italic text */
+.mobile-announce-item.italic {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 11.5px;
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  color: #E8D5B0;
+  letter-spacing: 0.05em;
+}
+
+/* Separator dot */
+.mobile-announce-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(201, 169, 110, 0.45);
+  flex-shrink: 0;
+  margin: 0 4px;
+}
+
+/* Fade edges */
+.mobile-announce-bar::before,
+.mobile-announce-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 32px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.mobile-announce-bar::before {
+  left: 0;
+  background: linear-gradient(to right, #1A1612 10%, transparent 100%);
+}
+
+.mobile-announce-bar::after {
+  right: 0;
+  background: linear-gradient(to left, #1A1612 10%, transparent 100%);
+}
+
+@keyframes hokMobileMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

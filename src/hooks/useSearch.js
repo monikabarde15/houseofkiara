@@ -1,3 +1,4 @@
+// src\hooks\useSearch.js
 import { useEffect, useRef, useState } from "react";
 import { designerPageMap } from "../data/designerMap";
 import {

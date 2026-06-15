@@ -1,0 +1,561 @@
+/* src/styles/Header/mobile/mobile-drawer.css */
+
+/* ==========================================
+   SECTION 4: DRAWER OVERLAY (SCRIM)
+========================================== */
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 300;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.drawer-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ==========================================
+   SECTION 5: NAVIGATION DRAWER
+========================================== */
+
+/* 5.1 Drawer Container */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(88vw, 360px);
+  background: #FFFFFB;
+  z-index: 400;
+  transform: translateX(-100%);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.nav-drawer.open {
+  transform: translateX(0);
+}
+
+/* 5.2 Drawer Header Zone */
+.drawer-head {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid #F0EAE0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawer-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.drawer-logo-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.drawer-logo-name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #1A1612;
+  font-weight: 500;
+}
+
+.drawer-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.drawer-close svg {
+  width: 18px;
+  height: 18px;
+  stroke: #1A1612;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+}
+
+/* 5.3 Drawer Search Bar */
+.drawer-search {
+  margin: 16px 20px 0;
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.drawer-search-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  stroke: #8A7E72;
+  fill: none;
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+
+.drawer-search-input {
+  width: 100%;
+  background: #FAF7F2;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+  padding: 10px 12px 10px 36px;
+  font-size: 16px;
+  font-family: 'DM Sans', sans-serif;
+  color: #1A1612;
+  cursor: pointer;
+}
+
+.drawer-search-input::placeholder {
+  color: #B0A394;
+  font-size: 13px;
+}
+
+.drawer-search-input:focus {
+  outline: none;
+  border-color: #C9A96E;
+}
+
+/* 5.4 Drawer Body */
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0 32px;
+}
+
+.drawer-body::-webkit-scrollbar {
+  display: none;
+}
+
+/* ==========================================
+   SECTION 6: MODE PILLS
+========================================== */
+
+/* 6.1 Pill Container */
+.drawer-mode-pills {
+  padding: 16px 20px 8px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* 6.2 Pill Base Styles */
+.mode-pill {
+  padding: 7px 16px;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 400;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  background: none;
+}
+
+.mode-pill:active {
+  background: #FAF7F2;
+}
+
+/* 6.3 Individual Pill Colours */
+
+/* Rent Pill */
+.mode-pill--rent {
+  background: #1A1612;
+  color: #D4C5B0;
+  border-color: #1A1612;
+}
+
+/* Buy Preloved Pill */
+.mode-pill--preloved {
+  background: #B85C38;
+  color: #FFFFFF;
+  border-color: #B85C38;
+}
+
+/* Buy New Pill */
+.mode-pill--new {
+  background: #6B7E5A;
+  color: #FFFFFF;
+  border-color: #6B7E5A;
+}
+
+
+/* ==========================================
+   SECTION 7: SECTION NAVIGATION ROWS
+========================================== */
+
+/* 7.1 Row Container */
+.drawer-section {
+  border-bottom: 1px solid #F0EAE0;
+}
+
+/* 7.2 Row Head */
+.drawer-section-head {
+  width: 100%;
+  padding: 16px 20px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.drawer-section-head:active {
+  background: #FAF7F2;
+}
+
+/* 7.3 Row Label */
+.drawer-section-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #1A1612;
+}
+
+/* Rent row modifier - terracotta color */
+.drawer-section-label.accent {
+  color: #B85C38;
+}
+
+/* Buy New row modifier - sage color */
+.drawer-section-label.green {
+  color: #6B7E5A;
+}
+
+/* 7.4 Chevron Icon */
+.drawer-chev {
+  width: 16px;
+  height: 16px;
+  stroke: #8A7E72;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   SECTION 8: SUB-PANELS (SIDEWAYS NAVIGATION)
+========================================== */
+
+/* 8.1 Sub-Panel Container */
+.drawer-sub-panel {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  bottom: 0;
+  width: 100%;
+  background: #FFFFFB;
+  z-index: 10;
+  transform: translateX(0);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Open state - slides in to cover main menu */
+.drawer-sub-panel.open {
+  transform: translateX(-100%);
+}
+
+/* 8.2 Sub-Panel Header */
+.sub-panel-head {
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid #F0EAE0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 8.3 Back Button */
+.sub-panel-back {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sub-panel-back svg {
+  width: 18px;
+  height: 18px;
+  stroke: #1A1612;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+}
+
+/* 8.4 Sub-Panel Title */
+.sub-panel-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #1A1612;
+}
+
+/* Rent panel modifier */
+.sub-panel-title.accent {
+  color: #B85C38;
+}
+
+/* Buy New panel modifier */
+.sub-panel-title.green {
+  color: #6B7E5A;
+}
+
+/* 8.5 Sub-Panel Body */
+.sub-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0 32px;
+}
+
+.sub-panel-body::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+/* ==========================================
+   SECTION 9: SUB-PANEL ITEM STYLES
+========================================== */
+
+/* 9.1 Sub-Label (Gold group headings) */
+.drawer-sub-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #C9A96E;
+  display: block;
+  margin: 12px 0 8px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* 9.2 Link Row */
+.drawer-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 0;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-bottom: 1px solid #F0EAE0;
+  min-height: 44px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  width: 100%;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+/* Remove border from last link */
+.drawer-link:last-child {
+  border-bottom: none;
+}
+
+/* 9.2 Pressed state - text turns gold */
+.drawer-link:active .drawer-link-serif,
+.drawer-link:active .drawer-link-sans {
+  color: #C9A96E;
+}
+
+/* 9.3 Link Text - ALL Items (shared styles) */
+.drawer-link-serif,
+.drawer-link-sans {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #1A1612;
+  transition: color 0.15s ease;
+}
+
+/* 9.4 Utility Links - Exception Rule */
+/* "See all →" and "A-Z index →" links use DM Sans, 11px, muted color */
+.drawer-link-sans[data-utility="true"] {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: #8A7E72;
+}
+
+/* 9.5 Link Arrow Icon */
+.drawer-link-arrow {
+  width: 12px;
+  height: 12px;
+  stroke: #8A7E72;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  flex-shrink: 0;
+}
+
+/* Sub-panel body overrides for horizontal padding */
+.sub-panel-body .drawer-link {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.sub-panel-body .drawer-sub-label {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+
+
+/* ==========================================
+   SECTION 11: STANDALONE LINKS & DRAWER FOOTER
+========================================== */
+
+/* 11.1 Standalone Row */
+.drawer-standalone {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  min-height: 52px;
+  border-bottom: 1px solid #F0EAE0;
+  transition: background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Last standalone item has no border-bottom */
+.drawer-standalone:last-child {
+  border-bottom: none;
+}
+
+.drawer-standalone:active {
+  background: #FAF7F2;
+}
+
+.drawer-standalone .drawer-section-head {
+  padding: 0;
+  min-height: auto;
+}
+
+.drawer-standalone .drawer-section-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #1A1612;
+}
+
+/* List Your Piece has sage color */
+.drawer-standalone .drawer-section-label.green {
+  color: #6B7E5A;
+}
+
+/* 11.3 New Pill Badge */
+.drawer-pill-new {
+  background: #B85C38;
+  color: #FFFFFF;
+  font-size: 7px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  padding: 2px 7px;
+  border-radius: 2px;
+  margin-left: 10px;
+}
+
+/* 11.4 Drawer Footer */
+.drawer-footer {
+  padding: 20px;
+  border-top: 1px solid #F0EAE0;
+  flex-shrink: 0;
+}
+
+.drawer-footer-brand {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #8A7E72;
+  margin-bottom: 12px;
+}
+
+.drawer-footer-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.drawer-footer-links a {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.drawer-footer-links a:active {
+  opacity: 0.7;
+}
+
+/* Hide on desktop */
+@media (min-width: 768px) {
+  .drawer-overlay,
+  .nav-drawer {
+    display: none;
+  }
+}
