@@ -1,5 +1,5 @@
 // src/components/Header/Header.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropdown } from "../../hooks/useDropdown";
 import { useSearch } from "../../hooks/useSearch";
@@ -20,17 +20,18 @@ const Header = () => {
   const search = useSearch();
   const theme = useHeaderTheme();
 
-  const [isScrolled, setIsScrolled] = useState(false);
+
+  // const [isScrolled, setIsScrolled] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Handle scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setIsScrolled(window.scrollY > 0);
+  //   };
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   // Drawer handlers
   const handleDrawerOpen = () => setIsDrawerOpen(true);
@@ -43,42 +44,53 @@ const Header = () => {
   return (
     <>
       {/* ==================== DESKTOP ==================== */}
-      <div className="hok-desktop-header-wrapper">
-        <AnnouncementBar />
-        <div
-          className="hok-header-desktop"
-          onMouseEnter={() => {
-            dropdown.inHeader.current = true;
-          }}
-          onMouseLeave={() => {
-            dropdown.inHeader.current = false;
-            dropdown.scheduleClose();
-          }}
-        >
-          <DesktopHeader onSearchOpen={search.openSearch} />
-          <DesktopNavigation
-            activeDropdown={dropdown.activeDropdown}
-            openDropdown={dropdown.openDropdown}
-          />
-        </div>
+      {/* Desktop */}
+      <div className="desktop-only-announce">
+      <AnnouncementBar/>
+      </div>
+
+
+      <div
+        className="hok-header-desktop"
+        onMouseEnter={() => {
+          dropdown.inHeader.current = true;
+        }}
+        onMouseLeave={() => {
+          dropdown.inHeader.current = false;
+          dropdown.scheduleClose();
+        }}
+      >
+        <DesktopHeader onSearchOpen={search.openSearch} />
+
+        <DesktopNavigation
+          activeDropdown={dropdown.activeDropdown}
+          openDropdown={dropdown.openDropdown}
+        />
+
+        {/* Desktop Dropdown */}
+        <Dropdown
+          activeDropdown={dropdown.activeDropdown}
+          inDropdown={dropdown.inDropdown}
+          scheduleClose={dropdown.scheduleClose}
+        />
       </div>
 
       {/* ==================== MOBILE ==================== */}
       <div className="hok-mobile-only">
         {/* Section 2: Announcement Bar */}
         <MobileAnnouncementBar />
+        </div>
         
         {/* Section 3: Sticky Header */}
         <MobileHeader
           theme={theme}
-          isScrolled={isScrolled}
+          // isScrolled={isScrolled}
           isMenuOpen={isDrawerOpen}
           onMenuOpen={handleDrawerOpen}
           onSearchOpen={search.openSearch}
           onWishlistClick={handleWishlistClick}
           onBagClick={handleBagClick}
         />
-      </div>
 
       {/* Sections 4 & 5: Drawer Overlay + Navigation Drawer */}
       <MobileDrawer
@@ -87,12 +99,7 @@ const Header = () => {
         onSearchOpen={search.openSearch}
       />
 
-      {/* Desktop Dropdown */}
-      <Dropdown
-        activeDropdown={dropdown.activeDropdown}
-        inDropdown={dropdown.inDropdown}
-        scheduleClose={dropdown.scheduleClose}
-      />
+      
 
       {/* Search Overlay - Shared between desktop and mobile */}
       <SearchOverlay

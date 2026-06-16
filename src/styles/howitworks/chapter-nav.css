@@ -1,0 +1,72 @@
+/* Sticky Chapter Navigation Bar - B6 */
+.hok-hiw-chapnav {
+  position: sticky;
+  top: 108px; /* 36px announcement bar + 72px header */
+  z-index: 100;
+  background: rgba(250, 247, 242, 0.97);
+  border-bottom: 1px solid #E8E0D4;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hok-hiw-chapnav-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 0 80px;
+  gap: 0;
+}
+
+.hok-hiw-cn-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 400;
+  color: #8A7E72;
+  padding: 18px 0;
+  margin-right: 40px;
+  margin-bottom: -1px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  min-height: 44px;
+}
+
+.hok-hiw-cn-btn:last-child {
+  margin-right: 0;
+}
+
+.hok-hiw-cn-btn:hover {
+  color: #1A1612;
+}
+
+.hok-hiw-cn-btn.hok-hiw-lit {
+  color: #1A1612;
+  border-bottom-color: #C9A96E;
+}
+
+.hok-hiw-cn-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+}
+
+.hok-hiw-cn-btn.hok-hiw-lit .hok-hiw-cn-dot {
+  opacity: 1;
+}
+
+.hok-hiw-cn-btn:hover .hok-hiw-cn-dot {
+  opacity: 0.8;
+}

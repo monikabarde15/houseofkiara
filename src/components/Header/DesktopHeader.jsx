@@ -1,3 +1,4 @@
+// src\components\Header\DesktopHeader.jsx
 import logo from "../../assets/logo/logo.png";
 import "../../styles/Header/desktop-header.css";
 

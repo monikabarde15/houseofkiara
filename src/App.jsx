@@ -28,6 +28,7 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import WishlistPage from "./pages/Wishlist/WishlistPage";
 import AuthPage from "./pages/Auth/AuthPage";
 import MainCategoryPage from "./pages/MainCategoryPage/MainCategoryPage";
+import HowItWorks from "./pages/HowItWorks/HowItWorks";
 
 
 
@@ -54,6 +55,9 @@ export default function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/auth" element={<AuthPage />} />
+
+        <Route path="/how-it-works" element={<HowItWorks />} />
+
 
       </Routes>
 

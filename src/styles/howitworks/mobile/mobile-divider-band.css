@@ -1,0 +1,107 @@
+/* Divider Band (Mobile) - C10 */
+.hok-hiw-mobile-divider {
+  background: #F5EDD8;
+  padding: 36px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative Watermark */
+.hok-hiw-mobile-divider-watermark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 160px;
+  font-weight: 100;
+  color: rgba(201, 169, 110, 0.1);
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+.hok-hiw-mobile-divider-content {
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+/* Quote - Above Stats */
+.hok-hiw-mobile-divider-quote {
+  margin-bottom: 24px;
+}
+
+.hok-hiw-mobile-divider-eyebrow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.hok-hiw-mobile-divider-line {
+  width: 16px;
+  height: 1px;
+  background: #C9A96E;
+}
+
+.hok-hiw-mobile-divider-eyebrow-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  color: #C9A96E;
+  font-weight: 400;
+}
+
+.hok-hiw-mobile-divider-quote-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: italic;
+  color: #1A1612;
+  line-height: 1.35;
+  margin: 0;
+  padding: 0;
+}
+
+/* Stats - Below Quote */
+.hok-hiw-mobile-divider-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hok-hiw-mobile-db-stat {
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.hok-hiw-mobile-db-stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #1A1612;
+  line-height: 1;
+}
+
+.hok-hiw-mobile-db-stat-number em {
+  font-style: normal;
+  color: #C9A96E;
+}
+
+.hok-hiw-mobile-db-stat-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8A7E72;
+  font-weight: 400;
+}

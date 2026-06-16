@@ -1,0 +1,167 @@
+/* Policies (Mobile) - C12 */
+.hok-hiw-mobile-policies {
+  background: #FFFEFB;
+  padding: 48px 16px;
+}
+
+/* Header */
+.hok-hiw-mobile-pol-header {
+  margin-bottom: 48px;
+}
+
+.hok-hiw-mobile-pol-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 400;
+  color: #1A1612;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin: 0 0 12px 0;
+}
+
+.hok-hiw-mobile-pol-title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.hok-hiw-mobile-pol-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.9;
+  margin: 0;
+}
+
+/* Policies Stack */
+.hok-hiw-mobile-pol-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Policy Card */
+.hok-hiw-mobile-pol-card {
+  background: #FAF7F2;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+  padding: 24px 20px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.hok-hiw-mobile-pol-card:hover {
+  border-color: #E8D5B0;
+  transform: translateY(-2px);
+}
+
+/* Icon */
+.hok-hiw-mobile-pol-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #E8E0D4;
+  background: #FFFEFB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.hok-hiw-mobile-pol-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Card Title */
+.hok-hiw-mobile-pol-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #1A1612;
+  margin: 0 0 10px 0;
+}
+
+/* Card Body */
+.hok-hiw-mobile-pol-card-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.85;
+  margin: 0 0 14px 0;
+}
+
+/* Card Link */
+.hok-hiw-mobile-pol-card-link {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #8A7E72;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  transition: color 0.2s ease;
+}
+
+.hok-hiw-mobile-pol-card-link::after {
+  /* content: '→'; */
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.hok-hiw-mobile-pol-card-link:hover {
+  color: #C9A96E;
+}
+
+.hok-hiw-mobile-pol-card-link:hover::after {
+  transform: translateX(2px);
+}
+
+/* Tablet Breakpoint - @media (min-width: 680px) */
+@media (min-width: 680px) {
+  .hok-hiw-mobile-policies {
+    padding: 64px 40px;
+  }
+
+  .hok-hiw-mobile-pol-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+
+  .hok-hiw-mobile-pol-title {
+    font-size: clamp(36px, 4vw, 52px);
+  }
+
+  .hok-hiw-mobile-pol-stack {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+
+  .hok-hiw-mobile-pol-card {
+    padding: 36px 32px;
+  }
+
+  .hok-hiw-mobile-pol-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hok-hiw-mobile-pol-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .hok-hiw-mobile-pol-card-title {
+    font-size: 19px;
+  }
+
+  .hok-hiw-mobile-pol-card-link {
+    min-height: auto;
+  }
+}

@@ -1,4 +1,5 @@
 // src\components\Header\Dropdown\Dropdown.jsx
+
 import DropdownRent from "./DropdownRent";
 import DropdownBuyPreloved from "./DropdownBuyPreloved";
 import DropdownBuyNew from "./DropdownBuyNew";
@@ -6,12 +7,16 @@ import DropdownWomen from "./DropdownWomen";
 import DropdownMen from "./DropdownMen";
 import DropdownOccasions from "./DropdownOccasions";
 import DropdownDesigners from "./DropdownDesigners";
+import { useEffect } from "react";
 
 const Dropdown = ({
   activeDropdown,
   inDropdown,
   scheduleClose,
+
 }) => {
+
+
   if (!activeDropdown) return null;
 
   const renderDropdown = () => {

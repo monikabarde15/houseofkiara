@@ -1,0 +1,297 @@
+/* Shopping Journey - Horizontal Scroll - B7 */
+.hok-hiw-shop-section {
+  background: #FAF7F2;
+  padding: 96px 80px;
+  overflow: hidden;
+}
+
+/* Section Header */
+.hok-hiw-shop-header {
+  margin-bottom: 56px;
+}
+
+.hok-hiw-shop-eyebrow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.hok-hiw-shop-line {
+  width: 24px;
+  height: 1px;
+  background: #C9A96E;
+}
+
+.hok-hiw-shop-eyebrow-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: #C9A96E;
+  font-weight: 400;
+}
+
+.hok-hiw-shop-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: 400;
+  color: #1A1612;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  /* margin-bottom: 14px; */
+}
+
+.hok-hiw-shop-title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.hok-hiw-shop-lead {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.9;
+  max-width: 520px;
+  margin-bottom: 14px;
+}
+
+.hok-hiw-shop-scroll-hint {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.hok-hiw-shop-scroll-bar {
+  width: 20px;
+  height: 1px;
+  background: #E8E0D4;
+  display: inline-block;
+}
+
+.hok-hiw-shop-scroll-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: #8A7E72;
+}
+
+/* Journey Track */
+.hok-hiw-jtrack {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  gap: 3px;
+  padding-bottom: 48px;
+  cursor: grab;
+  margin: 0 -80px;
+  padding-left: 80px;
+  padding-right: 80px;
+}
+
+.hok-hiw-jtrack::-webkit-scrollbar {
+  display: none;
+}
+
+.hok-hiw-jtrack:active {
+  cursor: grabbing;
+}
+
+/* Journey Cards */
+.hok-hiw-jcard {
+  width: clamp(300px, 32vw, 400px);
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  padding: 52px 44px 44px;
+  background: #FFFEFB;
+  border: 1px solid #E8E0D4;
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+  position: relative;
+}
+
+.hok-hiw-jcard:hover {
+  border-color: rgba(201, 169, 110, 0.5);
+  transform: translateY(-3px);
+}
+
+/* Ghost Number */
+.hok-hiw-jcard-ghost {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 140px;
+  font-weight: 300;
+  color: rgba(201, 169, 110, 0.055);
+  position: absolute;
+  top: -16px;
+  right: 12px;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Step Identifier */
+.hok-hiw-jstep-num {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  color: #C9A96E;
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.hok-hiw-jstep-num::after {
+  content: '';
+  display: block;
+  max-width: 40px;
+  height: 1px;
+  background: #E8D5B0;
+  margin-top: 12px;
+}
+
+/* Step Title */
+.hok-hiw-jstep-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #1A1612;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+
+.hok-hiw-jstep-title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* Step Body */
+.hok-hiw-jstep-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.9;
+  margin-bottom: 28px;
+}
+
+/* Details List */
+.hok-hiw-jstep-details {
+  border-top: 1px solid #F0EAE0;
+  padding-top: 22px;
+}
+
+.hok-hiw-jspd {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.hok-hiw-jspd:last-child {
+  border-bottom: none;
+}
+
+.hok-hiw-jspd-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #E8D5B0;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.hok-hiw-jspd-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.55;
+}
+
+/* Dark Card (5th card - Loop) */
+.hok-hiw-jcard-dark {
+  background: #1A1612;
+  border-color: transparent;
+}
+
+.hok-hiw-jcard-dark .hok-hiw-jcard-ghost {
+  color: rgba(201, 169, 110, 0.04);
+}
+
+.hok-hiw-jcard-dark .hok-hiw-jstep-num {
+  color: #C9A96E;
+}
+
+.hok-hiw-jcard-dark .hok-hiw-jstep-num::after {
+  background: rgba(201, 169, 110, 0.25);
+}
+
+.hok-hiw-jcard-dark .hok-hiw-jstep-title {
+  color: #FAF7F2;
+}
+
+.hok-hiw-jcard-dark .hok-hiw-jstep-title em {
+  color: #C9A96E;
+}
+
+.hok-hiw-jcard-dark .hok-hiw-jstep-body {
+  color: rgba(250, 247, 242, 0.72);
+}
+
+.hok-hiw-jcard-dark .hok-hiw-jstep-details {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+.hok-hiw-jcard-dark .hok-hiw-jspd {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.hok-hiw-jcard-dark .hok-hiw-jspd-dot {
+  background: rgba(201, 169, 110, 0.25);
+}
+
+.hok-hiw-jcard-dark .hok-hiw-jspd-text {
+  color: rgba(250, 247, 242, 0.65);
+}
+
+/* Spacer */
+.hok-hiw-jcard-spacer {
+  flex-shrink: 0;
+  width: 80px;
+}
+
+/* Progress Dots */
+.hok-hiw-jdots {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.hok-hiw-jdot {
+  width: 20px;
+  height: 2px;
+  background: #E8E0D4;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background 0.2s ease, width 0.2s ease;
+  display: inline-block;
+}
+
+.hok-hiw-jdot.hok-hiw-on {
+  width: 36px;
+  background: #C9A96E;
+}
+
+.hok-hiw-jdot:hover {
+  opacity: 0.7;
+}

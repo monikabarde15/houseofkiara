@@ -2,9 +2,8 @@
 
 /* Section 3: Sticky Header - sticks at top: 0 */
 .hok-mobile-header {
-  /* position: sticky; */
   width: 100%;
-  position: fixed;
+  position: sticky;
   top: 0;
   z-index: 200;
   height: 58px;

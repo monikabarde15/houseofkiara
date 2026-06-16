@@ -1,17 +1,23 @@
+/* src\styles\Header\dropdown.css */
 .dropdown {
   position: fixed;
   left: 0;
-  width: 100vw;
-  background: #fffefb;
-  border-top: 2px solid #1a1612;
-  border-bottom: 1px solid #e8e0d4;
-  box-shadow:
-    0 20px 60px rgba(26, 22, 18, 0.09),
-    0 4px 16px rgba(26, 22, 18, 0.05);
-
+  width: 100%;
+  background: var(--warm-white);
+  border-top: 2px solid var(--charcoal);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(26,22,18,0.09), 0 4px 16px rgba(26,22,18,0.05);
   z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
 
+.dropdown.open {
   opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
 }
 
 .dropdown-inner {

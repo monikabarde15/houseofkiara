@@ -5,20 +5,18 @@
    DESKTOP
 ========================================== */
 
-.hok-desktop-header-wrapper {
-  display: block;
-}
-
 .hok-header-desktop {
   position: sticky;
   top: 0;
+
   z-index: 250;
+
   background: rgba(255, 254, 251, 0.98);
   border-bottom: 1px solid #e8e0d4;
+
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
-
 /* ==========================================
    MOBILE
 ========================================== */
@@ -29,11 +27,15 @@
 }
 
 @media (max-width: 767px) {
-  .hok-desktop-header-wrapper {
+  .hok-header-desktop {
     display: none;
   }
   
   .hok-mobile-only {
     display: block;
+  }
+
+  .desktop-only-announce{
+    display: none;
   }
 }
