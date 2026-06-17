@@ -2,54 +2,54 @@ export const footerColumns = [
   {
     title: "SHOP",
     links: [
-      "Rent",
-      "Buy Preloved",
-      "Buy New",
-      "Shop by Occasion",
-      "Shop by Category",
-      "All Designers",
+      { label: "Rent", path: "/rent" },
+      { label: "Buy Preloved", path: "/buy-preloved" },
+      { label: "Buy New", path: "/buy-new" },
+      { label: "Shop by Occasion", path: "/shop-by-occasion" },
+      { label: "Shop by Category", path: "/shop-by-category" },
+      { label: "All Designers", path: "/all-designers" },
     ],
   },
 
   {
     title: "SELL WITH US",
     links: [
-      "List Your Piece",
-      "How It Works",
-      "Seller Guidelines",
-      "Pricing & Fees",
-      "Designer Partners",
+      { label: "List Your Piece", path: "/list-your-piece" },
+      { label: "How It Works", path: "/how-it-works" }, // ← Linked to /how-it-works
+      { label: "Seller Guidelines", path: "/seller-guidelines" },
+      { label: "Pricing & Fees", path: "/pricing-fees" },
+      { label: "Designer Partners", path: "/designer-partners" },
     ],
   },
 
   {
     title: "SUPPORT",
     links: [
-      "FAQs",
-      "Care, Cleaning & Damage",
-      "Deposit Policy",
-      "Refunds & Cancellations",
-      "Contact Us",
+      { label: "FAQs", path: "/faqs" },
+      { label: "Care, Cleaning & Damage", path: "/care-cleaning-damage" },
+      { label: "Deposit Policy", path: "/deposit-policy" },
+      { label: "Refunds & Cancellations", path: "/refunds-cancellations" },
+      { label: "Contact Us", path: "/contact-us" },
     ],
   },
 
   {
     title: "COMPANY",
     links: [
-      "About HOK",
-      "Sustainability",
-      "Careers",
-      "Press",
-      "Blog",
+      { label: "About HOK", path: "/about" },
+      { label: "Sustainability", path: "/sustainability" },
+      { label: "Careers", path: "/careers" },
+      { label: "Press", path: "/press" },
+      { label: "Blog", path: "/blog" },
     ],
   },
 ];
 
 export const policyLinks = [
-  "Terms & Conditions",
-  "Privacy Policy",
-  "Refund Policy",
-  "Deposit Policy",
-  "Care & Damage Policy",
-  "Cookie Policy",
+  { label: "Terms & Conditions", path: "/terms" },
+  { label: "Privacy Policy", path: "/privacy" },
+  { label: "Refund Policy", path: "/refund" },
+  { label: "Deposit Policy", path: "/deposit" },
+  { label: "Care & Damage Policy", path: "/care-damage" },
+  { label: "Cookie Policy", path: "/cookie" },
 ];
