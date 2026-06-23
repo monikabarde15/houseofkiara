@@ -1,3 +1,4 @@
+import Toast from "../AboutUs/shared/Toast";
 import "./../../styles/Footer/footer.css";
 import DesktopFooter from "./DesktopFooter/DesktopFooter";
 import MobileFooter from "./MobileFooter/MobileFooter";
@@ -12,6 +13,8 @@ const Footer = () => {
       <div className="footer-mobile-wrapper">
         <MobileFooter />
       </div>
+
+      <Toast/>
     </>
   );
 };

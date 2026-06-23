@@ -1,0 +1,195 @@
+/* ===== CLOSING CTA - MOBILE ===== */
+/* Mobile Spec §14 - Pages 15-16 */
+
+.mob-closing {
+  background: #1A1612; /* --charcoal */
+  padding: 72px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Glow - Mobile Spec §14 */
+.mob-closing__glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0.7;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 0%, rgba(201, 169, 110, 0.14), transparent 55%);
+}
+
+/* Inner Content - Mobile Spec §14 */
+.mob-closing__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* ===== H2 - Mobile Spec §14.1 ===== */
+/* Mobile: clamp(28px, 7vw, 42px) */
+.mob-closing__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(28px, 7vw, 42px);
+  font-weight: 400;
+  line-height: 1.2;
+  color: #FFFFFB;
+  margin: 0 0 18px 0;
+}
+
+.mob-closing__title em {
+  font-style: italic;
+  color: #E8D5B0; /* --gold-light */
+}
+
+/* ===== PARAGRAPH - Mobile Spec §14.1 ===== */
+/* Mobile: 15px */
+.mob-closing__paragraph {
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #B8AA9A;
+  max-width: 100%;
+  margin: 0 auto 32px;
+  padding: 0 4px;
+}
+
+/* ===== BUTTONS - Mobile Spec §14.2 ===== */
+/* Mobile: flex column, gap 12px, buttons stacked, each full width */
+.mob-closing__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Shared Button Base - Mobile Spec §14.2 */
+.mob-closing__btn {
+  width: 100%;
+  max-width: 400px;
+  padding: 16px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  text-align: center;
+}
+
+.mob-closing__btn:active {
+  transform: scale(0.97);
+}
+
+/* Gold Button - Mobile Spec §14.2 */
+.mob-closing__btn--gold {
+  background: #C9A96E;
+  color: #1A1612;
+  border: 1px solid #C9A96E;
+}
+
+.mob-closing__btn--gold:active {
+  background: #E8D5B0;
+  border-color: #E8D5B0;
+}
+
+/* Outline Button - Mobile Spec §14.2 */
+.mob-closing__btn--outline {
+  background: transparent;
+  color: #FFFFFB;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.mob-closing__btn--outline:active {
+  background: #6B7E5A;
+  border-color: #6B7E5A;
+  color: #FFFFFB;
+}
+
+/* ===== INSTAGRAM LINE - Mobile Spec §14.3 ===== */
+/* Mobile: 12px, margin-top: 32px */
+.mob-closing__instagram {
+  margin-top: 32px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  color: #8A7A6A;
+}
+
+.mob-closing__instagram a {
+  color: #E8D5B0;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(232, 213, 176, 0.3);
+  transition: border-color 0.3s ease;
+}
+
+.mob-closing__instagram a:active {
+  border-bottom-color: rgba(232, 213, 176, 0.7);
+}
+
+/* ===== REVEAL ANIMATION - Mobile Spec §02.3 ===== */
+.mob-closing .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.mob-closing .reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== TABLET BREAKPOINT (≥768px) - Mobile Spec Master Table ===== */
+@media (min-width: 768px) {
+  .mob-closing {
+    padding: 72px 48px;
+  }
+
+  /* Tablet: buttons row, max-width 480px, each flex:1 */
+  .mob-closing__buttons {
+    flex-direction: row;
+    max-width: 480px;
+    gap: 16px;
+  }
+
+  .mob-closing__btn {
+    flex: 1;
+    max-width: 100%;
+  }
+
+  .mob-closing__btn--gold:hover {
+    background: #E8D5B0;
+    border-color: #E8D5B0;
+    transform: translateY(-2px);
+  }
+
+  .mob-closing__btn--outline:hover {
+    background: #6B7E5A;
+    border-color: #6B7E5A;
+    color: #FFFFFB;
+    transform: translateY(-2px);
+  }
+
+  .mob-closing__instagram a:hover {
+    border-bottom-color: rgba(232, 213, 176, 0.7);
+  }
+}
+
+/* ===== REDUCED MOTION - Mobile Spec §01.1 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .mob-closing .reveal {
+    transition-duration: 0.001ms !important;
+  }
+  .mob-closing__btn {
+    transition-duration: 0.001ms !important;
+  }
+  .mob-closing__instagram a {
+    transition-duration: 0.001ms !important;
+  }
+}

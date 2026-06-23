@@ -1,0 +1,74 @@
+/* ===== ABOUT US - DESKTOP ===== */
+/* Global styles for the desktop About Us page */
+
+.au-desktop {
+  background: #FFFEFB;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* ===== GLOBAL SECTION PADDING (Desktop) ===== */
+/* Spec: 140px top/bottom · 80px left/right */
+.au-desktop section {
+  padding: 140px 80px;
+}
+
+/* ===== SECTION HEAD EYEBROW (shared) ===== */
+.au-desktop .section-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.au-desktop .section-eyebrow::before,
+.au-desktop .section-eyebrow::after {
+  content: "";
+  width: 40px;
+  height: 1px;
+  background: #C9A96E;
+}
+
+.au-desktop .section-eyebrow span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #C9A96E;
+}
+
+/* ===== REVEAL ANIMATION ===== */
+.au-desktop .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.au-desktop .reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ================================================================ */
+/* ===== REDUCED MOTION - Spec §16.3 ===== */
+/* Required accessibility - Page 24 */
+
+@media (prefers-reduced-motion: reduce) {
+  
+  /* Scroll behaviour override on html */
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Global override - per spec exactly */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

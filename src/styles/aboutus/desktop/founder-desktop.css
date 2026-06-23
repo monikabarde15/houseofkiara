@@ -1,0 +1,262 @@
+/* ===== FOUNDER SECTION  ===== */
+/* Monogram + Copy */
+
+.au-founder {
+  background: #1A1612; 
+  padding: 140px 80px;
+  color: #FFFEFB; 
+  position: relative;
+  /* overflow: hidden; */
+}
+
+/* ===== GRID ===== */
+.au-founder__grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* ===== MONOGRAM COLUMN ===== */
+.au-founder__monogram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  position: sticky;
+  top: 120px;
+}
+
+/* Monogram Circle - Spec §11.1 */
+.au-founder__monogram-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Inner Ring  */
+.au-founder__monogram-inner {
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(201, 169, 110, 0.18);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Monogram Letter */
+.au-founder__monogram-letter {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 78px;
+  font-style: italic;
+  color: #E8D5B0; 
+  line-height: 1;
+  z-index: 1;
+}
+
+/* Name */
+.au-founder__monogram-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  font-style: italic;
+  color: #FFFEFB;
+}
+
+/* Title -*/
+.au-founder__monogram-title {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8A7A6A;
+  margin-top: 6px;
+}
+
+/* ===== COPY COLUMN ===== */
+.au-founder__copy {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Eyebrow  */
+.au-founder__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.au-founder__eyebrow-line {
+  width: 40px;
+  height: 1px;
+  background: #E8D5B0; 
+}
+
+.au-founder__eyebrow span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #E8D5B0; 
+}
+
+/* H2 */
+.au-founder__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(28px, 3.4vw, 40px);
+  font-weight: 400;
+  line-height: 1.25;
+  color: #FFFEFB;
+  margin: 0 0 28px 0;
+}
+
+.au-founder__title em {
+  font-style: italic;
+  color: #E8D5B0;
+}
+
+/* Body Paragraphs */
+.au-founder__body {
+  font-family: "DM Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.95;
+  color: #C9BCAC;
+  margin: 0 0 20px 0;
+}
+
+.au-founder__body:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Sign-off - Spec §11.3 */
+.au-founder__signoff {
+  margin-top: 28px;
+}
+
+.au-founder__signoff-name {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 19px;
+  color: #E8D5B0;
+  margin: 0;
+}
+
+.au-founder__signoff-title {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8A7A6A;
+  margin: 6px 0 0 0;
+}
+
+/* ===== RESPONSIVE - Tablet ===== */
+@media (max-width: 1080px) {
+  .au-founder {
+    padding: 100px 40px;
+  }
+
+  .au-founder__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .au-founder__monogram {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px 24px;
+  }
+
+  .au-founder__monogram-circle {
+    width: 160px;
+    height: 160px;
+  }
+
+  .au-founder__monogram-letter {
+    font-size: 62px;
+  }
+
+  .au-founder__monogram-name {
+    font-size: 17px;
+  }
+
+  .au-founder__monogram-title {
+    width: 100%;
+    text-align: center;
+    margin-top: -8px;
+  }
+
+  .au-founder__copy {
+    text-align: center;
+  }
+
+  .au-founder__eyebrow {
+    justify-content: center;
+  }
+}
+
+/* ===== RESPONSIVE - Mobile ===== */
+@media (max-width: 680px) {
+  .au-founder {
+    padding: 72px 24px;
+  }
+
+  .au-founder__grid {
+    gap: 36px;
+  }
+
+  .au-founder__monogram-circle {
+    width: 140px;
+    height: 140px;
+  }
+
+  .au-founder__monogram-inner {
+    inset: 10px;
+  }
+
+  .au-founder__monogram-letter {
+    font-size: 52px;
+  }
+
+  .au-founder__monogram-name {
+    font-size: 15px;
+  }
+
+  .au-founder__title {
+    font-size: clamp(24px, 6vw, 32px);
+  }
+
+  .au-founder__body {
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .au-founder__copy {
+    text-align: left;
+  }
+
+  .au-founder__eyebrow {
+    justify-content: flex-start;
+  }
+
+  .au-founder__signoff {
+    text-align: left;
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .au-founder__monogram-circle {
+    transition-duration: 0.001ms;
+  }
+}

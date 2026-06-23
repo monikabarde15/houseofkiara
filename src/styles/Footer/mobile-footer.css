@@ -61,30 +61,36 @@
 .hok-mobile-footer-socials {
   display: flex;
   gap: 8px;
-
   margin-top: 14px;
 }
 
 .hok-mobile-footer-socials button {
   width: 32px;
   height: 32px;
-
   border-radius: 50%;
-
   border: 1px solid #e8e0d4;
-
   background: #fffefb;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
 }
 
 .hok-mobile-footer-socials svg {
-  stroke: #8a7e72;
-  stroke-width: 1.4;
+  width: 13px;
+  height: 13px;
+  stroke: var(--muted);
+  fill: none;
+  stroke-width: 1.6;
+  transition: stroke 220ms ease;
+}
+.hok-mobile-footer-socials button:hover {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.hok-mobile-footer-socials button:hover svg {
+  stroke: var(--gold);
 }
 
 /* =========================

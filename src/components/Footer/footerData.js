@@ -15,7 +15,7 @@ export const footerColumns = [
     title: "SELL WITH US",
     links: [
       { label: "List Your Piece", path: "/list-your-piece" },
-      { label: "How It Works", path: "/how-it-works" }, // ← Linked to /how-it-works
+      { label: "How It Works", path: "/how-it-works" }, 
       { label: "Seller Guidelines", path: "/seller-guidelines" },
       { label: "Pricing & Fees", path: "/pricing-fees" },
       { label: "Designer Partners", path: "/designer-partners" },
@@ -36,7 +36,7 @@ export const footerColumns = [
   {
     title: "COMPANY",
     links: [
-      { label: "About HOK", path: "/about" },
+      { label: "About HOK", path: "/about-us" },
       { label: "Sustainability", path: "/sustainability" },
       { label: "Careers", path: "/careers" },
       { label: "Press", path: "/press" },

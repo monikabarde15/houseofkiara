@@ -57,29 +57,42 @@
 .hok-footer-socials {
   display: flex;
   gap: 10px;
-
   margin-top: 24px;
 }
 
 .hok-footer-socials button {
   width: 34px;
   height: 34px;
-
   border-radius: 50%;
-
   border: 1px solid #e8e0d4;
-
   background: #fffefb;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
+
+  transition:
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease;
 }
 
-.hok-footer-socials svg {
-  stroke: #8a7e72;
+.hok-footer-socials button svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--muted);
+  fill: none;
+  stroke-width: 1.6;
+  transition: stroke 220ms ease;
+}
+
+.hok-footer-socials button:hover {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.hok-footer-socials button:hover svg {
+  stroke: var(--gold);
 }
 
 .hok-footer-column h4 {

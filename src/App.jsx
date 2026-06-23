@@ -29,10 +29,12 @@ import WishlistPage from "./pages/Wishlist/WishlistPage";
 import AuthPage from "./pages/Auth/AuthPage";
 import MainCategoryPage from "./pages/MainCategoryPage/MainCategoryPage";
 import HowItWorks from "./pages/HowItWorks/HowItWorks";
+import AboutUsPage from "./pages/AboutUsPage/AboutUsPage";
 
 
 
 export default function App() {
+
   return (
     <>
       <Header />
@@ -57,6 +59,7 @@ export default function App() {
         <Route path="/auth" element={<AuthPage />} />
 
         <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/about-us" element={<AboutUsPage />} />
 
 
       </Routes>

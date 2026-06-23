@@ -1,0 +1,51 @@
+/* ===== TOAST NOTIFICATION - About Us ===== */
+/* Spec Section 02.2 - Page 4 */
+
+.au-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1A1612; /* --charcoal */
+  color: #FFFFFB; /* --warm-white */
+  padding: 13px 26px;
+  border-radius: 2px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 998;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.au-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: all;
+}
+
+.au-toast__message {
+  display: block;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 680px) {
+  .au-toast {
+    bottom: 24px;
+    padding: 11px 20px;
+    font-size: 11px;
+    white-space: normal;
+    max-width: 90%;
+    text-align: center;
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .au-toast {
+    transition-duration: 0.001ms;
+  }
+}

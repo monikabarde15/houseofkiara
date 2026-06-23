@@ -1,0 +1,21 @@
+/* ===== SCROLL PROGRESS BAR  ===== */
+/* Fixed progress indicator at top of page */
+
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: #C9A96E; 
+  z-index: 999;
+  transition: width 0.08s linear;
+  pointer-events: none;
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress-bar {
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,135 @@
+/* ===== ABOUT US - MOBILE ===== */
+/* Mobile Spec §00 - Global Styles */
+
+.mob-about-us {
+  background: #FFFFFB;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ===== GLOBAL SECTION PADDING - Mobile Spec §00 ===== */
+/* Mobile: 72px top/bottom · 24px left/right */
+.mob-about-us section {
+  padding: 72px 24px;
+}
+
+/* ===== SECTION HEAD EYEBROW (shared) - Mobile Spec §07.1 ===== */
+.mob-about-us .section-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.mob-about-us .section-eyebrow::before,
+.mob-about-us .section-eyebrow::after {
+  content: "";
+  width: 20px;
+  height: 1px;
+  background: #C9A96E;
+}
+
+.mob-about-us .section-eyebrow span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #C9A96E;
+}
+
+/* ===== REVEAL ANIMATION - Mobile Spec §02.3 ===== */
+.mob-about-us .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.mob-about-us .reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== REVEAL STAGGER - Mobile Spec §02.3 ===== */
+.mob-about-us .reveal-stagger {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.mob-about-us .reveal-stagger.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mob-about-us .reveal-stagger.in-view > * {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: mobStaggerIn 0.6s ease forwards;
+}
+
+.mob-about-us .reveal-stagger.in-view > *:nth-child(1) {
+  animation-delay: 0s;
+}
+.mob-about-us .reveal-stagger.in-view > *:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.mob-about-us .reveal-stagger.in-view > *:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.mob-about-us .reveal-stagger.in-view > *:nth-child(4) {
+  animation-delay: 0.24s;
+}
+
+@keyframes mobStaggerIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================================================ */
+/* ===== TABLET BREAKPOINT (≥768px) - Mobile Spec Master Table ===== */
+/* Pages 18-19 */
+
+@media (min-width: 768px) {
+  
+  /* Global padding increases from 24px → 48px - Spec Master Table */
+  .mob-about-us section {
+    padding: 72px 48px;
+  }
+
+  /* Founder section gets 88px vertical padding - Spec Master Table */
+  .mob-about-us .mob-founder {
+    padding: 88px 48px;
+  }
+}
+
+/* ================================================================ */
+/* ===== REDUCED MOTION - Mobile Spec §01.1 ===== */
+/* Required accessibility - Page 3 */
+
+@media (prefers-reduced-motion: reduce) {
+  
+  /* Scroll behaviour override */
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  /* Global override - ONE rule with !important covers everything */
+  /* Per spec: animation-duration: 0.001ms, animation-iteration-count: 1, transition-duration: 0.001ms */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
