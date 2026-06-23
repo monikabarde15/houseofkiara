@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 import categoriesData from "../../../data/home/categoriesData";
 
 import SectionEyebrow from "../../shared/SectionEyebrow";
@@ -7,9 +7,24 @@ import SectionTitle from "../../shared/SectionTitle";
 import ViewAllLink from "../../shared/ViewAllLink";
 
 const CategoryTile = ({ category, isLarge = false }) => {
+
+  const navigate = useNavigate();
+
+  const handleCategoryClick = () => {
+    navigate(`/main-page?section=new&category=${category.variant}`);
+
+    setTimeout(()=>{
+      window.scrollTo({
+        top:0,
+        behavior:"smooth",
+      });
+    },0);
+  };
+
   return (
     <article
       className={`desk-category-tile desk-category-${category.variant}`}
+      onClick={handleCategoryClick}
     >
       {/* Image Wrapper - handles the scale on hover */}
       <div 
@@ -61,7 +76,10 @@ const DesktopCategories = () => {
             Shop by <em>Category</em>
           </SectionTitle>
         </div>
-        <ViewAllLink text="View All →" />
+        <ViewAllLink 
+        text="View All →"
+        href="/main-page?section=new&category"
+        />
       </div>
 
       <div className="desk-categories-grid">

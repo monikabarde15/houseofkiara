@@ -12,32 +12,32 @@ const instagramData = {
     {
       id: 1,
       image: instagram1,
-      link: "https://instagram.com/houseofkaira",
+      link: "https://instagram.com/house_of_kaira",
     },
     {
       id: 2,
       image: instagram2,
-      link: "https://instagram.com/houseofkaira",
+      link: "https://instagram.com/house_of_kaira",
     },
     {
       id: 3,
       image: instagram3,
-      link: "https://instagram.com/houseofkaira",
+      link: "https://instagram.com/house_of_kaira",
     },
     {
       id: 4,
       image: instagram4,
-      link: "https://instagram.com/houseofkaira",
+      link: "https://instagram.com/house_of_kaira",
     },
     {
       id: 5,
       image: instagram5,
-      link: "https://instagram.com/houseofkaira",
+      link: "https://instagram.com/house_of_kaira",
     },
     {
       id: 6,
       image: instagram6,
-      link: "https://instagram.com/houseofkaira",
+      link: "https://instagram.com/house_of_kaira",
     },
   ],
 };

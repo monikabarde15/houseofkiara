@@ -2,12 +2,12 @@ export const footerColumns = [
   {
     title: "SHOP",
     links: [
-      { label: "Rent", path: "/rent" },
-      { label: "Buy Preloved", path: "/buy-preloved" },
-      { label: "Buy New", path: "/buy-new" },
-      { label: "Shop by Occasion", path: "/shop-by-occasion" },
-      { label: "Shop by Category", path: "/shop-by-category" },
-      { label: "All Designers", path: "/all-designers" },
+      { label: "Rent", path: "/main-page?section=rent" },
+      { label: "Buy Preloved", path: "/main-page?section=preloved" },
+      { label: "Buy New", path: "/main-page?section=new" },
+      { label: "Shop by Occasion", path: "/main-page?section=occasions" },
+      { label: "Shop by Category", path: "/main-page?section=new&category" },
+      { label: "All Designers", path: "/main-page?section=designers" },
     ],
   },
 

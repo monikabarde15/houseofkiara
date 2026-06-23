@@ -5,6 +5,8 @@ import React, {
   useState,
 } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,7 +20,7 @@ const MobileDesigners = () => {
     () => featuredDesignersData.designers,
     []
   );
-
+  const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const touchStartX = useRef(0);
@@ -69,6 +71,20 @@ const MobileDesigners = () => {
     }
   };
 
+
+  const handleHomeDesignersClick = (designer) => {
+    navigate(
+      `/main-page?section=designers&designer=${designer.variant}`
+    );
+
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }, 0);
+  };
+
   return (
     <section
       className="mobile-designers"
@@ -105,7 +121,9 @@ const MobileDesigners = () => {
               {designer.pieces}
             </p>
 
-            <button className="mobile-designer-cta">
+            <button className="mobile-designer-cta"
+            onClick={() => handleHomeDesignersClick(designer)}
+            >
               <span>Explore Designer</span>
 
               <ArrowRight size={13} />

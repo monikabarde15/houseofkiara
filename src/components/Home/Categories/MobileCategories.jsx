@@ -1,14 +1,14 @@
 // src\components\Home\Categories\MobileCategories.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 import categoriesData from "../../../data/home/categoriesData";
 
 const MobileCategories = () => {
   const slides = useMemo(
-    () => [...categoriesData.rowOne, ...categoriesData.rowTwo],
-    []
-  );
+    () => [...categoriesData.rowOne, ...categoriesData.rowTwo],[] );
+  const navigate = useNavigate();
 
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -58,6 +58,10 @@ const MobileCategories = () => {
     }
   };
 
+  const handleMobileCategoryClick = (slide) => {
+    navigate(`/main-page?section=new&category=${slide.variant}`);
+  }
+
   return (
     <section
       className="mobile-categories"
@@ -94,9 +98,10 @@ const MobileCategories = () => {
               {slide.mobile.pieces}
             </p>
 
-            <button className="mobile-category-cta">
+            <button className="mobile-category-cta"
+              onClick={()=>handleMobileCategoryClick(slide)}
+            >
               <span>{slide.cta}</span>
-
               <ArrowRight size={12} />
             </button>
           </div>

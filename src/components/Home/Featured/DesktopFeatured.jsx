@@ -20,7 +20,10 @@ const DesktopFeatured = () => {
                     </SectionTitle>
                 </div>
 
-                <ViewAllLink text="View All →" />
+                <ViewAllLink 
+                text="View All →"
+                href="/main-page?section=designers"
+                />
             </div>
 
             <div className="desk-featured-grid">

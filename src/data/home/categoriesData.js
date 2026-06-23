@@ -23,7 +23,7 @@ const categoriesData = {
       id: 1,
       name: "Bridal Lehengas",
       cta: "Shop Now",
-      variant: "bridal",
+      variant: "Bridal%20Lehengas",
       desktopImage: sbc1, // Admin can change this path
       mobile: {
         eyebrow: "Curated for every occasion",
@@ -35,7 +35,7 @@ const categoriesData = {
       id: 2,
       name: "Sherwanis",
       cta: "Shop Now",
-      variant: "sherwanis",
+      variant: "Sherwanis",
       desktopImage: sbc2,
       mobile: {
         eyebrow: "For the groom",
@@ -50,7 +50,7 @@ const categoriesData = {
       id: 3,
       name: "Sarees",
       cta: "Shop Now",
-      variant: "sarees",
+      variant: "Sarees",
       desktopImage: sbc3,
       mobile: {
         eyebrow: "Timeless drapes",
@@ -62,7 +62,7 @@ const categoriesData = {
       id: 4,
       name: "Anarkalis",
       cta: "Shop Now",
-      variant: "anarkalis",
+      variant: "Anarkalis",
       desktopImage: sbc4,
       mobile: {
         eyebrow: "Ethereal silhouettes",
@@ -74,7 +74,7 @@ const categoriesData = {
       id: 5,
       name: "Indo-Western",
       cta: "Shop Now",
-      variant: "indo-western",
+      variant: "Indo-Western",
       desktopImage: sbc5,
       mobile: {
         eyebrow: "Modern fusion",

@@ -1,6 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const HowSellCtaCard = ({ data }) => {
+
+  const navigate = useNavigate();
+
+  const handleListYourPiece = () => {
+    navigate("/list-your-piece")
+  }
+  
   return (
     <article className="desk-how-sell-cta">
       <h3 className="desk-how-sell-cta-title">
@@ -17,7 +25,9 @@ const HowSellCtaCard = ({ data }) => {
         "Every piece has a story. Don't let it end with you."
       </p>
 
-      <button className="btn-primary">
+      <button className="btn-primary"
+      onClick={handleListYourPiece}
+      >
         List Your Piece →
       </button>
     </article>

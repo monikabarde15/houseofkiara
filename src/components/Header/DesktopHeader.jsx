@@ -1,8 +1,24 @@
 // src\components\Header\DesktopHeader.jsx
+import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo/logo.png";
 import "../../styles/Header/desktop-header.css";
 
 const DesktopHeader = ({ onSearchOpen }) => {
+  const navigate = useNavigate();
+
+  const handleProfileClick = () => {
+    navigate("/profile")
+  }
+  const handleBagClick = () => {
+    navigate("/cart")
+  }
+  const handleWishlistClick = () => {
+    navigate("/wishlist")
+  }
+  const handleLogoClick = () => {
+  navigate("/");
+  window.scrollTo(0, 0);
+  };
   return (
     <header className="hok-desktop-header">
       <div className="hok-desktop-header-inner">
@@ -36,6 +52,12 @@ const DesktopHeader = ({ onSearchOpen }) => {
           role="button"
           tabIndex={0}
           aria-label="House of Kaira — home"
+          onClick={handleLogoClick}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleLogoClick();
+            }
+          }}
         >
           <img
             src={logo}
@@ -54,6 +76,7 @@ const DesktopHeader = ({ onSearchOpen }) => {
           <button
             className="hok-desktop-header-btn"
             aria-label="Wishlist"
+            onClick={handleWishlistClick}
           >
             <svg viewBox="0 0 24 24">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
@@ -65,6 +88,7 @@ const DesktopHeader = ({ onSearchOpen }) => {
           <button
             className="hok-desktop-header-btn hok-desktop-header-cart-wrap"
             aria-label="Bag"
+            onClick={handleBagClick}
           >
             <span className="hok-desktop-header-cart-dot" />
 
@@ -80,6 +104,7 @@ const DesktopHeader = ({ onSearchOpen }) => {
           <button
             className="hok-desktop-header-btn"
             aria-label="Account"
+            onClick={handleProfileClick}
           >
             <svg viewBox="0 0 24 24">
               <circle cx="12" cy="7" r="4" />

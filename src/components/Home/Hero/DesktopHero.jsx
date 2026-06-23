@@ -1,7 +1,32 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import heroData from "../../../data/home/heroData";
 
 const DesktopHero = () => {
+    const navigate = useNavigate();
+
+    const handleExploreCollection = ()=>{
+        navigate("/main-page")
+
+        setTimeout(() => {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+            });
+        }, 0);
+    }
+
+    const handleHowItWorks = () =>{
+        navigate("/how-it-works")
+
+        setTimeout(() => {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+            });
+        }, 0);
+    }
+
     return (
         <section className="desk-hero">
             <div className="desk-hero-left">
@@ -21,11 +46,15 @@ const DesktopHero = () => {
                 </p>
 
                 <div className="desk-hero-actions">
-                    <button className="btn-primary">
+                    <button className="btn-primary"
+                    onClick={handleExploreCollection}
+                    >
                         {heroData.primaryButton}
                     </button>
 
-                    <button className="btn-outline">
+                    <button className="btn-outline"
+                    onClick={handleHowItWorks}
+                    >
                         {heroData.secondaryButton}
                     </button>
                 </div>
