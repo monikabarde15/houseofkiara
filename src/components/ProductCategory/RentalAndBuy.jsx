@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { Heart, Star, TrendingUp, Gift, User, Calendar, Box, CreditCard, MessageCircleCheck, Shield, CircleAlert, ArrowRight, ShoppingBag, X, Plus, Truck } from "lucide-react";
-import { products, makeProductDetail } from "./ProductList";
-import GalleryColumn from "./GalleryColumn";
-import '../styles/rental-and-buy.css'
-import RentalCalendar from "./RentalCalendar";
-import RelatedProduct from "./RelatedProduct";
+import { products, makeProductDetail } from "../ProductList";
+import GalleryColumn from "../GalleryColumn";
+import '../../styles/productcategory/rental-and-buy.css'
+import RentalCalendar from "../RentalCalendar";
+import RelatedProduct from "../RelatedProduct";
 
 const tempSizes = [
     { label: "XS", available: true },

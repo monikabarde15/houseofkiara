@@ -7,7 +7,7 @@ const DesktopHeader = ({ onSearchOpen }) => {
   const navigate = useNavigate();
 
   const handleProfileClick = () => {
-    navigate("/profile")
+    navigate("/auth")
   }
   const handleBagClick = () => {
     navigate("/cart")

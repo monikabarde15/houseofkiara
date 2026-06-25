@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import PrimaryButton from '../ui/PrimaryButton';
 import '../../../styles/Auth/screens/SuccessScreen.css';
 
@@ -49,6 +50,7 @@ const SuccessScreen = ({ switchScreen, userData = {} }) => {
   };
 
   const content = getContent();
+  const navigate = useNavigate();
   
   // If content is undefined, don't render (should not happen with proper navigation)
   if (!content) {
@@ -56,7 +58,7 @@ const SuccessScreen = ({ switchScreen, userData = {} }) => {
   }
 
   const handleContinue = () => {
-    window.location.href = '/';
+    navigate("/profile");
   };
 
   const handleSignIn = () => {

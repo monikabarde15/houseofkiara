@@ -13,8 +13,8 @@ import ProductList from "./components/Products";
 import BuyNew from "./components/ProductCategory/BuyNew";
 import Preloved from "./components/ProductCategory/Preloved";
 import OnlyRentalDetail from "./components/ProductCategory/OnlyRentalDetail";
-import RentalAndPreloved from "./components/RentalAndPreloved";
-import RentalAndBuy from "./components/RentalAndBuy";
+import RentalAndPreloved from "./components/ProductCategory/RentalAndPreloved";
+import RentalAndBuy from "./components/ProductCategory/RentalAndBuy";
 import DummyGowns from "./components/DummyGowns";
 
 
