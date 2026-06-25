@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { ShoppingBag, Heart, Star,Check, TrendingUp, Calendar, MessageCircleCheck, Shield, ArrowRight, X, Plus, Truck, Gift, ChevronRight, CircleAlert, User, CreditCard } from "lucide-react";
-import { useLocation, useParams } from "react-router-dom";
-import { products, makeProductDetail } from "./ProductList";
-import '../styles/preloved.css'
-import RelatedProduct from "./RelatedProduct";
-import GalleryColumn from "./GalleryColumn";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { products, makeProductDetail } from "../ProductList";
+import "../../styles/productcategory/preloved.css";
+import RelatedProduct from "../RelatedProduct";
+import GalleryColumn from "../GalleryColumn";
 const gradeDotColor = {
   pristine: "#6B7E5A",
   excellent: "#C9A96E",
@@ -41,6 +41,7 @@ export default function Preloved() {
 
   const location = useLocation();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   // ===== PRODUCT FETCH =====
   let product;
@@ -132,7 +133,69 @@ export default function Preloved() {
     localStorage.setItem('cart', JSON.stringify(existingCart));
 
     // Redirect to checkout flow (per spec)
-    window.location.href = '/checkout';
+    navigate("/checkout");
+  };
+
+  // function to add to the Wishlist and redirect
+
+  const handleAddToWishlist = () => {
+    const wishlistItem = {
+      id: product.id,
+      title: product.title,
+      price: price,
+      size: product.prelovedSize,
+      image: product.images?.[0],
+      designer: product.designer,
+      type: "preloved",
+      condition: product.condition?.grade
+    };
+
+    const existingWishlist = JSON.parse(
+      localStorage.getItem("wishlist") || "[]"
+    );
+
+    const alreadyExists = existingWishlist.some(
+      (item) => item.id === wishlistItem.id
+    );
+
+    if (!alreadyExists) {
+      existingWishlist.push(wishlistItem);
+      localStorage.setItem(
+        "wishlist",
+        JSON.stringify(existingWishlist)
+      );
+    }
+
+    setWish(true);
+
+    setTimeout(() => {
+      navigate("/wishlist");
+    }, 300);
+  };
+
+  // function to connect to the Whatsapp and redirect
+
+  const handleWhatsApp = () => {
+    const phoneNumber = "919999999999"; // Replace with actual number
+
+    const message = `
+Hi,
+
+I am interested in this preloved piece.
+
+Product: ${product.title}
+Designer: ${product.designer}
+Price: ₹${price.toLocaleString()}
+Condition: ${product.condition?.grade || "N/A"}
+Size: ${product.prelovedSize}
+
+Product ID: ${product.id}
+`;
+
+    window.open(
+      `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
   };
 
 
@@ -285,9 +348,12 @@ export default function Preloved() {
                 </button>
 
                 {/* WISHLIST */}
-                <button className="preloved-btn outline">
+                <button
+                  className="preloved-btn outline"
+                  onClick={handleAddToWishlist}
+                >
                   <span className="preloved-icon"><Heart /></span>
-                  SAVE TO WISHLIST
+                  {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                 </button>
 
               </div>
@@ -509,7 +575,9 @@ export default function Preloved() {
 
               {/* WHATSAPP ENQUIREY */}
 
-              <div className="preloved-whatsapp-btn">
+              <div className="preloved-whatsapp-btn"
+                onClick={handleWhatsApp}
+              >
                 <MessageCircleCheck className="whatsapp-icon" />
                 ENQUIRE ON WHATSAPP
               </div>

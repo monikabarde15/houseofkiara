@@ -8,16 +8,16 @@ import Footer from "./components/Footer/Footer";
 
 
 
-// Pages
+
 import ProductList from "./components/Products";
+import BuyNew from "./components/ProductCategory/BuyNew";
+import Preloved from "./components/ProductCategory/Preloved";
+import OnlyRentalDetail from "./components/ProductCategory/OnlyRentalDetail";
 import RentalAndPreloved from "./components/RentalAndPreloved";
-import OnlyRentalDetail from "./components/OnlyRentalDetail";
-import Preloved from "./components/Preloved";
 import RentalAndBuy from "./components/RentalAndBuy";
-import ProductDetail from "./components/ProductDetail";
 import DummyGowns from "./components/DummyGowns";
 
-// LYP
+
 
 import HomePage from "./pages/HomePage/HomePage";
 import LypMain from "./components/LYP/LypMain";
@@ -38,18 +38,19 @@ export default function App() {
   return (
     <>
       <Header />
-
       <Routes>
         <Route path="/" element={<HomePage />} />
         {/* Products Page */}
         <Route path="/products" element={<ProductList />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/main-page" element={<MainCategoryPage/>} />
-        <Route path="/rent/gowns" element={<DummyGowns />} />
-        <Route path="/rentalandpreloved/:id" element={<RentalAndPreloved />} />
-        <Route path="/onlyrental/:id" element={<OnlyRentalDetail />} />
+
+        <Route path="/buynew/:id" element={<BuyNew />} />
         <Route path="/preloved/:id" element={<Preloved />} />
+        <Route path="/onlyrental/:id" element={<OnlyRentalDetail />} />
+        <Route path="/rentalandpreloved/:id" element={<RentalAndPreloved />} />
         <Route path="/rentalandbuy/:id" element = {<RentalAndBuy/>} />
+
+        {/* <Route path="/rent/gowns" element={<DummyGowns />} /> */}
         <Route path="/list-your-piece/" element={<LypMain />} />
         <Route path="/cart" element={<CartPage/>} />
         <Route path="/checkout" element={<CheckoutPage/>}/>

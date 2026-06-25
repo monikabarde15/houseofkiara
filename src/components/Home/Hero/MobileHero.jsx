@@ -1,9 +1,34 @@
 // src\components\Home\Hero\MobileHero.jsx
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 import heroData from "../../../data/home/heroData";
 
 const MobileHero = () => {
+
+  const navigate = useNavigate();
+  const handleExploreCollection = () => {
+    navigate("/main-page")
+
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }, 0);
+  }
+
+  const handleHowItWorks = () => {
+    navigate("/how-it-works")
+
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }, 0);
+  }
+
+
   return (
     <section className="mobile-hero">
       <img
@@ -40,11 +65,15 @@ const MobileHero = () => {
         </p>
 
         <div className="mobile-hero-actions">
-          <button className="mobile-hero-primary-btn">
+          <button className="mobile-hero-primary-btn"
+            onClick={handleExploreCollection}
+          >
             {heroData.primaryButton}
           </button>
 
-          <button className="mobile-hero-secondary-btn">
+          <button className="mobile-hero-secondary-btn"
+            onClick={handleHowItWorks}
+          >
             {heroData.secondaryButton}
           </button>
         </div>

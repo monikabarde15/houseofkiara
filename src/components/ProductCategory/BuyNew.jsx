@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Heart, Star, Truck, Shield, User, Box, Plus, X } from "lucide-react";
-import { useLocation,useParams } from "react-router-dom";
-import "../styles/product-detail.css";
-import RelatedProduct from "./RelatedProduct";
-import GalleryColumn from "./GalleryColumn";
-import products from "../data/mainCategoryPageData"; 
+import { useLocation,useParams,useNavigate } from "react-router-dom";
+import "../../styles/productcategory/buy-new.css";
+import RelatedProduct from "../RelatedProduct";
+import GalleryColumn from "../GalleryColumn";
+import products from "../../data/mainCategoryPageData"; 
 
-export default function ProductDetail() {
+export default function BuyNew() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { id } = useParams();
 
   // Try from state first
@@ -97,8 +98,74 @@ export default function ProductDetail() {
 
     // Navigate to cart page
     setTimeout(() => {
-      window.location.href = '/cart';
+      navigate("/cart");
     }, 300);
+  };
+
+  // Add Wishlist Function
+
+  const handleAddToWishlist = () => {
+    const wishlistItem = {
+      id: product.id,
+      title: product.title,
+      price: price,
+      size: selectedSize,
+      color: selectedColor,
+      image: product.images?.[0],
+      designer: product.designer,
+      type: "buy-new"
+    };
+
+    const existingWishlist = JSON.parse(
+      localStorage.getItem("wishlist") || "[]"
+    );
+
+    const alreadyExists = existingWishlist.some(
+      (item) =>
+        item.id === wishlistItem.id &&
+        item.size === wishlistItem.size &&
+        item.color === wishlistItem.color
+    );
+
+    if (!alreadyExists) {
+      existingWishlist.push(wishlistItem);
+      localStorage.setItem(
+        "wishlist",
+        JSON.stringify(existingWishlist)
+      );
+    }
+
+    setWish(true);
+
+    setTimeout(() => {
+      navigate("/wishlist");
+    }, 300);
+  };
+
+  // Add WhatsApp Function
+
+  const handleWhatsApp = () => {
+    const phoneNumber = "919999999999"; // Replace with actual number
+
+    const message = `
+Hi,
+
+I am interested in this product:
+
+Product: ${product.title}
+Designer: ${product.designer}
+Price: ${price}
+Size: ${selectedSize || "Not Selected"}
+Color: ${selectedColor || "Not Selected"}
+
+Product ID: ${product.id}
+`;
+
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+
+    window.open(whatsappUrl, "_blank");
   };
 
   return (
@@ -288,11 +355,17 @@ export default function ProductDetail() {
                   {added ? "ADDED!" : `ADD TO BAG — ${price}`}
                 </button>
 
-                <button className="buynew-pdp-btn-outline">
-                  SAVE TO WISHLIST
+                <button
+                  className="buynew-pdp-btn-outline"
+                  onClick={handleAddToWishlist}
+                >
+                  {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                 </button>
 
-                <button className="buynew-pdp-btn-whatsapp">
+                <button
+                  className="buynew-pdp-btn-whatsapp"
+                  onClick={handleWhatsApp}
+                >
                   ASK ON WHATSAPP
                 </button>
 

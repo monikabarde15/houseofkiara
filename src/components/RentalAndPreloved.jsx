@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useParams , useNavigate} from "react-router-dom";
 import { Heart, Star, TrendingUp, Gift, User, Calendar, CreditCard, MessageCircleCheck, Shield, CircleAlert, ArrowRight, ShoppingBag, X, Plus, Truck } from "lucide-react";
 import { products, makeProductDetail } from "./ProductList";
 import GalleryColumn from "./GalleryColumn";
@@ -49,7 +49,7 @@ const gradeConfig = {
 
 export default function RentalAndPreloved() {
     const { id } = useParams();
-
+    const navigate = useNavigate();
     const found = products.find((p) => p.id === Number(id));
     const product = found ? makeProductDetail(found) : null;
 
@@ -125,6 +125,172 @@ export default function RentalAndPreloved() {
 
     // Offer submitted 
     const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const formatDate = (date) => {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+
+        return `${y}-${m}-${d}`;
+    };
+    // Confirm Booking Handler 
+    const handleConfirmBooking = () => {
+        if (!selectedStart || !selectedEnd) return;
+
+        const eventDate = new Date(selectedStart);
+        eventDate.setDate(eventDate.getDate() + 2);
+
+        const newItem = {
+            id: Date.now(),
+            type: "rental",
+
+            product,
+
+            booking: {
+                size: selectedSize || "M",
+
+                deliveryDate: formatDate(selectedStart),
+
+                eventDate: formatDate(eventDate),
+
+                returnDate: formatDate(selectedEnd),
+
+                rentalWindowDays:
+                    Math.ceil(
+                        (selectedEnd - selectedStart) /
+                        (1000 * 60 * 60 * 24)
+                    ) + 1
+            }
+        };
+
+        navigate("/cart", {
+            state: {
+                newItem
+            }
+        });
+    };
+
+    // Wishlist Handler
+    const handleAddToWishlist = () => {
+        const wishlistItem = {
+            id: product.id,
+            title: product.title,
+            designer: product.designer,
+            image: product.images?.[0],
+            type: mode === "rent" ? "rental" : "preloved",
+
+            ...(mode === "rent"
+                ? {
+                    rentalPrice: selectedWindowData?.price,
+                    rentalDays: selectedWindowData?.days,
+                    size: selectedSize,
+                }
+                : {
+                    price,
+                    size: product.prelovedSize,
+                    condition: product.condition?.grade,
+                }),
+        };
+
+        const existingWishlist = JSON.parse(
+            localStorage.getItem("wishlist") || "[]"
+        );
+
+        const alreadyExists = existingWishlist.some(
+            (item) => item.id === wishlistItem.id
+        );
+
+        if (!alreadyExists) {
+            existingWishlist.push(wishlistItem);
+
+            localStorage.setItem(
+                "wishlist",
+                JSON.stringify(existingWishlist)
+            );
+        }
+
+        setWish(true);
+
+        setTimeout(() => {
+            navigate("/wishlist");
+        }, 300);
+    };
+
+    // WhatsApp Handler
+    const handleWhatsApp = () => {
+        const phoneNumber = "919999999999"; // replace
+
+        const message =
+            mode === "rent"
+                ? `
+Hi,
+
+I am interested in renting this product.
+
+Product: ${product.title}
+Designer: ${product.designer}
+Rental Price: ₹${selectedWindowData?.price}
+Rental Duration: ${selectedWindowData?.days} Days
+Size: ${selectedSize || "Not Selected"}
+
+Product ID: ${product.id}
+`
+                : `
+Hi,
+
+I am interested in this preloved piece.
+
+Product: ${product.title}
+Designer: ${product.designer}
+Price: ₹${price.toLocaleString()}
+Condition: ${product.condition?.grade || "N/A"}
+
+Product ID: ${product.id}
+`;
+
+        window.open(
+            `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`,
+            "_blank"
+        );
+    };
+
+    // Preloved Buy Now Handler
+    const handleBuyNow = () => {
+        const cartItem = {
+            id: product.id,
+            title: product.title,
+            price: price,
+            size: product.prelovedSize,
+            image: product.images?.[0],
+            designer: product.designer,
+            type: "preloved",
+            condition: product.condition?.grade,
+            quantity: 1
+        };
+
+        const existingCart = JSON.parse(
+            localStorage.getItem("cart") || "[]"
+        );
+
+        const existingIndex = existingCart.findIndex(
+            (item) => item.id === cartItem.id
+        );
+
+        if (existingIndex > -1) {
+            existingCart[existingIndex].quantity += 1;
+        } else {
+            existingCart.push(cartItem);
+        }
+
+        localStorage.setItem(
+            "cart",
+            JSON.stringify(existingCart)
+        );
+
+        navigate("/checkout");
+    };
+
+
 
     return (
         <section className={`rap-root ${mode === "buy" ? "buy-mode" : "rent-mode"}`}>
@@ -336,21 +502,29 @@ export default function RentalAndPreloved() {
 
                                         {/* PRIMARY CTA */}
                                         <button
-                                            className={`rap-rental-cta-primary ${selectedStart && selectedEnd ? "active" : "disabled"}`}
+                                            className={`rap-rental-cta-primary ${selectedStart && selectedEnd
+                                                    ? "active"
+                                                    : "disabled"
+                                                }`}
                                             disabled={!(selectedStart && selectedEnd)}
+                                            onClick={handleConfirmBooking}
                                         >
                                             <span className="rap-rental-cta-icon"><Calendar /></span>
                                             CONFIRM BOOKING
                                         </button>
 
                                         {/* WISHLIST */}
-                                        <button className="rap-rental-cta-wishlist">
+                                        <button className="rap-rental-cta-wishlist"
+                                            onClick={handleAddToWishlist}
+                                        >
                                             <span className="rap-rental-cta-icon"><Heart /></span>
-                                            SAVE TO WISHLIST
+                                            {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                                         </button>
 
                                         {/* WHATSAPP */}
-                                        <button className="rap-rental-cta-whatsapp">
+                                        <button className="rap-rental-cta-whatsapp"
+                                         onClick={handleWhatsApp}
+                                        >
                                             <span className="rap-rental-cta-icon">
                                                 <MessageCircleCheck />
                                             </span>
@@ -533,7 +707,7 @@ export default function RentalAndPreloved() {
                                 </div>
                             )}
 
-                            {/* ================= BUY MODE ================= */}
+                            {/* ================= Preloved MODE ================= */}
                             {mode === "buy" && (
                                 <div className="rap-buy">
 
@@ -596,15 +770,22 @@ export default function RentalAndPreloved() {
                                     <div className="rap-preloved-cta-group">
 
                                         {/* BUY NOW */}
-                                        <button className="rap-preloved-btn primary">
+                                        <button className="rap-preloved-btn primary"
+                                        onClick={handleBuyNow}
+                                        >
                                             <span className="rap-preloved-icon"><ShoppingBag /></span>
                                             BUY NOW — ₹{price.toLocaleString()}
                                         </button>
 
                                         {/* WISHLIST */}
-                                        <button className="rap-preloved-btn outline">
-                                            <span className="rap-preloved-icon"><Heart /></span>
-                                            SAVE TO WISHLIST
+                                        <button
+                                            className="rap-preloved-btn outline"
+                                            onClick={handleAddToWishlist}
+                                        >
+                                            <span className="rap-preloved-icon">
+                                                <Heart />
+                                            </span>
+                                            {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                                         </button>
 
                                     </div>
@@ -819,7 +1000,9 @@ export default function RentalAndPreloved() {
                                     )}
 
                                     {/* 6. WHATSAPP */}
-                                    <div className="rap-preloved-whatsapp-btn">
+                                    <div className="rap-preloved-whatsapp-btn"
+                                    onClick={handleWhatsApp}
+                                    >
                                         <MessageCircleCheck className="rap-whatsapp-icon" />
                                         ENQUIRE ON WHATSAPP
                                     </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import howItWorksData from "../../../data/home/howItWorksData";
 
 import SectionEyebrow from "../../shared/SectionEyebrow";
@@ -7,11 +7,17 @@ import SectionTitle from "../../shared/SectionTitle";
 
 const MobileHowItWorks = () => {
   const [activeTab, setActiveTab] = useState("shop");
+  const navigate = useNavigate();
 
   const steps =
     activeTab === "shop"
       ? howItWorksData.shopSteps
       : howItWorksData.sellSteps;
+
+  
+  const handleListYourPiece = () => {
+    navigate("/list-your-piece")
+  }
 
   return (
     <section className="mobile-hiw">
@@ -97,7 +103,9 @@ const MobileHowItWorks = () => {
             with you."
           </p>
 
-          <button className="mobile-hiw-sell-btn">
+          <button className="mobile-hiw-sell-btn"
+          onClick={handleListYourPiece}
+          >
             List Your Piece →
           </button>
         </article>

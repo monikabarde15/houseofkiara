@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { useParams } from "react-router-dom";
-import { Heart, Star, TrendingUp, Gift, User, Calendar,Box, CreditCard, MessageCircleCheck, Shield, CircleAlert, ArrowRight, ShoppingBag, X, Plus, Truck } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Heart, Star, TrendingUp, Gift, User, Calendar, Box, CreditCard, MessageCircleCheck, Shield, CircleAlert, ArrowRight, ShoppingBag, X, Plus, Truck } from "lucide-react";
 import { products, makeProductDetail } from "./ProductList";
 import GalleryColumn from "./GalleryColumn";
 import '../styles/rental-and-buy.css'
@@ -49,10 +49,13 @@ const gradeConfig = {
 
 export default function RentalAndPreloved() {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const found = products.find((p) => p.id === Number(id));
     const product = found ? makeProductDetail(found) : null;
-
+    const [activeImage, setActiveImage] = useState(
+        product?.images?.[0]
+    );
     const [mode, setMode] = useState(
         product?.modes?.rent?.enabled ? "rent" : "buy"
     );
@@ -100,6 +103,181 @@ export default function RentalAndPreloved() {
     const [price, setPrice] = useState(product?.price);
     const [selectedColor, setSelectedColor] = useState(null);
 
+
+    const formatDate = (date) => {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+
+        return `${y}-${m}-${d}`;
+    };
+
+    // Confirm Booking Handler
+    const handleConfirmBooking = () => {
+        if (!selectedStart || !selectedEnd) return;
+
+        const eventDate = new Date(selectedStart);
+        eventDate.setDate(eventDate.getDate() + 2);
+
+        const newItem = {
+            id: Date.now(),
+            type: "rental",
+
+            product,
+
+            booking: {
+                size: selectedSize || "M",
+
+                deliveryDate: formatDate(selectedStart),
+
+                eventDate: formatDate(eventDate),
+
+                returnDate: formatDate(selectedEnd),
+
+                rentalWindowDays:
+                    Math.ceil(
+                        (selectedEnd - selectedStart) /
+                        (1000 * 60 * 60 * 24)
+                    ) + 1
+            }
+        };
+
+        navigate("/cart", {
+            state: { newItem }
+        });
+    };
+
+    // Wishlist Handler Rental
+    const handleRentalWishlist = () => {
+        const item = {
+            id: product.id,
+            title: product.title,
+            designer: product.designer,
+            image: product.images?.[0],
+            type: "rental",
+            rentalPrice: selectedWindowData?.price
+        };
+
+        const wishlist = JSON.parse(
+            localStorage.getItem("wishlist") || "[]"
+        );
+
+        if (!wishlist.some((i) => i.id === item.id)) {
+            wishlist.push(item);
+
+            localStorage.setItem(
+                "wishlist",
+                JSON.stringify(wishlist)
+            );
+        }
+
+        navigate("/wishlist");
+    };
+
+    //  WhatsApp Handler
+    const handleRentalWhatsApp = () => {
+        const phoneNumber = "919999999999";
+
+        const message = `
+Product: ${product.title}
+Designer: ${product.designer}
+Rental Price: ₹${selectedWindowData?.price}
+Duration: ${selectedWindowData?.days} Days
+`;
+
+        window.open(
+            `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`,
+            "_blank"
+        );
+    };
+
+    // Handle ADD to cart Buy new
+    const handleAddToCart = () => {
+        const cartItem = {
+            id: product.id,
+            title: product.title,
+            price,
+            size: selectedSize,
+            color: selectedColor,
+            image: product.images?.[0],
+            quantity: 1,
+            designer: product.designer,
+            type: "buy-new"
+        };
+
+        const existingCart = JSON.parse(
+            localStorage.getItem("cart") || "[]"
+        );
+
+        const existingIndex = existingCart.findIndex(
+            (item) =>
+                item.id === cartItem.id &&
+                item.size === cartItem.size &&
+                item.color === cartItem.color
+        );
+
+        if (existingIndex > -1) {
+            existingCart[existingIndex].quantity += 1;
+        } else {
+            existingCart.push(cartItem);
+        }
+
+        localStorage.setItem(
+            "cart",
+            JSON.stringify(existingCart)
+        );
+
+        navigate("/cart");
+    };
+
+    // Buy Wishlist Handler
+
+    const handleBuyWishlist = () => {
+        const item = {
+            id: product.id,
+            title: product.title,
+            price,
+            size: selectedSize,
+            color: selectedColor,
+            image: product.images?.[0],
+            designer: product.designer,
+            type: "buy-new"
+        };
+
+        const wishlist = JSON.parse(
+            localStorage.getItem("wishlist") || "[]"
+        );
+
+        if (!wishlist.some((i) => i.id === item.id)) {
+            wishlist.push(item);
+
+            localStorage.setItem(
+                "wishlist",
+                JSON.stringify(wishlist)
+            );
+        }
+
+        navigate("/wishlist");
+    };
+
+    // Buy New Whatsapp Handler
+
+    const handleBuyWhatsApp = () => {
+        const phoneNumber = "919999999999";
+
+        const message = `
+Product: ${product.title}
+Designer: ${product.designer}
+Price: ${price}
+Size: ${selectedSize || "Not Selected"}
+Color: ${selectedColor || "Not Selected"}
+`;
+
+        window.open(
+            `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`,
+            "_blank"
+        );
+    };
 
 
     return (
@@ -314,19 +492,28 @@ export default function RentalAndPreloved() {
                                         <button
                                             className={`rap-rental-cta-primary ${selectedStart && selectedEnd ? "active" : "disabled"}`}
                                             disabled={!(selectedStart && selectedEnd)}
+                                            onClick={handleConfirmBooking}
                                         >
                                             <span className="rap-rental-cta-icon"><Calendar /></span>
                                             CONFIRM BOOKING
                                         </button>
 
                                         {/* WISHLIST */}
-                                        <button className="rap-rental-cta-wishlist">
-                                            <span className="rap-rental-cta-icon"><Heart /></span>
-                                            SAVE TO WISHLIST
+                                        <button
+                                            className="rap-rental-cta-wishlist"
+                                            onClick={handleRentalWishlist}
+                                        >
+                                            <span className="rap-rental-cta-icon">
+                                                <Heart />
+                                            </span>
+
+                                            {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                                         </button>
 
                                         {/* WHATSAPP */}
-                                        <button className="rap-rental-cta-whatsapp">
+                                        <button className="rap-rental-cta-whatsapp"
+                                            onClick={handleRentalWhatsApp}
+                                        >
                                             <span className="rap-rental-cta-icon">
                                                 <MessageCircleCheck />
                                             </span>
@@ -547,7 +734,7 @@ export default function RentalAndPreloved() {
                                                     key={i}
                                                     className={`rab-swatches-details ${selectedColor === c.code ? "active" : ""}`}
                                                     onClick={() => {
-                                                        
+
                                                         setSelectedColor(c.code);
                                                         setActiveImage(c.images[0]);
                                                     }}
@@ -594,15 +781,22 @@ export default function RentalAndPreloved() {
 
                                     <div className="rab-pdp-cta">
 
-                                        <button className="rab-pdp-btn-primary">
+                                        <button className="rab-pdp-btn-primary"
+                                            onClick={handleAddToCart}
+                                        >
                                             ADD TO BAG — {price}
                                         </button>
 
-                                        <button className="rab-pdp-btn-outline">
-                                            SAVE TO WISHLIST
+                                        <button
+                                            className="rab-pdp-btn-outline"
+                                            onClick={handleBuyWishlist}
+                                        >
+                                            {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                                         </button>
 
-                                        <button className="rab-pdp-btn-whatsapp">
+                                        <button className="rab-pdp-btn-whatsapp"
+                                            onClick={handleBuyWhatsApp}
+                                        >
                                             ASK ON WHATSAPP
                                         </button>
 
@@ -650,7 +844,7 @@ export default function RentalAndPreloved() {
                                     </div>
 
                                     {/* PRODUCTS PAGE DETAILS */}
-                                    
+
                                     <div className="rab-pdp-accordion">
 
                                         {/* ================= PRODUCT DETAILS ================= */}
@@ -812,7 +1006,7 @@ export default function RentalAndPreloved() {
                                 </div>
                             )}
 
-                            
+
                         </div>
                     </Col>
 

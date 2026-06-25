@@ -32,7 +32,7 @@ const ProductCard = ({ item }) => {
             navigate(`/preloved/1`, { state: { product: productData } });
         }
         else {
-            navigate(`/product/1`, { state: { product: productData } });
+            navigate(`/buynew/1`, { state: { product: productData } });
         }
     };
 

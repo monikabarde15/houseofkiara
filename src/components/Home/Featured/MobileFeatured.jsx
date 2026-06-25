@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 import featuredProductsData from "../../../data/home/featuredProductsData";
 
 import SectionEyebrow from "../../shared/SectionEyebrow";
@@ -8,6 +8,12 @@ import SectionTitle from "../../shared/SectionTitle";
 import { Heart } from "lucide-react";
 
 const MobileFeatured = () => {
+
+  const navigate = useNavigate();
+
+  const handleFeaturedViewAll=()=>{
+    navigate("/main-page?section=designers")
+  }
   return (
     <section className="mobile-featured">
       <div className="mobile-featured-header">
@@ -21,7 +27,9 @@ const MobileFeatured = () => {
           </SectionTitle>
         </div>
 
-        <button className="mobile-featured-view-all">
+        <button className="mobile-featured-view-all"
+          onClick={handleFeaturedViewAll}
+        >
           View All →
         </button>
       </div>

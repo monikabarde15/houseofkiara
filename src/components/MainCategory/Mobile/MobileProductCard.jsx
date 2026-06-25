@@ -1,8 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../../../styles/maincategorypage/mobile/mobile-product-card.css";
+import { makeProductDetail } from "../../ProductList";
 
 const MobileProductCard = ({ item, onWishlistToggle }) => {
   
+  const navigate = useNavigate();
   // Helper to format price
   const formatPrice = (price) => {
     if (!price) return "£0";
@@ -59,8 +62,25 @@ const MobileProductCard = ({ item, onWishlistToggle }) => {
   };
 
   const handleCardClick = () => {
-    // Navigate to PDP - will be implemented later
-    console.log("Navigate to PDP for product:", item.id);
+    const { rent, preloved, isNew } = item;
+    const productData = makeProductDetail(item);
+    /*TEMP FIX STILL APPLIES FOR ID*/
+
+    if (rent && preloved) {
+      navigate(`/rentalandpreloved/1`, { state: { product: productData } });
+    }
+    else if (rent && isNew) {
+      navigate(`/rentalandbuy/1`, { state: { product: productData } });
+    }
+    else if (rent) {
+      navigate(`/onlyrental/1`, { state: { product: productData } });
+    }
+    else if (preloved) {
+      navigate(`/preloved/1`, { state: { product: productData } });
+    }
+    else {
+      navigate(`/buynew/1`, { state: { product: productData } });
+    }
   };
 
   return (

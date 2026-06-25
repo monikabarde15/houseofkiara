@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { Heart, Star, TrendingUp, Calendar, MessageCircleCheck, Shield, ArrowRight, X, Plus, Truck } from "lucide-react";
 import { useLocation, useParams } from "react-router-dom";
-import "../styles/onlyrentaldetail.css";
-import { products, makeProductDetail } from "./ProductList";
-import RentalCalendar from "./RentalCalendar";
-import RelatedProduct from "./RelatedProduct";
-import GalleryColumn from "./GalleryColumn";
+import "../../styles/productcategory/onlyrentaldetail.css";
+import { products, makeProductDetail } from "../ProductList";
+import RentalCalendar from "../RentalCalendar";
+import RelatedProduct from "../RelatedProduct";
+import GalleryColumn from "../GalleryColumn";
 const tempSizes = [
   { label: "XS", available: true },
   { label: "S", available: true },
@@ -109,6 +109,8 @@ export default function RentalProductDetail() {
   const eventDate = new Date(selectedStart);
   eventDate.setDate(eventDate.getDate() + 2); // delivery → event
 
+
+  // Function to handle confirm booking
   const handleConfirmBooking = () => {
     if (!selectedStart || !selectedEnd) return;
 
@@ -138,6 +140,79 @@ export default function RentalProductDetail() {
       }
     });
   };
+
+
+  // Function to handle save to wishlist 
+  const handleAddToWishlist = () => {
+    const wishlistItem = {
+      id: product.id,
+      title: product.title,
+      designer: product.designer,
+      image: product.images?.[0],
+      type: "rental",
+      size: selectedSize,
+      rentalPrice: selectedWindowData?.price,
+      rentalDays: selectedWindowData?.days
+    };
+
+    const existingWishlist = JSON.parse(
+      localStorage.getItem("wishlist") || "[]"
+    );
+
+    const alreadyExists = existingWishlist.some(
+      (item) => item.id === wishlistItem.id
+    );
+
+    if (!alreadyExists) {
+      existingWishlist.push(wishlistItem);
+
+      localStorage.setItem(
+        "wishlist",
+        JSON.stringify(existingWishlist)
+      );
+    }
+
+    setWish(true);
+
+    setTimeout(() => {
+      navigate("/wishlist");
+    }, 300);
+  };
+
+  // Function to connect to the whatsapp
+
+  const handleWhatsApp = () => {
+    const phoneNumber = "919999999999"; // Replace with your WhatsApp number
+
+    const message = `
+Hi,
+
+I am interested in renting this product.
+
+Product: ${product.title}
+Designer: ${product.designer}
+Rental Price: ₹${selectedWindowData?.price}
+Rental Duration: ${selectedWindowData?.days} Days
+Size: ${selectedSize || "Not Selected"}
+
+${selectedStart && selectedEnd
+        ? `
+Delivery Date: ${formatDate(selectedStart)}
+Return Date: ${formatDate(selectedEnd)}
+`
+        : ""
+      }
+
+Product ID: ${product.id}
+`;
+
+    window.open(
+      `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
+  };
+
+
 
   return (
     <>
@@ -328,13 +403,21 @@ export default function RentalProductDetail() {
                   </button>
 
                   {/* WISHLIST */}
-                  <button className="rental-cta-wishlist">
-                    <span className="rental-cta-icon"><Heart /></span>
-                    SAVE TO WISHLIST
+                  <button
+                    className="rental-cta-wishlist"
+                    onClick={handleAddToWishlist}
+                  >
+                    <span className="rental-cta-icon">
+                      <Heart />
+                    </span>
+
+                    {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                   </button>
 
                   {/* WHATSAPP */}
-                  <button className="rental-cta-whatsapp">
+                  <button className="rental-cta-whatsapp"
+                  onClick={handleWhatsApp}
+                  >
                     <span className="rental-cta-icon">
                       <MessageCircleCheck />
                     </span>
