@@ -1,0 +1,4 @@
+import mongoose from "mongoose";
+const bankSchema = new mongoose.Schema({ accountHolder: String, accountNumber: String, ifsc: String, bankName: String }, { _id: false });
+const listerSchema = new mongoose.Schema({ listerId: { type: String, unique: true, required: true }, name: { type: String, required: true }, email: { type: String, required: true, lowercase: true }, phone: String, location: String, status: { type: String, enum: ["Active", "Pending Review", "Suspended"], default: "Pending Review" }, verified: { type: Boolean, default: false }, bankDetails: bankSchema, payoutPercentages: { rental: { type: Number, default: 80 }, preloved: { type: Number, default: 80 }, buy: { type: Number, default: 80 } }, internalNotes: String }, { timestamps: true });
+export default mongoose.model("Lister", listerSchema);

@@ -1,0 +1,10 @@
+import { Product } from '../types';
+const API_BASE_URL = 'http://localhost:3001/api';
+const request = async (path: string, options?: RequestInit) => { const r = await fetch(`${API_BASE_URL}${path}`, { headers: { 'Content-Type': 'application/json', ...(options?.headers || {}) }, ...options }); const b = await r.json().catch(() => ({})); if (!r.ok || b.success === false) throw new Error(b.message || 'Product request failed'); return b; };
+export const getProducts = async () => (await request('/products')).data as Product[];
+export const createProduct = async (product: Product) => (await request('/products', { method: 'POST', body: JSON.stringify(product) })).data as Product;
+export const updateProduct = async (product: Product) => (await request(`/products/${encodeURIComponent(product.id)}`, { method: 'PUT', body: JSON.stringify(product) })).data as Product;
+export const deleteProduct = (id: string) => request(`/products/${encodeURIComponent(id)}`, { method: 'DELETE' });
+export const archiveProduct = (id: string) => request(`/products/${encodeURIComponent(id)}/archive`, { method: 'PATCH', body: JSON.stringify({ user: 'Admin' }) });
+export const restoreProduct = (id: string) => request(`/products/${encodeURIComponent(id)}/restore`, { method: 'PATCH', body: JSON.stringify({ user: 'Admin' }) });
+export const updateImages = (id: string, images: string[]) => request(`/products/${encodeURIComponent(id)}/images`, { method: 'PUT', body: JSON.stringify({ images, user: 'Admin' }) });
