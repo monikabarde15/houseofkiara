@@ -1,7 +1,7 @@
 // src/components/products/ProductTabs.tsx
 
 import React from 'react';
-import { ProductTab } from '../../types/product';
+import { ProductTab } from '../types/product';
 
 interface ProductTabsProps {
   activeTab: ProductTab;

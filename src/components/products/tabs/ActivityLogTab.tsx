@@ -1,7 +1,7 @@
 // src/components/products/tabs/ActivityLogTab.tsx
 
 import React from 'react';
-import { ActivityLog } from '../../../types/product';
+import { ActivityLog } from '../types/product';
 
 interface ActivityLogTabProps {
   activityLog: ActivityLog[];
@@ -52,7 +52,7 @@ export function ActivityLogTab({ activityLog, loading }: ActivityLogTabProps) {
                 <p className="text-xs font-semibold text-stone-800 leading-relaxed">
                   {entry.action}
                 </p>
-                <p className="text-[11px] text-stone-400 mt-0.5">{formatDate(entry.date)}</p>
+                <p className="text-[11px] text-stone-400 mt-0.5">{formatDate(entry.timestamp)}</p>
               </div>
             </div>
           ))}

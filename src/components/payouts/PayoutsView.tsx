@@ -47,12 +47,23 @@ export default function PayoutsView() {
   return (
     <div className="min-h-screen bg-[#F8F5F1]">
 
-    <PayoutPageHeader />
+    {/* Fixed to the viewport — flush against the top/edges of the screen
+        no matter what padding or margin the surrounding page shell uses.
+        This removes the dependency on finding/editing that parent file. */}
+    <div className="fixed top-0 left-0 right-0 z-40">
+      <PayoutPageHeader />
+    </div>
 
-    <div className="mx-auto max-w-[1600px] px-7 py-6">
+    {/* Spacer matching PayoutPageHeader's h-[60px], so content below
+        doesn't get hidden underneath the fixed bar. */}
+    <div className="h-[60px]" />
+
+    <div className="mx-auto max-w-[1600px] px-7 pb-6">
 
         {/* Header */}
-        <PayoutHeader />
+        <div className="pt-6">
+          <PayoutHeader />
+        </div>
 
         {/* Summary Cards */}
         <div className="mt-7">

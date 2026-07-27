@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { Calendar, ExternalLink, Archive } from 'lucide-react';
-import { Product } from '../../types/product';
+import { Product } from '../types/product';
 
 interface ProductSidebarProps {
     product: Product;
@@ -221,15 +221,17 @@ export function ProductSidebar({ product, onViewLive, onArchive, onOpenGlobalCal
                                             }
                                         `}
                                     >
-                                        {type === "blocked" && (
-                                            <div
-                                                className="absolute inset-0 opacity-70"
-                                                style={{
-                                                    backgroundImage:
-                                                        "repeating-linear-gradient(45deg,#D8C7AA 0,#D8C7AA 2px,transparent 2px,transparent 7px)"
-                                                }}
-                                            />
-                                        )}
+                                        {(type === "blocked" || type === "buffer") && (
+    <div
+        className="absolute inset-0 opacity-70"
+        style={{
+            backgroundImage:
+                type === "blocked"
+                    ? "repeating-linear-gradient(45deg,#D8C7AA 0,#D8C7AA 2px,transparent 2px,transparent 7px)"
+                    : "repeating-linear-gradient(45deg,#F0C989 0,#F0C989 2px,transparent 2px,transparent 7px)"
+        }}
+    />
+)}
                                         <span className="relative z-10">{date.getDate()}</span>
                                         {initials && (
                                             <span className="relative z-10 mt-[2px] text-[8px] font-bold tracking-wide">
@@ -248,10 +250,17 @@ export function ProductSidebar({ product, onViewLive, onArchive, onOpenGlobalCal
                                     <div className="h-3 w-3 rounded bg-[#DDE9D8]" />
                                     <span className="text-[#7B7369]">Available</span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded bg-[#F7F2E8]" />
-                                    <span className="text-[#7B7369]">Buffer</span>
-                                </div>
+                               <div className="flex items-center gap-2">
+    <div
+        className="h-3 w-3 rounded"
+        style={{
+            backgroundColor: "#F7F2E8",
+            backgroundImage:
+                "repeating-linear-gradient(45deg,#F0C989 0,#F0C989 2px,transparent 2px,transparent 7px)"
+        }}
+    />
+    <span className="text-[#7B7369]">Buffer</span>
+</div>
                                 <div className="flex items-center gap-2">
                                     <div className="h-3 w-3 rounded bg-[#C7683B]" />
                                     <span className="text-[#7B7369]">In Rental</span>

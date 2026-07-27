@@ -288,16 +288,8 @@ export default function App() {
     }
 
     if (currentView === 'payouts') {
-      return (
-        <PayoutsView 
-          listers={listers}
-          orders={orders}
-          setView={setView}
-          setSelectedOrderId={setSelectedOrderId}
-          onUpdateLister={handleUpdateLister}
-        />
-      );
-    }
+  return <PayoutsView />;
+}
 
     if (currentView === 'customers') {
       return (

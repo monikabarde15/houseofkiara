@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { X, Search, Shirt } from 'lucide-react';
-import { Product } from '../../../types/product';
+import { Product } from '../../types/product';
 
 interface RelatedProductsTabProps {
   formData: Partial<Product>;

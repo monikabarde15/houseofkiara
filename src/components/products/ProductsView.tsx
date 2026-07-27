@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
-import { Product, Lister } from '../../types/product';
+import { Product, Lister } from '../types/product'
 import { useProductEditor } from '../hooks/useProductEditor';
 import { ProductHeader } from './ProductHeader';
 import { ProductFilters } from './ProductFilters';
@@ -24,13 +24,6 @@ interface ProductsViewProps {
   onAddProduct: (newProduct: Product) => void | Promise<void>;
   onUpdateProduct: (updatedProduct: Product) => void | Promise<void>;
   listers: Lister[];
-
-  // setProductHeader?: (value: {
-  //   editing: boolean;
-  //   productName?: string;
-  // }) => void;
-
-  //  onRegisterBackHandler?: (handler: () => void) => void;
 }
 
 const CATEGORIES = ['All Categories', 'Bridal Lehenga', 'Lehenga', 'Anarkali', 'Sherwani', 'Saree'];
@@ -41,8 +34,6 @@ export default function ProductsView({
   onAddProduct,
   onUpdateProduct,
   listers,
-  // setProductHeader,
-  // onRegisterBackHandler,
 }: ProductsViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
@@ -58,27 +49,11 @@ export default function ProductsView({
     setUploadingImages,
   } = useProductEditor();
 
-  // React.useEffect(() => {
-  //   if (state.editingProduct) {
-  //     setProductHeader?.({
-  //       editing: true,
-  //       productName: state.editingProduct.name,
-  //     });
-  //   } else {
-  //     setProductHeader?.({
-  //       editing: false,
-  //     });
-  //   }
-  // }, [state.editingProduct, setProductHeader]);
-
-  // React.useEffect(() => {
-  //   onRegisterBackHandler?.(cancelEditing);
-  // }, [cancelEditing, onRegisterBackHandler]);
-
   const filteredProducts = products.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          p.designer.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          p.category.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.designer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.category.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCat = selectedCategory === 'All Categories' || p.category === selectedCategory;
     return matchesSearch && matchesCat;
   });
@@ -97,8 +72,10 @@ export default function ProductsView({
     if (formData.listingModes?.includes('Rental') && Number(formData.rentalPrice || 0) <= 0) {
       return alert('Rental price must be greater than zero for Rental listings.');
     }
-    if ((formData.listingModes?.includes('Buy') || formData.listingModes?.includes('Preloved')) && 
-        Number(formData.listingPrice || 0) <= 0) {
+    if (
+      (formData.listingModes?.includes('Buy') || formData.listingModes?.includes('Preloved')) &&
+      Number(formData.listingPrice || 0) <= 0
+    ) {
       return alert('Listing price must be greater than zero for Buy / Preloved listings.');
     }
     if (Number(formData.commissionRate || 0) < 0 || Number(formData.commissionRate || 0) > 100) {
@@ -107,7 +84,7 @@ export default function ProductsView({
 
     if (state.isAdding) {
       const newProduct: Product = {
-        id: "HOK-PRD-" + Math.floor(100 + Math.random() * 900),
+        id: 'HOK-PRD-' + Math.floor(100 + Math.random() * 900),
         name: formData.name || '',
         designer: formData.designer || '',
         listerId: formData.listerId || undefined,
@@ -152,7 +129,7 @@ export default function ProductsView({
         blockedDates: [],
       };
       await onAddProduct(newProduct);
-      alert("Product added successfully!");
+      alert('Product added successfully!');
     } else if (state.editingProduct) {
       const updated: Product = {
         ...state.editingProduct,
@@ -196,175 +173,149 @@ export default function ProductsView({
         relatedProductIds: formData.relatedProductIds || state.editingProduct.relatedProductIds || [],
       };
       await onUpdateProduct(updated);
-      alert("Product details updated!");
+      alert('Product details updated!');
     }
     cancelEditing();
   };
 
-  // If editing or adding, show the editor
+  // ================= Editor view (adding or editing a product) =================
   if (state.editingProduct || state.isAdding) {
-  return (
-    <div className="space-y-6 text-xs font-sans">
-      {/* ================= Sticky Header ================= */}
-      <header className="sticky top-0 z-40 -mx- border-b border-[#E8E0D6] bg-white px-6 py-3">
-        <div className="flex items-center justify-between">
-          {/* Left */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={cancelEditing}
-              className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E6DED3] bg-white px-3 text-[12px] font-medium text-[#6F675D] hover:bg-[#FAF8F5]"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Back
-            </button>
-            <div className="flex items-center gap-2 text-[13px]">
-              <span className="text-[#9B9287]">
-                Products
-              </span>
-              <span className="text-[#C3BAAF]">
-                /
-              </span>
-              <span className="font-semibold text-[#2C2926]">
-                {formData.name || state.editingProduct?.name || "New Product"}
-              </span>
+    return (
+      <div className="text-xs font-sans">
+        {/* ================= Fixed Header =================
+            Fixed to the viewport (not sticky-inside-padded-parent), so it is
+            flush against the top/edges of the screen no matter what padding
+            or margin the surrounding page shell uses. */}
+        <header className="fixed top-0 left-0 right-0 z-40 border-b border-[#E8E0D6] bg-white px-6 py-3">
+          <div className="flex items-center justify-between">
+            {/* Left */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={cancelEditing}
+                className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E6DED3] bg-white px-3 text-[12px] font-medium text-[#6F675D] hover:bg-[#FAF8F5]"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Back
+              </button>
+              <div className="flex items-center gap-2 text-[13px]">
+                <span className="text-[#9B9287]">Products</span>
+                <span className="text-[#C3BAAF]">/</span>
+                <span className="font-semibold text-[#2C2926]">
+                  {formData.name || state.editingProduct?.name || 'New Product'}
+                </span>
+              </div>
+            </div>
+
+            {/* Right */}
+            <div className="flex items-center gap-2">
+              {!state.isAdding && (
+                <button
+                  onClick={() => window.open(`/product/${state.editingProduct?.urlSlug}`, '_blank')}
+                  className="inline-flex h-9 items-center gap-2 rounded-md border border-[#E5DDD3] bg-white px-4 text-[13px] font-medium text-[#38332D] hover:bg-[#FAF8F5]"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  View Live Site
+                </button>
+              )}
+              <button
+                onClick={handleSave}
+                className="inline-flex h-9 items-center rounded-md bg-[#C7A55C] px-5 text-[13px] font-semibold text-[#2B2218] hover:bg-[#B9974B]"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* Spacer to offset the fixed header's height so content below
+            doesn't get hidden underneath it. Adjust h- value if you change
+            the header's padding/font-size and the height shifts. */}
+        <div className="h-[57px]" />
+
+        <div className="px-6 pt-6 space-y-6">
+          {/* ===== Product Hero + Tabs — flush together, no gap ===== */}
+          <div>
+            <ProductHeader
+              isEditing={!!state.editingProduct}
+              isAdding={state.isAdding}
+              productName={formData.name}
+              onSave={handleSave}
+              onAdd={startAdding}
+              showAddButton={false}
+            />
+
+            <div className="mt-4">
+              <ProductTabs
+                activeTab={state.activeTab}
+                onTabChange={setActiveTab}
+                isAdding={state.isAdding}
+              />
             </div>
           </div>
 
-          {/* Right */}
+          {/* Main content with sidebar */}
+          <div className="flex gap-6">
+            <div className="flex-1 space-y-6">
+              {state.activeTab === 'Core' && (
+                <CoreDetailsTab formData={formData} onFieldChange={updateFormField} listers={listers} />
+              )}
+              {state.activeTab === 'Pricing' && (
+                <PricingTaxTab formData={formData} onFieldChange={updateFormField} />
+              )}
+              {state.activeTab === 'Images' && (
+                <ImagesTab
+                  formData={formData}
+                  onFieldChange={updateFormField}
+                  uploadingImages={state.uploadingImages}
+                  setUploadingImages={setUploadingImages}
+                />
+              )}
+              {state.activeTab === 'Related Products' && (
+                <RelatedProductsTab
+                  formData={formData}
+                  onFieldChange={updateFormField}
+                  allProducts={products}
+                  currentProductId={state.editingProduct?.id}
+                />
+              )}
+              {state.activeTab === 'SEO' && (
+                <SEOTab formData={formData} onFieldChange={updateFormField} />
+              )}
+              {state.activeTab === 'Calendar' && state.editingProduct && (
+                <AvailabilityCalendarTab
+                  editingProduct={state.editingProduct}
+                  onUpdateProduct={onUpdateProduct}
+                  loading={state.loading}
+                />
+              )}
+              {state.activeTab === 'Payout History' && state.editingProduct && (
+                <PayoutHistoryTab payoutHistory={state.payoutHistory} loading={state.loading} />
+              )}
+              {state.activeTab === 'Activity Log' && state.editingProduct && (
+                <ActivityLogTab activityLog={state.activityLog} loading={state.loading} />
+              )}
+            </div>
 
-          <div className="flex items-center gap-2">
-            {!state.isAdding && (
-              <button
-                onClick={() =>
-                  window.open(
-                    `/product/${state.editingProduct?.urlSlug}`,
-                    "_blank"
-                  )
-                }
-                className="inline-flex h-9 items-center gap-2 rounded-md border border-[#E5DDD3] bg-white px-4 text-[13px] font-medium text-[#38332D] hover:bg-[#FAF8F5]"
-              >
-                <ExternalLink className="h-4 w-4" />
-                View Live Site
-              </button>
-
+            {/* Sidebar - only show when editing (not adding) */}
+            {state.editingProduct && (
+              <ProductSidebar
+                product={state.editingProduct}
+                onViewLive={() => window.open(`/product/${state.editingProduct?.urlSlug}`, '_blank')}
+                onArchive={() => {
+                  if (confirm('Archive this product?')) {
+                    updateFormField('status', 'Archived');
+                    handleSave();
+                  }
+                }}
+              />
             )}
-            <button
-              onClick={handleSave}
-              className="inline-flex h-9 items-center rounded-md bg-[#C7A55C] px-5 text-[13px] font-semibold text-[#2B2218] hover:bg-[#B9974B]"
-            >
-              Save Changes
-            </button>
           </div>
         </div>
-      </header>
-
-      {/* ================= Product Hero ================= */}
-
-      <ProductHeader
-        isEditing={!!state.editingProduct}
-        isAdding={state.isAdding}
-        productName={formData.name}
-        onBack={cancelEditing}
-        onSave={handleSave}
-        onAdd={startAdding}
-        showAddButton={false}
-      />
-
-      <ProductTabs
-        activeTab={state.activeTab}
-        onTabChange={setActiveTab}
-        isAdding={state.isAdding}
-      />
-
-      {/* Keep everything else exactly the same */}
-
-        {/* Main content with sidebar */}
-        <div className="flex gap-6">
-          <div className="flex-1 space-y-6">
-
-        {state.activeTab === 'Core' && (
-          <CoreDetailsTab 
-            formData={formData} 
-            onFieldChange={updateFormField} 
-            listers={listers} 
-          />
-        )}
-
-        {state.activeTab === 'Pricing' && (
-          <PricingTaxTab 
-            formData={formData} 
-            onFieldChange={updateFormField} 
-          />
-        )}
-
-        {state.activeTab === 'Images' && (
-          <ImagesTab 
-            formData={formData} 
-            onFieldChange={updateFormField}
-            uploadingImages={state.uploadingImages}
-            setUploadingImages={setUploadingImages}
-          />
-        )}
-
-        {state.activeTab === 'Related Products' && (
-          <RelatedProductsTab
-            formData={formData}
-            onFieldChange={updateFormField}
-            allProducts={products}
-            currentProductId={state.editingProduct?.id}
-          />
-        )}
-
-        {state.activeTab === 'SEO' && (
-          <SEOTab 
-            formData={formData} 
-            onFieldChange={updateFormField} 
-          />
-        )}
-
-
-        {state.activeTab === 'Calendar' && state.editingProduct && (
-          <AvailabilityCalendarTab 
-            editingProduct={state.editingProduct}
-            onUpdateProduct={onUpdateProduct}
-            loading={state.loading}
-          />
-        )}
-
-        {state.activeTab === 'Payout History' && state.editingProduct && (
-          <PayoutHistoryTab
-            payoutHistory={state.payoutHistory}
-            loading={state.loading}
-          />
-        )}
-
-        {state.activeTab === 'Activity Log' && state.editingProduct && (
-          <ActivityLogTab
-            activityLog={state.activityLog}
-            loading={state.loading}
-          />
-        )}
       </div>
-
-       {/* Sidebar - only show when editing (not adding) */}
-        {state.editingProduct && (
-          <ProductSidebar 
-            product={state.editingProduct}
-            onViewLive={() => window.open(`/product/${state.editingProduct?.urlSlug}`, '_blank')}
-            onArchive={() => {
-              if (confirm('Archive this product?')) {
-                updateFormField('status', 'Archived');
-                handleSave();
-              }
-            }}
-          />
-        )}
-      </div>
-    </div>
     );
   }
 
-  // Main products list view
+  // ================= Main products list view =================
   return (
     <div className="space-y-6 text-xs font-sans">
       <ProductHeader
@@ -384,11 +335,7 @@ export default function ProductsView({
       />
 
       <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
-        <ProductTable
-          products={filteredProducts}
-          loading={loading}
-          onEdit={startEditing}
-        />
+        <ProductTable products={filteredProducts} loading={loading} onEdit={startEditing} />
       </div>
     </div>
   );

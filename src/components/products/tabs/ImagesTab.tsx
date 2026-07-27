@@ -9,9 +9,10 @@ interface ImagesTabProps {
   onFieldChange: <K extends keyof Product>(field: K, value: Product[K]) => void;
   uploadingImages: boolean;
   setUploadingImages: (loading: boolean) => void;
+  onSave?: () => void;
 }
 
-export function ImagesTab({ formData, onFieldChange, uploadingImages, setUploadingImages }: ImagesTabProps) {
+export function ImagesTab({ formData, onFieldChange, uploadingImages, setUploadingImages, onSave }: ImagesTabProps) {
   const [newImageUrl, setNewImageUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -129,6 +130,16 @@ export function ImagesTab({ formData, onFieldChange, uploadingImages, setUploadi
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="flex justify-end pt-2 border-t border-[#e8dfd8]">
+        <button
+          type="button"
+          onClick={onSave}
+          className="rounded bg-[#C7A55C] px-5 py-2 text-xs font-bold text-stone-900 hover:bg-[#b8931f] transition"
+        >
+          Save Images
+        </button>
       </div>
     </div>
   );
