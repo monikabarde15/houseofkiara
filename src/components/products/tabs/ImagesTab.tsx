@@ -1,7 +1,7 @@
 // src/components/products/tabs/ImagesTab.tsx
 
 import React, { useRef, useState } from 'react';
-import { Product } from '../../../types/product';
+import { Product } from '../types/product';
 import { uploadFile } from '../../../services/uploadApi';
 
 interface ImagesTabProps {
