@@ -1,7 +1,7 @@
 // src/components/products/tabs/ActivityLogTab.tsx
 
 import React from 'react';
-import { ActivityLog } from '../types/product';
+import { ActivityLog } from '../../types/product';
 
 interface ActivityLogTabProps {
   activityLog: ActivityLog[];

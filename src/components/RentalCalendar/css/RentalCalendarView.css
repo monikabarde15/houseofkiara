@@ -1,0 +1,113 @@
+.rental-calendar-page {
+  background: #F7F3EA;
+  min-height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+.rental-calendar-page__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #EBE5D8;
+}
+
+.rental-calendar-page__topbar-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2B2118;
+  margin: 0;
+}
+
+.rental-calendar-page__topbar-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.rental-calendar-page__btn-outline {
+  border: 1px solid #E3DCCC;
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: #2B2118;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.rental-calendar-page__btn-outline:hover {
+  background: #F5F1E8;
+}
+
+.rental-calendar-page__btn-primary {
+  border: none;
+  border-radius: 6px;
+  background: #C08829;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.rental-calendar-page__btn-primary:hover {
+  background: #AD7A24;
+}
+
+.rental-calendar-page__intro {
+  padding: 24px 24px 16px;
+}
+
+.rental-calendar-page__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #C08829;
+  margin-bottom: 6px;
+}
+
+.rental-calendar-page__heading {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #2B2118;
+  margin: 0 0 8px;
+}
+
+.rental-calendar-page__description {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #6B6254;
+  max-width: 640px;
+  margin: 0;
+}
+
+.rental-calendar-page__panel {
+  display: flex;
+  align-items: stretch;
+  margin: 0 24px 24px;
+  border: 1px solid #EBE5D8;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+
+.rental-calendar-page__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 900px) {
+  .rental-calendar-page__panel {
+    flex-direction: column;
+  }
+
+  .rental-sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #EBE5D8;
+  }
+}

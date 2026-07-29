@@ -50,9 +50,7 @@ export default function PayoutsView() {
     {/* Fixed to the viewport — flush against the top/edges of the screen
         no matter what padding or margin the surrounding page shell uses.
         This removes the dependency on finding/editing that parent file. */}
-    <div className="fixed top-0 left-0 right-0 z-40">
-      <PayoutPageHeader />
-    </div>
+    <PayoutPageHeader />
 
     {/* Spacer matching PayoutPageHeader's h-[60px], so content below
         doesn't get hidden underneath the fixed bar. */}
