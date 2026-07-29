@@ -1,5 +1,5 @@
 import { Order } from '../types';
-const BASE = 'http://localhost:3001/api';
+const BASE = 'http://localhost:5000/api';
 const request = async (path: string, options?: RequestInit) => { const r = await fetch(`${BASE}${path}`, { headers: { 'Content-Type': 'application/json', ...(options?.headers || {}) }, ...options }); const b = await r.json().catch(() => ({})); if (!r.ok || b.success === false) throw new Error(b.message || 'Order request failed'); return b; };
 export const getOrders = async () => (await request('/orders')).data as Order[];
 export const getOrder = async (id: string) => (await request(`/orders/${encodeURIComponent(id)}`)).data as Order;

@@ -1,0 +1,18 @@
+.deposit-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: #fbe4e1;
+  border: 1px solid #f3c9c4;
+  border-radius: 8px;
+  color: #9b3d34;
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.deposit-warning-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}

@@ -5,11 +5,14 @@ import OrdersView from './components/OrdersView';
 import OrderDetailView from './components/OrderDetailView';
 import OffersView from './components/OffersView';
 import CalendarView from './components/CalendarView';
-import DispatchView from './components/DispatchView';
+import DispatchView from './components/Dispatch/jsx/DispatchView';
+// import DispatchView from './components/DispatchView';
 import ReturnsView from './components/ReturnsView';
-import PayoutsView from './components/PayoutsView';
+// import PayoutsView from './components/PayoutsView';
+import PayoutsView from './components/payouts/PayoutsView';
 import CustomersView from './components/CustomersView';
-import ProductsView from './components/ProductsView';
+// import ProductsView from './components/ProductsView';
+import ProductsView from './components/products/ProductsView';
 import DesignersView from './components/DesignersView';
 import ListersView from './components/ListersView';
 import OccasionsView from './components/OccasionsView';
@@ -41,13 +44,20 @@ import * as productApi from './services/productApi';
 import * as orderApi from './services/orderApi';
 import * as listerApi from './services/listerApi';
 import AdminAuth from './components/AdminAuth';
-import { ExternalLink, Menu, Save, X } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Menu, Save, X } from 'lucide-react';
 
 export default function App() {
   const [currentView, setView] = useState<string>('dashboard');
+  // const [productHeader, setProductHeader] = useState<{
+  //   editing: boolean;
+  //   productName?: string;
+  // }>({
+  //   editing: false,
+  // });
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [adminSession, setAdminSession] = useState<any>(() => authApi.getSession());
+  // const [productBackHandler, setProductBackHandler] = useState<(() => void) | null>(null);
 
   // Consolidated global state synced with initial data structures
   const [customers, setCustomers] = useState<Customer[]>(() => JSON.parse(localStorage.getItem('hok_customers') || 'null') || initialCustomers);
@@ -279,16 +289,8 @@ export default function App() {
     }
 
     if (currentView === 'payouts') {
-      return (
-        <PayoutsView 
-          listers={listers}
-          orders={orders}
-          setView={setView}
-          setSelectedOrderId={setSelectedOrderId}
-          onUpdateLister={handleUpdateLister}
-        />
-      );
-    }
+  return <PayoutsView />;
+}
 
     if (currentView === 'customers') {
       return (
@@ -305,12 +307,14 @@ export default function App() {
 
     if (currentView === 'products') {
       return (
-        <ProductsView 
+        <ProductsView
           products={products}
           loading={productsLoading}
           onAddProduct={handleAddProduct}
           onUpdateProduct={handleUpdateProduct}
           listers={listers}
+          // setProductHeader={setProductHeader}
+          // onRegisterBackHandler={setProductBackHandler}
         />
       );
     }
@@ -486,13 +490,76 @@ export default function App() {
           </div>
         </header>
 
-        <header className="hidden lg:flex h-[69px] shrink-0 items-center justify-between border-b border-[#e8e3dc] bg-white px-6">
-          <span className="text-[16px] font-semibold text-[#2c2926]">{currentView === 'offers' ? 'offers' : currentView}</span>
-          <div className="flex items-center gap-2">
-            <button className="inline-flex h-9 items-center gap-2 rounded-md border border-[#e2dcd3] bg-white px-4 text-[13px] font-semibold text-[#39342f] hover:bg-[#fbfaf8]"><ExternalLink className="h-4 w-4" />View Live Site</button>
-            <button className="inline-flex h-9 items-center gap-2 rounded-md bg-[#c9ab6c] px-4 text-[13px] font-semibold text-[#332817] hover:bg-[#b99b5d]"><Save className="h-4 w-4" />Save Changes</button>
+         {/* <header className="sticky top-0 z-40 hidden h-[62px] shrink-0 items-center justify-between border-b border-[#E8E0D6] bg-white px-6 lg:flex">
+
+
+          <div className="flex items-center gap-3">
+
+            {currentView === "products" && productHeader.editing ? (
+              <>
+
+                <button
+                  onClick={() => {
+                    productBackHandler?.();
+                    setProductHeader({
+                      editing: false,
+                    });
+                  }}
+                  className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E6DED3] bg-white px-3 text-[12px] font-medium text-[#6F675D] hover:bg-[#FAF8F5]"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  Back
+                </button>
+
+                <div className="flex items-center gap-2 text-[13px]">
+
+                  <span className="text-[#9B9287]">
+                    Products
+                  </span>
+
+                  <span className="text-[#C3BAAF]">
+                    /
+                  </span>
+
+                  <span className="font-semibold text-[#2C2926]">
+                    {productHeader.productName}
+                  </span>
+
+                </div>
+
+              </>
+            ) : (
+
+              <span className="text-[16px] font-semibold text-[#2C2926] capitalize">
+                {currentView === "products"
+                  ? "Products"
+                  : currentView.replace(/-/g, " ")}
+              </span>
+
+            )}
+
           </div>
-        </header>
+
+
+          <div className="flex items-center gap-2">
+
+            <button className="inline-flex h-9 items-center gap-2 rounded-md border border-[#E5DDD3] bg-white px-4 text-[13px] font-medium text-[#38332D] transition hover:bg-[#FAF8F5]">
+
+              <ExternalLink className="h-4 w-4" />
+
+              View Live Site
+
+            </button>
+
+            <button className="inline-flex h-9 items-center rounded-md bg-[#C7A55C] px-5 text-[13px] font-semibold text-[#2B2218] transition hover:bg-[#BB9A50]">
+
+              Save Changes
+
+            </button>
+
+          </div>
+
+        </header>  */}
 
         {/* Content Box */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-[#f8f6f2]">
