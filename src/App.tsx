@@ -4,7 +4,8 @@ import DashboardView from './components/DashboardView';
 import OrdersView from './components/OrdersView';
 import OrderDetailView from './components/OrderDetailView';
 import OffersView from './components/OffersView';
-import CalendarView from './components/CalendarView';
+// import CalendarView from './components/CalendarView';
+import RentalCalendarView from './components/RentalCalendar/tsx';
 import DispatchView from './components/Dispatch/jsx/DispatchView';
 // import DispatchView from './components/DispatchView';
 import ReturnsView from './components/ReturnsView';
@@ -256,15 +257,16 @@ export default function App() {
     }
 
     if (currentView === 'calendar') {
-      return (
-        <CalendarView 
-          orders={orders}
-          products={products}
-          setView={setView}
-          setSelectedOrderId={setSelectedOrderId}
-        />
-      );
-    }
+  return (
+    // <CalendarView 
+    //   orders={orders}
+    //   products={products}
+    //   setView={setView}
+    //   setSelectedOrderId={setSelectedOrderId}
+    // />
+    <RentalCalendarView />
+  );
+}
 
     if (currentView === 'dispatch') {
       return (
