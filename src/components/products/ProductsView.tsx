@@ -186,7 +186,7 @@ export default function ProductsView({
             Fixed to the viewport (not sticky-inside-padded-parent), so it is
             flush against the top/edges of the screen no matter what padding
             or margin the surrounding page shell uses. */}
-        <header className="fixed top-0 left-0 right-0 z-40 border-b border-[#E8E0D6] bg-white px-6 py-3">
+        <header className="border-b border-[#E8E0D6] bg-white px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Left */}
             <div className="flex items-center gap-3">
@@ -226,11 +226,6 @@ export default function ProductsView({
             </div>
           </div>
         </header>
-
-        {/* Spacer to offset the fixed header's height so content below
-            doesn't get hidden underneath it. Adjust h- value if you change
-            the header's padding/font-size and the height shifts. */}
-        <div className="h-[57px]" />
 
         <div className="px-6 pt-6 space-y-6">
           {/* ===== Product Hero + Tabs — flush together, no gap ===== */}

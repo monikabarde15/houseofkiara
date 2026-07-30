@@ -14,7 +14,7 @@ import PayoutsView from './components/payouts/PayoutsView';
 import CustomersView from './components/CustomersView';
 // import ProductsView from './components/ProductsView';
 import ProductsView from './components/products/ProductsView';
-import DesignersView from './components/DesignersView';
+import DesignersView from './components/Designers/tsx';
 import ListersView from './components/ListersView';
 import OccasionsView from './components/OccasionsView';
 import ReportsView from './components/ReportsView';
@@ -39,6 +39,7 @@ import {
 } from './data';
 
 import { Customer, Product, Order, Offer, Designer, Lister, ListerSubmission, PromoCode, EmailTemplate, SiteSettings, HomepageEditor } from './types';
+
 import * as offerApi from './services/offerApi';
 import * as authApi from './services/authApi';
 import * as productApi from './services/productApi';
@@ -321,15 +322,9 @@ export default function App() {
       );
     }
 
-    if (currentView === 'designers') {
-      return (
-        <DesignersView 
-          designers={designers}
-          onAddDesigner={handleAddDesigner}
-          onUpdateDesigner={handleUpdateDesigner}
-        />
-      );
-    }
+   if (currentView === 'designers') {
+  return <DesignersView />;
+}
 
     if (currentView === 'listers') {
       return (
