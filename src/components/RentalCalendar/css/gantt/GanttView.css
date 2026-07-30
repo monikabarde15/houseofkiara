@@ -1,0 +1,35 @@
+.gantt-view {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.gantt-view__header {
+  display: flex;
+  border-bottom: 1px solid #e5e1d8;
+  padding: 10px 16px;
+}
+
+.gantt-view__header-label {
+  width: 220px;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #8a8272;
+}
+
+.gantt-view__header-days {
+  display: grid;
+  flex: 1;
+}
+
+.gantt-view__day-number {
+  text-align: center;
+  font-size: 11px;
+  color: #a69c8b;
+}
+
+.gantt-view__body {
+  display: flex;
+  flex-direction: column;
+}

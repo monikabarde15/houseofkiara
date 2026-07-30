@@ -1,0 +1,42 @@
+.agenda-table {
+  width: 100%;
+  font-size: 13px;
+  overflow-x: auto;
+}
+
+.agenda-table__header,
+.agenda-row {
+  display: grid;
+  grid-template-columns:
+    40px    /* icon */
+    110px   /* date */
+    140px   /* type */
+    100px   /* order */
+    140px   /* customer */
+    50px    /* whatsapp */
+    220px   /* product */
+    1fr     /* note */
+    30px;   /* chevron */
+  align-items: center;
+  column-gap: 16px;
+  padding: 12px 16px;
+  min-width: 1100px;
+}
+
+.agenda-table__header {
+  border-bottom: 1px solid #e5e1d8;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #8a8272;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.agenda-table__body {
+  display: flex;
+  flex-direction: column;
+}

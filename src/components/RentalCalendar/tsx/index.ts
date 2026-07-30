@@ -9,6 +9,10 @@ export { default as CalendarGrid } from './CalendarGrid';
 export { default as CalendarLegend } from './CalendarLegend';
 export { default as EventPill } from './EventPill';
 export { default as Sidebar } from './Sidebar';
+export { default as AgendaView } from './agenda/AgendaView';
+export { default as AgendaTable } from './agenda/AgendaTable';
+export { default as AgendaRow } from './agenda/AgendaRow';
+export { default as AgendaFilterBar } from './agenda/AgendaFilterBar';
 
 export * from '../types';
 export * from '../mockdata';

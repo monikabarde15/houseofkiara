@@ -6,6 +6,8 @@ import Sidebar from './Sidebar';
 import { CalendarEvent, CalendarViewMode, DispatchCard } from '../types';
 import { mockDispatches, mockEvents } from '../mockdata';
 import '../css/RentalCalendarView.css';
+import AgendaView from './agenda/AgendaView';
+import GanttView from './gantt/GanttView';
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' });
 
@@ -72,9 +74,16 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
             onExport={() => {}}
           />
 
-          <CalendarGrid month={month} events={events} todayISO={todayISO} />
+          {viewMode === 'month' && (
+            <>
+              <CalendarGrid month={month} events={events} todayISO={todayISO} />
+              <CalendarLegend />
+            </>
+          )}
 
-          <CalendarLegend />
+          {viewMode === 'agenda' && <AgendaView />}
+
+          {viewMode === 'gantt' && <GanttView month={month} />}
         </div>
 
         <Sidebar monthLabel={sidebarMonthLabel} dispatches={dispatches} />
