@@ -4,7 +4,7 @@ import PayoutHeader from "./components/PayoutHeader";
 import PayoutSummaryCards from "./components/PayoutSummaryCards";
 import PayoutIntegrityBanner from "./components/PayoutIntegrityBanner";
 import PayoutTabs from "./components/PayoutTabs";
-import PayoutPageHeader from "./components/PayoutPageHeader";
+// import PayoutPageHeader from "./components/PayoutPageHeader";
 import PaymentQueueTab from "./tabs/PaymentQueueTab";
 import AllPayoutsTab from "./tabs/AllPayoutsTab";
 import ByListerTab from "./tabs/ByListerTab";
@@ -46,12 +46,12 @@ export default function PayoutsView() {
 
   return (
     <div className="min-h-screen bg-[#F8F5F1]">
-    <PayoutPageHeader />
+    {/* <PayoutPageHeader /> */}
 
-    <div className="mx-auto max-w-[1600px] px-7 pb-6">
+    <div className="mx-auto max-w-[1600px] px-0 py-0">
 
         {/* Header */}
-        <div className="pt-6">
+        <div className="pt-0">
           <PayoutHeader />
         </div>
 

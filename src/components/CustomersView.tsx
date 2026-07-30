@@ -11,10 +11,10 @@ interface CustomersViewProps {
   setSelectedOrderId: (id: string) => void;
 }
 
-export default function CustomersView({ 
-  customers, 
-  orders, 
-  products, 
+export default function CustomersView({
+  customers,
+  orders,
+  products,
   onUpdateCustomer,
   setView,
   setSelectedOrderId
@@ -31,17 +31,17 @@ export default function CustomersView({
   // OLD tab names for now ('History' | 'Wishlist' | 'Settings')
   // so nothing breaks. We'll widen this union as each part ships.
   // ============================================================
- const [activeTab, setActiveTab] = useState<
-  | 'Profile'
-  | 'Order History'
-  | 'Wishlist'
-  | 'Cart'
-  | 'Rentals'
-  | 'Deposits'
-  | 'Offers'
-  | 'Communication Log'
-  | 'Account Settings'
->('Profile');
+  const [activeTab, setActiveTab] = useState<
+    | 'Profile'
+    | 'Order History'
+    | 'Wishlist'
+    | 'Cart'
+    | 'Rentals'
+    | 'Deposits'
+    | 'Offers'
+    | 'Communication Log'
+    | 'Account Settings'
+  >('Profile');
 
   // ============================================================
   // CUSTOMER EDIT FIELDS (existing — unchanged, backend-bound)
@@ -202,9 +202,9 @@ export default function CustomersView({
   };
 
   const filteredCustomers = customers.filter(c => {
-    const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          c.email.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          c.location.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = selectedStatus === 'All Statuses' || c.status === selectedStatus;
     return matchesSearch && matchesStatus;
   });
@@ -217,140 +217,186 @@ export default function CustomersView({
     const custOrders = getCustomerOrders(editingCustomer.email);
     return (
       <div className="space-y-6 text-xs font-sans">
-        
+
         {/* Back and title bar */}
         {/* Hero Header */}
 
-<div className="space-y-6">
+        <div className="space-y-6">
 
-  {/* Breadcrumb */}
+          {/* Breadcrumb */}
 
-  <div className="flex items-center gap-2 text-sm text-stone-500">
+          <div className="flex items-center gap-2 text-sm text-stone-500">
 
-    <button
-      onClick={() => setEditingCustomer(null)}
-      className="px-3 py-1 border border-stone-200 rounded hover:bg-stone-50"
-    >
-      ← Back
-    </button>
+            <button
+              onClick={() => setEditingCustomer(null)}
+              className="px-3 py-1 border border-stone-200 rounded hover:bg-stone-50"
+            >
+              ← Back
+            </button>
 
-    <span>Customers</span>
+            <span>Customers</span>
 
-    <span>›</span>
+            <span>›</span>
 
-    <span className="font-medium text-stone-800">
-      {editingCustomer.name}
-    </span>
-
-  </div>
-
-  {/* Dark Customer Card */}
-
-  <div className="bg-[#181521] rounded-xl px-8 py-6 text-white flex justify-between items-center">
-
-    <div className="flex gap-5">
-
-      {/* Avatar */}
-
-      <div className="w-20 h-20 rounded-full bg-[#d2ae63] flex items-center justify-center text-3xl font-bold text-[#2d2418]">
-
-        {editingCustomer.name
-          .split(" ")
-          .map(n => n[0])
-          .join("")
-          .substring(0,2)}
-
-      </div>
-
-      {/* Details */}
-
-      <div>
-
-        <h2 className="text-4xl font-serif">
-
-          {editingCustomer.name}
-
-        </h2>
-
-        <p className="text-stone-300 mt-2">
-
-          {editingCustomer.email}
-
-          {" • "}
-
-          {editingCustomer.phone}
-
-          {" • "}
-
-          {editingCustomer.location}
-
-          {" • Joined "}
-
-          {editingCustomer.joinedDate}
-
-        </p>
-
-        <div className="flex gap-10 mt-6">
-
-          <div>
-
-            <div className="text-3xl font-bold">
-
-              {custOrders.length}
-
-            </div>
-
-            <div className="uppercase text-xs text-stone-400">
-
-              Orders
-
-            </div>
+            <span className="font-medium text-stone-800">
+              {editingCustomer.name}
+            </span>
 
           </div>
 
-          <div>
+          {/* Dark Customer Card */}
 
-            <div className="text-3xl font-bold">
+          <div className="bg-[#181521] rounded-xl px-8 py-6 text-white flex justify-between items-center">
 
-              ₹{custOrders.reduce((sum,o)=>sum+o.amount,0).toLocaleString("en-IN")}
+            <div className="flex gap-5">
+
+              {/* Avatar */}
+
+              <div className="w-20 h-20 rounded-full bg-[#d2ae63] flex items-center justify-center text-3xl font-bold text-[#2d2418]">
+
+                {editingCustomer.name
+                  .split(" ")
+                  .map(n => n[0])
+                  .join("")
+                  .substring(0, 2)}
+
+              </div>
+
+              {/* Details */}
+
+              <div>
+
+                <h2 className="text-4xl font-serif">
+
+                  {editingCustomer.name}
+
+                </h2>
+
+                <p className="text-stone-300 mt-2">
+
+                  {editingCustomer.email}
+
+                  {" • "}
+
+                  {editingCustomer.phone}
+
+                  {" • "}
+
+                  {editingCustomer.location}
+
+                  {" • Joined "}
+
+                  {editingCustomer.joinedDate}
+
+                </p>
+
+                <div className="flex gap-10 mt-6">
+
+                  <div>
+
+                    <div className="text-3xl font-bold">
+
+                      {custOrders.length}
+
+                    </div>
+
+                    <div className="uppercase text-xs text-stone-400">
+
+                      Orders
+
+                    </div>
+
+                  </div>
+
+                  <div>
+
+                    <div className="text-3xl font-bold">
+
+                      ₹{custOrders.reduce((sum, o) => sum + o.amount, 0).toLocaleString("en-IN")}
+
+                    </div>
+
+                    <div className="uppercase text-xs text-stone-400">
+
+                      Lifetime Value
+
+                    </div>
+
+                  </div>
+
+                  <div>
+
+                    <div className="text-3xl font-bold">
+
+                      ₹0
+
+                    </div>
+
+                    <div className="uppercase text-xs text-stone-400">
+
+                      Deposits Held
+
+                    </div>
+
+                  </div>
+
+                  <div>
+
+                    <div className="text-3xl font-bold">
+
+                      {editingCustomer.wishlistCount}
+
+                    </div>
+
+                    <div className="uppercase text-xs text-stone-400">
+
+                      Wishlist
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
 
             </div>
 
-            <div className="uppercase text-xs text-stone-400">
+            {/* Right Side */}
 
-              Lifetime Value
+            <div className="flex flex-col items-end gap-3">
 
-            </div>
+              <div className="flex gap-2">
 
-          </div>
+                <span className="px-3 py-1 rounded border border-stone-500 text-xs uppercase">
 
-          <div>
+                  WEBSITE SIGNUP
 
-            <div className="text-3xl font-bold">
+                </span>
 
-              ₹0
+                <span className="px-3 py-1 rounded bg-green-100 text-green-700 text-xs">
 
-            </div>
+                  Active
 
-            <div className="uppercase text-xs text-stone-400">
+                </span>
 
-              Deposits Held
+              </div>
 
-            </div>
+              <div className="flex gap-3">
 
-          </div>
+                <button className="bg-[#22c55e] hover:bg-[#16a34a] px-5 py-3 rounded text-white font-medium">
 
-          <div>
+                  WhatsApp Customer
 
-            <div className="text-3xl font-bold">
+                </button>
 
-              {editingCustomer.wishlistCount}
+                <button className="border border-stone-500 px-5 py-3 rounded text-white">
 
-            </div>
+                  Email
 
-            <div className="uppercase text-xs text-stone-400">
+                </button>
 
-              Wishlist
+              </div>
 
             </div>
 
@@ -358,82 +404,36 @@ export default function CustomersView({
 
         </div>
 
-      </div>
-
-    </div>
-
-    {/* Right Side */}
-
-    <div className="flex flex-col items-end gap-3">
-
-      <div className="flex gap-2">
-
-        <span className="px-3 py-1 rounded border border-stone-500 text-xs uppercase">
-
-          WEBSITE SIGNUP
-
-        </span>
-
-        <span className="px-3 py-1 rounded bg-green-100 text-green-700 text-xs">
-
-          Active
-
-        </span>
-
-      </div>
-
-      <div className="flex gap-3">
-
-        <button className="bg-[#22c55e] hover:bg-[#16a34a] px-5 py-3 rounded text-white font-medium">
-
-          WhatsApp Customer
-
-        </button>
-
-        <button className="border border-stone-500 px-5 py-3 rounded text-white">
-
-          Email
-
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
         {/* Top summary card */}
         {/* Track Record */}
 
-<div className="bg-white border border-stone-200 rounded-lg px-4 py-2 flex items-center gap-4 flex-wrap">
+        <div className="bg-white border border-stone-200 rounded-lg px-4 py-2 flex items-center gap-4 flex-wrap">
 
-  <span className="uppercase text-[11px] tracking-wider font-bold text-stone-400">
-    TRACK RECORD
-  </span>
+          <span className="uppercase text-[11px] tracking-wider font-bold text-stone-400">
+            TRACK RECORD
+          </span>
 
-  <span className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-sm">
-    🟢 0 rentals completed
-  </span>
+          <span className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-sm">
+            🟢 0 rentals completed
+          </span>
 
-  <span className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-sm">
-    🟢 0 on-time • 0 late
-  </span>
+          <span className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-sm">
+            🟢 0 on-time • 0 late
+          </span>
 
-  <span className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-sm">
-    🟢 No damage
-  </span>
+          <span className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-sm">
+            🟢 No damage
+          </span>
 
-  <span className="px-3 py-1 rounded-full bg-[#fff8eb] text-[#8a6a2c] text-sm">
-    🟡 1 upcoming
-  </span>
+          <span className="px-3 py-1 rounded-full bg-[#fff8eb] text-[#8a6a2c] text-sm">
+            🟡 1 upcoming
+          </span>
 
-  <span className="px-3 py-1 rounded-full bg-[#fff3ec] text-[#b45309] text-sm">
-    🟠 Deposit to collect — ₹25,000
-  </span>
+          <span className="px-3 py-1 rounded-full bg-[#fff3ec] text-[#b45309] text-sm">
+            🟠 Deposit to collect — ₹25,000
+          </span>
 
-</div>
+        </div>
 
         {/* ============================================================ */}
         {/* TAB CONTROLS                                                  */}
@@ -446,31 +446,30 @@ export default function CustomersView({
         {/* ============================================================ */}
         <div className="flex border-b border-stone-200 gap-1 select-none font-semibold overflow-x-auto whitespace-nowrap scrollbar-none pb-px">
           {(
-  [
-    "Profile",
-    "Order History",
-    "Wishlist",
-    "Cart",
-    "Rentals",
-    "Deposits",
-    "Offers",
-    "Communication Log",
-    "Account Settings",
-  ] as const
-).map((tab) => {
-  const isActive = activeTab === tab;
-  return (
-    <button
-      key={tab}
-      onClick={() => setActiveTab(tab)}
-      className={`px-4 py-2 border-b-2 text-xs transition cursor-pointer ${
-        isActive ? 'border-[#c5a880] text-stone-900 font-bold' : 'border-transparent text-stone-500 hover:text-stone-800'
-      }`}
-    >
-      {tab}
-    </button>
-  );
-})}
+            [
+              "Profile",
+              "Order History",
+              "Wishlist",
+              "Cart",
+              "Rentals",
+              "Deposits",
+              "Offers",
+              "Communication Log",
+              "Account Settings",
+            ] as const
+          ).map((tab) => {
+            const isActive = activeTab === tab;
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-2 border-b-2 text-xs transition cursor-pointer ${isActive ? 'border-[#c5a880] text-stone-900 font-bold' : 'border-transparent text-stone-500 hover:text-stone-800'
+                  }`}
+              >
+                {tab}
+              </button>
+            );
+          })}
         </div>
 
         {/* ============================================================ */}
@@ -886,75 +885,73 @@ export default function CustomersView({
         {/* We'll replace each block in turn: Order History next.)        */}
         {/* ============================================================ */}
 
-       {activeTab === 'Order History' && (
-  <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
-    <h3 className="font-serif font-bold text-stone-900 text-sm">Rented & Purchased Orders</h3>
-    {custOrders.length === 0 ? (
-      <p className="text-stone-400">No orders logged under this client.</p>
-    ) : (
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr className="bg-stone-50 text-stone-400 uppercase text-[10px] tracking-wider border-b border-stone-200">
-              <th className="px-4 py-3">Order ID</th>
-              <th className="px-4 py-3">Product</th>
-              <th className="px-4 py-3">Mode</th>
-              <th className="px-4 py-3">Amount</th>
-              <th className="px-4 py-3">Dates</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3 text-right">View</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-stone-100 text-stone-600">
-            {custOrders.map(o => (
-              <tr key={o.id} className="hover:bg-[#fcf9f5] transition-colors">
-                <td className="px-4 py-4 font-mono text-[11px] text-stone-500">{o.id}</td>
-                <td className="px-4 py-4">
-                  <div className="font-semibold text-stone-900">{o.productName}</div>
-                  {/* Shows a designer/brand line only if that field exists on Order */}
-                  {(o as any).designer && (
-                    <div className="text-[11px] text-stone-400">{(o as any).designer}</div>
-                  )}
-                </td>
-                <td className="px-4 py-4">
-                  <span className={`px-2 py-1 rounded text-[10px] ${
-                    o.mode === 'Rental' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                  }`}>
-                    {o.mode}
-                  </span>
-                </td>
-                <td className="px-4 py-4 font-semibold text-stone-900">
-                  ₹{o.amount.toLocaleString('en-IN')}
-                </td>
-                <td className="px-4 py-4 text-stone-500">
-                  {(o as any).date || '—'}
-                </td>
-                <td className="px-4 py-4">
-                  <span className={`px-2 py-1 rounded text-[10px] ${
-                    o.status === 'Delivered' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
-                  }`}>
-                    {o.status}
-                  </span>
-                </td>
-                <td className="px-4 py-4 text-right">
-                  <button
-                    onClick={() => {
-                      setSelectedOrderId(o.id);
-                      setView(`order_detail:${o.id}`);
-                    }}
-                    className="border border-stone-300 rounded-md px-3 py-1.5 text-xs hover:bg-stone-50"
-                  >
-                    View →
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )}
-  </div>
-)}
+        {activeTab === 'Order History' && (
+          <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
+            <h3 className="font-serif font-bold text-stone-900 text-sm">Rented & Purchased Orders</h3>
+            {custOrders.length === 0 ? (
+              <p className="text-stone-400">No orders logged under this client.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-stone-50 text-stone-400 uppercase text-[10px] tracking-wider border-b border-stone-200">
+                      <th className="px-4 py-3">Order ID</th>
+                      <th className="px-4 py-3">Product</th>
+                      <th className="px-4 py-3">Mode</th>
+                      <th className="px-4 py-3">Amount</th>
+                      <th className="px-4 py-3">Dates</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3 text-right">View</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-stone-100 text-stone-600">
+                    {custOrders.map(o => (
+                      <tr key={o.id} className="hover:bg-[#fcf9f5] transition-colors">
+                        <td className="px-4 py-4 font-mono text-[11px] text-stone-500">{o.id}</td>
+                        <td className="px-4 py-4">
+                          <div className="font-semibold text-stone-900">{o.productName}</div>
+                          {/* Shows a designer/brand line only if that field exists on Order */}
+                          {(o as any).designer && (
+                            <div className="text-[11px] text-stone-400">{(o as any).designer}</div>
+                          )}
+                        </td>
+                        <td className="px-4 py-4">
+                          <span className={`px-2 py-1 rounded text-[10px] ${o.mode === 'Rental' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                            }`}>
+                            {o.mode}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 font-semibold text-stone-900">
+                          ₹{o.amount.toLocaleString('en-IN')}
+                        </td>
+                        <td className="px-4 py-4 text-stone-500">
+                          {(o as any).date || '—'}
+                        </td>
+                        <td className="px-4 py-4">
+                          <span className={`px-2 py-1 rounded text-[10px] ${o.status === 'Delivered' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                            }`}>
+                            {o.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-right">
+                          <button
+                            onClick={() => {
+                              setSelectedOrderId(o.id);
+                              setView(`order_detail:${o.id}`);
+                            }}
+                            className="border border-stone-300 rounded-md px-3 py-1.5 text-xs hover:bg-stone-50"
+                          >
+                            View →
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ============================================================ */}
         {/* PART 2/9 — WISHLIST TAB                                       */}
@@ -1407,7 +1404,7 @@ export default function CustomersView({
           </div>
         )}
 
-      {/* ============================================================ */}
+        {/* ============================================================ */}
         {/* PART 8/9 — ACCOUNT SETTINGS TAB                               */}
         {/* Redesigned to match Admin Panel-customer.pdf reference.       */}
         {/* editNotes and editStatus are UNCHANGED — same fields, same    */}
@@ -1568,78 +1565,77 @@ export default function CustomersView({
 
   return (
     <div className="space-y-6 text-xs font-sans">
-      
-      
+
       {/* Header */}
-<div className="space-y-1">
-  <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-[#c5a880]">
-    OPERATIONS
-  </p>
+      <div className="space-y-1">
+        <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-[#c5a880]">
+          OPERATIONS
+        </p>
 
-  <h2 className="text-4xl font-serif text-stone-900">
-    Customers
-  </h2>
+        <h2 className="text-2xl font-serif text-stone-700">
+          Customers
+        </h2>
 
-  <p className="text-sm text-stone-500 max-w-3xl leading-7">
-    Every account holder and manual (WhatsApp) contact, with orders,
-    deposits and track record derived live from order data.
-    Click any row to open the full profile.
-  </p>
-</div>
+        <p className="text-xs text-stone-500 max-w-xl leading-5">
+          Every account holder and manual (WhatsApp) contact, with orders,
+          deposits and track record derived live from order data.
+          Click any row to open the full profile.
+        </p>
+      </div>
 
       {/* Filters row */}
-<div className="bg-white border border-stone-200 rounded-lg p-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="bg-white border border-stone-200 rounded-lg p-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
-  <div className="flex flex-1 flex-wrap gap-3">
+        <div className="flex flex-1 flex-wrap gap-3">
 
-    <div className="relative min-w-[320px] flex-1">
-      <Search className="absolute left-3 top-2.5 h-4 w-4 text-stone-400" />
+          <div className="relative min-w-[320px] flex-1">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-stone-400" />
 
-      <input
-        type="text"
-        placeholder="Search by name, email, phone, city..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full pl-10 pr-3 py-2 border border-stone-200 rounded-md text-sm focus:outline-none focus:border-[#c5a880]"
-      />
-    </div>
+            <input
+              type="text"
+              placeholder="Search by name, email, phone, city..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-3 py-2 border border-stone-200 rounded-md text-sm focus:outline-none focus:border-[#c5a880]"
+            />
+          </div>
 
-    <select
-      value={selectedStatus}
-      onChange={(e) => setSelectedStatus(e.target.value)}
-      className="px-4 py-2 border border-stone-200 rounded-md text-sm"
-    >
-      <option>All Statuses</option>
-      <option>Active</option>
-      <option>Suspended</option>
-    </select>
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="px-4 py-2 border border-stone-200 rounded-md text-sm"
+          >
+            <option>All Statuses</option>
+            <option>Active</option>
+            <option>Suspended</option>
+          </select>
 
-    <select
-      className="px-4 py-2 border border-stone-200 rounded-md text-sm"
-    >
-      <option>All Sources</option>
-      <option>Website</option>
-      <option>Manual - WA</option>
-    </select>
+          <select
+            className="px-4 py-2 border border-stone-200 rounded-md text-sm"
+          >
+            <option>All Sources</option>
+            <option>Website</option>
+            <option>Manual - WA</option>
+          </select>
 
-  </div>
+        </div>
 
-  <div className="flex gap-3">
+        <div className="flex gap-3">
 
-    <button
-      className="bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] font-semibold px-4 py-2 rounded-md text-sm transition">
-      + Add Customer
-    </button>
+          <button
+            className="bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] font-semibold px-4 py-2 rounded-md text-sm transition">
+            + Add Customer
+          </button>
 
-    <button
-      className="border border-stone-300 px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-50"
-    >
-      Export CSV
-    </button>
+          <button
+            className="border border-stone-300 px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-50"
+          >
+            Export CSV
+          </button>
 
-  </div>
+        </div>
 
-</div>
+      </div>
 
       {/* Customer Table */}
       <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
@@ -1648,115 +1644,115 @@ export default function CustomersView({
             <thead>
               <tr className="bg-stone-50 text-stone-400 uppercase text-[10px] tracking-wider border-b border-stone-200">
 
-  <th className="px-5 py-3">Customer</th>
+                <th className="px-5 py-3">Customer</th>
 
-  <th className="px-5 py-3">Location</th>
+                <th className="px-5 py-3">Location</th>
 
-  <th className="px-5 py-3">Modes</th>
+                <th className="px-5 py-3">Modes</th>
 
-  <th className="px-5 py-3">Orders</th>
+                <th className="px-5 py-3">Orders</th>
 
-  <th className="px-5 py-3">Lifetime Value</th>
+                <th className="px-5 py-3">Lifetime Value</th>
 
-  <th className="px-5 py-3">Last Order</th>
+                <th className="px-5 py-3">Last Order</th>
 
-  <th className="px-5 py-3">Joined</th>
+                <th className="px-5 py-3">Joined</th>
 
-  <th className="px-5 py-3">Source</th>
+                <th className="px-5 py-3">Source</th>
 
-  <th className="px-5 py-3">Status</th>
+                <th className="px-5 py-3">Status</th>
 
-  <th className="px-5 py-3 text-right">View</th>
+                <th className="px-5 py-3 text-right">View</th>
 
-</tr>
+              </tr>
             </thead>
             <tbody className="divide-y divide-stone-100 text-stone-600 font-sans">
               {filteredCustomers.map(c => (
                 <tr
-  key={c.id}
-  className="hover:bg-[#fcf9f5] transition-colors border-b border-stone-100"
->
-  {/* Customer */}
-  <td className="px-5 py-4">
-    <div className="flex items-start gap-2">
-      <div className="flex-1">
-        <div className="font-semibold text-stone-900">
-          {c.name}
-        </div>
+                  key={c.id}
+                  className="hover:bg-[#fcf9f5] transition-colors border-b border-stone-100"
+                >
+                  {/* Customer */}
+                  <td className="px-5 py-4">
+                    <div className="flex items-start gap-2">
+                      <div className="flex-1">
+                        <div className="font-semibold text-stone-900">
+                          {c.name}
+                        </div>
 
-        <div className="text-[11px] text-stone-500">
-          {c.email}
-        </div>
-      </div>
+                        <div className="text-[11px] text-stone-500">
+                          {c.email}
+                        </div>
+                      </div>
 
-      <span className="flex items-center justify-center w-7 h-7 rounded bg-[#22c55e]">
-  <MessageCircle className="w-4 h-4 text-white" />
-</span>
-    </div>
-  </td>
+                      <span className="flex items-center justify-center w-7 h-7 rounded bg-[#22c55e]">
+                        <MessageCircle className="w-4 h-4 text-white" />
+                      </span>
+                    </div>
+                  </td>
 
-  {/* Location */}
-  <td className="px-5 py-4">
-    {c.location}
-  </td>
+                  {/* Location */}
+                  <td className="px-5 py-4">
+                    {c.location}
+                  </td>
 
-  {/* Modes */}
-  <td className="px-5 py-4">
-    <div className="flex gap-1">
-      <span className="bg-green-100 text-green-700 px-2 rounded text-[10px]">
-        R
-      </span>
+                  {/* Modes */}
+                  <td className="px-5 py-4">
+                    <div className="flex gap-1">
+                      <span className="bg-green-100 text-green-700 px-2 rounded text-[10px]">
+                        R
+                      </span>
 
-      <span className="bg-orange-100 text-orange-700 px-2 rounded text-[10px]">
-        P
-      </span>
-    </div>
-  </td>
+                      <span className="bg-orange-100 text-orange-700 px-2 rounded text-[10px]">
+                        P
+                      </span>
+                    </div>
+                  </td>
 
-  {/* Orders */}
-  <td className="px-5 py-4 font-medium">
-    {getCustomerOrders(c.email).length}
-  </td>
+                  {/* Orders */}
+                  <td className="px-5 py-4 font-medium">
+                    {getCustomerOrders(c.email).length}
+                  </td>
 
-  {/* Lifetime */}
-  <td className="px-5 py-4 font-semibold">
-    ₹{getCustomerOrders(c.email)
-      .reduce((sum, o) => sum + o.amount, 0)
-      .toLocaleString("en-IN")}
-  </td>
+                  {/* Lifetime */}
+                  <td className="px-5 py-4 font-semibold">
+                    ₹{getCustomerOrders(c.email)
+                      .reduce((sum, o) => sum + o.amount, 0)
+                      .toLocaleString("en-IN")}
+                  </td>
 
-  {/* Last Order */}
-  <td className="px-5 py-4">
-    {c.lastOrderDate}
-  </td>
+                  {/* Last Order */}
+                  <td className="px-5 py-4">
+                    {c.lastOrderDate}
+                  </td>
 
-  {/* Joined */}
-  <td className="px-5 py-4">
-    {c.joinedDate}
-  </td>
+                  {/* Joined */}
+                  <td className="px-5 py-4">
+                    {c.joinedDate}
+                  </td>
 
-  {/* Source */}
-  <td className="px-5 py-4 text-stone-500">
-    Website
-  </td>
+                  {/* Source */}
+                  <td className="px-5 py-4 text-stone-500">
+                    Website
+                  </td>
 
-  {/* Status */}
-  <td className="px-5 py-4">
-    <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-xs">
-      {c.status}
-    </span>
-  </td>
+                  {/* Status */}
+                  <td className="px-5 py-4">
+                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-xs">
+                      {c.status}
+                    </span>
+                  </td>
 
-  {/* View */}
-  <td className="px-5 py-4 text-right">
-    <button
-      onClick={() => startEditing(c)}
-      className="border border-stone-300 rounded-md px-4 py-2 text-sm hover:bg-stone-50"
-    >
-      View →
-    </button>
-  </td>
-</tr>
+                  {/* View */}
+                  <td className="px-5 py-4 text-right">
+                    <button
+                      onClick={() => startEditing(c)}
+                      className="border border-stone-300 rounded-md px-4 py-2 text-sm hover:bg-stone-50"
+                    >
+                      View →
+                    </button>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>

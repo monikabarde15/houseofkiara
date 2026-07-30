@@ -37,7 +37,7 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
 
   return (
     <div className="rental-calendar-page">
-      <div className="rental-calendar-page__topbar">
+      {/* <div className="rental-calendar-page__topbar">
         <h2 className="rental-calendar-page__topbar-title">Rental Calendar</h2>
         <div className="rental-calendar-page__topbar-actions">
           <button type="button" className="rental-calendar-page__btn-outline" onClick={onViewLiveSite}>
@@ -47,7 +47,7 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
             Save Changes
           </button>
         </div>
-      </div>
+      </div> */}
 
       <div className="rental-calendar-page__intro">
         <div className="rental-calendar-page__eyebrow">OPERATIONS</div>

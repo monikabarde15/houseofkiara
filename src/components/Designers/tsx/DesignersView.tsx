@@ -19,7 +19,11 @@ const emptyDesigner: Designer = {
   status: 'Active',
 };
 
-const DesignersView: React.FC = () => {
+interface DesignersViewProps {
+  onEditingChange?: (isEditing: boolean) => void;
+}
+
+const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
   const [designers, setDesigners] = useState<Designer[]>(initialDesigners);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -32,6 +36,11 @@ const DesignersView: React.FC = () => {
   };
 
   const designerToEdit = selectedDesigner ?? (isCreating ? emptyDesigner : null);
+  const isEditing = !!designerToEdit;
+
+  React.useEffect(() => {
+    onEditingChange?.(isEditing);
+  }, [isEditing, onEditingChange]);
 
   const handleSaveProfile = (updated: Designer) => {
     if (isCreating) {

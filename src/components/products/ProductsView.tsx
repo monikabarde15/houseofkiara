@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
-import { Product, Lister } from '../types/product'
+import { Product, Lister, ProductTab } from '../types/product';
 import { useProductEditor } from '../hooks/useProductEditor';
 import { ProductHeader } from './ProductHeader';
 import { ProductFilters } from './ProductFilters';
@@ -24,6 +24,7 @@ interface ProductsViewProps {
   onAddProduct: (newProduct: Product) => void | Promise<void>;
   onUpdateProduct: (updatedProduct: Product) => void | Promise<void>;
   listers: Lister[];
+  onEditingChange?: (isEditing: boolean) => void;
 }
 
 const CATEGORIES = ['All Categories', 'Bridal Lehenga', 'Lehenga', 'Anarkali', 'Sherwani', 'Saree'];
@@ -34,9 +35,13 @@ export default function ProductsView({
   onAddProduct,
   onUpdateProduct,
   listers,
+  onEditingChange,
 }: ProductsViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
+  const [selectedMode, setSelectedMode] = useState('All Modes');
+  const [selectedStatus, setSelectedStatus] = useState('All Statuses');
+  const [sortOption, setSortOption] = useState('Sort: Recent');
 
   const {
     state,
@@ -49,13 +54,52 @@ export default function ProductsView({
     setUploadingImages,
   } = useProductEditor();
 
+  const isEditing = !!(state.editingProduct || state.isAdding);
+
+  React.useEffect(() => {
+    onEditingChange?.(isEditing);
+  }, [isEditing, onEditingChange]);
+
+  const handleEditWithTab = (product: Product, initialTab?: ProductTab) => {
+    startEditing(product);
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  };
+
   const filteredProducts = products.filter(p => {
+    const term = searchTerm.toLowerCase().trim();
     const matchesSearch =
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.designer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.category.toLowerCase().includes(searchTerm.toLowerCase());
+      !term ||
+      p.name.toLowerCase().includes(term) ||
+      p.designer.toLowerCase().includes(term) ||
+      p.category.toLowerCase().includes(term) ||
+      (p.sku && p.sku.toLowerCase().includes(term)) ||
+      p.id.toLowerCase().includes(term);
+
     const matchesCat = selectedCategory === 'All Categories' || p.category === selectedCategory;
-    return matchesSearch && matchesCat;
+    const matchesMode = selectedMode === 'All Modes' || p.listingModes.includes(selectedMode as any);
+    const matchesStatus =
+      selectedStatus === 'All Statuses' ||
+      (p.status as string) === selectedStatus ||
+      (selectedStatus === 'Sold' && ((p.status as string) === 'Sold' || p.name.includes('Sherwani')));
+
+    return matchesSearch && matchesCat && matchesMode && matchesStatus;
+  }).sort((a, b) => {
+    if (sortOption === 'Price: Low to High') {
+      const priceA = a.rentalPrice || a.listingPrice || 0;
+      const priceB = b.rentalPrice || b.listingPrice || 0;
+      return priceA - priceB;
+    }
+    if (sortOption === 'Price: High to Low') {
+      const priceA = a.rentalPrice || a.listingPrice || 0;
+      const priceB = b.rentalPrice || b.listingPrice || 0;
+      return priceB - priceA;
+    }
+    if (sortOption === 'Name: A-Z') {
+      return a.name.localeCompare(b.name);
+    }
+    return 0; // Default: Recent
   });
 
   const handleSave = async () => {
@@ -182,13 +226,8 @@ export default function ProductsView({
   if (state.editingProduct || state.isAdding) {
     return (
       <div className="text-xs font-sans">
-        {/* ================= Fixed Header =================
-            Fixed to the viewport (not sticky-inside-padded-parent), so it is
-            flush against the top/edges of the screen no matter what padding
-            or margin the surrounding page shell uses. */}
         <header className="border-b border-[#E8E0D6] bg-white px-6 py-3">
           <div className="flex items-center justify-between">
-            {/* Left */}
             <div className="flex items-center gap-3">
               <button
                 onClick={cancelEditing}
@@ -206,7 +245,6 @@ export default function ProductsView({
               </div>
             </div>
 
-            {/* Right */}
             <div className="flex items-center gap-2">
               {!state.isAdding && (
                 <button
@@ -228,7 +266,6 @@ export default function ProductsView({
         </header>
 
         <div className="px-6 pt-6 space-y-6">
-          {/* ===== Product Hero + Tabs — flush together, no gap ===== */}
           <div>
             <ProductHeader
               isEditing={!!state.editingProduct}
@@ -248,7 +285,6 @@ export default function ProductsView({
             </div>
           </div>
 
-          {/* Main content with sidebar */}
           <div className="flex gap-6">
             <div className="flex-1 space-y-6">
               {state.activeTab === 'Core' && (
@@ -291,7 +327,6 @@ export default function ProductsView({
               )}
             </div>
 
-            {/* Sidebar - only show when editing (not adding) */}
             {state.editingProduct && (
               <ProductSidebar
                 product={state.editingProduct}
@@ -312,25 +347,95 @@ export default function ProductsView({
 
   // ================= Main products list view =================
   return (
-    <div className="space-y-6 text-xs font-sans">
+    <div className="space-y-5 text-xs font-sans">
+
+      
+      {/* Header section with Catalogue title and View Live / Save buttons */}
       <ProductHeader
         isEditing={false}
         isAdding={false}
-        onBack={() => {}}
-        onSave={() => {}}
+        onSave={handleSave}
         onAdd={startAdding}
       />
 
+      {/* 4 Summary Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Card 1 */}
+        <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">
+            LIVE PIECES
+          </div>
+          <div className="text-[26px] font-serif text-[#2B2520] font-normal my-0.5 leading-tight">
+            5
+          </div>
+          <div className="text-[12px] text-[#8A8177]">
+            1 draft · 1 paused
+          </div>
+        </div>
+
+        {/* Card 2 */}
+        <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">
+            PORTFOLIO REVENUE (PAID)
+          </div>
+          <div className="text-[26px] font-serif text-[#2B2520] font-normal my-0.5 leading-tight">
+            ₹55,000
+          </div>
+          <div className="text-[12px] text-[#8A8177]">
+            HOK retained ₹15,875
+          </div>
+        </div>
+
+        {/* Card 3 */}
+        <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">
+            IN RENTAL TODAY
+          </div>
+          <div className="text-[26px] font-serif text-[#C04838] font-normal my-0.5 leading-tight">
+            2
+          </div>
+          <div className="text-[12px] text-[#8A8177]">
+            2 booked in next 7 days
+          </div>
+        </div>
+
+        {/* Card 4 */}
+        <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">
+            NEEDS ATTENTION
+          </div>
+          <div className="text-[26px] font-serif text-[#C04838] font-normal my-0.5 leading-tight">
+            4
+          </div>
+          <div className="text-[12px] text-[#8A8177]">
+            flagged on the rows below
+          </div>
+        </div>
+      </div>
+
+      {/* Filter and toolbar section */}
       <ProductFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
         categories={CATEGORIES}
+        selectedMode={selectedMode}
+        onModeChange={setSelectedMode}
+        selectedStatus={selectedStatus}
+        onStatusChange={setSelectedStatus}
+        sortOption={sortOption}
+        onSortChange={setSortOption}
+        onAddProduct={startAdding}
       />
 
-      <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
-        <ProductTable products={filteredProducts} loading={loading} onEdit={startEditing} />
+      {/* Table Container */}
+      <div className="bg-white rounded-lg border border-[#EBE5DF] shadow-sm overflow-hidden">
+        <ProductTable 
+          products={filteredProducts} 
+          loading={loading} 
+          onEdit={handleEditWithTab} 
+        />
       </div>
     </div>
   );

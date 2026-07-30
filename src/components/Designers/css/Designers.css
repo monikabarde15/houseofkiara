@@ -17,7 +17,7 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--hok-text);
   background: var(--hok-cream);
-  padding: 28px 40px 60px;
+  /* padding: 28px 40px 60px; */
 }
 
 /* Header */

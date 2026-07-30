@@ -58,7 +58,7 @@ const Designers: React.FC<DesignersProps> = ({ designers: designerList, onEditDe
   return (
     <div className="designers-page">
       {/* Page header */}
-      <div className="designers-header">
+      {/* <div className="designers-header">
         <h1 className="designers-title">Designers</h1>
         <div className="designers-header-actions">
           <button className="btn btn-outline">
@@ -66,7 +66,7 @@ const Designers: React.FC<DesignersProps> = ({ designers: designerList, onEditDe
           </button>
           <button className="btn btn-primary">Save Changes</button>
         </div>
-      </div>
+      </div> */}
 
       <div className="designers-eyebrow">CATALOGUE</div>
       <h2 className="designers-heading">Designers</h2>

@@ -1,7 +1,7 @@
 // src/components/products/tabs/PayoutHistoryTab.tsx
 
 import React, { useMemo } from 'react';
-import { PayoutRecord } from '../../../types/product';
+import { PayoutRecord } from '../../types/product';
 
 interface PayoutHistoryTabProps {
   payoutHistory: PayoutRecord[];

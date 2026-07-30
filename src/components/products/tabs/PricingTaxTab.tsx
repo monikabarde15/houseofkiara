@@ -1,7 +1,7 @@
 // src/components/products/tabs/PricingTaxTab.tsx
 
 import React from 'react';
-import { Product } from '../../../types/product';
+import { Product } from '../../types/product';
 
 interface PricingTaxTabProps {
   formData: Partial<Product>;

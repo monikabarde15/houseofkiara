@@ -15,7 +15,7 @@ export { RelatedProductsTab } from './tabs/RelatedProductsTab';
 export { AvailabilityCalendarTab } from './tabs/AvailabilityCalendarTab';
 
 // Hooks
-export { useProductEditor } from '../../hooks/useProductEditor';
+export { useProductEditor } from '../hooks/useProductEditor';
 
 // Types
-export * from '../../types/product';
+export * from '../types/product';
