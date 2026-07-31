@@ -48,3 +48,44 @@ export const EVENT_STYLES: Record<EventType, { label: string; color: string }> =
   'delivery-followup': { label: 'Delivery Follow-up', color: '#3B5A8A' },
   'internal-task': { label: 'Internal Task', color: '#7A4331' },
 };
+//Agenda
+export type AgendaActionType =
+  | 'prep-dispatch' | 'dispatched' | 'rental-starts' | 'return-due' | 'cleaning';
+
+export interface AgendaEntryDetail {
+  title: string;
+  subtitle: string;
+  dueDate: string;
+  relatedOrderId: string;
+  relatedCustomer: string;
+}
+
+export interface AgendaEntry {
+  id: string;
+  date: string;
+  isoDate: string;
+  type: AgendaActionType;
+  orderId: string;
+  customer: string;
+  product: string;
+  note: string;
+  done?: boolean;
+  savedNote?: string;
+  detail: AgendaEntryDetail;
+}
+// Gantt
+export type GanttSegmentType = 'dispatch' | 'rental' | 'return' | 'deposit';
+
+export interface GanttSegment {
+  /** Day of month, 1-31 */
+  day: number;
+  type: GanttSegmentType;
+}
+
+export interface GanttOrderRow {
+  id: string;
+  orderId: string;
+  customer: string;
+  product: string;
+  segments: GanttSegment[];
+}

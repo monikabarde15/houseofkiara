@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, ExternalLink } from 'lucide-react';
 
 interface ProductHeaderProps {
   isEditing: boolean;
@@ -147,11 +147,11 @@ export function ProductHeader({
             >
               {isSaving ? 'Saving...' : 'Save Changes'}
             </button>
-          </div>
-        </div>
+          </div >
+        </div >
 
         {/* Rental Status */}
-        <div className="rounded-md border border-[#E8DDD0] bg-[#FFF9F2] px-4 py-3">
+        < div className="rounded-md border border-[#E8DDD0] bg-[#FFF9F2] px-4 py-3" >
           <div className="flex items-start gap-3">
             <div className="mt-[2px] flex h-5 w-5 items-center justify-center rounded-full bg-[#F2D8B8] text-[10px]">
               ⚠
@@ -181,29 +181,23 @@ export function ProductHeader({
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </div >
+      </div >
     );
   }
 
   // ================= Main products list view =================
   return (
-    <div className="flex justify-between items-center">
-      <div>
-        <h2 className="text-2xl font-serif text-stone-900 font-medium">Products</h2>
-        <p className="text-xs text-stone-500 mt-1">
-          Complete inventory manager. Edit any row to open the full product editor with availability calendar.
-        </p>
-      </div>
-      {showAddButton && (
-        <button
-          onClick={onAdd}
-          className="flex items-center gap-1.5 px-4 py-2 bg-[#1e1412] hover:bg-[#2c1d1a] text-white text-xs font-semibold rounded cursor-pointer transition"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Add Product</span>
-        </button>
-      )}
+    <div className="space-y-1 pt-1">
+      <span className="text-[11px] font-medium tracking-[0.18em] text-[#B39B6B] uppercase block mb-0.5">
+        CATALOGUE
+      </span>
+      <h1 className="text-3xl sm:text-[34px] font-serif text-[#2B2520] font-normal tracking-tight leading-tight">
+        Products
+      </h1>
+      <p className="text-xs sm:text-[13px] text-[#8C847A] mt-1 max-w-2xl leading-relaxed">
+        Full catalogue across Rental, Preloved and Buy New. Click any row to open the full product editor with availability calendar. Use Cal button to jump straight to the calendar.
+      </p>
     </div>
   );
 }

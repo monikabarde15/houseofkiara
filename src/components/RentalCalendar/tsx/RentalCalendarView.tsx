@@ -6,6 +6,8 @@ import Sidebar from './Sidebar';
 import { CalendarEvent, CalendarViewMode, DispatchCard } from '../types';
 import { mockDispatches, mockEvents } from '../mockdata';
 import '../css/RentalCalendarView.css';
+import AgendaView from './agenda/AgendaView';
+import GanttView from './gantt/GanttView';
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' });
 
@@ -37,7 +39,7 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
 
   return (
     <div className="rental-calendar-page">
-      <div className="rental-calendar-page__topbar">
+      {/* <div className="rental-calendar-page__topbar">
         <h2 className="rental-calendar-page__topbar-title">Rental Calendar</h2>
         <div className="rental-calendar-page__topbar-actions">
           <button type="button" className="rental-calendar-page__btn-outline" onClick={onViewLiveSite}>
@@ -47,7 +49,7 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
             Save Changes
           </button>
         </div>
-      </div>
+      </div> */}
 
       <div className="rental-calendar-page__intro">
         <div className="rental-calendar-page__eyebrow">OPERATIONS</div>
@@ -72,9 +74,16 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
             onExport={() => {}}
           />
 
-          <CalendarGrid month={month} events={events} todayISO={todayISO} />
+          {viewMode === 'month' && (
+            <>
+              <CalendarGrid month={month} events={events} todayISO={todayISO} />
+              <CalendarLegend />
+            </>
+          )}
 
-          <CalendarLegend />
+          {viewMode === 'agenda' && <AgendaView />}
+
+          {viewMode === 'gantt' && <GanttView month={month} />}
         </div>
 
         <Sidebar monthLabel={sidebarMonthLabel} dispatches={dispatches} />

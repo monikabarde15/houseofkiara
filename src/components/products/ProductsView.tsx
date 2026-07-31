@@ -17,12 +17,15 @@ import { PayoutHistoryTab } from './tabs/PayoutHistoryTab';
 import { ActivityLogTab } from './tabs/ActivityLogTab';
 import { ProductSidebar } from './ProductSidebar';
 
+type ProductTab = 'Core' | 'Pricing' | 'Images' | 'Related Products' | 'SEO' | 'Calendar' | 'Payout History' | 'Activity Log';
+
 interface ProductsViewProps {
   products: Product[];
   loading?: boolean;
   onAddProduct: (newProduct: Product) => Promise<Product> | Product | void;
   onUpdateProduct: (updatedProduct: Product) => Promise<Product> | Product | void;
   listers: Lister[];
+  onEditingChange?: (isEditing: boolean) => void;
 }
 
 const CATEGORIES = ['All Categories', 'Bridal Lehenga', 'Lehenga', 'Anarkali', 'Sherwani', 'Saree'];
@@ -33,6 +36,7 @@ export default function ProductsView({
   onAddProduct,
   onUpdateProduct,
   listers,
+  onEditingChange,
 }: ProductsViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
@@ -42,6 +46,9 @@ export default function ProductsView({
 
   const [isFinalSaving, setIsFinalSaving] = useState(false);
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [selectedMode, setSelectedMode] = useState('All Modes');
+  const [selectedStatus, setSelectedStatus] = useState('All Statuses');
+  const [sortOption, setSortOption] = useState('Sort: Recent');
 
   const {
     state,
@@ -55,7 +62,7 @@ export default function ProductsView({
     setUploadingImages,
   } = useProductEditor();
 
-  // ✅ AUTO-CLEAR TOAST (But we will refresh before it auto-cleans)
+  // ✅ AUTO-CLEAR TOAST
   useEffect(() => {
     if (toast) {
       const timer = setTimeout(() => {
@@ -101,16 +108,53 @@ export default function ProductsView({
     }
   };
 
+  const isEditing = !!(state.editingProduct || state.isAdding);
+  useEffect(() => {
+    onEditingChange?.(isEditing);
+  }, [isEditing, onEditingChange]);
+
   const filteredProducts = products.filter((p) => {
+    const term = searchTerm.toLowerCase().trim();
     const matchesSearch =
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (p.designer && p.designer.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (p.category && p.category.toLowerCase().includes(searchTerm.toLowerCase()));
+      !term ||
+      p.name.toLowerCase().includes(term) ||
+      p.designer.toLowerCase().includes(term) ||
+      p.category.toLowerCase().includes(term) ||
+      (p.sku && p.sku.toLowerCase().includes(term)) ||
+      p.id.toLowerCase().includes(term);
+
     const matchesCat = selectedCategory === 'All Categories' || p.category === selectedCategory;
-    return matchesSearch && matchesCat;
+    const matchesMode = selectedMode === 'All Modes' || p.listingModes.includes(selectedMode as any);
+    const matchesStatus =
+      selectedStatus === 'All Statuses' ||
+      (p.status as string) === selectedStatus ||
+      (selectedStatus === 'Sold' && ((p.status as string) === 'Sold' || p.name.includes('Sherwani')));
+
+    return matchesSearch && matchesCat && matchesMode && matchesStatus;
+  }).sort((a, b) => {
+    if (sortOption === 'Price: Low to High') {
+      const priceA = a.rentalPrice || a.listingPrice || 0;
+      const priceB = b.rentalPrice || b.listingPrice || 0;
+      return priceA - priceB;
+    }
+    if (sortOption === 'Price: High to Low') {
+      const priceA = a.rentalPrice || a.listingPrice || 0;
+      const priceB = b.rentalPrice || b.listingPrice || 0;
+      return priceB - priceA;
+    }
+    if (sortOption === 'Name: A-Z') {
+      return a.name.localeCompare(b.name);
+    }
+    return 0; // Default: Recent
   });
 
-  // ✅ FIXED: handleSave now reloads properly after 1.5 seconds
+  const handleEditWithTab = (product: Product, initialTab?: ProductTab) => {
+    startEditing(product);
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  };
+
   const handleSave = async () => {
     if (isSaving || isFinalSaving) {
       console.log('⏳ Save already in progress...');
@@ -296,7 +340,6 @@ export default function ProductsView({
       setSaveSuccess(true);
       setToast({ type: 'success', message: '✅ Product saved successfully!' });
 
-      // ✅ FIX: 1500ms ke baad Page Refresh
       setTimeout(() => {
         window.location.reload();
       }, 1500);
@@ -310,7 +353,6 @@ export default function ProductsView({
     }
   };
 
-  // ✅ FIXED: DUPLICATE (Call onAddProduct directly, no handleSave)
   const handleDuplicate = async () => {
     if (!formData.productId && !state.editingProduct) {
       alert("No product to duplicate!");
@@ -362,7 +404,6 @@ export default function ProductsView({
     }
   };
 
-  // ✅ FIXED: ARCHIVE (Call onUpdateProduct directly with status update, NO handleSave)
   const handleArchive = async () => {
     if (!formData.productId && !state.editingProduct) {
       alert("No product to archive!");
@@ -376,13 +417,11 @@ export default function ProductsView({
     setToast(null);
 
     try {
-      // Simply update status locally
       const updatedProduct = {
         ...state.editingProduct,
         status: 'Archived'
       } as Product;
 
-      // Call API directly with onUpdateProduct
       const result = await onUpdateProduct(updatedProduct);
       console.log('✅ Product archived:', result);
 
@@ -399,6 +438,7 @@ export default function ProductsView({
     }
   };
 
+  // ✅ RENDER: Editing Mode
   if (state.editingProduct || state.isAdding) {
     return (
       <div className="text-xs font-sans relative">
@@ -412,8 +452,9 @@ export default function ProductsView({
           </div>
         )}
 
-        <header className="fixed top-0 left-0 right-0 z-40 border-b border-[#E8E0D6] bg-white px-6 py-3">
-          <div className="flex items-center justify-between">
+        {/* ✅ FIXED: Top Header Bar Layout */}
+        <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-[#E8E0D6]">
+          <div className="flex items-center justify-between px-6 py-3">
             <div className="flex items-center gap-3">
               <button onClick={cancelEditing} className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E6DED3] bg-white px-3 text-[12px] font-medium text-[#6F675D] hover:bg-[#FAF8F5]">
                 <ArrowLeft className="h-3.5 w-3.5" /> Back
@@ -424,7 +465,9 @@ export default function ProductsView({
                 <span className="font-semibold text-[#2C2926]">{formData.name || state.editingProduct?.name || 'New Product'}</span>
               </div>
             </div>
+
             <div className="flex items-center gap-2">
+              {/* ✅ Hide view live button for New Product */}
               {!state.isAdding && (
                 <button onClick={() => window.open(`/product/${state.editingProduct?.urlSlug}`, '_blank')} className="inline-flex h-9 items-center gap-2 rounded-md border border-[#E5DDD3] bg-white px-4 text-[13px] font-medium text-[#38332D] hover:bg-[#FAF8F5]">
                   <ExternalLink className="h-4 w-4" /> View Live Site
@@ -439,10 +482,12 @@ export default function ProductsView({
           </div>
         </header>
 
+        {/* Add spacing so content doesn't hide under fixed header */}
         <div className="h-[57px]" />
 
         <div className="px-6 pt-6 space-y-6">
           <div>
+            {/* ✅ FIXED: ProductHeader se Rental Status Card hata diya, ab wo undefined nahi aayega */}
             <ProductHeader
               isEditing={!!state.editingProduct}
               isAdding={state.isAdding}
@@ -455,15 +500,12 @@ export default function ProductsView({
               status={state.editingProduct?.status || formData.status}
               listerName={state.editingProduct?.listerName || listers.find((l) => l.id === formData.listerId)?.name}
               rentedCount={state.editingProduct?.timesRented || 0}
-
-              // ✅ RENTAL STATUS DATA (Backend se direct connect hoga)
               rentalStatus={state.editingProduct?.rentalStatus || 'Not Rented'}
               currentRenterName={state.editingProduct?.currentRenterName}
               currentOrderId={state.editingProduct?.currentOrderId}
               rentUntil={state.editingProduct?.rentUntil}
               nextFreeDate={state.editingProduct?.nextFreeDate}
               earnedAmount={state.editingProduct?.earnedAmount}
-
               isSaving={isFinalSaving}
               onSave={handleSave}
               onAdd={startAdding}
@@ -507,24 +549,79 @@ export default function ProductsView({
               {state.activeTab === 'Activity Log' && state.editingProduct && (<ActivityLogTab activityLog={state.activityLog} loading={state.loading} />)}
             </div>
 
-            {state.editingProduct && state.editingProduct._id && (
-              <ProductSidebar product={state.editingProduct} onViewLive={() => window.open(`/product/${state.editingProduct?.urlSlug}`, '_blank')} onArchive={handleArchive} />
-            )}
+            {
+              state.editingProduct && state.editingProduct._id && (
+                <ProductSidebar
+                  product={state.editingProduct}
+                  onViewLive={() => window.open(`/product/${state.editingProduct?.urlSlug}`, '_blank')}
+                  onArchive={() => {
+                    if (confirm('Archive this product?')) {
+                      updateFormField('status', 'Archived');
+                      handleSave();
+                    }
+                  }}
+                />
+              )
+            }
           </div>
         </div>
       </div>
     );
   }
 
+  // ✅ RENDER: List Mode
   return (
     <div className="space-y-6 text-xs font-sans">
       <ProductHeader isEditing={false} isAdding={false} onBack={() => { }} onSave={() => { }} onAdd={startAdding} />
-      <ProductFilters searchTerm={searchTerm} onSearchChange={setSearchTerm} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} categories={CATEGORIES} />
+
+      <ProductFilters
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        categories={CATEGORIES}
+        selectedMode={selectedMode}
+        onModeChange={setSelectedMode}
+        selectedStatus={selectedStatus}
+        onStatusChange={setSelectedStatus}
+        sortOption={sortOption}
+        onSortChange={setSortOption}
+        onAddProduct={startAdding}
+      />
+
       <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
-        <ProductTable products={filteredProducts} loading={loading} onEdit={(product) => {
-          const idToFetch = product.productId || product._id || product.id || '';
-          if (idToFetch) { console.log(`🚀 Fetching product with ID: ${idToFetch}`); fetchProduct(idToFetch); } else { alert('Product ID not found!'); }
-        }} />
+        <div className="space-y-5 text-xs font-sans p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+              <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">LIVE PIECES</div>
+              <div className="text-[26px] font-serif text-[#2B2520] font-normal my-0.5 leading-tight">5</div>
+              <div className="text-[12px] text-[#8A8177]">1 draft · 1 paused</div>
+            </div>
+            <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+              <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">PORTFOLIO REVENUE (PAID)</div>
+              <div className="text-[26px] font-serif text-[#2B2520] font-normal my-0.5 leading-tight">₹55,000</div>
+              <div className="text-[12px] text-[#8A8177]">HOK retained ₹15,875</div>
+            </div>
+            <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+              <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">IN RENTAL TODAY</div>
+              <div className="text-[26px] font-serif text-[#C04838] font-normal my-0.5 leading-tight">2</div>
+              <div className="text-[12px] text-[#8A8177]">2 booked in next 7 days</div>
+            </div>
+            <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+              <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">NEEDS ATTENTION</div>
+              <div className="text-[26px] font-serif text-[#C04838] font-normal my-0.5 leading-tight">4</div>
+              <div className="text-[12px] text-[#8A8177]">flagged on the rows below</div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-[#EBE5DF] shadow-sm overflow-hidden">
+            <ProductTable
+              products={filteredProducts}
+              loading={loading}
+              onEdit={handleEditWithTab}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

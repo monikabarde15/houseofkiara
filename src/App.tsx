@@ -14,7 +14,7 @@ import PayoutsView from './components/payouts/PayoutsView';
 import CustomersView from './components/CustomersView';
 // import ProductsView from './components/ProductsView';
 import ProductsView from './components/products/ProductsView';
-import DesignersView from './components/DesignersView';
+import DesignersView from './components/Designers/tsx';
 import ListersView from './components/ListersView';
 import OccasionsView from './components/OccasionsView';
 import ReportsView from './components/ReportsView';
@@ -39,6 +39,7 @@ import {
 } from './data';
 
 import { Customer, Product, Order, Offer, Designer, Lister, ListerSubmission, PromoCode, EmailTemplate, SiteSettings, HomepageEditor } from './types';
+
 import * as offerApi from './services/offerApi';
 import * as authApi from './services/authApi';
 import * as productApi from './services/productApi';
@@ -48,13 +49,12 @@ import AdminAuth from './components/AdminAuth';
 import { ArrowLeft, ExternalLink, Menu, Save, X } from 'lucide-react';
 
 export default function App() {
-  const [currentView, setView] = useState<string>('dashboard');
-  // const [productHeader, setProductHeader] = useState<{
-  //   editing: boolean;
-  //   productName?: string;
-  // }>({
-  //   editing: false,
-  // });
+  const [currentView, setCurrentView] = useState<string>('dashboard');
+  const [isSectionEditing, setIsSectionEditing] = useState<boolean>(false);
+  const setView = (view: string) => {
+    setIsSectionEditing(false);
+    setCurrentView(view);
+  };
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [adminSession, setAdminSession] = useState<any>(() => authApi.getSession());
@@ -315,20 +315,13 @@ export default function App() {
           onAddProduct={handleAddProduct}
           onUpdateProduct={handleUpdateProduct}
           listers={listers}
-          // setProductHeader={setProductHeader}
-          // onRegisterBackHandler={setProductBackHandler}
+          onEditingChange={setIsSectionEditing}
         />
       );
     }
 
     if (currentView === 'designers') {
-      return (
-        <DesignersView 
-          designers={designers}
-          onAddDesigner={handleAddDesigner}
-          onUpdateDesigner={handleUpdateDesigner}
-        />
-      );
+      return <DesignersView onEditingChange={setIsSectionEditing} />;
     }
 
     if (currentView === 'listers') {
@@ -492,80 +485,36 @@ export default function App() {
           </div>
         </header>
 
-         {/* <header className="sticky top-0 z-40 hidden h-[62px] shrink-0 items-center justify-between border-b border-[#E8E0D6] bg-white px-6 lg:flex">
-
-
-          <div className="flex items-center gap-3">
-
-            {currentView === "products" && productHeader.editing ? (
-              <>
-
-                <button
-                  onClick={() => {
-                    productBackHandler?.();
-                    setProductHeader({
-                      editing: false,
-                    });
-                  }}
-                  className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E6DED3] bg-white px-3 text-[12px] font-medium text-[#6F675D] hover:bg-[#FAF8F5]"
-                >
-                  <ArrowLeft className="h-3.5 w-3.5" />
-                  Back
-                </button>
-
-                <div className="flex items-center gap-2 text-[13px]">
-
-                  <span className="text-[#9B9287]">
-                    Products
-                  </span>
-
-                  <span className="text-[#C3BAAF]">
-                    /
-                  </span>
-
-                  <span className="font-semibold text-[#2C2926]">
-                    {productHeader.productName}
-                  </span>
-
-                </div>
-
-              </>
-            ) : (
-
-              <span className="text-[16px] font-semibold text-[#2C2926] capitalize">
-                {currentView === "products"
-                  ? "Products"
-                  : currentView.replace(/-/g, " ")}
+        {/* Desktop Sticky Header */}
+        {!isSectionEditing && (
+          <header className="sticky top-0 z-40 hidden h-[52px] shrink-0 items-center justify-between border-b border-[#E8E0D6] bg-white px-6 lg:flex">
+            <div className="flex items-center gap-3">
+              <span className="text-[14px] font-semibold text-[#2C2926] font-sans capitalize">
+                {currentView === "products" ? "Products" : currentView.replace(/-/g, " ")}
               </span>
+            </div>
 
-            )}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => window.open('/', '_blank')}
+                className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E5DDD3] bg-white px-3.5 text-[12px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition cursor-pointer shadow-2xs"
+              >
+                <ExternalLink className="h-3.5 w-3.5 text-[#6F675D]" />
+                <span>View Live Site</span>
+              </button>
 
-          </div>
-
-
-          <div className="flex items-center gap-2">
-
-            <button className="inline-flex h-9 items-center gap-2 rounded-md border border-[#E5DDD3] bg-white px-4 text-[13px] font-medium text-[#38332D] transition hover:bg-[#FAF8F5]">
-
-              <ExternalLink className="h-4 w-4" />
-
-              View Live Site
-
-            </button>
-
-            <button className="inline-flex h-9 items-center rounded-md bg-[#C7A55C] px-5 text-[13px] font-semibold text-[#2B2218] transition hover:bg-[#BB9A50]">
-
-              Save Changes
-
-            </button>
-
-          </div>
-
-        </header>  */}
+              <button
+                className="inline-flex h-8 items-center rounded-md bg-[#C7A55C] hover:bg-[#B9974B] px-4 text-[12px] font-semibold text-[#2A2118] transition cursor-pointer shadow-2xs"
+              >
+                Save Changes
+              </button>
+            </div>
+          </header>
+        )}
 
         {/* Content Box */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-[#f8f6f2]">
-          <div className="w-full space-y-6">
+        <main className="flex-1 overflow-y-auto bg-[#F8F6F2]">
+          <div className={`w-full ${isSectionEditing ? 'p-0' : 'p-6'}`}>
             {renderContent()}
           </div>
         </main>

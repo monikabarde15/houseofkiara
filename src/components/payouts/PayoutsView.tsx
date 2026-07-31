@@ -4,7 +4,7 @@ import PayoutHeader from "./components/PayoutHeader";
 import PayoutSummaryCards from "./components/PayoutSummaryCards";
 import PayoutIntegrityBanner from "./components/PayoutIntegrityBanner";
 import PayoutTabs from "./components/PayoutTabs";
-import PayoutPageHeader from "./components/PayoutPageHeader";
+// import PayoutPageHeader from "./components/PayoutPageHeader";
 import PaymentQueueTab from "./tabs/PaymentQueueTab";
 import AllPayoutsTab from "./tabs/AllPayoutsTab";
 import ByListerTab from "./tabs/ByListerTab";
@@ -46,20 +46,12 @@ export default function PayoutsView() {
 
   return (
     <div className="min-h-screen bg-[#F8F5F1]">
+    {/* <PayoutPageHeader /> */}
 
-    {/* Fixed to the viewport — flush against the top/edges of the screen
-        no matter what padding or margin the surrounding page shell uses.
-        This removes the dependency on finding/editing that parent file. */}
-    <PayoutPageHeader />
-
-    {/* Spacer matching PayoutPageHeader's h-[60px], so content below
-        doesn't get hidden underneath the fixed bar. */}
-    <div className="h-[60px]" />
-
-    <div className="mx-auto max-w-[1600px] px-7 pb-6">
+    <div className="mx-auto max-w-[1600px] px-0 py-0">
 
         {/* Header */}
-        <div className="pt-6">
+        <div className="pt-0">
           <PayoutHeader />
         </div>
 

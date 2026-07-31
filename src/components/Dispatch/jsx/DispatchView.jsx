@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import DispatchHeader from './DispatchHeader';
+// import DispatchHeader from './DispatchHeader';
 import { TodayTab, TomorrowTab, ThisWeekTab } from '../tabs';
 import './../css/DispatchView.css';
 
@@ -21,7 +21,7 @@ export default function DispatchView(props) {
 
   return (
     <div className="dispatch-page">
-      <DispatchHeader />
+      {/* <DispatchHeader /> */}
 
       <div className="dispatch-body">
         <span className="dispatch-eyebrow">OPERATIONS</span>

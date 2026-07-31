@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import { Image as ImageIcon } from 'lucide-react';
-import { Product } from '../../../types/product';
+import { Product } from '../../types/product';
 
 interface SEOTabProps {
   formData: Partial<Product>;

@@ -31,9 +31,17 @@
 }
 
 .dispatch-card {
-  display: block;
+  /* Explicit reset — prevents any global button flex/appearance rules from leaking in */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
   width: 100%;
   text-align: left;
+  font: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+
   background: #FBFAF6;
   border: 1px solid #EBE5D8;
   border-radius: 8px;
@@ -52,6 +60,7 @@
 
 .dispatch-card__date {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 4px;
   font-size: 10px;
@@ -59,6 +68,7 @@
   letter-spacing: 0.03em;
   color: #A69C8B;
   margin-bottom: 4px;
+  white-space: nowrap;
 }
 
 .dispatch-card--today .dispatch-card__date {
@@ -67,16 +77,22 @@
 
 .dispatch-card__star {
   color: #C24A2E;
+  flex-shrink: 0;
 }
 
 .dispatch-card__title {
+  display: block;
+  width: 100%;
   font-size: 13px;
   font-weight: 600;
   color: #2B2118;
   margin-bottom: 3px;
+  line-height: 1.35;
 }
 
 .dispatch-card__subtitle {
+  display: block;
+  width: 100%;
   font-size: 12px;
   color: #6B6254;
   line-height: 1.4;
@@ -84,6 +100,8 @@
 }
 
 .dispatch-card__order-id {
+  display: block;
+  width: 100%;
   font-size: 11px;
   color: #A69C8B;
 }
