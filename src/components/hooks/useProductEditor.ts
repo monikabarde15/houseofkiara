@@ -27,6 +27,34 @@ export function useProductEditor() {
 
   const [formData, setFormData] = useState<Partial<Product>>({});
 
+  // ✅ Helper function to ensure listingModes is uppercase
+  const normalizeListingModes = (modes?: string[]): string[] => {
+    if (!modes || !Array.isArray(modes) || modes.length === 0) {
+      return ['RENTAL'];
+    }
+    return modes.map((mode: string) => mode.toUpperCase()).filter((mode: string) => 
+      ['RENTAL', 'PRELOVED', 'BUY NEW'].includes(mode)
+    );
+  };
+
+  // ✅ Helper function to clean product data
+  const cleanProductData = (product: Product): Product => {
+    const cleanProduct = { ...product };
+    
+    // ✅ Remove any forbidden fields
+    const forbiddenFields = ['id', 'listerName', '_id', '__v', 'createdAt', 'updatedAt', 'listingModels', 'listingMode'];
+    forbiddenFields.forEach(field => {
+      if ((cleanProduct as any)[field] !== undefined) {
+        delete (cleanProduct as any)[field];
+      }
+    });
+
+    // ✅ Ensure listingModes is uppercase
+    cleanProduct.listingModes = normalizeListingModes(cleanProduct.listingModes);
+
+    return cleanProduct;
+  };
+
   const loadProductSections = useCallback(async (productId: string) => {
     setState(prev => ({ ...prev, loading: true }));
     try {
@@ -55,19 +83,26 @@ export function useProductEditor() {
     }
   }, []);
 
+  // ✅ FIXED: startEditing with cleaned data (Now includes Rental Status)
   const startEditing = useCallback((product: Product) => {
+    // Clean the product data
+    const cleanProduct = cleanProductData(product);
+    
     setState(prev => ({
       ...prev,
-      editingProduct: product,
+      editingProduct: cleanProduct,
       isAdding: false,
       activeTab: 'Core',
       payoutHistory: [],
       activityLog: [],
     }));
-    setFormData(product);
-    loadProductSections(product.id);
+    setFormData(cleanProduct);
+    
+    // ✅ Load additional sections (Calendar, Payout, Activity) from separate APIs
+    loadProductSections(product.id || product.productId || '');
   }, [loadProductSections]);
 
+  // ✅ FIXED: startAdding with UPPERCASE listingModes
   const startAdding = useCallback(() => {
     const defaultProduct: Partial<Product> = {
       name: '',
@@ -78,7 +113,7 @@ export function useProductEditor() {
       material: 'Silk Organza',
       embellishments: 'Zardozi',
       sizes: ['S', 'M'],
-      listingModes: ['Rental'],
+      listingModes: ['RENTAL'], // ✅ FIXED - UPPERCASE!
       condition: 'Excellent',
       status: 'Review',
       rentalPrice: 5000,
@@ -109,8 +144,15 @@ export function useProductEditor() {
     setState(prev => ({ ...prev, activeTab: tab }));
   }, []);
 
+  // ✅ FIXED: updateFormField with listingModes normalization
   const updateFormField = useCallback(<K extends keyof Product>(field: K, value: Product[K]) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    // If field is listingModes, normalize it
+    if (field === 'listingModes' && Array.isArray(value)) {
+      const normalized = value.map((mode: string) => mode.toUpperCase());
+      setFormData(prev => ({ ...prev, [field]: normalized }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
   }, []);
 
   const cancelEditing = useCallback(() => {
@@ -127,6 +169,32 @@ export function useProductEditor() {
     setState(prev => ({ ...prev, uploadingImages: loading }));
   }, []);
 
+  // ✅ New helper to get clean form data
+  const getCleanFormData = useCallback((): Partial<Product> => {
+    const cleanData = { ...formData };
+    
+    // Remove forbidden fields
+    const forbiddenFields = ['id', 'listerName', '_id', '__v', 'createdAt', 'updatedAt', 'listingModels', 'listingMode'];
+    forbiddenFields.forEach(field => {
+      if ((cleanData as any)[field] !== undefined) {
+        delete (cleanData as any)[field];
+      }
+    });
+
+    // Normalize listingModes
+    if (cleanData.listingModes) {
+      cleanData.listingModes = normalizeListingModes(cleanData.listingModes as string[]);
+    }
+
+    return cleanData;
+  }, [formData]);
+
+  // ✅ NEW: resetForm function (Taaki CoreDetailsTab isko call kar sake)
+  const resetForm = useCallback(() => {
+    setFormData({});
+    console.log("🔄 Form reset for new product.");
+  }, []);
+
   return {
     state,
     formData,
@@ -138,5 +206,8 @@ export function useProductEditor() {
     cancelEditing,
     loadProductSections,
     setUploadingImages,
+    getCleanFormData,
+    normalizeListingModes,
+    resetForm, // ✅ EXPORT KAR DIYA
   };
 }

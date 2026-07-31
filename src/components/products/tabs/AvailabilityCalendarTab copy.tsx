@@ -1,8 +1,8 @@
 // src/components/products/tabs/AvailabilityCalendarTab.tsx
 
 import React, { useMemo, useState } from 'react';
-import { Product } from '../../types/product';
-import { CalendarDays, Plus } from 'lucide-react';
+import { Product } from '../../../types/product';
+import { CalendarDays } from 'lucide-react';
 import * as productSectionsApi from '../../../services/productSectionsApi';
 
 interface AvailabilityCalendarTabProps {
@@ -50,7 +50,7 @@ function isSameDay(a: Date, b: Date) {
   return toISODate(a) === toISODate(b);
 }
 
-type DayType = 'muted' | 'available' | 'buffer' | 'rental' | 'blocked' | 'disabled';
+type DayType = 'muted' | 'available' | 'buffer' | 'rental' | 'blocked';
 
 interface DayInfo {
   date: Date;
@@ -66,16 +66,13 @@ export function AvailabilityCalendarTab({
   onOpenGlobalCalendar,
   onViewOrder,
 }: AvailabilityCalendarTabProps) {
-
   const today = useMemo(() => new Date(), []);
 
   const initialAnchor = useMemo(() => {
-    if (editingProduct) {
-      const firstBooking = editingProduct.bookingHistory?.[0];
-      if (firstBooking?.startDate) {
-        const d = new Date(firstBooking.startDate);
-        if (!isNaN(d.getTime())) return d;
-      }
+    const firstBooking = editingProduct?.bookingHistory?.[0] as any;
+    if (firstBooking?.startDate) {
+      const d = new Date(firstBooking.startDate);
+      if (!isNaN(d.getTime())) return d;
     }
     return today;
   }, [editingProduct, today]);
@@ -95,18 +92,19 @@ export function AvailabilityCalendarTab({
   const [splitNote, setSplitNote] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // ✅ Product available or not
-  const hasProduct = !!editingProduct;
+  if (!editingProduct) {
+    return (
+      <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm">
+        <p className="text-stone-400 text-center py-8">No product selected</p>
+      </div>
+    );
+  }
 
-  // ✅ Safe defaults when no product
-  const preBufferDays = hasProduct ? (editingProduct.preRentalBufferDays ?? DEFAULT_PRE_BUFFER_DAYS) : DEFAULT_PRE_BUFFER_DAYS;
-  const postBufferDays = hasProduct ? (editingProduct.postRentalBufferDays ?? DEFAULT_POST_BUFFER_DAYS) : DEFAULT_POST_BUFFER_DAYS;
-  const condition = hasProduct ? (editingProduct.condition || '—') : '—';
+  const preBufferDays = (editingProduct as any).preRentalBufferDays ?? DEFAULT_PRE_BUFFER_DAYS;
+  const postBufferDays = (editingProduct as any).postRentalBufferDays ?? DEFAULT_POST_BUFFER_DAYS;
 
-  const bookingHistory = hasProduct ? (editingProduct.bookingHistory || []) : [];
-  const blockedDates = hasProduct ? (editingProduct.blockedDates || []) : [];
-
-  const rentedCount = hasProduct ? (editingProduct.timesRented ?? bookingHistory.length) : 0;
+  const bookingHistory = (editingProduct.bookingHistory || []) as any[];
+  const blockedDates = editingProduct.blockedDates || [];
 
   const activeBookings = bookingHistory
     .filter(h => h.startDate && h.endDate)
@@ -122,7 +120,7 @@ export function AvailabilityCalendarTab({
   // --- Calendar grid ---
   const firstOfMonth = new Date(viewYear, viewMonth, 1);
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-  const startOffset = firstOfMonth.getDay();
+  const startOffset = firstOfMonth.getDay(); // 0 = Sunday
 
   const days: DayInfo[] = [];
   for (let i = 0; i < startOffset; i++) {
@@ -133,33 +131,32 @@ export function AvailabilityCalendarTab({
     let type: DayType = 'available';
     let label: string | undefined;
 
-    // ✅ If no product, all dates are disabled
-    if (!hasProduct) {
-      type = 'disabled';
+    // manual blocks
+    const manualBlock = blockedDates.find(b => date >= new Date(b.from) && date <= new Date(b.to));
+
+    // active rentals
+    const rental = activeBookings.find(b => date >= b.start && date <= b.end);
+
+    // buffer zones around each booking
+    const inBuffer = activeBookings.some(b => {
+      const preStart = addDays(b.start, -preBufferDays);
+      const preEnd = addDays(b.start, -1);
+      const postStart = addDays(b.end, 1);
+      const postEnd = addDays(b.end, postBufferDays);
+      return (date >= preStart && date <= preEnd) || (date >= postStart && date <= postEnd);
+    });
+
+    if (date < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+      type = 'muted';
+    } else if (manualBlock) {
+      type = 'blocked';
+    } else if (rental) {
+      type = 'rental';
+      label = initialsFromName(rental.customerName || '');
+    } else if (inBuffer) {
+      type = 'buffer';
     } else {
-      const manualBlock = blockedDates.find(b => date >= new Date(b.from) && date <= new Date(b.to));
-      const rental = activeBookings.find(b => date >= b.start && date <= b.end);
-
-      const inBuffer = activeBookings.some(b => {
-        const preStart = addDays(b.start, -preBufferDays);
-        const preEnd = addDays(b.start, -1);
-        const postStart = addDays(b.end, 1);
-        const postEnd = addDays(b.end, postBufferDays);
-        return (date >= preStart && date <= preEnd) || (date >= postStart && date <= postEnd);
-      });
-
-      if (date < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
-        type = 'muted';
-      } else if (manualBlock) {
-        type = 'blocked';
-      } else if (rental) {
-        type = 'rental';
-        label = initialsFromName(rental.customerName || '');
-      } else if (inBuffer) {
-        type = 'buffer';
-      } else {
-        type = 'available';
-      }
+      type = 'available';
     }
 
     days.push({ date, type, label, isToday: isSameDay(date, today) });
@@ -179,15 +176,13 @@ export function AvailabilityCalendarTab({
   const dayCellClasses = (type: DayType) => {
     switch (type) {
       case 'available':
-        return 'bg-emerald-100/70 text-emerald-900 hover:bg-emerald-200/70';
+        return 'bg-emerald-100/70 text-emerald-900';
       case 'rental':
         return 'bg-[#a8492f] text-white font-semibold';
       case 'buffer':
         return 'text-amber-800';
       case 'blocked':
         return 'text-stone-600';
-      case 'disabled':
-        return 'bg-stone-100 text-stone-300 cursor-not-allowed opacity-50';
       default:
         return 'bg-stone-50 text-stone-300';
     }
@@ -206,12 +201,6 @@ export function AvailabilityCalendarTab({
           'repeating-linear-gradient(45deg, #e7e5e4, #e7e5e4 4px, #d6d3d1 4px, #d6d3d1 8px)',
       };
     }
-    if (type === 'disabled') {
-      return {
-        backgroundImage:
-          'repeating-linear-gradient(45deg, #f3f4f6, #f3f4f6 4px, #e5e7eb 4px, #e5e7eb 8px)',
-      };
-    }
     return {};
   };
 
@@ -228,10 +217,6 @@ export function AvailabilityCalendarTab({
   };
 
   const handleBlockManualDates = () => {
-    if (!hasProduct) {
-      alert('Please create a product first before blocking dates.');
-      return;
-    }
     if (!blockFrom || !blockTo) {
       alert('Please choose a from and to date.');
       return;
@@ -248,17 +233,13 @@ export function AvailabilityCalendarTab({
   };
 
   const handleCreateExternalOrder = async () => {
-    if (!hasProduct) {
-      alert('Please create a product first before creating external bookings.');
-      return;
-    }
     if (!blockFrom || !blockTo || !customerName || !whatsappNumber) {
       alert('From date, to date, customer name and WhatsApp number are required.');
       return;
     }
     setSubmitting(true);
     try {
-      await productSectionsApi.addExternalBooking(editingProduct.id || editingProduct.productId, {
+      await productSectionsApi.addExternalBooking(editingProduct.id, {
         orderId: '',
         customerName,
         startDate: blockFrom,
@@ -269,9 +250,9 @@ export function AvailabilityCalendarTab({
         channel,
         listerSplitPercent: listerSplit,
         splitNote,
-      });
+      } as any);
 
-      const calendar = await productSectionsApi.getCalendar(editingProduct.id || editingProduct.productId);
+      const calendar = await productSectionsApi.getCalendar(editingProduct.id);
       onUpdateProduct({
         ...editingProduct,
         blockedDates: calendar.blockedDates || [],
@@ -295,31 +276,17 @@ export function AvailabilityCalendarTab({
 
   return (
     <div className="space-y-5">
-      {/* ✅ Show message when no product */}
-      {!hasProduct && (
-        <div className="rounded-md border border-blue-200/70 bg-blue-50/60 p-4 flex items-center gap-3">
-          <Plus className="w-5 h-5 text-blue-500" />
-          <p className="text-sm text-stone-700">
-            <span className="font-semibold">No product selected</span> —
-            Please select or create a product to manage its availability calendar.
-            The calendar below shows dates but they are currently disabled.
-          </p>
-        </div>
-      )}
-
-      {/* Auto-block logic banner - Only show if product exists */}
-      {hasProduct && (
-        <div className="rounded-md border border-amber-200/70 bg-amber-50/60 p-3 flex gap-2">
-          <span className="text-amber-500 text-sm leading-none">&#9432;</span>
-          <p className="text-xs text-stone-600 leading-relaxed">
-            <span className="font-semibold text-stone-800">Auto-block logic (from Master Data &rarr; Rental Logic):</span>{' '}
-            this piece is automatically blocked <span className="font-semibold text-stone-800">{preBufferDays} days before</span> every
-            dispatch and <span className="font-semibold text-stone-800">{postBufferDays} days after</span> every return
-            ({postBufferDays - 1}-day Post-Rental Buffer + 1-day Cleaning Period). Override either window for this piece specifically
-            in <span className="font-semibold text-stone-800">Pricing &amp; Tax</span> above &mdash; changes apply to the calendar immediately.
-          </p>
-        </div>
-      )}
+      {/* Auto-block logic banner */}
+      <div className="rounded-md border border-amber-200/70 bg-amber-50/60 p-3 flex gap-2">
+        <span className="text-amber-500 text-sm leading-none">&#9432;</span>
+        <p className="text-xs text-stone-600 leading-relaxed">
+          <span className="font-semibold text-stone-800">Auto-block logic (from Master Data &rarr; Rental Logic):</span>{' '}
+          this piece is automatically blocked <span className="font-semibold text-stone-800">{preBufferDays} days before</span> every
+          dispatch and <span className="font-semibold text-stone-800">{postBufferDays} days after</span> every return
+          ({postBufferDays - 1}-day Post-Rental Buffer + 1-day Cleaning Period). Override either window for this piece specifically
+          in <span className="font-semibold text-stone-800">Pricing &amp; Tax</span> above &mdash; changes apply to the calendar immediately.
+        </p>
+      </div>
 
       {/* Calendar + side panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -327,23 +294,15 @@ export function AvailabilityCalendarTab({
         <div className="lg:col-span-2 bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="font-serif font-bold text-stone-900 text-sm">
-                {hasProduct ? editingProduct.name : 'No Product Selected'}
-              </h3>
+              <h3 className="font-serif font-bold text-stone-900 text-sm">{editingProduct.name}</h3>
               <p className="text-xs text-stone-400">
-                {hasProduct
-                  ? `${editingProduct.designer || 'No designer'} · ${editingProduct.sku || 'No SKU'}`
-                  : 'Select a product to view details'}
+                {editingProduct.designer} &middot; {(editingProduct as any).sku}
               </p>
             </div>
             <button
               type="button"
               onClick={onOpenGlobalCalendar}
-              disabled={!hasProduct}
-              className={`whitespace-nowrap rounded border border-stone-200 px-3 py-1.5 text-xs font-medium transition ${hasProduct
-                  ? 'text-stone-700 hover:bg-stone-50'
-                  : 'text-stone-300 cursor-not-allowed opacity-50'
-                }`}
+              className="whitespace-nowrap rounded border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 transition"
             >
               Global Calendar &rarr;
             </button>
@@ -377,11 +336,10 @@ export function AvailabilityCalendarTab({
               <button
                 key={idx}
                 type="button"
-                disabled={isNaN(day.date.getTime()) || day.type === 'disabled' || day.type === 'muted'}
+                disabled={isNaN(day.date.getTime())}
                 onClick={() => setSelectedDate(day.date)}
                 className={`relative aspect-square rounded flex flex-col items-center justify-center text-[11px] transition
-                  ${isNaN(day.date.getTime()) ? 'invisible' : ''}
-                  ${day.type === 'disabled' ? 'cursor-not-allowed' : 'cursor-pointer hover:opacity-80'}
+                  ${isNaN(day.date.getTime()) ? 'invisible' : 'cursor-pointer hover:opacity-80'}
                   ${dayCellClasses(day.type)}
                   ${day.isToday ? 'ring-2 ring-stone-800 ring-offset-1' : ''}`}
                 style={dayCellStyle(day.type)}
@@ -390,9 +348,6 @@ export function AvailabilityCalendarTab({
                   <>
                     <span>{day.date.getDate()}</span>
                     {day.label && <span className="text-[9px] leading-none">{day.label}</span>}
-                    {day.type === 'disabled' && (
-                      <span className="absolute -top-0.5 -right-0.5 text-[8px]">🔒</span>
-                    )}
                   </>
                 )}
               </button>
@@ -420,35 +375,16 @@ export function AvailabilityCalendarTab({
                   style={{ backgroundImage: 'repeating-linear-gradient(45deg, #e7e5e4, #e7e5e4 3px, #d6d3d1 3px, #d6d3d1 6px)' }}
                 /> Blocked
               </span>
-              {!hasProduct && (
-                <span className="flex items-center gap-1">
-                  <span
-                    className="w-3 h-3 rounded-sm inline-block"
-                    style={{ backgroundImage: 'repeating-linear-gradient(45deg, #f3f4f6, #f3f4f6 3px, #e5e7eb 3px, #e5e7eb 6px)' }}
-                  /> Disabled (No Product)
-                </span>
-              )}
             </div>
             <p className="text-[10px] text-stone-400">
-              {hasProduct
-                ? 'Initials = customer · X = manual block · ring = today (ops date)'
-                : '🔒 Select a product to enable calendar interactions'}
+              Initials = customer &middot; X = manual block &middot; ring = today (ops date)
             </p>
           </div>
         </div>
 
         {/* Side panel */}
         <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm flex flex-col items-center justify-center text-center min-h-[220px]">
-          {!hasProduct ? (
-            <>
-              <CalendarDays className="w-8 h-8 text-stone-300 mb-2" />
-              <p className="text-sm font-semibold text-stone-500">No Product Selected</p>
-              <p className="text-xs text-stone-400 mt-1">
-                Please select a product from the list<br />
-                to view and manage its availability
-              </p>
-            </>
-          ) : selectedDate && !isNaN(selectedDate.getTime()) ? (
+          {selectedDate && !isNaN(selectedDate.getTime()) ? (
             <div className="space-y-2 w-full">
               <p className="text-xs font-semibold text-stone-700">
                 {selectedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -471,9 +407,6 @@ export function AvailabilityCalendarTab({
                 if (info.type === 'blocked') {
                   return <p className="text-xs text-stone-500">Manually blocked on this date.</p>;
                 }
-                if (info.type === 'disabled') {
-                  return <p className="text-xs text-stone-400">🔒 No product selected. Please select a product first.</p>;
-                }
                 return <p className="text-xs text-emerald-700">Available &mdash; use the form below to block or reserve it.</p>;
               })()}
             </div>
@@ -488,15 +421,13 @@ export function AvailabilityCalendarTab({
         </div>
       </div>
 
-      {/* Block Dates & External Bookings - Disabled when no product */}
-      <div className={`bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4 ${!hasProduct ? 'opacity-60 pointer-events-none' : ''
-        }`}>
+      {/* Block Dates & External Bookings */}
+      <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
         <div>
           <h3 className="font-serif font-bold text-stone-900 text-sm">Block Dates &amp; External Bookings</h3>
           <p className="text-xs text-stone-500 mt-1">
-            {hasProduct
-              ? 'Block dates for external bookings (Instagram, in-person enquiries), maintenance, alterations, or cleaning beyond the automatic buffer.'
-              : '🔒 Please select a product first to manage blocks and bookings.'}
+            Block dates for external bookings (Instagram, in-person enquiries), maintenance, alterations, or cleaning
+            beyond the automatic buffer. Blocks apply to the calendar above immediately &mdash; no save step needed.
           </p>
         </div>
 
@@ -507,8 +438,7 @@ export function AvailabilityCalendarTab({
               type="date"
               value={blockFrom}
               onChange={(e) => setBlockFrom(e.target.value)}
-              disabled={!hasProduct}
-              className="w-full p-2 bg-white border border-stone-200 rounded text-xs disabled:bg-stone-50 disabled:text-stone-400"
+              className="w-full p-2 bg-white border border-stone-200 rounded text-xs"
             />
           </div>
           <div className="space-y-1">
@@ -517,8 +447,7 @@ export function AvailabilityCalendarTab({
               type="date"
               value={blockTo}
               onChange={(e) => setBlockTo(e.target.value)}
-              disabled={!hasProduct}
-              className="w-full p-2 bg-white border border-stone-200 rounded text-xs disabled:bg-stone-50 disabled:text-stone-400"
+              className="w-full p-2 bg-white border border-stone-200 rounded text-xs"
             />
           </div>
         </div>
@@ -528,8 +457,7 @@ export function AvailabilityCalendarTab({
           <select
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            disabled={!hasProduct}
-            className="w-full p-2 bg-white border border-stone-200 rounded text-xs disabled:bg-stone-50 disabled:text-stone-400"
+            className="w-full p-2 bg-white border border-stone-200 rounded text-xs"
           >
             {REASON_OPTIONS.map(opt => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -537,7 +465,7 @@ export function AvailabilityCalendarTab({
           </select>
         </div>
 
-        {isExternalBooking && hasProduct && (
+        {isExternalBooking && (
           <>
             <div className="rounded-md border border-amber-200/70 bg-amber-50/60 p-3">
               <p className="text-xs text-stone-600 leading-relaxed">
@@ -620,8 +548,8 @@ export function AvailabilityCalendarTab({
                 Last split {lastSplitBooking ? `${lastSplitBooking.listerSplitPercent}%` : '—'}
                 {lastSplitBooking ? ` (${lastSplitBooking.orderId} · ${new Date(lastSplitBooking.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })})` : ''}
                 {' '}&middot; piece avg {avgSplit != null ? `${avgSplit}%` : '—'} across {activeBookings.length}
-                {' '}&middot; default 45% &middot; condition {condition}
-                {' '}&middot; rented {rentedCount}&times;
+                {' '}&middot; default 45% &middot; condition {(editingProduct as any).condition || '—'}
+                {' '}&middot; rented {(editingProduct as any).rentedCount ?? bookingHistory.length}&times;
               </p>
             </div>
 
@@ -635,19 +563,14 @@ export function AvailabilityCalendarTab({
           <button
             type="button"
             onClick={isExternalBooking ? handleCreateExternalOrder : handleBlockManualDates}
-            disabled={submitting || !hasProduct}
-            className={`rounded-md text-white text-xs font-bold px-4 py-2.5 transition disabled:opacity-50 ${!hasProduct
-                ? 'bg-stone-400 cursor-not-allowed'
-                : 'bg-amber-700/90 hover:bg-amber-700'
-              }`}
+            disabled={submitting}
+            className="rounded-md bg-amber-700/90 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2.5 transition disabled:opacity-50"
           >
-            {!hasProduct
-              ? '🔒 Select Product First'
-              : isExternalBooking
-                ? (submitting ? 'Reserving...' : 'Reserve Dates & Create Order \u2192')
-                : 'Block These Dates'}
+            {isExternalBooking
+              ? (submitting ? 'Reserving...' : 'Reserve Dates & Create Order \u2192')
+              : 'Block These Dates'}
           </button>
-          {!hasManualBlocks && hasProduct && (
+          {!hasManualBlocks && (
             <p className="text-[10px] text-stone-400">
               No manual blocks on this piece &mdash; only automatic booking buffers apply.
             </p>
@@ -655,65 +578,64 @@ export function AvailabilityCalendarTab({
         </div>
       </div>
 
-      {/* Order history table - Only show if product exists */}
-      {hasProduct && (
-        <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-3">
-          <h3 className="font-serif font-bold text-stone-900 text-sm">Order History for this Piece</h3>
-          {loading ? (
-            <p className="text-stone-400 text-xs">Loading bookings...</p>
-          ) : bookingHistory.length === 0 ? (
-            <p className="text-stone-400 text-xs">No historical bookings logged under this piece.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="text-left text-[10px] uppercase tracking-wide text-stone-400 border-b border-stone-100">
-                    <th className="py-2 pr-3 font-medium">Order ID</th>
-                    <th className="py-2 pr-3 font-medium">Customer</th>
-                    <th className="py-2 pr-3 font-medium">Dates</th>
-                    <th className="py-2 pr-3 font-medium">Revenue</th>
-                    <th className="py-2 pr-3 font-medium">Deposit</th>
-                    <th className="py-2 pr-3 font-medium">Status</th>
-                    <th className="py-2 pr-3 font-medium" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {bookingHistory.map((h, idx) => (
-                    <tr key={idx} className="border-b border-stone-50 last:border-b-0">
-                      <td className="py-2.5 pr-3 font-mono text-stone-600">{h.orderId}</td>
-                      <td className="py-2.5 pr-3 text-stone-700">{h.customerName}</td>
-                      <td className="py-2.5 pr-3 text-stone-500">
-                        {h.startDate && h.endDate
-                          ? `${new Date(h.startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} - ${new Date(h.endDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
-                          : new Date(h.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </td>
-                      <td className="py-2.5 pr-3 text-stone-700">₹{Number(h.amount || 0).toLocaleString('en-IN')}</td>
-                      <td className="py-2.5 pr-3 text-stone-500">{h.depositStatus || '—'}</td>
-                      <td className="py-2.5 pr-3">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${h.status === 'Returned'
+      {/* Order history table */}
+      <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-3">
+        <h3 className="font-serif font-bold text-stone-900 text-sm">Order History for this Piece</h3>
+        {loading ? (
+          <p className="text-stone-400 text-xs">Loading bookings...</p>
+        ) : bookingHistory.length === 0 ? (
+          <p className="text-stone-400 text-xs">No historical bookings logged under this piece.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-left text-[10px] uppercase tracking-wide text-stone-400 border-b border-stone-100">
+                  <th className="py-2 pr-3 font-medium">Order ID</th>
+                  <th className="py-2 pr-3 font-medium">Customer</th>
+                  <th className="py-2 pr-3 font-medium">Dates</th>
+                  <th className="py-2 pr-3 font-medium">Revenue</th>
+                  <th className="py-2 pr-3 font-medium">Deposit</th>
+                  <th className="py-2 pr-3 font-medium">Status</th>
+                  <th className="py-2 pr-3 font-medium" />
+                </tr>
+              </thead>
+              <tbody>
+                {bookingHistory.map((h, idx) => (
+                  <tr key={idx} className="border-b border-stone-50 last:border-b-0">
+                    <td className="py-2.5 pr-3 font-mono text-stone-600">{h.orderId}</td>
+                    <td className="py-2.5 pr-3 text-stone-700">{h.customerName}</td>
+                    <td className="py-2.5 pr-3 text-stone-500">
+                      {h.startDate && h.endDate
+                        ? `${new Date(h.startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} - ${new Date(h.endDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                        : new Date(h.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </td>
+                    <td className="py-2.5 pr-3 text-stone-700">₹{Number(h.amount || 0).toLocaleString('en-IN')}</td>
+                    <td className="py-2.5 pr-3 text-stone-500">{h.depositStatus || '—'}</td>
+                    <td className="py-2.5 pr-3">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${
+                        h.status === 'Returned'
                           ? 'bg-emerald-50 text-emerald-700'
                           : 'bg-amber-50 text-amber-700'
-                          }`}>
-                          {h.status}
-                        </span>
-                      </td>
-                      <td className="py-2.5 pr-0 text-right">
-                        <button
-                          type="button"
-                          onClick={() => onViewOrder?.(h.orderId)}
-                          className="rounded border border-stone-200 px-2.5 py-1 text-[10px] font-medium text-stone-600 hover:bg-stone-50 transition"
-                        >
-                          View &rarr;
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
+                      }`}>
+                        {h.status}
+                      </span>
+                    </td>
+                    <td className="py-2.5 pr-0 text-right">
+                      <button
+                        type="button"
+                        onClick={() => onViewOrder?.(h.orderId)}
+                        className="rounded border border-stone-200 px-2.5 py-1 text-[10px] font-medium text-stone-600 hover:bg-stone-50 transition"
+                      >
+                        View &rarr;
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

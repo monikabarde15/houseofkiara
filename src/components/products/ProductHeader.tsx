@@ -1,5 +1,3 @@
-// src/components/products/ProductHeader.tsx
-
 import React from 'react';
 import { Plus } from 'lucide-react';
 
@@ -7,7 +5,32 @@ interface ProductHeaderProps {
   isEditing: boolean;
   isAdding: boolean;
   productName?: string;
-  // onBack: () => void;
+
+  // ✅ API se aane wale saare naye props
+  designer?: string;
+  sku?: string;
+  listingMode?: string;
+  condition?: string;
+  size?: string;
+  status?: string;
+  listerName?: string;
+  rentedCount?: number;
+
+  // ✅ Rental Status ke props
+  rentalStatus?: string;
+  currentRenterName?: string;
+  currentOrderId?: string;
+  rentUntil?: string;
+  nextFreeDate?: string;
+  earnedAmount?: number;
+
+  // ✅ NAYA PROP: Save button disabled karne ke liye
+  isSaving?: boolean;
+
+  // ✅ NAYE PROPS: Duplicate aur Archive ke liye
+  onDuplicate?: () => void;
+  onArchive?: () => void;
+
   onSave: () => void;
   onAdd: () => void;
   showAddButton?: boolean;
@@ -17,99 +40,95 @@ export function ProductHeader({
   isEditing,
   isAdding,
   productName,
-  // onBack,
+
+  // ✅ API data
+  designer,
+  sku,
+  listingMode,
+  condition,
+  size,
+  status,
+  listerName,
+  rentedCount,
+
+  rentalStatus,
+  currentRenterName,
+  currentOrderId,
+  rentUntil,
+  nextFreeDate,
+  earnedAmount,
+
+  isSaving = false, // ✅ Default false rakho
+  onDuplicate,      // ✅ Naya prop
+  onArchive,        // ✅ Naya prop
   onSave,
   onAdd,
   showAddButton = true
 }: ProductHeaderProps) {
+
   if (isEditing || isAdding) {
     return (
       <div className="space-y-5">
-
-        {/* Breadcrumb */}
-        {/* <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E8E0D6] bg-white px-3 text-[12px] font-medium text-[#6F675D] transition hover:bg-[#FAF8F5]"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Back
-          </button>
-
-          <div className="flex items-center text-[12px] text-[#9A9186]">
-            <span>Products</span>
-
-            <svg
-              className="mx-2 h-3 w-3"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path d="M9 5l7 7-7 7" />
-            </svg>
-
-            <span className="font-medium text-[#2B2622]">
-              {productName}
-            </span>
-          </div>
-        </div> */}
-
         {/* Product Header */}
-
         <div className="flex items-start justify-between gap-12 pt-1">
-
           {/* Left */}
           <div className="min-w-0 flex-1">
-
             <h1 className="font-serif text-[44px] leading-[1.08] font-normal tracking-[-0.02em] text-[#2A241F]">
               {productName}
             </h1>
 
+            {/* DESIGNER, SKU, LISTING MODE */}
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[13px] font-normal text-[#81786D]">
-              <span>Sabyasachi</span>
+              <span>{designer || 'Sabyasachi'}</span>
               <span>·</span>
-              <span>SKU: HOK-SAB-001</span>
+              <span>SKU: {sku || 'HOK-SAB-001'}</span>
               <span>·</span>
-              <span>Rental</span>
+              <span>{listingMode || 'Rental'}</span>
             </div>
 
+            {/* LISTER, CONDITION, SIZE, RENTED COUNT */}
             <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px] text-[#8A8177]">
               <span>
                 Lister:
                 <span className="ml-1 font-medium text-[#6C645B]">
-                  Meera Joshi
+                  {listerName || 'Meera Joshi'}
                 </span>
               </span>
 
               <span>•</span>
-              <span>Excellent</span>
+              <span>{condition || 'Excellent'}</span>
 
               <span>•</span>
-              <span>Size S</span>
+              <span>Size {size || 'S'}</span>
 
               <span>•</span>
-              <span>Rented 6×</span>
-
-              <span>•</span>
-              <span>From 29 Mar</span>
+              <span>Rented {rentedCount || 0}×</span>
             </div>
-
           </div>
 
           {/* Right */}
-
           <div className="flex items-center gap-2.5 self-start shrink-0">
 
+            {/* STATUS */}
             <span className="inline-flex h-6 items-center rounded-md bg-[#EEF8EE] px-2.5 text-[11px] font-semibold text-[#4E8E58]">
-              Live
+              {status || 'Live'}
             </span>
 
-            <button className="inline-flex h-8 items-center rounded-md border border-[#E7DED2] bg-white px-3.5 text-[12px] font-medium text-[#3D3832] transition hover:bg-[#FBF9F6]">
+            {/* ✅ DUPLICATE BUTTON (Ab clickable hai!) */}
+            <button
+              onClick={onDuplicate}
+              disabled={isSaving}
+              className={`inline-flex h-8 items-center rounded-md border border-[#E7DED2] bg-white px-3.5 text-[12px] font-medium text-[#3D3832] transition hover:bg-[#FBF9F6] ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
               Duplicate as Draft
             </button>
 
-            <button className="inline-flex h-8 items-center rounded-md border border-[#F3D5CF] bg-white px-3.5 text-[12px] font-medium text-[#CC6E56] transition hover:bg-[#FFF8F6]">
+            {/* ✅ ARCHIVE BUTTON (Ab clickable hai!) */}
+            <button
+              onClick={onArchive}
+              disabled={isSaving}
+              className={`inline-flex h-8 items-center rounded-md border border-[#F3D5CF] bg-white px-3.5 text-[12px] font-medium text-[#CC6E56] transition hover:bg-[#FFF8F6] ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
               Archive
             </button>
 
@@ -117,19 +136,21 @@ export function ProductHeader({
               View on Site →
             </button>
 
+            {/* ✅ SAVE CHANGES BUTTON */}
             <button
               onClick={onSave}
-              className="inline-flex h-8 items-center rounded-md bg-[#C9A75B] px-4 text-[12px] font-semibold text-[#2A2118] shadow-sm transition hover:bg-[#BC9A4F]"
+              disabled={isSaving}
+              className={`inline-flex h-8 items-center rounded-md px-4 text-[12px] font-semibold shadow-sm transition ${isSaving
+                ? 'bg-gray-400 text-gray-100 cursor-not-allowed opacity-70'
+                : 'bg-[#C9A75B] text-[#2A2118] hover:bg-[#BC9A4F]'
+                }`}
             >
-              Save Changes
+              {isSaving ? 'Saving...' : 'Save Changes'}
             </button>
-
           </div>
-
         </div>
 
         {/* Rental Status */}
-
         <div className="rounded-md border border-[#E8DDD0] bg-[#FFF9F2] px-4 py-3">
           <div className="flex items-start gap-3">
             <div className="mt-[2px] flex h-5 w-5 items-center justify-center rounded-full bg-[#F2D8B8] text-[10px]">
@@ -137,31 +158,35 @@ export function ProductHeader({
             </div>
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-2">
+
+                {/* RENTAL STATUS, RENTER, ORDER ID */}
                 <span className="text-[13px] font-semibold text-[#2E2923]">
-                  In rental
+                  {rentalStatus || 'In rental'}
                 </span>
                 <span className="text-[#B2A79A]">—</span>
                 <span className="text-[13px] text-[#2D241D]">
-                  Sneha Iyer
+                  {currentRenterName || 'Sneha Iyer'}
                 </span>
                 <span className="rounded-sm bg-[#F4EADF] px-1.5 py-0.5 text-[11px] font-medium text-[#C49348]">
-                  HOK-ORD-009
+                  {currentOrderId || 'HOK-ORD-009'}
                 </span>
               </div>
               <div className="mt-1.5 flex flex-wrap items-center gap-x-2 text-[13px] text-[#4E4740]">
-                <span>Until <strong>25 Mar</strong></span>
-                <span>Next free <strong>29 Mar</strong></span>
-                <span>Rented <strong>6×</strong></span>
-                <span>Earned <strong>₹17,000</strong></span>
+
+                {/* DATES, RENTED COUNT, EARNED AMOUNT */}
+                <span>Until <strong>{rentUntil || '25 Mar'}</strong></span>
+                <span>Next free <strong>{nextFreeDate || '29 Mar'}</strong></span>
+                <span>Rented <strong>{rentedCount || 6}×</strong></span>
+                <span>Earned <strong>₹{(earnedAmount || 17000).toLocaleString()}</strong></span>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     );
   }
 
+  // ================= Main products list view =================
   return (
     <div className="flex justify-between items-center">
       <div>
