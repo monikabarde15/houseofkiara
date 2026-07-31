@@ -1,288 +1,41 @@
-import React, { useState } from 'react'
+// src/components/products/tabs/CoreDetailsTab.tsx
+
+import React from 'react';
 import { Product, Lister } from '../../types/product';
 
 interface CoreDetailsTabProps {
   formData: Partial<Product>;
   onFieldChange: <K extends keyof Product>(field: K, value: Product[K]) => void;
   listers: Lister[];
-  onSave: (data?: Product) => void;  // ✅ Allow product data as parameter
-  productId?: string;
-  isSaving?: boolean; // ✅ Parent se aane wala prop
-  resetForm?: () => void;
 }
 
-export function CoreDetailsTab({
-  formData,
-  onFieldChange,
-  listers,
-  onSave,
-  productId,
-  isSaving: externalIsSaving = false // ✅ Default false rakho
-}: CoreDetailsTabProps) {
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const [localSaving, setLocalSaving] = useState(false);
+// NOTE: The mockup includes several fields (subtitle, embroideryDetails,
+// threadYarnDetail, setIncludes, origin, weight, deliveryTiming, listingModes,
+// honestDisclosure, timesRented, bestSuitedForHeight, and cm variants of the
+// measurements) that do not yet exist on the `Product` type used by
+// `onFieldChange`. Per your instruction to only touch the frontend and not
+// touch backend/type contracts, this component reads/writes those extra
+// fields through a small local `set`/`get` helper that safely casts through
+// `formData` without requiring you to change `Product` right now. Once you're
+// ready, add these keys to `Product` and the casts can be removed.
 
+export function CoreDetailsTab({ formData, onFieldChange }: CoreDetailsTabProps) {
   const data = formData as Record<string, any>;
 
   const set = (field: string, value: any) => {
     (onFieldChange as any)(field, value);
   };
+
   const labelClass = 'text-[11px] font-semibold text-stone-500 tracking-wide uppercase';
   const inputClass =
     'w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs mt-1 focus:outline-none focus:ring-1 focus:ring-stone-400';
   const helpClass = 'text-[11px] text-stone-400 mt-1';
   const helpOrangeClass = 'text-[11px] text-orange-700 font-medium mt-1';
 
-  // Prepare data for API - remove disallowed fields and ensure required fields
-  const prepareProductData = (data: Partial<Product>): any => {
-    // Explicitly allow only valid fields
-    const {
-      // These fields come from MongoDB, we must NOT send them back
-      id,
-      _id,
-      __v,
-      createdAt,
-      updatedAt,
-      // These are list fields, we must NOT send them back
-      listerName,
-      listingModels,
-      listingMode,
-      listingmodel,
-      // ... rest are allowed to pass
-      ...cleanData
-    } = data as any;
-
-    const payload: any = {};
-
-    // Copy all fields except disallowed ones
-    Object.keys(cleanData).forEach(key => {
-      if (cleanData[key] !== undefined && cleanData[key] !== null && cleanData[key] !== '') {
-        payload[key] = cleanData[key];
-      }
-    });
-
-    // ✅ ENSURE productId EXISTS
-    if (!payload.productId) {
-      payload.productId = `HOK-PRD-${Date.now()}`;
-    }
-
-    // ✅ Ensure listingModes
-    if (!payload.listingModes || !Array.isArray(payload.listingModes) || payload.listingModes.length === 0) {
-      payload.listingModes = ['RENTAL'];
-    }
-
-    // ✅ Valid listing modes - UPPERCASE only
-    const validModes = ['RENTAL', 'PRELOVED', 'BUY NEW'];
-    payload.listingModes = payload.listingModes
-      .map((mode: string) => mode.toUpperCase())
-      .filter((mode: string) => validModes.includes(mode));
-
-    if (payload.listingModes.length === 0) {
-      payload.listingModes = ['RENTAL'];
-    }
-
-    // ✅ Ensure measurements is an object
-    if (!payload.measurements) {
-      payload.measurements = {};
-    }
-
-    // ✅ Remove empty strings
-    Object.keys(payload).forEach(key => {
-      if (payload[key] === '') {
-        delete payload[key];
-      }
-    });
-
-    console.log('📤 FINAL CLEAN PAYLOAD:', JSON.stringify(payload, null, 2));
-    return payload;
-  };
-
-  // Handle save for Core Details
-  const handleSaveCoreDetails = async () => {
-    // ✅ Agar Parent "Save Changes" kar raha hai ya local save chal raha hai, toh return
-    if (isSaving || localSaving || externalIsSaving) {
-      console.log('⏳ Save already in progress...');
-      return;
-    }
-
-    setIsSaving(true);
-    setLocalSaving(true); // ✅ Button ko disable karne ke liye
-    setSaveError(null);
-    setSaveSuccess(false);
-
-    try {
-      const payload = prepareProductData(formData);
-
-      const endpoint = productId
-        ? `/api/products/${productId}`
-        : '/api/products';
-      const method = productId ? 'PUT' : 'POST';
-
-      console.log('📤 Saving product data:', payload);
-
-      const response = await fetch(endpoint, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to save product');
-      }
-
-      console.log('✅ Product saved:', result);
-
-      // ✅ CRITICAL: Agar naya product create hua hai, toh productId set karein
-      if (!productId && result.data?.productId) {
-        console.log('✅ New product created with ID:', result.data.productId);
-
-        // ✅ Pass the productId back to parent
-        if (onSave) {
-          onSave(result.data);
-        }
-      } else {
-        // ✅ For update, still call onSave to refresh
-        if (onSave) {
-          onSave(result.data); // ⚠️ FIX: Data pass karo taaki Parent mein list update ho
-        }
-      }
-
-      // ✅ FIXED: Success aur Loading disable YAHAN karein (Timeout ke Bahar)
-      setSaveSuccess(true);
-      setLocalSaving(false); // ✅ Button wapas ENABLE ho jayega
-      setIsSaving(false);    // ✅ Main Saving state bhi false
-
-      // ✅ FIXED: SIRF Green success message 3 second baad hatana hai
-      setTimeout(() => {
-        setSaveSuccess(false);
-
-        if (resetForm) {
-          resetForm(); // Agar resetForm function props mein hai toh
-        }
-      }, 3000);
-
-    } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'An error occurred while saving');
-      console.error('❌ Save error:', error);
-      setLocalSaving(false); // ✅ Error aane par bhi button Enable karna zaroori hai
-      setIsSaving(false);
-    }
-  };
-
-  // Handle save for Measurements
-  const handleSaveMeasurements = async () => {
-    // ✅ SABSE PEHLE: Check karein ki measurements mein kuch data hai ya nahi
-    if (Object.keys(formData.measurements || {}).length === 0 && !formData.bestSuitedForHeight) {
-      console.log("⏸️ Measurements form is empty, not saving.");
-      return;
-    }
-
-    // Agar productId nahi hai toh bhi rok do
-    if (!productId) {
-      alert("⚠️ Please save Core Details first!");
-      return;
-    }
-
-    // ✅ Agar Parent "Save Changes" kar raha hai ya local save chal raha hai, toh return
-    if (isSaving || localSaving || externalIsSaving) return;
-
-    setIsSaving(true);
-    setLocalSaving(true);
-    setSaveError(null);
-    setSaveSuccess(false);
-
-    try {
-      const measurementsData = {
-        measurements: formData.measurements || {},
-        measurementsCm: data.measurementsCm || {},
-        bestSuitedForHeight: formData.bestSuitedForHeight || '',
-      };
-
-      const response = await fetch(`/api/products/${productId}/measurements`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(measurementsData),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to save measurements');
-      }
-
-      // ✅ FIXED: Success aur Loading disable YAHAN karein (Timeout ke Bahar)
-      setSaveSuccess(true);
-      setLocalSaving(false); // ✅ Button wapas ENABLE ho jayega
-      setIsSaving(false);    // ✅ Main Saving state bhi false
-
-      // ✅ FIXED: SIRF Green success message 3 second baad hatana hai
-      setTimeout(() => {
-        setSaveSuccess(false);
-      }, 3000);
-
-    } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'An error occurred');
-      console.error('Save error:', error);
-      setLocalSaving(false);
-      setIsSaving(false);
-    }
-  };
-
   return (
     <div className="space-y-6">
-      {saveError && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-          <strong>Error:</strong> {saveError}
-          <button
-            onClick={() => setSaveError(null)}
-            className="float-right text-red-500 hover:text-red-700"
-          >
-            ×
-          </button>
-        </div>
-      )}
-
-      {saveSuccess && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-          ✅ Product saved successfully!
-          <button
-            onClick={() => setSaveSuccess(false)}
-            className="float-right text-green-500 hover:text-green-700"
-          >
-            ×
-          </button>
-        </div>
-      )}
-
       {/* ---------------- Core Details Card ---------------- */}
       <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-5">
-        {/* Lister Selection */}
-        <div>
-          <label className={labelClass}>Lister</label>
-          <select
-            value={formData.listerId || ''}
-            onChange={(e) => onFieldChange('listerId', e.target.value)}
-            className={inputClass}
-          >
-            <option value="">Select a lister</option>
-            {listers.map((lister) => {
-              const uniqueId = lister.listerId || lister._id || lister.id || '';
-              return (
-                <option key={uniqueId} value={uniqueId}>
-                  {lister.name} ({uniqueId})
-                </option>
-              );
-            })}
-          </select>
-          <p className={helpClass}>Assign this product to a lister for payout tracking</p>
-        </div>
-
         {/* Product Title / Designer */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -310,8 +63,8 @@ export function CoreDetailsTab({
           <label className={labelClass}>Subtitle (Listing Card)</label>
           <input
             type="text"
-            value={formData.subtitle || ''}
-            onChange={(e) => onFieldChange('subtitle', e.target.value)}
+            value={data.subtitle || ''}
+            onChange={(e) => set('subtitle', e.target.value)}
             placeholder="Silk organza · Deep crimson"
             className={inputClass}
           />
@@ -333,23 +86,19 @@ export function CoreDetailsTab({
           <div>
             <label className={labelClass}>Rating (out of 5)</label>
             <input
-              type="number"
-              value={formData.rating || ''}
-              onChange={(e) => onFieldChange('rating', parseFloat(e.target.value) || 0)}
+              type="text"
+              value={data.rating || ''}
+              onChange={(e) => set('rating', e.target.value)}
               className={inputClass}
-              min="0"
-              max="5"
-              step="0.1"
             />
           </div>
           <div>
             <label className={labelClass}>Review Count</label>
             <input
-              type="number"
-              value={formData.reviewCount || ''}
-              onChange={(e) => onFieldChange('reviewCount', parseInt(e.target.value) || 0)}
+              type="text"
+              value={data.reviewCount || ''}
+              onChange={(e) => set('reviewCount', e.target.value)}
               className={inputClass}
-              min="0"
             />
           </div>
           <p className={`${helpClass} md:col-span-2 -mt-3`}>Shown as stars beside the title on the PDP</p>
@@ -436,8 +185,8 @@ export function CoreDetailsTab({
             <label className={labelClass}>Embroidery Details</label>
             <input
               type="text"
-              value={formData.embellishments || ''}
-              onChange={(e) => onFieldChange('embellishments', e.target.value)}
+              value={data.embellishments || formData.embellishments || ''}
+              onChange={(e) => set('embellishments', e.target.value)}
               className={inputClass}
             />
           </div>
@@ -445,8 +194,8 @@ export function CoreDetailsTab({
             <label className={labelClass}>Thread / Yarn Detail</label>
             <input
               type="text"
-              value={formData.threadYarnDetail || ''}
-              onChange={(e) => onFieldChange('threadYarnDetail', e.target.value)}
+              value={data.threadYarnDetail || ''}
+              onChange={(e) => set('threadYarnDetail', e.target.value)}
               placeholder="Optional — thread or yarn used"
               className={inputClass}
             />
@@ -459,8 +208,8 @@ export function CoreDetailsTab({
             <label className={labelClass}>Set Includes</label>
             <input
               type="text"
-              value={formData.setIncludes || ''}
-              onChange={(e) => onFieldChange('setIncludes', e.target.value)}
+              value={data.setIncludes || ''}
+              onChange={(e) => set('setIncludes', e.target.value)}
               className={inputClass}
             />
           </div>
@@ -468,8 +217,8 @@ export function CoreDetailsTab({
             <label className={labelClass}>Origin</label>
             <input
               type="text"
-              value={formData.origin || ''}
-              onChange={(e) => onFieldChange('origin', e.target.value)}
+              value={data.origin || ''}
+              onChange={(e) => set('origin', e.target.value)}
               className={inputClass}
             />
           </div>
@@ -483,8 +232,8 @@ export function CoreDetailsTab({
             </label>
             <input
               type="text"
-              value={formData.sizes?.[0] || ''}
-              onChange={(e) => onFieldChange('sizes', [e.target.value])}
+              value={data.size || ''}
+              onChange={(e) => set('size', e.target.value)}
               className={inputClass}
             />
             <p className={helpClass}>
@@ -496,8 +245,8 @@ export function CoreDetailsTab({
             <label className={labelClass}>Weight (grams)</label>
             <input
               type="text"
-              value={formData.weight || ''}
-              onChange={(e) => onFieldChange('weight', e.target.value)}
+              value={data.weight || ''}
+              onChange={(e) => set('weight', e.target.value)}
               className={inputClass}
             />
           </div>
@@ -508,8 +257,8 @@ export function CoreDetailsTab({
           <label className={labelClass}>Delivery Timing</label>
           <input
             type="text"
-            value={formData.deliveryTiming || ''}
-            onChange={(e) => onFieldChange('deliveryTiming', e.target.value)}
+            value={data.deliveryTiming || ''}
+            onChange={(e) => set('deliveryTiming', e.target.value)}
             className={inputClass}
           />
           <p className={helpClass}>
@@ -525,7 +274,8 @@ export function CoreDetailsTab({
           <label className={labelClass}>Listing Mode(s)</label>
           <div className="flex items-center gap-6 mt-2">
             {(['RENTAL', 'PRELOVED', 'BUY NEW'] as const).map((mode) => {
-              const modes = Array.isArray(formData.listingModes) ? formData.listingModes : [];
+              const key = mode.toLowerCase().replace(' ', '');
+              const modes: string[] = data.listingModes || [];
               const checked = modes.includes(mode);
               return (
                 <label key={mode} className="flex items-center gap-2 text-xs font-semibold text-stone-700">
@@ -536,7 +286,7 @@ export function CoreDetailsTab({
                       const next = e.target.checked
                         ? [...modes, mode]
                         : modes.filter((m) => m !== mode);
-                      onFieldChange('listingModes', next);
+                      set('listingModes', next);
                     }}
                     className="h-4 w-4 accent-blue-600"
                   />
@@ -570,8 +320,8 @@ export function CoreDetailsTab({
             Honest Disclosure — <span className="text-orange-700">Required for Preloved, gates publication</span>
           </label>
           <textarea
-            value={formData.honestDisclosure || ''}
-            onChange={(e) => onFieldChange('honestDisclosure', e.target.value)}
+            value={data.honestDisclosure || ''}
+            onChange={(e) => set('honestDisclosure', e.target.value)}
             rows={3}
             placeholder="Describe any visible wear, repairs, alterations, or imperfections honestly. Buyers rely on candour."
             className={inputClass}
@@ -597,11 +347,10 @@ export function CoreDetailsTab({
           <div>
             <label className={labelClass}>Times Rented (Display Counter)</label>
             <input
-              type="number"
-              value={formData.timesRented || ''}
-              onChange={(e) => onFieldChange('timesRented', parseInt(e.target.value) || 0)}
+              type="text"
+              value={data.timesRented || ''}
+              onChange={(e) => set('timesRented', e.target.value)}
               className={inputClass}
-              min="0"
             />
           </div>
           <div>
@@ -641,20 +390,9 @@ export function CoreDetailsTab({
           </button>
           <button
             type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (!isSaving && !localSaving && !externalIsSaving) { // ✅ Add externalIsSaving
-                handleSaveCoreDetails();
-              }
-            }}
-            disabled={isSaving || localSaving || saveSuccess || externalIsSaving} // ✅ Add externalIsSaving
-            className={`px-4 py-2 text-xs font-semibold rounded transition ${isSaving || localSaving || saveSuccess || externalIsSaving
-              ? 'bg-gray-400 cursor-not-allowed opacity-70'
-              : 'bg-amber-700 hover:bg-amber-800 text-white'
-              }`}
+            className="px-4 py-2 text-xs font-semibold rounded bg-amber-700 text-white hover:bg-amber-800"
           >
-            {isSaving || localSaving ? 'Saving...' : saveSuccess ? '✅ Saved!' : 'Save Core Details'}
+            Save Core Details
           </button>
         </div>
       </div>
@@ -686,7 +424,7 @@ export function CoreDetailsTab({
               <div className="p-3 text-xs text-stone-700">{row.label}</div>
               <div className="p-2 px-3">
                 <input
-                  value={formData.measurements?.[row.key as keyof typeof formData.measurements] || ''}
+                  value={(formData.measurements as any)?.[row.key] || ''}
                   onChange={(e) =>
                     onFieldChange('measurements', {
                       ...formData.measurements,
@@ -698,12 +436,9 @@ export function CoreDetailsTab({
               </div>
               <div className="p-2 px-3">
                 <input
-                  value={formData.measurementsCm?.[row.key as keyof typeof formData.measurementsCm] || ''}
+                  value={data.measurementsCm?.[row.key] || ''}
                   onChange={(e) =>
-                    onFieldChange('measurementsCm', {
-                      ...formData.measurementsCm,
-                      [row.key]: e.target.value,
-                    } as Product['measurementsCm'])
+                    set('measurementsCm', { ...data.measurementsCm, [row.key]: e.target.value })
                   }
                   className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
                 />
@@ -716,8 +451,8 @@ export function CoreDetailsTab({
             <div className="p-3 text-xs font-semibold text-stone-800">Best suited for height</div>
             <div className="p-2 px-3 col-span-2">
               <input
-                value={formData.bestSuitedForHeight || ''}
-                onChange={(e) => onFieldChange('bestSuitedForHeight', e.target.value)}
+                value={data.bestSuitedForHeight || ''}
+                onChange={(e) => set('bestSuitedForHeight', e.target.value)}
                 className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
               />
             </div>
@@ -733,36 +468,9 @@ export function CoreDetailsTab({
         <div className="flex justify-end pt-4 mt-2 border-t border-stone-100">
           <button
             type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (!isSaving && !localSaving && !externalIsSaving) { // ✅ Add externalIsSaving
-                handleSaveMeasurements();
-              }
-            }}
-            // ✅ CORRECT CONDITION: Jab tak koi measurement fill nahi, tab tak BUTTON DISABLE rahega
-            disabled={
-              isSaving ||
-              localSaving ||
-              saveSuccess ||
-              externalIsSaving || // ✅ Add externalIsSaving
-              (!formData.measurements?.bust && !formData.measurements?.waist &&
-                !formData.measurements?.hips && !formData.measurements?.length &&
-                !formData.measurementsCm?.bust && !formData.measurementsCm?.waist &&
-                !formData.measurementsCm?.hips && !formData.measurementsCm?.length &&
-                !formData.bestSuitedForHeight)
-            }
-            className={`px-4 py-2 text-xs font-semibold rounded transition ${isSaving || localSaving || saveSuccess || externalIsSaving ||
-              (!formData.measurements?.bust && !formData.measurements?.waist &&
-                !formData.measurements?.hips && !formData.measurements?.length &&
-                !formData.measurementsCm?.bust && !formData.measurementsCm?.waist &&
-                !formData.measurementsCm?.hips && !formData.measurementsCm?.length &&
-                !formData.bestSuitedForHeight)
-              ? 'bg-gray-400 cursor-not-allowed opacity-70'
-              : 'bg-amber-700 hover:bg-amber-800 text-white'
-              }`}
+            className="px-4 py-2 text-xs font-semibold rounded bg-amber-700 text-white hover:bg-amber-800"
           >
-            {isSaving || localSaving ? 'Saving...' : saveSuccess ? '✅ Saved!' : 'Save Measurements'}
+            Save Measurements
           </button>
         </div>
       </div>

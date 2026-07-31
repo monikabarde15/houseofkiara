@@ -1,53 +1,120 @@
-// src/types/product.ts
-
 export interface Product {
-  id: string;
+  id?: string;
+  productId: string;
   name: string;
-  designer: string;
-  listerId?: string;
-  listerName?: string;
-  description: string;
-  category: string;
-  occasion: string;
-  material: string;
-  embellishments: string;
-  sizes: string[];
-  listingModes: ('Rental' | 'Preloved' | 'Buy')[];
-  condition: string;
-  availability: string;
-  status: 'Live' | 'Archived' | 'Review';
-  rentalPrice: number;
-  securityDeposit: number;
-  listingPrice: number;
-  commissionRate: number;
-  minimumDurationDays: number;
-  extensionWindowDays: number;
-  cleaningBufferDays: number;
-  images: string[];
-  seoTitle?: string;
-  seoDescription?: string;
-  urlSlug?: string;
-  sku?: string;
+  designer?: string;
+  subtitle?: string;
+  description?: string;
+  story?: string;
+  category?: string;
+  occasion?: string;
+  material?: string;
   color?: string;
   craft?: string;
   technique?: string;
-  story?: string;
-  tags?: string[];
-  taxRate?: number;
-  gstRate?: number;
-  cleaningFee?: number;
-  extensionPrice?: number;
+  embellishments?: string;
+  threadYarnDetail?: string;
+  threadWork?: string;
+  setIncludes?: string;
+  origin?: string;
+  sizes?: string[];
+  sizeGuide?: string;
   measurements?: {
     bust?: string;
     waist?: string;
     hips?: string;
     length?: string;
   };
+  measurementsCm?: {
+    bust?: string;
+    waist?: string;
+    hips?: string;
+    length?: string;
+  };
+  bestSuitedForHeight?: string;
+  weight?: string;
+  listingModes?: string[];
+  availability?: string;
+  status?: string;
+  condition?: string;
+  honestDisclosure?: string;
+  rentalPrice?: number;
+  securityDeposit?: number;
+  listingPrice?: number;
+  commissionRate?: number;
+  minimumDurationDays?: number;
+  extensionWindowDays?: number;
+  cleaningBufferDays?: number;
+  preRentalBufferDays?: number;
+  postRentalBufferDays?: number;
+  deliveryTiming?: string;
+  taxRate?: number;
+  gstRate?: number;
+  cleaningFee?: number;
+  extensionPrice?: number;
+  listerId?: string;
+  payoutPercentage?: number;
+  payoutTerms?: string;
+  rating?: number;
+  // reviewCount?: number;
+  timesRented?: number;
+  images?: string[];
+  seoTitle?: string;
+  seoDescription?: string;
+  urlSlug?: string;
+  tags?: string[];
   relatedProductIds?: string[];
-  blockedDates?: BlockedDate[];
-  bookingHistory?: BookingHistory[];
+  sku?: string;
+  blockedDates?: Array<{
+    from: string;
+    to: string;
+    reason: string;
+  }>;
+  bookingHistory?: Array<{
+    orderId: string;
+    customerName?: string;
+    date?: string;
+    startDate?: string;
+    endDate?: string;
+    amount?: number;
+    deposit?: number;
+    mode?: string;
+    status?: string;
+    source?: string;
+    whatsappNumber?: string;
+    city?: string;
+    channel?: string;
+    listerSplitPercent?: number;
+    splitNote?: string;
+    depositStatus?: string;
+  }>;
+  externalBookings?: any[];
+  activityLog?: Array<{
+    action: string;
+    user?: string;
+    createdAt?: string;
+    remarks?: string;
+  }>;
+  createdAt?: string;
+  updatedAt?: string;
 }
-
+// Lister type
+export interface Lister {
+  id?: string;
+  listerId?: string;
+  _id?: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  payoutPercentage?: number;
+  status?: 'active' | 'inactive' | 'pending';
+  createdAt?: string;
+  updatedAt?: string;
+}
 export interface BlockedDate {
   from: string;
   to: string;
@@ -62,12 +129,6 @@ export interface BookingHistory {
   status: string;
 }
 
-export interface Lister {
-  id: string;
-  name: string;
-  email?: string;
-  phone?: string;
-}
 
 export interface PayoutRecord {
   id?: string;

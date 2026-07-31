@@ -6,7 +6,7 @@ import authRouter from "./routes/authRoutes.js";
 import productRouter from "./routes/productRoutes.js";
 import payoutRouter from "./routes/payoutRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
-import listerRouter from "./routes/listerRoutes.js";
+import listerRouter from "./routes/listerRoutes.js"; // ✅ Import sahi hai
 import uploadRouter from "./routes/uploadRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
 
@@ -21,12 +21,30 @@ app.use(express.json());
 
 app.use("/api", offersRouter);
 app.use("/api", authRouter);
-app.use("/api", productRouter);
+
+// ✅ FIX: SABSE PEHLE LISTER ROUTE REGISTER KARO (Taaki /api/listers product router se na takraye)
+app.use("/api/listers", listerRouter); 
+
 app.use("/api", payoutRouter);
+// server.js mein yeh line dhoondho:
+// app.use("/api/products", productRouter); 
+
+// ✅ ISKO CHANGE KARKE YEH KARO (Ya toh "/api" rakho, ya "/api/products" par "/" daal do):
+app.use("/api", productRouter); 
 app.use("/api", orderRouter);
-app.use("/api", listerRouter);
 app.use("/api", uploadRouter);
 app.use("/api", messageRouter);
+
+// ✅ 404 handler (SABSE LAST MEIN)
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found` });
+});
+
+// ✅ Error handler (SABSE LAST MEIN)
+app.use((err, req, res, next) => {
+  console.error("🔥 Server Error:", err.stack);
+  res.status(500).json({ success: false, message: err.message });
+});
 
 const PORT = process.env.PORT || 5000;
 

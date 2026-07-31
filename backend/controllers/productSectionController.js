@@ -1,6 +1,7 @@
 import Product from "../models/Product.js";
 
-const findProduct = (id) => Product.findOne({ $or: [{ productId: id }, { _id: id }] });
+// const findProduct = (id) => Product.findOne({ $or: [{ productId: id }, { _id: id }] });
+const findProduct = (id) => Product.findOne({ productId: id });
 const save = async (product, action, data) => { product.activityLog.push({ action, user: data.createdBy || data.updatedBy || "Admin", remarks: data.remarks || "" }); await product.save(); return product; };
 
 export const getAvailabilityCalendar = async (req, res) => { try { const p = await findProduct(req.params.id); if (!p) return res.status(404).json({ success: false, message: "Product not found" }); res.json({ success: true, data: { blockedDates: p.blockedDates || [], bookingHistory: p.bookingHistory || [], externalBookings: p.externalBookings || [], cleaningBufferDays: p.cleaningBufferDays || 0 } }); } catch (e) { res.status(500).json({ success: false, message: e.message }); } };
