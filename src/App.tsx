@@ -45,6 +45,7 @@ import * as authApi from './services/authApi';
 import * as productApi from './services/productApi';
 import * as orderApi from './services/orderApi';
 import * as listerApi from './services/listerApi';
+import * as customerApi from './services/customerApi';
 import AdminAuth from './components/AdminAuth';
 import { ArrowLeft, ExternalLink, Menu, Save, X } from 'lucide-react';
 
@@ -185,8 +186,24 @@ export default function App() {
     alert("Submission marked as rejected.");
   };
 
+  useEffect(() => {
+    customerApi.getCustomers()
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setCustomers(data);
+        }
+      })
+      .catch(err => console.error("Unable to load customers from API:", err));
+  }, []);
+
   const handleUpdateCustomer = (updated: Customer) => {
-    setCustomers(customers.map(c => c.id === updated.id ? updated : c));
+    setCustomers(prev => {
+      const exists = prev.some(c => c.id === updated.id || (c.customerId && c.customerId === updated.customerId));
+      if (exists) {
+        return prev.map(c => (c.id === updated.id || (c.customerId && c.customerId === updated.customerId)) ? updated : c);
+      }
+      return [updated, ...prev];
+    });
   };
 
   const handleAddPromoCode = (newCode: PromoCode) => {

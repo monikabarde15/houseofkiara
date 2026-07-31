@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Eye, Mail, Phone, MapPin, User, Save, ListFilter, AlertTriangle, MessageCircle, ChevronLeft, ExternalLink } from 'lucide-react';
-import { Customer, Order, Product } from '../types';
+import { Customer, Order, Product, SavedAddress, CustomerOccasion } from '../types';
+import * as customerApi from '../services/customerApi';
 
 interface CustomersViewProps {
   customers: Customer[];
@@ -102,15 +103,11 @@ export default function CustomersView({
   const [newOccasionName, setNewOccasionName] = useState('');
   const [newOccasionDate, setNewOccasionDate] = useState('');
   // TODO(backend): Customer.communicationLog?: { id: string; message: string; channel: string; timestamp: string }[]
-  // Seeded with sample entries matching the reference PDF for now.
-  const SEED_COMM_LOG = [
-    { id: 'comm_1', message: 'Dispatch notification sent — AWB BD90455102IN', channel: 'WhatsApp', timestamp: '22 Jun 2026, 12:35' },
-    { id: 'comm_2', message: 'Offer OFR-203 accepted — preloved sale confirmation sent', channel: 'WhatsApp', timestamp: '21 Jun 2026, 14:10' },
-    { id: 'comm_3', message: 'Rental confirmation sent', channel: 'WhatsApp', timestamp: '21 Mar 2026, 14:05' },
-  ];
-  const [commLog, setCommLog] = useState<{ id: string; message: string; channel: string; timestamp: string }[]>(SEED_COMM_LOG);
+
+  // Local card state: Communication Log tab & inline card
+  const [commLog, setCommLog] = useState<Array<{ id: string; message: string; channel: string; timestamp: string }>>([]);
   const [newCommMessage, setNewCommMessage] = useState('');
-  const [newCommChannel, setNewCommChannel] = useState('WhatsApp');
+  const [newCommChannel, setNewCommChannel] = useState<'WhatsApp' | 'Email' | 'Phone' | 'Internal Note'>('WhatsApp');
 
   const isEditingOrAdding = !!(editingCustomer || isAddingCustomer);
 
@@ -132,18 +129,18 @@ export default function CustomersView({
     setEditBirthDate(customer.birthDate || '');
     setEditReferrer(customer.referrer || '');
     setEditSize(customer.preferences?.preferredSize || '');
+    setEditPreferredOccasions(customer.preferences?.preferredOccasions || '');
     setEditSilhouettes(customer.preferences?.preferredSilhouettes || '');
     setEditNewsletter(customer.preferences?.newsletter || false);
     setEditWhatsapp(customer.preferences?.whatsappNotifications || false);
+    setEditMarketingOptIn(customer.preferences?.marketingOptIn || false);
     setEditNotes(customer.internalNotes || '');
     setEditStatus(customer.status);
 
-    setEditPreferredOccasions('');
-    setEditMarketingOptIn(false);
-    setAddresses([]);
+    setAddresses(customer.addresses || []);
     setNewAddressLabel('');
     setNewAddressText('');
-    setOccasions([]);
+    setOccasions(customer.occasions || []);
     setNewOccasionName('');
     setNewOccasionDate('');
   };
@@ -179,64 +176,115 @@ export default function CustomersView({
     setNewOccasionDate('');
   };
 
-  const handleSaveCustomer = () => {
+  const handleSaveCustomer = async () => {
     if (!isAddingCustomer && !editingCustomer) return;
     const isNew = isAddingCustomer || !editingCustomer;
-    const customerId = editingCustomer ? editingCustomer.id : `cust_${Date.now()}`;
+    const customerId = editingCustomer ? (editingCustomer.customerId || editingCustomer.id) : `HOK-CUST-${Date.now()}`;
+
+    // Ensure valid email formatting
+    let formattedEmail = editEmail.trim();
+    if (!formattedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formattedEmail)) {
+      formattedEmail = `contact_${Date.now()}@hok.local`;
+    }
+
+    // Determine primary address string from editAddress field or first item in addresses array
+    const primaryAddress = editAddress.trim() || (addresses.length > 0 ? addresses[0].address : (editingCustomer?.address || ''));
 
     const savedCustomer: Customer = {
       id: customerId,
+      customerId: customerId,
       name: editName.trim() || (isNew ? 'New Customer' : editingCustomer?.name || ''),
-      email: editEmail.trim() || (isNew ? 'manual@contact.local' : editingCustomer?.email || ''),
+      email: formattedEmail,
       phone: editPhone.trim() || (editingCustomer?.phone || ''),
       location: editLocation.trim() || (editingCustomer?.location || 'India'),
-      address: editAddress.trim() || (editingCustomer?.address || ''),
+      address: primaryAddress,
       gstin: editGstin,
       instagram: editInstagram,
       birthDate: editBirthDate,
       referrer: editReferrer,
       status: editStatus,
+      source: editSource,
       preferences: {
         preferredSize: editSize,
+        preferredOccasions: editPreferredOccasions,
         preferredSilhouettes: editSilhouettes,
         newsletter: editNewsletter,
-        whatsappNotifications: editWhatsapp
+        whatsappNotifications: editWhatsapp,
+        marketingOptIn: editMarketingOptIn
       },
+      addresses: addresses,
+      occasions: occasions,
       internalNotes: editNotes,
       joinedDate: editingCustomer?.joinedDate || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
       ordersCount: editingCustomer?.ordersCount || 0,
       totalSpent: editingCustomer?.totalSpent || 0,
+      lifetimeValue: editingCustomer?.lifetimeValue || editingCustomer?.totalSpent || 0,
       wishlistCount: editingCustomer?.wishlistCount || 0,
       lastOrderDate: editingCustomer?.lastOrderDate || '—'
     };
 
-    onUpdateCustomer(savedCustomer);
-    setEditingCustomer(savedCustomer);
+    let finalCustomer = savedCustomer;
+    let apiSuccess = false;
+    try {
+      if (isNew) {
+        const res = await customerApi.createCustomer(savedCustomer);
+        if (res && res.id) {
+          finalCustomer = res;
+          apiSuccess = true;
+        }
+      } else {
+        const res = await customerApi.updateCustomer(savedCustomer);
+        if (res && res.id) {
+          finalCustomer = res;
+          apiSuccess = true;
+        }
+      }
+    } catch (err: any) {
+      console.error("Backend API Error on Save:", err);
+      alert("Error saving customer to database: " + (err.message || "Failed to reach server"));
+    }
+
+    onUpdateCustomer(finalCustomer);
+    setEditingCustomer(finalCustomer);
     setIsAddingCustomer(false);
-    alert(isNew ? "New manual customer record created successfully!" : "Customer profile successfully updated!");
+    if (apiSuccess) {
+      alert(isNew ? "New customer record created & saved to database successfully!" : "Customer profile updated in database successfully!");
+    }
   };
 
-  // UI-only handlers for the new Saved Addresses / Occasions cards.
-  // Pure local state — safe no-ops as far as the backend is concerned.
   const handleAddAddress = () => {
     if (!newAddressLabel.trim() || !newAddressText.trim()) return;
-    setAddresses(prev => [
-      ...prev,
-      { id: `addr_${Date.now()}`, label: newAddressLabel.trim(), address: newAddressText.trim() }
-    ]);
+    const newAddr: SavedAddress = {
+      id: `addr_${Date.now()}`,
+      label: newAddressLabel.trim().toUpperCase(),
+      address: newAddressText.trim(),
+      isDefault: addresses.length === 0
+    };
+    setAddresses(prev => [...prev, newAddr]);
     setNewAddressLabel('');
     setNewAddressText('');
+
+    if (editingCustomer) {
+      customerApi.addCustomerAddress(editingCustomer.id, newAddr).catch(() => {});
+    }
   };
 
   const handleAddOccasion = () => {
     if (!newOccasionName.trim()) return;
-    setOccasions(prev => [
-      ...prev,
-      { id: `occ_${Date.now()}`, occasion: newOccasionName.trim(), date: newOccasionDate }
-    ]);
+    const newOcc: CustomerOccasion = {
+      id: `occ_${Date.now()}`,
+      occasion: newOccasionName.trim(),
+      date: newOccasionDate
+    };
+    setOccasions(prev => [...prev, newOcc]);
     setNewOccasionName('');
     setNewOccasionDate('');
+
+    if (editingCustomer) {
+      customerApi.addCustomerOccasion(editingCustomer.id, newOcc).catch(() => {});
+    }
   };
+
   const handleLogCommunication = () => {
     if (!newCommMessage.trim()) return;
     setCommLog(prev => [
@@ -736,19 +784,27 @@ export default function CustomersView({
                     </h3>
 
                     {/* Saved Addresses List */}
-                    <div className="space-y-2 pt-1 border-b border-[#EBE5DF] pb-4">
-                      <div className="flex items-center justify-between text-xs py-1">
-                        <div className="flex items-center gap-3">
-                          <span className="uppercase text-[10px] font-semibold tracking-wider text-[#8C847A] w-14 shrink-0">HOME</span>
-                          <span className="text-[#2A241F] font-normal">Tower 3, Lodha Heights, Lower Parel, Mumbai — 400013</span>
-                        </div>
-                        <span className="px-1.5 py-0.5 rounded border border-[#E2DAD1] text-[9px] uppercase tracking-wider text-[#8C847A] font-semibold shrink-0">DEFAULT</span>
+                    {addresses.length === 0 ? (
+                      <p className="text-stone-400 text-xs py-2 border-b border-[#EBE5DF]">No saved addresses yet — add one below.</p>
+                    ) : (
+                      <div className="space-y-2 pt-1 border-b border-[#EBE5DF] pb-4">
+                        {addresses.map((a, idx) => (
+                          <div key={a.id || idx} className="flex items-center justify-between text-xs py-1">
+                            <div className="flex items-center gap-3">
+                              <span className="uppercase text-[10px] font-semibold tracking-wider text-[#8C847A] w-16 shrink-0">
+                                {a.label}
+                              </span>
+                              <span className="text-[#2A241F] font-normal">{a.address}</span>
+                            </div>
+                            {(a.isDefault || idx === 0) && (
+                              <span className="px-1.5 py-0.5 rounded border border-[#E2DAD1] text-[9px] uppercase tracking-wider text-[#8C847A] font-semibold shrink-0">
+                                DEFAULT
+                              </span>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                      <div className="flex items-center gap-3 text-xs py-1">
-                        <span className="uppercase text-[10px] font-semibold tracking-wider text-[#8C847A] w-14 shrink-0">BANDRA</span>
-                        <span className="text-[#2A241F] font-normal">14, Carter Road, Bandra West, Mumbai — 400050</span>
-                      </div>
-                    </div>
+                    )}
 
                     {/* Add Address Form */}
                     <div className="space-y-3 pt-1">
@@ -793,9 +849,20 @@ export default function CustomersView({
                       </h3>
                     </div>
 
-                    <div className="p-5 py-6 text-center text-[#A0988E] text-xs font-normal border-y border-dashed border-[#EBE5DF]">
-                      No occasions on file — add the date she's dressing for.
-                    </div>
+                    {occasions.length === 0 ? (
+                      <div className="p-5 py-6 text-center text-[#A0988E] text-xs font-normal border-y border-dashed border-[#EBE5DF]">
+                        No occasions on file — add the date she's dressing for.
+                      </div>
+                    ) : (
+                      <div className="p-5 space-y-2 border-y border-[#EBE5DF]">
+                        {occasions.map((o, idx) => (
+                          <div key={o.id || idx} className="flex items-center justify-between text-xs py-1 border-b border-stone-100 last:border-0">
+                            <span className="text-[#2A241F] font-semibold">{o.occasion}</span>
+                            <span className="text-[#8C847A] font-normal">{o.date || '—'}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
                     <div className="p-5 space-y-3">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -930,7 +997,7 @@ export default function CustomersView({
           <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-stone-100">
               <h3 className="font-serif font-bold text-stone-900 text-sm">
-                Wishlist — {editingCustomer.name} ({editingCustomer.wishlistCount} item{editingCustomer.wishlistCount === 1 ? '' : 's'})
+                Wishlist — {editingCustomer?.name || 'New Customer'} ({editingCustomer?.wishlistCount || 0} item{(editingCustomer?.wishlistCount || 0) === 1 ? '' : 's'})
               </h3>
             </div>
 
@@ -992,7 +1059,7 @@ export default function CustomersView({
             <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
               <div className="px-5 py-4 border-b border-stone-100">
                 <h3 className="font-serif font-bold text-stone-900 text-sm">
-                  Cart — {editingCustomer.name} (0 items)
+                  Cart — {editingCustomer?.name || 'New Customer'} (0 items)
                 </h3>
               </div>
               <div className="p-8 text-center text-stone-400">
@@ -1234,7 +1301,7 @@ export default function CustomersView({
           <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-stone-100">
               <h3 className="font-serif font-bold text-stone-900 text-sm">
-                Offers & Enquiries — {editingCustomer.name} (1)
+                Offers & Enquiries — {editingCustomer?.name || 'New Customer'} (1)
               </h3>
             </div>
 
@@ -1416,7 +1483,7 @@ export default function CustomersView({
                       Customer Since
                     </label>
                     <div className="w-full p-2 bg-stone-50 border border-stone-200 rounded text-xs text-stone-600">
-                      {editingCustomer.joinedDate}
+                      {isAddingCustomer ? 'Manual creation' : (editingCustomer?.joinedDate || '—')}
                     </div>
                   </div>
                 </div>
@@ -1498,7 +1565,7 @@ export default function CustomersView({
                       Service updates — bookings, dispatch, returns (WhatsApp/Email)
                     </div>
                     <div className="text-stone-400 text-[11px] mt-0.5">
-                      {editingCustomer.joinedDate} · via Signup form
+                      {isAddingCustomer ? 'Manual creation' : (editingCustomer?.joinedDate || '—')} · via Signup form
                     </div>
                   </div>
                 </div>

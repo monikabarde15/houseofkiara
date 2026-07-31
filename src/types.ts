@@ -1,11 +1,26 @@
+export interface SavedAddress {
+  id: string;
+  label: string;
+  address: string;
+  isDefault?: boolean;
+}
+
+export interface CustomerOccasion {
+  id: string;
+  occasion: string;
+  date?: string;
+}
+
 export interface Customer {
   id: string;
+  customerId?: string;
   name: string;
   email: string;
   phone: string;
   location: string;
   ordersCount: number;
   lifetimeValue: number;
+  totalSpent?: number;
   lastOrderDate: string;
   wishlistCount: number;
   joinedDate: string;
@@ -15,12 +30,18 @@ export interface Customer {
   instagram?: string;
   birthDate?: string;
   referrer?: string;
+  source?: string;
+  flagReason?: string;
   preferences?: {
     preferredSize: string;
+    preferredOccasions?: string;
     preferredSilhouettes: string;
     newsletter: boolean;
     whatsappNotifications: boolean;
+    marketingOptIn?: boolean;
   };
+  addresses?: SavedAddress[];
+  occasions?: CustomerOccasion[];
   internalNotes?: string;
 }
 

@@ -9,14 +9,11 @@ import orderRouter from "./routes/orderRoutes.js";
 import listerRouter from "./routes/listerRoutes.js"; // ✅ Import sahi hai
 import uploadRouter from "./routes/uploadRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
+import customerRouter from "./routes/customerRoutes.js";
 
 const app = express();
 
-app.use(cors({
-  origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+app.use(cors());
 app.use(express.json());
 
 app.use("/api", offersRouter);
@@ -26,14 +23,11 @@ app.use("/api", authRouter);
 app.use("/api/listers", listerRouter); 
 
 app.use("/api", payoutRouter);
-// server.js mein yeh line dhoondho:
-// app.use("/api/products", productRouter); 
-
-// ✅ ISKO CHANGE KARKE YEH KARO (Ya toh "/api" rakho, ya "/api/products" par "/" daal do):
 app.use("/api", productRouter); 
 app.use("/api", orderRouter);
 app.use("/api", uploadRouter);
 app.use("/api", messageRouter);
+app.use("/api", customerRouter);
 
 // ✅ 404 handler (SABSE LAST MEIN)
 app.use((req, res) => {
