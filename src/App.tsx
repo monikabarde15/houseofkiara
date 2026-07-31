@@ -303,6 +303,7 @@ export default function App() {
           onUpdateCustomer={handleUpdateCustomer}
           setView={setView}
           setSelectedOrderId={setSelectedOrderId}
+          onEditingChange={setIsSectionEditing}
         />
       );
     }

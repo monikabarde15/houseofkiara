@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Eye, Mail, Phone, MapPin, User, Save, ListFilter, AlertTriangle, MessageCircle, } from 'lucide-react';
+import { Search, Eye, Mail, Phone, MapPin, User, Save, ListFilter, AlertTriangle, MessageCircle, ChevronLeft, ExternalLink } from 'lucide-react';
 import { Customer, Order, Product } from '../types';
 
 interface CustomersViewProps {
@@ -9,6 +9,7 @@ interface CustomersViewProps {
   onUpdateCustomer: (updated: Customer) => void;
   setView: (view: string) => void;
   setSelectedOrderId: (id: string) => void;
+  onEditingChange?: (isEditing: boolean) => void;
 }
 
 export default function CustomersView({
@@ -17,11 +18,13 @@ export default function CustomersView({
   products,
   onUpdateCustomer,
   setView,
-  setSelectedOrderId
+  setSelectedOrderId,
+  onEditingChange,
 }: CustomersViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [isAddingCustomer, setIsAddingCustomer] = useState(false);
 
   // ============================================================
   // TAB STATE
@@ -109,7 +112,14 @@ export default function CustomersView({
   const [newCommMessage, setNewCommMessage] = useState('');
   const [newCommChannel, setNewCommChannel] = useState('WhatsApp');
 
+  const isEditingOrAdding = !!(editingCustomer || isAddingCustomer);
+
+  React.useEffect(() => {
+    onEditingChange?.(isEditingOrAdding);
+  }, [isEditingOrAdding, onEditingChange]);
+
   const startEditing = (customer: Customer) => {
+    setIsAddingCustomer(false);
     setEditingCustomer(customer);
     setActiveTab('Profile');
     setEditName(customer.name);
@@ -128,8 +138,6 @@ export default function CustomersView({
     setEditNotes(customer.internalNotes || '');
     setEditStatus(customer.status);
 
-    // UI-only resets (see TODO(backend) notes above) —
-    // once Customer carries these fields, hydrate from `customer` here too.
     setEditPreferredOccasions('');
     setEditMarketingOptIn(false);
     setAddresses([]);
@@ -140,19 +148,49 @@ export default function CustomersView({
     setNewOccasionDate('');
   };
 
+  const startAdding = () => {
+    setIsAddingCustomer(true);
+    setEditingCustomer(null);
+    setActiveTab('Profile');
+    setEditName('');
+    setEditEmail('');
+    setEditPhone('');
+    setEditLocation('');
+    setEditAddress('');
+    setEditGstin('');
+    setEditInstagram('');
+    setEditBirthDate('');
+    setEditReferrer('');
+    setEditSize('');
+    setEditSilhouettes('');
+    setEditNewsletter(false);
+    setEditWhatsapp(false);
+    setEditMarketingOptIn(false);
+    setEditNotes('');
+    setEditStatus('Active');
+    setEditSource('Manual (WhatsApp)');
+    setEditFlagReason('');
+    setEditPreferredOccasions('');
+    setAddresses([]);
+    setNewAddressLabel('');
+    setNewAddressText('');
+    setOccasions([]);
+    setNewOccasionName('');
+    setNewOccasionDate('');
+  };
+
   const handleSaveCustomer = () => {
-    if (!editingCustomer) return;
-    // NOTE: payload shape is UNCHANGED from the original — none of the new
-    // UI-only fields (addresses, occasions, preferredOccasions, marketingOptIn)
-    // are sent to onUpdateCustomer, since Customer doesn't have room for them
-    // yet. Add them into this object once the backend/type support lands.
-    const updated: Customer = {
-      ...editingCustomer,
-      name: editName,
-      email: editEmail,
-      phone: editPhone,
-      location: editLocation,
-      address: editAddress,
+    if (!isAddingCustomer && !editingCustomer) return;
+    const isNew = isAddingCustomer || !editingCustomer;
+    const customerId = editingCustomer ? editingCustomer.id : `cust_${Date.now()}`;
+
+    const savedCustomer: Customer = {
+      id: customerId,
+      name: editName.trim() || (isNew ? 'New Customer' : editingCustomer?.name || ''),
+      email: editEmail.trim() || (isNew ? 'manual@contact.local' : editingCustomer?.email || ''),
+      phone: editPhone.trim() || (editingCustomer?.phone || ''),
+      location: editLocation.trim() || (editingCustomer?.location || 'India'),
+      address: editAddress.trim() || (editingCustomer?.address || ''),
       gstin: editGstin,
       instagram: editInstagram,
       birthDate: editBirthDate,
@@ -164,11 +202,18 @@ export default function CustomersView({
         newsletter: editNewsletter,
         whatsappNotifications: editWhatsapp
       },
-      internalNotes: editNotes
+      internalNotes: editNotes,
+      joinedDate: editingCustomer?.joinedDate || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      ordersCount: editingCustomer?.ordersCount || 0,
+      totalSpent: editingCustomer?.totalSpent || 0,
+      wishlistCount: editingCustomer?.wishlistCount || 0,
+      lastOrderDate: editingCustomer?.lastOrderDate || '—'
     };
-    onUpdateCustomer(updated);
-    setEditingCustomer(updated);
-    alert("Customer profile successfully updated!");
+
+    onUpdateCustomer(savedCustomer);
+    setEditingCustomer(savedCustomer);
+    setIsAddingCustomer(false);
+    alert(isNew ? "New manual customer record created successfully!" : "Customer profile successfully updated!");
   };
 
   // UI-only handlers for the new Saved Addresses / Occasions cards.
@@ -213,670 +258,587 @@ export default function CustomersView({
     return orders.filter(o => o.customerEmail === email);
   };
 
-  if (editingCustomer) {
-    const custOrders = getCustomerOrders(editingCustomer.email);
+  if (editingCustomer || isAddingCustomer) {
+    const custOrders = editingCustomer ? getCustomerOrders(editingCustomer.email) : [];
     return (
-      <div className="space-y-6 text-xs font-sans">
-
-        {/* Back and title bar */}
-        {/* Hero Header */}
-
-        <div className="space-y-6">
-
-          {/* Breadcrumb */}
-
-          <div className="flex items-center gap-2 text-sm text-stone-500">
-
-            <button
-              onClick={() => setEditingCustomer(null)}
-              className="px-3 py-1 border border-stone-200 rounded hover:bg-stone-50"
-            >
-              ← Back
-            </button>
-
-            <span>Customers</span>
-
-            <span>›</span>
-
-            <span className="font-medium text-stone-800">
-              {editingCustomer.name}
-            </span>
-
-          </div>
-
-          {/* Dark Customer Card */}
-
-          <div className="bg-[#181521] rounded-xl px-8 py-6 text-white flex justify-between items-center">
-
-            <div className="flex gap-5">
-
-              {/* Avatar */}
-
-              <div className="w-20 h-20 rounded-full bg-[#d2ae63] flex items-center justify-center text-3xl font-bold text-[#2d2418]">
-
-                {editingCustomer.name
-                  .split(" ")
-                  .map(n => n[0])
-                  .join("")
-                  .substring(0, 2)}
-
-              </div>
-
-              {/* Details */}
-
-              <div>
-
-                <h2 className="text-4xl font-serif">
-
-                  {editingCustomer.name}
-
-                </h2>
-
-                <p className="text-stone-300 mt-2">
-
-                  {editingCustomer.email}
-
-                  {" • "}
-
-                  {editingCustomer.phone}
-
-                  {" • "}
-
-                  {editingCustomer.location}
-
-                  {" • Joined "}
-
-                  {editingCustomer.joinedDate}
-
-                </p>
-
-                <div className="flex gap-10 mt-6">
-
-                  <div>
-
-                    <div className="text-3xl font-bold">
-
-                      {custOrders.length}
-
-                    </div>
-
-                    <div className="uppercase text-xs text-stone-400">
-
-                      Orders
-
-                    </div>
-
-                  </div>
-
-                  <div>
-
-                    <div className="text-3xl font-bold">
-
-                      ₹{custOrders.reduce((sum, o) => sum + o.amount, 0).toLocaleString("en-IN")}
-
-                    </div>
-
-                    <div className="uppercase text-xs text-stone-400">
-
-                      Lifetime Value
-
-                    </div>
-
-                  </div>
-
-                  <div>
-
-                    <div className="text-3xl font-bold">
-
-                      ₹0
-
-                    </div>
-
-                    <div className="uppercase text-xs text-stone-400">
-
-                      Deposits Held
-
-                    </div>
-
-                  </div>
-
-                  <div>
-
-                    <div className="text-3xl font-bold">
-
-                      {editingCustomer.wishlistCount}
-
-                    </div>
-
-                    <div className="uppercase text-xs text-stone-400">
-
-                      Wishlist
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            {/* Right Side */}
-
-            <div className="flex flex-col items-end gap-3">
-
-              <div className="flex gap-2">
-
-                <span className="px-3 py-1 rounded border border-stone-500 text-xs uppercase">
-
-                  WEBSITE SIGNUP
-
-                </span>
-
-                <span className="px-3 py-1 rounded bg-green-100 text-green-700 text-xs">
-
-                  Active
-
-                </span>
-
-              </div>
-
-              <div className="flex gap-3">
-
-                <button className="bg-[#22c55e] hover:bg-[#16a34a] px-5 py-3 rounded text-white font-medium">
-
-                  WhatsApp Customer
-
-                </button>
-
-                <button className="border border-stone-500 px-5 py-3 rounded text-white">
-
-                  Email
-
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* Top summary card */}
-        {/* Track Record */}
-
-        <div className="bg-white border border-stone-200 rounded-lg px-4 py-2 flex items-center gap-4 flex-wrap">
-
-          <span className="uppercase text-[11px] tracking-wider font-bold text-stone-400">
-            TRACK RECORD
-          </span>
-
-          <span className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-sm">
-            🟢 0 rentals completed
-          </span>
-
-          <span className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-sm">
-            🟢 0 on-time • 0 late
-          </span>
-
-          <span className="px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-sm">
-            🟢 No damage
-          </span>
-
-          <span className="px-3 py-1 rounded-full bg-[#fff8eb] text-[#8a6a2c] text-sm">
-            🟡 1 upcoming
-          </span>
-
-          <span className="px-3 py-1 rounded-full bg-[#fff3ec] text-[#b45309] text-sm">
-            🟠 Deposit to collect — ₹25,000
-          </span>
-
-        </div>
-
-        {/* ============================================================ */}
-        {/* TAB CONTROLS                                                  */}
-        {/* Kept as-is structurally. Label text now matches the 9-tab     */}
-        {/* target design; the underlying activeTab state still only      */}
-        {/* distinguishes 'Profile' | 'History' | 'Wishlist' | 'Settings'  */}
-        {/* until Parts 2-9 ship, so the other tab buttons are wired to    */}
-        {/* their nearest existing state value for now (see TODO markers  */}
-        {/* inline). Swap these over one at a time as each part lands.    */}
-        {/* ============================================================ */}
-        <div className="flex border-b border-stone-200 gap-1 select-none font-semibold overflow-x-auto whitespace-nowrap scrollbar-none pb-px">
-          {(
-            [
-              "Profile",
-              "Order History",
-              "Wishlist",
-              "Cart",
-              "Rentals",
-              "Deposits",
-              "Offers",
-              "Communication Log",
-              "Account Settings",
-            ] as const
-          ).map((tab) => {
-            const isActive = activeTab === tab;
-            return (
+      <div className="min-h-full bg-[#FAF7F2] font-sans text-xs text-[#2A241F]">
+        {/* Fixed Top Bar Header */}
+        <header className="border-b border-[#E8E0D6] bg-white px-6 py-3">
+          <div className="flex items-center justify-between">
+            {/* Left: Back Button & Breadcrumb */}
+            <div className="flex items-center gap-3">
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 border-b-2 text-xs transition cursor-pointer ${isActive ? 'border-[#c5a880] text-stone-900 font-bold' : 'border-transparent text-stone-500 hover:text-stone-800'
-                  }`}
+                onClick={() => { setEditingCustomer(null); setIsAddingCustomer(false); }}
+                className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E6DED3] bg-white px-3 text-[12px] font-medium text-[#6F675D] hover:bg-[#FAF8F5] transition shadow-2xs cursor-pointer"
               >
-                {tab}
+                <ChevronLeft className="h-3.5 w-3.5" />
+                <span>Back</span>
               </button>
-            );
-          })}
-        </div>
-
-        {/* ============================================================ */}
-        {/* PART 1/9 — PROFILE TAB                                        */}
-        {/* Redesigned to match Admin Panel-customer.pdf reference.       */}
-        {/* Contains: Track Record, Fit & Measurements, Contact           */}
-        {/* Information, Preferences & Account, Saved Addresses,          */}
-        {/* Occasions. Everything backend-bound keeps its original prop   */}
-        {/* name; new UI-only sections are clearly marked.                */}
-        {/* ============================================================ */}
-        {activeTab === 'Profile' && (
-          <div className="space-y-6">
-
-            {/* ---- Row 1: Track Record + Fit & Measurements ---- */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-
-              {/* Track Record (backend-derived, read-only) */}
-              <div className="border border-stone-200 rounded-lg overflow-hidden bg-white">
-                <div className="px-5 py-3 border-b bg-white font-semibold">
-                  Track Record
-                </div>
-                <div className="p-5 space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">Rentals completed</span>
-                    <span>0 • 1 upcoming</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">On-time returns</span>
-                    <span>—</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">Late returns / fees</span>
-                    <span>None</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">Damage deductions</span>
-                    <span>None</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">Cancelled orders</span>
-                    <span>None</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">Refunds issued</span>
-                    <span>None</span>
-                  </div>
-                  {/* NEW row — matches reference PDF */}
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">Promos used</span>
-                    <span>None</span>
-                  </div>
-                  {/* NEW row — matches reference PDF */}
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">Delivery incidents</span>
-                    <span>None</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">Outstanding dues</span>
-                    <span>None</span>
-                  </div>
-                </div>
-                <div className="px-5 py-3 bg-stone-50 text-xs text-stone-500">
-                  Derived live from this customer's orders, deposit decisions and late-fee receivables — nothing here is entered by hand.
-                </div>
-              </div>
-
-              {/* Fit & Measurements */}
-              <div className="border border-stone-200 rounded-lg overflow-hidden bg-white">
-                <div className="px-5 py-3 border-b bg-white font-semibold">
-                  Fit & Measurements
-                </div>
-                <div className="p-6 text-center text-stone-400">
-                  No measurements on file yet — they're captured automatically the first time she requests a custom fit on an order.
-                </div>
-                {/* NEW — "Sizes rented so far" line. Backed by existing
-                    editSize field as a stand-in until order-level size
-                    history exists on the backend. */}
-                <div className="px-6 pb-4 text-sm text-stone-600">
-                  Sizes rented so far: <span className="font-medium">{editSize || '—'}</span>
-                </div>
-                <div className="px-5 py-3 bg-stone-50 text-xs text-stone-500">
-                  Captured automatically from custom-fit requests on orders, so repeat renters never re-send measurements.
-                </div>
-              </div>
-
-            </div>
-
-            {/* ---- Row 2: Contact Information ---- */}
-            <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
-              <h3 className="font-serif font-bold text-stone-900 text-sm">
-                Contact Information
-              </h3>
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Full Name</label>
-                  <input
-                    type="text"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Email Address</label>
-                  <input
-                    type="email"
-                    value={editEmail}
-                    onChange={(e) => setEditEmail(e.target.value)}
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Phone Number (WhatsApp)</label>
-                  <input
-                    type="text"
-                    value={editPhone}
-                    onChange={(e) => setEditPhone(e.target.value)}
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">City Location</label>
-                  <input
-                    type="text"
-                    value={editLocation}
-                    onChange={(e) => setEditLocation(e.target.value)}
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">GSTIN (Optional)</label>
-                  <input
-                    type="text"
-                    value={editGstin}
-                    onChange={(e) => setEditGstin(e.target.value)}
-                    placeholder="For B2B invoicing"
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs uppercase"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Date of Birth (Optional)</label>
-                  <input
-                    type="date"
-                    value={editBirthDate}
-                    onChange={(e) => setEditBirthDate(e.target.value)}
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Instagram Handle</label>
-                  <input
-                    type="text"
-                    value={editInstagram}
-                    onChange={(e) => setEditInstagram(e.target.value)}
-                    placeholder="@handle"
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                {/* Referred By — state already existed (editReferrer) but
-                    wasn't rendered before. Now wired up, matches PDF. */}
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Referred By</label>
-                  <input
-                    type="text"
-                    value={editReferrer}
-                    onChange={(e) => setEditReferrer(e.target.value)}
-                    placeholder="Instagram, friend referral, walk-in..."
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                <div className="space-y-1 xl:col-span-2">
-                  <label className="text-stone-500 font-medium">Billing & Delivery Address</label>
-                  <input
-                    type="text"
-                    value={editAddress}
-                    onChange={(e) => setEditAddress(e.target.value)}
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end pt-2">
-                <button
-                  onClick={handleSaveCustomer}
-                  className="bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] font-semibold px-4 py-2 rounded-md text-sm transition flex items-center gap-2"
-                >
-                  <Save className="h-4 w-4" /> Save
-                </button>
+              <div className="flex items-center gap-1.5 text-[13px]">
+                <span className="text-[#9C9287]">Customers</span>
+                <span className="text-[#C3BAAF]">›</span>
+                <span className="font-semibold text-[#2C2926]">
+                  {isAddingCustomer ? 'New Customer' : editingCustomer?.name}
+                </span>
               </div>
             </div>
 
-            {/* ---- Row 3: Preferences & Account (NEW CARD) ---- */}
-            <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
-              <h3 className="font-serif font-bold text-stone-900 text-sm">
-                Preferences & Account
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Preferred Sizes</label>
-                  <input
-                    type="text"
-                    value={editSize}
-                    onChange={(e) => setEditSize(e.target.value)}
-                    placeholder="E.g. S, M, XL or numeric sizes"
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                {/* UI-only for now — see TODO(backend) at top of file */}
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Preferred Occasions</label>
-                  <input
-                    type="text"
-                    value={editPreferredOccasions}
-                    onChange={(e) => setEditPreferredOccasions(e.target.value)}
-                    placeholder="E.g. Wedding, Sangeet, Cocktail"
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-3 pt-2">
-                <label className="uppercase text-[11px] tracking-wider font-bold text-stone-400">
-                  WhatsApp Updates
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer select-none w-fit">
-                  <span
-                    onClick={() => setEditWhatsapp(!editWhatsapp)}
-                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${editWhatsapp ? 'bg-[#c5a880]' : 'bg-stone-300'}`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${editWhatsapp ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                  </span>
-                  <span className="text-stone-600 font-medium">Bookings, dispatch, returns</span>
-                </label>
-              </div>
-
-              <div className="space-y-3">
-                <label className="uppercase text-[11px] tracking-wider font-bold text-stone-400">
-                  Email Notifications
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer select-none w-fit">
-                  <span
-                    onClick={() => setEditNewsletter(!editNewsletter)}
-                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${editNewsletter ? 'bg-[#c5a880]' : 'bg-stone-300'}`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${editNewsletter ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                  </span>
-                  <span className="text-stone-600 font-medium">Orders, rentals, deposits</span>
-                </label>
-              </div>
-
-              {/* UI-only for now — see TODO(backend) at top of file */}
-              <div className="space-y-3">
-                <label className="uppercase text-[11px] tracking-wider font-bold text-stone-400">
-                  New Arrivals & Offers
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer select-none w-fit">
-                  <span
-                    onClick={() => setEditMarketingOptIn(!editMarketingOptIn)}
-                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${editMarketingOptIn ? 'bg-[#c5a880]' : 'bg-stone-300'}`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${editMarketingOptIn ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                  </span>
-                  <span className="text-stone-600 font-medium">Curated picks, occasions</span>
-                </label>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-stone-100">
-                <div className="space-y-1 pt-3">
-                  <label className="text-stone-500 font-medium">Account Created</label>
-                  {/* Backed by existing joinedDate field — no new backend needed */}
-                  <div className="w-full p-2 bg-stone-50 border border-stone-200 rounded text-xs text-stone-600">
-                    {editingCustomer.joinedDate}
-                  </div>
-                </div>
-                <div className="space-y-1 pt-3">
-                  <label className="text-stone-500 font-medium">Last Login</label>
-                  {/* TODO(backend): Customer.lastLogin?: string — placeholder until available */}
-                  <div className="w-full p-2 bg-stone-50 border border-stone-200 rounded text-xs text-stone-400 italic">
-                    Not tracked yet
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-end pt-2">
-                <button
-                  onClick={handleSaveCustomer}
-                  className="bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] font-semibold px-4 py-2 rounded-md text-sm transition flex items-center gap-2"
-                >
-                  <Save className="h-4 w-4" /> Save
-                </button>
-              </div>
+            {/* Right: Actions */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => window.open('/', '_blank')}
+                className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E5DDD3] bg-white px-3.5 text-[12px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition shadow-2xs cursor-pointer"
+              >
+                <ExternalLink className="h-3.5 w-3.5 text-[#6F675D]" />
+                <span>View Live Site</span>
+              </button>
+              <button
+                onClick={handleSaveCustomer}
+                className="inline-flex h-8 items-center rounded-md bg-[#C7A55C] hover:bg-[#B9974B] px-4 text-[12px] font-semibold text-[#2A2118] transition shadow-2xs cursor-pointer"
+              >
+                Save Changes
+              </button>
             </div>
-
-            {/* ---- Row 4: Saved Addresses (NEW CARD, UI-only) ---- */}
-            <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
-              <h3 className="font-serif font-bold text-stone-900 text-sm">
-                Saved Addresses
-              </h3>
-
-              {addresses.length === 0 ? (
-                <p className="text-stone-400">No saved addresses yet — add one below.</p>
-              ) : (
-                <div className="divide-y divide-stone-100">
-                  {addresses.map(a => (
-                    <div key={a.id} className="py-3 flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-3">
-                        <span className="uppercase text-[10px] font-bold text-stone-400 pt-0.5 w-16 shrink-0">
-                          {a.label}
-                        </span>
-                        <span className="text-stone-700">{a.address}</span>
-                      </div>
-                      {a.isDefault && (
-                        <span className="px-2 py-0.5 rounded border border-stone-300 text-[10px] uppercase text-stone-500 shrink-0">
-                          Default
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-3 items-end pt-2 border-t border-stone-100">
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Label</label>
-                  <input
-                    type="text"
-                    value={newAddressLabel}
-                    onChange={(e) => setNewAddressLabel(e.target.value)}
-                    placeholder="Home / Office / Venue..."
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Address</label>
-                  <input
-                    type="text"
-                    value={newAddressText}
-                    onChange={(e) => setNewAddressText(e.target.value)}
-                    placeholder="Full delivery address with pincode"
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                <button
-                  onClick={handleAddAddress}
-                  className="border border-stone-300 px-4 py-2 rounded-md text-xs font-medium hover:bg-stone-50 whitespace-nowrap"
-                >
-                  + Add Address
-                </button>
-              </div>
-            </div>
-
-            {/* ---- Row 5: Occasions (NEW CARD, UI-only) ---- */}
-            <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
-              <h3 className="font-serif font-bold text-stone-900 text-sm">
-                Occasions
-              </h3>
-
-              {occasions.length === 0 ? (
-                <p className="text-stone-400 text-center py-4">
-                  No occasions on file — add the date she's dressing for.
-                </p>
-              ) : (
-                <div className="divide-y divide-stone-100">
-                  {occasions.map(o => (
-                    <div key={o.id} className="py-3 flex items-center justify-between">
-                      <span className="text-stone-700 font-medium">{o.occasion}</span>
-                      <span className="text-stone-500">{o.date || '—'}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-3 items-end pt-2 border-t border-stone-100">
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Occasion</label>
-                  <input
-                    type="text"
-                    value={newOccasionName}
-                    onChange={(e) => setNewOccasionName(e.target.value)}
-                    placeholder="Sister's wedding, Sangeet..."
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Date</label>
-                  <input
-                    type="date"
-                    value={newOccasionDate}
-                    onChange={(e) => setNewOccasionDate(e.target.value)}
-                    className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
-                </div>
-                <button
-                  onClick={handleAddOccasion}
-                  className="border border-stone-300 px-4 py-2 rounded-md text-xs font-medium hover:bg-stone-50 whitespace-nowrap"
-                >
-                  + Add Occasion
-                </button>
-              </div>
-
-              <p className="text-xs text-stone-400 pt-1">
-                The dates she's dressing for — the anchor for proactive, celebration-led follow-ups.
-              </p>
-            </div>
-
           </div>
-        )}
-        {/* ============================ END PART 1/9 — PROFILE ============================ */}
+        </header>
+
+        {/* Content Body */}
+        <div className="p-6 space-y-6">
+          {/* Soft Green Banner Notice (when adding manual contact) */}
+          {isAddingCustomer && (
+            <div className="bg-[#F3F9F3] border border-[#D0EBD0] rounded-md p-3.5 px-4 text-[12.5px] text-[#2D6A35] leading-relaxed">
+              Creating a <span className="font-semibold">manual (WhatsApp) contact</span> — fill in Contact Information below and press Save to create the record. Website signups appear here automatically; manual contacts are merged into the signup account if the customer registers later with the same phone or email.
+            </div>
+          )}
+
+          {/* Dark Customer Hero Card */}
+          <div className="bg-[#181521] rounded-xl px-7 py-5 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-sm">
+            <div className="flex items-center gap-5">
+              {/* Avatar Circle */}
+              <div className="w-14 h-14 rounded-full bg-[#C7A55C] flex items-center justify-center text-xl font-bold text-[#2D2418] shrink-0 shadow-inner">
+                {isAddingCustomer ? (
+                  <span className="text-2xl font-normal">+</span>
+                ) : (
+                  editingCustomer?.name
+                    .split(" ")
+                    .map(n => n[0])
+                    .join("")
+                    .substring(0, 2)
+                )}
+              </div>
+
+              {/* Customer Details */}
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-serif font-normal text-white tracking-tight">
+                  {isAddingCustomer ? 'New Customer' : editingCustomer?.name}
+                </h2>
+                <p className="text-[#A89F91] text-[12.5px] mt-1 font-normal">
+                  {isAddingCustomer ? (
+                    "Manual (WhatsApp) contact — fill Contact Information below and press Save to create."
+                  ) : (
+                    `${editingCustomer?.email} • ${editingCustomer?.phone} • ${editingCustomer?.location} • Joined ${editingCustomer?.joinedDate}`
+                  )}
+                </p>
+
+                {!isAddingCustomer && (
+                  <div className="flex flex-wrap gap-8 mt-4 text-xs">
+                    <div>
+                      <div className="text-2xl font-bold text-white leading-tight">
+                        {custOrders.length}
+                      </div>
+                      <div className="uppercase text-[10px] tracking-wider text-[#A89F91] mt-0.5 font-medium">
+                        Orders
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-white leading-tight">
+                        ₹{custOrders.reduce((sum, o) => sum + o.amount, 0).toLocaleString("en-IN")}
+                      </div>
+                      <div className="uppercase text-[10px] tracking-wider text-[#A89F91] mt-0.5 font-medium">
+                        Lifetime Value
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-white leading-tight">
+                        ₹0
+                      </div>
+                      <div className="uppercase text-[10px] tracking-wider text-[#A89F91] mt-0.5 font-medium">
+                        Deposits Held
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-white leading-tight">
+                        {editingCustomer?.wishlistCount || 0}
+                      </div>
+                      <div className="uppercase text-[10px] tracking-wider text-[#A89F91] mt-0.5 font-medium">
+                        Wishlist
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Side Status & Actions */}
+            <div className="flex flex-col items-start sm:items-end gap-3 shrink-0 self-stretch sm:self-auto justify-between">
+              <div className="flex items-center gap-2">
+                {!isAddingCustomer && (
+                  <span className="px-2.5 py-0.5 rounded border border-stone-600 text-[10px] uppercase tracking-wider text-stone-300">
+                    WEBSITE SIGNUP
+                  </span>
+                )}
+                <span className="px-2.5 py-0.5 rounded bg-[#E8F2E8] text-[#3E7A4A] text-[11px] font-medium">
+                  Active
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                <button className="bg-[#22C55E] hover:bg-[#16A34A] px-4 py-2 rounded text-white font-medium text-xs flex items-center gap-1.5 transition cursor-pointer shadow-2xs">
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  WhatsApp Customer
+                </button>
+                <button className="border border-[#4A4452] hover:bg-white/10 px-4 py-2 rounded text-white font-medium text-xs transition cursor-pointer shadow-2xs">
+                  Email
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation Tabs Bar */}
+          <div className="border-b border-[#E8E1D9]">
+            <nav className="flex gap-7 overflow-x-auto scrollbar-none whitespace-nowrap">
+              {(
+                [
+                  "Profile",
+                  "Order History",
+                  "Wishlist",
+                  "Cart",
+                  "Rentals",
+                  "Deposits",
+                  "Offers",
+                  "Communication Log",
+                  "Account Settings",
+                ] as const
+              ).map((tab) => {
+                const isActive = activeTab === tab;
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`py-2.5 text-[13px] transition cursor-pointer relative font-medium ${
+                      isActive
+                        ? 'text-[#2B2520] font-semibold'
+                        : 'text-[#8C847A] hover:text-[#2B2520]'
+                    }`}
+                  >
+                    {tab}
+                    {isActive && (
+                      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#C7A55C] rounded-t-full" />
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'Profile' && (
+            <div className="space-y-6">
+              {/* Row 1: Track Record + Fit & Measurements */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                {/* Track Record */}
+                <div className="border border-[#EBE5DF] rounded-lg overflow-hidden bg-white shadow-2xs flex flex-col justify-between">
+                  <div>
+                    <div className="px-5 py-3 border-b border-[#EBE5DF] bg-white font-semibold text-stone-900 text-xs">
+                      Track Record
+                    </div>
+                    {isAddingCustomer ? (
+                      <div className="p-10 text-center text-[#A0988E] text-xs font-normal">
+                        Track record builds automatically from her first order.
+                      </div>
+                    ) : (
+                      <div className="p-5 space-y-3 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">Rentals completed</span>
+                          <span className="font-medium text-stone-900">0 • 1 upcoming</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">On-time returns</span>
+                          <span className="font-medium text-stone-900">—</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">Late returns / fees</span>
+                          <span className="font-medium text-stone-900">None</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">Damage deductions</span>
+                          <span className="font-medium text-stone-900">None</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">Cancelled orders</span>
+                          <span className="font-medium text-stone-900">None</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">Refunds issued</span>
+                          <span className="font-medium text-stone-900">None</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">Promos used</span>
+                          <span className="font-medium text-stone-900">None</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">Delivery incidents</span>
+                          <span className="font-medium text-stone-900">None</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">Outstanding dues</span>
+                          <span className="font-medium text-stone-900">None</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="px-5 py-3 bg-[#FAF7F2] text-[11px] text-[#8C847A] border-t border-[#EBE5DF]">
+                    Derived live from this customer's orders, deposit decisions and late-fee receivables — nothing here is entered by hand.
+                  </div>
+                </div>
+
+                {/* Fit & Measurements */}
+                <div className="border border-[#EBE5DF] rounded-lg overflow-hidden bg-white shadow-2xs flex flex-col justify-between">
+                  <div>
+                    <div className="px-5 py-3 border-b border-[#EBE5DF] bg-white font-semibold text-stone-900 text-xs">
+                      Fit & Measurements
+                    </div>
+                    {isAddingCustomer ? (
+                      <div className="p-10 text-center text-[#A0988E] text-xs font-normal">
+                        Captured automatically from the first custom-fit order.
+                      </div>
+                    ) : (
+                      <>
+                        <div className="p-6 text-center text-[#A0988E]">
+                          No measurements on file yet — they're captured automatically the first time she requests a custom fit on an order.
+                        </div>
+                        <div className="px-6 pb-4 text-xs text-stone-600">
+                          Sizes rented so far: <span className="font-medium">{editSize || '—'}</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div className="px-5 py-3 bg-[#FAF7F2] text-[11px] text-[#8C847A] border-t border-[#EBE5DF]">
+                    Captured automatically from custom-fit requests on orders, so repeat renters never re-send measurements.
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 2: Contact Information + Preferences & Account */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                {/* Contact Information */}
+                <div className="bg-white rounded-lg border border-[#EBE5DF] shadow-2xs overflow-hidden flex flex-col justify-between">
+                  <div className="p-5 space-y-4">
+                    <h3 className="font-serif font-bold text-stone-900 text-sm">
+                      Contact Information
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-semibold text-[#6F675D] uppercase tracking-wider block">FULL NAME</label>
+                        <input
+                          type="text"
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          placeholder="Full Name"
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-semibold text-[#6F675D] uppercase tracking-wider block">EMAIL</label>
+                        <input
+                          type="email"
+                          value={editEmail}
+                          onChange={(e) => setEditEmail(e.target.value)}
+                          placeholder="email@domain.com"
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-semibold text-[#6F675D] uppercase tracking-wider block">PHONE (WHATSAPP)</label>
+                        <input
+                          type="text"
+                          value={editPhone}
+                          onChange={(e) => setEditPhone(e.target.value)}
+                          placeholder="+91 98200 45871"
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-semibold text-[#6F675D] uppercase tracking-wider block">CITY</label>
+                        <input
+                          type="text"
+                          value={editLocation}
+                          onChange={(e) => setEditLocation(e.target.value)}
+                          placeholder="Mumbai"
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-semibold text-[#6F675D] uppercase tracking-wider block">GSTIN (OPTIONAL)</label>
+                        <input
+                          type="text"
+                          value={editGstin}
+                          onChange={(e) => setEditGstin(e.target.value)}
+                          placeholder="For B2B invoicing"
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs uppercase focus:border-[#C7A55C] outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-semibold text-[#6F675D] uppercase tracking-wider block">DATE OF BIRTH (OPTIONAL)</label>
+                        <input
+                          type="text"
+                          value={editBirthDate}
+                          onChange={(e) => setEditBirthDate(e.target.value)}
+                          placeholder="dd/mm/yyyy"
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1 sm:col-span-2">
+                        <label className="text-[11px] font-semibold text-[#6F675D] uppercase tracking-wider block">REFERRED BY</label>
+                        <input
+                          type="text"
+                          value={editReferrer}
+                          onChange={(e) => setEditReferrer(e.target.value)}
+                          placeholder="Platform / Friend / Instagram..."
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="px-5 py-2.5 bg-[#FAF7F2] border-t border-[#EBE5DF] flex justify-end">
+                    <button
+                      onClick={handleSaveCustomer}
+                      className="bg-[#C7A55C] hover:bg-[#B9974B] text-[#2A2118] font-semibold px-4 py-1.5 rounded-md text-xs transition cursor-pointer shadow-2xs"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+
+                {/* Preferences & Account */}
+                <div className="bg-white rounded-lg border border-[#EBE5DF] shadow-2xs overflow-hidden flex flex-col justify-between">
+                  <div className="p-5 space-y-4">
+                    <h3 className="font-serif font-bold text-stone-900 text-sm">
+                      Preferences & Account
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-semibold text-[#6F675D] uppercase tracking-wider block">PREFERRED SIZES</label>
+                        <input
+                          type="text"
+                          value={editSize}
+                          onChange={(e) => setEditSize(e.target.value)}
+                          placeholder="e.g. S, M, 36"
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-semibold text-[#6F675D] uppercase tracking-wider block">PREFERRED OCCASIONS</label>
+                        <input
+                          type="text"
+                          value={editPreferredOccasions}
+                          onChange={(e) => setEditPreferredOccasions(e.target.value)}
+                          placeholder="e.g. Wedding, Sangeet"
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                      <label className="uppercase text-[10px] tracking-wider font-bold text-stone-400 block">
+                        WHATSAPP UPDATES
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer select-none w-fit">
+                        <span
+                          onClick={() => setEditWhatsapp(!editWhatsapp)}
+                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${editWhatsapp ? 'bg-[#C7A55C]' : 'bg-stone-300'}`}
+                        >
+                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${editWhatsapp ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                        </span>
+                        <span className="text-stone-600 font-medium text-xs">Bookings, dispatch, returns</span>
+                      </label>
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="uppercase text-[10px] tracking-wider font-bold text-stone-400 block">
+                        EMAIL NOTIFICATIONS
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer select-none w-fit">
+                        <span
+                          onClick={() => setEditNewsletter(!editNewsletter)}
+                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${editNewsletter ? 'bg-[#C7A55C]' : 'bg-stone-300'}`}
+                        >
+                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${editNewsletter ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                        </span>
+                        <span className="text-stone-600 font-medium text-xs">Orders, rentals, deposits</span>
+                      </label>
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="uppercase text-[10px] tracking-wider font-bold text-stone-400 block">
+                        NEW ARRIVALS & OFFERS
+                      </label>
+                      <label className="flex items-center gap-3 cursor-pointer select-none w-fit">
+                        <span
+                          onClick={() => setEditMarketingOptIn(!editMarketingOptIn)}
+                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${editMarketingOptIn ? 'bg-[#C7A55C]' : 'bg-stone-300'}`}
+                        >
+                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${editMarketingOptIn ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                        </span>
+                        <span className="text-stone-600 font-medium text-xs">Curated picks, occasions</span>
+                      </label>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase tracking-wider font-bold text-stone-400 block">ACCOUNT CREATED</label>
+                        <input
+                          type="text"
+                          readOnly
+                          value={isAddingCustomer ? 'Manual creation' : (editingCustomer?.joinedDate || '15 Mar 2026')}
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs text-[#2A241F] outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase tracking-wider font-bold text-stone-400 block">LAST LOGIN</label>
+                        <input
+                          type="text"
+                          readOnly
+                          value={isAddingCustomer ? '—' : '21 Jun 2026, 13:55'}
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs text-[#2A241F] outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="px-5 py-2.5 bg-[#FAF7F2] border-t border-[#EBE5DF] flex justify-end">
+                    <button
+                      onClick={handleSaveCustomer}
+                      className="bg-[#C7A55C] hover:bg-[#B9974B] text-[#2A2118] font-semibold px-4 py-1.5 rounded-md text-xs transition cursor-pointer shadow-2xs"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 3: Saved Addresses + Occasions */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                {/* Saved Addresses */}
+                <div className="bg-white rounded-lg border border-[#EBE5DF] shadow-2xs overflow-hidden flex flex-col justify-between">
+                  <div className="p-5 space-y-3">
+                    <h3 className="font-serif font-bold text-stone-900 text-sm">
+                      Saved Addresses
+                    </h3>
+
+                    {/* Saved Addresses List */}
+                    <div className="space-y-2 pt-1 border-b border-[#EBE5DF] pb-4">
+                      <div className="flex items-center justify-between text-xs py-1">
+                        <div className="flex items-center gap-3">
+                          <span className="uppercase text-[10px] font-semibold tracking-wider text-[#8C847A] w-14 shrink-0">HOME</span>
+                          <span className="text-[#2A241F] font-normal">Tower 3, Lodha Heights, Lower Parel, Mumbai — 400013</span>
+                        </div>
+                        <span className="px-1.5 py-0.5 rounded border border-[#E2DAD1] text-[9px] uppercase tracking-wider text-[#8C847A] font-semibold shrink-0">DEFAULT</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-xs py-1">
+                        <span className="uppercase text-[10px] font-semibold tracking-wider text-[#8C847A] w-14 shrink-0">BANDRA</span>
+                        <span className="text-[#2A241F] font-normal">14, Carter Road, Bandra West, Mumbai — 400050</span>
+                      </div>
+                    </div>
+
+                    {/* Add Address Form */}
+                    <div className="space-y-3 pt-1">
+                      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-[#8C847A] uppercase tracking-wider block">LABEL</label>
+                          <input
+                            type="text"
+                            value={newAddressLabel}
+                            onChange={(e) => setNewAddressLabel(e.target.value)}
+                            placeholder="Home / Office / Venue..."
+                            className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                          />
+                        </div>
+                        <button
+                          onClick={handleAddAddress}
+                          className="border border-[#E2DAD1] bg-white hover:bg-[#FAF8F5] text-[#2A2118] font-semibold px-4 py-2 rounded-md text-xs transition cursor-pointer shadow-2xs whitespace-nowrap"
+                        >
+                          + Add Address
+                        </button>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-semibold text-[#8C847A] uppercase tracking-wider block">ADDRESS</label>
+                        <textarea
+                          value={newAddressText}
+                          onChange={(e) => setNewAddressText(e.target.value)}
+                          rows={2}
+                          placeholder="Full delivery address with pincode"
+                          className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none resize-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Occasions */}
+                <div className="bg-white rounded-lg border border-[#EBE5DF] shadow-2xs overflow-hidden flex flex-col justify-between">
+                  <div>
+                    <div className="p-5 pb-3">
+                      <h3 className="font-serif font-bold text-stone-900 text-sm">
+                        Occasions
+                      </h3>
+                    </div>
+
+                    <div className="p-5 py-6 text-center text-[#A0988E] text-xs font-normal border-y border-dashed border-[#EBE5DF]">
+                      No occasions on file — add the date she's dressing for.
+                    </div>
+
+                    <div className="p-5 space-y-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-[#8C847A] uppercase tracking-wider block">OCCASION</label>
+                          <input
+                            type="text"
+                            value={newOccasionName}
+                            onChange={(e) => setNewOccasionName(e.target.value)}
+                            placeholder="Sister's wedding, Sangeet..."
+                            className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-[#8C847A] uppercase tracking-wider block">DATE</label>
+                          <input
+                            type="text"
+                            value={newOccasionDate}
+                            onChange={(e) => setNewOccasionDate(e.target.value)}
+                            placeholder="dd/mm/yyyy"
+                            className="w-full p-2 bg-[#FCF9F5] border border-[#E5DDD3] rounded-md text-xs focus:border-[#C7A55C] outline-none"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <button
+                          onClick={handleAddOccasion}
+                          className="border border-[#E2DAD1] bg-white hover:bg-[#FAF8F5] text-[#2A2118] font-semibold px-4 py-1.5 rounded-md text-xs transition cursor-pointer shadow-2xs"
+                        >
+                          + Add Occasion
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="px-5 py-2.5 bg-[#FAF7F2] text-[11px] text-[#8C847A] border-t border-[#EBE5DF]">
+                    The dates she's dressing for — the anchor for proactive, celebration-led follow-ups.
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ============================ END PROFILE TAB ============================ */}
 
         {/* ============================================================ */}
         {/* PARTS 2-9 BELOW — UNCHANGED FOR NOW                           */}
@@ -1560,8 +1522,9 @@ export default function CustomersView({
         )}
 
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="space-y-6 text-xs font-sans">
@@ -1623,7 +1586,8 @@ export default function CustomersView({
         <div className="flex gap-3">
 
           <button
-            className="bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] font-semibold px-4 py-2 rounded-md text-sm transition">
+            onClick={startAdding}
+            className="bg-[#C7A55C] hover:bg-[#B9974B] text-[#2A2118] font-semibold px-4 py-2 rounded-md text-xs transition cursor-pointer shadow-2xs">
             + Add Customer
           </button>
 
