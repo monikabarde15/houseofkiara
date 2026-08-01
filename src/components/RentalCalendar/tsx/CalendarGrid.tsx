@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react';
-import { CalendarEvent } from './types';
+import React, { useMemo, useRef, useState } from 'react';
+import { CalendarEvent } from '../types';
 import EventPill from './EventPill';
+import EventDetailCard from './EventDetailCard';
+import DayEventsPopover from './DayEventspopover';
 import '../css/CalendarGrid.css';
 
 interface CalendarGridProps {
@@ -13,6 +15,12 @@ interface CalendarGridProps {
 }
 
 const DAY_LABELS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+const FULL_DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+});
 
 function toISODate(date: Date): string {
   return date.toISOString().slice(0, 10);
@@ -67,6 +75,48 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 
   const currentMonthIndex = month.getMonth();
 
+  // --- Hover card state (individual event pills) ---
+  const [hoverState, setHoverState] = useState<{ event: CalendarEvent; anchor: DOMRect } | null>(null);
+  const showTimer = useRef<number | null>(null);
+  const hideTimer = useRef<number | null>(null);
+
+  const cancelHide = () => {
+    if (hideTimer.current) window.clearTimeout(hideTimer.current);
+  };
+
+  const handleHoverStart = (event: CalendarEvent, anchor: DOMRect) => {
+    cancelHide();
+    if (showTimer.current) window.clearTimeout(showTimer.current);
+    showTimer.current = window.setTimeout(() => setHoverState({ event, anchor }), 250);
+  };
+
+  const handleHoverEnd = () => {
+    if (showTimer.current) window.clearTimeout(showTimer.current);
+    hideTimer.current = window.setTimeout(() => setHoverState(null), 150);
+  };
+
+  // --- "+N more" day popover state ---
+  const [expandedDay, setExpandedDay] = useState<{
+    iso: string;
+    dateLabel: string;
+    events: CalendarEvent[];
+    anchor: DOMRect;
+  } | null>(null);
+
+  const openDayPopover = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    date: Date,
+    iso: string,
+    dayEvents: CalendarEvent[],
+  ) => {
+    setExpandedDay({
+      iso,
+      dateLabel: FULL_DATE_FORMATTER.format(date),
+      events: dayEvents,
+      anchor: e.currentTarget.getBoundingClientRect(),
+    });
+  };
+
   return (
     <div className="calendar-grid">
       <div className="calendar-grid__scroll">
@@ -110,10 +160,20 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 
                   <div className="calendar-grid__events">
                     {visible.map((event) => (
-                      <EventPill key={event.id} event={event} onClick={onEventClick} />
+                      <EventPill
+                        key={event.id}
+                        event={event}
+                        onClick={onEventClick}
+                        onHoverStart={handleHoverStart}
+                        onHoverEnd={handleHoverEnd}
+                      />
                     ))}
                     {overflowCount > 0 && (
-                      <button type="button" className="calendar-grid__more">
+                      <button
+                        type="button"
+                        className="calendar-grid__more"
+                        onClick={(e) => openDayPopover(e, date, iso, dayEvents)}
+                      >
                         +{overflowCount} more
                       </button>
                     )}
@@ -124,6 +184,27 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           </div>
         ))}
       </div>
+
+      {hoverState && (
+        <EventDetailCard
+          event={hoverState.event}
+          anchor={hoverState.anchor}
+          onMouseEnter={cancelHide}
+          onMouseLeave={handleHoverEnd}
+        />
+      )}
+
+      {expandedDay && (
+        <DayEventsPopover
+          dateLabel={expandedDay.dateLabel}
+          events={expandedDay.events}
+          anchor={expandedDay.anchor}
+          onClose={() => setExpandedDay(null)}
+          onEventClick={onEventClick}
+          onEventHoverStart={handleHoverStart}
+          onEventHoverEnd={handleHoverEnd}
+        />
+      )}
     </div>
   );
 };

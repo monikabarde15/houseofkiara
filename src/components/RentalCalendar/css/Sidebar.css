@@ -5,6 +5,10 @@
   background: #FFFFFF;
   padding: 14px 14px 0;
   overflow-y: auto;
+
+  position: sticky;
+  top: 16px;
+  max-height: calc(100vh - 32px);
 }
 
 .rental-sidebar__month {

@@ -13,6 +13,23 @@ export type EventType =
   | 'delivery-followup'
   | 'internal-task';
 
+export interface CalendarEventDetail {
+  customerName: string;
+  customerLocation: string;
+  customerPhone: string;
+  orderPlaced: string; // display string, e.g. "15 Mar 2026"
+  productName: string;
+  productSubtitle: string; // e.g. "Ritu Kumar · Size M · Rental"
+  rentalPeriodLabel: string; // "19 Mar 2026 – 21 Mar 2026"
+  dispatchByLabel: string;
+  dispatchOverdue?: boolean;
+  carrierLabel: string;
+  rentalAmountLabel: string;
+  securityDepositLabel: string;
+  depositStatusLabel: string;
+  overdueMessage?: string;
+}
+
 export interface CalendarEvent {
   id: string;
   type: EventType;
@@ -20,6 +37,8 @@ export interface CalendarEvent {
   /** ISO date, e.g. "2026-03-18" */
   date: string;
   orderId?: string;
+  /** Optional — pills without this simply won't render a hover card. */
+  detail?: CalendarEventDetail;
 }
 
 export type CalendarViewMode = 'month' | 'agenda' | 'gantt';
@@ -48,6 +67,7 @@ export const EVENT_STYLES: Record<EventType, { label: string; color: string }> =
   'delivery-followup': { label: 'Delivery Follow-up', color: '#3B5A8A' },
   'internal-task': { label: 'Internal Task', color: '#7A4331' },
 };
+
 //Agenda
 export type AgendaActionType =
   | 'prep-dispatch' | 'dispatched' | 'rental-starts' | 'return-due' | 'cleaning';
@@ -73,6 +93,7 @@ export interface AgendaEntry {
   savedNote?: string;
   detail: AgendaEntryDetail;
 }
+
 // Gantt
 export type GanttSegmentType = 'dispatch' | 'rental' | 'return' | 'deposit';
 
