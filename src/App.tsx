@@ -206,6 +206,10 @@ export default function App() {
     });
   };
 
+  const handleDeleteCustomer = (id: string) => {
+    setCustomers(prev => prev.filter(c => c.id !== id && c.customerId !== id));
+  };
+
   const handleAddPromoCode = (newCode: PromoCode) => {
     setPromoCodes([newCode, ...promoCodes]);
   };
@@ -318,6 +322,7 @@ export default function App() {
           orders={orders}
           products={products}
           onUpdateCustomer={handleUpdateCustomer}
+          onDeleteCustomer={handleDeleteCustomer}
           setView={setView}
           setSelectedOrderId={setSelectedOrderId}
           onEditingChange={setIsSectionEditing}

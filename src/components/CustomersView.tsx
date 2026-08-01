@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Eye, Mail, Phone, MapPin, User, Save, ListFilter, AlertTriangle, MessageCircle, ChevronLeft, ExternalLink } from 'lucide-react';
+import { Search, Eye, Mail, Phone, MapPin, User, Save, ListFilter, AlertTriangle, MessageCircle, ChevronLeft, ExternalLink, Trash2, X, Loader2 } from 'lucide-react';
 import { Customer, Order, Product, SavedAddress, CustomerOccasion } from '../types';
 import * as customerApi from '../services/customerApi';
 
@@ -8,6 +8,7 @@ interface CustomersViewProps {
   orders: Order[];
   products: Product[];
   onUpdateCustomer: (updated: Customer) => void;
+  onDeleteCustomer: (id: string) => void;
   setView: (view: string) => void;
   setSelectedOrderId: (id: string) => void;
   onEditingChange?: (isEditing: boolean) => void;
@@ -18,6 +19,7 @@ export default function CustomersView({
   orders,
   products,
   onUpdateCustomer,
+  onDeleteCustomer,
   setView,
   setSelectedOrderId,
   onEditingChange,
@@ -26,6 +28,11 @@ export default function CustomersView({
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [isAddingCustomer, setIsAddingCustomer] = useState(false);
+
+  // Delete confirmation modal state
+  const [deleteTarget, setDeleteTarget] = useState<Customer | null>(null);
+  const [deleteConfirmed, setDeleteConfirmed] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // ============================================================
   // TAB STATE
@@ -99,7 +106,7 @@ export default function CustomersView({
   const [newAddressText, setNewAddressText] = useState('');
 
   // TODO(backend): Customer.occasions?: { id: string; occasion: string; date: string }[]
-  const [occasions, setOccasions] = useState<{ id: string; occasion: string; date: string }[]>([]);
+  const [occasions, setOccasions] = useState<CustomerOccasion[]>([]);
   const [newOccasionName, setNewOccasionName] = useState('');
   const [newOccasionDate, setNewOccasionDate] = useState('');
   // TODO(backend): Customer.communicationLog?: { id: string; message: string; channel: string; timestamp: string }[]
@@ -107,7 +114,7 @@ export default function CustomersView({
   // Local card state: Communication Log tab & inline card
   const [commLog, setCommLog] = useState<Array<{ id: string; message: string; channel: string; timestamp: string }>>([]);
   const [newCommMessage, setNewCommMessage] = useState('');
-  const [newCommChannel, setNewCommChannel] = useState<'WhatsApp' | 'Email' | 'Phone' | 'Internal Note'>('WhatsApp');
+  const [newCommChannel, setNewCommChannel] = useState<'WhatsApp' | 'Instagram' | 'Phone' | 'Email' | 'In Person' | 'Note'>('WhatsApp');
 
   const isEditingOrAdding = !!(editingCustomer || isAddingCustomer);
 
@@ -292,6 +299,37 @@ export default function CustomersView({
       ...prev
     ]);
     setNewCommMessage('');
+  };
+
+  const openDeleteModal = (customer: Customer) => {
+    setDeleteTarget(customer);
+    setDeleteConfirmed(false);
+    setDeleting(false);
+  };
+
+  const closeDeleteModal = () => {
+    if (deleting) return;
+    setDeleteTarget(null);
+    setDeleteConfirmed(false);
+    setDeleting(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget || !deleteConfirmed || deleting) return;
+    const idToDelete = deleteTarget.customerId || deleteTarget.id;
+    setDeleting(true);
+    try {
+      await customerApi.deleteCustomer(idToDelete);
+      onDeleteCustomer(idToDelete);
+      setDeleteTarget(null);
+      setDeleteConfirmed(false);
+      setDeleting(false);
+      alert(`Customer "${deleteTarget.name}" deleted from database successfully.`);
+    } catch (err: any) {
+      console.error("Backend API Error on Delete:", err);
+      alert("Error deleting customer from database: " + (err.message || "Failed to reach server"));
+      setDeleting(false);
+    }
   };
 
   const filteredCustomers = customers.filter(c => {
@@ -1413,7 +1451,7 @@ export default function CustomersView({
               />
               <select
                 value={newCommChannel}
-                onChange={(e) => setNewCommChannel(e.target.value)}
+                onChange={(e) => setNewCommChannel(e.target.value as typeof newCommChannel)}
                 className="p-2 border border-stone-200 rounded text-xs"
               >
                 <option>WhatsApp</option>
@@ -1693,7 +1731,7 @@ export default function CustomersView({
 
                 <th className="px-5 py-3">Status</th>
 
-                <th className="px-5 py-3 text-right">View</th>
+                <th className="px-5 py-3 text-right">Actions</th>
 
               </tr>
             </thead>
@@ -1774,14 +1812,25 @@ export default function CustomersView({
                     </span>
                   </td>
 
-                  {/* View */}
+                  {/* Actions: View + Delete */}
                   <td className="px-5 py-4 text-right">
-                    <button
-                      onClick={() => startEditing(c)}
-                      className="border border-stone-300 rounded-md px-4 py-2 text-sm hover:bg-stone-50"
-                    >
-                      View →
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => startEditing(c)}
+                        className="inline-flex items-center gap-1.5 border border-stone-300 rounded-md px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 whitespace-nowrap"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        View
+                      </button>
+                      <button
+                        onClick={() => openDeleteModal(c)}
+                        className="inline-flex items-center gap-1.5 border border-rose-200 rounded-md px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 whitespace-nowrap"
+                        title={`Delete ${c.name}`}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -1789,6 +1838,90 @@ export default function CustomersView({
           </table>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md rounded-xl bg-white shadow-xl overflow-hidden">
+            {/* Modal header */}
+            <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-stone-100">
+              <div className="flex items-start gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-50">
+                  <Trash2 className="h-5 w-5 text-rose-600" />
+                </span>
+                <div>
+                  <h3 className="text-base font-serif font-bold text-stone-900">
+                    Delete customer?
+                  </h3>
+                  <p className="text-xs text-stone-500 mt-0.5">
+                    This will permanently remove <span className="font-semibold text-stone-700">{deleteTarget.name}</span> from the database.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={closeDeleteModal}
+                disabled={deleting}
+                className="text-stone-400 hover:text-stone-600 transition cursor-pointer disabled:opacity-40"
+                aria-label="Close"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Modal body */}
+            <div className="px-6 py-5 space-y-4">
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 flex gap-3">
+                <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+                <p className="text-xs text-amber-800 leading-relaxed">
+                  Deleting a customer is permanent and cannot be undone. Their order history,
+                  addresses, occasions and profile data will be removed from the system.
+                </p>
+              </div>
+
+              <label className="flex items-start gap-3 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={deleteConfirmed}
+                  onChange={(e) => setDeleteConfirmed(e.target.checked)}
+                  disabled={deleting}
+                  className="mt-0.5 h-4 w-4 rounded border-stone-300 text-rose-600 focus:ring-rose-500"
+                />
+                <span className="text-xs text-stone-600 leading-relaxed">
+                  I understand this permanently deletes this customer's record and cannot be undone.
+                </span>
+              </label>
+            </div>
+
+            {/* Modal footer */}
+            <div className="px-6 py-4 bg-stone-50 flex justify-end gap-3">
+              <button
+                onClick={closeDeleteModal}
+                disabled={deleting}
+                className="border border-stone-300 bg-white px-4 py-2 rounded-md text-xs font-medium text-stone-700 hover:bg-stone-100 transition disabled:opacity-40 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                disabled={!deleteConfirmed || deleting}
+                className="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-40 disabled:cursor-not-allowed px-4 py-2 rounded-md text-xs font-semibold text-white transition cursor-pointer"
+              >
+                {deleting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4" />
+                    Delete Customer
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
