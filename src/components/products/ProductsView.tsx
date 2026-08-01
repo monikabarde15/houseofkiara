@@ -518,8 +518,8 @@ export default function ProductsView({
             </div>
           </div>
 
-          <div className="flex gap-6">
-            <div className="flex-1 space-y-6">
+         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+  <div className="min-w-0 flex-1 space-y-6">
               {state.activeTab === 'Core' && (
                 <CoreDetailsTab
                   formData={formData}
@@ -549,20 +549,22 @@ export default function ProductsView({
               {state.activeTab === 'Activity Log' && state.editingProduct && (<ActivityLogTab activityLog={state.activityLog} loading={state.loading} />)}
             </div>
 
-            {
-              state.editingProduct && state.editingProduct._id && (
-                <ProductSidebar
-                  product={state.editingProduct}
-                  onViewLive={() => window.open(`/product/${state.editingProduct?.urlSlug}`, '_blank')}
-                  onArchive={() => {
-                    if (confirm('Archive this product?')) {
-                      updateFormField('status', 'Archived');
-                      handleSave();
-                    }
-                  }}
-                />
-              )
-            }
+          {
+  state.editingProduct && (state.editingProduct._id || state.editingProduct.productId) && (
+    <div className="w-full lg:w-[340px] lg:shrink-0">
+      <ProductSidebar
+        product={state.editingProduct}
+        onViewLive={() => window.open(`/product/${state.editingProduct?.urlSlug}`, '_blank')}
+        onArchive={() => {
+          if (confirm('Archive this product?')) {
+            updateFormField('status', 'Archived');
+            handleSave();
+          }
+        }}
+      />
+    </div>
+  )
+}
           </div>
         </div>
       </div>

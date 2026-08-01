@@ -1,23 +1,32 @@
 import React, { useState } from 'react'
 import { Product, Lister } from '../../types/product';
 
+interface Designer {
+  id: string;
+  name: string;
+}
+
 interface CoreDetailsTabProps {
   formData: Partial<Product>;
   onFieldChange: <K extends keyof Product>(field: K, value: Product[K]) => void;
   listers: Lister[];
-  onSave: (data?: Product) => void;  // ✅ Allow product data as parameter
+  designers?: Designer[];        // ✅ NEW — dropdown source; see note below
+  onSave: (data?: Product) => void;
   productId?: string;
-  isSaving?: boolean; // ✅ Parent se aane wala prop
+  isSaving?: boolean;
   resetForm?: () => void;
 }
+
+const STATUS_OPTIONS = ['Draft', 'Pending Review', 'Live', 'Paused', 'Out of Stock', 'Archived'];
 
 export function CoreDetailsTab({
   formData,
   onFieldChange,
   listers,
+  designers = [],
   onSave,
   productId,
-  isSaving: externalIsSaving = false // ✅ Default false rakho
+  isSaving: externalIsSaving = false
 }: CoreDetailsTabProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -26,170 +35,83 @@ export function CoreDetailsTab({
 
   const data = formData as Record<string, any>;
 
-  const set = (field: string, value: any) => {
-    (onFieldChange as any)(field, value);
-  };
   const labelClass = 'text-[11px] font-semibold text-stone-500 tracking-wide uppercase';
   const inputClass =
     'w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs mt-1 focus:outline-none focus:ring-1 focus:ring-stone-400';
   const helpClass = 'text-[11px] text-stone-400 mt-1';
-  const helpOrangeClass = 'text-[11px] text-orange-700 font-medium mt-1';
 
-  // Prepare data for API - remove disallowed fields and ensure required fields
   const prepareProductData = (data: Partial<Product>): any => {
-    // Explicitly allow only valid fields
     const {
-      // These fields come from MongoDB, we must NOT send them back
-      id,
-      _id,
-      __v,
-      createdAt,
-      updatedAt,
-      // These are list fields, we must NOT send them back
-      listerName,
-      listingModels,
-      listingMode,
-      listingmodel,
-      // ... rest are allowed to pass
+      id, _id, __v, createdAt, updatedAt,
+      listerName, listingModels, listingMode, listingmodel,
       ...cleanData
     } = data as any;
 
     const payload: any = {};
-
-    // Copy all fields except disallowed ones
     Object.keys(cleanData).forEach(key => {
       if (cleanData[key] !== undefined && cleanData[key] !== null && cleanData[key] !== '') {
         payload[key] = cleanData[key];
       }
     });
 
-    // ✅ ENSURE productId EXISTS
-    if (!payload.productId) {
-      payload.productId = `HOK-PRD-${Date.now()}`;
-    }
+    if (!payload.productId) payload.productId = `HOK-PRD-${Date.now()}`;
 
-    // ✅ Ensure listingModes
     if (!payload.listingModes || !Array.isArray(payload.listingModes) || payload.listingModes.length === 0) {
       payload.listingModes = ['RENTAL'];
     }
-
-    // ✅ Valid listing modes - UPPERCASE only
     const validModes = ['RENTAL', 'PRELOVED', 'BUY NEW'];
     payload.listingModes = payload.listingModes
       .map((mode: string) => mode.toUpperCase())
       .filter((mode: string) => validModes.includes(mode));
+    if (payload.listingModes.length === 0) payload.listingModes = ['RENTAL'];
 
-    if (payload.listingModes.length === 0) {
-      payload.listingModes = ['RENTAL'];
-    }
+    if (!payload.measurements) payload.measurements = {};
 
-    // ✅ Ensure measurements is an object
-    if (!payload.measurements) {
-      payload.measurements = {};
-    }
-
-    // ✅ Remove empty strings
     Object.keys(payload).forEach(key => {
-      if (payload[key] === '') {
-        delete payload[key];
-      }
+      if (payload[key] === '') delete payload[key];
     });
 
-    console.log('📤 FINAL CLEAN PAYLOAD:', JSON.stringify(payload, null, 2));
     return payload;
   };
 
-  // Handle save for Core Details
   const handleSaveCoreDetails = async () => {
-    // ✅ Agar Parent "Save Changes" kar raha hai ya local save chal raha hai, toh return
-    if (isSaving || localSaving || externalIsSaving) {
-      console.log('⏳ Save already in progress...');
-      return;
-    }
+    if (isSaving || localSaving || externalIsSaving) return;
 
     setIsSaving(true);
-    setLocalSaving(true); // ✅ Button ko disable karne ke liye
+    setLocalSaving(true);
     setSaveError(null);
     setSaveSuccess(false);
 
     try {
       const payload = prepareProductData(formData);
-
-      const endpoint = productId
-        ? `/api/products/${productId}`
-        : '/api/products';
+      const endpoint = productId ? `/api/products/${productId}` : '/api/products';
       const method = productId ? 'PUT' : 'POST';
-
-      console.log('📤 Saving product data:', payload);
 
       const response = await fetch(endpoint, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-
       const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to save product');
 
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to save product');
-      }
+      if (onSave) onSave(result.data);
 
-      console.log('✅ Product saved:', result);
-
-      // ✅ CRITICAL: Agar naya product create hua hai, toh productId set karein
-      if (!productId && result.data?.productId) {
-        console.log('✅ New product created with ID:', result.data.productId);
-
-        // ✅ Pass the productId back to parent
-        if (onSave) {
-          onSave(result.data);
-        }
-      } else {
-        // ✅ For update, still call onSave to refresh
-        if (onSave) {
-          onSave(result.data); // ⚠️ FIX: Data pass karo taaki Parent mein list update ho
-        }
-      }
-
-      // ✅ FIXED: Success aur Loading disable YAHAN karein (Timeout ke Bahar)
       setSaveSuccess(true);
-      setLocalSaving(false); // ✅ Button wapas ENABLE ho jayega
-      setIsSaving(false);    // ✅ Main Saving state bhi false
+      setLocalSaving(false);
+      setIsSaving(false);
 
-      // ✅ FIXED: SIRF Green success message 3 second baad hatana hai
-      setTimeout(() => {
-        setSaveSuccess(false);
-
-        if (resetForm) {
-          resetForm(); // Agar resetForm function props mein hai toh
-        }
-      }, 3000);
-
+      setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
       setSaveError(error instanceof Error ? error.message : 'An error occurred while saving');
-      console.error('❌ Save error:', error);
-      setLocalSaving(false); // ✅ Error aane par bhi button Enable karna zaroori hai
+      setLocalSaving(false);
       setIsSaving(false);
     }
   };
 
-  // Handle save for Measurements
   const handleSaveMeasurements = async () => {
-    // ✅ SABSE PEHLE: Check karein ki measurements mein kuch data hai ya nahi
-    if (Object.keys(formData.measurements || {}).length === 0 && !formData.bestSuitedForHeight) {
-      console.log("⏸️ Measurements form is empty, not saving.");
-      return;
-    }
-
-    // Agar productId nahi hai toh bhi rok do
-    if (!productId) {
-      alert("⚠️ Please save Core Details first!");
-      return;
-    }
-
-    // ✅ Agar Parent "Save Changes" kar raha hai ya local save chal raha hai, toh return
+    if (Object.keys(formData.measurements || {}).length === 0 && !formData.bestSuitedForHeight) return;
+    if (!productId) { alert("⚠️ Please save Core Details first!"); return; }
     if (isSaving || localSaving || externalIsSaving) return;
 
     setIsSaving(true);
@@ -209,26 +131,15 @@ export function CoreDetailsTab({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(measurementsData),
       });
-
       const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to save measurements');
 
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to save measurements');
-      }
-
-      // ✅ FIXED: Success aur Loading disable YAHAN karein (Timeout ke Bahar)
       setSaveSuccess(true);
-      setLocalSaving(false); // ✅ Button wapas ENABLE ho jayega
-      setIsSaving(false);    // ✅ Main Saving state bhi false
-
-      // ✅ FIXED: SIRF Green success message 3 second baad hatana hai
-      setTimeout(() => {
-        setSaveSuccess(false);
-      }, 3000);
-
+      setLocalSaving(false);
+      setIsSaving(false);
+      setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
       setSaveError(error instanceof Error ? error.message : 'An error occurred');
-      console.error('Save error:', error);
       setLocalSaving(false);
       setIsSaving(false);
     }
@@ -239,32 +150,83 @@ export function CoreDetailsTab({
       {saveError && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
           <strong>Error:</strong> {saveError}
-          <button
-            onClick={() => setSaveError(null)}
-            className="float-right text-red-500 hover:text-red-700"
-          >
-            ×
-          </button>
+          <button onClick={() => setSaveError(null)} className="float-right text-red-500 hover:text-red-700">×</button>
         </div>
       )}
-
       {saveSuccess && (
         <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
           ✅ Product saved successfully!
-          <button
-            onClick={() => setSaveSuccess(false)}
-            className="float-right text-green-500 hover:text-green-700"
-          >
-            ×
-          </button>
+          <button onClick={() => setSaveSuccess(false)} className="float-right text-green-500 hover:text-green-700">×</button>
         </div>
       )}
 
+      {/* ---------------- Status & Publishing Workflow ---------------- */}
+      <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm">
+        <div className="flex items-baseline justify-between mb-3">
+          <h3 className="font-serif font-bold text-stone-900 text-sm">Status &amp; Publishing Workflow</h3>
+          <span className="text-[10px] font-semibold tracking-wide text-stone-400 uppercase">
+            Ops Prepares · Super Admin Publishes
+          </span>
+        </div>
+
+        <div className="border-t border-stone-100 pt-4">
+          <p className="text-xs text-stone-500 mb-4">
+            Draft → Pending Review → Live · Paused, Out of Stock and Archived are side states
+          </p>
+
+          <label className={labelClass}>Set Status Directly (Super Admin Override)</label>
+          <select
+            value={formData.status || 'Draft'}
+            onChange={(e) => onFieldChange('status', e.target.value as Product['status'])}
+            className={`${inputClass} max-w-sm`}
+          >
+            {STATUS_OPTIONS.map(status => (
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
+          <p className={helpClass}>Prefer the workflow buttons — the override path is still logged to Activity.</p>
+        </div>
+      </div>
+
       {/* ---------------- Core Details Card ---------------- */}
       <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-5">
-        {/* Lister Selection */}
+
+        {/* Product Title / Designer */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>Product Title</label>
+            <input
+              type="text"
+              value={formData.name || ''}
+              onChange={(e) => onFieldChange('name', e.target.value)}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Designer</label>
+            <select
+              value={formData.designer || ''}
+              onChange={(e) => onFieldChange('designer', e.target.value)}
+              className={inputClass}
+            >
+              <option value="">Select designer...</option>
+              {designers.map((d) => (
+                <option key={d.id} value={d.name}>{d.name}</option>
+              ))}
+              {/* keep an existing free-text value visible even if it's not in the registry yet */}
+              {formData.designer && !designers.some(d => d.name === formData.designer) && (
+                <option value={formData.designer}>{formData.designer}</option>
+              )}
+            </select>
+            <p className={helpClass}>
+              One registry, one spelling — mapping here is what powers the designer page, filter facet and reports for this piece.
+            </p>
+          </div>
+        </div>
+
+        {/* Lister — Supply Owner */}
         <div>
-          <label className={labelClass}>Lister</label>
+          <label className={labelClass}>Lister — Supply Owner</label>
           <select
             value={formData.listerId || ''}
             onChange={(e) => onFieldChange('listerId', e.target.value)}
@@ -280,29 +242,9 @@ export function CoreDetailsTab({
               );
             })}
           </select>
-          <p className={helpClass}>Assign this product to a lister for payout tracking</p>
-        </div>
-
-        {/* Product Title / Designer */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className={labelClass}>Product Title</label>
-            <input
-              type="text"
-              value={formData.name || ''}
-              onChange={(e) => onFieldChange('name', e.target.value)}
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label className={labelClass}>Designer</label>
-            <input
-              type="text"
-              value={formData.designer || ''}
-              onChange={(e) => onFieldChange('designer', e.target.value)}
-              className={inputClass}
-            />
-          </div>
+          <p className={helpClass}>
+            Who owns this piece — powers the lister profile grid, payout attribution and supply reports. Leave on HOK stock for designer-partner pieces.
+          </p>
         </div>
 
         {/* Subtitle */}
@@ -337,9 +279,7 @@ export function CoreDetailsTab({
               value={formData.rating || ''}
               onChange={(e) => onFieldChange('rating', parseFloat(e.target.value) || 0)}
               className={inputClass}
-              min="0"
-              max="5"
-              step="0.1"
+              min="0" max="5" step="0.1"
             />
           </div>
           <div>
@@ -488,8 +428,7 @@ export function CoreDetailsTab({
               className={inputClass}
             />
             <p className={helpClass}>
-              Each piece is a specific physical garment — enter the one size it fits, not a
-              range. General size guidance lives in Master Data.
+              Each piece is a specific physical garment — enter the one size it fits, not a range. General size guidance lives in Master Data.
             </p>
           </div>
           <div>
@@ -513,8 +452,7 @@ export function CoreDetailsTab({
             className={inputClass}
           />
           <p className={helpClass}>
-            Default comes from Master Data → Shipping Defaults; override here only if this piece
-            ships differently.
+            Default comes from Master Data → Shipping Defaults; override here only if this piece ships differently.
           </p>
         </div>
 
@@ -533,9 +471,7 @@ export function CoreDetailsTab({
                     type="checkbox"
                     checked={checked}
                     onChange={(e) => {
-                      const next = e.target.checked
-                        ? [...modes, mode]
-                        : modes.filter((m) => m !== mode);
+                      const next = e.target.checked ? [...modes, mode] : modes.filter((m) => m !== mode);
                       onFieldChange('listingModes', next);
                     }}
                     className="h-4 w-4 accent-blue-600"
@@ -621,10 +557,7 @@ export function CoreDetailsTab({
           <input
             value={formData.tags?.join(', ') || ''}
             onChange={(e) =>
-              onFieldChange(
-                'tags',
-                e.target.value.split(',').map((t) => t.trim()).filter(Boolean)
-              )
+              onFieldChange('tags', e.target.value.split(',').map((t) => t.trim()).filter(Boolean))
             }
             placeholder="Featured, Rare Find, New Arrival..."
             className={inputClass}
@@ -644,15 +577,14 @@ export function CoreDetailsTab({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              if (!isSaving && !localSaving && !externalIsSaving) { // ✅ Add externalIsSaving
-                handleSaveCoreDetails();
-              }
+              if (!isSaving && !localSaving && !externalIsSaving) handleSaveCoreDetails();
             }}
-            disabled={isSaving || localSaving || saveSuccess || externalIsSaving} // ✅ Add externalIsSaving
-            className={`px-4 py-2 text-xs font-semibold rounded transition ${isSaving || localSaving || saveSuccess || externalIsSaving
-              ? 'bg-gray-400 cursor-not-allowed opacity-70'
-              : 'bg-amber-700 hover:bg-amber-800 text-white'
-              }`}
+            disabled={isSaving || localSaving || saveSuccess || externalIsSaving}
+            className={`px-4 py-2 text-xs font-semibold rounded transition ${
+              isSaving || localSaving || saveSuccess || externalIsSaving
+                ? 'bg-gray-400 cursor-not-allowed opacity-70'
+                : 'bg-amber-700 hover:bg-amber-800 text-white'
+            }`}
           >
             {isSaving || localSaving ? 'Saving...' : saveSuccess ? '✅ Saved!' : 'Save Core Details'}
           </button>
@@ -679,10 +611,7 @@ export function CoreDetailsTab({
             { key: 'hips', label: 'Hips (skirt fall)' },
             { key: 'length', label: 'Length (skirt)' },
           ].map((row, idx) => (
-            <div
-              key={row.key}
-              className={`grid grid-cols-3 items-center ${idx !== 0 ? 'border-t border-stone-100' : ''}`}
-            >
+            <div key={row.key} className={`grid grid-cols-3 items-center ${idx !== 0 ? 'border-t border-stone-100' : ''}`}>
               <div className="p-3 text-xs text-stone-700">{row.label}</div>
               <div className="p-2 px-3">
                 <input
@@ -711,7 +640,6 @@ export function CoreDetailsTab({
             </div>
           ))}
 
-          {/* Best suited for height - highlighted row */}
           <div className="grid grid-cols-3 items-center border-t border-stone-100 bg-[#f4ece0]">
             <div className="p-3 text-xs font-semibold text-stone-800">Best suited for height</div>
             <div className="p-2 px-3 col-span-2">
@@ -725,9 +653,7 @@ export function CoreDetailsTab({
         </div>
 
         <p className={`${helpClass} mt-3`}>
-          General size-to-measurement guidance is managed centrally in Master Data → Occasions &amp;
-          Sizes → Sizes &amp; Fit Guide. These fields are this specific piece's actual measurements,
-          since each listing is one physical garment.
+          General size-to-measurement guidance is managed centrally in Master Data → Occasions &amp; Sizes → Sizes &amp; Fit Guide. These fields are this specific piece's actual measurements, since each listing is one physical garment.
         </p>
 
         <div className="flex justify-end pt-4 mt-2 border-t border-stone-100">
@@ -736,31 +662,26 @@ export function CoreDetailsTab({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              if (!isSaving && !localSaving && !externalIsSaving) { // ✅ Add externalIsSaving
-                handleSaveMeasurements();
-              }
+              if (!isSaving && !localSaving && !externalIsSaving) handleSaveMeasurements();
             }}
-            // ✅ CORRECT CONDITION: Jab tak koi measurement fill nahi, tab tak BUTTON DISABLE rahega
             disabled={
-              isSaving ||
-              localSaving ||
-              saveSuccess ||
-              externalIsSaving || // ✅ Add externalIsSaving
+              isSaving || localSaving || saveSuccess || externalIsSaving ||
               (!formData.measurements?.bust && !formData.measurements?.waist &&
                 !formData.measurements?.hips && !formData.measurements?.length &&
                 !formData.measurementsCm?.bust && !formData.measurementsCm?.waist &&
                 !formData.measurementsCm?.hips && !formData.measurementsCm?.length &&
                 !formData.bestSuitedForHeight)
             }
-            className={`px-4 py-2 text-xs font-semibold rounded transition ${isSaving || localSaving || saveSuccess || externalIsSaving ||
+            className={`px-4 py-2 text-xs font-semibold rounded transition ${
+              isSaving || localSaving || saveSuccess || externalIsSaving ||
               (!formData.measurements?.bust && !formData.measurements?.waist &&
                 !formData.measurements?.hips && !formData.measurements?.length &&
                 !formData.measurementsCm?.bust && !formData.measurementsCm?.waist &&
                 !formData.measurementsCm?.hips && !formData.measurementsCm?.length &&
                 !formData.bestSuitedForHeight)
-              ? 'bg-gray-400 cursor-not-allowed opacity-70'
-              : 'bg-amber-700 hover:bg-amber-800 text-white'
-              }`}
+                ? 'bg-gray-400 cursor-not-allowed opacity-70'
+                : 'bg-amber-700 hover:bg-amber-800 text-white'
+            }`}
           >
             {isSaving || localSaving ? 'Saving...' : saveSuccess ? '✅ Saved!' : 'Save Measurements'}
           </button>

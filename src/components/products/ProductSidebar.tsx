@@ -142,9 +142,8 @@ export function ProductSidebar({ product, onViewLive, onArchive, onOpenGlobalCal
     );
 
     return (
-        <div className="w-[340px] shrink-0">
-            <div className="sticky top-24 space-y-5">
-
+    <div className="w-full">
+        <div className="lg:sticky lg:top-24 space-y-5">
                 {/* =========================== Availability =========================== */}
 
                 <div className="rounded-xl border border-[#E8E0D6] bg-white shadow-sm overflow-hidden">
