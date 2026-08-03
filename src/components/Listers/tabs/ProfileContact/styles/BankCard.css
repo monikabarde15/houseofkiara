@@ -1,0 +1,260 @@
+/* ==========================================================================
+   BANK CARD
+   ========================================================================== */
+
+.bank-card {
+    background: #fff;
+    border: 1px solid #e7e0d8;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+.bank-card .card-hd {
+    height: 46px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid #e8e2da;
+    background: #fff;
+}
+
+.bank-card .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2d2a27;
+    line-height: 1;
+}
+
+/* ==========================================================================
+   BODY
+   ========================================================================== */
+
+.bank-card .card-bd {
+    padding: 16px;
+}
+
+.fld {
+    margin-bottom: 16px;
+}
+
+.fld:last-child {
+    margin-bottom: 0;
+}
+
+.g2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.fld-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   LABELS
+   ========================================================================== */
+
+.fld-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #867a6f;
+    line-height: 1.2;
+}
+
+.fld-label-required {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 10px;
+    font-weight: 400;
+    color: #bb6449;
+}
+
+/* ==========================================================================
+   INPUTS
+   ========================================================================== */
+
+.fld-input {
+    width: 100%;
+    height: 32px;
+    padding: 0 11px;
+    border: 1px solid #d7d0c8;
+    border-radius: 3px;
+    background: #fff;
+    font-size: 14px;
+    color: #2f2b28;
+    transition: .18s ease;
+    box-sizing: border-box;
+}
+
+.fld-input::placeholder {
+    color: #a89d91;
+}
+
+.fld-input:hover {
+    border-color: #c9b79c;
+}
+
+.fld-input:focus {
+    outline: none;
+    border-color: #b89560;
+    box-shadow: 0 0 0 3px rgba(184,149,96,.14);
+}
+
+.fld-monospace {
+    font-family: "SFMono-Regular",
+        Consolas,
+        monospace;
+}
+
+/* ==========================================================================
+   HINTS
+   ========================================================================== */
+
+.fld-hint {
+    margin-top: 4px;
+    font-size: 11px;
+    line-height: 1.45;
+    color: #8e8378;
+}
+
+.fld-error {
+    border-color: #bb6449 !important;
+}
+
+.fld-error:focus {
+    border-color: #bb6449;
+    box-shadow: 0 0 0 3px rgba(187,100,73,.15);
+}
+
+.fld-error-text {
+    margin-top: 5px;
+    font-size: 11px;
+    color: #bb6449;
+}
+
+/* ==========================================================================
+   TOGGLES
+   ========================================================================== */
+
+.fld-toggle-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.fld-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.tgl-track {
+    position: relative;
+    width: 32px;
+    height: 18px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: #d2c5b6;
+    cursor: pointer;
+    transition: .18s;
+    flex-shrink: 0;
+}
+
+.tgl-track:hover {
+    opacity: .9;
+}
+
+.tgl-track.tgl-on {
+    background: #c8a05a;
+}
+
+.tgl-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    transition: .18s;
+}
+
+.tgl-track.tgl-on .tgl-knob {
+    transform: translateX(14px);
+}
+
+.tgl-label {
+    font-size: 13px;
+    color: #2c2926;
+    line-height: 1;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+.bank-card .card-ft {
+    height: 50px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 16px;
+    border-top: 1px solid #e8e2da;
+    background: #fbf9f6;
+}
+
+/* ==========================================================================
+   BUTTON
+   ========================================================================== */
+
+.bank-card .btn {
+    height: 30px;
+    min-width: 48px;
+    padding: 0 16px;
+    border: 1px solid #b99353;
+    border-radius: 4px;
+    background: #b99353;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .18s;
+}
+
+.bank-card .btn:hover {
+    background: #a7864b;
+    border-color: #a7864b;
+}
+
+.bank-card .btn:active {
+    transform: translateY(1px);
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width:768px) {
+
+    .g2 {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .bank-card .card-bd {
+        padding: 16px;
+    }
+
+}

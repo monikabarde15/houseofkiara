@@ -1,0 +1,172 @@
+/* src/components/Listers/components/styles/ListerDetailHeader.css */
+
+.lh-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #1A1612, #2A2018);
+  flex-wrap: wrap;
+}
+
+.lh-header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.lh-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #C9A96E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1A1612;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.lh-avatar-create {
+  background: #3A3228;
+  color: #6F675D;
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.lh-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.lh-name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: #FFFFFF;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.lh-meta {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.lh-meta-sep {
+  margin: 0 6px;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.lh-stats {
+  display: flex;
+  gap: 22px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.lh-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lh-stat-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.lh-stat-pending {
+  color: #C0624A;
+}
+
+.lh-stat-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Right column */
+.lh-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.lh-right-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.lh-right-btns {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ALSO A CUSTOMER pill */
+.lh-customer-chip {
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #C9A96E;
+  border: 1px solid rgba(201, 169, 110, 0.6);
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.lh-customer-chip:hover {
+  background: rgba(201, 169, 110, 0.12);
+}
+
+/* Ghost (Email) button on dark bg */
+.lh-btn-email {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  color: #FFFFFF !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lh-btn-email:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* WhatsApp button */
+.lh-btn-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}

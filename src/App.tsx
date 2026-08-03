@@ -15,7 +15,8 @@ import CustomersView from './components/CustomersView';
 // import ProductsView from './components/ProductsView';
 import ProductsView from './components/products/ProductsView';
 import DesignersView from './components/Designers/tsx';
-import ListersView from './components/ListersView';
+// import ListersView from './components/ListersView';
+import ListersView from './components/Listers/ListersView';
 import OccasionsView from './components/OccasionsView';
 import ReportsView from './components/ReportsView';
 import PromotionsView from './components/PromotionsView';
@@ -206,6 +207,10 @@ export default function App() {
     });
   };
 
+  const handleDeleteCustomer = (id: string) => {
+    setCustomers(prev => prev.filter(c => c.id !== id && c.customerId !== id));
+  };
+
   const handleAddPromoCode = (newCode: PromoCode) => {
     setPromoCodes([newCode, ...promoCodes]);
   };
@@ -318,6 +323,7 @@ export default function App() {
           orders={orders}
           products={products}
           onUpdateCustomer={handleUpdateCustomer}
+          onDeleteCustomer={handleDeleteCustomer}
           setView={setView}
           setSelectedOrderId={setSelectedOrderId}
           onEditingChange={setIsSectionEditing}
@@ -343,17 +349,7 @@ export default function App() {
     }
 
     if (currentView === 'listers') {
-      return (
-        <ListersView 
-          listers={listers}
-          submissions={submissions}
-          onUpdateLister={handleUpdateLister}
-          onUpdateSubmission={handleUpdateSubmission}
-          onCreateLister={handleCreateLister}
-          products={products}
-          onUpdateProduct={handleUpdateProduct}
-        />
-      );
+      return <ListersView onEditingChange={setIsSectionEditing} />;
     }
 
     if (currentView === 'occasions') {

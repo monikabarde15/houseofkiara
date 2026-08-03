@@ -33,6 +33,7 @@ interface ProductHeaderProps {
 
   onSave: () => void;
   onAdd: () => void;
+  onBack?: () => void;
   showAddButton?: boolean;
 }
 

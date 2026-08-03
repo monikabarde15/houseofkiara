@@ -1,0 +1,41 @@
+/* src/components/Listers/tabs/SubmittedPieces/styles/SubmittedPiecesTab.css */
+
+.submitted-pieces-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.submitted-pieces-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+.submitted-pieces-intro {
+  font-size: 11.5px;
+  color: #8A7E72;
+  line-height: 1.55;
+  max-width: 540px;
+  margin: 0;
+}
+
+.submitted-pieces-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empty-state-boxed {
+  font-size: 11px;
+  color: #8A7E72;
+  padding: 24px 18px;
+  text-align: center;
+  border: 1px dashed #E8E0D4;
+  border-radius: 4px;
+  background: #F7F4EF;
+  line-height: 1.6;
+}

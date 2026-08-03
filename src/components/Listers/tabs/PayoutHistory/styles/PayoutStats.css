@@ -1,0 +1,57 @@
+/* src/components/Listers/tabs/PayoutHistory/styles/PayoutStats.css */
+
+.payout-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 11px;
+}
+
+.psc {
+  background: white;
+  border: 1px solid #EDE6DC;
+  border-radius: 4px;
+  padding: 11px 14px;
+}
+
+.psc-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #8A7E72;
+}
+
+.psc-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.psc-sage .psc-value {
+  color: #6B7E5A;
+}
+
+.psc-gold .psc-value {
+  color: #C9A96E;
+}
+
+.psc-charcoal .psc-value {
+  color: #1A1612;
+}
+
+.psc-terra .psc-value {
+  color: #B85C38;
+}
+
+@media (max-width: 768px) {
+  .payout-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .payout-stats {
+    grid-template-columns: 1fr;
+  }
+}

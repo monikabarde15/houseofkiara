@@ -1,0 +1,26 @@
+/* src/components/Listers/ListersView.css */
+
+@import "./components/styles/UI.css";
+@import "./components/styles/ListersHeader.css";
+@import "./components/styles/ListersTable.css";
+@import "./components/styles/PendingApprovals.css";
+@import "./components/styles/ApplicantCard.css";
+@import "./components/styles/SupplyInsightCard.css";
+
+.listers-view {
+  padding: 4px 4px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.listers-view-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .listers-view {
+    padding: 16px;
+  }
+}
