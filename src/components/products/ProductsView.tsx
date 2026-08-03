@@ -550,12 +550,16 @@ export default function ProductsView({
             </div>
 
           {
-  state.editingProduct && (state.editingProduct._id || state.editingProduct.productId) && (
+  (state.editingProduct || state.isAdding) && (
     <div className="w-full lg:w-[340px] lg:shrink-0">
       <ProductSidebar
-        product={state.editingProduct}
-        onViewLive={() => window.open(`/product/${state.editingProduct?.urlSlug}`, '_blank')}
+        product={(state.editingProduct || formData) as Product}
+        onViewLive={() =>
+          state.editingProduct?.urlSlug &&
+          window.open(`/product/${state.editingProduct.urlSlug}`, '_blank')
+        }
         onArchive={() => {
+          if (!state.editingProduct) return; // nothing to archive on a brand-new draft
           if (confirm('Archive this product?')) {
             updateFormField('status', 'Archived');
             handleSave();
