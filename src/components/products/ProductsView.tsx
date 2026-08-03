@@ -453,8 +453,8 @@ export default function ProductsView({
         )}
 
         {/* ✅ FIXED: Top Header Bar Layout */}
-        <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-[#E8E0D6]">
-          <div className="flex items-center justify-between px-6 py-3">
+        <header className="sticky top-0 z-40 bg-white border-b border-[#E8E0D6]">
+  <div className="flex items-center justify-between px-6 py-3">
             <div className="flex items-center gap-3">
               <button onClick={cancelEditing} className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E6DED3] bg-white px-3 text-[12px] font-medium text-[#6F675D] hover:bg-[#FAF8F5]">
                 <ArrowLeft className="h-3.5 w-3.5" /> Back
