@@ -140,6 +140,13 @@ export interface PayoutRecord {
   listerShare?: number;
   hokCommission?: number;
   status: string;
+  payoutPercent?: number;
+  amount?: number;
+  transactionValue?: number;
+  transactionLabel?: string;
+  date?: string;
+  listerName?: string;
+  type?: string;
 }
 
 export interface ActivityLog {

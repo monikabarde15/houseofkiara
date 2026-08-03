@@ -588,7 +588,7 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
                       key={s.status}
                       type="button"
                       onClick={() => {
-                        setDepositStatus(s.status);
+                        setDepositStatus(s.status as 'Pending' | 'Released' | 'Partial' | 'Forfeited');
                         if (s.status === 'Released') {
                           setReleasedAmount(order.deposit);
                           setDeductedAmount(0);

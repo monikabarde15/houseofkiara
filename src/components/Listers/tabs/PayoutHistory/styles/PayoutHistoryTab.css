@@ -1,0 +1,26 @@
+/* src/components/Listers/tabs/PayoutHistory/styles/PayoutHistoryTab.css */
+
+.payout-history-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.payout-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.payout-history-header .tax-strip {
+  flex: 1;
+  min-width: 280px;
+}
+
+.payout-history-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}

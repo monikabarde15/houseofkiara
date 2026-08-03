@@ -1,7 +1,7 @@
 // src/components/products/tabs/AvailabilityCalendarTab.tsx
 
 import React, { useMemo, useState } from 'react';
-import { Product } from '../../../types/product';
+import { Product } from '../../../types';
 import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import * as productSectionsApi from '../../../services/productSectionsApi';
 

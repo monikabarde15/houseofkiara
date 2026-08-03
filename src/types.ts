@@ -76,6 +76,7 @@ export interface Product {
   bookingHistory?: { orderId: string; customerName: string; date: string; amount: number; status: string }[];
   sku?: string; color?: string; craft?: string; technique?: string; story?: string; tags?: string[]; measurements?: Record<string, string>;
   taxRate?: number; gstRate?: number; cleaningFee?: number; extensionPrice?: number; payoutPercentage?: number; relatedProductIds?: string[];
+  _id?: string; productId?: string; reviewCount?: number; rentalStatus?: string; currentRenterName?: string; currentOrderId?: string; rentUntil?: string; nextFreeDate?: string; earnedAmount?: number;
 }
 
 export interface Order {
@@ -174,6 +175,7 @@ export interface Lister {
   location: string;
   listingsCount: number;
   totalEarnings: number;
+  totalEarned?: number;
   pendingPayout: number;
   status: 'Active' | 'Pending Review' | 'Suspended';
   joinedDate: string;

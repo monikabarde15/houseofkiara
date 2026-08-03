@@ -1,0 +1,49 @@
+// src/components/Listers/hooks/useListers.ts
+
+import { useState, useEffect, useCallback } from 'react';
+import { Lister, ListerFilters } from '../types/lister.types';
+import { listerService } from '../services/listerService';
+
+export const useListers = (filters?: ListerFilters) => {
+  const [listers, setListers] = useState<Lister[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const search = filters?.search;
+  const status = filters?.status;
+  const sortBy = filters?.sortBy;
+  const sortOrder = filters?.sortOrder;
+
+  const fetchListers = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await listerService.getListers({ search, status, sortBy, sortOrder });
+      setListers(result.data);
+      setTotalCount(result.total);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch listers');
+    } finally {
+      setLoading(false);
+    }
+  }, [search, status, sortBy, sortOrder]);
+
+  const refreshListers = useCallback(() => {
+    fetchListers();
+  }, [fetchListers]);
+
+  useEffect(() => {
+    fetchListers();
+  }, [fetchListers]);
+
+  return {
+    listers,
+    loading,
+    error,
+    totalCount,
+    refreshListers,
+  };
+};
+
+export default useListers;

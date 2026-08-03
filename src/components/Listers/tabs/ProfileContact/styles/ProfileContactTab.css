@@ -1,0 +1,43 @@
+/* src/components/Listers/tabs/ProfileContact/styles/ProfileContactTab.css */
+
+.profile-contact-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.profile-contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+.profile-contact-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.save-check {
+  font-size: 10px;
+  color: #6B7E5A;
+  font-weight: 600;
+  display: none;
+}
+
+.save-check.visible {
+  display: inline;
+}
+
+.profile-tab-empty {
+  padding: 32px;
+  text-align: center;
+  color: #8A7E72;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .profile-contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
