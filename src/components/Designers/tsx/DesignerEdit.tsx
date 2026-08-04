@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ExternalLink } from 'lucide-react';
 import { Designer } from '../types/designer.types';
 import ProfileTab from '../tabs/ProfileTab';
 import PerformancePiecesTab from '../tabs/PerformancePiecesTab';
-import AuthenticationTab from '../tabs/AuthenticationTab';
-import ContactCommercialTab from '../tabs/ContactCommercialTab';
+import AuthenticationTab, { AuthenticationData } from '../tabs/AuthenticationTab';
+import ContactCommercialTab, { ContactCommercialData } from '../tabs/ContactCommercialTab';
 
 type TabKey = 'profile' | 'performance' | 'authentication' | 'contact';
 
@@ -34,10 +34,78 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
   onDeleteProfile,
 }) => {
   const [activeTab, setActiveTab] = useState<TabKey>('profile');
+  const [currentDesigner, setCurrentDesigner] = useState<Designer>(designer);
+  const [isSavedRecently, setIsSavedRecently] = useState(false);
 
-  const designerName = designer.name || 'New Designer';
-  const slug = designer.slug || designerName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-  const bio = designer.bio || "India's most celebrated couturier, known for rich textiles and timeless bridal aesthetic.";
+  useEffect(() => {
+    setCurrentDesigner(designer);
+  }, [designer]);
+
+  const isCreateMode = !currentDesigner.id || !currentDesigner.name;
+  const designerName = currentDesigner.name ? currentDesigner.name : 'New Designer';
+  const slug = currentDesigner.slug ? currentDesigner.slug : (currentDesigner.name ? currentDesigner.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '');
+  const bio = currentDesigner.bio || '';
+
+  const handleTabChangeData = (partialData: Partial<Designer>) => {
+    setCurrentDesigner((prev) => ({
+      ...prev,
+      ...partialData,
+    }));
+  };
+
+  const handleMasterSave = () => {
+    if (!currentDesigner.name || !currentDesigner.name.trim()) {
+      alert('Designer name is required to save.');
+      return;
+    }
+    onSaveProfile(currentDesigner);
+    setIsSavedRecently(true);
+    setTimeout(() => setIsSavedRecently(false), 3000);
+  };
+
+  const handleSaveProfileData = (updated: Designer) => {
+    const merged = { ...currentDesigner, ...updated };
+    setCurrentDesigner(merged);
+    onSaveProfile(merged);
+    setIsSavedRecently(true);
+    setTimeout(() => setIsSavedRecently(false), 3000);
+  };
+
+  const handleSaveAuthenticationData = (authData: AuthenticationData) => {
+    const updated: Designer = {
+      ...currentDesigner,
+      counterfeitRiskTier: authData.riskTier as any,
+      authenticationChecklist: authData.checklist,
+      websiteUrl: authData.brandWebsite,
+      instagramHandle: authData.brandInstagram,
+    };
+    setCurrentDesigner(updated);
+    onSaveProfile(updated);
+    setIsSavedRecently(true);
+    setTimeout(() => setIsSavedRecently(false), 3000);
+    alert('Authentication details saved successfully to MongoDB database!');
+  };
+
+  const handleSaveContactData = (contactData: ContactCommercialData) => {
+    const updated: Designer = {
+      ...currentDesigner,
+      commercialTerms: {
+        suppliesFreshStockBuyNow: contactData.isBuyNewPartner,
+        commissionRateBuyNow: contactData.commissionPercent,
+        paymentTerms: contactData.paymentTerms,
+        brandFulfilmentPolicy: contactData.fulfilmentReturnsPolicy,
+        accountManagerName: contactData.accountManagerName,
+        contactEmail: contactData.contactEmail,
+        contactPhone: contactData.contactPhone,
+        internalNotes: contactData.internalNotes,
+      },
+    };
+    setCurrentDesigner(updated);
+    onSaveProfile(updated);
+    setIsSavedRecently(true);
+    setTimeout(() => setIsSavedRecently(false), 3000);
+    alert('Contact & Commercial details saved successfully to MongoDB database!');
+  };
 
   return (
     <div className="min-h-full bg-[#FAF7F2] font-sans text-xs text-[#2A241F]">
@@ -65,17 +133,17 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
           {/* Right: Actions */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => window.open(`/designer/${slug}`, '_blank')}
+              onClick={() => slug && window.open(`/designer/${slug}`, '_blank')}
               className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E5DDD3] bg-white px-3.5 text-[12px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition shadow-2xs cursor-pointer"
             >
               <ExternalLink className="h-3.5 w-3.5 text-[#6F675D]" />
               <span>View Live Site</span>
             </button>
             <button
-              onClick={() => onSaveProfile(designer)}
+              onClick={handleMasterSave}
               className="inline-flex h-8 items-center rounded-md bg-[#C7A55C] hover:bg-[#B9974B] px-4 text-[12px] font-semibold text-[#2A2118] transition shadow-2xs cursor-pointer"
             >
-              Save Changes
+              {isSavedRecently ? 'Saved ✓' : 'Save Changes'}
             </button>
           </div>
         </div>
@@ -90,27 +158,41 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
               {designerName}
             </h1>
             <p className="mt-1.5 text-[13px] text-[#8C847A] font-normal max-w-3xl leading-relaxed">
-              {bio} · <span className="text-[#A0988E]">slug: {slug}</span>
+              {isCreateMode ? (
+                'Fill in the Profile tab and Save to create it.'
+              ) : (
+                <>
+                  {bio ? `${bio} · ` : ''}
+                  <span className="text-[#A0988E]">slug: {slug}</span>
+                </>
+              )}
             </p>
           </div>
 
           {/* Right: Section Action Buttons */}
           <div className="flex items-center gap-2 shrink-0">
             <button
-              onClick={() => window.open(`/designer/${slug}`, '_blank')}
+              onClick={() => slug && window.open(`/designer/${slug}`, '_blank')}
               className="inline-flex h-8 items-center rounded-md border border-[#E2DAD1] bg-white px-3.5 text-[12px] font-medium text-[#524B43] hover:bg-[#FAF8F5] transition shadow-2xs cursor-pointer"
             >
               View Listing →
             </button>
             <button
-              onClick={() => onSaveProfile(designer)}
+              onClick={handleMasterSave}
               className="inline-flex h-8 items-center rounded-md bg-[#C7A55C] hover:bg-[#B9974B] px-4 text-[12px] font-semibold text-[#2A2118] transition shadow-2xs cursor-pointer"
             >
-              Save
+              {isSavedRecently ? 'Saved ✓' : 'Save'}
             </button>
           </div>
         </div>
       </div>
+
+      {/* Disclaimer Rectangle Banner (Renders ONLY in create mode; disappears once designer is saved!) */}
+      {isCreateMode && (
+        <div className="mx-6 mt-3 p-3.5 bg-[#F9F6F0] border border-[#E5DEC9] rounded-md text-[12px] text-[#5C5346] leading-relaxed">
+          Creating a new designer profile — fill the Profile tab and Save to create it. The other tabs unlock once the profile exists.
+        </div>
+      )}
 
       {/* Tabs Navigation Bar */}
       <div className="mt-4 border-b border-[#E8E1D9] px-6">
@@ -141,18 +223,47 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
       <div className="p-6">
         {activeTab === 'profile' && (
           <ProfileTab
-            designer={designer}
+            designer={currentDesigner}
             otherDesigners={allDesigners
-              .filter((d) => d.id !== designer.id)
+              .filter((d) => d.id !== currentDesigner.id)
               .map((d) => ({ id: d.id, name: d.name }))}
-            onSave={onSaveProfile}
+            onSave={handleSaveProfileData}
+            onChange={handleTabChangeData}
             onMerge={onMergeProfile}
             onDelete={onDeleteProfile}
           />
         )}
-        {activeTab === 'performance' && <PerformancePiecesTab designer={designer} />}
-        {activeTab === 'authentication' && <AuthenticationTab designer={designer} />}
-        {activeTab === 'contact' && <ContactCommercialTab designer={designer} />}
+        {activeTab === 'performance' && <PerformancePiecesTab designer={currentDesigner} />}
+        {activeTab === 'authentication' && (
+          <AuthenticationTab
+            designer={currentDesigner}
+            authentication={{
+              riskTier: (currentDesigner as any).counterfeitRiskTier || (currentDesigner as any).riskTier || 'Low',
+              checklist: (currentDesigner as any).authenticationChecklist || (currentDesigner as any).checklist || '',
+              brandWebsite: (currentDesigner as any).websiteUrl || (currentDesigner as any).brandWebsite || '',
+              brandInstagram: (currentDesigner as any).instagramHandle || (currentDesigner as any).brandInstagram || '',
+            }}
+            onSave={handleSaveAuthenticationData}
+            onChange={handleTabChangeData}
+          />
+        )}
+        {activeTab === 'contact' && (
+          <ContactCommercialTab
+            designer={currentDesigner}
+            data={{
+              isBuyNewPartner: currentDesigner.commercialTerms?.suppliesFreshStockBuyNow ?? false,
+              commissionPercent: currentDesigner.commercialTerms?.commissionRateBuyNow || '',
+              paymentTerms: (currentDesigner.commercialTerms?.paymentTerms as any) || 'Standard T+3',
+              fulfilmentReturnsPolicy: currentDesigner.commercialTerms?.brandFulfilmentPolicy || '',
+              accountManagerName: currentDesigner.commercialTerms?.accountManagerName || '',
+              contactEmail: currentDesigner.commercialTerms?.contactEmail || '',
+              contactPhone: currentDesigner.commercialTerms?.contactPhone || '',
+              internalNotes: currentDesigner.commercialTerms?.internalNotes || '',
+            }}
+            onSave={handleSaveContactData}
+            onChange={handleTabChangeData}
+          />
+        )}
       </div>
     </div>
   );

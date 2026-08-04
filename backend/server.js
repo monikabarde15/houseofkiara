@@ -10,6 +10,7 @@ import listerRouter from "./routes/listerRoutes.js"; // ✅ Import sahi hai
 import uploadRouter from "./routes/uploadRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
 import customerRouter from "./routes/customerRoutes.js";
+import designerRouter from "./routes/designerRoutes.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api", authRouter);
 
 // ✅ FIX: SABSE PEHLE LISTER ROUTE REGISTER KARO (Taaki /api/listers product router se na takraye)
 app.use("/api/listers", listerRouter); 
+app.use("/api/designers", designerRouter);
 
 app.use("/api", payoutRouter);
 app.use("/api", productRouter); 

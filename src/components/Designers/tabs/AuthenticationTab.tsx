@@ -15,19 +15,16 @@ interface AuthenticationTabProps {
   designer: Designer;
   authentication?: AuthenticationData;
   onSave?: (data: AuthenticationData) => void;
+  onChange?: (updated: Partial<Designer>) => void;
 }
 
 const DEFAULT_AUTHENTICATION: AuthenticationData = {
-  riskTier: 'High',
-  checklist:
-    'Hologram + serial tag stitched inside the waistband (post-2017 pieces). Woven label — check spelling and stitch density; fakes fray at the corners. Zardozi work is dense and even; sparse metalwork is a red flag. For post-2019 pieces, request the purchase invoice before approval.',
-  brandWebsite: 'https://www.sabyasachi.com',
-  brandInstagram: 'https://instagram.com/sabyasachiofficial',
+  riskTier: 'Low',
+  checklist: '',
+  brandWebsite: '',
+  brandInstagram: '',
 };
 
-// The screenshot only shows copy for the "High" tier. Low/Medium hints below
-// are my best-guess extrapolation of that pattern, not confirmed design —
-// swap in the real copy once it exists.
 const RISK_TIER_HINTS: Record<CounterfeitRiskTier, React.ReactNode> = {
   Low: 'Low = standard single-check approval flow.',
   Medium: 'Medium = second check recommended for high-value pieces before approval.',
@@ -41,13 +38,31 @@ const RISK_TIER_HINTS: Record<CounterfeitRiskTier, React.ReactNode> = {
 
 const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
   designer,
-  authentication = DEFAULT_AUTHENTICATION,
+  authentication,
   onSave,
+  onChange,
 }) => {
-  const [riskTier, setRiskTier] = useState<CounterfeitRiskTier>(authentication.riskTier);
-  const [checklist, setChecklist] = useState(authentication.checklist);
-  const [brandWebsite, setBrandWebsite] = useState(authentication.brandWebsite);
-  const [brandInstagram, setBrandInstagram] = useState(authentication.brandInstagram);
+  const initialAuth = authentication || {
+    riskTier: (designer as any)?.counterfeitRiskTier || 'Low',
+    checklist: (designer as any)?.authenticationChecklist || '',
+    brandWebsite: (designer as any)?.websiteUrl || '',
+    brandInstagram: (designer as any)?.instagramHandle || '',
+  };
+
+  const [riskTier, setRiskTier] = useState<CounterfeitRiskTier>(initialAuth.riskTier);
+  const [checklist, setChecklist] = useState(initialAuth.checklist);
+  const [brandWebsite, setBrandWebsite] = useState(initialAuth.brandWebsite);
+  const [brandInstagram, setBrandInstagram] = useState(initialAuth.brandInstagram);
+
+  const notifyChange = (fieldUpdates: any) => {
+    onChange?.({
+      counterfeitRiskTier: riskTier as any,
+      authenticationChecklist: checklist,
+      websiteUrl: brandWebsite,
+      instagramHandle: brandInstagram,
+      ...fieldUpdates
+    });
+  };
 
   const handleSave = () => {
     onSave?.({ riskTier, checklist, brandWebsite, brandInstagram });
@@ -62,7 +77,11 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
         <select
           className="form-select"
           value={riskTier}
-          onChange={(e) => setRiskTier(e.target.value as CounterfeitRiskTier)}
+          onChange={(e) => {
+            const val = e.target.value as CounterfeitRiskTier;
+            setRiskTier(val);
+            notifyChange({ counterfeitRiskTier: val });
+          }}
         >
           <option value="Low">Low</option>
           <option value="Medium">Medium</option>
@@ -76,7 +95,10 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
         <textarea
           className="form-textarea"
           value={checklist}
-          onChange={(e) => setChecklist(e.target.value)}
+          onChange={(e) => {
+            setChecklist(e.target.value);
+            notifyChange({ authenticationChecklist: e.target.value });
+          }}
           rows={4}
         />
         <p className="form-hint">
@@ -97,7 +119,10 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
           <input
             className="form-input"
             value={brandWebsite}
-            onChange={(e) => setBrandWebsite(e.target.value)}
+            onChange={(e) => {
+              setBrandWebsite(e.target.value);
+              notifyChange({ websiteUrl: e.target.value });
+            }}
           />
           <p className="form-hint">Cross-check collections, price points and product codes when verifying pieces</p>
         </div>
@@ -107,7 +132,10 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
           <input
             className="form-input"
             value={brandInstagram}
-            onChange={(e) => setBrandInstagram(e.target.value)}
+            onChange={(e) => {
+              setBrandInstagram(e.target.value);
+              notifyChange({ instagramHandle: e.target.value });
+            }}
           />
           <p className="form-hint">Official posts are the fastest visual reference for embroidery and label details</p>
         </div>

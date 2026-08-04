@@ -21,6 +21,7 @@ interface ContactCommercialTabProps {
   /** Gates editing — the tab is marked "Super Admin only" in the design. */
   isSuperAdmin?: boolean;
   onSave?: (data: ContactCommercialData) => void;
+  onChange?: (updated: Partial<Designer>) => void;
 }
 
 const DEFAULT_DATA: ContactCommercialData = {
@@ -47,20 +48,49 @@ const PAYMENT_TERMS_OPTIONS: PaymentTerms[] = [
 
 const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
   designer,
-  data = DEFAULT_DATA,
+  data,
   isSuperAdmin = true,
   onSave,
+  onChange,
 }) => {
-  const [isBuyNewPartner, setIsBuyNewPartner] = useState(data.isBuyNewPartner);
-  const [commissionPercent, setCommissionPercent] = useState(data.commissionPercent);
-  const [paymentTerms, setPaymentTerms] = useState<PaymentTerms>(data.paymentTerms);
-  const [fulfilmentReturnsPolicy, setFulfilmentReturnsPolicy] = useState(data.fulfilmentReturnsPolicy);
-  const [accountManagerName, setAccountManagerName] = useState(data.accountManagerName);
-  const [contactEmail, setContactEmail] = useState(data.contactEmail);
-  const [contactPhone, setContactPhone] = useState(data.contactPhone);
-  const [internalNotes, setInternalNotes] = useState(data.internalNotes);
+  const commTerms = designer?.commercialTerms || {};
+  const initialData: ContactCommercialData = data || {
+    isBuyNewPartner: commTerms.suppliesFreshStockBuyNow || false,
+    commissionPercent: commTerms.commissionRateBuyNow || '',
+    paymentTerms: (commTerms.paymentTerms as PaymentTerms) || 'Standard T+3',
+    fulfilmentReturnsPolicy: commTerms.brandFulfilmentPolicy || '',
+    accountManagerName: commTerms.accountManagerName || '',
+    contactEmail: commTerms.contactEmail || '',
+    contactPhone: commTerms.contactPhone || '',
+    internalNotes: commTerms.internalNotes || '',
+  };
+
+  const [isBuyNewPartner, setIsBuyNewPartner] = useState(initialData.isBuyNewPartner);
+  const [commissionPercent, setCommissionPercent] = useState(initialData.commissionPercent);
+  const [paymentTerms, setPaymentTerms] = useState<PaymentTerms>(initialData.paymentTerms);
+  const [fulfilmentReturnsPolicy, setFulfilmentReturnsPolicy] = useState(initialData.fulfilmentReturnsPolicy);
+  const [accountManagerName, setAccountManagerName] = useState(initialData.accountManagerName);
+  const [contactEmail, setContactEmail] = useState(initialData.contactEmail);
+  const [contactPhone, setContactPhone] = useState(initialData.contactPhone);
+  const [internalNotes, setInternalNotes] = useState(initialData.internalNotes);
 
   const fieldsLocked = !isSuperAdmin;
+
+  const notifyChange = (fieldUpdates: any) => {
+    onChange?.({
+      commercialTerms: {
+        suppliesFreshStockBuyNow: isBuyNewPartner,
+        commissionRateBuyNow: commissionPercent,
+        paymentTerms,
+        brandFulfilmentPolicy: fulfilmentReturnsPolicy,
+        accountManagerName,
+        contactEmail,
+        contactPhone,
+        internalNotes,
+        ...fieldUpdates
+      }
+    });
+  };
 
   const handleSave = () => {
     onSave?.({
@@ -87,7 +117,12 @@ const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
         <label className="toggle-row">
           <span
             className={`toggle ${isBuyNewPartner ? 'on' : ''}`}
-            onClick={() => !fieldsLocked && setIsBuyNewPartner(!isBuyNewPartner)}
+            onClick={() => {
+              if (fieldsLocked) return;
+              const val = !isBuyNewPartner;
+              setIsBuyNewPartner(val);
+              notifyChange({ suppliesFreshStockBuyNow: val });
+            }}
           >
             <span className="toggle-knob" />
           </span>
@@ -106,7 +141,10 @@ const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
             className="form-input"
             placeholder="e.g. 30"
             value={commissionPercent}
-            onChange={(e) => setCommissionPercent(e.target.value)}
+            onChange={(e) => {
+              setCommissionPercent(e.target.value);
+              notifyChange({ commissionRateBuyNow: e.target.value });
+            }}
             disabled={fieldsLocked || !isBuyNewPartner}
           />
           <p className="form-hint">Overrides global Buy New commission for this designer only</p>
@@ -117,7 +155,11 @@ const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
           <select
             className="form-select"
             value={paymentTerms}
-            onChange={(e) => setPaymentTerms(e.target.value as PaymentTerms)}
+            onChange={(e) => {
+              const val = e.target.value as PaymentTerms;
+              setPaymentTerms(val);
+              notifyChange({ paymentTerms: val });
+            }}
             disabled={fieldsLocked || !isBuyNewPartner}
           >
             {PAYMENT_TERMS_OPTIONS.map((term) => (
@@ -132,7 +174,10 @@ const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
             className="form-textarea"
             placeholder="Availability, made-to-order lead times, and the brand's return terms — this backs the 'availability and returns follow the brand's policy' line on Buy New PDPs."
             value={fulfilmentReturnsPolicy}
-            onChange={(e) => setFulfilmentReturnsPolicy(e.target.value)}
+            onChange={(e) => {
+              setFulfilmentReturnsPolicy(e.target.value);
+              notifyChange({ brandFulfilmentPolicy: e.target.value });
+            }}
             disabled={fieldsLocked || !isBuyNewPartner}
             rows={3}
           />
@@ -152,7 +197,10 @@ const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
             className="form-input"
             placeholder="Our point of contact at the brand"
             value={accountManagerName}
-            onChange={(e) => setAccountManagerName(e.target.value)}
+            onChange={(e) => {
+              setAccountManagerName(e.target.value);
+              notifyChange({ accountManagerName: e.target.value });
+            }}
             disabled={fieldsLocked}
           />
         </div>
@@ -163,7 +211,10 @@ const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
             className="form-input"
             placeholder="brand@email.com"
             value={contactEmail}
-            onChange={(e) => setContactEmail(e.target.value)}
+            onChange={(e) => {
+              setContactEmail(e.target.value);
+              notifyChange({ contactEmail: e.target.value });
+            }}
             disabled={fieldsLocked}
           />
         </div>
@@ -174,7 +225,10 @@ const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
             className="form-input"
             placeholder="+91 XXXXX XXXXX"
             value={contactPhone}
-            onChange={(e) => setContactPhone(e.target.value)}
+            onChange={(e) => {
+              setContactPhone(e.target.value);
+              notifyChange({ contactPhone: e.target.value });
+            }}
             disabled={fieldsLocked}
           />
         </div>
@@ -185,7 +239,10 @@ const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
             className="form-textarea"
             placeholder="e.g. agreed 28% commission Q1 2026, renewal in June..."
             value={internalNotes}
-            onChange={(e) => setInternalNotes(e.target.value)}
+            onChange={(e) => {
+              setInternalNotes(e.target.value);
+              notifyChange({ internalNotes: e.target.value });
+            }}
             disabled={fieldsLocked}
             rows={3}
           />

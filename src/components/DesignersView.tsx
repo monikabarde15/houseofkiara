@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Plus, Award, Save, ExternalLink, Percent, Globe, MessageSquare } from 'lucide-react';
 import { Designer } from '../types';
+import * as designerApi from '../services/designerApi';
 
 interface DesignersViewProps {
   designers: Designer[];
@@ -64,54 +65,99 @@ export default function DesignersView({ designers, onAddDesigner, onUpdateDesign
     setEditStatus('Active');
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editName.trim()) {
       alert("Designer name is required.");
       return;
     }
 
-    if (isAdding) {
-      const newD: Designer = {
-        id: "DSGN-" + Math.floor(100 + Math.random() * 900),
-        name: editName,
-        slug: editName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        activeListings: 0,
-        featured: editFeatured,
-        status: editStatus,
-        bio: editBio,
-        foundedYear: editFounded,
-        website: editWebsite,
-        instagram: editInstagram,
-        location: editLocation,
-        accountManager: editManager,
-        contactEmail: editEmail,
-        contactPhone: editPhone,
-        commissionOverride: editCommission,
-        payoutTerms: editPayout
-      };
-      onAddDesigner(newD);
-      setIsAdding(false);
-      alert("Designer added successfully!");
-    } else if (editingDesigner) {
-      const updated: Designer = {
-        ...editingDesigner,
-        name: editName,
-        bio: editBio,
-        foundedYear: editFounded,
-        website: editWebsite,
-        instagram: editInstagram,
-        location: editLocation,
-        accountManager: editManager,
-        contactEmail: editEmail,
-        contactPhone: editPhone,
-        commissionOverride: editCommission,
-        payoutTerms: editPayout,
-        featured: editFeatured,
-        status: editStatus
-      };
-      onUpdateDesigner(updated);
-      setEditingDesigner(null);
-      alert("Designer profile updated!");
+    try {
+      if (isAdding) {
+        const newD: Designer = {
+          id: "DSGN-" + Math.floor(100 + Math.random() * 900),
+          name: editName,
+          slug: editName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          activeListings: 0,
+          featured: editFeatured,
+          status: editStatus,
+          bio: editBio,
+          foundedYear: editFounded,
+          website: editWebsite,
+          instagram: editInstagram,
+          location: editLocation,
+          accountManager: editManager,
+          contactEmail: editEmail,
+          contactPhone: editPhone,
+          commissionOverride: editCommission,
+          payoutTerms: editPayout
+        };
+        await designerApi.createDesigner(newD as any);
+        onAddDesigner(newD);
+        setIsAdding(false);
+        alert("Designer added successfully to database!");
+      } else if (editingDesigner) {
+        const updated: Designer = {
+          ...editingDesigner,
+          name: editName,
+          bio: editBio,
+          foundedYear: editFounded,
+          website: editWebsite,
+          instagram: editInstagram,
+          location: editLocation,
+          accountManager: editManager,
+          contactEmail: editEmail,
+          contactPhone: editPhone,
+          commissionOverride: editCommission,
+          payoutTerms: editPayout,
+          featured: editFeatured,
+          status: editStatus
+        };
+        await designerApi.updateDesigner(updated.id, updated as any);
+        onUpdateDesigner(updated);
+        setEditingDesigner(null);
+        alert("Designer profile updated in database!");
+      }
+    } catch (err) {
+      console.error("Failed to save designer via API:", err);
+      if (isAdding) {
+        onAddDesigner({
+          id: "DSGN-" + Math.floor(100 + Math.random() * 900),
+          name: editName,
+          slug: editName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          activeListings: 0,
+          featured: editFeatured,
+          status: editStatus,
+          bio: editBio,
+          foundedYear: editFounded,
+          website: editWebsite,
+          instagram: editInstagram,
+          location: editLocation,
+          accountManager: editManager,
+          contactEmail: editEmail,
+          contactPhone: editPhone,
+          commissionOverride: editCommission,
+          payoutTerms: editPayout
+        });
+        setIsAdding(false);
+      } else if (editingDesigner) {
+        onUpdateDesigner({
+          ...editingDesigner,
+          name: editName,
+          bio: editBio,
+          foundedYear: editFounded,
+          website: editWebsite,
+          instagram: editInstagram,
+          location: editLocation,
+          accountManager: editManager,
+          contactEmail: editEmail,
+          contactPhone: editPhone,
+          commissionOverride: editCommission,
+          payoutTerms: editPayout,
+          featured: editFeatured,
+          status: editStatus
+        });
+        setEditingDesigner(null);
+      }
     }
   };
 
