@@ -40,9 +40,6 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({
     }
   };
 
-  const hasPendingPayouts = false;
-  const hasHOKCustody = false;
-
   return (
     <div className="compliance-tab">
       <div className="compliance-card card">
@@ -112,7 +109,7 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({
 
         <div className="card-ft">
           <button className="btn btn-danger btn-sm">Suspend Account</button>
-          <button 
+          <button
             className="btn btn-gold btn-sm"
             onClick={handleSave}
             disabled={loading}

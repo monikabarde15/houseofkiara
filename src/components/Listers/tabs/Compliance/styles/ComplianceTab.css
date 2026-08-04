@@ -1,5 +1,3 @@
-/* src/components/Listers/tabs/Compliance/styles/ComplianceTab.css */
-
 .compliance-tab {
   display: flex;
   flex-direction: column;
@@ -10,13 +8,18 @@
 }
 
 .compliance-card .card-bd {
+  display: flex;
+  flex-direction: column;
   padding: 16px;
 }
 
-.compliance-empty {
-  font-size: 11px;
-  color: #8A7E72;
-  padding: 4px 0;
+.fld {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.fld:last-of-type {
+  margin-bottom: 0;
 }
 
 .fld-label-internal {
@@ -61,21 +64,6 @@
 .terms-value,
 .offboarding-value {
   color: #1A1612;
-}
-
-.terms-missing {
-  color: #B85C38;
-  font-weight: 500;
-}
-
-.offboarding-blocked {
-  color: #B85C38;
-  font-weight: 500;
-}
-
-.offboarding-ready {
-  color: #6B7E5A;
-  font-weight: 500;
 }
 
 .save-check {
