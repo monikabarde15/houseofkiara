@@ -518,7 +518,7 @@ export default function ProductsView({
             </div>
           </div>
 
-         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+         <div className="flex flex-col gap-6 lg:flex-row">
   <div className="min-w-0 flex-1 space-y-6">
               {state.activeTab === 'Core' && (
                 <CoreDetailsTab
@@ -540,30 +540,43 @@ export default function ProductsView({
                   isSaving={isFinalSaving}
                 />
               )}
-              {state.activeTab === 'Pricing' && (<PricingTaxTab formData={formData} onFieldChange={updateFormField} />)}
+              {state.activeTab === 'Pricing' && (<PricingTaxTab formData={formData} onFieldChange={updateFormField} isAdding={state.isAdding} />)}
               {state.activeTab === 'Images' && (<ImagesTab formData={formData} onFieldChange={updateFormField} uploadingImages={state.uploadingImages} setUploadingImages={setUploadingImages} />)}
               {state.activeTab === 'Related Products' && (<RelatedProductsTab formData={formData} onFieldChange={updateFormField} allProducts={products} currentProductId={state.editingProduct?._id} />)}
               {state.activeTab === 'SEO' && (<SEOTab formData={formData} onFieldChange={updateFormField} />)}
               {state.activeTab === 'Calendar' && state.editingProduct && (<AvailabilityCalendarTab editingProduct={state.editingProduct} onUpdateProduct={onUpdateProduct} loading={state.loading} />)}
-              {state.activeTab === 'Payout History' && state.editingProduct && (<PayoutHistoryTab payoutHistory={state.payoutHistory} loading={state.loading} />)}
+             {state.activeTab === 'Payout History' && (state.editingProduct || state.isAdding) && (
+  <PayoutHistoryTab
+    payoutHistory={state.editingProduct ? state.payoutHistory : []}
+    loading={state.editingProduct ? state.loading : false}
+    isAdding={state.isAdding}
+  />
+)}
               {state.activeTab === 'Activity Log' && state.editingProduct && (<ActivityLogTab activityLog={state.activityLog} loading={state.loading} />)}
             </div>
 
-          {
+         {
   (state.editingProduct || state.isAdding) && (
     <div className="w-full lg:w-[340px] lg:shrink-0">
       <ProductSidebar
         product={(state.editingProduct || formData) as Product}
+        isNew={state.isAdding}
         onViewLive={() =>
           state.editingProduct?.urlSlug &&
           window.open(`/product/${state.editingProduct.urlSlug}`, '_blank')
         }
         onArchive={() => {
-          if (!state.editingProduct) return; // nothing to archive on a brand-new draft
+          if (!state.editingProduct) return;
           if (confirm('Archive this product?')) {
             updateFormField('status', 'Archived');
             handleSave();
           }
+        }}
+        onOpenGlobalCalendar={() => {
+          // TODO: wire this to wherever your "Rental Calendar" nav item goes —
+          // e.g. a route change, a modal, or setting a parent view state.
+          // Placeholder so the button in the New Product state isn't dead:
+          console.log('Open global rental calendar');
         }}
       />
     </div>
