@@ -13,6 +13,14 @@
   padding: 16px;
 }
 
+/* Account Status + Status Reason side by side */
+.compliance-status-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
 .fld {
   width: 100%;
   margin-bottom: 16px;

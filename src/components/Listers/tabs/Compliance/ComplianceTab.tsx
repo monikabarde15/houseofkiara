@@ -48,33 +48,35 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({
         </div>
 
         <div className="card-bd">
-          <div className="fld">
-            <label className="fld-label">Account Status</label>
-            <select
-              className="fld-input"
-              value={status}
-              onChange={(e) => handleStatusChange(e.target.value as ListerStatus)}
-            >
-              {LISTER_STATUSES.map(s => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-            <div className="fld-hint">
-              Suspended pauses every live piece (existing bookings honored). Exited runs the offboarding check below first.
+          <div className="compliance-status-row">
+            <div className="fld">
+              <label className="fld-label">Account Status</label>
+              <select
+                className="fld-input"
+                value={status}
+                onChange={(e) => handleStatusChange(e.target.value as ListerStatus)}
+              >
+                {LISTER_STATUSES.map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+              <div className="fld-hint">
+                Suspended pauses every live piece (existing bookings honored). Exited runs the offboarding check below first.
+              </div>
             </div>
-          </div>
 
-          <div className="fld">
-            <label className="fld-label">
-              Status Reason <span className="fld-label-internal">– internal, on the record</span>
-            </label>
-            <input
-              type="text"
-              className="fld-input"
-              value={statusReason}
-              onChange={(e) => setStatusReason(e.target.value)}
-              placeholder="e.g. repeated late handovers"
-            />
+            <div className="fld">
+              <label className="fld-label">
+                Status Reason <span className="fld-label-internal">– internal, on the record</span>
+              </label>
+              <input
+                type="text"
+                className="fld-input"
+                value={statusReason}
+                onChange={(e) => setStatusReason(e.target.value)}
+                placeholder="e.g. repeated late handovers"
+              />
+            </div>
           </div>
 
           <div className="compliance-authority-note">
