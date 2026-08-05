@@ -6,6 +6,7 @@ import { PayoutRecord } from '../../types/product';
 interface PayoutHistoryTabProps {
   payoutHistory: PayoutRecord[];
   loading: boolean;
+  isAdding?: boolean;
   condition?: string;
   rentedCount?: number;
   defaultSplitPercent?: number;
@@ -33,11 +34,55 @@ function statusBadgeClasses(status: string) {
 export function PayoutHistoryTab({
   payoutHistory,
   loading,
+  isAdding = false,
   condition = '—',
   rentedCount,
   defaultSplitPercent = 45,
   onViewPayout,
 }: PayoutHistoryTabProps) {
+  if (isAdding) {
+    return (
+      <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
+        <div className="p-5 pb-3 space-y-1">
+          <h3 className="font-serif font-bold text-stone-900 text-sm">Payout History &mdash; This Piece</h3>
+          <p className="text-xs text-stone-500">
+            Every rental of this piece is paid out individually. The percentage below reflects wear, demand, and
+            negotiation at the time &mdash; not a fixed rate.
+          </p>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="bg-[#fcf9f5] text-left text-[10px] uppercase tracking-wide text-stone-400 border-y border-stone-100">
+                <th className="py-2.5 px-5 font-medium">Transaction #</th>
+                <th className="py-2.5 px-3 font-medium">Date</th>
+                <th className="py-2.5 px-3 font-medium">Order</th>
+                <th className="py-2.5 px-3 font-medium">Lister</th>
+                <th className="py-2.5 px-3 font-medium">Type</th>
+                <th className="py-2.5 px-3 font-medium">Transaction Value</th>
+                <th className="py-2.5 px-3 font-medium">Payout %</th>
+                <th className="py-2.5 px-3 font-medium">Amount</th>
+                <th className="py-2.5 px-5 font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan={9} className="py-10 text-center text-stone-400 text-xs">
+                  Payouts appear after this piece&rsquo;s first completed transaction.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p className="px-5 py-3 text-[10px] text-stone-400 border-t border-stone-100">
+          Percentage progression across rentals is expected &mdash; later rentals typically settle lower as the piece
+          sees more wear. See Master Data for starting defaults.
+        </p>
+      </div>
+    );
+  }
   const stats = useMemo(() => {
     const timesRented = payoutHistory.length;
     const avgSplit = timesRented

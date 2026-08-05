@@ -6,6 +6,7 @@ import { Product } from '../types/product';
 
 interface ProductSidebarProps {
     product: Product;
+    isNew?: boolean;
     onViewLive?: () => void;
     onArchive?: () => void;
     onOpenGlobalCalendar?: () => void;
@@ -51,11 +52,19 @@ function startOfDay(d: Date) {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
-export function ProductSidebar({ product, onViewLive, onArchive, onOpenGlobalCalendar, onViewOrder }: ProductSidebarProps) {
+export function ProductSidebar({
+    product,
+    isNew = false,
+    onViewLive,
+    onArchive,
+    onOpenGlobalCalendar,
+    onViewOrder,
+}: ProductSidebarProps) {
+    // ── All hooks run unconditionally, on every render, regardless of `isNew`. ──
     const today = useMemo(() => startOfDay(new Date()), []);
 
-    const bookingHistory = ((product as any).bookingHistory || []) as any[];
-    const blockedDates = (product.blockedDates || []) as { from: string; to: string; reason?: string }[];
+    const bookingHistory = ((product as any)?.bookingHistory || []) as any[];
+    const blockedDates = (product?.blockedDates || []) as { from: string; to: string; reason?: string }[];
 
     const activeBookings = useMemo(
         () =>
@@ -69,8 +78,8 @@ export function ProductSidebar({ product, onViewLive, onArchive, onOpenGlobalCal
         [bookingHistory]
     );
 
-    const preBufferDays = (product as any).preRentalBufferDays ?? DEFAULT_PRE_BUFFER_DAYS;
-    const postBufferDays = (product as any).postRentalBufferDays ?? DEFAULT_POST_BUFFER_DAYS;
+    const preBufferDays = (product as any)?.preRentalBufferDays ?? DEFAULT_PRE_BUFFER_DAYS;
+    const postBufferDays = (product as any)?.postRentalBufferDays ?? DEFAULT_POST_BUFFER_DAYS;
 
     // Default the visible month to whichever active booking covers today, else the
     // nearest upcoming booking, else the current month.
@@ -141,9 +150,63 @@ export function ProductSidebar({ product, onViewLive, onArchive, onOpenGlobalCal
         b => selectedDate >= startOfDay(new Date(b.from)) && selectedDate <= startOfDay(new Date(b.to))
     );
 
+    // ── Only the JSX branches on `isNew` — no hooks below this point. ──
+    if (isNew) {
+        return (
+           <div className="w-full lg:h-full">
+    <div className="lg:sticky lg:top-24 space-y-5">
+
+                    {/* =========================== Availability (empty state) =========================== */}
+                    <div className="rounded-xl border border-[#E8E0D6] bg-white shadow-sm overflow-hidden">
+                        <div className="flex items-center justify-between border-b border-[#F1EBE3] px-5 py-4">
+                            <h3 className="text-[15px] font-semibold text-[#2D2926]">Availability</h3>
+                            <button
+                                onClick={onOpenGlobalCalendar}
+                                className="rounded-md border border-[#E7DED2] bg-white px-3 py-1.5 text-[11px] font-medium text-[#6B645C] transition hover:bg-[#FAF8F5]"
+                            >
+                                Full Calendar →
+                            </button>
+                        </div>
+
+                        <div className="p-5 space-y-4">
+                            <div className="rounded-lg border border-dashed border-[#DDD3C7] bg-[#FAF8F5] px-4 py-6 text-center">
+                                <p className="text-[12px] text-[#8B8175]">
+                                    Availability appears once the piece is created
+                                </p>
+                            </div>
+
+                            <div className="flex flex-col items-center justify-center rounded-lg bg-[#F1EBE3] px-4 py-10">
+                                <Calendar className="h-5 w-5 text-[#B5AB9D] mb-2" />
+                                <p className="text-[12px] text-[#A2978A]">Tap a date to see details</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* =========================== Quick Actions (new) =========================== */}
+                    <div className="overflow-hidden rounded-xl border border-[#E8E0D6] bg-white shadow-sm">
+                        <div className="border-b border-[#EFE8DE] px-5 py-4">
+                            <h3 className="text-[15px] font-semibold text-[#2D2926]">Quick Actions</h3>
+                        </div>
+
+                        <div className="space-y-3 p-4">
+                            <button
+                                onClick={onOpenGlobalCalendar}
+                                className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5]"
+                            >
+                                <Calendar className="h-4 w-4" />
+                                <span>Global Rental Calendar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        );
+    }
+
     return (
-    <div className="w-full">
-        <div className="lg:sticky lg:top-24 space-y-5">
+        <div className="w-full">
+            <div className="lg:sticky lg:top-24 space-y-5">
                 {/* =========================== Availability =========================== */}
 
                 <div className="rounded-xl border border-[#E8E0D6] bg-white shadow-sm overflow-hidden">
@@ -221,16 +284,16 @@ export function ProductSidebar({ product, onViewLive, onArchive, onOpenGlobalCal
                                         `}
                                     >
                                         {(type === "blocked" || type === "buffer") && (
-    <div
-        className="absolute inset-0 opacity-70"
-        style={{
-            backgroundImage:
-                type === "blocked"
-                    ? "repeating-linear-gradient(45deg,#D8C7AA 0,#D8C7AA 2px,transparent 2px,transparent 7px)"
-                    : "repeating-linear-gradient(45deg,#F0C989 0,#F0C989 2px,transparent 2px,transparent 7px)"
-        }}
-    />
-)}
+                                            <div
+                                                className="absolute inset-0 opacity-70"
+                                                style={{
+                                                    backgroundImage:
+                                                        type === "blocked"
+                                                            ? "repeating-linear-gradient(45deg,#D8C7AA 0,#D8C7AA 2px,transparent 2px,transparent 7px)"
+                                                            : "repeating-linear-gradient(45deg,#F0C989 0,#F0C989 2px,transparent 2px,transparent 7px)"
+                                                }}
+                                            />
+                                        )}
                                         <span className="relative z-10">{date.getDate()}</span>
                                         {initials && (
                                             <span className="relative z-10 mt-[2px] text-[8px] font-bold tracking-wide">
@@ -249,17 +312,17 @@ export function ProductSidebar({ product, onViewLive, onArchive, onOpenGlobalCal
                                     <div className="h-3 w-3 rounded bg-[#DDE9D8]" />
                                     <span className="text-[#7B7369]">Available</span>
                                 </div>
-                               <div className="flex items-center gap-2">
-    <div
-        className="h-3 w-3 rounded"
-        style={{
-            backgroundColor: "#F7F2E8",
-            backgroundImage:
-                "repeating-linear-gradient(45deg,#F0C989 0,#F0C989 2px,transparent 2px,transparent 7px)"
-        }}
-    />
-    <span className="text-[#7B7369]">Buffer</span>
-</div>
+                                <div className="flex items-center gap-2">
+                                    <div
+                                        className="h-3 w-3 rounded"
+                                        style={{
+                                            backgroundColor: "#F7F2E8",
+                                            backgroundImage:
+                                                "repeating-linear-gradient(45deg,#F0C989 0,#F0C989 2px,transparent 2px,transparent 7px)"
+                                        }}
+                                    />
+                                    <span className="text-[#7B7369]">Buffer</span>
+                                </div>
                                 <div className="flex items-center gap-2">
                                     <div className="h-3 w-3 rounded bg-[#C7683B]" />
                                     <span className="text-[#7B7369]">In Rental</span>

@@ -170,10 +170,22 @@ export function CoreDetailsTab({
         </div>
 
         <div className="border-t border-stone-100 pt-4">
-          <p className="text-xs text-stone-500 mb-4">
-            Draft → Pending Review → Live · Paused, Out of Stock and Archived are side states
-          </p>
-
+  {!productId && (
+    <div className="flex items-start gap-3 bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 mb-4">
+      <span className="shrink-0 px-2 py-0.5 text-[11px] font-semibold text-stone-500 bg-white border border-stone-300 rounded">
+        New
+      </span>
+      <p className="text-xs text-stone-600 leading-relaxed">
+        Not yet created. Fill in details, pricing and photos — the piece is saved as a{' '}
+        <strong className="font-semibold text-stone-800">Draft</strong> when you click{' '}
+        <strong className="font-semibold text-stone-800">Create Product</strong>, and enters
+        the review workflow from there.
+      </p>
+    </div>
+  )}
+  <p className="text-xs text-stone-500 mb-4">
+    Draft → Pending Review → Live · Paused, Out of Stock and Archived are side states
+  </p>
           <label className={labelClass}>Set Status Directly (Super Admin Override)</label>
           <select
             value={formData.status || 'Draft'}
@@ -492,6 +504,7 @@ export function CoreDetailsTab({
             className={inputClass}
           >
             <option value="">Select condition</option>
+            <option value="Pristine">Pristine</option>
             <option value="Excellent">Excellent</option>
             <option value="Very Good">Very Good</option>
             <option value="Good">Good</option>
