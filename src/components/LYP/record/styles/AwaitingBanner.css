@@ -1,0 +1,92 @@
+/* src/components/LYP/record/styles/AwaitingBanner.css */
+
+.awaiting-banner {
+  background: var(--gold-pale);
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  border-radius: var(--r);
+  padding: 10px 13px;
+  font-size: 11px;
+  color: #6B5730;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.awaiting-banner-text {
+  flex: 1;
+  line-height: 1.6;
+  min-width: 200px;
+}
+
+.awaiting-banner-text strong {
+  font-weight: 600;
+}
+
+.awaiting-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 1px;
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--charcoal);
+  border-color: var(--gold);
+  font-weight: 600;
+}
+
+.btn-gold:hover {
+  background: #B89058;
+  border-color: #B89058;
+}
+
+.btn-wa {
+  background: #25D366;
+  border-color: #20BD5B;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.btn-wa:hover {
+  background: #1DAD57;
+  border-color: #1DAD57;
+}
+
+.btn-wa svg {
+  stroke: #FFFFFF;
+}
+
+.btn-sec {
+  background: var(--card);
+  color: var(--charcoal);
+  border-color: var(--border);
+}
+
+.btn-sec:hover {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 10.5px;
+}

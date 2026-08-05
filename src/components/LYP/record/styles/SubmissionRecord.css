@@ -1,0 +1,43 @@
+/* src/components/LYP/record/styles/SubmissionRecord.css */
+
+.submission-record {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.submission-record-body {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.submission-record-main {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.submission-record-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  align-items: start;
+}
+
+.g2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+@media (max-width: 768px) {
+  .submission-record-facts {
+    grid-template-columns: 1fr;
+  }
+  
+  .g2 {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}

@@ -17,7 +17,8 @@ import ProductsView from './components/products/ProductsView';
 import DesignersView from './components/Designers/tsx';
 // import ListersView from './components/ListersView';
 import ListersView from './components/Listers/ListersView';
-import OccasionsView from './components/OccasionsView';
+// import OccasionsView from './components/OccasionsView';
+import LYPSubmissionsView from './components/LYP';
 import ReportsView from './components/ReportsView';
 import PromotionsView from './components/PromotionsView';
 import EmailsView from './components/EmailsView';
@@ -352,8 +353,12 @@ export default function App() {
       return <ListersView onEditingChange={setIsSectionEditing} />;
     }
 
-    if (currentView === 'occasions') {
-      return <OccasionsView />;
+    // if (currentView === 'occasions') {
+    //   return <OccasionsView />;
+    // }
+
+    if (currentView === 'lyp') {
+      return <LYPSubmissionsView onEditingChange={setIsSectionEditing} />;
     }
 
     if (currentView === 'reports') {

@@ -1,0 +1,66 @@
+/* src/components/LYP/record/styles/WithdrawRow.css */
+
+.withdraw-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.withdraw-row .fld-input {
+  flex: 1;
+  min-width: 220px;
+  padding: 7px 10px;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  font-size: 12px;
+  font-family: var(--sans);
+  color: var(--charcoal);
+  background: var(--ibg);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.withdraw-row .fld-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.3);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 1px;
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn-sec {
+  background: var(--card);
+  color: var(--charcoal);
+  border-color: var(--border);
+}
+
+.btn-sec:hover {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.btn-sec:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 10.5px;
+}

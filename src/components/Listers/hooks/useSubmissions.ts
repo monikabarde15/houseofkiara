@@ -59,6 +59,7 @@ export const useSubmissions = (listerId: string) => {
 
       const newSubmission: Submission = {
         subid,
+        listerId: listerId || submissionData.listerId || '',
         queueRow: null,
         piece: submissionData.piece || '',
         designer: submissionData.designer || '',

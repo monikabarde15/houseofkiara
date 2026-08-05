@@ -75,8 +75,8 @@ export interface Submission {
   media: Media[];
   notes: string | null;
   sku: string | null;
-  decision: Decision | null;
-  moreInfo: MoreInfo | null;
+  decision?: Decision | null;
+  moreInfo?: MoreInfo | null;
 }
 
 export interface Lister {
@@ -90,7 +90,7 @@ export interface Lister {
   address: Address;
   insta: string | null;
   referral: string;
-  source: 'Website (LXP)' | 'Manual (Admin)';
+  source: 'Website (LXP)' | 'Manual (Admin)' | 'Website (LYP)';
   joined: string;
   status: ListerStatus;
   statusReason: string | null;

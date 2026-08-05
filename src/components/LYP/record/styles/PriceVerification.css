@@ -1,0 +1,47 @@
+/* src/components/LYP/record/styles/PriceVerification.css */
+
+.price-verification {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.tchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  padding: 2px 8px;
+  border-radius: var(--r);
+  border: 1px solid var(--cb);
+  background: var(--card);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.tchip.ok {
+  border-color: rgba(107, 126, 90, 0.4);
+  color: #3E4A34;
+  background: #F4F7EF;
+}
+
+.tchip.warn {
+  border-color: rgba(201, 169, 110, 0.55);
+  color: #685738;
+  background: var(--gold-pale);
+}
+
+.tchip.bad {
+  border-color: rgba(184, 92, 56, 0.4);
+  color: var(--terra);
+  background: rgba(184, 92, 56, 0.07);
+}
+
+.tchip.clickable {
+  cursor: pointer;
+}
+
+.tchip.clickable:hover {
+  opacity: 0.8;
+}

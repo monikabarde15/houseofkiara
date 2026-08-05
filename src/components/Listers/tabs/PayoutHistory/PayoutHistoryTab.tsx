@@ -21,7 +21,7 @@ export const PayoutHistoryTab: React.FC<PayoutHistoryTabProps> = ({
   lister,
   isCreateMode = false,
 }) => {
-  const { sendStatementWhatsApp, exportCSV, loading } = usePayouts(lister?.id || '');
+  const { sendStatementWhatsApp, exportCSV, loading } = usePayouts(lister?.id || '', lister);
 
   const handleStatementWhatsApp = async () => {
     if (!lister) return;

@@ -1,0 +1,86 @@
+/* src/components/LYP/components/styles/StatCards.css */
+
+.sg {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 11px;
+  margin-bottom: 18px;
+}
+
+.sc {
+  background: var(--card);
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(26, 22, 18, 0.05);
+  cursor: pointer;
+  transition: outline 0.15s;
+}
+
+.sc::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gold);
+}
+
+.sc-lbl {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.sc-val {
+  font-size: 22px;
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.sc-val-terra {
+  color: var(--terra);
+}
+
+.sc-val-gold {
+  color: var(--gold);
+}
+
+.sc-val-sage {
+  color: var(--sage);
+}
+
+.sc-sub {
+  font-size: 9.5px;
+  color: var(--muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.sc-sub-warning {
+  color: var(--terra);
+}
+
+.sc-on {
+  outline: 1.5px solid var(--gold);
+  outline-offset: 1.5px;
+}
+
+@media (max-width: 768px) {
+  .sg {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .sg {
+    grid-template-columns: 1fr;
+  }
+}

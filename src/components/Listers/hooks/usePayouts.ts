@@ -7,7 +7,7 @@ import { calculateLedger } from '../utils/derived';
 import { inr, formatDate } from '../utils/formatter';
 import { generateWhatsAppLink } from '../utils/generators';
 
-export const usePayouts = (listerId: string) => {
+export const usePayouts = (listerId: string, lister?: any) => {
   const [payouts, setPayouts] = useState<PayoutTransaction[]>([]);
   const [ledger, setLedger] = useState<ListerLedger>({
     paid: 0,
@@ -70,7 +70,7 @@ export const usePayouts = (listerId: string) => {
     message += '\n\nQuestions? Just reply here.\n- Team HOK';
 
     return message;
-  }, [payouts, ledger]);
+  }, [payouts, ledger, lister]);
 
   const sendStatementWhatsApp = useCallback(async (listerName: string, phone: string) => {
     const message = generateStatement(listerName, phone);

@@ -1,0 +1,15 @@
+/* src/components/LYP/record/styles/ApplicantBanner.css */
+
+.applicant-banner {
+  background: var(--gold-pale);
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  border-radius: var(--r);
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #6B5730;
+  line-height: 1.6;
+}
+
+.applicant-banner strong {
+  font-weight: 600;
+}

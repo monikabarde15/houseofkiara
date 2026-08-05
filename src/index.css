@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+:root {
+  /* Design tokens - the palette and radii */
+  --charcoal: #1A1612;
+  --gold: #C9A96E;
+  --gold-l: #E2C99A;
+  --gold-pale: #F5EFE4;
+  --terra: #B85C38;
+  --sage: #6B7E5A;
+  --cream: #FAF7F2;
+  --muted: #8A7E72;
+  --muted-l: #B4A99E;
+  --border: #E8E0D4;
+  --canvas: #F7F4EF;
+  --card: #FFFFFF;
+  --cb: #EDE6DC;
+  --ib: #DDD5C8;
+  --ibg: #FFFEFB;
+  --r: 4px;
+
+  /* Font stacks */
+  --sans: 'Inter', system-ui, sans-serif;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+}
+
 @layer components {
   .auth-input { @apply h-11 w-full border border-[#dcd5ca] bg-white px-3 text-sm text-[#403c38] outline-none placeholder:text-[#9d9790] focus:border-[#c5a65f]; }
   .sidebar-reference { @apply flex flex-col overflow-hidden border-r border-[#2d261d] bg-[#1d1812] text-[#c3bcb3]; }

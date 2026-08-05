@@ -19,6 +19,11 @@ export interface Designer {
   livePieces: number;
   totalPieces: number;
   status: DesignerStatus;
+  commercialTerms?: any;
+  counterfeitRiskTier?: any;
+  authenticationChecklist?: any;
+  websiteUrl?: any;
+  instagramHandle?: any;
 }
 
 export interface UnmappedLabel {

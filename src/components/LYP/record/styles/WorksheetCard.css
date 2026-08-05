@@ -1,0 +1,51 @@
+/* src/components/LYP/record/styles/WorksheetCard.css */
+
+.worksheet-card {
+  margin-top: 13px;
+}
+
+.worksheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--cb);
+}
+
+.worksheet-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--charcoal);
+}
+
+.worksheet-note {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.worksheet-meaning {
+  margin-top: 13px;
+  padding-top: 13px;
+  border-top: 1px solid var(--cb);
+}
+
+.meaning-line {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--charcoal);
+  padding: 2px 0;
+}
+
+.meaning-line-empty {
+  color: var(--terra);
+}
+
+.meaning-line strong {
+  font-weight: 600;
+}
+
+.card-bd {
+  padding: 16px;
+}

@@ -1,0 +1,91 @@
+/* src/components/LYP/record/styles/AuthenticationStrip.css */
+
+.auth-strip {
+  padding: 11px 13px;
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.auth-strip-high {
+  border-left: 3px solid var(--terra);
+}
+
+.auth-strip-medium {
+  border-left: 3px solid #6B5730;
+}
+
+.auth-strip-low {
+  border-left: 3px solid var(--sage);
+}
+
+.auth-strip-unmapped {
+  background: var(--gold-pale);
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  padding: 10px 13px;
+  font-size: 11px;
+  color: #6B5730;
+  line-height: 1.6;
+}
+
+.auth-strip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.auth-strip-risk {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.auth-strip-high .auth-strip-risk {
+  color: var(--terra);
+}
+
+.auth-strip-medium .auth-strip-risk {
+  color: #6B5730;
+}
+
+.auth-strip-low .auth-strip-risk {
+  color: var(--sage);
+}
+
+.auth-strip-designer {
+  font-size: 11px;
+}
+
+.auth-strip-notes {
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.auth-strip-high-warning {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--terra);
+  margin-top: 6px;
+}
+
+.auth-strip-action {
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.qlnk {
+  color: var(--gold);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.qlnk:hover {
+  text-decoration: underline;
+}
