@@ -69,7 +69,7 @@ export const calculateAttentionFlags = (
   }
   
   // Flag 3: Bank unverified with money in flight
-  if (!lister.bank.verified && lister.status !== 'Pending Review' && lister.status !== 'Rejected') {
+  if (!lister.bank?.verified && lister.status !== 'Pending Review' && lister.status !== 'Rejected') {
     const hasPending = pendingPayouts.some(t => 
       t.status === 'Pending Approval' || t.status === 'Approved' || t.status === 'On Hold'
     );

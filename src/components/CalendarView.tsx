@@ -284,7 +284,7 @@ export default function CalendarView({ orders, products, setView, setSelectedOrd
                   <div>
                     <span className="text-stone-400 uppercase text-[9px] font-bold tracking-wider">Product / Rent</span>
                     <p className="font-semibold text-stone-800">{hoveredBooking.productName}</p>
-                    <p className="text-[10px] text-[#c5a880] mt-0.5">Value: ₹{hoveredBooking.amount.toLocaleString('en-IN')} | Deposit: ₹{hoveredBooking.deposit.toLocaleString('en-IN')}</p>
+                    <p className="text-[10px] text-[#c5a880] mt-0.5">Value: ₹{Number(hoveredBooking.amount || 0).toLocaleString('en-IN')} | Deposit: ₹{Number(hoveredBooking.deposit || 0).toLocaleString('en-IN')}</p>
                   </div>
                   <div>
                     <span className="text-stone-400 uppercase text-[9px] font-bold tracking-wider">Rental Dates</span>

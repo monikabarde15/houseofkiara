@@ -19,12 +19,14 @@ interface ListerDetailViewProps {
   listerId: string;
   isCreateMode?: boolean;
   activeTab?: string;
+  onListerChange?: (lister: Lister) => void;
 }
 
 export const ListerDetailView: React.FC<ListerDetailViewProps> = ({
   listerId,
   isCreateMode = false,
   activeTab = 'Profile & Contact',
+  onListerChange,
 }) => {
   const [currentTab, setCurrentTab] = useState(activeTab);
   
@@ -53,7 +55,7 @@ export const ListerDetailView: React.FC<ListerDetailViewProps> = ({
   const renderTabContent = () => {
     switch (currentTab) {
       case 'Profile & Contact':
-        return <ProfileContactTab lister={lister} onSave={refreshLister} isCreateMode={isCreateMode} />;
+        return <ProfileContactTab lister={lister} onSave={refreshLister} onListerChange={onListerChange} isCreateMode={isCreateMode} />;
       case 'Submitted Pieces':
         return <SubmittedPiecesTab submissions={submissions} listerId={listerId} onUpdate={refreshLister} isCreateMode={isCreateMode} />;
       case 'Their Listings':

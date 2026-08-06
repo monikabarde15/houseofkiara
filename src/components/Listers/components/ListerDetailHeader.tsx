@@ -73,9 +73,10 @@ export const ListerDetailHeader: React.FC<ListerDetailHeaderProps> = ({
     );
   }
 
-  const statusChip = STATUS_CHIP_MAPPING[lister.status];
-  const waLink = generateWhatsAppLink(lister.phone, getDefaultWhatsAppMessage(lister.name.split(' ')[0]));
-  const isPendingReview = lister.status === 'Pending Review';
+  const statusChip = STATUS_CHIP_MAPPING[lister?.status || 'Verified'] || { variant: 's-live' };
+  const firstName = (lister?.name || '').split(' ')[0] || '';
+  const waLink = generateWhatsAppLink(lister?.phone || '', getDefaultWhatsAppMessage(firstName));
+  const isPendingReview = lister?.status === 'Pending Review';
 
   return (
     <div className="lh-header">

@@ -37,12 +37,18 @@ export const useListers = (filters?: ListerFilters) => {
     fetchListers();
   }, [fetchListers]);
 
+  const deleteLister = useCallback(async (id: string) => {
+    await listerService.deleteLister(id);
+    await fetchListers();
+  }, [fetchListers]);
+
   return {
     listers,
     loading,
     error,
     totalCount,
     refreshListers,
+    deleteLister,
   };
 };
 

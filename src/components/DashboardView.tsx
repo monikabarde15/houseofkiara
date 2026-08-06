@@ -89,7 +89,7 @@ export default function DashboardView({
           </div>
           <div className="mt-4">
             <h3 className="text-2xl font-serif text-stone-900 font-bold">
-              ₹{mtdRevenue.toLocaleString('en-IN')}
+              ₹{Number(mtdRevenue || 0).toLocaleString('en-IN')}
             </h3>
             <p className="text-[11px] text-green-600 font-medium flex items-center gap-1 mt-1">
               <span>+ 24%</span>
@@ -181,7 +181,7 @@ export default function DashboardView({
                       <td className="px-5 py-3.5 font-mono text-stone-400">{order.id}</td>
                       <td className="px-5 py-3.5 font-medium text-stone-800">{order.customerName}</td>
                       <td className="px-5 py-3.5 max-w-[180px] truncate">{order.productName}</td>
-                      <td className="px-5 py-3.5 font-semibold text-stone-800">₹{order.amount.toLocaleString('en-IN')}</td>
+                      <td className="px-5 py-3.5 font-semibold text-stone-800">₹{Number(order.amount || 0).toLocaleString('en-IN')}</td>
                       <td className="px-5 py-3.5">
                         <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase ${
                           order.status === 'Returned' || order.status === 'Complete' || order.status === 'Processed'

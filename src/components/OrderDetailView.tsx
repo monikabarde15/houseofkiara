@@ -202,19 +202,19 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
           <div className="px-4 py-2 bg-stone-50 border border-stone-100 rounded">
             <span className="text-[9px] uppercase tracking-wider text-stone-400 font-sans font-bold">Value</span>
-            <p className="text-sm font-serif font-bold text-stone-900 mt-0.5">₹{order.amount.toLocaleString('en-IN')}</p>
+            <p className="text-sm font-serif font-bold text-stone-900 mt-0.5">₹{Number(order.amount || 0).toLocaleString('en-IN')}</p>
           </div>
           <div className="px-4 py-2 bg-stone-50 border border-stone-100 rounded">
             <span className="text-[9px] uppercase tracking-wider text-stone-400 font-sans font-bold">Discount</span>
-            <p className="text-sm font-serif font-bold text-stone-900 mt-0.5">₹{order.discount.toLocaleString('en-IN')}</p>
+            <p className="text-sm font-serif font-bold text-stone-900 mt-0.5">₹{Number(order.discount || 0).toLocaleString('en-IN')}</p>
           </div>
           <div className="px-4 py-2 bg-stone-50 border border-stone-100 rounded">
             <span className="text-[9px] uppercase tracking-wider text-stone-400 font-sans font-bold">Deposit Held</span>
-            <p className="text-sm font-serif font-bold text-amber-700 mt-0.5">₹{order.deposit.toLocaleString('en-IN')}</p>
+            <p className="text-sm font-serif font-bold text-amber-700 mt-0.5">₹{Number(order.deposit || 0).toLocaleString('en-IN')}</p>
           </div>
           <div className="px-4 py-2 bg-stone-50 border border-stone-100 rounded">
             <span className="text-[9px] uppercase tracking-wider text-stone-400 font-sans font-bold">Grand Total</span>
-            <p className="text-sm font-serif font-bold text-stone-900 mt-0.5">₹{order.grandTotal.toLocaleString('en-IN')}</p>
+            <p className="text-sm font-serif font-bold text-stone-900 mt-0.5">₹{Number(order.grandTotal || 0).toLocaleString('en-IN')}</p>
           </div>
         </div>
       </div>
@@ -369,23 +369,23 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
               <div className="space-y-3 font-sans">
                 <div className="flex justify-between py-1 border-b border-stone-50 text-stone-600">
                   <span>Rental fee / Retail price</span>
-                  <span className="font-semibold">₹{order.amount.toLocaleString('en-IN')}</span>
+                  <span className="font-semibold">₹{Number(order.amount || 0).toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-stone-50 text-stone-600">
                   <span>SGST / CGST Tax (Included)</span>
-                  <span>₹{Math.round(order.amount * 0.12).toLocaleString('en-IN')} (12%)</span>
+                  <span>₹{Math.round(Number(order.amount || 0) * 0.12).toLocaleString('en-IN')} (12%)</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-stone-50 text-stone-600">
                   <span>Security Deposit held (Refundable)</span>
-                  <span className="font-semibold">₹{order.deposit.toLocaleString('en-IN')}</span>
+                  <span className="font-semibold">₹{Number(order.deposit || 0).toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-stone-50 text-stone-600">
                   <span>Promo Discount</span>
-                  <span className="text-rose-600 font-semibold">- ₹{order.discount.toLocaleString('en-IN')}</span>
+                  <span className="text-rose-600 font-semibold">- ₹{Number(order.discount || 0).toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between py-2 border-t border-stone-200 text-sm font-bold text-stone-900">
                   <span>Grand Total Paid</span>
-                  <span>₹{order.grandTotal.toLocaleString('en-IN')}</span>
+                  <span>₹{Number(order.grandTotal || 0).toLocaleString('en-IN')}</span>
                 </div>
               </div>
 

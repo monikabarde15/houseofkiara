@@ -207,9 +207,9 @@ export default function OrdersView({ orders, setView, setSelectedOrderId, onCrea
                     </td>
                     <td className="px-5 py-3.5">
                       <div>
-                        <span className="font-semibold text-stone-900">₹{order.amount.toLocaleString('en-IN')}</span>
-                        {order.deposit > 0 && (
-                          <p className="text-[9px] text-stone-400 mt-0.5">+ ₹{order.deposit.toLocaleString('en-IN')} Dep.</p>
+                        <span className="font-semibold text-stone-900">₹{Number(order.amount || 0).toLocaleString('en-IN')}</span>
+                        {(order.deposit || 0) > 0 && (
+                          <p className="text-[9px] text-stone-400 mt-0.5">+ ₹{Number(order.deposit || 0).toLocaleString('en-IN')} Dep.</p>
                         )}
                       </div>
                     </td>

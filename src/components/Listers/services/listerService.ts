@@ -10,18 +10,58 @@ import {
   ListerFilters
 } from '../types/lister.types';
 
-// Mock data imports
+// Mock data imports for fallbacks & non-persisted secondary collections
 import { mockListers, mockSubmissions, mockPayouts, mockActivities, mockCommunications, mockRecalls, mockProducts } from '../data/mockListers';
+import { listerApi } from '../../../services/listerApi';
+
+let inMemoryListers: Lister[] = [...mockListers];
 
 export const listerService = {
   // Lister CRUD
   getListers: async (filters?: ListerFilters): Promise<{ data: Lister[]; total: number }> => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 300));
+    try {
+      const apiListers = await listerApi.getListers({
+        search: filters?.search,
+        status: filters?.status,
+      });
+
+      if (Array.isArray(apiListers) && apiListers.length > 0) {
+        let data = [...apiListers];
+
+        // Apply sorting
+        if (filters?.sortBy) {
+          data.sort((a, b) => {
+            let aVal: any = a[filters.sortBy as keyof Lister];
+            let bVal: any = b[filters.sortBy as keyof Lister];
+            
+            if (filters.sortBy === 'name') {
+              aVal = a.name;
+              bVal = b.name;
+            }
+            
+            if (filters.sortBy === 'joined') {
+              aVal = a.joined;
+              bVal = b.joined;
+            }
+            
+            if (aVal < bVal) return filters.sortOrder === 'asc' ? -1 : 1;
+            if (aVal > bVal) return filters.sortOrder === 'asc' ? 1 : -1;
+            return 0;
+          });
+        }
+
+        return {
+          data,
+          total: data.length,
+        };
+      }
+    } catch (err) {
+      console.warn('Backend Listers API unavailable, using local cache:', err);
+    }
+
+    // Fallback to local memory listers
+    let data = [...inMemoryListers];
     
-    let data = [...mockListers];
-    
-    // Apply filters
     if (filters?.status) {
       data = data.filter(l => l.status === filters.status);
     }
@@ -34,7 +74,6 @@ export const listerService = {
       );
     }
     
-    // Apply sorting
     if (filters?.sortBy) {
       data.sort((a, b) => {
         let aVal: any = a[filters.sortBy as keyof Lister];
@@ -63,8 +102,13 @@ export const listerService = {
   },
 
   getListerById: async (id: string): Promise<Lister> => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const lister = mockListers.find(l => l.id === id);
+    try {
+      const apiLister = await listerApi.getListerById(id);
+      if (apiLister) return apiLister;
+    } catch (err) {
+      console.warn('Backend API getListerById failed, searching fallback:', err);
+    }
+    const lister = inMemoryListers.find(l => l.id === id || (l as any).listerId === id);
     if (!lister) {
       throw new Error('Lister not found');
     }
@@ -72,12 +116,21 @@ export const listerService = {
   },
 
   createLister: async (listerData: Partial<Lister>): Promise<Lister> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      const created = await listerApi.createLister(listerData);
+      if (created) {
+        inMemoryListers.unshift(created);
+        return created;
+      }
+    } catch (err) {
+      console.warn('Backend API createLister failed, creating locally:', err);
+    }
+
     const newLister: Lister = {
-      id: `lister-${Date.now()}`,
+      id: listerData.id || `lister-${Date.now()}`,
       slug: listerData.slug || listerData.name?.toLowerCase().replace(/\s+/g, '-') || '',
-      name: listerData.name || '',
-      initials: listerData.initials || '',
+      name: listerData.name || 'New Lister',
+      initials: listerData.initials || 'NL',
       phone: listerData.phone || '',
       email: listerData.email || null,
       city: listerData.city || '',
@@ -102,16 +155,40 @@ export const listerService = {
       },
       notes: listerData.notes || null,
     };
+    inMemoryListers.unshift(newLister);
     return newLister;
   },
 
   updateLister: async (id: string, updates: Partial<Lister>): Promise<Lister> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const lister = mockListers.find(l => l.id === id);
+    try {
+      const updated = await listerApi.updateLister(id, updates);
+      if (updated) {
+        inMemoryListers = inMemoryListers.map(l => l.id === id ? { ...l, ...updated } : l);
+        return updated;
+      }
+    } catch (err) {
+      console.warn('Backend API updateLister failed, updating locally:', err);
+    }
+
+    const lister = inMemoryListers.find(l => l.id === id);
     if (!lister) {
       throw new Error('Lister not found');
     }
-    return { ...lister, ...updates };
+    const updatedLister = { ...lister, ...updates };
+    inMemoryListers = inMemoryListers.map(l => l.id === id ? updatedLister : l);
+    return updatedLister;
+  },
+
+  deleteLister: async (id: string): Promise<void> => {
+    if (!id) return;
+    try {
+      await listerApi.deleteLister(id);
+    } catch (err: any) {
+      console.error('Backend API deleteLister failed:', err);
+      inMemoryListers = inMemoryListers.filter(l => l.id !== id && (l as any).listerId !== id && (l as any)._id !== id);
+      throw new Error(err.message || 'Failed to delete lister from database');
+    }
+    inMemoryListers = inMemoryListers.filter(l => l.id !== id && (l as any).listerId !== id && (l as any)._id !== id);
   },
 
   // Submissions
@@ -302,8 +379,13 @@ export const listerService = {
 
   // Bank verification
   verifyBank: async (listerId: string): Promise<Lister> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const lister = mockListers.find(l => l.id === listerId);
+    try {
+      const updated = await listerApi.updateBankDetails(listerId, { verified: true });
+      if (updated) return updated;
+    } catch (e) {
+      console.warn('Bank verify API failed:', e);
+    }
+    const lister = inMemoryListers.find(l => l.id === listerId);
     if (!lister) {
       throw new Error('Lister not found');
     }
@@ -317,8 +399,13 @@ export const listerService = {
   },
 
   unverifyBank: async (listerId: string): Promise<Lister> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const lister = mockListers.find(l => l.id === listerId);
+    try {
+      const updated = await listerApi.updateBankDetails(listerId, { verified: false });
+      if (updated) return updated;
+    } catch (e) {
+      console.warn('Bank unverify API failed:', e);
+    }
+    const lister = inMemoryListers.find(l => l.id === listerId);
     if (!lister) {
       throw new Error('Lister not found');
     }
@@ -332,8 +419,13 @@ export const listerService = {
   },
 
   verifyPAN: async (listerId: string): Promise<Lister> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const lister = mockListers.find(l => l.id === listerId);
+    try {
+      const updated = await listerApi.updateLister(listerId, { panVerified: true });
+      if (updated) return updated;
+    } catch (e) {
+      console.warn('PAN verify API failed:', e);
+    }
+    const lister = inMemoryListers.find(l => l.id === listerId);
     if (!lister) {
       throw new Error('Lister not found');
     }

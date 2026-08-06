@@ -1,4 +1,39 @@
 import mongoose from "mongoose";
-const bankSchema = new mongoose.Schema({ accountHolder: String, accountNumber: String, ifsc: String, bankName: String }, { _id: false });
-const listerSchema = new mongoose.Schema({ listerId: { type: String, unique: true, required: true }, name: { type: String, required: true }, email: { type: String, required: true, lowercase: true }, phone: String, location: String, status: { type: String, enum: ["Active", "Pending Review", "Suspended"], default: "Pending Review" }, verified: { type: Boolean, default: false }, bankDetails: bankSchema, payoutPercentages: { rental: { type: Number, default: 80 }, preloved: { type: Number, default: 80 }, buy: { type: Number, default: 80 } }, internalNotes: String }, { timestamps: true });
+
+const listerSchema = new mongoose.Schema(
+  {
+    listerId: { type: String, unique: true, required: true },
+    name: { type: String, required: true },
+    initials: String,
+    email: { type: String, lowercase: true, default: null },
+    phone: String,
+    city: String,
+    location: String,
+    status: {
+      type: String,
+      default: "Verified",
+    },
+    statusReason: String,
+    source: { type: String, default: "Manual (Admin)" },
+    referral: String,
+    insta: String,
+    joined: String,
+    verified: { type: Boolean, default: true },
+    address: mongoose.Schema.Types.Mixed,
+    pickup: mongoose.Schema.Types.Mixed,
+    pickupPrefs: String,
+    bank: mongoose.Schema.Types.Mixed,
+    bankDetails: mongoose.Schema.Types.Mixed,
+    payoutPercentages: mongoose.Schema.Types.Mixed,
+    gstReg: { type: Boolean, default: false },
+    gstin: String,
+    pan: String,
+    panVerified: { type: Boolean, default: false },
+    terms: mongoose.Schema.Types.Mixed,
+    notes: String,
+    internalNotes: String,
+  },
+  { timestamps: true, strict: false }
+);
+
 export default mongoose.model("Lister", listerSchema);
