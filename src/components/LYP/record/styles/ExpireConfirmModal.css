@@ -1,0 +1,145 @@
+/* src/components/LYP/record/styles/ExpireConfirmModal.css */
+
+/* ── Backdrop ── */
+.expire-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: expire-fade-in 0.15s ease;
+}
+
+@keyframes expire-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Modal card ── */
+.expire-modal {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  width: 480px;
+  max-width: calc(100vw - 32px);
+  animation: expire-slide-up 0.18s ease;
+  font-family: var(--sans);
+}
+
+@keyframes expire-slide-up {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── Header ── */
+.expire-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+}
+
+.expire-modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1A1612;
+  margin: 0;
+  font-family: var(--sans);
+}
+
+.expire-modal-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #9C9287;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 2px;
+  transition: color 0.12s;
+}
+
+.expire-modal-close:hover {
+  color: #1A1612;
+}
+
+/* ── Divider ── */
+.expire-modal-divider {
+  height: 1px;
+  background: #EDE6DC;
+}
+
+/* ── Body ── */
+.expire-modal-body {
+  padding: 22px 24px;
+}
+
+.expire-modal-body p {
+  margin: 0;
+  font-size: 14px;
+  color: #3A3530;
+  line-height: 1.6;
+  font-family: var(--sans);
+}
+
+.expire-modal-body p strong {
+  font-weight: 700;
+  color: #1A1612;
+}
+
+/* ── Footer ── */
+.expire-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px 20px;
+}
+
+.expire-btn-cancel {
+  padding: 8px 20px;
+  border: 1px solid #D6CEC4;
+  background: #fff;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3A3530;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.expire-btn-cancel:hover:not(:disabled) {
+  background: #FAF8F5;
+  border-color: #C3BAAF;
+}
+
+.expire-btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Red-outlined confirm button matching design */
+.expire-btn-confirm {
+  padding: 8px 20px;
+  border: 1.5px solid #C0392B;
+  background: #fff;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #C0392B;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: background 0.12s, color 0.12s;
+}
+
+.expire-btn-confirm:hover:not(:disabled) {
+  background: #C0392B;
+  color: #fff;
+}
+
+.expire-btn-confirm:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

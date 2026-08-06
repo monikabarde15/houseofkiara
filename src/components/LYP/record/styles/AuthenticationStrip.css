@@ -1,34 +1,62 @@
 /* src/components/LYP/record/styles/AuthenticationStrip.css */
 
+/* ── Base card ── */
 .auth-strip {
-  padding: 11px 13px;
+  padding: 12px 14px;
   border: 1px solid var(--cb);
   border-radius: var(--r);
   background: var(--card);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
+  font-family: var(--sans);
+  line-height: 1.55;
 }
 
+/* ── Unmapped label warning — amber card, matching design ── */
+.auth-strip-unmapped {
+  background: #FBF6EC;
+  border: 1px solid #E6D5A7;
+  border-radius: var(--r);
+  padding: 13px 15px;
+  font-size: 11.5px;
+  color: #5C4A1E;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-strip-text strong {
+  color: #3A2E10;
+  font-weight: 700;
+}
+
+.auth-strip-action {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--gold);
+  cursor: pointer;
+  margin-top: 2px;
+  display: inline-block;
+}
+
+.auth-strip-action:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Risk variants ── */
 .auth-strip-high {
   border-left: 3px solid var(--terra);
 }
 
 .auth-strip-medium {
-  border-left: 3px solid #6B5730;
+  border-left: 3px solid #8B6A1E;
 }
 
 .auth-strip-low {
   border-left: 3px solid var(--sage);
-}
-
-.auth-strip-unmapped {
-  background: var(--gold-pale);
-  border: 1px solid rgba(201, 169, 110, 0.4);
-  padding: 10px 13px;
-  font-size: 11px;
-  color: #6B5730;
-  line-height: 1.6;
 }
 
 .auth-strip-row {
@@ -45,17 +73,9 @@
   letter-spacing: 0.07em;
 }
 
-.auth-strip-high .auth-strip-risk {
-  color: var(--terra);
-}
-
-.auth-strip-medium .auth-strip-risk {
-  color: #6B5730;
-}
-
-.auth-strip-low .auth-strip-risk {
-  color: var(--sage);
-}
+.auth-strip-high .auth-strip-risk { color: var(--terra); }
+.auth-strip-medium .auth-strip-risk { color: #8B6A1E; }
+.auth-strip-low .auth-strip-risk { color: var(--sage); }
 
 .auth-strip-designer {
   font-size: 11px;
@@ -71,21 +91,5 @@
   font-size: 10.5px;
   font-weight: 600;
   color: var(--terra);
-  margin-top: 6px;
-}
-
-.auth-strip-action {
-  font-size: 11px;
-  font-weight: 500;
   margin-top: 4px;
-}
-
-.qlnk {
-  color: var(--gold);
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.qlnk:hover {
-  text-decoration: underline;
 }

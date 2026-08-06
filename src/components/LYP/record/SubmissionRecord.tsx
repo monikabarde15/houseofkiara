@@ -16,6 +16,7 @@ import { SKUReservationLine } from './SKUReservationLine';
 import { MoreInfoComposer } from './MoreInfoComposer';
 import { RejectPanel } from './RejectPanel';
 import { WithdrawRow } from './WithdrawRow';
+import { ExpireConfirmModal } from './ExpireConfirmModal';
 import { getSubmissionStatus } from '../utils/derived';
 import './styles/SubmissionRecord.css';
 
@@ -45,6 +46,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const [showReject, setShowReject] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
+  const [showExpire, setShowExpire] = useState(false);
 
   const status = getSubmissionStatus(submission);
   const isDecided = !!submission.decision;
@@ -56,7 +58,13 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
     setShowMoreInfo(false);
     setShowReject(false);
     setShowWithdraw(false);
+    setShowExpire(false);
     onUpdate();
+  };
+
+  const handleExpireConfirm = () => {
+    // In production: call API to mark submission as expired
+    handleActionSuccess();
   };
 
   return (
@@ -105,8 +113,17 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
                 onMoreInfo={() => setShowMoreInfo(!showMoreInfo)}
                 onReject={() => setShowReject(!showReject)}
                 onWithdraw={() => setShowWithdraw(!showWithdraw)}
-                onExpire={handleActionSuccess}
+                onExpire={() => setShowExpire(true)}
               />
+
+              {/* Expire Confirm Modal — renders over everything */}
+              {showExpire && (
+                <ExpireConfirmModal
+                  subid={submission.subid}
+                  onConfirm={handleExpireConfirm}
+                  onCancel={() => setShowExpire(false)}
+                />
+              )}
 
               {showMoreInfo && (
                 <MoreInfoComposer 

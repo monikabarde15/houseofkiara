@@ -2,6 +2,7 @@
 
 .lyp-td-submission {
   padding-top: 13px !important;
+  
 }
 
 .lyp-td-submitted {
@@ -107,6 +108,7 @@
   padding: 1px 6px;
   border-radius: var(--r);
   margin-top: 3px;
+  margin-left: 10PX;
   white-space: nowrap;
 }
 

@@ -21,14 +21,14 @@ export const LYPHeader: React.FC<LYPHeaderProps> = ({
           The front door of supply. Every piece offered to House of Kaira - website form, WhatsApp, Instagram, In Person - reviewed against the 48-hour promise, priced in the open, and turned into a Draft the moment it earns a yes.
         </p>
       </div>
-      <div className="lyp-header-right">
+      {/* <div className="lyp-header-right">
         <button 
           className={`btn ${showIntake ? 'btn-gold' : 'btn-gold'} btn-sm`}
           onClick={onRecordSubmission}
         >
-          {showIntake ? '− Close' : '+ Record submission'}
+          {showIntake ? '− Close' : '+ Record submissiosssn'}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

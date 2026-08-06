@@ -69,18 +69,18 @@ export const LYPView: React.FC = () => {
         showIntake={showIntake}
       />
 
+      <StatCards 
+        stats={stats}
+        activeView={filters.view}
+        onViewChange={handleViewChange}
+      />
+
       {showIntake && (
         <IntakeCard 
           onSuccess={handleIntakeSuccess}
           onCancel={() => setShowIntake(false)}
         />
       )}
-
-      <StatCards 
-        stats={stats}
-        activeView={filters.view}
-        onViewChange={handleViewChange}
-      />
 
       <div className="lyp-table-container card">
         <LYPTableToolbar 

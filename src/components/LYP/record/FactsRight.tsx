@@ -3,6 +3,7 @@
 import React from 'react';
 import { Submission } from '../types/submission.types';
 import { Photographs } from './Photographs';
+import { AuthenticationStrip } from './AuthenticationStrip';
 import './styles/FactsRight.css';
 
 interface FactsRightProps {
@@ -13,8 +14,11 @@ interface FactsRightProps {
 export const FactsRight: React.FC<FactsRightProps> = ({ submission, onUpdate }) => {
   return (
     <div className="facts-right">
-      {/* PHOTOGRAPHS - §6.4 - Right column ONLY */}
+      {/* PHOTOGRAPHS — shown at top of right column */}
       <Photographs submission={submission} onUpdate={onUpdate} />
+
+      {/* AUTHENTICATION ALERT — amber warning box below photos, as per design */}
+      <AuthenticationStrip submission={submission} />
     </div>
   );
 };

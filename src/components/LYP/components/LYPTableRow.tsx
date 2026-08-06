@@ -54,13 +54,13 @@ export const LYPTableRow: React.FC<LYPTableRowProps> = ({
           {submission.subid}
         </span>
         <div className="lyp-td-submitted">
-          Submitted {formatDate(submission.submittedAt)}
-        </div>
+          {formatDate(submission.submittedAt)}
         {!isDecided && ageChip.text && (
           <span className={`agec ${ageChip.class}`}>
             {ageChip.text}
           </span>
         )}
+        </div>
       </td>
 
       <td className="lyp-td-piece">
@@ -83,7 +83,7 @@ export const LYPTableRow: React.FC<LYPTableRowProps> = ({
       <td className="lyp-td-lister">
         <div className="qlnk">{getFirstName(submission.listerID)}</div>
         <div className="lyp-td-lister-meta">
-          {(submission as any).phone || '—'} · {submission.city || '—'}
+          {(submission as any).phone}  {submission.city || '—'}
         </div>
       </td>
 

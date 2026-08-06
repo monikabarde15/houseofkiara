@@ -31,7 +31,7 @@ export const ActionsRow: React.FC<ActionsRowProps> = ({
   const liveHours = getLiveClockHours(submission);
   const isPast48 = liveHours > SUB_SLA_HOURS;
   const hasOpenAsk = !!submission.moreInfo;
-  const canExpire = isUndecided && !hasOpenAsk && isPast48;
+  const canExpire = isUndecided && !hasOpenAsk;
 
   const waLink = generateWhatsAppLink('', getDefaultWhatsAppMessage(getFirstName(submission.listerID)));
 
