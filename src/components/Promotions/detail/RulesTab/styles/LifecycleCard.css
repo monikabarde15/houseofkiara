@@ -1,0 +1,60 @@
+/* LifecycleCard Styles */
+/* ========================================
+   Lifecycle Card - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.12
+   ======================================== */
+
+.lifecycle-card {
+  border-color: var(--promo-terra);
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.lifecycle-card .card__header {
+  border-bottom-color: var(--promo-terra);
+  padding-left: 0;
+}
+
+.lifecycle-card .card__title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--promo-terra);
+  font-weight: 600;
+}
+
+.lifecycle-card__body {
+  font-size: 11.5px;
+  line-height: 1.6;
+  font-family: var(--promo-sans);
+  color: var(--promo-charcoal);
+}
+
+.lifecycle-card__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 11px;
+  flex-wrap: wrap;
+}
+
+.lifecycle-card__hint {
+  font-size: 10px;
+  color: var(--promo-muted);
+  margin-top: 8px;
+  font-family: var(--promo-sans);
+}
+
+.lifecycle-card__hint.warning {
+  color: var(--promo-terra);
+}
+
+.lifecycle-card__delete-btn {
+  border-color: var(--promo-terra) !important;
+  color: var(--promo-terra) !important;
+}
+
+.lifecycle-card__delete-btn:hover {
+  background: rgba(217, 119, 6, 0.05) !important;
+  border-color: var(--promo-terra) !important;
+  color: var(--promo-terra) !important;
+}

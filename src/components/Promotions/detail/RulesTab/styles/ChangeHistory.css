@@ -1,0 +1,56 @@
+/* ChangeHistory Styles */
+/* ========================================
+   Change History - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.15
+   ======================================== */
+
+.change-history__intro {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  margin-bottom: 9px;
+  font-family: var(--promo-sans);
+}
+
+.change-history__entry {
+  display: flex;
+  gap: 9px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--promo-cb);
+}
+
+.change-history__entry:last-child {
+  border-bottom: none;
+}
+
+.change-history__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--promo-gold);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.change-history__content {
+  flex: 1;
+}
+
+.change-history__text {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--promo-charcoal);
+  font-family: var(--promo-sans);
+}
+
+.change-history__stamp {
+  font-size: 10px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+}
+
+.change-history__empty {
+  font-size: 11px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+  padding: 8px 0;
+}

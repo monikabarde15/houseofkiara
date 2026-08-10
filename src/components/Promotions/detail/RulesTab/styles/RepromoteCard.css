@@ -1,0 +1,62 @@
+/* RepromoteCard Styles */
+/* ========================================
+   Repromote Card - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.11
+   ======================================== */
+
+.repromote-card {
+  border-color: var(--promo-sage);
+}
+
+.repromote-card .card__header {
+  border-bottom-color: var(--promo-sage);
+}
+
+.repromote-card .card__title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--promo-sage);
+  font-weight: 600;
+}
+
+.repromote-card__intro {
+  font-size: 11px;
+  color: var(--promo-muted);
+  margin-bottom: 9px;
+  font-family: var(--promo-sans);
+  line-height: 1.5;
+}
+
+.repromote-card__label {
+  font-size: 9px;
+  text-transform: uppercase;
+  color: var(--promo-muted);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-family: var(--promo-sans);
+}
+
+.repromote-card__text {
+  font-size: 11px;
+  line-height: 1.55;
+  padding: 8px 10px;
+  border: 1px solid var(--promo-cb);
+  background: var(--promo-canvas);
+  border-radius: var(--promo-radius);
+  margin: 4px 0 7px;
+  font-family: var(--promo-sans);
+  color: var(--promo-charcoal);
+}
+
+.repromote-card__label:not(:first-of-type) {
+  margin-top: 11px;
+  display: block;
+}
+
+.repromote-card__refusal {
+  font-size: 11.5px;
+  line-height: 1.6;
+  font-family: var(--promo-sans);
+  color: var(--promo-charcoal);
+}

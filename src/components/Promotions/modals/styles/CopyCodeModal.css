@@ -1,0 +1,63 @@
+/* CopyCodeModal Styles */
+/* ========================================
+   Copy Code Modal - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 8.3
+   ======================================== */
+
+.copy-modal__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.copy-modal {
+  background: var(--promo-card);
+  border-radius: var(--promo-radius);
+  padding: 24px;
+  max-width: 520px;
+  width: 90%;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+  font-family: var(--promo-sans);
+}
+
+.copy-modal__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--promo-charcoal);
+  margin: 0 0 8px 0;
+}
+
+.copy-modal__body {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--promo-charcoal);
+  margin-bottom: 12px;
+  white-space: pre-line;
+}
+
+.copy-modal__changes {
+  background: var(--promo-canvas);
+  padding: 8px 12px;
+  border-radius: var(--promo-radius);
+  margin: 8px 0 16px 0;
+  font-size: 12px;
+  font-family: var(--promo-mono);
+  color: var(--promo-charcoal);
+}
+
+.copy-modal__changes li {
+  padding: 2px 0;
+}
+
+.copy-modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

@@ -11,25 +11,26 @@ export default function ReportsView({ orders, products }: ReportsViewProps) {
   const [timeRange, setTimeRange] = useState<'30days' | '90days' | '1year'>('30days');
 
   // Analytical Calculations
-  const rentalRevenue = orders
-    .filter(o => o.mode === 'Rental' && (o.status !== 'Processed' || o.status === 'Processed')) // all
-    .reduce((sum, o) => sum + o.amount, 0);
+  const safeOrders = orders || [];
+  const rentalRevenue = safeOrders
+    .filter(o => o && o.mode === 'Rental' && (o.status !== 'Processed' || o.status === 'Processed')) // all
+    .reduce((sum, o) => sum + (o?.amount || 0), 0);
 
-  const prelovedRevenue = orders
-    .filter(o => o.mode === 'Preloved' || o.mode === 'Buy')
-    .reduce((sum, o) => sum + o.amount, 0);
+  const prelovedRevenue = safeOrders
+    .filter(o => o && (o.mode === 'Preloved' || o.mode === 'Buy'))
+    .reduce((sum, o) => sum + (o?.amount || 0), 0);
 
   const totalTaxCollected = Math.round((rentalRevenue + prelovedRevenue) * 0.12);
   const totalRevenue = rentalRevenue + prelovedRevenue + totalTaxCollected;
 
-  const totalRefunds = orders
-    .filter(o => o.depositDecision?.status === 'Released')
-    .reduce((sum, o) => sum + (o.depositDecision?.releasedAmount || 0), 0);
+  const totalRefunds = safeOrders
+    .filter(o => o && o.depositDecision?.status === 'Released')
+    .reduce((sum, o) => sum + (o?.depositDecision?.releasedAmount || 0), 0);
 
   // Category demand counts
   const categories = ["Bridal Lehenga", "Anarkali", "Sherwani", "Saree", "Gown"];
   const categoryCounts = categories.map(cat => {
-    const count = orders.filter(o => o.productName.toLowerCase().includes(cat.toLowerCase())).length;
+    const count = safeOrders.filter(o => o && (o.productName || (o as any).product || '').toLowerCase().includes(cat.toLowerCase())).length;
     return { name: cat, count: count || Math.floor(Math.random() * 5 + 1) };
   });
 

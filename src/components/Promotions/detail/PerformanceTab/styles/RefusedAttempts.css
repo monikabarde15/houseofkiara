@@ -1,0 +1,74 @@
+/* RefusedAttempts Styles */
+/* ========================================
+   Refused Attempts - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.5
+   ======================================== */
+
+.refused-attempts__intro {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  margin-bottom: 9px;
+  font-family: var(--promo-sans);
+}
+
+.refused-attempts__callout {
+  padding: 8px 10px;
+  border: 1px solid var(--promo-terra);
+  border-radius: var(--promo-radius);
+  background: var(--promo-canvas);
+  margin-bottom: 9px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  font-family: var(--promo-sans);
+  color: var(--promo-charcoal);
+}
+
+.refused-attempts__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--promo-sans);
+}
+
+.refused-attempts__th {
+  padding: 7px 10px;
+  background: var(--cream);
+  text-align: left;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--promo-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--promo-cb);
+}
+
+.refused-attempts__td {
+  padding: 7px 10px;
+  font-size: 11.5px;
+  border-bottom: 1px solid var(--promo-cb);
+  vertical-align: middle;
+}
+
+.refused-attempts__check {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--promo-radius);
+  border: 1px solid var(--promo-chip-warning-border);
+  background: var(--promo-chip-warning-bg);
+  color: var(--promo-chip-warning-text);
+  font-size: 10px;
+  font-family: var(--promo-sans);
+  font-weight: 600;
+}
+
+.refused-attempts__message {
+  font-size: 11px;
+  color: var(--promo-muted);
+  font-style: italic;
+}
+
+.refused-attempts__empty {
+  font-size: 11px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+  padding: 8px 0;
+}

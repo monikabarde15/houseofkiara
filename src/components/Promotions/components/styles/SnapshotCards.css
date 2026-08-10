@@ -1,0 +1,24 @@
+/* SnapshotCards Styles */
+/* ========================================
+   Snapshot Cards - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.2
+   ======================================== */
+
+.snapshot-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 11px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 768px) {
+  .snapshot-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .snapshot-cards {
+    grid-template-columns: 1fr;
+  }
+}

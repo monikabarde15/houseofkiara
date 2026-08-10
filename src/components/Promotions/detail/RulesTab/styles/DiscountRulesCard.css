@@ -1,0 +1,53 @@
+/* ========================================
+   Discount Rules Card - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.8
+   ======================================== */
+
+.discount-rules__notice {
+  padding: 8px 10px;
+  border: 1px solid var(--promo-terra);
+  border-radius: var(--promo-radius);
+  background: var(--promo-canvas);
+  margin-bottom: 11px;
+  font-size: 11px;
+  line-height: 1.55;
+  font-family: var(--promo-sans);
+  color: var(--promo-charcoal);
+}
+
+.discount-rules__notice strong {
+  font-weight: 600;
+}
+
+.discount-rules__notice--gold {
+  border-color: var(--promo-gold);
+  background: var(--promo-gold-pale);
+}
+
+.discount-rules__notice--neutral {
+  border-color: var(--promo-cb);
+  background: var(--promo-canvas);
+}
+
+.discount-rules__code-display {
+  padding: 7px 10px;
+  border: 1px solid var(--promo-ib);
+  border-radius: var(--promo-radius);
+  background: var(--promo-canvas);
+  color: var(--promo-muted);
+  font-family: var(--promo-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  width: 100%;
+  cursor: default;
+  margin-bottom: 4px;
+}
+
+.discount-rules__hint {
+  font-size: 10px;
+  color: var(--promo-muted);
+  margin-top: -4px;
+  margin-bottom: 8px;
+  font-family: var(--promo-sans);
+}

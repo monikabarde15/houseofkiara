@@ -1,0 +1,118 @@
+/* PromotionsTable Styles */
+/* ========================================
+   Promotions Table - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.9
+   ======================================== */
+
+.table-container {
+  background: var(--promo-card);
+  border: 1px solid var(--promo-cb);
+  border-radius: var(--promo-radius);
+  overflow: hidden;
+  box-shadow: var(--promo-shadow-card);
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--promo-sans);
+}
+
+.table__head {
+  background: var(--promo-canvas);
+}
+
+.table__th {
+  padding: 7px 13px;
+  text-align: left;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--promo-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--promo-cb);
+  white-space: nowrap;
+}
+
+.table__th--checkbox {
+  width: 28px;
+  text-align: center;
+}
+
+.table__th--sortable {
+  cursor: pointer;
+}
+
+.table__th--action {
+  text-align: right;
+}
+
+.table__body tr {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.table__body tr:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.table-empty {
+  text-align: center;
+  padding: 22px;
+  color: var(--promo-muted);
+  font-size: 12px;
+  font-family: var(--promo-sans);
+}
+
+.table-empty__link {
+  color: var(--promo-gold);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--promo-sans);
+}
+
+.table-empty__link:hover {
+  text-decoration: underline;
+}
+
+.table-loading {
+  text-align: center;
+  padding: 22px;
+  color: var(--promo-muted);
+  font-size: 12px;
+  font-family: var(--promo-sans);
+}
+
+.table-snapshot-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--promo-canvas);
+  border-bottom: 1px solid var(--promo-cb);
+}
+
+.table-snapshot-summary__text {
+  font-size: 11px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+}
+
+.table-snapshot-summary__clear {
+  font-size: 10.5px;
+  color: var(--promo-gold);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--promo-sans);
+}
+
+.table-snapshot-summary__clear:hover {
+  text-decoration: underline;
+}

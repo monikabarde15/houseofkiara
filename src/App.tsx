@@ -20,7 +20,8 @@ import ListersView from './components/Listers/ListersView';
 // import OccasionsView from './components/OccasionsView';
 import LYPSubmissionsView from './components/LYP';
 import ReportsView from './components/ReportsView';
-import PromotionsView from './components/PromotionsView';
+// import PromotionsView from './components/PromotionsView';
+import { PromotionsView } from './components/Promotions';
 import EmailsView from './components/EmailsView';
 import NotificationsView from './components/NotificationsView';
 import SettingsView from './components/SettingsView';
@@ -368,10 +369,7 @@ export default function App() {
     if (currentView === 'promotions') {
       return (
         <PromotionsView 
-          promoCodes={promoCodes}
-          onAddPromoCode={handleAddPromoCode}
-          onUpdatePromoCode={handleUpdatePromoCode}
-          onDeletePromoCode={handleDeletePromoCode}
+          onEditingChange={setIsSectionEditing}
         />
       );
     }

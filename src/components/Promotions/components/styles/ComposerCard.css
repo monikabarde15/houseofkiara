@@ -1,0 +1,96 @@
+/* ComposerCard Styles */
+/* ========================================
+   Composer Card - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.6
+   ======================================== */
+
+.composer-card .card__body {
+  padding-bottom: 8px;
+}
+
+.composer-card__grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+.composer-card__grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 13px;
+}
+
+.composer-card__field-row {
+  margin-bottom: 4px;
+}
+
+.composer-card__code-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.composer-card__modes {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.composer-card__mode {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-family: var(--promo-sans);
+  cursor: pointer;
+}
+
+.composer-card__audience-radios {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.composer-card__audience-radio {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-family: var(--promo-sans);
+  cursor: pointer;
+}
+
+.composer-card__switch-group {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0;
+}
+
+.composer-card__switch-group .form-field {
+  width: 100%;
+}
+
+.composer-card__customer-picker {
+  margin-top: 0;
+}
+
+.composer-card__preloved-notice {
+  padding: 8px 12px;
+  border: 1px solid var(--promo-cb, #e6e1da);
+  border-radius: var(--promo-radius, 4px);
+  background: var(--promo-canvas, #faf8f5);
+  font-size: 11px;
+  color: var(--promo-charcoal, #2b2623);
+  font-family: var(--promo-sans);
+  margin-top: 8px;
+  margin-bottom: 11px;
+}
+
+@media (max-width: 768px) {
+  .composer-card__grid-2,
+  .composer-card__grid-3 {
+    grid-template-columns: 1fr;
+  }
+}

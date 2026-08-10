@@ -1,0 +1,114 @@
+/* CheckoutRulesCard Styles */
+/* ========================================
+   Checkout Rules Card - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.3
+   ======================================== */
+
+.checkout-rules__section {
+  margin-bottom: 0;
+}
+
+.checkout-rules__section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--promo-muted);
+  text-transform: uppercase;
+  margin-bottom: 7px;
+  font-family: var(--promo-sans);
+}
+
+.checkout-rules__radio {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  font-size: 12px;
+  line-height: 1.5;
+  font-family: var(--promo-sans);
+  cursor: pointer;
+  margin-bottom: 7px;
+}
+
+.checkout-rules__radio input[type="radio"] {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.checkout-rules__radio--inline {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  margin-right: 16px;
+}
+
+.checkout-rules__radio-group-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--promo-muted);
+  margin-bottom: 4px;
+  font-family: var(--promo-sans);
+}
+
+.checkout-rules__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  margin-top: 7px;
+}
+
+.checkout-rules__divider {
+  margin: 12px 0 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--promo-cb);
+}
+
+.checkout-rules__empty {
+  font-size: 11.5px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+}
+
+.checkout-rules__pairs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.checkout-rules__pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: var(--promo-radius);
+  border: 1px solid var(--promo-chip-positive-border);
+  background: var(--promo-chip-positive-bg);
+  color: var(--promo-chip-positive-text);
+  font-size: 9.5px;
+  font-family: var(--promo-sans);
+}
+
+.checkout-rules__pair-arrow {
+  color: var(--promo-muted);
+}
+
+.checkout-rules__summary {
+  margin: 4px 0;
+}
+
+.checkout-rules__summary-text {
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: var(--promo-charcoal);
+  font-family: var(--promo-sans);
+  margin: 0 0 8px 0;
+}
+
+.checkout-rules__summary-text:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .checkout-rules__grid {
+    grid-template-columns: 1fr;
+  }
+}
