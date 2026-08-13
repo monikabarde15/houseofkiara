@@ -11,15 +11,14 @@ interface SendLogRowProps {
   onPersonClick: (name: string) => void;
   onAboutClick: (about: string) => void;
 }
-
 const OUTCOME_PILL_MAP = {
   'Delivered': 'blue' as const,
   'Opened': 'green' as const,
   'Bounced': 'terracotta' as const,
   'Held': 'amber' as const,
   'Not sent': 'grey' as const,
+  'Opened in WhatsApp': 'grey' as const,
 };
-
 export const SendLogRow: React.FC<SendLogRowProps> = ({
   log,
   onMessageClick,
@@ -55,15 +54,18 @@ export const SendLogRow: React.FC<SendLogRowProps> = ({
           <div className="msg-sendlog-wording">{log.wording}</div>
         )}
       </TableCell>
-      <TableCell>
-        <span
-          className="msg-sendlog-who"
-          onClick={handlePersonClick}
-        >
-          {log.who}
-        </span>
+     <TableCell>
+        {/* Only customer/lister sends get the clickable Gold link — anything else is plain text */}
+        {log.whoType ? (
+          <span className="msg-sendlog-who msg-sendlog-who--link" onClick={handlePersonClick}>
+            {log.who}
+          </span>
+        ) : (
+          <span className="msg-sendlog-who">{log.who}</span>
+        )}
         <div className="msg-sendlog-contact">{log.contact}</div>
       </TableCell>
+      
       <TableCell>{log.channel}</TableCell>
       <TableCell>
         <Pill status={OUTCOME_PILL_MAP[log.outcome]}>

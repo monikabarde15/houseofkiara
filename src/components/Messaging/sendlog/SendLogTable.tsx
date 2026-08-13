@@ -10,13 +10,13 @@ export interface SendLogEntry {
   message: string;
   wording: string;
   who: string;
+  whoType?: 'customer' | 'lister'; // present only when WHO should link to that record
   contact: string;
   channel: string;
-  outcome: 'Delivered' | 'Opened' | 'Bounced' | 'Held' | 'Not sent';
+  outcome: 'Delivered' | 'Opened' | 'Bounced' | 'Held' | 'Not sent' | 'Opened in WhatsApp';
   about: string;
   sentBy: string;
 }
-
 interface SendLogTableProps {
   logs: SendLogEntry[];
   onMessageClick: (id: string) => void;

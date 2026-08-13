@@ -33,7 +33,7 @@ export const SendLogToolbar: React.FC<SendLogToolbarProps> = ({
   return (
     <Toolbar className="msg-sendlog-toolbar">
       <SearchField
-        placeholder="Search a name, message or order..."
+       placeholder="Search a name, message or order…"
         value={search}
         onChange={onSearchChange}
         className="msg-sendlog-toolbar-search"
