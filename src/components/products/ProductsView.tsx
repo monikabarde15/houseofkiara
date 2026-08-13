@@ -552,7 +552,28 @@ export default function ProductsView({
     isAdding={state.isAdding}
   />
 )}
-              {state.activeTab === 'Activity Log' && state.editingProduct && (<ActivityLogTab activityLog={state.activityLog} loading={state.loading} />)}
+             {state.activeTab === "Activity Log" && (
+  state.isAdding ? (
+    <div className="overflow-hidden rounded-lg border border-[#E8E0D6] bg-white shadow-sm">
+      <div className="border-b border-[#EEE8E1] px-5 py-3">
+        <h3 className="text-[15px] font-semibold text-[#2F2B27]">
+          Activity Log
+        </h3>
+      </div>
+
+      <div className="px-5 py-6">
+        <p className="text-[13px] text-[#9B9388]">
+          No activity yet — this piece's story starts here.
+        </p>
+      </div>
+    </div>
+  ) : state.editingProduct ? (
+    <ActivityLogTab
+      activityLog={state.activityLog}
+      loading={state.loading}
+    />
+  ) : null
+)}
             </div>
 
          {
