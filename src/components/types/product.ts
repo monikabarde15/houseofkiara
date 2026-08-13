@@ -1,6 +1,7 @@
 export interface Product {
   id?: string;
-  productId: string;
+  productId?: string;
+  _id?: string;
   name: string;
   designer?: string;
   subtitle?: string;
@@ -56,8 +57,15 @@ export interface Product {
   payoutPercentage?: number;
   payoutTerms?: string;
   rating?: number;
-  // reviewCount?: number;
+  reviewCount?: number;
   timesRented?: number;
+  listerName?: string;
+  rentalStatus?: string;
+  currentRenterName?: string;
+  currentOrderId?: string;
+  rentUntil?: string;
+  nextFreeDate?: string;
+  earnedAmount?: number;
   images?: string[];
   seoTitle?: string;
   seoDescription?: string;

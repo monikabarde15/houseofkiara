@@ -22,9 +22,9 @@ type ProductTab = 'Core' | 'Pricing' | 'Images' | 'Related Products' | 'SEO' | '
 interface ProductsViewProps {
   products: Product[];
   loading?: boolean;
-  onAddProduct: (newProduct: Product) => Promise<Product> | Product | void;
-  onUpdateProduct: (updatedProduct: Product) => Promise<Product> | Product | void;
-  listers: Lister[];
+  onAddProduct: (newProduct: Product) => Promise<any> | any;
+  onUpdateProduct: (updatedProduct: Product) => Promise<any> | any;
+  listers: any[];
   onEditingChange?: (isEditing: boolean) => void;
 }
 

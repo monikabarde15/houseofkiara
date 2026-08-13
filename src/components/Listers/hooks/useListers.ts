@@ -42,6 +42,12 @@ export const useListers = (filters?: ListerFilters) => {
     await fetchListers();
   }, [fetchListers]);
 
+  const createLister = useCallback(async (data: Partial<Lister>) => {
+    const created = await listerService.createLister(data);
+    await fetchListers();
+    return created;
+  }, [fetchListers]);
+
   return {
     listers,
     loading,
@@ -49,6 +55,7 @@ export const useListers = (filters?: ListerFilters) => {
     totalCount,
     refreshListers,
     deleteLister,
+    createLister,
   };
 };
 

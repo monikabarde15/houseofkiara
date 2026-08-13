@@ -1,0 +1,71 @@
+/* ============================================
+   MESSAGING SECTION VARIABLES
+   Based on HOK_Messaging_UI_Spec.pdf
+   ============================================ */
+
+:root {
+  /* ---- COLOURS (A1) ---- */
+  --msg-charcoal: #1A1612;
+  --msg-gold: #C9A96E;
+  --msg-gold-light: #E2C99A;
+  --msg-gold-pale: #F5EFE4;
+  --msg-terracotta: #B85C38;
+  --msg-sage: #6B7E5A;
+  --msg-cream: #FAF7F2;
+  --msg-muted: #8A7E72;
+  --msg-muted-light: #B4A99E;
+  --msg-border: #E8E0D4;
+  --msg-canvas: #F7F4EF;
+  --msg-card: #FFFFFF;
+  --msg-card-border: #EDE6DC;
+  --msg-input-border: #DDD5C8;
+  --msg-input-bg: #FFFFFB;
+
+  /* ---- STATUS COLOURS (A1) ---- */
+  --msg-status-green-bg: #EAF0E5;
+  --msg-status-green-text: #3D6B30;
+  --msg-status-amber-bg: #FDF5E7;
+  --msg-status-amber-text: #8B6A1E;
+  --msg-status-grey-bg: #F0EDE8;
+  --msg-status-grey-text: #8A7E72;
+  --msg-status-blue-bg: #E9EFF6;
+  --msg-status-blue-text: #3B5C8A;
+  --msg-status-terracotta-bg: #FDF1EE;
+  --msg-status-terracotta-text: #B85C38;
+
+  /* ---- TYPOGRAPHY (A2) ---- */
+  --msg-font-display: 'Cormorant Garamond', Georgia, serif;
+  --msg-font-interface: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --msg-font-monospace: ui-monospace, 'SF Mono', 'Menlo', monospace;
+
+  /* ---- CORNERS & BORDERS (A3) ---- */
+  --msg-radius: 4px;
+  --msg-radius-tight: 2px;
+  --msg-radius-pill: 3px;
+  --msg-radius-toggle: 9px;
+  --msg-border-standard: 1px solid var(--msg-card-border);
+  --msg-border-input: 1px solid var(--msg-input-border);
+  --msg-shadow-card: 0 1px 4px rgba(26, 22, 18, 0.06);
+  --msg-shadow-overlay: 0 8px 28px rgba(26, 22, 18, 0.3);
+
+  /* ---- SPACING (A4) ---- */
+  --msg-spacing-28: 28px;
+  --msg-spacing-26: 26px;
+  --msg-spacing-24: 24px;
+  --msg-spacing-22: 22px;
+  --msg-spacing-20: 20px;
+  --msg-spacing-18: 18px;
+  --msg-spacing-16: 16px;
+  --msg-spacing-14: 14px;
+  --msg-spacing-13: 13px;
+  --msg-spacing-11: 11px;
+  --msg-spacing-10: 10px;
+  --msg-spacing-9: 9px;
+  --msg-spacing-8: 8px;
+  --msg-spacing-7: 7px;
+  --msg-spacing-6: 6px;
+  --msg-spacing-5: 5px;
+  --msg-spacing-4: 4px;
+  --msg-spacing-3: 3px;
+  --msg-spacing-2: 2px;
+}

@@ -137,6 +137,8 @@ export interface Submission {
   decision: Decision | null;
   assessment: Assessment;
   history: HistoryEntry[];
+  email?: string | null;
+  phone?: string | null;
 }
 
 export interface SubmissionFilters {

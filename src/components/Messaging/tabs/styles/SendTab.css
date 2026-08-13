@@ -1,0 +1,77 @@
+/* tabs/styles/SendTab.css */
+.msg-send-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: var(--msg-spacing-13);
+  align-items: start;
+}
+
+.msg-send-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.msg-send-left .msg-card:last-child {
+  margin-bottom: 0;
+}
+
+.msg-send-chips {
+  display: flex;
+  gap: var(--msg-spacing-14);
+  margin-top: var(--msg-spacing-3);
+}
+
+.msg-chip--wordgroup {
+  padding: var(--msg-spacing-4) var(--msg-spacing-9);
+  border: var(--msg-border-input);
+  border-radius: var(--msg-radius-tight);
+  background: var(--msg-card);
+  font-size: 10.5px;
+  color: var(--msg-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.msg-chip--wordgroup:hover {
+  border-color: var(--msg-gold);
+}
+
+.msg-chip--wordgroup.msg-chip--selected {
+  background: var(--msg-gold-pale);
+  border-color: var(--msg-gold);
+  color: #6B5730;
+  font-weight: 600;
+}
+
+.msg-send-quicklist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--msg-spacing-5);
+}
+
+.msg-send-search {
+  border: var(--msg-border-input);
+  border-radius: var(--msg-radius);
+  padding: var(--msg-spacing-5) var(--msg-spacing-9);
+}
+
+.msg-send-search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 11.5px;
+  width: 100%;
+  font-family: var(--msg-font-interface);
+}
+
+.msg-send-people-empty,
+.msg-send-readback-empty {
+  padding: var(--msg-spacing-18);
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--msg-muted);
+}
+
+.msg-send-readback-empty {
+  padding: var(--msg-spacing-30);
+}

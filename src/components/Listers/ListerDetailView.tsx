@@ -1,6 +1,7 @@
 // src/components/Listers/ListerDetailView.tsx
 
 import React, { useState, useEffect } from 'react';
+import { Lister } from './types/lister.types';
 import useListerDetail from './hooks/useListerDetail';
 import useJourneyStack from './hooks/useJourneyStack';
 import ListerDetailHeader from './components/ListerDetailHeader';

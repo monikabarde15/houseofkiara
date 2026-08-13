@@ -6,7 +6,7 @@ const groups = [
   { title: '', items: [{ id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard }] },
   { title: 'Operations', items: [{ id: 'orders', label: 'Orders', icon: ShoppingBag }, { id: 'offers', label: 'Offers & Enquiries', icon: Tag, badge: '2' }, { id: 'calendar', label: 'Rental Calendar', icon: Calendar }, { id: 'dispatch', label: 'Dispatch Schedule', icon: Truck }, { id: 'returns', label: 'Returns & Deposits', icon: RotateCcw }, { id: 'payouts', label: 'Payouts to Listers', icon: Wallet }, { id: 'customers', label: 'Customers', icon: Users }] },
   { title: 'Catalogue', items: [{ id: 'products', label: 'Products', icon: Package }, { id: 'designers', label: 'Designers', icon: Award }, { id: 'listers', label: 'Listers', icon: UserCheck, badge: '2' }, { id: 'lyp', label: 'LYP Submissions', icon: Grid, badge: '2' }, { id: 'occasions', label: 'Occasions & Sizes', icon: Grid }] },
-  { title: 'Growth', items: [{ id: 'reports', label: 'Reports & Analytics', icon: BarChart3 }, { id: 'promotions', label: 'Promotions', icon: Percent }, { id: 'emails', label: 'Email Templates', icon: Mail }, { id: 'notifications', label: 'Notifications', icon: Bell }] },
+  { title: 'Growth', items: [{ id: 'reports', label: 'Reports & Analytics', icon: BarChart3 }, { id: 'promotions', label: 'Promotions', icon: Percent }, { id: 'messaging', label: 'Messaging', icon: Mail }, { id: 'notifications', label: 'Notifications', icon: Bell }] },
   { title: 'Site settings', items: [{ id: 'settings', label: 'Site Settings', icon: Settings }, { id: 'homepage', label: 'Homepage', icon: Home }, { id: 'pages', label: 'Pages', icon: FileText }] },
 ];
 
