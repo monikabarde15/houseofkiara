@@ -1,0 +1,4 @@
+/* editor/styles/EditorHeader.css */
+.msg-editor-header {
+  margin-bottom: var(--msg-spacing-11);
+}

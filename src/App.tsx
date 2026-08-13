@@ -22,7 +22,9 @@ import LYPSubmissionsView from './components/LYP';
 import ReportsView from './components/ReportsView';
 // import PromotionsView from './components/PromotionsView';
 import { PromotionsView } from './components/Promotions';
-import EmailsView from './components/EmailsView';
+import { MessagingView } from './components/Messaging/MessagingView';
+import { mockMessages } from './components/Messaging/data/mockMessages';
+import { Message } from './components/Messaging/types/messaging.types';
 import NotificationsView from './components/NotificationsView';
 import SettingsView from './components/SettingsView';
 import HomepageView from './components/HomepageView';
@@ -62,6 +64,9 @@ export default function App() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [adminSession, setAdminSession] = useState<any>(() => authApi.getSession());
+  const [messagingActiveTab, setMessagingActiveTab] = useState('messages');
+  const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>(mockMessages);
   // const [productBackHandler, setProductBackHandler] = useState<(() => void) | null>(null);
 
   // Consolidated global state synced with initial data structures
@@ -81,7 +86,7 @@ export default function App() {
       .finally(() => setOffersLoading(false));
   }, []);
   const [designers, setDesigners] = useState<Designer[]>(initialDesigners);
-  const [listers, setListers] = useState<Lister[]>([]);
+  const [listers, setListers] = useState<any[]>([]);
   useEffect(() => { listerApi.getListers().then((data) => setListers(Array.isArray(data) ? data : [])).catch((error) => { console.error('Unable to load listers:', error); setListers([]); }); }, []);
   const [submissions, setSubmissions] = useState<ListerSubmission[]>(initialListerSubmissions);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>(initialPromoCodes);
@@ -126,10 +131,10 @@ export default function App() {
     setDesigners(designers.map(d => d.id === updated.id ? updated : d));
   };
 
-  const handleUpdateLister = (updated: Lister) => {
+  const handleUpdateLister = (updated: any) => {
     setListers(listers.map(l => l.id === updated.id ? updated : l));
   };
-  const handleCreateLister = async (newLister: Lister) => {
+  const handleCreateLister = async (newLister: any) => {
     const created = await listerApi.createLister(newLister);
     setListers(current => [created, ...current]);
   };
@@ -374,11 +379,15 @@ export default function App() {
       );
     }
 
-    if (currentView === 'emails') {
+    if (currentView === 'messaging') {
       return (
-        <EmailsView 
-          emailTemplates={emailTemplates}
-          onUpdateTemplate={handleUpdateTemplate}
+        <MessagingView 
+          activeTab={messagingActiveTab}
+          setActiveTab={setMessagingActiveTab}
+          selectedMessageId={selectedMessageId}
+          setSelectedMessageId={setSelectedMessageId}
+          messages={messages}
+          setMessages={setMessages}
         />
       );
     }
@@ -506,8 +515,19 @@ export default function App() {
         {!isSectionEditing && (
           <header className="sticky top-0 z-40 hidden h-[52px] shrink-0 items-center justify-between border-b border-[#E8E0D6] bg-white px-6 lg:flex">
             <div className="flex items-center gap-3">
+              {currentView === 'messaging' && messagingActiveTab === 'editor' && (
+                <button
+                  onClick={() => {
+                    setSelectedMessageId(null);
+                    setMessagingActiveTab('messages');
+                  }}
+                  className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E5DDD3] bg-white px-3 text-[11.5px] font-medium text-[#6F675D] hover:bg-[#FAF8F5] transition cursor-pointer shadow-2xs mr-1"
+                >
+                  &lt; Back to Messages
+                </button>
+              )}
               <span className="text-[14px] font-semibold text-[#2C2926] font-sans capitalize">
-                {currentView === "products" ? "Products" : currentView.replace(/-/g, " ")}
+                {currentView === "products" ? "Products" : currentView === "messaging" ? "Messaging" : currentView.replace(/-/g, " ")}
               </span>
             </div>
 

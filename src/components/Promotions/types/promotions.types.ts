@@ -47,7 +47,7 @@ export interface PromoCode {
   
   // Status & Visibility
   status: PromoCodeStatus;
-  visibility: PromoVisibility;
+  visibility: PromoCodeVisibility;
   
   // Meta fields (Section 3.2)
   publicDesc: string; // Shopper-facing, max 60 chars

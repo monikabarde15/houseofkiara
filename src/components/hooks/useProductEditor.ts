@@ -148,7 +148,7 @@ export function useProductEditor() {
   const updateFormField = useCallback(<K extends keyof Product>(field: K, value: Product[K]) => {
     // If field is listingModes, normalize it
     if (field === 'listingModes' && Array.isArray(value)) {
-      const normalized = value.map((mode: string) => mode.toUpperCase());
+      const normalized = (value as any[]).map((mode: string) => mode.toUpperCase());
       setFormData(prev => ({ ...prev, [field]: normalized }));
     } else {
       setFormData(prev => ({ ...prev, [field]: value }));

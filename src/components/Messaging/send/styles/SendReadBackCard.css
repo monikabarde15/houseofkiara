@@ -1,0 +1,32 @@
+/* send/styles/SendReadBackCard.css */
+.msg-send-readback-body {
+  max-height: 620px;
+  overflow-y: auto;
+}
+
+.msg-send-readback-empty {
+  padding: var(--msg-spacing-30);
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--msg-muted);
+}
+
+.msg-send-readback-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--msg-spacing-9);
+}
+
+.msg-send-readback-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--msg-spacing-10);
+  border-top: var(--msg-border-standard);
+  margin-top: var(--msg-spacing-16);
+}
+
+.msg-send-readback-footer-note {
+  font-size: 10px;
+  color: var(--msg-muted);
+}

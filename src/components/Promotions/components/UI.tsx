@@ -81,16 +81,19 @@ interface AttentionPillProps {
   children: ReactNode;
   onClick?: () => void;
   className?: string;
+  title?: string;
 }
 
 export const AttentionPill: React.FC<AttentionPillProps> = ({
   children,
   onClick,
   className = '',
+  title,
 }) => (
   <span
     className={`attention-pill ${className}`}
     onClick={onClick}
+    title={title}
   >
     {children}
   </span>

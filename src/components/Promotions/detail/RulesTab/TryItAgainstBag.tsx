@@ -24,10 +24,10 @@ interface TryItAgainstBagProps {
 
 // Mock available pieces
 const mockPieces = [
-  { id: '1', name: 'Champagne Tissue Sharara', sku: 'SKU-001', mode: 'Rental' as const, price: 5500, isAcceptedOffer: false },
-  { id: '2', name: 'Sabyasachi Bridal Lehenga', sku: 'SKU-002', mode: 'Rental' as const, price: 17500, isAcceptedOffer: false },
-  { id: '3', name: 'Manish Malhotra Saree', sku: 'SKU-003', mode: 'Preloved' as const, price: 8500, isAcceptedOffer: false },
-  { id: '4', name: 'Anarkali Suit', sku: 'SKU-004', mode: 'Preloved' as const, price: 3200, isAcceptedOffer: true },
+  { id: '1', productId: '1', name: 'Champagne Tissue Sharara', sku: 'SKU-001', mode: 'Rental' as const, price: 5500, isAcceptedOffer: false },
+  { id: '2', productId: '2', name: 'Sabyasachi Bridal Lehenga', sku: 'SKU-002', mode: 'Rental' as const, price: 17500, isAcceptedOffer: false },
+  { id: '3', productId: '3', name: 'Manish Malhotra Saree', sku: 'SKU-003', mode: 'Preloved' as const, price: 8500, isAcceptedOffer: false },
+  { id: '4', productId: '4', name: 'Anarkali Suit', sku: 'SKU-004', mode: 'Preloved' as const, price: 3200, isAcceptedOffer: true },
 ];
 
 export const TryItAgainstBag: React.FC<TryItAgainstBagProps> = ({

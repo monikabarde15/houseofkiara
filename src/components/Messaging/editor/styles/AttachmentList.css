@@ -1,0 +1,80 @@
+/* editor/styles/AttachmentList.css */
+.msg-attachment-list {
+  border: var(--msg-border-input);
+  border-radius: var(--msg-radius);
+  background: var(--msg-input-bg);
+  padding: var(--msg-spacing-9) var(--msg-spacing-11);
+}
+
+.msg-attachment-list-empty {
+  padding: var(--msg-spacing-9) var(--msg-spacing-11);
+  border: 1px dashed var(--msg-input-border);
+  border-radius: var(--msg-radius);
+  font-size: 11.5px;
+  color: var(--msg-muted);
+  text-align: center;
+}
+
+.msg-attachment-list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--msg-spacing-9);
+  padding: var(--msg-spacing-4) 0;
+}
+
+.msg-attachment-list-row--crossed .msg-attachment-list-reason {
+  opacity: 0.5;
+}
+
+.msg-attachment-list-tag {
+  padding: 1px var(--msg-spacing-6);
+  border-radius: var(--msg-radius-tight);
+  font-size: 9.5px;
+  white-space: nowrap;
+}
+
+.msg-attachment-list-tag--required-by-law {
+  color: #7A2E1D;
+  background: var(--msg-status-terracotta-bg);
+}
+
+.msg-attachment-list-tag--added-by-you {
+  color: var(--msg-status-green-text);
+  background: var(--msg-status-green-bg);
+}
+
+.msg-attachment-list-reason {
+  font-size: 10.5px;
+  color: var(--msg-muted);
+  line-height: 1.45;
+  flex: 1;
+}
+
+.msg-attachment-list-remove {
+  width: 19px;
+  height: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--msg-border-input);
+  border-radius: var(--msg-radius-tight);
+  background: var(--msg-card);
+  color: var(--msg-muted);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  padding: 0;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.msg-attachment-list-remove:hover:not(.msg-attachment-list-remove--locked) {
+  border-color: var(--msg-terracotta);
+  color: var(--msg-terracotta);
+}
+
+.msg-attachment-list-remove--locked {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

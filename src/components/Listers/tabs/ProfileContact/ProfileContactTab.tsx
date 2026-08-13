@@ -38,6 +38,7 @@ const defaultBlankLister: Lister = {
   panVerified: false,
   terms: { version: 'LST-2026-01', acceptedAt: new Date().toISOString(), channel: 'WhatsApp' },
   notes: null,
+  insta: null,
 };
 
 export const ProfileContactTab: React.FC<ProfileContactTabProps> = ({
