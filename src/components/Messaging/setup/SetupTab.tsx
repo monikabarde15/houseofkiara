@@ -10,28 +10,27 @@ import './styles/SetupTab.css';
 
 export const SetupTab: React.FC = () => {
   const [todoItems] = useState([
-    {
-      id: '1',
-      message: (
-        <>
-          <strong>Care Card</strong> has no file, so the messages that carry it would arrive with an empty paperclip
-        </>
-      ),
-      buttonLabel: 'Upload it',
-      onClick: () => console.log('Upload Care Card'),
-    },
-    {
-      id: '2',
-      message: (
-        <>
-          <strong>Rental Agreement</strong> is carried by <strong>Order Confirmation</strong> which cannot fill{' '}
-          <strong>{'{{rental_end}}'}</strong>
-        </>
-      ),
-      buttonLabel: 'Open the message',
-      onClick: () => console.log('Open message'),
-    },
-  ]);
+  {
+    id: '1',
+    message: (
+      <>
+        <strong>Care card, rental</strong> has no file, so the messages that carry it would arrive with an empty paperclip
+      </>
+    ),
+    buttonLabel: 'Upload it',
+    onClick: () => console.log('Upload Care card, rental'),
+  },
+  {
+    id: '2',
+    message: (
+      <>
+        <strong>Care card, preloved</strong> has no file, so the messages that carry it would arrive with an empty paperclip
+      </>
+    ),
+    buttonLabel: 'Upload it',
+    onClick: () => console.log('Upload Care card, preloved'),
+  },
+]);
 
   return (
     <div className="msg-setup-tab">

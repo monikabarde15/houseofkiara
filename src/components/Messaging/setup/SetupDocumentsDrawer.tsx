@@ -29,8 +29,8 @@ const MOCK_DOCUMENTS: Document[] = [
 ];
 
 const FILE_STATE_LABELS = {
-  builtin: { label: 'Built-in layout', color: 'green' as const },
-  uploaded: { label: 'Your layout', color: 'green' as const },
+  builtin: { label: 'Generated', color: 'green' as const },
+  uploaded: { label: 'Generated', color: 'green' as const },
   record: { label: 'On the record', color: 'green' as const },
   held: { label: 'Held', color: 'green' as const },
   missing: { label: 'No file yet', color: 'terracotta' as const },
@@ -56,14 +56,14 @@ export const SetupDocumentsDrawer: React.FC = () => {
   return (
     <SetupDrawer
       title="Documents"
-      summary={
-        <>
-          {documentCount} documents · {oursToHold} of them ours to hold
-          {missingFiles > 0 && (
-            <span className="msg-drawer-summary-warning"> — {missingFiles} with no file</span>
-          )}
-        </>
-      }
+     summary={
+  <>
+    {documentCount} documents · {oursToHold} of them ours to hold
+    {missingFiles > 0 && (
+      <> · <span className="msg-drawer-summary-warning">{missingFiles} with no file</span></>
+    )}
+  </>
+}
       defaultOpen={true}
     >
       <div className="msg-doc-list">
@@ -103,16 +103,20 @@ export const SetupDocumentsDrawer: React.FC = () => {
                           // Open template filler modal
                         }}
                       >
-                        personalised - {doc.wordCount} words
+                       personalised · {doc.wordCount} words
                       </span>
                     )}
-                    <span className="msg-doc-version">V{doc.version}</span>
-                    <Pill status={fileState.color} className="msg-doc-file-state">
-                      {fileState.label}
-                    </Pill>
-                    <span className="msg-doc-carried-by">
-                      {doc.carriedBy} message{doc.carriedBy > 1 ? 's' : ''}
-                    </span>
+                   <div className="msg-doc-row-trailing">
+                      {doc.version && doc.version !== '—' && (
+                        <span className="msg-doc-version">v{doc.version}</span>
+                      )}
+                      <Pill status={fileState.color} className="msg-doc-file-state">
+                        {fileState.label}
+                      </Pill>
+                      <span className="msg-doc-carried-by">
+                        {doc.carriedBy} message{doc.carriedBy > 1 ? 's' : ''}
+                      </span>
+                    </div>
                   </div>
 
                   {isOpen && (

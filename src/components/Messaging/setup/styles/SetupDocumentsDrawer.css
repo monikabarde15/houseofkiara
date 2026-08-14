@@ -58,7 +58,7 @@
   font-size: 12px;
   font-weight: 500;
   color: var(--msg-charcoal);
-  flex: 1;
+  white-space: nowrap;
 }
 
 .msg-doc-pill-required {
@@ -90,21 +90,27 @@
   border-radius: var(--msg-radius-tight);
   white-space: nowrap;
 }
+.msg-doc-row-trailing {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--msg-spacing-10);
+  flex-shrink: 0;
+}
 
 .msg-doc-file-state {
   font-size: 10px !important;
   font-weight: 700 !important;
   letter-spacing: 0.03em !important;
 }
-
 .msg-doc-carried-by {
   font-size: 10.5px;
   color: var(--msg-muted);
   white-space: nowrap;
   min-width: 110px;
   text-align: right;
+  
 }
-
 /* Row Body */
 .msg-doc-row-body {
   display: none;

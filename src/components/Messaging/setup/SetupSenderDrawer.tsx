@@ -16,6 +16,9 @@ export const SetupSenderDrawer: React.FC = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // NEW — tracks whether the "Saved ✓" chip should be showing right now
+  const [justSaved, setJustSaved] = useState(false);
+
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
@@ -45,6 +48,9 @@ export const SetupSenderDrawer: React.FC = () => {
   const handleSave = () => {
     if (validate()) {
       console.log('Saved!');
+      // NEW — show "Saved ✓" for 2 seconds, then go back to a plain "Save" button
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 2000);
     }
   };
 
@@ -59,12 +65,12 @@ export const SetupSenderDrawer: React.FC = () => {
       defaultOpen={false}
       footer={
         <>
-          <span className="msg-drawer-footer-hint">
-            Wrong here means wrong on all seventy-three messages, so it is checked before it saves.
-          </span>
-          <Button variant="primary" size="small" onClick={handleSave} saved>
+          <Button variant="primary" size="small" onClick={handleSave} saved={justSaved}>
             Save
           </Button>
+          <span className="msg-drawer-footer-hint">
+            Wrong here means wrong on all 73 messages, so it is checked before it saves.
+          </span>
         </>
       }
     >
@@ -72,64 +78,67 @@ export const SetupSenderDrawer: React.FC = () => {
         <FormField label="From Name">
           <Input value={fromName} onChange={(e) => setFromName(e.target.value)} />
         </FormField>
-        <FormField label="From Address" error={errors.fromAddress}>
+
+        <FormField label="From Address">
           <Input
             value={fromAddress}
             onChange={(e) => setFromAddress(e.target.value)}
             className={errors.fromAddress ? 'msg-input--error' : ''}
           />
+          {errors.fromAddress && <div className="msg-field-error">{errors.fromAddress}</div>}
+        </FormField>
+      </div>
+
+      <div className="msg-sender-grid">
+        <FormField
+          label="Reply-To"
+          hint="A real inbox, not no-reply. Replies will be rare next to WhatsApp, but the ones that come will matter."
+        >
+          <Input
+            value={replyTo}
+            onChange={(e) => setReplyTo(e.target.value)}
+            className={errors.replyTo ? 'msg-input--error' : ''}
+          />
+          {errors.replyTo && <div className="msg-field-error">{errors.replyTo}</div>}
+        </FormField>
+
+        <FormField label="Quiet Copy To">
+          <Input
+            value={quietCopy}
+            onChange={(e) => setQuietCopy(e.target.value)}
+            className={errors.quietCopy ? 'msg-input--error' : ''}
+          />
+          {errors.quietCopy && <div className="msg-field-error">{errors.quietCopy}</div>}
         </FormField>
       </div>
 
       <FormField
-        label="Reply-To"
-        hint="That it should be a real inbox rather than no-reply, and that replies will be rare next to WhatsApp but the ones that come will matter"
-        error={errors.replyTo}
-      >
-        <Input
-          value={replyTo}
-          onChange={(e) => setReplyTo(e.target.value)}
-          className={errors.replyTo ? 'msg-input--error' : ''}
-        />
-      </FormField>
-
-      <FormField label="Quiet Copy To" error={errors.quietCopy}>
-        <Input
-          value={quietCopy}
-          onChange={(e) => setQuietCopy(e.target.value)}
-          className={errors.quietCopy ? 'msg-input--error' : ''}
-        />
-      </FormField>
-
-      <FormField
         label="Your Desk"
-        hint="That this is where the messages addressed to the team land, comma separated"
-        error={errors.yourDesk}
+        hint="Where the messages addressed to you land. Comma separated."
       >
         <Input
           value={yourDesk}
           onChange={(e) => setYourDesk(e.target.value)}
           className={errors.yourDesk ? 'msg-input--error' : ''}
         />
+        {errors.yourDesk && <div className="msg-field-error">{errors.yourDesk}</div>}
       </FormField>
 
       <FormField
         label="WhatsApp Number"
         hint={
           <>
-            That it is quoted inside message wording as the support number, and that it is kept in{' '}
-            <LiveLink to="Site Settings" section="Site Settings">
-              Site Settings
-            </LiveLink>
+            Quoted inside message wording as <code className="msg-inline-var">{'{{support_whatsapp}}'}</code>. Reads from{' '}
+            <LiveLink to="Site Settings" section="Site Settings">Site Settings</LiveLink>.
           </>
         }
-        error={errors.whatsappNumber}
       >
         <Input
           value={whatsappNumber}
           onChange={(e) => setWhatsappNumber(e.target.value)}
           className={errors.whatsappNumber ? 'msg-input--error' : ''}
         />
+        {errors.whatsappNumber && <div className="msg-field-error">{errors.whatsappNumber}</div>}
       </FormField>
     </SetupDrawer>
   );

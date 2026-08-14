@@ -17,5 +17,10 @@
 .msg-drawer-footer-hint {
   font-size: 10px;
   color: var(--msg-muted);
-  flex: 1;
+  
+}
+.msg-field-error {
+  font-size: 10px;
+  color: var(--terra);
+  margin-top: 3px;
 }

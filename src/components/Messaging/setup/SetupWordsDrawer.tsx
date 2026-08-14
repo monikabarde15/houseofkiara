@@ -112,8 +112,7 @@ export const SetupWordsDrawer: React.FC = () => {
                       <span className="msg-words-group-label">{group}</span>
                       {section ? (
                         <>
-                          {' '}
-                          · kept in{' '}
+                         {' '}kept in{' '}
                           <LiveLink to={section.section} section={section.section}>
                             {section.label}
                           </LiveLink>
@@ -124,8 +123,7 @@ export const SetupWordsDrawer: React.FC = () => {
                         </>
                       ) : (
                         <>
-                          {' '}
-                          · <span className="msg-words-group-sub">Built by the platform</span>
+                          {' '}kept in <span className="msg-words-group-sub">Built by the platform</span>
                         </>
                       )}
                     </td>
@@ -146,16 +144,17 @@ export const SetupWordsDrawer: React.FC = () => {
                         </Pill>
                       );
                     } else {
-                      fixState = (
-                        <Pill
-                          status="amber"
-                          className="msg-words-fix-short"
-                          onClick={() => console.log('Open records short modal')}
-                        >
-                          {recordsShort} record{recordsShort > 1 ? 's' : ''} short
-                        </Pill>
-                      );
-                    }
+  fixState = (
+    <span
+      className="msg-words-fix-short-wrap"
+      onClick={() => console.log('Open records short modal')}
+    >
+      <Pill status="amber" className="msg-words-fix-short">
+        {recordsShort} record{recordsShort > 1 ? 's' : ''} short
+      </Pill>
+    </span>
+  );
+}
 
                     return (
                       <tr key={word.id} className="msg-words-row">

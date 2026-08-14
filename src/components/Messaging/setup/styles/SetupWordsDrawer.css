@@ -232,3 +232,7 @@
   flex: 1;
   line-height: 1.4;
 }
+.msg-words-fix-short-wrap {
+  cursor: pointer;
+  display: inline-block;
+}

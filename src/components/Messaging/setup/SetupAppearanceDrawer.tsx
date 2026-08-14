@@ -17,6 +17,16 @@ export const SetupAppearanceDrawer: React.FC = () => {
     'You are receiving this because you opted in. Unsubscribe here.'
   );
 
+  // NEW — tracks whether the "Saved ✓" chip should be showing right now
+  const [justSaved, setJustSaved] = useState(false);
+
+  // NEW — this drawer had no save handler at all before; it just always showed "Saved ✓"
+  const handleSave = () => {
+    console.log('Saved!');
+    setJustSaved(true);
+    setTimeout(() => setJustSaved(false), 2000);
+  };
+
   return (
     <SetupDrawer
       title="How messages look"
@@ -29,53 +39,45 @@ export const SetupAppearanceDrawer: React.FC = () => {
         </>
       }
       defaultOpen={false}
+      // CHANGED — wired to handleSave, and saved is now driven by state
       footer={
-        <>
-          <span className="msg-drawer-footer-hint">
-            Wrong here means wrong on all seventy-three messages.
-          </span>
-          <Button variant="primary" size="small" saved>Save</Button>
-        </>
+        <Button variant="primary" size="small" onClick={handleSave} saved={justSaved}>
+          Save
+        </Button>
       }
     >
       <FormField label="Logo">
         <div className="msg-appearance-logo-hint">
-          Reads the logo from{' '}
+          Reads the logo uploaded in{' '}
           <LiveLink to="Site Settings → Brand & Logo" section="Site Settings">
-            Site Settings → Brand & Logo
+            Site Settings, Brand & Logo
           </LiveLink>
-          , so there is one upload and nothing to keep in sync by hand.
+          . One upload, two places, nothing to keep in sync by hand.
         </div>
       </FormField>
 
       <div className="msg-appearance-grid">
-        <FormField label="Header Background">
-          <div className="msg-appearance-color-wrapper">
-            <input
-              type="color"
-              className="msg-appearance-color-input"
-              value={headerBg}
-              onChange={(e) => setHeaderBg(e.target.value)}
-            />
-            <span className="msg-appearance-color-hex">{headerBg}</span>
-          </div>
+       <FormField label="Header Background">
+          <input
+            type="color"
+            className="msg-appearance-color-input"
+            value={headerBg}
+            onChange={(e) => setHeaderBg(e.target.value)}
+          />
         </FormField>
         <FormField label="Logo Colour">
-          <div className="msg-appearance-color-wrapper">
-            <input
-              type="color"
-              className="msg-appearance-color-input"
-              value={logoColor}
-              onChange={(e) => setLogoColor(e.target.value)}
-            />
-            <span className="msg-appearance-color-hex">{logoColor}</span>
-          </div>
+          <input
+            type="color"
+            className="msg-appearance-color-input"
+            value={logoColor}
+            onChange={(e) => setLogoColor(e.target.value)}
+          />
         </FormField>
       </div>
 
       <FormField
         label="Sign-off"
-        hint="That it is added to the end of every message to a customer or list, that changing it here changes all of them, and that it must not be retyped inside a message."
+        hint="That it is added to the end of every message to a customer or lister, that changing it here changes all of them, and that it must not be retyped inside a message."
       >
         <Textarea
           value={signOff}
