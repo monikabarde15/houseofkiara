@@ -1,4 +1,4 @@
-/* editor/styles/EmailPreview.css */
+/* editor/styles/EmailPreview.css (UPDATED) */
 .msg-email-preview {
   display: flex;
   flex-direction: column;
@@ -99,6 +99,23 @@
   margin-top: var(--msg-spacing-7);
   padding-top: var(--msg-spacing-7);
   border-top: var(--msg-border-standard);
+}
+
+/* NEW: Source section styles */
+.msg-email-preview-source {
+  margin-top: var(--msg-spacing-8);
+  padding: var(--msg-spacing-8) var(--msg-spacing-11);
+  background: var(--msg-canvas);
+  border-radius: var(--msg-radius);
+  font-size: 10px;
+  color: var(--msg-muted);
+  line-height: 1.5;
+  border: var(--msg-border-standard);
+}
+
+.msg-email-preview-source-label {
+  font-weight: 600;
+  color: var(--msg-charcoal);
 }
 
 .msg-email-preview-hint {

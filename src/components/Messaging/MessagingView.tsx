@@ -1,4 +1,4 @@
-// MessagingView.tsx
+// MessagingView.tsx (UPDATED)
 import React, { useState } from 'react';
 import { MessagingHeader } from './components/MessagingHeader';
 import { StatTiles } from './components/StatTiles';
@@ -7,7 +7,7 @@ import { MessagesTab } from './tabs/MessagesTab';
 import { EditorTab } from './tabs/EditorTab';
 import { SendTab } from './tabs/SendTab';
 import { SendLogTab } from './tabs/SendLogTab';
-import { SettingsTab } from './tabs/SettingsTab';
+import { SetupTab } from './tabs/SetupTab';  // ✅ Changed from SettingsTab to SetupTab
 import { mockMessages } from './data/mockMessages';
 import { Message } from './types/messaging.types';
 import './MessagingView.css';
@@ -18,7 +18,7 @@ const TABS = [
   { id: 'editor', label: 'Editor' },
   { id: 'send', label: 'Send' },
   { id: 'sendlog', label: 'Send Log' },
-  { id: 'settings', label: 'Settings' },
+  { id: 'setup', label: 'Setup' },  // ✅ Changed from 'settings' to 'setup'
 ];
 
 const STAT_TILES = [
@@ -113,8 +113,8 @@ export const MessagingView: React.FC<MessagingViewProps> = ({
         return <SendTab />;
       case 'sendlog':
         return <SendLogTab />;
-      case 'settings':
-        return <SettingsTab />;
+      case 'setup':  // ✅ Changed from 'settings' to 'setup'
+        return <SetupTab />;
       default:
         return null;
     }

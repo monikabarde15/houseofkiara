@@ -1,0 +1,4 @@
+/* tabs/styles/SetupTab.css */
+.msg-tab-panel {
+  margin-top: var(--msg-spacing-14);
+}

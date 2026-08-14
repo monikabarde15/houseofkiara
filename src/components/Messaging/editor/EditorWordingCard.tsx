@@ -1,3 +1,4 @@
+// src\components\Messaging\editor\EditorWordingCard.tsx (UPDATED)
 import React, { useState, useEffect } from 'react';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
@@ -21,22 +22,32 @@ interface Wording {
   whatsapp: string;
 }
 
+// UPDATED: Now shows 3 wordings for "Dispatched" message
+// Per addendum: Rental, Preloved, Buy New
 const MOCK_WORDINGS: Wording[] = [
   {
     id: '1',
-    name: 'Default',
-    subject: 'Welcome to House of Kaira',
-    previewLine: 'Thank you for joining us',
-    email: 'Dear {{customer_name}},\n\nThank you for creating an account with House of Kaira. We are delighted to have you with us.\n\nYou can now browse our collection, save your favourite pieces, and book rentals.\n\nIf you have any questions, please don\'t hesitate to reach out.',
-    whatsapp: 'Welcome to House of Kaira! We\'re delighted to have you.',
+    name: 'Rental',
+    subject: 'Your rental is confirmed',
+    previewLine: 'Your deposit has been received',
+    email: 'Dear {{customer_name}},\n\nYour deposit for {{piece_name}} has been received.\n\nYour rental is now confirmed for {{rental_start}} to {{rental_end}}.\n\nWith love,\nThe House of Kaira Team',
+    whatsapp: 'Your rental deposit has been received. Your booking is confirmed! ✅',
   },
   {
     id: '2',
-    name: 'Rental - deposit paid',
-    subject: 'Your rental is confirmed',
-    previewLine: 'Your deposit has been received',
-    email: 'Dear {{customer_name}},\n\nYour deposit for {{piece_name}} has been received.\n\nYour rental is now confirmed.',
-    whatsapp: 'Your rental deposit has been received. Your booking is confirmed!',
+    name: 'Preloved',
+    subject: 'Your preloved item is confirmed',
+    previewLine: 'Your preloved piece has been confirmed',
+    email: 'Dear {{customer_name}},\n\nYour preloved piece {{piece_name}} has been confirmed.\n\nIt will be shipped to you shortly.\n\nWith love,\nThe House of Kaira Team',
+    whatsapp: 'Your preloved piece has been confirmed! We\'ll ship it shortly. 💚',
+  },
+  {
+    id: '3',
+    name: 'Buy New',
+    subject: 'Your order is confirmed',
+    previewLine: 'Your order has been confirmed',
+    email: 'Dear {{customer_name}},\n\nYour order for {{piece_name}} has been confirmed.\n\nYour item will ship from the studio directly.\n\nWith love,\nThe House of Kaira Team',
+    whatsapp: 'Your order has been confirmed! Your item will ship from the studio. 🛍️',
   },
 ];
 
@@ -142,11 +153,8 @@ export const EditorWordingCard: React.FC<EditorWordingCardProps> = ({
     }, 2000);
   };
 
-  // K1 - Renaming a wording (handled in WordingBar)
-
   // K6 - Crossing off an attachment
   const handleAttachmentToggle = (doc: string, included: boolean) => {
-    // In production, would update the document status
     console.log(`${doc} ${included ? 'included' : 'crossed off'}`);
   };
 
@@ -165,7 +173,10 @@ export const EditorWordingCard: React.FC<EditorWordingCardProps> = ({
       { heading: 'Liability', text: 'The renter is liable for any damage beyond normal wear and tear.' },
     ],
     footer: 'House of Kaira · 123 Luxury Lane, Mumbai',
-    source: 'Orders → Rental Agreement',
+    source: ['Orders → Rental Agreement'],
+    sourceLinks: [
+      { label: 'Orders → Rental Agreement', section: 'Orders', to: 'Orders → Rental Agreement' },
+    ],
   };
 
   const mockGSTInvoice = {
@@ -184,7 +195,10 @@ export const EditorWordingCard: React.FC<EditorWordingCardProps> = ({
       { heading: 'Payment Terms', text: 'This invoice is paid in full. Thank you for renting with House of Kaira.' },
     ],
     footer: 'House of Kaira · 123 Luxury Lane, Mumbai',
-    source: 'Orders → GST Invoice',
+    source: ['Orders → GST Invoice'],
+    sourceLinks: [
+      { label: 'Orders → GST Invoice', section: 'Orders', to: 'Orders → GST Invoice' },
+    ],
   };
 
   // Document viewer
@@ -386,7 +400,6 @@ export const EditorWordingCard: React.FC<EditorWordingCardProps> = ({
           </Card>
         </div>
       </div>
-
 
       <AttachmentStrip 
         documents={['Rental Agreement', 'GST Invoice']} 

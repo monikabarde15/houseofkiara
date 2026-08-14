@@ -1,28 +1,27 @@
 // tabs/MessagesTab.tsx (UPDATED)
 import React, { useState } from 'react';
 import { Card } from '../components/Card';
-import { Toolbar, SearchField, FilterSelect } from '../components/Toolbar';
-import { Button } from '../components/Button';
+import { MessagesToolbar } from '../messages/MessagesToolbar';
 import { MessagesTable } from '../messages/MessagesTable';
 import { MessagesFooter } from '../messages/MessagesFooter';
 import { ProblemBanner } from '../messages/ProblemBanner';
-import { useMessageActions } from '../hooks/useMessageActions';
 import { ConfirmModal } from '../modals/ConfirmModal';
 import { ALERTS } from '../utils/alerts';
 import { Message } from '../types/messaging.types';
-import { mockMessages } from '../data/mockMessages';
+import { useMessages } from '../hooks/useMessages';
+import { useMessageActions } from '../hooks/useMessageActions';
 import './styles/MessagesTab.css';
 
 interface MessagesTabProps {
-  messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   onOpenEditor: (messageId: string) => void;
+  onNewMessageCreated?: (newMsg: Message) => void;
+  onSelectMessage?: (id: string) => void;
 }
 
 export const MessagesTab: React.FC<MessagesTabProps> = ({ 
-  messages, 
-  setMessages, 
-  onOpenEditor 
+  onOpenEditor, 
+  onNewMessageCreated,
+  onSelectMessage 
 }) => {
   const [search, setSearch] = useState('');
   const [audience, setAudience] = useState('Everyone');
@@ -33,9 +32,17 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
   const [confirmMessage, setConfirmMessage] = useState('');
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
-  const { loading, createMessage, copyMessage, removeMessage } = useMessageActions({
+  const { messages, loading, refetch } = useMessages({
+    search,
+    audience,
+    type,
+    status,
+  });
+
+  const { createMessage, copyMessage, removeMessage } = useMessageActions({
     onSuccess: () => {
       setAlertMessage(null);
+      refetch();
     },
     onError: (error) => {
       setAlertMessage(error);
@@ -45,8 +52,12 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
   const handleNewMessage = async () => {
     const newMsg = await createMessage();
     if (newMsg) {
-      setMessages([newMsg, ...messages]);
-      // Open the new message in editor
+      if (onNewMessageCreated) {
+        onNewMessageCreated(newMsg);
+      }
+      if (onSelectMessage) {
+        onSelectMessage(newMsg.id);
+      }
       onOpenEditor(newMsg.id);
     }
   };
@@ -56,7 +67,7 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
     if (msg) {
       const copied = await copyMessage(msg);
       if (copied) {
-        setMessages([copied, ...messages]);
+        refetch();
         onOpenEditor(copied.id);
       }
     }
@@ -80,52 +91,24 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
     setConfirmAction(() => async () => {
       const success = await removeMessage(msg);
       if (success) {
-        setMessages(messages.filter(m => m.id !== messageId));
+        refetch();
       }
       setShowConfirm(false);
     });
     setShowConfirm(true);
   };
 
+  const handleExport = () => {
+    // Export CSV logic
+    console.log('Exporting messages...');
+  };
+
+  // UPDATED: Problem banner with Setup reference
   const hasProblems = false;
   const problems = [
-    'Welcome Email is switched on for WhatsApp that has no wording, so it would go out blank',
+    // UPDATED: Now references Setup instead of Settings
+    'Care Card has no file, so it would arrive empty. Upload it in Setup.',
   ];
-
-  const filteredMessages = messages.filter((msg) => {
-    // 1. Search filter
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      const nameMatch = msg.name.toLowerCase().includes(q);
-      const subjectMatch = msg.subject?.toLowerCase().includes(q) || false;
-      const triggerMatch = msg.trigger.toLowerCase().includes(q);
-      if (!nameMatch && !subjectMatch && !triggerMatch) {
-        return false;
-      }
-    }
-    // 2. Audience filter
-    if (audience !== 'Everyone') {
-      if (msg.audience !== audience) {
-        return false;
-      }
-    }
-    // 3. Type filter
-    if (type !== 'Required and optional') {
-      if (type === 'Required' && msg.class !== 'Required') {
-        return false;
-      }
-      if (type === 'Marketing' && msg.class !== 'Marketing') {
-        return false;
-      }
-    }
-    // 4. Status filter
-    if (status !== 'Any status') {
-      if (msg.status !== status) {
-        return false;
-      }
-    }
-    return true;
-  });
 
   return (
     <div className="msg-messages-tab">
@@ -152,45 +135,27 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
       )}
 
       <Card>
-        <Toolbar>
-          <SearchField 
-            placeholder="Search a message, or something it says..." 
-            value={search} 
-            onChange={setSearch} 
-          />
-          <FilterSelect 
-            options={['Everyone', 'Customer', 'Lister', 'You']} 
-            value={audience} 
-            onChange={setAudience} 
-          />
-          <FilterSelect 
-            options={['Required and optional', 'Required', 'Marketing']} 
-            value={type} 
-            onChange={setType} 
-          />
-          <FilterSelect 
-            options={['Any status', 'Live', 'Paused', 'Not written']} 
-            value={status} 
-            onChange={setStatus} 
-          />
-          <Button variant="secondary" size="small">Export CSV</Button>
-          <Button 
-            variant="primary" 
-            size="small" 
-            onClick={handleNewMessage}
-            disabled={loading}
-          >
-            + New Message
-          </Button>
-        </Toolbar>
+        <MessagesToolbar
+          search={search}
+          onSearchChange={setSearch}
+          audience={audience}
+          onAudienceChange={setAudience}
+          type={type}
+          onTypeChange={setType}
+          status={status}
+          onStatusChange={setStatus}
+          onExport={handleExport}
+          onNewMessage={handleNewMessage}
+          loading={loading}
+        />
 
         <MessagesTable 
-          messages={filteredMessages} 
+          messages={messages} 
           onRowClick={onOpenEditor}
           onCopy={handleCopyMessage}
           onRemove={handleRemoveMessage}
         />
-        <MessagesFooter count={filteredMessages.length} total={messages.length} />
+        <MessagesFooter count={messages.length} total={messages.length} />
       </Card>
 
       <ConfirmModal
@@ -199,7 +164,7 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
         confirmLabel="Remove"
         cancelLabel="Cancel"
         onConfirm={() => {
-          confirmAction();
+          setConfirmAction();
           setShowConfirm(false);
         }}
         onCancel={() => setShowConfirm(false)}

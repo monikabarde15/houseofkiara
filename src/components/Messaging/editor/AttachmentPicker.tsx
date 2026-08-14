@@ -1,6 +1,7 @@
-// editor/AttachmentPicker.tsx
+// editor/AttachmentPicker.tsx (UPDATED)
 import React, { useState } from 'react';
 import { Button } from '../components/Button';
+import { LiveLink } from '../components/LiveLink';
 import './styles/AttachmentPicker.css';
 
 interface DocumentOption {
@@ -20,7 +21,7 @@ export const AttachmentPicker: React.FC<AttachmentPickerProps> = ({
   availableDocuments,
   onAdd,
   disabledIds = [],
-  hint = 'Chosen from the master, never typed, so the system knows what to attach. A document that does not exist yet is created in Settings → Documents we issue first.',
+  hint,
 }) => {
   const [selectedId, setSelectedId] = useState('');
 
@@ -33,6 +34,18 @@ export const AttachmentPicker: React.FC<AttachmentPickerProps> = ({
 
   const filteredOptions = availableDocuments.filter(
     (doc) => !disabledIds.includes(doc.id)
+  );
+
+  // UPDATED: Default hint references Setup → Documents
+  const defaultHint = (
+    <>
+      Chosen from the master, never typed, so the system knows what to attach. 
+      A document that does not exist yet is created in{' '}
+      <LiveLink to="Setup → Documents" section="Setup">
+        Setup → Documents
+      </LiveLink>{' '}
+      first.
+    </>
   );
 
   return (
@@ -59,7 +72,9 @@ export const AttachmentPicker: React.FC<AttachmentPickerProps> = ({
           Add
         </Button>
       </div>
-      <div className="msg-attachment-picker-hint">{hint}</div>
+      <div className="msg-attachment-picker-hint">
+        {hint || defaultHint}
+      </div>
     </div>
   );
 };

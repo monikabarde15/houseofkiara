@@ -1,6 +1,7 @@
-// modals/DocumentViewer.tsx
+// modals/DocumentViewer.tsx (UPDATED)
 import React from 'react';
 import { Button } from '../components/Button';
+import { LiveLink } from '../components/LiveLink';
 import './styles/DocumentViewer.css';
 
 interface DocumentViewerProps {
@@ -13,7 +14,8 @@ interface DocumentViewerProps {
     clauses?: Array<{ heading: string; text: string }>;
     photos?: string[];
     footer?: string;
-    source?: string;
+    source?: string | string[];  // UPDATED: Can be string or array of strings
+    sourceLinks?: Array<{ label: string; section: string; to: string }>;  // NEW: For live links
   } | null;
   onClose: () => void;
 }
@@ -29,6 +31,40 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
     if (e.target === e.currentTarget) {
       onClose();
     }
+  };
+
+  // Helper to render source links
+  const renderSourceLinks = () => {
+    if (document.sourceLinks && document.sourceLinks.length > 0) {
+      return document.sourceLinks.map((link, index) => (
+        <React.Fragment key={index}>
+          {index > 0 && ' · '}
+          <LiveLink to={link.to} section={link.section}>
+            {link.label}
+          </LiveLink>
+        </React.Fragment>
+      ));
+    }
+
+    if (document.source) {
+      if (Array.isArray(document.source)) {
+        return document.source.map((src, index) => (
+          <React.Fragment key={index}>
+            {index > 0 && ' · '}
+            <LiveLink to={src} section={src.split(' → ')[0]}>
+              {src}
+            </LiveLink>
+          </React.Fragment>
+        ));
+      }
+      return (
+        <LiveLink to={document.source} section={document.source.split(' → ')[0]}>
+          {document.source}
+        </LiveLink>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -81,18 +117,31 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
             </>
           )}
 
-          {document.footer && (
-            <div className="msg-doc-viewer-footer">
-              {document.footer.split('\n').map((line, i) => (
-                <div key={i}>{line}</div>
-              ))}
-              {document.source && (
-                <div className="msg-doc-viewer-source">
-                  <span className="msg-doc-viewer-source-label">Filled in from</span> {document.source}
-                </div>
+          <div className="msg-doc-viewer-footer">
+            {document.footer && (
+              <div className="msg-doc-viewer-footer-legal">
+                {document.footer.split('\n').map((line, i) => (
+                  <div key={i}>{line}</div>
+                ))}
+              </div>
+            )}
+
+            {/* UPDATED: "Filled in from" section with live links */}
+            <div className="msg-doc-viewer-source">
+              <span className="msg-doc-viewer-source-label">Filled in from</span>
+              {' '}
+              {renderSourceLinks() || (
+                <span className="msg-doc-viewer-source-empty">—</span>
               )}
             </div>
-          )}
+
+            {/* NEW: Additional note if document has one */}
+            {document.sourceLinks && document.sourceLinks.length > 0 && (
+              <div className="msg-doc-viewer-source-note">
+                These sections supply the figures for this document. A change there changes every use at once.
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="msg-doc-viewer-close">

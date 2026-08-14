@@ -11,7 +11,7 @@ export const ALERTS = {
 
   // Crossing off a tax document
   CROSS_TAX_DOCUMENT: (document: string) =>
-    `${document} cannot be turned off. It is a tax document, and whether it goes is decided by law rather than by us. If it genuinely should not apply here, the rule for it lives in Settings under What travels with what.`,
+    `${document} cannot be turned off. It is a tax document, and whether it goes is decided by law rather than by us. If it genuinely should not apply here, open it under Setup → Documents and change which messages carry it.`,
 
   // Dropping a tax document from one send
   DROP_TAX_DOCUMENT: (document: string) =>
@@ -19,7 +19,7 @@ export const ALERTS = {
 
   // Attaching a tax document by hand
   ATTACH_TAX_DOCUMENT: (document: string) =>
-    `${document} is a tax document. Whether it travels is decided by the rule for it in Settings, not attached by hand.`,
+    `${document} is a tax document. Whether it travels is decided by the rule for it under Setup → Documents, not attached by hand.`,
 
   // Switching off a Required channel
   SWITCH_OFF_REQUIRED: 
@@ -71,7 +71,7 @@ export const ALERTS = {
 
   // A send held back
   SEND_HELD_BACK: (word: string) =>
-    `Held back, not sent. {{${word}}} could not be filled in on this record, and a half-written message is worse than a late one. It is in the Send Log marked Held.`,
+    `Held back, not sent. {{${word}}} could not be filled in on this record. It is in the Send Log marked Held.`,
 
   // A test that cannot be filled in
   TEST_CANNOT_FILL: (word: string) =>
@@ -96,4 +96,24 @@ export const ALERTS = {
   // Document added to master
   DOCUMENT_ADDED: (name: string) =>
     `${name} is now in the master. Add a rule below to decide which message carries it, or pick it under Also attach on a message.`,
+
+  // NEW ALERTS (from addendum 2.5)
+  WORD_NO_NAME:
+    'The format wanted is plain words without braces.',
+
+  WORD_ALREADY_EXISTS: (word: string, group: string) =>
+    `${word} is already in ${group}, and it can be used now.`,
+
+  WORD_ALREADY_ASKED: (word: string) =>
+    `${word} is already on the list.`,
+
+  WORD_NO_DESCRIPTION: (word: string) =>
+    `The build team could not know which field is meant.`,
+
+  WORD_NO_REASON: (word: string) =>
+    `The reason is what decides whether it is worth building.`,
+
+  WORD_REQUEST_RECORDED: (word: string) =>
+    `${word} cannot be used until the field exists on the record.`,
+
 };

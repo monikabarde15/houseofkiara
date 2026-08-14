@@ -1,4 +1,4 @@
-/* editor/styles/AttachmentPicker.css */
+/* editor/styles/AttachmentPicker.css (UPDATED) */
 .msg-attachment-picker {
   margin-top: var(--msg-spacing-9);
 }
@@ -29,4 +29,8 @@
   color: var(--msg-muted);
   margin-top: var(--msg-spacing-3);
   line-height: 1.4;
+}
+
+.msg-attachment-picker-hint .msg-live-link {
+  /* Inherits from LiveLink styles */
 }

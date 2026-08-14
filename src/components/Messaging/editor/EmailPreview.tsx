@@ -1,5 +1,6 @@
-// editor/EmailPreview.tsx
+// editor/EmailPreview.tsx (UPDATED)
 import React from 'react';
+import { LiveLink } from '../components/LiveLink';
 import './styles/EmailPreview.css';
 
 interface EmailPreviewProps {
@@ -13,6 +14,8 @@ interface EmailPreviewProps {
   signOff?: string;
   footer?: string;
   unsubscribeLine?: string;
+  // NEW: Source sections for "Filled in from" links
+  sourceSections?: Array<{ label: string; section: string; to: string }>;
 }
 
 const MOCK_VARIABLES: Record<string, string> = {
@@ -52,6 +55,10 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
   signOff = 'With warmth,\nHouse of Kaira',
   footer = 'House of Kaira, Indore, Madhya Pradesh, India\nGSTIN 23XXXXXXXXXXZX\nhello@houseofkaira.com · @house_of_kaira',
   unsubscribeLine = 'No unsubscribe line, because this one is Required and an opt-out link on a refund would be misleading.',
+  sourceSections = [
+    { label: 'Orders → Customer Details', section: 'Orders', to: 'Orders → Customer Details' },
+    { label: 'Orders → Rental Agreement', section: 'Orders', to: 'Orders → Rental Agreement' },
+  ],
 }) => {
   const hasPreview = previewLine.trim().length > 0;
 
@@ -139,6 +146,29 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
             <div key={i}>{line}</div>
           ))}
         </div>
+      </div>
+
+      {/* NEW: "Filled in from" section with LiveLinks */}
+      <div className="msg-email-preview-source">
+        <span className="msg-email-preview-source-label">Filled in from</span>
+        {' '}
+        {sourceSections.map((section, index) => (
+          <React.Fragment key={index}>
+            {index > 0 && ' · '}
+            <LiveLink to={section.to} section={section.section}>
+              {section.label}
+            </LiveLink>
+          </React.Fragment>
+        ))}
+      </div>
+
+      {isRequired && (
+        <div className="msg-email-preview-hint">
+          No unsubscribe line, because this one is Required and an opt-out link on a refund would be misleading.
+        </div>
+      )}
+      <div className="msg-email-preview-legend">
+        Gold means a stand-in filled a gap. Terracotta means a word could not be filled in at all, and a message in that state is held back rather than going out broken.
       </div>
     </div>
   );

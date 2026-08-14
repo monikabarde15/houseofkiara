@@ -1,6 +1,8 @@
-// editor/AttachmentList.tsx
+// editor/AttachmentList.tsx (UPDATED)
 import React, { useState } from 'react';
 import { Chip } from '../components/Chip';
+import { Button } from '../components/Button';
+import { LiveLink } from '../components/LiveLink';
 import './styles/AttachmentList.css';
 
 interface Document {
@@ -9,18 +11,28 @@ interface Document {
   tag?: 'required-by-law' | 'added-by-you';
   reason?: string;
   isTaxDocument?: boolean;
+  // NEW: Addendum fields
+  isTemplate?: boolean;
+  wordCount?: number;
+  hasFile?: boolean;
+  fileState?: 'held' | 'missing' | 'builtin' | 'record' | 'uploaded';
 }
 
 interface AttachmentListProps {
   documents: Document[];
   onToggleCrossOff?: (id: string, crossed: boolean) => void;
   onDocumentClick?: (id: string) => void;
+  // NEW: Addendum callbacks
+  onChangeDocument?: (id: string) => void;
+  onTemplateClick?: (id: string) => void;
 }
 
 export const AttachmentList: React.FC<AttachmentListProps> = ({
   documents,
   onToggleCrossOff,
   onDocumentClick,
+  onChangeDocument,
+  onTemplateClick,
 }) => {
   const [crossedOff, setCrossedOff] = useState<Set<string>>(new Set());
 
@@ -53,6 +65,33 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
       {documents.map((doc) => {
         const isCrossed = crossedOff.has(doc.id);
         const isTax = doc.isTaxDocument;
+        const isTemplate = doc.isTemplate;
+        const wordCount = doc.wordCount || 0;
+        const hasFile = doc.hasFile !== false;
+        const fileState = doc.fileState || 'held';
+
+        // Determine file state pill
+        let fileStatePill: React.ReactNode = null;
+        if (fileState === 'missing') {
+          fileStatePill = (
+            <span className="msg-attachment-pill msg-attachment-pill--missing">
+              not uploaded yet
+            </span>
+          );
+        } else if (isTemplate) {
+          fileStatePill = (
+            <span 
+              className="msg-attachment-pill msg-attachment-pill--template"
+              onClick={(e) => {
+                e.stopPropagation();
+                onTemplateClick?.(doc.id);
+              }}
+              title="Click to see what this template fills in"
+            >
+              filled in per recipient - {wordCount} words
+            </span>
+          );
+        }
 
         return (
           <div
@@ -67,9 +106,38 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
               {doc.name}
             </Chip>
 
-            {doc.tag && (
-              <span className={`msg-attachment-list-tag msg-attachment-list-tag--${doc.tag}`}>
-                {doc.tag === 'required-by-law' ? 'required by law' : 'added by you'}
+            {/* Tag: required by law */}
+            {doc.tag === 'required-by-law' && (
+              <span className="msg-attachment-pill msg-attachment-pill--required">
+                required by law
+              </span>
+            )}
+
+            {/* NEW: Template pill - filled in per recipient */}
+            {isTemplate && (
+              <span 
+                className="msg-attachment-pill msg-attachment-pill--template"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onTemplateClick?.(doc.id);
+                }}
+                title="Click to see what this template fills in"
+              >
+                filled in per recipient - {wordCount} words
+              </span>
+            )}
+
+            {/* NEW: Missing file pill */}
+            {!hasFile && !isTemplate && (
+              <span className="msg-attachment-pill msg-attachment-pill--missing">
+                not uploaded yet
+              </span>
+            )}
+
+            {/* Tag: added by you */}
+            {doc.tag === 'added-by-you' && (
+              <span className="msg-attachment-pill msg-attachment-pill--added">
+                added by you
               </span>
             )}
 
@@ -88,6 +156,31 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
           </div>
         );
       })}
+
+      {/* NEW: "Change the document" button */}
+      <div className="msg-attachment-list-actions">
+        <Button 
+          variant="secondary" 
+          size="small"
+          onClick={() => {
+            if (documents.length > 0) {
+              onChangeDocument?.(documents[0].id);
+            }
+          }}
+        >
+          Change the document
+        </Button>
+      </div>
+
+      {/* UPDATED: Hint referencing Setup → Documents */}
+      <div className="msg-attachment-list-hint">
+        Worked out from the rules in{' '}
+        <LiveLink to="Setup → Documents" section="Setup">
+          Setup → Documents
+        </LiveLink>
+        , read against this record and this wording. Cross one off to stop it going with this message. 
+        Tax documents cannot be crossed off.
+      </div>
     </div>
   );
 };

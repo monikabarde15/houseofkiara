@@ -1,4 +1,4 @@
-// send/SendCardItem.tsx
+// send/SendCardItem.tsx (UPDATED)
 import React from 'react';
 import { Pill } from '../components/Pill';
 import { AttachmentStrip } from '../editor/AttachmentStrip';
@@ -86,6 +86,11 @@ export const SendCardItem: React.FC<SendCardItemProps> = ({
         {body}
       </div>
 
+      {/* 
+        UPDATED: Attachment strip only renders if there are attachments.
+        Empty strip is not drawn - this is correct per the addendum.
+        A Buy New dispatch carries no document of ours, and the first overdue notice carries none.
+      */}
       {attachments.length > 0 && (
         <AttachmentStrip
           documents={attachments}

@@ -1,4 +1,4 @@
-/* modals/styles/DocumentViewer.css */
+/* modals/styles/DocumentViewer.css (UPDATED) */
 .msg-doc-viewer-overlay {
   position: fixed;
   top: 0;
@@ -113,6 +113,7 @@
   color: var(--msg-muted);
 }
 
+/* UPDATED: Footer with source links */
 .msg-doc-viewer-footer {
   margin-top: var(--msg-spacing-14);
   padding-top: var(--msg-spacing-11);
@@ -123,6 +124,10 @@
   text-align: center;
 }
 
+.msg-doc-viewer-footer-legal {
+  margin-bottom: var(--msg-spacing-7);
+}
+
 .msg-doc-viewer-source {
   color: var(--msg-charcoal);
   margin-top: var(--msg-spacing-7);
@@ -130,6 +135,17 @@
 
 .msg-doc-viewer-source-label {
   font-weight: 600;
+  color: var(--msg-charcoal);
+}
+
+.msg-doc-viewer-source-empty {
+  color: var(--msg-muted);
+}
+
+.msg-doc-viewer-source-note {
+  font-size: 9.5px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-3);
 }
 
 .msg-doc-viewer-close {
