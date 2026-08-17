@@ -21,10 +21,11 @@ interface Document {
   usedElsewhere?: string;
 }
 
+// FIXED — version no longer carries its own "V" prefix; the render adds "v" itself
 const MOCK_DOCUMENTS: Document[] = [
-  { id: '1', name: 'GST Invoice', kind: 'Tax document', required: true, isTemplate: false, version: 'V3', fileState: 'builtin', carriedBy: 4, description: 'Tax invoice for rental of occasion wear', source: ['Orders → Rental', 'Orders → Preloved'] },
-  { id: '2', name: 'Rental Agreement', kind: 'Agreement', required: false, isTemplate: true, wordCount: 12, version: 'V2', fileState: 'held', carriedBy: 3 },
-  { id: '3', name: 'Care Card', kind: 'Logistics', required: false, isTemplate: false, version: 'V1', fileState: 'missing', carriedBy: 2 },
+  { id: '1', name: 'GST Invoice', kind: 'Tax document', required: true, isTemplate: false, version: '3', fileState: 'builtin', carriedBy: 4, description: 'Tax invoice for rental of occasion wear', source: ['Orders → Rental', 'Orders → Preloved'] },
+  { id: '2', name: 'Rental Agreement', kind: 'Agreement', required: false, isTemplate: true, wordCount: 12, version: '2', fileState: 'held', carriedBy: 3 },
+  { id: '3', name: 'Care Card', kind: 'Logistics', required: false, isTemplate: false, version: '1', fileState: 'missing', carriedBy: 2 },
   { id: '4', name: 'Inspection Photographs', kind: 'Evidence', required: false, isTemplate: false, version: '—', fileState: 'record', carriedBy: 1 },
 ];
 
@@ -56,14 +57,14 @@ export const SetupDocumentsDrawer: React.FC = () => {
   return (
     <SetupDrawer
       title="Documents"
-     summary={
-  <>
-    {documentCount} documents · {oursToHold} of them ours to hold
-    {missingFiles > 0 && (
-      <> · <span className="msg-drawer-summary-warning">{missingFiles} with no file</span></>
-    )}
-  </>
-}
+      summary={
+        <>
+          {documentCount} documents · {oursToHold} of them ours to hold
+          {missingFiles > 0 && (
+            <> · <span className="msg-drawer-summary-warning">{missingFiles} with no file</span></>
+          )}
+        </>
+      }
       defaultOpen={true}
     >
       <div className="msg-doc-list">
@@ -103,10 +104,10 @@ export const SetupDocumentsDrawer: React.FC = () => {
                           // Open template filler modal
                         }}
                       >
-                       personalised · {doc.wordCount} words
+                        personalised · {doc.wordCount} words
                       </span>
                     )}
-                   <div className="msg-doc-row-trailing">
+                    <div className="msg-doc-row-trailing">
                       {doc.version && doc.version !== '—' && (
                         <span className="msg-doc-version">v{doc.version}</span>
                       )}
@@ -122,83 +123,83 @@ export const SetupDocumentsDrawer: React.FC = () => {
                   {isOpen && (
                     <div className="msg-doc-row-body">
                       <div className="msg-doc-row-grid">
+                        {/* FLATTENED — no .msg-doc-section wrappers, so label:not(:first-child) spacing works */}
                         <div className="msg-doc-row-left">
-                          <div className="msg-doc-section">
-                            <div className="msg-doc-label">What it is</div>
-                            <div className="msg-doc-text">{doc.description || 'No description'}</div>
-                          </div>
+                          <div className="msg-doc-label">What it is</div>
+                          <div className="msg-doc-text">{doc.description || 'No description'}</div>
 
                           {doc.source && (
-                            <div className="msg-doc-section">
+                            <>
                               <div className="msg-doc-label">Where its content comes from</div>
-                              {doc.source.map((src, i) => (
-                                <LiveLink key={i} to={src} section={src}>
-                                  {src}
-                                </LiveLink>
-                              ))}
-                            </div>
+                              {/* FIXED — each source on its own line, not run together */}
+                              <div className="msg-doc-text msg-doc-source-list">
+                                {doc.source.map((src, i) => (
+                                  <div key={i} className="msg-doc-source-line">
+                                    <LiveLink to={src} section={src}>
+                                      {src}
+                                    </LiveLink>
+                                  </div>
+                                ))}
+                              </div>
+                            </>
                           )}
 
-                          <div className="msg-doc-section">
-                            <div className="msg-doc-label">Where else it is used</div>
-                            <div className="msg-doc-text">
-                              <strong>Platform-wide.</strong> This is the document House of Kaira issues,
-                              not an email copy of one. The same version travels with a message, is served
-                              on her order page, and is what Reports counts.
-                              <LiveLink to="Platform & Legal → Documents" section="Platform & Legal">
-                                Upload and version it in Platform & Legal → Documents
-                              </LiveLink>
-                              . This tab decides only which message carries it.
-                            </div>
+                          <div className="msg-doc-label">Where else it is used</div>
+                          <div className="msg-doc-text">
+                            <strong>Platform-wide.</strong> This is the document House of Kaira issues,
+                            not an email copy of one. The same version travels with a message, is served
+                            on her order page, and is what Reports counts.{' '}
+                            <LiveLink to="Platform & Legal → Documents" section="Platform & Legal">
+                              Upload and version it in Platform & Legal → Documents
+                            </LiveLink>
+                            . This tab decides only which message carries it.
                           </div>
 
-                          <div className="msg-doc-section">
-                            <div className="msg-doc-label">The file</div>
-                            <div className="msg-doc-file-info">
-                              <Pill status={fileState.color} className="msg-doc-file-pill">
-                                {fileState.label}
-                              </Pill>
-                              {doc.fileState === 'held' && (
-                                <>
-                                  <span className="msg-doc-file-detail">Rental_Agreement_v2.pdf · v2 in force from 15 Mar 2026</span>
-                                  <div className="msg-doc-file-hint">
-                                    Uploaded and versioned in <LiveLink to="Platform & Legal → Documents" section="Platform & Legal">
-                                      Platform & Legal → Documents
-                                    </LiveLink>
-                                    . It is the same document her order page and Reports issue, not an email copy of one.
-                                  </div>
-                                </>
-                              )}
-                              {doc.fileState === 'missing' && (
-                                <>
-                                  <span className="msg-doc-file-detail msg-doc-file-detail--warning">
-                                    Nothing is held — this would arrive empty.
-                                  </span>
-                                  <Button variant="secondary" size="small">
-                                    Upload it in Platform & Legal
-                                  </Button>
-                                </>
-                              )}
-                              {doc.fileState === 'builtin' && (
-                                <>
-                                  <span className="msg-doc-file-detail">Built from the record</span>
+                          <div className="msg-doc-label">The file</div>
+                          <div className="msg-doc-file-info">
+                            <Pill status={fileState.color} className="msg-doc-file-pill">
+                              {fileState.label}
+                            </Pill>
+                            {doc.fileState === 'held' && (
+                              <>
+                                <span className="msg-doc-file-detail">Rental_Agreement_v2.pdf · v2 in force from 15 Mar 2026</span>
+                                <div className="msg-doc-file-hint">
+                                  Uploaded and versioned in <LiveLink to="Platform & Legal → Documents" section="Platform & Legal">
+                                    Platform & Legal → Documents
+                                  </LiveLink>
+                                  . It is the same document her order page and Reports issue, not an email copy of one.
+                                </div>
+                              </>
+                            )}
+                            {doc.fileState === 'missing' && (
+                              <>
+                                <span className="msg-doc-file-detail msg-doc-file-detail--warning">
+                                  Nothing is held — this would arrive empty.
+                                </span>
+                                <Button variant="secondary" size="small">
+                                  Upload it in Platform & Legal
+                                </Button>
+                              </>
+                            )}
+                            {doc.fileState === 'builtin' && (
+                              <>
+                                <span className="msg-doc-file-detail">Built from the record</span>
+                                {doc.version && doc.version !== '—' && (
                                   <span className="msg-doc-file-version">v{doc.version} in force</span>
-                                </>
-                              )}
-                              {doc.fileState === 'record' && (
-                                <>
-                                  <span className="msg-doc-file-detail">Supplied per order on the record itself</span>
-                                  <span className="msg-doc-file-sub">There is no single copy of it.</span>
-                                </>
-                              )}
-                            </div>
+                                )}
+                              </>
+                            )}
+                            {doc.fileState === 'record' && (
+                              <>
+                                <span className="msg-doc-file-detail">Supplied per order on the record itself</span>
+                                <span className="msg-doc-file-sub">There is no single copy of it.</span>
+                              </>
+                            )}
                           </div>
 
                           <div className="msg-doc-row-actions">
                             <Button variant="secondary" size="small">See the document</Button>
-                            <Button variant="secondary" size="small">
-                              Change the document
-                            </Button>
+                            <Button variant="secondary" size="small">Change the document</Button>
                           </div>
                         </div>
 
@@ -220,7 +221,6 @@ export const SetupDocumentsDrawer: React.FC = () => {
                               </div>
                             )}
                             <div className="msg-doc-message-list-scroll">
-                              {/* Message list with ticks */}
                               <div className="msg-doc-message-row msg-doc-message-row--on">
                                 <input type="checkbox" checked readOnly />
                                 <span className="msg-doc-message-name">Welcome Email</span>

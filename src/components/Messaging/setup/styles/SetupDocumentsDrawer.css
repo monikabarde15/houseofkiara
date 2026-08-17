@@ -134,23 +134,34 @@
   letter-spacing: 0.11em;
   text-transform: uppercase;
   color: var(--msg-muted);
-  margin-bottom: var(--msg-spacing-4);
+  margin: 0 0 4px;
 }
 
-.msg-doc-label:not(:first-child) {
-  margin-top: var(--msg-spacing-13);
+.msg-doc-row-left .msg-doc-label:not(:first-child) {
+  margin-top: 13px;
 }
 
 .msg-doc-text {
+  margin: 0;
   font-size: 11.5px;
   line-height: 1.6;
   color: var(--msg-charcoal);
 }
 
+.msg-doc-source-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.msg-doc-source-line {
+  line-height: 1.6;
+}
+
 .msg-doc-file-info {
   display: flex;
   flex-direction: column;
-  gap: var(--msg-spacing-4);
+  gap: 4px;
 }
 
 .msg-doc-file-pill {
@@ -211,17 +222,20 @@
 .msg-doc-message-list-scroll {
   border: var(--msg-border-standard);
   border-radius: var(--msg-radius);
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   max-height: 46vh;
 }
 
 .msg-doc-message-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--msg-spacing-9);
   padding: var(--msg-spacing-8) var(--msg-spacing-12);
   border-bottom: var(--msg-border-standard);
   cursor: pointer;
+  min-width: 0;
 }
 
 .msg-doc-message-row:last-child {
@@ -255,7 +269,10 @@
 .msg-doc-message-audience {
   font-size: 10px;
   color: var(--msg-muted);
-  white-space: nowrap;
+  white-space: normal;
+  text-align: right;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .msg-doc-message-audience--off {
