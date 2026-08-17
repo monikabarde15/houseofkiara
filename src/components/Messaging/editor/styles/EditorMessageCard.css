@@ -147,3 +147,8 @@
 .msg-checkbox-label {
   letter-spacing: 0.05em;
 }
+
+/* Back-to-Messages topbar */
+.msg-editor-topbar {
+  margin-bottom: var(--msg-spacing-13);
+}
