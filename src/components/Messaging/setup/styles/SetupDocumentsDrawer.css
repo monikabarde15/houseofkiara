@@ -405,16 +405,17 @@
 .msg-doc-wording-row {
   padding: 8px 12px 12px 22px;
 }
-
 .msg-doc-wording-tick {
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
+  gap: 6px;
+  padding: 4px 10px 4px 8px;
   border: 1px solid var(--msg-input-border, #DDD5C8);
   border-radius: 2px;
   background: var(--msg-card);
   font-size: 10.5px;
-  color: var(--msg-muted);
+  font-weight: 600;
+  color: var(--msg-charcoal);
   cursor: pointer;
   user-select: none;
 }
@@ -423,9 +424,27 @@
   background: var(--msg-gold-pale);
   border-color: var(--msg-gold);
   color: #6B5730;
-  font-weight: 600;
 }
 
+.msg-doc-wording-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--msg-input-border, #DDD5C8);
+  border-radius: 2px;
+  background: var(--msg-card);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--msg-gold);
+  flex-shrink: 0;
+}
+
+.msg-doc-wording-tick--on .msg-doc-wording-checkbox {
+  border-color: var(--msg-gold);
+  background: var(--msg-card);
+}
 .msg-doc-message-toolbar {
   display: flex;
   align-items: center;
@@ -448,4 +467,259 @@
 
 .msg-doc-empty-messages {
   color: var(--msg-muted);
+}  
+.msg-doc-message-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--msg-input-border, #DDD5C8);
+  border-radius: 2px;
+  background: var(--msg-card);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--msg-gold);
+  flex-shrink: 0;
+}
+.msg-tpl-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.msg-tpl-overlay {
+  background: var(--msg-card, #fff);
+  width: 560px;
+  max-width: 90vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  border-radius: 6px;
+  padding: 32px 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.msg-tpl-overlay-brand {
+  text-align: center;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  color: var(--msg-gold);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.msg-tpl-overlay-title {
+  text-align: center;
+  font-family: var(--msg-font-display);
+  font-size: 24px;
+  color: var(--msg-charcoal);
+}
+
+.msg-tpl-overlay-subtitle {
+  text-align: center;
+  font-size: 12px;
+  color: var(--msg-muted);
+  margin-bottom: 16px;
+}
+
+.msg-tpl-overlay-rule {
+  border-top: 1px solid var(--msg-card-border, #EDE6DC);
+  margin: 16px 0;
+}
+
+.msg-tpl-overlay-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--msg-charcoal);
+}
+
+.msg-tpl-overlay-word-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.msg-tpl-overlay-word {
+  font-family: monospace;
+  color: var(--msg-muted);
+}
+
+.msg-tpl-overlay-word-desc {
+  font-weight: 600;
+  color: var(--msg-charcoal);
+}
+
+.msg-tpl-overlay-travels-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.msg-tpl-overlay-travels-label {
+  color: var(--msg-muted);
+}
+
+.msg-tpl-overlay-travels-value {
+  font-weight: 600;
+  color: var(--msg-charcoal);
+}
+
+.msg-tpl-overlay-confirm {
+  font-size: 13px;
+  color: var(--msg-charcoal);
+  margin-top: 10px;
+}
+
+.msg-tpl-overlay-footer-legal {
+  text-align: center;
+  font-size: 10.5px;
+  color: var(--msg-muted);
+  line-height: 1.6;
+}
+
+.msg-tpl-overlay-filled-from {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 12px;
+}
+
+.msg-tpl-overlay-hint {
+  text-align: center;
+  font-size: 10.5px;
+  color: var(--msg-muted);
+  margin-top: 8px;
+}
+
+.msg-tpl-overlay-close-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.msg-doc-viewer-overlay {
+  background: var(--msg-card, #fff);
+  width: 520px;
+  max-width: 90vw;
+  max-height: 85vh;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.msg-doc-viewer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--msg-card-border, #EDE6DC);
+  background: var(--msg-canvas);
+}
+
+.msg-doc-viewer-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--msg-charcoal);
+}
+
+.msg-doc-viewer-close-x {
+  border: none;
+  background: none;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--msg-muted);
+  cursor: pointer;
+}
+
+.msg-doc-viewer-body {
+  padding: 24px;
+  overflow-y: auto;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--msg-canvas);
+}
+
+.msg-doc-viewer-empty {
+  text-align: center;
+  color: var(--msg-muted);
+  font-size: 13px;
+}
+
+.msg-doc-viewer-empty-icon {
+  font-size: 24px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.msg-doc-viewer-empty-sub {
+  font-size: 11.5px;
+  margin-top: 6px;
+}
+
+.msg-doc-viewer-page {
+  background: #fff;
+  width: 340px;
+  padding: 28px 24px;
+  border: 1px solid var(--msg-card-border, #EDE6DC);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.msg-doc-viewer-page-brand {
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--msg-gold);
+  font-weight: 600;
+}
+
+.msg-doc-viewer-page-doc-name {
+  text-align: center;
+  font-family: var(--msg-font-display);
+  font-size: 16px;
+  margin-top: 8px;
+  color: var(--msg-charcoal);
+}
+
+.msg-doc-viewer-page-filename {
+  text-align: center;
+  font-size: 10.5px;
+  color: var(--msg-muted);
+  margin-top: 2px;
+}
+
+.msg-doc-viewer-page-placeholder-lines {
+  margin-top: 20px;
+}
+
+.msg-doc-viewer-page-placeholder-lines div {
+  height: 7px;
+  background: var(--msg-canvas);
+  border-radius: 2px;
+  margin-bottom: 8px;
+}
+
+.msg-doc-viewer-page-placeholder-lines .short {
+  width: 60%;
+}
+
+.msg-doc-viewer-page-note {
+  margin-top: 18px;
+  font-size: 9.5px;
+  color: var(--msg-muted);
+  text-align: center;
+  font-style: italic;
+}
+
+.msg-doc-viewer-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--msg-card-border, #EDE6DC);
+  display: flex;
+  justify-content: flex-end;
 }
