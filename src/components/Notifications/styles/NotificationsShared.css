@@ -1,0 +1,71 @@
+/* ============================================================
+   Notifications — Shared Tokens
+   §2
+   ============================================================ */
+
+#sec-notifications {
+  --ntf-charcoal: #1A1612;
+  --ntf-gold: #C9A96E;
+  --ntf-gold-l: #E2C99A;
+  --ntf-gold-pale: #F5EFE4;
+  --ntf-terra: #B85C38;
+  --ntf-canvas: #F7F4EF;
+  --ntf-card: #FFFFFF;
+  --ntf-border: #EDE6DC;
+  --ntf-border-button: #E8E0D4;
+  --ntf-expanded: #FFFEFB;
+  --ntf-muted: #8A7E72;
+  --ntf-muted-light: #B4A99E;
+
+  --ntf-alarm-bg: #FDF1EE;
+  --ntf-alarm-text: #7A2E1D;
+
+  --ntf-clear-bg: #EAF0E5;
+  --ntf-clear-text: #3D6B30;
+
+  --ntf-them-bg: #EEF3EA;
+  --ntf-assigned-bg: #F7FAF5;
+
+  --ntf-amber-text: #6B5730;
+  --ntf-amber-figure: #8B6A1E;
+
+  --ntf-radius: 4px;
+
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--ntf-charcoal);
+}
+
+/* The specification uses Cormorant only for the
+   summary headline and summary number. */
+
+#sec-notifications .mod-ttl,
+#sec-notifications .ntf-lead-t,
+#sec-notifications .ntf-lead-n {
+  font-family:
+    'Cormorant Garamond',
+    Georgia,
+    serif;
+}
+
+/* Buttons and controls should inherit the admin font. */
+
+#sec-notifications button,
+#sec-notifications input,
+#sec-notifications select {
+  font-family: inherit;
+}
+
+/* Prevent default browser button appearance from
+   leaking into notification-specific controls. */
+
+#sec-notifications button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Inline Messaging reference in the footer note. */
+
+.ntf-inline-link {
+  color: #C9A96E;
+  font-weight: 600;
+  cursor: pointer;
+}

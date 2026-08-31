@@ -1,0 +1,188 @@
+/* src/components/Notifications/rows/styles/NotifRow.css */
+
+/* §8.1 — row shell */
+.ntf-row { border-bottom: 1px solid #EDE6DC; }
+.ntf-row:last-child { border-bottom: none; }
+
+.ntf-row-hd {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 11px 14px;
+}
+.ntf-row-hd:hover { background: #F7F4EF; }
+.ntf-row--open .ntf-row-hd { background: #F7F4EF; }
+.ntf-row--route .ntf-row-hd { align-items: center; }
+
+/* §8.3 — count pill */
+.ntf-n {
+  min-width: 28px;
+  height: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  background: #FDF1EE;
+  color: #7A2E1D;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.ntf-band--waiting .ntf-n { background: #F5EFE4; color: #6B5730; }
+.ntf-band--them .ntf-n { background: #EEF3EA; color: #3D6B30; }
+.ntf-band--know .ntf-n { background: #F7F4EF; color: #8A7E72; }
+.ntf-n--ok { background: #EAF0E5; color: #3D6B30; }
+.ntf-n--dim { background: #F7F4EF; color: #B4A99E; }
+
+.ntf-row-body { flex: 1; min-width: 0; }
+
+/* §8.4 — title line */
+.ntf-t { font-size: 12.5px; font-weight: 600; color: #1A1612; }
+.ntf-row--clear .ntf-t,
+.ntf-row--clear .ntf-w { color: #8A7E72; }
+
+.ntf-el {
+  margin-left: 9px;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  background: #F7F4EF;
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+
+/* §8.5 — explanation line */
+.ntf-w { font-size: 11.5px; color: #8A7E72; line-height: 1.6; margin-top: 2px; }
+
+/* §8.6 — preview line */
+.ntf-worst {
+  font-size: 11px;
+  color: #1A1612;
+  margin-top: 5px;
+  padding-left: 9px;
+  border-left: 2px solid #C9A96E;
+}
+
+/* §8.7 — tags */
+.ntf-tags { margin-top: 5px; padding-left: 9px; }
+.ntf-newtag {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  background: #B85C38;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.ntf-pickedtag {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  background: #EAF0E5;
+  color: #3D6B30;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* §8.8 — chevron */
+.ntf-chev {
+  width: 12px;
+  height: 12px;
+  color: #8A7E72;
+  flex-shrink: 0;
+  margin-top: 6px;
+  transition: transform .15s;
+}
+
+/* §8.9 / message-join link, shared with §11 message panel */
+.msg-src {
+  display: inline-block;
+  color: #C9A96E;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 1px dotted #E2C99A;
+}
+
+/* §9.5 — blocked row */
+.ntf-row--blocked { background: #FFFEFB; }
+
+/* §10.1 — expanded body */
+.ntf-body {
+  border-top: 1px solid #EDE6DC;
+  background: #FFFEFB;
+  padding: 13px 14px 14px 54px;
+}
+
+/* §10.2 — record list container */
+.ntf-recs {
+  border: 1px solid #EDE6DC;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+
+/* §10.3 — a record row */
+.ntf-rec {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  border-bottom: 1px solid #EDE6DC;
+}
+.ntf-rec:last-child { border-bottom: none; }
+.ntf-rec--picked { background: #F7FAF5; }
+
+/* §10.4 — left half */
+.ntf-rec-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+}
+.ntf-rec-main:hover { background: #F5EFE4; }
+.ntf-rec-l { font-size: 11.5px; font-weight: 500; color: #1A1612; min-width: 190px; }
+.ntf-rec-s { font-size: 11px; color: #8A7E72; flex: 1; }
+.ntf-rec-go { width: 11px; height: 11px; color: #C9A96E; flex-shrink: 0; }
+
+/* §10.5 — blocking line */
+.ntf-blocks {
+  display: block;
+  margin-top: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #7A2E1D;
+  padding-left: 8px;
+  border-left: 2px solid #B85C38;
+  line-height: 1.5;
+}
+
+/* §10.6 — owner dropdown */
+.ntf-pick {
+  flex-shrink: 0;
+  border: none;
+  border-left: 1px solid #EDE6DC;
+  background: transparent;
+  padding: 0 10px;
+  font-size: 10.5px;
+  color: #8A7E72;
+  cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif;
+  max-width: 130px;
+  white-space: nowrap;
+}
+.ntf-pick:hover { background: #F7F4EF; color: #1A1612; }
+.ntf-pick--on { background: #EAF0E5; color: #3D6B30; font-weight: 600; }
+
+/* §10.7 — action bar */
+.ntf-act { display: flex; align-items: center; gap: 11px; margin-top: 11px; }
+.fhint { font-size: 10px; color: #8A7E72; margin-top: 0; line-height: 1.4; flex: 1; }

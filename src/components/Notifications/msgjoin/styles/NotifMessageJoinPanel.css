@@ -1,0 +1,126 @@
+/* ============================================================
+   Notifications — Message Join Panel
+   §11
+   ============================================================ */
+
+.ntf-msgs {
+  border: 1px solid #EDE6DC;
+  border-radius: 4px;
+  background: #FFFFFF;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.ntf-msgs-hd {
+  padding: 8px 14px;
+  background: #F7F4EF;
+  border-bottom: 1px solid #EDE6DC;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+
+  color: #8A7E72;
+}
+
+.ntf-msgs-s {
+  padding: 9px 14px 3px;
+
+  font-size: 11px;
+  color: #8A7E72;
+  line-height: 1.6;
+}
+
+.ntf-msg-list {
+  width: 100%;
+}
+
+.ntf-msg-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 8px 14px;
+
+  border-top: 1px solid #EDE6DC;
+}
+
+.ntf-msg-row:first-child {
+  border-top: none;
+}
+
+.ntf-msg-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.ntf-msg-t {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #1A1612;
+}
+
+.ntf-msg-s {
+  margin-top: 1px;
+
+  font-size: 10.5px;
+  color: #8A7E72;
+  line-height: 1.5;
+}
+
+.ntf-msg-ch {
+  flex-shrink: 0;
+
+  font-size: 9.5px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+
+  color: #8A7E72;
+
+  background: #F7F4EF;
+  border: 1px solid #EDE6DC;
+  border-radius: 2px;
+
+  padding: 2px 7px;
+}
+
+.msg-src {
+  flex-shrink: 0;
+
+  padding: 0;
+  border: 0;
+  background: transparent;
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+
+  color: #C9A96E;
+
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: #E2C99A;
+  text-underline-offset: 3px;
+
+  cursor: pointer;
+}
+
+.msg-src:hover {
+  color: #B85C38;
+}
+
+@media (max-width: 760px) {
+  .ntf-msg-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .ntf-msg-copy {
+    flex-basis: 100%;
+  }
+
+  .ntf-msg-ch {
+    margin-left: 0;
+  }
+}

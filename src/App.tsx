@@ -25,7 +25,8 @@ import { PromotionsView } from './components/Promotions';
 import { MessagingView } from './components/Messaging/MessagingView';
 import { mockMessages } from './components/Messaging/data/mockMessages';
 import { Message } from './components/Messaging/types/messaging.types';
-import NotificationsView from './components/NotificationsView';
+// import NotificationsView from './components/NotificationsView';
+import { NotificationsView } from './components/Notifications/NotificationsView';
 import SettingsView from './components/SettingsView';
 import HomepageView from './components/HomepageView';
 import PagesView from './components/PagesView';
@@ -551,9 +552,17 @@ export default function App() {
 
         {/* Content Box */}
         <main className="flex-1 overflow-y-auto bg-[#F8F6F2]">
-          <div className={`w-full ${isSectionEditing ? 'p-0' : 'p-6'}`}>
-            {renderContent()}
-          </div>
+          <div
+  className={`w-full ${
+    isSectionEditing
+      ? 'p-0'
+      : currentView === 'notifications'
+        ? 'p-[22px]'
+        : 'p-6'
+  }`}
+>
+  {renderContent()}
+</div>
         </main>
       </div>
     </div>

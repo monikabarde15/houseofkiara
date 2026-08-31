@@ -1,0 +1,34 @@
+/* src/components/Notifications/components/styles/NoteBar.css */
+
+/* §12 — the amber note bar */
+.prebuilt-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 11px 13px;
+  background: #FDF9F0;
+  border: 1px solid #F0E4C4;
+  border-radius: 4px;
+  margin: 0; /* §12 — margin-bottom overridden inline to 0 in the shipped build */
+}
+.prebuilt-note svg {
+  width: 15px;
+  height: 15px;
+  stroke: #C9A96E;
+  fill: none;
+  stroke-width: 1.5;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.prebuilt-note strong {
+  color: #8B6A1E;
+  display: block;
+  font-size: 11.5px;
+  margin-bottom: 2px;
+}
+.prebuilt-note p {
+  font-size: 11px;
+  color: #9A8060;
+  line-height: 1.5;
+}
+.prebuilt-note em { font-style: italic; }
