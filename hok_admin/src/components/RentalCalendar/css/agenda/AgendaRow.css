@@ -1,0 +1,63 @@
+.agenda-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.badge-prep         { background: #f7e8d4; color: #a9673a; }
+.badge-dispatched    { background: #fbe1de; color: #c0392b; }
+.badge-rental-starts { background: transparent; color: #4a4740; padding-left: 0; }
+.badge-return-due    { background: #eee9df; color: #6b6558; }
+.badge-cleaning      { background: transparent; color: #9a9382; font-style: italic; }
+
+.agenda-row--done .agenda-row__date,
+.agenda-row--done .agenda-row__order,
+.agenda-row--done .agenda-row__customer,
+.agenda-row--done .agenda-row__product,
+.agenda-row--done .agenda-row__note,
+.agenda-row--done .agenda-badge {
+  text-decoration: line-through;
+  color: #b5ad9c;
+  opacity: 0.7;
+}
+.agenda-row--done .agenda-row__icon { color: #d8a34d; }
+
+.agenda-row__product,
+.agenda-row__note,
+.agenda-row__customer {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.agenda-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  color: #8a8272;
+  cursor: pointer;
+}
+
+.agenda-menu-btn:hover {
+  background: #f0ece2;
+  color: #3a362d;
+}
+
+.agenda-chevron {
+  transition: transform 0.15s ease;
+}
+
+.agenda-chevron--expanded {
+  transform: rotate(180deg);
+}
+.agenda-view {
+  width: 100%;
+  overflow-x: auto;
+}

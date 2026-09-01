@@ -1,0 +1,5 @@
+.agenda-filter-bar { display: flex; gap: 12px; padding: 16px 0; }
+.agenda-filter-select {
+  border: 1px solid #e5e1d8; border-radius: 6px; padding: 8px 12px;
+  font-size: 13px; background: #fff; color: #3a362d; min-width: 160px;
+}

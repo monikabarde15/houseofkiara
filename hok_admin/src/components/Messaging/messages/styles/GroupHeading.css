@@ -1,0 +1,11 @@
+/* messages/styles/GroupHeading.css */
+.msg-group-heading td {
+  padding: var(--msg-spacing-7) var(--msg-spacing-13) !important;
+  background: var(--msg-canvas);
+  border-bottom: var(--msg-border-standard);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--msg-muted);
+}

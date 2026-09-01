@@ -1,0 +1,58 @@
+/* PromotionsTableRow Styles */
+/* ========================================
+   Promotions Table Row - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.9
+   ======================================== */
+
+.table-row__cell {
+  padding: 10px 13px;
+  border-bottom: 1px solid var(--promo-cb);
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.table-row__cell--checkbox {
+  width: 28px;
+  text-align: center;
+}
+
+.table-row__cell--code {
+  min-width: 160px;
+}
+
+.table-row__code {
+  font-family: var(--promo-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--promo-charcoal);
+}
+
+.table-row__offer {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  margin-top: 2px;
+}
+
+.table-row__cell--audience {
+  font-size: 11px;
+  color: var(--promo-muted);
+}
+
+.table-row__cell--used {
+  font-weight: 600;
+}
+
+.table-row__cell--window {
+  font-size: 11px;
+  color: var(--promo-muted);
+}
+
+.table-row__cell--attention {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.table-row__cell--action {
+  text-align: right;
+}

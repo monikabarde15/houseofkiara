@@ -1,0 +1,144 @@
+/* ===== LEFT COLUMN WRAPPER ===== */
+.facts-left {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ===== SECTION GROUP ===== */
+.facts-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.facts-group-header {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--gold);
+  margin-bottom: 2px;
+}
+
+/* ===== FACTS GRID - Two columns ===== */
+.facts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+}
+
+.facts-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.facts-field-full {
+  grid-column: 1 / -1;
+}
+
+/* ===== FIELD LABEL ===== */
+.facts-field-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-family: var(--sans);
+}
+
+/* ===== FIELD VALUE — styled like a read-only input box ===== */
+.facts-field-value {
+  font-size: 12.5px;
+  color: var(--charcoal);
+  line-height: 1.4;
+  padding: 7px 10px;
+  border: 1px solid var(--cb);
+  background: var(--ibg);
+  border-radius: var(--r);
+  font-family: var(--sans);
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+}
+
+/* ===== LISTER LINK NAME — no box, just gold link ===== */
+.facts-name-link {
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--sans);
+  padding: 2px 0;
+  text-decoration: none;
+}
+
+.facts-name-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ===== FIELD HINT — small note below the box ===== */
+.facts-field-hint {
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.45;
+  margin-top: 2px;
+  font-family: var(--sans);
+}
+
+/* ===== PRICE VALUE ===== */
+.price-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--charcoal);
+  letter-spacing: -0.01em;
+}
+
+/* ===== STORY TEXT ===== */
+.story-text {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  align-items: flex-start;
+}
+
+/* ===== EMPTY STATES ===== */
+.facts-no-expectation,
+.facts-no-words {
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--muted);
+  border: none;
+  background: none;
+  padding: 4px 0;
+  line-height: 1.5;
+  min-height: unset;
+}
+
+/* ===== LINKS ===== */
+.qlnk {
+  color: var(--gold);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.qlnk:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .facts-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .facts-field-full {
+    grid-column: 1;
+  }
+}

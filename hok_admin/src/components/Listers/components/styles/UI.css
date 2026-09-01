@@ -1,0 +1,244 @@
+/* src/components/Listers/components/styles/UI.css */
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: all 0.12s;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.btn-gold {
+  background: #C9A96E;
+  color: #1A1612;
+  border-color: #C9A96E;
+  font-weight: 600;
+}
+
+.btn-gold:hover {
+  background: #B89058;
+  border-color: #B89058;
+}
+
+.btn-sec {
+  background: white;
+  color: #1A1612;
+  border-color: #E8E0D4;
+}
+
+.btn-sec:hover {
+  border-color: #C9A96E;
+  background: #F5EFE4;
+}
+
+.btn-danger {
+  background: #FDF1EE;
+  color: #B85C38;
+  border-color: #F5C5B5;
+}
+
+.btn-danger:hover {
+  background: #F5DDD7;
+  border-color: #B85C38;
+}
+
+.btn-wa {
+  background: #25D366;
+  color: white;
+  border-color: #25D366;
+}
+
+.btn-wa:hover {
+  background: #1EB558;
+  border-color: #1EB558;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 10.5px;
+}
+
+.btn-xs {
+  padding: 3px 8px;
+  font-size: 9.5px;
+}
+
+/* ===== STATUS CHIPS ===== */
+.s-chip {
+  display: inline-flex;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.s-live {
+  background: #EAF0E5;
+  color: #3D6B30;
+}
+
+.s-pend {
+  background: #FDF5E7;
+  color: #8B6A1E;
+}
+
+.s-paused {
+  background: #F5EFE4;
+  color: #9A7E52;
+}
+
+.s-draft {
+  background: #F0EDE8;
+  color: #8A7E72;
+}
+
+.s-sold {
+  background: #E9EFF6;
+  color: #3B5C8A;
+}
+
+/* ===== TAGS ===== */
+.tag {
+  display: inline-flex;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.t-r {
+  background: #E9F2EF;
+  color: #2D6B5C;
+}
+
+.t-p {
+  background: #F5EDE8;
+  color: #8B4A2E;
+}
+
+.t-n {
+  background: #E9EFF6;
+  color: #3B5C8A;
+}
+
+/* ===== SUBID CHIP ===== */
+.subid-chip {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #C9A96E;
+  background: #F5EFE4;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  border-radius: 4px;
+  padding: 1px 6px;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.subid-chip:hover {
+  text-decoration: underline;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: white;
+  border: 1px solid #EDE6DC;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(26, 22, 18, 0.06);
+}
+
+.card-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 16px;
+  border-bottom: 1px solid #EDE6DC;
+  gap: 8px;
+}
+
+.card-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1A1612;
+}
+
+.card-sub {
+  font-size: 10.5px;
+  color: #8A7E72;
+  margin-top: 1px;
+}
+
+.card-bd {
+  padding: 16px;
+}
+
+.card-ft {
+  padding: 10px 16px;
+  border-top: 1px solid #EDE6DC;
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+  background: #F7F4EF;
+}
+
+/* ===== EMPTY STATES ===== */
+.empty-state-inline {
+  font-size: 11px;
+  color: #8A7E72;
+  padding: 8px 0 5px;
+  line-height: 1.5;
+}
+
+.empty-state-boxed {
+  font-size: 11px;
+  color: #8A7E72;
+  padding: 24px 18px;
+  text-align: center;
+  border: 1px dashed #E8E0D4;
+  border-radius: 4px;
+  background: #F7F4EF;
+  line-height: 1.6;
+}
+
+/* ===== QLNK (Gold Door) ===== */
+.qlnk {
+  color: #C9A96E;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.qlnk:hover {
+  text-decoration: underline;
+}
+
+/* ===== ATTENTION PILLS ===== */
+.attn-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: #8B6A1E;
+  background: #FDF5E7;
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  border-radius: 3px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.attn-overflow {
+  color: #8A7E72;
+  background: #F0EDE8;
+  border-color: #D9D0C6;
+}

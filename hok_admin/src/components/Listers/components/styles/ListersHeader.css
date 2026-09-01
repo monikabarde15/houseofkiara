@@ -1,0 +1,48 @@
+/* src/components/Listers/components/styles/ListersHeader.css */
+
+.listers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 11px;
+  margin-bottom: 16px;
+}
+
+.listers-header-left {
+  flex: 1;
+  min-width: 280px;
+}
+
+.listers-header-eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: #C9A96E;
+  margin-bottom: 4px;
+}
+
+.listers-header-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: #1A1612;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.listers-header-sub {
+  font-size: 11.5px;
+  color: #8A7E72;
+  line-height: 1.5;
+  max-width: 560px;
+  margin: 0;
+}
+
+.listers-header-right {
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+/* Button styles are in global UI.css */

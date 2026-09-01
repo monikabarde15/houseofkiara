@@ -1,0 +1,218 @@
+/* ScopePicker Styles */
+/* ========================================
+   Scope Picker - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.7
+   ======================================== */
+
+.scope-picker__radios {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 0;
+}
+
+.scope-picker__radio {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-family: var(--promo-sans);
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--promo-muted, #6f675d);
+  letter-spacing: 0.05em;
+}
+
+.scope-picker__panel {
+  margin-top: 9px;
+  padding: 10px 11px;
+  border: 1px solid var(--promo-cb);
+  border-radius: var(--promo-radius);
+  background: var(--promo-canvas);
+}
+
+.scope-picker__group {
+  margin-bottom: 0;
+}
+
+.scope-picker__group-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--promo-muted);
+  margin-bottom: 5px;
+  font-family: var(--promo-sans);
+}
+
+.scope-picker__group:not(:first-child) .scope-picker__group-label {
+  margin-top: 10px;
+}
+
+.scope-picker__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.scope-picker__chip {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: var(--promo-radius);
+  font-size: 10.5px;
+  font-family: var(--promo-sans);
+  cursor: pointer;
+  border: 1px solid var(--promo-cb);
+  background: var(--promo-card);
+  color: var(--promo-muted);
+  transition: all 0.12s;
+}
+
+.scope-picker__chip.selected {
+  border-color: var(--promo-gold);
+  background: var(--promo-gold-pale);
+  color: var(--promo-charcoal);
+}
+
+.scope-picker__chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.scope-picker__search-wrapper {
+  position: relative;
+}
+
+.scope-picker__search {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--promo-ib);
+  border-radius: var(--promo-radius);
+  font-size: 11.5px;
+  font-family: var(--promo-sans);
+  color: var(--promo-charcoal);
+  background: var(--promo-ibg);
+  outline: none;
+}
+
+.scope-picker__search:focus {
+  border-color: var(--promo-gold);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.2);
+}
+
+.scope-picker__suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: var(--promo-card);
+  border: 1px solid var(--promo-ib);
+  border-radius: var(--promo-radius);
+  box-shadow: var(--promo-shadow-dropdown);
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.scope-picker__suggestion {
+  padding: 7px 10px;
+  font-size: 11.5px;
+  font-family: var(--promo-sans);
+  border-bottom: 1px solid var(--promo-cb);
+  cursor: pointer;
+  color: var(--promo-charcoal);
+}
+
+.scope-picker__suggestion:hover {
+  background: var(--promo-gold-pale);
+}
+
+.scope-picker__suggestion:last-child {
+  border-bottom: none;
+}
+
+.scope-picker__suggestion-name {
+  font-weight: 500;
+}
+
+.scope-picker__suggestion-sku {
+  font-family: var(--promo-mono);
+  font-size: 10.5px;
+  color: var(--promo-gold);
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.scope-picker__suggestion-meta {
+  font-size: 10px;
+  color: var(--promo-muted);
+}
+
+.scope-picker__pieces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 7px;
+}
+
+.scope-picker__empty {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+}
+
+.scope-picker__piece-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--promo-radius);
+  border: 1px solid var(--promo-chip-positive-border);
+  background: var(--promo-chip-positive-bg);
+  color: var(--promo-chip-positive-text);
+  font-size: 9.5px;
+  font-family: var(--promo-sans);
+}
+
+.scope-picker__piece-name {
+  font-weight: 500;
+}
+
+.scope-picker__piece-sku {
+  font-family: var(--promo-mono);
+  font-size: 9px;
+  color: var(--promo-gold);
+}
+
+.scope-picker__piece-remove {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--promo-muted);
+  padding: 0 2px;
+}
+
+.scope-picker__piece-remove:hover {
+  color: var(--promo-terra);
+}
+
+.scope-picker__hint {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  margin-top: 8px;
+  font-family: var(--promo-sans);
+  line-height: 1.4;
+}
+
+.scope-picker__count {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--promo-sage);
+  margin-top: 6px;
+  font-family: var(--promo-sans);
+}
+
+.scope-picker__count.zero {
+  color: var(--promo-terra);
+}

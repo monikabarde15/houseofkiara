@@ -1,0 +1,128 @@
+/* src/components/LYP/components/styles/LYPTableRow.css */
+
+.lyp-td-submission {
+  padding-top: 13px !important;
+  
+}
+
+.lyp-td-submitted {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.lyp-td-piece {
+  padding-top: 12px !important;
+}
+
+.lyp-td-piece-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.lyp-td-piece-byline {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.lyp-td-piece-category {
+  color: var(--muted);
+}
+
+.lyp-td-piece-no-designer {
+  color: var(--muted-1);
+}
+
+.lyp-td-lister {
+  padding-top: 13px !important;
+}
+
+.lyp-td-lister-meta {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.lyp-td-intent {
+  padding-top: 15px !important;
+}
+
+.lyp-td-channel {
+  padding-top: 14px !important;
+}
+
+.lyp-td-status {
+  padding-top: 13px !important;
+}
+
+.lyp-td-action {
+  text-align: right;
+  padding-top: 13px !important;
+}
+
+.tchip.warn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  padding: 2px 8px;
+  border-radius: var(--r);
+  border: 1px solid rgba(201, 169, 110, 0.55);
+  color: #685738;
+  background: var(--gold-pale);
+  line-height: 1.5;
+}
+
+.subid {
+  font-family: ui-monospace, monospace;
+  font-size: 10.5px;
+  color: var(--gold);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.subid:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.qlnk {
+  color: var(--gold);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.qlnk:hover {
+  text-decoration: underline;
+}
+
+.agec {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 1px 6px;
+  border-radius: var(--r);
+  margin-top: 3px;
+  margin-left: 10PX;
+  white-space: nowrap;
+}
+
+.agec-ok {
+  background: var(--canvas);
+  color: var(--muted);
+}
+
+.agec-due {
+  background: var(--gold-pale);
+  color: #6B5730;
+}
+
+.agec-over {
+  background: rgba(184, 92, 56, 0.14);
+  color: var(--terra);
+}

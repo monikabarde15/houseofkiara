@@ -1,0 +1,68 @@
+/* src/components/LYP/intake/styles/IntakeTapeBlock.css */
+
+.intake-tape-block {
+  background: var(--canvas);
+  border: 1px dashed var(--cb);
+  border-radius: var(--r);
+  padding: 11px 13px;
+  margin-top: 11px;
+}
+
+.intake-tape-header {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--charcoal);
+  margin-bottom: 10px;
+}
+
+.intake-tape-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px 12px;
+}
+
+.tape-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.tape-field-full {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.fld-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: 4px;
+}
+
+.fld-input {
+  padding: 7px 10px;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  font-size: 12px;
+  font-family: var(--sans);
+  color: var(--charcoal);
+  background: var(--ibg);
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.fld-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.3);
+}
+
+@media (max-width: 600px) {
+  .intake-tape-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

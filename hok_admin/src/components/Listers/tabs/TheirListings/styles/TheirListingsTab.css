@@ -1,0 +1,45 @@
+/* src/components/Listers/tabs/TheirListings/styles/TheirListingsTab.css */
+
+.their-listings-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.their-listings-intro {
+  font-size: 11.5px;
+  color: #8A7E72;
+  line-height: 1.55;
+  margin: 0 0 10px 0;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 11px;
+}
+
+.empty-state-boxed {
+  font-size: 11px;
+  color: #8A7E72;
+  padding: 24px 18px;
+  text-align: center;
+  border: 1px dashed #E8E0D4;
+  border-radius: 4px;
+  background: #F7F4EF;
+  line-height: 1.6;
+}
+
+.qlnk {
+  color: #C9A96E;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 0;
+}
+
+.qlnk:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,141 @@
+/* src/components/LYP/modals/styles/ConfirmModal.css */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(60, 58, 54, 0.5);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-box {
+  background: white;
+  border-radius: var(--r);
+  width: min(480px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--cb);
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.modal-close {
+  font-size: 16px;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: var(--charcoal);
+}
+
+.modal-body {
+  padding: 24px 22px;
+  font-size: 14px;
+  color: var(--charcoal);
+  line-height: 1.5;
+}
+
+.modal-body p {
+  margin: 0;
+}
+
+.modal-body ul {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+}
+
+.modal-body li {
+  margin-bottom: 4px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--cb);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 18px;
+  border-radius: 1px;
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn-sec {
+  background: var(--card);
+  color: var(--charcoal);
+  border-color: var(--border);
+}
+
+.btn-sec:hover {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.btn-sec:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn-confirm {
+  background: transparent;
+  color: var(--terra);
+  border: 1px solid var(--terra);
+}
+
+.btn-confirm:hover {
+  background: rgba(184, 92, 56, 0.05);
+}
+
+.btn-confirm:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn-danger {
+  background: #FDF1EE;
+  color: var(--terra);
+  border-color: #F5C5B5;
+}
+
+.btn-danger:hover {
+  background: #F5DDD7;
+  border-color: var(--terra);
+}
+
+.btn-danger:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

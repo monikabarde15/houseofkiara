@@ -1,0 +1,53 @@
+/* editor/styles/VariableChips.css */
+.msg-variable-chips {
+  display: flex;
+  flex-direction: column;
+}
+
+.msg-variable-chips-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--msg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: var(--msg-spacing-4);
+}
+
+.msg-variable-chips-box {
+  border: var(--msg-border-standard);
+  border-radius: var(--msg-radius);
+  padding: var(--msg-spacing-10);
+  background: var(--msg-canvas);
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.msg-variable-group-heading {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--msg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: var(--msg-spacing-9);
+  margin-bottom: var(--msg-spacing-4);
+}
+
+.msg-variable-group-heading:first-of-type {
+  margin-top: 0;
+}
+
+.msg-variable-group-spacer {
+  height: var(--msg-spacing-9);
+}
+
+.msg-variable-group-chips {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.msg-variable-chips-hint {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-3);
+  line-height: 1.4;
+}

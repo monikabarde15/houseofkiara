@@ -1,0 +1,68 @@
+/* OrdersLedger Styles */
+/* ========================================
+   Orders Ledger - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.6
+   ======================================== */
+
+.orders-ledger__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--promo-sans);
+}
+
+.orders-ledger__th {
+  padding: 7px 10px;
+  text-align: left;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--promo-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--promo-cb);
+  background:  var(--promo-cream);
+}
+
+.orders-ledger__td {
+  padding: 7px 10px;
+  font-size: 11.5px;
+  border-bottom: 1px solid var(--promo-cb);
+  vertical-align: middle;
+}
+
+.orders-ledger__td .link {
+  font-size: 11.5px;
+}
+
+.orders-ledger__td.discount {
+  color: var(--promo-terra);
+  font-weight: 500;
+}
+
+.orders-ledger__footer {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: 10px;
+  color: var(--promo-muted);
+  margin-top: 8px;
+  font-family: var(--promo-sans);
+  background:  var(--promo-cream);
+  margin-bottom: 0px;
+
+}
+
+.orders-ledger__empty {
+  font-size: 11px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+  padding: 8px 0;
+  
+}
+
+.orders-ledger__empty-cell {
+  text-align: center;
+  padding: 24px 0 !important;
+  font-size: 11px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+  
+}

@@ -1,0 +1,371 @@
+/* ========================================
+   UI Components - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 4
+   ======================================== */
+
+/* --- Card (Section 4.1) --- */
+.card {
+  background: var(--promo-card);
+  border: 1px solid var(--promo-cb);
+  border-radius: var(--promo-radius);
+  overflow: hidden;
+  box-shadow: var(--promo-shadow-card);
+  margin-bottom: var(--promo-card-gap);
+}
+
+.card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--promo-card-header-padding);
+  border-bottom: 1px solid var(--promo-cb);
+  gap: 8px;
+}
+
+.card__title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--promo-charcoal);
+  font-family: var(--promo-sans);
+}
+
+.card__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card__body {
+  padding: var(--promo-card-body-padding);
+}
+
+.card__footer {
+  padding: var(--promo-card-footer-padding);
+  border-top: 1px solid var(--promo-cb);
+  background: var(--promo-canvas);
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+/* --- Button (Section 4.3) --- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: var(--promo-radius);
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--promo-sans);
+  transition: background 0.12s, border-color 0.12s;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.button--primary {
+  background: var(--promo-gold);
+  border-color: var(--promo-gold);
+  color: var(--promo-charcoal);
+  font-weight: 600;
+}
+
+.button--primary:hover {
+  background: var(--promo-gold-hover);
+}
+
+.button--secondary {
+  background: var(--promo-card);
+  color: var(--promo-charcoal);
+  border-color: var(--promo-border);
+}
+
+.button--secondary:hover {
+  border-color: var(--promo-gold);
+  background: var(--promo-gold-pale);
+}
+
+.button--small {
+  padding: 5px 10px;
+  font-size: 10.5px;
+}
+
+.button__saved {
+  color: var(--promo-sage);
+  font-weight: 600;
+  margin-left: 3px;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Status Badge (Section 4.6) --- */
+.status-badge {
+  display: inline-flex;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  font-family: var(--promo-sans);
+}
+
+.status-badge.live {
+  background: var(--promo-status-live-bg);
+  color: var(--promo-status-live-text);
+}
+
+.status-badge.neutral {
+  background: var(--promo-status-neutral-bg);
+  color: var(--promo-status-neutral-text);
+}
+
+/* --- Chip (Section 4.6) --- */
+.chip {
+  display: inline-flex;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: var(--promo-radius);
+  font-size: 9.5px;
+  line-height: 1.5;
+  border: 1px solid var(--promo-cb);
+  background: var(--promo-card);
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+}
+
+.chip--positive {
+  border-color: var(--promo-chip-positive-border);
+  color: var(--promo-chip-positive-text);
+  background: var(--promo-chip-positive-bg);
+}
+
+.chip--warning {
+  border-color: var(--promo-chip-warning-border);
+  color: var(--promo-chip-warning-text);
+  background: var(--promo-chip-warning-bg);
+}
+
+/* --- Attention Pill (Section 4.6) --- */
+.attention-pill {
+  display: inline-block;
+  font-size: 9.5px;
+  letter-spacing: 0.03em;
+  color: var(--promo-attention-text);
+  background: var(--promo-attention-bg);
+  border: 1px solid var(--promo-attention-border);
+  border-radius: var(--promo-radius);
+  padding: 2px 7px;
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: default;
+  font-family: var(--promo-sans);
+}
+
+.attention-pill--clickable {
+  cursor: pointer;
+}
+
+/* --- Switch (Section 4.5) --- */
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.switch__toggle {
+  width: 32px;
+  height: 18px;
+  border-radius: 9px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  background: var(--promo-toggle-off);
+  transition: background 0.2s;
+  position: relative;
+}
+
+.switch__toggle.on {
+  background: var(--promo-gold);
+}
+
+.switch__toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.switch__track {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.switch__thumb {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s;
+}
+
+.switch__toggle.on .switch__thumb {
+  transform: translateX(14px);
+}
+
+.switch__label {
+  font-size: 11.5px;
+  color: var(--promo-charcoal);
+  font-family: var(--promo-sans);
+}
+
+/* --- Link (Section 4.9) --- */
+.link {
+  color: var(--promo-gold);
+  font-size: 10.5px;
+  font-family: var(--promo-sans);
+  cursor: pointer;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.link:hover {
+  color: var(--promo-gold-hover);
+  text-decoration: underline;
+}
+
+/* --- Form Field (Section 4.4) --- */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 11px;
+}
+
+.form-field__label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--promo-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: 4px;
+  font-family: var(--promo-sans);
+}
+
+.form-field__input {
+  padding: 7px 10px;
+  border: 1px solid var(--promo-ib);
+  border-radius: var(--promo-radius);
+  font-size: 12px;
+  font-family: var(--promo-sans);
+  color: var(--promo-charcoal);
+  background: var(--promo-ibg);
+  width: 100%;
+  outline: none;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.form-field__input:focus {
+  border-color: var(--promo-gold);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.2);
+}
+
+.form-field__input--textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.form-field__input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-field__hint {
+  font-size: 10px;
+  color: var(--promo-muted);
+  margin-top: 3px;
+  line-height: 1.4;
+  font-family: var(--promo-sans);
+}
+
+.form-field__error {
+  font-size: 10px;
+  color: var(--promo-terra);
+  margin-top: 3px;
+  line-height: 1.4;
+  font-family: var(--promo-sans);
+}
+
+/* --- Definition Row (Section 4.12) --- */
+.definition-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 3px;
+  font-family: var(--promo-sans);
+}
+
+.definition-row__label {
+  font-size: 11.5px;
+  color: var(--promo-muted);
+}
+
+.definition-row__value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--promo-charcoal);
+  text-align: right;
+}
+
+/* --- Stat Card (Section 4.2) --- */
+.stat-card {
+  background: var(--promo-card);
+  border: 1px solid var(--promo-cb);
+  border-radius: var(--promo-radius);
+  padding: 14px 16px;
+  box-shadow: var(--promo-shadow-stat);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.stat-card.active {
+  background: var(--promo-gold-pale);
+}
+
+.stat-card__label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: var(--promo-muted);
+  margin-bottom: 6px;
+  font-family: var(--promo-sans);
+}
+
+.stat-card__value {
+  font-size: 22px;
+  font-family: var(--promo-serif);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--promo-charcoal);
+}
+
+/* Global accent-color for checkbox and radio inputs */
+.promotions-view input[type="checkbox"],
+.promotions-view input[type="radio"],
+.promotions-detail-view input[type="checkbox"],
+.promotions-detail-view input[type="radio"] {
+  accent-color: #3b82f6;
+}

@@ -1,0 +1,91 @@
+/* Variables CSS */
+/* ========================================
+   Promotions Module - Design Tokens
+   Extends LYP variables with promo-specific tokens
+   Based on HOK_Promotions_UI_Spec_v150.pdf
+   ======================================== */
+
+/* --- Typefaces (Section 2.1) --- */
+:root {
+  --promo-serif: 'Cormorant Garamond', Georgia, serif;
+  --promo-sans: 'Inter', system-ui, sans-serif;
+  --promo-mono: ui-monospace, 'SF Mono', monospace;
+}
+
+/* --- Colour Tokens (Section 2.2) --- */
+:root {
+  /* Primary */
+  --promo-charcoal: #1A1612;
+  --promo-gold: #C9A96E;
+  --promo-gold-1: #E2C99A;
+  --promo-gold-pale: #F5EFE4;
+  --promo-gold-hover: #B89058;
+  
+  /* Status */
+  --promo-terra: #B85C38;
+  --promo-sage: #6B7E5A;
+  
+  /* Backgrounds */
+  --promo-cream: #FAF7F2;
+  --promo-canvas: #F7F4EF;
+  --promo-card: #FFFFFF;
+  
+  /* Text */
+  --promo-muted: #8A7E72;
+  --promo-muted-1: #B4A99E;
+  
+  /* Borders */
+  --promo-border: #E8E0D4;
+  --promo-cb: #EDE6DC;
+  --promo-ib: #DDD5C8;
+  --promo-ibg: #FFFFFB;
+  
+  /* Toggle */
+  --promo-toggle-off: #D4C8BC;
+  
+  /* Status Badges */
+  --promo-status-live-bg: #EAF0E5;
+  --promo-status-live-text: #3D6B30;
+  --promo-status-neutral-bg: #F0EDE8;
+  --promo-status-neutral-text: #8A7E72;
+  
+  /* Chips */
+  --promo-chip-positive-border: rgba(107, 126, 90, 0.4);
+  --promo-chip-positive-bg: #F4F7EF;
+  --promo-chip-positive-text: #3E4A34;
+  --promo-chip-warning-border: rgba(201, 169, 110, 0.55);
+  --promo-chip-warning-bg: #F5EFE4;
+  --promo-chip-warning-text: #6B5730;
+  
+  /* Attention Pill */
+  --promo-attention-bg: #F5EFE4;
+  --promo-attention-text: #8A3E22;
+  --promo-attention-border: rgba(184, 92, 56, 0.3);
+}
+
+/* --- Measurements (Section 2.3) --- */
+:root {
+  --promo-radius: 4px;
+  --promo-sidebar-width: 240px;
+  --promo-topbar-height: 52px;
+  --promo-content-padding: 22px;
+  --promo-card-gap: 13px;
+  --promo-card-body-padding: 16px;
+  --promo-card-header-padding: 11px 16px;
+  --promo-card-footer-padding: 10px 16px;
+  
+  /* Shadows (Section 2.4) */
+  --promo-shadow-card: 0 1px 4px rgba(26, 22, 18, 0.06);
+  --promo-shadow-stat: 0 1px 4px rgba(26, 22, 18, 0.05);
+  --promo-shadow-dropdown: 0 6px 18px rgba(26, 22, 18, 0.12);
+}
+
+/* --- Font Sizes --- */
+:root {
+  --promo-font-xs: 9px;
+  --promo-font-sm: 10px;
+  --promo-font-base: 11.5px;
+  --promo-font-md: 12px;
+  --promo-font-lg: 18px;
+  --promo-font-xl: 22px;
+}

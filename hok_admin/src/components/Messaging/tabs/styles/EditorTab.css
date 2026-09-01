@@ -1,0 +1,17 @@
+/* tabs/styles/EditorTab.css */
+.msg-editor-empty {
+  text-align: center;
+  padding: var(--msg-spacing-22);
+}
+
+.msg-editor-empty-text {
+  font-size: 11.5px;
+  color: var(--msg-muted);
+}
+
+.msg-editor-empty-actions {
+  display: flex;
+  gap: var(--msg-spacing-7);
+  justify-content: center;
+  margin-top: var(--msg-spacing-11);
+}

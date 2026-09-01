@@ -1,0 +1,10 @@
+/* MessagingView.css */
+.msg-view {
+  padding: var(--msg-spacing-22);
+  padding-bottom: 72px;
+  max-width: 100%;
+}
+
+.msg-view-content {
+  margin-top: var(--msg-spacing-14);
+}

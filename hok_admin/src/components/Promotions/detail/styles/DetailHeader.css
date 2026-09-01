@@ -1,0 +1,224 @@
+/* DetailHeader Styles */
+/* ========================================
+   Detail Header - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.1
+   ======================================== */
+
+.detail-header__top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-family: var(--promo-sans);
+  background: #ffffff;
+}
+
+.detail-header__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.detail-header__back-btn {
+  background: #FFF;
+  border: 1px solid #E5DDD3;
+  color: #38332D;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
+}
+
+.detail-header__back-btn:hover {
+  background: #FAF8F5;
+}
+
+.detail-header__breadcrumb-text {
+  font-size: 13px;
+  color: #6F675D;
+}
+
+.detail-header__breadcrumb-separator {
+  margin: 0 4px;
+  color: #B5AD9E;
+}
+
+.detail-header__breadcrumb-text strong {
+  color: #2C2926;
+  font-weight: 600;
+}
+
+.detail-header__top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-header__live-site-btn {
+  background: #FFF;
+  border: 1px solid #E5DDD3;
+  color: #38332D;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
+}
+
+.detail-header__live-site-btn:hover {
+  background: #FAF8F5;
+}
+
+.detail-header__save-btn {
+  background: #C7A55C;
+  border: none;
+  color: #2A2118;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.detail-header__save-btn:hover {
+  background: #B9974B;
+}
+
+.detail-header {
+  background: linear-gradient(135deg, #1A1612, #2A2018);
+  padding: 24px;
+  border-radius: var(--promo-radius);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.detail-header__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--promo-gold, #D9A05B);
+  color: var(--promo-charcoal, #1A1612);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--promo-sans);
+  flex-shrink: 0;
+}
+
+.detail-header__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.detail-header__title-row {
+  margin-bottom: 4px;
+}
+
+.detail-header__code {
+  font-family: var(--promo-mono);
+  font-size: 24px;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.detail-header__meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 16px;
+  font-family: var(--promo-sans);
+}
+
+.detail-header__stats {
+  display: flex;
+  gap: 40px;
+}
+
+.detail-header__stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-header__stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFFFFF;
+  font-family: var(--promo-sans);
+}
+
+.detail-header__stat-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--promo-sans);
+  margin-top: 4px;
+}
+
+.detail-header__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  align-self: stretch;
+}
+
+.detail-header__badges {
+  display: flex;
+  gap: 6px;
+}
+
+.detail-header__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.detail-header__actions .button--secondary {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #FFFFFF !important;
+}
+
+.detail-header__actions .button--secondary:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+@media (max-width: 768px) {
+  .detail-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .detail-header__right {
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .detail-header__stats {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .detail-header__actions {
+    flex-wrap: wrap;
+  }
+  
+  .detail-header__actions .button {
+    flex: 1;
+  }
+}

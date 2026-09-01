@@ -1,0 +1,7 @@
+/* send/styles/MessageSelect.css */
+.msg-message-select-hint {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-3);
+  line-height: 1.4;
+}

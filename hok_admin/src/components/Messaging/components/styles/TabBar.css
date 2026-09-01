@@ -1,0 +1,36 @@
+/* components/styles/TabBar.css */
+.msg-tab-bar {
+  display: flex;
+  border-bottom: var(--msg-border-standard);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.msg-tab-bar::-webkit-scrollbar {
+  height: 0;
+}
+
+.msg-tab {
+  padding: var(--msg-spacing-8) var(--msg-spacing-14);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--msg-muted);
+  cursor: pointer;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  white-space: nowrap;
+  transition: all 0.1s ease;
+  margin-bottom: -1px;
+  user-select: none;
+  font-family: var(--msg-font-interface);
+}
+
+.msg-tab:hover {
+  color: var(--msg-charcoal);
+}
+
+.msg-tab--active {
+  color: var(--msg-charcoal);
+  border-bottom-color: var(--msg-gold);
+}

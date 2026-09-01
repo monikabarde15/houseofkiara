@@ -1,0 +1,141 @@
+/* CustomerPicker Styles */
+/* ========================================
+   Customer Picker - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.8
+   ======================================== */
+
+.customer-picker__search-wrapper {
+  position: relative;
+}
+
+.customer-picker__search {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--promo-ib);
+  border-radius: var(--promo-radius);
+  font-size: 11.5px;
+  font-family: var(--promo-sans);
+  color: var(--promo-charcoal);
+  background: var(--promo-ibg);
+  outline: none;
+}
+
+.customer-picker__search:focus {
+  border-color: var(--promo-gold);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.2);
+}
+
+.customer-picker__suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: var(--promo-card);
+  border: 1px solid var(--promo-ib);
+  border-radius: var(--promo-radius);
+  box-shadow: var(--promo-shadow-dropdown);
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.customer-picker__suggestion {
+  padding: 7px 10px;
+  font-size: 11.5px;
+  font-family: var(--promo-sans);
+  border-bottom: 1px solid var(--promo-cb);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--promo-charcoal);
+}
+
+.customer-picker__suggestion:hover {
+  background: var(--promo-gold-pale);
+}
+
+.customer-picker__suggestion.assigned {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.customer-picker__suggestion:last-child {
+  border-bottom: none;
+}
+
+.customer-picker__suggestion-name {
+  font-weight: 500;
+}
+
+.customer-picker__suggestion-email {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+}
+
+.customer-picker__suggestion-badge {
+  margin-left: auto;
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: var(--promo-radius);
+  background: var(--promo-gold-pale);
+  color: var(--promo-muted);
+}
+
+.customer-picker__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 7px;
+}
+
+.customer-picker__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: var(--promo-radius);
+  border: 1px solid var(--promo-chip-positive-border);
+  background: var(--promo-chip-positive-bg);
+  color: var(--promo-chip-positive-text);
+  font-size: 9.5px;
+  font-family: var(--promo-sans);
+}
+
+.customer-picker__chip-name {
+  font-weight: 500;
+}
+
+.customer-picker__chip-email {
+  font-size: 9px;
+  color: var(--promo-muted);
+}
+
+.customer-picker__chip-remove {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--promo-muted);
+  padding: 0 2px;
+}
+
+.customer-picker__chip-remove:hover {
+  color: var(--promo-terra);
+}
+
+.customer-picker__empty {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  margin-top: 7px;
+  font-family: var(--promo-sans);
+}
+
+.customer-picker__hint {
+  font-size: 10px;
+  color: var(--promo-muted);
+  margin-top: 6px;
+  font-family: var(--promo-sans);
+  line-height: 1.4;
+}

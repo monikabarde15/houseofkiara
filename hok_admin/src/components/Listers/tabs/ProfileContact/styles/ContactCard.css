@@ -1,0 +1,202 @@
+/* ==========================================================================
+   Contact Card
+   ========================================================================== */
+
+.contact-card {
+  background: #fff;
+  border: 1px solid #e7e0d8;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.contact-card .card-hd {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border-bottom: 1px solid #e8e2da;
+  background: #fff;
+}
+
+.contact-card .card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2f2a25;
+  line-height: 1;
+}
+
+/* ==========================================================================
+   Body
+   ========================================================================== */
+
+.contact-card .card-bd {
+  padding: 18px;
+}
+
+.fld {
+  margin-bottom: 16px;
+}
+
+.fld:last-child {
+  margin-bottom: 0;
+}
+
+.g2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.fld-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   Labels
+   ========================================================================== */
+
+.fld-label {
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #85796d;
+  line-height: 1.2;
+}
+
+.fld-label-optional {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  font-size: 10px;
+  color: #a19588;
+}
+
+/* ==========================================================================
+   Inputs
+   ========================================================================== */
+
+.fld-input {
+  width: 100%;
+  height: 32px;
+  padding: 0 11px;
+  border: 1px solid #d8d1c8;
+  border-radius: 3px;
+  background: #fff;
+  color: #2d2925;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: inherit;
+  transition: border-color .18s ease, box-shadow .18s ease;
+  box-sizing: border-box;
+}
+
+.fld-input::placeholder {
+  color: #a69c91;
+}
+
+.fld-input:hover {
+  border-color: #cdbca2;
+}
+
+.fld-input:focus {
+  outline: none;
+  border-color: #b89863;
+  box-shadow: 0 0 0 3px rgba(184,152,99,.14);
+}
+
+/* ==========================================================================
+   Error
+   ========================================================================== */
+
+.fld-error {
+  border-color: #b75545 !important;
+}
+
+.fld-error:focus {
+  border-color: #b75545;
+  box-shadow: 0 0 0 3px rgba(183,85,69,.15);
+}
+
+.fld-error-text {
+  margin-top: 5px;
+  font-size: 11px;
+  color: #b75545;
+}
+
+.fld-hint {
+  margin-top: 5px;
+  font-size: 11px;
+  color: #93887c;
+}
+
+.fld-monospace {
+  font-family: inherit;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.contact-card .card-ft {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 16px;
+  border-top: 1px solid #e8e2da;
+  background: #fbfaf8;
+}
+
+/* ==========================================================================
+   Save Button
+   ========================================================================== */
+
+.contact-card .btn {
+  min-width: 48px;
+  height: 28px;
+  padding: 0 14px;
+  border-radius: 4px;
+  border: 1px solid #b7924c;
+  background: #b7924c;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .18s ease;
+}
+
+.contact-card .btn:hover {
+  background: #a98746;
+  border-color: #a98746;
+}
+
+.contact-card .btn:active {
+  transform: translateY(1px);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .g2 {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .contact-card .card-bd {
+    padding: 16px;
+  }
+
+  .fld {
+    margin-bottom: 16px;
+  }
+}

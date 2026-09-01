@@ -1,0 +1,71 @@
+/* PromotionsDetailView Styles */
+/* ========================================
+   Promotions Detail View - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6
+   ======================================== */
+
+@import './styles/variables.css';
+
+.promotions-detail-view {
+  padding: var(--promo-content-padding);
+  padding-bottom: 72px;
+  background: var(--promo-cream);
+  min-height: 100vh;
+}
+
+.promotions-detail-view__loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--promo-muted);
+  font-size: 14px;
+  font-family: var(--promo-sans);
+}
+
+.promotions-detail-view__error {
+  text-align: center;
+  padding: 40px;
+  color: var(--promo-terra);
+  font-size: 14px;
+  font-family: var(--promo-sans);
+}
+
+.promotions-detail-view__back-btn {
+  display: block;
+  margin: 12px auto 0;
+  background: none;
+  border: none;
+  color: var(--promo-gold);
+  font-size: 12px;
+  font-family: var(--promo-sans);
+  cursor: pointer;
+}
+
+.promotions-detail-view__back-btn:hover {
+  text-decoration: underline;
+}
+
+.promotions-detail-view__rules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  margin-top: 14px;
+}
+
+.promotions-detail-view__rules-left {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.promotions-detail-view__rules-right {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .promotions-detail-view__rules-grid {
+    grid-template-columns: 1fr;
+  }
+}

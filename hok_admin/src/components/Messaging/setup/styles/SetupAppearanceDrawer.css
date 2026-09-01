@@ -1,0 +1,70 @@
+/* setup/styles/SetupAppearanceDrawer.css */
+.msg-appearance-logo-hint {
+  font-size: 11.5px;
+  color: var(--msg-muted);
+  line-height: 1.55;
+}
+
+.msg-appearance-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--msg-spacing-13);
+}
+
+.msg-appearance-color-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--msg-spacing-8);
+}
+.msg-appearance-color-input {
+  width: 100%;
+  height: 6px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background: none;
+}
+
+/* Chrome/Edge render the native color swatch with default padding — this strips it so the color fills the whole bar */
+.msg-appearance-color-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: var(--msg-radius);
+}
+
+.msg-appearance-color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: var(--msg-radius);
+}
+
+.msg-appearance-color-input::-moz-color-swatch {
+  border: none;
+  border-radius: var(--msg-radius);
+}
+
+.msg-appearance-color-hex {
+  font-size: 12px;
+  color: var(--msg-charcoal);
+  font-family: var(--msg-font-monospace);
+}
+
+.msg-appearance-type {
+  margin-top: var(--msg-spacing-11);
+  padding-top: var(--msg-spacing-11);
+  border-top: var(--msg-border-standard);
+}
+
+.msg-appearance-type-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--msg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: var(--msg-spacing-4);
+}
+
+.msg-appearance-type-text {
+  font-size: 11.5px;
+  color: var(--msg-charcoal);
+  line-height: 1.6;
+}

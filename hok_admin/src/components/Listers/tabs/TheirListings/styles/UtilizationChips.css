@@ -1,0 +1,24 @@
+/* src/components/Listers/tabs/TheirListings/styles/UtilizationChips.css */
+
+.utilization-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.ret-chip {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 2px;
+  background: #F7F4EF;
+  color: #1A1612;
+}
+
+.ret-chip-gold {
+  background: #F5EFE4;
+  color: #8A6D2E;
+}

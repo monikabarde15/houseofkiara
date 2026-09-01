@@ -1,0 +1,8 @@
+/* messages/styles/MessagesToolbar.css */
+.msg-messages-toolbar {
+  /* Inherits from Toolbar */
+}
+
+.msg-messages-toolbar-search {
+  min-width: 200px;
+}

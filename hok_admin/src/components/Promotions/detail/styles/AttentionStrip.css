@@ -1,0 +1,89 @@
+/* AttentionStrip Styles */
+/* ========================================
+   Attention Strip - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.2
+   ======================================== */
+
+.attention-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  margin-bottom: 12px;
+}
+
+.attention-strip__label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--promo-muted);
+  flex-shrink: 0;
+  padding-top: 3px;
+  font-family: var(--promo-sans);
+}
+
+.attention-strip__flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9.5px;
+  letter-spacing: 0.03em;
+  color: var(--promo-attention-text);
+  background: var(--promo-attention-bg);
+  border: 1px solid var(--promo-attention-border);
+  border-radius: var(--promo-radius);
+  padding: 2px 7px;
+  line-height: 1.5;
+  cursor: pointer;
+  font-family: var(--promo-sans);
+  transition: background 0.12s;
+}
+
+.attention-strip__flag:hover {
+  background: #EDE4D4;
+}
+
+.attention-strip__flag-arrow {
+  margin-left: 2px;
+}
+
+.attention-strip__flag-snooze {
+  background: none;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--promo-muted);
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.attention-strip__flag-snooze:hover {
+  color: var(--promo-terra);
+}
+
+.attention-strip__snoozed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: var(--promo-radius);
+  background: var(--promo-canvas);
+  color: var(--promo-muted);
+  font-size: 9.5px;
+  font-family: var(--promo-sans);
+}
+
+.attention-strip__snoozed-restore {
+  background: none;
+  border: none;
+  color: var(--promo-gold);
+  cursor: pointer;
+  font-size: 9.5px;
+  font-family: var(--promo-sans);
+  padding: 0;
+}
+
+.attention-strip__snoozed-restore:hover {
+  text-decoration: underline;
+}

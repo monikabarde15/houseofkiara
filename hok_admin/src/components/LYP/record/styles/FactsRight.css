@@ -1,0 +1,7 @@
+/* src/components/LYP/record/styles/FactsRight.css */
+
+.facts-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

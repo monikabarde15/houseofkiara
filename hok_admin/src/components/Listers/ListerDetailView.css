@@ -1,0 +1,70 @@
+/* src/components/Listers/ListerDetailView.css */
+
+@import "./components/styles/UI.css";
+@import "./components/styles/AttentionStrip.css";
+@import "./components/styles/BackButton.css";
+@import "./components/styles/CreateModeBanner.css";
+@import "./components/styles/ListerDetailHeader.css";
+@import "./components/styles/ListerTabs.css";
+
+.lister-detail-view {
+  padding: 24px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.lister-detail-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  color: #8A7E72;
+  font-size: 14px;
+}
+
+.lister-detail-create-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, #1A1612, #2A2018);
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.lister-detail-create-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #4A4035;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #8A7E72;
+  flex-shrink: 0;
+}
+
+.lister-detail-create-info h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.lister-detail-create-info p {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 2px 0 0 0;
+}
+
+.lister-detail-tab-content {
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .lister-detail-view {
+    padding: 16px;
+  }
+}

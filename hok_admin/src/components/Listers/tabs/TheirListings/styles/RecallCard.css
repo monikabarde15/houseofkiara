@@ -1,0 +1,137 @@
+/* src/components/Listers/tabs/TheirListings/styles/RecallCard.css */
+
+.recall-card {
+  margin-bottom: 12px;
+}
+
+.recall-card .card-bd {
+  padding: 16px;
+}
+
+/* Recall Form */
+.recall-form {
+  padding: 10px 12px;
+  border: 1px dashed #E8E0D4;
+  border-radius: 4px;
+  background: #F7F4EF;
+  margin-bottom: 12px;
+}
+
+.recall-form-grid {
+  margin-bottom: 10px;
+}
+
+.recall-form-grid.g2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.recall-form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Recall Item */
+.recall-item {
+  padding: 11px 13px;
+  background: #FFFFFB;
+  border: 1px solid #EDE6DC;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.recall-item:last-child {
+  margin-bottom: 0;
+}
+
+.recall-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.recall-piece-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #C9A96E;
+  cursor: pointer;
+}
+
+.recall-piece-name:hover {
+  text-decoration: underline;
+}
+
+.recall-requested-date {
+  font-size: 10px;
+  color: #8A7E72;
+}
+
+.recall-reason {
+  font-size: 11.5px;
+  font-style: italic;
+  color: #8A7E72;
+  margin-bottom: 8px;
+}
+
+/* Recall States */
+.recall-state {
+  padding: 8px 11px;
+  border: 1px solid #EDE6DC;
+  border-radius: 4px;
+  background: #F7F4EF;
+  font-size: 11.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recall-requested {
+  border-left: 3px solid #C9A96E;
+}
+
+.recall-scheduled {
+  border-left: 3px solid #C9A96E;
+}
+
+.recall-returned {
+  border-left: 3px solid #6B7E5A;
+}
+
+.recall-declined {
+  border-left: 3px solid #B85C38;
+}
+
+.recall-conflict {
+  color: #B85C38;
+}
+
+.recall-clear {
+  color: #6B7E5A;
+}
+
+.recall-state-label {
+  color: #1A1612;
+}
+
+.recall-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.recall-empty {
+  font-size: 11px;
+  color: #8A7E72;
+  padding: 4px 0;
+}
+
+@media (max-width: 600px) {
+  .recall-form-grid.g2 {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}

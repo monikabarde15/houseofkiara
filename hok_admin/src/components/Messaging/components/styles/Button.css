@@ -1,0 +1,63 @@
+/* components/styles/Button.css */
+.msg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--msg-spacing-5);
+  padding: var(--msg-spacing-7) var(--msg-spacing-14);
+  border-radius: var(--msg-radius);
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  user-select: none;
+  white-space: nowrap;
+  background: transparent;
+  font-family: var(--msg-font-interface);
+}
+
+.msg-btn--small {
+  padding: var(--msg-spacing-5) var(--msg-spacing-10);
+  font-size: 10.5px;
+}
+
+.msg-btn--primary {
+  background: var(--msg-gold);
+  border-color: var(--msg-gold);
+  color: var(--msg-charcoal);
+  font-weight: 600;
+}
+
+.msg-btn--primary:hover:not(:disabled) {
+  background: #B89058;
+  border-color: #B89058;
+}
+
+.msg-btn--secondary {
+  background: var(--msg-card);
+  border-color: var(--msg-border);
+  color: var(--msg-charcoal);
+}
+
+.msg-btn--secondary:hover:not(:disabled) {
+  border-color: var(--msg-gold);
+  background: var(--msg-gold-pale);
+}
+
+.msg-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.msg-btn-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.msg-btn-saved {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--msg-sage);
+  margin-left: var(--msg-spacing-3);
+}

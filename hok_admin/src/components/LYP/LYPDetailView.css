@@ -1,0 +1,31 @@
+/* src/components/LYP/LYPDetailView.css */
+
+.lyp-detail-view {
+  padding: 20px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.lyp-detail-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.lyp-detail-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  color: var(--terra);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .lyp-detail-view {
+    padding: 16px;
+  }
+}

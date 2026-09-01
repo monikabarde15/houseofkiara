@@ -1,0 +1,54 @@
+/* components/styles/StatTiles.css */
+.msg-stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--msg-spacing-11);
+  margin-bottom: var(--msg-spacing-13);
+}
+
+.msg-stat-tile {
+  background: var(--msg-card);
+  border: var(--msg-border-standard);
+  border-radius: var(--msg-radius);
+  padding: var(--msg-spacing-11) var(--msg-spacing-14);
+  cursor: pointer;
+  transition: border-color 0.12s ease;
+}
+
+.msg-stat-tile:hover {
+  border-color: var(--msg-gold);
+}
+
+.msg-stat-tile-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--msg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.msg-stat-tile-number {
+  font-family: var(--msg-font-interface);
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  margin-top: var(--msg-spacing-2);
+}
+
+.msg-stat-tile-number--charcoal {
+  color: var(--msg-charcoal);
+}
+
+.msg-stat-tile-number--sage {
+  color: var(--msg-sage);
+}
+
+.msg-stat-tile-number--gold {
+  color: var(--msg-gold);
+}
+
+.msg-stat-tile-caption {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-2);
+}

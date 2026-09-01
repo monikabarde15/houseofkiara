@@ -1,0 +1,100 @@
+/* send/styles/SendCardItem.css */
+.msg-send-card-item {
+  border: var(--msg-border-standard);
+  border-radius: var(--msg-radius);
+  overflow: hidden;
+  margin-bottom: var(--msg-spacing-9);
+}
+
+.msg-send-card-item:last-child {
+  margin-bottom: 0;
+}
+
+.msg-send-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--msg-spacing-8);
+  padding: var(--msg-spacing-7) var(--msg-spacing-11);
+  background: var(--msg-canvas);
+  border-bottom: var(--msg-border-standard);
+}
+
+.msg-send-card-header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.msg-send-card-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--msg-charcoal);
+}
+
+.msg-send-card-ref {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--msg-muted);
+}
+
+.msg-send-card-contact {
+  font-size: 10px;
+  color: var(--msg-muted);
+}
+
+.msg-send-card-wording {
+  padding: var(--msg-spacing-6) var(--msg-spacing-11);
+  background: var(--msg-canvas);
+  font-size: 10.5px;
+  color: var(--msg-muted);
+  border-bottom: var(--msg-border-standard);
+}
+
+.msg-send-card-wording-name {
+  font-weight: 600;
+  color: var(--msg-charcoal);
+}
+
+.msg-send-card-pieces {
+  display: flex;
+  align-items: center;
+  gap: var(--msg-spacing-7);
+  padding: var(--msg-spacing-6) var(--msg-spacing-11);
+  background: var(--msg-gold-pale);
+  color: #6B5730;
+  font-size: 10.5px;
+  border-bottom: var(--msg-border-standard);
+}
+
+.msg-send-card-pieces-label {
+  font-weight: 400;
+}
+
+.msg-send-card-pieces-select {
+  flex: 1;
+  padding: 3px var(--msg-spacing-6);
+  border: var(--msg-border-input);
+  border-radius: var(--msg-radius-tight);
+  font-size: 10.5px;
+  background: var(--msg-card);
+  font-family: var(--msg-font-interface);
+}
+
+.msg-send-card-subject {
+  padding: var(--msg-spacing-7) var(--msg-spacing-11);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--msg-charcoal);
+  background: var(--msg-cream);
+  border-bottom: var(--msg-border-standard);
+}
+
+.msg-send-card-body {
+  padding: var(--msg-spacing-11);
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--msg-charcoal);
+  background: var(--msg-input-bg);
+  white-space: pre-wrap;
+  word-break: break-word;
+}

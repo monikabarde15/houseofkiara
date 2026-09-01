@@ -1,0 +1,107 @@
+/* src/components/Listers/tabs/Communication/styles/CommunicationTab.css */
+
+.communication-tab {
+  display: flex;
+  flex-direction: column;
+}
+
+.communication-card {
+  margin-bottom: 0;
+}
+
+.communication-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.comm-channel-select {
+  padding: 5px 9px;
+  border: 1px solid #DDD5C8;
+  border-radius: 4px;
+  font-size: 11px;
+  background: white;
+  color: #1A1612;
+  min-width: 130px;
+  height: 36px;
+}
+
+.comm-channel-select:focus {
+  border-color: #C9A96E;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.3);
+}
+
+.comm-message-input {
+  flex: 1;
+  min-width: 220px;
+  padding: 7px 10px;
+  border: 1px solid #DDD5C8;
+  border-radius: 4px;
+  font-size: 11.5px;
+  background: #FFFFFB;
+  color: #1A1612;
+  height: 36px;
+}
+
+.comm-message-input:focus {
+  border-color: #C9A96E;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.3);
+}
+
+.comm-message-input::placeholder {
+  color: #B4A99E;
+}
+
+.communication-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.comm-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 9px 0;
+  border-bottom: 1px solid #EDE6DC;
+}
+
+.comm-item:last-child {
+  border-bottom: none;
+}
+
+.comm-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.comm-text {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #1A1612;
+}
+
+.comm-time {
+  font-size: 10px;
+  color: #8A7E72;
+  margin-top: 2px;
+}
+
+.comm-channel-chip {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.comm-empty {
+  font-size: 11px;
+  color: #8A7E72;
+  padding: 4px 0;
+}

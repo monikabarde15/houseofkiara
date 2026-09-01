@@ -1,0 +1,115 @@
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #EBE5D8;
+  background: #FFFFFF;
+}
+
+.calendar-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.calendar-header__arrow {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #E3DCCC;
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: #2B2118;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-header__arrow:hover {
+  background: #F5F1E8;
+}
+
+.calendar-header__month {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2B2118;
+  min-width: 92px;
+  text-align: center;
+}
+
+.calendar-header__view-toggle {
+  display: flex;
+  border: 1px solid #E3DCCC;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-left: 8px;
+}
+
+.calendar-header__view-btn {
+  border: none;
+  background: #FFFFFF;
+  color: #5C5347;
+  font-size: 13px;
+  padding: 6px 14px;
+  cursor: pointer;
+  border-right: 1px solid #E3DCCC;
+}
+
+.calendar-header__view-btn:last-child {
+  border-right: none;
+}
+
+.calendar-header__view-btn--active {
+  background: #2B2118;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.calendar-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.calendar-header__demo-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #5C5347;
+}
+
+.calendar-header__demo-date input {
+  border: 1px solid #E3DCCC;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 13px;
+  color: #2B2118;
+  width: 104px;
+}
+
+.calendar-header__hint {
+  font-size: 11px;
+  color: #A69C8B;
+  font-style: italic;
+}
+
+.calendar-header__btn {
+  border: 1px solid #E3DCCC;
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: #2B2118;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+
+.calendar-header__btn:hover {
+  background: #F5F1E8;
+}

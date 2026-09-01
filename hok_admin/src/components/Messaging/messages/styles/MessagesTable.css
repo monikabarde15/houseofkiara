@@ -1,0 +1,41 @@
+/* messages/styles/MessagesTable.css */
+.msg-table-wrapper {
+  overflow-x: auto;
+}
+
+.msg-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--msg-font-interface);
+}
+
+.msg-table th {
+  padding: var(--msg-spacing-7) var(--msg-spacing-13);
+  text-align: left;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--msg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: var(--msg-border-standard);
+  background: var(--msg-canvas);
+  white-space: nowrap;
+}
+
+.msg-table td {
+  padding: var(--msg-spacing-10) var(--msg-spacing-13);
+  border-bottom: var(--msg-border-standard);
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.msg-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.msg-table-empty {
+  padding: var(--msg-spacing-22);
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--msg-muted);
+}

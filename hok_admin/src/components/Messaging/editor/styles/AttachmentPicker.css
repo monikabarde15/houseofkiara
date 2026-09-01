@@ -1,0 +1,36 @@
+/* editor/styles/AttachmentPicker.css (UPDATED) */
+.msg-attachment-picker {
+  margin-top: var(--msg-spacing-9);
+}
+
+.msg-attachment-picker-row {
+  display: flex;
+  gap: var(--msg-spacing-7);
+}
+
+.msg-attachment-picker-select {
+  flex: 1;
+  padding: var(--msg-spacing-7) var(--msg-spacing-10);
+  border: var(--msg-border-input);
+  border-radius: var(--msg-radius);
+  font-size: 12px;
+  font-family: var(--msg-font-interface);
+  color: var(--msg-charcoal);
+  background: var(--msg-input-bg);
+}
+
+.msg-attachment-picker-select:focus {
+  border-color: var(--msg-gold);
+  outline: none;
+}
+
+.msg-attachment-picker-hint {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-3);
+  line-height: 1.4;
+}
+
+.msg-attachment-picker-hint .msg-live-link {
+  /* Inherits from LiveLink styles */
+}

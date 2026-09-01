@@ -1,0 +1,50 @@
+/* src/components/Listers/tabs/SubmittedPieces/styles/SubmissionForm.css */
+
+.submission-form {
+  border: 1px solid #E5DDD3;
+  border-radius: 5px;
+  background: #F9F7F4;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+/* Rows */
+.sf-row {
+  padding: 10px 16px 0;
+}
+
+.sf-row:last-of-type {
+  padding-bottom: 0;
+}
+
+.sf-g2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Actions bar */
+.sf-actions {
+  display: flex;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #F9F7F4;
+}
+
+/* Error */
+.sf-error {
+  margin: 0 16px 8px;
+  padding: 8px 12px;
+  background: #FDF1EE;
+  border: 1px solid #F5C5B5;
+  border-radius: 4px;
+  color: #B85C38;
+  font-size: 11px;
+}
+
+@media (max-width: 600px) {
+  .sf-g2 {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

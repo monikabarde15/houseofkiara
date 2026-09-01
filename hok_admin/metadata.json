@@ -1,0 +1,6 @@
+{
+  "name": "Luxury Rental Admin Panel",
+  "description": "Premium e-commerce admin panel for managing inventory, tracking orders, and analyzing real-time sales performance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

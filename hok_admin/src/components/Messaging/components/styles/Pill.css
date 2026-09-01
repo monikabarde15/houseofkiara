@@ -1,0 +1,55 @@
+/* components/styles/Pill.css */
+.msg-pill {
+  display: inline-block;
+  padding: 2px var(--msg-spacing-7);
+  border-radius: var(--msg-radius-pill);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.msg-pill--class {
+  padding: 1px var(--msg-spacing-6);
+  border-radius: var(--msg-radius-tight);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Status colours */
+.msg-pill--green {
+  background: var(--msg-status-green-bg);
+  color: var(--msg-status-green-text);
+}
+
+.msg-pill--amber {
+  background: var(--msg-status-amber-bg);
+  color: var(--msg-status-amber-text);
+}
+
+.msg-pill--grey {
+  background: var(--msg-status-grey-bg);
+  color: var(--msg-status-grey-text);
+}
+
+.msg-pill--blue {
+  background: var(--msg-status-blue-bg);
+  color: var(--msg-status-blue-text);
+}
+
+.msg-pill--terracotta {
+  background: var(--msg-status-terracotta-bg);
+  color: var(--msg-status-terracotta-text);
+}
+
+/* Class pill overrides */
+.msg-pill--class.msg-pill--green {
+  background: var(--msg-status-green-bg);
+  color: var(--msg-status-green-text);
+}
+
+.msg-pill--class.msg-pill--amber {
+  background: var(--msg-status-amber-bg);
+  color: var(--msg-status-amber-text);
+}

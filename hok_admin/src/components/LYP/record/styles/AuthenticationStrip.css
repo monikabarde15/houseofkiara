@@ -1,0 +1,95 @@
+/* src/components/LYP/record/styles/AuthenticationStrip.css */
+
+/* ── Base card ── */
+.auth-strip {
+  padding: 12px 14px;
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: var(--sans);
+  line-height: 1.55;
+}
+
+/* ── Unmapped label warning — amber card, matching design ── */
+.auth-strip-unmapped {
+  background: #FBF6EC;
+  border: 1px solid #E6D5A7;
+  border-radius: var(--r);
+  padding: 13px 15px;
+  font-size: 11.5px;
+  color: #5C4A1E;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-strip-text strong {
+  color: #3A2E10;
+  font-weight: 700;
+}
+
+.auth-strip-action {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--gold);
+  cursor: pointer;
+  margin-top: 2px;
+  display: inline-block;
+}
+
+.auth-strip-action:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Risk variants ── */
+.auth-strip-high {
+  border-left: 3px solid var(--terra);
+}
+
+.auth-strip-medium {
+  border-left: 3px solid #8B6A1E;
+}
+
+.auth-strip-low {
+  border-left: 3px solid var(--sage);
+}
+
+.auth-strip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.auth-strip-risk {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.auth-strip-high .auth-strip-risk { color: var(--terra); }
+.auth-strip-medium .auth-strip-risk { color: #8B6A1E; }
+.auth-strip-low .auth-strip-risk { color: var(--sage); }
+
+.auth-strip-designer {
+  font-size: 11px;
+}
+
+.auth-strip-notes {
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.auth-strip-high-warning {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--terra);
+  margin-top: 4px;
+}

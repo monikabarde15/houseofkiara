@@ -1,0 +1,45 @@
+/* sendlog/styles/SendLogRow.css */
+.msg-sendlog-row {
+  cursor: default;
+}
+
+.msg-sendlog-message-name {
+  font-weight: 500;
+  color: var(--msg-charcoal);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.msg-sendlog-message-name:hover {
+  color: var(--msg-gold);
+}
+
+.msg-sendlog-wording {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-2);
+}
+
+.msg-sendlog-who {
+  font-size: 12px;
+  color: var(--msg-charcoal);
+  cursor: pointer;
+}
+
+.msg-sendlog-who:hover {
+  color: var(--msg-gold);
+}
+
+.msg-sendlog-contact {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-2);
+}
+
+.msg-sendlog-about {
+  cursor: pointer;
+}
+
+.msg-sendlog-about:hover {
+  color: var(--msg-gold);
+}

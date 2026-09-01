@@ -1,0 +1,66 @@
+/* PromotionsHeader Styles */
+/* ========================================
+   Promotions Header - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.1
+   ======================================== */
+
+.promotions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.promotions-header__left {
+  flex: 1;
+}
+
+.promotions-header__eyebrow {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--promo-gold);
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-family: var(--promo-sans);
+}
+
+.promotions-header__title {
+  font-size: 22px;
+  font-family: var(--promo-serif);
+  font-weight: 400;
+  color: var(--promo-charcoal);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.promotions-header__subtitle {
+  font-size: 11.5px;
+  color: var(--promo-muted);
+  margin-top: 3px;
+  line-height: 1.5;
+  max-width: 560px;
+  font-family: var(--promo-sans);
+}
+
+.promotions-header__right {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .promotions-header {
+    flex-direction: column;
+  }
+  
+  .promotions-header__right {
+    width: 100%;
+    margin-top: 12px;
+  }
+  
+  .promotions-header__right .button {
+    flex: 1;
+  }
+}

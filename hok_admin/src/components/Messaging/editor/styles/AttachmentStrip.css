@@ -1,0 +1,76 @@
+/* editor/styles/AttachmentStrip.css */
+.msg-attachment-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--msg-spacing-6);
+  padding: var(--msg-spacing-8) var(--msg-spacing-11);
+  background: var(--msg-gold-pale);
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  border-top: none;
+  border-radius: 0 0 var(--msg-radius) var(--msg-radius);
+  margin-top: 0;
+}
+
+.msg-attachment-strip-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.msg-attachment-doc {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--msg-spacing-4);
+  padding: 3px var(--msg-spacing-9);
+  background: var(--msg-card);
+  border: 1px solid var(--msg-gold);
+  border-radius: var(--msg-radius-tight);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6B5730;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.msg-attachment-doc:hover {
+  background: var(--msg-gold);
+  color: #FFFFFF;
+}
+
+.msg-attachment-doc--crossed {
+  opacity: 0.45;
+  border-style: dashed;
+  text-decoration: line-through;
+}
+
+.msg-attachment-cross {
+  width: 15px;
+  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--msg-gold);
+  border-radius: var(--msg-radius-tight);
+  background: var(--msg-card);
+  color: #8B6A1E;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  margin-left: -3px;
+  margin-right: var(--msg-spacing-4);
+  transition: all 0.12s ease;
+  padding: 0;
+}
+
+.msg-attachment-cross:hover {
+  background: var(--msg-terracotta);
+  border-color: var(--msg-terracotta);
+  color: #FFFFFF;
+}
+
+.msg-attachment-strip-tag {
+  font-size: 9.5px;
+  font-style: italic;
+  color: #8B6A1E;
+}

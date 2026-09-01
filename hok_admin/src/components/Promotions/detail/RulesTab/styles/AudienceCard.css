@@ -1,0 +1,32 @@
+/* AudienceCard Styles */
+/* ========================================
+   Audience Card - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.9
+   ======================================== */
+
+.audience-card__radios {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 0;
+}
+
+.audience-card__radio {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-family: var(--promo-sans);
+  cursor: pointer;
+}
+
+.audience-card__customers {
+  margin-top: 11px;
+}
+
+.audience-card__hint {
+  font-size: 10px;
+  color: var(--promo-muted);
+  margin-top: 8px;
+  font-family: var(--promo-sans);
+  line-height: 1.4;
+}

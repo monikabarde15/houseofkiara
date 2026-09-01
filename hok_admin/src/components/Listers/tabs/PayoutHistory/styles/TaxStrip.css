@@ -1,0 +1,56 @@
+/* src/components/Listers/tabs/PayoutHistory/styles/TaxStrip.css */
+
+.tax-strip {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+
+.tax-strip-pan {
+  background: #FDF5E7;
+  border: 1px solid rgba(139, 106, 30, 0.25);
+  color: #6B5730;
+}
+
+.tax-strip-warning {
+  background: #FBEFEA;
+  border: 1px solid rgba(184, 92, 56, 0.3);
+  color: #7A2E1D;
+}
+
+.tax-strip-empty {
+  background: #F7F4EF;
+  border: 1px solid #EDE6DC;
+  color: #8A7E72;
+}
+
+.tax-strip-label {
+  font-weight: 600;
+}
+
+.tax-strip-pan {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+}
+
+.tax-strip-verified {
+  font-size: 10px;
+}
+
+.tax-verified {
+  color: #6B7E5A;
+}
+
+.tax-unverified {
+  color: #8A7E72;
+}
+
+.tax-strip-detail {
+  color: inherit;
+  opacity: 0.85;
+}

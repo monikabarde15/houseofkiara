@@ -1,0 +1,43 @@
+/* modals/styles/ConfirmModal.css */
+.msg-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(60, 58, 54, 0.5);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.msg-confirm-panel {
+  background: var(--msg-card);
+  border-radius: var(--msg-radius);
+  padding: var(--msg-spacing-24) var(--msg-spacing-28);
+  max-width: 480px;
+  width: 94%;
+  box-shadow: var(--msg-shadow-overlay);
+}
+
+.msg-confirm-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--msg-charcoal);
+  margin-bottom: var(--msg-spacing-11);
+}
+
+.msg-confirm-message {
+  font-size: 13px;
+  color: var(--msg-charcoal);
+  line-height: 1.6;
+  margin-bottom: var(--msg-spacing-20);
+  white-space: pre-wrap;
+}
+
+.msg-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--msg-spacing-7);
+}

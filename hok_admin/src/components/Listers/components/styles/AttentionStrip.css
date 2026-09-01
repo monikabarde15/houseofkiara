@@ -1,0 +1,37 @@
+/* src/components/Listers/components/styles/AttentionStrip.css */
+
+.attention-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0 0 10px 0;
+  padding: 8px 14px;
+  background: #FAF7F2;
+  border: 1px solid #EBE5DF;
+  border-radius: 4px;
+}
+
+.attention-strip-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8A7E72;
+  padding-right: 10px;
+  margin-right: 6px;
+  border-right: 1px solid #D9D0C6;
+}
+
+.attn-go {
+  cursor: pointer;
+  transition: all 0.12s;
+  margin-left: 6px;
+}
+
+.attn-go:hover {
+  color: #B85C38;
+  text-decoration: underline;
+}
+
+/* attn-pill is defined globally in listers-global.css, only extend here */

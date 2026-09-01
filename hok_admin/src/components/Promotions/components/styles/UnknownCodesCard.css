@@ -1,0 +1,51 @@
+/* UnknownCodesCard Styles */
+/* ========================================
+   Unknown Codes Card - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.5
+   ======================================== */
+
+.unknown-codes__intro {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  margin-bottom: 9px;
+  font-family: var(--promo-sans);
+}
+
+.unknown-codes__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--promo-cb);
+}
+
+.unknown-codes__row:last-child {
+  border-bottom: none;
+}
+
+.unknown-codes__code {
+  font-family: var(--promo-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--promo-charcoal);
+}
+
+.unknown-codes__meta {
+  font-size: 11px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+}
+
+.unknown-codes__empty {
+  font-size: 11px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+  padding: 4px 0;
+}
+
+.unknown-codes__closing {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  margin-top: 8px;
+  font-family: var(--promo-sans);
+}

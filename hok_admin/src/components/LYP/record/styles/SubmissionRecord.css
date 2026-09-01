@@ -1,0 +1,60 @@
+/* src/components/LYP/record/styles/SubmissionRecord.css */
+
+.submission-record {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.submission-record-body {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.submission-record-main {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.submission-record-facts {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 0;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid #E8E0D4;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Left column — white */
+.facts-left {
+  padding: 24px;
+  background: #fff;
+}
+
+/* Right column — white */
+.facts-right {
+  padding: 24px;
+  background: #fff;
+  padding-left: 0px;
+}
+
+.g2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+@media (max-width: 768px) {
+  .submission-record-facts {
+    grid-template-columns: 1fr;
+  }
+  
+  .g2 {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}

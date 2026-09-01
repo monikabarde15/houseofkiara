@@ -1,0 +1,16 @@
+/* messages/styles/MessagesFooter.css */
+.msg-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--msg-spacing-8) var(--msg-spacing-14);
+  background: var(--msg-canvas);
+  border-top: var(--msg-border-standard);
+  font-size: 11px;
+  color: var(--msg-muted);
+}
+
+.msg-footer-hint {
+  font-size: 10px;
+  color: var(--msg-muted);
+}

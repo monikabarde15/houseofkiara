@@ -1,0 +1,73 @@
+/* editor/styles/WordingBar.css */
+.msg-wording-bar {
+  margin-bottom: var(--msg-spacing-11);
+}
+
+.msg-wording-bar-tabs {
+  display: flex;
+  border-bottom: var(--msg-border-standard);
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 0;
+}
+
+.msg-wording-bar-tabs::-webkit-scrollbar {
+  height: 0;
+}
+
+.msg-wording-tab {
+  padding: var(--msg-spacing-8) var(--msg-spacing-14);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--msg-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.1s ease;
+  margin-bottom: -1px;
+  user-select: none;
+  font-family: var(--msg-font-interface);
+  position: relative;
+}
+
+.msg-wording-tab:hover {
+  color: var(--msg-charcoal);
+}
+
+.msg-wording-tab--active {
+  color: var(--msg-charcoal);
+  border-bottom-color: var(--msg-gold);
+}
+
+.msg-wording-tab--copy {
+  color: var(--msg-gold);
+  font-weight: 600;
+}
+
+.msg-wording-tab--copy:hover {
+  color: #B89058;
+}
+
+.msg-wording-rename-input {
+  border: 1px solid var(--msg-gold);
+  border-radius: var(--msg-radius-tight);
+  background: var(--msg-card);
+  padding: var(--msg-spacing-5) var(--msg-spacing-9);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--msg-font-interface);
+  color: var(--msg-charcoal);
+  min-width: 150px;
+  outline: none;
+}
+
+.msg-wording-rename-input:focus {
+  box-shadow: 0 0 0 2px var(--msg-gold-pale);
+}
+
+.msg-wording-bar-hint {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: 4px;
+  margin-bottom: var(--msg-spacing-11);
+}

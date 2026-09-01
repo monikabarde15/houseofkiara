@@ -1,0 +1,16 @@
+/* PromotionsTableFooter Styles */
+/* ========================================
+   Promotions Table Footer - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.9
+   ======================================== */
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-top: 1px solid var(--promo-cb);
+  background: var(--promo-canvas);
+  font-size: 11px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+}

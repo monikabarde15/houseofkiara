@@ -1,0 +1,18 @@
+/* src/components/LYP/record/styles/SKUReservationLine.css */
+
+.sku-reservation-line {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 7px;
+  line-height: 1.5;
+  padding: 4px 0;
+}
+
+.sku-reserved {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  cursor: default;
+}

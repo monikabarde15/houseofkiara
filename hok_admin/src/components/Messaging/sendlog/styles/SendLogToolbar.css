@@ -1,0 +1,8 @@
+/* sendlog/styles/SendLogToolbar.css */
+.msg-sendlog-toolbar {
+  /* Inherits from Toolbar */
+}
+
+.msg-sendlog-toolbar-search {
+  min-width: 200px;
+}

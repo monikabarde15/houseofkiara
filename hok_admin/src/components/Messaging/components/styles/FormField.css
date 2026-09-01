@@ -1,0 +1,63 @@
+/* components/styles/FormField.css */
+.msg-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--msg-spacing-11);
+}
+
+.msg-field:last-child {
+  margin-bottom: 0;
+}
+
+.msg-field-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--msg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: var(--msg-spacing-4);
+}
+
+.msg-input,
+.msg-textarea {
+  padding: var(--msg-spacing-7) var(--msg-spacing-10);
+  border: var(--msg-border-input);
+  border-radius: var(--msg-radius);
+  font-size: 12px;
+  font-family: var(--msg-font-interface);
+  color: var(--msg-charcoal);
+  background: var(--msg-input-bg);
+  width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.msg-input:focus,
+.msg-textarea:focus {
+  border-color: var(--msg-gold);
+  box-shadow: 0 0 0 3px var(--msg-gold-pale);
+  outline: none;
+}
+
+.msg-input--readonly,
+.msg-textarea--readonly {
+  background: var(--msg-canvas);
+  cursor: default;
+}
+
+.msg-input--readonly:focus,
+.msg-textarea--readonly:focus {
+  border-color: var(--msg-input-border);
+  box-shadow: none;
+}
+
+.msg-textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.msg-field-hint {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-3);
+  line-height: 1.4;
+}

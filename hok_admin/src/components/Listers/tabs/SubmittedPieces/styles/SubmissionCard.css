@@ -1,0 +1,270 @@
+/* src/components/Listers/tabs/SubmittedPieces/styles/SubmissionCard.css */
+
+.submission-card {
+  margin-bottom: 12px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.submission-card:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Card Header ── */
+.sc-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #EDE6DC;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sc-hd-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.sc-hd-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sc-piece-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1A1612;
+}
+
+/* ── Meta Row ── */
+.sc-meta {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px 8px;
+  font-size: 11.5px;
+  color: #6F675D;
+  flex-wrap: wrap;
+  gap: 2px;
+  border-bottom: 1px solid #F3EEE8;
+}
+
+.sc-meta-dot {
+  margin: 0 5px;
+  color: #C5BDB5;
+}
+
+.sc-meta-space {
+  margin-left: 12px;
+}
+
+/* ── Timeline Pipeline ── */
+.sc-timeline {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #F3EEE8;
+  overflow-x: auto;
+  gap: 0;
+  background: #FDFCFA;
+}
+
+.sc-tl-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.sc-tl-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid #C5BDB5;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.sc-tl-dot-done {
+  background: #6B7E5A;
+  border-color: #6B7E5A;
+}
+
+.sc-tl-dot-dead {
+  background: #B85C38;
+  border-color: #B85C38;
+}
+
+.sc-tl-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #3A3228;
+  white-space: nowrap;
+}
+
+.sc-tl-muted {
+  color: #A09890;
+}
+
+.sc-tl-dead-text {
+  color: #B85C38;
+}
+
+.sc-tl-connector {
+  flex: 1;
+  min-width: 18px;
+  height: 1px;
+  background: #DDD5C8;
+  margin: 0 10px;
+}
+
+/* ── Facts Grid ── */
+.sc-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 20px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #F3EEE8;
+}
+
+.sc-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sc-fact-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8A7E72;
+}
+
+.sc-fact-value {
+  font-size: 12px;
+  color: #1A1612;
+  line-height: 1.45;
+}
+
+/* ── Condition Claimed ── */
+.sc-condition {
+  padding: 10px 16px 0;
+}
+
+.sc-condition-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8A7E72;
+  margin-bottom: 3px;
+}
+
+.sc-condition-text {
+  font-size: 12px;
+  color: #2A2118;
+  line-height: 1.55;
+  padding-bottom: 10px;
+}
+
+/* ── Notes / Quote ── */
+.sc-notes {
+  padding: 0 16px 12px;
+}
+
+.sc-quote {
+  display: block;
+  font-size: 11.5px;
+  font-style: italic;
+  color: #6F675D;
+  background: #F7F4EF;
+  padding: 8px 14px;
+  border-left: 2px solid #C9A96E;
+  border-radius: 4px;
+  line-height: 1.6;
+}
+
+/* ── Verdict Strip ── */
+.sc-verdict {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  gap: 10px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  border-top: 1px solid #EDE6DC;
+  flex-wrap: wrap;
+}
+
+.sc-verdict-sage {
+  background: #F3F7F0;
+  border-left: 3px solid #6B7E5A;
+}
+
+.sc-verdict-terra {
+  background: #FDF2EE;
+  border-left: 3px solid #B85C38;
+}
+
+.sc-verdict-muted {
+  background: #F7F4EF;
+  border-left: 3px solid #B4A99E;
+}
+
+.sc-verdict-text {
+  color: #2A2118;
+  flex: 1;
+}
+
+.sc-verdict-btn {
+  flex-shrink: 0;
+}
+
+/* ── Actions ── */
+.sc-actions {
+  padding: 10px 16px;
+  border-top: 1px solid #EDE6DC;
+}
+
+.sc-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.sc-withdraw-link {
+  background: none;
+  border: none;
+  font-size: 10.5px;
+  color: #8A7E72;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 4px 0;
+  margin-left: 4px;
+}
+
+.sc-withdraw-link:hover { color: #1A1612; }
+
+.sc-reject-box {
+  margin-top: 8px;
+  padding: 9px 11px;
+  background: #F7F4EF;
+  border: 1px solid #EDE6DC;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (max-width: 640px) {
+  .sc-facts {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,0 +1,16 @@
+import Order from "../models/Order.js";
+import Product from "../models/Product.js";
+import { calculateProductLine } from "../services/pricingService.js";
+
+const view = (o) => ({ ...o.toObject(), id: o.orderId });
+export const getOrders = async (req, res) => { try { const query = {}; if (req.query.status) query.status = req.query.status; if (req.query.mode) query.mode = req.query.mode; const rows = await Order.find(query).sort({ createdAt: -1 }); res.json({ success: true, data: rows.map(view) }); } catch (e) { res.status(500).json({ success: false, message: e.message }); } };
+export const getOrder = async (req, res) => { try { const o = await Order.findOne({ $or: [{ orderId: req.params.id }, { _id: req.params.id }] }); if (!o) return res.status(404).json({ success: false, message: "Order not found" }); res.json({ success: true, data: view(o) }); } catch (e) { res.status(400).json({ success: false, message: e.message }); } };
+export const createOrder = async (req, res) => { try {
+  if (!Array.isArray(req.body.items) || req.body.items.length === 0) return res.status(422).json({ success: false, message: "At least one product item is required" });
+  const calculatedItems = [];
+  for (const input of req.body.items) { const product = await Product.findOne({ $or: [{ productId: input.productId }, { _id: input.productId }] }); if (!product) return res.status(422).json({ success: false, message: `Product not found: ${input.productId}` }); calculatedItems.push(calculateProductLine(product, input)); }
+  const orderValue = calculatedItems.reduce((sum, item) => sum + item.amount, 0); const gst = calculatedItems.reduce((sum, item) => sum + item.gst, 0); const depositHeld = calculatedItems.reduce((sum, item) => sum + item.deposit, 0); const discount = Math.max(0, Number(req.body.discount || 0)); const grandTotal = Math.round((orderValue + calculatedItems.reduce((s, i) => s + i.cleaningFee, 0) + gst + depositHeld - discount) * 100) / 100;
+  const o = await Order.create({ ...req.body, orderId: req.body.orderId || `HOK-ORD-${Date.now()}`, items: calculatedItems, orderValue, gst, depositHeld, grandTotal, logs: [{ message: "Order placed", type: "Order", user: req.body.createdBy || "Admin" }] }); res.status(201).json({ success: true, data: view(o) });
+} catch (e) { res.status(422).json({ success: false, message: e.message }); } };
+export const updateOrder = async (req, res) => { try { const o = await Order.findOneAndUpdate({ $or: [{ orderId: req.params.id }, { _id: req.params.id }] }, { $set: req.body }, { new: true, runValidators: true }); if (!o) return res.status(404).json({ success: false, message: "Order not found" }); res.json({ success: true, data: view(o) }); } catch (e) { res.status(422).json({ success: false, message: e.message }); } };
+export const addOrderLog = async (req, res) => { try { const o = await Order.findOneAndUpdate({ orderId: req.params.id }, { $push: { logs: { message: req.body.message, type: req.body.type || "Internal Note", user: req.body.user || "Admin" } } }, { new: true }); if (!o) return res.status(404).json({ success: false, message: "Order not found" }); res.json({ success: true, data: view(o) }); } catch (e) { res.status(422).json({ success: false, message: e.message }); } };
