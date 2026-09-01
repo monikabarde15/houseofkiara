@@ -215,7 +215,33 @@ const CheckoutSummary = ({
             <button
                 type="button"
                 className="checkout-cta-btn"
-
+                onClick={async () => {
+                    try {
+                        const payload = {
+                            customerId: "guest", // or fetch from auth state if any
+                            items: cartItems.map(item => ({
+                                productId: item.product?.id || item.id,
+                                type: item.type,
+                                bookingDetails: item.booking || {},
+                                price: item.price || item.product?.price || 0
+                            })),
+                            discount: activePromo ? discount : 0,
+                        };
+                        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/orders`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            alert("Order placed successfully! Order ID: " + data.data.orderId);
+                        } else {
+                            alert("Failed to place order: " + data.message);
+                        }
+                    } catch (err) {
+                        alert("Error connecting to server.");
+                    }
+                }}
             >
                 <span className="checkout-cta-btn__shimmer"></span>
 

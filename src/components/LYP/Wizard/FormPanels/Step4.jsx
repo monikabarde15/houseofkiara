@@ -30,7 +30,7 @@ const Step4 = ({ formData, photos, onBack , setStep,setSubmitted}) => {
             });
 
             // API call 
-            await fetch("/api/lister-submissions", {
+            await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/lister-submissions`, {
                 method: "POST",
                 body: formDataToSend
             });
