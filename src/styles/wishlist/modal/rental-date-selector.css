@@ -1,0 +1,63 @@
+/* src/styles/wishlist/modal/rental-date-selector.css */
+/* Section 11.4: Rental Date Selection */
+
+.desk-wishlist-date-selector {
+  margin-bottom: 24px;
+}
+
+/* Section Label */
+.desk-wishlist-date-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  /* margin-bottom: 10px; */
+
+}
+
+/* 2 Column Grid */
+.desk-wishlist-date-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* .desk-wishlist-date-field {
+  display: flex;
+  flex-direction: column;
+} */
+
+/* Field Labels */
+.desk-wishlist-date-field-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+/* Date Inputs */
+.desk-wishlist-date-input {
+  height: 42px;
+  border: 1px solid #E8E0D4;
+  padding: 0 12px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  color: #1A1612;
+  background: #FFFEFB;
+  outline: none;
+  border-radius: 1px;
+  width: 100%;
+  transition: 0.15s;
+}
+
+.desk-wishlist-date-input:focus {
+  border: 1px solid #C9A96E;
+}
+
+.desk-wishlist-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}

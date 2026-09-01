@@ -1,0 +1,136 @@
+/* ============================================
+   Section 16
+   Help & Support
+   ============================================ */
+
+.profile-mobile-help-section {
+  padding-top: 24px;
+}
+
+/* ============================================
+   Support Grid
+   ============================================ */
+
+.profile-mobile-help-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: #F0EAE0;
+  border-top: 1px solid #F0EAE0;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+/* ============================================
+   Grid Cell
+   ============================================ */
+
+.profile-mobile-help-cell {
+  min-height: 130px;
+  padding: 16px 14px;
+  border: none;
+  background: #FFFEFB;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profile-mobile-help-cell:active {
+  background: #FAF7F2;
+}
+
+/* ============================================
+   Icon Wrapper
+   ============================================ */
+
+.profile-mobile-help-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* ============================================
+   Main Label
+   ============================================ */
+
+.profile-mobile-help-label {
+  margin-bottom: 3px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #3C3529;
+}
+
+/* ============================================
+   Sub Text
+   ============================================ */
+
+.profile-mobile-help-sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: #B0A898;
+}
+
+/* ============================================
+   Legal Block
+   ============================================ */
+
+.profile-mobile-legal-block {
+  padding: 16px;
+  background: #FFFEFB;
+  border-top: 1px solid #F0EAE0;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+/* ============================================
+   Legal Label
+   ============================================ */
+
+.profile-mobile-legal-label {
+  margin-bottom: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #B0A898;
+}
+
+/* ============================================
+   Policies Wrapper
+   ============================================ */
+
+.profile-mobile-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ============================================
+   Policy Pill
+   ============================================ */
+
+.profile-mobile-policy-pill {
+  padding: 5px 10px;
+  border: 1px solid #F0EAE0;
+  background: #FAF7F2;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  font-weight: 300;
+  line-height: 1.4;
+  color: #8A7E72;
+}
+
+.profile-mobile-policy-pill:active {
+  background: #F0EAE0;
+  color: #3C3529;
+}

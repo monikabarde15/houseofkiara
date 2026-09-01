@@ -1,0 +1,176 @@
+/* ===== CLOSING CTA ===== */
+/* Final call to action */
+
+.au-closing {
+  background: #1A1612; 
+  padding: 140px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Glow */
+.au-closing__glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 0%, rgba(201, 169, 110, 0.12), transparent 60%);
+}
+
+/* Inner Content - */
+.au-closing__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ===== H2  ===== */
+.au-closing__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(34px, 5vw, 58px);
+  font-weight: 400;
+  line-height: 1.18;
+  color: #FFFEFB; 
+  margin: 0 0 24px 0;
+}
+
+.au-closing__title em {
+  font-style: italic;
+  color: #E8D5B0; 
+}
+
+/* ===== PARAGRAPH  ===== */
+.au-closing__paragraph {
+  font-family: "DM Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: #B8AA9A;
+  max-width: 520px;
+  margin: 0 auto 44px;
+}
+
+/* ===== BUTTONS  ===== */
+.au-closing__buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Shared Button Base  */
+.au-closing__btn {
+  padding: 16px 34px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.au-closing__btn:active {
+  transform: scale(0.97);
+}
+
+/* Gold Button  */
+.au-closing__btn--gold {
+  background: #C9A96E; 
+  color: #1A1612; 
+  border: 1px solid #C9A96E;
+}
+
+.au-closing__btn--gold:hover {
+  background: #E8D5B0; 
+  border-color: #E8D5B0;
+  transform: translateY(-2px);
+}
+
+/* Outline Button  */
+.au-closing__btn--outline {
+  background: transparent;
+  color: #FFFEFB; 
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.au-closing__btn--outline:hover {
+  background: #6B7E5A;
+  border-color: #6B7E5A;
+  color: #FFFEFB;
+  transform: translateY(-2px);
+}
+
+/* ===== INSTAGRAM LINE ===== */
+.au-closing__instagram {
+  margin-top: 48px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12.5px;
+  color: #8A7A6A;
+}
+
+.au-closing__instagram a {
+  color: #E8D5B0;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(232, 213, 176, 0.35);
+  transition: border-color 0.3s ease;
+}
+
+.au-closing__instagram a:hover {
+  border-bottom-color: rgba(232, 213, 176, 0.7);
+}
+
+/* ===== RESPONSIVE - Tablet ===== */
+@media (max-width: 1080px) {
+  .au-closing {
+    padding: 100px 40px;
+  }
+}
+
+/* ===== RESPONSIVE - Mobile ===== */
+@media (max-width: 680px) {
+  .au-closing {
+    padding: 72px 24px;
+  }
+
+  .au-closing__buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .au-closing__btn {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .au-closing__title {
+    font-size: clamp(28px, 7vw, 42px);
+  }
+
+  .au-closing__paragraph {
+    font-size: 15px;
+    padding: 0 8px;
+  }
+
+  .au-closing__instagram {
+    font-size: 11px;
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .au-closing__btn {
+    transition-duration: 0.001ms;
+  }
+  .au-closing__instagram a {
+    transition-duration: 0.001ms;
+  }
+}

@@ -1,0 +1,145 @@
+/* ==========================================
+   OUR COMMITMENT
+========================================== */
+
+.desk-commitment {
+  position: relative;
+  background: #f5edd8;
+  padding: 80px;
+  overflow: hidden;
+}
+
+/* ==========================================
+   WATERMARK
+========================================== */
+
+.desk-commitment::before {
+  content: "∞";
+  position: absolute;
+  right: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 400px;
+  font-weight: 300;
+  color: rgba(201, 169, 110, 0.08);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==========================================
+   LAYOUT
+========================================== */
+
+.desk-commitment-layout {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+/* ==========================================
+   LEFT SIDE
+========================================== */
+
+.desk-commitment-description {
+  margin-top: 12px;
+  max-width: 480px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #8a7e72;
+}
+
+/* ==========================================
+   PILLS
+========================================== */
+
+.desk-commitment-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.desk-commitment-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #fffefb;
+  border: 1px solid #e8e0d4;
+  border-radius: 40px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+
+  color: #1a1612;
+}
+
+.desk-commitment-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c9a96e;
+}
+
+/* ==========================================
+   VALUE GRID
+========================================== */
+
+.desk-commitment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+}
+
+/* ==========================================
+   CARD
+========================================== */
+
+.desk-commitment-card {
+  background: #fffefb;
+  border: 1px solid #e8e0d4;
+  padding: 32px 28px;
+}
+
+.desk-commitment-icon-circle {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e8e0d4;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.desk-commitment-icon-circle svg {
+  width: 16px;
+  height: 16px;
+  stroke: #c9a96e;
+  stroke-width: 1.4;
+}
+
+.desk-commitment-card-title {
+  margin: 0 0 10px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.4;
+  color: #1a1612;
+}
+
+.desk-commitment-card-body {
+  margin: 0;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #8a7e72;
+}

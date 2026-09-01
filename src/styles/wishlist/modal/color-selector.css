@@ -1,0 +1,42 @@
+/* src/styles/wishlist/modal/color-selector.css */
+/* Section 11.4: Modal Body - Color Selector */
+
+.desk-wishlist-color-selector {
+  margin-bottom: 24px;
+}
+
+.desk-wishlist-color-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  margin-bottom: 10px;
+}
+
+.desk-wishlist-color-options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.desk-wishlist-color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.18s ease;
+}
+
+.desk-wishlist-color-swatch:hover {
+  transform: scale(1.1);
+  /* border-color: #C9A96E; */
+}
+
+.desk-wishlist-color-selected {
+  border: 2px solid #C9A96E;
+  box-shadow: 0 0 0 2px #FFFFFB, 0 0 0 4px #C9A96E;
+}

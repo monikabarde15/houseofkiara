@@ -1,0 +1,134 @@
+/* Closing CTA Band - B13 */
+.hok-hiw-closing-cta {
+  background: #1A1612;
+  padding: 120px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative watermark */
+.hok-hiw-closing-watermark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 500px;
+  font-weight: 300;
+  color: rgba(201, 169, 110, 0.025);
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+.hok-hiw-closing-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Eyebrow */
+.hok-hiw-closing-eyebrow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.hok-hiw-closing-line {
+  width: 20px;
+  height: 1px;
+  background: rgba(201, 169, 110, 0.4);
+}
+
+.hok-hiw-closing-eyebrow-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: rgba(201, 169, 110, 0.85);
+  font-weight: 400;
+}
+
+/* Title */
+.hok-hiw-closing-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(44px, 5.5vw, 76px);
+  font-weight: 300;
+  color: #FAF7F2;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  margin-bottom: 24px;
+}
+
+.hok-hiw-closing-title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* Body */
+.hok-hiw-closing-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(250, 247, 242, 0.72);
+  line-height: 1.85;
+  max-width: 480px;
+  margin: 0 auto 52px;
+}
+
+/* Buttons */
+.hok-hiw-closing-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* Primary Button */
+.hok-hiw-closing-btn-primary {
+  background: #C9A96E;
+  color: #1A1612;
+  border: none;
+  padding: 16px 48px;
+  border-radius: 1px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.hok-hiw-closing-btn-primary:hover {
+  background: #E8D5B0;
+  transform: translateY(-2px);
+}
+
+/* Secondary Button (Ghost) */
+.hok-hiw-closing-btn-secondary {
+  background: transparent;
+  color: rgba(250, 247, 242, 0.75);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  padding: 15px 40px;
+  border-radius: 1px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.hok-hiw-closing-btn-secondary:hover {
+  border-color: #C9A96E;
+  color: #C9A96E;
+  transform: translateY(-2px);
+}

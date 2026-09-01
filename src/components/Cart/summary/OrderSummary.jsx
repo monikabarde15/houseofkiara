@@ -2,10 +2,11 @@
 
 import React from "react";
 import { Lock } from "lucide-react";
-
 import { calculateTotals } from "../../../utils/cart/calculateTotals";
 import "../../../styles/cart/summary/order-summary.css";
-
+import "../../../styles/cart/summary/summary-section.css";
+import "../../../styles/cart/summary/summary-row.css";
+import "../../../styles/cart/summary/gst-breakdown.css";
 import SummarySection from "./SummarySection";
 import SummaryRow from "./SummaryRow";
 import GSTBreakdown from "./GSTBreakdown";

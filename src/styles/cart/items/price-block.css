@@ -1,3 +1,4 @@
+/* src\styles\cart\items\price-block.css */
 /* ============================= */
 /* COMMON PRICE SYSTEM */
 /* ============================= */
@@ -162,7 +163,7 @@
   .preloved-price__main sup,
   .new-price__main sup {
     font-size: 14px;
-    vertical-align: super;
+    /* vertical-align: super; */
   }
 
   /* ============================= */

@@ -1,0 +1,238 @@
+/* ============================================
+   Section 11
+   Listed Piece Detail Sheets
+   ============================================ */
+
+/* ============================================
+   Listed Badge Variants
+   ============================================ */
+
+.profile-mobile-b-lst {
+  background:
+    rgba(201, 169, 110, 0.15);
+
+  color: #A8844A;
+}
+
+.profile-mobile-b-ren {
+  background:
+    rgba(42, 68, 102, 0.10);
+
+  color: #2A4466;
+}
+
+.profile-mobile-b-resale {
+  background:
+    rgba(107, 126, 90, 0.12);
+
+  color: #6B7E5A;
+}
+
+/* ============================================
+   Badge Row
+   ============================================ */
+
+.profile-mobile-listed-badges {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-bottom: 6px;
+}
+
+/* ============================================
+   Section Divider
+   ============================================ */
+
+.profile-mobile-section-divider {
+  margin-top: 14px;
+
+  padding-top: 10px;
+
+  border-top:
+    1px solid #F0EAE0;
+}
+
+/* ============================================
+   Section Title
+   ============================================ */
+
+.profile-mobile-section-title {
+  margin-bottom: 8px;
+
+  font-family:
+    "DM Sans",
+    sans-serif;
+
+  font-size: 8px;
+
+  font-weight: 400;
+
+  letter-spacing: 0.14em;
+
+  text-transform: uppercase;
+
+  color: #B0A898;
+}
+
+/* ============================================
+   Booking History
+   ============================================ */
+
+.profile-mobile-booking-history {
+  margin-top: 14px;
+}
+
+/* ============================================
+   Booking History Label
+   ============================================ */
+
+.profile-mobile-booking-title {
+  margin-bottom: 8px;
+
+  padding-bottom: 6px;
+
+  border-bottom:
+    1px solid #F0EAE0;
+
+  font-family:
+    "DM Sans",
+    sans-serif;
+
+  font-size: 8px;
+
+  font-weight: 400;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+
+  color: #B0A898;
+}
+
+/* ============================================
+   Booking History drow Overrides
+   ============================================ */
+
+.profile-mobile-booking-history
+.profile-mobile-drow {
+  padding: 8px 0;
+}
+
+.profile-mobile-booking-history
+.profile-mobile-dl {
+  min-width: 0;
+
+  font-size: 10px;
+
+  line-height: 1.5;
+
+  text-transform: none;
+
+  letter-spacing: normal;
+
+  color: #3C3529;
+}
+
+/* ============================================
+   Paid Payout
+   Spec: #A8844A
+   ============================================ */
+
+.profile-mobile-dv-paid {
+  color: #A8844A;
+
+  font-weight: 500;
+}
+
+/* ============================================
+   Pending Payout
+   Spec: #8A7E72
+   ============================================ */
+
+.profile-mobile-dv-pending {
+  color: #8A7E72;
+
+  font-weight: 500;
+}
+
+/* ============================================
+   Pending Label
+   ============================================ */
+
+.profile-mobile-pending-label {
+  font-size: 9px;
+
+  font-weight: 300;
+}
+
+/* ============================================
+   Total Row
+   ============================================ */
+
+.profile-mobile-total-row {
+  margin-top: 8px;
+
+  padding-top: 10px;
+
+  border-top:
+    1px solid #E8E0D4;
+}
+
+/* ============================================
+   Total Amount
+   ============================================ */
+
+.profile-mobile-total-amount {
+  color: #1A1612;
+
+  font-weight: 500;
+}
+
+/* ============================================
+   Pending Total
+   ============================================ */
+
+.profile-mobile-total-pending {
+  margin-left: 4px;
+
+  font-size: 10px;
+
+  font-weight: 400;
+
+  color: #8A7E72;
+}
+
+/* ============================================
+   Coloured Detail Values
+   ============================================ */
+
+.profile-mobile-dv-gold {
+  color: #A8844A;
+
+  font-weight: 500;
+}
+
+.profile-mobile-dv-sage {
+  color: #6B7E5A;
+
+  font-weight: 500;
+}
+
+/* ============================================
+   Product Image Background
+   ============================================ */
+
+.profile-mobile-sheet-product-img {
+  background: var(--sheet-bg);
+}
+
+/* ============================================
+   Detail Value Overflow Protection
+   ============================================ */
+
+.profile-mobile-dv {
+  overflow-wrap: break-word;
+}

@@ -1,0 +1,47 @@
+/* Section 8.1: List View Layout */
+.desk-wishlist-list-view {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+/* Section 8.2: Card Layout */
+.desk-wishlist-list-card {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 24px 0;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.desk-wishlist-list-card:last-child {
+  border-bottom: none;
+}
+
+/* Section 9.4: Restored card fade-in animation */
+.desk-wishlist-card-restore {
+  animation: desk-wishlist-card-restore 0.3s ease forwards;
+}
+
+@keyframes desk-wishlist-card-restore {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Removal animation (shared with grid) */
+.desk-wishlist-card-removing {
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.desk-wishlist-card-collapsing {
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding-top 0.35s ease,
+              padding-bottom 0.35s ease, margin-top 0.35s ease,
+              margin-bottom 0.35s ease;
+}

@@ -1,0 +1,78 @@
+/* =========================================================
+   SUMMARY SECTION
+   Shared between desktop and mobile
+========================================================= */
+
+/* Desktop Styles */
+.summary-section-head {
+  display: flex;
+  align-items: center;
+  padding-top: 32px;
+  margin-bottom: 16px;
+}
+
+.summary-line {
+  flex: 1;
+  height: 1px;
+  background: #F0EAE0;
+  margin-left: 8px;
+}
+
+.summary-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.summary-label {
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #B0A898;
+}
+
+/* Mode Colors */
+.summary-section-head.rental .summary-dot {
+  background: #6B7E5A;
+}
+
+.summary-section-head.preloved .summary-dot {
+  background: #893860;
+}
+
+.summary-section-head.new .summary-dot {
+  background: #2A4466;
+}
+
+/* =========================================================
+   MOBILE (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .summary-section-head {
+    padding-top: 16px;
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+
+  .summary-dot {
+    width: 5px;
+    height: 5px;
+    margin-right: 6px;
+  }
+
+  .summary-label {
+    font-size: 7.5px;
+    letter-spacing: 0.22em;
+    color: #B0A898;
+  }
+
+  .summary-line {
+    flex: 1;
+    height: 1px;
+    background: #F0EAE0;
+    margin-left: 8px;
+  }
+}

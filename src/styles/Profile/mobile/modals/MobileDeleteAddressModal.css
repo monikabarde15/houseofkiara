@@ -1,0 +1,124 @@
+/* ============================================
+   Section 12.3 - Remove Address Confirmation Modal
+   ============================================ */
+
+/* Backdrop */
+.profile-mobile-deladdr-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 22, 18, 0.4);
+  z-index: 1000;
+}
+
+/* Modal Container - Bottom Sheet Style */
+.profile-mobile-deladdr-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 430px;
+  margin: 0 auto;
+  background: #FFFFFB;
+  border-top: 2px solid #1A1612;
+  border-radius: 0;
+  z-index: 1001;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 24px;
+  text-align: center;
+  animation: profile-mobile-deladdr-slide-up 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes profile-mobile-deladdr-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Icon */
+.profile-mobile-deladdr-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(184, 92, 56, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 13px;
+}
+
+.profile-mobile-deladdr-icon svg {
+  stroke: #B85C38;
+}
+
+/* Title */
+.profile-mobile-deladdr-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #1A1612;
+  margin-bottom: 7px;
+}
+
+/* Body Text */
+.profile-mobile-deladdr-body {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.65;
+  margin-bottom: 18px;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Buttons */
+.profile-mobile-deladdr-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-mobile-deladdr-btn-cancel {
+  width: 100%;
+  background: none;
+  border: none;
+  border-top: 1px solid #F0EAE0;
+  padding: 15px 20px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  cursor: pointer;
+}
+
+.profile-mobile-deladdr-btn-cancel:active {
+  background: #FAF7F2;
+}
+
+.profile-mobile-deladdr-btn-delete {
+  width: 100%;
+  background: #B85C38;
+  border: none;
+  padding: 15px 20px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.profile-mobile-deladdr-btn-delete:active {
+  opacity: 0.85;
+}

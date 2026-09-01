@@ -1,0 +1,17 @@
+/* ============================================
+   Section 5.1 - Section Container & Item Block
+   ============================================ */
+
+.profile-mobile-rentals-section {
+  padding-top: 24px;
+}
+
+.profile-mobile-section-container {
+  padding: 0;
+}
+
+.profile-mobile-item-block {
+  background: #FFFFFB;
+  border-top: 1px solid #F0EAE0;
+  border-bottom: 1px solid #F0EAE0;
+}

@@ -84,39 +84,31 @@
   .policy-strip {
     display: flex;
     flex-direction: row;
-
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-
-    margin-top: 36px;
+    margin-top: 28px;
     padding-top: 20px;
-
-    border-top: 1px solid var(--border-light);
-
-    gap: 0; /* 🔥 important */
-
+    border-top: 1px solid #F0EAE0;
+    gap: 0;
     -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
   }
 
   /* =========================
-     CARD
+     CARD 
   ========================= */
   .policy-item {
-    flex: 0 0 82vw;          
-    max-width: 320px;
-
+    flex: 0 0 80vw;
+    max-width: 300px;
     scroll-snap-align: start;
-
-    padding-right: 20px;
-    margin-right: 20px;
-
-    border-right: 1px solid var(--border-light);
-
+    padding-right: 18px;
+    margin-right: 18px;
+    border-right: 1px solid #F0EAE0;
     display: flex;
     flex-direction: column;
   }
 
-  /* LAST CARD FIX */
+  /* LAST CARD  */
   .policy-item:last-child {
     border-right: none;
     margin-right: 0;
@@ -124,39 +116,42 @@
   }
 
   /* =========================
-     NUMBER
+     NUMBER -
   ========================= */
   .policy-number {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 300;
     font-size: 11px;
-    margin-bottom: 10px;
-
-    color: var(--gold);
     letter-spacing: 0.1em;
+    color: #C9A96E;
+    margin-bottom: 10px;
   }
 
   /* =========================
-     TITLE
+     TITLE - 
   ========================= */
   .policy-title {
-    font-size: 17px;
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 400;
+    font-size: 16px;
     line-height: 1.3;
+    color: #1A1612;
     margin-bottom: 8px;
-
-    color: var(--charcoal);
   }
 
   /* =========================
-     TEXT
+     TEXT - 
   ========================= */
   .policy-text {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 300;
     font-size: 10.5px;
     line-height: 1.85;
-
-    color: var(--ink-4);
+    color: #B0A898;
   }
 
   /* =========================
-     SCROLLBAR HIDE
+     HIDE SCROLLBAR
   ========================= */
   .policy-strip::-webkit-scrollbar {
     display: none;

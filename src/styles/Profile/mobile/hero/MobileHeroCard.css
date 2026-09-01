@@ -1,0 +1,217 @@
+/* ============================================
+   Section 3 - Profile Hero Card
+   ============================================ */
+
+.profile-mobile-hero-card {
+  background: linear-gradient(160deg, #1A1612 0%, #2C2418 100%);
+  padding: 20px 20px 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ============================================
+   Rise Animation System
+   ============================================ */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-rise] {
+  opacity: 0;
+
+  animation-fill-mode: forwards;
+}
+
+[data-rise="1"] {
+  animation:
+    rise
+    0.5s
+    cubic-bezier(0.16, 1, 0.3, 1)
+    forwards;
+}
+
+/* Radial glow top-right */
+.profile-mobile-hero-card::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 169, 110, 0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* Bottom shimmer line */
+.profile-mobile-hero-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.3), transparent);
+}
+
+.profile-mobile-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Top Row */
+.profile-mobile-hero-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Avatar - Section 3.1.1 */
+.profile-mobile-avatar {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+}
+
+.profile-mobile-avatar-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.profile-mobile-avatar-initials {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3C3025, #2A2018);
+  border: 1px solid rgba(201, 169, 110, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #C9A96E;
+}
+
+/* Name & Info Block - Section 3.1.2 */
+.profile-mobile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-mobile-tier {
+  font-family: "DM Sans", sans-serif;
+  font-size: 7.5px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #C9A96E;
+  margin-bottom: 3px;
+}
+
+.profile-mobile-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #FFFFFB;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.profile-mobile-email {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: rgba(255, 254, 251, 0.75);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Edit Button - Section 3.1.3 */
+.profile-mobile-edit-btn {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 254, 251, 0.7);
+  cursor: pointer;
+}
+
+.profile-mobile-edit-btn svg {
+  stroke: currentColor;
+}
+
+/* Stats Bar - Section 3.2 */
+.profile-mobile-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid rgba(201, 169, 110, 0.12);
+}
+
+.profile-mobile-stat {
+  text-align: center;
+  flex: 1;
+}
+
+.profile-mobile-stat-number {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #E8D5B0;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.profile-mobile-stat-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 7px;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 254, 251, 0.65);
+}
+
+.profile-mobile-stat-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(201, 169, 110, 0.12);
+}
+
+/* Member Since Footer - Section 3.3 */
+.profile-mobile-since {
+  text-align: center;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: rgba(255, 254, 251, 0.55);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(201, 169, 110, 0.08);
+}

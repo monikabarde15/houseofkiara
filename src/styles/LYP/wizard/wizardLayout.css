@@ -12,11 +12,11 @@
 
 .lyp-wizard-header {
   position: sticky;
-  /* top: 120px; */
-  top: 0px;
+  top: 120px;
+  /* top: 0px; */
   background: var(--warm-white);
   z-index: 100;
-  /* border-bottom: 1px solid var(--border-light); */
+  border-bottom: 1px solid var(--border-light);
 }
 
 /* ----------  STEP TABS ROW ---------- */

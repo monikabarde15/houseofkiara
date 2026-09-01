@@ -18,7 +18,7 @@ const DepositNotice = ({ product }) => {
           ₹{amount} refundable security deposit
         </span>
         {" "}
-        — not collected at checkout. Our team will reach out via WhatsApp before dispatch. Refunded in full within 3–5 business days of return inspection.
+        — not collected at checkout. Our team will reach out via WhatsApp before dispatch. Refunded in full within {returnDays-2}-{returnDays} business days of return inspection.
       </p>
 
     </div>

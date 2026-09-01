@@ -1,0 +1,125 @@
+/* Policies Section - B11 */
+.hok-hiw-policies {
+  background: #FFFEFB;
+  padding: 96px 80px;
+}
+
+/* Header */
+.hok-hiw-pol-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: end;
+  margin-bottom: 64px;
+}
+
+.hok-hiw-pol-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: 400;
+  color: #1A1612;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.hok-hiw-pol-title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.hok-hiw-pol-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.9;
+  margin: 0;
+}
+
+/* Policies Grid */
+.hok-hiw-pol-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+}
+
+/* Policy Card */
+.hok-hiw-pol-card {
+  background: #FAF7F2;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+  padding: 36px 32px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.hok-hiw-pol-card:hover {
+  border-color: #E8D5B0;
+  transform: translateY(-2px);
+}
+
+/* Icon */
+.hok-hiw-pol-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #E8E0D4;
+  background: #FFFEFB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.hok-hiw-pol-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Card Title */
+.hok-hiw-pol-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-weight: 400;
+  color: #1A1612;
+  margin: 0 0 10px 0;
+}
+
+/* Card Body */
+.hok-hiw-pol-card-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.85;
+  margin: 0 0 14px 0;
+}
+
+/* Card Link */
+.hok-hiw-pol-card-link {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #8A7E72;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.hok-hiw-pol-card-link::after {
+  /* content: '→'; */
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.hok-hiw-pol-card-link:hover {
+  color: #C9A96E;
+}
+
+.hok-hiw-pol-card-link:hover::after {
+  transform: translateX(2px);
+}

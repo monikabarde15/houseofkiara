@@ -284,3 +284,205 @@
   font-weight: 400;
   color: var(--ink-2);
 }
+
+
+
+/* =========================================================
+   MOBILE OVERRIDES (max-width: 430px)
+   Spec: Mobile Checkout v1.0 (Page 19-21 - Section 8.9)
+========================================================= */
+
+/* =========================================================
+   MOBILE OVERRIDES (max-width: 430px)
+   Spec: Mobile Checkout v1.0 (Page 19-21 - Section 8.9)
+========================================================= */
+
+@media (max-width: 430px) {
+  /* =========================
+     OPTION CARDS
+  ========================= */
+  
+  .payment-section .checkout-payment-option-card {
+    padding: 14px 16px;
+  }
+  
+  .payment-section .checkout-payment-option-left {
+    gap: 12px;
+  }
+  
+  .payment-section .checkout-payment-opt-radio {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+  }
+  
+  .payment-section .checkout-payment-opt-radio.selected::after {
+    width: 7px;
+    height: 7px;
+  }
+  
+  .payment-section .checkout-payment-option-title {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    color: #3C3529;
+    margin-bottom: 3px;
+  }
+  
+  .payment-section .checkout-payment-option-desc {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 300;
+    font-size: 10.5px;
+    color: #B0A898;
+    line-height: 1.5;
+    margin-top: 3px;
+  }
+  
+  .payment-section .checkout-payment-tag {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 400;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 1px;
+  }
+  
+  /* =========================
+     PANEL CONTAINER
+  ========================= */
+  
+  .payment-section .checkout-payment-option-panel.open {
+    padding: 16px;
+    max-height: 420px;
+  }
+  
+  /* =========================
+     CREDIT/DEBIT CARD PANEL
+     Spec: Page 21 - Expiry + CVV side by side
+  ========================= */
+  
+  /* Card number - full width */
+  .payment-section .checkout-payment-field:first-child {
+    margin-bottom: 20px;
+  }
+  
+  /* Name on card - full width */
+  .payment-section .checkout-payment-field-grid.c3 .checkout-payment-field:first-child {
+    margin-bottom: 20px;
+  }
+  
+  /* Container for expiry and CVV - side by side */
+  .payment-section .checkout-payment-field-grid.c3 {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Create a flex row for expiry and CVV */
+  .payment-section .checkout-payment-field-grid.c3 {
+    display: block;
+  }
+  
+  .payment-section .checkout-payment-field-grid.c3 .checkout-payment-field:nth-child(2),
+  .payment-section .checkout-payment-field-grid.c3 .checkout-payment-field:nth-child(3) {
+    display: inline-block;
+    width: calc(50% - 8px);
+    vertical-align: top;
+  }
+  
+  .payment-section .checkout-payment-field-grid.c3 .checkout-payment-field:nth-child(2) {
+    margin-right: 16px;
+  }
+  
+  .payment-section .checkout-payment-field-grid.c3 .checkout-payment-field:nth-child(3) {
+    margin-right: 0;
+  }
+  
+  /* CVV hint positioning */
+  .payment-section .checkout-payment-field-grid.c3 .checkout-payment-field:nth-child(3) .checkout-payment-field-hint {
+    display: block;
+  }
+  
+  /* =========================
+     NO-COST EMI PANEL
+     Spec: Page 21 - Tenure + Bank side by side
+  ========================= */
+  
+  .payment-section .checkout-payment-row.pf-c3 {
+    display: block;
+  }
+  
+  /* Card number - full width */
+  .payment-section .checkout-payment-row.pf-c3 .checkout-payment-field:first-child {
+    margin-bottom: 20px;
+  }
+  
+  /* Tenure and Bank side by side */
+  .payment-section .checkout-payment-row.pf-c3 .checkout-payment-field:nth-child(2),
+  .payment-section .checkout-payment-row.pf-c3 .checkout-payment-field:nth-child(3) {
+    display: inline-block;
+    width: calc(50% - 8px);
+    vertical-align: top;
+  }
+  
+  .payment-section .checkout-payment-row.pf-c3 .checkout-payment-field:nth-child(2) {
+    margin-right: 16px;
+  }
+  
+  .payment-section .checkout-payment-row.pf-c3 .checkout-payment-field:nth-child(3) {
+    margin-right: 0;
+  }
+  
+  /* =========================
+     FIELD LABELS & INPUTS
+  ========================= */
+  
+  .payment-section .checkout-payment-field label {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 400;
+    font-size: 8px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #B0A898;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .payment-section .checkout-payment-field input,
+  .payment-section .checkout-payment-field .checkout-payment-field-input,
+  .payment-section .checkout-payment-select {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    padding: 10px 0;
+    width: 100%;
+  }
+  
+  .payment-section .checkout-payment-field-hint {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 300;
+    font-size: 9.5px;
+    margin-top: 4px;
+    color: #B0A898;
+  }
+  
+  /* =========================
+     PAYMENT NOTICE
+  ========================= */
+  
+  .payment-section .checkout-payment-notice {
+    margin-top: 16px;
+    padding: 12px 0 12px 14px;
+    font-family: "DM Sans", sans-serif;
+    font-weight: 300;
+    font-size: 10.5px;
+    line-height: 1.75;
+    color: #8A7E72;
+    border-left: 2px solid #B0A898;
+  }
+  
+  .payment-section .checkout-payment-notice b {
+    font-weight: 400;
+    color: #3C3529;
+  }
+}

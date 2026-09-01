@@ -1,0 +1,182 @@
+/* ============================================
+   Edit Profile Modal
+   ============================================ */
+
+.profile-edit-mbk {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.55);
+  z-index: 500;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+}
+
+.profile-edit-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 520px;
+  width: calc(100% - 48px);
+  background: #FFFFFB;
+  border-radius: 14px;
+  z-index: 501;
+  box-shadow: 0 28px 72px rgba(26, 22, 18, 0.22);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* Modal Header */
+.profile-edit-mhdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.profile-edit-mtit {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1A1612;
+}
+
+.profile-edit-mcls {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #FAF7F2;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.profile-edit-mcls:hover {
+  background: #E8E0D4;
+}
+
+.profile-edit-mcls svg {
+  stroke: #1A1612;
+}
+
+/* Modal Body */
+.profile-edit-mbdy {
+  padding: 20px 24px 24px;
+}
+
+/* Form Layout */
+.profile-edit-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+.profile-edit-field {
+  margin-bottom: 13px;
+}
+
+.profile-edit-field-full {
+  margin-bottom: 13px;
+}
+
+/* Labels */
+.profile-edit-label {
+  display: block;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  margin-bottom: 6px;
+}
+
+.profile-edit-required {
+  color: #B85C38;
+  margin-left: 2px;
+}
+
+/* Inputs */
+.profile-edit-input {
+  width: 100%;
+  height: 42px;
+  border: 1px solid #E8E0D4;
+  border-radius: 7px;
+  padding: 0 12px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  color: #1A1612;
+  background: #FFFFFB;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.profile-edit-input:focus {
+  border-color: #C9A96E;
+}
+
+/* Error State */
+.profile-edit-has-error .profile-edit-label {
+  color: #B85C38;
+}
+
+.profile-edit-has-error .profile-edit-input {
+  border-color: #B85C38;
+}
+
+.profile-edit-error {
+  display: block;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  color: #B85C38;
+  margin-top: 4px;
+}
+
+/* Modal Footer */
+.profile-edit-mftr {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 0 24px 20px;
+}
+
+.profile-edit-btn-cancel {
+  padding: 9px 17px;
+  border-radius: 6px;
+  border: 1px solid #E8E0D4;
+  background: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-edit-btn-cancel:hover {
+  background: #FAF7F2;
+  color: #3C3529;
+}
+
+.profile-edit-btn-save {
+  padding: 9px 22px;
+  border-radius: 6px;
+  border: none;
+  background: #1A1612;
+  color: #E8D5B0;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-edit-btn-save:hover {
+  background: #3C3529;
+}

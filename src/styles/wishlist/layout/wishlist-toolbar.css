@@ -1,0 +1,11 @@
+/* Section 5: Toolbar */
+
+
+.desk-wishlist-toolbar {
+  padding-top: 36px;
+  border-bottom: 1px solid #E8E0D4;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}

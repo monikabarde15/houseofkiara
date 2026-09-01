@@ -1,0 +1,50 @@
+/* ============================================
+   Section 6.2 - Sticky View Bar
+   ============================================ */
+
+.profile-mobile-fv-bar {
+  position: sticky;
+  /* top: 56px; */ /*Original Design*/
+  top:0px;
+  z-index: 150;
+  height: 44px;
+  background: #FFFFFB;
+  border-bottom: 1px solid #F0EAE0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.profile-mobile-fv-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}
+
+.profile-mobile-fv-back svg {
+  stroke: currentColor;
+}
+
+.profile-mobile-fv-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #1A1612;
+}
+
+.profile-mobile-fv-count {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #B0A898;
+}

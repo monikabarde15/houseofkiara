@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { CircleQuestionMark, File } from 'lucide-react';
+import "../../../styles/cart/summary/gst-breakdown.css";
 
 const GSTBreakdown = ({
   rentalGST,

@@ -1,0 +1,60 @@
+/* =========================================================
+   MODE SEPARATOR - UNIFIED
+   Desktop first, mobile overrides at max-width: 430px
+========================================================= */
+
+.mode-separator {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.mode-separator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mode-separator-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #B0A898;
+  line-height: 1;
+}
+
+/* Colour variants */
+.mode-separator[data-type="rental"] .mode-separator-dot {
+  background: #6B7E5A;
+}
+
+.mode-separator[data-type="preloved"] .mode-separator-dot {
+  background: #893860;
+}
+
+.mode-separator[data-type="new"] .mode-separator-dot {
+  background: #2A4466;
+}
+
+/* =========================================================
+   MOBILE: max-width 430px
+   Following spec: Page 9 - Section 5.1
+========================================================= */
+@media (max-width: 430px) {
+  .mode-separator {
+    gap: 12px;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+  }
+
+  .mode-separator-label {
+    font-size: 8px;
+    letter-spacing: 0.26em;
+  }
+}

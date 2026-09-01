@@ -1,0 +1,46 @@
+/* AuthLayout.css - Section 2.2 Two-Column Auth Layout */
+.hok-auth-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 112px);
+}
+
+/* Right Form Panel - Section 6 */
+.hok-auth-right-panel {
+  background: var(--warm-white, #FFFFFB);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 48px;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Section 16 - Screen Container */
+.hok-auth-screen {
+  display: none;
+  width: 100%;
+}
+
+/* Active screen is visible */
+.hok-auth-screen.active {
+  display: block;
+}
+
+/* Section 2.3 - Responsive Breakpoints */
+@media (max-width: 860px) {
+  .hok-auth-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .hok-auth-right-panel {
+    padding: 48px 32px;
+  }
+}
+
+/* Small Mobile (≤500px) */
+@media (max-width: 500px) {
+  .hok-auth-right-panel {
+    padding: 40px 20px;
+  }
+}

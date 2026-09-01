@@ -1,0 +1,41 @@
+/* Section 7.3: Mode Strip (Bottom of Image) */
+
+.desk-wishlist-mode-strip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 7px 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  font-family: "DM Sans", sans-serif;
+  font-size: 7px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Rental strip bg: rgba(26,22,18,0.82) */
+.desk-wishlist-mode-strip-rent {
+  background: rgba(26, 22, 18, 0.82);
+}
+
+/* Preloved strip bg: rgba(184,92,56,0.14) */
+.desk-wishlist-mode-strip-preloved {
+  background: rgba(184, 92, 56, 0.14);
+}
+
+/* Buy New strip bg: rgba(107,126,90,0.14) */
+.desk-wishlist-mode-strip-new {
+  background: rgba(107, 126, 90, 0.14);
+}
+
+.desk-wishlist-mode-strip-text {
+  font-family: "DM Sans", sans-serif;
+  font-size: 7px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}

@@ -1,0 +1,157 @@
+/* Section 7.7: Card Body (Below Image) */
+/* Section 7.9: Saved Date & Remove Link */
+
+.desk-wishlist-card-body {
+  padding: 0 1px;
+}
+
+/* Designer label: DM Sans 9px, letter-spacing 0.2em, uppercase, #A8844A */
+.desk-wishlist-card-designer-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #A8844A;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* Product name: Cormorant Garamond 17px, weight 400, line-height 1.3, #1A1612 */
+.desk-wishlist-card-product-name {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #1A1612;
+  margin-bottom: 10px;
+}
+
+/* Condition badge (Preloved only) */
+.desk-wishlist-condition-badge {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  margin-bottom: 10px;
+}
+
+.desk-wishlist-condition-pristine {
+  color: #6B7E5A;
+}
+
+.desk-wishlist-condition-excellent {
+  color: #A8844A;
+}
+
+.desk-wishlist-condition-good {
+  color: #8A7E72;
+}
+
+/* Price label: DM Sans 8.5px, letter-spacing 0.2em, uppercase, #8A7E72 */
+.desk-wishlist-price-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  margin-bottom: 4px;
+}
+
+/* Price: Cormorant Garamond 24px, weight 300, line-height 1, #1A1612 */
+.desk-wishlist-price {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+  color: #1A1612;
+  margin-bottom: 5px;
+}
+
+/* Price note: DM Sans 11px, flex row, gap 8px */
+.desk-wishlist-price-note {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: #8A7E72;
+  font-weight: 300;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.desk-wishlist-price-note-label {
+  color: #8A7E72;
+}
+
+/* Struck price: #F0EAE0, line-through */
+.desk-wishlist-struck-price {
+  color: #F0EAE0;
+  text-decoration: line-through;
+}
+
+/* Save badge: #6B7E5A, weight 400 */
+.desk-wishlist-save-badge {
+  font-weight: 400;
+  color: #6B7E5A;
+}
+
+/* New note for Buy New items */
+.desk-wishlist-new-note {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: #8A7E72;
+  margin-bottom: 16px;
+  font-weight: 300;
+}
+
+/* Unavailability note: Cormorant Garamond italic 11.5px, #8A7E72 */
+.desk-wishlist-unavailability-note {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 11.5px;
+  font-style: italic;
+  color: #8A7E72;
+  margin-bottom: 16px;
+}
+
+/* Section 7.9: Saved date */
+.desk-wishlist-saved-date {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  color: #8A7E72;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  margin-top: 9px;
+}
+
+/* Section 7.9: Remove link */
+.desk-wishlist-remove-link {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  display: inline-flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  background: none;
+  border: none;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.desk-wishlist-remove-link:hover {
+  color: #B85C38;
+}
+
+.desk-wishlist-remove-link svg {
+  width: 10px;
+  height: 10px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+}

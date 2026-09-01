@@ -1,0 +1,169 @@
+/* ============================================
+   Section 8 - Purchase Card (.purch-card)
+   ============================================ */
+
+/* Card Container */
+.profile-purch-pc {
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    border-color 0.2s;
+}
+
+.profile-purch-pc:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(26, 22, 18, 0.08);
+  border-color: #E8D5B0;
+}
+
+.profile-purch-pc.profile-purch-active-card {
+  border-color: #A8844A;
+  box-shadow: 0 8px 28px rgba(26, 22, 18, 0.1);
+}
+
+/* Card Image */
+.profile-purch-pc-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #F0EAE0, #E8E0D4);
+}
+
+.profile-purch-pc-placeholder {
+  width: 32px;
+  height: 32px;
+  opacity: 0.2;
+  stroke: #1A1612;
+}
+
+/* Card Body */
+.profile-purch-pc-body {
+  padding: 12px 13px 14px;
+}
+
+/* Status Badge Base */
+.profile-purch-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-bottom: 7px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Dot */
+.profile-purch-bdot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Delivered */
+.profile-purch-b-del {
+  background: rgba(107, 126, 90, 0.12);
+  color: #6B7E5A;
+}
+
+/* Processing */
+.profile-purch-b-pro {
+  background: rgba(184, 92, 56, 0.1);
+  color: #B85C38;
+}
+
+/* Cancelled */
+.profile-purch-b-can {
+  background: rgba(138, 126, 114, 0.12);
+  color: #8A7E72;
+}
+
+/* Card Name */
+.profile-purch-pc-name {
+  margin-bottom: 3px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #1A1612;
+}
+
+/* Type (with designer/condition) */
+.profile-purch-pc-type {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: #8A7E72;
+  margin-bottom: 2px;
+}
+
+/* Date */
+.profile-purch-pc-date {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: #8A7E72;
+  margin-bottom: 8px;
+}
+
+/* Footer */
+.profile-purch-pc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #F0EAE0;
+}
+
+/* Price */
+.profile-purch-pc-price {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #3C3529;
+}
+
+/* Details Button */
+.profile-purch-pc-details {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #A8844A;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.profile-purch-pc-details:hover {
+  color: #1A1612;
+}
+
+.profile-purch-pc-details svg {
+  width: 10px;
+  height: 10px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+}

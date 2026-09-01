@@ -1,0 +1,35 @@
+/* src/styles/Profile/left/LeftColumn.css */
+
+.profile-left-column {
+  width: 360px;
+  min-width: 360px;
+  flex-shrink: 0;
+
+  border-right: 1px solid #E8E0D4;
+  background: #FFFFFB;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.profile-left-column-content {
+  padding: 24px 0 40px;
+}
+
+/* Webkit Scrollbar */
+
+.profile-left-column::-webkit-scrollbar {
+  width: 4px;
+}
+
+.profile-left-column::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.profile-left-column::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}

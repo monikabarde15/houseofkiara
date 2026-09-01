@@ -1,0 +1,10 @@
+/* Section 4: Toolbar — Filter Tabs & Sort Row */
+
+
+.wishlist-mobile-toolbar {
+  background: #FFFFFB;
+  border-bottom: 1px solid #E8E0D4;
+  position: sticky;
+  top: 56px;
+  z-index: 190;
+}

@@ -1,0 +1,340 @@
+/* List & Earn (Mobile) - C11 */
+.hok-hiw-mobile-list-earn {
+  background: #1A1612;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Earn Watermark */
+.hok-hiw-mobile-le-watermark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 200px;
+  font-weight: 300;
+  color: rgba(201, 169, 110, 0.035);
+  letter-spacing: -0.04em;
+  position: absolute;
+  bottom: -30px;
+  left: -15px;
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.hok-hiw-mobile-le-container {
+  display: block;
+  position: relative;
+  z-index: 2;
+}
+
+/* Left Column */
+.hok-hiw-mobile-le-left {
+  padding: 52px 20px 40px;
+}
+
+.hok-hiw-mobile-le-eyebrow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.hok-hiw-mobile-le-line {
+  width: 24px;
+  height: 1px;
+  background: rgba(201, 169, 110, 0.4);
+}
+
+.hok-hiw-mobile-le-eyebrow-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: rgba(201, 169, 110, 0.6);
+  font-weight: 400;
+}
+
+.hok-hiw-mobile-le-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 400;
+  color: #FAF7F2;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+}
+
+.hok-hiw-mobile-le-title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.hok-hiw-mobile-le-lead {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(250, 247, 242, 0.72);
+  line-height: 1.9;
+  margin-bottom: 48px;
+}
+
+/* Commission Table */
+.hok-hiw-mobile-le-table {
+  border-top: 1px solid rgba(201, 169, 110, 0.12);
+  margin-bottom: 40px;
+}
+
+.hok-hiw-mobile-le-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.07);
+}
+
+.hok-hiw-mobile-le-row:last-child {
+  border-bottom: none;
+}
+
+.hok-hiw-mobile-le-row-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.hok-hiw-mobile-le-mode-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: rgba(201, 169, 110, 0.85);
+  font-weight: 400;
+}
+
+.hok-hiw-mobile-le-sub-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: rgba(250, 247, 242, 0.65);
+  margin-top: 3px;
+}
+
+.hok-hiw-mobile-le-figure {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: #FAF7F2;
+  letter-spacing: -0.02em;
+  text-align: right;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.hok-hiw-mobile-le-figure em {
+  font-style: normal;
+  color: #C9A96E;
+}
+
+.hok-hiw-mobile-le-figure-small {
+  font-size: 20px;
+}
+
+.hok-hiw-mobile-le-working-days {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: rgba(250, 247, 242, 0.6);
+  letter-spacing: 0;
+  margin-left: 4px;
+}
+
+.hok-hiw-mobile-le-figure-none {
+  font-size: 20px;
+}
+
+/* CTA Button */
+.hok-hiw-mobile-le-cta {
+  background: #C9A96E;
+  color: #1A1612;
+  border: none;
+  padding: 16px 40px;
+  min-height: 52px;
+  width: 100%;
+  border-radius: 1px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.hok-hiw-mobile-le-cta svg {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.25s ease;
+}
+
+.hok-hiw-mobile-le-cta:hover {
+  background: #EBD5B0;
+  transform: translateY(-1px);
+}
+
+.hok-hiw-mobile-le-cta:hover svg {
+  transform: translateX(3px);
+}
+
+.hok-hiw-mobile-le-cta:active {
+  background: #E8D5B0;
+}
+
+/* Divider */
+.hok-hiw-mobile-le-divider {
+  height: 1px;
+  background: rgba(201, 169, 110, 0.12);
+  margin: 0 20px;
+}
+
+/* Right Column */
+.hok-hiw-mobile-le-right {
+  padding: 0 20px 52px;
+}
+
+.hok-hiw-mobile-le-right-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: rgba(201, 169, 110, 0.85);
+  padding-top: 40px;
+  margin-bottom: 44px;
+}
+
+/* Lister Steps - Mobile */
+.hok-hiw-mobile-sstep {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 0;
+  padding: 32px 0;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.08);
+  position: relative;
+}
+
+.hok-hiw-mobile-sstep:last-child {
+  border-bottom: none;
+}
+
+/* Connector Line */
+.hok-hiw-mobile-sstep-connector {
+  position: absolute;
+  left: 20px;
+  top: 52px;
+  bottom: -24px;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(201, 169, 110, 0.15), transparent);
+}
+
+.hok-hiw-mobile-sstep:last-child .hok-hiw-mobile-sstep-connector {
+  display: none;
+}
+
+/* Icon Circle */
+.hok-hiw-mobile-sstep-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  background: rgba(201, 169, 110, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  grid-column: 1;
+  margin-top: 2px;
+}
+
+.hok-hiw-mobile-sstep-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+.hok-hiw-mobile-sstep-content {
+  grid-column: 2;
+  padding-left: 16px;
+}
+
+.hok-hiw-mobile-sstep-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-weight: 400;
+  color: #FAF7F2;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+
+.hok-hiw-mobile-sstep-tag {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(201, 169, 110, 0.85);
+  margin-bottom: 10px;
+}
+
+.hok-hiw-mobile-sstep-tag-line {
+  width: 12px;
+  height: 1px;
+  background: rgba(201, 169, 110, 0.3);
+}
+
+.hok-hiw-mobile-sstep-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(250, 247, 242, 0.72);
+  line-height: 1.85;
+}
+
+/* Tablet Breakpoint - @media (min-width: 680px) */
+@media (min-width: 680px) {
+  .hok-hiw-mobile-le-divider {
+    display: none;
+  }
+
+  .hok-hiw-mobile-le-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hok-hiw-mobile-le-left {
+    padding: 64px 40px;
+    border-right: 1px solid rgba(201, 169, 110, 0.08);
+  }
+
+  .hok-hiw-mobile-le-right {
+    padding: 64px 40px;
+  }
+
+  .hok-hiw-mobile-le-right-label {
+    padding-top: 0;
+  }
+
+  .hok-hiw-mobile-le-cta {
+    width: auto;
+    min-height: auto;
+  }
+
+  .hok-hiw-mobile-le-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+}

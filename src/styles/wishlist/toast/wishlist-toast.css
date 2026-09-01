@@ -1,0 +1,72 @@
+/* src/styles/wishlist/toast/wishlist-toast.css */
+/* Section 9.6: General Toast (All Other Actions) */
+
+/* General Toast Container - Identical to removal toast styling */
+.desk-wishlist-general-toast {
+  position: fixed;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  /* Entry animation - slides up from translateY(10px) opacity 0 to translateY(0) opacity 1 */
+  animation: desk-wishlist-general-toast-slide 0.3s ease forwards;
+  
+  /* Styling - identical to removal toast */
+  background: #1A1612;
+  padding: 12px 22px;
+  
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: #D4C5B0;
+  
+  white-space: nowrap;
+  
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.2);
+  
+  z-index: 300;
+  
+  pointer-events: auto;
+}
+
+/* Checkmark icon - 13×13px, stroke #C9A96E (gold) */
+.desk-wishlist-general-toast-icon {
+  width: 13px;
+  height: 13px;
+  stroke: #C9A96E;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* Toast message */
+.desk-wishlist-general-toast-message {
+  line-height: 1;
+}
+
+/* Section 9.6: Dismissal animation - opacity fades to 0 over 0.25s */
+.desk-wishlist-general-toast-dismiss {
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+/* Entry animation keyframes */
+@keyframes desk-wishlist-general-toast-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

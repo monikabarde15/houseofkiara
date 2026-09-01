@@ -1,0 +1,204 @@
+/* src/styles/Profile/left/LeftNav.css */
+
+.profile-left-nav {
+  margin: 0 20px 12px;
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.profile-left-nav-item {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 13px 16px;
+
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+
+  border-bottom: 1px solid var(--border-light);
+
+  transition: background 0.15s;
+}
+
+.profile-left-nav-item:last-child {
+  border-bottom: none;
+}
+
+.profile-left-nav-item:hover {
+  background: var(--cream);
+}
+
+/* Active State */
+
+.profile-left-nav-item.here {
+  background: var(--cream);
+}
+
+.profile-left-nav-item.here .profile-left-nav-label {
+  font-weight: 500;
+}
+
+.profile-left-nav-item.here .profile-left-nav-icon {
+  background: var(--gold-pale);
+}
+
+.profile-left-nav-item.here .profile-left-nav-icon svg {
+  stroke: var(--gold-deep);
+}
+
+/* Icon Box */
+
+.profile-left-nav-icon {
+  width: 30px;
+  height: 30px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 7px;
+  background: var(--cream);
+
+  transition: background 0.2s;
+}
+
+.profile-left-nav-icon svg {
+  width: 14px;
+  height: 14px;
+
+  stroke: #8A7E72;
+  fill: none;
+
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  transition: stroke 0.2s;
+}
+
+/* Text Content */
+
+.profile-left-nav-content {
+  flex: 1;
+}
+
+.profile-left-nav-label {
+  display: block;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #3C3529;
+}
+
+.profile-left-nav-sub-label {
+  display: block;
+  margin-top: 2px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  font-weight: 300;
+  color: #B0A898;
+}
+
+/* Right Side */
+
+.profile-left-nav-right {
+  flex-shrink: 0;
+}
+
+/* Pulsing Dot */
+
+.profile-left-pulsing-dot {
+  width: 5px;
+  height: 5px;
+
+  flex-shrink: 0;
+
+  display: block;
+
+  border-radius: 50%;
+  background: var(--gold);
+
+  animation: profile-pulse 2s infinite;
+}
+
+/* Badge */
+
+.profile-left-badge {
+  min-width: 15px;
+  height: 15px;
+
+  padding: 0 4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 8px;
+  font-weight: 500;
+
+  color: #FFFFFF;
+}
+
+.profile-left-badge.lb-red {
+  background: var(--terracotta);
+}
+
+.profile-left-badge.lb-gold {
+  background: var(--gold-deep);
+}
+
+/* Badge Variants */
+
+.profile-left-badge.lb-red {
+  background: var(--terracotta);
+  color: #FFFFFF;
+}
+
+.profile-left-badge.lb-gold {
+  background: var(--gold-deep);
+  color: #FFFFFF;
+}
+
+.profile-left-badge.lb-submission {
+  background: var(--gold-pale);
+  color: var(--gold-deep);
+}
+
+/* Chevron */
+
+.profile-left-chevron {
+  width: 11px;
+  height: 11px;
+
+  stroke: #E8E0D4;
+  fill: none;
+  stroke-width: 1.5;
+}
+
+@keyframes profile-pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

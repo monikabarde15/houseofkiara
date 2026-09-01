@@ -1,0 +1,17 @@
+/* src/styles/wishlist/sections/availability-notice.css */
+/* Section 6.3: Availability Notice (Rent Section Only) */
+
+.desk-wishlist-availability-notice {
+  border-left: 2px solid #C9A96E;
+  padding: 0 0 0 16px;
+  margin-bottom: 36px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: #1A1612;
+  line-height: 1.8;
+}
+
+.desk-wishlist-availability-notice-bold {
+  font-weight: 500;
+}

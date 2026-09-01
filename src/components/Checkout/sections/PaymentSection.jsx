@@ -10,6 +10,62 @@ import "../../../styles/checkout/sections/components/form-section.css";
 const PaymentSection = () => {
 
   const [selected, setSelected] = useState("upi");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("")
+
+  const formatCardNumber = (value) => {
+
+    /*
+      remove non-digits
+    */
+    const digits =
+      value.replace(/\D/g, "");
+
+    /*
+      limit to 16 digits
+    */
+    const limited =
+      digits.slice(0, 16);
+
+    /*
+      add spaces every 4 digits
+    */
+    return limited.replace(
+      /(\d{4})(?=\d)/g,
+      "$1 "
+    );
+
+  };
+
+
+  const formatExpiry = (value) => {
+
+    /*
+      remove non-digits
+    */
+    const digits =
+      value.replace(/\D/g, "");
+
+    /*
+      limit MMYY
+    */
+    const limited =
+      digits.slice(0, 4);
+
+    /*
+      add slash after month
+    */
+    if (limited.length <= 2) {
+      return limited;
+    }
+
+    return (
+      limited.slice(0, 2)
+      + " / "
+      + limited.slice(2)
+    );
+
+  };
 
   return (
     <FormSection>
@@ -119,7 +175,18 @@ const PaymentSection = () => {
                   id="card-num"
                   type="text"
                   placeholder="1234 5678 9012 3456"
-                  maxLength={22}
+                  maxLength={19}
+                  value={cardNumber}
+                  onChange={(e) => {
+
+                    const formatted =
+                      formatCardNumber(
+                        e.target.value
+                      );
+
+                    setCardNumber(formatted);
+
+                  }}
                 />
               </div>
 
@@ -143,6 +210,17 @@ const PaymentSection = () => {
                     type="text"
                     placeholder="MM / YY"
                     maxLength={7}
+                    value={cardExpiry}
+                    onChange={(e) => {
+
+                      const formatted =
+                        formatExpiry(
+                          e.target.value
+                        );
+
+                      setCardExpiry(formatted);
+
+                    }}
                   />
                 </div>
 

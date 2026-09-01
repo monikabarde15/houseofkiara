@@ -1,0 +1,49 @@
+/* Section 7.1: Card Entry Animation */
+/* Section 9.2: Removal Animation */
+/* Section 9.4: Restored Card Animation */
+
+@keyframes desk-wishlist-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.desk-wishlist-grid-card {
+  animation: desk-wishlist-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Removal animation */
+.desk-wishlist-card-removing {
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.desk-wishlist-card-collapsing {
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding-top 0.35s ease, 
+              padding-bottom 0.35s ease, margin-top 0.35s ease, 
+              margin-bottom 0.35s ease;
+}
+
+/* Restored card fade-in animation */
+@keyframes desk-wishlist-card-restore {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.desk-wishlist-card-restore {
+  animation: desk-wishlist-card-restore 0.3s ease forwards;
+}

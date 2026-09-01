@@ -1,0 +1,8 @@
+.wishlist-mobile-new-section {
+  margin-bottom: 8px;
+}
+
+.wishlist-mobile-new-section__cards {
+  display: flex;
+  flex-direction: column;
+}

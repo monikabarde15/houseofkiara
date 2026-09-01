@@ -1,0 +1,114 @@
+/* Divider Band - B9 */
+.hok-hiw-divider {
+  background: #F5EDD8;
+  padding: 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative Watermark */
+.hok-hiw-divider-watermark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 240px;
+  font-weight: 100;
+  color: rgba(201, 169, 110, 0.1);
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+.hok-hiw-divider-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Left - Quote */
+.hok-hiw-divider-quote {
+  flex: 1;
+  max-width: 520px;
+}
+
+.hok-hiw-divider-eyebrow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.hok-hiw-divider-line {
+  width: 16px;
+  height: 1px;
+  background: #C9A96E;
+}
+
+.hok-hiw-divider-eyebrow-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  color: #C9A96E;
+  font-weight: 400;
+}
+
+.hok-hiw-divider-quote-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  font-style: italic;
+  color: #1A1612;
+  line-height: 1.35;
+  margin: 0;
+  padding: 0;
+}
+
+/* Right - Stats */
+.hok-hiw-divider-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.hok-hiw-db-stat {
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.hok-hiw-db-stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #1A1612;
+  line-height: 1;
+}
+
+.hok-hiw-db-stat-number em {
+  font-style: normal;
+  color: #C9A96E;
+}
+
+.hok-hiw-db-stat-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8A7E72;
+  font-weight: 400;
+}

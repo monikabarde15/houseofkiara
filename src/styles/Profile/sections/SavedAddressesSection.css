@@ -1,0 +1,65 @@
+/* ============================================
+   Section 16 - Saved Addresses
+   ============================================ */
+
+.profile-saved-addresses-section {
+  margin-bottom: 52px;
+  scroll-margin-top: 20px;
+}
+
+.profile-addresses-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ============================================
+   Section 16.2 - Add New Address Card
+   ============================================ */
+
+.profile-add-addr-card {
+  background: none;
+  border: 1px dashed #E8E0D4;
+  border-radius: 11px;
+  padding: 24px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  width: 100%;
+  font-family: "DM Sans", sans-serif;
+}
+
+.profile-add-addr-card:hover {
+  background: #FAF7F2;
+  border-color: #E8D5B0;
+}
+
+.profile-add-addr-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #F5EDD8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-add-addr-icon svg {
+  stroke: #A8844A;
+  stroke-width: 1.5;
+}
+
+.profile-add-addr-title {
+  font-size: 12px;
+  color: #8A7E72;
+}
+
+.profile-add-addr-sub {
+  font-size: 10px;
+  font-weight: 300;
+  color: #B0A898;
+}

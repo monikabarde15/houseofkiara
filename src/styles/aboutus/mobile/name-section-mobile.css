@@ -1,0 +1,287 @@
+/* ===== THE NAME (KAIRA INTERACTIVE) - MOBILE ===== */
+
+.mob-name {
+  background: #FFFEFB;
+  padding: 72px 24px 80px;
+  position: relative;
+}
+
+/* ===== SECTION HEAD ===== */
+.mob-name__head {
+  max-width: 100%;
+  margin: 0 auto 44px;
+  text-align: center;
+}
+
+.mob-name__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mob-name__eyebrow-line {
+  width: 20px;
+  height: 1px;
+  background: #C9A96E;
+}
+
+.mob-name__eyebrow span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #C9A96E;
+}
+
+.mob-name__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(28px, 7vw, 38px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #1A1612;
+  margin: 0;
+}
+
+.mob-name__title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.mob-name__sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: #8A7E72;
+  margin-top: 12px;
+}
+
+/* ===== LETTERS ===== */
+
+.mob-name__letters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin-bottom: 40px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 4px;
+}
+
+.mob-name__letters::-webkit-scrollbar {
+  display: none;
+}
+
+.mob-name__letter {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 1;
+  padding: 0 3px 14px;
+  color: #E8E0D4;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: color 0.4s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Underline */
+.mob-name__letter-underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #C9A96E;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+/* Active state  */
+.mob-name__letter.active {
+  color: #1A1612;
+}
+
+.mob-name__letter.active .mob-name__letter-underline {
+  transform: scaleX(1);
+}
+
+/* Focus visible for keyboard */
+.mob-name__letter:focus-visible {
+  outline: 2px solid #C9A96E;
+  outline-offset: 4px;
+}
+
+/* ===== DISPLAY AREA ===== */
+.mob-name__display {
+  text-align: center;
+  min-height: 110px;
+}
+
+.mob-name__display-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.mob-name__display-word {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: clamp(22px, 6vw, 30px);
+  color: #B85C38;
+  margin: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.mob-name__display-word.fade-out {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.mob-name__display-word.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mob-name__display-desc {
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: #6B5E50;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 0 12px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition-delay: 0.05s;
+}
+
+.mob-name__display-desc.fade-out {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.mob-name__display-desc.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hint Line */
+.mob-name__hint {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  margin-top: 32px;
+}
+
+/* ===== DEFINITION BLOCK ===== */
+.mob-name__definition {
+  max-width: 100%;
+  margin: 48px auto 0;
+  text-align: center;
+  padding-top: 36px;
+  border-top: 1px solid #F0EAE0;
+}
+
+.mob-name__definition-lede {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 400;
+  line-height: 1.55;
+  color: #1A1612;
+  margin: 0;
+}
+
+.mob-name__definition-lede em {
+  font-style: italic;
+  color: #B85C38;
+}
+
+.mob-name__definition-sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: #6B5E50;
+  max-width: 100%;
+  margin: 14px auto 0;
+  padding: 0 8px;
+}
+
+/* Etymology Footnote - Mobile Spec §07.4 */
+.mob-name__definition-footnote {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 12.5px;
+  line-height: 1.85;
+  color: #8A7E72;
+  max-width: 100%;
+  margin: 22px auto 0;
+  padding: 0 8px;
+}
+
+.mob-name__definition-footnote em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* ===== REVEAL ANIMATION - Mobile Spec 2.3 ===== */
+.mob-name .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.mob-name .reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== REDUCED MOTION - Mobile Spec §01.1 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .mob-name .reveal {
+    transition-duration: 0.001ms !important;
+  }
+  .mob-name__letter {
+    transition-duration: 0.001ms !important;
+  }
+  .mob-name__letter-underline {
+    transition-duration: 0.001ms !important;
+  }
+  .mob-name__display-word,
+  .mob-name__display-desc {
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ===== TABLET BREAKPOINT (≥768px) - Mobile Spec Master Table ===== */
+@media (min-width: 768px) {
+  .mob-name {
+    padding: 72px 48px 80px;
+  }
+
+  .mob-name__letters {
+    gap: 16px;
+  }
+
+  .mob-name__letter {
+    font-size: 72px;
+    padding: 0 4px 18px;
+  }
+
+  .mob-name__display-desc {
+    max-width: 480px;
+  }
+}

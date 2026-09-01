@@ -1,0 +1,306 @@
+/* ===== ORBIT - MOBILE ===== */
+
+.mob-orbit {
+  background: #FFFEFB;
+  padding: 72px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== WRAPPER  ===== */
+/* Mobile: Orbit visual above copy — single column, stacked */
+.mob-orbit__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* ===== ORBIT VISUAL ===== */
+.mob-orbit__visual {
+  max-width: 300px;
+  width: 100%;
+  margin: 0 auto 40px;
+}
+
+.mob-orbit__svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Outer Ring */
+.mob-orbit__outer-ring {
+  fill: none;
+  stroke: #F0EAE0;
+  stroke-width: 1;
+}
+
+/* Orbit Path (Dashed) */
+.mob-orbit__path {
+  fill: none;
+  stroke: #EAE1D2;
+  stroke-width: 1;
+  stroke-dasharray: 2 7;
+}
+
+/* Centre Hub - Outer */
+.mob-orbit__hub-outer {
+  fill: #FFFEFB;
+  stroke: #C9A96E;
+  stroke-width: 1;
+}
+
+/* Centre Hub - Inner */
+.mob-orbit__hub-inner {
+  fill: none;
+  stroke: #E8D5B0;
+  stroke-width: 1;
+}
+
+/* Centre Dot */
+.mob-orbit__hub-dot {
+  fill: #C9A96E;
+}
+
+/* Centre Text */
+.mob-orbit__hub-text {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-style: italic;
+  fill: #1A1612;
+  dominant-baseline: central;
+}
+
+.mob-orbit__hub-text--gold {
+  fill: #C9A96E;
+}
+
+/* ===== NODES ===== */
+
+/* Node Group - Orbit Spin - Same as desktop */
+.mob-orbit__node {
+  cursor: pointer;
+  animation: mobOrbitSpin 46s linear infinite;
+  transform-origin: 200px 200px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Node Inner - Counter Rotation */
+.mob-orbit__node-inner {
+  animation: mobOrbitCounter 46s linear infinite;
+}
+
+@keyframes mobOrbitSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes mobOrbitCounter {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+/* Node Circle */
+.mob-orbit__node-circle {
+  fill: #FFFFFB;
+  stroke-width: 1.4;
+  transition: stroke-width 0.25s ease;
+}
+
+/* Rent Node */
+.mob-orbit__node-circle--rent {
+  stroke: #B85C38;
+}
+
+/* Preloved Node */
+.mob-orbit__node-circle--preloved {
+  stroke: #C9A96E;
+}
+
+/* List & Sell Node */
+.mob-orbit__node-circle--list {
+  stroke: #6B7E5A;
+}
+
+/* Node Text */
+.mob-orbit__node-text {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  fill: #1A1612;
+  dominant-baseline: central;
+}
+
+/* Rent Text */
+.mob-orbit__node-text--rent {
+  fill: #B85C38;
+}
+
+/* Preloved Text - smaller for two lines */
+.mob-orbit__node-text--preloved {
+  font-size: 9.5px;
+  letter-spacing: 0.3em;
+  fill: #A6843E;
+}
+
+/* List & Sell Text - smaller for two lines */
+.mob-orbit__node-text--list {
+  font-size: 9.5px;
+  letter-spacing: 0.3em;
+  fill: #6B7E5A;
+}
+
+/* ===== MOBILE INTERACTIONS ===== */
+/* Mobile: :active pauses animation, adds drop-shadow, stroke-width bump */
+
+.mob-orbit__node:active {
+  animation-play-state: paused;
+}
+
+.mob-orbit__node:active .mob-orbit__node-circle {
+  stroke-width: 2.3;
+}
+
+.mob-orbit__node:active {
+  filter: drop-shadow(0 8px 14px rgba(26, 22, 18, 0.16));
+}
+
+/* Focus visible for keyboard */
+.mob-orbit__node:focus-visible {
+  outline: 2px solid #C9A96E;
+  outline-offset: 8px;
+  animation-play-state: paused;
+}
+
+.mob-orbit__node:focus-visible .mob-orbit__node-circle {
+  stroke-width: 2.3;
+}
+
+/* ===== COPY BLOCK ===== */
+.mob-orbit__copy {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Eyebrow */
+.mob-orbit__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mob-orbit__eyebrow-line {
+  width: 20px;
+  height: 1px;
+  background: #C9A96E;
+}
+
+.mob-orbit__eyebrow span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #C9A96E;
+}
+
+/* H2 */
+.mob-orbit__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(26px, 6.5vw, 36px);
+  font-weight: 400;
+  line-height: 1.22;
+  color: #1A1612;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.mob-orbit__title em {
+  font-style: italic;
+  color: #6B7E5A;
+}
+
+/* Body Paragraphs -*/
+.mob-orbit__body {
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: #6B5E50;
+  margin: 0 0 16px 0;
+  text-align: left;
+}
+
+.mob-orbit__body:last-of-type {
+  margin-bottom: 0;
+}
+
+/* ===== REVEAL ANIMATION  ===== */
+.mob-orbit .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.mob-orbit .reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== TABLET BREAKPOINT (≥768px) - Mobile Spec Master Table ===== */
+@media (min-width: 768px) {
+  .mob-orbit {
+    padding: 72px 48px;
+  }
+
+  .mob-orbit__wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    max-width: 1100px;
+  }
+
+  .mob-orbit__visual {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .mob-orbit__copy {
+    text-align: left;
+  }
+
+  .mob-orbit__eyebrow {
+    justify-content: flex-start;
+  }
+
+  .mob-orbit__title {
+    text-align: left;
+  }
+
+  .mob-orbit__body {
+    text-align: left;
+  }
+}
+
+/* ===== REDUCED MOTION  ===== */
+@media (prefers-reduced-motion: reduce) {
+  .mob-orbit .reveal {
+    transition-duration: 0.001ms !important;
+  }
+  .mob-orbit__node {
+    animation-duration: 0.001ms !important;
+  }
+  .mob-orbit__node-inner {
+    animation-duration: 0.001ms !important;
+  }
+  .mob-orbit__node-circle {
+    transition-duration: 0.001ms !important;
+  }
+}

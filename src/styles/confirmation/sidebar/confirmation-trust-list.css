@@ -1,0 +1,69 @@
+/* src\styles\confirmation\sidebar\confirmation-trust-list.css */
+.confirmation-trust-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  margin-top: var(--s5);
+
+  padding-top: var(--s4);
+
+  border-top: 1px solid var(--ink-6);
+}
+
+.confirmation-trust-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  color: var(--ink-3);
+
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.confirmation-trust-list-icon {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+}
+
+.confirmation-trust-list-icon svg {
+  color: #C9A96E;
+
+  fill: none;
+
+  stroke-linecap: round;
+}
+
+.confirmation-trust-list-text {
+  margin: 0;
+}
+
+
+/* =========================================================
+   MOBILE: Trust List
+   @media (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .confirmation-trust-list {
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 18px;
+  }
+
+  .confirmation-trust-list-item {
+    gap: 10px;
+    font-size: 10.5px;
+    line-height: 1.45;
+  }
+
+  .confirmation-trust-list-icon svg {
+    width: 13px;
+    height: 13px;
+    stroke-width: 1.3;
+  }
+}

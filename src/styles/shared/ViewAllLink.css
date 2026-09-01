@@ -1,0 +1,25 @@
+.hok-view-all-link {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+
+  color: #1a1612;
+
+  border-bottom: 1px solid #1a1612;
+
+  padding-bottom: 2px;
+
+  text-decoration: none;
+
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.hok-view-all-link:hover {
+  color: #c9a96e;
+  border-color: #c9a96e;
+}

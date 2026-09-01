@@ -1,0 +1,91 @@
+/* ============================================
+   Section 4 - Active Rental Alert Banner
+   ============================================ */
+
+.profile-mobile-alert-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #FFFFFB;
+  border-bottom: 1px solid #F0EAE0;
+  cursor: pointer;
+}
+
+/* ============================================
+   Rise Animation System
+   ============================================ */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-rise] {
+  opacity: 0;
+
+  animation-fill-mode: forwards;
+}
+
+[data-rise="2"] {
+  animation:
+    rise
+    0.5s
+    cubic-bezier(0.16, 1, 0.3, 1)
+    forwards;
+}
+
+.profile-mobile-alert-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #6B7E5A;
+  flex-shrink: 0;
+  margin-top: 1px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.profile-mobile-alert-text {
+  flex: 1;
+}
+
+.profile-mobile-alert-title {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #3C3529;
+  margin-bottom: 2px;
+}
+
+.profile-mobile-alert-subtitle {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.5;
+}
+
+.profile-mobile-alert-arrow {
+  width: 14px;
+  height: 14px;
+
+  stroke: #8A7E72;
+
+  flex-shrink: 0;
+}

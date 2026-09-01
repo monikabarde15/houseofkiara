@@ -1,0 +1,182 @@
+/* ===== PHILOSOPHY - MOBILE ===== */
+
+.mob-philosophy {
+  background: #1A1612; 
+  padding: 72px 24px;
+  color: #FFFEFB;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== SECTION HEAD ===== */
+.mob-philosophy__head {
+  max-width: 100%;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.mob-philosophy__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mob-philosophy__eyebrow-line {
+  width: 20px;
+  height: 1px;
+  background: #C9A96E; 
+}
+
+.mob-philosophy__eyebrow span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #E8D5B0; 
+}
+
+.mob-philosophy__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(26px, 6.5vw, 36px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #FFFEFB;
+  margin: 0;
+}
+
+.mob-philosophy__title em {
+  font-style: italic;
+  color: #E8D5B0; 
+}
+
+/* ===== CARD GRID ===== */
+.mob-philosophy__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* ===== CARD ===== */
+.mob-philosophy__card {
+  background: #1A1612; /* --charcoal */
+  padding: 32px 24px;
+  transition: background 0.3s ease;
+}
+
+/* Card Icon - Mobile: 32x32px */
+.mob-philosophy__card-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 20px;
+}
+
+.mob-philosophy__card-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: #C9A96E;
+  fill: none;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Card Heading */
+.mob-philosophy__card-heading {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  font-weight: 400;
+  color: #FFFEFB;
+  line-height: 1.3;
+  margin: 0 0 10px 0;
+}
+
+.mob-philosophy__card-heading em {
+  font-style: italic;
+  color: #E8D5B0; 
+}
+
+/* Card Description */
+.mob-philosophy__card-desc {
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #B8AA9A;
+  margin: 0;
+}
+
+/* ===== STAGGER ANIMATION ===== */
+.mob-philosophy__grid.reveal-stagger {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.mob-philosophy__grid.reveal-stagger.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mob-philosophy__grid.reveal-stagger.in-view .mob-philosophy__card {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: mobStaggerIn 0.6s ease forwards;
+}
+
+.mob-philosophy__grid.reveal-stagger.in-view .mob-philosophy__card:nth-child(1) {
+  animation-delay: 0s;
+}
+.mob-philosophy__grid.reveal-stagger.in-view .mob-philosophy__card:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.mob-philosophy__grid.reveal-stagger.in-view .mob-philosophy__card:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.mob-philosophy__grid.reveal-stagger.in-view .mob-philosophy__card:nth-child(4) {
+  animation-delay: 0.24s;
+}
+
+@keyframes mobStaggerIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== TABLET BREAKPOINT ===== */
+@media (min-width: 768px) {
+  .mob-philosophy {
+    padding: 72px 48px;
+  }
+
+  .mob-philosophy__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+  }
+
+  .mob-philosophy__card {
+    padding: 40px 32px;
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .mob-philosophy__grid.reveal-stagger,
+  .mob-philosophy__grid.reveal-stagger.in-view .mob-philosophy__card {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+  .mob-philosophy__card {
+    transition-duration: 0.001ms !important;
+  }
+}

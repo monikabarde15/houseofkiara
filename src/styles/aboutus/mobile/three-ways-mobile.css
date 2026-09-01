@@ -1,0 +1,313 @@
+/* ===== THREE WAYS - MOBILE ===== */
+/* Mobile Spec §13 - Pages 14-15 */
+
+.mob-ways {
+  background: #FAF7F2; /* --cream */
+  padding: 72px 24px;
+  position: relative;
+}
+
+/* ===== SECTION HEAD - Mobile Spec §13.1 ===== */
+.mob-ways__head {
+  max-width: 100%;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.mob-ways__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mob-ways__eyebrow-line {
+  width: 20px;
+  height: 1px;
+  background: #C9A96E;
+}
+
+.mob-ways__eyebrow span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #C9A96E;
+}
+
+.mob-ways__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(26px, 6.5vw, 36px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #1A1612;
+  margin: 0;
+}
+
+.mob-ways__title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.mob-ways__sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: #8A7E72;
+  max-width: 100%;
+  margin: 12px auto 0;
+}
+
+/* ===== CARD GRID - Mobile Spec §13.2 ===== */
+/* Mobile: flex column, gap: 16px - cards stack vertically */
+.mob-ways__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* ===== CARD - Mobile Spec §13.3 ===== */
+/* Mobile: padding 32px 24px */
+.mob-ways__card {
+  background: #FFFFFB;
+  border-top: 3px solid #E8E0D4;
+  padding: 32px 24px;
+  transition: border-color 0.3s ease;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Card :active states - Mobile Spec §13.3 */
+.mob-ways__card--terracotta:active {
+  border-top-color: #B85C38;
+}
+
+.mob-ways__card--gold:active {
+  border-top-color: #C9A96E;
+}
+
+.mob-ways__card--sage:active {
+  border-top-color: #6B7E5A;
+}
+
+/* ===== CARD TOP ROW - Mobile Spec §13.3 ===== */
+.mob-ways__card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.mob-ways__card-numeral {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 18px;
+  color: #C9A96E;
+}
+
+.mob-ways__card-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.mob-ways__card-dot--terracotta {
+  background: #B85C38;
+}
+
+.mob-ways__card-dot--gold {
+  background: #C9A96E;
+}
+
+.mob-ways__card-dot--sage {
+  background: #6B7E5A;
+}
+
+/* ===== CARD CONTENT - Mobile Spec §13.3 ===== */
+/* Heading - Mobile: 21px */
+.mob-ways__card-heading {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 21px;
+  font-weight: 400;
+  color: #1A1612;
+  margin: 0 0 10px 0;
+}
+
+/* Tagline - Mobile: 16px */
+.mob-ways__card-tagline {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #1A1612;
+  line-height: 1.45;
+  margin: 0 0 12px 0;
+}
+
+/* Description - Mobile: 13px */
+.mob-ways__card-desc {
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: #8A7E72;
+  margin: 0 0 18px 0;
+}
+
+/* ===== CARD LINK - Mobile Spec §13.3 ===== */
+/* Mobile: 10px */
+.mob-ways__card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: #1A1612;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mob-ways__card-link svg {
+  width: 11px;
+  height: 11px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.3s ease;
+}
+
+.mob-ways__card-link:active {
+  color: #C9A96E;
+}
+
+.mob-ways__card-link:active svg {
+  transform: translateX(3px);
+}
+
+/* ===== BOTTOM NOTE - Mobile Spec §13.3 ===== */
+.mob-ways__note {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: #8A7E72;
+  text-align: center;
+  margin-top: 28px;
+}
+
+/* ===== STAGGER ANIMATION - Mobile Spec §02.3 ===== */
+.mob-ways__grid.reveal-stagger {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.mob-ways__grid.reveal-stagger.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mob-ways__grid.reveal-stagger.in-view .mob-ways__card {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: mobStaggerIn 0.6s ease forwards;
+}
+
+.mob-ways__grid.reveal-stagger.in-view .mob-ways__card:nth-child(1) {
+  animation-delay: 0s;
+}
+.mob-ways__grid.reveal-stagger.in-view .mob-ways__card:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.mob-ways__grid.reveal-stagger.in-view .mob-ways__card:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+@keyframes mobStaggerIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== TABLET BREAKPOINT (≥768px) - Mobile Spec Master Table ===== */
+/* Tablet: grid 1fr 1fr (2-column), gap 20px, 3rd card centred */
+@media (min-width: 768px) {
+  .mob-ways {
+    padding: 72px 48px;
+  }
+
+  .mob-ways__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* Third card spans full width, constrained to half-width and centred */
+  .mob-ways__card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: calc(50% - 10px);
+    margin: 0 auto;
+  }
+
+  .mob-ways__card {
+    padding: 32px 24px;
+  }
+
+  .mob-ways__card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(26, 22, 18, 0.08);
+  }
+
+  .mob-ways__card--terracotta:hover {
+    border-top-color: #B85C38;
+  }
+
+  .mob-ways__card--gold:hover {
+    border-top-color: #C9A96E;
+  }
+
+  .mob-ways__card--sage:hover {
+    border-top-color: #6B7E5A;
+  }
+
+  .mob-ways__card-link:hover {
+    color: #C9A96E;
+  }
+
+  .mob-ways__card-link:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+/* ===== REDUCED MOTION - Mobile Spec §01.1 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .mob-ways__grid.reveal-stagger,
+  .mob-ways__grid.reveal-stagger.in-view .mob-ways__card {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+  .mob-ways__card {
+    transition-duration: 0.001ms !important;
+  }
+  .mob-ways__card-link svg {
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,3 +1,4 @@
+// src\components\Cart\ui\RemoveDialog.jsx
 import React, { useEffect, useRef } from "react";
 import { Heart,X } from "lucide-react";
 import '../../../styles/cart/ui/remove-dialog.css'

@@ -1,0 +1,66 @@
+/* How It Works - Main Styles */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+.hok-hiw-page {
+  background: #FFFEFB;
+  color: #1A1612;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* overflow-x: hidden; */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll Reveal System */
+.hok-hiw-r {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.hok-hiw-r.hok-hiw-v {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hok-hiw-r.hok-hiw-d1 { transition-delay: 0.07s; }
+.hok-hiw-r.hok-hiw-d2 { transition-delay: 0.14s; }
+.hok-hiw-r.hok-hiw-d3 { transition-delay: 0.21s; }
+.hok-hiw-r.hok-hiw-d4 { transition-delay: 0.28s; }
+
+/* Section base classes */
+.hok-hiw-sec {
+  padding: 96px 80px;
+}
+
+.hok-hiw-sec-alt {
+  background: #FAF7F2;
+}
+
+/* Mobile overrides */
+@media (max-width: 679px) {
+  .hok-hiw-r {
+    transform: translateY(20px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .hok-hiw-r.hok-hiw-d1 { transition-delay: 0.06s; }
+  .hok-hiw-r.hok-hiw-d2 { transition-delay: 0.12s; }
+  .hok-hiw-r.hok-hiw-d3 { transition-delay: 0.18s; }
+  
+  .hok-hiw-sec {
+    padding: 48px 16px;
+  }
+}
+
+/* Tablet breakpoint */
+@media (min-width: 680px) and (max-width: 1023px) {
+  .hok-hiw-sec {
+    padding: 64px 40px;
+  }
+}

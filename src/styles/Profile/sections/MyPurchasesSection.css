@@ -1,0 +1,14 @@
+/* ============================================
+   Section 8 - My Purchases Section
+   ============================================ */
+
+.profile-right-my-purchases-section {
+  margin-bottom: 52px;
+  scroll-margin-top: 20px;
+}
+
+.profile-right-purchases-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}

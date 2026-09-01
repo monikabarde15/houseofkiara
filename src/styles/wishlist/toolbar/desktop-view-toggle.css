@@ -1,0 +1,37 @@
+/* Section 5.6: View Toggle */
+
+.desktop-view-toggle {
+  display: inline-flex;
+  border: 1px solid #E8E0D4;
+  overflow: hidden;
+}
+
+.desktop-view-toggle__button {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.desktop-view-toggle__button:first-child {
+  border-right: 1px solid #E8E0D4;
+}
+
+.desktop-view-toggle__button svg {
+  stroke: #8A7E72;
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.desktop-view-toggle__button--active {
+  background: #F5EDD8;
+}
+
+.desktop-view-toggle__button--active svg {
+  stroke: #A8844A;
+}

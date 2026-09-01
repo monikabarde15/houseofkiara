@@ -2,7 +2,7 @@
 
 import React from "react";
 import SummaryRow from "./SummaryRow";
-import "../../../styles/cart/summary/order-summary.css"
+import "../../../styles/cart/summary/summary-section.css";
 
 const getModeClass = (title) => {
     if (title === "Rental") return "rental";
@@ -30,7 +30,7 @@ const getSubtitle = (item) => {
         //  SAFE WINDOW CALCULATION
         const windowDays =
             item.windowDays ||
-            Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+            Math.round((end - start) / (1000 * 60 * 60 * 24))+1;
 
         // FORMAT DATE RANGE (SPEC STYLE)
         const startMonth = start.toLocaleString("en-IN", { month: "short" });

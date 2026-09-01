@@ -1,0 +1,300 @@
+/* ===== DUALITY TOGGLE ===== */
+/* Pages 13-15 - Two Sides, One Wardrobe */
+
+.au-duality {
+  background: #FFFEFB; /* --warm-white */
+  padding: 140px 80px;
+  position: relative;
+}
+
+/* ===== SECTION HEAD - Spec §10.1 ===== */
+.au-duality__head {
+  max-width: 640px;
+  margin: 0 auto 56px;
+  text-align: center;
+}
+
+.au-duality__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.au-duality__eyebrow-line {
+  width: 40px;
+  height: 1px;
+  background: #C9A96E; 
+}
+
+.au-duality__eyebrow span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #C9A96E;
+}
+
+.au-duality__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #1A1612; 
+  margin: 0;
+}
+
+.au-duality__title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* ===== TOGGLE CONTROL  ===== */
+.au-duality__toggle-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.au-duality__toggle {
+  position: relative;
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  background: #FAF7F2; 
+  border: 1px solid #E8E0D4; 
+  border-radius: 30px;
+  padding: 5px;
+  /* role: tablist; */
+}
+
+/* Sliding Pill  */
+.au-duality__slider {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: calc(50% - 5px);
+  height: calc(100% - 10px);
+  background: #1A1612; 
+  border-radius: 26px;
+  transition: left 0.4s cubic-bezier(0.65, 0, 0.35, 1), 
+              background 0.4s ease;
+  z-index: 0;
+}
+
+.au-duality__slider.right {
+  left: calc(50% + 0px);
+  background: #6B7E5A; 
+}
+
+/* Tab Base  */
+.au-duality__tab {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  padding: 14px 18px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  color: #8A7E72;
+  background: none;
+  border: none;
+  border-radius: 26px;
+  cursor: pointer;
+  transition: color 0.4s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Tab Active - sits visually inside the pill */
+.au-duality__tab.active {
+  color: #FFFEFB; 
+}
+
+/* Tab Hover */
+.au-duality__tab:hover:not(.active) {
+  color: #1A1612;
+}
+
+/* Tab Focus */
+.au-duality__tab:focus-visible {
+  outline: 2px solid #C9A96E;
+  outline-offset: 2px;
+}
+
+/* ===== PANELS ===== */
+.au-duality__panels {
+  max-width: 760px;
+  margin: 56px auto 0;
+  min-height: 230px;
+  position: relative;
+}
+
+/* Panel default - hidden */
+.au-duality__panel {
+  display: none;
+  animation: fadeUpSm 0.5s ease both;
+  text-align: center; /*Centers all panel content */
+}
+
+/* Panel active - visible */
+.au-duality__panel.active {
+  display: block;
+}
+
+@keyframes fadeUpSm {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Panel Label */
+.au-duality__panel-label {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 24px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.au-duality__panel-label--renter {
+  color: #B85C38;
+}
+
+.au-duality__panel-label--lister {
+  color: #6B7E5A; 
+}
+
+/* Panel Body */
+.au-duality__panel-body {
+  font-family: "DM Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: #6B5E50;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* CTA Button Container - Centered */
+.au-duality__panel .au-duality__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center; /* Center content inside button */
+  gap: 8px;
+  margin-top: 28px;
+  padding: 14px 30px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure CTA container is centered within panel */
+.au-duality__panel {
+  text-align: center; /*This centers the inline-flex button */
+}
+
+.au-duality__cta svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Renter CTA */
+.au-duality__cta--renter {
+  background: #1A1612; /* --charcoal */
+  color: #FFFEFB;
+}
+
+.au-duality__cta--renter:hover {
+  background: #B85C38; 
+  transform: translateY(-2px);
+}
+
+/* Lister CTA  */
+.au-duality__cta--lister {
+  background: #6B7E5A;
+  color: #FFFEFB;
+}
+
+.au-duality__cta--lister:hover {
+  background: #5A6B4A;
+  transform: translateY(-2px);
+}
+
+/* CTA Active state */
+.au-duality__cta:active {
+  transform: scale(0.97);
+}
+
+/* ===== RESPONSIVE - Tablet ===== */
+@media (max-width: 1080px) {
+  .au-duality {
+    padding: 100px 40px;
+  }
+
+  .au-duality__toggle {
+    max-width: 100%;
+  }
+}
+
+/* ===== RESPONSIVE - Mobile ===== */
+@media (max-width: 680px) {
+  .au-duality {
+    padding: 72px 24px;
+  }
+
+  .au-duality__toggle {
+    max-width: 100%;
+  }
+
+  .au-duality__tab {
+    font-size: 11px;
+    padding: 12px 14px;
+  }
+
+  /* On mobile, tab text may wrap to 2 lines - acceptable per spec */
+  .au-duality__panel-label {
+    font-size: 20px;
+  }
+
+  .au-duality__panel-body {
+    font-size: 15px;
+    padding: 0 8px;
+  }
+
+  .au-duality__cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .au-duality__slider {
+    transition-duration: 0.001ms;
+  }
+  .au-duality__panel {
+    animation-duration: 0.001ms;
+  }
+  .au-duality__cta {
+    transition-duration: 0.001ms;
+  }
+}

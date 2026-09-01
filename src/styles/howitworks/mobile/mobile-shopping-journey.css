@@ -1,0 +1,300 @@
+/* Journey Swipe Cards (Mobile) - C8 */
+.hok-hiw-mobile-shop-section {
+  background: #FAF7F2;
+  padding: 48px 16px;
+  overflow: hidden;
+}
+
+/* Section Header */
+.hok-hiw-mobile-shop-header {
+  margin-bottom: 56px;
+}
+
+.hok-hiw-mobile-shop-eyebrow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.hok-hiw-mobile-shop-line {
+  width: 24px;
+  height: 1px;
+  background: #C9A96E;
+}
+
+.hok-hiw-mobile-shop-eyebrow-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: #C9A96E;
+  font-weight: 400;
+}
+
+.hok-hiw-mobile-shop-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 400;
+  color: #1A1612;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.hok-hiw-mobile-shop-title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.hok-hiw-mobile-shop-lead {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.9;
+  max-width: 520px;
+  margin-bottom: 16px;
+}
+
+.hok-hiw-mobile-shop-scroll-hint {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.hok-hiw-mobile-shop-scroll-bar {
+  width: 20px;
+  height: 1px;
+  background: #E8E0D4;
+  display: inline-block;
+}
+
+.hok-hiw-mobile-shop-scroll-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: #8A7E72;
+  text-transform: uppercase;
+}
+
+/* Journey Track */
+.hok-hiw-mobile-jtrack {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  gap: 3px;
+  padding-bottom: 48px;
+  cursor: grab;
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hok-hiw-mobile-jtrack::-webkit-scrollbar {
+  display: none;
+}
+
+.hok-hiw-mobile-jtrack:active {
+  cursor: grabbing;
+}
+
+/* Journey Cards */
+.hok-hiw-mobile-jcard {
+  width: min(84vw, 320px);
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  padding: 36px 28px 28px;
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
+  border-radius: 1px;
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+  position: relative;
+}
+
+.hok-hiw-mobile-jcard:hover {
+  border-color: rgba(201, 169, 110, 0.5);
+  transform: translateY(-3px);
+}
+
+/* Ghost Number */
+.hok-hiw-mobile-jcard-ghost {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 100px;
+  font-weight: 300;
+  color: rgba(201, 169, 110, 0.055);
+  position: absolute;
+  top: -10px;
+  right: 8px;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Step Identifier */
+.hok-hiw-mobile-jstep-num {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  color: #C9A96E;
+  margin-bottom: 22px;
+  position: relative;
+}
+
+.hok-hiw-mobile-jstep-num::after {
+  content: '';
+  display: block;
+  max-width: 40px;
+  height: 1px;
+  background: #E8D5B0;
+  margin-top: 12px;
+}
+
+/* Step Title */
+.hok-hiw-mobile-jstep-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: #1A1612;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+
+.hok-hiw-mobile-jstep-title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* Step Body */
+.hok-hiw-mobile-jstep-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.9;
+  margin-bottom: 22px;
+}
+
+/* Details List */
+.hok-hiw-mobile-jstep-details {
+  border-top: 1px solid #F0EAE0;
+  padding-top: 22px;
+}
+
+.hok-hiw-mobile-jspd {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.hok-hiw-mobile-jspd:last-child {
+  border-bottom: none;
+}
+
+.hok-hiw-mobile-jspd-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #E8D5B0;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.hok-hiw-mobile-jspd-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.55;
+}
+
+/* Dark Card (5th card - Loop) */
+.hok-hiw-mobile-jcard-dark {
+  background: #1A1612;
+  border-color: transparent;
+}
+
+.hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jcard-ghost {
+  color: rgba(201, 169, 110, 0.04);
+}
+
+.hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-num {
+  color: #C9A96E;
+}
+
+.hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-num::after {
+  background: rgba(201, 169, 110, 0.25);
+}
+
+.hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-title {
+  color: #FAF7F2;
+}
+
+.hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-title em {
+  color: #C9A96E;
+}
+
+.hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-body {
+  color: rgba(250, 247, 242, 0.72);
+}
+
+.hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-details {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+.hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jspd {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jspd-dot {
+  background: rgba(201, 169, 110, 0.25);
+}
+
+.hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jspd-text {
+  color: rgba(250, 247, 242, 0.65);
+}
+
+/* Spacer */
+.hok-hiw-mobile-jcard-spacer {
+  flex-shrink: 0;
+  width: 16px;
+}
+
+/* Progress Dots */
+.hok-hiw-mobile-jdots {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 6px;
+  padding-top: 18px;
+}
+
+.hok-hiw-mobile-jdot {
+  width: 16px;
+  height: 2px;
+  background: #E8E0D4;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background 0.2s ease, width 0.2s ease;
+  display: inline-block;
+}
+
+.hok-hiw-mobile-jdot.hok-hiw-mobile-on {
+  width: 28px;
+  background: #C9A96E;
+}
+
+.hok-hiw-mobile-jdot:hover {
+  opacity: 0.7;
+}

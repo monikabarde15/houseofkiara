@@ -1,0 +1,30 @@
+/* ============================================
+   Section 7 - Saved Pieces (Wishlist) Grid
+   ============================================ */
+
+.profile-mobile-saved-section {
+  padding-top: 24px;
+}
+
+.profile-mobile-saved-section .profile-mobile-item-block {
+  background: #FFFEFB;
+
+  border-top: 1px solid #F0EAE0;
+  border-bottom: 1px solid #F0EAE0;
+}
+
+.profile-mobile-wl-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 1px;
+
+  background: #F0EAE0;
+}
+
+.profile-mobile-wl-phantom {
+  background: #FFFEFB;
+
+  pointer-events: none;
+}

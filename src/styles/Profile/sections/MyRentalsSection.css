@@ -1,0 +1,13 @@
+/* src/styles/Profile/sections/MyRentalsSection.css */
+
+.profile-right-my-rentals-section {
+  margin-bottom: 52px;
+
+  scroll-margin-top: 20px;
+}
+
+.profile-right-rental-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}

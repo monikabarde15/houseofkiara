@@ -1,0 +1,310 @@
+/* ===== THE NAME (KAIRA INTERACTIVE)  ===== */
+/*  Signature Interactive Section */
+
+.au-name {
+  background: #FFFEFB; /* --warm-white */
+  padding: 140px 80px;
+  position: relative;
+}
+
+/* ===== SECTION HEAD - ===== */
+.au-name__head {
+  max-width: 680px;
+  margin: 0 auto 80px;
+  text-align: center;
+}
+
+.au-name__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.au-name__eyebrow-line {
+  width: 40px;
+  height: 1px;
+  background: #C9A96E; 
+}
+
+.au-name__eyebrow span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #C9A96E;
+}
+
+.au-name__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(34px, 4.4vw, 52px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #1A1612; 
+  margin: 0;
+}
+
+.au-name__title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+.au-name__sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 15.5px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #8A7E72; 
+  margin-top: 18px;
+}
+
+/* ===== LETTERS -===== */
+.au-name__letters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(10px, 3vw, 36px);
+  margin-bottom: 56px;
+  position: relative;
+}
+
+.au-name__letter {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 400;
+  font-size: clamp(56px, 9vw, 104px);
+  line-height: 1;
+  padding: 0 4px 18px;
+  color: #E8E0D4; 
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.4s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Underline */
+.au-name__letter-underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #C9A96E; 
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s ease;
+}
+
+/* Active state */
+.au-name__letter.active {
+  color: #1A1612; 
+}
+
+.au-name__letter.active .au-name__letter-underline {
+  transform: scaleX(1);
+}
+
+/* Hover / Focus state */
+.au-name__letter:hover:not(.active),
+.au-name__letter:focus-visible:not(.active) {
+  color: #E8D5B0; 
+}
+
+/* Focus visible for keyboard */
+.au-name__letter:focus-visible {
+  outline: 2px solid #C9A96E;
+  outline-offset: 4px;
+}
+
+/* ===== DISPLAY AREA - ===== */
+.au-name__display {
+  text-align: center;
+  min-height: 132px;
+}
+
+.au-name__display-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.au-name__display-word {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: clamp(26px, 3.4vw, 38px);
+  color: #B85C38; 
+  margin: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.au-name__display-word.fade-out {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.au-name__display-word.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.au-name__display-desc {
+  font-family: "DM Sans", sans-serif;
+  font-size: 15.5px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: #6B5E50;
+  max-width: 560px;
+  margin: 0 auto;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition-delay: 0.05s;
+}
+
+.au-name__display-desc.fade-out {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.au-name__display-desc.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hint Line */
+.au-name__hint {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8A7E72;
+  margin-top: 40px;
+}
+
+/* ===== DEFINITION BLOCK  ===== */
+.au-name__definition {
+  max-width: 660px;
+  margin: 64px auto 0;
+  text-align: center;
+  padding-top: 44px;
+  border-top: 1px solid #F0EAE0; 
+}
+
+.au-name__definition-lede {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: clamp(22px, 2.6vw, 27px);
+  font-weight: 400;
+  line-height: 1.55;
+  color: #1A1612; 
+  margin: 0;
+}
+
+.au-name__definition-lede em {
+  font-style: italic;
+  color: #B85C38; 
+}
+
+.au-name__definition-sub {
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: #6B5E50;
+  max-width: 580px;
+  margin: 18px auto 0;
+}
+
+/* Etymology Footnote */
+.au-name__definition-footnote {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: #8A7E72; 
+  max-width: 560px;
+  margin: 30px auto 0;
+}
+
+.au-name__definition-footnote em {
+  font-style: italic;
+  color: #C9A96E; 
+}
+
+/* ===== RESPONSIVE - Tablet ===== */
+@media (max-width: 1080px) {
+  .au-name {
+    padding: 100px 40px;
+  }
+
+  .au-name__letters {
+    gap: clamp(8px, 2vw, 20px);
+  }
+
+  .au-name__letter {
+    font-size: clamp(48px, 8vw, 72px);
+    padding: 0 2px 14px;
+  }
+
+  .au-name__head {
+    margin-bottom: 56px;
+  }
+}
+
+/* ===== RESPONSIVE - Mobile ===== */
+@media (max-width: 680px) {
+  .au-name {
+    padding: 72px 24px;
+  }
+
+  .au-name__letters {
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding: 0 4px;
+  }
+
+  .au-name__letters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .au-name__letter {
+    font-size: 56px;
+    padding: 0 2px 12px;
+    flex-shrink: 0;
+  }
+
+  .au-name__display {
+    min-height: 160px;
+  }
+
+  .au-name__display-desc {
+    font-size: 14px;
+    padding: 0 12px;
+  }
+
+  .au-name__definition-lede {
+    font-size: clamp(18px, 5vw, 22px);
+  }
+
+  .au-name__definition-sub {
+    font-size: 14px;
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .au-name__letter {
+    transition-duration: 0.001ms;
+  }
+  .au-name__letter-underline {
+    transition-duration: 0.001ms;
+  }
+  .au-name__display-word,
+  .au-name__display-desc {
+    transition-duration: 0.001ms;
+  }
+}

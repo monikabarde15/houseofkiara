@@ -1,0 +1,336 @@
+/* =========================================================
+   MOBILE ORDER STATUS MODAL - BOTTOM SHEET
+========================================================= */
+
+/* Backdrop Overlay (Spec 9.2) */
+.mobile-os-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 700;
+    background: rgba(26, 22, 18, 0.55);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-os-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Bottom Sheet (Spec 9.3) */
+.mobile-os-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #FFFFFB;
+    border-top: 2px solid #1A1612;
+    max-height: 88vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-os-sheet.open {
+    transform: translateY(0);
+}
+
+/* Sheet Header (Spec 9.4) */
+.mobile-os-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 16px 16px 0;
+    background: #FFFEFB;
+}
+
+.mobile-os-header-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.mobile-os-eyebrow {
+    margin-bottom: 5px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 7.5px;
+    font-weight: 400;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: #B0A898;
+}
+
+.mobile-os-title {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1;
+    color: #1A1612;
+}
+
+.mobile-os-title em {
+    font-style: italic;
+    color: #C9A96E;
+}
+
+.mobile-os-ref {
+    margin-top: 5px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 9.5px;
+    font-weight: 300;
+    color: #B0A898;
+}
+
+.mobile-os-ref strong {
+    font-weight: 400;
+    color: #3C3529;
+}
+
+.mobile-os-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #E8E0D4;
+    background: #FFFEFB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.mobile-os-close:hover {
+    border-color: #3C3529;
+    background: #FAF7F2;
+}
+
+.mobile-os-close svg {
+    stroke: #8A7E72;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+}
+
+/* Sheet Body (Spec 9.5) */
+.mobile-os-body {
+    padding: 14px 16px 20px;
+}
+
+/* Context Note (Spec 9.5) */
+.mobile-os-status-note {
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    background: rgba(201, 169, 110, 0.05);
+    border: 1px solid rgba(201, 169, 110, 0.2);
+    border-left: 3px solid #C9A96E;
+}
+
+.mobile-os-status-note-text {
+    margin: 0;
+    font-family: "DM Sans", sans-serif;
+    font-size: 10.5px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: #8A7E72;
+}
+
+.mobile-os-status-note-text strong {
+    font-weight: 400;
+    color: #3C3529;
+}
+
+/* Piece List (Spec 9.6) */
+.mobile-os-pieces {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.mobile-os-piece {
+    padding: 16px 0;
+    border-bottom: 1px solid #F0EAE0;
+}
+
+.mobile-os-piece-last {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+/* Piece Header (Spec 9.6.1) */
+.mobile-os-piece-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.mobile-os-piece-dot {
+    width: 5px;
+    height: 5px;
+    flex-shrink: 0;
+    margin-top: 5px;
+    border-radius: 50%;
+}
+
+.mobile-os-piece-dot-rental {
+    background: #6B7E5A;
+}
+
+.mobile-os-piece-dot-preloved {
+    background: #893860;
+}
+
+.mobile-os-piece-dot-new {
+    background: #2A4466;
+}
+
+.mobile-os-piece-name {
+    flex: 1;
+    margin: 0;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: #1A1612;
+}
+
+.mobile-os-piece-mode {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border-radius: 1px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 7.5px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.mobile-os-piece-mode-rental {
+    background: rgba(107, 126, 90, 0.1);
+    color: #6B7E5A;
+}
+
+.mobile-os-piece-mode-preloved {
+    background: rgba(137, 56, 96, 0.1);
+    color: #893860;
+}
+
+.mobile-os-piece-mode-new {
+    background: rgba(42, 68, 102, 0.1);
+    color: #2A4466;
+}
+
+/* Override for StatusPipeline and DetailRows on mobile */
+.mobile-os-body .hok-order-status-pipeline {
+    margin-bottom: 14px;
+}
+
+.mobile-os-body .hok-order-status-pipeline::before {
+    top: 9px;
+    left: 9px;
+    right: 9px;
+}
+
+.mobile-os-body .hok-order-status-stage-circle {
+    width: 18px;
+    height: 18px;
+    margin-bottom: 6px;
+}
+
+.mobile-os-body .hok-order-status-stage-label {
+    font-size: 7px;
+    letter-spacing: 0.08em;
+}
+
+.mobile-os-body .hok-order-status-detail-row {
+    gap: 10px;
+    padding: 6px 0;
+}
+
+.mobile-os-body .hok-order-status-detail-key {
+    min-width: 78px;
+    font-size: 7.5px;
+    letter-spacing: 0.14em;
+}
+
+.mobile-os-body .hok-order-status-detail-value {
+    font-size: 10px;
+}
+
+/* Sheet Footer (Spec 9.7) */
+.mobile-os-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px 20px;
+    border-top: 1px solid #F0EAE0;
+    background: #FFFFFB;
+}
+
+.mobile-os-footer-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 16px;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: "DM Sans", sans-serif;
+    font-size: 9.5px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    min-height: 44px;
+    transition: border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.mobile-os-footer-btn-secondary {
+    border: 1px solid #E8E0D4;
+    background: transparent;
+    color: #3C3529;
+}
+
+.mobile-os-footer-btn-secondary:hover {
+    border-color: #3C3529;
+    color: #1A1612;
+}
+
+.mobile-os-footer-btn-primary {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    background: #1A1612;
+    color: #E8D5B0;
+}
+
+.mobile-os-footer-btn-primary:hover {
+    opacity: 0.85;
+}
+
+.mobile-os-footer-btn-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(201, 160, 90, 0.08) 50%, transparent 60%);
+    animation: mobileOSShimmer 4s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes mobileOSShimmer {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(200%);
+    }
+}

@@ -1,0 +1,118 @@
+/* =========================================================
+   SUMMARY ROW
+   Shared between desktop and mobile
+========================================================= */
+
+/* Desktop Styles */
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-top: 1px solid #F0EAE0;
+}
+
+.summary-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 80%;
+}
+
+.summary-left.row {
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.summary-title {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #3C3529;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-sub {
+  font-size: 10px;
+  line-height: 1.4;
+  color: #B0A898;
+}
+
+.summary-value {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #18140F;
+  text-align: right;
+}
+
+/* Row Variants */
+.summary-row.discount .summary-title,
+.summary-row.discount .summary-value {
+  color: #6B7E5A;
+}
+
+.summary-row.deposit .summary-value {
+  color: #9A7010;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+}
+
+.summary-row.deposit .summary-title {
+  color: #B0A898;
+}
+
+.summary-row.dim .summary-title,
+.summary-row.dim .summary-value {
+  color: #B0A898;
+}
+
+.summary-row.dim .summary-value {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* =========================================================
+   MOBILE (max-width: 430px)
+========================================================= */
+
+@media (max-width: 430px) {
+  .summary-row {
+    padding: 10px 0;
+    gap: 12px;
+  }
+
+  .summary-left {
+    flex: 1;
+    max-width: none;
+  }
+
+  .summary-title {
+    font-size: 11.5px;
+    line-height: 1.4;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  .summary-sub {
+    font-size: 9.5px;
+    margin-top: 2px;
+  }
+
+  .summary-value {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .summary-row.deposit .summary-value {
+    font-size: 11px;
+  }
+
+  .summary-row.dim .summary-value {
+    font-size: 10px;
+  }
+}

@@ -1,0 +1,283 @@
+/* ===== DUALITY TOGGLE - MOBILE ===== */
+/* Mobile Spec §10 - Pages 10-11 */
+
+.mob-duality {
+  background: #FFFEFB;
+  padding: 72px 24px;
+  position: relative;
+}
+
+/* ===== SECTION HEAD - Mobile Spec §10.1 ===== */
+.mob-duality__head {
+  max-width: 100%;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+
+.mob-duality__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mob-duality__eyebrow-line {
+  width: 20px;
+  height: 1px;
+  background: #C9A96E;
+}
+
+.mob-duality__eyebrow span {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #C9A96E;
+}
+
+.mob-duality__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(26px, 6.5vw, 36px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #1A1612;
+  margin: 0;
+}
+
+.mob-duality__title em {
+  font-style: italic;
+  color: #C9A96E;
+}
+
+/* ===== TOGGLE CONTROL  ===== */
+/* Mobile: full width (no max-width cap) */
+.mob-duality__toggle-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.mob-duality__toggle {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  background: #FAF7F2;
+  border: 1px solid #E8E0D4;
+  border-radius: 30px;
+  padding: 5px;
+  /* role: tablist; */
+}
+
+/* Sliding Pill  */
+.mob-duality__slider {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: calc(50% - 5px);
+  height: calc(100% - 10px);
+  background: #1A1612;
+  border-radius: 26px;
+  transition: left 0.4s cubic-bezier(0.65, 0, 0.35, 1), 
+              background 0.4s ease;
+  z-index: 0;
+}
+
+.mob-duality__slider.right {
+  left: calc(50% + 0px);
+  background: #6B7E5A;
+}
+
+/* Tab Base*/
+.mob-duality__tab {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  padding: 14px 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  font-weight: 500;
+  color: #8A7E72;
+  background: none;
+  border: none;
+  border-radius: 26px;
+  cursor: pointer;
+  transition: color 0.4s ease;
+  -webkit-tap-highlight-color: transparent;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* Tab Active - sits visually inside the pill */
+.mob-duality__tab.active {
+  color: #FFFEFB;
+}
+
+/* Tab Hover */
+.mob-duality__tab:hover:not(.active) {
+  color: #1A1612;
+}
+
+/* Tab Focus */
+.mob-duality__tab:focus-visible {
+  outline: 2px solid #C9A96E;
+  outline-offset: 2px;
+}
+
+/* ===== PANELS ===== */
+.mob-duality__panels {
+  max-width: 100%;
+  margin: 36px auto 0;
+  min-height: 240px;
+  position: relative;
+}
+
+/* Panel default - hidden */
+.mob-duality__panel {
+  display: none;
+  animation: mobFadeUpSm 0.45s ease both;
+  text-align: center;
+}
+
+/* Panel active - visible */
+.mob-duality__panel.active {
+  display: block;
+}
+
+@keyframes mobFadeUpSm {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Panel Label  */
+/* Mobile: 20px */
+.mob-duality__panel-label {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 20px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.mob-duality__panel-label--renter {
+  color: #B85C38;
+}
+
+.mob-duality__panel-label--lister {
+  color: #6B7E5A;
+}
+
+/* Panel Body */
+.mob-duality__panel-body {
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: #6B5E50;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* CTA Button */
+.mob-duality__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 14px 28px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mob-duality__cta svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Renter CTA */
+.mob-duality__cta--renter {
+  background: #1A1612;
+  color: #FFFEFB;
+}
+
+.mob-duality__cta--renter:active {
+  background: #B85C38;
+  transform: scale(0.97);
+}
+
+/* Lister CTA  */
+.mob-duality__cta--lister {
+  background: #6B7E5A;
+  color: #FFFEFB;
+}
+
+.mob-duality__cta--lister:active {
+  background: #5A6B4A;
+  transform: scale(0.97);
+}
+
+/* ===== REVEAL ANIMATION  ===== */
+.mob-duality .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.mob-duality .reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== TABLET BREAKPOINT (≥768px) - Mobile Spec Master Table ===== */
+@media (min-width: 768px) {
+  .mob-duality {
+    padding: 72px 48px;
+  }
+
+  .mob-duality__toggle {
+    max-width: 500px;
+  }
+
+  .mob-duality__panel-body {
+    max-width: 640px;
+  }
+}
+
+/* ===== REDUCED MOTION - Mobile Spec §01.1 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .mob-duality .reveal {
+    transition-duration: 0.001ms !important;
+  }
+  .mob-duality__slider {
+    transition-duration: 0.001ms !important;
+  }
+  .mob-duality__panel {
+    animation-duration: 0.001ms !important;
+  }
+  .mob-duality__cta {
+    transition-duration: 0.001ms !important;
+  }
+}

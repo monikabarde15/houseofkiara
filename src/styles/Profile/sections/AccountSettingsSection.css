@@ -1,0 +1,114 @@
+/* ============================================
+   Section 19.1 - Settings Grid
+   ============================================ */
+
+.profile-account-section {
+  margin-bottom: 52px;
+  scroll-margin-top: 20px;
+}
+
+.profile-account-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  margin-bottom: 13px;
+}
+
+/* ============================================
+   Section 19.4 - Account Actions (.dz)
+   ============================================ */
+
+.profile-account-dz {
+  border: 1px solid #E8E0D4;
+  border-radius: 11px;
+  overflow: hidden;
+  margin-top: 13px;
+}
+
+.profile-account-dz-head {
+  padding: 11px 16px;
+  background: #FAF7F2;
+  border-bottom: 1px solid #E8E0D4;
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #B0A898;
+  font-weight: 400;
+}
+
+/* Action Item */
+.profile-account-di {
+  padding: 13px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #F0EAE0;
+  cursor: pointer;
+  transition: background 0.15s;
+  background: #FFFFFB;
+  width: 100%;
+  text-align: left;
+}
+
+.profile-account-di:last-child {
+  border-bottom: none;
+}
+
+.profile-account-di:hover {
+  background: #FAF7F2;
+}
+
+/* Icon Container */
+.profile-account-di-ic {
+  width: 27px;
+  height: 27px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-account-di-ic svg {
+  width: 12px;
+  height: 12px;
+  /* stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none; */
+}
+
+/* Content */
+.profile-account-di-content {
+  flex: 1;
+}
+
+.profile-account-di-l {
+  font-family: "DM Sans", sans-serif;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: #3C3529;
+}
+
+.profile-account-di-l-red {
+  color: #B85C38;
+}
+
+.profile-account-di-s {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  color: #8A7E72;
+  font-weight: 300;
+  margin-top: 1px;
+}
+
+/* Arrow */
+
+.profile-account-di-arr svg {
+    height: 12px;
+    width: 12px;
+    stroke: #E8E0D4;
+    stroke-width: 1.5;
+    fill: none;
+    margin-left: auto;
+}

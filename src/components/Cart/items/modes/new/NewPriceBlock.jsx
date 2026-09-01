@@ -1,3 +1,4 @@
+// src\components\Cart\items\modes\new\NewPriceBlock.jsx
 import React from "react";
 import "../../../../../styles/cart/items/price-block.css";
 

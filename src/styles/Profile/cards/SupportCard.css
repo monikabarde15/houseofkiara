@@ -1,0 +1,78 @@
+/* ============================================
+   Section 20.1 - Support Card (.sup-c)
+   ============================================ */
+
+.profile-support-c {
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
+  border-radius: 11px;
+  padding: 18px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.profile-support-c:hover {
+  border-color: #E8D5B0;
+  transform: translateY(-1px);
+}
+
+/* Icon */
+.profile-support-ic {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-support-ic svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+/* Icon variants */
+.profile-support-shi-s {
+  background: rgba(107, 126, 90, 0.1);
+}
+
+.profile-support-shi-s svg {
+  stroke: #6B7E5A;
+}
+
+.profile-support-shi-g {
+  background: #F5EDD8;
+}
+
+.profile-support-shi-g svg {
+  stroke: #A8844A;
+}
+
+.profile-support-shi-t {
+  background: rgba(184, 92, 56, 0.08);
+}
+
+.profile-support-shi-t svg {
+  stroke: #B85C38;
+}
+
+/* Text */
+.profile-support-l {
+  font-family: "DM Sans", sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #3C3529;
+}
+
+.profile-support-s {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.5;
+}

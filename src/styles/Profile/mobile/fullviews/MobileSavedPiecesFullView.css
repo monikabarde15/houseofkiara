@@ -1,0 +1,24 @@
+/* ============================================
+   Section 6.6 - Saved Pieces Full View
+   ============================================ */
+
+.profile-mobile-fv-container {
+  background: #FFFFFB;
+  min-height: 100vh;
+}
+
+.profile-mobile-fv-content {
+  padding: 0;
+}
+
+.profile-mobile-wl-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: #F0EAE0;
+}
+
+.profile-mobile-wl-phantom {
+  background: #FFFFFB;
+  pointer-events: none;
+}

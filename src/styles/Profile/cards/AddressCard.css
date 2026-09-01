@@ -1,0 +1,123 @@
+/* ============================================
+   Section 16.1 - Address Card 
+   ============================================ */
+
+.profile-ac {
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
+  border-radius: 11px;
+  padding: 16px;
+}
+
+.profile-ac.profile-ac-def {
+  border-color: rgba(201, 169, 110, 0.4);
+}
+
+.profile-ac:hover {
+  border-color: #E8D5B0;
+}
+
+/* Top Row */
+.profile-ac-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+
+.profile-ac-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: #F5EDD8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-ac-icon svg {
+  stroke: #A8844A;
+  fill: none;
+}
+
+.profile-ac-acts {
+  display: flex;
+  gap: 5px;
+}
+
+.profile-acbtn {
+  background: none;
+  border: 1px solid #E8E0D4;
+  border-radius: 5px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-acbtn:hover {
+  background: #FAF7F2;
+  border-color: #E8D5B0;
+}
+
+.profile-acbtn svg {
+  stroke: #8A7E72;
+}
+
+/* Type Row */
+.profile-ac-type-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.profile-ac-type {
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #3C3529;
+}
+
+.profile-ac-dbadge {
+  font-family: "DM Sans", sans-serif;
+  font-size: 7.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #F5EDD8;
+  color: #A8844A;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Address Text */
+.profile-ac-text {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: #8A7E72;
+  line-height: 1.7;
+}
+
+/* Set as Default Link */
+.profile-ac-setdef {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.5px;
+  color: #A8844A;
+  padding: 0;
+  margin-top: 7px;
+  display: block;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.profile-ac-setdef:hover {
+  color: #3C3529;
+}

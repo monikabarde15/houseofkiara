@@ -1,0 +1,64 @@
+/* ============================================
+   Section 20.1 - Support Grid
+   ============================================ */
+
+.profile-help-section {
+  margin-bottom: 52px;
+  scroll-margin-top: 20px;
+}
+
+.profile-support-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+/* ============================================
+   Section 20.2 - Legal Block
+   ============================================ */
+
+.profile-legal-block {
+  background: #FAF7F2;
+  border: 1px solid #E8E0D4;
+  border-radius: 11px;
+  padding: 18px 22px;
+}
+
+.profile-legal-h {
+  font-family: "DM Sans", sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: #B0A898;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+.profile-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.profile-bl {
+  display: inline-flex;
+  padding: 7px 13px;
+  background: #FFFFFB;
+  color: #3C3529;
+  border: 1px solid #E8E0D4;
+  border-radius: 5px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 300;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.profile-bl:hover {
+  border-color: #E8D5B0;
+  background: #F5EDD8;
+  color: #A8844A;
+}
