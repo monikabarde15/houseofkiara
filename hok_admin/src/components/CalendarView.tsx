@@ -46,8 +46,8 @@ export default function CalendarView({ orders, products, setView, setSelectedOrd
     return orders.filter(o => {
       if (!o.rentalStartDate || !o.rentalEndDate) return false;
       const matchesSearch = searchQuery === '' || 
-        o.customerName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        o.productName.toLowerCase().includes(searchQuery.toLowerCase());
+        (o.customerName || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (o.productName || '').toLowerCase().includes(searchQuery.toLowerCase());
       return dateStr >= o.rentalStartDate && dateStr <= o.rentalEndDate && matchesSearch;
     });
   };

@@ -26,38 +26,10 @@ export const useRefusedAttempts = (): UseRefusedAttemptsReturn => {
     setLoading(true);
     setError(null);
     try {
-      // In production: await promotionService.getRefusedAttempts()
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // Mock data
-      const mockAttempts: RefusedAttempt[] = [
-        {
-          timestamp: '2026-03-23T10:30:00',
-          code: 'KAIRA10',
-          customer: 'cust_001',
-          check: 11,
-          messageKey: 'minimum',
-          bagValue: 2500,
-        },
-        {
-          timestamp: '2026-03-23T11:15:00',
-          code: 'KAIRA20',
-          customer: null,
-          check: 1,
-          messageKey: 'exists',
-          bagValue: 5000,
-        },
-        {
-          timestamp: '2026-03-20T22:35:00',
-          code: 'BRIDAL500',
-          customer: 'Riya Mehta',
-          check: 11,
-          messageKey: 'minimum',
-          bagValue: 4200,
-        },
-      ];
-      
-      setAttempts(mockAttempts);
+      // TODO: replace with real API call when backend is ready
+      // const data = await promotionService.getRefusedAttempts();
+      // setAttempts(data);
+      setAttempts([]); // DB blank hai to empty raho
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch refused attempts');
     } finally {

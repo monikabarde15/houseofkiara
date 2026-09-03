@@ -63,9 +63,17 @@ const customerSchema = new mongoose.Schema(
     ordersCount: { type: Number, default: 0 },
     totalSpent: { type: Number, default: 0 },
     wishlistCount: { type: Number, default: 0 },
-    lastOrderDate: { type: String, default: "—" }
+    lastOrderDate: { type: String, default: "—" },
+
+    // Auth & E-commerce Fields
+    passwordHash: { type: String, default: "" },
+    googleId: { type: String, default: "" },
+    otp: { type: String, default: "" },
+    otpExpiresAt: { type: Date },
+    wishlist: [{ type: String }],
+    cart: [{ type: mongoose.Schema.Types.Mixed }]
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 );
 
 export default mongoose.model("Customer", customerSchema);

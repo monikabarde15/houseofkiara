@@ -1,6 +1,5 @@
 import React from 'react';
 import { GanttOrderRow } from '../../types';
-import { ganttMockData } from './ganttMockData';
 import GanttRow from './GanttRow';
 import '../../css/gantt/GanttView.css';
 
@@ -9,7 +8,7 @@ interface GanttViewProps {
   rows?: GanttOrderRow[];
 }
 
-const GanttView: React.FC<GanttViewProps> = ({ month, rows = ganttMockData }) => {
+const GanttView: React.FC<GanttViewProps> = ({ month, rows = [] }) => {
   const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
   const dayNumbers = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 

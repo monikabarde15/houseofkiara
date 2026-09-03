@@ -43,8 +43,8 @@ export const CustomerPicker: React.FC<CustomerPickerProps> = ({
 
   const suggestions = searchTerm.length > 0
     ? mockCustomers.filter(c =>
-        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.email.toLowerCase().includes(searchTerm.toLowerCase())
+        (c.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (c.email || '').toLowerCase().includes(searchTerm.toLowerCase())
       )
     : mockCustomers;
 

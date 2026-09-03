@@ -33,10 +33,12 @@ export default function DashboardView({
   onApproveSubmission,
   onRejectSubmission
 }: DashboardViewProps) {
-  
+  // Filter out blank/invalid orders
+  const validOrders = orders.filter(o => o.id && o.customerName && o.customerName.trim() !== '');
+
   // Calculate stats
-  const mtdOrdersCount = orders.length;
-  const mtdRevenue = orders.reduce((sum, o) => sum + o.amount, 0);
+  const mtdOrdersCount = validOrders.length;
+  const mtdRevenue = validOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0);
   const pendingApprovalsCount = listerSubmissions.filter(s => s.status === 'Pending').length;
 
   const pendingSubmissions = listerSubmissions.filter(s => s.status === 'Pending');
@@ -69,8 +71,8 @@ export default function DashboardView({
           </div>
           <div className="mt-4">
             <h3 className="text-2xl font-serif text-stone-900 font-bold">{mtdOrdersCount}</h3>
-            <p className="text-[11px] text-green-600 font-medium flex items-center gap-1 mt-1">
-              <span>+ 2 from last month</span>
+            <p className="text-[11px] text-stone-400 font-medium flex items-center gap-1 mt-1">
+              <span>This month</span>
             </p>
           </div>
         </div>
@@ -91,8 +93,8 @@ export default function DashboardView({
             <h3 className="text-2xl font-serif text-stone-900 font-bold">
               ₹{Number(mtdRevenue || 0).toLocaleString('en-IN')}
             </h3>
-            <p className="text-[11px] text-green-600 font-medium flex items-center gap-1 mt-1">
-              <span>+ 24%</span>
+            <p className="text-[11px] text-stone-400 font-medium flex items-center gap-1 mt-1">
+              <span>Booked revenue</span>
             </p>
           </div>
         </div>
@@ -110,9 +112,9 @@ export default function DashboardView({
             </div>
           </div>
           <div className="mt-4">
-            <h3 className="text-2xl font-serif text-stone-900 font-bold">{activeListingsCount} / 41K+</h3>
+            <h3 className="text-2xl font-serif text-stone-900 font-bold">{activeListingsCount}</h3>
             <p className="text-[11px] text-stone-500 font-medium flex items-center gap-1 mt-1">
-              <span>Ready for rental...</span>
+              <span>Ready for rental</span>
             </p>
           </div>
         </div>
@@ -169,7 +171,7 @@ export default function DashboardView({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100 text-stone-600">
-                  {orders.slice(0, 4).map((order) => (
+                  {validOrders.slice(0, 4).map((order) => (
                     <tr 
                       key={order.id} 
                       onClick={() => {
@@ -330,55 +332,34 @@ export default function DashboardView({
               Activity Feed
             </h3>
             <div className="space-y-4 text-xs font-sans">
-              <div className="flex gap-3 items-start">
-                <div className="h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                <div>
-                  <p className="text-stone-700">
-                    <span className="font-medium text-stone-800">New rental</span> - HOK-ORD-001 by Priya Rathore
-                  </p>
-                  <span className="text-[10px] text-stone-400">10 mins ago</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3 items-start">
-                <div className="h-2 w-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-                <div>
-                  <p className="text-stone-700">
-                    <span className="font-medium text-stone-800">New listing submitted</span> - Classic Velvet Sherwani
-                  </p>
-                  <span className="text-[10px] text-stone-400">1 hour ago</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3 items-start">
-                <div className="h-2 w-2 rounded-full bg-amber-500 mt-1.5 shrink-0" />
-                <div>
-                  <p className="text-stone-700">
-                    <span className="font-medium text-stone-800">New offer received</span> - ₹16,000 for MM Sherwani
-                  </p>
-                  <span className="text-[10px] text-stone-400">2 hours ago</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3 items-start">
-                <div className="h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                <div>
-                  <p className="text-stone-700">
-                    <span className="font-medium text-stone-800">Return received</span> - Crimson Zardozi Lehenga - <span className="text-emerald-700 font-semibold bg-emerald-50 px-1 py-0.2 rounded text-[9px] uppercase border border-emerald-100">Excellent Condition</span>
-                  </p>
-                  <span className="text-[10px] text-stone-400">1 day ago</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3 items-start">
-                <div className="h-2 w-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-                <div>
-                  <p className="text-stone-700">
-                    <span className="font-medium text-stone-800">Dispatch confirmed</span> - HOK-ORD-003 via BlueDart
-                  </p>
-                  <span className="text-[10px] text-stone-400">2 days ago</span>
-                </div>
-              </div>
+              {validOrders.length === 0 && pendingSubmissions.length === 0 ? (
+                <p className="text-stone-400 text-center py-4 text-xs">No recent activity logged in database.</p>
+              ) : (
+                <>
+                  {validOrders.slice(0, 3).map((o) => (
+                    <div key={`act-ord-${o.id}`} className="flex gap-3 items-start">
+                      <div className="h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                      <div>
+                        <p className="text-stone-700">
+                          <span className="font-medium text-stone-800">New rental</span> - {o.id} by {o.customerName}
+                        </p>
+                        <span className="text-[10px] text-stone-400">Order date: {o.startDate || 'Recent'}</span>
+                      </div>
+                    </div>
+                  ))}
+                  {pendingSubmissions.slice(0, 3).map((sub) => (
+                    <div key={`act-sub-${sub.id}`} className="flex gap-3 items-start">
+                      <div className="h-2 w-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                      <div>
+                        <p className="text-stone-700">
+                          <span className="font-medium text-stone-800">New listing submitted</span> - {sub.productName} by {sub.listerName}
+                        </p>
+                        <span className="text-[10px] text-stone-400">Pending review</span>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
           </div>
 

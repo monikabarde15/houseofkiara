@@ -5,14 +5,18 @@
   "description": "HOK Admin Backend with PostgreSQL Supabase integration",
   "main": "server.js",
   "dependencies": {
-    "pg": "^8.23.0",
-    "express": "^4.22.2",
+    "axios": "^1.20.0",
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.10.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "cloudinary": "^2.10.0",
-    "multer": "^2.2.0",
-    "joi": "^18.2.3",
     "exceljs": "^4.4.0",
-    "json2csv": "^6.0.0-alpha.2"
+    "express": "^4.22.2",
+    "google-auth-library": "^11.0.2",
+    "joi": "^18.2.3",
+    "json2csv": "^6.0.0-alpha.2",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.2.0",
+    "pg": "^8.23.0"
   }
 }

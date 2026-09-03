@@ -88,7 +88,7 @@ export const getFirstResponseHours = (submission: Submission): number | null => 
   if (!submission.history || submission.history.length === 0) return null;
   
   const receiptIndex = submission.history.findIndex(h => 
-    h.e.toLowerCase().includes('received')
+    (h.e || '').toLowerCase().includes('received')
   );
   if (receiptIndex === -1) return null;
   

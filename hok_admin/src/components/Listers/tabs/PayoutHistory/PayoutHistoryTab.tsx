@@ -6,6 +6,7 @@ import { TaxStrip } from './TaxStrip';
 import { PayoutStats } from './PayoutStats';
 import { PayoutTable } from './PayoutTable';
 import { usePayouts } from '../../hooks/usePayouts';
+import toast from 'react-hot-toast';
 import './styles/PayoutHistoryTab.css';
 
 interface PayoutHistoryTabProps {
@@ -28,7 +29,7 @@ export const PayoutHistoryTab: React.FC<PayoutHistoryTabProps> = ({
     try {
       await sendStatementWhatsApp(lister.name, lister.phone);
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to send statement');
+      toast.error(error instanceof Error ? error.message : 'Failed to send statement');
     }
   };
 

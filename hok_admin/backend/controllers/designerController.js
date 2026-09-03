@@ -105,7 +105,7 @@ const formatDesignerResponse = (doc) => {
     _id: obj._id,
     designerId: obj.designerId || obj._id.toString(),
     name: obj.name,
-    slug: obj.slug || obj.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+    slug: obj.slug || (obj.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-"),
     bio: obj.bio || obj.shortBio || "",
     shortBio: obj.shortBio || obj.bio || "",
     type: obj.type || "Indie Designer",
@@ -164,7 +164,6 @@ const ensureSeedData = async () => {
 // GET /api/designers
 export const getDesigners = async (req, res) => {
   try {
-    await ensureSeedData();
 
     const { search, status, type } = req.query;
     const query = {};
@@ -344,7 +343,7 @@ export const updateDesigner = async (req, res) => {
     Object.assign(doc, fields);
 
     if (fields.name && !fields.slug) {
-      doc.slug = fields.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+      doc.slug = String(fields.name).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
     }
 
     const updated = await doc.save();
@@ -386,3 +385,60 @@ export const deleteDesigner = async (req, res) => {
     return res.status(500).json({ success: false, message: err.message });
   }
 };
+
+// PUT /api/designers/bulk/reorder-featured
+export const reorderFeaturedDesigners = async (req, res) => {
+  try {
+    const { orderedIds } = req.body;
+    if (!Array.isArray(orderedIds)) {
+      return res.status(400).json({ success: false, message: "orderedIds array is required" });
+    }
+
+    const promises = orderedIds.map((id, index) => {
+      return Designer.findOneAndUpdate(
+        { $or: [{ designerId: id }, { _id: mongoose.Types.ObjectId.isValid(id) ? id : null }] },
+        { featuredOrder: index + 1, isFeatured: true }
+      );
+    });
+
+    await Promise.all(promises);
+
+    return res.json({
+      success: true,
+      message: "Featured designers reordered successfully"
+    });
+  } catch (err) {
+    console.error("🔥 Error in reorderFeaturedDesigners:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// PUT /api/designers/bulk/update-type
+export const updateDesignerType = async (req, res) => {
+  try {
+    const { id, type } = req.body;
+    if (!id || !type) {
+      return res.status(400).json({ success: false, message: "id and type are required" });
+    }
+
+    const doc = await Designer.findOneAndUpdate(
+      { $or: [{ designerId: id }, { _id: mongoose.Types.ObjectId.isValid(id) ? id : null }] },
+      { type: type },
+      { new: true }
+    );
+
+    if (!doc) {
+      return res.status(404).json({ success: false, message: "Designer not found" });
+    }
+
+    return res.json({
+      success: true,
+      message: "Designer type updated successfully",
+      data: formatDesignerResponse(doc)
+    });
+  } catch (err) {
+    console.error("🔥 Error in updateDesignerType:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+

@@ -28,8 +28,8 @@ export const PeopleList: React.FC<PeopleListProps> = ({
   const [search, setSearch] = useState('');
 
   const filtered = people.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.contact.toLowerCase().includes(search.toLowerCase())
+    (p.name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (p.contact || '').toLowerCase().includes(search.toLowerCase())
   );
 
   if (filtered.length === 0) {

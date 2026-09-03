@@ -1,5 +1,6 @@
 // editor/WordingBar.tsx
 import React, { useState, useRef, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import './styles/WordingBar.css';
 
 interface Wording {
@@ -36,7 +37,7 @@ export const WordingBar: React.FC<WordingBarProps> = ({
       // Check for duplicates
       const exists = wordings.some(w => w.name === editValue.trim() && w.id !== id);
       if (exists) {
-        alert(`There is already a wording called "${editValue.trim()}". Give this one a different name.`);
+        toast.success(`There is already a wording called "${editValue.trim()}". Give this one a different name.`);
         return;
       }
       onRename(id, editValue.trim());

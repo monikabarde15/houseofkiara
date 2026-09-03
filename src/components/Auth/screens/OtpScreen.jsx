@@ -118,27 +118,60 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
     
     setIsLoading(true);
     
-    // Section 9.5 - Simulate API verification
-    setTimeout(() => {
-      // Section 9.5 - Correct OTP (prototype): "123456"
-      if (otpToVerify === '123456') {
-        // Clear timer interval
+    // Section 9.5 - API verification
+    try {
+      let result;
+
+      if (otpSource === 'register') {
+        // Register API call (Mocking OTP check for register since backend doesn't require OTP for registration currently)
+        if (otpToVerify !== '123456') {
+           throw new Error('Incorrect OTP. Please try again. (Hint: 123456)');
+        }
+        const response = await fetch('/api/customer/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: `${userData.firstName} ${userData.lastName}`,
+            email: userData.email,
+            password: userData.password,
+            phone: userData.mobile
+          })
+        });
+        result = await response.json();
+      } else {
+        // Mobile Sign In API call
+        const response = await fetch('/api/customer/auth/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: userData.mobile,
+            otp: otpToVerify
+          })
+        });
+        result = await response.json();
+      }
+
+      if (result.success) {
+        // Save to Auth Store
+        const authStore = (await import('../../../store/authStore')).default;
+        authStore.getState().login(result.data, result.data.token);
+
         setCanResend(true);
-        
-        // Navigate to Success Screen
         switchScreen('success', {
           userData: {
-            ...userData,
+            ...result.data,
             flow: otpSource === 'register' ? 'register' : 'otp-signin'
           }
         });
       } else {
-        // Wrong OTP - add error state to all 6 boxes
-        boxes.forEach(box => box.classList.add('error'));
-        setError('Incorrect OTP. Please try again.');
-        setIsLoading(false);
+        throw new Error(result.message || 'Verification failed');
       }
-    }, 1200);
+    } catch (err) {
+      boxes.forEach(box => box.classList.add('error'));
+      setError(err.message || 'An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Section 9.4 - Resend OTP

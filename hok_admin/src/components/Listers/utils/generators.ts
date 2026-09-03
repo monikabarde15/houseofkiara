@@ -75,6 +75,7 @@ export const generateSubId = (existingIds: string[] = [], year: number = new Dat
 };
 
 export const generateWhatsAppLink = (phone: string, message?: string): string | null => {
+  if (!phone) return null;
   const digits = phone.replace(/\D/g, '');
   if (!digits) return null;
   

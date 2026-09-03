@@ -1,132 +1,83 @@
 // Promotion Service
 /* ========================================
    Promotions Module - Promotion Service
-   All API calls for promo codes
-   Based on HOK_Promotions_Logic_Spec_v150.pdf
+   Real API calls to backend at /api/promotions
    ======================================== */
 
-import { PromoCode, PromoCodeFilter, PromoCodeSort } from '../types/promotions.types';
-import { mockPromoCodes } from '../data/mockPromotions';
+import { PromoCode } from '../types/promotions.types';
+
+const BASE = 'http://localhost:5000/api/promotions';
 
 export const promotionService = {
-  // Get all promo codes with optional filters
-  async getPromoCodes(filter?: PromoCodeFilter, sort?: PromoCodeSort): Promise<PromoCode[]> {
-    // In production: API call to /api/promotions
-    await new Promise(resolve => setTimeout(resolve, 500));
-    let codes = [...mockPromoCodes];
-    
-    if (filter?.search) {
-      const search = filter.search.toLowerCase();
-      codes = codes.filter(code =>
-        code.code.toLowerCase().includes(search) ||
-        code.publicDesc.toLowerCase().includes(search) ||
-        code.reason.toLowerCase().includes(search)
-      );
-    }
-    
-    return codes;
+  // GET all promo codes
+  async getPromoCodes(): Promise<PromoCode[]> {
+    const res = await fetch(BASE);
+    if (!res.ok) throw new Error('Failed to fetch promo codes');
+    const json = await res.json();
+    return json.data || [];
   },
 
-  // Get single promo code
-  async getPromotion(codeId: string): Promise<PromoCode | null> {
-    // In production: API call to /api/promotions/:codeId
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const code = mockPromoCodes.find(c => c.code === codeId);
-    return code || null;
+  // GET single promo code by code string
+  async getPromotion(code: string): Promise<PromoCode | null> {
+    const res = await fetch(`${BASE}/${code}`);
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error('Failed to fetch promo code');
+    const json = await res.json();
+    return json.data || null;
   },
 
-  // Create promo code
+  // POST create new promo code
   async createPromotion(data: Partial<PromoCode>): Promise<PromoCode> {
-    // In production: POST to /api/promotions
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const newCode: PromoCode = {
-      code: data.code!.toUpperCase(),
-      type: data.type!,
-      value: data.value!,
-      maxDiscount: data.maxDiscount || null,
-      minOrder: data.minOrder || null,
-      modes: data.modes!,
-      scope: data.scope || { categories: [], designerIds: [], skus: [] },
-      stacksWith: data.stacksWith || [],
-      audience: data.audience || 'public',
-      customerIds: data.customerIds || [],
-      firstOrderOnly: data.firstOrderOnly || false,
-      usesTotalCap: data.usesTotalCap || null,
-      usesPerCustomer: data.usesPerCustomer || null,
-      validFrom: data.validFrom || null,
-      validUntil: data.validUntil || null,
-      status: 'Active',
-      visibility: data.visibility || 'share',
-      publicDesc: data.publicDesc || '',
-      reason: data.reason!,
-      notes: data.notes || '',
-      createdBy: 'Soumya',
-      createdOn: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-      history: [{ e: 'Code created', t: `${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} - Soumya` }],
-      attnSnooze: {},
-    };
-    return newCode;
+    const res = await fetch(BASE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || 'Failed to create promo code');
+    }
+    const json = await res.json();
+    return json.data;
   },
 
-  // Update promo code
-  async updatePromotion(codeId: string, data: Partial<PromoCode>): Promise<PromoCode> {
-    // In production: PUT to /api/promotions/:codeId
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const existing = mockPromoCodes.find(c => c.code === codeId);
-    if (!existing) throw new Error('Code not found');
-    return { ...existing, ...data };
+  // PUT update promo code
+  async updatePromotion(code: string, data: Partial<PromoCode>): Promise<PromoCode> {
+    const res = await fetch(`${BASE}/${code}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || 'Failed to update promo code');
+    }
+    const json = await res.json();
+    return json.data;
   },
 
-  // Pause promo code
-  async pausePromotion(codeId: string): Promise<void> {
-    // In production: POST to /api/promotions/:codeId/pause
-    await new Promise(resolve => setTimeout(resolve, 300));
+  // PATCH toggle Active/Paused
+  async toggleStatus(code: string, by = 'Admin'): Promise<PromoCode> {
+    const res = await fetch(`${BASE}/${code}/toggle`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ by }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || 'Failed to toggle promo code status');
+    }
+    const json = await res.json();
+    return json.data;
   },
 
-  // Resume promo code
-  async resumePromotion(codeId: string): Promise<void> {
-    // In production: POST to /api/promotions/:codeId/resume
-    await new Promise(resolve => setTimeout(resolve, 300));
-  },
-
-  // Delete promo code
-  async deletePromotion(codeId: string): Promise<void> {
-    // In production: DELETE to /api/promotions/:codeId
-    await new Promise(resolve => setTimeout(resolve, 300));
-  },
-
-  // Copy promo code (frozen terms)
-  async copyPromotion(codeId: string, changes: Partial<PromoCode>): Promise<PromoCode> {
-    // In production: POST to /api/promotions/:codeId/copy
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const existing = mockPromoCodes.find(c => c.code === codeId);
-    if (!existing) throw new Error('Code not found');
-    
-    const newCode: PromoCode = {
-      ...existing,
-      ...changes,
-      code: `${codeId}-V2`,
-      status: 'Active',
-      createdOn: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-      history: [
-        { e: `Created as an edited copy of ${codeId}`, t: `${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} - Soumya` }
-      ],
-      supersedes: codeId,
-    };
-    return newCode;
-  },
-
-  // Get refused attempts
-  async getRefusedAttempts(): Promise<any[]> {
-    // In production: GET to /api/promotions/refused-attempts
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return [];
-  },
-
-  // Get redemption count for a code
-  async getRedemptions(codeId: string): Promise<number> {
-    // In production: GET to /api/promotions/:codeId/redemptions
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return Math.floor(Math.random() * 100);
+  // DELETE promo code
+  async deletePromotion(code: string): Promise<void> {
+    const res = await fetch(`${BASE}/${code}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || 'Failed to delete promo code');
+    }
   },
 };
+

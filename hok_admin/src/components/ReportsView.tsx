@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BarChart2, TrendingUp, DollarSign, Calendar, RefreshCcw, Star, Award, Layers } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { BarChart2, TrendingUp, DollarSign, Calendar, Layers } from 'lucide-react';
 import { Order, Product } from '../types';
 
 interface ReportsViewProps {
@@ -7,40 +7,99 @@ interface ReportsViewProps {
   products: Product[];
 }
 
-export default function ReportsView({ orders, products }: ReportsViewProps) {
+export default function ReportsView({ orders = [], products = [] }: ReportsViewProps) {
   const [timeRange, setTimeRange] = useState<'30days' | '90days' | '1year'>('30days');
 
-  // Analytical Calculations
-  const safeOrders = orders || [];
+  // Filter orders based on timeRange if dates exist
+  const safeOrders = useMemo(() => {
+    const now = new Date();
+    return (orders || []).filter(o => {
+      if (!o) return false;
+      const orderDate = new Date(o.createdAt || o.date || now);
+      if (isNaN(orderDate.getTime())) return true;
+      const diffDays = (now.getTime() - orderDate.getTime()) / (1000 * 3600 * 24);
+      if (timeRange === '30days') return diffDays <= 30;
+      if (timeRange === '90days') return diffDays <= 90;
+      if (timeRange === '1year') return diffDays <= 365;
+      return true;
+    });
+  }, [orders, timeRange]);
+
+  // Analytical Calculations from live database orders
   const rentalRevenue = safeOrders
-    .filter(o => o && o.mode === 'Rental' && (o.status !== 'Processed' || o.status === 'Processed')) // all
-    .reduce((sum, o) => sum + (o?.amount || 0), 0);
+    .filter(o => o && o.mode === 'Rental')
+    .reduce((sum, o) => sum + (Number(o?.amount) || 0), 0);
 
   const prelovedRevenue = safeOrders
     .filter(o => o && (o.mode === 'Preloved' || o.mode === 'Buy'))
-    .reduce((sum, o) => sum + (o?.amount || 0), 0);
+    .reduce((sum, o) => sum + (Number(o?.amount) || 0), 0);
 
   const totalTaxCollected = Math.round((rentalRevenue + prelovedRevenue) * 0.12);
   const totalRevenue = rentalRevenue + prelovedRevenue + totalTaxCollected;
 
-  const totalRefunds = safeOrders
-    .filter(o => o && o.depositDecision?.status === 'Released')
-    .reduce((sum, o) => sum + (o?.depositDecision?.releasedAmount || 0), 0);
+  // Category demand dynamically derived from live orders & products
+  const categoryCounts = useMemo(() => {
+    const catMap: Record<string, number> = {};
+    safeOrders.forEach(o => {
+      const cat = (o as any)?.category || o?.productName || 'General';
+      const cleanCat = cat.split(' ')[0] || 'Standard';
+      catMap[cleanCat] = (catMap[cleanCat] || 0) + 1;
+    });
 
-  // Category demand counts
-  const categories = ["Bridal Lehenga", "Anarkali", "Sherwani", "Saree", "Gown"];
-  const categoryCounts = categories.map(cat => {
-    const count = safeOrders.filter(o => o && (o.productName || (o as any).product || '').toLowerCase().includes(cat.toLowerCase())).length;
-    return { name: cat, count: count || Math.floor(Math.random() * 5 + 1) };
-  });
+    return Object.entries(catMap).map(([name, count]) => ({ name, count }));
+  }, [safeOrders]);
 
-  // Designer sales mapping
-  const designerEarnings = [
-    { name: "Sabyasachi Mukherji", sales: 85500, count: 3, share: "45%" },
-    { name: "Anita Dongre", sales: 42000, count: 2, share: "22%" },
-    { name: "Tarun Tahiliani", sales: 38500, count: 1, share: "20%" },
-    { name: "Manish Malhotra", sales: 24000, count: 1, share: "13%" }
-  ];
+  // Monthly Revenue Trend dynamically calculated from database orders
+  const monthlyRevenue = useMemo(() => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const currentMonthIndex = new Date().getMonth();
+    const last6Months = [];
+    for (let i = 5; i >= 0; i--) {
+      const mIdx = (currentMonthIndex - i + 12) % 12;
+      last6Months.push({ label: months[mIdx], monthNum: mIdx, value: 0 });
+    }
+
+    safeOrders.forEach(o => {
+      const d = new Date(o.createdAt || o.date || new Date());
+      if (!isNaN(d.getTime())) {
+        const m = d.getMonth();
+        const found = last6Months.find(lm => lm.monthNum === m);
+        if (found) {
+          found.value += Math.round((Number(o.amount) || 0) / 1000);
+        }
+      }
+    });
+
+    const maxVal = Math.max(...last6Months.map(m => m.value), 1);
+    return last6Months.map(m => ({
+      ...m,
+      pct: `${Math.max(Math.round((m.value / maxVal) * 100), 4)}%`
+    }));
+  }, [safeOrders]);
+
+  // Top Performing Designers dynamically derived from database orders
+  const designerEarnings = useMemo(() => {
+    const designerMap: Record<string, { count: number; sales: number }> = {};
+    let totalSales = 0;
+
+    safeOrders.forEach(o => {
+      const designerName = (o as any)?.designer || (o as any)?.designerName || (o as any)?.brand || 'Independent';
+      if (!designerMap[designerName]) {
+        designerMap[designerName] = { count: 0, sales: 0 };
+      }
+      const amt = Number(o.amount) || 0;
+      designerMap[designerName].count += 1;
+      designerMap[designerName].sales += amt;
+      totalSales += amt;
+    });
+
+    return Object.entries(designerMap).map(([name, data]) => ({
+      name,
+      count: data.count,
+      sales: data.sales,
+      share: totalSales > 0 ? `${Math.round((data.sales / totalSales) * 100)}%` : '0%'
+    })).sort((a, b) => b.sales - a.sales);
+  }, [safeOrders]);
 
   return (
     <div className="space-y-6 text-xs font-sans">
@@ -76,9 +135,8 @@ export default function ReportsView({ orders, products }: ReportsViewProps) {
           <DollarSign className="absolute right-3 top-3 h-5 w-5 text-stone-300" />
           <p className="text-[10px] text-stone-400 font-bold uppercase tracking-wider font-sans">Gross Revenue (Incl. Tax)</p>
           <h3 className="text-xl font-serif font-bold text-stone-900 mt-1.5">₹{totalRevenue.toLocaleString('en-IN')}</h3>
-          <p className="text-[10px] text-green-600 font-semibold mt-1 flex items-center gap-1">
-            <TrendingUp className="h-3 w-3" />
-            <span>+14.2% vs prev month</span>
+          <p className="text-[10px] text-stone-400 font-medium mt-1">
+            Live database calculation
           </p>
         </div>
 
@@ -112,17 +170,9 @@ export default function ReportsView({ orders, products }: ReportsViewProps) {
             <span className="text-[10px] text-stone-400 font-semibold font-mono">₹ Values in Thousands</span>
           </div>
 
-          {/* Simple premium SVG graph bar visualizer */}
           <div className="pt-4">
             <div className="h-44 flex items-end justify-between gap-6 px-4">
-              {[
-                { label: "Oct", value: 35, pct: "35%" },
-                { label: "Nov", value: 48, pct: "48%" },
-                { label: "Dec", value: 72, pct: "72%" },
-                { label: "Jan", value: 55, pct: "55%" },
-                { label: "Feb", value: 92, pct: "92%" },
-                { label: "Mar", value: 110, pct: "100%" }
-              ].map((month) => (
+              {monthlyRevenue.map((month) => (
                 <div key={month.label} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end">
                   <div className="text-[10px] font-bold text-stone-700 opacity-0 group-hover:opacity-100 transition duration-150">
                     ₹{month.value}k
@@ -142,21 +192,25 @@ export default function ReportsView({ orders, products }: ReportsViewProps) {
         <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
           <h3 className="font-serif font-bold text-stone-900 text-sm border-b border-stone-150 pb-2">Demand by Outfit silhouette</h3>
           <div className="space-y-3 font-sans">
-            {categoryCounts.map(cat => {
-              const maxVal = Math.max(...categoryCounts.map(c => c.count));
-              const pct = maxVal > 0 ? (cat.count / maxVal) * 100 : 20;
-              return (
-                <div key={cat.name} className="space-y-1">
-                  <div className="flex justify-between items-center text-stone-700">
-                    <span className="font-semibold">{cat.name}</span>
-                    <span className="font-bold">{cat.count} rents</span>
+            {categoryCounts.length === 0 ? (
+              <p className="text-stone-400 italic py-6 text-center">No categories data recorded yet in database.</p>
+            ) : (
+              categoryCounts.map(cat => {
+                const maxVal = Math.max(...categoryCounts.map(c => c.count), 1);
+                const pct = (cat.count / maxVal) * 100;
+                return (
+                  <div key={cat.name} className="space-y-1">
+                    <div className="flex justify-between items-center text-stone-700">
+                      <span className="font-semibold">{cat.name}</span>
+                      <span className="font-bold">{cat.count} rents</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                      <div className="bg-[#c5a880] h-full" style={{ width: `${pct}%` }} />
+                    </div>
                   </div>
-                  <div className="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden">
-                    <div className="bg-[#c5a880] h-full" style={{ width: `${pct}%` }} />
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -166,33 +220,39 @@ export default function ReportsView({ orders, products }: ReportsViewProps) {
             Top Performing Designer Label shares
           </h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-stone-50 text-stone-400 uppercase font-bold text-[9px] border-b border-stone-150 tracking-wider">
-                  <th className="px-4 py-3">Label Name</th>
-                  <th className="px-4 py-3">Completed Bookings</th>
-                  <th className="px-4 py-3">Total Sales Share (Gross)</th>
-                  <th className="px-4 py-3">Percentage Volume</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-100 text-stone-600 font-sans">
-                {designerEarnings.map(des => (
-                  <tr key={des.name} className="hover:bg-stone-50 transition">
-                    <td className="px-4 py-3 font-bold text-stone-850">{des.name}</td>
-                    <td className="px-4 py-3 font-semibold text-stone-700">{des.count} Orders</td>
-                    <td className="px-4 py-3 font-bold text-stone-900">₹{des.sales.toLocaleString('en-IN')}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 h-1.5 bg-stone-100 rounded-full overflow-hidden">
-                          <div className="bg-[#1e1412] h-full" style={{ width: des.share }} />
-                        </div>
-                        <span className="font-bold text-stone-500">{des.share}</span>
-                      </div>
-                    </td>
+            {designerEarnings.length === 0 ? (
+              <div className="py-8 text-center text-stone-400 font-medium">
+                No orders recorded yet. As orders are placed in the database, designer label revenue shares will appear here.
+              </div>
+            ) : (
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-stone-50 text-stone-400 uppercase font-bold text-[9px] border-b border-stone-150 tracking-wider">
+                    <th className="px-4 py-3">Label Name</th>
+                    <th className="px-4 py-3">Completed Bookings</th>
+                    <th className="px-4 py-3">Total Sales Share (Gross)</th>
+                    <th className="px-4 py-3">Percentage Volume</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-stone-100 text-stone-600 font-sans">
+                  {designerEarnings.map(des => (
+                    <tr key={des.name} className="hover:bg-stone-50 transition">
+                      <td className="px-4 py-3 font-bold text-stone-850">{des.name}</td>
+                      <td className="px-4 py-3 font-semibold text-stone-700">{des.count} Orders</td>
+                      <td className="px-4 py-3 font-bold text-stone-900">₹{des.sales.toLocaleString('en-IN')}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-24 h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                            <div className="bg-[#1e1412] h-full" style={{ width: des.share }} />
+                          </div>
+                          <span className="font-bold text-stone-500">{des.share}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>

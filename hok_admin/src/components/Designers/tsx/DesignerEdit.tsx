@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ExternalLink } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { Designer } from '../types/designer.types';
 import ProfileTab from '../tabs/ProfileTab';
 import PerformancePiecesTab from '../tabs/PerformancePiecesTab';
@@ -43,7 +44,7 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
 
   const isCreateMode = !currentDesigner.id || !currentDesigner.name;
   const designerName = currentDesigner.name ? currentDesigner.name : 'New Designer';
-  const slug = currentDesigner.slug ? currentDesigner.slug : (currentDesigner.name ? currentDesigner.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '');
+  const slug = currentDesigner.slug ? currentDesigner.slug : (currentDesigner.name ? (currentDesigner.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') : '');
   const bio = currentDesigner.bio || '';
 
   const handleTabChangeData = (partialData: Partial<Designer>) => {
@@ -55,11 +56,12 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
 
   const handleMasterSave = () => {
     if (!currentDesigner.name || !currentDesigner.name.trim()) {
-      alert('Designer name is required to save.');
+      toast.error('Designer name is required to save.');
       return;
     }
     onSaveProfile(currentDesigner);
     setIsSavedRecently(true);
+    toast.success('Designer profile saved successfully!');
     setTimeout(() => setIsSavedRecently(false), 3000);
   };
 
@@ -68,6 +70,7 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
     setCurrentDesigner(merged);
     onSaveProfile(merged);
     setIsSavedRecently(true);
+    toast.success('Profile details saved successfully!');
     setTimeout(() => setIsSavedRecently(false), 3000);
   };
 
@@ -82,8 +85,8 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
     setCurrentDesigner(updated);
     onSaveProfile(updated);
     setIsSavedRecently(true);
+    toast.success('Authentication details saved successfully!');
     setTimeout(() => setIsSavedRecently(false), 3000);
-    alert('Authentication details saved successfully to MongoDB database!');
   };
 
   const handleSaveContactData = (contactData: ContactCommercialData) => {
@@ -103,8 +106,8 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
     setCurrentDesigner(updated);
     onSaveProfile(updated);
     setIsSavedRecently(true);
+    toast.success('Contact & Commercial details saved successfully!');
     setTimeout(() => setIsSavedRecently(false), 3000);
-    alert('Contact & Commercial details saved successfully to MongoDB database!');
   };
 
   return (

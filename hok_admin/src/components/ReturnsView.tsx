@@ -1,6 +1,7 @@
 import React from 'react';
 import { Eye, RotateCcw, ShieldCheck, CheckCircle, ShieldAlert } from 'lucide-react';
 import { Order } from '../types';
+import toast from 'react-hot-toast';
 
 interface ReturnsViewProps {
   orders: Order[];
@@ -12,7 +13,7 @@ interface ReturnsViewProps {
 export default function ReturnsView({ orders, setView, setSelectedOrderId, onUpdateOrder }: ReturnsViewProps) {
   
   // Stats
-  const pendingReturns = orders.filter(o => o.mode === 'Rental' && o.status === 'Shipped').length || 1;
+  const pendingReturns = orders.filter(o => o.mode === 'Rental' && o.status === 'Shipped').length;
   const depositsHeld = orders
     .filter(o => o.mode === 'Rental' && (o.status === 'Confirmed' || o.status === 'Dispatched' || o.status === 'Shipped' || o.status === 'Delivered'))
     .reduce((sum, o) => sum + o.deposit, 0);
@@ -47,7 +48,7 @@ export default function ReturnsView({ orders, setView, setSelectedOrderId, onUpd
       }
     };
     onUpdateOrder(updated);
-    alert(`Quick-logged return of order ${order.id} in Excellent Condition. Deposit of ₹${order.deposit} released.`);
+    toast.success(`Quick-logged return of order ${order.id} in Excellent Condition. Deposit of ₹${order.deposit} released.`);
   };
 
   return (
@@ -172,7 +173,7 @@ export default function ReturnsView({ orders, setView, setSelectedOrderId, onUpd
                     <td className="px-5 py-3.5 font-medium text-stone-800">{o.productName}</td>
                     <td className="px-5 py-3.5">{o.customerName}</td>
                     <td className="px-5 py-3.5 text-stone-400">
-                      {o.conditionAssessment?.receivedDate ? new Date(o.conditionAssessment.receivedDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '19 Mar'}
+                      {o.conditionAssessment?.receivedDate ? new Date(o.conditionAssessment.receivedDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—'}
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1.5">

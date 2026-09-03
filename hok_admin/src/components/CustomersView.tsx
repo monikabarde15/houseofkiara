@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, Eye, Mail, Phone, MapPin, User, Save, ListFilter, AlertTriangle, MessageCircle, ChevronLeft, ExternalLink, Trash2, X, Loader2 } from 'lucide-react';
 import { Customer, Order, Product, SavedAddress, CustomerOccasion } from '../types';
 import * as customerApi from '../services/customerApi';
+import toast from 'react-hot-toast';
 
 interface CustomersViewProps {
   customers: Customer[];
@@ -248,14 +249,14 @@ export default function CustomersView({
       }
     } catch (err: any) {
       console.error("Backend API Error on Save:", err);
-      alert("Error saving customer to database: " + (err.message || "Failed to reach server"));
+      toast.error("Error saving customer to database: " + (err.message || "Failed to reach server"));
     }
 
     onUpdateCustomer(finalCustomer);
     setEditingCustomer(finalCustomer);
     setIsAddingCustomer(false);
     if (apiSuccess) {
-      alert(isNew ? "New customer record created & saved to database successfully!" : "Customer profile updated in database successfully!");
+      toast.success(isNew ? "New customer record created & saved to database successfully!" : "Customer profile updated in database successfully!");
     }
   };
 
@@ -324,18 +325,25 @@ export default function CustomersView({
       setDeleteTarget(null);
       setDeleteConfirmed(false);
       setDeleting(false);
-      alert(`Customer "${deleteTarget.name}" deleted from database successfully.`);
+      toast.success(`Customer "${deleteTarget.name}" deleted from database successfully.`);
     } catch (err: any) {
       console.error("Backend API Error on Delete:", err);
-      alert("Error deleting customer from database: " + (err.message || "Failed to reach server"));
+      toast.error("Error deleting customer from database: " + (err.message || "Failed to reach server"));
       setDeleting(false);
     }
   };
 
   const filteredCustomers = customers.filter(c => {
-    const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.location.toLowerCase().includes(searchTerm.toLowerCase());
+    if (!c.name || c.name.trim() === '') return false;
+    
+    const sTerm = searchTerm.toLowerCase();
+    const cName = c.name || '';
+    const cEmail = c.email || '';
+    const cLocation = c.location || '';
+    
+    const matchesSearch = cName.toLowerCase().includes(sTerm) ||
+      cEmail.toLowerCase().includes(sTerm) ||
+      cLocation.toLowerCase().includes(sTerm);
     const matchesStatus = selectedStatus === 'All Statuses' || c.status === selectedStatus;
     return matchesSearch && matchesStatus;
   });
@@ -1736,7 +1744,14 @@ export default function CustomersView({
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100 text-stone-600 font-sans">
-              {filteredCustomers.map(c => (
+              {filteredCustomers.length === 0 ? (
+                <tr>
+                  <td colSpan={10} className="p-12 text-center text-stone-400">
+                    No customers found. Click "+ Add Customer" to create a record.
+                  </td>
+                </tr>
+              ) : (
+                filteredCustomers.map(c => (
                 <tr
                   key={c.id}
                   className="hover:bg-[#fcf9f5] transition-colors border-b border-stone-100"
@@ -1833,7 +1848,8 @@ export default function CustomersView({
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+              )}
             </tbody>
           </table>
         </div>

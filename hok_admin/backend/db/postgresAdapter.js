@@ -104,12 +104,87 @@ const TABLE_CONFIGS = {
     entityIdField: "productId",
     columnMap: {
       productId: "product_id",
+      listerId: "lister_id",
       name: "name",
       designer: "designer",
       category: "category",
       status: "status",
-      availability: "availability",
+      rentStatus: "rent_status",
+      size: "size",
+    },
+  },
+  Submission: {
+    tableName: "submissions",
+    entityIdField: "subid",
+    columnMap: {
+      subid: "subid",
       listerId: "lister_id",
+      piece: "piece",
+      designer: "designer",
+      category: "category",
+      status: "status",
+    }
+  },
+  Task: {
+    tableName: "tasks",
+    entityIdField: "taskId",
+    columnMap: {
+      title: "title",
+      date: "date",
+      time: "time",
+      type: "type",
+      status: "status",
+      assignee: "assignee",
+      orderId: "order_id",
+      description: "description"
+    },
+  },
+  PromoCode: {
+    tableName: "promo_codes",
+    entityIdField: "code",
+    columnMap: {
+      code: "code",
+      type: "type",
+      status: "status",
+      audience: "audience",
+      validFrom: "valid_from",
+      validUntil: "valid_until",
+    },
+  },
+  Message: {
+    tableName: "messages",
+    entityIdField: "messageId",
+    columnMap: {
+      messageId: "message_id",
+      name: "name",
+      subject: "subject",
+      audience: "audience",
+      class: "class",
+      status: "status",
+    },
+  },
+  Notification: {
+    tableName: "notifications",
+    entityIdField: "notificationId",
+    columnMap: {
+      notificationId: "notification_id",
+      title: "title",
+      category: "category",
+      channel: "channel",
+      priority: "priority",
+      unread: "unread",
+    },
+  },
+  SiteSettings: {
+    tableName: "site_settings",
+    entityIdField: "key",
+    columnMap: {
+      key: "key",
+      siteName: "site_name",
+      tagline: "tagline",
+      supportEmail: "support_email",
+      whatsappNumber: "whatsapp_number",
+      instagramHandle: "instagram_handle",
     },
   },
 };
@@ -278,6 +353,11 @@ export class Schema {
   plugin(fn, opts) {
     this._plugins.push({ fn, opts });
     if (typeof fn === "function") fn(this, opts);
+    return this;
+  }
+
+  set(key, val) {
+    this.options[key] = val;
     return this;
   }
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Save, Trash2, Plus, Edit, Image } from 'lucide-react';
 import { HomepageEditor } from '../types';
+import toast from 'react-hot-toast';
 
 interface HomepageViewProps {
   homepage: HomepageEditor;
@@ -36,12 +37,12 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
       testimonials
     };
     onUpdateHomepage(updated);
-    alert("Homepage CMS modifications saved successfully!");
+    toast.success("Homepage CMS modifications saved successfully!");
   };
 
   const handleAddTestimonial = () => {
     if (!newAuthor.trim() || !newText.trim()) {
-      alert("Author name and review text are required.");
+      toast.error("Author name and review text are required.");
       return;
     }
     const newTest = {
@@ -55,7 +56,7 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
     setNewAuthor('');
     setNewRole('');
     setNewText('');
-    alert("Review testimonial added!");
+    toast.success("Review testimonial added!");
   };
 
   const handleDeleteTestimonial = (id: string) => {

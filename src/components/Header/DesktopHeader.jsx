@@ -2,9 +2,11 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo/logo.png";
 import "../../styles/Header/desktop-header.css";
+import useAuthStore from "../../store/authStore";
 
 const DesktopHeader = ({ onSearchOpen }) => {
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuthStore();
 
   const handleProfileClick = () => {
     navigate("/auth")
@@ -104,14 +106,20 @@ const DesktopHeader = ({ onSearchOpen }) => {
           <button
             className="hok-desktop-header-btn"
             aria-label="Account"
-            onClick={handleProfileClick}
+            onClick={() => {
+              if (isAuthenticated) {
+                navigate("/profile");
+              } else {
+                navigate("/auth");
+              }
+            }}
           >
             <svg viewBox="0 0 24 24">
               <circle cx="12" cy="7" r="4" />
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             </svg>
 
-            <span>Account</span>
+            <span>{isAuthenticated && user?.name ? user.name.split(' ')[0] : 'Account'}</span>
           </button>
 
         </div>

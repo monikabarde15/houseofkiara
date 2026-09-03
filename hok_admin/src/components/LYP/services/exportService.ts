@@ -2,11 +2,12 @@
 
 import { Submission } from '../types/submission.types';
 import { formatDate, formatMeasurements } from '../utils/formatter';
+import toast from 'react-hot-toast';
 
 export const exportService = {
   exportSubmissionsCSV: (submissions: Submission[]): void => {
     if (submissions.length === 0) {
-      alert('No submissions to export');
+      toast.success('No submissions to export');
       return;
     }
 

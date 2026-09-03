@@ -1,44 +1,30 @@
 import { AlertTriangle } from "lucide-react";
+import { Payout } from "../../../services/payoutApi";
 
-export default function PayoutIntegrityBanner() {
-  const orders = [
-    {
-      id: "HOK-ORD-008",
-      lister: "Meera Joshi",
-      product: "Rajputana Silk Bridal Lehenga",
-      customer: "Radhika Mehta",
-      amount: "₹16,500",
-    },
-    {
-      id: "HOK-ORD-017",
-      lister: "Aishwarya Sharma",
-      product: "Charcoal Silk Bandhgala",
-      customer: "Kabir Malhotra",
-      amount: "₹32,000",
-    },
-    {
-      id: "HOK-ORD-015",
-      lister: "Meera Joshi",
-      product: "Rajputana Silk Bridal Lehenga",
-      customer: "Tara Bhatt",
-      amount: "₹8,500",
-    },
-  ];
+interface PayoutIntegrityBannerProps {
+  payouts?: Payout[];
+}
+
+export default function PayoutIntegrityBanner({ payouts = [] }: PayoutIntegrityBannerProps) {
+  // TODO: We need to cross-reference with live Orders to find missing payouts.
+  // For now, since we don't have static data and we don't want to show dummy data,
+  // we return null. Once the missing payouts API is ready, we can render them here.
+  const missingPayouts: any[] = []; 
+  
+  if (missingPayouts.length === 0) return null;
 
   return (
     <section className="overflow-hidden rounded-xl border border-[#E7CBC0] bg-[#FCF0EE]">
       <div className="p-5">
-        {/* Header */}
         <div className="flex items-start gap-2">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#B45309]" />
           <h3 className="text-xs font-bold uppercase tracking-wide text-[#92400E]">
-            Payout Integrity — 3 Completed Orders with No Payout on Record (₹57,000 of Transaction Value Untracked)
+            Payout Integrity — {missingPayouts.length} Completed Orders with No Payout on Record
           </h3>
         </div>
 
-        {/* Order Rows */}
         <div className="mt-4 space-y-3">
-          {orders.map((order) => (
+          {missingPayouts.map((order) => (
             <div
               key={order.id}
               className="flex items-center justify-between gap-4"

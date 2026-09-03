@@ -2,6 +2,7 @@
 import { useState, useCallback } from 'react';
 import { ALERTS } from '../utils/alerts';
 import { Message } from '../types/messaging.types';
+import { messageService } from '../services/messageService';
 
 interface UseMessageActionsOptions {
   onSuccess?: () => void;
@@ -12,31 +13,15 @@ export const useMessageActions = (options: UseMessageActionsOptions = {}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // K3 - Creating a new message
+  // Creating a new message via DB API
   const createMessage = useCallback(async () => {
     setLoading(true);
     try {
-      // Mock API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      const newMessage: Message = {
-        id: `msg_${Date.now()}`,
-        name: 'New message',
-        wordingCount: 1,
-        isYours: true,
-        trigger: 'Sent by hand, so nothing fires on its own.',
-        subject: '',
-        audience: 'Customer' as const,
-        class: 'Required' as const,
-        channels: ['email'],
-        status: 'Not written',
-        lastEdited: new Date().toLocaleDateString(),
-        editor: 'You',
-        sentCount: 0,
-      };
+      const newMessage = await messageService.createMessage();
       options.onSuccess?.();
       return newMessage;
-    } catch (err) {
-      const msg = 'Failed to create message';
+    } catch (err: any) {
+      const msg = err.message || 'Failed to create message';
       setError(msg);
       options.onError?.(msg);
       return null;
@@ -45,26 +30,15 @@ export const useMessageActions = (options: UseMessageActionsOptions = {}) => {
     }
   }, [options]);
 
-  // K4 - Copying a message
+  // Copying a message via DB API
   const copyMessage = useCallback(async (message: Message) => {
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      const copiedMessage: Message = {
-        ...message,
-        id: `msg_${Date.now()}`,
-        name: `${message.name} (copy)`,
-        isYours: true,
-        trigger: 'Sent by hand, so nothing fires on its own.',
-        status: 'Not written',
-        lastEdited: new Date().toLocaleDateString(),
-        editor: 'You',
-        sentCount: 0,
-      };
+      const copiedMessage = await messageService.copyMessage(message.id);
       options.onSuccess?.();
       return copiedMessage;
-    } catch (err) {
-      const msg = 'Failed to copy message';
+    } catch (err: any) {
+      const msg = err.message || 'Failed to copy message';
       setError(msg);
       options.onError?.(msg);
       return null;
@@ -73,29 +47,26 @@ export const useMessageActions = (options: UseMessageActionsOptions = {}) => {
     }
   }, [options]);
 
-  // K5 - Removing a message
+  // Removing a message via DB API
   const removeMessage = useCallback(async (message: Message) => {
     setLoading(true);
     try {
-      // Check if message has been sent
       if (message.sentCount && message.sentCount > 0) {
         const alertMsg = ALERTS.REMOVE_SENT_MESSAGE(message.sentCount);
         options.onError?.(alertMsg);
         return false;
       }
 
-      // Check if built-in message
       if (!message.isYours) {
         options.onError?.(ALERTS.REMOVE_BUILTIN_MESSAGE);
         return false;
       }
 
-      // Mock API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await messageService.deleteMessage(message.id);
       options.onSuccess?.();
       return true;
-    } catch (err) {
-      const msg = 'Failed to remove message';
+    } catch (err: any) {
+      const msg = err.message || 'Failed to remove message';
       setError(msg);
       options.onError?.(msg);
       return false;
@@ -104,7 +75,7 @@ export const useMessageActions = (options: UseMessageActionsOptions = {}) => {
     }
   }, [options]);
 
-  // K8 - Logging a message sent by hand
+  // Logging a message sent by hand
   const logHandSent = useCallback(async (data: { name: string; channel: string; about: string }) => {
     setLoading(true);
     try {
@@ -138,11 +109,10 @@ export const useMessageActions = (options: UseMessageActionsOptions = {}) => {
     }
   }, [options]);
 
-  // K9 - Sending a test
+  // Sending a test
   const sendTest = useCallback(async (wording: string, variables: string[]) => {
     setLoading(true);
     try {
-      // Check for unfilled variables
       const unfilled = variables.filter(v => !wording.includes(`{{${v}}}`));
       if (unfilled.length > 0) {
         const alertMsg = ALERTS.TEST_CANNOT_FILL(unfilled[0]);

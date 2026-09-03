@@ -4,7 +4,7 @@ import { PayoutTab } from "../PayoutsView";
 interface PayoutTabsProps {
   activeTab: PayoutTab;
   onChange: (tab: PayoutTab) => void;
-  counts?: Partial<Record<PayoutTab, number>>;
+  payouts?: any[];
 }
 
 interface TabItem {
@@ -16,13 +16,18 @@ interface TabItem {
 export default function PayoutTabs({
   activeTab,
   onChange,
-  counts,
+  payouts = [],
 }: PayoutTabsProps) {
+  const pendingCount = payouts.filter((p) => p.status === "Pending").length;
+  const damageCompCount = payouts.filter(
+    (p) => p.mode === "Damage Comp." && p.status === "Pending"
+  ).length;
+
   const tabs: TabItem[] = [
     {
       label: "Payment Queue",
       value: "payment-queue",
-      count: counts?.["payment-queue"] ?? 4,
+      count: pendingCount,
     },
     {
       label: "All Payouts",
@@ -39,7 +44,7 @@ export default function PayoutTabs({
     {
       label: "Damage Compensation",
       value: "damage-compensation",
-      count: counts?.["damage-compensation"] ?? 1,
+      count: damageCompCount,
     },
   ];
 
@@ -61,7 +66,7 @@ export default function PayoutTabs({
             >
               <span>{tab.label}</span>
 
-              {tab.count !== undefined && (
+              {tab.count !== undefined && tab.count > 0 && (
                 <span className="inline-flex items-center justify-center rounded bg-[#F5EAD2] px-2 py-0.5 text-xs font-semibold text-[#8C6B20]">
                   {tab.count}
                 </span>

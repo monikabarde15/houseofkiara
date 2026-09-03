@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import { Payout } from "../../../services/payoutApi";
 
-// ============================================================
-// WHATSAPP ICON — same glyph used across Payment Queue / All
-// Payouts / By Product, kept local so this file can drop in
-// standalone. If you've already centralized this in a shared
-// components file, delete this copy and import that one instead.
-// ============================================================
 const WhatsAppIcon = () => (
   <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm">
     <svg className="h-3 w-3 fill-current" viewBox="0 0 24 24">
@@ -14,293 +10,107 @@ const WhatsAppIcon = () => (
   </span>
 );
 
-// ============================================================
-// TYPES
-// TODO(backend): replace DamageCompRecord + MOCK_DAMAGE_COMP with
-// real data (filter your payouts source to type === 'Damage Comp.'
-// and status === 'Pending Approval', same records that show up in
-// the Payment Queue tab). This tab is just a focused, damage-comp-
-// only view of the same underlying data.
-// ============================================================
-interface DamageCompRecord {
-  id: string;
-  listerName: string;
-  productName: string;
-  orderId: string;
-  dueDate: string;
-  transactionValue: number;
-  standardPayoutPercent: string;
-  standardPayoutAmount: string;
-  hokCommissionRent: number;
-  deductedFromCustomer: number;
-  returnCondition: string;
-  compensationToLister: string;   // editable — ₹ amount
-  compensationPercent: string;    // editable — % of deduction
-  reason: string;
-  approvedBy: string;
+interface DamageCompensationTabProps {
+  payouts?: Payout[];
 }
 
-// TODO(backend): swap for real fetched data
-const MOCK_DAMAGE_COMP: DamageCompRecord[] = [
-  {
-    id: 'dc1',
-    listerName: 'Meera Joshi',
-    productName: 'Rajputana Silk Bridal Lehenga',
-    orderId: 'HOK-ORD-008',
-    dueDate: '24 Mar 2026',
-    transactionValue: 16500,
-    standardPayoutPercent: '55',
-    standardPayoutAmount: '9075',
-    hokCommissionRent: 7425,
-    deductedFromCustomer: 15000,
-    returnCondition: 'Minor embroidery tear on hem — agreed deduction per rental agreement',
-    compensationToLister: '9000',
-    compensationPercent: '60',
-    reason: 'Rental #2 of piece. Customer caused embroidery tear. ₹15,000 deducted from deposit. 60% of deduction passed to Meera Joshi as damage compensation per HOK policy.',
-    approvedBy: 'Priya (Ops)',
-  },
-];
-
-export default function DamageCompensationTab() {
-  // One editable-state object per record, keyed by record id, so
-  // each card's inputs are independent even though they all render
-  // from the same MOCK_DAMAGE_COMP list.
-  const [edits, setEdits] = useState<Record<string, Pick<DamageCompRecord, 'compensationToLister' | 'compensationPercent' | 'reason' | 'approvedBy'>>>(
-    Object.fromEntries(
-      MOCK_DAMAGE_COMP.map(r => [r.id, {
-        compensationToLister: r.compensationToLister,
-        compensationPercent: r.compensationPercent,
-        reason: r.reason,
-        approvedBy: r.approvedBy,
-      }])
-    )
-  );
-
-  const updateEdit = (id: string, field: keyof (typeof edits)[string], value: string) => {
-    setEdits(prev => ({ ...prev, [id]: { ...prev[id], [field]: value } }));
-  };
-
-  const handleApprove = (record: DamageCompRecord) => {
-    // TODO(backend): submit edits[record.id] to your payout-approval endpoint.
-    alert(`Approved compensation payout for ${record.listerName} — ${record.productName}`);
-  };
+export default function DamageCompensationTab({ payouts = [] }: DamageCompensationTabProps) {
+  const damagePayouts = payouts.filter(p => p.mode === 'Damage Comp.');
 
   return (
     <div className="space-y-4 text-xs font-sans">
-
-      {/* Explanatory banner */}
       <div className="rounded-md border border-[#EFE0B8] bg-[#FDF6E3] px-5 py-3.5 text-[13px] leading-relaxed text-[#6b5a2e]">
         Damage compensation records are created automatically when a partial or full deposit deduction is processed on a returned rental. The lister is owed compensation because their piece was damaged during a customer's rental — HOK passes a portion of the deducted deposit to the lister, absorbing the rest.
       </div>
 
-      {MOCK_DAMAGE_COMP.length === 0 && (
+      {damagePayouts.length === 0 && (
         <div className="bg-white p-8 rounded-lg border border-stone-200/80 shadow-sm text-center text-stone-400">
           No damage compensation records pending approval.
         </div>
       )}
 
-      {MOCK_DAMAGE_COMP.map((record) => {
-        const edit = edits[record.id];
+      {damagePayouts.map(r => (
+        <DamageCompCard key={r.id} record={r} />
+      ))}
+    </div>
+  );
+}
 
-        // Live-computed figures, same formulas as the Payment Queue card:
-        // HOK retains = deducted - compensation to lister
-        // Total payout to lister = standard payout + compensation
-        // Total to HOK = HOK commission (rent) + HOK retained
-        const compAmount = Number(edit.compensationToLister) || 0;
-        const hokRetains = record.deductedFromCustomer - compAmount;
-        const totalPayoutToLister = Number(record.standardPayoutAmount) + compAmount;
-        const totalToHok = record.hokCommissionRent + hokRetains;
+function DamageCompCard({ record }: { record: Payout }) {
+  const [compPct, setCompPct] = useState("60");
+  const [compAmt, setCompAmt] = useState(record.listerShare.toString());
+  const [approvedBy, setApprovedBy] = useState("Priya (Ops)");
+  const [reason, setReason] = useState("Damage compensation generated automatically.");
 
-        return (
-          <div key={record.id} className="overflow-hidden rounded-md border border-[#E7E0D6] bg-white shadow-sm">
+  const handleApprove = () => {
+    toast.success(`Approved compensation payout for ${record.listerName} — ${record.productName}`);
+  };
 
-            {/* Card header */}
-            <div className="flex flex-wrap items-center gap-2.5 border-b border-[#E7E0D6] bg-white px-6 py-4 text-sm">
-              <span className="font-medium text-[#B88E36]">{record.listerName}</span>
-              <WhatsAppIcon />
-              <span className="text-stone-300">·</span>
-              <span className="font-medium text-[#B88E36]">{record.productName}</span>
-              <span className="rounded bg-[#EDE9FE] px-2 py-0.5 text-xs font-semibold text-[#5B21B6]">
-                Damage Compensation
-              </span>
-              <span className="ml-auto text-sm text-[#78716C]">due {record.dueDate}</span>
+  const transactionVal = record.transactionAmount || record.listerShare + record.hokCommission;
+
+  return (
+    <div className="overflow-hidden rounded-md border border-[#E7CBC0] bg-white shadow-sm">
+      <div className="flex flex-wrap items-center gap-2.5 border-b border-[#E7CBC0] bg-[#FCF0EE] px-6 py-4 text-sm">
+        <span className="font-medium text-[#B45309]">{record.listerName}</span>
+        <WhatsAppIcon />
+        <span className="text-[#D4A574]">·</span>
+        <span className="font-medium text-[#B45309]">{record.productName}</span>
+        <span className="rounded bg-[#FEF3C7] px-2 py-0.5 text-xs font-semibold text-[#B45309]">Damage Comp.</span>
+        <span className="ml-auto text-sm text-[#9A3412]">due {new Date(record.dueDate).toLocaleDateString()}</span>
+      </div>
+
+      <div className="p-6">
+        <div className="mb-4 rounded-md border border-[#EFE8D8] bg-[#FAF5EB] p-3.5 text-xs leading-relaxed text-[#524B45]">
+          Customer deposit deduction was applied for damage. Review the compensation split.
+        </div>
+        <p className="mb-1 text-xs font-semibold text-[#B88E36] hover:underline cursor-pointer">
+          Related order: {record.orderId} →
+        </p>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 mt-4">
+          {/* Left Column */}
+          <div className="space-y-4">
+            <div>
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">TRANSACTION VALUE</label>
+              <div className="text-2xl font-bold text-[#1E1412]">₹{transactionVal.toLocaleString('en-IN')}</div>
             </div>
 
-            <div className="p-6">
-              {/* Context banner */}
-              <div className="mb-4 rounded-md border border-[#EFE8D8] bg-[#FAF5EB] p-3.5 text-xs leading-relaxed text-[#524B45]">
-                Customer deposit deduction of ₹{record.deductedFromCustomer.toLocaleString('en-IN')} was applied for damage. Standard payout for this rental would be ₹{Number(record.standardPayoutAmount).toLocaleString('en-IN')} ({record.standardPayoutPercent}% of ₹{record.transactionValue.toLocaleString('en-IN')}). Who keeps the deduction is your call below — lister compensation vs the repair cost HOK bears.
-              </div>
-
-              <p className="mb-1 text-xs font-semibold text-[#B88E36] hover:underline cursor-pointer">
-                Related order: {record.orderId} →
-              </p>
-              <p className="mb-4 text-xs text-[#78716C]">
-                Return condition: {record.returnCondition}
-              </p>
-
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-
-                {/* Left column */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                      Transaction Value
-                    </label>
-                    <div className="text-2xl font-bold text-[#1E1412]">
-                      ₹{record.transactionValue.toLocaleString('en-IN')}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                          Standard Payout %
-                        </label>
-                        <div className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412]">
-                          {record.standardPayoutPercent}
-                        </div>
-                      </div>
-                      <div>
-                        <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                          Standard Payout (₹)
-                        </label>
-                        <div className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412]">
-                          {record.standardPayoutAmount}
-                        </div>
-                      </div>
-                    </div>
-                    <p className="mt-1.5 text-xs text-[#78716C]">
-                      Rental #2 — type either side
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                      HOK Commission (Rent)
-                    </label>
-                    <div className="text-2xl font-bold text-[#1E1412]">
-                      ₹{record.hokCommissionRent.toLocaleString('en-IN')}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right column */}
-                <div className="space-y-3">
-                  <div>
-                    <span className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                      Deduction — who keeps it
-                    </span>
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                      Deducted from customer
-                    </div>
-                    <div className="text-xl font-bold text-[#991B1B]">
-                      ₹{record.deductedFromCustomer.toLocaleString('en-IN')}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                        Compensation to Lister (₹)
-                      </label>
-                      <input
-                        type="text"
-                        value={edit.compensationToLister}
-                        onChange={(e) => updateEdit(record.id, 'compensationToLister', e.target.value)}
-                        className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                        ...or % of deduction
-                      </label>
-                      <input
-                        type="text"
-                        value={edit.compensationPercent}
-                        onChange={(e) => updateEdit(record.id, 'compensationPercent', e.target.value)}
-                        className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-xs text-[#78716C]">
-                    Type either side · the rest covers costs HOK bears
-                  </p>
-
-                  <div>
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                      HOK retains (repair cost)
-                    </div>
-                    <div className="font-serif text-lg italic text-[#8C6B20]">
-                      ₹{hokRetains.toLocaleString('en-IN')}
-                    </div>
-                  </div>
-
-                  <hr className="my-2 border-[#E7E0D6]" />
-
-                  <div>
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                      Total payout to lister
-                    </div>
-                    <div className="font-serif text-xl font-semibold italic text-[#2D5A27]">
-                      ₹{totalPayoutToLister.toLocaleString('en-IN')}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                      Total to HOK (commission + retained)
-                    </div>
-                    <div className="font-serif text-lg italic text-[#1E1412]">
-                      ₹{totalToHok.toLocaleString('en-IN')}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                      Reason
-                    </label>
-                    <textarea
-                      rows={3}
-                      value={edit.reason}
-                      onChange={(e) => updateEdit(record.id, 'reason', e.target.value)}
-                      className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] p-3 text-sm text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
-                    />
-                    <p className="mt-1 text-xs text-[#78716C]">
-                      Updates with the numbers until you edit it yourself
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
-                      Approved by
-                    </label>
-                    <select
-                      value={edit.approvedBy}
-                      onChange={(e) => updateEdit(record.id, 'approvedBy', e.target.value)}
-                      className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
-                    >
-                      <option value="Priya (Ops)">Priya (Ops)</option>
-                    </select>
-                  </div>
+            <div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">COMPENSATION %</label>
+                  <input type="text" value={compPct} onChange={(e) => setCompPct(e.target.value)} className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none" />
                 </div>
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="flex justify-end border-t border-[#E7E0D6] bg-[#FAF8F5] px-6 py-3.5">
-              <button
-                onClick={() => handleApprove(record)}
-                className="rounded-md bg-[#C39A38] px-4 py-1.5 text-sm font-semibold text-[#1E1412] shadow-sm transition-colors hover:bg-[#B38A28]"
-              >
-                Approve Compensation Payout
-              </button>
+            <div>
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">APPROVED BY</label>
+              <select value={approvedBy} onChange={(e) => setApprovedBy(e.target.value)} className="w-full rounded-md border border-[#FBD38D] bg-[#FFFDF5] px-3 py-2 text-sm font-medium text-[#742A2A] focus:border-[#DD6B20] focus:outline-none">
+                <option value="Priya (Ops)">Priya (Ops)</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">REASON FOR THIS SPLIT</label>
+              <textarea rows={2} value={reason} onChange={(e) => setReason(e.target.value)} className="w-full rounded-md border border-[#FBD38D] bg-[#FFFDF5] p-3 text-sm text-[#742A2A] focus:border-[#DD6B20] focus:outline-none" />
             </div>
           </div>
-        );
-      })}
 
+          {/* Right Column */}
+          <div className="space-y-4">
+            <div>
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#DD6B20]">COMP. AMOUNT (₹)</label>
+              <input type="text" value={compAmt} onChange={(e) => setCompAmt(e.target.value)} className="w-full rounded-md border border-transparent bg-[#FFFDF5] px-3 py-2 text-2xl font-bold text-[#DD6B20] focus:outline-none shadow-[0_0_0_1px_#DD6B20_inset]" />
+            </div>
+
+            <div className="flex gap-2 pt-2 mt-auto">
+              <button className="flex-1 rounded-md border border-[#FBD38D] bg-white px-4 py-3 text-sm font-medium text-[#DD6B20] transition hover:bg-[#FFFDF5]">Hold</button>
+              <button onClick={handleApprove} className="flex-1 rounded-md border border-transparent bg-[#9C4221] px-4 py-3 text-sm font-bold tracking-wide text-white shadow-md transition hover:bg-[#742A2A]">APPROVE COMP. ₹{Number(compAmt).toLocaleString('en-IN')}</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -6,26 +6,21 @@ import "../../../styles/checkout/sections/contact-section.css";
 import Field from "./components/Field";
 import { useState, useEffect } from "react";
 
+import useCheckoutStore from "../../../store/checkoutStore";
+
 const ContactSection = ({
   submitCount,
   setFieldErrors,
 }) => {
-
-  const [formData, setFormData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "johndoe@example.com",
-    whatsapp: "+91 98765 43210",
-  });
+  const { contact: formData, setContact: setFormDataStore } = useCheckoutStore();
 
   const [errors, setErrors] = useState({});
 
   const handleChange = (field, value) => {
-
-    setFormData((prev) => ({
-      ...prev,
+    setFormDataStore({
+      ...formData,
       [field]: value,
-    }));
+    });
 
     /* clear error live */
     if (errors[field]) {

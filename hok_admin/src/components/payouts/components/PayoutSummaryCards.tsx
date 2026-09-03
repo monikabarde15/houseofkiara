@@ -1,31 +1,43 @@
-const cards = [
-  {
-    title: "Pending Approval",
-    value: "₹84,500",
-    subtitle: "4 awaiting approval",
-    valueColor: "text-[#C46A3A]",
-  },
-  {
-    title: "Paid (MTD)",
-    value: "₹28,500",
-    subtitle: "",
-    valueColor: "text-[#5F7D54]",
-  },
-  {
-    title: "HOK Commission (MTD)",
-    value: "₹9,500",
-    subtitle: "",
-    valueColor: "text-[#1F1B18]",
-  },
-  {
-    title: "Damage Compensation Due",
-    value: "₹9,000",
-    subtitle: "1 record — triggered by deposit deduction",
-    valueColor: "text-[#C9A45A]",
-  },
-];
+import { Payout } from "../../../services/payoutApi";
 
-export default function PayoutSummaryCards() {
+interface PayoutSummaryCardsProps {
+  pendingTotal: number;
+  paidTotal: number;
+  pendingCount: number;
+  payouts?: Payout[];
+}
+
+export default function PayoutSummaryCards({ pendingTotal, paidTotal, pendingCount, payouts = [] }: PayoutSummaryCardsProps) {
+  const hokCommissionTotal = payouts.reduce((sum, p) => sum + (p.status === 'Paid' ? (p.hokCommission || 0) : 0), 0);
+  const damageCompTotal = payouts.reduce((sum, p) => sum + (p.mode === 'Damage Comp.' && p.status === 'Pending' ? p.listerShare : 0), 0);
+
+  const cards = [
+    {
+      title: "Pending Approval",
+      value: `₹${pendingTotal.toLocaleString('en-IN')}`,
+      subtitle: `${pendingCount} awaiting approval`,
+      valueColor: "text-[#C46A3A]",
+    },
+    {
+      title: "Paid (MTD)",
+      value: `₹${paidTotal.toLocaleString('en-IN')}`,
+      subtitle: "",
+      valueColor: "text-[#5F7D54]",
+    },
+    {
+      title: "HOK Commission (MTD)",
+      value: `₹${hokCommissionTotal.toLocaleString('en-IN')}`,
+      subtitle: "",
+      valueColor: "text-[#1F1B18]",
+    },
+    {
+      title: "Damage Compensation Due",
+      value: `₹${damageCompTotal.toLocaleString('en-IN')}`,
+      subtitle: damageCompTotal > 0 ? "Triggered by deposit deduction" : "",
+      valueColor: "text-[#C9A45A]",
+    },
+  ];
+
   return (
     <section className="grid grid-cols-4 gap-4">
       {cards.map((card) => (

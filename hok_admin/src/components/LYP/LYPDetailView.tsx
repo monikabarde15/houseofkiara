@@ -3,6 +3,7 @@ import { ChevronLeft, ExternalLink } from 'lucide-react';
 import { useSubmissionDetail } from './hooks/useSubmissionDetail';
 import { useJourneyStack } from './hooks/useJourneyStack';
 import { SubmissionRecord } from './record/SubmissionRecord';
+import toast from 'react-hot-toast';
 import './LYPDetailView.css';
 
 interface LYPDetailViewProps {
@@ -39,7 +40,7 @@ export const LYPDetailView: React.FC<LYPDetailViewProps> = ({ submissionId }) =>
   };
 
   const handleSave = () => {
-    alert(`Worksheet changes for ${submission?.subid} saved successfully!`);
+    toast.success(`Worksheet changes for ${submission?.subid} saved successfully!`);
   };
 
   const handleViewLive = () => {

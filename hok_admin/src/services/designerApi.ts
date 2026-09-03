@@ -34,3 +34,17 @@ export const deleteDesigner = async (id: string) => {
     method: 'DELETE'
   });
 };
+
+export const reorderFeaturedDesigners = async (orderedIds: string[]) => {
+  return apiRequest('/designers/bulk/reorder-featured', {
+    method: 'PUT',
+    body: JSON.stringify({ orderedIds })
+  });
+};
+
+export const updateDesignerType = async (id: string, type: string) => {
+  return (await apiRequest('/designers/bulk/update-type', {
+    method: 'PUT',
+    body: JSON.stringify({ id, type })
+  })).data as Designer;
+};

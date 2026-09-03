@@ -21,33 +21,6 @@ const TABS = [
   { id: 'setup', label: 'Setup' },  // ✅ Changed from 'settings' to 'setup'
 ];
 
-const STAT_TILES = [
-  { 
-    label: 'Messages', 
-    number: 73, 
-    numberColor: 'charcoal' as const,
-    caption: 'to customers, listers and your own desk'
-  },
-  { 
-    label: 'Live', 
-    number: 73, 
-    numberColor: 'sage' as const,
-    caption: 'written and switched on'
-  },
-  { 
-    label: 'Not Written Yet', 
-    number: 0, 
-    numberColor: 'gold' as const,
-    caption: 'every message has wording'
-  },
-  { 
-    label: 'Sent', 
-    number: 18, 
-    numberColor: 'charcoal' as const,
-    caption: '1 held back — 1 bounced'
-  },
-];
-
 interface MessagingViewProps {
   activeTab?: string;
   setActiveTab?: (tab: string) => void;
@@ -67,7 +40,7 @@ export const MessagingView: React.FC<MessagingViewProps> = ({
 }) => {
   const [localActiveTab, localSetActiveTab] = useState('messages');
   const [localSelectedMessageId, localSetSelectedMessageId] = useState<string | null>(null);
-  const [localMessages, localSetMessages] = useState<Message[]>(mockMessages);
+  const [localMessages, localSetMessages] = useState<Message[]>([]);
 
   const activeTab = propActiveTab !== undefined ? propActiveTab : localActiveTab;
   const setActiveTab = propSetActiveTab !== undefined ? propSetActiveTab : localSetActiveTab;
@@ -75,6 +48,39 @@ export const MessagingView: React.FC<MessagingViewProps> = ({
   const setSelectedMessageId = propSetSelectedMessageId !== undefined ? propSetSelectedMessageId : localSetSelectedMessageId;
   const messages = propMessages !== undefined ? propMessages : localMessages;
   const setMessages = propSetMessages !== undefined ? propSetMessages : localSetMessages;
+
+  // Calculate dynamic stats from real messages array
+  const totalCount = messages.length;
+  const liveCount = messages.filter(m => m.status === 'Live').length;
+  const notWrittenCount = messages.filter(m => m.status === 'Not written').length;
+  const sentCountTotal = messages.reduce((acc, m) => acc + (m.sentCount || 0), 0);
+
+  const statTiles = [
+    { 
+      label: 'Messages', 
+      number: totalCount, 
+      numberColor: 'charcoal' as const,
+      caption: 'to customers, listers and your own desk'
+    },
+    { 
+      label: 'Live', 
+      number: liveCount, 
+      numberColor: 'sage' as const,
+      caption: 'written and switched on'
+    },
+    { 
+      label: 'Not Written Yet', 
+      number: notWrittenCount, 
+      numberColor: 'gold' as const,
+      caption: 'every message has wording'
+    },
+    { 
+      label: 'Sent', 
+      number: sentCountTotal, 
+      numberColor: 'charcoal' as const,
+      caption: `${sentCountTotal} total messages delivered`
+    },
+  ];
 
   const handleOpenEditor = (messageId: string) => {
     setSelectedMessageId(messageId);
@@ -123,7 +129,7 @@ export const MessagingView: React.FC<MessagingViewProps> = ({
   return (
     <div className="msg-view">
       <MessagingHeader />
-      <StatTiles tiles={STAT_TILES} />
+      <StatTiles tiles={statTiles} />
       <TabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
       <div className="msg-view-content">
         {renderTabContent()}

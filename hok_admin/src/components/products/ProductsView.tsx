@@ -16,6 +16,7 @@ import { AvailabilityCalendarTab } from './tabs/AvailabilityCalendarTab';
 import { PayoutHistoryTab } from './tabs/PayoutHistoryTab';
 import { ActivityLogTab } from './tabs/ActivityLogTab';
 import { ProductSidebar } from './ProductSidebar';
+import toast from 'react-hot-toast';
 
 type ProductTab = 'Core' | 'Pricing' | 'Images' | 'Related Products' | 'SEO' | 'Calendar' | 'Payout History' | 'Activity Log';
 
@@ -45,7 +46,7 @@ export default function ProductsView({
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const [isFinalSaving, setIsFinalSaving] = useState(false);
-  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+
   const [selectedMode, setSelectedMode] = useState('All Modes');
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [sortOption, setSortOption] = useState('Sort: Recent');
@@ -62,16 +63,7 @@ export default function ProductsView({
     setUploadingImages,
   } = useProductEditor();
 
-  // ✅ AUTO-CLEAR TOAST
-  useEffect(() => {
-    if (toast) {
-      const timer = setTimeout(() => {
-        setToast(null);
-        setIsFinalSaving(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [toast]);
+  
 
   const resetForm = () => {
     setFormData({});
@@ -100,11 +92,11 @@ export default function ProductsView({
         setActiveTab('Core');
         console.log('✅ Product loaded successfully with ID:', safeData.productId);
       } else {
-        alert(`Product with ID ${productId} not found`);
+        toast.error(`Product with ID ${productId} not found`);
       }
     } catch (error: any) {
       console.error('❌ Error fetching product:', error);
-      alert(error.message || 'Error connecting to server');
+      toast.error(error.message || 'Error connecting to server');
     }
   };
 
@@ -113,22 +105,29 @@ export default function ProductsView({
     onEditingChange?.(isEditing);
   }, [isEditing, onEditingChange]);
 
-  const filteredProducts = products.filter((p) => {
+  const validProducts = products.filter(p => p.id && p.name && p.name !== 'undefined');
+
+  const filteredProducts = validProducts.filter((p) => {
     const term = searchTerm.toLowerCase().trim();
+    const pName = p.name || '';
+    const pDesigner = p.designer || '';
+    const pCategory = p.category || '';
+    const pListingModes = p.listingModes || [];
+    
     const matchesSearch =
       !term ||
-      p.name.toLowerCase().includes(term) ||
-      p.designer.toLowerCase().includes(term) ||
-      p.category.toLowerCase().includes(term) ||
-      (p.sku && p.sku.toLowerCase().includes(term)) ||
-      p.id.toLowerCase().includes(term);
+      pName.toLowerCase().includes(term) ||
+      pDesigner.toLowerCase().includes(term) ||
+      pCategory.toLowerCase().includes(term) ||
+      (p.sku && (p.sku || '').toLowerCase().includes(term)) ||
+      (p.id && (p.id || '').toLowerCase().includes(term));
 
     const matchesCat = selectedCategory === 'All Categories' || p.category === selectedCategory;
-    const matchesMode = selectedMode === 'All Modes' || p.listingModes.includes(selectedMode as any);
+    const matchesMode = selectedMode === 'All Modes' || pListingModes.includes(selectedMode as any);
     const matchesStatus =
       selectedStatus === 'All Statuses' ||
       (p.status as string) === selectedStatus ||
-      (selectedStatus === 'Sold' && ((p.status as string) === 'Sold' || p.name.includes('Sherwani')));
+      (selectedStatus === 'Sold' && ((p.status as string) === 'Sold' || pName.includes('Sherwani')));
 
     return matchesSearch && matchesCat && matchesMode && matchesStatus;
   }).sort((a, b) => {
@@ -162,30 +161,30 @@ export default function ProductsView({
     }
 
     if (!formData.name?.trim() || formData.name.trim().length < 3) {
-      alert('Listing title must be at least 3 characters.');
+      toast.error('Listing title must be at least 3 characters.');
       return;
     }
     if (!formData.designer?.trim()) {
-      alert('Designer / Brand is required.');
+      toast.error('Designer / Brand is required.');
       return;
     }
     if (!formData.listingModes?.length) {
-      alert('Select at least one listing mode.');
+      toast.success('Select at least one listing mode.');
       return;
     }
     if (formData.listingModes?.includes('RENTAL') && Number(formData.rentalPrice || 0) <= 0) {
-      alert('Rental price must be greater than zero for Rental listings.');
+      toast.error('Rental price must be greater than zero for Rental listings.');
       return;
     }
     if (
       (formData.listingModes?.includes('BUY NEW') || formData.listingModes?.includes('PRELOVED')) &&
       Number(formData.listingPrice || 0) <= 0
     ) {
-      alert('Listing price must be greater than zero for Buy / Preloved listings.');
+      toast.error('Listing price must be greater than zero for Buy / Preloved listings.');
       return;
     }
     if (Number(formData.commissionRate || 0) < 0 || Number(formData.commissionRate || 0) > 100) {
-      alert('Commission must be between 0% and 100%.');
+      toast.error('Commission must be between 0% and 100%.');
       return;
     }
 
@@ -338,7 +337,7 @@ export default function ProductsView({
       }
 
       setSaveSuccess(true);
-      setToast({ type: 'success', message: '✅ Product saved successfully!' });
+      toast.success('✅ Product saved successfully!');
 
       setTimeout(() => {
         window.location.reload();
@@ -347,7 +346,7 @@ export default function ProductsView({
     } catch (error) {
       console.error('❌ Save error:', error);
       setSaveError(error instanceof Error ? error.message : 'Failed to save product');
-      setToast({ type: 'error', message: '❌ Failed to save product!' });
+      toast.error('❌ Failed to save product!');
       setIsFinalSaving(false);
       setIsSaving(false);
     }
@@ -355,7 +354,7 @@ export default function ProductsView({
 
   const handleDuplicate = async () => {
     if (!formData.productId && !state.editingProduct) {
-      alert("No product to duplicate!");
+      toast.error("No product to duplicate!");
       return;
     }
     if (isSaving || isFinalSaving) return;
@@ -391,14 +390,14 @@ export default function ProductsView({
       const savedProduct = result as Product;
       console.log('✅ Duplicate created:', savedProduct);
 
-      setToast({ type: 'success', message: '📋 Product duplicated as draft!' });
+      toast.success('📋 Product duplicated as draft!');
       setTimeout(() => {
         window.location.reload();
       }, 1500);
 
     } catch (error) {
       console.error('❌ Duplicate error:', error);
-      setToast({ type: 'error', message: '❌ Failed to duplicate product!' });
+      toast.error('❌ Failed to duplicate product!');
       setIsFinalSaving(false);
       setIsSaving(false);
     }
@@ -406,7 +405,7 @@ export default function ProductsView({
 
   const handleArchive = async () => {
     if (!formData.productId && !state.editingProduct) {
-      alert("No product to archive!");
+      toast.error("No product to archive!");
       return;
     }
     if (!window.confirm('Are you sure you want to archive this product?')) return;
@@ -432,7 +431,7 @@ export default function ProductsView({
 
     } catch (error) {
       console.error('❌ Archive error:', error);
-      setToast({ type: 'error', message: '❌ Failed to archive product!' });
+      toast.error('❌ Failed to archive product!');
       setIsFinalSaving(false);
       setIsSaving(false);
     }
@@ -609,6 +608,17 @@ export default function ProductsView({
     );
   }
 
+  // Calculate dynamic stats
+  const liveCount = validProducts.filter(p => p.status !== 'Draft' && p.status !== 'Archived').length;
+  const draftCount = validProducts.filter(p => p.status === 'Draft').length;
+  const pausedCount = validProducts.filter(p => p.status === 'Archived' || p.status === 'Paused').length;
+
+  const totalRevenue = validProducts.reduce((sum, p) => sum + (p.earnedAmount || 0), 0);
+  const hokRetained = Math.round(totalRevenue * 0.25); // Assuming avg 25% commission
+
+  const inRental = validProducts.filter(p => p.rentalStatus === 'Rented' || (p.status as string) === 'Sold').length;
+  const needsAttention = validProducts.filter(p => p.status === 'Review').length;
+
   // ✅ RENDER: List Mode
   return (
     <div className="space-y-6 text-xs font-sans">
@@ -634,22 +644,22 @@ export default function ProductsView({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
               <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">LIVE PIECES</div>
-              <div className="text-[26px] font-serif text-[#2B2520] font-normal my-0.5 leading-tight">5</div>
-              <div className="text-[12px] text-[#8A8177]">1 draft · 1 paused</div>
+              <div className="text-[26px] font-serif text-[#2B2520] font-normal my-0.5 leading-tight">{liveCount}</div>
+              <div className="text-[12px] text-[#8A8177]">{draftCount} draft · {pausedCount} paused</div>
             </div>
             <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
               <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">PORTFOLIO REVENUE (PAID)</div>
-              <div className="text-[26px] font-serif text-[#2B2520] font-normal my-0.5 leading-tight">₹55,000</div>
-              <div className="text-[12px] text-[#8A8177]">HOK retained ₹15,875</div>
+              <div className="text-[26px] font-serif text-[#2B2520] font-normal my-0.5 leading-tight">₹{totalRevenue.toLocaleString('en-IN')}</div>
+              <div className="text-[12px] text-[#8A8177]">HOK retained ₹{hokRetained.toLocaleString('en-IN')}</div>
             </div>
             <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
               <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">IN RENTAL TODAY</div>
-              <div className="text-[26px] font-serif text-[#C04838] font-normal my-0.5 leading-tight">2</div>
-              <div className="text-[12px] text-[#8A8177]">2 booked in next 7 days</div>
+              <div className="text-[26px] font-serif text-[#C04838] font-normal my-0.5 leading-tight">{inRental}</div>
+              <div className="text-[12px] text-[#8A8177]">active rentals</div>
             </div>
             <div className="bg-white border border-[#EBE5DF] rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
               <div className="text-[11px] font-semibold tracking-wider text-[#8C847A] uppercase">NEEDS ATTENTION</div>
-              <div className="text-[26px] font-serif text-[#C04838] font-normal my-0.5 leading-tight">4</div>
+              <div className="text-[26px] font-serif text-[#C04838] font-normal my-0.5 leading-tight">{needsAttention}</div>
               <div className="text-[12px] text-[#8A8177]">flagged on the rows below</div>
             </div>
           </div>

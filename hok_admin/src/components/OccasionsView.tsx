@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Layers, Check, Plus, Trash2, Sliders, ChevronRight, Save } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function OccasionsView() {
   const [occasions, setOccasions] = useState([
@@ -40,7 +41,7 @@ export default function OccasionsView() {
     setOccasions([...occasions, newO]);
     setNewOccasionName('');
     setNewOccasionDeposit('');
-    alert("Occasion type added successfully!");
+    toast.success("Occasion type added successfully!");
   };
 
   const handleDeleteOccasion = (id: string) => {
@@ -72,7 +73,7 @@ export default function OccasionsView() {
       }
       return s;
     }));
-    alert(`Size chart configuration for ${selectedSizeCode} updated successfully!`);
+    toast.success(`Size chart configuration for ${selectedSizeCode} updated successfully!`);
   };
 
   return (

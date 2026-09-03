@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Designers from './Designers';
 import DesignerEdit from './DesignerEdit';
 import { Designer } from '../types/designer.types';
-import { designers as initialDesigners } from '../data/mockDesigners';
 import * as designerApi from '../../../services/designerApi';
 
 const emptyDesigner: Designer = {
@@ -25,7 +24,7 @@ interface DesignersViewProps {
 }
 
 const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
-  const [designers, setDesigners] = useState<Designer[]>(initialDesigners);
+  const [designers, setDesigners] = useState<Designer[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,10 +34,15 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
     try {
       const data = await designerApi.getDesigners();
       if (Array.isArray(data)) {
-        setDesigners(data);
+        // Filter out blank/corrupted designers that have no name
+        const validDesigners = data.filter(d => d && d.name && d.name.trim() !== '' && d.name !== 'undefined');
+        setDesigners(validDesigners);
+      } else {
+        setDesigners([]);
       }
     } catch (err) {
-      console.warn('Backend designer API offline or empty, fallback to local state:', err);
+      console.warn('Backend designer API offline or empty:', err);
+      setDesigners([]);
     } finally {
       setLoading(false);
     }
@@ -76,7 +80,6 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
       }
     } catch (err) {
       console.error('Failed to save designer via API:', err);
-      // Fallback local update
       const fallbackId = updated.id || `DES-${Date.now()}`;
       const withId: Designer = { ...updated, id: fallbackId };
       if (isCreating) {
@@ -129,6 +132,8 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
       designers={designers}
       onEditDesigner={(id) => setSelectedId(id)}
       onAddDesigner={() => setIsCreating(true)}
+      onReorderFeatured={designerApi.reorderFeaturedDesigners}
+      onUpdateType={designerApi.updateDesignerType}
     />
   );
 };

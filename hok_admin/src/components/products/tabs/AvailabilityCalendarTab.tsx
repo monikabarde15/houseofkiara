@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { Product } from '../../../types';
 import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import * as productSectionsApi from '../../../services/productSectionsApi';
+import toast from 'react-hot-toast';
 
 interface AvailabilityCalendarTabProps {
   editingProduct: Product | null;
@@ -166,19 +167,19 @@ export function AvailabilityCalendarTab({
   // --- Actions ---
   const resetForm = () => { setBlockFrom(''); setBlockTo(''); setCustomerName(''); setWhatsappNumber(''); setCity(''); setChannel(CHANNEL_OPTIONS[0]); setListerSplit(45); setSplitNote(''); };
   const handleBlockManualDates = () => {
-    if (!blockFrom || !blockTo) { alert('Please choose a from and to date.'); return; }
+    if (!blockFrom || !blockTo) { toast.error('Please choose a from and to date.'); return; }
     const updated = { ...editingProduct, blockedDates: [...blockedDates, { from: blockFrom, to: blockTo, reason: reasonMeta.label }] };
     onUpdateProduct(updated); resetForm();
   };
   const handleCreateExternalOrder = async () => {
-    if (!blockFrom || !blockTo || !customerName || !whatsappNumber) { alert('From date, to date, customer name and WhatsApp number are required.'); return; }
+    if (!blockFrom || !blockTo || !customerName || !whatsappNumber) { toast.error('From date, to date, customer name and WhatsApp number are required.'); return; }
     setSubmitting(true);
     try {
       await productSectionsApi.addExternalBooking(editingProduct.id, { orderId: '', customerName, startDate: blockFrom, endDate: blockTo, amount: 0, whatsappNumber, city, channel, listerSplitPercent: listerSplit, splitNote } as any);
       const calendar = await productSectionsApi.getCalendar(editingProduct.id);
       onUpdateProduct({ ...editingProduct, blockedDates: calendar.blockedDates || [], bookingHistory: calendar.bookingHistory || [] });
       resetForm();
-    } catch (error) { alert(error instanceof Error ? error.message : 'Unable to reserve these dates'); } finally { setSubmitting(false); }
+    } catch (error) { toast.error(error instanceof Error ? error.message : 'Unable to reserve these dates'); } finally { setSubmitting(false); }
   };
 
   // --- Render ---

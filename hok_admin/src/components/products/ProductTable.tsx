@@ -72,10 +72,13 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
             // Tag check (e.g. Booked this week / Idle 30d+)
             let tagText = '';
             let tagClass = '';
-            if (p.name.includes('Gulabi') || p.id === 'HOK-SAB-002') {
+            const pName = p.name || '';
+            const pListingModes = p.listingModes || [];
+
+            if (pName.includes('Gulabi') || p.id === 'HOK-SAB-002') {
               tagText = '• Booked this week';
               tagClass = 'text-[#3E7A4A]';
-            } else if (p.name.includes('Rajputana') || p.id === 'HOK-SAB-003') {
+            } else if (pName.includes('Rajputana') || p.id === 'HOK-SAB-003') {
               tagText = '• Idle 30d+';
               tagClass = 'text-[#C04838]';
             }
@@ -86,14 +89,14 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
             // Prices
             let priceMain = '';
             let priceSub = '';
-            if (p.listingModes.includes('Rental') && p.rentalPrice > 0) {
+            if (pListingModes.includes('Rental') && p.rentalPrice > 0) {
               priceMain = `₹${p.rentalPrice.toLocaleString('en-IN')} / 4d`;
               if (p.listingPrice > 0) {
                 priceSub = `or buy ₹${p.listingPrice.toLocaleString('en-IN')}`;
               }
             } else if (p.listingPrice > 0) {
               priceMain = `₹${p.listingPrice.toLocaleString('en-IN')}`;
-              if (p.name.includes('Sherwani') || p.id === 'HOK-MM-001') {
+              if (pName.includes('Sherwani') || p.id === 'HOK-MM-001') {
                 priceSub = `RRP ₹52,000`;
               }
             } else {
@@ -103,10 +106,10 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
             // Revenue
             let revenueMain = '—';
             let revenueSub = '';
-            if (p.name.includes('Crimson') || p.id === 'HOK-SAB-001') {
+            if (pName.includes('Crimson') || p.id === 'HOK-SAB-001') {
               revenueMain = '₹17,000';
               revenueSub = 'HOK ₹6,375';
-            } else if (p.name.includes('Sherwani') || p.id === 'HOK-MM-001') {
+            } else if (pName.includes('Sherwani') || p.id === 'HOK-MM-001') {
               revenueMain = '₹38,000';
               revenueSub = 'HOK ₹9,500';
             } else if (p.bookingHistory && p.bookingHistory.length > 0) {
@@ -123,15 +126,15 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
             let availSub = '';
             let availClass = 'text-[#3E7A4A]';
 
-            if (p.name.includes('Crimson') || p.id === 'HOK-SAB-001') {
+            if (pName.includes('Crimson') || p.id === 'HOK-SAB-001') {
               availMain = 'now → 25 Mar';
               availSub = 'free 29 Mar';
               availClass = 'text-[#C04838]';
-            } else if (p.name.includes('Gulabi') || p.id === 'HOK-SAB-002') {
+            } else if (pName.includes('Gulabi') || p.id === 'HOK-SAB-002') {
               availMain = 'Available now';
               availSub = 'booked 28 Mar · free 5 Apr';
               availClass = 'text-[#3E7A4A]';
-            } else if ((p.status as string) === 'Sold' || p.name.includes('Sherwani') || p.id === 'HOK-MM-001') {
+            } else if ((p.status as string) === 'Sold' || pName.includes('Sherwani') || p.id === 'HOK-MM-001') {
               availMain = '—';
               availSub = '';
               availClass = 'text-[#A0988E]';
@@ -149,11 +152,11 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
                 {/* PIECE */}
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-3">
-                    <ProductThumbnail src={p.images?.[0]} alt={p.name} />
+                    <ProductThumbnail src={p.images?.[0]} alt={pName} />
                     <div>
                       <div className="flex items-center flex-wrap gap-x-1.5">
                         <span className="font-bold text-[#2A241F] text-[13px] hover:text-[#C7A55C] transition">
-                          {p.name}
+                          {pName}
                         </span>
                         {tagText && (
                           <span className={`text-[11px] font-medium ${tagClass}`}>
@@ -171,7 +174,7 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
                 {/* LISTING */}
                 <td className="px-4 py-3.5 align-middle">
                   <div className="flex flex-wrap items-center gap-1 mb-1">
-                    {p.listingModes.map(m => (
+                    {pListingModes.map(m => (
                       <span 
                         key={m}
                         className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium ${
@@ -230,15 +233,15 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
                 {/* STATUS */}
                 <td className="px-4 py-3.5 align-middle">
                   <span className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-[11px] font-semibold ${
-                    p.status === 'Live' && !p.name.includes('Sherwani')
+                    p.status === 'Live' && !pName.includes('Sherwani')
                       ? 'bg-[#EDF7ED] text-[#3E7A4A]'
-                      : (p.status as string) === 'Sold' || p.name.includes('Sherwani')
+                      : (p.status as string) === 'Sold' || pName.includes('Sherwani')
                       ? 'bg-[#EEF4FB] text-[#3B669B]'
                       : p.status === 'Archived'
                       ? 'bg-[#FEF6E6] text-[#B88422]'
                       : 'bg-[#F4F3F1] text-[#736B63]'
                   }`}>
-                    {p.status === 'Live' && !p.name.includes('Sherwani') ? 'Live' : (p.name.includes('Sherwani') ? 'Sold' : p.status)}
+                    {p.status === 'Live' && !pName.includes('Sherwani') ? 'Live' : (pName.includes('Sherwani') ? 'Sold' : p.status)}
                   </span>
                 </td>
 

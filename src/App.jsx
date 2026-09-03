@@ -1,6 +1,7 @@
 // src\App.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
 
 // Layout
 import Header from "./components/Header/Header";
@@ -37,6 +38,25 @@ export default function App() {
 
   return (
     <>
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#1e1412',
+            color: '#fcf9f5',
+            border: '1px solid #c5a880',
+            fontSize: '13px',
+            fontFamily: 'sans-serif',
+            zIndex: 9999,
+          },
+          success: {
+            iconTheme: {
+              primary: '#c5a880',
+              secondary: '#1e1412',
+            },
+          },
+        }}
+      />
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />

@@ -19,6 +19,7 @@ import { Order } from '../types';
 import * as orderApi from '../services/orderApi';
 import { uploadFile } from '../services/uploadApi';
 import { sendMockMessage } from '../services/messageApi';
+import toast from 'react-hot-toast';
 
 interface OrderDetailViewProps {
   order: Order;
@@ -68,7 +69,7 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
     setDispatchEvidence(item?.preDispatch?.photos || []);
     setReturnEvidence(item?.returnCondition?.photos || []);
   }, [order, evidenceItemIndex]);
-  const uploadEvidence = async (files: FileList | null, stage: 'dispatch' | 'return') => { if (!files?.length) return; setEvidenceUploading(true); try { const uploaded = await Promise.all(Array.from(files).map(file => uploadFile(file, 'orders'))); const urls = uploaded.map(file => file.url); const current = stage === 'dispatch' ? dispatchEvidence : returnEvidence; const next = [...current, ...urls]; if (stage === 'dispatch') setDispatchEvidence(next); else setReturnEvidence(next); await orderApi.saveEvidence(order.id, evidenceItemIndex, stage, next); } catch (error) { alert(error instanceof Error ? error.message : 'Evidence upload failed'); } finally { setEvidenceUploading(false); } };
+  const uploadEvidence = async (files: FileList | null, stage: 'dispatch' | 'return') => { if (!files?.length) return; setEvidenceUploading(true); try { const uploaded = await Promise.all(Array.from(files).map(file => uploadFile(file, 'orders'))); const urls = uploaded.map(file => file.url); const current = stage === 'dispatch' ? dispatchEvidence : returnEvidence; const next = [...current, ...urls]; if (stage === 'dispatch') setDispatchEvidence(next); else setReturnEvidence(next); await orderApi.saveEvidence(order.id, evidenceItemIndex, stage, next); } catch (error) { toast.error(error instanceof Error ? error.message : 'Evidence upload failed'); } finally { setEvidenceUploading(false); } };
 
   const handleSaveChanges = () => {
     const updatedOrder: Order = {
@@ -101,7 +102,7 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
       logs
     };
     onUpdateOrder(updatedOrder);
-    alert("Changes saved successfully!");
+    toast.success("Changes saved successfully!");
   };
 
   const addLog = async () => {
@@ -114,7 +115,7 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
     };
     setLogs([newLog, ...logs]);
     setNewLogText('');
-    try { await orderApi.addOrderLog(order.id, newLogText, 'Internal Note'); } catch (error) { alert(error instanceof Error ? error.message : 'Unable to save log entry'); }
+    try { await orderApi.addOrderLog(order.id, newLogText, 'Internal Note'); } catch (error) { toast.error(error instanceof Error ? error.message : 'Unable to save log entry'); }
   };
 
   const downloadInvoice = async () => {
@@ -126,28 +127,28 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
       if (!win) throw new Error('Please allow pop-ups to print the invoice');
       win.document.write(`<html><head><title>${invoice.invoiceNo}</title><style>body{font-family:Arial;color:#29231d;padding:40px}h1{color:#8b6b32}table{width:100%;border-collapse:collapse;margin-top:28px}th,td{border:1px solid #ddd;padding:10px;text-align:left}th{background:#f5f0e8}.totals{margin-left:auto;width:280px;margin-top:24px;line-height:1.8;text-align:right}@media print{button{display:none}}</style></head><body><h1>HOUSE OF KAIRA</h1><p>GST Invoice</p><p><b>Invoice No:</b> ${invoice.invoiceNo}<br><b>Date:</b> ${new Date(invoice.invoiceDate).toLocaleDateString('en-IN')}<br><b>Order:</b> ${invoice.orderId}</p><p><b>Customer:</b> ${invoice.customer?.name || ''}<br>${invoice.customer?.email || ''}<br>${invoice.customer?.phone || ''}<br>${invoice.customer?.address || ''}</p><table><thead><tr><th>Product</th><th>Mode</th><th>Amount</th><th>GST</th><th>Deposit</th></tr></thead><tbody>${rows}</tbody></table><div class="totals"><b>Order value: ${money(invoice.orderValue)}</b><br>GST: ${money(invoice.gst)}<br>Deposit: ${money(invoice.deposit)}<br><b>Grand total: ${money(invoice.grandTotal)}</b></div><button onclick="window.print()">Print / Save as PDF</button></body></html>`);
       win.document.close(); win.focus();
-    } catch (error) { alert(error instanceof Error ? error.message : 'Unable to generate invoice'); }
+    } catch (error) { toast.error(error instanceof Error ? error.message : 'Unable to generate invoice'); }
   };
 
   const printDispatchLabel = () => {
     const win = window.open('', '_blank', 'width=600,height=500');
-    if (!win) return alert('Please allow pop-ups to print the dispatch label');
+    if (!win) return toast.error('Please allow pop-ups to print the dispatch label');
     win.document.write(`<html><head><title>Dispatch Label ${order.id}</title><style>body{font-family:Arial;padding:28px;border:2px solid #222;margin:20px}h2{margin-top:0}.line{border-bottom:1px solid #aaa;padding:10px 0}</style></head><body><h2>HOUSE OF KAIRA — DISPATCH LABEL</h2><div class="line"><b>Order:</b> ${order.id}</div><div class="line"><b>Customer:</b> ${order.customerName}</div><div class="line"><b>Phone:</b> ${order.customerPhone || ''}</div><div class="line"><b>Address:</b> ${order.address || '—'}</div><div class="line"><b>Courier:</b> ${courierPartner || '—'} &nbsp; <b>Tracking:</b> ${trackingNumber || '—'}</div><div class="line"><b>Dispatch date:</b> ${dispatchDate || new Date().toISOString().slice(0,10)}</div><button onclick="window.print()">Print Label</button></body></html>`);
     win.document.close(); win.focus();
   };
 
   const sendTrackingInfo = async () => {
     const tracking = trackingNumber.trim();
-    if (!tracking) return alert('Please save a tracking number before sending tracking information.');
+    if (!tracking) return toast.error('Please save a tracking number before sending tracking information.');
     const phone = (order.customerPhone || '').replace(/[^0-9]/g, '');
-    if (!phone) return alert('Customer phone number is missing.');
+    if (!phone) return toast.error('Customer phone number is missing.');
     const message = `Hello ${order.customerName}, your House of Kaira order #${order.id} has been dispatched via ${courierPartner || 'our courier partner'}. Tracking number: ${tracking}.`;
     await sendMockMessage({ channel: 'whatsapp', to: phone, body: message });
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
     const logMessage = `Tracking information shared with customer via WhatsApp: ${tracking}`;
     const log = { date: new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), message: logMessage, user: 'Admin' };
     setLogs(current => [log, ...current]);
-    try { await orderApi.addOrderLog(order.id, logMessage, 'Customer Communication'); } catch (error) { alert(error instanceof Error ? error.message : 'Tracking message opened, but log could not be saved'); }
+    try { await orderApi.addOrderLog(order.id, logMessage, 'Customer Communication'); } catch (error) { toast.error(error instanceof Error ? error.message : 'Tracking message opened, but log could not be saved'); }
   };
 
   const steps = ['Confirmed', 'Dispatched', 'Shipped', 'Delivered', 'Return Sent', 'Returned', 'Complete'];

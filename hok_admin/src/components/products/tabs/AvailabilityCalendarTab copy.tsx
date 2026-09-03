@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { Product } from '../../../types';
 import { CalendarDays } from 'lucide-react';
 import * as productSectionsApi from '../../../services/productSectionsApi';
+import toast from 'react-hot-toast';
 
 interface AvailabilityCalendarTabProps {
   editingProduct: Product | null;
@@ -218,7 +219,7 @@ export function AvailabilityCalendarTab({
 
   const handleBlockManualDates = () => {
     if (!blockFrom || !blockTo) {
-      alert('Please choose a from and to date.');
+      toast.error('Please choose a from and to date.');
       return;
     }
     const updated = {
@@ -234,7 +235,7 @@ export function AvailabilityCalendarTab({
 
   const handleCreateExternalOrder = async () => {
     if (!blockFrom || !blockTo || !customerName || !whatsappNumber) {
-      alert('From date, to date, customer name and WhatsApp number are required.');
+      toast.error('From date, to date, customer name and WhatsApp number are required.');
       return;
     }
     setSubmitting(true);
@@ -260,7 +261,7 @@ export function AvailabilityCalendarTab({
       });
       resetForm();
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Unable to reserve these dates');
+      toast.error(error instanceof Error ? error.message : 'Unable to reserve these dates');
     } finally {
       setSubmitting(false);
     }

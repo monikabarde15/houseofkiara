@@ -8,6 +8,7 @@
 import { useState, useCallback } from 'react';
 import { PromoCode } from '../types/promotions.types';
 import { validatePromoCode } from '../utils/validators';
+import { promotionService } from '../services/promotionService';
 
 interface UsePromotionActionsReturn {
   creating: boolean;
@@ -58,36 +59,7 @@ export const usePromotionActions = (): UsePromotionActionsReturn => {
         return null;
       }
 
-      // In production: await promotionService.createPromotion(data)
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const newCode: PromoCode = {
-        code: data.code!.toUpperCase(),
-        type: data.type!,
-        value: data.value!,
-        maxDiscount: data.maxDiscount || null,
-        minOrder: data.minOrder || null,
-        modes: data.modes!,
-        scope: data.scope || { categories: [], designerIds: [], skus: [] },
-        stacksWith: data.stacksWith || [],
-        audience: data.audience || 'public',
-        customerIds: data.customerIds || [],
-        firstOrderOnly: data.firstOrderOnly || false,
-        usesTotalCap: data.usesTotalCap || null,
-        usesPerCustomer: data.usesPerCustomer || null,
-        validFrom: data.validFrom || null,
-        validUntil: data.validUntil || null,
-        status: 'Active',
-        visibility: data.visibility || 'share',
-        publicDesc: data.publicDesc || '',
-        reason: data.reason!,
-        notes: data.notes || '',
-        createdBy: 'Soumya', // In production: get from auth
-        createdOn: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-        history: [{ e: 'Code created', t: `${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} - Soumya` }],
-        attnSnooze: {},
-      };
-
+      const newCode = await promotionService.createPromotion(data);
       setCreating(false);
       return newCode;
     } catch (err) {
@@ -101,37 +73,7 @@ export const usePromotionActions = (): UsePromotionActionsReturn => {
     setUpdating(true);
     setError(null);
     try {
-      // In production: await promotionService.updatePromotion(codeId, data)
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Mock update
-      const updatedCode: PromoCode = {
-        code: codeId,
-        type: data.type || 'percent',
-        value: data.value || 0,
-        maxDiscount: data.maxDiscount || null,
-        minOrder: data.minOrder || null,
-        modes: data.modes || ['Rental'],
-        scope: data.scope || { categories: [], designerIds: [], skus: [] },
-        stacksWith: data.stacksWith || [],
-        audience: data.audience || 'public',
-        customerIds: data.customerIds || [],
-        firstOrderOnly: data.firstOrderOnly || false,
-        usesTotalCap: data.usesTotalCap || null,
-        usesPerCustomer: data.usesPerCustomer || null,
-        validFrom: data.validFrom || null,
-        validUntil: data.validUntil || null,
-        status: data.status || 'Active',
-        visibility: data.visibility || 'share',
-        publicDesc: data.publicDesc || '',
-        reason: data.reason || '',
-        notes: data.notes || '',
-        createdBy: 'Soumya',
-        createdOn: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-        history: [{ e: 'Code updated', t: `${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} - Soumya` }],
-        attnSnooze: {},
-      };
-
+      const updatedCode = await promotionService.updatePromotion(codeId, data);
       setUpdating(false);
       return updatedCode;
     } catch (err) {
@@ -144,8 +86,7 @@ export const usePromotionActions = (): UsePromotionActionsReturn => {
   const pauseCode = useCallback(async (codeId: string): Promise<boolean> => {
     setError(null);
     try {
-      // In production: await promotionService.pausePromotion(codeId)
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await promotionService.toggleStatus(codeId);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to pause code');
@@ -156,8 +97,7 @@ export const usePromotionActions = (): UsePromotionActionsReturn => {
   const resumeCode = useCallback(async (codeId: string): Promise<boolean> => {
     setError(null);
     try {
-      // In production: await promotionService.resumePromotion(codeId)
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await promotionService.toggleStatus(codeId);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to resume code');
@@ -168,8 +108,7 @@ export const usePromotionActions = (): UsePromotionActionsReturn => {
   const deleteCode = useCallback(async (codeId: string): Promise<boolean> => {
     setError(null);
     try {
-      // In production: await promotionService.deletePromotion(codeId)
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await promotionService.deletePromotion(codeId);
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete code');

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Calendar } from 'lucide-react';
 import { DispatchCard } from '../types';
 import '../css/Sidebar.css';
 
@@ -19,7 +20,7 @@ const DispatchListItem: React.FC<{ dispatch: DispatchCard; onClick?: () => void 
   >
     <div className="dispatch-card__date">
       {dispatch.isToday && <span className="dispatch-card__star">★</span>}
-      {dispatch.dateLabel} · DISPATCH
+      {dispatch.dateLabel}
     </div>
     <div className="dispatch-card__title">{dispatch.title}</div>
     <div className="dispatch-card__subtitle">{dispatch.subtitle}</div>
@@ -29,8 +30,14 @@ const DispatchListItem: React.FC<{ dispatch: DispatchCard; onClick?: () => void 
 
 const Sidebar: React.FC<SidebarProps> = ({ monthLabel, dispatches, onSelectDispatch }) => (
   <aside className="rental-sidebar">
-    <div className="rental-sidebar__month">{monthLabel}</div>
-    <div className="rental-sidebar__section-title">DISPATCHES</div>
+    <div className="rental-sidebar__month">
+      <Calendar className="w-[14px] h-[14px] mr-2 text-[#4A72B2] inline-block -mt-0.5" strokeWidth={2.5} />
+      {monthLabel}
+    </div>
+    <div className="rental-sidebar__section-title">
+      <span className="inline-block w-[6px] h-[6px] rounded-full bg-[#C24A2E] mr-2 align-middle -mt-0.5"></span>
+      DISPATCHES
+    </div>
 
     <div className="rental-sidebar__list">
       {dispatches.map((dispatch) => (

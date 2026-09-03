@@ -41,7 +41,7 @@ export function RelatedProductsTab({
     return availableProducts
       .filter(p => !relatedIds.includes(p.id))
       .filter(p =>
-        p.name.toLowerCase().includes(q) ||
+        (p.name || '').toLowerCase().includes(q) ||
         p.designer?.toLowerCase().includes(q) ||
         p.sku?.toLowerCase().includes(q)
       )

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import Sidebar from './components/Sidebar';
 import DashboardView from './components/DashboardView';
 import OrdersView from './components/OrdersView';
@@ -6,8 +7,8 @@ import OrderDetailView from './components/OrderDetailView';
 import OffersView from './components/OffersView';
 // import CalendarView from './components/CalendarView';
 import RentalCalendarView from './components/RentalCalendar/tsx';
-import DispatchView from './components/Dispatch/jsx/DispatchView';
-// import DispatchView from './components/DispatchView';
+// import DispatchView from './components/Dispatch/jsx/DispatchView';
+import DispatchView from './components/DispatchView';
 import ReturnsView from './components/ReturnsView';
 // import PayoutsView from './components/PayoutsView';
 import PayoutsView from './components/payouts/PayoutsView';
@@ -51,6 +52,7 @@ import * as productApi from './services/productApi';
 import * as orderApi from './services/orderApi';
 import * as listerApi from './services/listerApi';
 import * as customerApi from './services/customerApi';
+import * as taskApi from './services/taskApi';
 import AdminAuth from './components/AdminAuth';
 import { ArrowLeft, ExternalLink, Menu, Save, X } from 'lucide-react';
 
@@ -66,11 +68,18 @@ export default function App() {
   const [adminSession, setAdminSession] = useState<any>(() => authApi.getSession());
   const [messagingActiveTab, setMessagingActiveTab] = useState('messages');
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>(mockMessages);
+  const [messages, setMessages] = useState<Message[]>([]);
   // const [productBackHandler, setProductBackHandler] = useState<(() => void) | null>(null);
 
-  // Consolidated global state synced with initial data structures
-  const [customers, setCustomers] = useState<Customer[]>(() => JSON.parse(localStorage.getItem('hok_customers') || 'null') || initialCustomers);
+  // Consolidated global state synced with real database API
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  useEffect(() => {
+    customerApi.getCustomers()
+      .then(data => {
+        setCustomers(Array.isArray(data) ? data : []);
+      })
+      .catch(err => console.error("Unable to load customers from API:", err));
+  }, []);
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
   useEffect(() => { productApi.getProducts().then(setProducts).catch((error) => console.error('Unable to load products:', error)).finally(() => setProductsLoading(false)); }, []);
@@ -85,69 +94,126 @@ export default function App() {
       .catch((error) => console.error('Unable to load offers:', error))
       .finally(() => setOffersLoading(false));
   }, []);
-  const [designers, setDesigners] = useState<Designer[]>(initialDesigners);
+  const [designers, setDesigners] = useState<Designer[]>([]);
   const [listers, setListers] = useState<any[]>([]);
   useEffect(() => { listerApi.getListers().then((data) => setListers(Array.isArray(data) ? data : [])).catch((error) => { console.error('Unable to load listers:', error); setListers([]); }); }, []);
-  const [submissions, setSubmissions] = useState<ListerSubmission[]>(initialListerSubmissions);
-  const [promoCodes, setPromoCodes] = useState<PromoCode[]>(initialPromoCodes);
-  const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>(initialEmailTemplates);
-  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => JSON.parse(localStorage.getItem('hok_site_settings') || 'null') || initialSiteSettings);
-  const [homepage, setHomepage] = useState<HomepageEditor>(() => JSON.parse(localStorage.getItem('hok_homepage') || 'null') || initialHomepage);
-  useEffect(() => { localStorage.setItem('hok_customers', JSON.stringify(customers)); }, [customers]);
-  useEffect(() => { localStorage.setItem('hok_site_settings', JSON.stringify(siteSettings)); }, [siteSettings]);
-  useEffect(() => { localStorage.setItem('hok_homepage', JSON.stringify(homepage)); }, [homepage]);
+  const [calendarTasks, setCalendarTasks] = useState<any[]>([]);
+  useEffect(() => { taskApi.getTasks().then(setCalendarTasks).catch((error) => console.error('Unable to load tasks:', error)); }, []);
+  const [submissions, setSubmissions] = useState<ListerSubmission[]>([]);
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
+  const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(initialSiteSettings);
+  useEffect(() => {
+    import('./services/siteSettingsApi').then(api => {
+      api.getSiteSettings().then(data => {
+        if (data) setSiteSettings(data);
+      }).catch(() => {
+        // Fallback gracefully without console error spam if API endpoint is starting
+      });
+    });
+  }, []);
+  const [homepage, setHomepage] = useState<HomepageEditor>(initialHomepage);
+  const handleUpdateCustomer = (updated: Customer) => {
+    setCustomers(prev => {
+      const exists = prev.some(c => c.id === updated.id || (c.customerId && c.customerId === updated.customerId));
+      if (exists) {
+        return prev.map(c => (c.id === updated.id || (c.customerId && c.customerId === updated.customerId)) ? updated : c);
+      }
+      return [updated, ...prev];
+    });
+    toast.success('Customer updated successfully!');
+  };
 
-  // Callbacks for CRUD actions across different segments
+  const handleDeleteCustomer = (id: string) => {
+    setCustomers(prev => prev.filter(c => c.id !== id && c.customerId !== id));
+    toast.success('Customer removed successfully!');
+  };
+
+  const handleAddPromoCode = (newCode: PromoCode) => {
+    setPromoCodes([newCode, ...promoCodes]);
+    toast.success('Promo code added successfully!');
+  };
+
+  const handleUpdatePromoCode = (updated: PromoCode) => {
+    setPromoCodes(promoCodes.map(p => p.id === updated.id ? updated : p));
+    toast.success('Promo code updated successfully!');
+  };
+
+  const handleDeletePromoCode = (id: string) => {
+    setPromoCodes(promoCodes.filter(p => p.id !== id));
+    toast.success('Promo code deleted!');
+  };
+
   const handleUpdateOrder = async (updated: Order) => {
-    try { const saved = await orderApi.updateOrder(updated.id, updated); setOrders(current => current.map(o => o.id === updated.id ? saved : o)); }
-    catch (error) { console.error('Unable to update order:', error); }
+    try { const saved = await orderApi.updateOrder(updated.id, updated); setOrders(current => current.map(o => o.id === updated.id ? saved : o)); toast.success('Order updated successfully!'); }
+    catch (error) { console.error('Unable to update order:', error); toast.error('Failed to update order'); }
   };
 
   const handleUpdateOffer = async (id: string, updatedFields: Partial<Offer>) => {
-    try { const currentOffer = offers.find((offer) => offer.id === id); const updated = updatedFields.status ? await offerApi.updateOfferStatus(id, updatedFields.status, currentOffer?.backendId) : await offerApi.updateOffer(id, updatedFields, currentOffer?.backendId); setOffers(current => current.map(o => o.id === id ? { ...o, ...updated, ...updatedFields } : o)); }
-    catch (error) { console.error('Unable to update offer:', error); }
+    try { const currentOffer = offers.find((offer) => offer.id === id); const updated = updatedFields.status ? await offerApi.updateOfferStatus(id, updatedFields.status, currentOffer?.backendId) : await offerApi.updateOffer(id, updatedFields, currentOffer?.backendId); setOffers(current => current.map(o => o.id === id ? { ...o, ...updated, ...updatedFields } : o)); toast.success('Offer updated successfully!'); }
+    catch (error) { console.error('Unable to update offer:', error); toast.error('Failed to update offer'); }
   };
 
   const handleAddOffer = async (newOffer: Offer) => {
-    try { const created = await offerApi.createOffer(newOffer); setOffers(current => [created, ...current]); }
-    catch (error) { console.error('Unable to create offer:', error); }
+    try { const created = await offerApi.createOffer(newOffer); setOffers(current => [created, ...current]); toast.success('Offer created successfully!'); }
+    catch (error) { console.error('Unable to create offer:', error); toast.error('Failed to create offer'); }
   };
 
   const handleAddProduct = async (newProd: Product) => {
-    try { const created = await productApi.createProduct(newProd); setProducts(current => [created, ...current]); }
-    catch (error) { console.error('Unable to create product:', error); alert(error instanceof Error ? error.message : 'Unable to create product'); }
+    try { const created = await productApi.createProduct(newProd); setProducts(current => [created, ...current]); toast.success('Product created successfully!'); }
+    catch (error) { console.error('Unable to create product:', error); toast.error(error instanceof Error ? error.message : 'Unable to create product'); }
   };
 
   const handleUpdateProduct = async (updated: Product) => {
-    try { const saved = await productApi.updateProduct(updated); setProducts(current => current.map(p => p.id === updated.id ? saved : p)); }
-    catch (error) { console.error('Unable to update product:', error); alert(error instanceof Error ? error.message : 'Unable to update product'); }
+    try { const saved = await productApi.updateProduct(updated); setProducts(current => current.map(p => p.id === updated.id ? saved : p)); toast.success('Product updated successfully!'); }
+    catch (error) { console.error('Unable to update product:', error); toast.error(error instanceof Error ? error.message : 'Unable to update product'); }
   };
 
   const handleAddDesigner = (newDes: Designer) => {
     setDesigners([newDes, ...designers]);
+    toast.success('Designer added successfully!');
   };
 
   const handleUpdateDesigner = (updated: Designer) => {
     setDesigners(designers.map(d => d.id === updated.id ? updated : d));
+    toast.success('Designer updated successfully!');
   };
 
   const handleUpdateLister = (updated: any) => {
     setListers(listers.map(l => l.id === updated.id ? updated : l));
+    toast.success('Lister profile updated successfully!');
   };
+
   const handleCreateLister = async (newLister: any) => {
-    const created = await listerApi.createLister(newLister);
-    setListers(current => [created, ...current]);
+    try {
+      const created = await listerApi.createLister(newLister);
+      setListers(current => [created, ...current]);
+      toast.success('Lister created successfully!');
+    } catch (error) {
+      toast.error('Failed to create lister');
+    }
+  };
+
+  const handleAddCalendarTask = async (task: any) => {
+    try {
+      const created = await taskApi.createTask(task);
+      setCalendarTasks(current => [...current, created]);
+      toast.success('Task added successfully!');
+    } catch (error) {
+      console.error('Unable to add task:', error);
+      toast.error('Failed to add task');
+    }
   };
 
   const handleUpdateSubmission = (updated: ListerSubmission) => {
     setSubmissions(submissions.map(s => s.id === updated.id ? updated : s));
+    toast.success('Submission updated successfully!');
   };
 
   const handleApproveSubmission = (id: string) => {
     const sub = submissions.find(s => s.id === id);
     if (!sub) return;
     
-    // Create actual Product record based on approved submission specs
     const newProd: Product = {
       id: "HOK-PRD-" + Math.floor(100 + Math.random() * 900),
       name: sub.productName,
@@ -176,7 +242,6 @@ export default function App() {
     setProducts([newProd, ...products]);
     setSubmissions(submissions.map(s => s.id === id ? { ...s, status: 'Approved' } : s));
     
-    // Add positive total earnings offset to lister profile matching verified status
     const matchingLister = listers.find(l => l.id === sub.listerId || l.name === sub.listerName);
     if (matchingLister) {
       handleUpdateLister({
@@ -186,52 +251,17 @@ export default function App() {
       });
     }
 
-    alert(`Submission "${sub.productName}" approved! Piece is now Live on the storefront.`);
+    toast.success(`Submission "${sub.productName}" approved! Piece is now Live.`);
   };
 
   const handleRejectSubmission = (id: string) => {
     setSubmissions(submissions.map(s => s.id === id ? { ...s, status: 'Rejected' } : s));
-    alert("Submission marked as rejected.");
-  };
-
-  useEffect(() => {
-    customerApi.getCustomers()
-      .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          setCustomers(data);
-        }
-      })
-      .catch(err => console.error("Unable to load customers from API:", err));
-  }, []);
-
-  const handleUpdateCustomer = (updated: Customer) => {
-    setCustomers(prev => {
-      const exists = prev.some(c => c.id === updated.id || (c.customerId && c.customerId === updated.customerId));
-      if (exists) {
-        return prev.map(c => (c.id === updated.id || (c.customerId && c.customerId === updated.customerId)) ? updated : c);
-      }
-      return [updated, ...prev];
-    });
-  };
-
-  const handleDeleteCustomer = (id: string) => {
-    setCustomers(prev => prev.filter(c => c.id !== id && c.customerId !== id));
-  };
-
-  const handleAddPromoCode = (newCode: PromoCode) => {
-    setPromoCodes([newCode, ...promoCodes]);
-  };
-
-  const handleUpdatePromoCode = (updated: PromoCode) => {
-    setPromoCodes(promoCodes.map(p => p.id === updated.id ? updated : p));
-  };
-
-  const handleDeletePromoCode = (id: string) => {
-    setPromoCodes(promoCodes.filter(p => p.id !== id));
+    toast.success('Submission marked as rejected.');
   };
 
   const handleUpdateTemplate = (updated: EmailTemplate) => {
     setEmailTemplates(emailTemplates.map(t => t.id === updated.id ? updated : t));
+    toast.success('Email template updated!');
   };
 
   // Render correct view block based on router currentView ID
@@ -287,13 +317,11 @@ export default function App() {
 
     if (currentView === 'calendar') {
   return (
-    // <CalendarView 
-    //   orders={orders}
-    //   products={products}
-    //   setView={setView}
-    //   setSelectedOrderId={setSelectedOrderId}
-    // />
-    <RentalCalendarView />
+    <RentalCalendarView 
+      orders={orders} 
+      tasks={calendarTasks}
+      onAddTask={handleAddCalendarTask}
+    />
   );
 }
 
@@ -425,8 +453,8 @@ export default function App() {
     );
   };
 
-  const handleLogout = () => { authApi.logoutAdmin(); setAdminSession(null); };
-  if (!adminSession) return <AdminAuth onLogin={setAdminSession} />;
+  const handleLogout = () => { authApi.logoutAdmin(); setAdminSession(null); toast.success('Logged out successfully!'); };
+  if (!adminSession) return <AdminAuth onLogin={(session) => { setAdminSession(session); toast.success('Logged in successfully!'); }} />;
 
   return (
     <div className="flex h-screen bg-[#fcf9f5] text-stone-800 overflow-hidden font-sans relative">

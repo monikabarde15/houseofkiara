@@ -16,20 +16,28 @@ export default function OrdersView({ orders, setView, setSelectedOrderId, onCrea
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  // Filter out blank/invalid orders first
+  const validOrders = orders.filter(o => o.id && o.customerName && o.customerName.trim() !== '');
+
   // Calculate order metrics
-  const totalOrders = orders.length;
-  const rentalsToday = orders.filter(o => o.mode === 'Rental' && o.status === 'Shipped').length || 1;
-  const depositsHeld = orders
+  const totalOrders = validOrders.length;
+  const rentalsToday = validOrders.filter(o => o.mode === 'Rental' && o.status === 'Shipped').length || 0;
+  const depositsHeld = validOrders
     .filter(o => o.mode === 'Rental' && (o.status === 'Confirmed' || o.status === 'Dispatched' || o.status === 'Shipped' || o.status === 'Delivered'))
-    .reduce((sum, o) => sum + o.deposit, 0);
-  const mtdRevenue = orders.reduce((sum, o) => sum + o.amount, 0);
+    .reduce((sum, o) => sum + (Number(o.deposit) || 0), 0);
+  const mtdRevenue = validOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0);
 
   // Filter logic
   const filteredOrders = orders.filter(o => {
+    // Sirf valid data wale orders hi show honge
+    if (!o.id || !o.customerName || o.customerName.trim() === '') {
+      return false;
+    }
+
     const matchesSearch = 
-      o.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      o.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      o.productName.toLowerCase().includes(searchTerm.toLowerCase());
+      (o.id || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (o.customerName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (o.productName || '').toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = selectedStatus === 'All Statuses' || o.status === selectedStatus;
     const matchesMode = selectedMode === 'All Modes' || o.mode === selectedMode;
@@ -257,7 +265,7 @@ export default function OrdersView({ orders, setView, setSelectedOrderId, onCrea
         
         {/* Footer info */}
         <div className="px-5 py-3.5 border-t border-stone-100 bg-stone-50 flex items-center justify-between text-stone-500 font-sans text-[11px]">
-          <span>Showing {filteredOrders.length} of {orders.length} orders</span>
+          <span>Showing {filteredOrders.length} of {validOrders.length} orders</span>
           <div className="flex gap-2">
             <button className="px-2.5 py-1 border border-stone-200 rounded bg-white text-stone-600 cursor-not-allowed">Previous</button>
             <button className="px-2.5 py-1 border border-stone-200 rounded bg-white text-stone-600 cursor-not-allowed">Next</button>

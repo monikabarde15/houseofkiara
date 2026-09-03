@@ -46,7 +46,7 @@ export const SetupWordsDrawer: React.FC = () => {
   const groups = [...new Set(words.map(w => w.group))];
   const filtered = words.filter(w =>
     w.word.includes(search.toLowerCase()) ||
-    w.description.toLowerCase().includes(search.toLowerCase())
+    (w.description || '').toLowerCase().includes(search.toLowerCase())
   );
 
   const handleAskForWord = () => {

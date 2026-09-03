@@ -5,7 +5,7 @@ import { Lister } from '../types/lister.types';
 import { calculateSupplyInsight } from '../utils/derived';
 import './styles/SupplyInsightCard.css';
 
-import { mockProducts, mockPayouts } from '../data/mockListers';
+// removed mock imports
 
 interface SupplyInsightCardProps {
   listers: Lister[];
@@ -13,8 +13,8 @@ interface SupplyInsightCardProps {
 
 export const SupplyInsightCard: React.FC<SupplyInsightCardProps> = ({ listers }) => {
   // In real implementation, pass products and transactions
-  // For now, using mock data
-  const insight = calculateSupplyInsight(listers, mockProducts, mockPayouts);
+  // For now, using empty arrays as backend is being connected
+  const insight = calculateSupplyInsight(listers, [], []);
 
   if (!insight) {
     return null;

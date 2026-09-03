@@ -3,6 +3,7 @@
 import React, { useRef, useState } from 'react';
 import { Product } from '../../types/product';
 import { uploadFile } from '../../../services/uploadApi';
+import toast from 'react-hot-toast';
 
 interface ImagesTabProps {
   formData: Partial<Product>;
@@ -34,7 +35,7 @@ export function ImagesTab({ formData, onFieldChange, uploadingImages, setUploadi
       const uploaded = await Promise.all(files.map(file => uploadFile(file, 'products')));
       onFieldChange('images', [...images, ...uploaded.map(file => file.url)]);
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Image upload failed');
+      toast.error(error instanceof Error ? error.message : 'Image upload failed');
     } finally {
       setUploadingImages(false);
       if (fileInputRef.current) fileInputRef.current.value = '';

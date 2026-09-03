@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Edit, Save, Plus, FileText, Check } from 'lucide-react';
 import { EmailTemplate } from '../types';
+import toast from 'react-hot-toast';
 
 interface EmailsViewProps {
   emailTemplates: EmailTemplate[];
@@ -30,7 +31,7 @@ export default function EmailsView({ emailTemplates, onUpdateTemplate }: EmailsV
       body: editBody
     };
     onUpdateTemplate(updated);
-    alert(`Email template "${currentTemplate.name}" updated successfully!`);
+    toast.success(`Email template "${currentTemplate.name}" updated successfully!`);
   };
 
   const insertVariable = (variable: string) => {

@@ -91,19 +91,53 @@ const CheckoutLayout = () => {
       */
       setIsProcessingOrder(true);
 
-      /*
-        FAKE PAYMENT DELAY
-      */
-      setTimeout(() => {
+      const storeState = import('../../../store/checkoutStore').then(m => m.default.getState());
+      storeState.then(async (state) => {
+        const contact = state.contact;
+        const address = state.address;
+        const orderData = {
+          orderId: `HOK-ORD-${Date.now()}`,
+          customerName: `${contact.firstName} ${contact.lastName}`,
+          customerEmail: contact.email,
+          customerPhone: contact.whatsapp,
+          customerCity: address.city,
+          customerState: address.state,
+          address: `${address.address1}, ${address.city}, ${address.state} - ${address.pin}`,
+          mode: hasRentalItem ? 'Rental' : 'Buy',
+          discount: activePromo ? activePromo.discount : 0,
+          items: checkoutItems.map(item => ({
+            productId: item.id || item._id,
+            productName: item.title || item.name,
+            designer: item.designer,
+            mode: item.type === 'rental' ? 'Rental' : 'Buy',
+            size: item.size || 'M',
+            quantity: item.quantity || 1,
+            rentalStartDate: item.rentalDates?.start,
+            rentalEndDate: item.rentalDates?.end,
+            amount: item.price || item.modes?.rent?.pricing?.pricePerDay,
+          }))
+        };
 
-        setIsProcessingOrder(false);
-
-        /*
-          OPEN SUCCESS OVERLAY
-        */
-        setIsOrderConfirmed(true);
-
-      }, 2000);
+        try {
+          const res = await fetch('/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+          });
+          const result = await res.json();
+          if (result.success) {
+            // clear cart if needed
+            localStorage.removeItem('checkoutData');
+          } else {
+            console.error("Order failed:", result.message);
+          }
+        } catch (error) {
+          console.error("Order network error:", error);
+        } finally {
+          setIsProcessingOrder(false);
+          setIsOrderConfirmed(true);
+        }
+      });
 
     }, 0);
 

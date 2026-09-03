@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, Plus, Award, Save, ExternalLink, Percent, Globe, MessageSquare } from 'lucide-react';
 import { Designer } from '../types';
 import * as designerApi from '../services/designerApi';
+import toast from 'react-hot-toast';
 
 interface DesignersViewProps {
   designers: Designer[];
@@ -67,7 +68,7 @@ export default function DesignersView({ designers, onAddDesigner, onUpdateDesign
 
   const handleSave = async () => {
     if (!editName.trim()) {
-      alert("Designer name is required.");
+      toast.error("Designer name is required.");
       return;
     }
 
@@ -94,7 +95,7 @@ export default function DesignersView({ designers, onAddDesigner, onUpdateDesign
         await designerApi.createDesigner(newD as any);
         onAddDesigner(newD);
         setIsAdding(false);
-        alert("Designer added successfully to database!");
+        toast.success("Designer added successfully to database!");
       } else if (editingDesigner) {
         const updated: Designer = {
           ...editingDesigner,
@@ -115,7 +116,7 @@ export default function DesignersView({ designers, onAddDesigner, onUpdateDesign
         await designerApi.updateDesigner(updated.id, updated as any);
         onUpdateDesigner(updated);
         setEditingDesigner(null);
-        alert("Designer profile updated in database!");
+        toast.success("Designer profile updated in database!");
       }
     } catch (err) {
       console.error("Failed to save designer via API:", err);
@@ -162,8 +163,8 @@ export default function DesignersView({ designers, onAddDesigner, onUpdateDesign
   };
 
   const filteredDesigners = designers.filter(d => 
-    d.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (d.location && d.location.toLowerCase().includes(searchTerm.toLowerCase()))
+    (d.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (d.location && (d.location || '').toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   if (editingDesigner || isAdding) {

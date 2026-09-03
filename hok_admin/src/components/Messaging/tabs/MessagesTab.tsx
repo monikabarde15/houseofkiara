@@ -13,12 +13,16 @@ import { useMessageActions } from '../hooks/useMessageActions';
 import './styles/MessagesTab.css';
 
 interface MessagesTabProps {
+  messages?: Message[];
+  setMessages?: React.Dispatch<React.SetStateAction<Message[]>>;
   onOpenEditor: (messageId: string) => void;
   onNewMessageCreated?: (newMsg: Message) => void;
   onSelectMessage?: (id: string) => void;
 }
 
 export const MessagesTab: React.FC<MessagesTabProps> = ({ 
+  messages: propMessages,
+  setMessages: propSetMessages,
   onOpenEditor, 
   onNewMessageCreated,
   onSelectMessage 
@@ -38,6 +42,12 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
     type,
     status,
   });
+
+  React.useEffect(() => {
+    if (propSetMessages) {
+      propSetMessages(messages);
+    }
+  }, [messages, propSetMessages]);
 
   const { createMessage, copyMessage, removeMessage } = useMessageActions({
     onSuccess: () => {

@@ -227,6 +227,18 @@ export interface EmailTemplate {
   variables: string[];
 }
 
+export interface AnnouncementMessage {
+  id: string;
+  status: string;
+  scope: string;
+  text: string;
+  printItalicSerif: boolean;
+  showsOn: string;
+  link: string;
+  goLiveDate: string;
+  expiresDate: string;
+}
+
 export interface SiteSettings {
   siteName: string;
   tagline: string;
@@ -238,8 +250,44 @@ export interface SiteSettings {
   announcementBar: {
     text: string;
     enabled: boolean;
+    howItMoves?: string;
+    loopTime?: number;
+    pauseOnHover?: boolean;
     backgroundColor: string;
     textColor: string;
+    italicColor?: string;
+    separator?: string;
+    messages?: AnnouncementMessage[];
+  };
+  header?: {
+    shopByCategoryItems?: any[];
+    shopByDesignerItems?: any[];
+    navigationBlocks?: any[];
+    searchPlaceholder?: string;
+    bagCartLabel?: string;
+    headerStaysFixed?: boolean;
+    showTaglineUnderWordmark?: boolean;
+    reducedHeader?: {
+      backLinkText?: string;
+      securityLineText?: string;
+      pagesUsingReducedHeader?: string;
+    };
+  };
+  footer?: {
+    columns?: any[];
+    legalRowLinks?: any[];
+    taglineWordmarkText?: string;
+    copyrightLineYear?: string;
+    copyrightHolderText?: string;
+    trustBadgesText?: string;
+    paymentMethodsText?: string;
+    showNewsletterBlock?: boolean;
+  };
+  mobileBar?: {
+    bottomBarItems?: any[];
+    drawerItems?: any[];
+    showMobileSearchTop?: boolean;
+    showMobileModeShortcuts?: boolean;
   };
 }
 

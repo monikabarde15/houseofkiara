@@ -96,10 +96,10 @@ export const useSendLog = (options: UseSendLogOptions = {}) => {
   }) => {
     return logs.filter(log => {
       if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        const matches = log.message.toLowerCase().includes(searchLower) ||
-          log.who.toLowerCase().includes(searchLower) ||
-          log.about.toLowerCase().includes(searchLower);
+        const searchLower = (filters.search || '').toLowerCase();
+        const matches = (log.message || '').toLowerCase().includes(searchLower) ||
+          (log.who || '').toLowerCase().includes(searchLower) ||
+          (log.about || '').toLowerCase().includes(searchLower);
         if (!matches) return false;
       }
       if (filters.channel && filters.channel !== 'All channels' && log.channel !== filters.channel) {

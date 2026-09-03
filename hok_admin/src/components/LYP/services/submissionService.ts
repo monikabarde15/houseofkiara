@@ -1,238 +1,191 @@
 // src/components/LYP/services/submissionService.ts
 
 import { Submission, SubmissionFilters, PaginatedResponse } from '../types/submission.types';
-import { mockSubmissions } from '../data/mockSubmissions';
+import { apiRequest } from '../../../services/apiClient';
 
 export const submissionService = {
   getSubmissions: async (filters?: SubmissionFilters): Promise<PaginatedResponse<Submission>> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    let data = [...mockSubmissions];
-    
-    // Apply filters
-    if (filters?.search) {
-      const search = filters.search.toLowerCase();
-      data = data.filter(s => 
-        s.subid.toLowerCase().includes(search) ||
-        s.piece.toLowerCase().includes(search) ||
-        s.designer.toLowerCase().includes(search) ||
-        s.category.toLowerCase().includes(search)
-      );
+    try {
+      const queryParams = new URLSearchParams();
+      if (filters?.search) queryParams.append('search', filters.search);
+      if (filters?.status) queryParams.append('status', filters.status);
+      if (filters?.intent) queryParams.append('intent', filters.intent);
+      if (filters?.channel) queryParams.append('channel', filters.channel);
+      if (filters?.dateFrom) queryParams.append('dateFrom', filters.dateFrom);
+      if (filters?.dateTo) queryParams.append('dateTo', filters.dateTo);
+
+      const qs = queryParams.toString() ? `?${queryParams.toString()}` : '';
+      const response = await apiRequest(`/submissions${qs}`);
+      const rawData = response.data || [];
+
+      // Normalize fields if necessary
+      const data: Submission[] = rawData.map((s: any) => ({
+        subid: s.subid || s._id,
+        listerID: s.listerId || s.listerID || '',
+        channel: s.channel || 'Website',
+        submittedAt: s.submittedAt || s.submitted || s.createdAt || new Date().toISOString(),
+        piece: s.piece || '',
+        designer: s.designer || '',
+        category: s.category || '',
+        colour: s.colour || '',
+        size: s.size || 'Free Size',
+        measurements: s.measurements || null,
+        timesWorn: s.timesWorn || '',
+        yearOfPurchase: s.yearOfPurchase || '',
+        originalPrice: s.originalPrice || '',
+        intent: s.intent || 'Open to both',
+        expectation: s.expectation || { rent: s.askRent, sell: s.askSell },
+        selfGrade: s.selfGrade || s.conditionClaim || '',
+        conditionClaim: s.conditionClaim || '',
+        story: s.story || '',
+        notes: s.notes || '',
+        city: s.city || '',
+        photos: s.photos || (s.media ? s.media.filter((m: any) => m.kind === 'image').length : 0),
+        videos: s.videos || (s.media ? s.media.filter((m: any) => m.kind === 'video').length : 0),
+        media: s.media || [],
+        terms: s.terms || { version: 'LST-2026-01', acceptedAt: s.submitted || new Date().toISOString() },
+        moreInfo: s.moreInfo || null,
+        replyAt: s.replyAt || null,
+        decision: s.decision || null,
+        assessment: s.assessment || null,
+        history: s.history || [],
+      }));
+
+      return {
+        data,
+        total: response.total !== undefined ? response.total : data.length,
+        page: 1,
+        limit: data.length,
+      };
+    } catch (err) {
+      console.warn('Backend submissions API error or empty:', err);
+      return {
+        data: [],
+        total: 0,
+        page: 1,
+        limit: 0,
+      };
     }
-    
-    if (filters?.status) {
-      // Status is derived, so we need to compute it
-      // For mock, we'll filter by decision presence
-      if (filters.status === 'Approved') {
-        data = data.filter(s => s.decision?.what === 'Approved');
-      } else if (filters.status === 'Rejected') {
-        data = data.filter(s => s.decision?.what === 'Rejected');
-      } else if (filters.status === 'Withdrawn') {
-        data = data.filter(s => s.decision?.what === 'Withdrawn');
-      } else if (filters.status === 'Expired') {
-        data = data.filter(s => s.decision?.what === 'Expired');
-      } else if (filters.status === 'Awaiting Reply') {
-        data = data.filter(s => s.moreInfo && !s.decision);
-      } else if (filters.status === 'In Review') {
-        data = data.filter(s => s.replyAt && !s.moreInfo && !s.decision);
-      } else if (filters.status === 'New') {
-        data = data.filter(s => !s.replyAt && !s.moreInfo && !s.decision);
-      }
-    }
-    
-    if (filters?.intent) {
-      data = data.filter(s => s.intent === filters.intent);
-    }
-    
-    if (filters?.channel) {
-      data = data.filter(s => s.channel === filters.channel);
-    }
-    
-    if (filters?.dateFrom) {
-      data = data.filter(s => s.submittedAt >= filters.dateFrom!);
-    }
-    
-    if (filters?.dateTo) {
-      data = data.filter(s => s.submittedAt <= filters.dateTo!);
-    }
-    
-    return {
-      data,
-      total: data.length,
-      page: 1,
-      limit: data.length,
-    };
   },
 
   getSubmissionById: async (id: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const submission = mockSubmissions.find(s => s.subid === id);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-    return submission;
+    const response = await apiRequest(`/submissions/${encodeURIComponent(id)}`);
+    return response;
   },
 
   getAllSubmissionIds: async (): Promise<string[]> => {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    return mockSubmissions.map(s => s.subid);
+    const response = await apiRequest('/submissions');
+    const items = response.data || [];
+    return items.map((s: any) => s.subid || s._id);
   },
 
   getAllSKUs: async (): Promise<string[]> => {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    return mockSubmissions
-      .filter(s => s.assessment?.sku)
-      .map(s => s.assessment!.sku);
+    const response = await apiRequest('/submissions');
+    const items = response.data || [];
+    return items
+      .filter((s: any) => s.assessment?.sku || s.sku)
+      .map((s: any) => s.assessment?.sku || s.sku);
   },
 
-  createSubmission: async (submission: Submission): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    // In production, this would POST to the server
-    return submission;
+  createSubmission: async (submission: Partial<Submission>): Promise<Submission> => {
+    return await apiRequest('/submissions', {
+      method: 'POST',
+      body: JSON.stringify(submission),
+    });
   },
 
   approveSubmission: async (submissionId: string, by: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-    return {
-      ...submission,
-      decision: {
-        what: 'Approved',
-        on: new Date().toISOString(),
-        by,
-        reason: undefined,
-      },
-      moreInfo: null,
-    };
+    return await apiRequest(`/submissions/${encodeURIComponent(submissionId)}/decision`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        decision: {
+          what: 'Approved',
+          on: new Date().toISOString(),
+          by,
+          reason: null,
+        },
+      }),
+    });
   },
 
-  rejectSubmission: async (submissionId: string, reasonCode: string, optionalNote?: string, by?: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-    return {
-      ...submission,
-      decision: {
-        what: 'Rejected',
-        on: new Date().toISOString(),
-        by: by || 'Soumya',
-        reasonCode,
-        reason: optionalNote,
-      },
-      moreInfo: null,
-    };
+  rejectSubmission: async (submissionId: string, by: string, reasonCode: string, reason?: string): Promise<Submission> => {
+    return await apiRequest(`/submissions/${encodeURIComponent(submissionId)}/decision`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        decision: {
+          what: 'Rejected',
+          on: new Date().toISOString(),
+          by,
+          reasonCode,
+          reason: reason || null,
+        },
+      }),
+    });
   },
 
   withdrawSubmission: async (submissionId: string, reason: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-    return {
-      ...submission,
-      decision: {
-        what: 'Withdrawn',
-        on: new Date().toISOString(),
-        by: 'Lister',
-        reason,
-      },
-      moreInfo: null,
-    };
+    return await apiRequest(`/submissions/${encodeURIComponent(submissionId)}/decision`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        decision: {
+          what: 'Withdrawn',
+          on: new Date().toISOString(),
+          by: 'Lister',
+          reason,
+        },
+      }),
+    });
   },
 
-  expireSubmission: async (submissionId: string, reason: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-    return {
-      ...submission,
-      decision: {
-        what: 'Expired',
-        on: new Date().toISOString(),
-        by: 'Soumya',
-        reason,
-      },
-      moreInfo: null,
-    };
+  expireSubmission: async (submissionId: string): Promise<Submission> => {
+    return await apiRequest(`/submissions/${encodeURIComponent(submissionId)}/decision`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        decision: {
+          what: 'Expired',
+          on: new Date().toISOString(),
+          by: 'System',
+          reason: '48-hour response window exceeded',
+        },
+      }),
+    });
   },
 
   requestMoreInfo: async (submissionId: string, message: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-    return {
-      ...submission,
-      moreInfo: {
-        on: new Date().toISOString(),
-        lastNudge: null,
-      },
-    };
+    return await apiRequest(`/submissions/${encodeURIComponent(submissionId)}/more-info`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        moreInfo: {
+          on: new Date().toISOString(),
+          lastNudge: null,
+        },
+      }),
+    });
   },
 
-  replyReceived: async (submissionId: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-    return {
-      ...submission,
-      replyAt: new Date().toISOString(),
-      moreInfo: null,
-    };
-  },
-
-  sendNudge: async (submissionId: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-    return {
-      ...submission,
-      moreInfo: {
-        ...submission.moreInfo!,
-        lastNudge: new Date().toISOString(),
-      },
-    };
+  nudgeLister: async (submissionId: string): Promise<Submission> => {
+    return await apiRequest(`/submissions/${encodeURIComponent(submissionId)}/more-info`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        moreInfo: {
+          on: new Date().toISOString(),
+          lastNudge: new Date().toISOString(),
+        },
+      }),
+    });
   },
 
   updateAssessment: async (submissionId: string, assessment: any): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-    return {
-      ...submission,
-      assessment: {
-        ...submission.assessment,
-        ...assessment,
-      },
-    };
+    return await apiRequest(`/submissions/${encodeURIComponent(submissionId)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ assessment }),
+    });
   },
 
-  addMedia: async (submissionId: string, media: any[]): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
-    if (!submission) {
-      throw new Error('Submission not found');
-    }
-    return {
-      ...submission,
-      media: [...submission.media, ...media],
-      photos: submission.photos + media.filter(m => m.kind === 'image').length,
-      videos: submission.videos + media.filter(m => m.kind === 'video').length,
-    };
+  updateSubmission: async (submissionId: string, updates: Partial<Submission>): Promise<Submission> => {
+    return await apiRequest(`/submissions/${encodeURIComponent(submissionId)}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    });
   },
 };

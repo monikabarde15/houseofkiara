@@ -44,11 +44,25 @@ const MobileSignInForm = ({ switchScreen, onSendOtp }) => {
 
     setIsLoading(true);
 
-    // Section 7.4B - OTP Flow
-    setTimeout(() => {
-      onSendOtp(mobile);
+    // Call backend API
+    try {
+      const response = await fetch('/api/customer/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: mobile })
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        onSendOtp(mobile);
+      } else {
+        setFormError(result.message || 'Failed to send OTP. Please try again.');
+      }
+    } catch (err) {
+      setFormError('Network error. Please try again later.');
+    } finally {
       setIsLoading(false);
-    }, 1200);
+    }
   };
 
   return (

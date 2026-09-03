@@ -77,8 +77,8 @@ export const ListerPicker: React.FC<ListerPickerProps> = ({
 
   const filteredListers = listers.filter(l => {
     const searchLower = search.toLowerCase();
-    return l.name.toLowerCase().includes(searchLower) ||
-           (l.email && l.email.toLowerCase().includes(searchLower)) ||
+    return (l.name || '').toLowerCase().includes(searchLower) ||
+           (l.email && (l.email || '').toLowerCase().includes(searchLower)) ||
            isPhoneMatch(l.phone, search);
   });
 

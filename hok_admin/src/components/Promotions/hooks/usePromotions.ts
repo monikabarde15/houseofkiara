@@ -1,13 +1,6 @@
-// usePromotions Hook
-/* ========================================
-   Promotions Module - usePromotions Hook
-   Fetch, filter, sort promo codes
-   Based on HOK_Promotions_Logic_Spec_v150.pdf Section 13
-   ======================================== */
-
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { PromoCode, PromoCodeFilter, PromoCodeSort, DerivedPromoState } from '../types/promotions.types';
-import { mockPromoCodes } from '../data/mockPromotions';
+import { promotionService } from '../services/promotionService';
 import { deriveState } from '../utils/derived';
 import { formatOfferLine, formatAudiencePhrase } from '../utils/formatter';
 
@@ -33,27 +26,19 @@ export const usePromotions = (): UsePromotionsReturn => {
   const [filter, setFilter] = useState<PromoCodeFilter>({});
   const [sort, setSort] = useState<PromoCodeSort>({ field: 'code', direction: 'asc' });
 
-  // Mock redemption counts (in production, derived from orders)
-  const [redemptionsMap] = useState<Record<string, number>>({
-    'KAIRA10': 45,
-    'BRIDAL500': 12,
-    'FIRST25': 78,
-    'FREESHIP': 0,
-    'VIP1000': 8,
-    'PAUSED20': 15,
-    'EXPIRED50': 5,
-  });
+  // Redemption counts - fetched from orders in production
+  const [redemptionsMap] = useState<Record<string, number>>({});
 
-  // Fetch codes
+  // Fetch codes from backend
   const fetchCodes = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      // In production: await promotionService.getPromoCodes()
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setCodes(mockPromoCodes);
+      const data = await promotionService.getPromoCodes();
+      setCodes(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch promo codes');
+      setCodes([]);
     } finally {
       setLoading(false);
     }
@@ -62,6 +47,7 @@ export const usePromotions = (): UsePromotionsReturn => {
   useEffect(() => {
     fetchCodes();
   }, [fetchCodes]);
+
 
   // Get redemptions for a code
   const getRedemptions = useCallback((code: PromoCode): number => {
@@ -80,12 +66,12 @@ export const usePromotions = (): UsePromotionsReturn => {
 
     // Search filter
     if (filter.search) {
-      const search = filter.search.toLowerCase();
+      const search = (filter.search || '').toLowerCase();
       result = result.filter(code =>
-        code.code.toLowerCase().includes(search) ||
+        (code.code || '').toLowerCase().includes(search) ||
         formatOfferLine(code).toLowerCase().includes(search) ||
-        code.publicDesc.toLowerCase().includes(search) ||
-        code.reason.toLowerCase().includes(search) ||
+        (code.publicDesc || '').toLowerCase().includes(search) ||
+        (code.reason || '').toLowerCase().includes(search) ||
         formatAudiencePhrase(code).toLowerCase().includes(search)
       );
     }

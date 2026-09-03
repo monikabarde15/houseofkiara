@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Plus, Trash2, Tag, Percent, Calendar, Check, Play, SquareTerminal } from 'lucide-react';
 import { PromoCode } from '../types';
+import toast from 'react-hot-toast';
 
 interface PromotionsViewProps {
   promoCodes: PromoCode[];
@@ -28,7 +29,7 @@ export default function PromotionsView({
 
   const handleCreate = () => {
     if (!newCode.trim() || !newVal) {
-      alert("Please provide a valid code name and discount value.");
+      toast.error("Please provide a valid code name and discount value.");
       return;
     }
     const newPromo: PromoCode = {
@@ -48,7 +49,7 @@ export default function PromotionsView({
     setIsAdding(false);
     setNewCode('');
     setNewVal('');
-    alert("Promo code generated successfully!");
+    toast.success("Promo code generated successfully!");
   };
 
   const handleToggleStatus = (promo: PromoCode) => {
@@ -60,7 +61,7 @@ export default function PromotionsView({
   };
 
   const filteredCodes = promoCodes.filter(p =>
-    p.code.toLowerCase().includes(searchTerm.toLowerCase())
+    (p.code || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (

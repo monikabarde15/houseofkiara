@@ -11,6 +11,7 @@ import PendingApprovals from './components/PendingApprovals';
 import SupplyInsightCard from './components/SupplyInsightCard';
 import ListersTable from './components/ListersTable';
 import ListerDetailView from './ListerDetailView';
+import toast from 'react-hot-toast';
 import './ListersView.css';
 
 interface ListersViewProps {
@@ -126,24 +127,24 @@ export const ListersView: React.FC<ListersViewProps> = ({ onEditingChange }) => 
                     };
                     if (isCreateMode) {
                       if (!listerToSave.name || !listerToSave.name.trim()) {
-                        alert("Name is required to create the lister.");
+                        toast.error("Name is required to create the lister.");
                         return;
                       }
                       if (!listerToSave.phone || !listerToSave.phone.trim()) {
-                        alert("Phone is required — WhatsApp is how we reach listers.");
+                        toast.error("Phone is required — WhatsApp is how we reach listers.");
                         return;
                       }
                       const created = await listerService.createLister(listerToSave);
-                      alert(`New lister "${created.name}" created successfully in MongoDB database!`);
+                      toast.success(`New lister "${created.name}" created successfully in MongoDB database!`);
                       await refreshListers();
                       handleBack();
                     } else if (selectedListerId) {
                       const updated = await listerService.updateLister(selectedListerId, listerToSave);
-                      alert(`Lister "${updated.name}" updated successfully in MongoDB database!`);
+                      toast.success(`Lister "${updated.name}" updated successfully in MongoDB database!`);
                       await refreshListers();
                     }
                   } catch (err: any) {
-                    alert("Validation / Save Error: " + (err.message || "Failed to save to database"));
+                    toast.error("Validation / Save Error: " + (err.message || "Failed to save to database"));
                   }
                 }}
                 className="inline-flex h-8 items-center rounded-md bg-[#C7A55C] hover:bg-[#B9974B] px-4 text-[12px] font-semibold text-[#2A2118] transition shadow-2xs cursor-pointer"

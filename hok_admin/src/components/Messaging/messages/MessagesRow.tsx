@@ -4,6 +4,7 @@ import { Pill } from '../components/Pill';
 import { Chip } from '../components/Chip';
 import { Button } from '../components/Button';
 import { Message } from '../types/messaging.types';
+import toast from 'react-hot-toast';
 import './styles/MessagesRow.css';
 
 interface MessagesRowProps {
@@ -103,7 +104,7 @@ export const MessagesRow: React.FC<MessagesRowProps> = ({
         <Button variant="secondary" size="small" onClick={handleEditClick}>
           {message.status === 'Not written' ? 'Write' : 'Edit'}
         </Button>
-        <Button variant="secondary" size="small" onClick={(e) => { e.stopPropagation(); alert(`Manual sending for "${message.name}" triggered.`); }}>
+        <Button variant="secondary" size="small" onClick={(e) => { e.stopPropagation(); toast.success(`Manual sending for "${message.name}" triggered.`); }}>
           Send
         </Button>
         <Button variant="secondary" size="small" onClick={handleCopyClick}>

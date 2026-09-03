@@ -1,13 +1,15 @@
 // src/components/Listers/components/ListersTable.tsx
 
+// src/components/Listers/components/ListersTable.tsx
+
 import React, { useState } from 'react';
 import { Trash2, Loader2 } from 'lucide-react';
 import { Lister, ListerFilters } from '../types/lister.types';
 import { formatDate, inr, pluralize } from '../utils/formatter';
 import { STATUS_CHIP_MAPPING } from '../utils/constants';
 import { calculateLedger, calculateAttentionFlags } from '../utils/derived';
-import { mockPayouts, mockSubmissions, mockRecalls, mockProducts } from '../data/mockListers';
 import { generateWhatsAppLink, getDefaultWhatsAppMessage } from '../utils/generators';
+import toast from 'react-hot-toast';
 import './styles/ListersTable.css';
 
 interface ListersTableProps {
@@ -19,6 +21,11 @@ interface ListersTableProps {
   onDeleteLister?: (lister: Lister) => Promise<void>;
   totalCount: number;
 }
+// Fallback empty arrays until backend has these connected
+const mockPayouts: any[] = [];
+const mockSubmissions: any[] = [];
+const mockRecalls: any[] = [];
+const mockProducts: any[] = [];
 
 export const ListersTable: React.FC<ListersTableProps> = ({
   listers,
@@ -71,12 +78,12 @@ export const ListersTable: React.FC<ListersTableProps> = ({
     setDeleting(true);
     try {
       await onDeleteLister(deleteTarget);
-      alert(`Lister "${deleteTarget.name}" deleted from database successfully.`);
+      toast.success(`Lister "${deleteTarget.name}" deleted from database successfully.`);
       setDeleteTarget(null);
       setDeleteConfirmed(false);
     } catch (err: any) {
       console.error("Failed to delete lister:", err);
-      alert("Error deleting lister from database: " + (err.message || "Failed to delete"));
+      toast.error("Error deleting lister from database: " + (err.message || "Failed to delete"));
     } finally {
       setDeleting(false);
     }
@@ -135,7 +142,7 @@ export const ListersTable: React.FC<ListersTableProps> = ({
 
   const handleExportCSV = (e: React.MouseEvent) => {
     e.stopPropagation();
-    alert("Exporting CSV...");
+    toast.success("Exporting CSV...");
   };
 
   return (
@@ -204,7 +211,8 @@ export const ListersTable: React.FC<ListersTableProps> = ({
               const ledger = calculateLedger(listerPayouts);
               const attentionFlags = calculateAttentionFlags(lister, listerSubmissions, listerRecalls, listerPayouts);
               const statusChip = STATUS_CHIP_MAPPING[lister.status] || { variant: 's-live' };
-              const waLink = generateWhatsAppLink(lister.phone, getDefaultWhatsAppMessage(lister.name.split(' ')[0]));
+              const firstName = (lister.name || '').split(' ')[0] || 'Lister';
+              const waLink = generateWhatsAppLink(lister.phone, getDefaultWhatsAppMessage(firstName));
               
               return (
                 <tr key={lister.id} onClick={() => onRowClick(lister)}>

@@ -85,12 +85,18 @@
 
 .rental-calendar-page__panel {
   display: flex;
-  align-items: stretch;
+  flex-direction: column;
   margin: 0 24px 24px;
   border: 1px solid #EBE5D8;
   border-radius: 10px;
   overflow: hidden;
   background: #FFFFFF;
+}
+
+.rental-calendar-page__content {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
 }
 
 .rental-calendar-page__main {
@@ -101,7 +107,7 @@
 }
 
 @media (max-width: 900px) {
-  .rental-calendar-page__panel {
+  .rental-calendar-page__content {
     flex-direction: column;
   }
 

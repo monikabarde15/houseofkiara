@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Product, Lister } from '../../types/product';
+import toast from 'react-hot-toast';
 
 interface Designer {
   id: string;
@@ -111,7 +112,7 @@ export function CoreDetailsTab({
 
   const handleSaveMeasurements = async () => {
     if (Object.keys(formData.measurements || {}).length === 0 && !formData.bestSuitedForHeight) return;
-    if (!productId) { alert("⚠️ Please save Core Details first!"); return; }
+    if (!productId) { toast.error("⚠️ Please save Core Details first!"); return; }
     if (isSaving || localSaving || externalIsSaving) return;
 
     setIsSaving(true);

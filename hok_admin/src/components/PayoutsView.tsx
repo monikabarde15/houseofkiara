@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Wallet, Check, Eye, Search } from 'lucide-react';
 import { Lister, Order } from '../types';
 import * as payoutApi from '../services/payoutApi';
+import toast from 'react-hot-toast';
 
 interface PayoutsViewProps {
   listers: Lister[];
@@ -25,16 +26,16 @@ export default function PayoutsView({ listers, orders, setView, setSelectedOrder
   useEffect(() => { payoutApi.getPayouts().then((result) => { setPayoutsList(result.data || []); setPendingPayoutsTotal(result.summary?.pending || 0); setPaidPayoutsTotal(result.summary?.paid || 0); }).catch((error) => console.error('Unable to load payouts:', error)); }, []);
 
   const handleMarkPaid = async (id: string) => {
-    try { const updated = await payoutApi.markPaid(id, { paidBy: 'Admin', paymentReference, taxDeduction }); setPayoutsList(prev => prev.map(p => p.id === id ? updated : p)); setPendingPayoutsTotal(value => Math.max(0, value - updated.listerShare)); setPaidPayoutsTotal(value => value + updated.listerShare); setApprovePayout(null); alert("Payout approved and marked as Paid."); }
-    catch (error) { alert(error instanceof Error ? error.message : 'Unable to mark payout paid'); }
+    try { const updated = await payoutApi.markPaid(id, { paidBy: 'Admin', paymentReference, taxDeduction }); setPayoutsList(prev => prev.map(p => p.id === id ? updated : p)); setPendingPayoutsTotal(value => Math.max(0, value - updated.listerShare)); setPaidPayoutsTotal(value => value + updated.listerShare); setApprovePayout(null); toast.success("Payout approved and marked as Paid."); }
+    catch (error) { toast.error(error instanceof Error ? error.message : 'Unable to mark payout paid'); }
   };
 
   const filteredPayouts = payoutsList.filter(p => {
     const matchesStatus = statusFilter === 'All' || p.status === statusFilter;
     const matchesLister = listerFilter === 'All' || p.listerId === listerFilter;
-    return matchesStatus && matchesLister && (p.listerName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-           p.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           p.orderId.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesStatus && matchesLister && ((p.listerName || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+           (p.productName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+           (p.orderId || '').toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
   return (

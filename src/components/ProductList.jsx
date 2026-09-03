@@ -662,16 +662,39 @@ export const makeProductDetail = (item) => ({
 /* ================= COMPONENT ================= */
 export default function ProductList() {
   const [hoveredId, setHoveredId] = useState(null);
+  const [fetchedProducts, setFetchedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.data)) {
+          // Map backend products to the expected UI format if needed, or just use as is
+          // Assume backend returns standard format for now
+          setFetchedProducts(data.data);
+        } else {
+          setFetchedProducts(products); // fallback to hardcoded
+        }
+      })
+      .catch(err => {
+        console.error("Failed to fetch products", err);
+        setFetchedProducts(products); // fallback
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const displayProducts = fetchedProducts.length > 0 ? fetchedProducts : products;
+
   return (
     <section className="luxury-products">
       <Container>
-
         {/* HEADER */}
         <div className="lux-header">
           <div>
             <p className="sub">FROM THE SAME HOUSE</p>
             <h2>
-              More by <span>Rahul Mishra</span>
+              Our <span>Collection</span>
             </h2>
           </div>
 
@@ -681,77 +704,88 @@ export default function ProductList() {
         </div>
 
         {/* GRID */}
-        <Row className="g-4 justify-content-start">
-          {products.map((item, index) => (
-            <Col lg={3} md={4} sm={6} xs={6} key={item.id}>
-
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                viewport={{ once: true }}
-              >
-                <Link
-                  to={`/product/${item.id}`}
-                  state={{ product: makeProductDetail(item) }}
-                  className="text-decoration-none"
+        {loading ? (
+          <p>Loading products...</p>
+        ) : (
+          <Row className="g-4 justify-content-start">
+            {displayProducts.map((item, index) => (
+              <Col lg={3} md={4} sm={6} xs={6} key={item.id || item._id}>
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  viewport={{ once: true }}
                 >
-                  <div
-                    className="lux-card"
-                    onMouseEnter={() => setHoveredId(item.id)}
-                    onMouseLeave={() => setHoveredId(null)}
+                  <Link
+                    to={`/product/${item.id || item._id}`}
+                    state={{ product: makeProductDetail(item) }}
+                    className="text-decoration-none"
                   >
+                    <div
+                      className="lux-card"
+                      onMouseEnter={() => setHoveredId(item.id || item._id)}
+                      onMouseLeave={() => setHoveredId(null)}
+                    >
+                      {/* IMAGE */}
+                      <div className="img-box">
+                        <img
+                          src={
+                            hoveredId === (item.id || item._id) && item.image?.[1]
+                              ? item.image[1]
+                              : item.image?.[0] || 'https://via.placeholder.com/300x400'
+                          }
+                          alt={item.name}
+                        />
 
-                    {/* IMAGE */}
-                    <div className="img-box">
-                      <img
-                        src={
-                          hoveredId === item.id && item.image?.[1]
-                            ? item.image[1]
-                            : item.image?.[0]
-                        }
-                        alt={item.name}
-                      />
-
-                      <span className={`badge-${item.tag.toLowerCase()}`}>
-                        {item.tag}
-                      </span>
-
-                      <button
-                        className="wishlist"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation(); // 🔥 IMPORTANT
-                          console.log("Wishlist clicked:", item.id);
-                        }}
-                      >
-                        <Heart size={16} />
-                      </button>
-
-                      <div className="overlay"></div>
-                    </div>
-
-                    {/* TEXT */}
-                    <div className="info">
-                      <p className="designer">{item.designer}</p>
-                      <h6 className="product-name">{item.name}</h6>
-                      <div className="price-wrap">
-                        <span className="price">{item.price}</span>
-                        {item.oldPrice && (
-                          <span className="old-price">{item.oldPrice}</span>
+                        {item.tag && (
+                          <span className={`badge-${item.tag.toLowerCase()}`}>
+                            {item.tag}
+                          </span>
                         )}
+
+                        <button
+                          className="wishlist"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation(); // 🔥 IMPORTANT
+                            
+                            const wishlistStore = import('../store/wishlistStore').then(m => m.default.getState());
+                            wishlistStore.then(store => store.toggleWishlist((item.id || item._id).toString()));
+                          }}
+                        >
+                          <Heart 
+                            size={16} 
+                            fill={
+                              (() => {
+                                // Dynamic fill based on store - we'll handle this purely visually or with a React hook later if needed
+                                // For now, let's keep it simple
+                                return "none";
+                              })()
+                            }
+                          />
+                        </button>
+
+                        <div className="overlay"></div>
+                      </div>
+
+                      {/* TEXT */}
+                      <div className="info">
+                        <p className="designer">{item.designer || item.brand || 'House of Kaira'}</p>
+                        <h6 className="product-name">{item.name}</h6>
+                        <div className="price-wrap">
+                          <span className="price">₹{item.price || item.modes?.rent?.pricing?.pricePerDay || 0}</span>
+                          {item.oldPrice && (
+                            <span className="old-price">{item.oldPrice}</span>
+                          )}
+                        </div>
                       </div>
                     </div>
-
-
-                  </div>
-                </Link>
-              </motion.div>
-
-            </Col>
-          ))}
-        </Row>
-
+                  </Link>
+                </motion.div>
+              </Col>
+            ))}
+          </Row>
+        )}
       </Container>
     </section>
   );

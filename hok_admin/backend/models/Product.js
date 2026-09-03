@@ -139,7 +139,11 @@ const productSchema = new mongoose.Schema({
   sku: String, // Already exists
   
   // ========== ACTIVITY LOG ==========
-  activityLog: [activityLogSchema]
+  activityLog: [activityLogSchema],
+
+  // ========== CURATION ==========
+  isPinnedToAteliers: { type: Boolean, default: false },
+  ateliersOrder: { type: Number, default: null }
   
 }, { timestamps: true, strict: false });
 

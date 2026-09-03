@@ -65,22 +65,32 @@ const EmailSignInForm = ({ switchScreen, onSuccess }) => {
 
     setIsLoading(true);
 
-    // Simulate API call - Section 7.3A & 7.3B
-    setTimeout(() => {
-      // Section 7.3A - Incorrect credentials demo
-      if (email === 'wrong@test.com') {
-        setFormError('The email or password you entered is incorrect. Please try again.');
+    // Call backend API
+    try {
+      const response = await fetch('/api/customer/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        setFormError(result.message || 'The email or password you entered is incorrect. Please try again.');
         setEmailError(' ');
         setPasswordError(' ');
-        setIsLoading(false);
       } else {
-        // Section 7.3B - Success flow
-        onSuccess({
-          email,
-          name: 'Priya'
-        });
+        const authStore = (await import('../../../store/authStore')).default;
+        authStore.getState().login(result.data, result.data.token);
+        onSuccess(result.data);
       }
-    }, 1400);
+    } catch (err) {
+      setFormError('Network error. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

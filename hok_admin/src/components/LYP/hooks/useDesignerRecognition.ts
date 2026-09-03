@@ -32,13 +32,13 @@ export const useDesignerRecognition = (query: string) => {
       ];
 
       const filtered = mockProfiles.filter(p => 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase())
+        (p.name || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
       setMatches(filtered);
 
       // Check exact match
       const exact = mockProfiles.find(p => 
-        p.name.toLowerCase() === searchQuery.toLowerCase().trim()
+        (p.name || '').toLowerCase() === searchQuery.toLowerCase().trim()
       );
       if (exact) {
         setIsMapped(true);

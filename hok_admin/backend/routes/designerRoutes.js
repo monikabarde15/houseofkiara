@@ -4,14 +4,18 @@ import {
   getDesignerById,
   createDesigner,
   updateDesigner,
-  deleteDesigner
+  deleteDesigner,
+  reorderFeaturedDesigners,
+  updateDesignerType
 } from "../controllers/designerController.js";
 
 const router = express.Router();
 
 router.get("/", getDesigners);
-router.get("/:id", getDesignerById);
 router.post("/", createDesigner);
+router.put("/bulk/reorder-featured", reorderFeaturedDesigners);
+router.put("/bulk/update-type", updateDesignerType);
+router.get("/:id", getDesignerById);
 router.put("/:id", updateDesigner);
 router.delete("/:id", deleteDesigner);
 

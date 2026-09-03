@@ -58,16 +58,27 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
         </div>
       </div>
 
-      <div className="calendar-header__actions">
-        <label className="calendar-header__demo-date">
-          Demo date:
-          <input
-            type="text"
-            value={demoDate}
-            onChange={(e) => onDemoDateChange(e.target.value)}
-          />
-        </label>
-        <span className="calendar-header__hint">→ move to see colours change</span>
+      <div className="calendar-header__actions flex items-center gap-3 ml-auto">
+        <div className="flex items-center gap-2">
+          <span className="text-[12px] font-medium text-stone-500">Demo date:</span>
+          <div className="relative">
+            <input
+              type="date"
+              value={demoDate.includes('/') ? demoDate.split('/').reverse().join('-') : demoDate}
+              onChange={(e) => {
+                const parts = e.target.value.split('-');
+                if (parts.length === 3) {
+                  onDemoDateChange(`${parts[2]}/${parts[1]}/${parts[0]}`);
+                } else {
+                  onDemoDateChange(e.target.value);
+                }
+              }}
+              className="pl-3 pr-2 py-1.5 border border-stone-200 rounded text-xs text-stone-700 focus:outline-none focus:border-[#C7A55C] w-[130px] font-medium"
+            />
+          </div>
+        </div>
+        
+        <span className="text-[10px] italic text-stone-400 whitespace-nowrap hidden lg:inline-block">→ move to see colours change</span>
 
         <button type="button" className="calendar-header__btn" onClick={onAddTask}>
           + Add Task

@@ -47,6 +47,8 @@ const INDIAN_STATES_AND_UTS = [
 
 ];
 
+import useCheckoutStore from "../../../store/checkoutStore";
+
 export default function DeliveryAddress({
   submitCount,
   setFieldErrors,
@@ -54,22 +56,16 @@ export default function DeliveryAddress({
   const [sameBilling, setSameBilling] = useState(true);
   const [gstEnabled, setGstEnabled] = useState(false);
 
-  const [formData, setFormData] = useState({
-    address1: "",
-    city: "",
-    state: "Madhya Pradesh",
-    pin: "",
-  });
+  const { address: formData, setAddress: setFormDataStore } = useCheckoutStore();
 
   const [errors, setErrors] = useState({});
 
   // CHANGE HANDLER
   const handleChange = (field, value) => {
-
-    setFormData((prev) => ({
-      ...prev,
+    setFormDataStore({
+      ...formData,
       [field]: value,
-    }));
+    });
 
     /* live clear */
     if (errors[field]) {

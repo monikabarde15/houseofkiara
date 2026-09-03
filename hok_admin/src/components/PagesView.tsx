@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Save, FileText, Sparkles, AlertCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function PagesView() {
   const [pages, setPages] = useState(() => JSON.parse(localStorage.getItem('hok_pages') || 'null') || [
@@ -52,7 +53,7 @@ export default function PagesView() {
       }
       return p;
     }));
-    alert(`Static page "${editTitle}" has been updated successfully!`);
+    toast.success(`Static page "${editTitle}" has been updated successfully!`);
   };
 
   return (

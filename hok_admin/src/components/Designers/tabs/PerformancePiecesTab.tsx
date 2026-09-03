@@ -79,80 +79,32 @@ interface PerformancePiecesTabProps {
 }
 
 const DEFAULT_METRICS: PerformanceMetrics = {
-  livePieces: 3,
-  lifetimeRentals: 13,
-  rentalRevenueBooked: 71000,
-  prelovedGmvBooked: 95000,
+  livePieces: 0,
+  lifetimeRentals: 0,
+  rentalRevenueBooked: 0,
+  prelovedGmvBooked: 0,
 };
 
-const DEFAULT_SUPPLY: SupplyListerRow[] = [
-  { id: 'meera-joshi', name: 'Meera Joshi', pieces: 3, live: 3, lifetimeRentals: 13 },
-];
+const DEFAULT_SUPPLY: SupplyListerRow[] = [];
 
-const DEFAULT_PRICING: PricingVelocity = {
-  rentalBandMin: 6400,
-  rentalBandMax: 9900,
-  averageRental: 8267,
-  depositMin: 20000,
-  depositMax: 25000,
-  velocityPerPieceMonth: 1.8,
-  rating: 4.8,
-  reviewCount: 53,
-};
+const DEFAULT_PRICING: PricingVelocity | null = null;
 
 const DEFAULT_QUALITY: QualityReturns = {
-  returnsAssessed: 4,
-  withIssues: 1,
-  issues: [{ pieceCode: 'SAB-003', note: 'minor embroidery tear on hem' }],
+  returnsAssessed: 0,
+  withIssues: 0,
+  issues: [],
 };
 
 const DEFAULT_CUSTOMER_PULL: CustomerPull = {
-  distinctCustomers: 7,
+  distinctCustomers: 0,
   repeatOrders: 0,
-  topCustomerName: 'Priya Rathore',
-  topCustomerOrders: 1,
-  offersEnquiries: 6,
-  offersOpen: 4,
+  topCustomerName: '—',
+  topCustomerOrders: 0,
+  offersEnquiries: 0,
+  offersOpen: 0,
 };
 
-const DEFAULT_PIECES: PieceSummary[] = [
-  {
-    id: 'hok-sab-001',
-    code: 'HOK-SAB-001',
-    name: 'Crimson Zardozi Bridal Lehenga',
-    listerId: 'meera-joshi',
-    listerName: 'Meera Joshi',
-    listingTypes: ['Rental'],
-    isLive: true,
-    rentPrice: 8500,
-    rentDuration: '3 days',
-    timesRented: 6,
-  },
-  {
-    id: 'hok-sab-002',
-    code: 'HOK-SAB-002',
-    name: 'Gulabi Silk Bridal Lehenga',
-    listerId: 'meera-joshi',
-    listerName: 'Meera Joshi',
-    listingTypes: ['Rental', 'Preloved'],
-    isLive: true,
-    sellPrice: 110000,
-    rentPrice: 6400,
-    timesRented: 4,
-  },
-  {
-    id: 'hok-sab-003',
-    code: 'HOK-SAB-003',
-    name: 'Rajputana Silk Bridal Lehenga',
-    listerId: 'meera-joshi',
-    listerName: 'Meera Joshi',
-    listingTypes: ['Rental'],
-    isLive: true,
-    rentPrice: 9900,
-    rentDuration: '3 days',
-    timesRented: 3,
-  },
-];
+const DEFAULT_PIECES: PieceSummary[] = [];
 
 const formatINR = (value: number) => `₹${value.toLocaleString('en-IN')}`;
 
@@ -196,20 +148,18 @@ const PerformancePiecesTab: React.FC<PerformancePiecesTabProps> = ({
   onOpenCustomer,
   onAddPiece,
 }) => {
-  const isSabyasachi = designer.id === 'sabyasachi' || designer.slug === 'sabyasachi';
-
-  const activeMetrics = metrics || (isSabyasachi ? DEFAULT_METRICS : {
+  const activeMetrics = metrics || {
     livePieces: 0,
     lifetimeRentals: 0,
     rentalRevenueBooked: 0,
     prelovedGmvBooked: 0,
-  });
+  };
 
-  const activeSupply = supplyNetwork || (isSabyasachi ? DEFAULT_SUPPLY : []);
-  const activePricing = pricingVelocity || (isSabyasachi ? DEFAULT_PRICING : null);
-  const activeQuality = qualityReturns || (isSabyasachi ? DEFAULT_QUALITY : null);
-  const activeCustomer = customerPull || (isSabyasachi ? DEFAULT_CUSTOMER_PULL : null);
-  const activePieces = pieces || (isSabyasachi ? DEFAULT_PIECES : []);
+  const activeSupply = supplyNetwork || [];
+  const activePricing = pricingVelocity || null;
+  const activeQuality = qualityReturns || null;
+  const activeCustomer = customerPull || null;
+  const activePieces = pieces || [];
 
   const concentrationNote = buildConcentrationNote(designer.name, activeSupply);
 
