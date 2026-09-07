@@ -1,0 +1,664 @@
+/* =========================================
+   MOBILE BAR TAB
+   ========================================= */
+
+.mobile-bar-tab {
+  width: 100%;
+  color: #332f2b;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+
+/* =========================================
+   CARD
+   ========================================= */
+
+.mobile-bar-card {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+
+  background: #ffffff;
+
+  border: 1px solid #e6ddd2;
+  border-radius: 5px;
+
+  overflow: hidden;
+}
+
+
+/* =========================================
+   CARD HEADER
+   ========================================= */
+
+.mobile-bar-card-header {
+  padding: 13px 18px;
+
+  border-bottom: 1px solid #ece5dc;
+}
+
+.mobile-bar-card-header h2 {
+  margin: 0;
+
+  color: #211d19;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mobile-bar-card-header p {
+  max-width: 850px;
+
+  margin: 3px 0 0;
+
+  color: #8d857b;
+
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+
+/* =========================================
+   BOTTOM BAR CONTENT
+   ========================================= */
+
+.mobile-bar-columns {
+  padding: 14px 18px 17px;
+}
+
+
+/* =========================================
+   COLUMN HEADERS
+   ========================================= */
+
+/*
+   5 columns:
+   1 = checkbox
+   2 = reorder
+   3 = label
+   4 = link
+   5 = reserved action space
+*/
+
+.mobile-bar-column-label {
+  display: grid;
+
+  grid-template-columns:
+    24px
+    25px
+    minmax(0, 1.5fr)
+    minmax(0, 1fr)
+    46px;
+
+  align-items: center;
+
+  min-height: 27px;
+
+  color: #8f867b;
+
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+
+.mobile-bar-column-label span:nth-child(3),
+.mobile-bar-column-label span:nth-child(4) {
+  text-align: left;
+}
+
+
+/* =========================================
+   TAB LIST
+   ========================================= */
+
+.mobile-tab-list {
+  width: 100%;
+}
+
+
+/* =========================================
+   TAB ROW
+   ========================================= */
+
+.mobile-tab-row {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    24px
+    25px
+    minmax(0, 1.5fr)
+    minmax(0, 1fr)
+    46px;
+
+  align-items: center;
+
+  min-height: 36px;
+
+  border-radius: 3px;
+
+  transition: background 0.15s ease;
+}
+
+.mobile-tab-row:hover {
+  background: #faf7f2;
+}
+
+
+/* =========================================
+   CHECKBOX
+   ========================================= */
+
+.mobile-checkbox {
+  width: 18px;
+  height: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid #d8cbbb;
+  border-radius: 4px;
+
+  background: #ffffff;
+
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.mobile-checkbox.checked {
+  border-color: #c9a85f;
+  background: #c9a85f;
+}
+
+
+/* =========================================
+   REORDER BUTTONS
+   ========================================= */
+
+.mobile-reorder-buttons {
+  display: flex;
+  flex-direction: column;
+
+  width: 18px;
+
+  gap: 1px;
+}
+
+.mobile-reorder-buttons button {
+  width: 18px;
+  height: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid #e2d9cf;
+  border-radius: 2px;
+
+  background: #ffffff;
+
+  color: #8e857b;
+
+  cursor: pointer;
+}
+
+.mobile-reorder-buttons button:hover:not(:disabled) {
+  background: #faf6ef;
+  color: #695c4d;
+}
+
+.mobile-reorder-buttons button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+
+/* =========================================
+   QUIET FIELDS
+   ========================================= */
+
+.mobile-quiet-field {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  padding: 5px 0;
+
+  border: 1px solid transparent;
+  border-radius: 3px;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #302b26;
+
+  font-family: inherit;
+  font-size: 10.5px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-quiet-field:hover {
+  border-color: #e3d9cd;
+  background: #ffffff;
+}
+
+.mobile-quiet-field:focus {
+  padding-left: 6px;
+  padding-right: 6px;
+
+  border-color: #c7a55c;
+  background: #ffffff;
+}
+
+
+/* =========================================
+   LINK FIELD
+   ========================================= */
+
+.mobile-link-field {
+  color: #958b80;
+
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+}
+
+
+/* =========================================
+   LINKED BAG LABEL
+   ========================================= */
+
+.mobile-linked-field {
+  color: #8d7040;
+}
+
+.mobile-linked-marker {
+  position: absolute;
+
+  right: 49px;
+
+  color: #b49351;
+
+  font-size: 8px;
+}
+
+
+/* =========================================
+   DELETE BUTTON
+   ========================================= */
+
+.mobile-delete-button {
+  justify-self: end;
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid #dfd4c8;
+  border-radius: 4px;
+
+  background: #ffffff;
+
+  color: #a0968a;
+
+  cursor: pointer;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition:
+    opacity 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.mobile-tab-row:hover .mobile-delete-button {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-delete-button:hover {
+  background: #fff9f6;
+
+  border-color: #cfb8ac;
+
+  color: #9a5145;
+}
+
+.mobile-delete-disabled {
+  display: none;
+}
+
+
+/* =========================================
+   HIDDEN TAB
+   ========================================= */
+
+.mobile-tab-hidden {
+  opacity: 0.55;
+}
+
+.mobile-tab-hidden .mobile-quiet-field {
+  color: #aaa197;
+}
+
+
+/* =========================================
+   ADD TAB
+   ========================================= */
+
+.mobile-add-tab {
+  margin-top: 8px;
+
+  padding: 5px 9px;
+
+  border: 1px dashed #d8cbbb;
+  border-radius: 4px;
+
+  background: transparent;
+
+  color: #8c7143;
+
+  font-family: inherit;
+  font-size: 9.5px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.mobile-add-tab:hover {
+  border-color: #c7a55c;
+  background: #fcf7ed;
+}
+
+
+/* =========================================
+   HAMBURGER DRAWER
+   ========================================= */
+
+.hamburger-drawer-card {
+  margin-top: 16px;
+}
+
+
+/* =========================================
+   DRAWER SETTINGS
+   ========================================= */
+
+.drawer-settings {
+  padding: 14px 18px 12px;
+
+  border-bottom: 1px solid #ece5dc;
+}
+
+.drawer-toggle-row {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  color: #3a342e;
+
+  font-size: 10.5px;
+
+  cursor: pointer;
+}
+
+.drawer-toggle-row + .drawer-toggle-row {
+  margin-top: 10px;
+}
+
+
+/* =========================================
+   TOGGLE
+   ========================================= */
+
+.drawer-toggle-row input {
+  appearance: none;
+
+  position: relative;
+
+  width: 34px;
+  height: 18px;
+
+  flex-shrink: 0;
+
+  margin: 0;
+
+  border: 0;
+  border-radius: 20px;
+
+  background: #d7cec3;
+
+  cursor: pointer;
+
+  transition: background 0.18s ease;
+}
+
+.drawer-toggle-row input::after {
+  content: "";
+
+  position: absolute;
+
+  top: 3px;
+  left: 3px;
+
+  width: 12px;
+  height: 12px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  transition: transform 0.18s ease;
+}
+
+.drawer-toggle-row input:checked {
+  background: #c7a55c;
+}
+
+.drawer-toggle-row input:checked::after {
+  transform: translateX(16px);
+}
+
+
+/* =========================================
+   DRAWER HINT
+   ========================================= */
+
+.drawer-hint {
+  margin: 3px 0 0 43px;
+
+  color: #9a9187;
+
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.drawer-toggle-row + .drawer-hint {
+  margin-bottom: 10px;
+}
+
+
+/* =========================================
+   DRAWER ITEMS
+   ========================================= */
+
+.drawer-items {
+  padding: 8px 18px 13px;
+}
+
+.drawer-item {
+  display: grid;
+
+  grid-template-columns:
+    22px
+    minmax(0, 1fr)
+    minmax(220px, 1fr);
+
+  align-items: center;
+
+  min-height: 27px;
+
+  border-radius: 3px;
+}
+
+.drawer-item:hover {
+  background: #faf7f2;
+}
+
+
+/* =========================================
+   DRAWER CHECKBOX
+   ========================================= */
+
+.drawer-checkbox {
+  width: 17px;
+  height: 17px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid #d8cbbb;
+  border-radius: 3px;
+
+  background: #ffffff;
+
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.drawer-checkbox.checked {
+  border-color: #c9a85f;
+  background: #c9a85f;
+}
+
+
+/* =========================================
+   DRAWER LABEL
+   ========================================= */
+
+.drawer-item-label {
+  min-width: 0;
+
+  padding: 3px 8px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #3a342e;
+
+  font-family: inherit;
+  font-size: 10.5px;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.drawer-item-off .drawer-item-label {
+  color: #aaa197;
+}
+
+
+/* =========================================
+   DRAWER NOTE
+   ========================================= */
+
+.drawer-item-note {
+  min-width: 0;
+
+  color: #a1988d;
+
+  font-size: 9px;
+
+  text-align: right;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawer-item-off .drawer-item-note {
+  color: #b0a79d;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 900px) {
+  .mobile-bar-column-label,
+  .mobile-tab-row {
+    grid-template-columns:
+      24px
+      25px
+      minmax(0, 1.5fr)
+      minmax(0, 1fr)
+      40px;
+  }
+
+  .drawer-item {
+    grid-template-columns:
+      22px
+      minmax(0, 1fr)
+      minmax(150px, 1fr);
+  }
+}
+
+
+@media (max-width: 650px) {
+  .mobile-bar-columns {
+    padding: 12px;
+  }
+
+  .mobile-bar-column-label,
+  .mobile-tab-row {
+    grid-template-columns:
+      22px
+      22px
+      minmax(0, 1.2fr)
+      minmax(80px, 0.8fr)
+      34px;
+  }
+
+  .mobile-quiet-field {
+    font-size: 9.5px;
+  }
+
+  .drawer-item {
+    grid-template-columns:
+      22px
+      minmax(0, 1fr);
+  }
+
+  .drawer-item-note {
+    display: none;
+  }
+}

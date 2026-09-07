@@ -27,7 +27,9 @@ import { MessagingView } from './components/Messaging/MessagingView';
 import { mockMessages } from './components/Messaging/data/mockMessages';
 import { Message } from './components/Messaging/types/messaging.types';
 import NotificationsView from './components/NotificationsView';
-import SettingsView from './components/SettingsView';
+// import SettingsView from './components/SettingsView';
+import SiteSettingsView from './components/SettingsView';
+
 import HomepageView from './components/HomepageView';
 import PagesView from './components/PagesView';
 
@@ -564,15 +566,14 @@ export default function App() {
       return <NotificationsView />;
     }
 
-    if (currentView === 'settings') {
-      return (
-        <SettingsView 
-          siteSettings={siteSettings}
-          onUpdateSettings={setSiteSettings}
-        />
-      );
-    }
-
+   if (currentView === 'settings') {
+  return (
+    <SiteSettingsView
+      siteSettings={siteSettings}
+      onUpdateSettings={setSiteSettings}
+    />
+  );
+}
     if (currentView === 'homepage') {
       return (
         <HomepageView 
@@ -667,7 +668,7 @@ export default function App() {
         </header>
 
         {/* Desktop Sticky Header */}
-        {!isSectionEditing && (
+       {!isSectionEditing && currentView !== 'settings' && (
           <header className="sticky top-0 z-40 hidden h-[52px] shrink-0 items-center justify-between border-b border-[#E8E0D6] bg-white px-6 lg:flex">
             <div className="flex items-center gap-3">
               {currentView === 'messaging' && messagingActiveTab === 'editor' && (
@@ -706,7 +707,9 @@ export default function App() {
 
         {/* Content Box */}
         <main className="flex-1 overflow-y-auto bg-[#F8F6F2]">
-          <div className={`w-full ${isSectionEditing ? 'p-0' : 'p-6'}`}>
+       <div className={`w-full ${
+  currentView === 'settings' || isSectionEditing ? 'p-0' : 'p-6'
+}`}>
             {renderContent()}
           </div>
         </main>
