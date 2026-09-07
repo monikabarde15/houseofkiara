@@ -3,6 +3,7 @@ import { ChevronLeft, ExternalLink } from 'lucide-react';
 import { useSubmissionDetail } from './hooks/useSubmissionDetail';
 import { useJourneyStack } from './hooks/useJourneyStack';
 import { SubmissionRecord } from './record/SubmissionRecord';
+import { submissionService } from './services/submissionService';
 import toast from 'react-hot-toast';
 import './LYPDetailView.css';
 
@@ -39,8 +40,15 @@ export const LYPDetailView: React.FC<LYPDetailViewProps> = ({ submissionId }) =>
     pushState({ type: 'detail', id });
   };
 
-  const handleSave = () => {
-    toast.success(`Worksheet changes for ${submission?.subid} saved successfully!`);
+  const handleSave = async () => {
+    if (!submission) return;
+    try {
+      await submissionService.updateSubmission(submission.subid, submission);
+      toast.success(`Worksheet changes for ${submission.subid} saved to Database!`);
+      refreshSubmission();
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to save changes');
+    }
   };
 
   const handleViewLive = () => {
@@ -65,7 +73,7 @@ export const LYPDetailView: React.FC<LYPDetailViewProps> = ({ submissionId }) =>
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
-      {/* Top Header Bar - Matches Listers & Designers sections */}
+      {/* Top Header Bar */}
       <header className="sticky top-0 z-30 bg-white border-b border-[#E8E0D6] px-6 py-3 flex items-center justify-between shrink-0 h-[52px]">
         {/* Left: Back Button & Breadcrumbs */}
         <div className="flex items-center gap-3">
@@ -89,32 +97,32 @@ export const LYPDetailView: React.FC<LYPDetailViewProps> = ({ submissionId }) =>
             onClick={handleViewLive}
             className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E5DDD3] bg-white px-3.5 text-[12px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition shadow-2xs cursor-pointer"
           >
-            <ExternalLink className="h-3.5 w-3.5 text-[#6F675D]" />
+            <ExternalLink className="h-3.5 w-3.5 text-[#8C8275]" />
             <span>View Live Site</span>
           </button>
           <button
             onClick={handleSave}
-            className="inline-flex h-8 items-center rounded-md bg-[#C7A55C] hover:bg-[#B9974B] px-4 text-[12px] font-semibold text-[#2A2118] transition shadow-2xs cursor-pointer"
+            className="inline-flex h-8 items-center justify-center rounded-md bg-[#C5A265] px-4 text-[12px] font-medium text-white hover:bg-[#B38F52] transition shadow-2xs cursor-pointer active:scale-95"
           >
             Save Changes
           </button>
         </div>
       </header>
 
-      {/* Detail Body (Padded container) */}
-      <div className="lyp-detail-view">
-        <SubmissionRecord 
+      {/* Main Submission Record Container */}
+      <main className="p-6">
+        <SubmissionRecord
           submission={submission}
           onUpdate={refreshSubmission}
           onNavigate={handleNavigate}
+          currentIndex={currentIndex}
+          totalCount={totalCount}
           hasPrev={hasPrev}
           hasNext={hasNext}
           onPrev={goPrev}
           onNext={goNext}
-          currentIndex={currentIndex}
-          totalCount={totalCount}
         />
-      </div>
+      </main>
     </div>
   );
 };

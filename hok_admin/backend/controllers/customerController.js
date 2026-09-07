@@ -13,7 +13,7 @@ const formatCustomerResponse = (doc) => {
 // GET /api/customers
 export const getCustomers = async (req, res) => {
   try {
-    const { search, status, source } = req.query;
+    const { search, status, source } = req.query || {};
     const query = {};
 
     if (status && status !== "All Statuses") {

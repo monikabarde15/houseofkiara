@@ -28,7 +28,7 @@ export const FactsLeft: React.FC<FactsLeftProps> = ({ submission, onUpdate }) =>
           <div className="facts-field">
             <div className="facts-field-label">Full Name</div>
             <span className="facts-name-link">
-              {getFirstName(submission.listerID)} →
+              {submission.listerName || getFirstName(submission.listerID)} →
             </span>
           </div>
 

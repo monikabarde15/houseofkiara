@@ -50,7 +50,8 @@ export const useIntake = () => {
 
       const submission: Partial<Submission> = {
         subid,
-        listerID: data.listerId,
+        listerId: data.listerId || 'LST-GENERAL',
+        listerID: data.listerId || 'LST-GENERAL',
         channel: data.channel,
         submittedAt: new Date().toISOString(),
         piece: data.piece,

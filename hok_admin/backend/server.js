@@ -32,10 +32,10 @@ app.use("/api/submissions", submissionRouter);
 app.use("/api/promotions", promotionRouter);
 app.use("/api/notifications", notificationRouter);
 
+app.use("/api", productRouter);
 app.use("/api", offersRouter);
 app.use("/api", authRouter);
 app.use("/api", payoutRouter);
-app.use("/api", productRouter); 
 app.use("/api", orderRouter);
 app.use("/api", uploadRouter);
 app.use("/api", messageRouter);

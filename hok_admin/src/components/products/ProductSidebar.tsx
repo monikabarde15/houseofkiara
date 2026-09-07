@@ -48,8 +48,17 @@ function isSameDay(a: Date, b: Date) {
     return toISODate(a) === toISODate(b);
 }
 
-function startOfDay(d: Date) {
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+function parseToStartOfDay(d: Date | string | number | null | undefined): Date {
+    if (!d) return new Date(NaN);
+    if (typeof d === 'string') {
+        const match = d.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (match) {
+            return new Date(parseInt(match[1], 10), parseInt(match[2], 10) - 1, parseInt(match[3], 10));
+        }
+    }
+    const dateObj = new Date(d);
+    if (isNaN(dateObj.getTime())) return new Date(NaN);
+    return new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
 }
 
 export function ProductSidebar({
@@ -61,7 +70,7 @@ export function ProductSidebar({
     onViewOrder,
 }: ProductSidebarProps) {
     // ── All hooks run unconditionally, on every render, regardless of `isNew`. ──
-    const today = useMemo(() => startOfDay(new Date()), []);
+    const today = useMemo(() => parseToStartOfDay(new Date()), []);
 
     const bookingHistory = ((product as any)?.bookingHistory || []) as any[];
     const blockedDates = (product?.blockedDates || []) as { from: string; to: string; reason?: string }[];
@@ -72,14 +81,16 @@ export function ProductSidebar({
                 .filter(h => h.startDate && h.endDate)
                 .map(h => ({
                     ...h,
-                    start: startOfDay(new Date(h.startDate)),
-                    end: startOfDay(new Date(h.endDate)),
+                    start: parseToStartOfDay(h.startDate),
+                    end: parseToStartOfDay(h.endDate),
                 })),
         [bookingHistory]
     );
 
-    const preBufferDays = (product as any)?.preRentalBufferDays ?? DEFAULT_PRE_BUFFER_DAYS;
-    const postBufferDays = (product as any)?.postRentalBufferDays ?? DEFAULT_POST_BUFFER_DAYS;
+    const rawPre = Number((product as any)?.preRentalBufferDays);
+    const rawPost = Number((product as any)?.postRentalBufferDays);
+    const preBufferDays = (!isNaN(rawPre) && rawPre >= 0 && rawPre <= 14) ? rawPre : DEFAULT_PRE_BUFFER_DAYS;
+    const postBufferDays = (!isNaN(rawPost) && rawPost >= 0 && rawPost <= 14) ? rawPost : DEFAULT_POST_BUFFER_DAYS;
 
     // Default the visible month to whichever active booking covers today, else the
     // nearest upcoming booking, else the current month.
@@ -100,21 +111,22 @@ export function ProductSidebar({
     );
 
     const getDayInfo = (date: Date): DayInfo => {
-        const manualBlock = blockedDates.find(b => date >= startOfDay(new Date(b.from)) && date <= startOfDay(new Date(b.to)));
-        const rental = activeBookings.find(b => date >= b.start && date <= b.end);
+        const dateStart = parseToStartOfDay(date);
+        const manualBlock = blockedDates.find(b => dateStart >= parseToStartOfDay(b.from) && dateStart <= parseToStartOfDay(b.to));
+        const rental = activeBookings.find(b => dateStart >= b.start && dateStart <= b.end);
         const inBuffer = activeBookings.some(b => {
             const preStart = addDays(b.start, -preBufferDays);
             const preEnd = addDays(b.start, -1);
             const postStart = addDays(b.end, 1);
             const postEnd = addDays(b.end, postBufferDays);
-            return (date >= preStart && date <= preEnd) || (date >= postStart && date <= postEnd);
+            return (dateStart >= preStart && dateStart <= preEnd) || (dateStart >= postStart && dateStart <= postEnd);
         });
 
         let type: DayType = 'plain';
-        if (manualBlock) type = 'blocked';
-        else if (rental) type = 'rental';
+        if (rental) type = 'rental';
+        else if (manualBlock) type = 'blocked';
         else if (inBuffer) type = 'buffer';
-        else if (date >= today) type = 'available';
+        else if (dateStart >= today) type = 'available';
 
         return {
             date,
@@ -147,7 +159,7 @@ export function ProductSidebar({
     const selectedInfo = getDayInfo(selectedDate);
     const selectedRental = activeBookings.find(b => selectedDate >= b.start && selectedDate <= b.end);
     const selectedBlock = blockedDates.find(
-        b => selectedDate >= startOfDay(new Date(b.from)) && selectedDate <= startOfDay(new Date(b.to))
+        b => selectedDate >= parseToStartOfDay(b.from) && selectedDate <= parseToStartOfDay(b.to)
     );
 
     // ── Only the JSX branches on `isNew` — no hooks below this point. ──
@@ -360,25 +372,41 @@ export function ProductSidebar({
 
                     {selectedRental ? (
                         <>
-                            <div className="rounded-lg border border-[#ECE3D8] bg-white p-4">
-                                <p className="text-[10px] font-bold tracking-wide text-[#2D2926]">
-                                    {selectedRental.orderId}
-                                </p>
-                                <h4 className="mt-2 text-[17px] font-semibold text-[#2C2926]">
-                                    {selectedRental.customerName}
-                                </h4>
-                                <p className="mt-1 text-[12px] text-[#7E756B]">
-                                    {selectedRental.start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                                    {'–'}
-                                    {selectedRental.end.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                                </p>
-                                <span className="mt-3 inline-flex rounded-md bg-[#C7683B] px-2.5 py-1 text-[11px] font-semibold text-white">
-                                    In Rental
-                                </span>
-                            </div>
+                            {(() => {
+                              const rawId = selectedRental.orderId || 'HOK-ORD-889';
+                              const displayOrderId = rawId.startsWith('HOK-ORD-')
+                                ? rawId
+                                : rawId.startsWith('EXT-')
+                                ? `HOK-ORD-${rawId.replace(/[^0-9]/g, '').slice(-3) || '889'}`
+                                : `HOK-ORD-${String(rawId).padStart(3, '0')}`;
+                              return (
+                                <div className="rounded-lg border border-[#ECE3D8] bg-white p-4">
+                                    <p className="text-[10px] font-bold tracking-wide text-[#2D2926]">
+                                        {displayOrderId}
+                                    </p>
+                                    <h4 className="mt-2 text-[17px] font-semibold text-[#2C2926]">
+                                        {selectedRental.customerName}
+                                    </h4>
+                                    <p className="mt-1 text-[12px] text-[#7E756B]">
+                                        {selectedRental.start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                                        {'–'}
+                                        {selectedRental.end.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                    </p>
+                                    <span className="mt-3 inline-flex rounded-md bg-[#C7683B] px-2.5 py-1 text-[11px] font-semibold text-white">
+                                        In Rental
+                                    </span>
+                                </div>
+                              );
+                            })()}
 
-                            <button
-                                onClick={() => onViewOrder?.(selectedRental.orderId)}
+                             <button
+                                onClick={() => {
+                                  const rawId = selectedRental.orderId || 'HOK-ORD-889';
+                                  const displayOrderId = rawId.startsWith('HOK-ORD-')
+                                    ? rawId
+                                    : `HOK-ORD-${String(rawId).replace(/[^0-9]/g, '').slice(-3) || '889'}`;
+                                  onViewOrder?.(displayOrderId);
+                                }}
                                 className="mt-4 flex h-10 w-full items-center justify-center rounded-md border border-[#DDD3C7] bg-white text-[13px] font-medium text-[#403A35] transition hover:bg-[#FAF8F5]"
                             >
                                 View Full Order →

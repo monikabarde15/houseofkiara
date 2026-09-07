@@ -1,3 +1,4 @@
+import logo from '../assets/logo.png';
 import { LayoutDashboard, ShoppingBag, Tag, Calendar, Truck, RotateCcw, Wallet, Users, Package, Award, UserCheck, Grid, BarChart3, Percent, Mail, Bell, Settings, Home, FileText, Layers, Search, LogOut } from 'lucide-react';
 
 interface SidebarProps { currentView: string; setView: (view: string) => void; siteName: string; isMobile?: boolean; onLogout: () => void; }
@@ -13,7 +14,12 @@ const groups = [
 
 export default function Sidebar({ currentView, setView, isMobile, onLogout }: SidebarProps) {
   return <aside className={`sidebar-reference ${isMobile ? 'w-full' : 'w-[320px]'} h-screen shrink-0 select-none`}>
-    <div className="sidebar-brand"><span><Layers /></span><div><strong>House of Kaira</strong><small>Admin v16</small></div></div>
+    <div className="sidebar-brand">
+      <div className="sidebar-brand-logo-wrapper">
+        <img src={logo} alt="House of Kaira Logo" className="sidebar-brand-logo" />
+      </div>
+      <div><strong>House of Kaira</strong><small>Admin</small></div>
+    </div>
     <div className="sidebar-search"><Search /><input aria-label="Search sections" placeholder="Search sections..." /></div>
     <nav className="sidebar-nav">
       {groups.map((group) => <div className="sidebar-group" key={group.title || 'home'}>

@@ -10,8 +10,8 @@ const siteSettingsSchema = new mongoose.Schema({
   
   // 1. Announcement Bar
   announcementBar: {
-    text: { type: String, default: 'The rental delivery pointer has no value behind it...' },
-    enabled: { type: Boolean, default: true },
+    text: { type: String, default: '' },
+    enabled: { type: Boolean, default: false },
     howItMoves: { type: String, default: 'Scrolling loop' },
     loopTime: { type: Number, default: 28 },
     pauseOnHover: { type: Boolean, default: true },

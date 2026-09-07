@@ -24,10 +24,11 @@ const buildIdQuery = (id) => {
 
 export const getListers = async (req, res) => {
   try {
+    const reqQ = req.query || {};
     const q = {};
-    if (req.query.status) q.status = req.query.status;
-    if (req.query.search) {
-      const regex = new RegExp(req.query.search, "i");
+    if (reqQ.status) q.status = reqQ.status;
+    if (reqQ.search) {
+      const regex = new RegExp(reqQ.search, "i");
       q.$or = [{ name: regex }, { email: regex }, { phone: regex }, { city: regex }];
     }
     const rows = await Lister.find(q).sort({ createdAt: -1 });

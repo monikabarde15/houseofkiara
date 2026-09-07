@@ -4,12 +4,35 @@ import React, { useState } from 'react';
 import { Submission, Media } from '../types/submission.types';
 import { pluralize } from '../utils/formatter';
 import { Lightbox } from '../modals/Lightbox';
+import { toast } from 'react-hot-toast';
+import { submissionService } from '../services/submissionService';
+import { uploadFile } from '../../../services/uploadApi';
 import './styles/Photographs.css';
 
 interface PhotographsProps {
   submission: Submission;
   onUpdate: () => void;
 }
+
+const FALLBACK_PHOTO = 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=60';
+
+const getPhotoUrl = (url: string) => {
+  if (!url) return FALLBACK_PHOTO;
+  if (url.startsWith('blob:') || url.includes('test.jpg') || url.includes('v12345')) return FALLBACK_PHOTO;
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url;
+  }
+  if (url.startsWith('photo-')) {
+    return `https://images.unsplash.com/${url}?w=800&auto=format&fit=crop&q=60`;
+  }
+  return FALLBACK_PHOTO;
+};
+
+const uploadToCloudinary = async (file: File): Promise<string> => {
+  const result = await uploadFile(file, 'submissions');
+  if (!result || !result.url) throw new Error('Cloudinary returned empty response');
+  return result.url;
+};
 
 export const Photographs: React.FC<PhotographsProps> = ({ submission, onUpdate }) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -25,43 +48,75 @@ export const Photographs: React.FC<PhotographsProps> = ({ submission, onUpdate }
   // Form slot labels
   const slotLabels = ['1 - Full view', '2 - Detail / work', '3 - Back view'];
 
-  const handleAddPhotos = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+
+  const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+  const MAX_VIDEO_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB
+
+  const handleAddPhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
-    const newMedia: Media[] = Array.from(files).map(file => ({
-      name: file.name,
-      url: URL.createObjectURL(file),
-      kind: 'image',
-    }));
+    for (const file of Array.from(files)) {
+      if (file.size > MAX_IMAGE_SIZE_BYTES) {
+        toast.error(`"${file.name}" exceeds maximum image size limit of 10 MB!`, { id: 'upload' });
+        return;
+      }
+    }
 
-    // In production, this would upload to storage
-    // For now, we'll just update the local state via callback
-    const updatedMedia = [...submission.media, ...newMedia];
-    // This would be handled by the parent component
-    onUpdate();
+    toast.loading('Uploading photo to Cloudinary...', { id: 'upload' });
+    try {
+      const uploadedMedia: Media[] = [];
+      for (const file of Array.from(files)) {
+        const url = await uploadToCloudinary(file);
+        uploadedMedia.push({ name: file.name, url, kind: 'image' });
+      }
+      const updatedMedia = [...(submission.media || []), ...uploadedMedia];
+      await submissionService.updateSubmission(submission.subid, { media: updatedMedia });
+      toast.success('Photos uploaded to Cloudinary & saved!', { id: 'upload' });
+      onUpdate();
+    } catch (err: any) {
+      toast.error('Upload failed', { id: 'upload' });
+    }
   };
 
-  const handleAddVideo = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAddVideo = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
-    const newMedia: Media[] = Array.from(files).map(file => ({
-      name: file.name,
-      url: URL.createObjectURL(file),
-      kind: 'video',
-    }));
+    for (const file of Array.from(files)) {
+      if (file.size > MAX_VIDEO_SIZE_BYTES) {
+        toast.error(`"${file.name}" exceeds maximum video size limit of 50 MB!`, { id: 'upload' });
+        return;
+      }
+    }
 
-    const updatedMedia = [...submission.media, ...newMedia];
-    onUpdate();
+    toast.loading('Uploading video to Cloudinary...', { id: 'upload' });
+    try {
+      const uploadedMedia: Media[] = [];
+      for (const file of Array.from(files)) {
+        const url = await uploadToCloudinary(file);
+        uploadedMedia.push({ name: file.name, url, kind: 'video' });
+      }
+      const updatedMedia = [...(submission.media || []), ...uploadedMedia];
+      await submissionService.updateSubmission(submission.subid, { media: updatedMedia });
+      toast.success('Video uploaded to Cloudinary & saved!', { id: 'upload' });
+      onUpdate();
+    } catch (err: any) {
+      toast.error('Upload failed', { id: 'upload' });
+    }
   };
 
-  const handleRemoveMedia = (index: number) => {
-    // In production, this would delete from storage
-    const updatedMedia = [...submission.media];
-    URL.revokeObjectURL(updatedMedia[index].url);
-    updatedMedia.splice(index, 1);
-    onUpdate();
+  const handleRemoveMedia = async (index: number) => {
+    try {
+      const updatedMedia = [...(submission.media || [])];
+      updatedMedia.splice(index, 1);
+      await submissionService.updateSubmission(submission.subid, { media: updatedMedia });
+      toast.success('Media item removed');
+      onUpdate();
+    } catch (err: any) {
+      toast.error('Failed to remove media');
+    }
   };
 
   const getCountDisplay = () => {
@@ -82,8 +137,6 @@ export const Photographs: React.FC<PhotographsProps> = ({ submission, onUpdate }
     return 'photo-count';
   };
 
-  const allMedia = [...photos, ...videos];
-
   return (
     <div className="photographs">
       <div className="photo-header">
@@ -99,7 +152,11 @@ export const Photographs: React.FC<PhotographsProps> = ({ submission, onUpdate }
             className="photo-tile"
             onClick={() => setLightboxIndex(index)}
           >
-            <img src={photo.url} alt={photo.name || `Photo ${index + 1}`} />
+            <img 
+              src={getPhotoUrl(photo.url)} 
+              alt={photo.name || `Photo ${index + 1}`} 
+              onError={(e) => { e.currentTarget.src = FALLBACK_PHOTO; }}
+            />
             <span className="photo-label">{photo.name || `Photo ${index + 1}`}</span>
           </div>
         ))}
@@ -177,7 +234,7 @@ export const Photographs: React.FC<PhotographsProps> = ({ submission, onUpdate }
       {/* Lightbox */}
       {lightboxIndex !== null && (
         <Lightbox
-          media={allMedia}
+          media={photos}
           initialIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
         />

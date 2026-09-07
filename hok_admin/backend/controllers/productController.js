@@ -16,7 +16,8 @@ const productFilter = (id) => {
 
 export const getProducts = async (req, res) => { 
   try { 
-    const filter = req.query.productId ? { productId: req.query.productId } : {};
+    const q = req.query || {};
+    const filter = q.productId ? { productId: q.productId } : {};
     const rows = await Product.find(filter).sort({ createdAt: -1 }); 
     res.json({ success: true, data: rows.map(normalize) }); 
   } catch (e) { 
@@ -39,10 +40,26 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// ✅ CLEAN PAYLOAD HELPER (Extra MongoDB fields hatao)
+export const getProductActivity = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const p = await Product.findOne(productFilter(id));
+    if (!p) return res.status(404).json({ success: false, message: "Product not found" });
+    res.json({ success: true, data: p.activityLog || [] });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+};
+
+// ✅ CLEAN PAYLOAD HELPER (Extra MongoDB & transient UI fields hatao)
 const cleanPayload = (body) => {
   const clean = { ...body };
-  const forbidden = ['id', '_id', '__v', 'createdAt', 'updatedAt'];
+  const forbidden = [
+    'id', '_id', '__v', 'createdAt', 'updatedAt',
+    'rentalStatus', 'rentStatus', 'currentRenterName',
+    'currentOrderId', 'rentUntil', 'nextFreeDate',
+    'earnedAmount', 'listerName'
+  ];
   forbidden.forEach(f => delete clean[f]);
   return clean;
 };

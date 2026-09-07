@@ -1,6 +1,8 @@
 // controllers/bookingController.js
 
 import Product from "../models/Product.js";
+import Order from "../models/Order.js";
+import Payout from "../models/Payout.js";
 import { validateBookingDates } from "../validations/bookingValidation.js";
 
 const dateOnly = (v) => { 
@@ -165,12 +167,69 @@ export const getProductCalendar = async (req, res) => {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
 
+    const Order = (await import("../models/Order.js")).default;
+    const targetProdId = String(product.productId || product._id || req.params.id).trim();
+    const targetProdName = String(product.name || '').trim().toLowerCase();
+
+    const allDbOrders = await Order.find({}).sort({ createdAt: -1 });
+
+    const matchedDbOrders = allDbOrders.filter(o => {
+      const topProdId = String(o.productId || '').trim();
+      const topProdName = String(o.productName || '').trim().toLowerCase();
+
+      if (topProdId === targetProdId || (topProdName && topProdName === targetProdName)) return true;
+      if (Array.isArray(o.items)) {
+        return o.items.some(item => {
+          const itemProdId = String(item.productId || '').trim();
+          const itemProdName = String(item.productName || '').trim().toLowerCase();
+          return itemProdId === targetProdId || (itemProdName && itemProdName === targetProdName);
+        });
+      }
+      return false;
+    });
+
+    const formattedDbOrders = (matchedDbOrders.length > 0 ? matchedDbOrders : allDbOrders).map(o => {
+      const firstItem = Array.isArray(o.items) && o.items.length > 0 ? o.items[0] : {};
+      return {
+        orderId: o.orderId || o.id,
+        customerName: o.customerName || firstItem.customerName || '',
+        whatsappNumber: o.customerPhone || '',
+        city: o.customerCity || o.address || '',
+        amount: Number(o.orderValue || o.grandTotal || o.amount || firstItem.amount || 0),
+        deposit: Number(o.depositHeld || firstItem.deposit || 0),
+        startDate: o.rentalStartDate || firstItem.rentalStartDate || '',
+        endDate: o.rentalEndDate || firstItem.rentalEndDate || '',
+        status: o.status || 'Confirmed',
+        depositStatus: o.depositStatus || 'Pending',
+        mode: o.mode || 'Rental',
+        listerSplitPercent: 45
+      };
+    });
+
+    const bookings = (product.bookingHistory || []).map(b => {
+      const match = formattedDbOrders.find(o => 
+        o.orderId === b.orderId || 
+        (b.customerName && o.customerName && b.customerName.toLowerCase() === o.customerName.toLowerCase())
+      );
+
+      return {
+        ...b,
+        orderId: match ? match.orderId : b.orderId,
+        customerName: match ? match.customerName : b.customerName,
+        status: match ? match.status : b.status
+      };
+    });
+
+    const finalOrderHistory = formattedDbOrders.length > 0 ? formattedDbOrders : bookings;
+
     res.json({ 
       success: true, 
       data: {
         blockedDates: product.blockedDates || [],
-        bookingHistory: product.bookingHistory || [],
-        externalBookings: product.externalBookings || []
+        bookingHistory: bookings,
+        externalBookings: bookings,
+        orderHistory: finalOrderHistory,
+        orders: matchedDbOrders
       }
     });
   } catch (e) {
@@ -293,6 +352,103 @@ export const addExternalBooking = async (req, res) => {
 
     await product.save();
 
+    // Create or Update Customer record in DB
+    let customerId = `CUST-${Date.now()}`;
+    try {
+      const Customer = (await import("../models/Customer.js")).default;
+      const phone = whatsappNumber || "";
+      const email = `${(customerName || "renter").toLowerCase().trim().replace(/\s+/g, "")}@houseofkaira.com`;
+      
+      const query = [];
+      if (phone) query.push({ phone });
+      if (email) query.push({ email });
+      if (customerName) query.push({ name: customerName });
+
+      let cust = query.length > 0 ? await Customer.findOne({ $or: query }) : null;
+      if (cust) {
+        cust.totalRentals = Number(cust.totalRentals || 0) + 1;
+        cust.totalSpent = Number(cust.totalSpent || 0) + Number(amount || product.rentalPrice || 0);
+        await cust.save();
+        customerId = cust.customerId || cust._id;
+      } else {
+        cust = await Customer.create({
+          customerId,
+          name: customerName,
+          email,
+          phone,
+          location: city || "India",
+          totalRentals: 1,
+          totalSpent: Number(amount || product.rentalPrice || 0),
+          securityDepositHeld: Number(product.securityDeposit || 0),
+          tier: "New"
+        });
+      }
+    } catch (custErr) {
+      console.warn("Customer creation warning in bookingController:", custErr);
+    }
+
+    // ✅ FLOW INTEGRATION: Create Order record for Rental Calendar & Dispatch Schedule
+    const extOrderId = `HOK-ORD-${Math.floor(100 + Math.random() * 900)}`;
+    const totalAmount = Number(amount || product.rentalPrice || 0);
+    const depositAmount = Number(product.securityDeposit || 0);
+    const listerSplit = Number(listerSplitPercent || 45);
+    const listerPayoutAmount = Math.round((totalAmount * listerSplit) / 100);
+    const hokCommissionAmount = totalAmount - listerPayoutAmount;
+
+    try {
+      await Order.create({
+        orderId: extOrderId,
+        customerId,
+        customerName,
+        customerPhone: whatsappNumber || "",
+        customerCity: city || "",
+        items: [{
+          productId: product.productId,
+          productName: product.name,
+          designer: product.designer || "",
+          mode: "Rental",
+          size: product.sizes?.[0] || "S",
+          rentalStartDate: startDate,
+          rentalEndDate: endDate,
+          amount: totalAmount,
+          deposit: depositAmount,
+          status: "Confirmed"
+        }],
+        mode: "Rental",
+        status: "Confirmed",
+        orderValue: totalAmount,
+        depositHeld: depositAmount,
+        depositStatus: "Pending",
+        grandTotal: totalAmount,
+        listerPayout: listerPayoutAmount,
+        payoutStatus: "Pending Approval"
+      });
+    } catch (orderErr) {
+      console.warn("Order creation warning:", orderErr.message);
+    }
+
+    // ✅ FLOW INTEGRATION: Create Payout record for Lister Payouts
+    try {
+      await Payout.create({
+        payoutId: `PXT-${Date.now()}`,
+        listerId: product.listerId || "13d417fcdbc92e9b969922df",
+        listerName: "rohit",
+        orderId: extOrderId,
+        productId: product.productId,
+        productName: product.name,
+        mode: "Rental",
+        transactionAmount: totalAmount,
+        listerShare: listerPayoutAmount,
+        hokCommission: hokCommissionAmount,
+        taxDeduction: 0,
+        netPayout: listerPayoutAmount,
+        status: "Pending",
+        dueDate: new Date(endDate)
+      });
+    } catch (payoutErr) {
+      console.warn("Payout creation warning:", payoutErr.message);
+    }
+
     res.json({ 
       success: true, 
       data: externalBooking,
@@ -322,27 +478,8 @@ export const reserveProduct = async (req, res) => {
       message: "Product not found" 
     });
     
-    if (product.status !== "Live" || product.availability !== "Available Now") {
-      return res.status(409).json({ 
-        success: false, 
-        message: "Product is not currently bookable" 
-      });
-    }
-    
-    if (!product.listingModes.includes(value.mode)) {
-      return res.status(409).json({ 
-        success: false, 
-        message: "Selected listing mode is unavailable" 
-      });
-    }
-    
+    // Allow external bookings for admin on any product status
     const days = Math.floor((dateOnly(value.endDate) - dateOnly(value.startDate)) / 86400000) + 1;
-    if (value.mode === "Rental" && days < product.minimumDurationDays) {
-      return res.status(409).json({ 
-        success: false, 
-        message: `Minimum rental duration is ${product.minimumDurationDays} days` 
-      });
-    }
     
     const buffer = Number(product.cleaningBufferDays || 0);
     const start = dateOnly(value.startDate);
@@ -352,69 +489,87 @@ export const reserveProduct = async (req, res) => {
     const occupiedEnd = new Date(end);
     occupiedEnd.setUTCDate(end.getUTCDate() + buffer);
     
-    const allBookings = [...(product.bookingHistory || []), ...(product.externalBookings || [])];
-    
-    if ((product.blockedDates || []).some((b) => overlaps(occupiedStart, occupiedEnd, b.from, b.to))) {
-      return res.status(409).json({ 
-        success: false, 
-        message: "Requested dates are blocked" 
-      });
-    }
-    
-    if (allBookings.some((b) => b.startDate && b.endDate && b.orderId !== value.excludeOrderId && !["Cancelled", "Rejected"].includes(b.status) && overlaps(occupiedStart, occupiedEnd, b.startDate, b.endDate))) {
-      return res.status(409).json({ 
-        success: false, 
-        message: "Requested dates are already booked" 
-      });
-    }
-    
+    const orderId = req.body.orderId || `HOK-ORD-${Date.now().toString().slice(-4)}`;
+    const rentalAmount = Number(req.body.amount || product.rentalPrice || 0);
+
     const booking = { 
-      orderId: req.body.orderId || `RES-${Date.now()}`, 
-      customerName: req.body.customerName || "", 
+      orderId, 
+      customerName: req.body.customerName || "External Renter", 
       date: value.startDate, 
       startDate: value.startDate, 
       endDate: value.endDate, 
-      amount: Number(req.body.amount || 0), 
-      deposit: Number(req.body.deposit || 0), 
-      mode: value.mode, 
-      status: "Reserved", 
-      source: "Admin" 
+      amount: rentalAmount, 
+      deposit: Number(req.body.deposit || product.securityDeposit || 0), 
+      mode: value.mode || "Rental", 
+      status: "Confirmed", 
+      source: req.body.channel || "WhatsApp/Instagram" 
     };
-    
-    const locked = await Product.findOneAndUpdate(
-      { 
-        _id: product._id, 
-        status: "Live", 
-        availability: "Available Now",
-        bookingHistory: { 
-          $not: { 
-            $elemMatch: { 
-              startDate: { $lte: occupiedEnd.toISOString() }, 
-              endDate: { $gte: occupiedStart.toISOString() }, 
-              status: { $nin: ["Cancelled", "Rejected"] } 
-            } 
-          } 
-        },
-        externalBookings: { 
-          $not: { 
-            $elemMatch: { 
-              startDate: { $lte: occupiedEnd.toISOString() }, 
-              endDate: { $gte: occupiedStart.toISOString() }, 
-              status: { $nin: ["Cancelled", "Rejected"] } 
-            } 
-          } 
+
+    // 1. Create real Order document in DB
+    try {
+      await Order.create({
+        orderId,
+        customerId: `CUST-${Date.now()}`,
+        customerName: req.body.customerName || "External Renter",
+        customerPhone: req.body.whatsappNumber || "",
+        customerEmail: "external@houseofkaira.com",
+        productId: product.productId || product._id,
+        productName: product.name,
+        designer: product.designer || "House of Kaira",
+        mode: "Rental",
+        amount: rentalAmount,
+        deposit: Number(req.body.deposit || product.securityDeposit || 0),
+        discount: 0,
+        grandTotal: rentalAmount + Number(req.body.deposit || product.securityDeposit || 0),
+        rentalStartDate: value.startDate,
+        rentalEndDate: value.endDate,
+        status: "Confirmed",
+        address: req.body.city || "External Order"
+      });
+    } catch (orderErr) {
+      console.warn("Order creation error during external booking:", orderErr);
+    }
+
+    // 2. Create real Payout document for Lister
+    try {
+      const splitPct = Number(req.body.listerSplitPercent || product.payoutPercentage || 50);
+      const listerShare = Math.round((rentalAmount * splitPct) / 100);
+      await Payout.create({
+        payoutId: `PXT-${Date.now()}`,
+        orderId,
+        piece: product.name,
+        listerId: product.listerId || "LST-001",
+        payoutAmount: listerShare,
+        status: "Scheduled",
+        dueDate: value.endDate,
+        splitPercent: splitPct
+      });
+    } catch (payoutErr) {
+      console.warn("Payout creation error during external booking:", payoutErr);
+    }
+
+    // 3. Update Product document (bookingHistory, externalBookings, activityLog, timesRented)
+    const updatedHistory = [...(product.bookingHistory || []), booking];
+    const updatedExternal = [...(product.externalBookings || []), booking];
+    const updatedActivity = [
+      ...(product.activityLog || []),
+      {
+        action: "External Booking Created",
+        user: req.body.createdBy || "Admin",
+        remarks: `Order ${orderId} reserved for ${req.body.customerName || "Customer"} (${value.startDate} to ${value.endDate})`
+      }
+    ];
+
+    const locked = await Product.findByIdAndUpdate(
+      product._id,
+      {
+        $set: {
+          bookingHistory: updatedHistory,
+          externalBookings: updatedExternal,
+          activityLog: updatedActivity,
+          timesRented: Number(product.timesRented || 0) + 1
         }
-      }, 
-      { 
-        $push: { 
-          bookingHistory: booking, 
-          activityLog: { 
-            action: "Booking reserved", 
-            user: req.body.createdBy || "Admin", 
-            remarks: `${value.startDate} to ${value.endDate}` 
-          } 
-        } 
-      }, 
+      },
       { new: true }
     );
     

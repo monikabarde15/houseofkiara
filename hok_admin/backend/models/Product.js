@@ -90,8 +90,12 @@ const productSchema = new mongoose.Schema({
   
   // ========== RENTAL CONFIG ==========
   rentalPrice: Number,
+  extendedWindowPrice: Number,
+  perDayRate: Number,
   securityDeposit: Number,
   listingPrice: Number,
+  originalRetailPrice: Number,
+  resalePayoutPercentage: Number,
   commissionRate: Number,
   minimumDurationDays: Number,
   extensionWindowDays: Number,

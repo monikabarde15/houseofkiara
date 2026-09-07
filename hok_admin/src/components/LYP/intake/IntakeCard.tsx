@@ -47,8 +47,11 @@ export const IntakeCard: React.FC<IntakeCardProps> = ({
 
   const isCustomSize = size === 'Custom / Free Size';
 
-  const handleListerSelect = (listerId: string) => {
+  const [selectedListerName, setSelectedListerName] = useState<string>('');
+
+  const handleListerSelect = (listerId: string, listerName?: string) => {
     setSelectedLister(listerId);
+    if (listerName) setSelectedListerName(listerName);
     setShowNewLister(false);
   };
 
@@ -70,11 +73,22 @@ export const IntakeCard: React.FC<IntakeCardProps> = ({
     const newErrors: Record<string, string> = {};
 
     if (!selectedLister && !showNewLister) {
-      newErrors.lister = 'Pick the lister first — or create them with New lister.';
+      newErrors.lister = 'Please select a valid Lister or create a new one.';
     }
 
-    if (!piece.trim()) {
-      newErrors.piece = 'The piece needs a name — that\'s the least a record can carry.';
+    const trimmedPiece = piece.trim();
+    if (!trimmedPiece || trimmedPiece.length < 3) {
+      newErrors.piece = 'Piece name is required and must be at least 3 characters long.';
+    } else if (/^(.)\1+$/.test(trimmedPiece)) {
+      newErrors.piece = 'Please enter a valid piece name, not repeating characters.';
+    }
+
+    if (designer && /^(.)\1+$/.test(designer.trim())) {
+      newErrors.designer = 'Please enter a valid designer name.';
+    }
+
+    if (originalPrice && (isNaN(Number(originalPrice)) || Number(originalPrice) <= 0)) {
+      newErrors.originalPrice = 'Original price must be a valid positive number.';
     }
 
     setErrors(newErrors);

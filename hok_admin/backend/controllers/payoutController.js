@@ -2,7 +2,17 @@ import Payout from "../models/Payout.js";
 import { validatePayout } from "../validations/payoutValidation.js";
 import mongoose from "mongoose"; // Import mongoose for ObjectId validation
 
-const view = (p) => ({ ...p.toObject(), id: p.payoutId, dueDate: p.dueDate?.toISOString().slice(0, 10) });
+const view = (p) => {
+  const obj = p.toObject ? p.toObject() : p;
+  const rawDate = obj.dueDate || p.dueDate;
+  let dueDateStr = '';
+  if (typeof rawDate === 'string') {
+    dueDateStr = rawDate.slice(0, 10);
+  } else if (rawDate && typeof rawDate.toISOString === 'function') {
+    dueDateStr = rawDate.toISOString().slice(0, 10);
+  }
+  return { ...obj, id: obj.payoutId || p.payoutId, dueDate: dueDateStr };
+};
 
 export const getPayouts = async (req, res) => {
   try {

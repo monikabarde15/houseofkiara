@@ -31,11 +31,14 @@ export function ImagesTab({ formData, onFieldChange, uploadingImages, setUploadi
     if (!files.length) return;
     
     setUploadingImages(true);
+    toast.loading('Uploading media to Cloudinary...', { id: 'prod-upload' });
     try {
-      const uploaded = await Promise.all(files.map(file => uploadFile(file, 'products')));
-      onFieldChange('images', [...images, ...uploaded.map(file => file.url)]);
+      const uploaded = await Promise.all(files.map(file => uploadFile(file, 'product')));
+      const newUrls = uploaded.map(file => file.url);
+      onFieldChange('images', [...images, ...newUrls]);
+      toast.success('Media uploaded to Cloudinary & saved to Product!', { id: 'prod-upload' });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Image upload failed');
+      toast.error(error instanceof Error ? error.message : 'Media upload failed', { id: 'prod-upload' });
     } finally {
       setUploadingImages(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -54,19 +57,23 @@ export function ImagesTab({ formData, onFieldChange, uploadingImages, setUploadi
     onFieldChange('images', newImages);
   };
 
+  const isVideoUrl = (url: string) => {
+    return url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i) || url.includes('/video/upload/');
+  };
+
   return (
     <div className="bg-white p-5 rounded-lg border border-[#e8dfd8] shadow-sm space-y-4">
-      <h3 className="font-serif font-bold text-stone-900 text-sm">Visual Assets Carousels</h3>
+      <h3 className="font-serif font-bold text-stone-900 text-sm">Visual Assets Carousels (Images & Videos)</h3>
       
       <div className="space-y-3">
         <div className="space-y-1">
-          <label className="text-stone-500 font-medium">Add Image URL</label>
+          <label className="text-stone-500 font-medium">Add Image / Video URL</label>
           <div className="flex gap-2">
             <input
               type="text"
               value={newImageUrl}
               onChange={(e) => setNewImageUrl(e.target.value)}
-              placeholder="https://example.com/image.jpg"
+              placeholder="https://res.cloudinary.com/..."
               className="flex-1 p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
             />
             <button 
@@ -80,7 +87,7 @@ export function ImagesTab({ formData, onFieldChange, uploadingImages, setUploadi
         </div>
 
         <div className="flex items-center gap-4">
-          <span className="text-stone-500 font-medium text-xs">Or upload from device:</span>
+          <span className="text-stone-500 font-medium text-xs">Or upload from device (Max 10MB Images, 50MB Videos):</span>
           <label className="inline-flex cursor-pointer rounded border border-stone-300 px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50 transition">
             <input 
               type="file" 
@@ -91,18 +98,26 @@ export function ImagesTab({ formData, onFieldChange, uploadingImages, setUploadi
               ref={fileInputRef}
               disabled={uploadingImages}
             />
-            {uploadingImages ? 'Uploading...' : 'Upload images/video'}
+            {uploadingImages ? 'Uploading to Cloudinary...' : 'Upload images / videos'}
           </label>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {images.map((image, index) => (
-            <div key={`${image}-${index}`} className="rounded border border-stone-200 p-2 bg-white">
-              <img 
-                src={image} 
-                alt={`Product ${index + 1}`} 
-                className="h-28 w-full rounded object-cover" 
-              />
+          {images.map((mediaUrl, index) => (
+            <div key={`${mediaUrl}-${index}`} className="rounded border border-stone-200 p-2 bg-white">
+              {isVideoUrl(mediaUrl) ? (
+                <video 
+                  src={mediaUrl} 
+                  controls 
+                  className="h-28 w-full rounded object-cover bg-black" 
+                />
+              ) : (
+                <img 
+                  src={mediaUrl} 
+                  alt={`Product Asset ${index + 1}`} 
+                  className="h-28 w-full rounded object-cover" 
+                />
+              )}
               <div className="mt-2 flex justify-between text-[10px]">
                 <button 
                   type="button" 
@@ -115,7 +130,7 @@ export function ImagesTab({ formData, onFieldChange, uploadingImages, setUploadi
                 <button 
                   type="button" 
                   onClick={() => handleRemoveImage(index)} 
-                  className="text-rose-600 hover:text-rose-800"
+                  className="text-rose-600 hover:text-rose-800 font-semibold"
                 >
                   Remove
                 </button>

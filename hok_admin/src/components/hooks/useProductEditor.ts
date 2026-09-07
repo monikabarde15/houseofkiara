@@ -41,8 +41,8 @@ export function useProductEditor() {
   const cleanProductData = (product: Product): Product => {
     const cleanProduct = { ...product };
     
-    // ✅ Remove any forbidden fields
-    const forbiddenFields = ['id', 'listerName', '_id', '__v', 'createdAt', 'updatedAt', 'listingModels', 'listingMode'];
+    // ✅ Remove internal DB fields only
+    const forbiddenFields = ['__v', 'listingModels', 'listingMode'];
     forbiddenFields.forEach(field => {
       if ((cleanProduct as any)[field] !== undefined) {
         delete (cleanProduct as any)[field];
@@ -56,57 +56,67 @@ export function useProductEditor() {
   };
 
   const loadProductSections = useCallback(async (productId: string) => {
+    if (!productId) return;
     setState(prev => ({ ...prev, loading: true }));
     try {
       const [calendar, payout, activity] = await Promise.all([
-        productSectionsApi.getCalendar(productId),
-        productSectionsApi.getPayoutHistory(productId),
-        productSectionsApi.getActivity(productId),
+        productSectionsApi.getCalendar(productId).catch(() => ({ blockedDates: [], bookingHistory: [] })),
+        productSectionsApi.getPayoutHistory(productId).catch(() => []),
+        productSectionsApi.getActivity(productId).catch(() => []),
       ]);
       
-      setState(prev => ({
-        ...prev,
-        editingProduct: prev.editingProduct 
-          ? { 
-              ...prev.editingProduct, 
-              blockedDates: calendar.blockedDates || [], 
-              bookingHistory: calendar.bookingHistory || [] 
-            } 
-          : null,
-        payoutHistory: payout || [],
-        activityLog: activity || [],
-        loading: false,
-      }));
+      setState(prev => {
+        const productLog = (prev.editingProduct?.activityLog || []) as any[];
+        const apiLog = (activity || []) as any[];
+        const mergedLog = Array.from(new Set([...productLog, ...apiLog].map(a => JSON.stringify(a)))).map(s => JSON.parse(s));
+
+        return {
+          ...prev,
+          editingProduct: prev.editingProduct 
+            ? { 
+                ...prev.editingProduct, 
+                blockedDates: calendar?.blockedDates || [], 
+                bookingHistory: calendar?.bookingHistory || [],
+                externalBookings: calendar?.externalBookings || [],
+                orderHistory: calendar?.orderHistory || []
+              } 
+            : null,
+          payoutHistory: payout || [],
+          activityLog: mergedLog.length > 0 ? mergedLog : (prev.activityLog || []),
+          loading: false,
+        };
+      });
     } catch (error) {
       console.error('Unable to load product sections:', error);
       setState(prev => ({ ...prev, loading: false }));
     }
   }, []);
 
-  // ✅ FIXED: startEditing with cleaned data (Now includes Rental Status)
+  // ✅ FIXED: startEditing with cleaned data
   const startEditing = useCallback((product: Product) => {
     // Clean the product data
     const cleanProduct = cleanProductData(product);
+    const targetId = cleanProduct.productId || (cleanProduct as any)._id || cleanProduct.id || '';
     
     setState(prev => ({
       ...prev,
       editingProduct: cleanProduct,
       isAdding: false,
       activeTab: 'Core',
-      payoutHistory: [],
-      activityLog: [],
     }));
     setFormData(cleanProduct);
     
     // ✅ Load additional sections (Calendar, Payout, Activity) from separate APIs
-    loadProductSections(product.id || product.productId || '');
+    if (targetId) {
+      loadProductSections(targetId);
+    }
   }, [loadProductSections]);
 
   // ✅ FIXED: startAdding with UPPERCASE listingModes
   const startAdding = useCallback(() => {
     const defaultProduct: Partial<Product> = {
       name: '',
-      designer: 'Sabyasachi',
+      designer: '',
       description: '',
       category: 'Bridal Lehenga',
       occasion: 'Wedding',

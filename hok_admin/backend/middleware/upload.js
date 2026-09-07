@@ -1,4 +1,22 @@
 import multer from "multer";
-const allowed = /^(image\/(jpeg|png|webp|gif)|video\/(mp4|quicktime|webm)|application\/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document))$/;
+
 const storage = multer.memoryStorage();
-export default multer({ storage, limits: { fileSize: 50 * 1024 * 1024 }, fileFilter: (_req, file, cb) => allowed.test(file.mimetype) ? cb(null, true) : cb(new Error("Only images, videos and PDF/DOC documents are allowed")) });
+
+export default multer({
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB
+  fileFilter: (_req, file, cb) => {
+    const isAllowed =
+      file.mimetype.startsWith("image/") ||
+      file.mimetype.startsWith("video/") ||
+      file.mimetype.startsWith("application/pdf") ||
+      file.mimetype.includes("word") ||
+      file.mimetype === "application/octet-stream";
+
+    if (isAllowed) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only images, videos and PDF/DOC documents are allowed"));
+    }
+  },
+});

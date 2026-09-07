@@ -110,6 +110,7 @@ export interface Lister {
 export interface Submission {
   subid: string;
   listerID: string;
+  listerName?: string;
   channel: Channel;
   submittedAt: string;
   piece: string;

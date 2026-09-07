@@ -10,20 +10,34 @@ import {
   updateProductImages,
   incrementTimesRented,
   updateListingModes,
-  updateMeasurements  // 👈 YEH IMPORT KARO
+  updateMeasurements,
+  getProductActivity
 } from '../controllers/productController.js';
+
 import { 
   checkProductAvailability,
-  getProductCalendar,
-  addExternalBooking,
   reserveProduct 
 } from '../controllers/bookingController.js';
+
+import {
+  addBlockedDate,
+  removeBlockedDate,
+  getProductPayoutHistory,
+  addExternalBooking,
+  getAvailabilityCalendar
+} from '../controllers/productSectionController.js';
+
+import { getPayouts } from '../controllers/payoutController.js';
 
 const router = express.Router();
 
 // ========== PRODUCT ROUTES ==========
 // GET routes
 router.get('/products', getProducts);
+router.get('/products/:id/availability', checkProductAvailability);
+router.get('/products/:id/calendar', getAvailabilityCalendar);
+router.get('/products/:productId/payout-history', getProductPayoutHistory);
+router.get('/products/:id/activity', getProductActivity);
 router.get('/products/:id', getProductById);
 
 // POST routes
@@ -42,11 +56,12 @@ router.patch('/products/:id/restore', restoreProduct);
 router.patch('/products/:id/increment-rented', incrementTimesRented);
 router.patch('/products/:id/listing-modes', updateListingModes);
 
-// ========== BOOKING ROUTES ==========
-router.get('/products/:id/availability', checkProductAvailability);
-router.get('/products/:id/calendar', getProductCalendar);
+// ========== BOOKING & SECTION ROUTES ==========
 router.post('/products/:id/reserve', reserveProduct);
 router.post('/products/:id/external-booking', addExternalBooking);
+router.post('/products/:id/external-bookings', addExternalBooking);
+router.post('/products/:id/blocked-dates', addBlockedDate);
+router.delete('/products/:id/blocked-dates/:index', removeBlockedDate);
 router.patch('/products/:id/measurements', updateMeasurements);
 
 export default router;

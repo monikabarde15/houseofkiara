@@ -41,6 +41,9 @@ export function SEOTab({
     const url = URL.createObjectURL(file);
     onFieldChange('ogImage' as keyof Product, url as any);
   };
+  const liveProductImage = formData.images?.find(img => img && typeof img === 'string' && !img.startsWith('blob:')) || formData.images?.[0] || '';
+  const rawOgImage = (formData as any).ogImage as string | undefined;
+  const displayOgImage = (rawOgImage && typeof rawOgImage === 'string' && !rawOgImage.startsWith('blob:')) ? rawOgImage : liveProductImage;
 
   return (
     <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-5">
@@ -118,9 +121,18 @@ export function SEOTab({
             className="w-full aspect-[1200/300] rounded-md border-2 border-dashed border-stone-300 bg-[#fcf9f5] flex flex-col items-center justify-center gap-1 hover:bg-stone-50 transition overflow-hidden"
             style={{ minHeight: 140 }}
           >
-            {ogImage ? (
+            {displayOgImage ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={ogImage} alt="Social share preview" className="w-full h-full object-cover" />
+              <img
+                src={displayOgImage}
+                alt="Social share preview"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  if (liveProductImage && e.currentTarget.src !== liveProductImage) {
+                    e.currentTarget.src = liveProductImage;
+                  }
+                }}
+              />
             ) : (
               <>
                 <ImageIcon className="w-4 h-4 text-stone-400 mb-1" />

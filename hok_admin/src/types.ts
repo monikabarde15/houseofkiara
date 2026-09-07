@@ -76,6 +76,7 @@ export interface Product {
   bookingHistory?: { orderId: string; customerName?: string; date?: string; amount?: number; status?: string }[];
   sku?: string; color?: string; craft?: string; technique?: string; story?: string; tags?: string[]; measurements?: Record<string, string>;
   taxRate?: number; gstRate?: number; cleaningFee?: number; extensionPrice?: number; payoutPercentage?: number; relatedProductIds?: string[];
+  extendedWindowPrice?: number; perDayRate?: number; originalRetailPrice?: number; resalePayoutPercentage?: number; minimumOffer?: number; threadYarnDetail?: string; setIncludes?: string; origin?: string; weight?: string;
   _id?: string; productId?: string; reviewCount?: number; rentalStatus?: string; currentRenterName?: string; currentOrderId?: string; rentUntil?: string; nextFreeDate?: string; earnedAmount?: number;
 }
 

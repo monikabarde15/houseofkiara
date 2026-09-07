@@ -14,13 +14,11 @@ export default function SettingsView({ siteSettings, onUpdateSettings }: Setting
   const [activeViewMode, setActiveViewMode] = useState<'Desktop' | 'Mobile'>('Desktop');
 
   // Announcement Bar State
-  const [showAcrossSite, setShowAcrossSite] = useState(true);
+  const [showAcrossSite, setShowAcrossSite] = useState(false);
   const [howItMoves, setHowItMoves] = useState('Scrolling loop');
   const [loopTime, setLoopTime] = useState(28);
   const [pauseOnHover, setPauseOnHover] = useState(true);
-  const [annBarText, setAnnBarText] = useState(
-    'The rental delivery pointer has no value behind it. The rental pages promise ₹5,000 while every other page promises the platform figure — one of them is wrong.'
-  );
+  const [annBarText, setAnnBarText] = useState('');
 
   const [messages, setMessages] = useState<AnnouncementMessage[]>([
     { id: '1', status: 'Live', scope: 'ALL PAGES', text: 'Every story deserves a second chapter', printItalicSerif: true, showsOn: 'All pages', link: '/rent', goLiveDate: '', expiresDate: '' },
@@ -179,7 +177,7 @@ export default function SettingsView({ siteSettings, onUpdateSettings }: Setting
 
         {/* WORKSPACE */}
         <div className="flex flex-col lg:flex-row gap-8 items-start">
-          
+
           {/* LEFT TREE SIDEBAR */}
           <div className="w-44 shrink-0 space-y-6 text-[11.5px] font-sans">
             <div className="space-y-1">
@@ -196,11 +194,10 @@ export default function SettingsView({ siteSettings, onUpdateSettings }: Setting
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`w-full text-left px-2.5 py-1.5 rounded flex items-center justify-between cursor-pointer ${
-                      activeTab === item.id
+                    className={`w-full text-left px-2.5 py-1.5 rounded flex items-center justify-between cursor-pointer ${activeTab === item.id
                         ? 'bg-[#FAF7F2] border border-[#E0D5C7] font-bold text-[#1E1915]'
                         : 'text-[#6F665B] hover:text-[#1E1915]'
-                    }`}
+                      }`}
                   >
                     <span>{item.label}</span>
                     {item.dot && <span className="h-1.5 w-1.5 rounded-full bg-[#C7A55C]" />}
@@ -223,11 +220,10 @@ export default function SettingsView({ siteSettings, onUpdateSettings }: Setting
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`w-full text-left px-2.5 py-1.5 rounded flex items-center justify-between cursor-pointer ${
-                      activeTab === item.id
+                    className={`w-full text-left px-2.5 py-1.5 rounded flex items-center justify-between cursor-pointer ${activeTab === item.id
                         ? 'bg-[#FAF7F2] border border-[#E0D5C7] font-bold text-[#1E1915]'
                         : 'text-[#6F665B] hover:text-[#1E1915]'
-                    }`}
+                      }`}
                   >
                     <span>{item.label}</span>
                     {item.dot && <span className="h-1.5 w-1.5 rounded-full bg-[#C7A55C]" />}
@@ -242,11 +238,10 @@ export default function SettingsView({ siteSettings, onUpdateSettings }: Setting
               </div>
               <button
                 onClick={() => setActiveTab('Maintenance')}
-                className={`w-full text-left px-2.5 py-1.5 rounded cursor-pointer ${
-                  activeTab === 'Maintenance'
+                className={`w-full text-left px-2.5 py-1.5 rounded cursor-pointer ${activeTab === 'Maintenance'
                     ? 'bg-[#FAF7F2] border border-[#E0D5C7] font-bold text-[#1E1915]'
                     : 'text-[#6F665B] hover:text-[#1E1915]'
-                }`}
+                  }`}
               >
                 Maintenance
               </button>
@@ -255,7 +250,7 @@ export default function SettingsView({ siteSettings, onUpdateSettings }: Setting
 
           {/* MAIN FORM */}
           <div className="flex-1 space-y-6">
-            
+
             {/* FIRST TAB: ANNOUNCEMENT BAR (100% COPY OF PDF SCREENSHOT 1) */}
             {activeTab === 'Announcement' && (
               <div className="space-y-6">
@@ -581,17 +576,15 @@ export default function SettingsView({ siteSettings, onUpdateSettings }: Setting
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setActiveViewMode('Desktop')}
-                  className={`px-2.5 py-1 rounded text-[11px] font-medium cursor-pointer ${
-                    activeViewMode === 'Desktop' ? 'bg-[#1E1412] text-white' : 'bg-white border border-[#E0D5C7] text-[#6F665B]'
-                  }`}
+                  className={`px-2.5 py-1 rounded text-[11px] font-medium cursor-pointer ${activeViewMode === 'Desktop' ? 'bg-[#1E1412] text-white' : 'bg-white border border-[#E0D5C7] text-[#6F665B]'
+                    }`}
                 >
                   Desktop
                 </button>
                 <button
                   onClick={() => setActiveViewMode('Mobile')}
-                  className={`px-2.5 py-1 rounded text-[11px] font-medium cursor-pointer ${
-                    activeViewMode === 'Mobile' ? 'bg-[#1E1412] text-white' : 'bg-white border border-[#E0D5C7] text-[#6F665B]'
-                  }`}
+                  className={`px-2.5 py-1 rounded text-[11px] font-medium cursor-pointer ${activeViewMode === 'Mobile' ? 'bg-[#1E1412] text-white' : 'bg-white border border-[#E0D5C7] text-[#6F665B]'
+                    }`}
                 >
                   Mobile
                 </button>

@@ -7,7 +7,7 @@ import { getPhoneDigits } from '../utils/validators';
 import './styles/ListerPicker.css';
 
 interface ListerPickerProps {
-  onSelect: (listerId: string) => void;
+  onSelect: (listerId: string, listerName?: string) => void;
   onNewLister: () => void;
   selectedId: string | null;
   error?: string;
@@ -59,7 +59,7 @@ export const ListerPicker: React.FC<ListerPickerProps> = ({
     setSelectedLister(lister);
     setSearch(lister.name);
     setShowResults(false);
-    onSelect(lister.id);
+    onSelect(lister.id, lister.name);
   };
 
   const handleClear = () => {

@@ -80,11 +80,19 @@ export function ProductHeader({
 
             {/* DESIGNER, SKU, LISTING MODE */}
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[13px] font-normal text-[#81786D]">
-              <span>{designer || 'Sabyasachi'}</span>
-              <span>·</span>
-              <span>SKU: {sku || 'HOK-SAB-001'}</span>
-              <span>·</span>
-              <span>{listingMode || 'Rental'}</span>
+              {designer && (
+                <>
+                  <span>{designer}</span>
+                  <span>·</span>
+                </>
+              )}
+              {sku && (
+                <>
+                  <span>SKU: {sku}</span>
+                  <span>·</span>
+                </>
+              )}
+              <span>{listingMode || 'RENTAL'}</span>
             </div>
 
             {/* LISTER, CONDITION, SIZE, RENTED COUNT */}
@@ -92,7 +100,7 @@ export function ProductHeader({
               <span>
                 Lister:
                 <span className="ml-1 font-medium text-[#6C645B]">
-                  {listerName || 'Meera Joshi'}
+                  {listerName || 'Select a lister'}
                 </span>
               </span>
 
@@ -151,8 +159,8 @@ export function ProductHeader({
           </div >
         </div >
 
-        {/* Rental Status */}
-        < div className="rounded-md border border-[#E8DDD0] bg-[#FFF9F2] px-4 py-3" >
+        {/* Rental Status Banner */}
+        <div className="rounded-md border border-[#E8DDD0] bg-[#FFF9F2] px-4 py-3">
           <div className="flex items-start gap-3">
             <div className="mt-[2px] flex h-5 w-5 items-center justify-center rounded-full bg-[#F2D8B8] text-[10px]">
               ⚠
@@ -162,27 +170,31 @@ export function ProductHeader({
 
                 {/* RENTAL STATUS, RENTER, ORDER ID */}
                 <span className="text-[13px] font-semibold text-[#2E2923]">
-                  {rentalStatus || 'In rental'}
+                  {rentalStatus || 'Not Rented'}
                 </span>
-                <span className="text-[#B2A79A]">—</span>
-                <span className="text-[13px] text-[#2D241D]">
-                  {currentRenterName || 'Sneha Iyer'}
-                </span>
-                <span className="rounded-sm bg-[#F4EADF] px-1.5 py-0.5 text-[11px] font-medium text-[#C49348]">
-                  {currentOrderId || 'HOK-ORD-009'}
-                </span>
+                {currentRenterName && (
+                  <>
+                    <span className="text-[#B2A79A]">—</span>
+                    <span className="text-[13px] text-[#2D241D]">{currentRenterName}</span>
+                  </>
+                )}
+                {currentOrderId && (
+                  <span className="rounded-sm bg-[#F4EADF] px-1.5 py-0.5 text-[11px] font-medium text-[#C49348]">
+                    {currentOrderId}
+                  </span>
+                )}
               </div>
-              <div className="mt-1.5 flex flex-wrap items-center gap-x-2 text-[13px] text-[#4E4740]">
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 text-[13px] text-[#4E4740]">
 
                 {/* DATES, RENTED COUNT, EARNED AMOUNT */}
-                <span>Until <strong>{rentUntil || '25 Mar'}</strong></span>
-                <span>Next free <strong>{nextFreeDate || '29 Mar'}</strong></span>
-                <span>Rented <strong>{rentedCount || 6}×</strong></span>
-                <span>Earned <strong>₹{(earnedAmount || 17000).toLocaleString()}</strong></span>
+                {rentUntil && <span>Until <strong>{rentUntil}</strong></span>}
+                {nextFreeDate && <span>Next free <strong>{nextFreeDate}</strong></span>}
+                <span>Rented <strong>{rentedCount || 0}×</strong></span>
+                <span>Earned <strong>₹{(earnedAmount || 0).toLocaleString('en-IN')}</strong></span>
               </div>
             </div>
           </div>
-        </div >
+        </div>
       </div >
     );
   }

@@ -103,7 +103,9 @@ function PayoutCard({ payout, onApprove }: { payout: Payout, onApprove: (payout:
             <div>
               <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">APPROVED BY</label>
               <select value={approvedBy} onChange={(e) => setApprovedBy(e.target.value)} className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none">
-                <option value="Priya (Ops)">Priya (Ops)</option>
+                <option value="Soumya (Platform Admin)">Soumya (Platform Admin)</option>
+                <option value="Rohit (Lister Ops)">Rohit (Lister Ops)</option>
+                <option value="Admin User">Admin User</option>
               </select>
             </div>
           </div>

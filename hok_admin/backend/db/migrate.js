@@ -269,7 +269,7 @@ export const migrationQueries = [
   `CREATE TABLE IF NOT EXISTS submissions (
     _id VARCHAR(64) PRIMARY KEY,
     subid VARCHAR(255) UNIQUE NOT NULL,
-    lister_id VARCHAR(255) NOT NULL,
+    lister_id VARCHAR(255),
     piece VARCHAR(255),
     designer VARCHAR(255),
     category VARCHAR(100),
@@ -278,6 +278,7 @@ export const migrationQueries = [
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );`,
+  `ALTER TABLE submissions ALTER COLUMN lister_id DROP NOT NULL;`,
   `ALTER TABLE submissions ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
   `ALTER TABLE submissions ADD COLUMN IF NOT EXISTS subid VARCHAR(255);`,
   `ALTER TABLE submissions ADD COLUMN IF NOT EXISTS lister_id VARCHAR(255);`,

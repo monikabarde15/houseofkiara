@@ -12,7 +12,7 @@ dotenv.config({ path: path.resolve(configDir, "../.env") });
 const connectionString =
   process.env.DATABASE_URL_POOLER ||
   process.env.DATABASE_URL ||
-  "postgresql://postgres.qfwrxdgjywseodbtadnx:DpUpEOIutDJo6l41@aws-0-ap-south-1.pooler.supabase.co:6543/postgres";
+  "postgresql://postgres.qfwrxdgjywseodbtadnx:DpUpEOIutDJo6l41@aws-0-ap-south-1.pooler.supabase.com:6543/postgres";
 
 export const pool = new pg.Pool({
   connectionString,

@@ -7,6 +7,8 @@ import { TapeBlock } from './TapeBlock';
 import { StorefrontPreview } from './StorefrontPreview';
 import { inr } from '../utils/formatter';
 import { GRADES, MODES } from '../utils/constants';
+import { submissionService } from '../services/submissionService';
+import toast from 'react-hot-toast';
 import './styles/WorksheetCard.css';
 
 interface WorksheetCardProps {
@@ -15,15 +17,35 @@ interface WorksheetCardProps {
 }
 
 export const WorksheetCard: React.FC<WorksheetCardProps> = ({ submission, onUpdate }) => {
-  const [assessment, setAssessment] = useState<Assessment>(submission.assessment);
+  const [assessment, setAssessment] = useState<Assessment>(submission.assessment || {
+    sku: '',
+    name: submission.piece || '',
+    mode: 'Rental/Preloved',
+    grade: 'Pristine',
+    sizeLabel: (submission.size as Size) || 'M',
+    measurements: null,
+    priceStd: 0,
+    priceExt: 0,
+    perDay: 0,
+    minDays: 4,
+    deposit: 0,
+    resalePrice: 0,
+    minOffer: 0,
+    retailPrice: 0,
+    retailVerifiedVia: null,
+    payoutPctRental: 40,
+    payoutPctResale: 75,
+  });
 
-  const handleAssessmentChange = (updates: Partial<Assessment>) => {
-    setAssessment(prev => ({ ...prev, ...updates }));
-  };
-
-  const handleSave = () => {
-    // In production, this would save to the server
-    onUpdate();
+  const handleAssessmentChange = async (updates: Partial<Assessment>) => {
+    const updated = { ...assessment, ...updates };
+    setAssessment(updated);
+    try {
+      await submissionService.updateSubmission(submission.subid, { assessment: updated });
+      onUpdate();
+    } catch (err: any) {
+      toast.error('Failed to update assessment pricing');
+    }
   };
 
   const isCustomSize = assessment.sizeLabel === 'Custom / Free Size';

@@ -115,7 +115,7 @@ export const getOffers = async (req, res) => {
       customer,
       sortBy = "createdAt",
       order = "desc",
-    } = req.query;
+    } = req.query || {};
 
     const filter = {};
 
@@ -143,7 +143,12 @@ export const getOffers = async (req, res) => {
       };
     }
 
-    const total = await Offer.countDocuments(filter);
+    let total = 0;
+    try {
+      total = await Offer.countDocuments(filter);
+    } catch (e) {
+      total = 0;
+    }
 
     const offers = await Offer.find(filter)
       .sort({

@@ -81,7 +81,7 @@ export const LYPTableRow: React.FC<LYPTableRowProps> = ({
       </td>
 
       <td className="lyp-td-lister">
-        <div className="qlnk">{getFirstName(submission.listerID)}</div>
+        <div className="qlnk">{submission.listerName || getFirstName(submission.listerID)}</div>
         <div className="lyp-td-lister-meta">
           {(submission as any).phone}  {submission.city || '—'}
         </div>

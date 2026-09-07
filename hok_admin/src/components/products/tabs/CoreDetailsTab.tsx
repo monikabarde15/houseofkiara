@@ -33,6 +33,23 @@ export function CoreDetailsTab({
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [localSaving, setLocalSaving] = useState(false);
+  const [fetchedDesigners, setFetchedDesigners] = useState<Designer[]>([]);
+
+  React.useEffect(() => {
+    const fetchDesignersFromApi = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/designers').then(r => r.json());
+        if (res.success && Array.isArray(res.data)) {
+          setFetchedDesigners(res.data.map((d: any) => ({ id: d.id || d._id, name: d.name })));
+        }
+      } catch (e) {
+        console.warn('Failed to fetch designers in CoreDetailsTab:', e);
+      }
+    };
+    fetchDesignersFromApi();
+  }, []);
+
+  const activeDesigners = designers.length > 0 ? designers : fetchedDesigners;
 
   const data = formData as Record<string, any>;
 
@@ -223,11 +240,11 @@ export function CoreDetailsTab({
               className={inputClass}
             >
               <option value="">Select designer...</option>
-              {designers.map((d) => (
+              {activeDesigners.map((d) => (
                 <option key={d.id} value={d.name}>{d.name}</option>
               ))}
               {/* keep an existing free-text value visible even if it's not in the registry yet */}
-              {formData.designer && !designers.some(d => d.name === formData.designer) && (
+              {formData.designer && !activeDesigners.some(d => d.name === formData.designer) && (
                 <option value={formData.designer}>{formData.designer}</option>
               )}
             </select>

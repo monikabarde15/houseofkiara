@@ -165,7 +165,7 @@ const ensureSeedData = async () => {
 export const getDesigners = async (req, res) => {
   try {
 
-    const { search, status, type } = req.query;
+    const { search, status, type } = req.query || {};
     const query = {};
 
     if (status && status !== "All") {

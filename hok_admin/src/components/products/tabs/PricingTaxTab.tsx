@@ -207,179 +207,143 @@ export function PricingTaxTab({ formData, onFieldChange, isAdding = false }: Pri
           </div>
         </div>
 
-        {isAdding ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>
-                Discount vs Retail — <span className={helpOrangeClass}>auto-calculated, shown on PDP</span>
-              </label>
-              <div className={`${inputClass} bg-stone-100 text-stone-600`}>
-                {originalRetailPrice > 0 ? `${discountVsRetail}% off retail` : '—'}
-              </div>
-              <p className={helpClass}>RRP shown struck through beside the resale price on the PDP.</p>
-            </div>
-          </div>
-        ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>
               Discount vs Retail — <span className={helpOrangeClass}>auto-calculated, shown on PDP</span>
             </label>
-            <div className={`${inputClass} max-w-sm bg-stone-100 text-stone-600`}>
+            <div className={`${inputClass} bg-stone-100 text-stone-600`}>
               {originalRetailPrice > 0 ? `${discountVsRetail}% off retail` : '—'}
             </div>
+            <p className={helpClass}>RRP shown struck through beside the resale price on the PDP.</p>
           </div>
-        )}
+          <div>
+            <label className={labelClass}>
+              Lister Payout % — Resale —{' '}
+              <span className={helpOrangeClass}>
+                per-piece suggestion; decided per transaction at acceptance or payout approval
+              </span>
+            </label>
+            <input
+              type="number"
+              min="0"
+              max="100"
+              value={data.resalePayoutPercentage ?? ''}
+              onChange={(e) => set('resalePayoutPercentage', e.target.value === '' ? '' : Number(e.target.value))}
+              className={inputClass}
+            />
+            <p className={helpClass}>Per-product; drives the auto-calculated payout below.</p>
+          </div>
+        </div>
 
-        {isAdding && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClass}>
-                  Lister Payout % — Resale —{' '}
-                  <span className={helpOrangeClass}>
-                    per-piece suggestion; decided per transaction at acceptance or payout approval
-                  </span>
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={data.resalePayoutPercentage || ''}
-                  onChange={(e) => set('resalePayoutPercentage', Number(e.target.value))}
-                  className={inputClass}
-                />
-                <p className={helpClass}>Per-product; drives the auto-calculated payout below.</p>
-              </div>
-              <div>
-                <label className={labelClass}>
-                  Minimum Offer (₹) — <span className={helpOrangeClass}>optional</span>
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="₹ — overrides sitewide floor"
-                  value={data.minimumOffer ?? ''}
-                  onChange={(e) => set('minimumOffer', e.target.value === '' ? '' : Number(e.target.value))}
-                  className={inputClass}
-                />
-                <p className={helpClass}>
-                  Absolute floor for this listing; blank uses the sitewide % floor in Site Settings.
-                </p>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>
+              Minimum Offer (₹) — <span className={helpOrangeClass}>optional</span>
+            </label>
+            <input
+              type="number"
+              min="0"
+              placeholder="₹ — overrides sitewide floor"
+              value={data.minimumOffer ?? ''}
+              onChange={(e) => set('minimumOffer', e.target.value === '' ? '' : Number(e.target.value))}
+              className={inputClass}
+            />
+            <p className={helpClass}>
+              Absolute floor for this listing; blank uses the sitewide % floor in Site Settings.
+            </p>
+          </div>
+          <div>
+            <label className={labelClass}>Lister Payout (Auto)</label>
+            <div className={`${inputClass} bg-stone-100 text-stone-600`}>
+              {listedResalePrice > 0 && resalePayoutPercentage > 0 ? `₹${listerPayoutAuto.toLocaleString('en-IN')}` : '—'}
             </div>
+          </div>
+        </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClass}>Lister Payout (Auto)</label>
-                <div className={`${inputClass} bg-stone-100 text-stone-600`}>
-                  {listedResalePrice > 0 && resalePayoutPercentage > 0 ? `₹${listerPayoutAuto.toLocaleString('en-IN')}` : '—'}
-                </div>
-              </div>
-              <div>
-                <label className={labelClass}>HOK Commission ({hokCommissionPct}%)</label>
-                <div className={`${inputClass} bg-stone-100 text-stone-600`}>
-                  {listedResalePrice > 0 && resalePayoutPercentage > 0 ? `₹${hokCommissionAuto.toLocaleString('en-IN')}` : '—'}
-                </div>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>HOK Commission ({hokCommissionPct}%)</label>
+            <div className={`${inputClass} bg-stone-100 text-stone-600`}>
+              {listedResalePrice > 0 && resalePayoutPercentage > 0 ? `₹${hokCommissionAuto.toLocaleString('en-IN')}` : '—'}
             </div>
-
+          </div>
+          <div className="flex items-end pb-2">
             <Toggle
               checked={!!data.allowMakeOffer}
               onChange={(v) => set('allowMakeOffer', v)}
               label="Buyers can submit offers on this preloved listing"
             />
-          </>
-        )}
+          </div>
+        </div>
       </div>
 
-      {/* ---------------- Add mode: Tax card ---------------- */}
-      {isAdding && (
-        <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
-          <h3 className="font-serif font-bold text-stone-900 text-sm">Tax</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>GST Rate Applied</label>
-              <select
-                value={formData.gstRate ?? 5}
-                onChange={(e) => onFieldChange('gstRate', Number(e.target.value))}
-                className={inputClass}
-              >
-                <option value={0}>0% — Exempt</option>
-                <option value={5}>5% — Preloved (HSN 6309)</option>
-                <option value={12}>12% — Buy New</option>
-                <option value={18}>18% — Rental Services</option>
-              </select>
-              <p className={helpClass}>GST is additive — charged on top of the listed price.</p>
-            </div>
-            <div className="flex items-end pb-2">
-              <Toggle
-                checked={!!data.stylistConsultationBanner}
-                onChange={(v) => set('stylistConsultationBanner', v)}
-                label="Show banner on PDP (Preloved & Buy New only)"
-              />
-            </div>
+      {/* ---------------- Commission, Fees & Tax ---------------- */}
+      <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
+        <h3 className="font-serif font-bold text-stone-900 text-sm">Commission, Fees &amp; Tax</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>HOK Platform Commission %</label>
+            <input
+              type="number"
+              value={formData.commissionRate ?? 25}
+              onChange={(e) => onFieldChange('commissionRate', Number(e.target.value))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Extension Price / Day — ₹</label>
+            <input
+              type="number"
+              min="0"
+              value={formData.extensionPrice ?? ''}
+              onChange={(e) => onFieldChange('extensionPrice', e.target.value === '' ? '' as any : Number(e.target.value))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Cleaning Fee — ₹</label>
+            <input
+              type="number"
+              min="0"
+              value={formData.cleaningFee ?? ''}
+              onChange={(e) => onFieldChange('cleaningFee', e.target.value === '' ? '' as any : Number(e.target.value))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>GST / Tax % Rate</label>
+            <input
+              type="number"
+              min="0"
+              max="100"
+              value={formData.gstRate ?? formData.taxRate ?? ''}
+              onChange={(e) => {
+                const val = e.target.value === '' ? '' as any : Number(e.target.value);
+                onFieldChange('gstRate', val);
+                onFieldChange('taxRate', val);
+              }}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Cleaning Buffer (Days)</label>
+            <input
+              type="number"
+              value={formData.cleaningBufferDays ?? 2}
+              onChange={(e) => onFieldChange('cleaningBufferDays', Number(e.target.value))}
+              className={inputClass}
+            />
+          </div>
+          <div className="flex items-end pb-2">
+            <Toggle
+              checked={!!data.stylistConsultationBanner}
+              onChange={(v) => set('stylistConsultationBanner', v)}
+              label="Show banner on PDP (Preloved & Buy New only)"
+            />
           </div>
         </div>
-      )}
-
-      {/* ---------------- Edit mode only: Commission & Fees ---------------- */}
-      {!isAdding && (
-        <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
-          <h3 className="font-serif font-bold text-stone-900 text-sm">Commission &amp; Fees</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>HOK Platform Commission %</label>
-              <input
-                type="number"
-                value={formData.commissionRate ?? 25}
-                onChange={(e) => onFieldChange('commissionRate', Number(e.target.value))}
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className={labelClass}>Extension Price / Day — ₹</label>
-              <input
-                type="number"
-                min="0"
-                value={formData.extensionPrice || ''}
-                onChange={(e) => onFieldChange('extensionPrice', Number(e.target.value))}
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className={labelClass}>Cleaning Fee — ₹</label>
-              <input
-                type="number"
-                min="0"
-                value={formData.cleaningFee || ''}
-                onChange={(e) => onFieldChange('cleaningFee', Number(e.target.value))}
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className={labelClass}>GST / Tax %</label>
-              <input
-                type="number"
-                min="0"
-                max="100"
-                value={formData.taxRate || ''}
-                onChange={(e) => onFieldChange('taxRate', Number(e.target.value))}
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className={labelClass}>Cleaning Buffer (Days)</label>
-              <input
-                type="number"
-                value={formData.cleaningBufferDays ?? 2}
-                onChange={(e) => onFieldChange('cleaningBufferDays', Number(e.target.value))}
-                className={inputClass}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
