@@ -1,0 +1,606 @@
+/* =========================================================
+   HOUSE OF KAIRA
+   HOMEPAGE — HERO EDITOR
+========================================================= */
+
+.hero-editor {
+  width: 100%;
+}
+
+
+/* =========================================================
+   EDITOR HEADING
+========================================================= */
+
+.hero-editor-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 13px;
+}
+
+.hero-editor-heading h2 {
+  margin: 0 0 3px;
+
+  color: #29251f;
+
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.hero-editor-heading p {
+  max-width: 760px;
+
+  margin: 0;
+
+  color: #8a7e72;
+
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.hero-band-counter {
+  flex-shrink: 0;
+
+  margin-top: 3px;
+
+  color: #8a7e72;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   VISIBILITY
+========================================================= */
+
+.hero-visibility-row {
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 0 13px;
+
+  margin-bottom: 8px;
+
+  background: #ffffff;
+
+  border: 1px solid #e8e0d4;
+  border-radius: 4px;
+}
+
+.hero-visibility-left {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  color: #29251f;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.hero-visibility-status {
+  color: #8a7e72;
+
+  font-size: 11px;
+
+  text-align: right;
+}
+
+
+/* =========================================================
+   TOGGLE
+========================================================= */
+
+.hero-toggle {
+  position: relative;
+
+  width: 38px;
+  height: 21px;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 20px;
+
+  background: #d4ccc0;
+
+  cursor: pointer;
+}
+
+.hero-toggle span {
+  position: absolute;
+
+  top: 3px;
+  left: 3px;
+
+  width: 15px;
+  height: 15px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  transition: transform 0.18s ease;
+}
+
+.hero-toggle-active {
+  background: #c9a45c;
+}
+
+.hero-toggle-active span {
+  transform: translateX(17px);
+}
+
+
+/* =========================================================
+   INFO / WARNING STRIPS
+========================================================= */
+
+.hero-info-strip {
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 13px;
+
+  margin-bottom: 8px;
+
+  background: #ffffff;
+
+  border: 1px solid #e8e0d4;
+  border-radius: 4px;
+
+  color: #8a7e72;
+
+  font-size: 11.5px;
+}
+
+.hero-warning-strip {
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 13px;
+
+  margin-bottom: 12px;
+
+  background: #fff1ec;
+
+  border: 1px solid #efcfc3;
+  border-radius: 4px;
+
+  color: #b85c38;
+
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.hero-card {
+  overflow: hidden;
+
+  margin-bottom: 12px;
+
+  background: #ffffff;
+
+  border: 1px solid #e8e0d4;
+  border-radius: 4px;
+}
+
+.hero-card-header {
+  padding: 13px 18px;
+
+  border-bottom: 1px solid #e8e0d4;
+}
+
+.hero-card-header h3 {
+  margin: 0 0 3px;
+
+  color: #29251f;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hero-card-header p {
+  margin: 0;
+
+  color: #8a7e72;
+
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.hero-card-body {
+  padding: 17px 18px;
+}
+
+
+/* =========================================================
+   FIELDS
+========================================================= */
+
+.hero-field {
+  margin-bottom: 16px;
+}
+
+.hero-field:last-child {
+  margin-bottom: 0;
+}
+
+.hero-field label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #8a7e72;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 1.1px;
+}
+
+.hero-field input,
+.hero-field textarea,
+.hero-field select {
+  width: 100%;
+
+  border: 1px solid #ddd5c8;
+  border-radius: 4px;
+
+  background: #fffefb;
+
+  color: #29251f;
+
+  outline: none;
+
+  font-family: Inter, Arial, sans-serif;
+
+  font-size: 12px;
+}
+
+.hero-field input {
+  height: 36px;
+
+  padding: 0 11px;
+}
+
+.hero-field textarea {
+  display: block;
+
+  min-height: 76px;
+
+  padding: 9px 11px;
+
+  resize: vertical;
+
+  line-height: 1.45;
+}
+
+.hero-field select {
+  height: 36px;
+
+  padding: 0 11px;
+
+  cursor: pointer;
+}
+
+.hero-field input:focus,
+.hero-field textarea:focus,
+.hero-field select:focus {
+  border-color: #c9a45c;
+
+  box-shadow:
+    0 0 0 1px #e2c99a;
+}
+
+
+/* =========================================================
+   HELP TEXT
+========================================================= */
+
+.hero-help-text {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #8a7e72;
+
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.hero-print-line {
+  display: block;
+
+  margin-top: 6px;
+
+  color: #8a7e72;
+
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   READS AS PREVIEW
+========================================================= */
+
+.hero-read-preview {
+  padding: 13px 15px;
+
+  margin: -2px 0 17px;
+
+  background: #faf7f2;
+
+  border: 1px solid #e8e0d4;
+  border-radius: 4px;
+}
+
+.hero-preview-label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #8a7e72;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.hero-preview-headline {
+  color: #171411;
+
+  font-family: "Cormorant Garamond", Georgia, serif;
+
+  font-size: 24px;
+  line-height: 1.05;
+}
+
+.hero-preview-headline em {
+  color: #c9a45c;
+
+  font-style: italic;
+}
+
+.hero-preview-mobile {
+  font-size: 22px;
+}
+
+
+/* =========================================================
+   TWO COLUMN
+========================================================= */
+
+.hero-two-column {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 14px;
+}
+
+
+/* =========================================================
+   TOGGLE ROW
+========================================================= */
+
+.hero-toggle-row {
+  min-height: 28px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  color: #29251f;
+
+  font-size: 12px;
+}
+
+.hero-toggle-row + .hero-toggle-row {
+  margin-top: 8px;
+}
+
+.hero-state-note {
+  margin: 6px 0 0 47px;
+
+  color: #8a7e72;
+
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   UPLOAD CARD
+========================================================= */
+
+.hero-upload-card {
+  display: grid;
+
+  grid-template-columns: 150px minmax(0, 1fr);
+
+  gap: 14px;
+
+  padding: 10px;
+
+  margin-top: 2px;
+
+  background: #ffffff;
+
+  border: 1px solid #e8e0d4;
+  border-radius: 4px;
+}
+
+.hero-upload-placeholder {
+  min-height: 190px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px dashed #ddd5c8;
+
+  background: #fffefb;
+
+  color: #b4a99e;
+
+  text-align: center;
+
+  font-size: 10px;
+
+  line-height: 1.45;
+}
+
+.hero-upload-icon {
+  margin-bottom: 8px;
+
+  color: #b4a99e;
+
+  font-size: 20px;
+}
+
+.hero-upload-content {
+  min-width: 0;
+
+  padding: 2px 3px;
+}
+
+.hero-upload-title {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 4px;
+}
+
+.hero-upload-title strong {
+  color: #29251f;
+
+  font-size: 12px;
+}
+
+.hero-required {
+  padding: 2px 5px;
+
+  border-radius: 2px;
+
+  background: #fff0eb;
+
+  color: #b85c38;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.5px;
+}
+
+.hero-upload-content > p {
+  margin: 0 0 13px;
+
+  color: #8a7e72;
+
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.hero-upload-content .hero-field {
+  margin-bottom: 12px;
+}
+
+.hero-upload-button {
+  height: 30px;
+
+  padding: 0 11px;
+
+  border: 1px solid #ddd5c8;
+  border-radius: 4px;
+
+  background: #ffffff;
+
+  color: #6f665d;
+
+  font-family: Inter, Arial, sans-serif;
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.hero-upload-button:hover {
+  border-color: #c9a45c;
+
+  color: #29251f;
+
+  background: #faf7f2;
+}
+
+
+/* =========================================================
+   FRAME SELECT
+========================================================= */
+
+.hero-frame-field {
+  margin-top: 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 950px) {
+  .hero-two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-upload-card {
+    grid-template-columns: 130px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .hero-visibility-row {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    padding: 12px;
+  }
+
+  .hero-visibility-status {
+    text-align: left;
+  }
+
+  .hero-upload-card {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-upload-placeholder {
+    min-height: 180px;
+  }
+}
