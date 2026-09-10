@@ -1,0 +1,198 @@
+/* =========================================================
+   REGIONAL
+========================================================= */
+
+.regional-tab {
+  width: 100%;
+  box-sizing: border-box;
+  color: #1a1612;
+  font-family: Inter, Arial, sans-serif;
+  padding-bottom: 40px;
+}
+
+/* =========================================================
+   REGION HEADER
+========================================================= */
+
+.regional-region-header {
+  margin-bottom: 17px;
+}
+
+.regional-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.regional-title-row h2 {
+  margin: 0;
+  color: #1a1612;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 650;
+}
+
+.regional-meta {
+  flex-shrink: 0;
+  color: #8d857b;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+
+.regional-region-header p {
+  max-width: 760px;
+  margin: 5px 0 0;
+  color: #8d857b;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.regional-card {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1px solid #e5ddd2;
+  border-radius: 5px;
+  background: #fffefb;
+  box-shadow: 0 1px 3px rgba(26, 22, 18, 0.035);
+}
+
+.regional-card-header {
+  padding: 11px 14px 10px;
+  border-bottom: 1px solid #e8e0d6;
+}
+
+.regional-card-header h3 {
+  margin: 0;
+  color: #29231e;
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 650;
+}
+
+.regional-card-header p {
+  margin: 3px 0 0;
+  color: #91877b;
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.regional-card-body {
+  padding: 15px 14px 17px;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.regional-grid-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+
+.regional-row-gap {
+  margin-top: 14px;
+}
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.regional-field {
+  min-width: 0;
+}
+
+.regional-field > label {
+  display: block;
+  margin-bottom: 5px;
+  color: #8a8176;
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.regional-input {
+  width: 100%;
+  height: 36px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  border: 1px solid #ded4c7;
+  border-radius: 5px;
+  outline: none;
+  background: #fffefb;
+  color: #332d27;
+  font-family: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.regional-input:focus {
+  border-color: #c9a96e;
+  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.13);
+}
+
+/* =========================================================
+   HELP / EXAMPLES
+========================================================= */
+
+.regional-help {
+  display: block;
+  margin-top: 4px;
+  color: #91877b;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.regional-example {
+  display: block;
+  margin-top: 4px;
+  color: #81776c;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+/* =========================================================
+   BOTTOM NOTE
+========================================================= */
+
+.regional-note {
+  max-width: 780px;
+  margin-top: 15px;
+  color: #91877b;
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+
+.regional-note strong {
+  color: #b28c45;
+  font-weight: 600;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+  .regional-grid-two {
+    grid-template-columns: 1fr;
+  }
+
+  .regional-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .regional-meta {
+    white-space: normal;
+  }
+}

@@ -1,0 +1,298 @@
+.contact-tab {
+  width: 100%;
+  min-width: 0;
+  color: #1e1915;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 11.5px;
+}
+
+/* =========================
+   REGION HEADER
+========================= */
+
+.contact-region-header {
+  margin-bottom: 12px;
+}
+
+.contact-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.contact-title-row h2 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 600;
+  color: #1e1915;
+}
+
+.contact-meta {
+  color: #a09488;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+
+.contact-region-header p {
+  margin: 3px 0 0;
+  max-width: 560px;
+  color: #8c847a;
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.contact-card {
+  width: 100%;
+  margin-bottom: 14px;
+  background: #fff;
+  border: 1px solid #e8e1d9;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(30, 25, 21, 0.04);
+  overflow: hidden;
+}
+
+.contact-card-header {
+  padding: 11px 18px 10px;
+  border-bottom: 1px solid #e8e1d9;
+}
+
+.contact-card-header h3 {
+  margin: 0;
+  color: #1e1915;
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.contact-card-header p {
+  margin: 2px 0 0;
+  color: #8c847a;
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.contact-card-body {
+  padding: 15px 18px 17px;
+}
+
+/* =========================
+   POINTERS
+========================= */
+
+.pointer-chip {
+  display: inline-block;
+  padding: 1px 4px;
+  border: 1px solid #eadcc2;
+  border-radius: 3px;
+  background: #fbf5e9;
+  color: #7a5f2e;
+  font-family: monospace;
+  font-size: 9.5px;
+}
+
+/* =========================
+   GRIDS
+========================= */
+
+.contact-grid {
+  display: grid;
+  gap: 13px;
+  min-width: 0;
+}
+
+.contact-grid-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.contact-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.contact-second-row {
+  margin-top: 12px;
+}
+
+/* =========================
+   FIELDS
+========================= */
+
+.contact-field {
+  min-width: 0;
+}
+
+.contact-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #8c847a;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.09em;
+  font-weight: 600;
+}
+
+.contact-input {
+  width: 100%;
+  height: 35px;
+  box-sizing: border-box;
+  padding: 7px 10px;
+  border: 1px solid #ddd5c7;
+  border-radius: 4px;
+  outline: none;
+  background: #fff;
+  color: #38332d;
+  font-family: inherit;
+  font-size: 11.5px;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.contact-input:focus {
+  border-color: #c7a55c;
+  box-shadow: 0 0 0 2px rgba(199, 165, 92, 0.12);
+}
+
+select.contact-input {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.contact-field-full {
+  margin-bottom: 12px;
+}
+
+.contact-hint {
+  display: block;
+  margin-top: 4px;
+  color: #9b9287;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* =========================
+   RETURNS ADDRESS
+========================= */
+
+.address-print-preview {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid #eadfce;
+  border-radius: 4px;
+  background: #f7f3ed;
+}
+
+.address-print-label {
+  margin-bottom: 5px;
+  color: #9b9287;
+  font-size: 8.5px;
+  letter-spacing: 0.09em;
+  font-weight: 600;
+}
+
+.address-print-value {
+  color: #38332d;
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.address-print-empty {
+  color: #b85c38;
+  font-size: 11px;
+}
+
+.address-missing {
+  margin-top: 4px;
+  color: #b85c38;
+  font-size: 10px;
+}
+
+/* =========================
+   WHATSAPP TOGGLE
+========================= */
+
+.contact-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 13px;
+  color: #38332d;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.contact-toggle {
+  position: relative;
+  width: 39px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #d8d0c6;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.contact-toggle span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(30, 25, 21, 0.18);
+  transition: transform 120ms ease;
+}
+
+.contact-toggle.on {
+  background: #c7a55c;
+}
+
+.contact-toggle.on span {
+  transform: translateX(17px);
+}
+
+.whatsapp-fields {
+  margin-top: 2px;
+}
+
+/* =========================
+   SOCIAL
+========================= */
+
+.contact-tab .contact-card:last-child {
+  margin-bottom: 0;
+}
+
+.contact-tab .contact-card:last-child .contact-grid + .contact-grid {
+  margin-top: 13px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .contact-grid-three {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-grid-two {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .contact-meta {
+    white-space: normal;
+  }
+}
