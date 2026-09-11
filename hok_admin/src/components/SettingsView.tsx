@@ -7,6 +7,12 @@ import AnnouncementTab from './SiteSettings/Announcement/AnnouncementTab';
 import HeaderTab from './SiteSettings/Header/HeaderTab';
 import FooterTab from './SiteSettings/Footer/FooterTab';
 import MobileBarTab from "./SiteSettings/MobileBar/MobileBarTab";
+import BrandTab from "./SiteSettings/Brand/BrandTab";
+import ContactTab from "./SiteSettings/Contact/ContactTab";
+import GoogleTab from "./SiteSettings/Google/GoogleTab";
+import LegalTab from "./SiteSettings/Legal/LegalTab";
+import RegionalTab from "./SiteSettings/Regional/RegionalTab";
+import MaintenanceTab from "./SiteSettings/Maintenance/MaintenanceTab";
 
 interface SettingsViewProps {
   siteSettings: SiteSettings;
@@ -216,11 +222,12 @@ export default function SettingsView({ siteSettings, onUpdateSettings }: Setting
               </div>
               <div className="space-y-0.5">
                 {[
-                  { id: 'Brand', label: 'Brand', dot: true },
-                  { id: 'Contact', label: 'Contact', dot: false },
-                  { id: 'Search', label: 'Search', dot: false },
-                  { id: 'Legal', label: 'Legal', dot: true }
-                ].map((item) => (
+  { id: 'Brand', label: 'Brand', dot: true },
+  { id: 'Contact', label: 'Contact', dot: false },
+  { id: 'Google', label: 'Google', dot: false },
+  { id: 'Legal', label: 'Legal', dot: true },
+  { id: 'Regional', label: 'Regional', dot: false }
+].map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
@@ -303,7 +310,24 @@ export default function SettingsView({ siteSettings, onUpdateSettings }: Setting
 {activeTab === 'Mobile bar' && (
   <MobileBarTab />
 )}
-
+{activeTab === 'Brand' && (
+  <BrandTab />
+)}
+{activeTab === 'Contact' && (
+  <ContactTab />
+)}
+{activeTab === 'Google' && (
+  <GoogleTab />
+)}
+{activeTab === 'Legal' && (
+  <LegalTab />
+)}
+{activeTab === 'Regional' && (
+  <RegionalTab />
+)}
+{activeTab === 'Maintenance' && (
+  <MaintenanceTab />
+)}
 </div>
 
           
