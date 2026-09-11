@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import "./HomepageView.css";
 import Hero from "./Sections/Hero/Hero";
 import HowItWorks from "./Sections/HowItWorks/HowItWorks";
+import FeaturedPieces from "./Sections/FeaturedPieces/FeaturedPieces";
+import ShopByCategoryBand from "./ShopByCategory/ShopByCategoryBand";
+import ShopByOccasion from "./Shopbyoccasion/Shopbyoccasion";
 interface HomepageViewProps {
   homepage?: any;
   onUpdateHomepage?: (homepage: any) => void;
@@ -154,42 +157,22 @@ const HomepageView: React.FC<HomepageViewProps> = ({
   const renderSelectedBand = () => {
 
     switch (selectedBand) {
-
+//Hero Section
       case "hero":
         return <Hero />;
-
+        
+//How it works Section
       case "how-it-works":
   return <HowItWorks />;
 
       case "featured-pieces":
-        return (
-          <div className="homepage-coming-soon">
-            <h2>Featured Pieces</h2>
-            <p>
-              Featured Pieces editor will be implemented next.
-            </p>
-          </div>
-        );
+  return <FeaturedPieces />;
 
       case "shop-by-category":
-        return (
-          <div className="homepage-coming-soon">
-            <h2>Shop by Category</h2>
-            <p>
-              Shop by Category editor will be implemented next.
-            </p>
-          </div>
-        );
-
+        return <ShopByCategoryBand />
+        
       case "shop-by-occasion":
-        return (
-          <div className="homepage-coming-soon">
-            <h2>Shop by Occasion</h2>
-            <p>
-              This section is currently not built.
-            </p>
-          </div>
-        );
+        return <ShopByOccasion />;
 
       case "our-commitment":
         return (
