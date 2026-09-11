@@ -1,7 +1,8 @@
 // src\App.jsx
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
+import useAuthStore from "./store/authStore";
 
 // Layout
 import Header from "./components/Header/Header";
@@ -35,6 +36,9 @@ import AboutUsPage from "./pages/AboutUsPage/AboutUsPage";
 
 
 export default function App() {
+  useEffect(() => {
+    useAuthStore.getState().checkAuth();
+  }, []);
 
   return (
     <>

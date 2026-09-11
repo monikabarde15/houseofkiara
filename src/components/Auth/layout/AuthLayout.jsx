@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import LeftEditorialPanel from './LeftEditorialPanel';
 import RightFormPanel from './RightFormPanel';
 import AuthFooter from './AuthFooter';
@@ -11,6 +12,7 @@ import SuccessScreen from '../screens/SuccessScreen';
 import '../../../styles/Auth/layout/AuthLayout.css';
 
 const AuthLayout = ({ isMobile }) => {
+  const [searchParams] = useSearchParams();
   const [activeScreen, setActiveScreen] = useState('signin');
   const [otpSource, setOtpSource] = useState(null);
   const [userData, setUserData] = useState({}); // Empty object - no default flow
@@ -72,11 +74,22 @@ const AuthLayout = ({ isMobile }) => {
   };
   
   useEffect(() => {
-    const defaultScreen = document.getElementById('screen-signin');
-    if (defaultScreen) {
-      defaultScreen.classList.add('active');
+    const token = searchParams.get('token') || searchParams.get('resetToken');
+    const screenParam = searchParams.get('screen');
+
+    if (token || screenParam === 'reset') {
+      switchScreen('reset', { userData: { token: token || '' } });
+    } else if (screenParam === 'register') {
+      switchScreen('register');
+    } else if (screenParam === 'forgot') {
+      switchScreen('forgot');
+    } else {
+      const defaultScreen = document.getElementById('screen-signin');
+      if (defaultScreen) {
+        defaultScreen.classList.add('active');
+      }
     }
-  }, []);
+  }, [searchParams]);
 
   return (
     <>
@@ -124,7 +137,7 @@ const AuthLayout = ({ isMobile }) => {
             ref={resetRef}
             className="hok-auth-screen"
           >
-            <ResetPasswordScreen switchScreen={switchScreen} />
+            <ResetPasswordScreen switchScreen={switchScreen} userData={userData} />
           </div>
           
           <div 

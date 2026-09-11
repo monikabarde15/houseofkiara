@@ -117,65 +117,90 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
     boxes.forEach(box => box.classList.remove('error'));
     
     setIsLoading(true);
+    setError('');
     
-    // Section 9.5 - API verification
-    try {
-      let result;
+    const phone = userData?.mobile || userData?.phone || '';
 
-      if (otpSource === 'register') {
-        // Register API call (Mocking OTP check for register since backend doesn't require OTP for registration currently)
-        if (otpToVerify !== '123456') {
-           throw new Error('Incorrect OTP. Please try again. (Hint: 123456)');
-        }
-        const response = await fetch('/api/customer/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: `${userData.firstName} ${userData.lastName}`,
-            email: userData.email,
-            password: userData.password,
-            phone: userData.mobile
-          })
-        });
-        result = await response.json();
-      } else {
-        // Mobile Sign In API call
-        const response = await fetch('/api/customer/auth/verify-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            phone: userData.mobile,
-            otp: otpToVerify
-          })
-        });
-        result = await response.json();
+    try {
+      // 1. Verify OTP with backend
+      const verifyResponse = await fetch('/api/customer/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone,
+          otp: otpToVerify,
+        }),
+      });
+
+      const verifyResult = await verifyResponse.json();
+
+      if (!verifyResponse.ok || !verifyResult.success) {
+        boxes.forEach(box => box.classList.add('error'));
+        setError(verifyResult.message || 'Incorrect OTP. Please check and try again.');
+        return;
       }
 
-      if (result.success) {
+      // 2. If register flow, complete registration
+      if (otpSource === 'register') {
+        const regResponse = await fetch('/api/customer/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            name: `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'Customer',
+            email: userData.email,
+            password: userData.password,
+            phone: userData.mobile || phone,
+            mobile: userData.mobile || phone,
+            verificationToken: verifyResult.data?.verificationToken,
+            otp: otpToVerify,
+            marketingAccepted: userData.marketingAccepted,
+            termsAccepted: userData.termsAccepted,
+          }),
+        });
+
+        const regResult = await regResponse.json();
+
+        if (!regResponse.ok || !regResult.success) {
+          setError(regResult.message || 'Account registration failed. Please try again.');
+          return;
+        }
+
         // Save to Auth Store
         const authStore = (await import('../../../store/authStore')).default;
-        authStore.getState().login(result.data, result.data.token);
+        authStore.getState().login(regResult.data, regResult.data.token);
 
         setCanResend(true);
         switchScreen('success', {
           userData: {
-            ...result.data,
-            flow: otpSource === 'register' ? 'register' : 'otp-signin'
-          }
+            ...regResult.data,
+            flow: 'register',
+          },
         });
       } else {
-        throw new Error(result.message || 'Verification failed');
+        // Mobile Sign In API flow
+        const authStore = (await import('../../../store/authStore')).default;
+        authStore.getState().login(verifyResult.data, verifyResult.data.token);
+
+        setCanResend(true);
+        switchScreen('success', {
+          userData: {
+            ...verifyResult.data,
+            flow: 'otp-signin',
+          },
+        });
       }
     } catch (err) {
       boxes.forEach(box => box.classList.add('error'));
-      setError(err.message || 'An error occurred. Please try again.');
+      setError(err.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
   // Section 9.4 - Resend OTP
-  const handleResendOtp = () => {
+  const handleResendOtp = async () => {
     if (!canResend) return;
     
     // Clear all OTP boxes
@@ -187,18 +212,35 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
       if (ref) ref.value = '';
     });
     
-    // Reset timer
-    setTimer(30);
-    setCanResend(false);
-    
-    // Show "Sent!" temporarily
-    const resendButton = document.querySelector('.hok-auth-resend-btn');
-    if (resendButton) {
-      const originalText = resendButton.textContent;
-      resendButton.textContent = 'Sent!';
-      setTimeout(() => {
-        resendButton.textContent = originalText;
-      }, 2000);
+    const phone = userData?.mobile || userData?.phone || '';
+
+    try {
+      const res = await fetch('/api/customer/auth/resend-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, mobile: phone }),
+      });
+      const result = await res.json();
+
+      if (res.ok && result.success) {
+        // Reset timer
+        setTimer(30);
+        setCanResend(false);
+        
+        // Show "Sent!" temporarily
+        const resendButton = document.querySelector('.hok-auth-resend-btn');
+        if (resendButton) {
+          const originalText = resendButton.textContent;
+          resendButton.textContent = 'Sent!';
+          setTimeout(() => {
+            resendButton.textContent = originalText;
+          }, 2000);
+        }
+      } else {
+        setError(result.message || 'Failed to resend OTP. Please try again.');
+      }
+    } catch (err) {
+      setError('Failed to resend OTP. Please check your network connection.');
     }
     
     // Focus on first input
@@ -265,9 +307,6 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
               Resend OTP
             </button>
           )}
-        </div>
-        <div className="hok-auth-otp-footer-right">
-          <span className="hok-auth-demo-hint">Code: 123456 (demo)</span>
         </div>
       </div>
 

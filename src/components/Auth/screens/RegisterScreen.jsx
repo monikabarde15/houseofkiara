@@ -142,30 +142,46 @@ const RegisterScreen = ({ switchScreen }) => {
   const handleCreateAccount = async () => {
     setGeneralError('');
 
-    // Step 1: All 6 fields valid + terms checked → CTA clicked
+    // Step 1: All fields valid + terms checked
     const isValid = validateAllFields();
-
     if (!isValid) {
       return;
     }
 
-    // Step 1: Button enters loading state (1,400ms)
     setIsLoading(true);
 
-    // Step 2: Navigate to Screen 3 (OTP Verify) after 1,400ms
-    // Section 8.5 - Step 2: Navigate to Screen 3 (OTP Verify)
-    setTimeout(() => {
-      switchScreen('otp', {
-        otpSource: 'register',  // Identifies this came from register flow
-        userData: {
-          ...formData,
-          marketingAccepted,
-          flow: 'register',  // Add flow type for success screen
-          otpDestination: `+91 ${formData.mobile}`
-        }
+    try {
+      const response = await fetch('/api/customer/auth/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: formData.mobile,
+          mobile: formData.mobile,
+        }),
       });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        switchScreen('otp', {
+          otpSource: 'register',
+          userData: {
+            ...formData,
+            marketingAccepted,
+            flow: 'register',
+            otpDestination: `+91 ${formData.mobile}`,
+          },
+        });
+      } else {
+        setGeneralError(result.message || 'Failed to send verification code. Please try again.');
+      }
+    } catch (err) {
+      setGeneralError('Network error. Please check your connection and try again.');
+    } finally {
       setIsLoading(false);
-    }, 1400);
+    }
   };
 
   return (

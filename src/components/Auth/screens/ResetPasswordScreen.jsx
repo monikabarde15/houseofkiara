@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import FormEyebrow from '../ui/FormEyebrow';
 import FormHeading from '../ui/FormHeading';
 import FormSubText from '../ui/FormSubText';
@@ -8,13 +9,31 @@ import PrimaryButton from '../ui/PrimaryButton';
 import FormAlert from '../ui/FormAlert';
 import '../../../styles/Auth/screens/ResetPasswordScreen.css';
 
-const ResetPasswordScreen = ({ switchScreen }) => {
+const ResetPasswordScreen = ({ switchScreen, userData = {} }) => {
+  const [searchParams] = useSearchParams();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [newPasswordError, setNewPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [generalError, setGeneralError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const resetToken =
+    userData?.token ||
+    userData?.resetToken ||
+    searchParams.get('token') ||
+    searchParams.get('resetToken') ||
+    '';
+
+  useEffect(() => {
+    if (!resetToken) {
+      setGeneralError(
+        'Password reset link is invalid or missing. Please request a new link from the forgot password page.'
+      );
+    } else {
+      setGeneralError('');
+    }
+  }, [resetToken]);
 
   // Validate new password (≥ 8 characters)
   const validateNewPassword = () => {
@@ -80,18 +99,45 @@ const ResetPasswordScreen = ({ switchScreen }) => {
       return;
     }
 
+    if (!resetToken) {
+      setGeneralError('Password reset link is invalid or missing. Please request a new link.');
+      return;
+    }
+
     setIsLoading(true);
 
-    // Simulate API call - 1,200ms loading state
-    setTimeout(() => {
-      // Navigate to Success Screen
-      switchScreen('success', {
-        userData: {
-          flow: 'reset'
-        }
+    try {
+      const response = await fetch('/api/customer/auth/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: resetToken,
+          newPassword: newPassword,
+          confirmPassword: confirmPassword,
+        }),
       });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (response.ok && result.success) {
+        setNewPassword('');
+        setConfirmPassword('');
+        // Navigate to Success Screen
+        switchScreen('success', {
+          userData: {
+            flow: 'reset',
+          },
+        });
+      } else {
+        setGeneralError(result.message || 'Password reset token is invalid or has expired. Please request a new one.');
+      }
+    } catch (err) {
+      setGeneralError('Network error. Please check your internet connection and try again.');
+    } finally {
       setIsLoading(false);
-    }, 1200);
+    }
   };
 
   return (

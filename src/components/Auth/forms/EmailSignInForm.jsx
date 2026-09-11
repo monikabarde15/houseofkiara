@@ -72,7 +72,7 @@ const EmailSignInForm = ({ switchScreen, onSuccess }) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email: email.trim(), password })
       });
 
       const result = await response.json();
@@ -87,7 +87,7 @@ const EmailSignInForm = ({ switchScreen, onSuccess }) => {
         onSuccess(result.data);
       }
     } catch (err) {
-      setFormError('Network error. Please try again later.');
+      setFormError('Network error. Please check your internet connection and try again.');
     } finally {
       setIsLoading(false);
     }

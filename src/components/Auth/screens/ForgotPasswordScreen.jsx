@@ -54,16 +54,28 @@ const ForgotPasswordScreen = ({ switchScreen }) => {
 
     setIsLoading(true);
 
-    // Simulate API call - Section 10
-    setTimeout(() => {
-      // Success case
-      setSuccessMessage(`A password reset link has been sent to ${email}. Please check your inbox.`);
-      setIsLinkSent(true);
+    try {
+      const response = await fetch('/api/customer/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (response.ok && result.success) {
+        setSuccessMessage(result.message || `A password reset link has been sent to ${email}. Please check your inbox.`);
+        setIsLinkSent(true);
+      } else {
+        setErrorMessage(result.message || 'Failed to process password recovery request. Please try again.');
+      }
+    } catch (err) {
+      setErrorMessage('Network error. Please check your internet connection and try again.');
+    } finally {
       setIsLoading(false);
-      
-      // Note: For production, handle server errors here
-      // setErrorMessage('Server error message');
-    }, 1400);
+    }
   };
 
   // Back link navigates to Sign In (Screen 1)

@@ -33,6 +33,8 @@ const customerSchema = new mongoose.Schema(
   {
     customerId: { type: String, unique: true, required: true },
     name: { type: String, required: true },
+    firstName: { type: String, default: "" },
+    lastName: { type: String, default: "" },
     email: { type: String, required: true },
     phone: { type: String, default: "" },
     location: { type: String, default: "" },
@@ -70,6 +72,11 @@ const customerSchema = new mongoose.Schema(
     googleId: { type: String, default: "" },
     otp: { type: String, default: "" },
     otpExpiresAt: { type: Date },
+    otpAttempts: { type: Number, default: 0 },
+    phoneVerified: { type: Boolean, default: false },
+    phoneVerifiedAt: { type: Date },
+    resetPasswordToken: { type: String, default: "" },
+    resetPasswordExpiresAt: { type: Date },
     wishlist: [{ type: String }],
     cart: [{ type: mongoose.Schema.Types.Mixed }]
   },
