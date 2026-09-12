@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Customer from "../models/Customer.js";
 import { validateCustomerInput } from "../validations/customerValidation.js";
+import { generateNextCustomerId } from "../utils/idGenerator.js";
 
 const formatCustomerResponse = (doc) => {
   const obj = doc.toObject();
@@ -73,7 +74,7 @@ export const createCustomer = async (req, res) => {
     }
 
     const email = req.body.email ? req.body.email.trim().toLowerCase() : "";
-    const customerId = req.body.customerId || req.body.id || `HOK-CUST-${Date.now()}`;
+    const customerId = req.body.customerId || req.body.id || (await generateNextCustomerId());
 
     const existing = await Customer.findOne({
       $or: [

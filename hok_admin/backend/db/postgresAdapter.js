@@ -967,6 +967,13 @@ export class PostgresDocument {
     this._data.updatedAt = new Date().toISOString();
     this._data._id = this._id;
 
+    if (this._model?.modelName === 'Customer') {
+      if (!this._data.customerId || /^CUST-\d{10,}$/.test(this._data.customerId)) {
+        const { generateNextCustomerId } = await import("../utils/idGenerator.js");
+        this._data.customerId = await generateNextCustomerId();
+      }
+    }
+
     const config = TABLE_CONFIGS[this._model?.modelName] || {
       tableName: this._model?.modelName?.toLowerCase() + "s",
       columnMap: {},

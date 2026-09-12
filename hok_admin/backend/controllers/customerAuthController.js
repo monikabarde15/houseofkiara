@@ -12,6 +12,7 @@ import {
   validateForgotPassword,
   validateResetPassword,
 } from "../validations/customerAuthValidation.js";
+import { generateNextCustomerId } from "../utils/idGenerator.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "hok_super_secret_key_123";
 const FAST2SMS_KEY = process.env.FAST2SMS_KEY || "";
@@ -166,11 +167,14 @@ export const register = async (req, res) => {
     // Reuse existing stub or create fresh customer record
     let customer = existingPhone || existingEmail;
     if (!customer) {
+      const customerId = await generateNextCustomerId();
       customer = new Customer({
-        customerId: `CUST-${Date.now()}`,
+        customerId,
         wishlist: [],
         cart: [],
       });
+    } else if (!customer.customerId || /^CUST-\d{10,}$/.test(customer.customerId)) {
+      customer.customerId = await generateNextCustomerId();
     }
 
     customer.name = resolvedName;
@@ -307,8 +311,9 @@ export const sendOtp = async (req, res) => {
     const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     if (!customer) {
+      const customerId = await generateNextCustomerId();
       customer = new Customer({
-        customerId: `CUST-${Date.now()}`,
+        customerId,
         name: "User",
         firstName: "User",
         lastName: "",
@@ -319,6 +324,8 @@ export const sendOtp = async (req, res) => {
         wishlist: [],
         cart: [],
       });
+    } else if (!customer.customerId || /^CUST-\d{10,}$/.test(customer.customerId)) {
+      customer.customerId = await generateNextCustomerId();
     }
 
     // Overwrite previous OTP and reset verification state & attempt counter
@@ -471,7 +478,13 @@ export const forgotPassword = async (req, res) => {
     }
 
     const normalizedEmail = value.email.toLowerCase().trim();
-    const customer = await Customer.findOne({ email: normalizedEmail });
+    let customer = await Customer.findOne({ email: normalizedEmail });
+    if (!customer) {
+      // Fallback regex lookup for case-insensitive matching
+      customer = await Customer.findOne({
+        email: { $regex: new RegExp(`^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+      });
+    }
 
     if (customer) {
       const resetToken = crypto.randomBytes(32).toString("hex");
@@ -481,8 +494,16 @@ export const forgotPassword = async (req, res) => {
       customer.resetPasswordExpiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
       await customer.save();
 
-      console.log(`[PASSWORD RECOVERY] Reset token for ${normalizedEmail}: ${resetToken}`);
-      console.log(`[PASSWORD RECOVERY] Reset link: /auth?resetToken=${resetToken}`);
+      console.log(`\n================== [PASSWORD RECOVERY] ==================`);
+      console.log(`👤 Customer Email : ${customer.email}`);
+      console.log(`🔑 Reset Token    : ${resetToken}`);
+      console.log(`🔗 Reset Link     : http://localhost:3000/auth?resetToken=${resetToken}`);
+      console.log(`=========================================================\n`);
+    } else {
+      console.log(`\n⚠️  [PASSWORD RECOVERY NOTICE]`);
+      console.log(`Email "${normalizedEmail}" was NOT found in the database.`);
+      console.log(`To test password reset, register this email first or use an existing customer email.`);
+      console.log(`=========================================================\n`);
     }
 
     return res.json({
