@@ -1,0 +1,402 @@
+
+.commitment-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.editor-heading-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.editor-heading-row h2 {
+  margin: 0;
+  font-size: 25px;
+}
+
+.editor-heading-row p {
+  margin: 5px 0;
+  color: #817a70;
+}
+
+.editor-band-count {
+  color: #8b6b35;
+  font-size: 12px;
+}
+
+.editor-live-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e8dfd2;
+  border-radius: 7px;
+  background: #fff;
+  padding: 13px 15px;
+}
+
+.editor-live-row > span:last-child {
+  margin-left: auto;
+  color: #8b847b;
+  font-size: 13px;
+}
+
+.hok-switch {
+  width: 39px;
+  height: 23px;
+  border: 0;
+  border-radius: 20px;
+  background: #d8d1c6;
+  padding: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.hok-switch span {
+  display: block;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #fff;
+  transition: 0.2s;
+}
+
+.hok-switch.on {
+  background: #cba968;
+}
+
+.hok-switch.on span {
+  transform: translateX(16px);
+}
+
+.hok-editor-card {
+  background: #fff;
+  border: 1px solid #e8dfd2;
+  border-radius: 7px;
+  padding: 20px;
+}
+
+.hok-editor-card h3 {
+  margin: 0 -20px 18px;
+  padding: 0 20px 16px;
+  border-bottom: 1px solid #eee5d9;
+  font-size: 17px;
+}
+
+.hok-editor-card label {
+  display: block;
+  margin: 15px 0 7px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #8a8177;
+}
+
+.hok-editor-card input,
+.hok-editor-card textarea {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #ddd4c7;
+  border-radius: 5px;
+  padding: 12px;
+  font: inherit;
+  background: #fff;
+  color: #29251f;
+}
+
+.hok-editor-card textarea {
+  min-height: 78px;
+  resize: vertical;
+}
+
+.hok-read-preview {
+  margin-top: 10px;
+  padding: 20px;
+  background: #faf7f2;
+  font: 24px Georgia, serif;
+}
+
+.hok-pill-row {
+  display: grid;
+  grid-template-columns: 42px 1fr 1fr 30px 30px 70px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee5d9;
+}
+
+.hok-pill-row span {
+  color: #8b847b;
+  font-size: 13px;
+}
+
+.hok-small-button,
+.hok-remove,
+.hok-add-button {
+  border: 1px solid #ddd4c7;
+  background: #fff;
+  border-radius: 5px;
+  padding: 7px 10px;
+  color: #766c60;
+  cursor: pointer;
+}
+
+.hok-remove {
+  white-space: nowrap;
+}
+
+.hok-add-button {
+  margin-top: 15px;
+}
+
+.hok-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.commitment-card {
+  border: 1px solid #e1d5c4;
+  border-radius: 6px;
+  padding: 12px;
+  min-width: 0;
+}
+
+.commitment-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed #e2d8ca;
+  padding-bottom: 12px;
+}
+
+.card-number {
+  background: #655e54;
+  color: #fff;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+}
+
+.commitment-icon {
+  font-size: 31px;
+  color: #c5a05e;
+}
+
+.commitment-card h4 {
+  font-size: 14px;
+  line-height: 1.35;
+  margin: 13px 0 8px;
+}
+
+.commitment-card p {
+  font-size: 12px;
+  color: #8b847b;
+}
+
+.commitment-card-actions {
+  display: flex;
+  gap: 5px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .hok-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .editor-live-row > span:last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .hok-pill-row {
+    grid-template-columns: 35px 1fr 30px 30px 65px;
+  }
+
+  .hok-pill-row span {
+    display: none;
+  }
+
+  .hok-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* =========================================
+   EDITING CARD SECTION
+========================================= */
+
+.editing-card-section {
+  background: #ffffff;
+  border: 1px solid #cba968;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 18px;
+}
+
+/* HEADER */
+
+.editing-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 15px;
+  background: #f8f0e3;
+  border-bottom: 1px solid #cba968;
+}
+
+.editing-card-header span {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #94713a;
+}
+
+.editing-card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #24211d;
+}
+
+/* CONTENT */
+
+.editing-card-content {
+  padding: 18px 16px 24px;
+}
+
+.editing-card-content label {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #8a8177;
+}
+
+.editing-card-content textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 88px;
+  resize: vertical;
+  border: 1px solid #dcd3c7;
+  border-radius: 5px;
+  background: #ffffff;
+  padding: 12px;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #29251f;
+  outline: none;
+  margin-bottom: 18px;
+}
+
+.editing-card-content textarea:focus {
+  border-color: #cba968;
+}
+
+/* PRINT PREVIEW */
+
+.print-preview {
+  margin: -8px 0 20px;
+  color: #8a8177;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.print-preview span {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 4px 8px;
+  border: 1px solid #ddd4c7;
+  border-radius: 5px;
+  color: #8a8177;
+}
+
+/* ICON ROW */
+
+.icon-selection-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.icon-button {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd4c7;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #8c8171;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  border-color: #cba968;
+}
+
+.icon-button.selected {
+  border: 2px solid #cba968;
+  background: #faf3e7;
+  color: #cba968;
+}
+
+.icon-help-text {
+  margin: 0 0 20px;
+  color: #8a8177;
+  font-size: 12px;
+}
+
+/* SHOW IN APP */
+
+.show-card-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.show-card-row strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #29251f;
+}
+
+.show-card-row p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #8a8177;
+  line-height: 1.5;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+
+  .editing-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .editing-card-content {
+    padding: 16px 12px 20px;
+  }
+
+  .icon-button {
+    width: 34px;
+    height: 34px;
+  }
+
+}
