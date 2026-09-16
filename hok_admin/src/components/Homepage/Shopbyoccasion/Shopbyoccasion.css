@@ -1,0 +1,524 @@
+/* =====================================================
+   TOKENS (scoped to this band — mirrors the admin
+   panel's cream / warm-ink / gold-serif language)
+===================================================== */
+
+.occasion-editor {
+  --occasion-ink: #262019;
+  --occasion-ink-muted: #857b6c;
+  --occasion-border: #e7e1d3;
+  --occasion-surface: #ffffff;
+  --occasion-gold: #a97c2f;
+  --occasion-gold-soft: #f1e6cf;
+  --occasion-alert-bg: #fbf3d8;
+  --occasion-alert-border: #e7d089;
+  --occasion-alert-text: #7a5c12;
+  --occasion-info-bg: #f6f2e8;
+  --occasion-pill-bg: #ece6d8;
+  --occasion-pill-text: #746a58;
+  --occasion-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 880px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--occasion-ink);
+}
+
+.occasion-editor * {
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.occasion-editor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.occasion-editor-title {
+  margin: 0 0 6px;
+  font-family: Georgia, "Iowan Old Style", serif;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.occasion-editor-context {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--occasion-ink-muted);
+}
+
+.occasion-editor-band-count {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--occasion-ink-muted);
+}
+
+
+/* =====================================================
+   VISIBILITY SWITCH
+===================================================== */
+
+.occasion-toggle-row {
+  padding: 16px 18px;
+  border: 1px solid var(--occasion-border);
+  border-radius: var(--occasion-radius);
+  background: var(--occasion-surface);
+}
+
+.occasion-toggle-row-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.occasion-toggle-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.occasion-pill-not-built {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--occasion-pill-bg);
+  color: var(--occasion-pill-text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.occasion-toggle-note {
+  margin: 10px 0 0 52px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--occasion-ink-muted);
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .occasion-toggle-note {
+    margin-left: 0;
+    text-align: left;
+  }
+}
+
+/* --- toggle switch --- */
+
+.occasion-toggle {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.occasion-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.occasion-toggle-track {
+  width: 38px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--occasion-pill-bg);
+  transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+.occasion-toggle-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--occasion-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease;
+}
+
+.occasion-toggle input:checked + .occasion-toggle-track {
+  background: var(--occasion-gold);
+}
+
+.occasion-toggle input:checked + .occasion-toggle-track .occasion-toggle-thumb {
+  transform: translateX(16px);
+}
+
+.occasion-toggle input:focus-visible + .occasion-toggle-track {
+  outline: 2px solid var(--occasion-gold);
+  outline-offset: 2px;
+}
+
+.occasion-toggle-disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.occasion-toggle-disabled input {
+  cursor: not-allowed;
+}
+
+.occasion-toggle-small .occasion-toggle-track {
+  width: 32px;
+  height: 19px;
+}
+
+.occasion-toggle-small .occasion-toggle-thumb {
+  width: 15px;
+  height: 15px;
+}
+
+.occasion-toggle-small input:checked + .occasion-toggle-track .occasion-toggle-thumb {
+  transform: translateX(13px);
+}
+
+
+/* =====================================================
+   ALERT — the flag needs a home
+===================================================== */
+
+.occasion-alert {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px;
+  border: 1px solid var(--occasion-alert-border);
+  border-radius: var(--occasion-radius);
+  background: var(--occasion-alert-bg);
+}
+
+.occasion-alert-text {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--occasion-alert-text);
+}
+
+.occasion-alert-link {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  color: var(--occasion-alert-text);
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   INFO
+===================================================== */
+
+.occasion-info {
+  padding: 14px 18px;
+  border: 1px solid var(--occasion-border);
+  border-radius: var(--occasion-radius);
+  background: var(--occasion-info-bg);
+}
+
+.occasion-info p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--occasion-ink-muted);
+}
+
+.occasion-info strong {
+  color: var(--occasion-ink);
+}
+
+
+/* =====================================================
+   CARD (shared by "The words", "Which occasions…",
+   "Layout")
+===================================================== */
+
+.occasion-card {
+  padding: 20px;
+  border: 1px solid var(--occasion-border);
+  border-radius: var(--occasion-radius);
+  background: var(--occasion-surface);
+}
+
+.occasion-card + .occasion-card {
+  margin-top: 0;
+}
+
+.occasion-card-title {
+  margin: 0 0 16px;
+  font-family: Georgia, "Iowan Old Style", serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.occasion-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.occasion-card-header .occasion-card-title {
+  margin-bottom: 4px;
+}
+
+.occasion-card-subtitle {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--occasion-ink-muted);
+}
+
+
+/* =====================================================
+   FIELDS
+===================================================== */
+
+.occasion-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.occasion-field:last-child {
+  margin-bottom: 0;
+}
+
+.occasion-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 560px) {
+  .occasion-field-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.occasion-field label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--occasion-ink-muted);
+}
+
+.occasion-field input,
+.occasion-field select,
+.occasion-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--occasion-border);
+  border-radius: 8px;
+  background: var(--occasion-surface);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--occasion-ink);
+  resize: vertical;
+}
+
+.occasion-field input:focus,
+.occasion-field select:focus,
+.occasion-field textarea:focus {
+  outline: none;
+  border-color: var(--occasion-gold);
+  box-shadow: 0 0 0 3px var(--occasion-gold-soft);
+}
+
+.occasion-field-hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--occasion-ink-muted);
+}
+
+
+/* =====================================================
+   READS AS
+===================================================== */
+
+.occasion-reads-as {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border: 1px dashed var(--occasion-border);
+  border-radius: 8px;
+  background: var(--occasion-info-bg);
+}
+
+.occasion-reads-as-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--occasion-ink-muted);
+}
+
+.occasion-reads-as-preview {
+  margin: 0;
+  font-family: Georgia, "Iowan Old Style", serif;
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.occasion-accent {
+  color: var(--occasion-gold);
+  font-style: italic;
+}
+
+
+/* =====================================================
+   OCCASION GRID
+===================================================== */
+
+.occasion-open-master-data {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border: 1px solid var(--occasion-border);
+  border-radius: 8px;
+  background: var(--occasion-surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--occasion-ink);
+  cursor: pointer;
+}
+
+.occasion-open-master-data:hover {
+  border-color: var(--occasion-gold);
+  color: var(--occasion-gold);
+}
+
+.occasion-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 720px) {
+  .occasion-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  .occasion-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.occasion-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--occasion-border);
+  border-radius: 8px;
+  background: var(--occasion-surface);
+}
+
+.occasion-tile-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--occasion-ink);
+  color: var(--occasion-surface);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.occasion-tile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.occasion-tile-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.occasion-tile-count {
+  font-size: 12px;
+  color: var(--occasion-ink-muted);
+}
+
+.occasion-tile-action {
+  align-self: flex-start;
+  padding: 6px 12px;
+  border: 1px solid var(--occasion-border);
+  border-radius: 999px;
+  background: var(--occasion-surface);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--occasion-ink-muted);
+  cursor: pointer;
+}
+
+.occasion-tile-action:hover {
+  border-color: var(--occasion-ink-muted);
+  color: var(--occasion-ink);
+}
+
+.occasion-tile-action-feature {
+  border-color: var(--occasion-gold);
+  color: var(--occasion-gold);
+}
+
+.occasion-tile-action-feature:hover {
+  background: var(--occasion-gold-soft);
+}
+
+.occasion-card-footnote {
+  margin: 16px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--occasion-ink-muted);
+}
+
+
+/* =====================================================
+   LAYOUT CARD — switch row
+===================================================== */
+
+.occasion-switch-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .occasion-toggle-track,
+  .occasion-toggle-thumb {
+    transition: none;
+  }
+}

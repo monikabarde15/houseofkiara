@@ -1,0 +1,649 @@
+/* =====================================================
+   SHOP BY CATEGORY BAND — tokens shared with the rest
+   of the Homepage editor (Hero, HowItWorks, FeaturedPieces)
+===================================================== */
+
+.sbc-band {
+  --sbc-cream: #faf7f2;
+  --sbc-paper: #ffffff;
+  --sbc-border: #e7e0d3;
+  --sbc-ink: #211d17;
+  --sbc-muted: #837a6b;
+  --sbc-gold: #b8935a;
+  --sbc-gold-dark: #96723f;
+  --sbc-warning-bg: #fbebe9;
+  --sbc-warning-border: #eabdb6;
+  --sbc-warning-text: #9a3b32;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--sbc-ink);
+}
+
+/* -----------------------------------------------------
+   HEADER
+----------------------------------------------------- */
+
+.sbc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sbc-title {
+  margin: 0 0 6px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.sbc-subtitle {
+  margin: 0;
+  max-width: 640px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--sbc-muted);
+}
+
+.sbc-position {
+  flex-shrink: 0;
+  font-size: 12.5px;
+  color: var(--sbc-muted);
+  white-space: nowrap;
+}
+
+/* -----------------------------------------------------
+   PANEL SHELL
+----------------------------------------------------- */
+
+.sbc-panel {
+  background: var(--sbc-paper);
+  border: 1px solid var(--sbc-border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sbc-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sbc-panel-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.sbc-panel-subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--sbc-muted);
+  max-width: 520px;
+  line-height: 1.5;
+}
+
+/* -----------------------------------------------------
+   VISIBILITY BAR
+----------------------------------------------------- */
+
+.sbc-visibility {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sbc-visibility-status {
+  font-size: 13px;
+  color: var(--sbc-muted);
+}
+
+/* -----------------------------------------------------
+   TOGGLE
+----------------------------------------------------- */
+
+.sbc-toggle-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.sbc-toggle {
+  flex-shrink: 0;
+  width: 38px;
+  height: 22px;
+  border-radius: 999px;
+  border: none;
+  background: #e2dbcb;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.sbc-toggle-on {
+  background: var(--sbc-gold);
+  justify-content: flex-end;
+}
+
+.sbc-toggle-knob {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  display: block;
+}
+
+.sbc-toggle-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sbc-toggle-label {
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.sbc-toggle-hint {
+  font-size: 12px;
+  color: var(--sbc-muted);
+  line-height: 1.4;
+  max-width: 360px;
+}
+
+.sbc-toggle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+}
+
+/* -----------------------------------------------------
+   HEALTH MESSAGES
+----------------------------------------------------- */
+
+.sbc-health-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sbc-health-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--sbc-border);
+  background: var(--sbc-paper);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.sbc-health-warning {
+  background: var(--sbc-warning-bg);
+  border-color: var(--sbc-warning-border);
+  color: var(--sbc-warning-text);
+}
+
+.sbc-health-text strong {
+  font-weight: 600;
+}
+
+.sbc-health-action {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* -----------------------------------------------------
+   FIELDS
+----------------------------------------------------- */
+
+.sbc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.sbc-field-row {
+  display: flex;
+  gap: 20px;
+}
+
+.sbc-field-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--sbc-muted);
+}
+
+.sbc-field-label-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sbc-field-hint {
+  font-size: 12px;
+  color: var(--sbc-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.sbc-needed-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--sbc-warning-text);
+  background: var(--sbc-warning-bg);
+  border: 1px solid var(--sbc-warning-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.sbc-input,
+.sbc-textarea,
+.sbc-select {
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--sbc-ink);
+  background: var(--sbc-cream);
+  border: 1px solid var(--sbc-border);
+  border-radius: 7px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.sbc-input:focus,
+.sbc-textarea:focus,
+.sbc-select:focus {
+  border-color: var(--sbc-gold);
+}
+
+.sbc-textarea {
+  resize: vertical;
+  min-height: 56px;
+  line-height: 1.5;
+}
+
+.sbc-select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--sbc-muted) 50%),
+    linear-gradient(135deg, var(--sbc-muted) 50%, transparent 50%);
+  background-position: calc(100% - 16px) center, calc(100% - 11px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+/* -----------------------------------------------------
+   READS AS PREVIEW
+----------------------------------------------------- */
+
+.sbc-reads-as {
+  border: 1px solid var(--sbc-border);
+  background: var(--sbc-cream);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sbc-reads-as-preview {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.sbc-heading-emphasis {
+  font-style: italic;
+  color: var(--sbc-gold-dark);
+}
+
+/* -----------------------------------------------------
+   TILE GRID
+----------------------------------------------------- */
+
+.sbc-tile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.sbc-tile-card {
+  text-align: left;
+  background: var(--sbc-cream);
+  border: 1px solid var(--sbc-border);
+  border-radius: 9px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sbc-tile-card:hover {
+  border-color: var(--sbc-gold);
+}
+
+.sbc-tile-card-selected {
+  border-color: var(--sbc-gold);
+  box-shadow: 0 0 0 1px var(--sbc-gold);
+  background: var(--sbc-paper);
+}
+
+.sbc-tile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sbc-tile-number {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--sbc-ink);
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sbc-tile-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--sbc-warning-text);
+  background: var(--sbc-warning-bg);
+  border: 1px solid var(--sbc-warning-border);
+  border-radius: 4px;
+  padding: 3px 7px;
+  text-transform: uppercase;
+}
+
+.sbc-tile-picture {
+  height: 110px;
+  border: 1px dashed var(--sbc-border);
+  border-radius: 7px;
+  background: var(--sbc-paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.sbc-tile-picture-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e7e0d3, #cfc5b2);
+}
+
+.sbc-tile-picture-icon {
+  font-size: 20px;
+  color: #c9c0ae;
+}
+
+.sbc-tile-picture-label {
+  font-size: 11.5px;
+  color: var(--sbc-muted);
+}
+
+.sbc-tile-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sbc-tile-name {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.sbc-tile-sub {
+  font-size: 12px;
+  color: var(--sbc-muted);
+}
+
+.sbc-tile-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+  border-top: 1px solid var(--sbc-border);
+}
+
+.sbc-tile-reorder {
+  display: flex;
+  gap: 4px;
+}
+
+.sbc-tile-reorder button {
+  border: 1px solid var(--sbc-border);
+  background: var(--sbc-paper);
+  border-radius: 5px;
+  width: 22px;
+  height: 22px;
+  font-size: 9px;
+  color: var(--sbc-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sbc-tile-reorder button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.sbc-tile-take-off {
+  font-size: 12px;
+  color: var(--sbc-muted);
+  border: 1px solid var(--sbc-border);
+  border-radius: 6px;
+  padding: 4px 9px;
+  background: var(--sbc-paper);
+}
+
+.sbc-tile-take-off:hover {
+  color: var(--sbc-warning-text);
+  border-color: var(--sbc-warning-border);
+}
+
+.sbc-tile-add {
+  border: 1px dashed var(--sbc-border);
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 20px 12px;
+  color: var(--sbc-muted);
+  cursor: pointer;
+}
+
+.sbc-tile-add-icon {
+  font-size: 18px;
+}
+
+.sbc-tile-add-label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.sbc-tile-add-hint {
+  font-size: 11.5px;
+}
+
+.sbc-master-data-button {
+  flex-shrink: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--sbc-border);
+  background: var(--sbc-paper);
+  border-radius: 7px;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sbc-master-data-button:hover {
+  border-color: var(--sbc-gold);
+}
+
+/* -----------------------------------------------------
+   EDITING PANEL
+----------------------------------------------------- */
+
+.sbc-editing-panel {
+  border: 1px solid var(--sbc-gold);
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.sbc-editing-header {
+  background: #f3e8d6;
+  padding: 10px 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.sbc-editing-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--sbc-gold-dark);
+  text-transform: uppercase;
+}
+
+.sbc-editing-name {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.sbc-editing-body {
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 20px;
+}
+
+.sbc-editing-picture {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sbc-editing-picture-frame {
+  aspect-ratio: 7 / 10;
+  border: 1px dashed var(--sbc-border);
+  border-radius: 8px;
+  background: var(--sbc-cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  padding: 12px;
+}
+
+.sbc-upload-button {
+  border: 1px solid var(--sbc-border);
+  background: var(--sbc-paper);
+  border-radius: 7px;
+  padding: 8px 0;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.sbc-upload-button:hover {
+  border-color: var(--sbc-gold);
+}
+
+.sbc-editing-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sbc-editing-picture-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sbc-master-data-note {
+  border-top: 1px solid var(--sbc-border);
+  padding-top: 12px;
+}
+
+.sbc-inline-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--sbc-ink);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* -----------------------------------------------------
+   RESPONSIVE
+----------------------------------------------------- */
+
+@media (max-width: 960px) {
+  .sbc-tile-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sbc-editing-body {
+    grid-template-columns: 1fr;
+  }
+
+  .sbc-toggle-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .sbc-tile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sbc-field-row {
+    flex-direction: column;
+  }
+}
