@@ -12,7 +12,7 @@ const logSchema = new mongoose.Schema({ message: String, type: String, user: Str
 const orderSchema = new mongoose.Schema({
   orderId: { type: String, unique: true, required: true }, customerId: String, customerName: String, customerEmail: String, customerPhone: String, customerCity: String, customerState: String, gstin: String, address: String,
   items: [itemSchema], mode: String, status: { type: String, enum: ["Confirmed", "Packed", "Dispatched", "Shipped", "Delivered", "Return Due", "Return Sent", "Returned", "Complete", "Partially Returned", "Processing"], default: "Confirmed" },
-  orderValue: Number, depositHeld: Number, depositStatus: { type: String, enum: ["Pending", "Released", "Partially Released", "Forfeited"], default: "Pending" }, grandTotal: Number, discount: Number, gst: Number, listerPayout: Number, payoutStatus: { type: String, enum: ["Pending Approval", "Approved", "Paid"], default: "Pending Approval" }, invoiceNo: String, invoiceDate: String,
+  orderValue: Number, priceBeforePromo: Number, offerId: String, promoCode: String, promoDiscount: Number, depositHeld: Number, depositStatus: { type: String, enum: ["Pending", "Released", "Partially Released", "Forfeited"], default: "Pending" }, grandTotal: Number, discount: Number, gst: Number, listerPayout: Number, payoutStatus: { type: String, enum: ["Pending Approval", "Approved", "Paid"], default: "Pending Approval" }, invoiceNo: String, invoiceDate: String,
   logs: [logSchema], internalNotes: String
 }, { timestamps: true, strict: false });
 export default mongoose.model("Order", orderSchema);

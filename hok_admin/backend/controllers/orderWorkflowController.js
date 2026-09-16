@@ -5,7 +5,18 @@ import Payout from "../models/Payout.js";
 const findOrder = (id) => Order.findOne({ $or: [{ orderId: id }, { _id: id }] });
 const itemOf = (order, index) => order.items?.[Number(index)];
 const saveLog = (order, message, type = "Workflow") => { order.logs.push({ message, type, user: "Admin" }); };
-const validTransition = { Confirmed: ["Packed", "Processing"], Packed: ["Dispatched", "Shipped"], Dispatched: ["Shipped", "Delivered"], Shipped: ["Delivered"], Delivered: ["Return Due", "Returned", "Complete"], "Return Due": ["Return Sent", "Returned"], "Return Sent": ["Returned"], Returned: ["Partially Returned", "Complete"], "Partially Returned": ["Returned", "Complete"], Processing: ["Confirmed", "Packed"] };
+const validTransition = { 
+  Confirmed: ["Packed", "Dispatched", "Shipped", "Delivered", "Return Due", "Returned", "Complete", "Processing"], 
+  Packed: ["Confirmed", "Dispatched", "Shipped", "Delivered", "Complete"], 
+  Dispatched: ["Confirmed", "Packed", "Shipped", "Delivered", "Complete"], 
+  Shipped: ["Confirmed", "Dispatched", "Delivered", "Return Due", "Returned", "Complete"], 
+  Delivered: ["Confirmed", "Dispatched", "Shipped", "Return Due", "Return Sent", "Returned", "Complete"], 
+  "Return Due": ["Confirmed", "Delivered", "Return Sent", "Returned", "Complete"], 
+  "Return Sent": ["Confirmed", "Return Due", "Returned", "Complete"], 
+  Returned: ["Confirmed", "Delivered", "Partially Returned", "Complete"], 
+  "Partially Returned": ["Returned", "Complete"], 
+  Processing: ["Confirmed", "Packed", "Dispatched", "Shipped", "Delivered", "Complete"] 
+};
 const createPayoutsForOrder = async (order) => { for (const item of order.items || []) { if (!item.productId || !["Rental", "Preloved", "Buy"].includes(item.mode)) continue; const exists = await Payout.findOne({ orderId: order.orderId, productId: item.productId }); if (exists) continue; const product = await Product.findOne({ productId: item.productId }); const percentage = Number(product?.payoutPercentage ?? 80); const transaction = Number(item.amount || 0); const share = Math.round(transaction * percentage) / 100; await Payout.create({ payoutId: `PAY-${order.orderId}-${item.productId}`, productId: item.productId, listerId: product?.listerId || "UNASSIGNED", listerName: product?.listerName || "Unassigned Lister", orderId: order.orderId, productName: item.productName, mode: item.mode, transactionAmount: transaction, payoutPercentage: percentage, listerShare: share, hokCommission: Math.round((transaction - share) * 100) / 100, netPayout: share, dueDate: new Date(), status: "Pending" }); } };
 
 export const transitionOrder = async (req, res) => { try { const o = await findOrder(req.params.id); if (!o) return res.status(404).json({ success: false, message: "Order not found" }); const next = req.body.status; if (!validTransition[o.status]?.includes(next) && o.status !== next) return res.status(422).json({ success: false, message: `Invalid order transition: ${o.status} → ${next}` }); o.status = next; saveLog(o, `Order status changed to ${next}`); await o.save(); if (next === "Complete") await createPayoutsForOrder(o); res.json({ success: true, data: { ...o.toObject(), id: o.orderId } }); } catch (e) { res.status(422).json({ success: false, message: e.message }); } };

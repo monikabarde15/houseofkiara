@@ -140,6 +140,7 @@ export interface Submission {
   history: HistoryEntry[];
   email?: string | null;
   phone?: string | null;
+  assignedTo?: string;
 }
 
 export interface SubmissionFilters {

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Payout } from "../../../services/payoutApi";
+import { Payout, AdminUser } from "../../../services/payoutApi";
+import * as payoutApi from "../../../services/payoutApi";
 
 const WhatsAppIcon = () => (
   <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm">
@@ -12,10 +13,58 @@ const WhatsAppIcon = () => (
 
 interface DamageCompensationTabProps {
   payouts?: Payout[];
+  setPayouts?: React.Dispatch<React.SetStateAction<Payout[]>>;
+  setPending?: React.Dispatch<React.SetStateAction<number>>;
+  setPaid?: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function DamageCompensationTab({ payouts = [] }: DamageCompensationTabProps) {
-  const damagePayouts = payouts.filter(p => p.mode === 'Damage Comp.');
+export default function DamageCompensationTab({ payouts = [], setPayouts, setPending, setPaid }: DamageCompensationTabProps) {
+  const damagePayouts = payouts.filter(p => p.mode === 'Damage Comp.' || p.mode === 'Damage Compensation');
+  const [assignees, setAssignees] = useState<string[]>([]);
+
+  useEffect(() => {
+    payoutApi.getAdmins().then(admins => {
+      // Deduplicate admin names for a clean UI
+      const uniqueNames = Array.from(new Set(admins.map(a => a.name).filter(Boolean)));
+      if (uniqueNames.length === 0) uniqueNames.push('Master Admin');
+      setAssignees(uniqueNames);
+    }).catch(() => {});
+  }, []);
+
+  const handleApprove = async (record: Payout, approvedBy: string) => {
+    if (!setPayouts || !setPending || !setPaid) return;
+    try {
+      const updated = await payoutApi.markPaid(record.id, { paidBy: approvedBy });
+      setPayouts(prev => prev.map(p => p.id === record.id ? updated : p));
+      setPending(value => Math.max(0, value - updated.listerShare));
+      setPaid(value => value + updated.listerShare);
+      toast.success("Payout saved successfully.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to approve compensation payout');
+    }
+  };
+
+  const handleSaveDraft = async (record: Payout, amtStr: string, pctStr: string, approvedBy: string) => {
+    if (!setPayouts) return;
+    try {
+      const parsedAmt = Number(amtStr.replace(/,/g, ''));
+      const parsedPct = Number(pctStr);
+      const transactionAmount = record.transactionAmount || 0;
+      
+      const payload: Partial<Payout> = {
+        listerShare: parsedAmt,
+        payoutPercentage: parsedPct,
+        submissionAssignedTo: approvedBy,
+        hokCommission: Math.max(0, transactionAmount - parsedAmt),
+      };
+      
+      const updated = await payoutApi.updatePayout(record.id, payload);
+      setPayouts(prev => prev.map(p => p.id === record.id ? updated : p));
+      toast.success("Draft saved successfully.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to save draft');
+    }
+  };
 
   return (
     <div className="space-y-4 text-xs font-sans">
@@ -30,23 +79,25 @@ export default function DamageCompensationTab({ payouts = [] }: DamageCompensati
       )}
 
       {damagePayouts.map(r => (
-        <DamageCompCard key={r.id} record={r} />
+        <DamageCompCard key={r.id} record={r} assignees={assignees} onApprove={handleApprove} onSaveDraft={handleSaveDraft} />
       ))}
     </div>
   );
 }
 
-function DamageCompCard({ record }: { record: Payout }) {
+function DamageCompCard({ record, assignees, onApprove, onSaveDraft }: { record: Payout; assignees: string[]; onApprove: (record: Payout, approvedBy: string) => void; onSaveDraft: (record: Payout, amtStr: string, pctStr: string, approvedBy: string) => void }) {
   const [compPct, setCompPct] = useState("60");
-  const [compAmt, setCompAmt] = useState(record.listerShare.toString());
-  const [approvedBy, setApprovedBy] = useState("Priya (Ops)");
+  const [compAmt, setCompAmt] = useState((record.listerShare ?? 0).toString());
+  const [approvedBy, setApprovedBy] = useState(
+    record.submissionAssignedTo || (assignees.length > 0 ? assignees[0] : "Unassigned")
+  );
   const [reason, setReason] = useState("Damage compensation generated automatically.");
 
-  const handleApprove = () => {
-    toast.success(`Approved compensation payout for ${record.listerName} — ${record.productName}`);
+  const handleHold = () => {
+    toast("Payout placed on hold for review.", { icon: '⏸️' });
   };
 
-  const transactionVal = record.transactionAmount || record.listerShare + record.hokCommission;
+  const transactionVal = record.transactionAmount || ((record.listerShare ?? 0) + (record.hokCommission ?? 0));
 
   return (
     <div className="overflow-hidden rounded-md border border-[#E7CBC0] bg-white shadow-sm">
@@ -86,8 +137,12 @@ function DamageCompCard({ record }: { record: Payout }) {
 
             <div>
               <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">APPROVED BY</label>
-              <select value={approvedBy} onChange={(e) => setApprovedBy(e.target.value)} className="w-full rounded-md border border-[#FBD38D] bg-[#FFFDF5] px-3 py-2 text-sm font-medium text-[#742A2A] focus:border-[#DD6B20] focus:outline-none">
-                <option value="Priya (Ops)">Priya (Ops)</option>
+              <select
+                value={approvedBy}
+                onChange={(e) => setApprovedBy(e.target.value)}
+                className="w-full rounded-md border border-[#FBD38D] bg-[#FFFDF5] px-3 py-2 text-sm font-medium text-[#742A2A] focus:border-[#DD6B20] focus:outline-none"
+              >
+                {assignees.map(a => <option key={a} value={a}>{a}</option>)}
               </select>
             </div>
             
@@ -104,10 +159,18 @@ function DamageCompCard({ record }: { record: Payout }) {
               <input type="text" value={compAmt} onChange={(e) => setCompAmt(e.target.value)} className="w-full rounded-md border border-transparent bg-[#FFFDF5] px-3 py-2 text-2xl font-bold text-[#DD6B20] focus:outline-none shadow-[0_0_0_1px_#DD6B20_inset]" />
             </div>
 
-            <div className="flex gap-2 pt-2 mt-auto">
-              <button className="flex-1 rounded-md border border-[#FBD38D] bg-white px-4 py-3 text-sm font-medium text-[#DD6B20] transition hover:bg-[#FFFDF5]">Hold</button>
-              <button onClick={handleApprove} className="flex-1 rounded-md border border-transparent bg-[#9C4221] px-4 py-3 text-sm font-bold tracking-wide text-white shadow-md transition hover:bg-[#742A2A]">APPROVE COMP. ₹{Number(compAmt).toLocaleString('en-IN')}</button>
-            </div>
+            {record.status === 'Paid' ? (
+              <div className="flex flex-col gap-2 mt-auto">
+                <div className="flex-1 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-bold text-green-700">
+                  APPROVED & PAID
+                </div>
+              </div>
+            ) : (
+              <div className="flex gap-2 pt-2 mt-auto">
+                <button onClick={() => onSaveDraft(record, compAmt, compPct, approvedBy)} className="flex-1 rounded-md border border-[#FBD38D] bg-white px-4 py-3 text-sm font-medium text-[#DD6B20] transition hover:bg-[#FFFDF5]">Save Draft</button>
+                <button onClick={() => onApprove(record, approvedBy)} className="flex-1 rounded-md border border-transparent bg-[#9C4221] px-4 py-3 text-sm font-bold tracking-wide text-white shadow-md transition hover:bg-[#742A2A]">APPROVE COMP. ₹{Number(compAmt).toLocaleString('en-IN')}</button>
+              </div>
+            )}
           </div>
         </div>
       </div>

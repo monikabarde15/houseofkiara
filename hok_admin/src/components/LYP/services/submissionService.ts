@@ -57,6 +57,7 @@ const normalizeSubmission = (s: any): Submission => {
     decision: s.decision || null,
     assessment: s.assessment || null,
     history: s.history || [],
+    assignedTo: s.assignedTo || 'Unassigned',
   };
 };
 

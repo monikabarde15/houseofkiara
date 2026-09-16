@@ -42,6 +42,7 @@ export interface Customer {
   };
   addresses?: SavedAddress[];
   occasions?: CustomerOccasion[];
+  wishlist?: string[];
   internalNotes?: string;
 }
 
@@ -74,6 +75,9 @@ export interface Product {
   urlSlug?: string;
   blockedDates?: { from: string; to: string; reason: string }[];
   bookingHistory?: { orderId: string; customerName?: string; date?: string; amount?: number; status?: string }[];
+  externalBookings?: any[];
+  activityLog?: any[];
+  timesRented?: number;
   sku?: string; color?: string; craft?: string; technique?: string; story?: string; tags?: string[]; measurements?: Record<string, string>;
   taxRate?: number; gstRate?: number; cleaningFee?: number; extensionPrice?: number; payoutPercentage?: number; relatedProductIds?: string[];
   extendedWindowPrice?: number; perDayRate?: number; originalRetailPrice?: number; resalePayoutPercentage?: number; minimumOffer?: number; threadYarnDetail?: string; setIncludes?: string; origin?: string; weight?: string;
@@ -125,6 +129,13 @@ export interface Order {
     deductedAmount: number;
     reason: string;
     date?: string;
+    issueStatus?: 'None' | 'Reported' | 'Invalid' | 'Valid';
+    issueSource?: 'Admin' | 'Customer';
+    adminComment?: string;
+    customerRequestDetails?: {
+      reason: string;
+      date: string;
+    };
   };
   logs: { date: string; message: string; user: string }[];
   internalNotes?: string;
@@ -133,6 +144,8 @@ export interface Order {
 export interface Offer {
   id: string;
   backendId?: string;
+  productId?: string;
+  customerId?: string;
   customerName: string;
   customerEmail: string;
   productName: string;
@@ -204,6 +217,7 @@ export interface ListerSubmission {
   status: 'Pending' | 'Approved' | 'Rejected';
   submittedDate: string;
   description: string;
+  assignedTo?: string;
 }
 
 export interface PromoCode {

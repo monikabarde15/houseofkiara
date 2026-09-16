@@ -142,6 +142,11 @@ const offerSchema = new mongoose.Schema(
 
     customerState: String,
 
+    // Filled when an offer is used to create a booking so customer history
+    // can retrieve it directly and reliably.
+    customerId: String,
+    linkedOrderId: String,
+
     quantity: {
       type: Number,
       default: 1,

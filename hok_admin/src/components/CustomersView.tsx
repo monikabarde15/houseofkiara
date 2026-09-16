@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Search, Eye, Mail, Phone, MapPin, User, Save, ListFilter, AlertTriangle, MessageCircle, ChevronLeft, ExternalLink, Trash2, X, Loader2 } from 'lucide-react';
-import { Customer, Order, Product, SavedAddress, CustomerOccasion } from '../types';
+import { Customer, Order, Product, SavedAddress, CustomerOccasion, Offer } from '../types';
 import * as customerApi from '../services/customerApi';
+import * as orderApi from '../services/orderApi';
+import * as offerApi from '../services/offerApi';
 import toast from 'react-hot-toast';
 
 interface CustomersViewProps {
@@ -28,7 +30,14 @@ export default function CustomersView({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [detailOrders, setDetailOrders] = useState<Order[]>([]);
   const [isAddingCustomer, setIsAddingCustomer] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Reset page when filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedStatus]);
 
   // Delete confirmation modal state
   const [deleteTarget, setDeleteTarget] = useState<Customer | null>(null);
@@ -119,13 +128,38 @@ export default function CustomersView({
 
   const isEditingOrAdding = !!(editingCustomer || isAddingCustomer);
 
+
+
   React.useEffect(() => {
     onEditingChange?.(isEditingOrAdding);
   }, [isEditingOrAdding, onEditingChange]);
 
+  const [customerOffers, setCustomerOffers] = useState<Offer[]>([]);
+  const [offersLoading, setOffersLoading] = useState(false);
+
+  React.useEffect(() => {
+    if (activeTab === 'Offers' && editingCustomer) {
+      setOffersLoading(true);
+      offerApi.getOffers().then(allOffers => {
+        const matching = allOffers.filter(o => 
+          (o.customerId && o.customerId === (editingCustomer.customerId || editingCustomer.id)) ||
+          (o.customerEmail && o.customerEmail === editingCustomer.email) || 
+          (o.customerName && o.customerName === editingCustomer.name) ||
+          (o.phone && o.phone === editingCustomer.phone)
+        );
+        setCustomerOffers(matching);
+      }).catch(err => {
+        console.error("Failed to load offers", err);
+      }).finally(() => {
+        setOffersLoading(false);
+      });
+    }
+  }, [activeTab, editingCustomer]);
+
   const startEditing = (customer: Customer) => {
     setIsAddingCustomer(false);
     setEditingCustomer(customer);
+    setDetailOrders(orders);
     setActiveTab('Profile');
     setEditName(customer.name);
     setEditEmail(customer.email);
@@ -144,6 +178,18 @@ export default function CustomersView({
     setEditMarketingOptIn(customer.preferences?.marketingOptIn || false);
     setEditNotes(customer.internalNotes || '');
     setEditStatus(customer.status);
+
+    // Rehydrate a customer detail page from the database so all tabs use the
+    // same up-to-date orders, totals, deposits, and rental history.
+    Promise.all([
+      customerApi.getCustomerById(customer.customerId || customer.id),
+      orderApi.getOrders(),
+    ]).then(([freshCustomer, freshOrders]) => {
+      setEditingCustomer(freshCustomer);
+      setDetailOrders(freshOrders);
+    }).catch((error) => {
+      console.error('Unable to refresh customer detail data:', error);
+    });
 
     setAddresses(customer.addresses || []);
     setNewAddressLabel('');
@@ -187,7 +233,17 @@ export default function CustomersView({
   const handleSaveCustomer = async () => {
     if (!isAddingCustomer && !editingCustomer) return;
     const isNew = isAddingCustomer || !editingCustomer;
-    const customerId = editingCustomer ? (editingCustomer.customerId || editingCustomer.id) : `HOK-CUST-${Date.now()}`;
+    let nextCustId = 'CUST-00001';
+    if (!editingCustomer) {
+      const existingCustIds = customers
+        .map(c => c.id || c.customerId)
+        .filter(id => id && id.startsWith('CUST-'))
+        .map(id => parseInt(id.replace('CUST-', ''), 10))
+        .filter(num => !isNaN(num));
+      const maxId = existingCustIds.length > 0 ? Math.max(...existingCustIds) : 0;
+      nextCustId = `CUST-${String(maxId + 1).padStart(5, '0')}`;
+    }
+    const customerId = editingCustomer ? (editingCustomer.customerId || editingCustomer.id) : nextCustId;
 
     // Ensure valid email formatting
     let formattedEmail = editEmail.trim();
@@ -348,12 +404,16 @@ export default function CustomersView({
     return matchesSearch && matchesStatus;
   });
 
-  const getCustomerOrders = (email: string) => {
-    return orders.filter(o => o.customerEmail === email);
+  const getCustomerOrders = (cust: Customer) => {
+    const sourceOrders = editingCustomer && (cust.customerId || cust.id) === (editingCustomer.customerId || editingCustomer.id)
+      ? detailOrders
+      : orders;
+    const customerId = cust.customerId || cust.id;
+    return sourceOrders.filter((order) => order.customerId === customerId);
   };
 
   if (editingCustomer || isAddingCustomer) {
-    const custOrders = editingCustomer ? getCustomerOrders(editingCustomer.email) : [];
+    const custOrders = editingCustomer ? getCustomerOrders(editingCustomer) : [];
     return (
       <div className="min-h-full bg-[#FAF7F2] font-sans text-xs text-[#2A241F]">
         {/* Fixed Top Bar Header */}
@@ -446,7 +506,7 @@ export default function CustomersView({
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-white leading-tight">
-                        ₹{custOrders.reduce((sum, o) => sum + o.amount, 0).toLocaleString("en-IN")}
+                        ₹{custOrders.reduce((sum, o) => sum + Number(o.amount || (o as any).orderValue || (o as any).grandTotal || 0), 0).toLocaleString("en-IN")}
                       </div>
                       <div className="uppercase text-[10px] tracking-wider text-[#A89F91] mt-0.5 font-medium">
                         Lifetime Value
@@ -454,7 +514,7 @@ export default function CustomersView({
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-white leading-tight">
-                        ₹0
+                        ₹{custOrders.filter(o => o.depositStatus === 'Held' || ['Dispatched', 'Shipped', 'Delivered', 'Return Sent'].includes(o.status)).reduce((sum, o) => sum + Number(o.deposit || (o as any).depositHeld || 0), 0).toLocaleString("en-IN")}
                       </div>
                       <div className="uppercase text-[10px] tracking-wider text-[#A89F91] mt-0.5 font-medium">
                         Deposits Held
@@ -1000,7 +1060,9 @@ export default function CustomersView({
                           ₹{o.amount.toLocaleString('en-IN')}
                         </td>
                         <td className="px-4 py-4 text-stone-500">
-                          {(o as any).date || '—'}
+                          {o.mode === 'Rental' && (o as any).rentalStartDate && (o as any).rentalEndDate 
+                            ? `${(o as any).rentalStartDate} to ${(o as any).rentalEndDate}` 
+                            : (o as any).date || (o as any).createdAt?.split('T')[0] || '—'}
                         </td>
                         <td className="px-4 py-4">
                           <span className={`px-2 py-1 rounded text-[10px] ${o.status === 'Delivered' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
@@ -1048,17 +1110,17 @@ export default function CustomersView({
             </div>
 
             <div className="p-5">
-              {products.slice(0, 3).length === 0 ? (
+              {(!editingCustomer?.wishlist || editingCustomer.wishlist.length === 0) ? (
                 <p className="text-stone-400 text-center py-6">No saved items yet.</p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                  {products.slice(0, 3).map(p => (
+                  {products.filter(p => editingCustomer.wishlist?.includes(p.productId || p.id || '')).map(p => (
                     <div
                       key={p.id}
                       className="border border-stone-200 rounded-lg overflow-hidden bg-white hover:shadow-sm transition"
                     >
                       <img
-                        src={p.images[0]}
+                        src={p.images?.[0] || ''}
                         alt={p.name}
                         className="h-40 w-full object-cover"
                       />
@@ -1067,10 +1129,10 @@ export default function CustomersView({
                           {p.name}
                         </div>
                         <div className="text-[11px] text-stone-500">
-                          {p.designer} · Preloved
+                          {p.designer} · {p.condition || 'Preloved'}
                         </div>
                         <div className="text-sm font-bold text-stone-900 pt-1">
-                          ₹{p.rentalPrice.toLocaleString('en-IN')}
+                          ₹{(p.rentalPrice || 0).toLocaleString('en-IN')}
                         </div>
                       </div>
                     </div>
@@ -1193,30 +1255,46 @@ export default function CustomersView({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-stone-100 text-stone-600">
-                    {custOrders.filter(o => o.mode === 'Rental').map(o => (
-                      <tr key={o.id} className="hover:bg-[#fcf9f5] transition-colors">
-                        <td className="px-5 py-4 font-mono text-[11px] text-stone-500">
-                          {o.id}
-                        </td>
-                        <td className="px-5 py-4 font-semibold text-stone-900">
-                          {o.productName}
-                        </td>
-                        <td className="px-5 py-4 text-stone-500">
-                          {(o as any).date || '—'}
-                        </td>
-                        <td className="px-5 py-4 text-stone-500">
-                          —
-                        </td>
-                        <td className="px-5 py-4 text-stone-500">
-                          —
-                        </td>
-                        <td className="px-5 py-4">
-                          <span className="px-2 py-1 rounded text-[10px] bg-amber-100 text-amber-700">
-                            {o.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                    {custOrders.filter(o => o.mode === 'Rental' || o.items?.some(i => i.mode === 'Rental')).map(o => {
+                      const firstRentalItem = o.items?.find(i => i.mode === 'Rental') || o.items?.[0] || o as any;
+                      const startDate = firstRentalItem.rentalStartDate || o.rentalStartDate;
+                      const endDate = firstRentalItem.rentalEndDate || o.rentalEndDate || firstRentalItem.returnDueDate;
+                      let daysDiff = '—';
+                      if (endDate) {
+                        const parsedEnd = new Date(endDate);
+                        if (!isNaN(parsedEnd.getTime())) {
+                          const diff = Math.ceil((parsedEnd.getTime() - new Date().getTime()) / (1000 * 3600 * 24));
+                          if (diff > 0) daysDiff = `${diff} days left`;
+                          else if (diff === 0) daysDiff = 'Due today';
+                          else daysDiff = `${Math.abs(diff)} days overdue`;
+                        }
+                      }
+                      
+                      return (
+                        <tr key={o.id} className="hover:bg-[#fcf9f5] transition-colors">
+                          <td className="px-5 py-4 font-mono text-[11px] text-stone-500">
+                            {o.id}
+                          </td>
+                          <td className="px-5 py-4 font-semibold text-stone-900">
+                            {firstRentalItem.productName || o.productName}
+                          </td>
+                          <td className="px-5 py-4 text-stone-500">
+                            {startDate && endDate ? `${startDate} to ${endDate}` : (startDate || endDate || (o as any).date || '—')}
+                          </td>
+                          <td className="px-5 py-4 text-stone-500">
+                            {endDate || '—'}
+                          </td>
+                          <td className="px-5 py-4 text-stone-500">
+                            {['Returned', 'Complete', 'Processed'].includes(o.status) ? 'Returned' : daysDiff}
+                          </td>
+                          <td className="px-5 py-4">
+                            <span className={`px-2 py-1 rounded text-[10px] ${['Dispatched', 'Shipped', 'Delivered'].includes(o.status) ? 'bg-blue-100 text-blue-700' : ['Returned', 'Complete', 'Processed'].includes(o.status) ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                              {o.status}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -1264,14 +1342,20 @@ export default function CustomersView({
                   Deposit History
                 </h3>
                 <div className="flex items-center gap-3 text-xs text-stone-500">
-                  <span>Held ₹0 · To collect ₹25,000 — by 23 Mar 2026</span>
-                  <button className="border border-stone-300 px-3 py-1.5 rounded-md font-medium hover:bg-stone-50 whitespace-nowrap">
+                  <span>
+                    Held ₹{custOrders.filter(o => o.mode === 'Rental' && (o.depositStatus === 'Held' || ['Dispatched', 'Shipped', 'Delivered', 'Return Sent'].includes(o.status))).reduce((sum, o) => sum + (o.deposit || 0), 0).toLocaleString('en-IN')} 
+                    {' · '} 
+                    To collect ₹{custOrders.filter(o => o.mode === 'Rental' && o.status === 'Confirmed' && o.depositStatus !== 'Held').reduce((sum, o) => sum + (o.deposit || 0), 0).toLocaleString('en-IN')}
+                  </span>
+                  <button 
+                    onClick={() => setView('returns')}
+                    className="border border-stone-300 px-3 py-1.5 rounded-md font-medium hover:bg-stone-50 whitespace-nowrap">
                     Open Deposit Ledger →
                   </button>
                 </div>
               </div>
 
-              {custOrders.filter(o => o.mode === 'Rental').length === 0 ? (
+              {custOrders.filter(o => o.mode === 'Rental' && (o.deposit || 0) > 0).length === 0 ? (
                 <div className="p-8 text-center text-stone-400">
                   No deposits on file for this customer yet.
                 </div>
@@ -1289,33 +1373,103 @@ export default function CustomersView({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-stone-100 text-stone-600">
-                      {custOrders.filter(o => o.mode === 'Rental').map(o => (
-                        <tr key={o.id} className="hover:bg-[#fcf9f5] transition-colors">
-                          <td className="px-5 py-4 font-mono text-[11px] text-[#c5a880]">
-                            {o.id}
-                          </td>
-                          <td className="px-5 py-4 font-semibold text-stone-900">
-                            {o.productName}
-                          </td>
-                          <td className="px-5 py-4 font-semibold text-stone-900">
-                            ₹25,000
-                          </td>
-                          <td className="px-5 py-4">
-                            <span className="px-2 py-1 rounded text-[10px] bg-stone-200 text-stone-600">
-                              Pending Collection
-                            </span>
-                          </td>
-                          <td className="px-5 py-4 text-stone-500">
-                            Collect by 23 Mar 2026 · <span className="text-[#b45309] font-medium">today</span>
-                            <div className="text-[11px] text-stone-400">before dispatch</div>
-                          </td>
-                          <td className="px-5 py-4 text-right">
-                            <button className="bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] font-semibold px-3 py-1.5 rounded-md text-xs whitespace-nowrap">
-                              Record receipt →
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {custOrders.filter(o => o.mode === 'Rental' && (o.deposit || 0) > 0).map(o => {
+                        const isHeld = o.depositStatus === 'Held' || ['Dispatched', 'Shipped', 'Delivered', 'Return Sent'].includes(o.status);
+                        const isPending = o.status === 'Confirmed' && o.depositStatus !== 'Held';
+                        const isPhysicalReturnComplete = ['Returned', 'Complete', 'Processed'].includes(o.status);
+                        
+                        let depositStatus = 'Pending Collection';
+                        if (isPhysicalReturnComplete) depositStatus = o.depositDecision?.status || 'Released';
+                        else if (isHeld) depositStatus = 'Held';
+
+                        const isDepositPendingRefund = isPhysicalReturnComplete && depositStatus === 'Pending';
+                        const isDepositDeducted = isPhysicalReturnComplete && (depositStatus === 'Partial' || depositStatus === 'Forfeited');
+                        const isDepositFullyReleased = isPhysicalReturnComplete && depositStatus === 'Released';
+
+                        let badgeColor = 'bg-stone-200 text-stone-600';
+                        if (isHeld) badgeColor = 'bg-blue-100 text-blue-700';
+                        else if (isDepositPendingRefund) badgeColor = 'bg-amber-100 text-amber-700';
+                        else if (isDepositDeducted) badgeColor = 'bg-rose-100 text-rose-700';
+                        else if (isDepositFullyReleased) badgeColor = 'bg-green-100 text-green-700';
+
+                        let displayStatus = depositStatus;
+                        if (isDepositPendingRefund && o.depositDecision?.issueSource === 'Customer') displayStatus = 'Customer Request';
+                        else if (isDepositPendingRefund && o.depositDecision?.issueStatus === 'Reported') displayStatus = 'Issue Reported';
+                        else if (isDepositPendingRefund) displayStatus = 'Refund Pending';
+
+                        return (
+                          <tr key={o.id} className="hover:bg-[#fcf9f5] transition-colors">
+                            <td className="px-5 py-4 font-mono text-[11px] text-[#c5a880]">
+                              {o.id}
+                            </td>
+                            <td className="px-5 py-4 font-semibold text-stone-900">
+                              {o.productName}
+                            </td>
+                            <td className="px-5 py-4 font-semibold text-stone-900">
+                              ₹{(o.deposit || 0).toLocaleString('en-IN')}
+                            </td>
+                            <td className="px-5 py-4">
+                              <span className={`px-2 py-1 rounded text-[10px] font-medium tracking-wide ${badgeColor}`}>
+                                {displayStatus}
+                              </span>
+                            </td>
+                            <td className="px-5 py-4 text-stone-500">
+                              {isPending ? (
+                                <>
+                                  Collect by {o.rentalStartDate || 'dispatch'} · <span className="text-[#b45309] font-medium">pending</span>
+                                  <div className="text-[11px] text-stone-400">before dispatch</div>
+                                </>
+                              ) : isHeld ? (
+                                <>
+                                  Held securely
+                                  <div className="text-[11px] text-stone-400">
+                                    {o.status === 'Confirmed' ? 'awaiting dispatch' : 'awaiting return'}
+                                  </div>
+                                </>
+                              ) : isDepositPendingRefund ? (
+                                <>
+                                  <span className="text-amber-600 font-medium">
+                                    {o.depositDecision?.issueSource === 'Customer' ? 'Customer Dispute/Request' : o.depositDecision?.issueStatus === 'Reported' ? 'Admin Reviewing Damage' : 'Awaiting Release'}
+                                  </span>
+                                  <div className="text-[11px] text-stone-400">action required</div>
+                                </>
+                              ) : isDepositDeducted ? (
+                                <>
+                                  Resolved
+                                  <div className="text-[11px] text-rose-500 font-medium">₹{o.depositDecision?.deductedAmount?.toLocaleString('en-IN')} deducted</div>
+                                </>
+                              ) : (
+                                <>
+                                  Resolved
+                                  <div className="text-[11px] text-green-600 font-medium">full deposit released</div>
+                                </>
+                              )}
+                            </td>
+                            <td className="px-5 py-4 text-right flex justify-end gap-2">
+                              <button 
+                                onClick={() => {
+                                  setSelectedOrderId(o.id);
+                                  setView(`order_detail:${o.id}`);
+                                }}
+                                className="px-3 py-1.5 bg-white border border-stone-200 hover:border-[#c5a880] text-stone-700 hover:bg-stone-50 rounded text-xs font-semibold flex items-center gap-1 cursor-pointer transition"
+                              >
+                                View Order
+                              </button>
+                              {isPending && (
+                                <button 
+                                  onClick={() => {
+                                    setSelectedOrderId(o.id);
+                                    setView('returns');
+                                  }}
+                                  className="text-[#c5a880] hover:text-[#b49870] font-medium transition flex items-center gap-1 cursor-pointer"
+                                >
+                                  Collect
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -1347,7 +1501,7 @@ export default function CustomersView({
           <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-stone-100">
               <h3 className="font-serif font-bold text-stone-900 text-sm">
-                Offers & Enquiries — {editingCustomer?.name || 'New Customer'} (1)
+                Offers & Enquiries — {editingCustomer?.name || 'New Customer'} ({customerOffers.length})
               </h3>
             </div>
 
@@ -1359,38 +1513,61 @@ export default function CustomersView({
                     <th className="px-5 py-3">Piece</th>
                     <th className="px-5 py-3">Listed</th>
                     <th className="px-5 py-3">Offered</th>
+                    <th className="px-5 py-3">Coupon</th>
                     <th className="px-5 py-3">Counter</th>
                     <th className="px-5 py-3">Status</th>
                     <th className="px-5 py-3">Received</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100 text-stone-600">
-                  <tr className="hover:bg-[#fcf9f5] transition-colors cursor-pointer">
-                    <td className="px-5 py-4 font-mono text-[11px] text-stone-500">
-                      OFR-203
-                    </td>
-                    <td className="px-5 py-4">
-                      <div className="font-semibold text-stone-900">Charcoal Silk Bandhgala</div>
-                      <div className="text-[11px] text-stone-400">Manish Malhotra</div>
-                    </td>
-                    <td className="px-5 py-4 font-semibold text-stone-900">
-                      ₹38,000
-                    </td>
-                    <td className="px-5 py-4 font-semibold text-[#c5a880]">
-                      ₹32,000
-                    </td>
-                    <td className="px-5 py-4 text-stone-400">
-                      —
-                    </td>
-                    <td className="px-5 py-4">
-                      <span className="px-2 py-1 rounded text-[10px] bg-green-100 text-green-700">
-                        Accepted
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 text-stone-500">
-                      22 May 2026
-                    </td>
-                  </tr>
+                  {offersLoading ? (
+                    <tr>
+                      <td colSpan={8} className="px-5 py-6 text-center text-stone-400">Loading offers...</td>
+                    </tr>
+                  ) : customerOffers.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="px-5 py-6 text-center text-stone-400">No offers or enquiries found for this customer.</td>
+                    </tr>
+                  ) : (
+                    customerOffers.map(offer => {
+                      const linkedOrder = getCustomerOrders(editingCustomer!).find((order: any) =>
+                        String(order.orderId || order.id || '') === String((offer as any).linkedOrderId || '') ||
+                        String((order as any).offerId || '') === String(offer.id || '')
+                      );
+                      const coupon = (linkedOrder as any)?.promoCode || '';
+                      const couponDiscount = Number((linkedOrder as any)?.promoDiscount || (linkedOrder as any)?.discount || 0);
+                      return (
+                      <tr key={offer.id} onClick={() => setView('offers')} className="hover:bg-[#fcf9f5] transition-colors cursor-pointer">
+                        <td className="px-5 py-4 font-mono text-[11px] text-stone-500">
+                          {offer.id}
+                        </td>
+                        <td className="px-5 py-4">
+                          <div className="font-semibold text-stone-900">{offer.productName}</div>
+                          {/* <div className="text-[11px] text-stone-400">Designer if available</div> */}
+                        </td>
+                        <td className="px-5 py-4 font-semibold text-stone-900">
+                          ₹{offer.marketPrice.toLocaleString('en-IN')}
+                        </td>
+                        <td className="px-5 py-4 font-semibold text-[#c5a880]">
+                          ₹{offer.offerPrice.toLocaleString('en-IN')}
+                        </td>
+                        <td className="px-5 py-4 text-stone-600">
+                          {coupon ? <><span className="font-semibold text-emerald-700">{coupon}</span>{couponDiscount > 0 && <span className="block text-[10px] text-stone-400">₹{couponDiscount.toLocaleString('en-IN')}</span>}</> : '—'}
+                        </td>
+                        <td className="px-5 py-4 text-stone-400">
+                          ₹{Math.max(0, Number(offer.counterPrice || 0)).toLocaleString('en-IN')}
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className={`px-2 py-1 rounded text-[10px] ${offer.status === 'Accepted' ? 'bg-green-100 text-green-700' : offer.status === 'Declined' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                            {offer.status}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4 text-stone-500">
+                          {new Date(offer.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        </td>
+                      </tr>
+                    )})
+                  )}
                 </tbody>
               </table>
             </div>
@@ -1693,25 +1870,34 @@ export default function CustomersView({
             <option>Website</option>
             <option>Manual - WA</option>
           </select>
-
         </div>
 
-        <div className="flex gap-3">
-
+        <div className="flex gap-3 items-center">
+          <button
+            onClick={() => {
+              const toastId = toast.loading('Refreshing customers...');
+              customerApi.getCustomers().then(res => {
+                if (Array.isArray(res)) {
+                  res.forEach(c => onUpdateCustomer(c));
+                  toast.success('List refreshed successfully!', { id: toastId });
+                }
+              }).catch(() => toast.error('Failed to refresh data', { id: toastId }));
+            }}
+            className="border border-stone-300 px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-50 transition cursor-pointer"
+          >
+            Refresh
+          </button>
           <button
             onClick={startAdding}
             className="bg-[#C7A55C] hover:bg-[#B9974B] text-[#2A2118] font-semibold px-4 py-2 rounded-md text-xs transition cursor-pointer shadow-2xs">
             + Add Customer
           </button>
-
           <button
-            className="border border-stone-300 px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-50"
+            className="border border-stone-300 px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-50 cursor-pointer"
           >
             Export CSV
           </button>
-
         </div>
-
       </div>
 
       {/* Customer Table */}
@@ -1720,27 +1906,16 @@ export default function CustomersView({
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-stone-50 text-stone-400 uppercase text-[10px] tracking-wider border-b border-stone-200">
-
                 <th className="px-5 py-3">Customer</th>
-
                 <th className="px-5 py-3">Location</th>
-
                 <th className="px-5 py-3">Modes</th>
-
                 <th className="px-5 py-3">Orders</th>
-
                 <th className="px-5 py-3">Lifetime Value</th>
-
                 <th className="px-5 py-3">Last Order</th>
-
                 <th className="px-5 py-3">Joined</th>
-
                 <th className="px-5 py-3">Source</th>
-
                 <th className="px-5 py-3">Status</th>
-
                 <th className="px-5 py-3 text-right">Actions</th>
-
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100 text-stone-600 font-sans">
@@ -1751,7 +1926,7 @@ export default function CustomersView({
                   </td>
                 </tr>
               ) : (
-                filteredCustomers.map(c => (
+                filteredCustomers.slice((currentPage - 1) * 10, currentPage * 10).map(c => (
                 <tr
                   key={c.id}
                   className="hover:bg-[#fcf9f5] transition-colors border-b border-stone-100"
@@ -1763,87 +1938,68 @@ export default function CustomersView({
                         <div className="font-semibold text-stone-900">
                           {c.name}
                         </div>
-
                         <div className="text-[11px] text-stone-500">
                           {c.email}
                         </div>
                       </div>
-
                       <span className="flex items-center justify-center w-7 h-7 rounded bg-[#22c55e]">
                         <MessageCircle className="w-4 h-4 text-white" />
                       </span>
                     </div>
                   </td>
-
                   {/* Location */}
-                  <td className="px-5 py-4">
-                    {c.location}
-                  </td>
-
+                  <td className="px-5 py-4">{c.location}</td>
                   {/* Modes */}
                   <td className="px-5 py-4">
                     <div className="flex gap-1">
-                      <span className="bg-green-100 text-green-700 px-2 rounded text-[10px]">
-                        R
-                      </span>
-
-                      <span className="bg-orange-100 text-orange-700 px-2 rounded text-[10px]">
-                        P
-                      </span>
+                      <span className="bg-green-100 text-green-700 px-2 rounded text-[10px]">R</span>
+                      <span className="bg-orange-100 text-orange-700 px-2 rounded text-[10px]">P</span>
                     </div>
                   </td>
-
                   {/* Orders */}
-                  <td className="px-5 py-4 font-medium">
-                    {getCustomerOrders(c.email).length}
-                  </td>
-
-                  {/* Lifetime */}
-                  <td className="px-5 py-4 font-semibold">
-                    ₹{getCustomerOrders(c.email)
-                      .reduce((sum, o) => sum + o.amount, 0)
-                      .toLocaleString("en-IN")}
-                  </td>
-
+                  {(() => {
+                    const cOrders = getCustomerOrders(c);
+                    const dispCount = cOrders.length;
+                    const orderSum = cOrders.reduce((sum, o) => sum + Number(o.amount || (o as any).orderValue || (o as any).grandTotal || 0), 0);
+                    const dispSpent = orderSum;
+                    return (
+                      <>
+                        <td className="px-5 py-4 font-medium">
+                          <span className="inline-flex items-center justify-center font-bold px-2.5 py-0.5 rounded-full text-xs bg-stone-100 text-stone-900 border border-stone-200">
+                            {dispCount}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4 font-semibold text-stone-900">
+                          ₹{dispSpent.toLocaleString("en-IN")}
+                        </td>
+                      </>
+                    );
+                  })()}
                   {/* Last Order */}
-                  <td className="px-5 py-4">
-                    {c.lastOrderDate}
-                  </td>
-
+                  <td className="px-5 py-4">{c.lastOrderDate}</td>
                   {/* Joined */}
-                  <td className="px-5 py-4">
-                    {c.joinedDate}
-                  </td>
-
+                  <td className="px-5 py-4">{c.joinedDate}</td>
                   {/* Source */}
-                  <td className="px-5 py-4 text-stone-500">
-                    Website
-                  </td>
-
+                  <td className="px-5 py-4 text-stone-500">{c.source || '—'}</td>
                   {/* Status */}
                   <td className="px-5 py-4">
-                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-xs">
-                      {c.status}
-                    </span>
+                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-xs">{c.status}</span>
                   </td>
-
                   {/* Actions: View + Delete */}
                   <td className="px-5 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => startEditing(c)}
-                        className="inline-flex items-center gap-1.5 border border-stone-300 rounded-md px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 whitespace-nowrap"
+                        className="inline-flex items-center gap-1.5 border border-stone-300 rounded-md px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 whitespace-nowrap cursor-pointer"
                       >
-                        <Eye className="h-3.5 w-3.5" />
-                        View
+                        <Eye className="h-3.5 w-3.5" /> View
                       </button>
                       <button
                         onClick={() => openDeleteModal(c)}
-                        className="inline-flex items-center gap-1.5 border border-rose-200 rounded-md px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 whitespace-nowrap"
+                        className="inline-flex items-center gap-1.5 border border-rose-200 rounded-md px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 whitespace-nowrap cursor-pointer"
                         title={`Delete ${c.name}`}
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        Delete
+                        <Trash2 className="h-3.5 w-3.5" /> Delete
                       </button>
                     </div>
                   </td>
@@ -1854,6 +2010,42 @@ export default function CustomersView({
           </table>
         </div>
       </div>
+
+      {/* Pagination Controls */}
+      {filteredCustomers.length > 10 && (
+        <div className="flex items-center justify-between bg-white px-4 py-4 border border-stone-200/80 sm:px-6 rounded-lg mt-4 shadow-sm">
+          <div className="flex flex-1 items-center justify-between">
+            <div>
+              <p className="text-xs text-stone-500 font-sans">
+                Showing <span className="font-semibold text-stone-800">{((currentPage - 1) * 10) + 1}</span> to <span className="font-semibold text-stone-800">{Math.min(currentPage * 10, filteredCustomers.length)}</span> of <span className="font-semibold text-stone-800">{filteredCustomers.length}</span> results
+              </p>
+            </div>
+            <div>
+              <nav className="inline-flex rounded-md gap-2" aria-label="Pagination">
+                <button
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  className="relative inline-flex items-center rounded px-3 py-1.5 text-[#c5a880] border border-stone-200 bg-white hover:bg-[#fcf9f5] hover:border-[#c5a880] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition shadow-xs"
+                >
+                  <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                  <span className="text-xs font-semibold ml-1">Prev</span>
+                </button>
+                <div className="relative inline-flex items-center px-4 py-1.5 text-xs font-bold text-[#3d2d14] bg-[#fcf9f5] border border-stone-200 rounded shadow-inner">
+                  Page {currentPage} of {Math.ceil(filteredCustomers.length / 10)}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(Math.min(Math.ceil(filteredCustomers.length / 10), currentPage + 1))}
+                  disabled={currentPage >= Math.ceil(filteredCustomers.length / 10)}
+                  className="relative inline-flex items-center rounded px-3 py-1.5 text-[#c5a880] border border-stone-200 bg-white hover:bg-[#fcf9f5] hover:border-[#c5a880] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition shadow-xs"
+                >
+                  <span className="text-xs font-semibold mr-1">Next</span>
+                  <ChevronLeft className="h-4 w-4 rotate-180" aria-hidden="true" />
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {deleteTarget && (

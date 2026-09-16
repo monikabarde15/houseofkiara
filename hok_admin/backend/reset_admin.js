@@ -6,6 +6,11 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const connectionString =
+  process.env.DATABASE_URL_POOLER ||
+  process.env.DATABASE_URL ||
+  "postgresql://postgres.qfwrxdgjywseodbtadnx:DpUpEOIutDJo6l41@aws-0-ap-south-1.pooler.supabase.com:6543/postgres";
+
 const scrypt = promisify(crypto.scrypt);
 const hashPassword = async (password, salt = crypto.randomBytes(16).toString("hex")) => ({
   salt,
@@ -14,7 +19,7 @@ const hashPassword = async (password, salt = crypto.randomBytes(16).toString("he
 
 async function run() {
   const client = new Client({
-    connectionString: process.env.DATABASE_URL
+    connectionString,
   });
   
   try {

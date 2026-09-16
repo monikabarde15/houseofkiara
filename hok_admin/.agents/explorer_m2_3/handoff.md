@@ -64,7 +64,7 @@
 
 - **No Source Code Direct Modification**: As an explorer agent, no production source code was modified. Complete, drop-in replacement code for `apiClient.ts` and `authApi.ts` has been documented in `analysis.md`.
 - **Domain Services Migration Scope**: Migrating domain services (`offerApi.ts`, `productSectionsApi.ts`, etc.) to `apiClient.ts` should be coordinated with the respective milestone implementers (M3 for Operations, M4 for Catalogue).
-- **Network / Proxy Setup**: Frontend is configured in `vite.config.ts` to proxy `/api` to `http://localhost:5000`. The proposed `apiClient.ts` supports both relative `/api` paths and explicit base URLs.
+- **Network / Proxy Setup**: Frontend is configured in `vite.config.ts` to proxy `/api` to `http://localhost:5003`. The proposed `apiClient.ts` supports both relative `/api` paths and explicit base URLs.
 
 ---
 

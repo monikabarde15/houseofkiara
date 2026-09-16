@@ -17,8 +17,8 @@ export const validateOffer = (data) => {
         customerName: Joi.string().required(),
 
         customerEmail: Joi.string()
-            .email()
-            .allow("", null),
+            .allow("", null)
+            .empty(""),
 
         customerPhone: Joi.string().allow("", null),
 
@@ -42,14 +42,20 @@ export const validateOffer = (data) => {
 
         expiresAt: Joi.date().allow(null),
 
-        notes: Joi.string().allow("", null)
+        notes: Joi.string().allow("", null),
+
+        channel: Joi.string().allow("", null),
 
     });
 
     return schema.custom((value, helpers) => {
-        if (value.offeredAmount > value.originalAmount && value.originalAmount > 0) return helpers.error("any.custom", { message: "Offered amount cannot exceed original amount" });
-        if (value.discount > value.originalAmount && value.originalAmount > 0) return helpers.error("any.custom", { message: "Discount cannot exceed original amount" });
-        if (value.finalAmount > 0 && value.originalAmount > 0 && value.finalAmount > value.originalAmount) return helpers.error("any.custom", { message: "Final amount cannot exceed original amount" });
+        // Only validate amounts when both originalAmount and offeredAmount are non-zero
+        if (value.offeredAmount > 0 && value.originalAmount > 0 && value.offeredAmount > value.originalAmount)
+            return helpers.error("any.custom", { message: "Offered amount cannot exceed original amount" });
+        if (value.discount > 0 && value.originalAmount > 0 && value.discount > value.originalAmount)
+            return helpers.error("any.custom", { message: "Discount cannot exceed original amount" });
+        if (value.finalAmount > 0 && value.originalAmount > 0 && value.finalAmount > value.originalAmount)
+            return helpers.error("any.custom", { message: "Final amount cannot exceed original amount" });
         return value;
     }).messages({ "any.custom": "{{#message}}" }).validate(data, { abortEarly: false, stripUnknown: true });
 

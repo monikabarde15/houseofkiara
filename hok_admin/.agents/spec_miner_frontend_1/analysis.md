@@ -19,7 +19,7 @@ The frontend is a React 19 single-page application built with TypeScript, Vite 6
 
 ## 2. Frontend Structure & Stack
 
-- **Build Tool**: Vite 6.2.3 (`vite.config.ts`), dev server on port `3000` with `/api` proxy forwarding to `http://localhost:5000`.
+- **Build Tool**: Vite 6.2.3 (`vite.config.ts`), dev server on port `3000` with `/api` proxy forwarding to `http://localhost:5003`.
 - **Framework**: React 19.0.1, React DOM 19.0.1.
 - **Styling**: Tailwind CSS 4 (`@tailwindcss/vite`), custom CSS stylesheets per module.
 - **Icons**: Lucide React (`lucide-react`).

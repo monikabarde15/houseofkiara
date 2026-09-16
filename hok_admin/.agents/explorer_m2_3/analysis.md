@@ -20,7 +20,7 @@ The objective of Milestone 2 is to establish robust, secure, and persistent admi
 ### 2.1 `src/services/apiClient.ts`
 
 #### Current Implementation (Lines 1–40):
-- Base URL: `const API_BASE_URL = 'http://localhost:5000/api';`
+- Base URL: `const API_BASE_URL = 'http://localhost:5003/api';`
 - Token extraction: Only checks `localStorage.getItem('hok_admin_session')`.
 - Headers: Always injects `'Content-Type': 'application/json'`, which corrupts `FormData` payloads.
 - 401 Handling: Throws generic `Error` with message, but does not clear `localStorage` tokens or notify the React runtime.
@@ -39,7 +39,7 @@ The objective of Milestone 2 is to establish robust, secure, and persistent admi
    - If `options.body` is an instance of `FormData`, omit `'Content-Type'` header so the browser automatically populates multipart boundaries.
    - Always inject `Accept: 'application/json'` and `Authorization: Bearer <token>` when a token exists.
 4. **URL Normalization**:
-   - Support relative paths (`/orders`), absolute API paths (`/api/orders`), full URLs (`http://localhost:5000/api/orders`), and ensure no double slashes.
+   - Support relative paths (`/orders`), absolute API paths (`/api/orders`), full URLs (`http://localhost:5003/api/orders`), and ensure no double slashes.
 
 ---
 
@@ -108,7 +108,7 @@ The objective of Milestone 2 is to establish robust, secure, and persistent admi
  * and graceful 401 Unauthorized token clearance and event broadcasting.
  */
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:5003/api';
 
 /**
  * Retrieves the active auth token from localStorage.

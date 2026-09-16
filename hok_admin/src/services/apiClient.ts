@@ -1,4 +1,6 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000') + '/api';
+// All browser API requests go through the port-3000 reverse proxy. This keeps
+// the admin portal on one origin and avoids stale hard-coded backend ports.
+export const API_BASE_URL = '/api';
 
 export const getAuthToken = (): string | null => {
   try {
@@ -30,6 +32,9 @@ export const apiRequest = async <T = any>(
 
   const body = await response.json().catch(() => ({}));
   if (!response.ok || body.success === false) {
+    if (response.status === 401) {
+      localStorage.removeItem('hok_admin_session');
+    }
     throw new Error(body.message || `Request to ${path} failed with status ${response.status}`);
   }
 

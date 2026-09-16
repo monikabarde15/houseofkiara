@@ -41,7 +41,7 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
   const codeId = propCodeId || '';
   const [activeTab, setActiveTab] = useState<'performance' | 'rules'>('performance');
   
-  const { code, loading, error, derivedState, redemptions, refresh } = usePromotionDetail(codeId);
+  const { code, loading, error, derivedState, redemptions, promotionOrders, refresh } = usePromotionDetail(codeId);
   const { pauseCode, resumeCode, deleteCode, copyCode, updateCode } = usePromotionActions();
   const { getAttemptsForCode } = useRefusedAttempts();
   const { items, archetype, result, addItem, removeItem, clearBag, setArchetype, evaluate } = useTestBag();
@@ -126,6 +126,23 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
   }
 
   const refusedAttempts = getAttemptsForCode(code.code);
+  const ledgerOrders = promotionOrders.map((order: any) => {
+    const base = Number(order.priceBeforePromo ?? order.orderValue ?? order.amount ?? 0);
+    const discount = Math.max(0, Number(order.promoDiscount ?? order.discount ?? 0));
+    return {
+      id: order.orderId || order.id || order._id,
+      customer: order.customerName || order.customerId || 'Customer',
+      mode: order.mode || 'Rental',
+      placed: order.createdAt || order.orderDate || order.rentalStartDate || new Date().toISOString(),
+      base,
+      discount,
+      customerPaid: Math.max(0, base - discount),
+      status: order.status || 'Confirmed',
+    };
+  });
+  const orderValueThroughCode = ledgerOrders.reduce((sum, order) => sum + order.base, 0);
+  const discountFunded = ledgerOrders.reduce((sum, order) => sum + order.discount, 0);
+  const discountRate = orderValueThroughCode > 0 ? Math.round((discountFunded / orderValueThroughCode) * 100) : 0;
 
   return (
     <div className="promotions-detail-view">
@@ -157,12 +174,12 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
           <RedemptionEconomics
             code={code}
             redemptions={redemptions}
-            orderValue={redemptions * 5000} // Mock
-            discountFunded={redemptions * 500} // Mock
-            discountRate={10}
-            firstOrders={Math.floor(redemptions * 0.4)}
-            qualifyingLivePieces={3} // Since BRIDAL500 has 3 in design and the rest is mock
-            cameBackCount={Math.floor(redemptions * 0.1)}
+            orderValue={orderValueThroughCode}
+            discountFunded={discountFunded}
+            discountRate={discountRate}
+            firstOrders={0}
+            qualifyingLivePieces={0}
+            cameBackCount={0}
           />
 
           <RefusedAttempts
@@ -172,7 +189,7 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
           />
 
           <OrdersLedger
-            orders={[]} // Mock
+            orders={ledgerOrders}
             code={code}
           />
         </>

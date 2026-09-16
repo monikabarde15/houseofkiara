@@ -44,6 +44,7 @@ export const LYPTable: React.FC<LYPTableProps> = ({
             <th>Lister</th>
             <th>Intent</th>
             <th>Channel</th>
+            <th>Assigned</th>
             <th>Status</th>
             <th className="lyp-table-action">Action</th>
           </tr>

@@ -67,10 +67,10 @@ export default function ByProductTab({ payouts = [] }: ByProductTabProps) {
                   <td className="px-4 py-3">{new Date(t.dueDate).toLocaleDateString()}</td>
                   <td className="px-4 py-3 text-[#8a6a2c] font-mono text-[10px]">{t.orderId}</td>
                   <td className="px-4 py-3 font-semibold text-[#8a6a2c]">{t.listerName}</td>
-                  <td className="px-4 py-3 font-medium">₹{(t.transactionAmount || t.listerShare + t.hokCommission).toLocaleString('en-IN')}</td>
-                  <td className="px-4 py-3 text-stone-500">₹{t.hokCommission.toLocaleString('en-IN')}</td>
+                  <td className="px-4 py-3 font-medium">₹{(Number(t.transactionAmount || ((t.listerShare || 0) + (t.hokCommission || 0))) || 0).toLocaleString('en-IN')}</td>
+                  <td className="px-4 py-3 text-stone-500">₹{(Number(t.hokCommission) || 0).toLocaleString('en-IN')}</td>
                   <td className={`px-4 py-3 font-semibold ${t.status === 'Paid' ? 'text-green-600' : 'text-orange-500'}`}>
-                    ₹{t.listerShare.toLocaleString('en-IN')}
+                    ₹{(Number(t.listerShare) || 0).toLocaleString('en-IN')}
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2.5 py-1 rounded text-[10px] font-medium ${statusBadgeClasses[t.status] || statusBadgeClasses['Pending']}`}>

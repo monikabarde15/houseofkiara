@@ -20,12 +20,12 @@ interface ListersTableProps {
   onRowClick: (lister: Lister) => void;
   onDeleteLister?: (lister: Lister) => Promise<void>;
   totalCount: number;
+  allProducts?: any[];
+  allPayouts?: any[];
+  allSubmissions?: any[];
+  allRecalls?: any[];
 }
-// Fallback empty arrays until backend has these connected
-const mockPayouts: any[] = [];
-const mockSubmissions: any[] = [];
-const mockRecalls: any[] = [];
-const mockProducts: any[] = [];
+
 
 export const ListersTable: React.FC<ListersTableProps> = ({
   listers,
@@ -35,6 +35,10 @@ export const ListersTable: React.FC<ListersTableProps> = ({
   onRowClick,
   onDeleteLister,
   totalCount,
+  allProducts = [],
+  allPayouts = [],
+  allSubmissions = [],
+  allRecalls = [],
 }) => {
   const [deleteTarget, setDeleteTarget] = useState<Lister | null>(null);
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
@@ -102,14 +106,14 @@ export const ListersTable: React.FC<ListersTableProps> = ({
     let aVal: any;
     let bVal: any;
 
-    const aPayouts = mockPayouts.filter(p => p.listerId === a.id);
-    const bPayouts = mockPayouts.filter(p => p.listerId === b.id);
+    const aPayouts = allPayouts.filter(p => p.listerId === a.id || p.listerId === a.listerId);
+    const bPayouts = allPayouts.filter(p => p.listerId === b.id || p.listerId === b.listerId);
     
     const aLedger = calculateLedger(aPayouts);
     const bLedger = calculateLedger(bPayouts);
 
-    const aProducts = mockProducts.filter(p => p.listerId === a.id);
-    const bProducts = mockProducts.filter(p => p.listerId === b.id);
+    const aProducts = allProducts.filter(p => p.listerId === a.id || p.listerId === a.listerId);
+    const bProducts = allProducts.filter(p => p.listerId === b.id || p.listerId === b.listerId);
 
     if (filters.sortBy === 'name') {
       aVal = a.name;
@@ -203,10 +207,10 @@ export const ListersTable: React.FC<ListersTableProps> = ({
           </thead>
           <tbody>
             {sortedListers.map((lister) => {
-              const listerPayouts = mockPayouts.filter(p => p.listerId === lister.id);
-              const listerSubmissions = mockSubmissions.filter(s => s.listerId === lister.id);
-              const listerRecalls = mockRecalls.filter(r => r.pieceId === lister.id || r.id === lister.id);
-              const listerProducts = mockProducts.filter(p => p.listerId === lister.id);
+              const listerPayouts = allPayouts.filter(p => p.listerId === lister.id || p.listerId === lister.listerId);
+              const listerSubmissions = allSubmissions.filter(s => s.listerId === lister.id || s.listerId === lister.listerId);
+              const listerRecalls = allRecalls.filter(r => r.pieceId === lister.id || r.id === lister.id || r.pieceId === lister.listerId);
+              const listerProducts = allProducts.filter(p => p.listerId === lister.id || p.listerId === lister.listerId);
 
               const ledger = calculateLedger(listerPayouts);
               const attentionFlags = calculateAttentionFlags(lister, listerSubmissions, listerRecalls, listerPayouts);
@@ -220,7 +224,7 @@ export const ListersTable: React.FC<ListersTableProps> = ({
                     <div className="td-p">{lister.name}</div>
                     <div className="td-s">{lister.email || '—'}</div>
                   </td>
-                  <td>{lister.city || '—'}</td>
+                  <td>{lister.city || lister.address?.city || lister.pickup?.city || '—'}</td>
                   <td>{listerProducts.length}</td>
                   <td className="td-earned">{inr(ledger.paid)}</td>
                   <td>

@@ -5,6 +5,13 @@ import { Lister, PayoutTransaction, ListerLedger } from '../../types/lister.type
 import { TaxStrip } from './TaxStrip';
 import { PayoutStats } from './PayoutStats';
 import { PayoutTable } from './PayoutTable';
+// src/components/Listers/tabs/PayoutHistory/PayoutHistoryTab.tsx
+
+import React from 'react';
+import { Lister, PayoutTransaction, ListerLedger } from '../../types/lister.types';
+import { TaxStrip } from './TaxStrip';
+import { PayoutStats } from './PayoutStats';
+import { PayoutTable } from './PayoutTable';
 import { usePayouts } from '../../hooks/usePayouts';
 import toast from 'react-hot-toast';
 import './styles/PayoutHistoryTab.css';
@@ -14,6 +21,7 @@ interface PayoutHistoryTabProps {
   ledger: ListerLedger;
   lister: Lister | null;
   isCreateMode?: boolean;
+  setView?: (view: string) => void;
 }
 
 export const PayoutHistoryTab: React.FC<PayoutHistoryTabProps> = ({
@@ -21,6 +29,7 @@ export const PayoutHistoryTab: React.FC<PayoutHistoryTabProps> = ({
   ledger,
   lister,
   isCreateMode = false,
+  setView,
 }) => {
   const { sendStatementWhatsApp, exportCSV, loading } = usePayouts(lister?.id || '', lister);
 
@@ -103,7 +112,7 @@ export const PayoutHistoryTab: React.FC<PayoutHistoryTabProps> = ({
       <PayoutStats ledger={ledger} pendingCount={pendingCount} />
 
       {/* Payout Table */}
-      <PayoutTable payouts={payouts} />
+      <PayoutTable payouts={payouts} setView={setView} />
     </div>
   );
 };

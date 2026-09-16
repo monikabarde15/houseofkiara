@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { CommunicationEntry } from '../../types/lister.types';
 import { CHANNELS } from '../../utils/constants';
 import { formatLogTimestamp } from '../../utils/formatter';
+import toast from 'react-hot-toast';
 import './styles/CommunicationTab.css';
 
 interface CommunicationTabProps {
@@ -34,10 +35,14 @@ export const CommunicationTab: React.FC<CommunicationTabProps> = ({
     if (!message.trim() || isCreateMode) return;
     setLoading(true);
     try {
+      const { listerService } = await import('../../services/listerService');
+      await listerService.logCommunication(listerId, channel, message);
+      toast.success('Communication logged successfully');
       setMessage('');
       onUpdate();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to log communication:', error);
+      toast.error('Failed to log communication: ' + (error.message || 'Unknown error'));
     } finally {
       setLoading(false);
     }

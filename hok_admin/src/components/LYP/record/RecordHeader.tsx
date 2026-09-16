@@ -15,6 +15,7 @@ import {
   getChannelClass
 } from '../utils/derived';
 import { useJourneyStack } from '../hooks/useJourneyStack';
+import { submissionService } from '../services/submissionService';
 import './styles/RecordHeader.css';
 
 interface RecordHeaderProps {
@@ -80,6 +81,22 @@ export const RecordHeader: React.FC<RecordHeaderProps> = ({
             <span className={`tag ${channelClass}`}>{submission.channel}</span>
             <span className="record-meta-sep">·</span>
             <span className="qlnk text-[#C7A55C]" onClick={() => onNavigate(submission.listerID)}>from {getFirstName(submission.listerID)}</span>
+            <span className="record-meta-sep">·</span>
+            <span className="flex items-center gap-1">
+              Assigned to:
+              <select 
+                className="bg-transparent border-b border-dashed border-[#C7A55C] text-[#C7A55C] outline-none cursor-pointer"
+                value={submission.assignedTo || 'Unassigned'}
+                onChange={(e) => {
+                  submissionService.updateSubmission(submission.subid, { assignedTo: e.target.value })
+                    .then(() => onSave?.());
+                }}
+              >
+                <option value="Unassigned">Unassigned</option>
+                <option value="Soumya">Soumya</option>
+                <option value="Operations Team">Operations Team</option>
+              </select>
+            </span>
           </div>
         </div>
 

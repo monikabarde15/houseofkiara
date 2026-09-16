@@ -3,6 +3,8 @@
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import Payout from "../models/Payout.js";
+import Customer from "../models/Customer.js";
+import { nextCustomerId } from "../services/customerIdService.js";
 import { validateBookingDates } from "../validations/bookingValidation.js";
 
 const dateOnly = (v) => { 
@@ -353,9 +355,8 @@ export const addExternalBooking = async (req, res) => {
     await product.save();
 
     // Create or Update Customer record in DB
-    let customerId = `CUST-${Date.now()}`;
+    let customerId = "";
     try {
-      const Customer = (await import("../models/Customer.js")).default;
       const phone = whatsappNumber || "";
       const email = `${(customerName || "renter").toLowerCase().trim().replace(/\s+/g, "")}@houseofkaira.com`;
       
@@ -371,6 +372,7 @@ export const addExternalBooking = async (req, res) => {
         await cust.save();
         customerId = cust.customerId || cust._id;
       } else {
+        customerId = await nextCustomerId();
         cust = await Customer.create({
           customerId,
           name: customerName,
@@ -505,14 +507,31 @@ export const reserveProduct = async (req, res) => {
       source: req.body.channel || "WhatsApp/Instagram" 
     };
 
-    // 1. Create real Order document in DB
+    // 1. Resolve/create a real customer before creating its order.
     try {
+      const phone = req.body.whatsappNumber || "";
+      const email = req.body.customerEmail || "";
+      let customer = req.body.customerId
+        ? await Customer.findOne({ customerId: req.body.customerId })
+        : null;
+      if (!customer && phone) customer = await Customer.findOne({ phone });
+      if (!customer && email) customer = await Customer.findOne({ email });
+      if (!customer) {
+        customer = await Customer.create({
+          customerId: await nextCustomerId(),
+          name: req.body.customerName || "External Renter",
+          email: email || `guest_${Date.now()}@houseofkaira.com`,
+          phone,
+          location: req.body.city || "India",
+        });
+      }
+
       await Order.create({
         orderId,
-        customerId: `CUST-${Date.now()}`,
-        customerName: req.body.customerName || "External Renter",
-        customerPhone: req.body.whatsappNumber || "",
-        customerEmail: "external@houseofkaira.com",
+        customerId: customer.customerId,
+        customerName: customer.name,
+        customerPhone: customer.phone || phone,
+        customerEmail: customer.email,
         productId: product.productId || product._id,
         productName: product.name,
         designer: product.designer || "House of Kaira",

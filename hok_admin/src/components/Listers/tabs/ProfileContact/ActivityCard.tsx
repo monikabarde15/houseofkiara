@@ -13,6 +13,10 @@ const dotClass = {
     gold: "activity-dot-gold",
     terra: "activity-dot-terra",
     muted: "activity-dot-muted",
+    blue: "activity-dot-blue",
+    green: "activity-dot-green",
+    red: "activity-dot-red",
+    orange: "activity-dot-orange",
 };
 
 export const ActivityCard: React.FC<ActivityCardProps> = ({

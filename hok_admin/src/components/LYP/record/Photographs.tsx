@@ -163,11 +163,15 @@ export const Photographs: React.FC<PhotographsProps> = ({ submission, onUpdate }
 
         {/* Show video tiles */}
         {videos.map((video, index) => (
-          <div key={`video-${index}`} className="photo-tile video-tile">
-            <div className="video-placeholder">
-              <span className="video-play-icon">▶</span>
-              <span className="video-name">{video.name}</span>
-            </div>
+          <div key={`video-${index}`} className="photo-tile">
+            <video 
+              src={video.url} 
+              controls
+              muted
+              playsInline
+              style={{ width: '100%', height: '100%', objectFit: 'cover', background: '#000' }}
+            />
+            <span className="photo-label">{video.name || `Video ${index + 1}`}</span>
           </div>
         ))}
 

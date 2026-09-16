@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { Product, Lister } from '../types/product';
 import * as productApi from '../../services/productApi';
+import { getDesigners } from '../../services/designerApi';
 import { useProductEditor } from '../hooks/useProductEditor';
 import { ProductHeader } from './ProductHeader';
 import { ProductFilters } from './ProductFilters';
@@ -23,12 +24,17 @@ type ProductTab = 'Core' | 'Pricing' | 'Images' | 'Related Products' | 'SEO' | '
 interface ProductsViewProps {
   products: Product[];
   orders?: any[];
+  offers?: any[];
+  promoCodes?: any[];
   loading?: boolean;
   onAddProduct: (newProduct: Product) => Promise<any> | any;
   onUpdateProduct: (updatedProduct: Product) => Promise<any> | any;
   listers: any[];
   onEditingChange?: (isEditing: boolean) => void;
   onViewOrder?: (orderId: string) => void;
+  onAddCustomer?: (newCustomer: any) => void;
+  onAddOrder?: (newOrder: any) => void;
+  customers?: any[];
 }
 
 const CATEGORIES = ['All Categories', 'Bridal Lehenga', 'Lehenga', 'Anarkali', 'Sherwani', 'Saree'];
@@ -36,12 +42,17 @@ const CATEGORIES = ['All Categories', 'Bridal Lehenga', 'Lehenga', 'Anarkali', '
 export default function ProductsView({
   products,
   orders = [],
+  offers = [],
+  promoCodes = [],
   loading = false,
   onAddProduct,
   onUpdateProduct,
   listers,
   onEditingChange,
   onViewOrder,
+  onAddCustomer,
+  onAddOrder,
+  customers = [],
 }: ProductsViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
@@ -58,10 +69,7 @@ export default function ProductsView({
   useEffect(() => {
     const fetchDesigners = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/designers').then(r => r.json());
-        if (res.success && Array.isArray(res.data)) {
-          setDbDesigners(res.data);
-        }
+        setDbDesigners(await getDesigners());
       } catch (e) {
         console.warn('Failed to fetch designers:', e);
       }
@@ -138,7 +146,7 @@ export default function ProductsView({
     const pDesigner = p.designer || '';
     const pCategory = p.category || '';
     const pListingModes = p.listingModes || [];
-    
+
     const matchesSearch =
       !term ||
       pName.toLowerCase().includes(term) ||
@@ -602,9 +610,13 @@ export default function ProductsView({
                     startEditing(updatedProd);
                     setFormData(updatedProd);
                   }}
+                  onOpenGlobalCalendar={() => { }}
+                  orders={orders}
+                  offers={offers}
+                  promoCodes={promoCodes}
                   loading={state.loading}
                   onViewOrder={onViewOrder}
-                  orders={orders}
+                  customers={customers}
                   onAddOrder={(newOrder) => {
                     if (onUpdateProduct) {
                       onUpdateProduct({
@@ -612,7 +624,11 @@ export default function ProductsView({
                         bookingHistory: [...(state.editingProduct?.bookingHistory || []), newOrder]
                       } as any);
                     }
+                    if (onAddOrder) {
+                      onAddOrder(newOrder);
+                    }
                   }}
+                  onAddCustomer={onAddCustomer}
                 />
               )}
               {state.activeTab === 'Payout History' && (state.editingProduct || state.isAdding) && (
@@ -666,34 +682,21 @@ export default function ProductsView({
     );
   }
 
-  const liveCount = filteredProducts.filter(p => p.status !== 'Draft' && p.status !== 'Archived').length;
-  const draftCount = filteredProducts.filter(p => p.status === 'Draft').length;
-  const pausedCount = filteredProducts.filter(p => p.status === 'Archived' || p.status === 'Paused').length;
+  const liveCount = filteredProducts.filter(p => p.status === 'Live' || p.status === 'Active' || p.status === 'Published').length;
+  const draftCount = filteredProducts.filter(p => p.status === 'Draft' || p.status === 'Pending Review').length;
+  const pausedCount = filteredProducts.filter(p => p.status === 'Archived' || p.status === 'Paused' || p.status === 'Inactive').length;
 
-  // Real dynamic calculation for portfolio revenue and HOK retained based on filtered list
-  const { totalRevenue, hokRetained } = filteredProducts.reduce((acc, p) => {
-    let pRevenue = 0;
-    const history = (p.bookingHistory || []) as any[];
-    if (history.length > 0) {
-      pRevenue = history.reduce((sum, b) => sum + Number(b.amount || p.rentalPrice || 8500), 0);
-    } else if ((p as any).earnedAmount && Number((p as any).earnedAmount) > 0) {
-      pRevenue = Number((p as any).earnedAmount);
-    } else if (p.timesRented && p.timesRented > 0) {
-      pRevenue = p.timesRented * Number(p.rentalPrice || 8500);
-    }
-    const hokShare = Math.round(pRevenue * (Number(p.commissionRate || 25) / 100));
-    return {
-      totalRevenue: acc.totalRevenue + pRevenue,
-      hokRetained: acc.hokRetained + hokShare
-    };
-  }, { totalRevenue: 0, hokRetained: 0 });
+  // Dynamic portfolio revenue calculation using real DB orders prop
+  const totalRevenue = orders.reduce((sum, o) => sum + Number(o.orderValue || o.grandTotal || o.amount || 0), 0);
+  const hokRetained = orders.reduce((sum, o) => {
+    const val = Number(o.orderValue || o.grandTotal || o.amount || 0);
+    const listerPayout = Number(o.listerPayout || Math.round(val * 0.45));
+    return sum + (val - listerPayout);
+  }, 0);
 
-  const inRental = filteredProducts.filter(p => {
-    if (p.rentalStatus === 'Rented' || (p.status as string) === 'Sold') return true;
-    const history = (p.bookingHistory || []) as any[];
-    return history.length > 0;
-  }).length;
-  const needsAttention = filteredProducts.filter(p => p.status === 'Review' || p.status === 'Draft').length;
+  // Active rentals count from DB orders
+  const inRental = orders.filter(o => o.status === 'Confirmed' || o.status === 'Dispatched' || o.status === 'Shipped' || o.status === 'In Rental').length;
+  const needsAttention = filteredProducts.filter(p => p.status === 'Pending Review' || p.status === 'Review' || p.status === 'Draft').length;
 
   return (
     <div className="space-y-6 text-xs font-sans">

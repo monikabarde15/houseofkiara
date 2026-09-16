@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Product, Lister } from '../../types/product';
 import toast from 'react-hot-toast';
+import { getDesigners } from '../../../services/designerApi';
+import { apiRequest } from '../../../services/apiClient';
 
 interface Designer {
   id: string;
@@ -38,10 +40,8 @@ export function CoreDetailsTab({
   React.useEffect(() => {
     const fetchDesignersFromApi = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/designers').then(r => r.json());
-        if (res.success && Array.isArray(res.data)) {
-          setFetchedDesigners(res.data.map((d: any) => ({ id: d.id || d._id, name: d.name })));
-        }
+        const data = await getDesigners();
+        setFetchedDesigners(data.map((d: any) => ({ id: d.id || d._id, name: d.name })));
       } catch (e) {
         console.warn('Failed to fetch designers in CoreDetailsTab:', e);
       }
@@ -102,17 +102,14 @@ export function CoreDetailsTab({
 
     try {
       const payload = prepareProductData(formData);
-      const endpoint = productId ? `/api/products/${productId}` : '/api/products';
+      const endpoint = productId ? `/products/${productId}` : '/products';
       const method = productId ? 'PUT' : 'POST';
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}${endpoint}`, {
+      const result = await apiRequest(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || 'Failed to save product');
-
       if (onSave) onSave(result.data);
 
       setSaveSuccess(true);
@@ -144,14 +141,11 @@ export function CoreDetailsTab({
         bestSuitedForHeight: formData.bestSuitedForHeight || '',
       };
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/products/${productId}/measurements`, {
+      await apiRequest(`/products/${productId}/measurements`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(measurementsData),
       });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || 'Failed to save measurements');
-
       setSaveSuccess(true);
       setLocalSaving(false);
       setIsSaving(false);
@@ -188,22 +182,22 @@ export function CoreDetailsTab({
         </div>
 
         <div className="border-t border-stone-100 pt-4">
-  {!productId && (
-    <div className="flex items-start gap-3 bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 mb-4">
-      <span className="shrink-0 px-2 py-0.5 text-[11px] font-semibold text-stone-500 bg-white border border-stone-300 rounded">
-        New
-      </span>
-      <p className="text-xs text-stone-600 leading-relaxed">
-        Not yet created. Fill in details, pricing and photos — the piece is saved as a{' '}
-        <strong className="font-semibold text-stone-800">Draft</strong> when you click{' '}
-        <strong className="font-semibold text-stone-800">Create Product</strong>, and enters
-        the review workflow from there.
-      </p>
-    </div>
-  )}
-  <p className="text-xs text-stone-500 mb-4">
-    Draft → Pending Review → Live · Paused, Out of Stock and Archived are side states
-  </p>
+          {!productId && (
+            <div className="flex items-start gap-3 bg-stone-50 border border-stone-200 rounded-lg px-4 py-3 mb-4">
+              <span className="shrink-0 px-2 py-0.5 text-[11px] font-semibold text-stone-500 bg-white border border-stone-300 rounded">
+                New
+              </span>
+              <p className="text-xs text-stone-600 leading-relaxed">
+                Not yet created. Fill in details, pricing and photos — the piece is saved as a{' '}
+                <strong className="font-semibold text-stone-800">Draft</strong> when you click{' '}
+                <strong className="font-semibold text-stone-800">Create Product</strong>, and enters
+                the review workflow from there.
+              </p>
+            </div>
+          )}
+          <p className="text-xs text-stone-500 mb-4">
+            Draft → Pending Review → Live · Paused, Out of Stock and Archived are side states
+          </p>
           <label className={labelClass}>Set Status Directly (Super Admin Override)</label>
           <select
             value={formData.status || 'Draft'}
@@ -611,11 +605,10 @@ export function CoreDetailsTab({
               if (!isSaving && !localSaving && !externalIsSaving) handleSaveCoreDetails();
             }}
             disabled={isSaving || localSaving || saveSuccess || externalIsSaving}
-            className={`px-4 py-2 text-xs font-semibold rounded transition ${
-              isSaving || localSaving || saveSuccess || externalIsSaving
+            className={`px-4 py-2 text-xs font-semibold rounded transition ${isSaving || localSaving || saveSuccess || externalIsSaving
                 ? 'bg-gray-400 cursor-not-allowed opacity-70'
                 : 'bg-amber-700 hover:bg-amber-800 text-white'
-            }`}
+              }`}
           >
             {isSaving || localSaving ? 'Saving...' : saveSuccess ? '✅ Saved!' : 'Save Core Details'}
           </button>
@@ -703,16 +696,15 @@ export function CoreDetailsTab({
                 !formData.measurementsCm?.hips && !formData.measurementsCm?.length &&
                 !formData.bestSuitedForHeight)
             }
-            className={`px-4 py-2 text-xs font-semibold rounded transition ${
-              isSaving || localSaving || saveSuccess || externalIsSaving ||
-              (!formData.measurements?.bust && !formData.measurements?.waist &&
-                !formData.measurements?.hips && !formData.measurements?.length &&
-                !formData.measurementsCm?.bust && !formData.measurementsCm?.waist &&
-                !formData.measurementsCm?.hips && !formData.measurementsCm?.length &&
-                !formData.bestSuitedForHeight)
+            className={`px-4 py-2 text-xs font-semibold rounded transition ${isSaving || localSaving || saveSuccess || externalIsSaving ||
+                (!formData.measurements?.bust && !formData.measurements?.waist &&
+                  !formData.measurements?.hips && !formData.measurements?.length &&
+                  !formData.measurementsCm?.bust && !formData.measurementsCm?.waist &&
+                  !formData.measurementsCm?.hips && !formData.measurementsCm?.length &&
+                  !formData.bestSuitedForHeight)
                 ? 'bg-gray-400 cursor-not-allowed opacity-70'
                 : 'bg-amber-700 hover:bg-amber-800 text-white'
-            }`}
+              }`}
           >
             {isSaving || localSaving ? 'Saving...' : saveSuccess ? '✅ Saved!' : 'Save Measurements'}
           </button>

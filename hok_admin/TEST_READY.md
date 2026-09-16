@@ -79,7 +79,7 @@ node --test tests/e2e/tier1_lyp.test.js
 
 ### Custom Test Environment URL
 ```bash
-TEST_BASE_URL=http://localhost:5000/api node tests/e2e/runner.js
+TEST_BASE_URL=http://localhost:5003/api node tests/e2e/runner.js
 ```
 
 ---

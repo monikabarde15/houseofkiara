@@ -5,6 +5,9 @@ import { Channel, Intent, Media } from '../../types/lister.types';
 import { MediaPicker } from './MediaPicker';
 import { CHANNELS, INTENTS, CONDITION_GRADES } from '../../utils/constants';
 import { useSubmissions } from '../../hooks/useSubmissions';
+import { getProducts } from '../../../../services/productApi';
+import { uploadFile } from '../../../../services/uploadApi';
+import { Product } from '../../../../types';
 import './styles/SubmissionForm.css';
 
 interface SubmissionFormProps {
@@ -44,6 +47,23 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [designers, setDesigners] = useState<string[]>([]);
+  const [productNames, setProductNames] = useState<string[]>([]);
+
+  React.useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getProducts();
+        const uniqueDesigners = Array.from(new Set(data.map(p => p.designer || p.data?.designer).filter(Boolean)));
+        setDesigners(uniqueDesigners as string[]);
+        const uniqueNames = Array.from(new Set(data.map(p => p.name || p.data?.name || p.title || p.data?.title).filter(Boolean)));
+        setProductNames(uniqueNames as string[]);
+      } catch (e) {
+        console.error("Failed to fetch products for autocomplete", e);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const handleChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -62,13 +82,40 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  const [uploadingMedia, setUploadingMedia] = useState(false);
+
   const handleSubmit = async () => {
     if (!validate()) return;
     try {
-      await createSubmission(formData);
+      setUploadingMedia(true);
+      
+      // Upload any new media files to Cloudinary
+      const processedMedia = await Promise.all(
+        formData.media.map(async (m) => {
+          if ((m as any).file) {
+            const uploaded = await uploadFile((m as any).file, 'submissions');
+            return {
+              name: m.name,
+              url: uploaded.url,
+              kind: m.kind
+            };
+          }
+          return { name: m.name, url: m.url, kind: m.kind }; // ensure we strip the File object
+        })
+      );
+
+      const finalData = {
+        ...formData,
+        media: processedMedia
+      };
+
+      await createSubmission(finalData);
+      window.dispatchEvent(new Event('refreshProducts'));
       onSuccess();
     } catch (error) {
       setErrors({ submit: error instanceof Error ? error.message : 'Failed to create submission' });
+    } finally {
+      setUploadingMedia(false);
     }
   };
 
@@ -81,6 +128,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
           <label className="fld-label">Piece Name *</label>
           <input
             type="text"
+            list="pieces-list"
             className={`fld-input ${errors.piece ? 'fld-error' : ''}`}
             value={formData.piece}
             onChange={(e) => handleChange('piece', e.target.value)}
@@ -92,6 +140,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
           <label className="fld-label">Designer Label *</label>
           <input
             type="text"
+            list="designers-list"
             className={`fld-input ${errors.designer ? 'fld-error' : ''}`}
             value={formData.designer}
             onChange={(e) => handleChange('designer', e.target.value)}
@@ -249,11 +298,18 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
       )}
 
       {/* Actions */}
+      <datalist id="pieces-list">
+        {productNames.map(p => <option key={p} value={p} />)}
+      </datalist>
+      <datalist id="designers-list">
+        {designers.map(d => <option key={d} value={d} />)}
+      </datalist>
+
       <div className="sf-actions">
-        <button className="btn btn-gold btn-sm" onClick={handleSubmit} disabled={loading}>
-          {loading ? 'Saving...' : 'Save to Approvals Queue'}
+        <button className="btn btn-gold btn-sm" onClick={handleSubmit} disabled={loading || uploadingMedia}>
+          {loading || uploadingMedia ? 'Saving...' : 'Save to Approvals Queue'}
         </button>
-        <button className="btn btn-sec btn-sm" onClick={onCancel} disabled={loading}>
+        <button className="btn btn-sec btn-sm" onClick={onCancel} disabled={loading || uploadingMedia}>
           Cancel
         </button>
       </div>

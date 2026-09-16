@@ -1,9 +1,10 @@
 import express from 'express';
-import { getSubmissions, getSubmission, createSubmission, updateSubmission, updateSubmissionDecision, requestMoreInfo } from '../controllers/submissionController.js';
+import { getSubmissions, getSubmission, createSubmission, updateSubmission, updateSubmissionDecision, requestMoreInfo, getAssignees } from '../controllers/submissionController.js';
 
 const router = express.Router();
 
 router.get('/', getSubmissions);
+router.get('/assignees', getAssignees);
 router.get('/:id', getSubmission);
 router.post('/', createSubmission);
 router.put('/:id', updateSubmission);

@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch-path=. --watch-preserve-output --watch server.js"
   },
   "dependencies": {
     "axios": "^1.20.0",
@@ -22,6 +22,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.9.5",
     "multer": "^2.2.0",
+    "node-fetch": "^2.7.0",
     "pg": "^8.23.0"
   }
 }

@@ -1,766 +1,320 @@
-import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import axios from "axios";
+import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
 import Customer from "../models/Customer.js";
-import {
-  validateCustomerRegister,
-  validateCustomerLogin,
-  validateSendOtp,
-  validateVerifyOtp,
-  validateForgotPassword,
-  validateResetPassword,
-} from "../validations/customerAuthValidation.js";
-import { generateNextCustomerId } from "../utils/idGenerator.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "hok_super_secret_key_123";
 const FAST2SMS_KEY = process.env.FAST2SMS_KEY || "";
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || "MOCK_CLIENT_ID");
-const MAX_OTP_ATTEMPTS = 5;
-const PHONE_VERIFICATION_MAX_AGE_MS = 15 * 60 * 1000; // 15 minutes
 
 const generateToken = (id) => {
   return jwt.sign({ id, role: "customer" }, JWT_SECRET, { expiresIn: "30d" });
 };
 
-const generateVerificationToken = (phone) => {
-  return jwt.sign({ phone, purpose: "phone_verification" }, JWT_SECRET, { expiresIn: "15m" });
-};
-
-const normalizePhone = (rawPhone) => {
-  if (!rawPhone) return "";
-  let digits = String(rawPhone).replace(/\D/g, "");
-  if (digits.length === 12 && digits.startsWith("91")) {
-    digits = digits.slice(2);
-  } else if (digits.length === 11 && digits.startsWith("0")) {
-    digits = digits.slice(1);
-  }
-  return digits;
-};
-
-const sanitizeCustomer = (customer) => {
-  const obj = typeof customer.toObject === "function" ? customer.toObject() : { ...customer };
-  delete obj.passwordHash;
-  delete obj.otp;
-  delete obj.otpExpiresAt;
-  delete obj.otpAttempts;
-  delete obj.phoneVerified;
-  delete obj.phoneVerifiedAt;
-  delete obj.resetPasswordToken;
-  delete obj.resetPasswordExpiresAt;
-  return obj;
-};
-
-// 1. Register with Email & Details (requires prior or atomic OTP verification)
+// 1. Register with Email
 export const register = async (req, res) => {
   try {
-    const { error, value } = validateCustomerRegister(req.body);
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        message: error.details.map((d) => d.message).join("; "),
-      });
-    }
+    const { name, email, password, phone } = req.body;
+    if (!name || !email || !password) return res.status(400).json({ success: false, message: "Missing fields" });
 
-    const {
-      name,
-      firstName,
-      lastName,
-      email,
-      password,
-      phone,
-      mobile,
-      verificationToken,
-      otp,
-      marketingAccepted,
-      marketingOptIn,
-    } = value;
-
-    const normalizedEmail = email.toLowerCase().trim();
-    const normalizedPhoneNumber = normalizePhone(phone || mobile);
-
-    // Check duplicate email (if user is fully registered with a password)
-    const existingEmail = await Customer.findOne({ email: normalizedEmail });
-    if (existingEmail && existingEmail.passwordHash) {
-      return res.status(409).json({
-        success: false,
-        message: "Email is already registered. Please sign in or use a different email.",
-      });
-    }
-
-    // Check duplicate phone (if user is fully registered with a password)
-    const existingPhone = normalizedPhoneNumber
-      ? await Customer.findOne({ phone: normalizedPhoneNumber })
-      : null;
-    if (existingPhone && existingPhone.passwordHash && existingPhone.email !== normalizedEmail) {
-      return res.status(409).json({
-        success: false,
-        message: "Mobile number is already registered to an account. Please sign in.",
-      });
-    }
-
-    // Security Verification Check: Ensure mobile was verified before registration
-    if (normalizedPhoneNumber) {
-      let isVerified = false;
-
-      // 1. Verification via verificationToken
-      if (verificationToken) {
-        try {
-          const decoded = jwt.verify(verificationToken, JWT_SECRET);
-          if (decoded.purpose === "phone_verification" && decoded.phone === normalizedPhoneNumber) {
-            isVerified = true;
-          }
-        } catch {
-          return res.status(400).json({
-            success: false,
-            message: "Phone verification token has expired. Please verify OTP again.",
-          });
-        }
-      }
-
-      // 2. Direct OTP verification
-      if (!isVerified && otp) {
-        const stub = existingPhone || (await Customer.findOne({ phone: normalizedPhoneNumber }));
-        if (stub && stub.otp && (!stub.otpExpiresAt || new Date() <= new Date(stub.otpExpiresAt))) {
-          const isMatch = otp === "123456" || (await bcrypt.compare(otp, stub.otp));
-          if (isMatch) {
-            stub.otp = "";
-            stub.otpExpiresAt = null;
-            isVerified = true;
-          }
-        }
-      }
-
-      // 3. Check recent phoneVerified state on customer stub
-      if (!isVerified && existingPhone && existingPhone.phoneVerified && existingPhone.phoneVerifiedAt) {
-        const verifiedAge = Date.now() - new Date(existingPhone.phoneVerifiedAt).getTime();
-        if (verifiedAge <= PHONE_VERIFICATION_MAX_AGE_MS) {
-          isVerified = true;
-        }
-      }
-
-      if (!isVerified) {
-        return res.status(400).json({
-          success: false,
-          message: "Mobile number verification is required before registration. Please verify OTP first.",
-        });
-      }
-    }
-
-    // Resolve full name and parts
-    let resolvedFirstName = (firstName || "").trim();
-    let resolvedLastName = (lastName || "").trim();
-    let resolvedName = (name || "").trim();
-
-    if (resolvedName && (!resolvedFirstName || !resolvedLastName)) {
-      const parts = resolvedName.split(" ");
-      if (!resolvedFirstName) resolvedFirstName = parts[0] || "";
-      if (!resolvedLastName) resolvedLastName = parts.slice(1).join(" ") || "";
-    } else if (!resolvedName) {
-      resolvedName = [resolvedFirstName, resolvedLastName].filter(Boolean).join(" ") || "Customer";
-    }
+    const existing = await Customer.findOne({ email });
+    if (existing) return res.status(400).json({ success: false, message: "Email already registered" });
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // Reuse existing stub or create fresh customer record
-    let customer = existingPhone || existingEmail;
-    if (!customer) {
-      const customerId = await generateNextCustomerId();
-      customer = new Customer({
-        customerId,
-        wishlist: [],
-        cart: [],
-      });
-    } else if (!customer.customerId || /^CUST-\d{10,}$/.test(customer.customerId)) {
-      customer.customerId = await generateNextCustomerId();
-    }
+    const allCustomers = await Customer.find({}, 'customerId').exec();
+    const existingNums = allCustomers
+      .map(c => c.customerId)
+      .filter(id => id && id.startsWith('CUST-'))
+      .map(id => parseInt(id.replace('CUST-', ''), 10))
+      .filter(n => !isNaN(n));
+    const maxNum = existingNums.length > 0 ? Math.max(...existingNums) : 0;
+    const newCustId = `CUST-${String(maxNum + 1).padStart(5, '0')}`;
 
-    customer.name = resolvedName;
-    customer.firstName = resolvedFirstName;
-    customer.lastName = resolvedLastName;
-    customer.email = normalizedEmail;
-    customer.phone = normalizedPhoneNumber;
-    customer.passwordHash = passwordHash;
-    customer.status = "Active";
-    customer.source = "Website";
-    customer.phoneVerified = false; // consume verification
-    customer.phoneVerifiedAt = null;
-    customer.otp = "";
-    customer.otpExpiresAt = null;
-    customer.otpAttempts = 0;
-    customer.preferences = {
-      newsletter: Boolean(marketingAccepted || marketingOptIn),
-      whatsappNotifications: true,
-      marketingOptIn: Boolean(marketingAccepted || marketingOptIn),
-    };
-
+    const customer = new Customer({
+      customerId: newCustId,
+      name,
+      email,
+      phone: phone || "",
+      passwordHash,
+      wishlist: [],
+      cart: []
+    });
+    
     await customer.save();
 
-    const token = generateToken(customer._id);
-
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
-      message: "Account created successfully.",
       data: {
         _id: customer._id,
         customerId: customer.customerId,
         name: customer.name,
-        firstName: customer.firstName,
-        lastName: customer.lastName,
         email: customer.email,
-        phone: customer.phone,
-        token,
-      },
+        token: generateToken(customer._id)
+      }
     });
-  } catch (err) {
-    console.error("Register Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Failed to create account. Please try again later.",
-    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// 2. Login with Email and Password
+// 2. Login with Email
 export const login = async (req, res) => {
   try {
-    const { error, value } = validateCustomerLogin(req.body);
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        message: error.details.map((d) => d.message).join("; "),
+    const { email, password } = req.body;
+    const customer = await Customer.findOne({ email });
+
+    if (customer && customer.passwordHash && (await bcrypt.compare(password, customer.passwordHash))) {
+      res.json({
+        success: true,
+        data: {
+          _id: customer._id,
+          customerId: customer.customerId,
+          name: customer.name,
+          email: customer.email,
+          token: generateToken(customer._id)
+        }
       });
+    } else {
+      res.status(401).json({ success: false, message: "Invalid email or password" });
     }
-
-    const { email, password } = value;
-    const normalizedEmail = email.toLowerCase().trim();
-
-    const customer = await Customer.findOne({ email: normalizedEmail });
-    if (!customer || !customer.passwordHash) {
-      return res.status(401).json({
-        success: false,
-        message: "The email or password you entered is incorrect. Please try again.",
-      });
-    }
-
-    const isMatch = await bcrypt.compare(password, customer.passwordHash);
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "The email or password you entered is incorrect. Please try again.",
-      });
-    }
-
-    if (customer.status === "Suspended") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account is currently suspended. Please contact customer support.",
-      });
-    }
-
-    const token = generateToken(customer._id);
-
-    return res.json({
-      success: true,
-      message: "Login successful.",
-      data: {
-        _id: customer._id,
-        customerId: customer.customerId,
-        name: customer.name,
-        firstName: customer.firstName || "",
-        lastName: customer.lastName || "",
-        email: customer.email,
-        phone: customer.phone || "",
-        token,
-      },
-    });
-  } catch (err) {
-    console.error("Login Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Login failed. Please try again later.",
-    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// 3. Send OTP (Mobile Login / Verification) - Invalides previous OTP
+// 3. Send OTP
 export const sendOtp = async (req, res) => {
   try {
-    const { error, value } = validateSendOtp(req.body);
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        message: error.details.map((d) => d.message).join("; "),
-      });
-    }
+    const { phone } = req.body;
+    if (!phone) return res.status(400).json({ success: false, message: "Phone required" });
 
-    const normalizedPhoneNumber = normalizePhone(value.phone || value.mobile);
-    let customer = await Customer.findOne({ phone: normalizedPhoneNumber });
+    let customer = await Customer.findOne({ phone });
+    if (!customer) {
+      // Auto-create stub customer
+      const allCustomers = await Customer.find({}, 'customerId').exec();
+      const existingNums = allCustomers
+        .map(c => c.customerId)
+        .filter(id => id && id.startsWith('CUST-'))
+        .map(id => parseInt(id.replace('CUST-', ''), 10))
+        .filter(n => !isNaN(n));
+      const maxNum = existingNums.length > 0 ? Math.max(...existingNums) : 0;
+      const newCustId = `CUST-${String(maxNum + 1).padStart(5, '0')}`;
 
-    if (customer && customer.status === "Suspended") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account is currently suspended. Please contact support.",
+      customer = new Customer({
+        customerId: newCustId,
+        name: "User",
+        email: `user${Date.now()}@temp.com`,
+        phone,
       });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const hashedOtp = await bcrypt.hash(otp, 10);
-    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
-    if (!customer) {
-      const customerId = await generateNextCustomerId();
-      customer = new Customer({
-        customerId,
-        name: "User",
-        firstName: "User",
-        lastName: "",
-        email: `guest_${normalizedPhoneNumber}@houseofkaira.com`,
-        phone: normalizedPhoneNumber,
-        status: "Active",
-        source: "Mobile OTP",
-        wishlist: [],
-        cart: [],
-      });
-    } else if (!customer.customerId || /^CUST-\d{10,}$/.test(customer.customerId)) {
-      customer.customerId = await generateNextCustomerId();
-    }
-
-    // Overwrite previous OTP and reset verification state & attempt counter
-    customer.otp = hashedOtp;
-    customer.otpExpiresAt = otpExpiresAt;
-    customer.otpAttempts = 0;
-    customer.phoneVerified = false;
-    customer.phoneVerifiedAt = null;
+    customer.otp = await bcrypt.hash(otp, 10);
+    customer.otpExpiresAt = new Date(Date.now() + 10 * 60000); // 10 mins
     await customer.save();
 
-    console.log(`[AUTH OTP] OTP code for ${normalizedPhoneNumber} is: ${otp} (valid for 10 minutes)`);
-
+    console.log(`[MOCK OTP] Sending ${otp} to ${phone}`);
     if (FAST2SMS_KEY) {
-      try {
-        await axios.get("https://www.fast2sms.com/dev/bulkV2", {
-          params: {
-            authorization: FAST2SMS_KEY,
-            route: "v3",
-            sender_id: "TXTIND",
-            message: `Your House of Kaira verification OTP is ${otp}. Valid for 10 minutes.`,
-            language: "english",
-            flash: 0,
-            numbers: normalizedPhoneNumber,
-          },
-        });
-      } catch (smsErr) {
-        console.warn("SMS Gateway dispatch notice:", smsErr.message);
-      }
+       await axios.get(`https://www.fast2sms.com/dev/bulkV2`, {
+         params: {
+           authorization: FAST2SMS_KEY,
+           route: "v3",
+           sender_id: "TXTIND",
+           message: `Your House of Kaira login OTP is ${otp}. Valid for 10 minutes.`,
+           language: "english",
+           flash: 0,
+           numbers: phone
+         }
+       });
     }
 
-    return res.json({
-      success: true,
-      message: `OTP sent successfully to +91 ${normalizedPhoneNumber}`,
-    });
-  } catch (err) {
-    console.error("Send OTP Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Failed to send OTP.",
-    });
+    res.json({ success: true, message: "OTP sent" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// 4. Verify OTP (One-time use, validates expiry & attempt limits)
+// 4. Verify OTP
 export const verifyOtp = async (req, res) => {
   try {
-    const { error, value } = validateVerifyOtp(req.body);
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        message: error.details.map((d) => d.message).join("; "),
-      });
+    const { phone, otp } = req.body;
+    const customer = await Customer.findOne({ phone });
+    if (!customer || !customer.otp) return res.status(400).json({ success: false, message: "Invalid request" });
+
+    if (new Date() > new Date(customer.otpExpiresAt)) {
+      return res.status(400).json({ success: false, message: "OTP expired" });
     }
 
-    const { otp } = value;
-    const normalizedPhoneNumber = normalizePhone(value.phone || value.mobile);
+    const isMatch = await bcrypt.compare(otp, customer.otp);
+    if (!isMatch) return res.status(400).json({ success: false, message: "Invalid OTP" });
 
-    const customer = await Customer.findOne({ phone: normalizedPhoneNumber });
-    if (!customer || !customer.otp) {
-      return res.status(400).json({
-        success: false,
-        message: "No active OTP request found for this mobile number. Please request a new OTP.",
-      });
-    }
-
-    if (customer.status === "Suspended") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account is currently suspended. Please contact customer support.",
-      });
-    }
-
-    if (customer.otpAttempts >= MAX_OTP_ATTEMPTS) {
-      customer.otp = "";
-      customer.otpExpiresAt = null;
-      await customer.save();
-      return res.status(400).json({
-        success: false,
-        message: "Too many failed attempts. This OTP has been invalidated. Please request a new one.",
-      });
-    }
-
-    if (customer.otpExpiresAt && new Date() > new Date(customer.otpExpiresAt)) {
-      return res.status(400).json({
-        success: false,
-        message: "OTP has expired. Please request a new one.",
-      });
-    }
-
-    const isMatch = otp === "123456" || (await bcrypt.compare(otp, customer.otp));
-    if (!isMatch) {
-      customer.otpAttempts = (customer.otpAttempts || 0) + 1;
-      await customer.save();
-      const attemptsRemaining = MAX_OTP_ATTEMPTS - customer.otpAttempts;
-      return res.status(400).json({
-        success: false,
-        message:
-          attemptsRemaining > 0
-            ? `Incorrect OTP. Please check and try again (${attemptsRemaining} attempt${
-                attemptsRemaining === 1 ? "" : "s"
-              } remaining).`
-            : "Too many failed attempts. This OTP has been invalidated. Please request a new one.",
-      });
-    }
-
-    // Clear used OTP (prevent reuse) and set phoneVerified state
     customer.otp = "";
-    customer.otpExpiresAt = null;
-    customer.otpAttempts = 0;
-    customer.phoneVerified = true;
-    customer.phoneVerifiedAt = new Date();
     await customer.save();
 
-    const verificationToken = generateVerificationToken(normalizedPhoneNumber);
-    const token = generateToken(customer._id);
-
-    return res.json({
+    res.json({
       success: true,
-      message: "OTP verified successfully.",
       data: {
         _id: customer._id,
         customerId: customer.customerId,
         name: customer.name,
-        firstName: customer.firstName || "",
-        lastName: customer.lastName || "",
         email: customer.email,
-        phone: customer.phone,
-        token,
-        verificationToken,
-      },
+        token: generateToken(customer._id)
+      }
     });
-  } catch (err) {
-    console.error("Verify OTP Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: err.message || "OTP verification failed.",
-    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// 5. Forgot Password Request
+// 5. Password recovery.  The route is registered by customerAuthRoutes, so
+// these exports must remain available even when the local authentication
+// controller is merged with older customer-login changes.
 export const forgotPassword = async (req, res) => {
   try {
-    const { error, value } = validateForgotPassword(req.body);
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        message: error.details.map((d) => d.message).join("; "),
-      });
-    }
+    const email = String(req.body?.email || "").trim().toLowerCase();
+    if (!email) return res.status(400).json({ success: false, message: "Email is required" });
 
-    const normalizedEmail = value.email.toLowerCase().trim();
-    let customer = await Customer.findOne({ email: normalizedEmail });
+    const customer = await Customer.findOne({ email });
+    // Do not reveal whether an account exists.
     if (!customer) {
-      // Fallback regex lookup for case-insensitive matching
-      customer = await Customer.findOne({
-        email: { $regex: new RegExp(`^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
-      });
+      return res.json({ success: true, message: "If an account exists, password reset instructions have been created." });
     }
 
-    if (customer) {
-      const resetToken = crypto.randomBytes(32).toString("hex");
-      const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+    const token = crypto.randomBytes(32).toString("hex");
+    customer.resetPasswordToken = crypto.createHash("sha256").update(token).digest("hex");
+    customer.resetPasswordExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    await customer.save();
 
-      customer.resetPasswordToken = hashedToken;
-      customer.resetPasswordExpiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
-      await customer.save();
-
-      console.log(`\n================== [PASSWORD RECOVERY] ==================`);
-      console.log(`👤 Customer Email : ${customer.email}`);
-      console.log(`🔑 Reset Token    : ${resetToken}`);
-      console.log(`🔗 Reset Link     : http://localhost:3000/auth?resetToken=${resetToken}`);
-      console.log(`=========================================================\n`);
-    } else {
-      console.log(`\n⚠️  [PASSWORD RECOVERY NOTICE]`);
-      console.log(`Email "${normalizedEmail}" was NOT found in the database.`);
-      console.log(`To test password reset, register this email first or use an existing customer email.`);
-      console.log(`=========================================================\n`);
-    }
-
-    return res.json({
-      success: true,
-      message: `A password reset link has been sent to ${value.email}. Please check your inbox.`,
-    });
-  } catch (err) {
-    console.error("Forgot Password Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Failed to process password recovery request.",
-    });
+    // Email delivery can be connected through the configured provider.  This
+    // keeps the API usable locally without exposing the token in its response.
+    console.log(`[PASSWORD RECOVERY] Reset link: http://localhost:3000/auth?resetToken=${token}`);
+    return res.json({ success: true, message: "If an account exists, password reset instructions have been created." });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message || "Failed to start password reset." });
   }
 };
 
-// 6. Reset Password with Token
 export const resetPassword = async (req, res) => {
   try {
-    const { error, value } = validateResetPassword(req.body);
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        message: error.details.map((d) => d.message).join("; "),
-      });
+    const token = String(req.body?.token || req.body?.resetToken || "").trim();
+    const password = String(req.body?.newPassword || req.body?.password || "");
+    if (!token || password.length < 6) {
+      return res.status(400).json({ success: false, message: "A valid reset token and password of at least 6 characters are required." });
     }
 
-    const rawToken = (value.token || value.resetToken).trim();
-    const newPassword = value.newPassword || value.password;
-    const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
-
-    let customer = await Customer.findOne({ resetPasswordToken: hashedToken });
-    if (!customer) {
-      customer = await Customer.findOne({ resetPasswordToken: rawToken });
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const customer = await Customer.findOne({ resetPasswordToken: hashedToken });
+    if (!customer || !customer.resetPasswordExpiresAt || new Date() > new Date(customer.resetPasswordExpiresAt)) {
+      return res.status(400).json({ success: false, message: "Password reset token is invalid or expired." });
     }
 
-    if (!customer || !customer.resetPasswordExpiresAt) {
-      return res.status(400).json({
-        success: false,
-        message: "Password reset token is invalid or has expired. Please request a new one.",
-      });
-    }
-
-    if (new Date() > new Date(customer.resetPasswordExpiresAt)) {
-      return res.status(400).json({
-        success: false,
-        message: "Password reset token has expired. Please request a new reset link.",
-      });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    customer.passwordHash = await bcrypt.hash(newPassword, salt);
+    customer.passwordHash = await bcrypt.hash(password, 10);
     customer.resetPasswordToken = "";
     customer.resetPasswordExpiresAt = null;
     await customer.save();
-
-    return res.json({
-      success: true,
-      message: "Password has been successfully updated. You can now sign in with your new password.",
-    });
-  } catch (err) {
-    console.error("Reset Password Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Failed to reset password.",
-    });
+    return res.json({ success: true, message: "Password has been successfully updated. You can now sign in." });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message || "Failed to reset password." });
   }
 };
 
-// 7. Logout
-export const logout = async (req, res) => {
-  try {
-    return res.json({
-      success: true,
-      message: "Successfully logged out.",
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Logout failed.",
-    });
-  }
+export const logout = async (_req, res) => {
+  return res.json({ success: true, message: "Successfully logged out." });
 };
 
-// 8. Google OAuth Login
+// 7. Google Login
 export const googleLogin = async (req, res) => {
   try {
-    const { token, credential } = req.body;
-    const effectiveToken = token || credential;
-
-    if (!effectiveToken) {
-      return res.status(400).json({
-        success: false,
-        message: "Google credential/token is required.",
-      });
-    }
-
-    let payload;
-    if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_ID !== "MOCK_CLIENT_ID") {
+    const { token } = req.body;
+    if (process.env.GOOGLE_CLIENT_ID) {
       const ticket = await googleClient.verifyIdToken({
-        idToken: effectiveToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID
       });
-      payload = ticket.getPayload();
-    } else {
-      const parts = effectiveToken.split(".");
-      if (parts.length === 3) {
-        payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf-8"));
-      } else {
-        return res.status(400).json({
-          success: false,
-          message: "Google Client ID is not configured on the server.",
+      const payload = ticket.getPayload();
+      const { email, name, sub } = payload;
+
+      let customer = await Customer.findOne({ email });
+      if (!customer) {
+        const allCustomers = await Customer.find({}, 'customerId').exec();
+        const existingNums = allCustomers
+          .map(c => c.customerId)
+          .filter(id => id && id.startsWith('CUST-'))
+          .map(id => parseInt(id.replace('CUST-', ''), 10))
+          .filter(n => !isNaN(n));
+        const maxNum = existingNums.length > 0 ? Math.max(...existingNums) : 0;
+        const newCustId = `CUST-${String(maxNum + 1).padStart(5, '0')}`;
+
+        customer = new Customer({
+          customerId: newCustId,
+          name,
+          email,
+          googleId: sub,
         });
+        await customer.save();
       }
-    }
 
-    const { email, name, sub, given_name, family_name } = payload || {};
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        message: "Unable to extract email from Google credential.",
+      res.json({
+        success: true,
+        data: {
+          _id: customer._id,
+          customerId: customer.customerId,
+          name: customer.name,
+          email: customer.email,
+          token: generateToken(customer._id)
+        }
       });
-    }
-
-    const normalizedEmail = email.toLowerCase().trim();
-    let customer = await Customer.findOne({ email: normalizedEmail });
-
-    if (!customer) {
-      customer = new Customer({
-        customerId: `CUST-${Date.now()}`,
-        name: name || [given_name, family_name].filter(Boolean).join(" ") || "Customer",
-        firstName: given_name || "",
-        lastName: family_name || "",
-        email: normalizedEmail,
-        googleId: sub || "",
-        status: "Active",
-        source: "Google OAuth",
-        wishlist: [],
-        cart: [],
-      });
-      await customer.save();
-    } else if (!customer.googleId && sub) {
-      customer.googleId = sub;
-      await customer.save();
-    }
-
-    const sessionToken = generateToken(customer._id);
-
-    return res.json({
-      success: true,
-      message: "Google login successful.",
-      data: {
-        _id: customer._id,
-        customerId: customer.customerId,
-        name: customer.name,
-        firstName: customer.firstName || "",
-        lastName: customer.lastName || "",
-        email: customer.email,
-        phone: customer.phone || "",
-        token: sessionToken,
-      },
-    });
-  } catch (err) {
-    console.error("Google Login Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Google authentication failed.",
-    });
-  }
-};
-
-// 9. Current User Profile (/me)
-export const getMe = async (req, res) => {
-  try {
-    const customerId = req.user?._id || req.customer?._id || req.user?.id;
-    if (!customerId) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized.",
-      });
-    }
-
-    const customer = await Customer.findById(customerId);
-    if (!customer) {
-      return res.status(404).json({
-        success: false,
-        message: "Customer not found.",
-      });
-    }
-
-    return res.json({
-      success: true,
-      data: sanitizeCustomer(customer),
-    });
-  } catch (err) {
-    console.error("GetMe Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Failed to fetch profile.",
-    });
-  }
-};
-
-// 10. Wishlist Endpoints
-export const toggleWishlist = async (req, res) => {
-  try {
-    const customerId = req.user?._id || req.customer?._id || req.user?.id;
-    const customer = await Customer.findById(customerId);
-    if (!customer) {
-      return res.status(404).json({
-        success: false,
-        message: "Customer not found.",
-      });
-    }
-
-    const productId = String(req.params.productId);
-    customer.wishlist = customer.wishlist || [];
-    const index = customer.wishlist.indexOf(productId);
-
-    if (index === -1) {
-      customer.wishlist.push(productId);
     } else {
-      customer.wishlist.splice(index, 1);
+      res.status(400).json({ success: false, message: "Google Client ID not configured on backend" });
     }
-    customer.wishlistCount = customer.wishlist.length;
-
-    await customer.save();
-    return res.json({
-      success: true,
-      data: customer.wishlist,
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Failed to update wishlist.",
-    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const getMe = async (req, res) => {
+    try {
+        const customer = await Customer.findById(req.user.id).select("-passwordHash -otp");
+        if (!customer) return res.status(404).json({success: false, message: "Customer not found"});
+        res.json({ success: true, data: customer });
+    } catch (err) {
+        res.status(500).json({success: false, message: err.message});
+    }
+}
+
+export const toggleWishlist = async (req, res) => {
+    try {
+        const customer = await Customer.findById(req.user.id);
+        if (!customer) return res.status(404).json({success: false, message: "Customer not found"});
+        
+        const productId = req.params.productId;
+        const index = customer.wishlist.indexOf(productId);
+        
+        if (index === -1) {
+            customer.wishlist.push(productId);
+        } else {
+            customer.wishlist.splice(index, 1);
+        }
+        customer.wishlistCount = customer.wishlist.length;
+        
+        await customer.save();
+        res.json({ success: true, data: customer.wishlist });
+    } catch (err) {
+        res.status(500).json({success: false, message: err.message});
+    }
+}
 
 export const getWishlist = async (req, res) => {
-  try {
-    const customerId = req.user?._id || req.customer?._id || req.user?.id;
-    const customer = await Customer.findById(customerId);
-    if (!customer) {
-      return res.status(404).json({
-        success: false,
-        message: "Customer not found.",
-      });
+    try {
+        const customer = await Customer.findById(req.user.id);
+        if (!customer) return res.status(404).json({success: false, message: "Customer not found"});
+        
+        res.json({ success: true, data: customer.wishlist });
+    } catch (err) {
+        res.status(500).json({success: false, message: err.message});
     }
-
-    return res.json({
-      success: true,
-      data: customer.wishlist || [],
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Failed to fetch wishlist.",
-    });
-  }
-};
+}

@@ -16,10 +16,22 @@ interface ProductCardProps {
     resalePrice?: number;
     nextAvailable?: string;
     image?: string;
+    images?: string[];
   };
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const getMediaThumbnail = (images?: string[], image?: string) => {
+    const allImages = [];
+    if (image) allImages.push(image);
+    if (images && images.length) allImages.push(...images);
+    if (allImages.length === 0) return undefined;
+    
+    const img = allImages.find(url => !url.match(/\.(mp4|mov|webm)$/i));
+    if (img) return img;
+    return allImages[0].replace(/\.(mp4|mov|webm)$/i, '.jpg');
+  };
+
   const getStatusChip = (status: string) => {
     const mapping: Record<string, string> = {
       'Live': 's-live',
@@ -55,8 +67,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div 
         className="product-card-image"
         style={{ 
-          backgroundImage: product.image 
-            ? `url(${product.image})` 
+          backgroundImage: getMediaThumbnail(product.images, product.image)
+            ? `url(${getMediaThumbnail(product.images, product.image)})` 
             : 'linear-gradient(145deg, #2A2420, #0F0B08)'
         }}
       >

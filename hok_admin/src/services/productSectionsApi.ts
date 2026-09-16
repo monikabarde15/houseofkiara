@@ -1,4 +1,5 @@
-const BASE = 'http://localhost:5000/api';
+import { API_BASE_URL } from './apiClient';
+const BASE = API_BASE_URL;
 const request = async (path: string, options?: RequestInit) => { const r = await fetch(`${BASE}${path}`, { headers: { 'Content-Type': 'application/json', ...(options?.headers || {}) }, ...options }); const b = await r.json().catch(() => ({})); if (!r.ok || b.success === false) throw new Error(b.message || 'Product request failed'); return b.data; };
 export const getCalendar = (id: string) => request(`/products/${encodeURIComponent(id)}/calendar`);
 export const addBlockedDate = (id: string, data: { from: string; to: string; reason: string }) => request(`/products/${encodeURIComponent(id)}/blocked-dates`, { method: 'POST', body: JSON.stringify(data) });

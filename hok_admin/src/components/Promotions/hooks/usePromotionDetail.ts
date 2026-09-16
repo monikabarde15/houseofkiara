@@ -7,8 +7,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { PromoCode, DerivedPromoState } from '../types/promotions.types';
-import { mockPromoCodes } from '../data/mockPromotions';
 import { deriveState } from '../utils/derived';
+import { promotionService } from '../services/promotionService';
+import * as orderApi from '../../../services/orderApi';
 
 interface UsePromotionDetailReturn {
   code: PromoCode | null;
@@ -16,6 +17,7 @@ interface UsePromotionDetailReturn {
   error: string | null;
   derivedState: DerivedPromoState | null;
   redemptions: number;
+  promotionOrders: any[];
   navigateToCode: (codeId: string) => void;
   refresh: () => void;
 }
@@ -25,17 +27,7 @@ export const usePromotionDetail = (initialCodeId?: string): UsePromotionDetailRe
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [codeId, setCodeId] = useState<string | undefined>(initialCodeId);
-
-  // Mock redemption counts
-  const [redemptionsMap] = useState<Record<string, number>>({
-    'KAIRA10': 45,
-    'BRIDAL500': 0,
-    'FIRST25': 78,
-    'FREESHIP': 0,
-    'VIP1000': 8,
-    'PAUSED20': 15,
-    'EXPIRED50': 5,
-  });
+  const [promotionOrders, setPromotionOrders] = useState<any[]>([]);
 
   const fetchCode = useCallback(async (id: string) => {
     if (!id) {
@@ -47,14 +39,20 @@ export const usePromotionDetail = (initialCodeId?: string): UsePromotionDetailRe
     setLoading(true);
     setError(null);
     try {
-      // In production: await promotionService.getPromotion(id)
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const found = mockPromoCodes.find(c => c.code === id);
+      const [found, allOrders] = await Promise.all([
+        promotionService.getPromotion(id),
+        orderApi.getOrders().catch(() => []),
+      ]);
       if (found) {
         setCode(found);
+        const normalizedCode = String(found.code || id).trim().toUpperCase();
+        setPromotionOrders((allOrders || []).filter((order: any) =>
+          String(order.promoCode || '').trim().toUpperCase() === normalizedCode
+        ));
       } else {
         setError(`Code ${id} not found`);
         setCode(null);
+        setPromotionOrders([]);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch code');
@@ -72,7 +70,7 @@ export const usePromotionDetail = (initialCodeId?: string): UsePromotionDetailRe
     }
   }, [codeId, fetchCode]);
 
-  const redemptions = code ? (redemptionsMap[code.code] || 0) : 0;
+  const redemptions = promotionOrders.length;
   const derivedState = code ? deriveState(code, redemptions) : null;
 
   const navigateToCode = useCallback((id: string) => {
@@ -91,6 +89,7 @@ export const usePromotionDetail = (initialCodeId?: string): UsePromotionDetailRe
     error,
     derivedState,
     redemptions,
+    promotionOrders,
     navigateToCode,
     refresh,
   };

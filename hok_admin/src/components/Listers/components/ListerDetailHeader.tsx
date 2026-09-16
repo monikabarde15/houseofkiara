@@ -88,10 +88,10 @@ export const ListerDetailHeader: React.FC<ListerDetailHeaderProps> = ({
             {lister.email && <span>{lister.email}</span>}
             {lister.email && lister.phone && <span className="lh-meta-sep">·</span>}
             {lister.phone && <span>{lister.phone}</span>}
-            {lister.city && (
+            {(lister.city || lister.address?.city || lister.pickup?.city) && (
               <>
                 <span className="lh-meta-sep">·</span>
-                <span>{lister.city}</span>
+                <span>{lister.city || lister.address?.city || lister.pickup?.city}</span>
               </>
             )}
             <span className="lh-meta-sep">·</span>

@@ -32,10 +32,14 @@ export interface CalendarEventDetail {
 
 export interface CalendarEvent {
   id: string;
-  type: EventType;
+  type: EventType | string;
   title: string;
   /** ISO date, e.g. "2026-03-18" */
   date: string;
+  time?: string;
+  assignee?: string;
+  description?: string;
+  status?: string;
   orderId?: string;
   /** Optional — pills without this simply won't render a hover card. */
   detail?: CalendarEventDetail;
@@ -70,7 +74,7 @@ export const EVENT_STYLES: Record<EventType, { label: string; color: string }> =
 
 //Agenda
 export type AgendaActionType =
-  | 'prep-dispatch' | 'dispatched' | 'rental-starts' | 'return-due' | 'cleaning';
+  | 'prep-dispatch' | 'dispatched' | 'rental-starts' | 'return-due' | 'cleaning' | 'internal-task';
 
 export interface AgendaEntryDetail {
   title: string;
@@ -95,11 +99,13 @@ export interface AgendaEntry {
 }
 
 // Gantt
-export type GanttSegmentType = 'dispatch' | 'rental' | 'return' | 'deposit';
+export type GanttSegmentType = 'dispatch' | 'rental' | 'return' | 'deposit' | 'cleaning';
 
 export interface GanttSegment {
   /** Day of month, 1-31 */
-  day: number;
+  day?: number;
+  start?: string;
+  end?: string;
   type: GanttSegmentType;
 }
 

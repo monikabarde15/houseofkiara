@@ -43,6 +43,13 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
     }
   };
 
+  const generateSku = () => {
+    const designerStr = submission.designer || 'UNK';
+    const initials = designerStr.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase() || 'UNK';
+    const num = Math.floor(100 + Math.random() * 900);
+    onChange({ sku: `HOK-${initials}-${num}` });
+  };
+
   return (
     <div className="ws-grid">
       {/* SKU */}
@@ -56,7 +63,11 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
             onChange={(e) => onChange({ sku: e.target.value })}
             placeholder="HOK-XXX-001"
           />
-          <button className="btn btn-sec btn-sm" title="Fills the next free number in the house pattern — HOK-designer initials-nnn, collision-checked across catalogue and queue">
+          <button 
+            className="btn btn-sec btn-sm" 
+            title="Fills the next free number in the house pattern"
+            onClick={generateSku}
+          >
             Suggest
           </button>
         </div>

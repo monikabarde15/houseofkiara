@@ -27,6 +27,7 @@ export default function PayoutsView() {
   const [payoutsList, setPayoutsList] = useState<payoutApi.Payout[]>([]);
   const [pendingPayoutsTotal, setPendingPayoutsTotal] = useState(0);
   const [paidPayoutsTotal, setPaidPayoutsTotal] = useState(0);
+  const [hokCommissionTotal, setHokCommissionTotal] = useState(0);
 
   useEffect(() => {
     payoutApi.getPayouts()
@@ -34,6 +35,7 @@ export default function PayoutsView() {
         setPayoutsList(result.data || []);
         setPendingPayoutsTotal(result.summary?.pending || 0);
         setPaidPayoutsTotal(result.summary?.paid || 0);
+        setHokCommissionTotal(result.summary?.hokCommission || 0);
       })
       .catch((error) => console.error('Unable to load payouts:', error));
   }, []);
@@ -53,7 +55,7 @@ export default function PayoutsView() {
         return <ByProductTab payouts={payoutsList} />;
 
       case "damage-compensation":
-        return <DamageCompensationTab payouts={payoutsList} />;
+        return <DamageCompensationTab payouts={payoutsList} setPayouts={setPayoutsList} setPending={setPendingPayoutsTotal} setPaid={setPaidPayoutsTotal} />;
 
       default:
         return <PaymentQueueTab payouts={payoutsList} setPayouts={setPayoutsList} setPending={setPendingPayoutsTotal} setPaid={setPaidPayoutsTotal} />;
@@ -73,7 +75,13 @@ export default function PayoutsView() {
 
         {/* Summary Cards */}
         <div className="mt-7">
-          <PayoutSummaryCards pendingTotal={pendingPayoutsTotal} paidTotal={paidPayoutsTotal} pendingCount={payoutsList.filter(p => p.status === 'Pending').length} />
+          <PayoutSummaryCards
+            pendingTotal={pendingPayoutsTotal}
+            paidTotal={paidPayoutsTotal}
+            hokCommissionTotal={hokCommissionTotal}
+            pendingCount={payoutsList.filter(p => p.status === 'Pending').length}
+            payouts={payoutsList}
+          />
         </div>
 
         {/* Integrity Banner */}
@@ -95,7 +103,6 @@ export default function PayoutsView() {
           {renderActiveTab()}
         </div>
       </div>
-      <Toaster position="bottom-right" />
     </div>
   );
 }

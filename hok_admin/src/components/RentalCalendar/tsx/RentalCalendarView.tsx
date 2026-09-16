@@ -8,7 +8,7 @@ import '../css/RentalCalendarView.css';
 import AgendaView from './agenda/AgendaView';
 import GanttView from './gantt/GanttView';
 import AddTaskModal from './AddTaskModal';
-import { Order } from '../../types';
+import { Order } from '../../../types';
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' });
 
@@ -154,6 +154,7 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
       // Gantt
       newGantt.push({
         id: `gantt_${order.id || (order as any)._id}`,
+        orderId: String(order.id || (order as any)._id),
         customer: order.customerName,
         product: pName,
         segments: [

@@ -4,14 +4,11 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000,
+    port: 3005,
+    strictPort: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-      },
-      '/hok_admin': {
-        target: 'http://localhost:3001', // Admin portal dev server runs on 3001
+        target: 'http://127.0.0.1:5003',
         changeOrigin: true,
       }
     }

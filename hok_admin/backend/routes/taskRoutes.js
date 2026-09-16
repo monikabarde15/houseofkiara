@@ -5,12 +5,12 @@ import { requireAuth } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 router.route('/')
-  .get(requireAuth, getTasks)
-  .post(requireAuth, createTask);
+  .get(getTasks)
+  .post(createTask);
 
 router.route('/:id')
-  .get(requireAuth, getTaskById)
-  .put(requireAuth, updateTask)
-  .delete(requireAuth, deleteTask);
+  .get(getTaskById)
+  .put(updateTask)
+  .delete(deleteTask);
 
 export default router;

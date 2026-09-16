@@ -160,5 +160,5 @@ To independently verify the findings:
    - Run Auth E2E Suite: `node tests/e2e/tier1_auth.test.js`
    - Run Full Suite: `node tests/e2e/runner.js`
 3. **Manual / Curl Verification**:
-   - `curl -s http://localhost:5000/api/auth/status` -> verifies JSON response with 200 OK.
-   - `curl -s -X POST http://localhost:5000/api/auth/login -H "Content-Type: application/json" -d '{"email":"invalid@test.com","password":"123"}'` -> verifies 401 Unauthorized.
+   - `curl -s http://localhost:5003/api/auth/status` -> verifies JSON response with 200 OK.
+   - `curl -s -X POST http://localhost:5003/api/auth/login -H "Content-Type: application/json" -d '{"email":"invalid@test.com","password":"123"}'` -> verifies 401 Unauthorized.

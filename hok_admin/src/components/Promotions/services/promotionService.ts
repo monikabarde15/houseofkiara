@@ -6,7 +6,8 @@
 
 import { PromoCode } from '../types/promotions.types';
 
-const BASE = 'http://localhost:5000/api/promotions';
+import { API_BASE_URL } from '../../../services/apiClient';
+const BASE = `${API_BASE_URL}/promotions`;
 
 export const promotionService = {
   // GET all promo codes

@@ -44,7 +44,7 @@
 ## Interface Contracts
 
 ### Frontend ↔ Backend REST API
-- Base URL: `/api` (proxied by Vite to `http://localhost:5000`)
+- Base URL: `/api` (proxied by Vite to `http://localhost:5003`)
 - Standard Header: `Authorization: Bearer <sessionToken>`, `Content-Type: application/json`
 - Auth Endpoints:
   - `GET /api/auth/status` -> `{ initialized: boolean }`

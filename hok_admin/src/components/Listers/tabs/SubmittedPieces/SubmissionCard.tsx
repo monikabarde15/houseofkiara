@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Submission } from '../../types/lister.types';
 import { formatDate, pluralize, inr } from '../../utils/formatter';
 import { CHANNEL_TAG_MAPPING } from '../../utils/constants';
+import toast from 'react-hot-toast';
 import { getSubmissionStatus, getStatusChipVariant } from '../../utils/derived';
 import { useSubmissions } from '../../hooks/useSubmissions';
 import { generateWhatsAppLink, getDefaultWhatsAppMessage } from '../../utils/generators';
@@ -24,6 +25,8 @@ export const SubmissionCard: React.FC<SubmissionCardProps> = ({
   const [showRejectBox, setShowRejectBox] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [withdrawReason, setWithdrawReason] = useState('');
 
   const status = getSubmissionStatus(submission);
   const chipVariant = getStatusChipVariant(status);
@@ -38,9 +41,11 @@ export const SubmissionCard: React.FC<SubmissionCardProps> = ({
     setIsLoading(true);
     try {
       await approveSubmission(submission.subid, 'Admin');
+      toast.success('Submission approved successfully');
       onUpdate();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to approve:', error);
+      toast.error('Failed to approve: ' + (error.message || 'Unknown error'));
     } finally { setIsLoading(false); }
   };
 
@@ -49,29 +54,34 @@ export const SubmissionCard: React.FC<SubmissionCardProps> = ({
     setIsLoading(true);
     try {
       await rejectSubmission(submission.subid, 'Admin', rejectReason);
+      toast.success('Submission rejected successfully');
       setShowRejectBox(false);
       setRejectReason('');
       onUpdate();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to reject:', error);
+      toast.error('Failed to reject: ' + (error.message || 'Unknown error'));
     } finally { setIsLoading(false); }
   };
 
   const handleWithdraw = async () => {
-    if (isLoading) return;
-    const reason = prompt('Reason for withdrawal:', 'Lister sold the piece elsewhere');
-    if (reason === null) return;
+    if (isLoading || !withdrawReason.trim()) return;
     setIsLoading(true);
     try {
-      await withdrawSubmission(submission.subid, reason);
+      await withdrawSubmission(submission.subid, withdrawReason);
+      toast.success('Submission marked as withdrawn');
+      setShowWithdrawModal(false);
+      setWithdrawReason('');
       onUpdate();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to withdraw:', error);
+      toast.error('Failed to withdraw: ' + (error.message || 'Unknown error'));
     } finally { setIsLoading(false); }
   };
 
   // Derive timeline nodes
-  const submittedDate = formatDate(submission.submitted);
+  const rawDate = submission.submittedAt || submission.createdAt || submission.submitted;
+  const submittedDate = rawDate ? formatDate(rawDate) : 'Unknown date';
   const approvedDate = submission.decision?.what === 'Approved' ? formatDate(submission.decision.on) : null;
   const rejectedDate = submission.decision?.what === 'Rejected' ? formatDate(submission.decision.on) : null;
   const publishedDate = submission.sku ? approvedDate : null;
@@ -281,6 +291,44 @@ export const SubmissionCard: React.FC<SubmissionCardProps> = ({
               </button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Withdraw Modal */}
+      {showWithdrawModal && (
+        <div className="recall-modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+          <div className="recall-modal-content" style={{ background: 'white', padding: '24px', borderRadius: '8px', width: '400px', maxWidth: '90%', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
+            <h3 style={{ marginTop: 0, marginBottom: '16px', fontSize: '16px', color: '#2f2a27' }}>
+              Withdraw Submission
+            </h3>
+            <div className="fld" style={{ marginBottom: '20px' }}>
+              <label className="fld-label">Reason for withdrawal</label>
+              <input
+                type="text"
+                className="fld-input"
+                value={withdrawReason}
+                onChange={(e) => setWithdrawReason(e.target.value)}
+                placeholder="e.g. Lister sold the piece elsewhere"
+                autoFocus
+              />
+            </div>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <button 
+                className="btn btn-sec"
+                onClick={() => setShowWithdrawModal(false)}
+                disabled={isLoading}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn btn-danger"
+                disabled={!withdrawReason.trim() || isLoading}
+                onClick={handleWithdraw}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

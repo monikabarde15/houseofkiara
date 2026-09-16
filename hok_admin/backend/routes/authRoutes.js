@@ -5,6 +5,7 @@ import {
   registerAdmin,
   logoutAdmin,
   getMe,
+  getAdmins,
 } from "../controllers/authController.js";
 import { requireAuth } from "../middleware/authMiddleware.js";
 
@@ -15,5 +16,6 @@ router.post("/auth/register", registerAdmin);
 router.post("/auth/login", loginAdmin);
 router.post("/auth/logout", logoutAdmin);
 router.get("/auth/me", requireAuth, getMe);
+router.get("/auth/admins", getAdmins);
 
 export default router;

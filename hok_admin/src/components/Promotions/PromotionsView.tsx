@@ -22,10 +22,11 @@ import { useRefusedAttempts } from './hooks/useRefusedAttempts';
 import { usePromotionActions } from './hooks/usePromotionActions';
 
 interface PromotionsViewProps {
+  orders?: any[];
   onEditingChange?: (isEditing: boolean) => void;
 }
 
-export const PromotionsView: React.FC<PromotionsViewProps> = ({ onEditingChange }) => {
+export const PromotionsView: React.FC<PromotionsViewProps> = ({ orders = [], onEditingChange }) => {
   const [selectedCodeId, setSelectedCodeId] = useState<string | null>(null);
   const [composerOpen, setComposerOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -38,7 +39,7 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({ onEditingChange 
     }
   }, [selectedCodeId, onEditingChange]);
 
-  const { codes, loading, getRedemptions, getDerivedState, setFilter, setSort, refresh } = usePromotions();
+  const { codes, loading, getRedemptions, getDerivedState, promotionOrders, setFilter, setSort, refresh } = usePromotions();
   const { rules, updateRules } = useCheckoutRules();
   const { messages, updateMessages, resetMessage, getCustomizedCount } = useShopperMessages();
   const { getUnknownCodes } = useRefusedAttempts();
@@ -46,9 +47,25 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({ onEditingChange 
 
   // Compute stats for snapshot cards
   const liveCodes = codes.filter(c => getDerivedState(c) === 'Active').length;
-  const totalRedemptions = codes.reduce((sum, c) => sum + getRedemptions(c), 0);
-  const totalOrderValue = codes.reduce((sum, c) => sum + (getRedemptions(c) * 1000), 0); // Mock
-  const totalDiscountFunded = codes.reduce((sum, c) => sum + (getRedemptions(c) * 100), 0); // Mock
+  
+  let dynamicRedemptions = 0;
+  let dynamicOrderValue = 0;
+  let dynamicDiscountFunded = 0;
+
+  const liveOrderData = promotionOrders.length > 0 ? promotionOrders : orders;
+  codes.forEach(c => {
+    const promoCode = String(c.code || c.id || '').trim().toUpperCase();
+    const matchingOrders = liveOrderData.filter((o: any) => String(o.promoCode || '').trim().toUpperCase() === promoCode);
+    dynamicRedemptions += matchingOrders.length;
+    matchingOrders.forEach((o: any) => {
+      dynamicOrderValue += Math.max(0, Number(o.priceBeforePromo ?? o.orderValue ?? o.amount ?? o.price ?? 0));
+      dynamicDiscountFunded += Math.max(0, Number(o.promoDiscount ?? o.discount ?? 0));
+    });
+  });
+
+  const totalRedemptions = dynamicRedemptions;
+  const totalOrderValue = dynamicOrderValue;
+  const totalDiscountFunded = dynamicDiscountFunded;
 
   const handleSnapshotClick = (filter: string | null) => {
     setActiveSnapshot(filter);

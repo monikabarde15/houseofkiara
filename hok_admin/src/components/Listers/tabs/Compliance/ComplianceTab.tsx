@@ -32,6 +32,14 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({
   const handleSave = async () => {
     setLoading(true);
     try {
+      const { listerService } = await import('../../services/listerService');
+      if (lister?.id && !isCreateMode) {
+        await listerService.updateLister(lister.id, {
+          status,
+          statusReason,
+          notes,
+        });
+      }
       onSave();
     } catch (error) {
       console.error('Failed to save:', error);

@@ -22,6 +22,7 @@ export const MediaPicker: React.FC<MediaPickerProps> = ({ media, onChange }) => 
       name: file.name,
       url: URL.createObjectURL(file),
       kind: 'image',
+      file: file,
     }));
 
     onChange([...media, ...newMedia]);
@@ -38,6 +39,7 @@ export const MediaPicker: React.FC<MediaPickerProps> = ({ media, onChange }) => 
       name: file.name,
       url: URL.createObjectURL(file),
       kind: 'video',
+      file: file,
     }));
 
     onChange([...media, ...newMedia]);

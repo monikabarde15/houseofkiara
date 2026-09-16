@@ -3,6 +3,7 @@ import { PromoCode, PromoCodeFilter, PromoCodeSort, DerivedPromoState } from '..
 import { promotionService } from '../services/promotionService';
 import { deriveState } from '../utils/derived';
 import { formatOfferLine, formatAudiencePhrase } from '../utils/formatter';
+import * as orderApi from '../../../services/orderApi';
 
 interface UsePromotionsReturn {
   codes: PromoCode[];
@@ -17,6 +18,7 @@ interface UsePromotionsReturn {
   refresh: () => void;
   getRedemptions: (code: PromoCode) => number;
   getDerivedState: (code: PromoCode) => DerivedPromoState;
+  promotionOrders: any[];
 }
 
 export const usePromotions = (): UsePromotionsReturn => {
@@ -26,16 +28,26 @@ export const usePromotions = (): UsePromotionsReturn => {
   const [filter, setFilter] = useState<PromoCodeFilter>({});
   const [sort, setSort] = useState<PromoCodeSort>({ field: 'code', direction: 'asc' });
 
-  // Redemption counts - fetched from orders in production
-  const [redemptionsMap] = useState<Record<string, number>>({});
+  const [redemptionsMap, setRedemptionsMap] = useState<Record<string, number>>({});
+  const [promotionOrders, setPromotionOrders] = useState<any[]>([]);
 
   // Fetch codes from backend
   const fetchCodes = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await promotionService.getPromoCodes();
+      const [data, orders] = await Promise.all([
+        promotionService.getPromoCodes(),
+        orderApi.getOrders().catch(() => []),
+      ]);
       setCodes(data);
+      setPromotionOrders(orders || []);
+      const counts = (orders || []).reduce((result: Record<string, number>, order: any) => {
+        const code = String(order.promoCode || '').trim().toUpperCase();
+        if (code) result[code] = (result[code] || 0) + 1;
+        return result;
+      }, {});
+      setRedemptionsMap(counts);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch promo codes');
       setCodes([]);
@@ -51,7 +63,7 @@ export const usePromotions = (): UsePromotionsReturn => {
 
   // Get redemptions for a code
   const getRedemptions = useCallback((code: PromoCode): number => {
-    return redemptionsMap[code.code] || 0;
+    return redemptionsMap[String(code.code || '').trim().toUpperCase()] || 0;
   }, [redemptionsMap]);
 
   // Get derived state for a code
@@ -160,5 +172,6 @@ export const usePromotions = (): UsePromotionsReturn => {
     refresh,
     getRedemptions,
     getDerivedState,
+    promotionOrders,
   };
 };

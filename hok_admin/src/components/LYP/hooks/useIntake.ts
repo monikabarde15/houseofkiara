@@ -48,6 +48,31 @@ export const useIntake = () => {
       const photos = data.media.filter(m => m.kind === 'image').length;
       const videos = data.media.filter(m => m.kind === 'video').length;
 
+      const priceStd = data.askRent ? parseFloat(String(data.askRent).replace(/,/g, '')) || 0 : 0;
+      const resalePrice = data.askSell ? parseFloat(String(data.askSell).replace(/,/g, '')) || 0 : 0;
+      const retailPrice = data.originalPrice ? parseFloat(String(data.originalPrice).replace(/,/g, '')) || 0 : 0;
+
+      const assessment = {
+        sku: sku || '',
+        name: data.piece,
+        mode: data.intent === 'Rent it' ? 'Rental' : 
+              data.intent === 'Sell it' ? 'Preloved' : 'Rental/Preloved',
+        grade: 'Good',
+        sizeLabel: data.size as any,
+        measurements: data.measurements,
+        priceStd,
+        priceExt: Math.round(priceStd * 1.5),
+        perDay: Math.round(priceStd / 4),
+        minDays: 4,
+        deposit: Math.round(retailPrice * 0.2),
+        resalePrice,
+        minOffer: Math.round(resalePrice * 0.8),
+        retailPrice,
+        retailVerifiedVia: null,
+        payoutPctRental: 40,
+        payoutPctResale: 75,
+      };
+
       const submission: Partial<Submission> = {
         subid,
         listerId: data.listerId || 'LST-GENERAL',
@@ -77,26 +102,7 @@ export const useIntake = () => {
         moreInfo: null,
         replyAt: null,
         decision: null,
-        assessment: {
-          sku: sku || '',
-          name: data.piece,
-          mode: data.intent === 'Rent it' ? 'Rental' : 
-                data.intent === 'Sell it' ? 'Preloved' : 'Rental/Preloved',
-          grade: 'Good',
-          sizeLabel: data.size as any,
-          measurements: data.measurements,
-          priceStd: 0,
-          priceExt: 0,
-          perDay: 0,
-          minDays: 4,
-          deposit: 0,
-          resalePrice: 0,
-          minOffer: 0,
-          retailPrice: 0,
-          retailVerifiedVia: null,
-          payoutPctRental: 40,
-          payoutPctResale: 75,
-        },
+        assessment,
         history: [
           {
             c: 'muted',

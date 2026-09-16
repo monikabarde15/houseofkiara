@@ -5,6 +5,8 @@ import React, { useMemo, useState } from 'react';
 import { Product } from '../../../types';
 import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import * as productSectionsApi from '../../../services/productSectionsApi';
+import * as offerApi from '../../../services/offerApi';
+import { promotionService } from '../../Promotions/services/promotionService';
 import toast from 'react-hot-toast';
 
 interface AvailabilityCalendarTabProps {
@@ -14,6 +16,8 @@ interface AvailabilityCalendarTabProps {
   onOpenGlobalCalendar?: () => void;
   onViewOrder?: (orderId: string) => void;
   orders?: any[];
+  offers?: any[];
+  promoCodes?: any[];
   onAddOrder?: (newOrder: any) => void;
 }
 
@@ -62,6 +66,8 @@ export function AvailabilityCalendarTab({
   onOpenGlobalCalendar,
   onViewOrder,
   orders = [],
+  offers = [],
+  promoCodes = [],
   onAddOrder,
 }: AvailabilityCalendarTabProps) {
   const [localProduct, setLocalProduct] = useState<Product>(editingProduct!);
@@ -103,7 +109,31 @@ export function AvailabilityCalendarTab({
   const [channel, setChannel] = useState(CHANNEL_OPTIONS[0]);
   const [listerSplit, setListerSplit] = useState<number>(45);
   const [splitNote, setSplitNote] = useState('');
+  const [selectedOfferId, setSelectedOfferId] = useState('');
+  const [selectedPromoCode, setSelectedPromoCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [databaseOffers, setDatabaseOffers] = useState<any[] | null>(null);
+  const [databasePromoCodes, setDatabasePromoCodes] = useState<any[] | null>(null);
+  // Kept only for the disabled legacy selector markup; customer lookup is
+  // performed by the booking API from name/phone.
+  const customerList: any[] = [];
+  const selectedCustomerId = '';
+  const customerMode = 'new';
+  const setSelectedCustomerId = () => {};
+  const setCustomerMode = () => {};
+
+
+  // Reload these choices from PostgreSQL whenever a product calendar opens.
+  // Parent state can be stale if offers/promos were added after initial login.
+  React.useEffect(() => {
+    if (!editingProduct) return;
+    offerApi.getOffers()
+      .then(setDatabaseOffers)
+      .catch(() => setDatabaseOffers(null));
+    promotionService.getPromoCodes()
+      .then(setDatabasePromoCodes)
+      .catch(() => setDatabasePromoCodes(null));
+  }, [editingProduct?.productId, (editingProduct as any)?._id]);
 
   if (!activeProduct) {
     return <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm"><p className="text-stone-400 text-center py-8">No product selected</p></div>;
@@ -126,8 +156,50 @@ export function AvailabilityCalendarTab({
       }));
   }, [bookingHistory]);
 
+  // All context values are derived from booking rows returned by the calendar
+  // API.  No split, count, or date on this card is a display-only constant.
+  const splitBookings = activeBookings
+    .filter((booking: any) => Number.isFinite(Number(booking.listerSplitPercent)))
+    .sort((a: any, b: any) => new Date(b.startDate || b.date).getTime() - new Date(a.startDate || a.date).getTime());
+  const lastSplitBooking = splitBookings[0];
+  const averageSplit = splitBookings.length
+    ? Math.round(splitBookings.reduce((total: number, booking: any) => total + Number(booking.listerSplitPercent), 0) / splitBookings.length)
+    : 0;
+  const defaultSplit = Math.max(0, Number((activeProduct as any).payoutPercentage || 45));
+  const rentalCount = activeBookings.length;
+  const productCondition = String((activeProduct as any).condition || 'Not recorded');
+
   const reasonMeta = REASON_OPTIONS.find(r => r.value === reason)!;
   const isExternalBooking = reasonMeta.isExternal;
+
+  // Offers are optional at booking time. List all usable database offers so
+  // legacy records without a product ID are never hidden from an admin.
+  const applicableOffers = useMemo(() => {
+    const sourceOffers = databaseOffers ?? offers;
+    return sourceOffers.filter((offer: any) => offer.status === 'Pending' || offer.status === 'Accepted');
+  }, [databaseOffers, offers]);
+
+  const activePromoCodes = useMemo(() => {
+    const sourcePromoCodes = databasePromoCodes ?? promoCodes;
+    return sourcePromoCodes.filter((promo: any) =>
+      String(promo.status || '').toLowerCase() === 'active'
+    );
+  }, [databasePromoCodes, promoCodes]);
+
+  const bookingSummary = useMemo(() => {
+    const basePrice = Number(activeProduct.rentalPrice || (activeProduct as any).listingPrice || 0);
+    const offer = applicableOffers.find((item: any) => item.id === selectedOfferId);
+    const beforePromo = offer?.offerPrice && Number(offer.offerPrice) > 0 ? Number(offer.offerPrice) : basePrice;
+    const promo = activePromoCodes.find((item: any) => (item.id || item.code) === selectedPromoCode || item.code === selectedPromoCode);
+    let discount = 0;
+    const type = String(promo?.type || '').toLowerCase();
+    if (promo && (type === 'percent' || type === 'percentage')) discount = beforePromo * Number(promo.value || 0) / 100;
+    if (promo && (type === 'flat' || type === 'fixed')) discount = Number(promo.value || 0);
+    if (promo?.maxDiscount != null) discount = Math.min(discount, Number(promo.maxDiscount));
+    discount = Math.max(0, Math.min(Math.round(discount), beforePromo));
+    const deposit = Number(activeProduct.securityDeposit || 0);
+    return { beforePromo, discount, rental: Math.max(0, beforePromo - discount), deposit, total: Math.max(0, beforePromo - discount) + deposit };
+  }, [activeProduct, applicableOffers, activePromoCodes, selectedOfferId, selectedPromoCode]);
 
   // --- Helper to generate days for ANY month ---
   const generateDaysForMonth = (year: number, month: number) => {
@@ -239,7 +311,7 @@ export function AvailabilityCalendarTab({
   };
 
   // --- Actions ---
-  const resetForm = () => { setBlockFrom(''); setBlockTo(''); setCustomerName(''); setWhatsappNumber(''); setCity(''); setChannel(CHANNEL_OPTIONS[0]); setListerSplit(45); setSplitNote(''); };
+  const resetForm = () => { setBlockFrom(''); setBlockTo(''); setCustomerName(''); setWhatsappNumber(''); setCity(''); setChannel(CHANNEL_OPTIONS[0]); setListerSplit(45); setSplitNote(''); setSelectedOfferId(''); setSelectedPromoCode(''); };
   
   const handleBlockManualDates = async () => {
     if (!blockFrom || !blockTo) { toast.error('Please choose a from and to date.'); return; }
@@ -277,17 +349,40 @@ export function AvailabilityCalendarTab({
     if (overlapErr) { toast.error(overlapErr); return; }
     setSubmitting(true);
     try {
+      let finalAmount = Number(activeProduct.rentalPrice || 8500);
+      let appliedOffer = null;
+      let appliedPromo = null;
+
+      if (selectedOfferId) {
+        appliedOffer = offers.find(o => o.id === selectedOfferId);
+        if (appliedOffer && appliedOffer.offerPrice) {
+          finalAmount = appliedOffer.offerPrice;
+        }
+      }
+      if (selectedPromoCode) {
+        appliedPromo = activePromoCodes.find(p => p.id === selectedPromoCode || p.code === selectedPromoCode);
+        if (appliedPromo) {
+          if (appliedPromo.type === 'fixed') {
+            finalAmount = Math.max(0, finalAmount - appliedPromo.value);
+          } else if (appliedPromo.type === 'percentage') {
+            finalAmount = Math.max(0, finalAmount - (finalAmount * (appliedPromo.value / 100)));
+          }
+        }
+      }
+
       const targetId = activeProduct.productId || (activeProduct as any)._id || activeProduct.id;
       const res = await productSectionsApi.addExternalBooking(targetId, {
         customerName,
         startDate: blockFrom,
         endDate: blockTo,
-        amount: Number(activeProduct.rentalPrice || 8500),
+        amount: finalAmount,
         whatsappNumber,
         city,
         channel,
         listerSplitPercent: listerSplit,
-        splitNote
+        splitNote,
+        offerId: selectedOfferId || undefined,
+        promoCode: selectedPromoCode || undefined
       } as any);
 
       const resData = res?.data || res;
@@ -315,7 +410,10 @@ export function AvailabilityCalendarTab({
       onUpdateProduct(updatedProd);
 
       resetForm();
-      toast.success('Reservation saved & order created!');
+      const finalCustName = resData.customer?.name || customerName;
+      const finalCustId = resData.customer?.customerId || resData.customer?.id || "Created";
+      const finalOrderCnt = resData.customer?.ordersCount ?? 1;
+      toast.success(`Reservation saved & order created! Order: ${finalOrderId} · Customer: ${finalCustName} (${finalCustId}) · Total Orders: ${finalOrderCnt}`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Unable to reserve these dates');
     } finally {
@@ -462,25 +560,169 @@ export function AvailabilityCalendarTab({
           <div className="space-y-3 pt-2">
             <div className="rounded-md border border-amber-200/70 bg-amber-50/60 p-3"><p className="text-xs text-stone-600 font-medium">An external booking is a real reservation &mdash; HOK reserves these dates by creating an order, so deposit, GST, lister payout and dispatch are all tracked. There is no date-block without an order on this path.</p></div>
 
+            {false && customerMode === 'existing' && (
+              <div className="space-y-2 bg-stone-50/80 p-3 rounded-md border border-stone-200/80">
+                <label className="text-stone-600 font-semibold text-[11px] flex items-center justify-between">
+                  <span>Select Registered Customer *</span>
+                  <span className="text-[10px] text-stone-400 font-normal">Auto-links order & increases customer order count</span>
+                </label>
+                <select
+                  value={selectedCustomerId}
+                  onChange={(e) => {
+                    const cId = e.target.value;
+                    setSelectedCustomerId(cId);
+                    const found = customerList.find(c => (c.customerId || c.id) === cId);
+                    if (found) {
+                      setCustomerName(found.name || '');
+                      setWhatsappNumber(found.phone || '');
+                      setCity(found.location || found.address || '');
+                    }
+                  }}
+                  className="w-full p-2.5 bg-white border border-stone-300 rounded text-xs font-medium focus:ring-1 focus:ring-stone-700"
+                >
+                  <option value="">-- Choose Existing Customer ({customerList.length} registered) --</option>
+                  {customerList.map((c: any) => (
+                    <option key={c.customerId || c.id} value={c.customerId || c.id}>
+                      {c.customerId || c.id} - {c.name} {c.phone ? `(${c.phone})` : ''} - {c.ordersCount || 0} order(s) - ₹{(c.totalSpent || 0).toLocaleString('en-IN')} spent
+                    </option>
+                  ))}
+                </select>
+
+                {selectedCustomerId && (() => {
+                  const activeCust = customerList.find(c => (c.customerId || c.id) === selectedCustomerId);
+                  if (!activeCust) return null;
+                  return (
+                    <div className="bg-emerald-50/90 border border-emerald-200 rounded p-2.5 text-xs text-emerald-900 flex items-center justify-between">
+                      <div>
+                        <span className="font-bold">{activeCust.name}</span> <span className="font-mono text-[11px] text-emerald-700 font-semibold">({activeCust.customerId || activeCust.id})</span>
+                        <span className="text-emerald-700 block text-[11px] mt-0.5">
+                          📱 {activeCust.phone || 'No phone'} · 📍 {activeCust.location || 'India'} · 📦 {activeCust.ordersCount || 0} order(s) currently · 💰 ₹{(activeCust.totalSpent || 0).toLocaleString('en-IN')} total spent
+                        </span>
+                      </div>
+                      <span className="bg-emerald-200/90 text-emerald-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wide">Customer Linked</span>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="space-y-1"><label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">Customer Name *</label><input type="text" placeholder="As shared on chat" value={customerName} onChange={(e) => setCustomerName(e.target.value)} className="w-full p-2 bg-white border border-stone-200 rounded text-xs" /></div>
-              <div className="space-y-1"><label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">WhatsApp Number *</label><input type="text" placeholder="+91 ..." value={whatsappNumber} onChange={(e) => setWhatsappNumber(e.target.value)} className="w-full p-2 bg-white border border-stone-200 rounded text-xs" /></div>
-              <div className="space-y-1"><label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">City</label><input type="text" placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} className="w-full p-2 bg-white border border-stone-200 rounded text-xs" /></div>
-              <div className="space-y-1"><label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">Channel</label>
+              <div className="space-y-1">
+                <label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">Customer Name *</label>
+                <input
+                  type="text"
+                  placeholder="As shared on chat"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className="w-full p-2 bg-white border border-stone-200 rounded text-xs"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">WhatsApp Number *</label>
+                <input
+                  type="text"
+                  placeholder="+91 ..."
+                  value={whatsappNumber}
+                  onChange={(e) => setWhatsappNumber(e.target.value)}
+                  className="w-full p-2 bg-white border border-stone-200 rounded text-xs"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">City</label>
+                <input
+                  type="text"
+                  placeholder="City"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full p-2 bg-white border border-stone-200 rounded text-xs"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">Channel</label>
                 <select value={channel} onChange={(e) => setChannel(e.target.value)} className="w-full p-2 bg-white border border-stone-200 rounded text-xs">
                   {CHANNEL_OPTIONS.map(ch => <option key={ch} value={ch}>{ch}</option>)}
                 </select>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* Smart detection: if user types a number matching existing customer */}
+            {false && !selectedCustomerId && whatsappNumber.replace(/\D/g, '').length >= 6 && (() => {
+              const cleanIn = whatsappNumber.replace(/\D/g, '');
+              const detected = customerList.find(c => {
+                const cP = (c.phone || '').replace(/\D/g, '');
+                return cP && (cP === cleanIn || cP.endsWith(cleanIn) || cleanIn.endsWith(cP));
+              });
+              if (!detected) return null;
+              return (
+                <div className="bg-amber-50 border border-amber-200 rounded p-2.5 text-xs text-amber-900 flex items-center justify-between">
+                  <div>
+                    <span className="font-bold">Existing customer found:</span> {detected.name} ({detected.customerId || detected.id})
+                    <span className="block text-[11px] text-amber-700">Has {detected.ordersCount || 0} order(s) · ₹{(detected.totalSpent || 0).toLocaleString('en-IN')} spent</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedCustomerId(detected.customerId || detected.id);
+                      setCustomerName(detected.name || '');
+                      setWhatsappNumber(detected.phone || '');
+                      setCity(detected.location || detected.address || '');
+                      setCustomerMode('existing');
+                    }}
+                    className="bg-amber-700 hover:bg-amber-800 text-white font-semibold text-[11px] px-2.5 py-1 rounded cursor-pointer"
+                  >
+                    Link This Customer →
+                  </button>
+                </div>
+              );
+            })()}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+              <div className="space-y-1">
+                <label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">Apply Offer</label>
+                <select value={selectedOfferId} onChange={(e) => {
+                  const offerId = e.target.value;
+                  setSelectedOfferId(offerId);
+                  const offer = applicableOffers.find((item: any) => item.id === offerId);
+                  if (offer) {
+                    setCustomerName(offer.customerName || '');
+                    setWhatsappNumber(offer.phone || '');
+                    setSelectedCustomerId('');
+                    setCustomerMode('new');
+                  }
+                }} className="w-full p-2 bg-white border border-stone-200 rounded text-xs">
+                  <option value="">No Offer</option>
+                  {applicableOffers.map(o => (
+                    <option key={o.id} value={o.id}>{o.id} - {o.customerName} (₹{o.offerPrice})</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">Apply Promo Code</label>
+                <select value={selectedPromoCode} onChange={(e) => setSelectedPromoCode(e.target.value)} className="w-full p-2 bg-white border border-stone-200 rounded text-xs">
+                  <option value="">No Promo Code</option>
+                  {activePromoCodes.map((p: any) => (
+                    <option key={p.id} value={p.id}>{p.code} ({p.type === 'fixed' ? `₹${p.value}` : `${p.value}%`})</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {(selectedOfferId || selectedPromoCode) && <div className="grid grid-cols-2 md:grid-cols-5 gap-2 rounded-md border border-stone-200 bg-stone-50 p-3 text-xs">
+              <div><span className="block text-[10px] uppercase text-stone-400">Base / offer</span><b>₹{bookingSummary.beforePromo.toLocaleString('en-IN')}</b></div>
+              <div><span className="block text-[10px] uppercase text-stone-400">Promo discount</span><b className="text-rose-600">₹{bookingSummary.discount.toLocaleString('en-IN')}</b></div>
+              <div><span className="block text-[10px] uppercase text-stone-400">Rental payable</span><b>₹{bookingSummary.rental.toLocaleString('en-IN')}</b></div>
+              <div><span className="block text-[10px] uppercase text-stone-400">Refundable deposit</span><b>₹{bookingSummary.deposit.toLocaleString('en-IN')}</b></div>
+              <div><span className="block text-[10px] uppercase text-stone-400">Total to collect</span><b className="text-emerald-700">₹{bookingSummary.total.toLocaleString('en-IN')}</b></div>
+            </div>}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
               <div className="space-y-1"><label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">Lister Split % (This Transaction)</label><input type="number" value={listerSplit} onChange={(e) => setListerSplit(Number(e.target.value))} className="w-full p-2 bg-white border border-stone-200 rounded text-xs" /></div>
               <div className="space-y-1"><label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">Why This % (Internal)</label><input type="text" placeholder="e.g. couture demand - 8th rental, fair condition" value={splitNote} onChange={(e) => setSplitNote(e.target.value)} className="w-full p-2 bg-white border border-stone-200 rounded text-xs" /></div>
             </div>
 
             <div className="rounded-md border border-stone-200 bg-stone-50 p-3 space-y-1">
               <p className="text-[10px] font-bold text-stone-500 uppercase tracking-wide">Decision Context</p>
-              <p className="text-xs text-stone-700">Last split 55% (Rental #{bookingHistory.length} &middot; {bookingHistory[0]?.startDate ? new Date(bookingHistory[0].startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent'}) &middot; piece avg {listerSplit}% &middot; default 45% &middot; condition Excellent &middot; rented {editingProduct.timesRented || bookingHistory.length}&times;</p>
+              <p className="text-xs text-stone-700">Last split {lastSplitBooking ? `${Math.max(0, Number(lastSplitBooking.listerSplitPercent))}%` : '0%'}{lastSplitBooking ? ` (Rental #${rentalCount} · ${new Date(lastSplitBooking.startDate || lastSplitBooking.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })})` : ''} &middot; piece avg {averageSplit}% &middot; default {defaultSplit}% &middot; condition {productCondition} &middot; rented {rentalCount}&times;</p>
             </div>
           </div>
         )}
@@ -503,20 +745,27 @@ export function AvailabilityCalendarTab({
         </div>
 
         {(() => {
-          // Direct matching with Orders list
-          const matchedOrders = (orders || []).filter((o: any) => 
-            o.productId === editingProduct.id ||
-            o.productId === (editingProduct as any)._id ||
-            o.productName === editingProduct.name ||
-            (bookingHistory || []).some((b: any) => 
-              b.orderId === o.id ||
-              b.orderId === o.orderNumber ||
-              b.orderId === o.orderId ||
-              (b.orderId && o.id && b.orderId === o.id)
-            )
-          );
+          // Use backend-filtered orderHistory (already filtered by product in API)
+          const productOrderHistory: any[] = (editingProduct as any)?.orderHistory || [];
+          const productBookingHistory: any[] = bookingHistory || [];
 
-          const displayList = matchedOrders.length > 0 ? matchedOrders : (bookingHistory.length > 0 ? bookingHistory : []);
+          // Merge orderHistory + bookingHistory by orderId (deduplicate)
+          const mergedMap = new Map<string, any>();
+          [...productOrderHistory, ...productBookingHistory].forEach((entry: any) => {
+            const key = entry.orderId || entry.id || entry.orderNumber || Math.random().toString();
+            if (!mergedMap.has(key)) mergedMap.set(key, entry);
+            else mergedMap.set(key, { ...mergedMap.get(key), ...entry });
+          });
+
+          // Also enrich with any global orders that match by orderId
+          mergedMap.forEach((entry, key) => {
+            const match = (orders || []).find((o: any) =>
+              o.orderId === key || o.id === key || o.orderNumber === key
+            );
+            if (match) mergedMap.set(key, { ...entry, ...match });
+          });
+
+          const displayList = Array.from(mergedMap.values());
 
           if (displayList.length === 0) {
             return <p className="text-stone-400 text-xs py-4 text-center">No orders recorded for this piece yet.</p>;
