@@ -60,6 +60,7 @@ export const createOffer = async (req, res) => {
       currency,
       assignedTo,
       expiresAt,
+      channel: req.body.channel || "Website",
 
       status: "Pending",
       negotiationStatus: "Not Started",
@@ -191,7 +192,7 @@ export const getOfferById = async (req, res) => {
     const { id } = req.params;
 
     // Validate Mongo ObjectId
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -236,7 +237,7 @@ export const updateOffer = async (req, res) => {
     const { id } = req.params;
 
     // Validate Mongo ID
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -273,6 +274,8 @@ export const updateOffer = async (req, res) => {
     offer.customerPhone = req.body.customerPhone ?? offer.customerPhone;
     offer.customerCity = req.body.customerCity ?? offer.customerCity;
     offer.customerState = req.body.customerState ?? offer.customerState;
+
+    offer.channel = req.body.channel ?? offer.channel;
 
     offer.quantity = req.body.quantity ?? offer.quantity;
 
@@ -337,7 +340,7 @@ export const deleteOffer = async (req, res) => {
     const { id } = req.params;
 
     // Validate Mongo ID
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -403,7 +406,7 @@ export const permanentDeleteOffer = async (req, res) => {
     const { id } = req.params;
 
     // Validate MongoDB ObjectId
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -458,7 +461,7 @@ export const updateOfferStatus = async (req, res) => {
       "Completed",
     ];
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -538,7 +541,7 @@ export const sendCounterOffer = async (req, res) => {
       sentBy,
     } = req.body;
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -630,7 +633,7 @@ export const assignOffer = async (req, res) => {
       remarks,
     } = req.body;
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -714,7 +717,7 @@ export const addOfferNote = async (req, res) => {
     const { id } = req.params;
     const { message, createdBy } = req.body;
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -784,7 +787,7 @@ export const getOfferNotes = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -833,7 +836,7 @@ export const getOfferTimeline = async (req, res) => {
     const { id } = req.params;
 
     // Validate Mongo ObjectId
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -883,7 +886,7 @@ export const getAssignmentHistory = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -934,7 +937,7 @@ export const getCounterOfferHistory = async (req, res) => {
     const { id } = req.params;
 
     // Validate MongoDB ObjectId
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -984,7 +987,7 @@ export const restoreOffer = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID.",
@@ -1465,7 +1468,7 @@ export const duplicateOffer = async (req, res) => {
 
     const { id } = req.params;
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       return res.status(400).json({
         success: false,
         message: "Invalid Offer ID."

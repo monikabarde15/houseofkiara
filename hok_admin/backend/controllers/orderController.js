@@ -22,7 +22,8 @@ const calculateItems = async (items) => {
     if (!input) return {};
     if (!input.productId) return input;
     // Only recalculate pricing if rental dates are provided or mode is not Rental
-    const needsCalc = (input.mode && input.mode !== 'Rental') || (input.startDate && input.endDate);
+    const mode = input.mode ? input.mode.charAt(0).toUpperCase() + input.mode.slice(1).toLowerCase() : 'Rental';
+    const needsCalc = (mode !== 'Rental') || (input.startDate && input.endDate);
     if (!needsCalc) return input; // Return as-is to preserve existing pricing
     try {
       const product = await Product.findOne({ $or: [{ productId: input.productId }, { _id: input.productId }] });
@@ -64,7 +65,39 @@ export const getOrder = async (req, res) => {
 
 export const createOrder = async (req, res) => {
   try {
-    const customer = await customerById(req.body.customerId);
+    let customer = await customerById(req.body.customerId);
+
+    // Auto-create customer if missing
+    if (!customer && req.body.customerName) {
+      const email = req.body.customerEmail ? req.body.customerEmail.trim().toLowerCase() : "";
+      const phone = req.body.customerPhone ? req.body.customerPhone.trim() : "";
+
+      if (email && !email.includes('hok.local')) customer = await Customer.findOne({ email });
+      if (!customer && phone) customer = await Customer.findOne({ phone });
+
+      if (!customer) {
+        const customers = await Customer.find({}, 'customerId').exec();
+        const existingCustIds = customers
+          .map(c => c.customerId)
+          .filter(id => id && id.startsWith('CUST-'))
+          .map(id => parseInt(id.replace('CUST-', ''), 10))
+          .filter(num => !isNaN(num));
+        const maxId = existingCustIds.length > 0 ? Math.max(...existingCustIds) : 0;
+        const newCustomerId = `CUST-${String(maxId + 1).padStart(5, '0')}`;
+
+        customer = await Customer.create({
+          customerId: newCustomerId,
+          name: req.body.customerName.trim(),
+          email: email || `contact_${Date.now()}@hok.local`,
+          phone: phone,
+          location: req.body.customerCity || "India",
+          status: "Active",
+          source: "Auto-Created from Order",
+          joinedDate: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
+        });
+      }
+    }
+
     const items = await calculateItems(req.body.items);
     const order = await Order.create({
       ...req.body,

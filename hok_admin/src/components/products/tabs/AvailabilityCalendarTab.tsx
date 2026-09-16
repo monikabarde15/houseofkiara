@@ -44,7 +44,7 @@ function addDays(d: Date, n: number) { const copy = new Date(d); copy.setDate(co
 function isSameDay(a: Date, b: Date) { return toISODate(a) === toISODate(b); }
 
 type DayType = 'muted' | 'available' | 'buffer' | 'rental' | 'blocked';
-interface DayInfo { date: Date; type: DayType; label?: string; isToday: boolean; }
+interface DayInfo { date: Date; type: DayType; label?: string; isToday: boolean; isPast: boolean; }
 
 function parseToStartOfDay(d: Date | string | number | null | undefined): Date {
   if (!d) return new Date(NaN);
@@ -110,6 +110,8 @@ export function AvailabilityCalendarTab({
   const [listerSplit, setListerSplit] = useState<number>(45);
   const [splitNote, setSplitNote] = useState('');
   const [selectedOfferId, setSelectedOfferId] = useState('');
+  const [isEditingOffer, setIsEditingOffer] = useState(false);
+  const [editOfferData, setEditOfferData] = useState({ customerName: '', phone: '', customerEmail: '', offerPrice: 0 });
   const [selectedPromoCode, setSelectedPromoCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [databaseOffers, setDatabaseOffers] = useState<any[] | null>(null);
@@ -172,12 +174,22 @@ export function AvailabilityCalendarTab({
   const reasonMeta = REASON_OPTIONS.find(r => r.value === reason)!;
   const isExternalBooking = reasonMeta.isExternal;
 
-  // Offers are optional at booking time. List all usable database offers so
-  // legacy records without a product ID are never hidden from an admin.
+  // Offers are optional at booking time. List all usable database offers but
+  // restrict them to the current product (or legacy records without any product link).
   const applicableOffers = useMemo(() => {
     const sourceOffers = databaseOffers ?? offers;
-    return sourceOffers.filter((offer: any) => offer.status === 'Pending' || offer.status === 'Accepted');
-  }, [databaseOffers, offers]);
+    const currentId = activeProduct.productId || (activeProduct as any)._id || activeProduct.id;
+    return sourceOffers.filter((offer: any) => {
+      const isPendingOrAccepted = offer.status === 'Pending' || offer.status === 'Accepted';
+      if (!isPendingOrAccepted) return false;
+      
+      const hasNoProductLink = !offer.productId && !offer.productName;
+      const matchesId = offer.productId && String(offer.productId) === String(currentId);
+      const matchesName = offer.productName && offer.productName === activeProduct.name;
+      
+      return matchesId || matchesName || hasNoProductLink;
+    });
+  }, [databaseOffers, offers, activeProduct]);
 
   const activePromoCodes = useMemo(() => {
     const sourcePromoCodes = databasePromoCodes ?? promoCodes;
@@ -209,13 +221,14 @@ export function AvailabilityCalendarTab({
 
     const days: DayInfo[] = [];
     for (let i = 0; i < startOffset; i++) {
-      days.push({ date: new Date(NaN), type: 'muted', isToday: false });
+      days.push({ date: new Date(NaN), type: 'muted', isToday: false, isPast: false });
     }
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(year, month, d);
       const dateStart = parseToStartOfDay(date);
       let type: DayType = 'available';
       let label: string | undefined;
+      const isPast = dateStart < today;
 
       const manualBlock = blockedDates.find(b => {
         const from = parseToStartOfDay(b.from);
@@ -231,9 +244,7 @@ export function AvailabilityCalendarTab({
         return (dateStart >= preStart && dateStart <= preEnd) || (dateStart >= postStart && dateStart <= postEnd);
       });
 
-      if (dateStart < today) {
-        type = 'muted';
-      } else if (rental) {
+      if (rental) {
         type = 'rental';
         label = initialsFromName(rental.customerName || '');
       } else if (manualBlock) {
@@ -244,7 +255,7 @@ export function AvailabilityCalendarTab({
         type = 'available';
       }
 
-      days.push({ date, type, label, isToday: isSameDay(date, today) });
+      days.push({ date, type, label, isToday: isSameDay(date, today), isPast });
     }
     return { days, monthLabel: firstOfMonth.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }) };
   };
@@ -337,6 +348,29 @@ export function AvailabilityCalendarTab({
       toast.error(error instanceof Error ? error.message : 'Unable to block these dates');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleUpdateOffer = async () => {
+    if (!selectedOfferId) return;
+    try {
+      const originalOffer = databaseOffers?.find(o => o.id === selectedOfferId) || offers.find(o => o.id === selectedOfferId);
+      const updatedOffer = await offerApi.updateOffer(
+        selectedOfferId, 
+        { 
+          ...editOfferData, 
+          productName: originalOffer?.productName || activeProduct.name,
+          marketPrice: originalOffer?.marketPrice || activeProduct.rentalPrice 
+        },
+        originalOffer?.backendId
+      );
+      setDatabaseOffers(prev => prev ? prev.map(o => o.id === selectedOfferId ? { ...o, ...editOfferData, offerPrice: editOfferData.offerPrice } : o) : null);
+      setCustomerName(editOfferData.customerName);
+      setWhatsappNumber(editOfferData.phone);
+      setIsEditingOffer(false);
+      toast.success('Offer updated successfully!');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update offer');
     }
   };
 
@@ -454,8 +488,14 @@ export function AvailabilityCalendarTab({
           <div className="grid grid-cols-7 gap-2 text-center max-w-[500px] mx-auto">
             {['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'].map(d => (<div key={d} className="text-[10px] font-semibold text-stone-400 pb-1">{d}</div>))}
             {bigCalendar.days.map((day, idx) => (
-              <button key={idx} disabled={isNaN(day.date.getTime())} onClick={() => setSelectedDate(day.date)}
-                className={`relative flex items-center justify-center w-full rounded transition-all ${isNaN(day.date.getTime()) ? 'invisible' : 'cursor-pointer hover:scale-105 shadow-sm'} ${dayCellClasses(day.type)} ${day.isToday ? 'ring-2 ring-stone-800 ring-offset-1' : ''}`} style={dayCellStyle(day.type)}>
+              <button key={idx} disabled={isNaN(day.date.getTime())} onClick={() => {
+                  setSelectedDate(day.date);
+                  if (day.isPast) { toast('Past dates cannot be booked.', { icon: 'ℹ️' }); return; }
+                  if (day.type === 'rental') { toast.error('This date is already booked!'); }
+                  else if (day.type === 'buffer') { toast.error('This date is in cleaning buffer - not available!'); }
+                  else if (day.type === 'blocked') { toast.error('This date is manually blocked!'); }
+                }}
+                className={`relative flex items-center justify-center w-full rounded transition-all ${isNaN(day.date.getTime()) ? 'invisible' : 'cursor-pointer hover:scale-105 shadow-sm'} ${dayCellClasses(day.type)} ${day.isToday ? 'ring-2 ring-stone-800 ring-offset-1' : ''} ${day.isPast ? 'opacity-40' : ''}`} style={dayCellStyle(day.type)}>
                 {!isNaN(day.date.getTime()) && (<><span>{day.date.getDate()}</span>{day.label && <span className="absolute -top-1 -right-1 bg-white rounded-full px-1 text-[8px] font-bold text-stone-700 border border-stone-200">{day.label}</span>}</>)}
               </button>
             ))}
@@ -480,8 +520,16 @@ export function AvailabilityCalendarTab({
             <div className="grid grid-cols-7 gap-1 text-center mt-2">
               {['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'].map(d => (<div key={d} className="text-[8px] font-semibold text-stone-400 pb-0.5">{d}</div>))}
               {smallCalendar.days.map((day, idx) => (
-                <button key={idx} disabled={isNaN(day.date.getTime())} onClick={() => { setSelectedDate(day.date); setViewMonth(day.date.getMonth()); setViewYear(day.date.getFullYear()); }}
-                  className={`relative flex items-center justify-center rounded transition-all ${isNaN(day.date.getTime()) ? 'invisible' : 'cursor-pointer hover:opacity-80'} ${dayCellClasses(day.type, true)} ${day.isToday ? 'ring-1 ring-stone-800 ring-offset-1' : ''}`} style={dayCellStyle(day.type)}>
+                <button key={idx} disabled={isNaN(day.date.getTime())} onClick={() => { 
+                    setSelectedDate(day.date); 
+                    setViewMonth(day.date.getMonth()); 
+                    setViewYear(day.date.getFullYear()); 
+                    if (day.isPast) { toast('Past dates cannot be booked.', { icon: 'ℹ️' }); return; }
+                    if (day.type === 'rental') { toast.error('This date is already booked!'); }
+                    else if (day.type === 'buffer') { toast.error('This date is in cleaning buffer - not available!'); }
+                    else if (day.type === 'blocked') { toast.error('This date is manually blocked!'); }
+                  }}
+                  className={`relative flex items-center justify-center rounded transition-all ${isNaN(day.date.getTime()) ? 'invisible' : 'cursor-pointer hover:opacity-80'} ${dayCellClasses(day.type, true)} ${day.isToday ? 'ring-1 ring-stone-800 ring-offset-1' : ''} ${day.isPast ? 'opacity-40' : ''}`} style={dayCellStyle(day.type)}>
                   {!isNaN(day.date.getTime()) && <span>{day.date.getDate()}</span>}
                 </button>
               ))}
@@ -678,10 +726,29 @@ export function AvailabilityCalendarTab({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
               <div className="space-y-1">
-                <label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">Apply Offer</label>
+                <label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide flex justify-between">
+                  <span>Apply Offer</span>
+                  {selectedOfferId && (
+                    <button type="button" onClick={() => {
+                      const offer = applicableOffers.find((item: any) => item.id === selectedOfferId);
+                      if (offer) {
+                        setEditOfferData({
+                          customerName: offer.customerName || '',
+                          phone: offer.phone || '',
+                          customerEmail: offer.customerEmail || '',
+                          offerPrice: offer.offerPrice || 0
+                        });
+                        setIsEditingOffer(!isEditingOffer);
+                      }
+                    }} className="text-[#8c3523] hover:underline cursor-pointer">
+                      {isEditingOffer ? 'Cancel Edit' : 'Edit Selected Offer'}
+                    </button>
+                  )}
+                </label>
                 <select value={selectedOfferId} onChange={(e) => {
                   const offerId = e.target.value;
                   setSelectedOfferId(offerId);
+                  setIsEditingOffer(false);
                   const offer = applicableOffers.find((item: any) => item.id === offerId);
                   if (offer) {
                     setCustomerName(offer.customerName || '');
@@ -695,6 +762,21 @@ export function AvailabilityCalendarTab({
                     <option key={o.id} value={o.id}>{o.id} - {o.customerName} (₹{o.offerPrice})</option>
                   ))}
                 </select>
+                
+                {isEditingOffer && selectedOfferId && (
+                  <div className="p-3 mt-2 border border-[#8c3523]/30 bg-orange-50/50 rounded-md space-y-2 relative z-10">
+                    <p className="text-[10px] uppercase font-bold text-[#8c3523]">Edit Offer Details</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input type="text" placeholder="Name" value={editOfferData.customerName} onChange={e => setEditOfferData({...editOfferData, customerName: e.target.value})} className="w-full p-1.5 bg-white border border-stone-200 rounded text-[11px]" />
+                      <input type="text" placeholder="Phone" value={editOfferData.phone} onChange={e => setEditOfferData({...editOfferData, phone: e.target.value})} className="w-full p-1.5 bg-white border border-stone-200 rounded text-[11px]" />
+                      <input type="email" placeholder="Email" value={editOfferData.customerEmail} onChange={e => setEditOfferData({...editOfferData, customerEmail: e.target.value})} className="w-full p-1.5 bg-white border border-stone-200 rounded text-[11px]" />
+                      <input type="number" placeholder="Offer Price (₹)" value={editOfferData.offerPrice || ''} onChange={e => setEditOfferData({...editOfferData, offerPrice: Number(e.target.value)})} className="w-full p-1.5 bg-white border border-stone-200 rounded text-[11px]" />
+                    </div>
+                    <button type="button" onClick={handleUpdateOffer} className="w-full bg-[#8c3523] text-white py-1.5 rounded text-[11px] font-bold hover:bg-[#722a1b]">
+                      Save & Update Offer
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="space-y-1">
                 <label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">Apply Promo Code</label>

@@ -200,6 +200,17 @@ const TABLE_CONFIGS = {
       instagramHandle: "instagram_handle",
     },
   },
+  Category: {
+    tableName: "categories",
+    entityIdField: "categoryId",
+    columnMap: {
+      categoryId: "category_id",
+      name: "name",
+      slug: "slug",
+      image: "image",
+      description: "description"
+    },
+  },
 };
 
 // Generate 24-character hexadecimal ObjectId

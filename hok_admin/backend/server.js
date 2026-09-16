@@ -17,6 +17,7 @@ import submissionRouter from "./routes/submissionRoutes.js";
 import promotionRouter from "./routes/promotionRoutes.js";
 import notificationRouter from "./routes/notificationRoutes.js";
 import siteSettingsRouter from "./routes/siteSettingsRoutes.js";
+import categoryRouter from "./routes/categoryRoutes.js";
 
 const app = express();
 let dbReady = false;
@@ -40,6 +41,7 @@ app.use("/api/tasks", taskRouter);
 app.use("/api/submissions", submissionRouter);
 app.use("/api/promotions", promotionRouter);
 app.use("/api/notifications", notificationRouter);
+app.use("/api/categories", categoryRouter);
 
 app.use("/api", productRouter);
 app.use("/api", offersRouter);

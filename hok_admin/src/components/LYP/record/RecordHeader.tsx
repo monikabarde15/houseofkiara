@@ -1,6 +1,6 @@
 // src/components/LYP/record/RecordHeader.tsx
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Submission } from '../types/submission.types';
 import { 
   formatDate, 
@@ -46,6 +46,12 @@ export const RecordHeader: React.FC<RecordHeaderProps> = ({
   const { goBack, getBackDestination } = useJourneyStack();
   const backDest = getBackDestination();
 
+  const [localAssignedTo, setLocalAssignedTo] = useState(submission.assignedTo || 'Unassigned');
+
+  useEffect(() => {
+    setLocalAssignedTo(submission.assignedTo || 'Unassigned');
+  }, [submission.assignedTo]);
+
   const status = getSubmissionStatus(submission);
   const statusClass = getStatusClass(status);
   const ageChip = getAgeChip(submission);
@@ -86,10 +92,13 @@ export const RecordHeader: React.FC<RecordHeaderProps> = ({
               Assigned to:
               <select 
                 className="bg-transparent border-b border-dashed border-[#C7A55C] text-[#C7A55C] outline-none cursor-pointer"
-                value={submission.assignedTo || 'Unassigned'}
+                value={localAssignedTo}
                 onChange={(e) => {
-                  submissionService.updateSubmission(submission.subid, { assignedTo: e.target.value })
-                    .then(() => onSave?.());
+                  const newVal = e.target.value;
+                  setLocalAssignedTo(newVal);
+                  submissionService.updateSubmission(submission.subid, { assignedTo: newVal })
+                    .then(() => onSave?.())
+                    .catch(() => setLocalAssignedTo(submission.assignedTo || 'Unassigned'));
                 }}
               >
                 <option value="Unassigned">Unassigned</option>

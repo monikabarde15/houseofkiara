@@ -26,13 +26,29 @@ export default function ReportsView({ orders = [], products = [] }: ReportsViewP
   }, [orders, timeRange]);
 
   // Analytical Calculations from live database orders
-  const rentalRevenue = safeOrders
-    .filter(o => o && o.mode === 'Rental')
-    .reduce((sum, o) => sum + (Number(o?.amount) || 0), 0);
+  let rentalRevenue = 0;
+  let prelovedRevenue = 0;
 
-  const prelovedRevenue = safeOrders
-    .filter(o => o && (o.mode === 'Preloved' || o.mode === 'Buy'))
-    .reduce((sum, o) => sum + (Number(o?.amount) || 0), 0);
+  safeOrders.forEach(o => {
+    if (!o) return;
+    if (o.items && o.items.length > 0) {
+      o.items.forEach(item => {
+        const itemAmount = Number(item.amount) || 0;
+        if (item.mode === 'Preloved' || item.mode === 'Buy') {
+          prelovedRevenue += itemAmount;
+        } else {
+          rentalRevenue += itemAmount;
+        }
+      });
+    } else {
+      const orderAmount = Number(o.amount) || Number((o as any).orderValue) || 0;
+      if (o.mode === 'Preloved' || o.mode === 'Buy') {
+        prelovedRevenue += orderAmount;
+      } else {
+        rentalRevenue += orderAmount;
+      }
+    }
+  });
 
   const totalTaxCollected = Math.round((rentalRevenue + prelovedRevenue) * 0.12);
   const totalRevenue = rentalRevenue + prelovedRevenue + totalTaxCollected;

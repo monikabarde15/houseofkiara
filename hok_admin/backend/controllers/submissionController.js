@@ -119,6 +119,37 @@ const logListerActivity = async (listerId, color, text) => {
 export const createSubmission = async (req, res) => {
   try {
     const submissionData = req.body;
+    
+    // Map frontend wizard fields to backend schema
+    if (submissionData.year_purchased && !submissionData.yearOfPurchase) {
+      submissionData.yearOfPurchase = submissionData.year_purchased;
+    }
+    if (submissionData.full_name && !submissionData.listerName) {
+      submissionData.listerName = submissionData.full_name;
+    }
+    if (submissionData.mobile && !submissionData.phone) {
+      submissionData.phone = submissionData.mobile;
+      submissionData.listerPhone = submissionData.mobile;
+    }
+    if (submissionData.email && !submissionData.listerEmail) {
+      submissionData.listerEmail = submissionData.email;
+    }
+    if (submissionData.piece_name && !submissionData.piece) {
+      submissionData.piece = submissionData.piece_name;
+    }
+    if (submissionData.original_price && !submissionData.originalPrice) {
+      submissionData.originalPrice = submissionData.original_price;
+    }
+    if (submissionData.condition && !submissionData.selfGrade) {
+      submissionData.selfGrade = submissionData.condition;
+    }
+    if (submissionData.times_worn && !submissionData.timesWorn) {
+      submissionData.timesWorn = submissionData.times_worn;
+    }
+    if (submissionData.colour_family && !submissionData.colour) {
+      submissionData.colour = submissionData.colour_family;
+    }
+
     if (!submissionData.subid) {
       submissionData.subid = `SUB-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`;
     }

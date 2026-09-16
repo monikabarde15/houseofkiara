@@ -18,7 +18,7 @@ export const uploadFile = async (req, res) => {
       return res.status(422).json({ success: false, message: "file is required" });
     }
 
-    const baseSection = String(req.body.folder || "products").replace(/[^a-zA-Z0-9/_-]/g, "").trim();
+    const baseSection = String(req.body.folder || "products").replace(/\s+/g, '-').replace(/[^a-zA-Z0-9/_-]/g, "").trim();
     const mediaType = req.file.mimetype.startsWith("video/")
       ? "video"
       : req.file.mimetype === "application/pdf" || req.file.mimetype.includes("word")

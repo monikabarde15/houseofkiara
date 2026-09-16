@@ -443,7 +443,33 @@ export const migrationQueries = [
   `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS instagram_handle VARCHAR(255);`,
   `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
   `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
-  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+
+  // 15. Categories Table
+  `CREATE TABLE IF NOT EXISTS categories (
+    _id VARCHAR(64) PRIMARY KEY,
+    category_id VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    image VARCHAR(255),
+    description TEXT,
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS category_id VARCHAR(255);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS name VARCHAR(255);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS slug VARCHAR(255);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS image VARCHAR(255);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS description TEXT;`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories__id ON categories(_id);`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_category_id ON categories(category_id);`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);`,
+  `CREATE INDEX IF NOT EXISTS idx_categories_data_gin ON categories USING GIN (data);`
 ];
 
 export const migrate = async () => {

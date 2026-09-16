@@ -12,6 +12,7 @@ import {
   SELF_GRADE_OPTIONS 
 } from '../utils/constants';
 import './styles/PieceFields.css';
+import DynamicCategorySelect from '../../ui/DynamicCategorySelect';
 
 interface PieceFieldsProps {
   channel: Channel;
@@ -100,16 +101,11 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
         {/* Piece Type */}
         <div className="fld">
           <label className="fld-label">Piece Type *</label>
-          <select
-            className="fld-input"
+          <DynamicCategorySelect 
             value={category}
-            onChange={(e) => onCategoryChange(e.target.value)}
-          >
-            <option value="">Select type</option>
-            {CATEGORIES.map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+            onChange={(value) => onCategoryChange(value)}
+            className="mt-1"
+          />
           <div className="fhint">Same list as the website form — one vocabulary everywhere.</div>
         </div>
 

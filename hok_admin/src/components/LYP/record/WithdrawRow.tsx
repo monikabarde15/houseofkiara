@@ -18,15 +18,21 @@ export const WithdrawRow: React.FC<WithdrawRowProps> = ({
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!reason.trim()) return;
     setLoading(true);
     
-    // In production, this would call the API
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const { submissionService } = await import('../services/submissionService');
+      const { toast } = await import('react-hot-toast');
+      await submissionService.withdrawSubmission(submission.subid, reason);
+      toast.success('Submission withdrawn');
       onSuccess();
-    }, 500);
+    } catch (err: any) {
+      import('react-hot-toast').then(({ toast }) => toast.error(err.message || 'Failed to withdraw'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

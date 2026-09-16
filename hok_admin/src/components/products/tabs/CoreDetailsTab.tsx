@@ -3,6 +3,7 @@ import { Product, Lister } from '../../types/product';
 import toast from 'react-hot-toast';
 import { getDesigners } from '../../../services/designerApi';
 import { apiRequest } from '../../../services/apiClient';
+import DynamicCategorySelect from '../../ui/DynamicCategorySelect';
 
 interface Designer {
   id: string;
@@ -323,17 +324,11 @@ export function CoreDetailsTab({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Category</label>
-            <select
-              value={formData.category || 'Bridal Lehenga'}
-              onChange={(e) => onFieldChange('category', e.target.value)}
-              className={inputClass}
-            >
-              <option value="Bridal Lehenga">Bridal Lehenga</option>
-              <option value="Lehenga">Lehenga Only</option>
-              <option value="Anarkali">Anarkali Suit</option>
-              <option value="Sherwani">Sherwani Menswear</option>
-              <option value="Saree">Saree / Draped Saree</option>
-            </select>
+            <DynamicCategorySelect 
+              value={formData.category || ''}
+              onChange={(value) => onFieldChange('category', value)}
+              className="mt-1"
+            />
           </div>
           <div>
             <label className={labelClass}>Occasion(s)</label>

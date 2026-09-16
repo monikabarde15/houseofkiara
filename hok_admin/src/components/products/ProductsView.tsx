@@ -3,6 +3,7 @@ import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { Product, Lister } from '../types/product';
 import * as productApi from '../../services/productApi';
 import { getDesigners } from '../../services/designerApi';
+import { getCategories } from '../../services/categoryApi';
 import { useProductEditor } from '../hooks/useProductEditor';
 import { ProductHeader } from './ProductHeader';
 import { ProductFilters } from './ProductFilters';
@@ -37,7 +38,6 @@ interface ProductsViewProps {
   customers?: any[];
 }
 
-const CATEGORIES = ['All Categories', 'Bridal Lehenga', 'Lehenga', 'Anarkali', 'Sherwani', 'Saree'];
 
 export default function ProductsView({
   products,
@@ -65,6 +65,7 @@ export default function ProductsView({
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [sortOption, setSortOption] = useState('Sort: Recent');
   const [dbDesigners, setDbDesigners] = useState<any[]>([]);
+  const [dbCategories, setDbCategories] = useState<string[]>(['All Categories']);
 
   useEffect(() => {
     const fetchDesigners = async () => {
@@ -74,7 +75,16 @@ export default function ProductsView({
         console.warn('Failed to fetch designers:', e);
       }
     };
+    const fetchCats = async () => {
+      try {
+        const cats = await getCategories();
+        setDbCategories(['All Categories', ...cats.map(c => c.name)]);
+      } catch (e) {
+        console.warn('Failed to fetch categories:', e);
+      }
+    };
     fetchDesigners();
+    fetchCats();
   }, []);
 
   const {
@@ -707,7 +717,7 @@ export default function ProductsView({
         onSearchChange={setSearchTerm}
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
-        categories={CATEGORIES}
+        categories={dbCategories}
         selectedMode={selectedMode}
         onModeChange={setSelectedMode}
         selectedStatus={selectedStatus}

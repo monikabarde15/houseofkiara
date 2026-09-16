@@ -15,6 +15,7 @@ import PayoutsView from './components/payouts/PayoutsView';
 import CustomersView from './components/CustomersView';
 // import ProductsView from './components/ProductsView';
 import ProductsView from './components/products/ProductsView';
+import CategoriesView from './components/CategoriesView';
 import DesignersView from './components/Designers/tsx';
 // import ListersView from './components/ListersView';
 import ListersView from './components/Listers/ListersView';
@@ -582,6 +583,10 @@ export default function App() {
 
     if (currentView === 'designers') {
       return <DesignersView onEditingChange={setIsSectionEditing} />;
+    }
+
+    if (currentView === 'categories') {
+      return <CategoriesView onEditingChange={setIsSectionEditing} />;
     }
 
     if (currentView === 'listers') {

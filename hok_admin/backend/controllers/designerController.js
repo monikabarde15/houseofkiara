@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Designer from "../models/Designer.js";
+import Product from "../models/Product.js";
 import { validateDesignerInput } from "../validations/designerValidation.js";
 
 const initialDesigners = [
@@ -187,11 +188,33 @@ export const getDesigners = async (req, res) => {
     }
 
     const docs = await Designer.find(query).sort({ createdAt: -1 });
+    const formattedDocs = docs.map(formatDesignerResponse);
+
+    // Dynamically calculate live and total pieces
+    const allProducts = await Product.find({});
+    const counts = {};
+    allProducts.forEach(p => {
+      const dName = p.designer;
+      if (!dName) return;
+      if (!counts[dName]) counts[dName] = { live: 0, total: 0 };
+      counts[dName].total += 1;
+      if (p.status === "Live") {
+        counts[dName].live += 1;
+      }
+    });
+
+    formattedDocs.forEach(d => {
+      const stats = counts[d.name] || { live: 0, total: 0 };
+      d.livePieces = stats.live;
+      d.activeListingsCount = stats.live;
+      d.totalPieces = stats.total;
+      d.totalPiecesCount = stats.total;
+    });
 
     return res.json({
       success: true,
-      count: docs.length,
-      data: docs.map(formatDesignerResponse)
+      count: formattedDocs.length,
+      data: formattedDocs
     });
   } catch (err) {
     console.error("🔥 Error in getDesigners:", err);
@@ -215,9 +238,22 @@ export const getDesignerById = async (req, res) => {
       return res.status(404).json({ success: false, message: "Designer not found" });
     }
 
+    const formattedDoc = formatDesignerResponse(doc);
+    const allProducts = await Product.find({ designer: formattedDoc.name });
+    const stats = { live: 0, total: 0 };
+    allProducts.forEach(p => {
+      stats.total += 1;
+      if (p.status === "Live") stats.live += 1;
+    });
+
+    formattedDoc.livePieces = stats.live;
+    formattedDoc.activeListingsCount = stats.live;
+    formattedDoc.totalPieces = stats.total;
+    formattedDoc.totalPiecesCount = stats.total;
+
     return res.json({
       success: true,
-      data: formatDesignerResponse(doc)
+      data: formattedDoc
     });
   } catch (err) {
     console.error("🔥 Error in getDesignerById:", err);

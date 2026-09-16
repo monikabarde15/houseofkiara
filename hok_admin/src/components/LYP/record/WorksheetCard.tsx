@@ -17,25 +17,40 @@ interface WorksheetCardProps {
 }
 
 export const WorksheetCard: React.FC<WorksheetCardProps> = ({ submission, onUpdate }) => {
-  const [assessment, setAssessment] = useState<Assessment>(submission.assessment || {
-    sku: '',
-    name: submission.piece || '',
-    mode: 'Rental/Preloved',
-    grade: 'Pristine',
-    sizeLabel: (submission.size as Size) || 'M',
-    measurements: null,
-    priceStd: 0,
-    priceExt: 0,
-    perDay: 0,
-    minDays: 4,
-    deposit: 0,
-    resalePrice: 0,
-    minOffer: 0,
-    retailPrice: 0,
-    retailVerifiedVia: null,
-    payoutPctRental: 40,
-    payoutPctResale: 75,
-  });
+  const getDefaultAssessment = (): Assessment => {
+    const existing = submission.assessment;
+    
+    // Parse values from string if needed, stripping commas
+    const askRent = parseFloat(String((submission as any).askRent || submission.expectation?.rent || 0).replace(/,/g, '')) || 0;
+    const askSell = parseFloat(String((submission as any).askSell || submission.expectation?.sell || 0).replace(/,/g, '')) || 0;
+    const originalPrice = parseFloat(String(submission.originalPrice || 0).replace(/,/g, '')) || 0;
+
+    const priceStd = (existing && existing.priceStd > 0) ? existing.priceStd : askRent;
+    const resalePrice = (existing && existing.resalePrice > 0) ? existing.resalePrice : askSell;
+    const retailPrice = (existing && existing.retailPrice > 0) ? existing.retailPrice : originalPrice;
+
+    return {
+      sku: existing?.sku || '',
+      name: existing?.name || submission.piece || '',
+      mode: existing?.mode || 'Rental/Preloved',
+      grade: existing?.grade || 'Pristine',
+      sizeLabel: existing?.sizeLabel || (submission.size as Size) || 'M',
+      measurements: existing?.measurements || null,
+      priceStd,
+      priceExt: (existing && existing.priceExt > 0) ? existing.priceExt : Math.round(priceStd * 1.5),
+      perDay: (existing && existing.perDay > 0) ? existing.perDay : Math.round(priceStd / 4),
+      minDays: existing?.minDays || 4,
+      deposit: (existing && existing.deposit > 0) ? existing.deposit : Math.round(retailPrice * 0.2),
+      resalePrice,
+      minOffer: (existing && existing.minOffer > 0) ? existing.minOffer : Math.round(resalePrice * 0.8),
+      retailPrice,
+      retailVerifiedVia: existing?.retailVerifiedVia || null,
+      payoutPctRental: existing?.payoutPctRental || 40,
+      payoutPctResale: existing?.payoutPctResale || 75,
+    };
+  };
+
+  const [assessment, setAssessment] = useState<Assessment>(getDefaultAssessment());
 
   const handleAssessmentChange = async (updates: Partial<Assessment>) => {
     const updated = { ...assessment, ...updates };
