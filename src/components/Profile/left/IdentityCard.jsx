@@ -1,13 +1,13 @@
-// src\components\Profile\left\IdentityCard.jsx
-import React from 'react';
+// src/components/Profile/left/IdentityCard.jsx
+import React, { useState } from 'react';
 import { SquarePen } from 'lucide-react';
 import "../../../styles/Profile/left/IdentityCard.css";
-import { useState } from 'react';
 import EditProfileModal from '../modals/EditProfileModal';
 import Toast from '../ui/Toast';
+import useAuthStore from '../../../store/authStore';
 
 const IdentityCard = () => {
-
+    const { user, updateProfile } = useAuthStore();
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [showToast, setShowToast] = useState(false);
@@ -16,20 +16,57 @@ const IdentityCard = () => {
         setIsEditModalOpen(true);
     };
 
-    const handleSaveEditProfile = (data) => {
-        console.log("Save profile data:", data);
+    const handleSaveEditProfile = async (data) => {
+        try {
+            const res = await updateProfile({
+                firstName: data.firstName,
+                lastName: data.lastName,
+                name: `${data.firstName || ''} ${data.lastName || ''}`.trim(),
+                email: data.email,
+                phone: data.mobile,
+                mobile: data.mobile,
+                city: data.city,
+                location: data.city,
+            });
+
+            if (res.success) {
+                setToastMessage("Profile updated successfully");
+            } else {
+                setToastMessage(res.message || "Failed to update profile");
+            }
+        } catch (err) {
+            setToastMessage("Failed to update profile");
+        }
         setIsEditModalOpen(false);
-        setToastMessage("Profile updated successfully");
         setShowToast(true);
     };
 
+    // Dynamic user details
+    const firstName = user?.firstName || (user?.name ? user.name.split(' ')[0] : 'Customer');
+    const lastName = user?.lastName || (user?.name ? user.name.split(' ').slice(1).join(' ') : '');
+    const fullName = user?.name || [firstName, lastName].filter(Boolean).join(' ') || 'Customer';
+    const email = user?.email || 'customer@houseofkaira.com';
+    const mobile = user?.phone || user?.mobile || '';
+    const city = user?.location || user?.city || 'India';
+    const memberSince = user?.joinedDate || '2025';
+
+    // Compute Initials (e.g., "Priya Varma" -> "PV", "Priya" -> "P")
+    const initials = (
+        (firstName?.[0] || '') + (lastName?.[0] || (firstName?.[1] || ''))
+    ).toUpperCase() || 'HK';
+
     const userData = {
-        firstName: "Priya",
-        lastName: "Varma",
-        email: "priya.varma@gmail.com",
-        mobile: "+91 98765 43210",
-        city: "Indore"
+        firstName,
+        lastName,
+        email,
+        mobile,
+        city
     };
+
+    const rentalsCount = user?.ordersCount || 0;
+    const purchasesCount = user?.purchasesCount || 0;
+    const savedCount = user?.wishlist?.length || user?.wishlistCount || 0;
+
     return (
         <div className="profile-identity-card">
             <div className="profile-identity-card-inner">
@@ -44,31 +81,31 @@ const IdentityCard = () => {
                         </defs>
                         <circle cx="29" cy="29" r="27" fill="none" stroke="url(#profile-gold-gradient)" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.7" />
                     </svg>
-                    <div className="profile-avatar-initials">PV</div>
+                    <div className="profile-avatar-initials">{initials}</div>
                 </div>
 
                 {/* Identity Text */}
                 <div className="profile-identity-text">
                     <div className="profile-tier-label">Member</div>
-                    <div className="profile-name">Priya Varma</div>
-                    <div className="profile-email">priya.varma@gmail.com</div>
-                    <div className="profile-since-member">Member since April 2025</div>
+                    <div className="profile-name">{fullName}</div>
+                    <div className="profile-email">{email}</div>
+                    <div className="profile-since-member">Member since {memberSince}</div>
                 </div>
 
                 {/* Stats Bar */}
                 <div className="profile-stats-bar">
                     <div className="profile-stat">
-                        <div className="profile-stat-number">4</div>
+                        <div className="profile-stat-number">{rentalsCount}</div>
                         <div className="profile-stat-label">RENTALS</div>
                     </div>
                     <div className="profile-stat-divider"></div>
                     <div className="profile-stat">
-                        <div className="profile-stat-number">2</div>
+                        <div className="profile-stat-number">{purchasesCount}</div>
                         <div className="profile-stat-label">PURCHASES</div>
                     </div>
                     <div className="profile-stat-divider"></div>
                     <div className="profile-stat">
-                        <div className="profile-stat-number">7</div>
+                        <div className="profile-stat-number">{savedCount}</div>
                         <div className="profile-stat-label">SAVED</div>
                     </div>
                 </div>

@@ -13,13 +13,47 @@ const useAuthStore = create(
       login: (userData, token) => {
         set({ 
           user: userData, 
-          token: token, 
+          token: token || get().token, 
           isAuthenticated: true,
           isCheckingAuth: false,
         });
         toast.success('Successfully logged in!');
       },
       
+      setUser: (userData) => {
+        set((state) => ({
+          user: typeof userData === 'function' ? userData(state.user) : { ...state.user, ...userData },
+        }));
+      },
+
+      updateProfile: async (profileUpdates) => {
+        const { token, user } = get();
+        if (!token) return { success: false, message: 'Not authenticated' };
+
+        try {
+          const response = await fetch('/api/customer/profile', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(profileUpdates),
+          });
+
+          const result = await response.json();
+          if (response.ok && result.success) {
+            set({
+              user: { ...user, ...result.data },
+            });
+            return { success: true, data: result.data };
+          } else {
+            return { success: false, message: result.message || 'Failed to update profile' };
+          }
+        } catch (error) {
+          return { success: false, message: error.message || 'Network error while updating profile' };
+        }
+      },
+
       logout: (showToast = true) => {
         set({ 
           user: null, 
@@ -40,7 +74,7 @@ const useAuthStore = create(
         }
 
         try {
-          const response = await fetch('/api/customer/auth/me', {
+          const response = await fetch('/api/customer/profile', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

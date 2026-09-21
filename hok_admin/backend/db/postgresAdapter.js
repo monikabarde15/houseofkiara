@@ -972,6 +972,17 @@ export class PostgresDocument {
         const { generateNextCustomerId } = await import("../utils/idGenerator.js");
         this._data.customerId = await generateNextCustomerId();
       }
+
+      // Auto-sync location from default address if available
+      if (Array.isArray(this._data.addresses) && this._data.addresses.length > 0) {
+        const defaultAddr = this._data.addresses.find((a) => a.isDefault) || this._data.addresses[0];
+        if (defaultAddr) {
+          const fullAddr = defaultAddr.address || [defaultAddr.line1, defaultAddr.line2, defaultAddr.city, defaultAddr.state, defaultAddr.pin].filter(Boolean).join(", ");
+          if (fullAddr) {
+            this._data.location = fullAddr;
+          }
+        }
+      }
     }
 
     const config = TABLE_CONFIGS[this._model?.modelName] || {
