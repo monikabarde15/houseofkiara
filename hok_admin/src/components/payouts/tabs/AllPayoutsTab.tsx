@@ -60,6 +60,23 @@ export default function AllPayoutsTab({ payouts = [] }: AllPayoutsTabProps) {
 
   return (
     <div className="space-y-4 text-xs font-sans">
+      {/* Status Counts Summary */}
+      <div className="flex flex-wrap gap-3 pb-1">
+        {[
+          { label: 'Pending', count: payouts.filter(p => p.status === 'Pending').length, color: 'bg-amber-50 text-amber-700 border-amber-200' },
+          { label: 'Paid', count: payouts.filter(p => p.status === 'Paid').length, color: 'bg-green-50 text-green-700 border-green-200' },
+          { label: 'Failed', count: payouts.filter(p => p.status === 'Failed').length, color: 'bg-red-50 text-red-700 border-red-200' },
+          { label: 'Reversed', count: payouts.filter(p => p.status === 'Reversed').length, color: 'bg-gray-50 text-gray-700 border-gray-200' },
+        ].map(s => (
+          <span key={s.label} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded border text-xs font-semibold ${s.color}`}>
+            {s.label}: <span className="font-bold">{s.count}</span>
+          </span>
+        ))}
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border text-xs font-semibold bg-stone-50 text-stone-700 border-stone-200">
+          Total: <span className="font-bold">{payouts.length}</span>
+        </span>
+      </div>
+
       {/* Search + status filter + time filter + export row */}
       <div className="flex flex-col lg:flex-row lg:items-center gap-3">
         <div className="relative flex-1 min-w-[280px]">
@@ -142,9 +159,9 @@ export default function AllPayoutsTab({ payouts = [] }: AllPayoutsTabProps) {
                       {p.mode}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-medium">₹{(p.transactionAmount || p.listerShare + p.hokCommission).toLocaleString('en-IN')}</td>
-                  <td className={`px-4 py-3 font-semibold ${p.status === 'Paid' ? 'text-green-600' : 'text-orange-500'}`}>₹{p.listerShare.toLocaleString('en-IN')}</td>
-                  <td className="px-4 py-3">₹{p.hokCommission.toLocaleString('en-IN')}</td>
+                  <td className="px-4 py-3 font-medium">₹{(Number(p.transactionAmount ?? ((p.listerShare ?? 0) + (p.hokCommission ?? 0))) || 0).toLocaleString('en-IN')}</td>
+                  <td className={`px-4 py-3 font-semibold ${p.status === 'Paid' ? 'text-green-600' : 'text-orange-500'}`}>₹{(Number(p.listerShare) || 0).toLocaleString('en-IN')}</td>
+                  <td className="px-4 py-3">₹{(Number(p.hokCommission) || 0).toLocaleString('en-IN')}</td>
                   <td className="px-4 py-3 text-stone-500">{p.mode}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2.5 py-1 rounded text-[10px] font-medium ${statusBadgeClasses[p.status]}`}>

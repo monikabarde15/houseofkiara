@@ -12,7 +12,7 @@ import { checkServerLiveness } from "./helpers/server_harness.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const BASE_URL = process.env.TEST_BASE_URL || "http://localhost:5000/api";
+const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:5003/api';
 
 const TEST_FILES = [
   "tier1_auth.test.js",

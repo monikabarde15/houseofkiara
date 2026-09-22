@@ -99,6 +99,22 @@
     background: #8e7f73;
 }
 
+.activity-dot-blue {
+    background: #4A7FC1;
+}
+
+.activity-dot-green {
+    background: #3E7A4A;
+}
+
+.activity-dot-red {
+    background: #C04838;
+}
+
+.activity-dot-orange {
+    background: #D4872A;
+}
+
 /* ==========================================================================
    CONTENT
    ========================================================================== */

@@ -43,6 +43,13 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
     }
   };
 
+  const generateSku = () => {
+    const designerStr = submission.designer || 'UNK';
+    const initials = designerStr.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase() || 'UNK';
+    const num = Math.floor(100 + Math.random() * 900);
+    onChange({ sku: `HOK-${initials}-${num}` });
+  };
+
   return (
     <div className="ws-grid">
       {/* SKU */}
@@ -56,7 +63,11 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
             onChange={(e) => onChange({ sku: e.target.value })}
             placeholder="HOK-XXX-001"
           />
-          <button className="btn btn-sec btn-sm" title="Fills the next free number in the house pattern — HOK-designer initials-nnn, collision-checked across catalogue and queue">
+          <button 
+            className="btn btn-sec btn-sm" 
+            title="Fills the next free number in the house pattern"
+            onClick={generateSku}
+          >
             Suggest
           </button>
         </div>
@@ -132,7 +143,14 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
           type="number"
           className="fld-input"
           value={assessment.priceStd || ''}
-          onChange={(e) => onChange({ priceStd: parseFloat(e.target.value) || 0 })}
+          onChange={(e) => {
+            const priceStd = parseFloat(e.target.value) || 0;
+            onChange({ 
+              priceStd,
+              priceExt: Math.round(priceStd * 1.5),
+              perDay: Math.round(priceStd / 4)
+            });
+          }}
           placeholder="0"
         />
         <div className="fhint">Customer pays this + 18% GST</div>
@@ -182,7 +200,13 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
           type="number"
           className="fld-input"
           value={assessment.resalePrice || ''}
-          onChange={(e) => onChange({ resalePrice: parseFloat(e.target.value) || 0 })}
+          onChange={(e) => {
+            const resalePrice = parseFloat(e.target.value) || 0;
+            onChange({
+              resalePrice,
+              minOffer: Math.round(resalePrice * 0.8)
+            });
+          }}
           placeholder="0"
         />
         <div className="fhint">Customer pays this + 5% GST</div>
@@ -208,7 +232,13 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
           type="number"
           className="fld-input"
           value={assessment.retailPrice || ''}
-          onChange={(e) => onChange({ retailPrice: parseFloat(e.target.value) || 0 })}
+          onChange={(e) => {
+            const retailPrice = parseFloat(e.target.value) || 0;
+            onChange({
+              retailPrice,
+              deposit: Math.round(retailPrice * 0.2)
+            });
+          }}
           placeholder="0"
         />
         <div className="fhint">Lister claimed {submission.originalPrice || '—'} · bought {submission.yearOfPurchase || '—'} — this becomes the storefront strike-through.</div>

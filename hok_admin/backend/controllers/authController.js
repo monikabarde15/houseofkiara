@@ -72,11 +72,13 @@ export const loginAdmin = async (req, res) => {
     }
 
     const credentials = await hashPassword(password, admin.passwordSalt);
+    const submittedHash = Buffer.from(String(credentials.hash || ""), "hex");
+    const storedHash = Buffer.from(String(admin.passwordHash || ""), "hex");
     if (
-      !crypto.timingSafeEqual(
-        Buffer.from(credentials.hash, "hex"),
-        Buffer.from(admin.passwordHash, "hex")
-      )
+      submittedHash.length === 0 ||
+      storedHash.length === 0 ||
+      submittedHash.length !== storedHash.length ||
+      !crypto.timingSafeEqual(submittedHash, storedHash)
     ) {
       return res.status(401).json({
         success: false,
@@ -174,6 +176,22 @@ export const getAuthStatus = async (_req, res) => {
     return res.status(500).json({
       success: false,
       message: "Unable to check auth status.",
+      error: error.message,
+    });
+  }
+};
+
+export const getAdmins = async (_req, res) => {
+  try {
+    const admins = await Admin.find({}, { name: 1, email: 1 });
+    return res.json({
+      success: true,
+      data: admins.map(a => ({ id: a._id, name: a.name, email: a.email })),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch admins.",
       error: error.message,
     });
   }

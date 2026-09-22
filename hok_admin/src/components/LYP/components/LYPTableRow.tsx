@@ -99,6 +99,12 @@ export const LYPTableRow: React.FC<LYPTableRowProps> = ({
         </span>
       </td>
 
+      <td className="lyp-td-assigned">
+        <span className="assigned-text">
+          {submission.assignedTo || 'Unassigned'}
+        </span>
+      </td>
+
       <td className="lyp-td-status">
         <span className={`s-chip ${statusClass}`}>
           {status}

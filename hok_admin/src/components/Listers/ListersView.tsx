@@ -16,9 +16,10 @@ import './ListersView.css';
 
 interface ListersViewProps {
   onEditingChange?: (isEditing: boolean) => void;
+  setView?: (view: string) => void;
 }
 
-export const ListersView: React.FC<ListersViewProps> = ({ onEditingChange }) => {
+export const ListersView: React.FC<ListersViewProps> = ({ onEditingChange, setView }) => {
   const [selectedListerId, setSelectedListerId] = useState<string | null>(null);
   const [isCreateMode, setIsCreateMode] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>('Profile & Contact');
@@ -31,7 +32,17 @@ export const ListersView: React.FC<ListersViewProps> = ({ onEditingChange }) => 
     sortOrder: 'asc',
   });
 
-  const { listers, loading, error, totalCount, refreshListers, deleteLister } = useListers(filters);
+  const { 
+    listers, 
+    loading, 
+    error, 
+    totalCount, 
+    refreshListers, 
+    deleteLister,
+    allProducts,
+    allPayouts,
+    allSubmissions
+  } = useListers(filters);
   const { pushState } = useJourneyStack();
 
   const handleDeleteLister = async (targetLister: Lister) => {
@@ -161,6 +172,7 @@ export const ListersView: React.FC<ListersViewProps> = ({ onEditingChange }) => 
           isCreateMode={isCreateMode}
           activeTab={activeTab}
           onListerChange={(updated) => setFormListerData(prev => ({ ...prev, ...updated }))}
+          setView={setView}
         />
       </div>
     );
@@ -183,6 +195,9 @@ export const ListersView: React.FC<ListersViewProps> = ({ onEditingChange }) => 
           onRowClick={handleRowClick}
           onDeleteLister={handleDeleteLister}
           totalCount={totalCount}
+          allProducts={allProducts}
+          allPayouts={allPayouts}
+          allSubmissions={allSubmissions}
         />
       </div>
     </div>

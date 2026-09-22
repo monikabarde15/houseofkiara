@@ -96,6 +96,11 @@ export interface Product {
     splitNote?: string;
     depositStatus?: string;
   }>;
+  extendedWindowPrice?: number;
+  perDayRate?: number;
+  originalRetailPrice?: number;
+  resalePayoutPercentage?: number;
+  minimumOffer?: number;
   externalBookings?: any[];
   activityLog?: Array<{
     action: string;

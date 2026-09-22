@@ -4,36 +4,38 @@ interface PayoutSummaryCardsProps {
   pendingTotal: number;
   paidTotal: number;
   pendingCount: number;
+  hokCommissionTotal?: number;
   payouts?: Payout[];
 }
 
-export default function PayoutSummaryCards({ pendingTotal, paidTotal, pendingCount, payouts = [] }: PayoutSummaryCardsProps) {
-  const hokCommissionTotal = payouts.reduce((sum, p) => sum + (p.status === 'Paid' ? (p.hokCommission || 0) : 0), 0);
-  const damageCompTotal = payouts.reduce((sum, p) => sum + (p.mode === 'Damage Comp.' && p.status === 'Pending' ? p.listerShare : 0), 0);
+export default function PayoutSummaryCards({ pendingTotal, paidTotal, pendingCount, hokCommissionTotal, payouts = [] }: PayoutSummaryCardsProps) {
+  const computedHokCommission = payouts.reduce((sum, p) => sum + (Number(p.hokCommission) || 0), 0);
+  const finalHokCommission = hokCommissionTotal ?? computedHokCommission;
+  const damageCompTotal = payouts.reduce((sum, p) => sum + ((p.mode === 'Damage Comp.' || p.mode === 'Damage Compensation') ? (Number(p.listerShare) || 0) : 0), 0);
 
   const cards = [
     {
       title: "Pending Approval",
-      value: `₹${pendingTotal.toLocaleString('en-IN')}`,
+      value: `₹${(Number(pendingTotal) || 0).toLocaleString('en-IN')}`,
       subtitle: `${pendingCount} awaiting approval`,
       valueColor: "text-[#C46A3A]",
     },
     {
       title: "Paid (MTD)",
-      value: `₹${paidTotal.toLocaleString('en-IN')}`,
+      value: `₹${(Number(paidTotal) || 0).toLocaleString('en-IN')}`,
       subtitle: "",
       valueColor: "text-[#5F7D54]",
     },
     {
       title: "HOK Commission (MTD)",
-      value: `₹${hokCommissionTotal.toLocaleString('en-IN')}`,
+      value: `₹${(Number(finalHokCommission) || 0).toLocaleString('en-IN')}`,
       subtitle: "",
       valueColor: "text-[#1F1B18]",
     },
     {
-      title: "Damage Compensation Due",
-      value: `₹${damageCompTotal.toLocaleString('en-IN')}`,
-      subtitle: damageCompTotal > 0 ? "Triggered by deposit deduction" : "",
+      title: "Damage Compensation",
+      value: `₹${(Number(damageCompTotal) || 0).toLocaleString('en-IN')}`,
+      subtitle: damageCompTotal > 0 ? "From deposit deductions" : "",
       valueColor: "text-[#C9A45A]",
     },
   ];

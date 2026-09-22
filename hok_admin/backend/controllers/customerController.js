@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Customer from "../models/Customer.js";
+import Order from "../models/Order.js";
 import { validateCustomerInput } from "../validations/customerValidation.js";
-import { generateNextCustomerId } from "../utils/idGenerator.js";
 
 const formatCustomerResponse = (doc) => {
   const obj = doc.toObject();
@@ -9,6 +9,39 @@ const formatCustomerResponse = (doc) => {
     ...obj,
     id: obj.customerId || obj._id.toString()
   };
+};
+
+const orderStartDate = (order) => order.rentalStartDate || order.startDate || order.items?.[0]?.rentalStartDate || order.items?.[0]?.startDate || '';
+const orderValue = (order) => Number(order.orderValue ?? order.amount ?? order.totalAmount ?? order.grandTotal ?? order.items?.reduce((sum, item) => sum + Number(item.amount || 0), 0) ?? 0);
+
+// A customer ledger is keyed only by its immutable customerId. Names, phones
+// and emails can be edited or duplicated and must never assign an order twice.
+export const syncCustomerOrderStats = async (customers) => {
+  const orders = await Order.find({});
+  await Promise.all(customers.map(async (customer) => {
+    const customerId = customer.customerId;
+    const matchingOrders = orders.filter((order) => order.customerId === customerId);
+
+    const lastOrderDate = matchingOrders.map(orderStartDate).filter(Boolean).sort().at(-1) || '—';
+    const totalSpent = matchingOrders.reduce((total, order) => total + orderValue(order), 0);
+    const securityDepositHeld = matchingOrders.filter(o => o.depositStatus === 'Held' || ['Dispatched', 'Shipped', 'Delivered', 'Return Sent'].includes(o.status)).reduce((total, order) => total + (order.depositHeld || order.deposit || 0), 0);
+    const totalRentals = matchingOrders.filter(o => o.mode === 'Rental' || o.items?.some(i => i.mode === 'Rental')).length;
+
+    const totalsChanged = customer.ordersCount !== matchingOrders.length ||
+      Number(customer.totalSpent || 0) !== totalSpent ||
+      Number(customer.totalRentals || 0) !== totalRentals ||
+      Number(customer.securityDepositHeld || 0) !== securityDepositHeld ||
+      customer.lastOrderDate !== lastOrderDate;
+
+    if (totalsChanged) {
+      customer.ordersCount = matchingOrders.length;
+      customer.totalSpent = totalSpent;
+      customer.totalRentals = totalRentals;
+      customer.securityDepositHeld = securityDepositHeld;
+      customer.lastOrderDate = lastOrderDate;
+      await customer.save();
+    }
+  }));
 };
 
 // GET /api/customers
@@ -37,6 +70,7 @@ export const getCustomers = async (req, res) => {
     }
 
     const customers = await Customer.find(query).sort({ createdAt: -1 });
+    await syncCustomerOrderStats(customers);
     res.json({
       success: true,
       count: customers.length,
@@ -59,6 +93,7 @@ export const getCustomer = async (req, res) => {
       return res.status(404).json({ success: false, message: "Customer not found" });
     }
 
+    await syncCustomerOrderStats([customer]);
     res.json({ success: true, data: formatCustomerResponse(customer) });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -74,7 +109,17 @@ export const createCustomer = async (req, res) => {
     }
 
     const email = req.body.email ? req.body.email.trim().toLowerCase() : "";
-    const customerId = req.body.customerId || req.body.id || (await generateNextCustomerId());
+    let customerId = req.body.customerId || req.body.id;
+    if (!customerId || customerId.startsWith('HOK-CUST-')) {
+      const customers = await Customer.find({}, 'customerId').exec();
+      const existingCustIds = customers
+        .map(c => c.customerId)
+        .filter(id => id && id.startsWith('CUST-'))
+        .map(id => parseInt(id.replace('CUST-', ''), 10))
+        .filter(num => !isNaN(num));
+      const maxId = existingCustIds.length > 0 ? Math.max(...existingCustIds) : 0;
+      customerId = `CUST-${String(maxId + 1).padStart(5, '0')}`;
+    }
 
     const existing = await Customer.findOne({
       $or: [
@@ -85,6 +130,10 @@ export const createCustomer = async (req, res) => {
 
     let customerDoc;
     if (existing) {
+      if (existing.customerId !== customerId) {
+        return res.status(422).json({ success: false, message: "A customer with this email or ID already exists" });
+      }
+      
       if (req.body.name) existing.name = req.body.name.trim();
       if (email) existing.email = email;
       if (req.body.phone !== undefined) existing.phone = req.body.phone;
@@ -156,9 +205,14 @@ export const updateCustomer = async (req, res) => {
       return res.status(422).json({ success: false, message: errors.join(", "), errors });
     }
 
+    const updateData = { ...req.body };
+    delete updateData.customerId;
+    delete updateData.id;
+    delete updateData._id;
+
     let updatedCustomer = await Customer.findOneAndUpdate(
       { $or: [{ customerId: id }, { _id: mongoose.Types.ObjectId.isValid(id) ? id : null }] },
-      { $set: req.body },
+      { $set: updateData },
       { new: true, runValidators: true }
     );
 
@@ -188,7 +242,11 @@ export const deleteCustomer = async (req, res) => {
       return res.status(404).json({ success: false, message: "Customer not found" });
     }
 
-    res.json({ success: true, message: "Customer deleted successfully" });
+    // Cascade delete associated orders
+    const Order = (await import('../models/Order.js')).default;
+    await Order.deleteMany({ customerId: deleted.customerId || deleted._id });
+
+    res.json({ success: true, message: "Customer and related orders deleted successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

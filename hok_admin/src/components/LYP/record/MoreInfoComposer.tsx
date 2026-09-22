@@ -47,7 +47,7 @@ export const MoreInfoComposer: React.FC<MoreInfoComposerProps> = ({
     }
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!message.trim()) return;
     setLoading(true);
     
@@ -57,11 +57,17 @@ export const MoreInfoComposer: React.FC<MoreInfoComposerProps> = ({
       window.open(link, '_blank');
     }
     
-    // Log the request
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const { submissionService } = await import('../services/submissionService');
+      const { toast } = await import('react-hot-toast');
+      await submissionService.requestMoreInfo(submission.subid, message);
+      toast.success('Requested more info!');
       onSuccess();
-    }, 500);
+    } catch (err: any) {
+      import('react-hot-toast').then(({ toast }) => toast.error(err.message || 'Failed to request info'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

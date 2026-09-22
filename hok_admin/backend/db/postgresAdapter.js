@@ -92,6 +92,9 @@ const TABLE_CONFIGS = {
       customerId: "customer_id",
       customerName: "customer_name",
       customerEmail: "customer_email",
+      offerId: "offer_id",
+      promoCode: "promo_code",
+      discount: "discount",
       mode: "mode",
       status: "status",
       depositStatus: "deposit_status",
@@ -195,6 +198,17 @@ const TABLE_CONFIGS = {
       supportEmail: "support_email",
       whatsappNumber: "whatsapp_number",
       instagramHandle: "instagram_handle",
+    },
+  },
+  Category: {
+    tableName: "categories",
+    entityIdField: "categoryId",
+    columnMap: {
+      categoryId: "category_id",
+      name: "name",
+      slug: "slug",
+      image: "image",
+      description: "description"
     },
   },
 };

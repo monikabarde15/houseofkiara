@@ -4,7 +4,7 @@
 
 The HOK Admin Panel End-to-End (E2E) Test Suite is an opaque-box testing framework designed to validate all backend API endpoints, business logic workflows, data integrity, and PostgreSQL JSONB persistence.
 
-The test suite communicates exclusively over HTTP/REST against the Express backend (`http://localhost:5000/api`), verifying status codes, payload contracts, validation errors, database state transitions, and concurrency safeguards without relying on internal function mocks or white-box shortcuts.
+The test suite communicates exclusively over HTTP/REST against the Express backend (`http://localhost:5003/api`), verifying status codes, payload contracts, validation errors, database state transitions, and concurrency safeguards without relying on internal function mocks or white-box shortcuts.
 
 ```
 +-------------------------------------------------------------------------------+
@@ -34,7 +34,7 @@ The test suite communicates exclusively over HTTP/REST against the Express backe
 - **HTTP Client**: Native `fetch` (Node 18+) with standard JSON and header handling
 - **Zero External Test Dependencies**: Executes out-of-the-box using the existing Node.js runtime without needing heavy test runners or separate browser drivers.
 - **Server Lifecycle Management**:
-  - Automatically connects to an active backend server on `http://localhost:5000` (or custom `TEST_BASE_URL`).
+  - Automatically connects to an active backend server on `http://localhost:5003` (or custom `TEST_BASE_URL`).
   - Capable of booting the Express server in-process if no standalone server is running.
 - **Test Isolation & Determinism**:
   - Every test uses randomized / timestamped identifiers (e.g. `TEST-ORD-<timestamp>`, `test_user_<timestamp>@example.com`).
@@ -176,6 +176,6 @@ node --test tests/e2e/tier1_products.test.js
 
 ### Environment Configuration
 ```bash
-# Custom base URL (default: http://localhost:5000/api)
-TEST_BASE_URL=http://localhost:5000/api node tests/e2e/runner.js
+# Custom base URL (default: http://localhost:5003/api)
+TEST_BASE_URL=http://localhost:5003/api node tests/e2e/runner.js
 ```

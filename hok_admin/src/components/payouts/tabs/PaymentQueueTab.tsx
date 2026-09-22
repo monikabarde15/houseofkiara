@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Payout } from "../../../services/payoutApi";
+import React, { useState, useEffect } from "react";
+import { Payout, AdminUser } from "../../../services/payoutApi";
 import * as payoutApi from "../../../services/payoutApi";
 import toast from "react-hot-toast";
 
@@ -20,7 +20,17 @@ interface PaymentQueueTabProps {
 }
 
 export default function PaymentQueueTab({ payouts = [], setPayouts, setPending, setPaid }: PaymentQueueTabProps) {
-  const pendingPayouts = payouts.filter(p => p.status === 'Pending');
+  const pendingPayouts = payouts.filter(p => p.status === 'Pending' || p.status === 'Pending Approval');
+  const [assignees, setAssignees] = useState<string[]>([]);
+
+  useEffect(() => {
+    payoutApi.getAdmins().then(admins => {
+      // Deduplicate admin names for a clean UI
+      const uniqueNames = Array.from(new Set(admins.map(a => a.name).filter(Boolean)));
+      if (uniqueNames.length === 0) uniqueNames.push('Master Admin');
+      setAssignees(uniqueNames);
+    }).catch(() => {});
+  }, []);
 
   const handleApprove = async (payout: Payout, amtStr: string, approvedBy: string) => {
     if (!setPayouts || !setPending || !setPaid) return;
@@ -29,9 +39,31 @@ export default function PaymentQueueTab({ payouts = [], setPayouts, setPending, 
       setPayouts(prev => prev.map(p => p.id === payout.id ? updated : p));
       setPending(value => Math.max(0, value - updated.listerShare));
       setPaid(value => value + updated.listerShare);
-      toast.success("Payout approved and marked as Paid.");
+      toast.success("Payout saved successfully.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Unable to mark payout paid');
+    }
+  };
+
+  const handleSaveDraft = async (payout: Payout, amtStr: string, pctStr: string, approvedBy: string) => {
+    if (!setPayouts) return;
+    try {
+      const parsedAmt = Number(amtStr.replace(/,/g, ''));
+      const parsedPct = Number(pctStr);
+      const transactionAmount = payout.transactionAmount || 0;
+      
+      const payload: Partial<Payout> = {
+        listerShare: parsedAmt,
+        payoutPercentage: parsedPct,
+        submissionAssignedTo: approvedBy,
+        hokCommission: Math.max(0, transactionAmount - parsedAmt),
+      };
+      
+      const updated = await payoutApi.updatePayout(payout.id, payload);
+      setPayouts(prev => prev.map(p => p.id === payout.id ? updated : p));
+      toast.success("Draft saved successfully.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to save draft');
     }
   };
 
@@ -46,19 +78,26 @@ export default function PaymentQueueTab({ payouts = [], setPayouts, setPending, 
       )}
 
       {pendingPayouts.map(payout => (
-        <PayoutCard key={payout.id} payout={payout} onApprove={handleApprove} />
+        <PayoutCard key={payout.id} payout={payout} assignees={assignees} onApprove={handleApprove} onSaveDraft={handleSaveDraft} />
       ))}
     </div>
   );
 }
 
-function PayoutCard({ payout, onApprove }: { payout: Payout, onApprove: (payout: Payout, amtStr: string, approvedBy: string) => void }) {
+function PayoutCard({ payout, assignees, onApprove, onSaveDraft }: {
+  payout: Payout;
+  assignees: string[];
+  onApprove: (payout: Payout, amtStr: string, approvedBy: string) => void;
+  onSaveDraft: (payout: Payout, amtStr: string, pctStr: string, approvedBy: string) => void;
+}) {
   const [pct, setPct] = useState("55");
-  const [amt, setAmt] = useState(payout.listerShare.toString());
-  const [approvedBy, setApprovedBy] = useState("Priya (Ops)");
+  const [amt, setAmt] = useState((payout.listerShare ?? 0).toString());
+  const [approvedBy, setApprovedBy] = useState(
+    payout.submissionAssignedTo || (assignees.length > 0 ? assignees[0] : "Unassigned")
+  );
   const [reason, setReason] = useState("Automated pending payout generation for completed order.");
 
-  const transactionAmt = payout.transactionAmount || (payout.listerShare + payout.hokCommission);
+  const transactionAmt = payout.transactionAmount || ((payout.listerShare ?? 0) + (payout.hokCommission ?? 0));
   const proposedHokCommission = transactionAmt - Number(amt);
 
   return (
@@ -102,10 +141,12 @@ function PayoutCard({ payout, onApprove }: { payout: Payout, onApprove: (payout:
 
             <div>
               <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">APPROVED BY</label>
-              <select value={approvedBy} onChange={(e) => setApprovedBy(e.target.value)} className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none">
-                <option value="Soumya (Platform Admin)">Soumya (Platform Admin)</option>
-                <option value="Rohit (Lister Ops)">Rohit (Lister Ops)</option>
-                <option value="Admin User">Admin User</option>
+              <select
+                value={approvedBy}
+                onChange={(e) => setApprovedBy(e.target.value)}
+                className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
+              >
+                {assignees.map(a => <option key={a} value={a}>{a}</option>)}
               </select>
             </div>
           </div>
@@ -122,7 +163,7 @@ function PayoutCard({ payout, onApprove }: { payout: Payout, onApprove: (payout:
                 <span>Proposed Payout Amount</span><span className="font-medium text-[#1E1412]">₹{Number(amt).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between border-b border-[#E5DFD5] pb-2 mb-2">
-                <span>Current HOK Commission</span><span className="font-medium text-[#1E1412]">₹{payout.hokCommission.toLocaleString('en-IN')}</span>
+                <span>Current HOK Commission</span><span className="font-medium text-[#1E1412]">₹{(Number(payout.hokCommission) || 0).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between pt-1">
                 <span>Proposed HOK Commission</span><span className="font-medium text-[#1E1412]">₹{proposedHokCommission.toLocaleString('en-IN')}</span>
@@ -130,7 +171,7 @@ function PayoutCard({ payout, onApprove }: { payout: Payout, onApprove: (payout:
             </div>
 
             <div className="flex gap-2 pt-2">
-              <button className="flex-1 rounded-md border border-[#E5DFD5] bg-white px-4 py-3 text-sm font-medium text-[#78716C] transition hover:bg-[#F8F5F1]">
+              <button onClick={() => onSaveDraft(payout, amt, pct, approvedBy)} className="flex-1 rounded-md border border-[#E5DFD5] bg-white px-4 py-3 text-sm font-medium text-[#78716C] transition hover:bg-[#F8F5F1]">
                 Save Draft
               </button>
               <button onClick={() => onApprove(payout, amt, approvedBy)} className="flex-1 rounded-md border border-transparent bg-[#1E1412] px-4 py-3 text-sm font-bold tracking-wide text-white transition hover:bg-[#3E2923] shadow-md">

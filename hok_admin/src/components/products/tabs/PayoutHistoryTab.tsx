@@ -23,11 +23,19 @@ function formatDate(date?: string) {
 function statusBadgeClasses(status: string) {
   switch (status) {
     case 'Paid':
-      return 'bg-emerald-50 text-emerald-700';
+    case 'Delivered':
+    case 'Completed':
+      return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
     case 'Pending Approval':
-      return 'bg-amber-50 text-amber-700';
+    case 'Pending':
+    case 'In Rental':
+      return 'bg-amber-50 text-amber-700 border border-amber-200';
+    case 'Shipped':
+    case 'Confirmed':
+    case 'Dispatched':
+      return 'bg-blue-50 text-blue-700 border border-blue-200';
     default:
-      return 'bg-stone-100 text-stone-600';
+      return 'bg-stone-100 text-stone-600 border border-stone-200';
   }
 }
 

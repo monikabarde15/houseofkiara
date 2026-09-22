@@ -34,6 +34,7 @@ interface DesignersProps {
   onAddDesigner: () => void;
   onReorderFeatured?: (orderedIds: string[]) => Promise<void>;
   onUpdateType?: (id: string, newType: string) => Promise<void>;
+  onToggleFeatured?: (id: string, isFeatured: boolean) => Promise<void>;
 }
 
 // Sortable Row Component for Featured list
@@ -99,10 +100,12 @@ const Designers: React.FC<DesignersProps> = ({
   onEditDesigner, 
   onAddDesigner,
   onReorderFeatured,
-  onUpdateType
+  onUpdateType,
+  onToggleFeatured
 }) => {
   const [search, setSearch] = useState('');
   const [designerList, setDesignerList] = useState(initialDesignerList);
+  const [isAddingFeatured, setIsAddingFeatured] = useState(false);
 
   React.useEffect(() => {
     setDesignerList(initialDesignerList);
@@ -266,12 +269,34 @@ const Designers: React.FC<DesignersProps> = ({
               ))}
             </SortableContext>
           </DndContext>
-          <button 
-            className="add-link" 
-            onClick={() => toast('To feature a designer, edit their profile from the list below and toggle "Feature Label on Homepage"', { icon: 'ℹ️' })}
-          >
-            + Feature a designer
-          </button>
+          {isAddingFeatured ? (
+            <div className="add-featured-select">
+              <select 
+                style={{ marginTop: '12px', width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+                onChange={async (e) => {
+                  const id = e.target.value;
+                  if (id && onToggleFeatured) {
+                    await onToggleFeatured(id, true);
+                  }
+                  setIsAddingFeatured(false);
+                }}
+                onBlur={() => setIsAddingFeatured(false)}
+                autoFocus
+              >
+                <option value="">Select a designer to feature...</option>
+                {designerList.filter(d => !d.isFeatured).map(d => (
+                  <option key={d.id} value={d.id}>{d.name}</option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <button 
+              className="add-link" 
+              onClick={() => setIsAddingFeatured(true)}
+            >
+              + Feature a designer
+            </button>
+          )}
         </div>
       </div>
 

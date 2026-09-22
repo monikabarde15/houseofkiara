@@ -1,4 +1,5 @@
-const BASE = 'http://localhost:5000/api';
+import { API_BASE_URL } from './apiClient';
+const BASE = API_BASE_URL;
 export const sendMockMessage = async (payload: { channel: 'whatsapp' | 'sms'; to: string; body: string }) => {
   const response = await fetch(`${BASE}/messages/send`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
   const body = await response.json().catch(() => ({}));

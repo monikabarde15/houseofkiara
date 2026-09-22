@@ -92,9 +92,9 @@ export default function ByListerTab({ payouts = [] }: ByListerTabProps) {
                   <div className="font-semibold">{row.productName}</div>
                 </td>
                 <td className="px-5 py-4 text-[#7A7065]">{row.mode}</td>
-                <td className="px-5 py-4 text-right">₹{(row.transactionAmount || row.listerShare + row.hokCommission).toLocaleString('en-IN')}</td>
-                <td className="px-5 py-4 text-right text-[#A69C8E]">₹{row.hokCommission.toLocaleString('en-IN')}</td>
-                <td className="px-5 py-4 text-right font-bold text-[#1F1B18]">₹{row.listerShare.toLocaleString('en-IN')}</td>
+                <td className="px-5 py-4 text-right">₹{(Number(row.transactionAmount || ((row.listerShare || 0) + (row.hokCommission || 0))) || 0).toLocaleString('en-IN')}</td>
+                <td className="px-5 py-4 text-right text-[#A69C8E]">₹{(Number(row.hokCommission) || 0).toLocaleString('en-IN')}</td>
+                <td className="px-5 py-4 text-right font-bold text-[#1F1B18]">₹{(Number(row.listerShare) || 0).toLocaleString('en-IN')}</td>
                 <td className="px-5 py-4">
                   <span className={`inline-flex items-center rounded-sm px-1.5 py-0.5 text-[10px] font-semibold uppercase ${row.status === 'Paid' ? 'bg-[#EBF5ED] text-[#347A3E]' : 'bg-[#FEF5E5] text-[#B87A14]'}`}>
                     {row.status}

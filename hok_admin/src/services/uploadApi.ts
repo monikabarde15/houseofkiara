@@ -1,4 +1,5 @@
-const BASE = 'http://localhost:5000/api';
+import { API_BASE_URL } from './apiClient';
+const BASE = API_BASE_URL;
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10 MB
 const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50 MB
 

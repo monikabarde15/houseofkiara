@@ -52,9 +52,9 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
     }
   };
 
-  const [demoDateStr, setDemoDateStr] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [filterDateStr, setFilterDateStr] = useState<string>(new Date().toISOString().split('T')[0]);
   
-  const todayDate = new Date(demoDateStr);
+  const todayDate = new Date(filterDateStr);
   const todayKey = todayDate.toISOString().split('T')[0];
   
   const tomorrowDate = new Date(todayDate);
@@ -78,11 +78,30 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
     return !!pName && !!o.customerName && pName !== 'Unknown Product';
   };
 
-  const dispatchToday = orders.filter(o => o.status === 'Confirmed' && getDispatchDate(o) === todayKey && isValidDispatch(o));
-  const dispatchTomorrow = orders.filter(o => o.status === 'Confirmed' && getDispatchDate(o) === tomorrowKey && isValidDispatch(o));
-  const dispatchWeek = orders.filter(o => (o.status === 'Confirmed' || o.status === 'Dispatched' || o.status === 'Shipped') && isValidDispatch(o));
+  const weekEndDate = new Date(todayDate);
+  weekEndDate.setDate(weekEndDate.getDate() + 7);
+  const weekEndKey = weekEndDate.toISOString().split('T')[0];
 
-  const handleMarkDispatched = (order: Order) => {
+  const dispatchToday = orders.filter(o => o.status === 'Confirmed' && getDispatchDate(o) <= todayKey && isValidDispatch(o));
+  const dispatchTomorrow = orders.filter(o => o.status === 'Confirmed' && getDispatchDate(o) === tomorrowKey && isValidDispatch(o));
+  
+  const dispatchWeek = orders.filter(o => {
+    if (!isValidDispatch(o)) return false;
+    if (o.status !== 'Confirmed' && o.status !== 'Dispatched' && o.status !== 'Shipped') return false;
+    const dDate = getDispatchDate(o);
+    if (!dDate) return false;
+    
+    if (o.status === 'Confirmed' && dDate <= weekEndKey) return true;
+    if ((o.status === 'Dispatched' || o.status === 'Shipped') && dDate >= todayKey && dDate <= weekEndKey) return true;
+    return false;
+  }).sort((a, b) => getDispatchDate(a).localeCompare(getDispatchDate(b)));
+
+  const handleMarkDispatched = (order: Order, depositNeeded: boolean, depositCollected: boolean) => {
+    if (depositNeeded && !depositCollected) {
+      if (!window.confirm(`Deposit for order ${order.id} has NOT been collected yet. Are you sure you want to mark this as Dispatched and override the block?`)) {
+        return;
+      }
+    }
     const updated: Order = {
       ...order,
       status: 'Dispatched',
@@ -127,13 +146,13 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
         </p>
 
         <div className="dispatch-date-row">
-          <label>Demo date:</label>
+          <label>Filter Date:</label>
           <input
             type="date"
-            value={demoDateStr}
-            onChange={(e) => setDemoDateStr(e.target.value)}
+            value={filterDateStr}
+            onChange={(e) => setFilterDateStr(e.target.value)}
+            className="border border-stone-200 rounded px-2 py-1 text-sm outline-none focus:border-[#c5a880]"
           />
-          <span className="dispatch-date-note">— shared with the Operations Calendar's demo date</span>
         </div>
 
         <div className="dispatch-tabs">
@@ -164,8 +183,9 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
                 const dDate = getDispatchDate(order);
                 const dateParts = formatDateForDisplay(dDate || todayKey);
                 
-                const depositNeeded = (item.deposit || order.depositHeld || 0) > 0;
-                const depositCollected = order.depositStatus === 'Released' || order.depositStatus === 'Partially Released' || order.paymentStatus === 'Paid';
+                const actualDeposit = Number(order.depositHeld ?? order.deposit ?? item?.deposit ?? order.securityDeposit ?? 0);
+                const depositNeeded = actualDeposit > 0;
+                const depositCollected = order.depositStatus === 'Held' || order.depositStatus === 'Released' || order.depositStatus === 'Partially Released' || order.paymentStatus === 'Paid';
                 const pieces = order.items?.length || item.quantity || 1;
                 const rentalDates = item.rentalStartDate ? `${item.rentalStartDate} – ${item.rentalEndDate}` : 'Dates missing';
                 const pName = item.productName || order.productName || 'Unknown Product';
@@ -189,7 +209,7 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
                           {pieces > 1 && <span className="pieces-badge">{pieces} PIECES</span>}
                         </h3>
                         <p>
-                          {oId} · {order.customerName} · {(order.address || order.customerCity || "").substring(0, 20)}... · {rentalDates} · Size: {item.size || "M"} · Dep: ₹{Number(item.deposit || order.depositHeld || 0).toLocaleString("en-IN")}
+                          {oId} · {order.customerName} · {(order.address || order.customerCity || "").substring(0, 20)}... · {rentalDates} · Size: {item.size || "M"} · Dep: ₹{Number(actualDeposit).toLocaleString("en-IN")}
                         </p>
 
                         <p>
@@ -223,7 +243,7 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
                         {order.status === 'Confirmed' && (
                           <button 
                             className="btn-mark-dispatched"
-                            onClick={() => handleMarkDispatched(order)}
+                            onClick={() => handleMarkDispatched(order, depositNeeded, depositCollected)}
                           >
                             Mark Dispatched
                           </button>
@@ -232,7 +252,7 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
                     </div>
 
                     {depositNeeded && !depositCollected && (
-                      <DepositWarning amount={item.deposit || order.depositHeld || 0} />
+                      <DepositWarning amount={actualDeposit} />
                     )}
                   </div>
                 );

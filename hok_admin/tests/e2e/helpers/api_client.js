@@ -2,7 +2,7 @@
  * Opaque-box HTTP API Client for HOK Admin Panel E2E Tests
  */
 
-const BASE_URL = process.env.TEST_BASE_URL || "http://localhost:5000/api";
+const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:5003/api';
 
 class ApiClient {
   constructor(baseUrl = BASE_URL) {

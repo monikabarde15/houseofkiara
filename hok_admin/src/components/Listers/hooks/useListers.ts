@@ -6,6 +6,9 @@ import { listerService } from '../services/listerService';
 
 export const useListers = (filters?: ListerFilters) => {
   const [listers, setListers] = useState<Lister[]>([]);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [allPayouts, setAllPayouts] = useState<any[]>([]);
+  const [allSubmissions, setAllSubmissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -22,6 +25,16 @@ export const useListers = (filters?: ListerFilters) => {
       const result = await listerService.getListers({ search, status, sortBy, sortOrder });
       setListers(result.data);
       setTotalCount(result.total);
+
+      // Fetch aggregated data for the table
+      const [productsRes, payoutsRes, submissionsRes] = await Promise.all([
+        listerService.getAllProducts(),
+        import('../../../services/payoutApi').then(api => api.getPayouts()),
+        import('../../../services/listerApi').then(api => api.getSubmissions())
+      ]);
+      setAllProducts(productsRes || []);
+      setAllPayouts(payoutsRes.data || []);
+      setAllSubmissions(submissionsRes || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch listers');
     } finally {
@@ -56,6 +69,9 @@ export const useListers = (filters?: ListerFilters) => {
     refreshListers,
     deleteLister,
     createLister,
+    allProducts,
+    allPayouts,
+    allSubmissions,
   };
 };
 

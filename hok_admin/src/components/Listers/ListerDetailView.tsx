@@ -21,6 +21,7 @@ interface ListerDetailViewProps {
   isCreateMode?: boolean;
   activeTab?: string;
   onListerChange?: (lister: Lister) => void;
+  setView?: (view: string) => void;
 }
 
 export const ListerDetailView: React.FC<ListerDetailViewProps> = ({
@@ -28,6 +29,7 @@ export const ListerDetailView: React.FC<ListerDetailViewProps> = ({
   isCreateMode = false,
   activeTab = 'Profile & Contact',
   onListerChange,
+  setView,
 }) => {
   const [currentTab, setCurrentTab] = useState(activeTab);
   
@@ -56,13 +58,13 @@ export const ListerDetailView: React.FC<ListerDetailViewProps> = ({
   const renderTabContent = () => {
     switch (currentTab) {
       case 'Profile & Contact':
-        return <ProfileContactTab lister={lister} onSave={refreshLister} onListerChange={onListerChange} isCreateMode={isCreateMode} />;
+        return <ProfileContactTab lister={lister} activities={activities} onSave={refreshLister} onListerChange={onListerChange} isCreateMode={isCreateMode} />;
       case 'Submitted Pieces':
         return <SubmittedPiecesTab submissions={submissions} listerId={listerId} onUpdate={refreshLister} isCreateMode={isCreateMode} />;
       case 'Their Listings':
         return <TheirListingsTab listings={listings} recalls={recalls} listerId={listerId} onUpdate={refreshLister} isCreateMode={isCreateMode} />;
       case 'Payout History':
-        return <PayoutHistoryTab payouts={payouts} ledger={ledger} lister={lister} isCreateMode={isCreateMode} />;
+        return <PayoutHistoryTab payouts={payouts} ledger={ledger} lister={lister} isCreateMode={isCreateMode} setView={setView} />;
       case 'Communication Log':
         return <CommunicationTab communications={communications} listerId={listerId} onUpdate={refreshLister} isCreateMode={isCreateMode} />;
       case 'Account & Compliance':

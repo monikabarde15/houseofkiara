@@ -33,7 +33,8 @@ export function ImagesTab({ formData, onFieldChange, uploadingImages, setUploadi
     setUploadingImages(true);
     toast.loading('Uploading media to Cloudinary...', { id: 'prod-upload' });
     try {
-      const uploaded = await Promise.all(files.map(file => uploadFile(file, 'product')));
+      const folderPath = `${formData.category || 'uncategorized'}/${formData.name || formData.productId || 'unnamed'}`;
+      const uploaded = await Promise.all(files.map(file => uploadFile(file, folderPath)));
       const newUrls = uploaded.map(file => file.url);
       onFieldChange('images', [...images, ...newUrls]);
       toast.success('Media uploaded to Cloudinary & saved to Product!', { id: 'prod-upload' });

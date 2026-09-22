@@ -62,9 +62,16 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
     onUpdate();
   };
 
-  const handleExpireConfirm = () => {
-    // In production: call API to mark submission as expired
-    handleActionSuccess();
+  const handleExpireConfirm = async () => {
+    try {
+      const { submissionService } = await import('../services/submissionService');
+      const { toast } = await import('react-hot-toast');
+      await submissionService.expireSubmission(submission.subid);
+      toast.success('Submission marked as expired');
+      handleActionSuccess();
+    } catch (err: any) {
+      import('react-hot-toast').then(({ toast }) => toast.error(err.message || 'Failed to expire submission'));
+    }
   };
 
   return (
@@ -78,6 +85,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
         onNext={onNext}
         currentIndex={currentIndex}
         totalCount={totalCount}
+        onSave={onUpdate}
       />
 
       <div className="submission-record-body">
@@ -109,7 +117,18 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
 
               <ActionsRow 
                 submission={submission}
-                onApprove={handleActionSuccess}
+                onApprove={async () => {
+                  try {
+                    const { submissionService } = await import('../services/submissionService');
+                    const { toast } = await import('react-hot-toast');
+                    await submissionService.approveSubmission(submission.subid, 'Admin');
+                    toast.success('Submission approved successfully!');
+                    handleActionSuccess();
+                  } catch (err: any) {
+                    const { toast } = await import('react-hot-toast');
+                    toast.error(err.message || 'Failed to approve submission');
+                  }
+                }}
                 onMoreInfo={() => setShowMoreInfo(!showMoreInfo)}
                 onReject={() => setShowReject(!showReject)}
                 onWithdraw={() => setShowWithdraw(!showWithdraw)}

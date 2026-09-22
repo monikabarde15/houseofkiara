@@ -2,7 +2,7 @@
  * Server Harness for checking server liveness
  */
 
-export const checkServerLiveness = async (baseUrl = "http://localhost:5000/api") => {
+export const checkServerLiveness = async (baseUrl = 'http://localhost:5003/api') => {
   const url = `${baseUrl.replace(/\/+$/, "")}/auth/status`;
   try {
     const res = await fetch(url, { method: "GET", headers: { "Accept": "application/json" } });

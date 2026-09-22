@@ -1,5 +1,5 @@
 import express from "express";
-import { getPayouts, getPayoutById, createPayout, markPayoutPaid, exportPayouts, updatePayoutStatus } from "../controllers/payoutController.js";
+import { getPayouts, getPayoutById, createPayout, markPayoutPaid, exportPayouts, updatePayoutStatus, updatePayout } from "../controllers/payoutController.js";
 
 const router = express.Router();
 
@@ -11,10 +11,6 @@ router.post("/payouts", createPayout);
 router.patch("/payouts/:id/paid", markPayoutPaid); 
 router.patch("/payouts/:id/approve", markPayoutPaid); 
 router.patch("/payouts/:id/status", updatePayoutStatus);
-
-// 🟢 NEW ROUTE TO FIX YOUR ERROR:
-// Ye route products ke andar nested payout-history ko handle karega
-router.get("/products/:productId/payout-history", getPayouts);
-
+router.patch("/payouts/:id", updatePayout);
 
 export default router;

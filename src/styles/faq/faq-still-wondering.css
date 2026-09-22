@@ -1,0 +1,271 @@
+/* src/styles/faq/faq-still-wondering.css */
+/* Policies Line (E1) and Still Wondering Band (F1-F3) */
+
+/* Policies Line (E1) */
+.pol {
+  max-width: 1280px;
+  margin: 0px auto;
+  padding: 0px 40px 80px;
+  box-sizing: border-box;
+  font-family: var(--hok-faq-font-sans);
+}
+
+.pol-in {
+  border-top: 1px solid var(--hok-faq-border);
+  padding-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 22px;
+  font-size: 12px;
+  color: var(--hok-faq-muted);
+}
+
+.pol-in b {
+  font-family: var(--hok-faq-font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--hok-faq-charcoal);
+  margin-right: 6px;
+}
+
+.pol-link {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--hok-faq-border);
+  cursor: pointer;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 12px;
+  color: var(--hok-faq-charcoal);
+  padding: 0px 0px 2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.pol-link:hover {
+  color: var(--hok-faq-gold);
+  border-color: var(--hok-faq-gold);
+}
+
+.pol p {
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--hok-faq-soft-label);
+  line-height: 1.6;
+}
+
+/* Still Wondering Band (F1) */
+.still {
+  background-color: var(--hok-faq-charcoal);
+  padding: 104px 80px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.still::before {
+  content: "“";
+  position: absolute;
+  left: 50px;
+  top: -90px;
+  font-family: var(--hok-faq-font-serif);
+  font-size: 420px;
+  line-height: 1;
+  color: rgba(201, 169, 110, 0.05);
+  pointer-events: none;
+  user-select: none;
+}
+
+.still-grid {
+  max-width: 1280px;
+  margin: 0px auto;
+  display: grid;
+  grid-template-columns: minmax(0px, 1.1fr) minmax(0px, 1fr);
+  gap: 80px;
+  position: relative;
+  z-index: 1;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Message Column (F2) */
+.fq-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.fq-eyebrow i {
+  width: 32px;
+  height: 1px;
+  background-color: var(--hok-faq-gold);
+  display: block;
+}
+
+.fq-eyebrow span {
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--hok-faq-gold-light);
+}
+
+.still h2 {
+  font-family: var(--hok-faq-font-serif);
+  font-weight: 300;
+  font-size: clamp(42px, 4.6vw, 66px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: #faf7f2;
+  margin: 0;
+}
+
+.still h2 em {
+  font-style: italic;
+  color: var(--hok-faq-gold);
+}
+
+.still-p {
+  font-family: var(--hok-faq-font-sans);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: rgba(250, 247, 242, 0.72);
+  margin-top: 22px;
+  max-width: 470px;
+}
+
+.still-sign {
+  font-family: var(--hok-faq-font-serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--hok-faq-gold-light);
+  margin-top: 26px;
+  margin-bottom: 0;
+}
+
+.still-btns {
+  margin-top: 36px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Channel List (F3) */
+.chan {
+  border-top: 1px solid rgba(201, 169, 110, 0.18);
+  box-sizing: border-box;
+}
+
+.chan-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0px, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  padding: 24px 0px;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.12);
+  box-sizing: border-box;
+}
+
+.chan-ic {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 169, 110, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chan-svg {
+  width: 17px;
+  height: 17px;
+  color: var(--hok-faq-gold-light);
+}
+
+.chan-svg.fill {
+  fill: var(--hok-faq-gold-light);
+}
+
+.chan-k {
+  font-family: var(--hok-faq-font-serif);
+  font-size: 21px;
+  font-weight: 400;
+  color: #faf7f2;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.chan-v {
+  font-family: var(--hok-faq-font-sans);
+  font-size: 12px;
+  color: rgba(250, 247, 242, 0.6);
+  margin-top: 3px;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+.chan-go {
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.35);
+  color: var(--hok-faq-gold);
+  cursor: pointer;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0px 0px 3px;
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.chan-go:hover {
+  color: var(--hok-faq-gold-light);
+  border-color: var(--hok-faq-gold-light);
+}
+
+/* Responsive adjustments (Section 11) */
+@media (max-width: 1199px) {
+  .still {
+    padding: 88px 40px;
+  }
+
+  .still-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+
+@media (max-width: 760px) {
+  .pol {
+    padding: 0px 18px 56px;
+  }
+
+  .still {
+    padding: 72px 18px;
+  }
+
+  .still-btns {
+    justify-content: center;
+  }
+
+  .still-btns .btn-wa,
+  .still-btns .btn-line {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .chan-row {
+    grid-template-columns: 40px minmax(0px, 1fr);
+  }
+
+  .chan-go {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 4px;
+  }
+}

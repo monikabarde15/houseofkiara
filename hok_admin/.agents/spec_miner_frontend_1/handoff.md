@@ -11,7 +11,7 @@
 
 1. **Frontend Architecture**:
    - `package.json` specifies `"type": "module"`, React 19.0.1, Vite 6.2.3, `@tailwindcss/vite` 4.1.14, and TypeScript ~5.8.2.
-   - `vite.config.ts` (lines 15–17) defines proxy configuration forwarding `/api` to `http://localhost:5000`.
+   - `vite.config.ts` (lines 15–17) defines proxy configuration forwarding `/api` to `http://localhost:5003`.
    - `src/App.tsx` (lines 58–426) implements a single-page view router switching between 19 active and sub-views.
 
 2. **Operations & Catalogue View Implementations**:

@@ -13,6 +13,7 @@ interface ProfileContactTabProps {
   onSave: () => void;
   onListerChange?: (lister: Lister) => void;
   isCreateMode?: boolean;
+  activities?: any[];
 }
 
 const defaultBlankLister: Lister = {
@@ -46,6 +47,7 @@ export const ProfileContactTab: React.FC<ProfileContactTabProps> = ({
   onSave,
   onListerChange,
   isCreateMode = false,
+  activities = [],
 }) => {
   const [localLister, setLocalLister] = useState<Lister>(lister || defaultBlankLister);
 
@@ -87,7 +89,7 @@ export const ProfileContactTab: React.FC<ProfileContactTabProps> = ({
           isCreateMode={isCreateMode}
         />
         <ActivityCard 
-          activities={localLister ? [] : []} 
+          activities={activities} 
           isCreateMode={isCreateMode}
         />
       </div>

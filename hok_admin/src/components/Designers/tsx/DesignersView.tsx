@@ -114,6 +114,23 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
     handleBack();
   };
 
+  const handleToggleFeatured = async (id: string, isFeatured: boolean) => {
+    const designer = designers.find(d => d.id === id);
+    if (!designer) return;
+    const updated = { 
+      ...designer, 
+      isFeatured, 
+      featuredOrder: isFeatured ? (designers.filter(d=>d.isFeatured).length + 1) : null 
+    };
+    try {
+      await designerApi.updateDesigner(id, updated);
+      setDesigners(prev => prev.map(d => d.id === id ? updated : d));
+    } catch (err) {
+      console.error(err);
+      setDesigners(prev => prev.map(d => d.id === id ? updated : d));
+    }
+  };
+
   if (designerToEdit) {
     return (
       <DesignerEdit
@@ -134,6 +151,7 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
       onAddDesigner={() => setIsCreating(true)}
       onReorderFeatured={designerApi.reorderFeaturedDesigners}
       onUpdateType={designerApi.updateDesignerType}
+      onToggleFeatured={handleToggleFeatured}
     />
   );
 };

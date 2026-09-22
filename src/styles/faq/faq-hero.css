@@ -1,0 +1,308 @@
+/* src/styles/faq/faq-hero.css */
+/* Concierge Hero, Search, Results Dropdown, Popular Questions (B1-B7, B13) */
+
+/* Hero Band (B1) */
+.ch-hero {
+  background-color: var(--hok-faq-cream);
+  padding: 36px 40px 64px;
+  text-align: center;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Greeting (B2) */
+.ch-hello {
+  font-family: var(--hok-faq-font-serif);
+  font-style: italic;
+  font-size: 21px;
+  color: var(--hok-faq-muted);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Headline (B3) */
+.ch-h1 {
+  font-family: var(--hok-faq-font-serif);
+  font-weight: 300;
+  font-size: clamp(46px, 6.2vw, 86px);
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+  margin: 8px 0 0 0;
+  color: var(--hok-faq-charcoal);
+}
+
+.ch-h1 em {
+  font-style: italic;
+  color: var(--hok-faq-gold);
+}
+
+/* Search Field (B4) */
+.ch-find {
+  position: relative;
+  max-width: 600px;
+  margin: 34px auto 0px;
+  text-align: left;
+  z-index: 20;
+}
+
+.ch-search {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--hok-faq-charcoal);
+  padding: 12px 2px;
+  background: transparent;
+}
+
+.ch-search-svg {
+  width: 19px;
+  height: 19px;
+  color: var(--hok-faq-charcoal);
+  flex-shrink: 0;
+}
+
+.ch-search input {
+  flex: 1 1 0%;
+  min-width: 0;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--hok-faq-charcoal);
+  padding: 0;
+}
+
+.ch-search input::placeholder {
+  color: var(--hok-faq-soft-label);
+}
+
+.ch-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.ch-kbd {
+  font-size: 10px;
+  font-family: var(--hok-faq-font-sans);
+  color: var(--hok-faq-muted);
+  border: 1px solid var(--hok-faq-border);
+  padding: 2px 7px;
+  border-radius: 2px;
+  user-select: none;
+}
+
+.ch-x {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hok-faq-muted);
+  padding: 4px 0px;
+  transition: color 0.15s ease;
+}
+
+.ch-x:hover {
+  color: var(--hok-faq-charcoal);
+}
+
+/* Search Results Dropdown (B5) */
+.ch-drop {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  background-color: var(--hok-faq-warm-white);
+  border: 1px solid var(--hok-faq-border);
+  box-shadow: var(--hok-faq-shadow-dropdown);
+  max-height: 430px;
+  overflow-y: auto;
+  z-index: 25;
+  text-align: left;
+}
+
+.ch-drop-hd {
+  padding: 12px 20px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hok-faq-muted);
+  border-bottom: 1px solid var(--hok-faq-border-light);
+}
+
+.ch-hit {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--hok-faq-border-light);
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.ch-hit:last-child {
+  border-bottom: none;
+}
+
+.ch-hit[aria-selected="true"],
+.ch-hit:hover {
+  background-color: var(--hok-faq-cream);
+  box-shadow: inset 0 -1px 0 var(--hok-faq-gold);
+}
+
+.ch-hit b {
+  display: block;
+  font-family: var(--hok-faq-font-serif);
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.3;
+  color: var(--hok-faq-charcoal);
+  transition: color 0.15s ease;
+}
+
+.ch-hit[aria-selected="true"] b,
+.ch-hit:hover b {
+  color: var(--hok-faq-gold);
+}
+
+.ch-hit small {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hok-faq-muted);
+}
+
+.ch-hit mark {
+  background-color: var(--hok-faq-gold-pale);
+  color: inherit;
+  padding: 0px 1px;
+}
+
+/* Empty State (B6) */
+.ch-none {
+  padding: 22px 20px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 13px;
+  color: var(--hok-faq-body-brown);
+  line-height: 1.7;
+}
+
+.ch-none b {
+  display: block;
+  font-family: var(--hok-faq-font-serif);
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--hok-faq-charcoal);
+  margin-bottom: 4px;
+}
+
+.ch-none p {
+  margin: 0;
+}
+
+.ch-none .btn-wa {
+  margin-top: 14px;
+  padding: 11px 18px;
+  font-size: 10px;
+}
+
+/* Popular Questions (B7) */
+.ch-pop {
+  margin-top: 18px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 12px;
+  color: var(--hok-faq-muted);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+
+.ch-pop-link {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--hok-faq-border);
+  padding: 0 0 1px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 12px;
+  color: var(--hok-faq-body-brown);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.ch-pop-link:hover {
+  color: var(--hok-faq-charcoal);
+  border-color: var(--hok-faq-gold);
+}
+
+/* Hero Entrance Animations (B13 & 10.8) */
+@keyframes enter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.enter {
+  opacity: 0;
+  animation: enter 0.8s var(--hok-faq-ease) 0s 1 normal forwards running;
+}
+
+.e2 {
+  animation-delay: 0.08s;
+}
+
+.e3 {
+  animation-delay: 0.16s;
+}
+
+.e4 {
+  animation-delay: 0.26s;
+}
+
+/* Responsive adjustments */
+@media (max-width: 760px) {
+  .ch-hero {
+    padding: 26px 18px 44px;
+  }
+
+  .ch-hello {
+    font-size: 17px;
+  }
+
+  .ch-search input {
+    font-size: 16px;
+  }
+
+  .ch-kbd {
+    display: none;
+  }
+
+  .ch-pop {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

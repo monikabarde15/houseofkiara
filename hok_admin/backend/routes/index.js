@@ -20,6 +20,7 @@ import submissionRouter from "./submissionRoutes.js";
 import promotionRouter from "./promotionRoutes.js";
 import notificationRouter from "./notificationRoutes.js";
 import siteSettingsRouter from "./siteSettingsRoutes.js";
+import categoryRouter from "./categoryRoutes.js";
 
 const router = express.Router();
 
@@ -48,6 +49,7 @@ router.use("/tasks", taskRouter);
 router.use("/submissions", submissionRouter);
 router.use("/promotions", promotionRouter);
 router.use("/notifications", notificationRouter);
+router.use("/categories", categoryRouter);
 
 // Root /api endpoints (Products, Orders, Offers, Payouts, Admin Auth, Messages, Customers, Upload)
 router.use(productRouter);

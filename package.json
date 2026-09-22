@@ -21,16 +21,21 @@
     "zustand": "^5.0.15"
   },
   "scripts": {
-    "dev:frontend": "vite",
+    "dev": "concurrently --kill-others-on-fail \"npm run dev:frontend\" \"npm run dev:admin\" \"npm run dev:proxy\" \"npm run dev:backend\"",
+    "dev:frontend": "vite --port=3005 --strictPort --host=0.0.0.0",
     "dev:admin": "npm run dev --prefix hok_admin",
-    "dev:backend": "npm start --prefix hok_admin/backend",
-    "dev": "npx concurrently \"npm run dev:frontend\" \"npm run dev:admin\" \"npm run dev:backend\"",
+    "dev:proxy": "node dev-proxy.js",
+    "dev:backend": "node --watch-path=hok_admin/backend --watch-preserve-output --watch hok_admin/backend/server.js",
+    "server": "node --watch-path=hok_admin/backend --watch-preserve-output --watch hok_admin/backend/server.js",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.1.1",
+    "concurrently": "^10.0.5",
+    "cross-env": "^7.0.3",
+    "http-proxy-middleware": "^2.0.6",
     "vite": "^8.0.3"
   }
 }

@@ -32,6 +32,13 @@ function ProductThumbnail({ src, alt }: { src?: string; alt: string }) {
 }
 
 export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
+  const getMediaThumbnail = (images?: string[]) => {
+    if (!images || images.length === 0) return undefined;
+    const img = images.find(url => !url.match(/\.(mp4|mov|webm)$/i));
+    if (img) return img;
+    return images[0].replace(/\.(mp4|mov|webm)$/i, '.jpg');
+  };
+
   if (loading) {
     return (
       <div className="px-5 py-16 text-center text-[#8A8177] font-medium text-xs">
@@ -152,7 +159,7 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
                 {/* PIECE */}
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-3">
-                    <ProductThumbnail src={p.images?.[0]} alt={pName} />
+                    <ProductThumbnail src={getMediaThumbnail(p.images)} alt={pName} />
                     <div>
                       <div className="flex items-center flex-wrap gap-x-1.5">
                         <span className="font-bold text-[#2A241F] text-[13px] hover:text-[#C7A55C] transition">

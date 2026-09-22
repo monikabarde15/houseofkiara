@@ -99,7 +99,13 @@ export const togglePromoCodeStatus = async (req, res) => {
 // DELETE /api/promotions/:code — delete promo code
 export const deletePromoCode = async (req, res) => {
   try {
-    const deleted = await PromoCode.findOneAndDelete({ code: req.params.code.toUpperCase() });
+    const code = req.params.code.toUpperCase();
+    const Order = (await import("../models/Order.js")).default;
+    const usedOrders = await Order.find({ promoCode: code });
+    if (usedOrders.length > 0) {
+      return res.status(409).json({ success: false, message: `This promo has been used on ${usedOrders.length} order(s). Pause it instead to preserve order history.` });
+    }
+    const deleted = await PromoCode.findOneAndDelete({ code });
     if (!deleted) return res.status(404).json({ success: false, message: "Promo code not found" });
     res.json({ success: true, message: "Promo code deleted" });
   } catch (err) {

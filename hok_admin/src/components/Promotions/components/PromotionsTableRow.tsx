@@ -78,14 +78,16 @@ export const PromotionsTableRow: React.FC<PromotionsTableRowProps> = ({
         <StatusBadge status={derivedState} />
       </td>
       <td className="table-row__cell table-row__cell--attention">
-        {displayFlags.map(flag => (
-          <AttentionPill key={flag.key} title={flag.trigger}>
-            {flag.chip}
-          </AttentionPill>
-        ))}
-        {overflowCount > 0 && (
-          <AttentionPill>+{overflowCount}</AttentionPill>
-        )}
+        {displayFlags.length > 0 ? <>
+          {displayFlags.map(flag => (
+            <AttentionPill key={flag.key} title={flag.trigger}>
+              {flag.chip}
+            </AttentionPill>
+          ))}
+          {overflowCount > 0 && (
+            <AttentionPill>+{overflowCount}</AttentionPill>
+          )}
+        </> : <span className="text-stone-400 text-xs">No attention</span>}
       </td>
       <td className="table-row__cell table-row__cell--action">
         <Button variant="secondary" size="small">View →</Button>

@@ -15,6 +15,7 @@ import PayoutsView from './components/payouts/PayoutsView';
 import CustomersView from './components/CustomersView';
 // import ProductsView from './components/ProductsView';
 import ProductsView from './components/products/ProductsView';
+import CategoriesView from './components/CategoriesView';
 import DesignersView from './components/Designers/tsx';
 // import ListersView from './components/ListersView';
 import ListersView from './components/Listers/ListersView';
@@ -85,7 +86,14 @@ export default function App() {
   }, []);
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
-  useEffect(() => { productApi.getProducts().then(setProducts).catch((error) => console.error('Unable to load products:', error)).finally(() => setProductsLoading(false)); }, []);
+  useEffect(() => { 
+    const fetchAllProducts = () => {
+      productApi.getProducts().then(setProducts).catch((error) => console.error('Unable to load products:', error)).finally(() => setProductsLoading(false)); 
+    };
+    fetchAllProducts();
+    window.addEventListener('refreshProducts', fetchAllProducts);
+    return () => window.removeEventListener('refreshProducts', fetchAllProducts);
+  }, []);
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
   useEffect(() => { orderApi.getOrders().then(setOrders).catch((error) => console.error('Unable to load orders:', error)).finally(() => setOrdersLoading(false)); }, []);
@@ -101,7 +109,14 @@ export default function App() {
   const [listers, setListers] = useState<any[]>([]);
   useEffect(() => { listerApi.getListers().then((data) => setListers(Array.isArray(data) ? data : [])).catch((error) => { console.error('Unable to load listers:', error); setListers([]); }); }, []);
   const [calendarTasks, setCalendarTasks] = useState<any[]>([]);
-  useEffect(() => { taskApi.getTasks().then(setCalendarTasks).catch((error) => console.error('Unable to load tasks:', error)); }, []);
+  useEffect(() => {
+    taskApi.getTasks()
+      .then(data => setCalendarTasks(Array.isArray(data) ? data : []))
+      .catch((error) => {
+        console.error('Unable to load tasks:', error);
+        setCalendarTasks([]);
+      });
+  }, []);
   const [submissions, setSubmissions] = useState<ListerSubmission[]>([]);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
@@ -117,19 +132,74 @@ export default function App() {
   }, []);
   const [homepage, setHomepage] = useState<HomepageEditor>(initialHomepage);
   const handleUpdateCustomer = (updated: Customer) => {
+    const formatted = {
+      ...updated,
+      id: updated.id || updated.customerId || (updated as any)._id
+    };
     setCustomers(prev => {
-      const exists = prev.some(c => c.id === updated.id || (c.customerId && c.customerId === updated.customerId));
+      const exists = prev.some(c => c.id === formatted.id || (c.customerId && c.customerId === formatted.customerId));
       if (exists) {
-        return prev.map(c => (c.id === updated.id || (c.customerId && c.customerId === updated.customerId)) ? updated : c);
+        return prev.map(c => (c.id === formatted.id || (c.customerId && c.customerId === formatted.customerId)) ? { ...c, ...formatted } : c);
       }
-      return [updated, ...prev];
+      return [formatted, ...prev];
     });
-    toast.success('Customer updated successfully!');
+  };
+
+  const handleAddCustomer = (newCust: any) => {
+    if (!newCust) return;
+    const formatted = {
+      ...newCust,
+      id: newCust.id || newCust.customerId || newCust._id
+    };
+    setCustomers(prev => {
+      const existsIdx = prev.findIndex(c => 
+        (formatted.id && (c.id === formatted.id || c.customerId === formatted.id || c._id === formatted.id)) || 
+        (formatted.phone && c.phone && c.phone === formatted.phone) ||
+        (formatted.name && c.name && c.name.toLowerCase() === formatted.name.toLowerCase())
+      );
+      if (existsIdx >= 0) {
+        const updated = [...prev];
+        updated[existsIdx] = { ...updated[existsIdx], ...formatted };
+        return updated;
+      }
+      return [formatted, ...prev];
+    });
+
+    customerApi.getCustomers()
+      .then(res => {
+        if (Array.isArray(res)) setCustomers(res);
+      })
+      .catch(() => {});
   };
 
   const handleDeleteCustomer = (id: string) => {
     setCustomers(prev => prev.filter(c => c.id !== id && c.customerId !== id));
     toast.success('Customer removed successfully!');
+  };
+
+  const handleAddOrder = (newOrder: any) => {
+    if (!newOrder) return;
+    const formatted = {
+      ...newOrder,
+      id: newOrder.id || newOrder.orderId || newOrder.orderNumber
+    };
+    setOrders(prev => {
+      const exists = prev.some(o => o.id === formatted.id || (o as any).orderId === formatted.id);
+      if (exists) return prev.map(o => (o.id === formatted.id || (o as any).orderId === formatted.id) ? { ...o, ...formatted } : o);
+      return [formatted, ...prev];
+    });
+
+    orderApi.getOrders()
+      .then(res => {
+        if (Array.isArray(res)) setOrders(res);
+      })
+      .catch(() => {});
+
+    customerApi.getCustomers()
+      .then(res => {
+        if (Array.isArray(res)) setCustomers(res);
+      })
+      .catch(() => {});
   };
 
   const handleAddPromoCode = (newCode: PromoCode) => {
@@ -213,7 +283,7 @@ export default function App() {
 
   const handleAddOffer = async (newOffer: Offer) => {
     try { const created = await offerApi.createOffer(newOffer); setOffers(current => [created, ...current]); toast.success('Offer created successfully!'); }
-    catch (error) { console.error('Unable to create offer:', error); toast.error('Failed to create offer'); }
+    catch (error) { console.error('Unable to create offer:', error); toast.error(error instanceof Error ? error.message : 'Failed to create offer'); }
   };
 
   const handleAddProduct = async (newProd: Product) => {
@@ -416,29 +486,10 @@ export default function App() {
         }
       }
 
-      const finalOrder = matchedOrder || ({
-        id: orderId.startsWith('HOK-ORD-') ? orderId : `HOK-ORD-${String(orderId).replace(/[^0-9]/g, '').slice(-3) || '889'}`,
-        orderNumber: orderId.startsWith('HOK-ORD-') ? orderId : `HOK-ORD-${String(orderId).replace(/[^0-9]/g, '').slice(-3) || '889'}`,
-        customerName: 'Riya Sharma',
-        customerPhone: '9876543210',
-        customerEmail: 'riya.sharma@houseofkaira.com',
-        productName: 'Crimson Zardozi Lehenga',
-        designer: 'House of Kaira',
-        date: '2026-09-05',
-        startDate: '2026-09-10',
-        endDate: '2026-09-14',
-        status: 'Confirmed',
-        amount: 8500,
-        totalAmount: 8500,
-        grandTotal: 8500,
-        securityDeposit: 0,
-        depositStatus: 'Held',
-        items: [],
-      } as any);
-
       return (
         <OrderDetailView 
-          order={finalOrder}
+          orderId={orderId}
+          order={matchedOrder ? undefined : undefined} // We want it to fetch via API if possible.
           onBack={() => setView('orders')}
           onUpdateOrder={handleUpdateOrder}
         />
@@ -449,6 +500,9 @@ export default function App() {
       return (
         <OffersView 
           offers={offers}
+          products={products}
+          listers={listers}
+          currentAdminName={adminSession?.admin?.name || 'Soumya'}
           loading={offersLoading}
           onUpdateOffer={handleUpdateOffer}
           onAddOffer={handleAddOffer}
@@ -512,12 +566,17 @@ export default function App() {
         <ProductsView
           products={products}
           orders={orders}
+          offers={offers}
+          promoCodes={promoCodes}
           loading={productsLoading}
           onAddProduct={handleAddProduct}
           onUpdateProduct={handleUpdateProduct}
           listers={listers}
           onEditingChange={setIsSectionEditing}
           onViewOrder={(orderId) => setView(`order_detail:${orderId}`)}
+          customers={customers}
+          onAddCustomer={handleAddCustomer}
+          onAddOrder={handleAddOrder}
         />
       );
     }
@@ -526,8 +585,12 @@ export default function App() {
       return <DesignersView onEditingChange={setIsSectionEditing} />;
     }
 
+    if (currentView === 'categories') {
+      return <CategoriesView onEditingChange={setIsSectionEditing} />;
+    }
+
     if (currentView === 'listers') {
-      return <ListersView onEditingChange={setIsSectionEditing} />;
+      return <ListersView onEditingChange={setIsSectionEditing} setView={setView} />;
     }
 
     // if (currentView === 'occasions') {
@@ -545,6 +608,7 @@ export default function App() {
     if (currentView === 'promotions') {
       return (
         <PromotionsView 
+          orders={orders}
           onEditingChange={setIsSectionEditing}
         />
       );

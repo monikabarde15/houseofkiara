@@ -1,0 +1,345 @@
+/* src/styles/faq/faq-cards.css */
+/* Moment Cards, Arches, Hygiene Promise, and Account Link (B8-B13) */
+
+/* Lede (B8) */
+.ch-lede {
+  margin-top: 48px;
+  margin-bottom: 0;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hok-faq-muted);
+  text-align: center;
+}
+
+/* Moment Cards Row (B9) */
+.ch-cards {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0px, 1fr));
+  gap: 12px;
+  max-width: 1280px;
+  margin: 18px auto 0px;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+/* Card (B9) */
+.ch-card {
+  position: relative;
+  height: 260px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  color: #faf7f2;
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-align: left;
+  box-sizing: border-box;
+  font-family: var(--hok-faq-font-sans);
+  transition: transform 0.4s var(--hok-faq-ease), box-shadow 0.4s var(--hok-faq-ease);
+}
+
+/* Card Gold Bottom Line (B9) */
+.ch-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background-color: var(--hok-faq-gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s var(--hok-faq-ease);
+}
+
+/* Arch SVG Drawing (B9) */
+.ch-card .arch {
+  position: absolute;
+  top: 42px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 112px;
+  stroke: rgba(201, 169, 110, 0.42);
+  fill: none;
+  stroke-width: 1;
+  transition: stroke 0.3s ease, transform 0.4s var(--hok-faq-ease);
+  pointer-events: none;
+}
+
+.ch-card .arch .in {
+  stroke: rgba(201, 169, 110, 0.22);
+}
+
+.ch-card:hover .arch {
+  stroke: rgba(201, 169, 110, 0.7);
+}
+
+/* Applies-to Label (B9, B10) */
+.ch-card .for {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(232, 213, 176, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+/* Card Title (B9) */
+.ch-card .t {
+  font-family: var(--hok-faq-font-serif);
+  font-size: 24px;
+  line-height: 1.12;
+  position: relative;
+  color: #faf7f2;
+}
+
+/* Answer Count (B9) */
+.ch-card .n {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(232, 213, 176, 0.72);
+  margin-top: 8px;
+  position: relative;
+}
+
+/* Selected Card (B9) */
+.ch-card[aria-pressed="true"] {
+  transform: translateY(-10px);
+  box-shadow: var(--hok-faq-shadow-card-lift);
+}
+
+.ch-card[aria-pressed="true"]::after {
+  transform: scaleX(1);
+}
+
+.ch-card[aria-pressed="true"] .arch {
+  stroke: var(--hok-faq-gold);
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* Card Entrance Stagger Delays (B13 & 10.8) */
+.c-delay-1 { animation-delay: 0.30s; }
+.c-delay-2 { animation-delay: 0.36s; }
+.c-delay-3 { animation-delay: 0.42s; }
+.c-delay-4 { animation-delay: 0.48s; }
+.c-delay-5 { animation-delay: 0.54s; }
+.c-delay-6 { animation-delay: 0.60s; }
+
+/* Hygiene Promise (B11) */
+.promise {
+  max-width: 1280px;
+  margin: 34px auto 0px;
+  display: grid;
+  grid-template-columns: auto minmax(0px, 1fr) auto;
+  gap: 26px;
+  align-items: center;
+  text-align: left;
+  background-color: var(--hok-faq-warm-white);
+  border: 1px solid var(--hok-faq-gold-light);
+  padding: 22px 28px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.promise::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  bottom: -1px;
+  width: 3px;
+  background-color: var(--hok-faq-gold);
+}
+
+.promise-ic {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background-color: var(--hok-faq-gold-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.promise-svg {
+  width: 26px;
+  height: 26px;
+  color: var(--hok-faq-deep-gold);
+}
+
+.promise-k {
+  display: block;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--hok-faq-gold);
+}
+
+.promise-t {
+  font-family: var(--hok-faq-font-serif);
+  font-size: 23px;
+  line-height: 1.3;
+  margin: 4px 0 0 0;
+  color: var(--hok-faq-charcoal);
+}
+
+.promise-t em {
+  font-style: italic;
+  color: var(--hok-faq-deep-gold);
+}
+
+.promise-s {
+  font-family: var(--hok-faq-font-sans);
+  font-size: 12.5px;
+  color: var(--hok-faq-muted);
+  margin: 4px 0 0 0;
+  line-height: 1.6;
+}
+
+.promise-go {
+  background-color: var(--hok-faq-charcoal);
+  color: #faf7f2;
+  border: none;
+  cursor: pointer;
+  padding: 13px 20px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-radius: 1px;
+  transition: background-color 0.2s ease;
+}
+
+.promise-go:hover {
+  background-color: #3a322b;
+}
+
+/* Account Link (B12) */
+.ch-else {
+  margin-top: 26px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 12px;
+  color: var(--hok-faq-muted);
+  text-align: center;
+}
+
+.ch-else-btn {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--hok-faq-border);
+  padding: 0 0 1px;
+  margin-left: 6px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 12px;
+  color: var(--hok-faq-charcoal);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.ch-else-btn:hover {
+  border-color: var(--hok-faq-gold);
+  color: var(--hok-faq-gold);
+}
+
+/* Responsive adjustments (Section 11) */
+@media (max-width: 1199px) {
+  .ch-cards {
+    grid-template-columns: repeat(3, minmax(0px, 1fr));
+  }
+
+  .ch-card {
+    height: 200px;
+  }
+}
+
+@media (max-width: 760px) {
+  .ch-lede {
+    margin-top: 36px;
+    text-align: left;
+  }
+
+  .ch-cards {
+    display: grid;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 58%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin: 14px -18px 0px;
+    padding: 12px 18px 16px;
+    scrollbar-width: none;
+  }
+
+  .ch-cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ch-card {
+    height: 190px;
+    scroll-snap-align: start;
+    padding: 18px 16px;
+  }
+
+  .ch-card[aria-pressed="true"] {
+    transform: translateY(-6px);
+  }
+
+  .ch-card .arch {
+    width: 60px;
+    height: 84px;
+    top: 36px;
+  }
+
+  .ch-card .for {
+    display: none;
+  }
+
+  .ch-card .t {
+    font-size: 21px;
+  }
+
+  .promise {
+    grid-template-columns: 44px minmax(0px, 1fr);
+    gap: 14px 16px;
+    padding: 20px 18px;
+  }
+
+  .promise-ic {
+    width: 44px;
+    height: 44px;
+    align-self: start;
+  }
+
+  .promise-svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .promise-t {
+    font-size: 20px;
+  }
+
+  .promise-go {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .ch-else {
+    text-align: left;
+    line-height: 2;
+  }
+}

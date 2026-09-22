@@ -15,6 +15,7 @@ const submissionSchema = new mongoose.Schema(
     askSell: { type: String, default: null },
     conditionClaim: { type: String },
     timesWorn: { type: String },
+    yearOfPurchase: { type: String },
     originalPrice: { type: String },
     colour: { type: String },
     size: { type: String },
@@ -25,6 +26,7 @@ const submissionSchema = new mongoose.Schema(
     sku: { type: String, default: null },
     decision: mongoose.Schema.Types.Mixed,
     moreInfo: mongoose.Schema.Types.Mixed,
+    assignedTo: { type: String, default: 'Unassigned' },
   },
   { timestamps: true, strict: false }
 );

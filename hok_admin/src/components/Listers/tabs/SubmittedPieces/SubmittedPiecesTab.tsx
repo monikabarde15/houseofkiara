@@ -20,6 +20,8 @@ export const SubmittedPiecesTab: React.FC<SubmittedPiecesTabProps> = ({
   isCreateMode = false,
 }) => {
   const [showForm, setShowForm] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 5;
 
   const handleFormSuccess = () => {
     setShowForm(false);
@@ -60,14 +62,37 @@ export const SubmittedPiecesTab: React.FC<SubmittedPiecesTabProps> = ({
             When a piece comes in over WhatsApp or a walk-in, record it above — it lands in the Approvals queue with a full record.
           </div>
         ) : (
-          submissions.map((submission) => (
-            <SubmissionCard 
-              key={submission.subid} 
-              submission={submission}
-              listerId={listerId}
-              onUpdate={onUpdate}
-            />
-          ))
+          <>
+            {submissions.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE).map((submission) => (
+              <SubmissionCard 
+                key={submission.subid} 
+                submission={submission}
+                listerId={listerId}
+                onUpdate={onUpdate}
+              />
+            ))}
+            {submissions.length > PAGE_SIZE && (
+              <div className="pagination-controls" style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center', marginTop: '16px' }}>
+                <button 
+                  className="btn btn-sec btn-sm" 
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                >
+                  Previous
+                </button>
+                <span style={{ fontSize: '12px', color: '#8A7E72' }}>
+                  Page {currentPage} of {Math.ceil(submissions.length / PAGE_SIZE)}
+                </span>
+                <button 
+                  className="btn btn-sec btn-sm" 
+                  disabled={currentPage === Math.ceil(submissions.length / PAGE_SIZE)}
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(submissions.length / PAGE_SIZE), p + 1))}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

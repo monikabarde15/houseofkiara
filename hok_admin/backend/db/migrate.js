@@ -183,6 +183,10 @@ export const migrationQueries = [
     customer_email VARCHAR(255),
     customer_phone VARCHAR(100),
     total_amount NUMERIC(12, 2) DEFAULT 0,
+    offer_id VARCHAR(255),
+    promo_code VARCHAR(50),
+    discount NUMERIC DEFAULT 0,
+    mode VARCHAR(100),
     status VARCHAR(50) DEFAULT 'Confirmed',
     type VARCHAR(50) DEFAULT 'Rental',
     payment_status VARCHAR(50) DEFAULT 'Paid',
@@ -197,6 +201,10 @@ export const migrationQueries = [
   `ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_email VARCHAR(255);`,
   `ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_phone VARCHAR(100);`,
   `ALTER TABLE orders ADD COLUMN IF NOT EXISTS total_amount NUMERIC(12, 2) DEFAULT 0;`,
+  `ALTER TABLE orders ADD COLUMN IF NOT EXISTS offer_id VARCHAR(255);`,
+  `ALTER TABLE orders ADD COLUMN IF NOT EXISTS promo_code VARCHAR(50);`,
+  `ALTER TABLE orders ADD COLUMN IF NOT EXISTS discount NUMERIC DEFAULT 0;`,
+  `ALTER TABLE orders ADD COLUMN IF NOT EXISTS mode VARCHAR(100);`,
   `ALTER TABLE orders ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'Confirmed';`,
   `ALTER TABLE orders ADD COLUMN IF NOT EXISTS type VARCHAR(50) DEFAULT 'Rental';`,
   `ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_status VARCHAR(50) DEFAULT 'Paid';`,
@@ -206,6 +214,8 @@ export const migrationQueries = [
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_orders__id ON orders(_id);`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_order_id ON orders(order_id);`,
   `CREATE INDEX IF NOT EXISTS idx_orders_customer_id ON orders(customer_id);`,
+  `CREATE INDEX IF NOT EXISTS idx_orders_offer_id ON orders(offer_id);`,
+  `CREATE INDEX IF NOT EXISTS idx_orders_promo_code ON orders(promo_code);`,
   `CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);`,
   `CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON orders(payment_status);`,
   `CREATE INDEX IF NOT EXISTS idx_orders_data_gin ON orders USING GIN (data);`,
@@ -307,10 +317,147 @@ export const migrationQueries = [
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_submissions_submission_id ON submissions(submission_id);`,
   `CREATE INDEX IF NOT EXISTS idx_submissions_status ON submissions(status);`,
   `CREATE INDEX IF NOT EXISTS idx_submissions_data_gin ON submissions USING GIN (data);`,
+
+  // 11. Promo Codes Table
+  `CREATE TABLE IF NOT EXISTS promo_codes (
+    _id VARCHAR(64) PRIMARY KEY,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    type VARCHAR(20),
+    status VARCHAR(20) DEFAULT 'Active',
+    audience VARCHAR(20) DEFAULT 'public',
+    valid_from VARCHAR(20),
+    valid_until VARCHAR(20),
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS code VARCHAR(50);`,
+  `ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS type VARCHAR(20);`,
+  `ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'Active';`,
+  `ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS audience VARCHAR(20) DEFAULT 'public';`,
+  `ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS valid_from VARCHAR(20);`,
+  `ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS valid_until VARCHAR(20);`,
+  `ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `ALTER TABLE promo_codes ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_promo_codes__id ON promo_codes(_id);`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_promo_codes_code ON promo_codes(code);`,
+  `CREATE INDEX IF NOT EXISTS idx_promo_codes_status ON promo_codes(status);`,
+  `CREATE INDEX IF NOT EXISTS idx_promo_codes_audience ON promo_codes(audience);`,
+  `CREATE INDEX IF NOT EXISTS idx_promo_codes_data_gin ON promo_codes USING GIN (data);`,
+
+  // 12. Messages Table
+  `CREATE TABLE IF NOT EXISTS messages (
+    _id VARCHAR(64) PRIMARY KEY,
+    message_id VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    subject VARCHAR(255),
+    audience VARCHAR(50) DEFAULT 'Customer',
+    class VARCHAR(50) DEFAULT 'Required',
+    status VARCHAR(50) DEFAULT 'Not written',
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS message_id VARCHAR(255);`,
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS name VARCHAR(255);`,
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS subject VARCHAR(255);`,
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS audience VARCHAR(50) DEFAULT 'Customer';`,
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS class VARCHAR(50) DEFAULT 'Required';`,
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'Not written';`,
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_messages__id ON messages(_id);`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_messages_message_id ON messages(message_id);`,
+  `CREATE INDEX IF NOT EXISTS idx_messages_name ON messages(name);`,
+  `CREATE INDEX IF NOT EXISTS idx_messages_audience ON messages(audience);`,
+  `CREATE INDEX IF NOT EXISTS idx_messages_status ON messages(status);`,
+  `CREATE INDEX IF NOT EXISTS idx_messages_data_gin ON messages USING GIN (data);`,
+
+  // 13. Notifications Table
+  `CREATE TABLE IF NOT EXISTS notifications (
+    _id VARCHAR(64) PRIMARY KEY,
+    notification_id VARCHAR(255) UNIQUE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    category VARCHAR(50) DEFAULT 'System',
+    channel VARCHAR(50) DEFAULT 'System',
+    priority VARCHAR(50) DEFAULT 'Medium',
+    unread BOOLEAN DEFAULT TRUE,
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS notification_id VARCHAR(255);`,
+  `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS title VARCHAR(255);`,
+  `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS category VARCHAR(50) DEFAULT 'System';`,
+  `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS channel VARCHAR(50) DEFAULT 'System';`,
+  `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS priority VARCHAR(50) DEFAULT 'Medium';`,
+  `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS unread BOOLEAN DEFAULT TRUE;`,
+  `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `ALTER TABLE notifications ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications__id ON notifications(_id);`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications_notification_id ON notifications(notification_id);`,
+  `CREATE INDEX IF NOT EXISTS idx_notifications_category ON notifications(category);`,
+  `CREATE INDEX IF NOT EXISTS idx_notifications_unread ON notifications(unread);`,
+  `CREATE INDEX IF NOT EXISTS idx_notifications_data_gin ON notifications USING GIN (data);`,
+
+  // 14. Site Settings Table
+  `CREATE TABLE IF NOT EXISTS site_settings (
+    key VARCHAR(255) PRIMARY KEY,
+    site_name VARCHAR(255),
+    tagline TEXT,
+    support_email VARCHAR(255),
+    whatsapp_number VARCHAR(255),
+    instagram_handle VARCHAR(255),
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS key VARCHAR(255);`,
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS site_name VARCHAR(255);`,
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS tagline TEXT;`,
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS support_email VARCHAR(255);`,
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS whatsapp_number VARCHAR(255);`,
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS instagram_handle VARCHAR(255);`,
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+
+  // 15. Categories Table
+  `CREATE TABLE IF NOT EXISTS categories (
+    _id VARCHAR(64) PRIMARY KEY,
+    category_id VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    image VARCHAR(255),
+    description TEXT,
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS category_id VARCHAR(255);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS name VARCHAR(255);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS slug VARCHAR(255);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS image VARCHAR(255);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS description TEXT;`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories__id ON categories(_id);`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_category_id ON categories(category_id);`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);`,
+  `CREATE INDEX IF NOT EXISTS idx_categories_data_gin ON categories USING GIN (data);`
 ];
 
 export const runMigrations = async () => {
-  console.log("Starting PostgreSQL schema migration for 10 tables...");
+  console.log("Starting PostgreSQL schema migration for 15 tables...");
   const client = await pool.connect();
   try {
     await client.query("BEGIN;");
@@ -318,7 +465,7 @@ export const runMigrations = async () => {
       await client.query(sql);
     }
     await client.query("COMMIT;");
-    console.log("PostgreSQL schema migration completed successfully for all 10 tables.");
+    console.log("PostgreSQL schema migration completed successfully for all 15 tables.");
   } catch (error) {
     await client.query("ROLLBACK;");
     console.error("PostgreSQL schema migration failed:", error.message);
@@ -327,6 +474,9 @@ export const runMigrations = async () => {
     client.release();
   }
 };
+
+export const migrate = runMigrations;
+export default runMigrations;
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   runMigrations()

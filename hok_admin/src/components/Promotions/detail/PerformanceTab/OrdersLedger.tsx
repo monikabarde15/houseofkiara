@@ -70,7 +70,7 @@ export const OrdersLedger: React.FC<OrdersLedgerProps> = ({ orders, code }) => {
                 <td className="orders-ledger__td">{order.mode}</td>
                 <td className="orders-ledger__td">{formatDate(order.placed)}</td>
                 <td className="orders-ledger__td">{formatMoney(order.base)}</td>
-                <td className="orders-ledger__td discount">-{formatMoney(order.discount)}</td>
+                <td className="orders-ledger__td discount">{formatMoney(Math.max(0, order.discount))}</td>
                 <td className="orders-ledger__td">{formatMoney(order.customerPaid)}</td>
                 <td className="orders-ledger__td">
                   <span className="status-badge neutral">{order.status}</span>

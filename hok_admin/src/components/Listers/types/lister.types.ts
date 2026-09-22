@@ -60,7 +60,9 @@ export interface Submission {
   piece: string;
   designer: string;
   category: string;
-  submitted: string;
+  submitted?: string;
+  submittedAt?: string;
+  createdAt?: string;
   channel: Channel;
   intent: Intent;
   askRent: string | null;

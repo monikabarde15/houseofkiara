@@ -57,6 +57,7 @@ const normalizeSubmission = (s: any): Submission => {
     decision: s.decision || null,
     assessment: s.assessment || null,
     history: s.history || [],
+    assignedTo: s.assignedTo || 'Unassigned',
   };
 };
 
@@ -181,10 +182,10 @@ export const submissionService = {
     return await apiRequest(`/submissions/${encodeURIComponent(submissionId)}/more-info`, {
       method: 'PUT',
       body: JSON.stringify({
-        moreInfo: {
-          on: new Date().toISOString(),
-          lastNudge: null,
-        },
+        infoRequired: message,
+        requestedBy: 'Admin',
+        comment: message,
+        deadline: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
       }),
     });
   },

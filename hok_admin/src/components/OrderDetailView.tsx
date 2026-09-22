@@ -22,59 +22,100 @@ import { sendMockMessage } from '../services/messageApi';
 import toast from 'react-hot-toast';
 
 interface OrderDetailViewProps {
-  order: Order;
+  orderId?: string;
+  order?: Order;
   onBack: () => void;
   onUpdateOrder: (updatedOrder: Order) => void;
 }
 
-export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderDetailViewProps) {
+export default function OrderDetailView({ orderId, order: initialOrder, onBack, onUpdateOrder }: OrderDetailViewProps) {
+  const [order, setOrder] = useState<Order | null>(initialOrder || null);
+  const [loading, setLoading] = useState(!initialOrder && !!orderId);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (orderId && !initialOrder) {
+      setLoading(true);
+      orderApi.getOrder(orderId)
+        .then(data => {
+          setOrder(data);
+          setStatus(data.status);
+          setInternalNotes(data.internalNotes || '');
+          setDispatchedBy(data.dispatchDetails?.dispatchedBy || '');
+          setDispatchDate(data.dispatchDetails?.date || '');
+          setTrackingNumber(data.dispatchDetails?.trackingNumber || '');
+          setCourierPartner(data.dispatchDetails?.courierPartner || '');
+          setReturnDate(data.returnLogistics?.returnDate || '');
+          setReturnMethod(data.returnLogistics?.returnMethod || '');
+          setReturnCourier(data.returnLogistics?.courierPartner || '');
+          setReceivedBy(data.conditionAssessment?.receivedBy || 'Soumya');
+          setReceivedDate(data.conditionAssessment?.receivedDate || '');
+          setConditionGrade(data.conditionAssessment?.grade || 'A');
+          setConditionNotes(data.conditionAssessment?.notes || '');
+          setDepositStatus(data.depositDecision?.status || 'Pending');
+          setReleasedAmount(data.depositDecision?.releasedAmount || 0);
+          setDeductedAmount(data.depositDecision?.deductedAmount || 0);
+          setDepositReason(data.depositDecision?.reason || '');
+          setLogs(data.logs || []);
+        })
+        .catch(err => setError(err.message || 'Failed to fetch order'))
+        .finally(() => setLoading(false));
+    }
+  }, [orderId, initialOrder]);
   const [activeTab, setActiveTab] = useState<'Summary' | 'Items' | 'Dispatch' | 'Return' | 'Deposit' | 'Log'>('Summary');
   
   // local editable state
-  const [status, setStatus] = useState(order.status);
-  const [internalNotes, setInternalNotes] = useState(order.internalNotes || '');
+  const [status, setStatus] = useState(order?.status || 'Confirmed');
+  const [internalNotes, setInternalNotes] = useState(order?.internalNotes || '');
   
   // Dispatch fields
-  const [dispatchedBy, setDispatchedBy] = useState(order.dispatchDetails?.dispatchedBy || '');
-  const [dispatchDate, setDispatchDate] = useState(order.dispatchDetails?.date || '');
-  const [trackingNumber, setTrackingNumber] = useState(order.dispatchDetails?.trackingNumber || '');
-  const [courierPartner, setCourierPartner] = useState(order.dispatchDetails?.courierPartner || '');
+  const [dispatchedBy, setDispatchedBy] = useState(order?.dispatchDetails?.dispatchedBy || '');
+  const [dispatchDate, setDispatchDate] = useState(order?.dispatchDetails?.date || '');
+  const [trackingNumber, setTrackingNumber] = useState(order?.dispatchDetails?.trackingNumber || '');
+  const [courierPartner, setCourierPartner] = useState(order?.dispatchDetails?.courierPartner || '');
 
   // Return Logistics fields
-  const [returnDate, setReturnDate] = useState(order.returnLogistics?.returnDate || '');
-  const [returnMethod, setReturnMethod] = useState(order.returnLogistics?.returnMethod || '');
-  const [returnCourier, setReturnCourier] = useState(order.returnLogistics?.courierPartner || '');
+  const [returnDate, setReturnDate] = useState(order?.returnLogistics?.returnDate || '');
+  const [returnMethod, setReturnMethod] = useState(order?.returnLogistics?.returnMethod || '');
+  const [returnCourier, setReturnCourier] = useState(order?.returnLogistics?.courierPartner || '');
 
   // Return Assessment
-  const [receivedBy, setReceivedBy] = useState(order.conditionAssessment?.receivedBy || 'Soumya');
-  const [receivedDate, setReceivedDate] = useState(order.conditionAssessment?.receivedDate || '');
-  const [conditionGrade, setConditionGrade] = useState<'A' | 'B' | 'C' | 'D'>(order.conditionAssessment?.grade || 'A');
-  const [conditionNotes, setConditionNotes] = useState(order.conditionAssessment?.notes || '');
+  const [receivedBy, setReceivedBy] = useState(order?.conditionAssessment?.receivedBy || 'Soumya');
+  const [receivedDate, setReceivedDate] = useState(order?.conditionAssessment?.receivedDate || '');
+  const [conditionGrade, setConditionGrade] = useState<'A' | 'B' | 'C' | 'D'>(order?.conditionAssessment?.grade || 'A');
+  const [conditionNotes, setConditionNotes] = useState(order?.conditionAssessment?.notes || '');
 
   // Deposit Decision
-  const [depositStatus, setDepositStatus] = useState(order.depositDecision?.status || 'Pending');
-  const [releasedAmount, setReleasedAmount] = useState(order.depositDecision?.releasedAmount || 0);
-  const [deductedAmount, setDeductedAmount] = useState(order.depositDecision?.deductedAmount || 0);
-  const [depositReason, setDepositReason] = useState(order.depositDecision?.reason || '');
+  const [depositStatus, setDepositStatus] = useState(order?.depositDecision?.status || 'Pending');
+  const [releasedAmount, setReleasedAmount] = useState(order?.depositDecision?.releasedAmount || 0);
+  const [deductedAmount, setDeductedAmount] = useState(order?.depositDecision?.deductedAmount || 0);
+  const [depositReason, setDepositReason] = useState(order?.depositDecision?.reason || '');
 
   // New logs list
-  const [logs, setLogs] = useState(order.logs);
+  const [logs, setLogs] = useState(order?.logs || []);
   const [newLogText, setNewLogText] = useState('');
   const [dispatchEvidence, setDispatchEvidence] = useState<string[]>([]);
   const [returnEvidence, setReturnEvidence] = useState<string[]>([]);
   const [evidenceUploading, setEvidenceUploading] = useState(false);
   const [evidenceItemIndex, setEvidenceItemIndex] = useState(0);
+
   useEffect(() => {
+    if (!order) return;
     const item = order.items?.[evidenceItemIndex] as any;
     setDispatchEvidence(item?.preDispatch?.photos || []);
     setReturnEvidence(item?.returnCondition?.photos || []);
   }, [order, evidenceItemIndex]);
-  const uploadEvidence = async (files: FileList | null, stage: 'dispatch' | 'return') => { if (!files?.length) return; setEvidenceUploading(true); try { const uploaded = await Promise.all(Array.from(files).map(file => uploadFile(file, 'orders'))); const urls = uploaded.map(file => file.url); const current = stage === 'dispatch' ? dispatchEvidence : returnEvidence; const next = [...current, ...urls]; if (stage === 'dispatch') setDispatchEvidence(next); else setReturnEvidence(next); await orderApi.saveEvidence(order.id, evidenceItemIndex, stage, next); } catch (error) { toast.error(error instanceof Error ? error.message : 'Evidence upload failed'); } finally { setEvidenceUploading(false); } };
 
-  const handleSaveChanges = () => {
+  const uploadEvidence = async (files: FileList | null, stage: 'dispatch' | 'return') => { if (!files?.length || !order) return; setEvidenceUploading(true); try { const uploaded = await Promise.all(Array.from(files).map(file => uploadFile(file, 'orders'))); const urls = uploaded.map(file => file.url); const current = stage === 'dispatch' ? dispatchEvidence : returnEvidence; const next = [...current, ...urls]; if (stage === 'dispatch') setDispatchEvidence(next); else setReturnEvidence(next); await orderApi.saveEvidence(order.id, evidenceItemIndex, stage, next); } catch (error) { toast.error(error instanceof Error ? error.message : 'Evidence upload failed'); } finally { setEvidenceUploading(false); } };
+
+  const handleSaveChanges = async (overrideStatus?: string) => {
+    if (!order) return;
+    const finalStatus = overrideStatus || status;
+    if (overrideStatus) setStatus(finalStatus);
+
     const updatedOrder: Order = {
       ...order,
-      status,
+      status: finalStatus as any,
       internalNotes,
       dispatchDetails: {
         dispatchedBy,
@@ -101,22 +142,37 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
       },
       logs
     };
-    onUpdateOrder(updatedOrder);
-    toast.success("Changes saved successfully!");
+    try {
+      const saved = await orderApi.updateOrder(order.id, updatedOrder);
+      setOrder(saved);
+      onUpdateOrder(saved);
+      toast.success(overrideStatus ? `Order advanced to ${overrideStatus}` : 'Order details updated.');
+    } catch (e) {
+      toast.error('Failed to update order');
+    }
   };
 
-  const addLog = async () => {
-    if (!newLogText.trim()) return;
-    const nowStr = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    const newLog = {
-      date: nowStr,
-      message: newLogText,
-      user: "Soumya"
-    };
-    setLogs([newLog, ...logs]);
-    setNewLogText('');
-    try { await orderApi.addOrderLog(order.id, newLogText, 'Internal Note'); } catch (error) { toast.error(error instanceof Error ? error.message : 'Unable to save log entry'); }
+  const handleAddLog = async () => {
+    if (!newLogText.trim() || !order) return;
+    try {
+      const res = await orderApi.addOrderLog(order.id, newLogText);
+      setLogs(res.data?.logs || []);
+      setNewLogText('');
+      toast.success('Log added');
+    } catch (e) {
+      toast.error('Failed to add log');
+    }
   };
+
+  if (loading) {
+    return <div className="p-8 text-center text-stone-500 font-sans">Fetching real-time order data...</div>;
+  }
+  
+  if (error || !order) {
+    return <div className="p-8 text-center text-rose-500 font-sans">{error || 'Order not found'}</div>;
+  }
+
+  const { customerName, customerPhone, customerEmail, mode, products, productName } = order;
 
   const downloadInvoice = async () => {
     try {
@@ -175,6 +231,34 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
         
         {/* Save actions */}
         <div className="flex items-center gap-2">
+          {order.status === 'Confirmed' && (
+            <button onClick={() => handleSaveChanges('Dispatched')} className="px-4 py-2 bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+              Mark Dispatched
+            </button>
+          )}
+          {order.status === 'Dispatched' && (
+            <button onClick={() => handleSaveChanges('Shipped')} className="px-4 py-2 bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+              Mark Shipped
+            </button>
+          )}
+          {order.status === 'Shipped' && (
+            <button onClick={() => handleSaveChanges('Delivered')} className="px-4 py-2 bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+              Mark Delivered
+            </button>
+          )}
+          {order.status === 'Delivered' && (
+            <button onClick={() => handleSaveChanges('Return Sent')} className="px-4 py-2 bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+              Mark Return Sent
+            </button>
+          )}
+          {order.status === 'Return Sent' && (
+            <button onClick={() => handleSaveChanges('Returned')} className="px-4 py-2 bg-[#d2ae63] hover:bg-[#c49d4f] text-[#3d2d14] rounded text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+              Log Received Return
+            </button>
+          )}
+
+          <div className="h-6 w-px bg-stone-200 mx-2"></div>
+
           <select 
             value={status}
             onChange={(e) => setStatus(e.target.value as any)}
@@ -184,7 +268,7 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
             <option value="Processed">Processed</option>
           </select>
           <button 
-            onClick={handleSaveChanges}
+            onClick={() => handleSaveChanges()}
             className="px-4 py-2 bg-[#1e1412] hover:bg-[#2c1d1a] text-white text-xs font-semibold rounded cursor-pointer transition"
           >
             Save Changes
@@ -667,7 +751,7 @@ export default function OrderDetailView({ order, onBack, onUpdateOrder }: OrderD
                 />
                 <button
                   type="button"
-                  onClick={addLog}
+                  onClick={handleAddLog}
                   className="px-4 py-2 bg-[#1e1412] text-white hover:bg-[#2c1d1a] rounded text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
                 >
                   <Plus className="h-4 w-4" />

@@ -1,0 +1,237 @@
+/* src/styles/faq/faq-chrome.css */
+/* Chrome, Breadcrumbs, Toast, Floating WhatsApp, Shared Components */
+
+/* Breadcrumb (A8) */
+.crumbs {
+  padding: 18px 80px 0px;
+  font-size: 11px;
+  color: var(--hok-faq-muted);
+  letter-spacing: 0.04em;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background-color: var(--hok-faq-cream);
+  font-family: var(--hok-faq-font-sans);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.crumb-link {
+  background: none;
+  border: none;
+  color: var(--hok-faq-muted);
+  cursor: pointer;
+  font-size: 11px;
+  font-family: inherit;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.crumb-link:hover {
+  color: var(--hok-faq-charcoal);
+}
+
+.crumb-slash {
+  font-style: normal;
+  color: var(--hok-faq-gold-light);
+}
+
+.crumb-current {
+  color: var(--hok-faq-charcoal);
+}
+
+/* Applies-to dots (B10) */
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot.dot-rent {
+  background-color: var(--hok-faq-terracotta);
+}
+
+.dot.dot-pre {
+  background-color: var(--hok-faq-gold);
+}
+
+.dot.dot-both {
+  border: 1px solid currentColor;
+  background: transparent;
+}
+
+/* Floating WhatsApp Button (A9) */
+.whatsapp-float {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 200;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--hok-faq-wa-green);
+  box-shadow: var(--hok-faq-shadow-wa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: transform 0.2s var(--hok-faq-ease), box-shadow 0.2s var(--hok-faq-ease);
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.08);
+  box-shadow: var(--hok-faq-shadow-wa-hover);
+}
+
+.whatsapp-float-svg {
+  width: 26px;
+  height: 26px;
+}
+
+.whatsapp-tooltip {
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--hok-faq-charcoal);
+  color: #ffffff;
+  font-size: 10px;
+  font-family: var(--hok-faq-font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  border-radius: 1px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.whatsapp-float:hover .whatsapp-tooltip,
+.whatsapp-float:focus-visible .whatsapp-tooltip {
+  opacity: 1;
+}
+
+/* Toast Message (A10) */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background-color: var(--hok-faq-charcoal);
+  color: var(--hok-faq-warm-white);
+  padding: 13px 26px;
+  border-radius: 2px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--hok-faq-ease), transform 0.3s var(--hok-faq-ease);
+  z-index: 998;
+  white-space: nowrap;
+  font-family: var(--hok-faq-font-sans);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0px);
+}
+
+/* Shared Buttons (A11) */
+.btn-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--hok-faq-wa-green);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  padding: 15px 26px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: 1px;
+  text-decoration: none;
+  font-family: var(--hok-faq-font-sans);
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-wa:hover {
+  background-color: var(--hok-faq-wa-green-hover);
+  transform: translateY(-1px);
+}
+
+.btn-wa svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.btn-wa.sm {
+  padding: 10px 16px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.btn-wa.sm svg {
+  width: 13px;
+  height: 13px;
+}
+
+.btn-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  color: var(--hok-faq-cream);
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  cursor: pointer;
+  padding: 14px 24px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: 1px;
+  text-decoration: none;
+  font-family: var(--hok-faq-font-sans);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-line:hover {
+  border-color: var(--hok-faq-gold);
+  color: var(--hok-faq-gold);
+}
+
+.btn-line svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* Responsive adjustments for chrome */
+@media (max-width: 760px) {
+  .crumbs {
+    padding: 14px 18px 0px;
+  }
+
+  .whatsapp-float {
+    bottom: 18px;
+    right: 18px;
+  }
+
+  .toast {
+    white-space: normal;
+    max-width: calc(100% - 36px);
+    text-align: center;
+  }
+}

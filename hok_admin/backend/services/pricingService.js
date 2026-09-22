@@ -2,8 +2,9 @@ const round = (value) => Math.round(Number(value || 0) * 100) / 100;
 const dateOnly = (value) => { const d = new Date(value); d.setUTCHours(0, 0, 0, 0); return d; };
 
 export const calculateProductLine = (product, input = {}) => {
-  const mode = input.mode || (product.listingModes.includes("Rental") ? "Rental" : product.listingModes[0]);
-  if (!product.listingModes.includes(mode)) throw new Error(`${mode} mode is not enabled for ${product.name}`);
+  const productModes = (product.listingModes || []).map(m => m.charAt(0).toUpperCase() + m.slice(1).toLowerCase());
+  const mode = input.mode ? (input.mode.charAt(0).toUpperCase() + input.mode.slice(1).toLowerCase()) : (productModes.includes("Rental") ? "Rental" : productModes[0]);
+  if (!productModes.includes(mode)) throw new Error(`${mode} mode is not enabled for ${product.name}`);
   const quantity = Math.max(1, Number(input.quantity || 1));
   let durationDays = 0; let baseAmount = 0; let extensionDays = 0;
   if (mode === "Rental") {

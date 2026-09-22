@@ -12,22 +12,31 @@ export const calculateLedger = (transactions: PayoutTransaction[]): ListerLedger
   let pctSum = 0;
   let pctCount = 0;
   
-  for (const tx of transactions) {
-    tv += tx.tv;
+  for (const tx of transactions as any[]) {
+    let txTv = Number(tx.tv !== undefined ? tx.tv : (tx.transactionAmount || 0));
+    let txAmount = Number(tx.amount !== undefined ? tx.amount : (tx.listerShare || 0));
+    let txPct = Number(tx.pct !== undefined ? tx.pct : (tx.payoutPercentage || 0));
+    const txStatus = tx.status === 'Pending' ? 'Pending Approval' : tx.status;
     
-    if (tx.status === 'Paid') {
-      paid += tx.amount;
+    if (isNaN(txTv)) txTv = 0;
+    if (isNaN(txAmount)) txAmount = 0;
+    if (isNaN(txPct)) txPct = 0;
+    
+    tv += txTv;
+    
+    if (txStatus === 'Paid') {
+      paid += txAmount;
       paidCount++;
-      if (tx.type === 'Preloved Sale') sales++;
+      if (tx.type === 'Preloved Sale' || tx.mode === 'Preloved') sales++;
       else rentals++;
       
-      const pct = tx.isDamage ? (tx.stdPct || 0) : tx.pct;
+      const pct = tx.isDamage || tx.mode === 'Damage Comp.' ? (tx.stdPct || 0) : txPct;
       pctSum += pct;
       pctCount++;
     }
     
-    if (tx.status === 'Pending Approval' || tx.status === 'Approved' || tx.status === 'On Hold') {
-      pending += tx.amount;
+    if (txStatus === 'Pending Approval' || txStatus === 'Approved' || txStatus === 'On Hold') {
+      pending += txAmount;
     }
   }
   
@@ -59,19 +68,19 @@ export const calculateAttentionFlags = (
   }
   
   // Flag 2: Pending payouts
-  const pendingCount = pendingPayouts.filter(t => t.status === 'Pending Approval').length;
+  const pendingCount = pendingPayouts.filter(t => t.status === 'Pending Approval' || t.status === 'Pending').length;
   if (pendingCount > 0) {
     flags.push({
       text: `${pendingCount} payout${pendingCount > 1 ? 's' : ''} to approve`,
       door: 'payout',
-      target: pendingPayouts.find(t => t.status === 'Pending Approval')?.id,
+      target: pendingPayouts.find(t => t.status === 'Pending Approval' || t.status === 'Pending')?.id,
     });
   }
   
   // Flag 3: Bank unverified with money in flight
   if (!lister.bank?.verified && lister.status !== 'Pending Review' && lister.status !== 'Rejected') {
     const hasPending = pendingPayouts.some(t => 
-      t.status === 'Pending Approval' || t.status === 'Approved' || t.status === 'On Hold'
+      t.status === 'Pending Approval' || t.status === 'Pending' || t.status === 'Approved' || t.status === 'On Hold'
     );
     if (hasPending) {
       flags.push({

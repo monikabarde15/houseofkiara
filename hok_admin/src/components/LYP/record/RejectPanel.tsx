@@ -29,15 +29,21 @@ export const RejectPanel: React.FC<RejectPanelProps> = ({
     return `Hi ${firstName}, thank you for offering ${submission.piece} to House of Kaira. We took a careful look — ${code}${note}. We'd truly love to see the next one.`;
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!reasonCode) return;
     setLoading(true);
     
-    // In production, this would call the API
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const { submissionService } = await import('../services/submissionService');
+      const { toast } = await import('react-hot-toast');
+      await submissionService.rejectSubmission(submission.subid, 'Admin', reasonCode, optionalNote);
+      toast.success('Submission rejected');
       onSuccess();
-    }, 500);
+    } catch (err: any) {
+      import('react-hot-toast').then(({ toast }) => toast.error(err.message || 'Failed to reject'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

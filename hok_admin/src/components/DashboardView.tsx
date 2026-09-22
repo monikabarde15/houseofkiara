@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ShoppingBag, 
-  TrendingUp, 
-  Package, 
-  AlertCircle, 
+import {
+  ShoppingBag,
+  TrendingUp,
+  Package,
+  AlertCircle,
   ArrowRight,
-  PlusCircle, 
-  Users, 
-  CheckSquare, 
-  Truck, 
+  PlusCircle,
+  Users,
+  CheckSquare,
+  Truck,
   BarChart3,
   Check,
   X
 } from 'lucide-react';
 import { Order, ListerSubmission } from '../types';
+import { apiRequest } from '../services/apiClient';
 
 interface DashboardViewProps {
   orders: Order[];
@@ -42,9 +43,9 @@ export default function DashboardView({
     const fetchDashboardData = async () => {
       try {
         const [ordRes, subRes, prodRes] = await Promise.all([
-          fetch('http://localhost:5000/api/orders').then(r => r.json()).catch(() => ({ data: [] })),
-          fetch('http://localhost:5000/api/submissions').then(r => r.json()).catch(() => ({ data: [] })),
-          fetch('http://localhost:5000/api/products').then(r => r.json()).catch(() => ({ data: [] })),
+          apiRequest('/orders').catch(() => ({ data: [] })),
+          apiRequest('/submissions').catch(() => ({ data: [] })),
+          apiRequest('/products').catch(() => ({ data: [] })),
         ]);
         if (ordRes.data && ordRes.data.length > 0) setDbOrders(ordRes.data);
         if (subRes.data && subRes.data.length > 0) setDbSubmissions(subRes.data);
@@ -60,8 +61,8 @@ export default function DashboardView({
   const displaySubmissions = dbSubmissions.length > 0 ? dbSubmissions : listerSubmissions;
   const displayProductCount = activeListingsCount || dbProductCount || 1;
 
-  // Filter out blank/invalid orders & map fallback details
-  const validOrders = displayOrders.map((o: any) => {
+  // Remove fallback details since data is now from real DB
+  const validOrders = displayOrders.filter(o => o.id || o.orderId || o.orderNumber).map((o: any) => {
     const rawId = o.id || o.orderId || o.orderNumber;
     const formattedId = rawId?.startsWith('HOK-ORD-')
       ? rawId
@@ -70,9 +71,7 @@ export default function DashboardView({
     return {
       ...o,
       id: formattedId,
-      customerName: o.customerName || 'Riya Sharma',
-      productName: o.productName && o.productName !== 'N/A' ? o.productName : 'test',
-      amount: Number(o.amount || o.totalAmount || o.orderValue || 8000),
+      amount: Number(o.amount || o.totalAmount || o.orderValue || 0),
       status: o.status || 'Confirmed'
     };
   });
@@ -97,7 +96,7 @@ export default function DashboardView({
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-        <div 
+        <div
           onClick={() => setView('orders')}
           className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm cursor-pointer hover:border-[#c5a880] hover:shadow transition-all group"
         >
@@ -117,7 +116,7 @@ export default function DashboardView({
           </div>
         </div>
 
-        <div 
+        <div
           onClick={() => setView('reports')}
           className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm cursor-pointer hover:border-[#c5a880] hover:shadow transition-all group"
         >
@@ -139,7 +138,7 @@ export default function DashboardView({
           </div>
         </div>
 
-        <div 
+        <div
           onClick={() => setView('products')}
           className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm cursor-pointer hover:border-[#c5a880] hover:shadow transition-all group"
         >
@@ -159,7 +158,7 @@ export default function DashboardView({
           </div>
         </div>
 
-        <div 
+        <div
           onClick={() => setView('listers')}
           className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm cursor-pointer hover:border-[#c5a880] hover:shadow transition-all group"
         >
@@ -182,15 +181,15 @@ export default function DashboardView({
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* Left Col - 2 spans */}
         <div className="lg:col-span-2 space-y-6">
-          
+
           {/* Recent Orders Table */}
           <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-stone-100 flex justify-between items-center bg-white">
               <h3 className="font-serif font-bold text-stone-900 text-sm tracking-wide">Recent Orders</h3>
-              <button 
+              <button
                 onClick={() => setView('orders')}
                 className="text-xs text-[#c5a880] hover:text-[#b4936a] font-medium flex items-center gap-1 cursor-pointer transition-colors"
               >
@@ -198,7 +197,7 @@ export default function DashboardView({
                 <ArrowRight className="h-3.5 w-3.5" />
               </button>
             </div>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
@@ -212,8 +211,8 @@ export default function DashboardView({
                 </thead>
                 <tbody className="divide-y divide-stone-100 text-stone-600">
                   {validOrders.slice(0, 4).map((order) => (
-                    <tr 
-                      key={order.id} 
+                    <tr
+                      key={order.id}
                       onClick={() => {
                         setSelectedOrderId(order.id);
                         setView(`order_detail:${order.id}`);
@@ -225,13 +224,12 @@ export default function DashboardView({
                       <td className="px-5 py-3.5 max-w-[180px] truncate">{order.productName}</td>
                       <td className="px-5 py-3.5 font-semibold text-stone-800">₹{Number(order.amount || 0).toLocaleString('en-IN')}</td>
                       <td className="px-5 py-3.5">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase ${
-                          order.status === 'Returned' || order.status === 'Complete' || order.status === 'Processed'
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase ${order.status === 'Returned' || order.status === 'Complete' || order.status === 'Processed'
                             ? 'bg-green-50 text-green-700 border border-green-100'
                             : order.status === 'Shipped' || order.status === 'Dispatched'
-                            ? 'bg-blue-50 text-blue-700 border border-blue-100'
-                            : 'bg-amber-50 text-amber-700 border border-amber-100'
-                        }`}>
+                              ? 'bg-blue-50 text-blue-700 border border-blue-100'
+                              : 'bg-amber-50 text-amber-700 border border-amber-100'
+                          }`}>
                           {order.status}
                         </span>
                       </td>
@@ -252,7 +250,7 @@ export default function DashboardView({
                 </span>
               </div>
               {pendingSubmissions.length > 0 && (
-                <button 
+                <button
                   onClick={() => pendingSubmissions.forEach(s => onApproveSubmission(s.id))}
                   className="text-xs text-[#c5a880] hover:text-[#b4936a] font-medium cursor-pointer"
                 >
@@ -272,7 +270,7 @@ export default function DashboardView({
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-stone-800 text-xs">{sub.listerName}</span>
-                        <span className="text-[10px] text-stone-400 font-mono">Submitted {new Date(sub.submittedDate).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'})}</span>
+                        <span className="text-[10px] text-stone-400 font-mono">Submitted {new Date(sub.submittedDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                       </div>
                       <p className="text-xs text-stone-500 font-serif">
                         {sub.productName} ({sub.category})
@@ -282,7 +280,7 @@ export default function DashboardView({
                       </p>
                     </div>
                     <div className="flex items-center gap-2 mt-3 sm:mt-0 shrink-0">
-                      <button 
+                      <button
                         onClick={() => {
                           setView(`lister_detail:${sub.listerId || 'LST-003'}`);
                         }}
@@ -290,14 +288,14 @@ export default function DashboardView({
                       >
                         View Profile
                       </button>
-                      <button 
+                      <button
                         onClick={() => onApproveSubmission(sub.id)}
                         className="p-1.5 bg-green-600 hover:bg-green-700 text-white rounded transition cursor-pointer"
                         title="Approve"
                       >
                         <Check className="h-4 w-4" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => onRejectSubmission(sub.id)}
                         className="p-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded transition cursor-pointer"
                         title="Reject"
@@ -314,49 +312,49 @@ export default function DashboardView({
 
         {/* Right Col - 1 span */}
         <div className="space-y-6">
-          
+
           {/* Quick Actions */}
           <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm p-5 space-y-4">
             <h3 className="font-serif font-bold text-stone-900 text-sm border-b border-stone-100 pb-3 tracking-wide">
               Quick Actions
             </h3>
             <div className="grid grid-cols-2 gap-3">
-              <button 
+              <button
                 onClick={() => setView('products')}
                 className="flex flex-col items-center justify-center p-4 bg-[#fcf9f5] border border-stone-100 rounded hover:border-[#c5a880] transition group text-center cursor-pointer"
               >
                 <PlusCircle className="h-5 w-5 text-stone-400 group-hover:text-[#c5a880] transition" />
                 <span className="text-xs font-medium text-stone-700 mt-2">Add Product</span>
               </button>
-              <button 
+              <button
                 onClick={() => setView('orders')}
                 className="flex flex-col items-center justify-center p-4 bg-[#fcf9f5] border border-stone-100 rounded hover:border-[#c5a880] transition group text-center cursor-pointer"
               >
                 <ShoppingBag className="h-5 w-5 text-stone-400 group-hover:text-[#c5a880] transition" />
                 <span className="text-xs font-medium text-stone-700 mt-2">All Orders</span>
               </button>
-              <button 
+              <button
                 onClick={() => setView('listers')}
                 className="flex flex-col items-center justify-center p-4 bg-[#fcf9f5] border border-stone-100 rounded hover:border-[#c5a880] transition group text-center cursor-pointer"
               >
                 <Users className="h-5 w-5 text-stone-400 group-hover:text-[#c5a880] transition" />
                 <span className="text-xs font-medium text-stone-700 mt-2">Review Listers</span>
               </button>
-              <button 
+              <button
                 onClick={() => setView('offers')}
                 className="flex flex-col items-center justify-center p-4 bg-[#fcf9f5] border border-stone-100 rounded hover:border-[#c5a880] transition group text-center cursor-pointer"
               >
                 <CheckSquare className="h-5 w-5 text-stone-400 group-hover:text-[#c5a880] transition" />
                 <span className="text-xs font-medium text-stone-700 mt-2">Offers Board</span>
               </button>
-              <button 
+              <button
                 onClick={() => setView('dispatch')}
                 className="flex flex-col items-center justify-center p-4 bg-[#fcf9f5] border border-stone-100 rounded hover:border-[#c5a880] transition group text-center cursor-pointer"
               >
                 <Truck className="h-5 w-5 text-stone-400 group-hover:text-[#c5a880] transition" />
                 <span className="text-xs font-medium text-stone-700 mt-2">Today's Dispatch</span>
               </button>
-              <button 
+              <button
                 onClick={() => setView('reports')}
                 className="flex flex-col items-center justify-center p-4 bg-[#fcf9f5] border border-stone-100 rounded hover:border-[#c5a880] transition group text-center cursor-pointer"
               >
@@ -366,40 +364,62 @@ export default function DashboardView({
             </div>
           </div>
 
-          {/* Activity Feed */}
+          {/* Action Required Feed */}
           <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm p-5 space-y-4">
-            <h3 className="font-serif font-bold text-stone-900 text-sm border-b border-stone-100 pb-3 tracking-wide">
-              Activity Feed
+            <h3 className="font-serif font-bold text-stone-900 text-sm border-b border-stone-100 pb-3 tracking-wide flex justify-between items-center">
+              <span>Action Required Today</span>
+              <span className="bg-rose-50 text-rose-600 text-[10px] px-2 py-0.5 rounded-full font-bold">Priority</span>
             </h3>
             <div className="space-y-4 text-xs font-sans">
-              {validOrders.length === 0 && pendingSubmissions.length === 0 ? (
-                <p className="text-stone-400 text-center py-4 text-xs">No recent activity logged in database.</p>
-              ) : (
-                <>
-                  {validOrders.slice(0, 3).map((o) => (
-                    <div key={`act-ord-${o.id}`} className="flex gap-3 items-start">
-                      <div className="h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                      <div>
-                        <p className="text-stone-700">
-                          <span className="font-medium text-stone-800">New rental</span> - {o.id} by {o.customerName}
-                        </p>
-                        <span className="text-[10px] text-stone-400">Order date: {o.startDate || 'Recent'}</span>
+              {(() => {
+                const pendingDeposits = validOrders.filter((o: any) => o.mode === 'Rental' && o.status === 'Confirmed' && o.deposit > 0 && o.depositStatus !== 'Held');
+                const pendingDispatches = validOrders.filter((o: any) => o.status === 'Confirmed' && o.depositStatus === 'Held');
+                const pendingReturns = validOrders.filter((o: any) => o.status === 'Shipped' || o.status === 'Delivered');
+
+                if (pendingDeposits.length === 0 && pendingDispatches.length === 0 && pendingReturns.length === 0) {
+                  return <p className="text-stone-400 text-center py-4 text-xs">All caught up for today! 🎉</p>;
+                }
+
+                return (
+                  <>
+                    {pendingDeposits.slice(0, 3).map((o: any) => (
+                      <div key={`act-dep-${o.id}`} className="flex gap-3 items-start cursor-pointer hover:bg-stone-50 p-2 -mx-2 rounded transition" onClick={() => { setSelectedOrderId(o.id); setView(`order_detail:${o.id}`); }}>
+                        <div className="h-2 w-2 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                        <div>
+                          <p className="text-stone-700">
+                            <span className="font-bold text-amber-600">Collect Deposit</span> - ₹{Number(o.deposit).toLocaleString('en-IN')} from {o.customerName}
+                          </p>
+                          <span className="text-[10px] text-stone-400 font-mono">{o.id} • Click to open order</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                  {pendingSubmissions.slice(0, 3).map((sub) => (
-                    <div key={`act-sub-${sub.id}`} className="flex gap-3 items-start">
-                      <div className="h-2 w-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-                      <div>
-                        <p className="text-stone-700">
-                          <span className="font-medium text-stone-800">New listing submitted</span> - {sub.productName} by {sub.listerName}
-                        </p>
-                        <span className="text-[10px] text-stone-400">Pending review</span>
+                    ))}
+
+                    {pendingDispatches.slice(0, 3).map((o: any) => (
+                      <div key={`act-disp-${o.id}`} className="flex gap-3 items-start cursor-pointer hover:bg-stone-50 p-2 -mx-2 rounded transition" onClick={() => { setSelectedOrderId(o.id); setView(`order_detail:${o.id}`); }}>
+                        <div className="h-2 w-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                        <div>
+                          <p className="text-stone-700">
+                            <span className="font-bold text-blue-600">Needs Dispatch</span> - {o.productName}
+                          </p>
+                          <span className="text-[10px] text-stone-400 font-mono">{o.id} • Deposit held</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </>
-              )}
+                    ))}
+
+                    {pendingReturns.slice(0, 3).map((o: any) => (
+                      <div key={`act-ret-${o.id}`} className="flex gap-3 items-start cursor-pointer hover:bg-stone-50 p-2 -mx-2 rounded transition" onClick={() => { setSelectedOrderId(o.id); setView(`order_detail:${o.id}`); }}>
+                        <div className="h-2 w-2 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                        <div>
+                          <p className="text-stone-700">
+                            <span className="font-bold text-rose-600">Awaiting Return</span> - {o.customerName}
+                          </p>
+                          <span className="text-[10px] text-stone-400 font-mono">{o.id} • Currently {o.status}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                );
+              })()}
             </div>
           </div>
 
