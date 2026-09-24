@@ -1,0 +1,79 @@
+/* src/components/LYP/components/styles/LYPTable.css */
+
+.lyp-table-loading {
+  padding: 32px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.lyp-table-empty {
+  padding: 20px;
+}
+
+.lyp-table-action {
+  text-align: right;
+}
+
+.dt {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dt th {
+  padding: 7px 13px;
+  text-align: left;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--cb);
+  background: var(--canvas);
+  white-space: nowrap;
+}
+
+.dt td {
+  padding: 10px 13px;
+  border-bottom: 1px solid var(--cb);
+  font-size: 12px;
+  vertical-align: top;
+}
+
+.dt tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dt tbody tr.clickable {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.dt tbody tr.clickable:hover {
+  background: var(--gold-pale);
+}
+
+.twrap {
+  overflow-x: auto;
+}
+
+.empty-state-boxed {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 24px 18px;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: var(--r);
+  background: var(--canvas);
+  line-height: 1.6;
+}
+
+.qlnk {
+  color: var(--gold);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.qlnk:hover {
+  text-decoration: underline;
+}

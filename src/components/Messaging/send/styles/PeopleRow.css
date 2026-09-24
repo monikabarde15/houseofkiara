@@ -1,0 +1,67 @@
+/* send/styles/PeopleRow.css */
+.msg-people-row {
+  display: flex;
+  align-items: center;
+  gap: var(--msg-spacing-9);
+  padding: var(--msg-spacing-8) var(--msg-spacing-11);
+  border-bottom: var(--msg-border-standard);
+  cursor: pointer;
+  transition: background 0.07s ease;
+}
+
+.msg-people-row:last-child {
+  border-bottom: none;
+}
+
+.msg-people-row:hover:not(.msg-people-row--unavailable) {
+  background: var(--msg-gold-pale);
+}
+
+.msg-people-row--selected {
+  background: #F4F7EF;
+}
+
+.msg-people-row--unavailable {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: var(--msg-canvas);
+}
+
+.msg-people-row--unavailable:hover {
+  background: var(--msg-canvas);
+}
+
+.msg-people-checkbox {
+  width: 13px;
+  height: 13px;
+  accent-color: var(--msg-gold);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.msg-people-checkbox:disabled {
+  cursor: not-allowed;
+}
+
+.msg-people-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.msg-people-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--msg-charcoal);
+}
+
+.msg-people-summary {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: 1px;
+}
+
+.msg-people-unavailable-reason {
+  flex-shrink: 0;
+  font-size: 9px !important;
+}

@@ -1,0 +1,113 @@
+.dispatch-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #ece7de;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.dispatch-card-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: #f2ece1;
+  border-radius: 6px;
+  margin-right: 18px;
+  flex-shrink: 0;
+}
+
+.dispatch-card-date .day {
+  font-size: 17px;
+  font-weight: 700;
+  color: #2b2b2b;
+  line-height: 1.1;
+}
+
+.dispatch-card-date .month {
+  font-size: 10px;
+  font-weight: 600;
+  color: #8a8478;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dispatch-card-info {
+  flex: 1;
+}
+
+.dispatch-card-info h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f1f1f;
+  margin: 0 0 6px 0;
+}
+
+.dispatch-card-info p {
+  font-size: 13px;
+  color: #7d786e;
+  margin: 2px 0;
+}
+
+.dispatch-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.dispatch-card-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-whatsapp {
+  background: #25b561;
+  color: #ffffff;
+  border: none;
+}
+.btn-whatsapp:hover {
+  background: #1fa055;
+}
+
+.btn-outline {
+  background: #ffffff;
+  color: #2b2b2b;
+  border: 1px solid #d8d2c7;
+}
+.btn-outline:hover {
+  background: #f7f5f1;
+}
+
+.btn-mark-dispatched {
+  background: #b8925a;
+  color: #ffffff;
+  border: none;
+}
+.btn-mark-dispatched:hover {
+  background: #a67f4a;
+}
+.btn-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #25b561;
+  color: #ffffff;
+  border: none;
+}
+.btn-whatsapp:hover {
+  background: #1fa055;
+}

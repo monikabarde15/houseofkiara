@@ -1,0 +1,12 @@
+/* sendlog/styles/SendLogTable.css */
+.msg-sendlog-table-wrapper {
+  overflow-x: auto;
+}
+
+.msg-sendlog-loading,
+.msg-sendlog-empty {
+  padding: var(--msg-spacing-22);
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--msg-muted);
+}

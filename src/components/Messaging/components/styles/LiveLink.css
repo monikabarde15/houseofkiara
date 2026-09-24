@@ -1,0 +1,14 @@
+/* components/styles/LiveLink.css */
+.msg-live-link {
+  display: inline-block;
+  color: var(--msg-gold);
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 1px dotted var(--msg-gold-light);
+  transition: all 0.15s ease;
+}
+
+.msg-live-link:hover {
+  color: var(--msg-terracotta);
+  border-bottom-color: var(--msg-terracotta);
+}

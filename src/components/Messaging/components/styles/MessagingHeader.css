@@ -1,0 +1,31 @@
+/* components/styles/MessagingHeader.css */
+.msg-header {
+  margin-bottom: var(--msg-spacing-18);
+}
+
+.msg-header-eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--msg-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  margin-bottom: var(--msg-spacing-4);
+}
+
+.msg-header-title {
+  font-family: var(--msg-font-display);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--msg-charcoal);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.msg-header-subtitle {
+  font-size: 11.5px;
+  color: var(--msg-muted);
+  line-height: 1.5;
+  max-width: 560px;
+  margin-top: var(--msg-spacing-3);
+  margin-bottom: 0;
+}

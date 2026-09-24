@@ -1,0 +1,70 @@
+/* src/components/Listers/tabs/PayoutHistory/styles/PayoutTable.css */
+
+.payout-table-card {
+  margin-bottom: 7px;
+}
+
+.payout-table-card .card-bd {
+  padding: 16px;
+}
+
+.payout-table-empty {
+  font-size: 11px;
+  color: #8A7E72;
+  padding: 4px 0;
+}
+
+.payout-order-id {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #C9A96E;
+  font-weight: 500;
+}
+
+.payout-product-link {
+  font-size: 12px;
+  color: #C9A96E;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.payout-product-link:hover {
+  text-decoration: underline;
+}
+
+.payout-amount-paid {
+  color: #6B7E5A;
+  font-weight: 600;
+}
+
+.payout-amount-pending {
+  color: #B85C38;
+  font-weight: 600;
+}
+
+.payout-amount-damage {
+  color: #6B3FA0;
+  font-weight: 600;
+}
+
+.payout-action-cell {
+  text-align: right;
+}
+
+.payout-row-clickable {
+  cursor: pointer;
+}
+
+.damage-tag {
+  background: rgba(139, 104, 208, 0.15);
+  color: #6B3FA0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.btn-xs {
+  padding: 3px 8px;
+  font-size: 9.5px;
+}

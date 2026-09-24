@@ -1,0 +1,114 @@
+/* ============================================================
+   Notifications — Alert History
+   §26.3
+   ============================================================ */
+
+.ntf-history {
+  border: 1px solid #EDE6DC;
+  border-radius: 4px;
+  background: #FFFFFF;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.ntf-history-hd {
+  padding: 8px 14px;
+
+  background: #F7F4EF;
+  border-bottom: 1px solid #EDE6DC;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+
+  color: #8A7E72;
+}
+
+.ntf-history-intro {
+  padding: 9px 14px 10px;
+
+  font-size: 11px;
+  color: #8A7E72;
+  line-height: 1.6;
+
+  border-bottom: 1px solid #EDE6DC;
+}
+
+.ntf-history-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    68px
+    68px
+    78px
+    78px;
+
+  column-gap: 0;
+
+  align-items: center;
+}
+
+.ntf-history-grid > div {
+  min-width: 0;
+  padding: 8px 14px;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.ntf-history-grid > div:not(:first-child) {
+  text-align: right;
+}
+
+.ntf-history-grid--head {
+  background: #F7F4EF;
+
+  font-size: 9px;
+  font-weight: 700;
+  color: #8A7E72;
+
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.ntf-history-grid--head > div {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.ntf-history-row {
+  border-top: 1px solid #EDE6DC;
+
+  font-size: 10.5px;
+  color: #8A7E72;
+}
+
+.ntf-history-row:hover {
+  background: #F7F4EF;
+}
+
+.ntf-history-alert {
+  color: #1A1612;
+  font-size: 11px;
+  font-weight: 500;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ntf-history-still {
+  color: #B85C38;
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .ntf-history {
+    overflow-x: auto;
+  }
+
+  .ntf-history-grid {
+    min-width: 520px;
+  }
+}

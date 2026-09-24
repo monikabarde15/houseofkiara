@@ -1,0 +1,6 @@
+/* send/styles/QuickLists.css */
+.msg-quicklists {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--msg-spacing-5);
+}

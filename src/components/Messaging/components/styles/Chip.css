@@ -1,0 +1,64 @@
+.msg-chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 2px;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Channel variant */
+.msg-chip--channel {
+  padding: 2px 7px;
+  background-color: var(--canvas, #F7F4EF);
+  color: var(--muted-light, #B4A99E);
+  border: 1px solid var(--cb, #EDE6DC);
+  text-decoration: line-through;
+}
+
+.msg-chip--channel.msg-chip--active {
+  background-color: #EAF0E5;
+  color: #3D6B30;
+  border-color: rgba(107, 126, 90, 0.3);
+  text-decoration: none;
+}
+
+/* Variable variant */
+.msg-chip--variable {
+  padding: 3px 7px;
+  margin: 0 4px 4px 0;
+  border: 1px solid var(--ib, #DDD5C8);
+  background-color: var(--input-bg, #FFFEFB);
+  font-family: monospace;
+  font-size: 10px;
+  color: #6B5730;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.msg-chip--variable:hover {
+  border-color: var(--gold, #C9A96E);
+  background-color: var(--gold-pale, #F5EFE4);
+}
+
+/* Document variant */
+.msg-chip--document {
+  padding: 3px 9px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--gold, #C9A96E);
+  font-size: 10.5px;
+  color: #6B5730;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.msg-chip--document:hover {
+  background-color: var(--gold, #C9A96E);
+  color: #FFFFFF;
+}
+
+.msg-chip--document.msg-chip--crossed {
+  opacity: 0.45;
+  text-decoration: line-through;
+  border-style: dashed;
+}

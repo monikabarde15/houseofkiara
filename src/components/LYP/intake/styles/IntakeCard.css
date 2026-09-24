@@ -1,0 +1,105 @@
+/* src/components/LYP/intake/styles/IntakeCard.css */
+
+.intake-card {
+  margin-bottom: 14px;
+}
+
+.intake-close {
+  font-size: 16px;
+  color: var(--muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0 4px;
+}
+
+.intake-close:hover {
+  color: var(--charcoal);
+}
+
+.intake-error {
+  padding: 8px 12px;
+  background: #FDF1EE;
+  border: 1px solid #F5C5B5;
+  border-radius: var(--r);
+  color: var(--terra);
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+.intake-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 13px;
+  flex-wrap: wrap;
+}
+
+.intake-helper {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.card-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--cb);
+  gap: 8px;
+}
+
+.card-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.card-sub {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.card-bd {
+  padding: 16px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 1px;
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--charcoal);
+  border-color: var(--gold);
+  font-weight: 600;
+}
+
+.btn-gold:hover {
+  background: #B89058;
+  border-color: #B89058;
+}
+
+.btn-gold:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 10.5px;
+}

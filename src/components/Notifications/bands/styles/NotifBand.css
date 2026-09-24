@@ -1,0 +1,60 @@
+/* src/components/Notifications/bands/styles/NotifBand.css */
+
+/* §7.2 — band container and header */
+.ntf-band {
+  margin-bottom: 15px;
+  border: 1px solid #EDE6DC;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+
+.ntf-band-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #F7F4EF;
+  border-bottom: 1px solid #EDE6DC;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}
+.ntf-band-hd--go { cursor: pointer; }
+.ntf-band-hd--go:hover { filter: brightness(.97); }
+
+.ntf-band--today .ntf-band-hd { background: #FDF1EE; color: #7A2E1D; }
+.ntf-band--waiting .ntf-band-hd { background: #F5EFE4; color: #6B5730; }
+.ntf-band--them .ntf-band-hd { background: #EEF3EA; color: #3D6B30; }
+/* --know reuses the default canvas header colours already set above */
+
+.ntf-band-n {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.ntf-only {
+  margin-left: 8px;
+  font-size: 8.5px;
+  letter-spacing: .04em;
+  opacity: .75;
+  text-transform: none;
+}
+
+.ntf-band-s {
+  padding: 7px 14px;
+  font-size: 10.5px;
+  color: #8A7E72;
+  line-height: 1.6;
+  background: #FFFEFB;
+  border-bottom: 1px solid #EDE6DC;
+}
+
+/* §9.6 — folded summary row (reuses the "clear" row look) */
+.ntf-row--clear .ntf-t--muted,
+.ntf-row--clear .ntf-w--muted {
+  color: #8A7E72;
+}

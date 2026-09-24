@@ -1,0 +1,119 @@
+/* src/components/LYP/record/styles/ActionsRow.css */
+
+.actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 13px;
+}
+
+.actions-row-spacer {
+  flex: 1;
+}
+
+.actions-withdraw {
+  font-size: 10.5px;
+  color: var(--muted);
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.actions-withdraw:hover {
+  color: var(--charcoal);
+}
+
+.actions-expire {
+  font-size: 10.5px;
+  color: var(--terra);
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 4px 0;
+  margin-left: 11px;
+}
+
+.actions-expire:hover {
+  color: #8A2E1D;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 1px;
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--charcoal);
+  border-color: var(--gold);
+  font-weight: 600;
+}
+
+.btn-gold:hover {
+  background: #B89058;
+  border-color: #B89058;
+}
+
+.btn-sec {
+  background: var(--card);
+  color: var(--charcoal);
+  border-color: var(--border);
+}
+
+.btn-sec:hover {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.btn-danger {
+  background: #FDF1EE;
+  color: var(--terra);
+  border-color: #F5C5B5;
+}
+
+.btn-danger:hover {
+  background: #F5DDD7;
+  border-color: var(--terra);
+}
+
+.btn-wa {
+  background: #25D366;
+  border-color: #20BD5B;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.btn-wa:hover {
+  background: #1DAD57;
+  border-color: #1DAD57;
+}
+
+.btn-wa svg {
+  stroke: #FFFFFF;
+}
+
+.btn-wa:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 10.5px;
+}

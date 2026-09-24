@@ -1,0 +1,100 @@
+/* editor/styles/EditorWordingCard.css */
+.msg-editor-wording-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: var(--msg-spacing-13);
+  align-items: start;
+  margin-top: var(--msg-spacing-11);
+}
+
+.msg-editor-wording-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--msg-spacing-11);
+}
+
+.msg-editor-wording-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--msg-spacing-11);
+}
+
+.msg-editor-sent-on {
+  margin-top: var(--msg-spacing-4);
+}
+
+.msg-editor-sent-on-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--msg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: var(--msg-spacing-4);
+}
+
+.msg-editor-sent-on-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--msg-spacing-7);
+}
+
+.msg-editor-sent-on-hint {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-4);
+  line-height: 1.4;
+}
+
+.msg-editor-sent-on-hint--required {
+  color: #7A2E1D;
+}
+
+.msg-editor-wording-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--msg-spacing-16);
+  border-top: var(--msg-border-standard);
+  margin-top: var(--msg-spacing-16);
+}
+
+.msg-editor-diagnostic {
+  font-size: 10px;
+  color: var(--msg-muted);
+}
+
+.msg-editor-diagnostic-clean {
+  color: var(--msg-sage);
+  font-weight: 600;
+}
+
+.msg-editor-footer-actions {
+  display: flex;
+  gap: var(--msg-spacing-7);
+}
+
+.msg-editor-previews {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--msg-spacing-13);
+  margin-top: var(--msg-spacing-13);
+}
+
+.msg-preview-header-hint {
+  font-size: 10.5px;
+  color: var(--msg-muted);
+  font-weight: normal;
+}
+
+.msg-email-preview-col,
+.msg-whatsapp-preview-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.msg-email-preview-hints {
+  margin-top: var(--msg-spacing-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--msg-spacing-4);
+}

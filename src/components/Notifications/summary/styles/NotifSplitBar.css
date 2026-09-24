@@ -1,0 +1,77 @@
+/* src/components/Notifications/summary/styles/NotifSplitBar.css */
+
+/* §6.1 — container, joined to the card above */
+.ntf-split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 10px 17px;
+  background: #F7F4EF;
+  border: 1px solid #EDE6DC;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  margin: -15px 0 15px;
+}
+
+/* §6.2 — left arithmetic */
+.ntf-split-l {
+  font-size: 11px;
+  color: #8A7E72;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.ntf-split-n {
+  font-weight: 700;
+  color: #1A1612;
+  margin-right: 3px;
+}
+.ntf-split-n--hot { color: #7A2E1D; }
+.ntf-split-n--warm { color: #8B6A1E; }
+.ntf-split-n--cool { color: #3D6B30; }
+.ntf-split-sep {
+  margin: 0 9px;
+  color: #B4A99E;
+}
+
+/* §6.3 — put-down link */
+.ntf-snz {
+  margin-left: 11px;
+  font-size: 10.5px;
+  color: #C9A96E;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+.ntf-snz:hover { color: #B85C38; }
+
+/* §6.4 — right, person chips */
+.ntf-split-r {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* §28.3 — the clickable figure control */
+.ntf-fig {
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 2px 5px;
+  margin: 0 -1px;
+  transition: background .1s;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 11px;
+  color: #8A7E72;
+}
+.ntf-fig:hover { background: #FFFFFF; }
+.ntf-fig--on {
+  background: #FFFFFF;
+  box-shadow: inset 0 0 0 1px #C9A96E;
+}

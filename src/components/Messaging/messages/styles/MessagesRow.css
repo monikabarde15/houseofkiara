@@ -1,0 +1,81 @@
+/* messages/styles/MessagesRow.css */
+.msg-row {
+  cursor: pointer;
+  transition: background 0.07s ease;
+}
+
+.msg-row:hover {
+  background: var(--msg-gold-pale);
+}
+
+.msg-row-message-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--msg-spacing-2);
+}
+
+.msg-row-message-name-line {
+  font-weight: 700;
+  color: var(--msg-charcoal);
+  font-size: 12.5px;
+  display: flex;
+  align-items: center;
+  gap: var(--msg-spacing-2);
+  flex-wrap: wrap;
+}
+
+.msg-row-message-name {
+  font-weight: 700;
+  color: var(--msg-charcoal);
+}
+
+.msg-row-wording-count {
+  font-size: 10px;
+  color: var(--msg-muted);
+  font-weight: 400;
+}
+
+.msg-row-yours-pill {
+  font-size: 9px !important;
+}
+
+.msg-row-trigger {
+  font-size: 10px;
+  color: var(--msg-muted);
+}
+
+.msg-row-subject {
+  font-size: 10px;
+  color: var(--msg-charcoal);
+  opacity: 0.62;
+  margin-top: var(--msg-spacing-3);
+}
+
+.msg-row-audience {
+  font-size: 12px;
+  color: var(--msg-charcoal);
+  margin-bottom: var(--msg-spacing-3);
+}
+
+.msg-row-channels {
+  display: flex;
+  gap: var(--msg-spacing-4);
+  flex-wrap: wrap;
+}
+
+.msg-row-date {
+  font-size: 11px;
+  color: var(--msg-charcoal);
+}
+
+.msg-row-editor {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-2);
+}
+
+.msg-row-actions {
+  display: flex;
+  gap: var(--msg-spacing-5);
+  white-space: nowrap;
+}

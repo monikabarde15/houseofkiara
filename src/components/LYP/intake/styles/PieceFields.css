@@ -1,0 +1,122 @@
+/* src/components/LYP/intake/styles/PieceFields.css */
+
+.piece-fields {
+  margin-top: 10px;
+}
+
+.piece-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+.fld {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.fld-full {
+  margin-top: 11px;
+}
+
+.fld-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: 4px;
+}
+
+.fld-input {
+  padding: 7px 10px;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  font-size: 12px;
+  font-family: var(--sans);
+  color: var(--charcoal);
+  background: var(--ibg);
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.fld-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.3);
+}
+
+.fld-error {
+  border-color: var(--terra);
+}
+
+.fld-error:focus {
+  border-color: var(--terra);
+  box-shadow: 0 0 0 3px rgba(184, 92, 56, 0.2);
+}
+
+.fld-error-text {
+  font-size: 10px;
+  color: var(--terra);
+  margin-top: 3px;
+}
+
+.fhint {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.designer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  padding: 2px 8px;
+  border-radius: var(--r);
+  line-height: 1.5;
+}
+
+.tchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  padding: 2px 8px;
+  border-radius: var(--r);
+  border: 1px solid var(--cb);
+  background: var(--card);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.tchip.ok {
+  border-color: rgba(107, 126, 90, 0.4);
+  color: #3E4A34;
+  background: #F4F7EF;
+}
+
+.tchip.warn {
+  border-color: rgba(201, 169, 110, 0.55);
+  color: #685738;
+  background: var(--gold-pale);
+}
+
+.g2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+@media (max-width: 600px) {
+  .piece-fields-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .g2 {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}

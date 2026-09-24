@@ -1,0 +1,90 @@
+.compliance-tab {
+  display: flex;
+  flex-direction: column;
+}
+
+.compliance-card {
+  margin-bottom: 0;
+}
+
+.compliance-card .card-bd {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+/* Account Status + Status Reason side by side */
+.compliance-status-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.fld {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.fld:last-of-type {
+  margin-bottom: 0;
+}
+
+.fld-label-internal {
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #8A7E72;
+}
+
+.compliance-authority-note {
+  background: #F5EFE4;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  border-radius: 4px;
+  padding: 8px 11px;
+  font-size: 11px;
+  color: #6B5730;
+  margin-bottom: 11px;
+  line-height: 1.5;
+}
+
+.compliance-terms-line,
+.compliance-offboarding-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  padding: 8px 11px;
+  border: 1px solid #EDE6DC;
+  border-radius: 4px;
+  background: #F7F4EF;
+  font-size: 11.5px;
+  margin-bottom: 11px;
+}
+
+.terms-label,
+.offboarding-label {
+  font-weight: 600;
+  color: #1A1612;
+}
+
+.terms-value,
+.offboarding-value {
+  color: #1A1612;
+}
+
+.save-check {
+  font-size: 10px;
+  color: #6B7E5A;
+  font-weight: 600;
+}
+
+.card-ft {
+  padding: 10px 16px;
+  border-top: 1px solid #EDE6DC;
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+  background: #F7F4EF;
+}

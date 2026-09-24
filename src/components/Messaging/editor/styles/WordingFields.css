@@ -1,0 +1,10 @@
+/* editor/styles/WordingFields.css */
+.msg-wording-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--msg-spacing-11);
+}
+
+.msg-wording-fields .msg-field:last-child {
+  margin-bottom: 0;
+}

@@ -1,0 +1,26 @@
+/* src/components/Notifications/components/styles/Table.css */
+
+/* §26.3 — the history table grid */
+.ntf-table-hd {
+  display: grid;
+  gap: 0;
+  padding: 7px 14px;
+  background: #F7F4EF;
+  border-top: 1px solid #EDE6DC;
+  border-bottom: 1px solid #EDE6DC;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: #8A7E72;
+}
+.ntf-table-hd-cell--right { text-align: right; }
+
+.ntf-table-row {
+  display: grid;
+  gap: 0;
+  padding: 7px 14px;
+  border-top: 1px solid #EDE6DC;
+  align-items: center;
+}
+.ntf-table-row:first-of-type { border-top: none; }

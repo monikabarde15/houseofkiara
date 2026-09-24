@@ -1,0 +1,46 @@
+/* src/components/LYP/components/styles/LYPHeader.css */
+
+.lyp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 11px;
+  margin-bottom: 16px;
+}
+
+.lyp-header-left {
+  flex: 1;
+  min-width: 280px;
+}
+
+.mod-ey {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: #C9A96E;
+  margin-bottom: 4px;
+}
+
+.mod-ttl {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--charcoal);
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.mod-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 560px;
+  margin: 0;
+}
+
+.lyp-header-right {
+  margin-top: 8px;
+  flex-shrink: 0;
+}

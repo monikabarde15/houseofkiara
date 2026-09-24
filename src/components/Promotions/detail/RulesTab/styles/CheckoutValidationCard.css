@@ -1,0 +1,63 @@
+/* CheckoutValidationCard Styles */
+/* ========================================
+   Checkout Validation Card - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.10
+   ======================================== */
+
+.checkout-validation__intro {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  margin-bottom: 9px;
+  font-family: var(--promo-sans);
+  line-height: 1.5;
+}
+
+.checkout-validation__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.checkout-validation__item {
+  font-size: 11.5px;
+  line-height: 1.5;
+  font-family: var(--promo-sans);
+  color: var(--promo-charcoal);
+  padding-left: 18px;
+  position: relative;
+}
+
+.checkout-validation__item::before {
+  content: attr(data-index) '.';
+  position: absolute;
+  left: 0;
+  color: var(--promo-muted);
+}
+
+.checkout-validation__item .sentence {
+  font-style: italic;
+}
+
+.checkout-validation__item .note {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  display: block;
+  margin-top: 2px;
+}
+
+.checkout-validation__closing {
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid var(--promo-cb);
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+  line-height: 1.5;
+}
+
+.checkout-validation__closing strong {
+  color: var(--promo-charcoal);
+}

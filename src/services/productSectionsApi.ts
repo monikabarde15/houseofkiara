@@ -1,0 +1,9 @@
+const BASE = 'http://localhost:5000/api';
+const request = async (path: string, options?: RequestInit) => { const r = await fetch(`${BASE}${path}`, { headers: { 'Content-Type': 'application/json', ...(options?.headers || {}) }, ...options }); const b = await r.json().catch(() => ({})); if (!r.ok || b.success === false) throw new Error(b.message || 'Product request failed'); return b.data; };
+export const getCalendar = (id: string) => request(`/products/${encodeURIComponent(id)}/calendar`);
+export const addBlockedDate = (id: string, data: { from: string; to: string; reason: string }) => request(`/products/${encodeURIComponent(id)}/blocked-dates`, { method: 'POST', body: JSON.stringify(data) });
+export const removeBlockedDate = (id: string, index: number) => request(`/products/${encodeURIComponent(id)}/blocked-dates/${index}`, { method: 'DELETE' });
+export const getActivity = (id: string) => request(`/products/${encodeURIComponent(id)}/activity`);
+export const getPayoutHistory = (id: string) => request(`/products/${encodeURIComponent(id)}/payout-history`);
+export const updateRelatedProducts = (id: string, relatedProductIds: string[]) => request(`/products/${encodeURIComponent(id)}/related-products`, { method: 'PUT', body: JSON.stringify({ relatedProductIds }) });
+export const addExternalBooking = (id: string, data: { orderId: string; customerName: string; startDate: string; endDate: string; amount?: number }) => request(`/products/${encodeURIComponent(id)}/external-bookings`, { method: 'POST', body: JSON.stringify(data) });

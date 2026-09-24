@@ -1,0 +1,33 @@
+/* ReasonNotesCard Styles */
+/* ========================================
+   Reason Notes Card - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.4
+   ======================================== */
+
+.reason-notes__field {
+  margin-bottom: 11px;
+}
+
+.reason-notes__field:last-child {
+  margin-bottom: 0;
+}
+
+.reason-notes__created {
+  font-size: 10px;
+  color: var(--promo-muted);
+  margin-top: 4px;
+  font-family: var(--promo-sans);
+}
+
+.reason-notes__footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.reason-notes__created-by {
+  font-size: 11px;
+  color: var(--promo-muted, #6F675D);
+  font-family: var(--promo-sans);
+}

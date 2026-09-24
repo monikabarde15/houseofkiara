@@ -1,0 +1,142 @@
+/* src/components/LYP/record/styles/WorksheetGrid.css */
+
+.ws-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px 13px;
+}
+
+.ws-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.ws-field-sku {
+  grid-column: span 1;
+}
+
+.ws-sku-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.ws-sku-row .fld-input {
+  flex: 1;
+}
+
+.ws-dev input {
+  background: var(--gold-pale) !important;
+  border-color: var(--gold) !important;
+}
+
+.ws-devnote {
+  font-size: 9.5px;
+  color: #685730;
+  margin-top: 2px;
+}
+
+.ws-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fld-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: 4px;
+}
+
+.fld-input {
+  padding: 7px 10px;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  font-size: 12px;
+  font-family: var(--sans);
+  color: var(--charcoal);
+  background: var(--ibg);
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.fld-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.3);
+}
+
+.fld-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.fld-input[type="number"]::-webkit-outer-spin-button,
+.fld-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.fhint {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.fhint-echo {
+  font-size: 9.5px;
+  font-style: italic;
+  color: var(--muted-1);
+  margin-bottom: 2px;
+}
+
+.fhint-terra {
+  color: var(--terra);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 1px;
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn-sec {
+  background: var(--card);
+  color: var(--charcoal);
+  border-color: var(--border);
+}
+
+.btn-sec:hover {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 10.5px;
+}
+
+@media (max-width: 768px) {
+  .ws-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .ws-grid {
+    grid-template-columns: 1fr;
+  }
+}

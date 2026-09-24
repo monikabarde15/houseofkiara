@@ -1,0 +1,98 @@
+.calendar-grid {
+  background: #FFFFFF;
+}
+
+.calendar-grid__scroll {
+  overflow-x: auto;
+  --day-col-width: 33%; /* now ~3 columns visible instead of 4, rest scroll */
+}
+
+.calendar-grid__header,
+.calendar-grid__row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(220px, var(--day-col-width)));
+  min-width: 100%;
+}
+
+.calendar-grid__header {
+  border-bottom: 1px solid #EBE5D8;
+}
+
+.calendar-grid__header-cell {
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #A69C8B;
+}
+
+.calendar-grid__row {
+  /* border-bottom: 1px solid #EBE5D8;  ← remove this */
+}
+
+.calendar-grid__cell {
+  min-height: 92px;
+  padding: 8px 10px;
+  border-right: 1px solid #F1ECE1;
+  border-bottom: 1px solid #EBE5D8; /* add this */
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-grid__cell--outside {
+  background: #FBFAF6;
+}
+
+.calendar-grid__cell--outside .calendar-grid__date {
+  color: #C9C2B3;
+}
+
+.calendar-grid__cell--today {
+  background: #FFF8EE;
+}
+
+.calendar-grid__date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #2B2118;
+  margin-bottom: 6px;
+}
+
+.calendar-grid__date-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #C24A2E;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.calendar-grid__date-count {
+  font-size: 11px;
+  color: #A69C8B;
+}
+
+.calendar-grid__events {
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-grid__more {
+  border: none;
+  background: transparent;
+  color: #A69C8B;
+  font-size: 11px;
+  text-align: left;
+  padding: 1px 2px;
+  cursor: pointer;
+}
+
+.calendar-grid__more:hover {
+  color: #5C5347;
+  text-decoration: underline;
+}

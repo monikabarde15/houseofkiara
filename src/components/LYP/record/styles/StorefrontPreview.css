@@ -1,0 +1,52 @@
+/* src/components/LYP/record/styles/StorefrontPreview.css */
+
+.storefront-preview-invite {
+  font-size: 10.5px;
+  font-style: italic;
+  color: var(--muted-1);
+  grid-column: 1 / -1;
+  padding: 4px 0;
+}
+
+.storefront-preview {
+  grid-column: 1 / -1;
+  margin-top: 9px;
+}
+
+.storefront-preview-eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.storefront-preview-card {
+  background: var(--card);
+  border: 1px solid var(--cb);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--r);
+  padding: 10px 13px;
+}
+
+.storefront-preview-size {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--gold);
+}
+
+.storefront-preview-values {
+  font-size: 12px;
+  color: var(--charcoal);
+  margin-top: 4px;
+}
+
+.storefront-preview-fitnote {
+  font-size: 10.5px;
+  font-style: italic;
+  color: var(--muted);
+  margin-top: 4px;
+}

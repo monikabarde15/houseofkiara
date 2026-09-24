@@ -1,0 +1,55 @@
+/* editor/styles/WhatsAppPreview.css */
+.msg-whatsapp-preview-body {
+  background: #E7F3E4;
+  border: 1px solid rgba(107, 126, 90, 0.3);
+  border-radius: var(--msg-radius);
+  padding: var(--msg-spacing-11) var(--msg-spacing-13);
+  font-size: 12px;
+  line-height: 1.65;
+  color: #2E3A26;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 80px;
+}
+
+.msg-whatsapp-preview-body--empty {
+  background: transparent;
+  border: 1px dashed var(--msg-input-border);
+  color: var(--msg-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 48px !important;
+}
+
+.msg-whatsapp-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.msg-whatsapp-standin {
+  background: var(--msg-gold-pale);
+  border-bottom: 1px dotted var(--msg-gold);
+  padding: 0 2px;
+}
+
+.msg-whatsapp-unfilled {
+  background: var(--msg-status-terracotta-bg);
+  color: var(--msg-terracotta);
+  font-weight: 600;
+  border-bottom: 1px dotted var(--msg-terracotta);
+  padding: 0 2px;
+}
+
+.msg-whatsapp-empty {
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--msg-muted);
+}
+
+.msg-whatsapp-char-count {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-4);
+}

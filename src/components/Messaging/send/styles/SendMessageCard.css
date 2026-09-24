@@ -1,0 +1,13 @@
+/* send/styles/SendMessageCard.css */
+.msg-send-promotion-hint {
+  font-size: 10px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-3);
+  line-height: 1.4;
+}
+
+.msg-send-chips {
+  display: flex;
+  gap: var(--msg-spacing-14);
+  margin-top: var(--msg-spacing-3);
+}

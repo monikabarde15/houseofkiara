@@ -1,0 +1,26 @@
+/* setup/styles/SetupSenderDrawer.css */
+.msg-sender-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--msg-spacing-13);
+}
+
+.msg-input--error {
+  border-color: var(--msg-terracotta) !important;
+}
+
+.msg-input--error:focus {
+  border-color: var(--msg-terracotta) !important;
+  box-shadow: 0 0 0 3px var(--msg-status-terracotta-bg) !important;
+}
+
+.msg-drawer-footer-hint {
+  font-size: 10px;
+  color: var(--msg-muted);
+  
+}
+.msg-field-error {
+  font-size: 10px;
+  color: var(--terra);
+  margin-top: 3px;
+}

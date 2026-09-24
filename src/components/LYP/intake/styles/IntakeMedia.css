@@ -1,0 +1,132 @@
+/* src/components/LYP/intake/styles/IntakeMedia.css */
+
+.intake-media {
+  margin-top: 11px;
+}
+
+.intake-media-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+.intake-media-count {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.intake-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.intake-media-item {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r);
+  border: 1px solid var(--cb);
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+.intake-media-thumb {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.intake-media-video {
+  width: 100%;
+  height: 100%;
+  background: #14100C;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.intake-media-video-play {
+  font-size: 14px;
+  color: var(--gold);
+}
+
+.intake-media-video-name {
+  font-size: 8.5px;
+  color: #B8AD9E;
+  padding: 0 4px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 90%;
+}
+
+.intake-media-remove {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(26, 22, 18, 0.78);
+  border: none;
+  color: white;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.intake-media-remove:hover {
+  background: rgba(26, 22, 18, 0.9);
+}
+
+.fld-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 1px;
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn-sec {
+  background: var(--card);
+  color: var(--charcoal);
+  border-color: var(--border);
+}
+
+.btn-sec:hover {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 10.5px;
+}

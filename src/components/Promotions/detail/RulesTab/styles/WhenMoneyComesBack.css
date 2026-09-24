@@ -1,0 +1,25 @@
+/* WhenMoneyComesBack Styles */
+/* ========================================
+   When Money Comes Back - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.16
+   ======================================== */
+
+.when-money__paragraph {
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: var(--promo-charcoal);
+  font-family: var(--promo-sans);
+  margin-bottom: 8px;
+}
+
+.when-money__paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.when-money__paragraph strong {
+  font-weight: 600;
+}
+
+.when-money__paragraph em {
+  font-style: italic;
+}

@@ -1,0 +1,129 @@
+/* modals/styles/TemplateFillerModal.css */
+.msg-template-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 22, 18, 0.45);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.msg-template-modal-panel {
+  background: var(--msg-input-bg);
+  border-radius: var(--msg-radius);
+  width: 520px;
+  max-width: 94vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: var(--msg-spacing-24) var(--msg-spacing-26);
+  box-shadow: var(--msg-shadow-overlay);
+}
+
+.msg-template-modal-header {
+  text-align: center;
+  padding-bottom: var(--msg-spacing-14);
+  border-bottom: var(--msg-border-standard);
+  margin-bottom: var(--msg-spacing-14);
+}
+
+.msg-template-modal-title {
+  font-family: var(--msg-font-display);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--msg-charcoal);
+}
+
+.msg-template-modal-subtitle {
+  font-size: 11px;
+  color: var(--msg-muted);
+  margin-top: var(--msg-spacing-3);
+}
+
+.msg-template-modal-body {
+  font-size: 11.5px;
+  color: var(--msg-charcoal);
+  line-height: 1.6;
+}
+
+.msg-template-modal-explanation {
+  margin-bottom: var(--msg-spacing-13);
+}
+
+.msg-template-modal-words {
+  border: var(--msg-border-standard);
+  border-radius: var(--msg-radius);
+  overflow: hidden;
+  margin-bottom: var(--msg-spacing-13);
+}
+
+.msg-template-modal-word {
+  display: flex;
+  align-items: center;
+  gap: var(--msg-spacing-13);
+  padding: var(--msg-spacing-7) var(--msg-spacing-11);
+  border-bottom: var(--msg-border-standard);
+}
+
+.msg-template-modal-word:last-child {
+  border-bottom: none;
+}
+
+.msg-template-modal-word-name {
+  font-family: var(--msg-font-monospace);
+  font-size: 10.5px;
+  color: #6B5730;
+  background: var(--msg-gold-pale);
+  padding: 1px var(--msg-spacing-5);
+  border-radius: var(--msg-radius-tight);
+  min-width: 100px;
+}
+
+.msg-template-modal-word-desc {
+  color: var(--msg-muted);
+}
+
+.msg-template-modal-messages {
+  margin-bottom: var(--msg-spacing-13);
+}
+
+.msg-template-modal-messages-label {
+  font-weight: 600;
+  margin-bottom: var(--msg-spacing-4);
+}
+
+.msg-template-modal-message {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--msg-spacing-4) 0;
+  border-bottom: 1px solid var(--msg-border);
+}
+
+.msg-template-modal-message:last-child {
+  border-bottom: none;
+}
+
+.msg-template-modal-supply-ok {
+  color: var(--msg-sage);
+}
+
+.msg-template-modal-supply-missing {
+  color: var(--msg-terracotta);
+}
+
+.msg-template-modal-warning {
+  padding: var(--msg-spacing-10) var(--msg-spacing-13);
+  background: var(--msg-status-terracotta-bg);
+  border: 1px solid rgba(184, 92, 56, 0.28);
+  border-radius: var(--msg-radius);
+  color: #7A2E1D;
+  margin-bottom: var(--msg-spacing-13);
+}
+
+.msg-template-modal-close {
+  text-align: right;
+  margin-top: var(--msg-spacing-16);
+}

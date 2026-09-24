@@ -1,0 +1,78 @@
+/* ShopperMessagesCard Styles */
+/* ========================================
+   Shopper Messages Card - Styles
+   Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.4
+   ======================================== */
+
+.shopper-messages__intro {
+  font-size: 10.5px;
+  color: var(--promo-muted);
+  margin-bottom: 11px;
+  font-family: var(--promo-sans);
+  line-height: 1.5;
+}
+
+.shopper-messages__field {
+  margin-bottom: 10px;
+}
+
+.shopper-messages__field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.shopper-messages__field-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--promo-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-family: var(--promo-sans);
+}
+
+.shopper-messages__field-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--promo-ib);
+  border-radius: var(--promo-radius);
+  font-size: 12px;
+  font-family: var(--promo-sans);
+  color: var(--promo-charcoal);
+  background: var(--promo-ibg);
+  resize: vertical;
+  outline: none;
+  min-height: 44px;
+}
+
+.shopper-messages__field-input:focus {
+  border-color: var(--promo-gold);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.2);
+}
+
+.shopper-messages__field-placeholder {
+  font-size: 10px;
+  color: var(--promo-muted);
+  margin-top: 3px;
+  font-family: var(--promo-sans);
+}
+
+.shopper-messages__field-placeholder.warning {
+  color: var(--promo-terra);
+}
+
+.shopper-messages__field-preview {
+  font-size: 10.5px;
+  font-style: italic;
+  color: var(--promo-charcoal);
+  margin-top: 3px;
+  font-family: var(--promo-sans);
+}
+
+.shopper-messages__summary-text {
+  font-size: 11.5px;
+  color: var(--promo-muted);
+  font-family: var(--promo-sans);
+  margin: 0;
+}
