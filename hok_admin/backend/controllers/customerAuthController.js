@@ -4,6 +4,8 @@ import axios from "axios";
 import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
 import Customer from "../models/Customer.js";
+import Order from "../models/Order.js";
+import Product from "../models/Product.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "hok_super_secret_key_123";
 const FAST2SMS_KEY = process.env.FAST2SMS_KEY || "";
@@ -132,7 +134,7 @@ export const sendOtp = async (req, res) => {
        });
     }
 
-    res.json({ success: true, message: "OTP sent" });
+    res.json({ success: true, message: "OTP sent", otp });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -278,7 +280,7 @@ export const googleLogin = async (req, res) => {
 
 export const getMe = async (req, res) => {
     try {
-        const customer = await Customer.findById(req.user.id).select("-passwordHash -otp");
+        const customer = await Customer.findById(req.user._id).select("-passwordHash -otp");
         if (!customer) return res.status(404).json({success: false, message: "Customer not found"});
         res.json({ success: true, data: customer });
     } catch (err) {
@@ -288,11 +290,11 @@ export const getMe = async (req, res) => {
 
 export const toggleWishlist = async (req, res) => {
     try {
-        const customer = await Customer.findById(req.user.id);
+        const customer = await Customer.findById(req.user._id);
         if (!customer) return res.status(404).json({success: false, message: "Customer not found"});
         
         const productId = req.params.productId;
-        const index = customer.wishlist.indexOf(productId);
+        const index = customer.wishlist.findIndex(id => id.toString() === productId);
         
         if (index === -1) {
             customer.wishlist.push(productId);
@@ -310,7 +312,7 @@ export const toggleWishlist = async (req, res) => {
 
 export const getWishlist = async (req, res) => {
     try {
-        const customer = await Customer.findById(req.user.id);
+        const customer = await Customer.findById(req.user._id);
         if (!customer) return res.status(404).json({success: false, message: "Customer not found"});
         
         res.json({ success: true, data: customer.wishlist });
@@ -318,3 +320,196 @@ export const getWishlist = async (req, res) => {
         res.status(500).json({success: false, message: err.message});
     }
 }
+
+export const getMyOrders = async (req, res) => {
+    try {
+        const customerId = req.user.customerId;
+        const orders = await Order.find({ customerId }).sort({ createdAt: -1 });
+        
+        // Populate product images for the first item of each order
+        const formattedOrders = await Promise.all(orders.map(async (order) => {
+            let image = "";
+            let piece = "Unknown Item";
+            let type = "Unknown Type";
+            
+            if (order.items && order.items.length > 0) {
+                const firstItem = order.items[0];
+                piece = firstItem.productName;
+                type = firstItem.mode;
+                
+                if (firstItem.productId) {
+                    const product = await Product.findOne({ id: firstItem.productId }) || await Product.findById(firstItem.productId).catch(() => null);
+                    if (product && product.images && product.images.length > 0) {
+                        image = product.images[0];
+                    } else if (product && product.image && product.image.length > 0) {
+                        image = product.image[0];
+                    }
+                }
+            }
+            
+            return {
+                id: order.orderId,
+                piece,
+                type,
+                typeDetail: type, // simplified for now
+                status: order.status,
+                amount: order.grandTotal || order.orderValue || 0,
+                date: `Ordered ${new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`,
+                image,
+                dbId: order._id
+            };
+        }));
+        
+        res.json({ success: true, data: formattedOrders });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+export const getMyOrderById = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const customerId = req.user.customerId;
+        
+        // Support finding by the string orderId (e.g. #HOK-123) or mongoose _id
+        const order = await Order.findOne({ 
+            $or: [{ orderId: orderId }, { _id: orderId }],
+            customerId 
+        });
+        
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
+        
+        // Fetch detailed product info for items
+        const populatedItems = await Promise.all(order.items.map(async (item) => {
+            let itemDetails = { ...item.toObject() };
+            if (item.productId) {
+                const product = await Product.findOne({ id: item.productId }) || await Product.findById(item.productId).catch(() => null);
+                if (product) {
+                    itemDetails.image = product.images?.[0] || product.image?.[0] || "";
+                    itemDetails.designer = product.designer || item.designer;
+                    // Try to extract condition if available
+                    itemDetails.condition = product.preloved?.condition || "Excellent";
+                }
+            }
+            
+            // Map rental dates for frontend
+            if (item.rentalStartDate && item.rentalEndDate) {
+                itemDetails.rentalDates = {
+                    start: item.rentalStartDate,
+                    end: item.rentalEndDate
+                };
+            }
+            
+            return itemDetails;
+        }));
+        
+        const detailedOrder = {
+            ...order.toObject(),
+            items: populatedItems
+        };
+        
+        res.json({ success: true, data: detailedOrder });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+export const placeOrder = async (req, res) => {
+    try {
+        const { items, totals, address } = req.body;
+        const customer = req.user; // populated by requireCustomerAuth
+
+        // Generate unique order ID
+        const orderId = `HOK-ORD-${Date.now()}`;
+
+        // Map cart items to order items schema
+        const orderItems = items.map(item => ({
+            productId: item.product?._id || item.product?.id || item.id,
+            productName: item.product?.title || item.product?.name || item.title || item.productName || "Unknown Product",
+            designer: item.product?.designer || item.designer,
+            mode: item.type === "rental" ? "Rental" : item.type === "preloved" ? "Preloved" : item.type === "new" ? "Buy" : "Buy",
+            size: item.booking?.size || item.size || "Standard",
+            amount: item.price || item.totalPrice || 0,
+            quantity: item.quantity || 1, // Assume 1 for now based on cart logic
+            status: "Confirmed",
+            image: item.product?.images?.[0] || item.product?.image?.[0] || item.image || "",
+            rentalStartDate: item.booking?.rentalDates?.start || "",
+            rentalEndDate: item.booking?.rentalDates?.end || ""
+        }));
+
+        const newOrder = new Order({
+            orderId,
+            customerId: customer.customerId,
+            customerName: customer.name || customer.firstName + " " + customer.lastName,
+            customerEmail: customer.email,
+            customerPhone: customer.phone,
+            address: address || customer.address || "Address not provided",
+            items: orderItems,
+            mode: orderItems.length === 1 ? orderItems[0].mode : "Multi-item",
+            status: "Confirmed",
+            grandTotal: totals.finalTotal || totals.grandTotal || 0,
+            orderValue: totals.itemTotal || 0,
+            depositHeld: totals.depositTotal || 0,
+            discount: totals.discount || 0,
+            gst: totals.gst || 0,
+            logs: [{
+                message: "Order placed by customer",
+                type: "Order",
+                user: "Customer"
+            }]
+        });
+
+        await newOrder.save();
+        
+        // Update customer document - add to total spent and orders count
+        if (customer) {
+            customer.ordersCount = (customer.ordersCount || 0) + 1;
+            customer.totalSpent = (customer.totalSpent || 0) + newOrder.grandTotal;
+            customer.lastOrderDate = new Date().toISOString();
+            await customer.save();
+        }
+
+        res.status(201).json({ success: true, data: newOrder });
+    } catch (err) {
+        console.error("Error placing order:", err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+export const cancelOrder = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const customerId = req.user.customerId;
+        
+        const order = await Order.findOne({ 
+            $or: [{ orderId: orderId }, { _id: orderId }],
+            customerId 
+        });
+        
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
+        
+        if (["Dispatched", "Shipped", "Delivered", "Returned", "Complete", "Return Sent", "Return Due", "Partially Returned"].includes(order.status)) {
+            return res.status(400).json({ success: false, message: "Cannot cancel an order that has already been processed or shipped." });
+        }
+        
+        order.status = "Cancelled";
+        if (!order.logs) order.logs = [];
+        order.logs.push({
+            message: "Order cancelled by customer",
+            type: "Cancellation",
+            user: "Customer"
+        });
+        
+        await order.save();
+        
+        res.json({ success: true, message: "Order cancelled successfully", data: order });
+    } catch (err) {
+        console.error("Error cancelling order:", err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+

@@ -4,22 +4,16 @@ import AttributeSelectorModal from '../forms/AttributeSelectorModal';
 import Toast from '../ui/Toast';
 import "../../../styles/Profile/sections/SavedPiecesSection.css";
 
+import { useWishlistProducts } from '../../Wishlist/hooks/useWishlistProducts';
+
 const SavedPiecesSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
 
-  // Mock data from spec Page 47 with sizes and colors
-  const savedPieces = [
-    { id: 1, name: "Midnight Blue Lehenga", mode: "Rental", price: 6500, sizes: ["XS", "S", "M", "L", "XL"], colors: [] },
-    { id: 2, name: "Crimson Benarasi Saree", mode: "Preloved", price: 22000, sizes: ["One size"], colors: ["Crimson", "Gold Border"] },
-    { id: 3, name: "Pistachio Sharara", mode: "Rental", price: 4200, sizes: ["XS", "S", "M", "L"], colors: ["Pistachio", "Sage"] },
-    { id: 4, name: "Gold Tissue Lehenga", mode: "Rental", price: 9800, sizes: ["S", "M", "L", "XL"], colors: [] },
-    { id: 5, name: "Mulberry Silk Sharara", mode: "Rental", price: 5400, sizes: ["XS", "S", "M", "L"], colors: ["Mulberry", "Blush"] },
-    { id: 6, name: "Navy Chanderi Kurta", mode: "Buy New", price: 28000, sizes: ["XS", "S", "M", "L", "XL"], colors: ["Navy", "Steel"] },
-    { id: 7, name: "Champagne Zardozi Lehenga", mode: "Rental", price: 15000, sizes: ["S", "M", "L"], colors: ["Champagne", "Ivory"] }
-  ];
+  const { products, removeProduct } = useWishlistProducts();
+  const savedPieces = products || [];
 
   // Overview shows only first 3 pieces
   const overviewPieces = savedPieces.slice(0, 3);
@@ -63,12 +57,14 @@ const SavedPiecesSection = () => {
     setSelectedPiece(null);
   };
 
-  const handleViewProduct = (pieceId) => {
-    showToastMessage("Redirecting to product page...");
+  const handleRemoveItem = (id) => {
+    removeProduct(id);
+    showToastMessage("Item removed from your saved pieces");
   };
 
-  const handleRemove = (pieceId) => {
-    showToastMessage("Removed from wishlist");
+  const handleViewProduct = (id) => {
+    console.log("View product detail page:", id);
+    // Navigation to PDP would happen here
   };
 
   return (
@@ -81,7 +77,7 @@ const SavedPiecesSection = () => {
               piece={piece}
               onAddToBag={handleAddToBag}
               onViewProduct={handleViewProduct}
-              onRemove={handleRemove}
+              onRemove={handleRemoveItem}
             />
           ))}
         </div>

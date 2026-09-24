@@ -49,6 +49,7 @@ export const ListersView: React.FC<ListersViewProps> = ({ onEditingChange, setVi
     const idToDelete = (targetLister as any)._id || targetLister.id || (targetLister as any).listerId;
     if (!idToDelete) throw new Error("Missing Lister ID for deletion");
     await deleteLister(idToDelete);
+    window.dispatchEvent(new Event('refreshListers'));
   };
 
   useEffect(() => {
@@ -148,11 +149,13 @@ export const ListersView: React.FC<ListersViewProps> = ({ onEditingChange, setVi
                       const created = await listerService.createLister(listerToSave);
                       toast.success(`New lister "${created.name}" created successfully in MongoDB database!`);
                       await refreshListers();
+                      window.dispatchEvent(new Event('refreshListers'));
                       handleBack();
                     } else if (selectedListerId) {
                       const updated = await listerService.updateLister(selectedListerId, listerToSave);
                       toast.success(`Lister "${updated.name}" updated successfully in MongoDB database!`);
                       await refreshListers();
+                      window.dispatchEvent(new Event('refreshListers'));
                     }
                   } catch (err: any) {
                     toast.error("Validation / Save Error: " + (err.message || "Failed to save to database"));

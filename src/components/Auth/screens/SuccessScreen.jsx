@@ -58,7 +58,13 @@ const SuccessScreen = ({ switchScreen, userData = {} }) => {
   }
 
   const handleContinue = () => {
-    navigate("/profile");
+    const returnTo = sessionStorage.getItem("returnTo");
+    if (returnTo) {
+      sessionStorage.removeItem("returnTo");
+      navigate(returnTo);
+    } else {
+      navigate("/profile");
+    }
   };
 
   const handleSignIn = () => {

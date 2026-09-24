@@ -27,23 +27,21 @@ const CategoryTile = ({ category, isLarge = false }) => {
       onClick={handleCategoryClick}
     >
       {/* Image Wrapper - handles the scale on hover */}
-      <div 
-        className="desk-category-image-wrapper"
-        style={{
-          backgroundImage: `
-            linear-gradient(
-              to top,
-              rgba(0, 0, 0, 0.78) 0%,
-              rgba(0, 0, 0, 0.2) 60%,
-              transparent 100%
-            ),
-            url(${category.desktopImage})
-          `,
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
+      <div className="desk-category-image-wrapper">
+        <img 
+          src={category.desktopImage} 
+          alt={category.name}
+          loading="lazy"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center top",
+            position: "absolute",
+            inset: 0,
+            zIndex: 0
+          }}
+        />
         {/* Overlay for gradient (if needed) */}
         <div className="desk-category-overlay" />
       </div>

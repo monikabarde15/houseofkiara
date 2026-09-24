@@ -59,7 +59,7 @@ export default function DashboardView({
 
   const displayOrders = orders;
   const displaySubmissions = dbSubmissions.length > 0 ? dbSubmissions : listerSubmissions;
-  const displayProductCount = activeListingsCount || dbProductCount || 1;
+  const displayProductCount = activeListingsCount || dbProductCount || 0;
 
   // Remove fallback details since data is now from real DB
   const validOrders = displayOrders.filter(o => o.id || o.orderId || o.orderNumber).map((o: any) => {

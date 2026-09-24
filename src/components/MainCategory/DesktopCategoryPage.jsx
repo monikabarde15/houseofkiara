@@ -10,14 +10,15 @@ import Breadcrumbs from "../../components/MainCategory/Breadcrumbs";
 import ListingHeader from "../../components/MainCategory/ListingHeader";
 import ActiveFilters from "../../components/MainCategory/ActiveFilters";
 
-import products from "../../data/mainCategoryPageData";
+// Remove static import
+// import productsData from "../../data/mainCategoryPageData";
 
 // For dropdown nav
 import { buildHeading } from "../../components/MainCategory/utils/buildHeading"
 import { buildBreadcrumb } from "../../components/MainCategory/utils/buildBreadcrumb";
 import { useSearchParams } from "react-router-dom";
 
-function DesktopCategoryPage() {
+function DesktopCategoryPage({ productsData }) {
   const [filters, setFilters] = useState({
     rentType: [],
     gender: [],
@@ -39,6 +40,8 @@ function DesktopCategoryPage() {
 
   const ITEMS_PER_PAGE = 9;
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // Products are now passed down as a prop (productsData)
 
   // dropdown nav
   const [searchParams] = useSearchParams();
@@ -51,6 +54,8 @@ function DesktopCategoryPage() {
   const gender = searchParams.get("gender");
 
   const condition = searchParams.get("condition");
+  const size = searchParams.get("size");
+  const color = searchParams.get("color");
 
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
@@ -118,6 +123,14 @@ function DesktopCategoryPage() {
       nextFilters.condition = [condition];
     }
 
+    if (size) {
+      nextFilters.size = [size];
+    }
+
+    if (color) {
+      nextFilters.color = [color];
+    }
+
     if (minPrice || maxPrice) {
       nextFilters.budget = {
         min: Number(minPrice) || 0,
@@ -136,8 +149,10 @@ function DesktopCategoryPage() {
     designer,
     occasion,
     condition,
+    size,
+    color,
     minPrice,
-  maxPrice,
+    maxPrice,
   ]);
 
   const mainDesigners = [
@@ -165,7 +180,7 @@ function DesktopCategoryPage() {
 
   // FILTERING
 
-  const filteredProducts = products.filter(
+  const filteredProducts = (productsData || []).filter(
     (item) => {
       // DESIGNER
 
@@ -221,11 +236,9 @@ function DesktopCategoryPage() {
       // GENDER
 
       if (filters.gender.length) {
-        if (
-          !filters.gender.includes(
-            item.gender
-          )
-        ) {
+        const itemGender = item.gender ? item.gender.toLowerCase() : "";
+        const match = filters.gender.some((g) => g.toLowerCase() === itemGender);
+        if (!match) {
           return false;
         }
       }
@@ -284,10 +297,10 @@ function DesktopCategoryPage() {
       // SIZE
 
       if (filters.size.length) {
-        const match =
-          filters.size.some((s) =>
-            item.size?.includes(s)
-          );
+        const itemSizes = item.size || [];
+        const match = filters.size.some((s) =>
+          itemSizes.some((is) => is && typeof is === 'string' && is.trim().toLowerCase() === s.trim().toLowerCase())
+        );
 
         if (!match) return false;
       }
@@ -295,10 +308,10 @@ function DesktopCategoryPage() {
       // COLOR
 
       if (filters.color.length) {
-        const match =
-          filters.color.some((c) =>
-            item.color?.includes(c)
-          );
+        const itemColors = item.color || [];
+        const match = filters.color.some((c) =>
+          itemColors.some((ic) => ic.toLowerCase() === c.toLowerCase())
+        );
 
         if (!match) return false;
       }
@@ -417,6 +430,7 @@ function DesktopCategoryPage() {
         <Filters
           filters={filters}
           setFilters={setFilters}
+          productsData={productsData}
         />
 
         <div className="clp__main">

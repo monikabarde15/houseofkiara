@@ -1,5 +1,4 @@
-// src\components\Cart\items\CartItemDesktop.jsx
-import React, { useState } from "react";
+import React from "react";
 import "../../../styles/cart/items/cart-item-desktop.css";
 
 import RentalTimeline from "./modes/rental/RentalTimeline";
@@ -13,20 +12,43 @@ import PrelovedPriceBlock from "./modes/preloved/PrelovedPriceBlock";
 import NewPriceBlock from "./modes/new/NewPriceBlock";
 
 import { useNavigate } from "react-router-dom";
-import { X } from "lucide-react";
+import { X, Heart, Star } from "lucide-react";
 import Notice from "../../shared/Notice/Notice";
+import useWishlistStore from "../../../store/wishlistStore";
+import { makeProductDetail } from "../../ProductList";
 
 const CartItemDesktop = ({ item, onRemove }) => {
   const { product, booking, type } = item;
-  const [saved, setSaved] = useState(false);
-
   const navigate = useNavigate();
 
+  const [localProduct, setLocalProduct] = React.useState(product);
+
+  React.useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const productId = product._id || product.id;
+        const res = await fetch(`/api/products/${productId}`);
+        const data = await res.json();
+        if (data && data.success && data.data) {
+          setLocalProduct(data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch fresh product data:", err);
+      }
+    };
+    if (product?._id || product?.id) {
+      fetchProduct();
+    }
+  }, [product]);
+
+  const { items: wishlistItems, toggleWishlist } = useWishlistStore();
+  const isSaved = wishlistItems.includes(localProduct?._id || localProduct?.id);
+
   // ===== DATA =====
-  const brand = product?.designer || "";
-  const name = product?.title || "";
-  const desc = product?.description || "";
-  const condition = product?.condition?.grade || "";
+  const brand = localProduct?.designer || "";
+  const name = localProduct?.title || localProduct?.name || "";
+  const desc = localProduct?.description || "";
+  const condition = localProduct?.condition?.grade || "";
 
   const gradeLabel = {
     pristine: "Pristine condition",
@@ -34,19 +56,52 @@ const CartItemDesktop = ({ item, onRemove }) => {
   };
 
   // ===== HANDLER =====
-  const handleEditDates = () => {
+  const handleEditDates = async () => {
     if (type !== "rental") return;
 
-    navigate(`/onlyrental/${product.id}`, {
-      state: {
-        booking: {
-          deliveryDate: booking?.deliveryDate,
-          eventDate: booking?.eventDate,
-          returnDate: booking?.returnDate,
-          rentalWindowDays: booking?.rentalWindowDays,
+    try {
+      const productId = localProduct._id || localProduct.id;
+      const res = await fetch(`/api/products/${productId}`);
+      const data = await res.json();
+      
+      let fullProduct = localProduct;
+      if (data && data.success && data.data) {
+        fullProduct = data.data;
+      }
+
+      const detailedProduct = makeProductDetail(fullProduct);
+      const rent = detailedProduct.modes?.rent?.enabled;
+      const preloved = detailedProduct.modes?.preloved?.enabled;
+      const isNew = detailedProduct.modes?.buy?.enabled;
+
+      let url = `/onlyrental/${productId}`;
+
+      if (rent && preloved) {
+          url = `/rentalandpreloved/${productId}`;
+      } else if (rent && isNew) {
+          url = `/rentalandbuy/${productId}`;
+      } else if (rent) {
+          url = `/onlyrental/${productId}`;
+      } else if (preloved) {
+          url = `/preloved/${productId}`;
+      } else {
+          url = `/buynew/${productId}`;
+      }
+
+      navigate(url, {
+        state: {
+          product: makeProductDetail(fullProduct),
+          booking: {
+            deliveryDate: booking?.deliveryDate,
+            eventDate: booking?.eventDate,
+            returnDate: booking?.returnDate,
+            rentalWindowDays: booking?.rentalWindowDays,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
   };
 
   return (
@@ -56,10 +111,19 @@ const CartItemDesktop = ({ item, onRemove }) => {
       <div className="cart-item__image">
         <div className="cart-item__thumb">
           <img
-            src={product?.images?.[0] || "/placeholder.jpg"}
+            src={localProduct?.images?.[0] || localProduct?.image?.[0] || "/placeholder.jpg"}
             alt={name || "Product"}
             className="cart-item__img"
           />
+          {isSaved && (
+            <Heart 
+              className="cart-item__heart-icon" 
+              fill="#b85c38" 
+              stroke="#b85c38"
+              size={18} 
+              style={{ position: 'absolute', top: 8, right: 8 }} 
+            />
+          )}
           <span className="cart-item__mode-tag">
             {type === "rental"
               ? "Rent"
@@ -78,6 +142,13 @@ const CartItemDesktop = ({ item, onRemove }) => {
           <div className="cart-item__info">
             <div className="cart-item__brand">{brand}</div>
             <h3 className="cart-item__name">{name}</h3>
+            {localProduct?.rating != null && (
+              <div className="cart-item__rating" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#666', marginTop: '4px', marginBottom: '8px' }}>
+                <Star size={12} fill="#c5a46d" stroke="#c5a46d" />
+                <span>{localProduct.rating}</span>
+                {localProduct?.reviews != null && <span>({localProduct.reviews} reviews)</span>}
+              </div>
+            )}
             <p className="cart-item__desc">{desc}</p>
           </div>
 
@@ -91,7 +162,7 @@ const CartItemDesktop = ({ item, onRemove }) => {
 
         {/* META */}
         <div className="cart-item__meta">
-          <span>Size {booking?.size || "-"}</span>
+          <span>{booking?.size === 'Default' ? 'Free Size' : `Size ${booking?.size || "-"}`}</span>
 
           {(type === "rental" || type === "preloved") && condition && (
             <>
@@ -138,15 +209,17 @@ const CartItemDesktop = ({ item, onRemove }) => {
     {/* RENTAL */}
     {type === "rental" && (() => {
 
-      const deposit = product?.rent?.deposit;
+      const deposit = localProduct?.rent?.deposit;
 
-      const amount = deposit?.amount;
-      const returnDays = deposit?.returnDays;
+      const amount = deposit?.amount || 0;
+      const returnDays = deposit?.returnDays || 5;
+
+      if (amount <= 0) return null;
 
       return (
         <Notice
           variant="amber"
-          title={`₹${amount} refundable security deposit`}
+          title={`₹${amount.toLocaleString()} refundable security deposit`}
         >
           — not collected at checkout. Our team will reach
           out via WhatsApp before dispatch. Refunded in full
@@ -161,21 +234,21 @@ const CartItemDesktop = ({ item, onRemove }) => {
     {type === "preloved" && (
       <>
 
-        {product?.preloved?.disclosure && (
+        {localProduct?.preloved?.disclosure && (
           <Notice
             variant="rose"
             title="Condition disclosure:"
           >
-            {product?.preloved?.disclosure}
+            {localProduct?.preloved?.disclosure}
           </Notice>
         )}
 
-        {product?.preloved?.finalSaleNote && (
+        {localProduct?.preloved?.finalSaleNote && (
           <Notice
             variant="slate"
             title="Final sale."
           >
-            {product?.preloved?.finalSaleNote}
+            {localProduct?.preloved?.finalSaleNote}
           </Notice>
         )}
 
@@ -191,25 +264,25 @@ const CartItemDesktop = ({ item, onRemove }) => {
           {/* PRICE */}
           <div className="cart-item__price">
             {type === "rental" && (
-              <RentalPriceBlock product={product} booking={booking} />
+              <RentalPriceBlock item={item} product={localProduct} booking={booking} />
             )}
 
             {type === "preloved" && (
-              <PrelovedPriceBlock product={product} />
+              <PrelovedPriceBlock item={item} product={localProduct} />
             )}
 
             {type === "new" && (
-              <NewPriceBlock product={product} />
+              <NewPriceBlock item={item} product={localProduct} />
             )}
           </div>
 
           {/* ACTIONS */}
           <div className="cart-item__actions">
             <span
-              className={`cart-item__action ${saved ? "saved" : ""}`}
-              onClick={() => setSaved(true)}
+              className={`cart-item__action ${isSaved ? "saved" : ""}`}
+              onClick={() => toggleWishlist(localProduct._id || localProduct.id)}
             >
-              {saved ? "Saved ✓" : "Save to wishlist"}
+              {isSaved ? "Saved ✓" : "Save to wishlist"}
             </span>
 
             {type === "rental" && (

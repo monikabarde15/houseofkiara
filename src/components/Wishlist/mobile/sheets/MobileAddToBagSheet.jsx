@@ -4,7 +4,7 @@ import MobileSizeSelector from './MobileSizeSelector';
 import MobileRentalDateSelector from './MobileRentalDateSelector';
 import '../../../../styles/wishlist/mobile/sheets/mobile-add-to-bag-sheet.css';
 
-const MobileAddToBagSheet = ({ item, mode, showToast, onClose }) => {
+const MobileAddToBagSheet = ({ item, mode, showToast, onClose, onAddToBag }) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -95,6 +95,15 @@ const MobileAddToBagSheet = ({ item, mode, showToast, onClose }) => {
       toastMsg += ` - ${formattedStart} - ${formattedEnd}`;
     }
     toastMsg += ' added to your bag';
+
+    if (onAddToBag) {
+      onAddToBag({
+        product: item,
+        size: selectedSize,
+        startDate,
+        endDate
+      });
+    }
     
     showToast(toastMsg);
     onClose();

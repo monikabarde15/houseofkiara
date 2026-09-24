@@ -347,18 +347,18 @@ const PaymentSection = () => {
                 {/* Tenure */}
                 <div className="checkout-payment-field">
                   <label>Tenure</label>
-                  <select className="checkout-payment-select">
+                  <select className="checkout-payment-select" defaultValue="12 months · ₹4,305/mo">
                     <option>3 months · ₹17,210/mo</option>
                     <option>6 months · ₹8,605/mo</option>
-                    <option selected>12 months · ₹4,305/mo</option>
+                    <option>12 months · ₹4,305/mo</option>
                   </select>
                 </div>
 
                 {/* Bank / Issuer */}
                 <div className="checkout-payment-field">
                   <label>Bank / Issuer</label>
-                  <select className="checkout-payment-select">
-                    <option selected>HDFC Bank</option>
+                  <select className="checkout-payment-select" defaultValue="HDFC Bank">
+                    <option>HDFC Bank</option>
                     <option>ICICI Bank</option>
                     <option>Axis Bank</option>
                     <option>Kotak Bank</option>

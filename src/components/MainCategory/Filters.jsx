@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import "../../styles/maincategorypage/filters.css"
 
 
@@ -24,9 +25,48 @@ const FilterGroup = ({title , children, defaultOpen = true}) =>{
     </div>
   );
 };
-function Filters({ filters, setFilters }) {
+function Filters({ filters, setFilters, productsData }) {
   const [min, setMin] = useState("");
   const [max, setMax] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [designers, setDesigners] = useState([]);
+  const [dynamicFilters, setDynamicFilters] = useState({
+    occasions: [],
+    sizes: [],
+    colors: [],
+    budget: { min: 0, max: 100000 }
+  });
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    // Use relative paths — Vite proxy forwards /api/* to backend (no CORS issues)
+    fetch(`/api/categories`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.data)) {
+          setCategories(data.data);
+        }
+      })
+      .catch(err => console.error("Error fetching categories:", err));
+
+    fetch(`/api/designers`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.data)) {
+          setDesigners(data.data);
+        }
+      })
+      .catch(err => console.error("Error fetching designers:", err));
+
+    fetch(`/api/web-products/filters`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          setDynamicFilters(data.data);
+        }
+      })
+      .catch(err => console.error("Error fetching filters data:", err));
+  }, []);
 
   useEffect(() => {
   setMin(
@@ -63,6 +103,7 @@ function Filters({ filters, setFilters }) {
                 max: Infinity,
               },
             });
+            setSearchParams(new URLSearchParams());
           }}
         >
           Clear All
@@ -80,15 +121,23 @@ function Filters({ filters, setFilters }) {
               className={`chip ${type} ${filters.rentType.includes(type) ? "active" : ""
                 }`}
               onClick={() => {
-                setFilters((prev) => {
-                  const exists = prev.rentType.includes(type);
+                const exists = filters.rentType.includes(type);
+                const newRentTypes = exists
+                  ? filters.rentType.filter((t) => t !== type)
+                  : [...filters.rentType, type];
+                
+                // Update URL to trigger API fetch
+                const newParams = new URLSearchParams(searchParams);
+                if (newRentTypes.length > 0) {
+                  newParams.set("section", newRentTypes[0]); // Using the first one for the section param
+                } else {
+                  newParams.delete("section");
+                }
+                setSearchParams(newParams);
 
-                  return {
-                    ...prev,
-                    rentType: exists
-                      ? prev.rentType.filter((t) => t !== type)
-                      : [...prev.rentType, type],
-                  };
+                setFilters({
+                  ...filters,
+                  rentType: newRentTypes,
                 });
               }}
             >
@@ -104,31 +153,49 @@ function Filters({ filters, setFilters }) {
       <FilterGroup title="GENDER" defaultOpen={true}>
         <div className="checkboxList">
           {[
-            ["Women", 480],
-            ["Men", 320],
-            ["Unisex", 380],
-          ].map(([name, count]) => (
+            "Women",
+            "Men",
+            "Unisex",
+          ]
+          .filter((name, i, self) => self.indexOf(name) === i)
+          .map((name) => {
+            const count = (productsData || []).filter(p => {
+               const itemGender = p.gender ? p.gender.toLowerCase() : "";
+               return itemGender === name.toLowerCase();
+            }).length;
+            return { name, count };
+          })
+          .filter(item => item.count > 0)
+          .map(({ name, count }) => {
+            return (
             <label className="checkboxRow" key={name}>
               <input
                 type="checkbox"
                 checked={filters.gender.includes(name)}
                 onChange={() => {
-                  setFilters((prev) => {
-                    const exists = prev.gender.includes(name);
+                  const exists = filters.gender.includes(name);
+                  const newGender = exists
+                    ? filters.gender.filter((g) => g !== name)
+                    : [...filters.gender, name];
 
-                    return {
-                      ...prev,
-                      gender: exists
-                        ? prev.gender.filter((g) => g !== name)
-                        : [...prev.gender, name],
-                    };
+                  const newParams = new URLSearchParams(searchParams);
+                  if (newGender.length > 0) {
+                    newParams.set("gender", newGender[0]);
+                  } else {
+                    newParams.delete("gender");
+                  }
+                  setSearchParams(newParams);
+
+                  setFilters({
+                    ...filters,
+                    gender: newGender,
                   });
                 }}
               />
               <span className="labelText">{name}</span>
               <span className="count">{count}</span>
             </label>
-          ))}
+          )})}
         </div>
       </FilterGroup>
 
@@ -136,49 +203,59 @@ function Filters({ filters, setFilters }) {
 
       <FilterGroup title="CATEGORY" defaultOpen={true}>
         <div className="checkboxList">
-          {[
-            ["Bridal Lehengas", 480],
-            ["Party Lehengas", 320],
-            ["Anarkalis", 380],
-            ["Sarees", 640],
-            ["Sherwanis", 210],
-            ["Indo-Western", 290],
-            ["Salwar Suits", 160],
-          ].map(([name, count]) => (
+          {categories
+            .map(cat => cat.name)
+            .filter((name, i, self) => self.indexOf(name) === i)
+            .map((name) => {
+              const count = (productsData || []).filter(p => p.category === name).length;
+              return { name, count };
+            })
+            .filter(item => item.count > 0)
+            .map(({ name, count }) => {
+            return (
             <label className="checkboxRow" key={name}>
               <input
                 type="checkbox"
                 checked={filters.category.includes(name)}
                 onChange={() => {
-                  setFilters((prev) => {
-                    const exists = prev.category.includes(name);
-                    return {
-                      ...prev,
-                      category: exists
-                        ? prev.category.filter((c) => c !== name)
-                        : [...prev.category, name],
-                    };
+                  const exists = filters.category.includes(name);
+                  const newCategory = exists
+                    ? filters.category.filter((c) => c !== name)
+                    : [...filters.category, name];
+
+                  const newParams = new URLSearchParams(searchParams);
+                  if (newCategory.length > 0) {
+                    newParams.set("category", newCategory[0]);
+                  } else {
+                    newParams.delete("category");
+                  }
+                  setSearchParams(newParams);
+
+                  setFilters({
+                    ...filters,
+                    category: newCategory,
                   });
                 }}
               />
               <span className="labelText">{name}</span>
               <span className="count">{count}</span>
             </label>
-          ))}
+          )})}
         </div>
       </FilterGroup>
 
       {/* OCCASION */}
       <FilterGroup title="OCCASION" defaultOpen={true}>
         <div className="checkboxList">
-          {[
-            ["Wedding", 820],
-            ["Mehendi", 340],
-            ["Sangeet", 280],
-            ["Reception", 460],
-            ["Haldi", 190],
-            ["Festive", 510]
-          ].map(([name, count]) => (
+          {dynamicFilters.occasions
+            .filter((name, i, self) => self.indexOf(name) === i)
+            .map((name) => {
+              const count = (productsData || []).filter(p => p.occasion && p.occasion.includes(name)).length;
+              return { name, count };
+            })
+            .filter(item => item.count > 0)
+            .map(({ name, count }) => {
+            return (
             <label className="checkboxRow" key={name}>
 
               <input
@@ -186,21 +263,29 @@ function Filters({ filters, setFilters }) {
                 checked={filters.occasion.includes(name)}
                 onChange={() => {
                   // e.stopPropagation();
-                  setFilters((prev) => {
-                    const exists = prev.occasion.includes(name);
-                    return {
-                      ...prev,
-                      occasion: exists
-                        ? prev.occasion.filter((c) => c !== name)
-                        : [...prev.occasion, name],
-                    };
+                  const exists = filters.occasion.includes(name);
+                  const newOccasion = exists
+                    ? filters.occasion.filter((c) => c !== name)
+                    : [...filters.occasion, name];
+
+                  const newParams = new URLSearchParams(searchParams);
+                  if (newOccasion.length > 0) {
+                    newParams.set("occasion", newOccasion[0]);
+                  } else {
+                    newParams.delete("occasion");
+                  }
+                  setSearchParams(newParams);
+
+                  setFilters({
+                    ...filters,
+                    occasion: newOccasion,
                   });
                 }}
               />
               <span className="labelText">{name}</span>
               <span className="count">{count}</span>
             </label>
-          ))}
+          )})}
         </div>
       </FilterGroup>
 
@@ -208,36 +293,44 @@ function Filters({ filters, setFilters }) {
       {/*DESIGNER*/}
       <FilterGroup title="DESIGNER" defaultOpen={true}>
         <div className="checkboxList">
-          {[
-            ["Sabyasachi", 214],
-            ["Manish Malohtra", 187],
-            ["Tarun Tahiliani", 143],
-            ["Anita Donge", 118],
-            ["Ritu Kumar", 96],
-            ["Rahul Mishra", 84],
-            ["Other Designers", 620]
-          ].map(([name, count]) => (
+          {designers
+            .map(d => d.name)
+            .filter((name, i, self) => self.indexOf(name) === i)
+            .map((name) => {
+              const count = (productsData || []).filter(p => p.designer === name).length;
+              return { name, count };
+            })
+            .filter(item => item.count > 0)
+            .map(({ name, count }) => {
+            return (
             <label className="checkboxRow" key={name}>
-
               <input
                 type="checkbox"
                 checked={filters.designer.includes(name)}
                 onChange={() => {
-                  setFilters((prev) => {
-                    const exists = prev.designer.includes(name);
-                    return {
-                      ...prev,
-                      designer: exists
-                        ? prev.designer.filter((d) => d !== name)
-                        : [...prev.designer, name],
-                    };
+                  const exists = filters.designer.includes(name);
+                  const newDesigner = exists
+                    ? filters.designer.filter((d) => d !== name)
+                    : [...filters.designer, name];
+
+                  const newParams = new URLSearchParams(searchParams);
+                  if (newDesigner.length > 0) {
+                    newParams.set("designer", newDesigner[0]);
+                  } else {
+                    newParams.delete("designer");
+                  }
+                  setSearchParams(newParams);
+
+                  setFilters({
+                    ...filters,
+                    designer: newDesigner,
                   });
                 }}
               />
               <span className="labelText">{name}</span>
               <span className="count">{count}</span>
             </label>
-          ))}
+          )})}
         </div>
       </FilterGroup>
 
@@ -269,11 +362,23 @@ function Filters({ filters, setFilters }) {
             type="button" 
             className="budget__apply"
             onClick={() => {
+              const newMin = min ? parseInt(min.replace(/,/g, "")) : 0;
+              const newMax = max ? parseInt(max.replace(/,/g, "")) : Infinity;
+              
+              const newParams = new URLSearchParams(searchParams);
+              if (newMin > 0) newParams.set("minPrice", newMin);
+              else newParams.delete("minPrice");
+              
+              if (newMax !== Infinity) newParams.set("maxPrice", newMax);
+              else newParams.delete("maxPrice");
+              
+              setSearchParams(newParams);
+              
               setFilters((prev) => ({
                 ...prev,
                 budget: {
-                  min: min ? parseInt(min.replace(/,/g, "")) : 0,
-                  max: max ? parseInt(max.replace(/,/g, "")) : Infinity,
+                  min: newMin,
+                  max: newMax,
                 },
               }));
             }}
@@ -287,22 +392,36 @@ function Filters({ filters, setFilters }) {
       {/* SIZE */}
       <FilterGroup title="SIZE" defaultOpen={true}>
         <div className="sizegrid">
-          {["XS", "S", "M", "L", "XL", "XXL", "Free", "Custom"].map((s) => (
+          {dynamicFilters.sizes
+            .filter((s) => {
+              // Only show this size button if at least one product has it
+              return (productsData || []).some((p) => {
+                const itemSizes = p.size || [];
+                return itemSizes.some(
+                  (is) => is && typeof is === 'string' && is.trim().toLowerCase() === s.trim().toLowerCase()
+                );
+              });
+            })
+            .map((s) => (
             <button
               type="button"
               key={s}
               className={`size ${filters.size.includes(s) ? "active" : ""}`}
               onClick={() => {
-                setFilters((prev) => {
-                  const exists = prev.size.includes(s);
+                  const exists = filters.size.includes(s);
+                  const newSize = exists
+                    ? filters.size.filter((size) => size !== s)
+                    : [...filters.size, s];
+                    
+                  const newParams = new URLSearchParams(searchParams);
+                  if (newSize.length > 0) newParams.set("size", newSize[0]);
+                  else newParams.delete("size");
+                  setSearchParams(newParams);
 
-                  return {
-                    ...prev,
-                    size: exists
-                      ? prev.size.filter((size) => size !== s)
-                      : [...prev.size, s],
-                  };
-                });
+                  setFilters({
+                    ...filters,
+                    size: newSize
+                  });
               }}
             >
               {s}
@@ -316,25 +435,37 @@ function Filters({ filters, setFilters }) {
       <FilterGroup title="COLOUR" defaultOpen={true}>
         <div className="colorSwatches">
 
-          {[
-            "red", "pink", "orange", "yellow", "green", "blue",
-            "purple", "maroon", "gold", "ivory", "black", "white"
-          ].map((c) => (
+          {dynamicFilters.colors
+            .filter((c) => {
+              // Only show this color swatch if at least one product has it
+              return (productsData || []).some((p) => {
+                const itemColors = p.color || [];
+                return itemColors.some(
+                  (ic) => ic.toLowerCase() === c.toLowerCase()
+                );
+              });
+            })
+            .map((c) => (
             <div
               key={c}
-              className={`swatch ${c} ${filters.color.includes(c) ? "active" : ""
+              className={`swatch ${c.toLowerCase()} ${filters.color.includes(c) ? "active" : ""
                 }`}
+              title={c}
               onClick={() => {
-                setFilters((prev) => {
-                  const exists = prev.color.includes(c);
+                  const exists = filters.color.includes(c);
+                  const newColor = exists
+                    ? filters.color.filter((col) => col !== c)
+                    : [...filters.color, c];
+                    
+                  const newParams = new URLSearchParams(searchParams);
+                  if (newColor.length > 0) newParams.set("color", newColor[0]);
+                  else newParams.delete("color");
+                  setSearchParams(newParams);
 
-                  return {
-                    ...prev,
-                    color: exists
-                      ? prev.color.filter((col) => col !== c)
-                      : [...prev.color, c],
-                  };
-                });
+                  setFilters({
+                    ...filters,
+                    color: newColor
+                  });
               }}
             />
           ))}

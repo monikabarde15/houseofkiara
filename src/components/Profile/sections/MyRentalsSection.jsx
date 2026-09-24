@@ -10,6 +10,38 @@ const MyRentalsSection = ({ openDetailId, setOpenDetailId }) => {
   const cardRefs = useRef({});
   const scrollTimeoutRef = useRef(null);
 
+  const [rentalOrders, setRentalOrders] = useState([]);
+  const [activeOrder, setActiveOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchRentals = async () => {
+    try {
+      const authStore = await import('../../../store/authStore').then(m => m.default.getState());
+      const token = authStore.token;
+      if (!token) return;
+      
+      const res = await fetch(`/api/customer/auth/orders`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Filter only orders that are rentals
+        const rentals = data.data.filter(order => order.type === "Rental" || order.typeDetail === "Rental");
+        setRentalOrders(rentals);
+      }
+    } catch (err) {
+      console.error("Error fetching rentals:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRentals();
+  }, []);
+
   // Open detail panel for active rental
   useEffect(() => {
     if (openDetailId) {
@@ -27,7 +59,7 @@ const MyRentalsSection = ({ openDetailId, setOpenDetailId }) => {
     };
   }, []);
 
-  const handleDetailsClick = (bookingId) => {
+  const handleDetailsClick = async (bookingId) => {
     const isOpening = activeCardId !== bookingId;
     
     // Clear any pending scroll timeouts
@@ -38,6 +70,23 @@ const MyRentalsSection = ({ openDetailId, setOpenDetailId }) => {
     if (isOpening) {
       // Opening panel
       setActiveCardId(bookingId);
+      setActiveOrder(null);
+
+      try {
+        const authStore = await import('../../../store/authStore').then(m => m.default.getState());
+        const token = authStore.token;
+        if (token) {
+          const res = await fetch(`/api/customer/auth/orders/${bookingId}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+          const data = await res.json();
+          if (data.success) {
+            setActiveOrder(data.data);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching rental detail:", err);
+      }
       
       // 40ms delay before scrolling to panel
       scrollTimeoutRef.current = setTimeout(() => {
@@ -68,41 +117,41 @@ const MyRentalsSection = ({ openDetailId, setOpenDetailId }) => {
     }
   };
 
-  
-  const rentalBookings = [
-    { id: "HOK-240524-001", piece: "Ivory Tissue Lehenga", designer: "Manish Malhotra", status: "Dispatched", dates: "24–28 May 2025", fee: 8500, depositStatus: "pending" },
-    { id: "HOK-100625-002", piece: "Emerald Banarasi Saree", designer: "Raw Mango", status: "Confirmed", dates: "10–14 Jun 2025", fee: 4800, depositStatus: null },
-    { id: "HOK-120225-003", piece: "Blush Anarkali Set", designer: "Anita Dongre", status: "Completed", dates: "12–16 Feb 2025", fee: 5200, depositStatus: "refunded" },
-    { id: "HOK-180125-004", piece: "Sage Chanderi Suit", designer: "Mrunalini Rao", status: "Returned", dates: "18–22 Jan 2025", fee: 3600, depositStatus: "refunded" },
-    { id: "HOK-051224-005", piece: "Burgundy Velvet Lehenga", designer: "Tarun Tahiliani", status: "Cancelled", dates: "5–9 Dec 2024", fee: 11200, depositStatus: null }
-  ];
-  const activeBooking = rentalBookings.find(b => b.id === activeCardId);
-
   return (
     <div className="profile-right-my-rentals-section" id="rentals">
       <div className="profile-right-rental-grid">
-        {rentalBookings.slice(0, 3).map((booking) => (
-          <div
-            key={booking.id}
-            ref={(el) => {
-              if (el) cardRefs.current[booking.id] = el;
-            }}
-          >
-            <RentalCard
-              booking={booking}
-              isActive={activeCardId === booking.id}
-              onDetailsClick={handleDetailsClick}
-            />
-          </div>
-        ))}
+        {loading ? (
+          <div style={{ padding: '20px', color: '#666' }}>Loading rentals...</div>
+        ) : rentalOrders.length === 0 ? (
+          <div style={{ padding: '20px', color: '#666' }}>No rental bookings found.</div>
+        ) : (
+          rentalOrders.slice(0, 3).map((order) => (
+            <div
+              key={order.id || order.orderId}
+              ref={(el) => {
+                if (el) cardRefs.current[order.id || order.orderId] = el;
+              }}
+            >
+              <RentalCard
+                booking={order}
+                isActive={activeCardId === (order.id || order.orderId)}
+                onDetailsClick={() => handleDetailsClick(order.id || order.orderId)}
+              />
+            </div>
+          ))
+        )}
       </div>
       
       {/* Panel container with ref for scrolling */}
       <div ref={panelRef}>
         <RentalDetailPanel 
-          booking={activeBooking}
+          booking={activeOrder}
           isOpen={!!activeCardId}
           onClose={() => handleDetailsClick(activeCardId)}
+          onRefresh={() => {
+            fetchRentals();
+            handleDetailsClick(activeCardId);
+          }}
         />
       </div>
     </div>

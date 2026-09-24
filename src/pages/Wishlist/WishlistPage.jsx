@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import WishlistLayout from "../../components/Wishlist/layout/WishlistLayout";
 import MobileWishlistLayout from "../../components/Wishlist/mobile/layout/MobileWishlistLayout";
+import useWishlistStore from "../../store/wishlistStore";
 import "../../styles/wishlist/wishlist-page.css";
 
 const WishlistPage = () => {
@@ -17,6 +18,11 @@ const WishlistPage = () => {
     mediaQuery.addEventListener("change", handleChange);
     
     return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  useEffect(() => {
+    // Clear unseen items count when user views the wishlist page
+    useWishlistStore.getState().clearUnseenCount();
   }, []);
 
   return (

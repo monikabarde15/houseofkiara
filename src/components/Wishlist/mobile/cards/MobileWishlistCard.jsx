@@ -1,10 +1,13 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import MobileWishlistImageArea from './MobileWishlistImageArea';
 import MobileWishlistCardBody from './MobileWishlistCardBody';
 import '../../../../styles/wishlist/mobile/cards/mobile-wishlist-card.css';
+import { useNavigate } from 'react-router-dom';
+import { makeProductDetail } from '../../../ProductList';
 
 const MobileWishlistCard = ({ item, mode, index, showToast, onRemoveCard, onOpenAddToBagSheet }) => {
   const cardRef = useRef(null);
+  const [isRemoving, setIsRemoving] = useState(false);
   
   // Section 6: Card entry animation with staggered delays
   const getAnimationDelay = () => {
@@ -15,14 +18,41 @@ const MobileWishlistCard = ({ item, mode, index, showToast, onRemoveCard, onOpen
     return '0s';
   };
 
+  const navigate = useNavigate();
+
   const handleCardTap = (e) => {
     // Don't navigate if the click target is a button or link
     if (e.target.closest('button')) return;
-    console.log('Navigate to product detail:', item.name);
+    
+    const originalItem = item.originalData;
+    if (!originalItem) return;
+
+    const productId = item.id;
+    const productData = makeProductDetail(originalItem);
+    
+    const { rent, preloved, isNew } = originalItem;
+
+    if (rent && preloved) {
+        navigate(`/rentalandpreloved/${productId}`, { state: { product: productData } });
+    }
+    else if (rent && isNew) {
+        navigate(`/rentalandbuy/${productId}`, { state: { product: productData } });
+    }
+    else if (rent) {
+        navigate(`/onlyrental/${productId}`, { state: { product: productData } });
+    }
+    else if (preloved) {
+        navigate(`/preloved/${productId}`, { state: { product: productData } });
+    }
+    else {
+        navigate(`/buynew/${productId}`, { state: { product: productData } });
+    }
   };
 
   // Section 7.1: Handle remove from wishlist
   const handleRemove = () => {
+    if (isRemoving) return;
+    setIsRemoving(true);
     if (cardRef.current) {
       onRemoveCard?.(item, cardRef.current);
     }

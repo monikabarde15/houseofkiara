@@ -13,13 +13,55 @@ const useAuthStore = create(
       login: (userData, token) => {
         set({ 
           user: userData, 
-          token: token, 
+          token: token || get().token, 
           isAuthenticated: true,
           isCheckingAuth: false,
         });
         toast.success('Successfully logged in!');
+        
+        // Sync wishlist
+        import('./wishlistStore').then(m => {
+          m.default.getState().fetchWishlist();
+        });
+        
+        // Fetch order stats
+        get().fetchOrderStats();
       },
       
+      setUser: (userData) => {
+        set((state) => ({
+          user: typeof userData === 'function' ? userData(state.user) : { ...state.user, ...userData },
+        }));
+      },
+
+      updateProfile: async (profileUpdates) => {
+        const { token, user } = get();
+        if (!token) return { success: false, message: 'Not authenticated' };
+
+        try {
+          const response = await fetch('/api/customer/profile', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(profileUpdates),
+          });
+
+          const result = await response.json();
+          if (response.ok && result.success) {
+            set({
+              user: { ...user, ...result.data },
+            });
+            return { success: true, data: result.data };
+          } else {
+            return { success: false, message: result.message || 'Failed to update profile' };
+          }
+        } catch (error) {
+          return { success: false, message: error.message || 'Network error while updating profile' };
+        }
+      },
+
       logout: (showToast = true) => {
         set({ 
           user: null, 
@@ -40,7 +82,7 @@ const useAuthStore = create(
         }
 
         try {
-          const response = await fetch('/api/customer/auth/me', {
+          const response = await fetch('/api/customer/profile', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -56,6 +98,15 @@ const useAuthStore = create(
               isAuthenticated: true,
               isCheckingAuth: false,
             });
+            
+            // Sync wishlist on app load if authenticated
+            import('./wishlistStore').then(m => {
+              m.default.getState().fetchWishlist();
+            });
+            
+            // Fetch order stats async
+            get().fetchOrderStats();
+            
             return result.data;
           } else if (response.status === 401 || response.status === 403) {
             // Explicit authentication failure / expired token / suspended account
@@ -75,6 +126,31 @@ const useAuthStore = create(
           // Network offline / fetch failure: retain cached session
           set({ isCheckingAuth: false });
           return get().user;
+        }
+      },
+
+      fetchOrderStats: async () => {
+        const { token } = get();
+        if (!token || !get().user) return;
+        try {
+          const res = await fetch(`/api/customer/auth/orders`, {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+          const data = await res.json();
+          if (data.success) {
+            const rentals = data.data.filter(o => o.type === "Rental" || o.typeDetail === "Rental").length;
+            const purchases = data.data.filter(o => o.type !== "Rental" && o.typeDetail !== "Rental").length;
+            
+            set({
+              user: {
+                ...get().user,
+                rentalsCount: rentals,
+                purchasesCount: purchases
+              }
+            });
+          }
+        } catch (err) {
+          console.error("Failed to fetch order stats:", err);
         }
       },
     }),

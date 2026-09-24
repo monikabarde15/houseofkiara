@@ -111,6 +111,23 @@ export const createOrder = async (req, res) => {
       ...totalsFor(items, req.body.discount),
       logs: [{ message: "Order placed", type: "Order", user: req.body.createdBy || "Admin" }],
     });
+    
+    // Auto-block dates for rental items
+    for (const item of items) {
+      if (item.productId && item.mode && item.mode.toLowerCase() === 'rental' && item.rentalStartDate && item.rentalEndDate) {
+        const product = await Product.findOne({ $or: [{ productId: item.productId }, { _id: item.productId }] });
+        if (product) {
+          if (!product.blockedDates) product.blockedDates = [];
+          product.blockedDates.push({
+            from: new Date(item.rentalStartDate),
+            to: new Date(item.rentalEndDate),
+            reason: `Rented (Order ${order.orderId})`
+          });
+          await product.save();
+        }
+      }
+    }
+
     if (customer) await syncCustomerOrderStats([customer]);
     res.status(201).json({ success: true, data: view(order), related: { customerId: customer?.customerId, productIds: items.map((item) => item.productId) } });
   } catch (error) { res.status(422).json({ success: false, message: error.message }); }
@@ -139,6 +156,22 @@ export const updateOrder = async (req, res) => {
     }
 
     const order = await Order.findOneAndUpdate(byId(req.params.id), { $set: updateData }, { new: true });
+    
+    // If order status became Returned, Complete, or Cancelled -> unblock dates
+    if (["Returned", "Complete", "Cancelled"].includes(order.status)) {
+      for (const item of order.items || []) {
+        if (!item.productId || item.mode?.toLowerCase() !== "rental") continue;
+        const product = await Product.findOne({ $or: [{ productId: item.productId }, { _id: item.productId }] });
+        if (product && Array.isArray(product.blockedDates)) {
+          const orderTag = `Order ${order.orderId}`;
+          product.blockedDates = product.blockedDates.filter(
+            bd => !(bd.reason && bd.reason.includes(orderTag))
+          );
+          await product.save();
+        }
+      }
+    }
+
     if (customer) {
       syncCustomerOrderStats([customer]).catch(() => {});
     }

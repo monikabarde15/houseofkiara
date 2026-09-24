@@ -3,11 +3,19 @@ import mongoose from "../db/postgresAdapter.js";
 const addressSchema = new mongoose.Schema(
   {
     id: String,
-    label: String,
-    address: String,
+    label: { type: String, default: "Home" },
+    recipientName: { type: String, default: "" },
+    line1: { type: String, default: "" },
+    line2: { type: String, default: "" },
+    city: { type: String, default: "" },
+    state: { type: String, default: "" },
+    pin: { type: String, default: "" },
+    mobile: { type: String, default: "" },
+    phone: { type: String, default: "" },
+    address: { type: String, default: "" },
     isDefault: { type: Boolean, default: false }
   },
-  { _id: false }
+  { _id: false, strict: false }
 );
 
 const occasionSchema = new mongoose.Schema(

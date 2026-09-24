@@ -5,8 +5,9 @@ import "../../../styles/Profile/panels/RentalDetailPanel.css";
 import { useState } from 'react';
 import CancelBookingModal from '../modals/CancelBookingModal';
 import Toast from '../ui/Toast';
+import useAuthStore from '../../../store/authStore';
 
-const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
+const RentalDetailPanel = ({ booking, isOpen, onClose, onRefresh }) => {
     if (!booking) return null;
 
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
@@ -17,16 +18,35 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
         setIsCancelModalOpen(true);
     };
 
-    const handleConfirmCancel = () => {
-        setIsCancelModalOpen(false);
-        setToastMessage("Cancellation request submitted — our team will be in touch");
-        setShowToast(true);
+    const handleConfirmCancel = async () => {
+        try {
+            const token = useAuthStore.getState().token;
+            const res = await fetch(`/api/customer/auth/orders/${booking.id || booking.orderId || booking._id}/cancel`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setIsCancelModalOpen(false);
+                setToastMessage("Booking has been cancelled successfully");
+                setShowToast(true);
+                if (onRefresh) onRefresh();
+            } else {
+                setIsCancelModalOpen(false);
+                setToastMessage(data.message || "Failed to cancel booking");
+                setShowToast(true);
+            }
+        } catch (err) {
+            setIsCancelModalOpen(false);
+            setToastMessage("Network error occurred");
+            setShowToast(true);
+        }
     };
 
     return (
         <div className={`profile-rental-dpane ${isOpen ? 'open' : ''}`}>
             <div className="profile-rental-dpn">
-                <div className="profile-rental-dpn-title">{booking.piece}</div>
+                <div className="profile-rental-dpn-title">{booking.items?.[0]?.productName || booking.piece}</div>
                 <button className="profile-rental-dpn-close" onClick={onClose}>
                     Close
                     <X size={12} strokeWidth={1.5} />
@@ -35,9 +55,13 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
 
             <div className="profile-rental-dpb">
                 <div className="profile-rental-dp-img-cell">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.18" />
-                    </svg>
+                    {(booking.items?.[0]?.image || booking.image) ? (
+                        <img src={booking.items?.[0]?.image || booking.image} alt="Product" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                    ) : (
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.18" />
+                        </svg>
+                    )}
                 </div>
 
                 <div className="profile-rental-dp-info">
@@ -84,8 +108,8 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
 
                     </div>
 
-                    <div className="profile-rental-dp-name">{booking.piece}</div>
-                    <div className="profile-rental-dp-des">{booking.designer}</div>
+                    <div className="profile-rental-dp-name">{booking.items?.[0]?.productName || booking.piece}</div>
+                    <div className="profile-rental-dp-des">{booking.items?.[0]?.designer || booking.designer}</div>
 
                     {/* Dispatched  */}
                     {booking.status === 'Dispatched' && (
@@ -104,7 +128,7 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Rental Fee</div>
-                                <div className="profile-rental-dp-rv">₹{booking.fee.toLocaleString()}</div>
+                                <div className="profile-rental-dp-rv">₹{(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Security Deposit</div>
@@ -138,19 +162,19 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
                         <>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Booking ID</div>
-                                <div className="profile-rental-dp-rv">{booking.id}</div>
+                                <div className="profile-rental-dp-rv">{booking.orderId || booking.id}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Rental Dates</div>
-                                <div className="profile-rental-dp-rv">{booking.dates}</div>
+                                <div className="profile-rental-dp-rv">{booking.items?.[0]?.rentalDates ? `${booking.items[0].rentalDates.start} - ${booking.items[0].rentalDates.end}` : (booking.dates || "Not specified")}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Size</div>
-                                <div className="profile-rental-dp-rv">M</div>
+                                <div className="profile-rental-dp-rv">{booking.items?.[0]?.size || "M"}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Rental Fee</div>
-                                <div className="profile-rental-dp-rv">₹{booking.fee.toLocaleString()}</div>
+                                <div className="profile-rental-dp-rv">₹{(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Deposit Due</div>
@@ -201,7 +225,7 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Rental Fee</div>
-                                <div className="profile-rental-dp-rv">₹{booking.fee.toLocaleString()}</div>
+                                <div className="profile-rental-dp-rv">₹{(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Security Deposit</div>
@@ -231,7 +255,7 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Rental Fee</div>
-                                <div className="profile-rental-dp-rv">₹{booking.fee.toLocaleString()}</div>
+                                <div className="profile-rental-dp-rv">₹{(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Security Deposit</div>
@@ -265,7 +289,7 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Rental Fee</div>
-                                <div className="profile-rental-dp-rv profile-rental-dp-rv-cancelled">₹{booking.fee.toLocaleString()}</div>
+                                <div className="profile-rental-dp-rv profile-rental-dp-rv-cancelled">₹{(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Cancellation Date</div>

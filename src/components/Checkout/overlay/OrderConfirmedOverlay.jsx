@@ -1,5 +1,9 @@
 import "../../../styles/checkout/overlay/order-confirmed-overlay.css";
 import { Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import useCartStore from "../../../store/cartStore";
+import useAuthStore from "../../../store/authStore";
 
 
 const OrderConfirmedOverlay = ({
@@ -9,6 +13,13 @@ const OrderConfirmedOverlay = ({
     totals,
     onClose,
 }) => {
+    const navigate = useNavigate();
+    const onTrackOrderClick = () => {
+        // Navigate to My Purchases
+        navigate("/profile#purchases");
+        // Close checkout if needed
+        if (onClose) onClose();
+    };
 
     const groupedItems = {
         rental: [],
@@ -212,12 +223,10 @@ const OrderConfirmedOverlay = ({
                         {/* PRIMARY */}
                         <button
                             className="confirmed-btn confirmed-btn--primary"
+                            onClick={onTrackOrderClick}
                         >
-
                             <span className="confirmed-btn__shimmer"></span>
-
                             Track my order
-
                         </button>
 
 

@@ -8,12 +8,33 @@ const MobileRentalsSection = ({ onViewAll }) => {
 
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [rentalBookings, setRentalBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [rentalBookings] = useState([
-    { id: "HOK-240524-001", piece: "Ivory Tissue Lehenga", designer: "Manish Malhotra", status: "Dispatched", dates: "24–28 May 2025", fee: 8500, depositStatus: "pending" },
-    { id: "HOK-100625-002", piece: "Emerald Banarasi Saree", designer: "Raw Mango", status: "Confirmed", dates: "10–14 Jun 2025", fee: 4800, depositStatus: null },
-    { id: "HOK-120225-003", piece: "Blush Anarkali Set", designer: "Anita Dongre", status: "Completed", dates: "12–16 Feb 2025", fee: 5200, depositStatus: "refunded" }
-  ]);
+  const fetchRentals = async () => {
+    try {
+      const authStore = await import('../../../../store/authStore').then(m => m.default.getState());
+      const token = authStore.token;
+      if (!token) return;
+      
+      const res = await fetch(`/api/customer/auth/orders`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        const rentals = data.data.filter(order => order.type === "Rental" || order.typeDetail === "Rental");
+        setRentalBookings(rentals);
+      }
+    } catch (err) {
+      console.error("Error fetching rentals:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchRentals();
+  }, []);
 
   const handleRowClick = (id) => {
     const booking = rentalBookings.find(b => b.id === id);
@@ -33,13 +54,19 @@ const MobileRentalsSection = ({ onViewAll }) => {
             onLinkClick={onViewAll}
           />
           <div className="profile-mobile-item-block">
-            {rentalBookings.map((booking) => (
-              <MobileRentalRow
-                key={booking.id}
-                booking={booking}
-                onClick={handleRowClick}
-              />
-            ))}
+            {loading ? (
+              <div style={{ padding: '20px', color: '#666', fontSize: '12px' }}>Loading...</div>
+            ) : rentalBookings.length === 0 ? (
+              <div style={{ padding: '20px', color: '#666', fontSize: '12px' }}>No rental bookings found.</div>
+            ) : (
+              rentalBookings.slice(0, 3).map((booking) => (
+                <MobileRentalRow
+                  key={booking.id || booking.orderId}
+                  booking={booking}
+                  onClick={() => handleRowClick(booking.id || booking.orderId)}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -48,6 +75,10 @@ const MobileRentalsSection = ({ onViewAll }) => {
         isOpen={isSheetOpen}
         onClose={() => setIsSheetOpen(false)}
         booking={selectedBooking}
+        onRefresh={() => {
+          fetchRentals();
+          setIsSheetOpen(false); // Optionally close the sheet
+        }}
       />
     </>
   );

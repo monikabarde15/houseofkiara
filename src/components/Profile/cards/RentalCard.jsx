@@ -25,9 +25,13 @@ const RentalCard = ({ booking, isActive, onDetailsClick }) => {
             onClick={() => onDetailsClick(booking.id)}
         >
             <div className="profile-rental-pc-image">
-                <svg className="profile-rental-pc-placeholder" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.2" />
-                </svg>
+                {(booking.items?.[0]?.image || booking.image) ? (
+                    <img src={booking.items?.[0]?.image || booking.image} alt={booking.items?.[0]?.productName || booking.piece || "Rental"} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                ) : (
+                    <svg className="profile-rental-pc-placeholder" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.2" />
+                    </svg>
+                )}
             </div>
 
             <div className="profile-rental-pc-body">
@@ -36,9 +40,9 @@ const RentalCard = ({ booking, isActive, onDetailsClick }) => {
                     {booking.status}
                 </div>
 
-                <div className="profile-rental-pc-name">{booking.piece}</div>
-                <div className="profile-rental-pc-designer">{booking.designer}</div>
-                <div className="profile-rental-pc-meta">{booking.dates}</div>
+                <div className="profile-rental-pc-name">{booking.items?.[0]?.productName || booking.piece}</div>
+                <div className="profile-rental-pc-designer">{booking.items?.[0]?.designer || booking.designer}</div>
+                <div className="profile-rental-pc-meta">{booking.items?.[0]?.rentalDates ? `${booking.items[0].rentalDates.start} - ${booking.items[0].rentalDates.end}` : (booking.dates || "Dates not specified")}</div>
 
 
                 {booking.depositStatus === 'pending' && (
@@ -49,8 +53,8 @@ const RentalCard = ({ booking, isActive, onDetailsClick }) => {
                 )}
 
                 <div className="profile-rental-pc-footer">
-                    <div className="profile-rental-pc-price">₹{booking.fee.toLocaleString()}</div>
-                    <button className="profile-rental-pc-details" onClick={(e) => { e.stopPropagation(); onDetailsClick(booking.id); }}>
+                    <div className="profile-rental-pc-price">₹{(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}</div>
+                    <button className="profile-rental-pc-details" onClick={(e) => { e.stopPropagation(); onDetailsClick(booking.orderId || booking.id || booking._id); }}>
                         DETAILS
                         <ChevronRight size={11} strokeWidth={1.5} />
                     </button>

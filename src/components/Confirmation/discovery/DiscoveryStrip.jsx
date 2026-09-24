@@ -2,64 +2,9 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import { products } from "../../ProductList";
+import { makeProductDetail } from "../../ProductList";
 
 import "../../../styles/confirmation/discovery/discovery-strip.css";
-
-/* =========================================================
-   DISCOVERY STRIP DATA
-========================================================= */
-
-const confirmationDiscoveryCards = products
-    .slice(0, 4)
-    .map((item, index) => {
-
-        const isRental =
-            item.tag === "RENT";
-
-        const isPreloved =
-            item.tag === "PRELOVED";
-
-        const isNew =
-            item.tag === "NEW";
-
-        return {
-
-            id: item.id,
-
-            brand: item.designer,
-
-            name: item.name,
-
-            image: item.image?.[0],
-
-            price: isRental
-                ? item.modes?.rent?.pricing?.pricePerDay
-                : item.price,
-
-            suffix: isRental
-                ? ` / ${item.modes?.rent?.pricing?.minDays || 3}-day window`
-                : isPreloved
-                    ? " buy to own"
-                    : " new",
-
-            modeLabel: isRental
-                ? "Rent"
-                : isPreloved
-                    ? "Preloved"
-                    : "New",
-
-            modeClass: isRental
-                ? "hok-confirmation-discovery-mode-pill-rental"
-                : isPreloved
-                    ? "hok-confirmation-discovery-mode-pill-preloved"
-                    : "hok-confirmation-discovery-mode-pill-new",
-
-            thumbGradientClass:
-                `hok-confirmation-discovery-thumb-gradient-${index + 1}`,
-        };
-
-    });
 
 /* =========================================================
    COMPONENT
@@ -68,6 +13,60 @@ const confirmationDiscoveryCards = products
 const DiscoveryStrip = () => {
 
     const [isMobile, setIsMobile] = useState(false);
+    const [confirmationDiscoveryCards, setConfirmationDiscoveryCards] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchDiscovery = async () => {
+            try {
+                const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+                const response = await fetch(`${backendUrl}/api/products?status=Active`);
+                const data = await response.json();
+                
+                if (data.success && Array.isArray(data.products)) {
+                    const mapped = data.products
+                        .slice(0, 4)
+                        .map(makeProductDetail)
+                        .map((item, index) => {
+                            const isRental = item.tag === "RENT";
+                            const isPreloved = item.tag === "PRELOVED";
+                            const isNew = item.tag === "NEW";
+
+                            return {
+                                id: item.id,
+                                brand: item.designer,
+                                name: item.title || item.name,
+                                image: item.images?.[0] || item.image?.[0],
+                                price: isRental
+                                    ? item.rent?.pricing?.windows?.[0]?.price || 0
+                                    : item.preloved?.enabled
+                                        ? item.preloved?.pricing?.price
+                                        : item.buy?.pricing?.price,
+                                suffix: isRental
+                                    ? ` / ${item.rent?.pricing?.windows?.[0]?.days || 4}-day window`
+                                    : isPreloved
+                                        ? " buy to own"
+                                        : " new",
+                                modeLabel: isRental ? "Rent" : isPreloved ? "Preloved" : "New",
+                                modeClass: isRental
+                                    ? "hok-confirmation-discovery-mode-pill-rental"
+                                    : isPreloved
+                                        ? "hok-confirmation-discovery-mode-pill-preloved"
+                                        : "hok-confirmation-discovery-mode-pill-new",
+                                thumbGradientClass: `hok-confirmation-discovery-thumb-gradient-${index + 1}`,
+                            };
+                        });
+                    setConfirmationDiscoveryCards(mapped);
+                }
+            } catch (err) {
+                console.error("Failed to fetch discovery products", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDiscovery();
+    }, []);
 
     useEffect(() => {
         const mediaQuery = window.matchMedia("(max-width: 430px)");
@@ -77,6 +76,8 @@ const DiscoveryStrip = () => {
         mediaQuery.addEventListener("change", handleChange);
         return () => mediaQuery.removeEventListener("change", handleChange);
     }, []);
+
+    if (loading || confirmationDiscoveryCards.length === 0) return null;
 
     return (
 

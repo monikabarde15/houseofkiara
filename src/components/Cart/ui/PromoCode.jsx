@@ -10,26 +10,49 @@ const PromoCode = ({ onApply }) => {
   const [celebrate, setCelebrate] = useState(false);
   const feedbackRef = useRef(null); // Add ref for anchor element
 
-  const handleApply = () => {
-    const promo = PROMO_CODES[code];
+  const [loading, setLoading] = useState(false);
 
-    if (!promo) {
-      setError("This code is not valid. Try KAIRA10 or NEWUSER.");
-      setApplied(null);
-      return;
-    }
-
-    const appliedData = { code, ...promo };
-
-    setApplied(appliedData);
-    onApply(appliedData);
+  const handleApply = async () => {
+    if (!code) return;
+    setLoading(true);
     setError("");
+    
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+      const res = await fetch(`${backendUrl}/api/promotions/${code}`);
+      const data = await res.json();
+      
+      if (!data.success || !data.data) {
+        setError("This code is not valid or has expired.");
+        setApplied(null);
+        return;
+      }
 
-    // Delay animation to ensure feedback element is rendered
-    setTimeout(() => {
-      setCelebrate(true);
-      setTimeout(() => setCelebrate(false), 2000);
-    }, 50);
+      // Check if it's inactive (admin might have toggled it off)
+      if (data.data.status === "Inactive") {
+        setError("This code is currently inactive.");
+        setApplied(null);
+        return;
+      }
+
+      const promo = data.data;
+      const appliedData = { code: promo.code, type: promo.type, value: promo.value, label: promo.reason };
+
+      setApplied(appliedData);
+      onApply(appliedData);
+      setError("");
+
+      // Delay animation to ensure feedback element is rendered
+      setTimeout(() => {
+        setCelebrate(true);
+        setTimeout(() => setCelebrate(false), 2000);
+      }, 50);
+    } catch (err) {
+      setError("Error validating promo code. Please try again.");
+      setApplied(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRemove = () => {
@@ -70,8 +93,9 @@ const PromoCode = ({ onApply }) => {
           className="promo-btn apply-btn"
           onClick={handleApply}
           style={{ display: applied ? "none" : "block" }}
+          disabled={loading}
         >
-          APPLY
+          {loading ? "..." : "APPLY"}
         </button>
 
         <button

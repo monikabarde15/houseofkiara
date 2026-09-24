@@ -1,9 +1,12 @@
 // src/components/Wishlist/sections/EmptyWishlistState.jsx
 // Section 10: Empty State
 
+import { useNavigate } from "react-router-dom";
 import "../../../styles/wishlist/sections/empty-wishlist-state.css";
 
 const EmptyWishlistState = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="desk-wishlist-empty-state">
       {/* Ring Icon - 60×60px circle with heart SVG inside */}
@@ -43,7 +46,7 @@ const EmptyWishlistState = () => {
       </p>
       
       {/* CTA Button */}
-      <button className="desk-wishlist-empty-cta">
+      <button className="desk-wishlist-empty-cta" onClick={() => navigate("/main-page")}>
         Browse the Collection
       </button>
     </div>

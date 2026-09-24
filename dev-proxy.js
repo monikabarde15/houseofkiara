@@ -6,7 +6,9 @@ const app = express();
 const PORT = 3000;
 
 const apiProxyError = (err, req, res) => {
-  console.error(`[HPM] API proxy error for ${req.method} ${req.url}: ${err.code || err.message}`);
+  const errMsg = `[HPM] API proxy error for ${req.method} ${req.url}: ${err.code || err.message}`;
+  console.error(errMsg);
+  require('fs').appendFileSync('proxy-error.log', errMsg + '\\n');
   if (res.headersSent) return;
   res.writeHead(503, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify({
@@ -36,6 +38,7 @@ app.use('/hok_admin', createProxyMiddleware({
 app.use('/', createProxyMiddleware({
   target: 'http://localhost:3005',
   changeOrigin: true,
+  ws: true,
 }));
 
 const server = app.listen(PORT);

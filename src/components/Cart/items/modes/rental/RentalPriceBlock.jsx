@@ -5,14 +5,25 @@ import "../../../../../styles/cart/items/price-block.css";
 const formatPrice = (num) =>
   new Intl.NumberFormat("en-IN").format(num);
 
-const RentalPriceBlock = ({ product, booking }) => {
+const cleanPrice = (price) => {
+  if (!price) return 0;
+  return Number(String(price).replace(/[^\d]/g, ""));
+};
+
+const RentalPriceBlock = ({ item, product, booking }) => {
   const rent = product?.rent;
 
-  // SOURCE OF TRUTH
-  const days = booking?.rentalWindowDays || 0;
+  let days = booking?.rentalWindowDays || 0;
+  if (!days && booking?.deliveryDate && booking?.returnDate) {
+    const start = new Date(booking.deliveryDate);
+    const end = new Date(booking.returnDate);
+    const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    days = diff > 0 ? diff : 0;
+  }
+  if (!days) days = 4;
 
   // PER DAY PRICE
-  const perDay = rent?.pricing?.pricePerDay || 0;
+  const perDay = rent?.pricing?.pricePerDay || (cleanPrice(item?.price) / 4) || 0;
 
   // TOTAL PRICE (MAIN CALCULATION)
   const totalPrice = days * perDay;

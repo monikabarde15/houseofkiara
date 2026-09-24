@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useParams , useNavigate} from "react-router-dom";
 import { Heart, Star, TrendingUp, Gift, User, Calendar, CreditCard, MessageCircleCheck, Shield, CircleAlert, ArrowRight, ShoppingBag, X, Plus, Truck } from "lucide-react";
-import { products, makeProductDetail } from "../ProductList";
 import GalleryColumn from "../GalleryColumn";
 import '../../styles/productcategory/rental-and-preloved.css'
 import RentalCalendar from "../RentalCalendar";
@@ -46,16 +45,41 @@ const gradeConfig = {
     }
 };
 
-
 export default function RentalAndPreloved() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const found = products.find((p) => p.id === Number(id));
-    const product = found ? makeProductDetail(found) : null;
 
-    const [mode, setMode] = useState(
-        product?.modes?.rent?.enabled ? "rent" : "buy"
-    );
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [mode, setMode] = useState("rent");
+
+    useEffect(() => {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+        fetch(`${backendUrl}/api/web-products/${id}`)
+            .then(res => {
+                if(!res.ok) throw new Error("Not found");
+                return res.json();
+            })
+            .then(data => {
+                if (data && data.success && data.data) {
+                    setProduct(data.data);
+                    if (data.data.modes?.rent?.enabled) {
+                        setMode("rent");
+                    } else if (data.data.modes?.preloved?.enabled || data.data.modes?.buy?.enabled) {
+                        setMode("buy");
+                    }
+                    setLoading(false);
+                } else {
+                    throw new Error("No data returned");
+                }
+            })
+            .catch(err => {
+                console.error("API error:", err);
+                setError(true);
+                setLoading(false);
+            });
+    }, [id]);
 
     const [wish, setWish] = useState(false);
     const [selectedWindow, setSelectedWindow] = useState("standard");
@@ -63,15 +87,30 @@ export default function RentalAndPreloved() {
     const [selectedEnd, setSelectedEnd] = useState(null);
     const [selectedSize, setSelectedSize] = useState(null);
     const [openSections, setOpenSections] = useState(["details"]);
-
     const [isOfferOpen, setIsOfferOpen] = useState(false);
+    const [offer, setOffer] = useState(0);
+    const [inputValue, setInputValue] = useState(0);
+    const [note, setNote] = useState("");
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
-    if (!product) return <h2>Product not found</h2>;
+    useEffect(() => {
+        if (product) {
+            const initialPrice = product.modes?.preloved?.pricing?.price || product.modes?.buy?.pricing?.price || 185000;
+            const minOffr = Math.round(initialPrice * 0.54 / 5000) * 5000;
+            setOffer(minOffr);
+            setInputValue(minOffr);
+        }
+    }, [product]);
+
+    if (loading) return <h2 style={{ padding: 40 }}>Loading product...</h2>;
+    if (error || !product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
 
     // ===== DATA =====
     const rentData = product.modes?.rent || null;
-    const buyData = product.modes?.buy || null;
-    const sizes = product?.modes?.rent?.sizes || [];
+    const buyData = product.modes?.buy || product.modes?.preloved || null;
+    const sizes = product.modes?.rent?.sizes || product.sizeTable || [];
 
     const isOpen = (key) => openSections.includes(key);
 
@@ -86,30 +125,28 @@ export default function RentalAndPreloved() {
     };
 
     // ===== SELECTED WINDOW =====
-    const selectedWindowData =
-        rentData?.pricing?.windows?.find((w) => w.id === selectedWindow) ||
-        rentData?.pricing?.windows?.[0];
+    const displayWindows = rentData?.pricing?.windows?.length > 0 
+        ? rentData.pricing.windows 
+        : [
+            { id: "standard", label: "Standard", days: rentData?.pricing?.minDays || 4, price: (rentData?.pricing?.minDays || 4) * (rentData?.pricing?.pricePerDay || 0), tag: "most popular" },
+            { id: "extended", label: "Extended", days: (rentData?.pricing?.minDays || 4) + 2, price: ((rentData?.pricing?.minDays || 4) + 2) * (rentData?.pricing?.pricePerDay || 0), tag: "destination weddings" }
+        ];
 
+    const selectedWindowData = displayWindows.find((w) => w.id === selectedWindow) || displayWindows[0];
 
     // for dot color
     const grade = product.condition?.grade || "pristine";
 
-
     // ===============PRELOVED======================//
 
     // FOR DISCOUNT - 
-    const price = product.preloved?.pricing?.price || 185000;
-    const retail = 420000;
+    const price = product.modes?.preloved?.pricing?.price || product.modes?.buy?.pricing?.price || 185000;
+    const retail = product.modes?.preloved?.pricing?.originalPrice || 420000;
     const discount = Math.round(((retail - price) / retail) * 100);
 
     // MINIMUM AND MAXIMUM OFFER PRICE
-
     const minOffer = Math.round(price * 0.54 / 5000) * 5000;
     const maxOffer = price;
-
-    const [offer, setOffer] = useState(minOffer);      // number (slider)
-    const [inputValue, setInputValue] = useState(minOffer); // (typing)
-
 
     // CALCULATION ON TOP
     const savings = maxOffer - offer;
@@ -117,14 +154,6 @@ export default function RentalAndPreloved() {
 
     // Golden Progress Bar
     const progress = ((offer - minOffer) / (maxOffer - minOffer)) * 100;
-
-    // FOR INPUT AND NOTES
-    const [note, setNote] = useState("");
-    const [name, setName] = useState("");
-    const [phone, setPhone] = useState("");
-
-    // Offer submitted 
-    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const formatDate = (date) => {
         const y = date.getFullYear();
@@ -424,7 +453,7 @@ Product ID: ${product.id}
                                         {/* 2. RENTAL WINDOWS */}
                                         {/* WINDOWS */}
                                         <div className="rap-rental-rental-window">
-                                            {rentData.pricing.windows.map((w) => (
+                                            {displayWindows.map((w) => (
                                                 <div
                                                     key={w.id}
                                                     className={`rap-rental-rental-block ${selectedWindow === w.id ? "selected" : ""
@@ -1356,7 +1385,7 @@ Product ID: ${product.id}
 
                 </Row>
             </Container>
-            <RelatedProduct />
+            <RelatedProduct product={product} currentProductId={id} category={product?.category} />
         </section>
     );
 }

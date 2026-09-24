@@ -12,6 +12,7 @@ const WishlistGridCard = ({ product, type, index, onRemove, onOpenModal, isResto
   const animationDelay = index < 8 ? `${staggerDelays[index]}s` : "0s";
 
   const handleRemove = () => {
+    if (isRemoving) return;
     setIsRemoving(true);
 
     setTimeout(() => {

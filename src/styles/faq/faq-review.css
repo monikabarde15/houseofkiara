@@ -1,0 +1,70 @@
+/* src/styles/faq/faq-review.css */
+/* Review Mode Internal Toolbar & Indicators (D7, 10.9) */
+
+/* Review Bar (D7) */
+.rv-bar {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 300;
+  background-color: var(--hok-faq-charcoal);
+  color: #faf7f2;
+  padding: 12px 16px;
+  gap: 14px;
+  display: flex;
+  align-items: center;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 11px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.25);
+  border-radius: 2px;
+}
+
+.rv-bar button {
+  background-color: var(--hok-faq-terracotta);
+  color: #ffffff;
+  border: none;
+  padding: 6px 10px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 1px;
+  transition: opacity 0.2s ease;
+}
+
+.rv-bar button:hover {
+  opacity: 0.9;
+}
+
+/* DECISION Tag on Question Row (D7) */
+.cq.has-rv .cq-t::after {
+  content: "Decision";
+  margin-left: 8px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: var(--hok-faq-terracotta);
+  padding: 2px 5px;
+  vertical-align: middle;
+  border-radius: 1px;
+}
+
+/* When showing decisions only in review mode */
+.rv-only .cq:not(.has-rv) {
+  display: none;
+}
+
+/* Responsive review bar */
+@media (max-width: 760px) {
+  .rv-bar {
+    left: 12px;
+    right: 84px;
+    bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+}

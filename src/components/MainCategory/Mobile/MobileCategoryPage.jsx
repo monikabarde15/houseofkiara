@@ -15,17 +15,17 @@ import MobileContinueBrowsing from "./MobileContinueBrowsing";
 import MobileFooter from "./MobileFooter";
 import MobileFilterSheet from "./MobileFilterSheet";
 
-// Product data
-import productsData from "../../../data/mainCategoryPageData";
+// Remove static import
+// import productsData from "../../../data/mainCategoryPageData";
 
-const MobileCategoryPage = () => {
+const MobileCategoryPage = ({ productsData }) => {
   const [searchParams] = useSearchParams();
   const [sortBy, setSortBy] = useState("recommended");
   const [visibleItems, setVisibleItems] = useState(6);
   const [isLoading, setIsLoading] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   
-  // Filter state
+  // Products state is passed down as a prop (productsData)
   const [filters, setFilters] = useState({
     rentType: [],
     category: [],
@@ -35,7 +35,8 @@ const MobileCategoryPage = () => {
     availabilityFrom: "",
     availabilityTo: "",
     size: [],
-    colour: []
+    colour: [],
+    gender: []
   });
 
   // Get URL parameters
@@ -44,6 +45,8 @@ const MobileCategoryPage = () => {
   const designer = searchParams.get("designer");
   const occasion = searchParams.get("occasion");
   const gender = searchParams.get("gender");
+  const size = searchParams.get("size");
+  const color = searchParams.get("color");
 
   // ===== PAGE ENTRY -  29.1 =====
   // Scroll to top on page load
@@ -62,7 +65,8 @@ const MobileCategoryPage = () => {
       availabilityFrom: "",
       availabilityTo: "",
       size: [],
-      colour: []
+      colour: [],
+      gender: []
     };
 
     // Set mode filter based on section
@@ -81,18 +85,28 @@ const MobileCategoryPage = () => {
 
     // Set gender filter
     if (gender) {
-      // Gender filter logic here
+      preAppliedFilters.gender = [gender];
+    }
+    
+    // Set size filter
+    if (size) {
+      preAppliedFilters.size = [size];
+    }
+    
+    // Set color filter
+    if (color) {
+      preAppliedFilters.colour = [color];
     }
 
     setFilters(preAppliedFilters);
-  }, [section, category, designer, occasion, gender]);
+  }, [section, category, designer, occasion, gender, size, color]);
 
   // Build heading and breadcrumb
   const heading = buildHeading({ section, category, designer, occasion });
   const breadcrumb = buildBreadcrumb({ section, category, designer, occasion });
 
   // ===== FILTERING LOGIC =====
-  const filteredProducts = productsData.filter((product) => {
+  const filteredProducts = (productsData || []).filter((product) => {
     // Rent type filter
     if (filters.rentType.length > 0) {
       const match = filters.rentType.some(type => {
@@ -112,6 +126,31 @@ const MobileCategoryPage = () => {
     
     // Designer filter
     if (filters.designer.length > 0 && !filters.designer.includes(product.designer)) return false;
+
+    // Gender filter
+    if (filters.gender && filters.gender.length > 0) {
+      const itemGender = product.gender ? product.gender.toLowerCase() : "";
+      const match = filters.gender.some(g => g.toLowerCase() === itemGender);
+      if (!match) return false;
+    }
+    
+    // Size filter
+    if (filters.size && filters.size.length > 0) {
+      const itemSizes = product.size || [];
+      const match = filters.size.some((s) =>
+        itemSizes.some((is) => is && typeof is === 'string' && is.trim().toLowerCase() === s.trim().toLowerCase())
+      );
+      if (!match) return false;
+    }
+
+    // Color filter
+    if (filters.colour && filters.colour.length > 0) {
+      const itemColors = product.color || [];
+      const match = filters.colour.some((c) =>
+        itemColors.some((ic) => ic.toLowerCase() === c.toLowerCase())
+      );
+      if (!match) return false;
+    }
     
     // Budget filter
     const price = product.buyPrice ? parseInt(product.buyPrice.replace(/,/g, "")) : 0;
@@ -184,6 +223,15 @@ const MobileCategoryPage = () => {
     else if (filters.designer.includes(tagToRemove)) {
       setFilters(prev => ({ ...prev, designer: prev.designer.filter(d => d !== tagToRemove) }));
     }
+    else if (filters.gender && filters.gender.includes(tagToRemove)) {
+      setFilters(prev => ({ ...prev, gender: prev.gender.filter(g => g !== tagToRemove) }));
+    }
+    else if (filters.size && filters.size.includes(tagToRemove)) {
+      setFilters(prev => ({ ...prev, size: prev.size.filter(s => s !== tagToRemove) }));
+    }
+    else if (filters.colour && filters.colour.includes(tagToRemove)) {
+      setFilters(prev => ({ ...prev, colour: prev.colour.filter(c => c !== tagToRemove) }));
+    }
   };
 
   // Clear all filters
@@ -197,7 +245,8 @@ const MobileCategoryPage = () => {
       availabilityFrom: "",
       availabilityTo: "",
       size: [],
-      colour: []
+      colour: [],
+      gender: []
     });
   };
 
@@ -212,6 +261,9 @@ const MobileCategoryPage = () => {
     filters.category.forEach(cat => tags.push(cat));
     filters.occasion.forEach(occ => tags.push(occ));
     filters.designer.forEach(des => tags.push(des));
+    if (filters.gender) filters.gender.forEach(gen => tags.push(gen));
+    if (filters.size) filters.size.forEach(s => tags.push(s));
+    if (filters.colour) filters.colour.forEach(c => tags.push(c));
     return tags;
   };
 

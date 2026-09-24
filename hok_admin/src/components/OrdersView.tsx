@@ -53,7 +53,7 @@ export default function OrdersView({ orders, setView, setSelectedOrderId, onCrea
     return matchesSearch && matchesStatus && matchesMode && matchesDates;
   });
 
-  const statuses = ['All Statuses', 'Confirmed', 'Dispatched', 'Shipped', 'Delivered', 'Return Sent', 'Returned', 'Complete', 'Processed'];
+  const statuses = ['All Statuses', 'Confirmed', 'Dispatched', 'Shipped', 'Delivered', 'Return Sent', 'Returned', 'Complete', 'Processed', 'Cancelled'];
   const modes = ['All Modes', 'Rental', 'Preloved', 'Buy'];
 
   return (
@@ -235,7 +235,9 @@ export default function OrdersView({ orders, setView, setSelectedOrderId, onCrea
                     </td>
                     <td className="px-5 py-3.5">
                       <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase ${
-                        order.status === 'Returned' || order.status === 'Complete' || order.status === 'Processed'
+                        order.status === 'Cancelled'
+                          ? 'bg-red-50 text-red-700 border border-red-100'
+                          : order.status === 'Returned' || order.status === 'Complete' || order.status === 'Processed'
                           ? 'bg-green-50 text-green-700 border border-green-100'
                           : order.status === 'Shipped' || order.status === 'Dispatched'
                           ? 'bg-blue-50 text-blue-700 border border-blue-100'

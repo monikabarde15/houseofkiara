@@ -2,10 +2,15 @@
 import React from "react";
 import "../../../../../styles/cart/items/price-block.css";
 
-const NewPriceBlock = ({ product }) => {
+const cleanPrice = (price) => {
+  if (!price) return 0;
+  return Number(String(price).replace(/[^\d]/g, ""));
+};
+
+const NewPriceBlock = ({ item, product }) => {
   const pricing = product?.new?.pricing || {};
 
-  const price = pricing?.price || 0;
+  const price = pricing?.price || cleanPrice(item?.price) || 0;
 
   return (
     <div className="new-price">

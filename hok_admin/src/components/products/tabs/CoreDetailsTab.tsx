@@ -442,8 +442,8 @@ export function CoreDetailsTab({
             </label>
             <input
               type="text"
-              value={formData.sizes?.[0] || ''}
-              onChange={(e) => onFieldChange('sizes', [e.target.value])}
+              value={formData.sizes?.join(', ') || ''}
+              onChange={(e) => onFieldChange('sizes', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
               className={inputClass}
             />
             <p className={helpClass}>

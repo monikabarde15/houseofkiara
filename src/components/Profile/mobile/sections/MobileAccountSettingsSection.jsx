@@ -13,48 +13,113 @@ import MobileSectionLabel from "../ui/MobileSectionLabel";
 import MobileSettingsRow from "../rows/MobileSettingsRow";
 import MobileToggle from "../ui/MobileToggle";
 import MobileEditProfileModal from "../modals/MobileEditProfileModal";
+import Toast from "../../ui/Toast";
+import useAuthStore from "../../../../store/authStore";
 
 import "../../../../styles/Profile/mobile/sections/MobileAccountSettingsSection.css";
 
 const MobileAccountSettingsSection = () => {
-  const [whatsAppOn, setWhatsAppOn] = useState(true);
-  const [emailOn, setEmailOn] = useState(true);
-  const [offersOn, setOffersOn] = useState(false);
+  const { user, token, updateProfile } = useAuthStore();
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [isSendingReset, setIsSendingReset] = useState(false);
 
-  const [profileData, setProfileData] =
-    useState({
-      firstName: "Priya",
-      lastName: "Verma",
-      email: "priya@example.com",
-      mobile: "+91 98765 43210",
-      city: "Indore"
-    });
+  const showToastMsg = (msg) => {
+    setToastMessage(msg);
+    setShowToast(true);
+  };
+
+  const firstName = user?.firstName || (user?.name ? user.name.split(' ')[0] : 'Customer');
+  const lastName = user?.lastName || (user?.name ? user.name.split(' ').slice(1).join(' ') : '');
+  const email = user?.email || 'customer@houseofkaira.com';
+  const mobile = user?.phone || user?.mobile || '';
+  const city = user?.location || user?.city || 'India';
+
+  const whatsAppOn = user?.preferences?.whatsappNotifications !== false;
+  const emailOn = user?.preferences?.newsletter !== false;
+  const offersOn = Boolean(user?.preferences?.marketingOptIn);
 
   const handleEditProfile = () => {
     setIsEditProfileOpen(true);
   };
 
-  const handleSecurity = () => {
-    console.log(
-      "Open security settings"
-    );
+  const handleSaveProfile = async (updatedData) => {
+    await updateProfile({
+      firstName: updatedData.firstName,
+      lastName: updatedData.lastName,
+      name: `${updatedData.firstName || ''} ${updatedData.lastName || ''}`.trim(),
+      email: updatedData.email,
+      phone: updatedData.mobile,
+      mobile: updatedData.mobile,
+      city: updatedData.city,
+      location: updatedData.city,
+    });
+    setIsEditProfileOpen(false);
+    showToastMsg("Profile updated successfully");
   };
 
-  const handlePaymentMethods =
-    () => {
-      console.log(
-        "Open payment methods"
-      );
-    };
+  const handleToggleWhatsApp = async (val) => {
+    await updateProfile({
+      preferences: {
+        ...(user?.preferences || {}),
+        whatsappNotifications: val,
+      }
+    });
+    showToastMsg(`WhatsApp updates ${val ? "enabled" : "disabled"}`);
+  };
 
-  const handleOpenRentalDetail =
-    (id) => {
-      console.log(
-        "Open deposit detail:",
-        id
-      );
-    };
+  const handleToggleEmail = async (val) => {
+    await updateProfile({
+      preferences: {
+        ...(user?.preferences || {}),
+        newsletter: val,
+      }
+    });
+    showToastMsg(`Email notifications ${val ? "enabled" : "disabled"}`);
+  };
+
+  const handleToggleOffers = async (val) => {
+    await updateProfile({
+      preferences: {
+        ...(user?.preferences || {}),
+        marketingOptIn: val,
+      }
+    });
+    showToastMsg(`Offer notifications ${val ? "enabled" : "disabled"}`);
+  };
+
+  const handleSecurity = async () => {
+    if (isSendingReset) return;
+    setIsSendingReset(true);
+    try {
+      const response = await fetch('/api/customer/profile/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const res = await response.json();
+      if (res.success) {
+        showToastMsg(`Password reset link sent to ${email}. Check your inbox!`);
+      } else {
+        showToastMsg(res.message || "Failed to send reset link");
+      }
+    } catch (err) {
+      showToastMsg("Network error. Please try again.");
+    } finally {
+      setIsSendingReset(false);
+    }
+  };
+
+  const handlePaymentMethods = () => {
+    showToastMsg("Payment methods management coming soon");
+  };
+
+  const handleOpenRentalDetail = (id) => {
+    console.log("Open deposit detail:", id);
+  };
 
   return (
     <>
@@ -82,7 +147,7 @@ const MobileAccountSettingsSection = () => {
               />
             }
             label="Personal Details"
-            subLabel="Name, email, mobile"
+            subLabel={`${firstName} ${lastName}, ${email}`}
             onClick={
               handleEditProfile
             }
@@ -95,8 +160,8 @@ const MobileAccountSettingsSection = () => {
                 strokeWidth={1.5}
               />
             }
-            label="Security"
-            subLabel="Password, login sessions"
+            label="Security & Password"
+            subLabel={isSendingReset ? "Sending reset link..." : "Send password reset link to email"}
             onClick={
               handleSecurity
             }
@@ -219,9 +284,7 @@ const MobileAccountSettingsSection = () => {
 
               <MobileToggle
                 isOn={whatsAppOn}
-                onToggle={
-                  setWhatsAppOn
-                }
+                onToggle={handleToggleWhatsApp}
               />
             </div>
 
@@ -250,9 +313,7 @@ const MobileAccountSettingsSection = () => {
 
               <MobileToggle
                 isOn={emailOn}
-                onToggle={
-                  setEmailOn
-                }
+                onToggle={handleToggleEmail}
               />
             </div>
 
@@ -280,25 +341,32 @@ const MobileAccountSettingsSection = () => {
 
               <MobileToggle
                 isOn={offersOn}
-                onToggle={
-                  setOffersOn
-                }
+                onToggle={handleToggleOffers}
               />
             </div>
           </div>
         </div>
       </section>
+
       <MobileEditProfileModal
         isOpen={isEditProfileOpen}
         onClose={() =>
           setIsEditProfileOpen(false)
         }
-        onSave={(updatedData) => {
-          setProfileData(updatedData);
-
-          setIsEditProfileOpen(false);
+        onSave={handleSaveProfile}
+        profileData={{
+          firstName,
+          lastName,
+          email,
+          mobile,
+          city
         }}
-        profileData={profileData}
+      />
+
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
       />
     </>
   );

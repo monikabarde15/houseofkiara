@@ -161,8 +161,29 @@ export const buildHeading = ({
     };
   }
 
+  if (category) {
+    return {
+      title: "",
+      highlight: category,
+    };
+  }
+
+  if (designer) {
+    return {
+      title: "",
+      highlight: designer,
+    };
+  }
+
+  if (occasion) {
+    return {
+      title: "",
+      highlight: occasion,
+    };
+  }
+
   return {
-    title: "Bridal",
-    highlight: "Lehengas",
+    title: "All",
+    highlight: "Products",
   };
 };

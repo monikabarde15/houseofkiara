@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Heart, Search, ZoomIn } from "lucide-react";
+import useWishlistStore from "../store/wishlistStore";
 import '../styles/gallery-column.css'
 
 const badgeConfig = {
@@ -19,24 +20,23 @@ const badgeConfig = {
 
 
 
-export default function GalleryColumn({ images = [], variant = "rent", video = null }) {
+export default function GalleryColumn({ images = [], variant = "rent", video = null, productId }) {
 
     const media = [
         ...images.map(img => ({ type: "image", src: img })),
         ...(video ? [{ type: "video", src: video }] : [])
     ];
 
-    // const [activeMedia, setActiveMedia] = useState(media?.[0] || null);
-    const [wish, setWish] = useState(false);
+    const wishlistItems = useWishlistStore((state) => state.items);
+    const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+    const isWishlisted = productId ? wishlistItems.includes(productId) : false;
+
     const [activeIndex, setActiveIndex] = useState(0);
-    const activeMedia = media[activeIndex];
+    const activeMedia = media.length > 0 ? media[activeIndex] : null;
 
     const badge = badgeConfig[variant];
     return (
-
-
         <div className="gallery-column">
-
             {/* THUMBNAILS Image + Video */}
             <div className="thumbs">
                 {media.map((item, i) => (
@@ -57,7 +57,7 @@ export default function GalleryColumn({ images = [], variant = "rent", video = n
             {/* MAIN IMAGE */}
             <div className="main-img"
                 onMouseMove={(e) => {
-                    if (activeMedia.type !== "image") return;
+                    if (!activeMedia || activeMedia.type !== "image") return;
 
                     const rect = e.currentTarget.getBoundingClientRect();
                     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -67,16 +67,20 @@ export default function GalleryColumn({ images = [], variant = "rent", video = n
                     e.currentTarget.style.setProperty("--y", `${y}%`);
                 }}>
 
-                {activeMedia.type === "video" ? (
-                    <video
-                        src={activeMedia.src}
-                        controls
-                        autoPlay
-                        muted
-                        playsInline
-                    />
+                {activeMedia ? (
+                    activeMedia.type === "video" ? (
+                        <video
+                            src={activeMedia.src}
+                            controls
+                            autoPlay
+                            muted
+                            playsInline
+                        />
+                    ) : (
+                        <img src={activeMedia.src} alt="" />
+                    )
                 ) : (
-                    <img src={activeMedia.src} alt="" />
+                    <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f5f5f5" }}>No images available</div>
                 )}
 
                 {/* BADGE */}
@@ -85,13 +89,20 @@ export default function GalleryColumn({ images = [], variant = "rent", video = n
                 {/* WISHLIST */}
                 <button
                     className="gallery-wishlist-icon-btn"
-                    onClick={() => setWish(!wish)}
+                    onClick={() => productId && toggleWishlist(productId)}
                 >
-                    <Heart className={wish ? "active" : ""} />
+                    <Heart 
+                        className={isWishlisted ? "active" : ""} 
+                        style={{
+                            fill: isWishlisted ? "#B85C38" : "none",
+                            stroke: isWishlisted ? "#B85C38" : "currentColor",
+                            color: isWishlisted ? "#B85C38" : "inherit"
+                        }}
+                    />
                 </button>
 
                 {/* ZOOM */}
-                {activeMedia.type === "image" && (
+                {activeMedia?.type === "image" && (
                     <div className="zoom-hint">
                         <ZoomIn className="zoom-hint-icon" />
                         <span>Zoom</span>

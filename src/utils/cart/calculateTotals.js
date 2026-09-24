@@ -20,6 +20,7 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
     const { product, booking, type } = item;
 
     let basePrice = 0;
+    let days = 0;
 
     // RENTAL
     if (type === "rental") {
@@ -36,15 +37,17 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
             (end - start) / (1000 * 60 * 60 * 24)
           );
 
-          return diff > 0 ? diff : 0;
+          // Add +1 to include both start and end dates in the count
+          const totalDays = diff + 1;
+          return totalDays > 0 ? totalDays : 0;
         }
 
-        return 0;
+        return 4;
       };
 
-      const days = getRentalDays(booking);
+      days = getRentalDays(booking);
 
-      const perDay = product?.rent?.pricing?.pricePerDay || 0;
+      const perDay = product?.rent?.pricing?.pricePerDay || (cleanPrice(item.price) / 4) || 0;
 
       basePrice = days * perDay;
     }
@@ -52,12 +55,12 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
     // PRELOVED
     if (type === "preloved") {
       // basePrice = cleanPrice(product?.price);
-      basePrice = cleanPrice(product?.preloved?.pricing?.price);
+      basePrice = cleanPrice(product?.preloved?.pricing?.price) || cleanPrice(item.price) || 0;
     }
 
     // NEW
     if (type === "new") {
-      basePrice = cleanPrice(product?.price);
+      basePrice = cleanPrice(product?.price) || cleanPrice(item.price) || 0;
     }
 
     if (basePrice <= 0) return;
@@ -67,14 +70,12 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
     itemsGrouped[type].push({
       id: item.id,
       type,
-      productName: product?.title,
+      productName: product?.title || product?.name,
       basePrice,
       size: booking?.size || product?.size,
       startDate: booking?.deliveryDate,
       endDate: booking?.returnDate,
-      windowDays:
-        booking?.rentalWindowDays ||
-        booking?.windowDays,
+      windowDays: type === "rental" ? days : (booking?.rentalWindowDays || booking?.windowDays),
     });
   });
 

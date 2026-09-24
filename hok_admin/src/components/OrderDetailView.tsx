@@ -207,7 +207,7 @@ export default function OrderDetailView({ orderId, order: initialOrder, onBack, 
     try { await orderApi.addOrderLog(order.id, logMessage, 'Customer Communication'); } catch (error) { toast.error(error instanceof Error ? error.message : 'Tracking message opened, but log could not be saved'); }
   };
 
-  const steps = ['Confirmed', 'Dispatched', 'Shipped', 'Delivered', 'Return Sent', 'Returned', 'Complete'];
+  const steps = ['Confirmed', 'Dispatched', 'Shipped', 'Delivered', 'Return Sent', 'Returned', 'Complete', 'Cancelled'];
   const currentStepIndex = steps.indexOf(status === 'Processed' ? 'Complete' : status);
 
   return (

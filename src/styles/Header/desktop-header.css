@@ -153,15 +153,22 @@
   position: relative;
 }
 
-.hok-desktop-header-cart-dot {
+.hok-desktop-header-badge {
   position: absolute;
-  top: 7px;
-  right: 8px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #b85c38;
+  top: 1px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #B85C38;
   border: 1.5px solid #fffefb;
+  color: #ffffff !important;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Tablet */

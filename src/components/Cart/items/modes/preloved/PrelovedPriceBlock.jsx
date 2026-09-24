@@ -2,14 +2,19 @@
 import React from "react";
 import "../../../../../styles/cart/items/price-block.css";
 
-const PrelovedPriceBlock = ({ product }) => {
+const cleanPrice = (price) => {
+  if (!price) return 0;
+  return Number(String(price).replace(/[^\d]/g, ""));
+};
+
+const PrelovedPriceBlock = ({ item, product }) => {
   const pricing = product?.preloved?.pricing || {};
 
-  const resale = pricing?.price || 0;
-  const retail = pricing?.originalPrice || 0;
+  const resale = pricing?.price || cleanPrice(item?.price) || 0;
+  const retail = pricing?.originalPrice || cleanPrice(product?.originalPrice) || 0;
 
   const savings = retail - resale;
-  const percent = retail
+  const percent = retail > 0 && resale > 0
     ? Math.round((savings / retail) * 100)
     : 0;
 

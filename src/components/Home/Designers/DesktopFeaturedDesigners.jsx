@@ -46,10 +46,20 @@ const DesktopFeaturedDesigners = () => {
             <article
               key={designer.id}
               className="desk-designer-card"
-              style={{
-                backgroundImage: `url(${designer.image})`,
-              }}
             >
+              <img 
+                src={designer.image} 
+                alt={designer.name}
+                loading="lazy"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  zIndex: 0
+                }}
+              />
               <div className="desk-designer-overlay" />
 
               <div className="desk-designer-content">

@@ -28,6 +28,13 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
     itemsGrouped,
   } = totals;
 
+  const totalDeposit = cartItems.reduce((acc, item) => {
+    if (item.type === "rental") {
+      return acc + (item.product?.rent?.deposit?.amount || 0);
+    }
+    return acc;
+  }, 0);
+
   return (
     <div className="order-summary">
 
@@ -127,7 +134,7 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
 
         <div className="summary-total-sub">
           {hasRental
-            ? "Excl. delivery + ₹15,000 security deposit"
+            ? `Excl. delivery + ₹${totalDeposit.toLocaleString()} security deposit`
             : "Excl. delivery charges"}
         </div>
 
@@ -143,7 +150,7 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
 
         {hasRental && (
           <p>
-            <strong>* Security deposit (₹15,000)</strong> not collected here — our team contacts you before dispatch. Refunded within 3–5 business days of return inspection.
+            <strong>* Security deposit (₹{totalDeposit.toLocaleString()})</strong> not collected here — our team contacts you before dispatch. Refunded within 3–5 business days of return inspection.
           </p>
         )}
 

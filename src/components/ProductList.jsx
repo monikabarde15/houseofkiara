@@ -592,73 +592,229 @@ The dupatta is pristine. The blouse fits a 32" bust; the skirt waist is adjustab
   }
 ];
 /* ================= FINAL HELPER ================= */
-export const makeProductDetail = (item) => ({
-  ...item,
-  type:
-    item.tag === "RENT"
-      ? "rental"
-      : item.tag === "PRELOVED"
-        ? "preloved"
-        : item.tag === "NEW"
-          ? "new"
-          : "rental",
-  title: item.name,
-  subTitle: "Anarkali Set",
-  rent: item.modes?.rent || null,
-  preloved: item.modes?.preloved || null,
-  buy: item.modes?.buy || null,
-  new: item.modes?.buy || null,
+export const makeProductDetail = (item) => {
+  // Support both sources:
+  // 1. Full product API: has listingModes array e.g. ["RENTAL", "PRELOVED", "BUY NEW"]
+  // 2. Web-products listing API: has rent/preloved/isNew boolean flags
+  const listingModes = item.listingModes || [];
+  const rentEnabled  = listingModes.includes("RENTAL")  || item.rent === true;
+  const prelovedEnabled = listingModes.includes("PRELOVED") || listingModes.includes("RE-SELL") || item.preloved === true;
+  const buyEnabled   = listingModes.includes("BUY NEW") || listingModes.includes("BUY")  || item.isNew === true;
 
+  // Build modes object (used by detail page toggle buttons)
+  const builtModes = item.modes || {
+    rent: {
+      enabled: rentEnabled,
+      pricing: {
+        pricePerDay: item.perDayRate || 0,
+        minDays: item.minimumDurationDays || 3,
+        windows: [
+          { id: "standard", label: "Standard Window", price: item.rentalPrice || 0, days: 4, tag: "most popular" },
+          { id: "extended", label: "Extended Window", price: item.extendedWindowPrice || 0, days: 7, tag: "destination weddings" }
+        ]
+      },
+      deposit: { amount: item.securityDeposit || 0, refundable: true, returnDays: 5 },
+      availability: {
+        unavailableDates: (() => {
+          const dates = [];
+          if (Array.isArray(item.blockedDates)) {
+            item.blockedDates.forEach(bd => {
+              if (!bd.from || !bd.to) return;
+              const start = new Date(bd.from);
+              const end = new Date(bd.to);
+              const bufferStart = new Date(start);
+              bufferStart.setDate(bufferStart.getDate() - (item.preRentalBufferDays || 2));
+              const bufferEnd = new Date(end);
+              bufferEnd.setDate(bufferEnd.getDate() + (item.postRentalBufferDays || 3));
+              let d = new Date(bufferStart);
+              while (d <= bufferEnd) {
+                dates.push(d.toISOString().split('T')[0]);
+                d.setDate(d.getDate() + 1);
+              }
+            });
+          }
+          return [...new Set(dates)];
+        })(),
+        blockedRanges: (() => {
+          if (!Array.isArray(item.blockedDates)) return [];
+          return item.blockedDates
+            .filter(bd => bd.from && bd.to)
+            .map(bd => {
+              const start = new Date(bd.from);
+              const end = new Date(bd.to);
+              const bufferStart = new Date(start);
+              bufferStart.setDate(bufferStart.getDate() - (item.preRentalBufferDays || 2));
+              const bufferEnd = new Date(end);
+              bufferEnd.setDate(bufferEnd.getDate() + (item.postRentalBufferDays || 3));
+              return {
+                from: bufferStart.toISOString().split('T')[0],
+                to: bufferEnd.toISOString().split('T')[0],
+                reason: bd.reason || 'Booked',
+              };
+            });
+        })(),
+        preRentalBufferDays: item.preRentalBufferDays || 2,
+        rentedCount: item.timesRented || 0
+      },
+      delivery: {
+        dispatchBeforeDays: item.preRentalBufferDays || 2,
+        returnAfterDays: item.postRentalBufferDays || 1
+      },
+      rules: { allowCustomRange: true },
+      sizes: item.sizes && item.sizes.length > 0
+        ? item.sizes.map(s => ({ label: s, available: true }))
+        : [
+            { label: "XS", available: true },
+            { label: "S", available: true },
+            { label: "M", available: true },
+            { label: "L", available: false },
+            { label: "XL", available: false }
+          ]
+    },
+    preloved: {
+      enabled: prelovedEnabled,
+      pricing: { price: item.listingPrice || 0, originalPrice: item.originalRetailPrice || 0 }
+    },
+    buy: {
+      enabled: buyEnabled,
+      pricing: { price: item.listingPrice || 0, discountPrice: 0 }
+    }
+  };
 
-  // ✅ ADD THIS (MISSING DATA FIX)
-  description:
-    "Pure silk georgette • Ivory & antique gold • Hand-done chikankari & zardozi threadwork",
+  return {
+    ...item,
+    type: item.rent === true ? "rental"
+        : item.preloved === true ? "preloved"
+        : item.isNew === true ? "new"
+        : rentEnabled ? "rental"
+        : prelovedEnabled ? "preloved"
+        : "new",
+    title: item.name || item.title,
+    subTitle: item.subtitle || item.subTitle || "",
+    modes: builtModes,
+    // Shortcut getters for legacy code
+    rent:     builtModes.rent,
+    preloved: builtModes.preloved,
+    buy:      builtModes.buy,
+    new:      builtModes.buy,
 
-  rating: 5,
-  reviews: 3,
-
-  condition: {
-    grade: item.condition?.grade || "pristine"
-  },
-
-  rentInfo: {
-    rentedCount: item.modes?.rent?.availability?.rentedCount || 0
-  },
-
-  badges: [
-    item.tag === "NEW" ? "BUY NEW" : null,
-    "NEVER WORN"
-  ].filter(Boolean),
-
-  delivery:
-    "Ready to ship • Dispatches in 2–3 days • Standard delivery 4–6 days • Express available",
-
-  note:
-    item.sizeNote ||
-    "This piece is unstitched. It runs true to size — Need help choosing?",
-
-  features: [
-    "AUTHENTICATED",
-    "DIRECT FROM DESIGNER",
-    "READY TO SHIP"
-  ],
-
-  // ✅ IMPORTANT
-  images: item.image || [],
-
-  colors:
-    item.colors?.map((c, i) => ({
-      code: c.code,
-      name: c.name || `Color ${i + 1}`,
-      images: c.images || [item.image?.[0]]
-    })) || [],
-
-  sizes: ["XS", "S", "M", "L", "XL"],
-
-
-  shipping: item.shipping || [],
-  care: item.care || [],
-});
+    description: item.description || item.story || "",
+    story: item.story || item.description || "",
+    craft: item.craft || "",
+    rating: item.rating || 0,
+    reviews: item.reviewCount || item.reviews || 0,
+    condition: { grade: (item.condition?.grade || item.condition || "pristine") },
+    disclosure: item.honestDisclosure || item.disclosure || "",
+    sku: item.sku || "",
+    tags: (() => {
+      const dbTags = item.tags || [];
+      // Only filter out HOK internal product-code tags like "HOK-IW-001", "HOK-PRD-123"
+      const meaningfulTags = dbTags.filter(t => !String(t).match(/^HOK-[A-Z0-9-]+$/i));
+      if (meaningfulTags.length > 0) return meaningfulTags;
+      // Auto-generate from product attributes as fallback (when only SKU tags exist)
+      return [
+        item.category,
+        item.occasion,
+        item.color,
+        item.material,
+        item.embellishments,
+      ].filter(Boolean);
+    })(),
+    relatedProductIds: item.relatedProductIds || [],
+    weight: item.weight || "",
+    originalRetailPrice: item.originalRetailPrice || 0,
+    bestSuitedForHeight: item.bestSuitedForHeight || "",
+    measurements: item.measurements || null,
+    measurementsCm: item.measurementsCm || null,
+    rentInfo: { rentedCount: item.timesRented || 0 },
+    badges: [
+      (buyEnabled || item.tag === "NEW") ? "BUY NEW" : null,
+      (item.condition === "pristine" || !item.condition) ? "NEVER WORN" : null
+    ].filter(Boolean),
+    delivery: item.deliveryTiming || "",
+    sizeNote: item.sizeNote || item.sizeGuide || "",
+    note: item.sizeGuide || item.sizeNote || "",
+    taxNote: item.taxNote || "",
+    packaging: item.packaging && item.packaging.length > 0 ? item.packaging : [
+      "Arrives in a signature HOK protective garment bag."
+    ],
+    sizeTable: item.sizeTable || [],
+    features: item.features || [],
+    images: item.images || item.image || [],
+    colors: (() => {
+      if (Array.isArray(item.colors) && item.colors.length > 0) {
+        return item.colors.map((c, i) => {
+          if (typeof c === 'string') {
+            const hex = c.startsWith('#') ? c : '#8B0000';
+            return { code: hex, name: c, images: item.images || item.image || [] };
+          }
+          return {
+            code: c.code || '#8B0000',
+            name: c.name || `Color ${i + 1}`,
+            images: c.images || item.images || item.image || []
+          };
+        });
+      }
+      if (item.color) {
+        const colorNames = String(item.color).split(',').map(s => s.trim()).filter(Boolean);
+        const colorHexMap = {
+          red: '#C0392B',
+          crimson: '#990000',
+          maroon: '#800000',
+          emerald: '#0B6623',
+          green: '#27AE60',
+          blue: '#2980B9',
+          navy: '#1B263B',
+          midnight: '#191970',
+          pink: '#E8A598',
+          blush: '#F4C2C2',
+          wine: '#722F37',
+          burgundy: '#800020',
+          gold: '#D4AF37',
+          mustard: '#E1AD01',
+          black: '#1A1A1A',
+          white: '#FDFEFE',
+          ivory: '#FFFFF0',
+          beige: '#F5F5DC',
+          purple: '#8E44AD',
+          peach: '#FFE5B4',
+          yellow: '#F1C40F'
+        };
+        return colorNames.map((cName) => {
+          const lower = cName.toLowerCase();
+          const foundHex = colorHexMap[lower] || (lower.includes('red') ? '#C0392B' : lower.includes('green') ? '#0B6623' : lower.includes('blue') ? '#2980B9' : lower.includes('pink') ? '#E8A598' : lower.includes('gold') ? '#D4AF37' : '#8B0000');
+          return {
+            code: foundHex,
+            name: cName,
+            images: item.images || item.image || []
+          };
+        });
+      }
+      return [];
+    })(),
+    sizes: item.sizes && item.sizes.length > 0 ? item.sizes : ["XS", "S", "M", "L", "XL"],
+    shipping: item.shipping && item.shipping.length > 0 ? item.shipping : [
+      { method: "Standard", time: "5-7 Business Days", cost: "Free" },
+      { method: "Express", time: "2-3 Business Days", cost: "₹500" }
+    ],
+    care: item.care && item.care.length > 0 ? item.care : [
+      "Dry clean only",
+      "Do not bleach",
+      "Iron on low heat"
+    ],
+    details: {
+      fabric: item.material || item.details?.fabric || "",
+      technique: item.technique || item.details?.technique || "",
+      includes: item.setIncludes || item.details?.includes || "",
+      delivery: item.deliveryTiming || item.details?.delivery || "",
+      color: item.color || item.details?.color || "",
+      thread: item.threadYarnDetail || item.threadWork || item.details?.thread || "",
+      occasion: item.occasion || item.details?.occasion || "",
+      origin: item.origin || item.details?.origin || "",
+      embellishments: item.embellishments || item.details?.embellishments || ""
+    }
+  };
+};
 /* ================= COMPONENT ================= */
 export default function ProductList() {
   const [hoveredId, setHoveredId] = useState(null);

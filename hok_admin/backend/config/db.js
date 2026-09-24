@@ -37,8 +37,11 @@ export const connectDB = async (retries = 3) => {
       console.log("Connected to PostgreSQL (Supabase) at:", res.rows[0].now);
 
       // Auto-migrate tables on connection
-      const { migrate } = await import("../db/migrate.js");
-      await migrate();
+      const migrationModule = await import("../db/migrate.js");
+      const run = migrationModule.migrate || migrationModule.runMigrations || migrationModule.default;
+      if (typeof run === "function") {
+        await run();
+      }
       return;
     } catch (error) {
       console.error(`PostgreSQL connection attempt ${attempt} failed:`, error.message);

@@ -140,16 +140,24 @@ const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast
           {/* Product Summary Row */}
           <div className="desk-wishlist-modal-summary-row">
             <div className={`desk-wishlist-modal-thumbnail desk-wishlist-modal-thumbnail-${type}`}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M8 5L10 3H14L16 5L18 7V21H6V7L8 5Z" stroke="currentColor" strokeWidth="1.2" />
-              </svg>
+              {product?.image?.[0] || product?.images?.[0] ? (
+                <img 
+                  src={product?.image?.[0] || product?.images?.[0]} 
+                  alt={product.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M8 5L10 3H14L16 5L18 7V21H6V7L8 5Z" stroke="currentColor" strokeWidth="1.2" />
+                </svg>
+              )}
             </div>
             <div className="desk-wishlist-modal-summary-content">
               <h3 className="desk-wishlist-modal-product-name">{product.name}</h3>
               <div className="desk-wishlist-modal-meta-line">
-                {type === "rent" && `Rental · ₹${product.price?.toLocaleString()} / ${product.duration}`}
-                {type === "preloved" && `Preloved · ₹${product.price?.toLocaleString()}`}
-                {type === "new" && `Buy New · ₹${product.price?.toLocaleString()}`}
+                {type === "rent" ? `Rental · ₹${product.price} ${product.duration ? `/ ${product.duration}` : ''}` : null}
+                {type === "preloved" ? `Preloved · ₹${product.price}` : null}
+                {type === "new" ? `Buy New · ₹${product.price}` : null}
               </div>
             </div>
           </div>
@@ -158,19 +166,19 @@ const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast
           <SizeSelector sizes={product.sizes} selectedSize={selectedSize} onSizeChange={setSelectedSize} />
 
           {/* Color Selector - only if product has colors */}
-          {product.colors && product.colors.length > 0 && (
+          {product.colors && product.colors.length > 0 ? (
             <ColorSelector colors={product.colors} selectedColor={selectedColor} onColorChange={setSelectedColor} />
-          )}
+          ) : null}
 
           {/* Rental Date Selector - only for rental items */}
-          {type === "rent" && (
+          {type === "rent" ? (
             <RentalDateSelector
               startDate={startDate}
               endDate={endDate}
               onStartDateChange={setStartDate}
               onEndDateChange={setEndDate}
             />
-          )}
+          ) : null}
 
           {/* Add to Bag Button */}
           <button
@@ -184,7 +192,7 @@ const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast
 
           {/* Validation Message - Below the button */}
           <div className="desk-wishlist-modal-validation">
-            {!validation.isValid ? validationMessage : ""}
+            {!validation.isValid ? validationMessage : null}
           </div>
         </div>
       </div>

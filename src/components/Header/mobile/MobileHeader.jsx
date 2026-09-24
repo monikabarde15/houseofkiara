@@ -1,7 +1,10 @@
 // src/components/Header/mobile/MobileHeader.jsx
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import '../../../styles/Header/mobile/mobile-header.css';
 import logo from '../../../assets/logo/logo.png';
+import useWishlistStore from '../../../store/wishlistStore';
+import useCartStore from '../../../store/cartStore';
 
 const MobileHeader = ({ 
   theme = 'light',
@@ -13,6 +16,15 @@ const MobileHeader = ({
   onBagClick 
 }) => {
   const isDark = theme === 'dark';
+  const location = useLocation();
+  const { items: wishlistItems, unseenCount } = useWishlistStore();
+  const { items: cartItems } = useCartStore();
+
+  const isWishlistPage = location.pathname === '/wishlist';
+  const isCartPage = location.pathname === '/cart';
+
+  const wishlistCount = wishlistItems.length;
+  const cartCount = cartItems.length;
 
   return (
     <header 
@@ -50,11 +62,21 @@ const MobileHeader = ({
           </button>
 
           {/* Wishlist */}
-          <button className="hdr-btn" onClick={onWishlistClick} aria-label="Wishlist">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
-          </button>
+          <div className="cart-wrap">
+            <button className="hdr-btn" onClick={onWishlistClick} aria-label="Wishlist">
+              <svg 
+                viewBox="0 0 24 24" 
+                style={{
+                  fill: wishlistItems.length > 0 ? "#B85C38" : "none",
+                  stroke: wishlistItems.length > 0 ? "#B85C38" : "currentColor"
+                }}
+                strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"
+              >
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+            </button>
+            {wishlistCount > 0 && !isWishlistPage && <div className="cart-dot">{wishlistCount}</div>}
+          </div>
 
           {/* Cart */}
           <div className="cart-wrap">
@@ -65,7 +87,7 @@ const MobileHeader = ({
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
             </button>
-            <div className="cart-dot"></div>
+            {cartCount > 0 && !isCartPage && <div className="cart-dot">{cartCount}</div>}
           </div>
         </div>
       </div>

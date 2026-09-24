@@ -1,6 +1,9 @@
 // src\components\Profile\right\RightColumn.jsx
 import React from 'react';
 import { useState } from 'react';
+import { Search, MapPin, Plus, Heart, User, Clock, Package } from 'lucide-react';
+import useAuthStore from '../../../store/authStore';
+import useWishlistStore from '../../../store/wishlistStore';
 import "../../../styles/Profile/right/RightColumn.css";
 import ActiveRentalAlert from '../sections/ActiveRentalAlert';
 import SectionLabel from '../ui/SectionLabel';
@@ -19,9 +22,27 @@ import EarnPromptBanner from '../sections/EarnPromptBanner';
 import AccountSettingsSection from '../sections/AccountSettingsSection';
 import HelpSupportSection from '../sections/HelpSupportSection';
 
-const RightColumn = () => {
+const RightColumn = ({ 
+  isScrolled, 
+  onViewAllRentals, 
+  onViewAllPurchases, 
+  onViewAllWishlist, 
+  onViewAllListings,
+  openRentalDetailId: propOpenRentalDetailId,
+  setOpenRentalDetailId: propSetOpenRentalDetailId 
+}) => {
+  const user = useAuthStore((state) => state.user);
+  const wishlistItems = useWishlistStore((state) => state.items);
+  
+  const purchasesCount = user?.purchasesCount || 0;
+  const rentalsCount = user?.rentalsCount || 0;
+  const savedCount = wishlistItems?.length || 0;
+
   const [activeView, setActiveView] = useState('overview');
-  const [openRentalDetailId, setOpenRentalDetailId] = useState(null);
+  const [internalRentalDetailId, setInternalRentalDetailId] = useState(null);
+
+  const openRentalDetailId = propOpenRentalDetailId !== undefined ? propOpenRentalDetailId : internalRentalDetailId;
+  const setOpenRentalDetailId = propSetOpenRentalDetailId || setInternalRentalDetailId;
 
   const handleAlertBarClick = () => {
     setOpenRentalDetailId('HOK-240524-001');
@@ -69,7 +90,7 @@ const RightColumn = () => {
           {/* My Rentals Section */}
           <SectionLabel 
             title="MY RENTALS" 
-            count={5} 
+            count={rentalsCount} 
             countLabel="BOOKINGS"
             linkText="View all" 
             onLinkClick={handleViewAllRentals}
@@ -80,7 +101,7 @@ const RightColumn = () => {
           {/* My Purchases Section */}
           <SectionLabel 
             title="MY PURCHASES" 
-            count={4} 
+            count={purchasesCount} 
             countLabel="ORDERS"
             linkText="View all" 
             onLinkClick={handleViewAllPurchases}
@@ -91,7 +112,7 @@ const RightColumn = () => {
           {/* WISHLIST SECTION */}
           <SectionLabel
             title="SAVED PIECES"
-            count={7}
+            count={savedCount}
             countLabel="SAVED"
             linkText="View all"
             onLinkClick={handleViewAllWishlist}
@@ -101,7 +122,7 @@ const RightColumn = () => {
           {/* Listed Piece Section */}
           <SectionLabel
             title="MY LISTED PIECES"
-            count={3}
+            count={0}
             countLabel="ACTIVE LISTINGS"
             linkText="+ List another piece"
             onLinkClick={handleListAnotherPiece}
@@ -112,7 +133,7 @@ const RightColumn = () => {
           {/* Saved Addresses Section */}
           <SectionLabel
             title="SAVED ADDRESSES"
-            count={2}
+            count={0}
             countLabel=""
             linkText=""
           />

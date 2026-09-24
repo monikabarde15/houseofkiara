@@ -1,62 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import AddressCard from '../cards/AddressCard';
 import AddAddressForm from '../forms/AddAddressForm';
 import EditAddressModal from '../modals/EditAddressModal';
 import DeleteAddressModal from '../modals/DeleteAddressModal';
 import Toast from '../ui/Toast';
+import useAuthStore from '../../../store/authStore';
 import "../../../styles/Profile/sections/SavedAddressesSection.css";
 
 const SavedAddressesSection = () => {
+  const { user, token, setUser } = useAuthStore();
   const [showForm, setShowForm] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
-
-  // Mock data from spec Page 48
-  const [addresses, setAddresses] = useState([
-    {
-      id: "ac-home",
-      label: "Home",
-      recipientName: "Priya Varma",
-      line1: "204, Suncity Towers",
-      line2: "Vijay Nagar",
-      city: "Indore",
-      state: "Madhya Pradesh",
-      pin: "452001",
-      mobile: "+91 98765 43210",
-      isDefault: true
-    },
-    {
-      id: "ac-parents",
-      label: "Parents' Home",
-      recipientName: "Priya Varma",
-      line1: "12, Ranjit Nagar",
-      line2: "Bhanwarkuan",
-      city: "Indore",
-      state: "Madhya Pradesh",
-      pin: "452015",
-      mobile: "+91 98765 43210",
-      isDefault: false
-    }
-  ]);
+  const [addresses, setAddresses] = useState(user?.addresses || []);
 
   const showToastMessage = (message) => {
     setToastMessage(message);
     setShowToast(true);
   };
 
+  // Fetch addresses from API on mount
+  useEffect(() => {
+    if (!token) return;
+    fetch('/api/customer/addresses', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && Array.isArray(res.data)) {
+          setAddresses(res.data);
+          setUser((prev) => ({ ...prev, addresses: res.data }));
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch customer addresses:", err);
+      });
+  }, [token, setUser]);
+
   // Set Default Address Logic
-  const handleSetDefault = (address) => {
-    setAddresses(prevAddresses =>
-      prevAddresses.map(addr => ({
-        ...addr,
-        isDefault: addr.id === address.id
-      }))
-    );
-    showToastMessage('Default address updated');
+  const handleSetDefault = async (address) => {
+    try {
+      const response = await fetch(`/api/customer/addresses/${address.id}/default`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const res = await response.json();
+      if (res.success) {
+        setAddresses(res.data);
+        setUser((prev) => ({ ...prev, addresses: res.data }));
+        showToastMessage('Default address updated');
+      } else {
+        showToastMessage(res.message || 'Failed to update default address');
+      }
+    } catch (err) {
+      showToastMessage('Network error updating default address');
+    }
   };
 
   // Edit Address
@@ -65,15 +71,28 @@ const SavedAddressesSection = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEdit = (updatedData) => {
-    setAddresses(prevAddresses =>
-      prevAddresses.map(addr =>
-        addr.id === selectedAddress.id
-          ? { ...addr, ...updatedData }
-          : addr
-      )
-    );
-    showToastMessage('Address updated successfully');
+  const handleSaveEdit = async (updatedData) => {
+    if (!selectedAddress) return;
+    try {
+      const response = await fetch(`/api/customer/addresses/${selectedAddress.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedData),
+      });
+      const res = await response.json();
+      if (res.success) {
+        setAddresses(res.data);
+        setUser((prev) => ({ ...prev, addresses: res.data }));
+        showToastMessage('Address updated successfully');
+      } else {
+        showToastMessage(res.message || 'Failed to update address');
+      }
+    } catch (err) {
+      showToastMessage('Network error updating address');
+    }
     setIsEditModalOpen(false);
     setSelectedAddress(null);
   };
@@ -84,11 +103,26 @@ const SavedAddressesSection = () => {
     setIsDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    setAddresses(prevAddresses =>
-      prevAddresses.filter(addr => addr.id !== selectedAddress.id)
-    );
-    showToastMessage('Address removed');
+  const handleConfirmDelete = async () => {
+    if (!selectedAddress) return;
+    try {
+      const response = await fetch(`/api/customer/addresses/${selectedAddress.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const res = await response.json();
+      if (res.success) {
+        setAddresses(res.data);
+        setUser((prev) => ({ ...prev, addresses: res.data }));
+        showToastMessage('Address removed');
+      } else {
+        showToastMessage(res.message || 'Failed to delete address');
+      }
+    } catch (err) {
+      showToastMessage('Network error deleting address');
+    }
     setIsDeleteModalOpen(false);
     setSelectedAddress(null);
   };
@@ -98,35 +132,37 @@ const SavedAddressesSection = () => {
     setShowForm(!showForm);
   };
 
-  const handleSaveNewAddress = (newAddress) => {
-    const newId = `ac-${Date.now()}`;
-    const addressToAdd = {
-      id: newId,
-      label: newAddress.label,
-      recipientName: newAddress.recipientName,
-      line1: newAddress.line1,
-      line2: newAddress.line2,
-      city: newAddress.city,
-      state: newAddress.state,
-      pin: newAddress.pin,
-      mobile: newAddress.mobile,
-      isDefault: newAddress.setAsDefault
-    };
-
-    if (newAddress.setAsDefault) {
-      setAddresses(prevAddresses =>
-        prevAddresses.map(addr => ({ ...addr, isDefault: false }))
-      );
+  const handleSaveNewAddress = async (newAddress) => {
+    try {
+      const response = await fetch('/api/customer/addresses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          label: newAddress.label,
+          recipientName: newAddress.recipientName,
+          line1: newAddress.line1,
+          line2: newAddress.line2,
+          city: newAddress.city,
+          state: newAddress.state,
+          pin: newAddress.pin,
+          mobile: newAddress.mobile,
+          isDefault: Boolean(newAddress.setAsDefault),
+        }),
+      });
+      const res = await response.json();
+      if (res.success) {
+        setAddresses(res.data);
+        setUser((prev) => ({ ...prev, addresses: res.data }));
+        showToastMessage(newAddress.setAsDefault ? 'New address saved and set as default' : 'New address saved');
+      } else {
+        showToastMessage(res.message || 'Failed to save address');
+      }
+    } catch (err) {
+      showToastMessage('Network error saving address');
     }
-
-    setAddresses(prevAddresses => [...prevAddresses, addressToAdd]);
-    
-    if (newAddress.setAsDefault) {
-      showToastMessage('New address saved and set as default');
-    } else {
-      showToastMessage('New address saved');
-    }
-    
     setShowForm(false);
   };
 

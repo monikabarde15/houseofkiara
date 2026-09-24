@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Check } from 'lucide-react';
+import useAuthStore from '../../../store/authStore';
 import "../../../styles/Profile/forms/AddAddressForm.css";
 
 const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
+  const { user } = useAuthStore();
   const [formData, setFormData] = useState({
     label: initialData?.label || "Home",
-    recipientName: initialData?.recipientName || "Priya Varma",
+    recipientName: initialData?.recipientName || user?.name || "",
     line1: initialData?.line1 || "",
     line2: initialData?.line2 || "",
-    city: initialData?.city || "Indore",
-    state: initialData?.state || "Madhya Pradesh",
+    city: initialData?.city || user?.location || user?.city || "",
+    state: initialData?.state || "",
     pin: initialData?.pin || "",
-    mobile: initialData?.mobile || "+91 98765 43210",
+    mobile: initialData?.mobile || user?.phone || user?.mobile || "",
     setAsDefault: false
   });
 
@@ -56,7 +58,6 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === 'checkbox' ? checked : value;
     setFormData(prev => ({ ...prev, [name]: newValue }));
-    // Clear error for this field when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -67,7 +68,6 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
     if (validateForm()) {
       onSave(formData);
     } else {
-      // Scroll to first error
       const firstErrorField = document.querySelector('.profile-af-has-error');
       if (firstErrorField) {
         setTimeout(() => {
@@ -77,7 +77,6 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
     }
   };
 
-  // Animation on mount
   useEffect(() => {
     if (formRef.current) {
       formRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

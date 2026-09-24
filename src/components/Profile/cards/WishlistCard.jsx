@@ -14,9 +14,9 @@ const WishlistCard = ({ piece, onAddToBag, onViewProduct, onRemove }) => {
     e.stopPropagation();
     
     // Check if modal is needed or direct add
-    const needsSize = piece.sizes && piece.sizes.length > 1;
+    const needsSize = piece.sizes && Array.isArray(piece.sizes) && piece.sizes.length > 1;
     const needsColor = piece.colors && piece.colors.length > 1;
-    const isRental = piece.mode === 'Rental';
+    const isRental = piece.condition === 'Rental';
     
     const needsModal = needsSize || needsColor || isRental;
     
@@ -41,9 +41,17 @@ const WishlistCard = ({ piece, onAddToBag, onViewProduct, onRemove }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="profile-wc-thumb">
-        <svg className="profile-wc-placeholder" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <rect x="4" y="4" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.22" />
-        </svg>
+        {piece.image ? (
+          <img 
+            src={piece.image} 
+            alt={piece.name} 
+            className="profile-wc-image" 
+          />
+        ) : (
+          <svg className="profile-wc-placeholder" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="4" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.22" />
+          </svg>
+        )}
         
         <button className="profile-wc-heart" onClick={handleRemove}>
           <Heart size={12} fill="#B85C38" stroke="#B85C38" strokeWidth={1.5} />
@@ -61,9 +69,11 @@ const WishlistCard = ({ piece, onAddToBag, onViewProduct, onRemove }) => {
         )}
       </div>
       
-      <div className="profile-wc-name">{piece.name}</div>
-      <div className="profile-wc-price">₹{piece.price.toLocaleString()}</div>
-      <div className="profile-wc-mode">{piece.mode}</div>
+      <div className="profile-wc-body">
+        <div className="profile-wc-name">{piece.name}</div>
+        <div className="profile-wc-mode">{piece.condition}</div>
+        <div className="profile-wc-price">₹{piece.price ? Number(String(piece.price).replace(/,/g, '')).toLocaleString('en-IN') : '—'}</div>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MobilePageTitle from '../ui/MobilePageTitle';
 import MobileWishlistToolbar from '../toolbar/MobileWishlistToolbar';
 import MobileRentSection from '../sections/MobileRentSection';
@@ -14,6 +15,7 @@ import { useMobileWishlistProducts } from '../hooks/useMobileWishlistProducts';
 import '../../../../styles/wishlist/mobile/layout/mobile-wishlist-layout.css';
 
 const MobileWishlistLayout = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [toastMessage, setToastMessage] = useState(null);
@@ -194,7 +196,7 @@ const MobileWishlistLayout = () => {
         
         <MobileEmptyState 
           isVisible={showEmptyState}
-          onBrowseClick={() => showToast('Opening collection...')}
+          onBrowseClick={() => navigate('/main-page')}
         />
       </div>
       
@@ -208,6 +210,20 @@ const MobileWishlistLayout = () => {
           mode={selectedMode}
           showToast={showToast}
           onClose={handleCloseAddToBagSheet}
+          onAddToBag={async (details) => {
+            const { useCartStore } = await import('../../../../store/cartStore').then(m => ({ useCartStore: m.default }));
+            const product = details.product.originalData || details.product;
+            
+            // Normalize type string
+            const normalizedType = details.product.type === "rent" ? "rental" : (details.product.type || "rental");
+
+            useCartStore.getState().addToCart(product, {
+              type: normalizedType,
+              size: details.size,
+              rentalDates: details.startDate && details.endDate ? { start: details.startDate, end: details.endDate } : null,
+              price: details.product.price
+            });
+          }}
         />
       </MobileBottomSheet>
       

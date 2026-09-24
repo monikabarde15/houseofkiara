@@ -6,8 +6,10 @@ import Toast from '../../ui/Toast';
 const MobileRentalDetailSheet = ({
   isOpen,
   onClose,
-  booking
+  booking,
+  onRefresh
 }) => {
+  const useAuthStore = require('../../../../store/authStore').default;
 
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -16,16 +18,29 @@ const MobileRentalDetailSheet = ({
     setIsCancelModalOpen(true);
   };
 
-  const handleConfirmCancel = () => {
+  const handleConfirmCancel = async () => {
     setIsCancelModalOpen(false);
 
-    onClose?.();
-
-    setToastMessage(
-      "Cancellation request submitted — our team will be in touch"
-    );
-
-    setShowToast(true);
+    try {
+      const token = useAuthStore.getState().token;
+      const res = await fetch(`/api/customer/auth/orders/${booking.id || booking.orderId || booking._id}/cancel`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+          setToastMessage("Booking has been cancelled successfully");
+          setShowToast(true);
+          onClose?.();
+          if (onRefresh) onRefresh();
+      } else {
+          setToastMessage(data.message || "Failed to cancel booking");
+          setShowToast(true);
+      }
+    } catch (err) {
+        setToastMessage("Network error occurred");
+        setShowToast(true);
+    }
   };
 
   useEffect(() => {
@@ -94,7 +109,7 @@ const MobileRentalDetailSheet = ({
       },
       {
         label: "Rental Fee",
-        value: `₹${booking.fee.toLocaleString()}`
+        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`
       },
       {
         label: "Security Deposit",
@@ -130,7 +145,7 @@ const MobileRentalDetailSheet = ({
       },
       {
         label: "Rental Fee",
-        value: `₹${booking.fee.toLocaleString()}`
+        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`
       },
       {
         label: "Deposit Due",
@@ -157,7 +172,7 @@ const MobileRentalDetailSheet = ({
       },
       {
         label: "Rental Fee",
-        value: `₹${booking.fee.toLocaleString()}`
+        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`
       },
       {
         label: "Security Deposit",
@@ -184,7 +199,7 @@ const MobileRentalDetailSheet = ({
       },
       {
         label: "Rental Fee",
-        value: `₹${booking.fee.toLocaleString()}`
+        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`
       },
       {
         label: "Security Deposit",
@@ -211,7 +226,7 @@ const MobileRentalDetailSheet = ({
       },
       {
         label: "Rental Fee",
-        value: `₹${booking.fee.toLocaleString()} (cancelled)`,
+        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()} (cancelled)`,
         valueClass:
           "profile-mobile-dv-cancelled"
       },
@@ -267,7 +282,7 @@ const MobileRentalDetailSheet = ({
       title:
         "Cancellation Policy",
       text:
-        `Cancelled more than 7 days before the rental start date. Full refund of ₹${booking.fee.toLocaleString()} was processed to the original payment method within 5–7 business days.`
+        `Cancelled more than 7 days before the rental start date. Full refund of ₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()} was processed to the original payment method within 5–7 business days.`
     }
   };
 

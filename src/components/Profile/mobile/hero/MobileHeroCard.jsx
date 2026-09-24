@@ -2,31 +2,14 @@ import React, { useState } from 'react';
 import { SquarePen } from 'lucide-react';
 import MobileEditProfileModal from '../modals/MobileEditProfileModal';
 import Toast from '../../ui/Toast';
+import useAuthStore from '../../../../store/authStore';
 import "../../../../styles/Profile/mobile/hero/MobileHeroCard.css";
 
 const MobileHeroCard = () => {
+  const { user, updateProfile } = useAuthStore();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
-
-  // User data array
-  const [userData, setUserData] = useState({
-    firstName: "Priya",
-    lastName: "Varma",
-    email: "priya.varma@gmail.com",
-    mobile: "+91 98765 43210",
-    city: "Indore",
-    tier: "Member",
-    memberSince: "April 2025",
-    initials: "PV"
-  });
-
-  // Stats data array
-  const [stats, setStats] = useState({
-    rentals: 4,
-    purchases: 2,
-    saved: 7
-  });
 
   const showToastMessage = (message) => {
     setToastMessage(message);
@@ -37,18 +20,46 @@ const MobileHeroCard = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEditProfile = (data) => {
-    setUserData(prev => ({
-      ...prev,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      mobile: data.mobile,
-      city: data.city
-    }));
+  const handleSaveEditProfile = async (data) => {
+    try {
+      const res = await updateProfile({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        name: `${data.firstName || ''} ${data.lastName || ''}`.trim(),
+        email: data.email,
+        phone: data.mobile,
+        mobile: data.mobile,
+        city: data.city,
+        location: data.city,
+      });
+
+      if (res.success) {
+        showToastMessage("Profile updated successfully");
+      } else {
+        showToastMessage(res.message || "Failed to update profile");
+      }
+    } catch (err) {
+      showToastMessage("Failed to update profile");
+    }
     setIsEditModalOpen(false);
-    showToastMessage("Profile updated");
   };
+
+  // Dynamic values
+  const firstName = user?.firstName || (user?.name ? user.name.split(' ')[0] : 'Customer');
+  const lastName = user?.lastName || (user?.name ? user.name.split(' ').slice(1).join(' ') : '');
+  const fullName = user?.name || [firstName, lastName].filter(Boolean).join(' ') || 'Customer';
+  const email = user?.email || 'customer@houseofkaira.com';
+  const mobile = user?.phone || user?.mobile || '';
+  const city = user?.location || user?.city || 'India';
+  const memberSince = user?.joinedDate || '2025';
+
+  const initials = (
+    (firstName?.[0] || '') + (lastName?.[0] || (firstName?.[1] || ''))
+  ).toUpperCase() || 'HK';
+
+  const rentalsCount = user?.ordersCount || 0;
+  const purchasesCount = user?.purchasesCount || 0;
+  const savedCount = user?.wishlist?.length || user?.wishlistCount || 0;
 
   return (
     <>
@@ -67,14 +78,14 @@ const MobileHeroCard = () => {
                 </defs>
                 <circle cx="25" cy="25" r="23" fill="none" stroke="url(#mobile-gold-gradient)" strokeWidth="1.2" strokeDasharray="4 3" opacity="0.7" />
               </svg>
-              <div className="profile-mobile-avatar-initials">{userData.initials}</div>
+              <div className="profile-mobile-avatar-initials">{initials}</div>
             </div>
             
             {/* Name & Info Block */}
             <div className="profile-mobile-info">
-              <div className="profile-mobile-tier">✦ {userData.tier}</div>
-              <div className="profile-mobile-name">{userData.firstName} {userData.lastName}</div>
-              <div className="profile-mobile-email">{userData.email}</div>
+              <div className="profile-mobile-tier">✦ Member</div>
+              <div className="profile-mobile-name">{fullName}</div>
+              <div className="profile-mobile-email">{email}</div>
             </div>
             
             {/* Edit Button */}
@@ -87,23 +98,23 @@ const MobileHeroCard = () => {
           {/* Stats Bar */}
           <div className="profile-mobile-stats">
             <div className="profile-mobile-stat">
-              <div className="profile-mobile-stat-number">{stats.rentals}</div>
+              <div className="profile-mobile-stat-number">{rentalsCount}</div>
               <div className="profile-mobile-stat-label">RENTALS</div>
             </div>
             <div className="profile-mobile-stat-divider"></div>
             <div className="profile-mobile-stat">
-              <div className="profile-mobile-stat-number">{stats.purchases}</div>
+              <div className="profile-mobile-stat-number">{purchasesCount}</div>
               <div className="profile-mobile-stat-label">PURCHASES</div>
             </div>
             <div className="profile-mobile-stat-divider"></div>
             <div className="profile-mobile-stat">
-              <div className="profile-mobile-stat-number">{stats.saved}</div>
+              <div className="profile-mobile-stat-number">{savedCount}</div>
               <div className="profile-mobile-stat-label">SAVED</div>
             </div>
           </div>
           
           {/* Member Since Footer */}
-          <div className="profile-mobile-since">Member since {userData.memberSince}</div>
+          <div className="profile-mobile-since">Member since {memberSince}</div>
         </div>
       </div>
 
@@ -112,11 +123,11 @@ const MobileHeroCard = () => {
         onClose={() => setIsEditModalOpen(false)}
         onSave={handleSaveEditProfile}
         profileData={{
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          email: userData.email,
-          mobile: userData.mobile,
-          city: userData.city
+          firstName,
+          lastName,
+          email,
+          mobile,
+          city
         }}
       />
 

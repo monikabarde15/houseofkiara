@@ -1,0 +1,450 @@
+/* src/styles/faq/faq-reading-pane.css */
+/* Split Layout, Question Rows, Sticky Reading Pane, and Feedback (D1-D6, 10.8) */
+
+/* Split Grid Layout (D1) */
+.sp {
+  max-width: 1280px;
+  margin: 0px auto;
+  padding: 8px 40px 72px;
+  display: grid;
+  grid-template-columns: minmax(0px, 0.92fr) minmax(0px, 1.08fr);
+  gap: 60px;
+  align-items: start;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.cl {
+  padding-top: 20px;
+  box-sizing: border-box;
+}
+
+/* Question Row (D2) */
+.cq {
+  border-bottom: 1px solid var(--hok-faq-border);
+  scroll-margin-top: 140px;
+  box-sizing: border-box;
+}
+
+.cq-b {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  grid-template-columns: minmax(0px, 1fr) auto 14px;
+  gap: 14px;
+  align-items: center;
+  padding: 17px 16px 17px 18px;
+  position: relative;
+  transition: background-color 0.2s ease;
+  font-family: var(--hok-faq-font-sans);
+  box-sizing: border-box;
+}
+
+/* 2px Gold Left Bar on Current Row (D2) */
+.cq-b::before {
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.cq-t {
+  font-family: var(--hok-faq-font-serif);
+  font-size: 19.5px;
+  line-height: 1.35;
+  color: var(--hok-faq-body-brown);
+  transition: color 0.2s ease;
+}
+
+.cq-b:hover .cq-t {
+  color: var(--hok-faq-charcoal);
+}
+
+/* Applies-to Tag (D2) */
+.cq-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hok-faq-soft-label);
+  white-space: nowrap;
+}
+
+.cq-chevron {
+  width: 12px;
+  height: 12px;
+  color: var(--hok-faq-soft-label);
+  transition: transform 0.25s var(--hok-faq-ease), color 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* Current / Selected Row State (D2) */
+.cq.on .cq-b {
+  background-color: var(--hok-faq-cream);
+}
+
+.cq.on .cq-b::before {
+  background-color: var(--hok-faq-gold);
+}
+
+.cq.on .cq-t {
+  color: var(--hok-faq-charcoal);
+}
+
+.cq.on .cq-chevron {
+  color: var(--hok-faq-gold);
+}
+
+/* Inline answer (hidden on desktop, shown on <=900px) */
+.cq-inline {
+  display: none;
+  background-color: var(--hok-faq-cream);
+  padding: 4px 18px 22px;
+  box-sizing: border-box;
+}
+
+/* Sticky Reading Pane (D3) */
+.pane {
+  position: sticky;
+  top: 138px;
+  background-color: var(--hok-faq-warm-white);
+  border: 1px solid var(--hok-faq-border);
+  padding: 42px 46px 34px;
+  margin-top: 20px;
+  box-sizing: border-box;
+  font-family: var(--hok-faq-font-sans);
+}
+
+/* Kicker Row (D3) */
+.pane-k {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hok-faq-gold);
+  position: relative;
+}
+
+.pane-k::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background-color: var(--hok-faq-gold);
+  flex-shrink: 0;
+}
+
+.pane-applies {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--hok-faq-muted);
+}
+
+/* Question Title (D3) */
+.pane-title {
+  font-family: var(--hok-faq-font-serif);
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.14;
+  margin: 14px 0px 20px;
+  color: var(--hok-faq-charcoal);
+}
+
+/* Answer Body (D4) */
+.ans {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--hok-faq-answer-brown);
+}
+
+.ans p {
+  margin: 0;
+}
+
+.ans p + p {
+  margin-top: 12px;
+}
+
+.ans strong {
+  font-weight: 500;
+  color: var(--hok-faq-charcoal);
+}
+
+.ans ul {
+  list-style: none;
+  margin: 10px 0;
+  padding: 0;
+}
+
+.ans li {
+  display: grid;
+  grid-template-columns: 16px minmax(0px, 1fr);
+  padding: 4px 0px;
+  align-items: baseline;
+}
+
+.ans li::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--hok-faq-gold);
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.ans .lnk {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--hok-faq-gold-light);
+  color: var(--hok-faq-charcoal);
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  line-height: inherit;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.ans .lnk:hover {
+  color: var(--hok-faq-gold);
+  border-color: var(--hok-faq-gold);
+}
+
+/* Next Question Link (D5) */
+.next {
+  margin-top: 22px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--hok-faq-muted);
+}
+
+.next button {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--hok-faq-border);
+  padding: 0px 0px 1px;
+  font-family: var(--hok-faq-font-serif);
+  font-size: 16px;
+  color: var(--hok-faq-charcoal);
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.next button:hover {
+  color: var(--hok-faq-gold);
+  border-color: var(--hok-faq-gold);
+}
+
+/* Feedback Row (D6) */
+.fb {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hok-faq-border-light);
+  display: flex;
+  align-items: center;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--hok-faq-muted);
+}
+
+.fb-v {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fb-v button {
+  border: 1px solid var(--hok-faq-border);
+  background-color: var(--hok-faq-warm-white);
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--hok-faq-charcoal);
+  cursor: pointer;
+  font-family: var(--hok-faq-font-sans);
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.fb-v button:hover {
+  border-color: var(--hok-faq-gold);
+}
+
+.fb-v button[aria-pressed="true"] {
+  background-color: var(--hok-faq-charcoal);
+  color: #ffffff;
+  border-color: var(--hok-faq-charcoal);
+}
+
+.fb-copy {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--hok-faq-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-family: var(--hok-faq-font-sans);
+  transition: color 0.15s ease;
+}
+
+.fb-copy svg {
+  width: 13px;
+  height: 13px;
+  color: currentColor;
+}
+
+.fb-copy:hover {
+  color: var(--hok-faq-charcoal);
+}
+
+.fb-thanks {
+  width: 100%;
+  color: var(--hok-faq-sage);
+  display: none;
+  font-family: var(--hok-faq-font-sans);
+  margin-top: 4px;
+}
+
+.fb.yes .fb-thanks {
+  display: block;
+}
+
+.fb-more {
+  width: 100%;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background-color: var(--hok-faq-cream);
+  border-left: 2px solid var(--hok-faq-gold);
+  padding: 12px 16px;
+  color: var(--hok-faq-body-brown);
+  font-family: var(--hok-faq-font-sans);
+  margin-top: 8px;
+}
+
+.fb.no .fb-more {
+  display: flex;
+}
+
+/* Pane Fade Animation on Change (D3, 10.8) */
+@keyframes fade {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade {
+  opacity: 1;
+  animation: fade 0.42s var(--hok-faq-ease) 0s 1 normal forwards running;
+}
+
+/* Review Note (D7) */
+.rv-note {
+  margin-top: 18px;
+  padding: 10px 14px;
+  background-color: var(--hok-faq-decision-fill);
+  border-left: 2px solid var(--hok-faq-terracotta);
+  font-size: 12px;
+  line-height: 1.6;
+  color: #7A3A22;
+}
+
+/* Responsive adjustments (Section 11) */
+@media (max-width: 1199px) {
+  .cq {
+    scroll-margin-top: 84px;
+  }
+
+  .pane {
+    top: 84px;
+  }
+}
+
+@media (max-width: 900px) {
+  .sp {
+    grid-template-columns: 1fr;
+    gap: 0px;
+  }
+
+  .pane {
+    display: none;
+  }
+
+  .cq-inline {
+    display: block;
+  }
+
+  .cq.on .cq-chevron {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 760px) {
+  .sp {
+    padding: 0px 18px 48px;
+  }
+
+  .cq {
+    scroll-margin-top: 76px;
+  }
+
+  .cq-b {
+    grid-template-columns: minmax(0px, 1fr) 12px;
+    padding: 16px 4px 16px 12px;
+  }
+
+  .cq-tag {
+    display: none;
+  }
+
+  .cq-t {
+    font-size: 18px;
+  }
+
+  .cq-inline {
+    padding: 2px 12px 20px;
+  }
+
+  .fb-copy {
+    margin-left: 0px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

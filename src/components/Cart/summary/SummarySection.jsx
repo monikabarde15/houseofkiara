@@ -23,14 +23,12 @@ const truncate = (text = "", max = 30) => {
 
 const getSubtitle = (item) => {
     if (item.type === "rental") {
+        if (!item.startDate || !item.endDate) {
+            return `${item.windowDays}-day window · Dates not selected`;
+        }
 
         const start = new Date(item.startDate);
         const end = new Date(item.endDate);
-
-        //  SAFE WINDOW CALCULATION
-        const windowDays =
-            item.windowDays ||
-            Math.round((end - start) / (1000 * 60 * 60 * 24))+1;
 
         // FORMAT DATE RANGE (SPEC STYLE)
         const startMonth = start.toLocaleString("en-IN", { month: "short" });
@@ -44,7 +42,7 @@ const getSubtitle = (item) => {
                 ? `${startMonth} ${startDay}–${endDay}`
                 : `${startMonth} ${startDay}–${endMonth} ${endDay}`;
 
-        return `${windowDays}-day window · ${dateRange}`;
+        return `${item.windowDays}-day window · ${dateRange}`;
     }
 
     if (item.type === "preloved") {

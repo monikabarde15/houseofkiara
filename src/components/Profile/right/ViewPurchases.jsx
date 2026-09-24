@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import PurchaseCard from '../cards/PurchaseCard';
 import PurchaseDetailPanel from '../panels/PurchaseDetailPanel';
+import useAuthStore from '../../../store/authStore';
 import "../../../styles/Profile/right/ViewPurchases.css";
 
 const ViewPurchases = ({ onBack }) => {
@@ -10,44 +11,34 @@ const ViewPurchases = ({ onBack }) => {
   const cardRefs = useRef({});
   const scrollTimeoutRef = useRef(null);
 
-  const purchaseOrders = [
-    { 
-      id: "#HOK-030325-007", 
-      piece: "Coral Sharara Suit", 
-      type: "Preloved", 
-      typeDetail: "Preloved - Excellent condition",
-      status: "Delivered", 
-      amount: 12500, 
-      date: "Delivered 3 Mar 2025" 
-    },
-    { 
-      id: "#HOK-100525-011", 
-      piece: "Sage Silk Dupatta Set", 
-      type: "Buy New", 
-      typeDetail: "Buy New - Anju Modi",
-      status: "Processing", 
-      amount: 18000, 
-      date: "Ordered 10 May 2025" 
-    },
-    { 
-      id: "#HOK-180125-008", 
-      piece: "Ivory Silk Kurta Set", 
-      type: "Buy New", 
-      typeDetail: "Buy New - Ritu Kumar",
-      status: "Delivered", 
-      amount: 8400, 
-      date: "Delivered 18 Jan 2025" 
-    },
-    { 
-      id: "#HOK-021124-009", 
-      piece: "Navy Chanderi Kurta", 
-      type: "Buy New", 
-      typeDetail: "Buy New - Sabyasachi",
-      status: "Cancelled", 
-      amount: 14500, 
-      date: "2 Nov 2024" 
-    }
-  ];
+  const [purchaseOrders, setPurchaseOrders] = useState([]);
+  const [activeOrder, setActiveOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const token = useAuthStore.getState().token;
+        if (!token) return;
+        
+        const res = await fetch(`/api/customer/auth/orders`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        const data = await res.json();
+        if (data.success) {
+          const purchases = data.data.filter(order => order.type !== "Rental" && order.typeDetail !== "Rental");
+          setPurchaseOrders(purchases);
+        }
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -58,7 +49,7 @@ const ViewPurchases = ({ onBack }) => {
     };
   }, []);
 
-  const handleDetailsClick = (orderId) => {
+  const handleDetailsClick = async (orderId) => {
     const isOpening = activeCardId !== orderId;
     
     // Clear any pending scroll timeouts
@@ -69,6 +60,28 @@ const ViewPurchases = ({ onBack }) => {
     if (isOpening) {
       // Opening panel
       setActiveCardId(orderId);
+      setActiveOrder(null); // Clear previous
+      
+      // Fetch details
+      try {
+        const token = useAuthStore.getState().token;
+        if (!token) return;
+        
+        const res = await fetch(`/api/customer/auth/orders/${orderId}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        const data = await res.json();
+        if (data.success) {
+          // Format API response into what PurchaseDetailPanel expects
+          const detailedOrder = data.data;
+          
+          setActiveOrder(detailedOrder);
+        }
+      } catch (err) {
+        console.error("Error fetching order detail:", err);
+      }
       
       // 40ms delay before scrolling to panel
       scrollTimeoutRef.current = setTimeout(() => {
@@ -99,8 +112,6 @@ const ViewPurchases = ({ onBack }) => {
     }
   };
 
-  const activeOrder = purchaseOrders.find(o => o.id === activeCardId);
-
   return (
     <div className="profile-fv-purchases">
       <div className="profile-fv-purchases-bar">
@@ -109,24 +120,30 @@ const ViewPurchases = ({ onBack }) => {
           Back to overview
         </button>
         <div className="profile-fv-purchases-bar-title">My Purchases</div>
-        <div className="profile-fv-purchases-bar-count">4 orders</div>
+        <div className="profile-fv-purchases-bar-count">{purchaseOrders.length} orders</div>
       </div>
 
       <div className="profile-fv-purchases-grid">
-        {purchaseOrders.map((order) => (
-          <div
-            key={order.id}
-            ref={(el) => {
-              if (el) cardRefs.current[order.id] = el;
-            }}
-          >
-            <PurchaseCard
-              order={order}
-              isActive={activeCardId === order.id}
-              onDetailsClick={handleDetailsClick}
-            />
-          </div>
-        ))}
+        {loading ? (
+          <div style={{ padding: '20px', color: '#666' }}>Loading orders...</div>
+        ) : purchaseOrders.length === 0 ? (
+          <div style={{ padding: '20px', color: '#666' }}>No orders found.</div>
+        ) : (
+          purchaseOrders.map((order) => (
+            <div
+              key={order.id}
+              ref={(el) => {
+                if (el) cardRefs.current[order.id] = el;
+              }}
+            >
+              <PurchaseCard
+                order={order}
+                isActive={activeCardId === order.id}
+                onDetailsClick={handleDetailsClick}
+              />
+            </div>
+          ))
+        )}
       </div>
 
       {/* Panel container with ref for scrolling */}

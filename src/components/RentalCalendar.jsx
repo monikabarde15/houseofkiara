@@ -2,6 +2,7 @@
 import '../styles/rental-calendar.css';
 import React, { useState } from "react";
 import { Calendar } from 'lucide-react';
+
 export default function RentalCalendar({
   rentData,
   selectedStart,
@@ -13,8 +14,8 @@ export default function RentalCalendar({
     const [currentDate, setCurrentDate] = useState(
         selectedStart || new Date()
     );
+    const [hoverDate, setHoverDate] = useState(null);
 
-   
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth(); // 0–11
 
@@ -52,135 +53,187 @@ export default function RentalCalendar({
         setCurrentDate(new Date(year, month - 1, 1));
     };
 
-    const isUnavailable = (day) => {
-        if (!day) return false;
-
-        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-        return rentData?.availability?.unavailableDates?.includes(dateStr);
+    // ─── Helpers ───────────────────────────────────────────────────────────
+    const toMidnight = (d) => {
+        const copy = new Date(d);
+        copy.setHours(0, 0, 0, 0);
+        return copy;
     };
 
-    // DATE SELECTION HANDLER
+    const today = toMidnight(new Date());
+
+    const bufferDays = rentData?.availability?.preRentalBufferDays ?? 
+                       rentData?.delivery?.dispatchBeforeDays ?? 2;
+
+    const minValidDate = new Date(today);
+    minValidDate.setDate(today.getDate() + bufferDays);
+
+    // Build the flat unavailable date set (already includes buffer days from makeProductDetail)
+    const unavailableSet = new Set(
+        rentData?.availability?.unavailableDates || []
+    );
+
+    // Build raw booked ranges for overlap checks (with buffers already in unavailableSet)
+    // We also keep raw ranges for the "range crosses blocked" check
+    const blockedRanges = (rentData?.availability?.blockedRanges || []).map(r => ({
+        from: toMidnight(new Date(r.from)),
+        to: toMidnight(new Date(r.to)),
+    }));
+
+    // ─── Core availability checks ──────────────────────────────────────────
+
+    /** Is a single calendar date unavailable to click? */
+    const isUnavailable = (day) => {
+        if (!day) return false;
+        const date = toMidnight(new Date(year, month, day));
+        if (date < minValidDate) return true;
+        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        return unavailableSet.has(dateStr);
+    };
+
+    /** Does the range [a, b] contain any unavailable date? */
+    const rangeHasBlockedDate = (a, b) => {
+        if (!a || !b) return false;
+        const start = toMidnight(new Date(Math.min(a, b)));
+        const end   = toMidnight(new Date(Math.max(a, b)));
+        let d = new Date(start);
+        while (d <= end) {
+            const str = d.toISOString().split('T')[0];
+            if (unavailableSet.has(str)) return true;
+            d.setDate(d.getDate() + 1);
+        }
+        return false;
+    };
+
+    // ─── Date selection handler ────────────────────────────────────────────
     const handleDateClick = (day) => {
         if (!day) return;
+        if (isUnavailable(day)) {
+            alert("This date is already booked and unavailable for rental.");
+            return;
+        }
 
-        if (isUnavailable(day)) return;
+        const clicked = toMidnight(new Date(year, month, day));
 
-        const clickedDate = new Date(year, month, day);
-
-        // first click
+        // First click OR reset (already have both selected)
         if (!selectedStart || (selectedStart && selectedEnd)) {
-            setSelectedStart(clickedDate);
+            setSelectedStart(clicked);
             setSelectedEnd(null);
             return;
         }
 
-        // second click
+        // Second click → set end date
         if (selectedStart && !selectedEnd) {
-            if (clickedDate < selectedStart) {
-                setSelectedStart(clickedDate);
-            } else {
-                setSelectedEnd(clickedDate);
+            if (clicked < selectedStart) {
+                // User clicked earlier → swap: make clicked the new start
+                setSelectedStart(clicked);
+                setSelectedEnd(null);
+                return;
             }
+
+            // ⛔ Block if any date in selected range is unavailable
+            if (rangeHasBlockedDate(selectedStart, clicked)) {
+                alert("Your selected range includes dates that are already booked.");
+                // Reset selection — range crosses a booked date
+                setSelectedStart(clicked);
+                setSelectedEnd(null);
+                return;
+            }
+
+            setSelectedEnd(clicked);
         }
     };
 
-    // RANGE FOR THE RENT 
+    const handleMouseEnter = (day) => {
+        if (!day || !selectedStart || selectedEnd) {
+            setHoverDate(null);
+            return;
+        }
+        setHoverDate(toMidnight(new Date(year, month, day)));
+    };
 
+    const handleMouseLeave = () => setHoverDate(null);
+
+    // ─── Range / state helpers ─────────────────────────────────────────────
     const isInRange = (day) => {
-        if (!selectedStart || !selectedEnd) return false;
+        if (!day) return false;
+        const start = selectedStart;
+        const end = selectedEnd || hoverDate;
+        if (!start || !end) return false;
 
-        const date = new Date(year, month, day);
-
-        const start = new Date(selectedStart);
-        start.setHours(0, 0, 0, 0);
-
-        const end = new Date(selectedEnd);
-        end.setHours(0, 0, 0, 0);
-
-        return date > start && date < end;
+        const date = toMidnight(new Date(year, month, day));
+        const lo = toMidnight(new Date(Math.min(start, end)));
+        const hi = toMidnight(new Date(Math.max(start, end)));
+        return date > lo && date < hi;
     };
 
     const isStart = (day) => {
         if (!selectedStart || !day) return false;
-
-        const date = new Date(year, month, day);
-
-        return date.toDateString() === selectedStart.toDateString();
+        return toMidnight(new Date(year, month, day)).getTime() === toMidnight(new Date(selectedStart)).getTime();
     };
 
     const isEnd = (day) => {
         if (!selectedEnd || !day) return false;
-
-        const date = new Date(year, month, day);
-
-        return date.toDateString() === selectedEnd.toDateString();
+        return toMidnight(new Date(year, month, day)).getTime() === toMidnight(new Date(selectedEnd)).getTime();
     };
 
-    // COUNT THE DAYS
+    /** Is this day in a hover-preview range that crosses blocked dates? */
+    const isRangeConflict = (day) => {
+        if (!day || !selectedStart || selectedEnd) return false;
+        if (!hoverDate) return false;
+        const date = toMidnight(new Date(year, month, day));
+        const lo = toMidnight(new Date(Math.min(selectedStart, hoverDate)));
+        const hi = toMidnight(new Date(Math.max(selectedStart, hoverDate)));
+        if (date < lo || date > hi) return false;
+        return rangeHasBlockedDate(selectedStart, hoverDate);
+    };
+
+    // ─── Pricing calculations ──────────────────────────────────────────────
     const getDays = () => {
         if (!selectedStart || !selectedEnd) return 0;
-
-        const diff = selectedEnd - selectedStart;
+        const diff = toMidnight(new Date(selectedEnd)) - toMidnight(new Date(selectedStart));
         return Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
     };
 
     const totalDays = getDays();
 
-    // CALCULATE THE PRICE
     const getPrice = () => {
         if (!totalDays || !rentData?.pricing) return 0;
-
         const pricing = rentData.pricing;
-
-        // ✅ 1. Check window match first
-        const windowMatch = pricing.windows?.find(
-            (w) => w.days === totalDays
-        );
-
-        if (windowMatch) {
-            return windowMatch.price;
-        }
-
-        // ✅ 2. fallback to per day
+        const windowMatch = pricing.windows?.find((w) => w.days === totalDays);
+        if (windowMatch) return windowMatch.price;
         return totalDays * pricing.pricePerDay;
     };
 
     const totalPrice = getPrice();
 
-    // GET THE DELIVERY
     const getDeliveryDate = () => {
-        if (!selectedStart || !rentData?.delivery) return null;
-
-        const daysBefore = rentData.delivery.dispatchBeforeDays || 0;
-
+        if (!selectedStart) return null;
+        const daysBefore = rentData?.delivery?.dispatchBeforeDays || 2;
         const date = new Date(selectedStart);
         date.setDate(date.getDate() - daysBefore);
-
         return date;
     };
 
     const getReturnDate = () => {
         if (!selectedEnd) return null;
-
         const date = new Date(selectedEnd);
-        date.setDate(date.getDate() + rentData.delivery.returnAfterDays);
+        date.setDate(date.getDate() + (rentData?.delivery?.returnAfterDays || 1));
         return date;
     };
 
-    // DATE FORMAT
     const formatDate = (date) => {
         if (!date) return "";
-
-        return date.toLocaleDateString("en-IN", {
-            day: "numeric",
-            month: "short"
-        });
+        return date.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
     };
+
+    // Determine if hover range is invalid (crosses blocked dates)
+    const hoverRangeConflicts = selectedStart && !selectedEnd && hoverDate
+        ? rangeHasBlockedDate(selectedStart, hoverDate)
+        : false;
+
     return (
         <>
-
-
             <p className="calendar-section-label">
                 Select Your Rental Dates
             </p>
@@ -214,22 +267,34 @@ export default function RentalCalendar({
                         ))}
                     </div>
 
-                    {/* Dynamic Calander Grid */}
+                    {/* Dynamic Calendar Grid */}
                     <div className="calendar__grid" id="calDays">
                         {daysArray.map((day, i) => {
                             const unavailable = isUnavailable(day);
+                            const conflict = isRangeConflict(day);
+                            const inRange = !conflict && isInRange(day);
 
                             return (
                                 <div
                                     key={i}
                                     onClick={() => handleDateClick(day)}
+                                    onMouseEnter={() => handleMouseEnter(day)}
+                                    onMouseLeave={handleMouseLeave}
+                                    title={
+                                        unavailable && day
+                                            ? "This date is unavailable"
+                                            : conflict
+                                            ? "This range includes booked dates"
+                                            : undefined
+                                    }
                                     className={`calendar__day
-          ${!day ? "empty" : ""}
-          ${unavailable ? "blocked" : "available"}
-          ${isStart(day) ? "start" : ""}
-          ${isEnd(day) ? "end" : ""}
-          ${isInRange(day) ? "range" : ""}
-        `}
+                                        ${!day ? "empty" : ""}
+                                        ${unavailable ? "blocked" : "available"}
+                                        ${isStart(day) ? "start" : ""}
+                                        ${isEnd(day) ? "end" : ""}
+                                        ${inRange ? "range" : ""}
+                                        ${conflict ? "conflict" : ""}
+                                    `}
                                 >
                                     {day || ""}
                                 </div>
@@ -264,7 +329,14 @@ export default function RentalCalendar({
                 </div>
                 </div>
 
-                {/* Calender Summary */}
+                {/* Conflict Warning */}
+                {hoverRangeConflicts && selectedStart && !selectedEnd && (
+                    <div className="calendar-conflict-warning">
+                        ⚠ This range includes booked dates — please choose different dates.
+                    </div>
+                )}
+
+                {/* Calendar Summary */}
                 <div className="calendar-summary">
 
                     <div className="summary-row" id="sumDates">

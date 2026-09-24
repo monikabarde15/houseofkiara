@@ -45,6 +45,7 @@ const productSchema = new mongoose.Schema({
   subtitle: String, // NEW: Listing card subtitle
   description: String,
   story: String, // Already exists
+  gender: String, // NEW: For frontend filtering
   
   // ========== CATEGORY & OCCASION ==========
   category: String,
@@ -103,8 +104,15 @@ const productSchema = new mongoose.Schema({
   preRentalBufferDays: { type: Number, default: 2 }, // NEW: Auto-block before dispatch
   postRentalBufferDays: { type: Number, default: 3 }, // NEW: Auto-block after return
   
-  // ========== DELIVERY ==========
+  // ========== DELIVERY & CARE ==========
   deliveryTiming: String, // Already exists
+  care: [String], // NEW: Care instructions
+  packaging: [String], // NEW: Packaging info
+  shipping: [{ 
+    method: String, 
+    time: String, 
+    cost: String 
+  }], // NEW: Shipping methods
   
   // ========== PRICING & TAX ==========
   taxRate: Number,
@@ -124,6 +132,7 @@ const productSchema = new mongoose.Schema({
   
   // ========== MEDIA ==========
   images: [String],
+  video: String, // NEW: Video URL
   
   // ========== SEO ==========
   seoTitle: String,

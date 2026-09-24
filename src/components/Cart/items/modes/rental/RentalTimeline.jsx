@@ -8,7 +8,7 @@ import "../../../../../styles/cart/items/rental-timeline.css";
 /* ============================= */
 
 const formatDate = (date) => {
-  if (!date) return "";
+  if (!date) return "--/--";
   const d = new Date(date);
   const day = d.getDate();
   const month = d.toLocaleString("en-IN", { month: "short" });
@@ -16,7 +16,7 @@ const formatDate = (date) => {
 };
 
 const formatDay = (date) => {
-    if (!date) return "";
+    if (!date) return "Select Date";
     return new Date(date).toLocaleDateString("en-IN", {
         weekday: "long"
     });
@@ -42,13 +42,21 @@ const calculateWindowDays = (deliveryDate, returnDate) => {
 
 const RentalTimeline = ({ booking }) => {
 
-    if (!booking) return null;
+    if (!booking || !booking.deliveryDate || !booking.returnDate) return null;
 
     // ✅ Calculate - don't look for stored value
     const windowDays = calculateWindowDays(
-        booking?.deliveryDate, 
-        booking?.returnDate
+        booking.deliveryDate, 
+        booking.returnDate
     );
+    
+    // Calculate eventDate as exactly 1 day before the return date (standard rental policy)
+    let eventDate = booking.eventDate;
+    if (!eventDate) {
+        const end = new Date(booking.returnDate);
+        end.setDate(end.getDate() - 1); // Event is 1 day before return
+        eventDate = end.toISOString().split('T')[0];
+    }
     
     const windowLabel = `${windowDays}-Day Window`;
 
@@ -88,11 +96,11 @@ const RentalTimeline = ({ booking }) => {
                 <div className="cart-timeline__circle cart-timeline__circle--filled" />
 
                 <div className="cart-timeline__date">
-                    {formatDate(booking?.eventDate)}
+                    {formatDate(eventDate)}
                 </div>
 
                 <div className="cart-timeline__sub">
-                    {formatDay(booking?.eventDate)}
+                    {formatDay(eventDate)}
                 </div>
             </div>
 

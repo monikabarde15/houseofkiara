@@ -10,6 +10,7 @@ const WishlistListCard = ({ product, type, onRemove, onOpenModal, isRestored }) 
   const [isCollapsing, setIsCollapsing] = useState(false);
 
   const handleRemove = () => {
+    if (isRemoving) return;
     setIsRemoving(true);
 
     setTimeout(() => {

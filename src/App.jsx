@@ -32,6 +32,7 @@ import AuthPage from "./pages/Auth/AuthPage";
 import MainCategoryPage from "./pages/MainCategoryPage/MainCategoryPage";
 import HowItWorks from "./pages/HowItWorks/HowItWorks";
 import AboutUsPage from "./pages/AboutUsPage/AboutUsPage";
+import FAQPage from "./pages/FAQPage/FAQPage";
 
 
 
@@ -85,6 +86,7 @@ export default function App() {
 
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/about-us" element={<AboutUsPage />} />
+        <Route path="/faqs" element={<FAQPage />} />
 
 
       </Routes>

@@ -1,12 +1,11 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { ShoppingBag, Heart, Star,Check, TrendingUp, Calendar, MessageCircleCheck, Shield, ArrowRight, X, Plus, Truck, Gift, ChevronRight, CircleAlert, User, CreditCard } from "lucide-react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { products, makeProductDetail } from "../ProductList";
 import "../../styles/productcategory/preloved.css";
 import RelatedProduct from "../RelatedProduct";
 import GalleryColumn from "../GalleryColumn";
+import useWishlistStore from "../../store/wishlistStore";
 const gradeDotColor = {
   pristine: "#6B7E5A",
   excellent: "#C9A96E",
@@ -43,55 +42,77 @@ export default function Preloved() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // ===== PRODUCT FETCH =====
-  let product;
-
-  const found = products.find((p) => p.id === Number(id));
-  if (found) product = makeProductDetail(found);
-
-  if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
-
   // ===== STATES =====
-  const [wish, setWish] = useState(false);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [activeImage, setActiveImage] = useState(null);
+
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const isWishlisted = wishlistItems.includes(id);
+
   const [selectedWindow, setSelectedWindow] = useState("standard");
   const [openSections, setOpenSections] = useState(["details"]);
   const [isOfferOpen, setIsOfferOpen] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
 
-  const isOpen = (key) => openSections.includes(key);
+  useEffect(() => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+    fetch(`${backendUrl}/api/web-products/${id}`)
+      .then(res => {
+        if(!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .then(data => {
+        if (data && data.success && data.data) {
+          setProduct(data.data);
+          setActiveImage(data.data.images?.[0] || data.data.colors?.[0]?.images?.[0]);
+          setLoading(false);
+        } else {
+          throw new Error("No data returned");
+        }
+      })
+      .catch(err => {
+        console.error("API error:", err);
+        setError(true);
+        setLoading(false);
+      });
+  }, [id]);
 
-  // for Dot color
-  const grade = product.condition?.grade || "pristine";
-
-
-  // FOR DISCOUNT - 
-  const price = product.preloved?.pricing?.price || 185000;
+  const price = product?.preloved?.pricing?.price || 185000;
   const retail = 420000;
   const discount = Math.round(((retail - price) / retail) * 100);
-
-
-  // MINIMUM AND MAXIMUM OFFER PRICE
-
   const minOffer = Math.round(price * 0.54 / 5000) * 5000;
   const maxOffer = price;
 
-  const [offer, setOffer] = useState(minOffer);      // number (slider)
-  const [inputValue, setInputValue] = useState(minOffer); // (typing)
+  const [offer, setOffer] = useState(0);      // number (slider)
+  const [inputValue, setInputValue] = useState(0); // (typing)
 
-
-  // CALCULATION ON TOP
-  const savings = maxOffer - offer;
-  const savingsPercent = Math.round((savings / maxOffer) * 100);
-
-  // Golden Progress Bar
-  const progress = ((offer - minOffer) / (maxOffer - minOffer)) * 100;
-
-  // FOR INPUT AND NOTES
   const [note, setNote] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-
-  // Offer submitted 
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Initialize offer states when product loads
+  useEffect(() => {
+    if (product) {
+      setOffer(minOffer);
+      setInputValue(minOffer);
+    }
+  }, [product]);
+
+  if (loading) return <h2 style={{ padding: 40 }}>Loading product...</h2>;
+  if (error || !product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
+
+  const isOpen = (key) => openSections.includes(key);
+
+  const grade = product.condition?.grade || "pristine";
+
+  const savings = maxOffer - offer;
+  const savingsPercent = Math.round((savings / maxOffer) * 100);
+  const progress = ((offer - minOffer) / (maxOffer - minOffer)) * 100;
 
   const toggle = (key) => {
     setOpenSections((prev) =>
@@ -109,7 +130,8 @@ export default function Preloved() {
       id: product.id,
       title: product.title,
       price: price,
-      size: product.prelovedSize,
+      size: selectedSize || product?.sizeTable?.[0]?.label || product.prelovedSize || "M",
+      color: selectedColor || product?.colors?.[0]?.code || "Standard",
       image: product.images?.[0],
       designer: product.designer,
       type: "preloved",
@@ -143,7 +165,8 @@ export default function Preloved() {
       id: product.id,
       title: product.title,
       price: price,
-      size: product.prelovedSize,
+      size: selectedSize || product?.sizeTable?.[0]?.label || product.prelovedSize || "M",
+      color: selectedColor || product?.colors?.[0]?.code || "Standard",
       image: product.images?.[0],
       designer: product.designer,
       type: "preloved",
@@ -315,6 +338,38 @@ Product ID: ${product.id}
               </div>
 
 
+              {/* COLORS BLOCK */}
+              {(() => {
+                const displayColors = product?.colors?.length > 0 ? product.colors : [{ code: '#000000', name: 'Standard' }];
+                return (
+                  <div className="preloved-size-block" style={{ marginBottom: "20px" }}>
+                    <p className="preloved-size-label">
+                      SELECT COLOUR
+                    </p>
+                    <div className="rab-color-list" style={{ display: "flex", gap: "10px", marginTop: "10px", flexWrap: "wrap" }}>
+                      {displayColors.map((c, i) => (
+                        <div
+                          key={i}
+                          className={`rab-swatches-details ${selectedColor === c.code ? "active" : ""}`}
+                          onClick={() => {
+                            setSelectedColor(c.code);
+                            if (c.images && c.images.length > 0) {
+                              setActiveImage(c.images[0]);
+                            }
+                          }}
+                        >
+                          <span
+                            className="rab-swatch-circle-details"
+                            style={{ backgroundColor: c.code }}
+                          ></span>
+                          <span className="rab-swatch-name">{c.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* SIZE BLOCK */}
 
               <div className="preloved-size-block">
@@ -324,11 +379,25 @@ Product ID: ${product.id}
                 </p>
 
                 <div className="preloved-size-pills">
-                  <span className="preloved-size-pill active">
-                    <span className="preloved-size-pill active">
-                      {product.prelovedSize}
-                    </span>
-                  </span>
+                  {(() => {
+                    const displaySizes = (product?.sizeTable?.length > 0 ? product.sizeTable : (product?.sizes?.map(s => ({label: s, available: true})) || [])).filter(s => s && s.label && String(s.label).trim() !== "");
+                    return displaySizes.length > 0 ? (
+                      displaySizes.map((s, i) => (
+                        <span 
+                          key={i} 
+                          className={`preloved-size-pill ${selectedSize === s.label ? "active" : ""} ${!s.available ? "unavailable" : ""}`}
+                          onClick={() => s.available && setSelectedSize(s.label)}
+                          style={{ cursor: s.available ? 'pointer' : 'not-allowed' }}
+                        >
+                          {s.label}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="preloved-size-pill active">
+                        {product?.prelovedSize || product?.sizes?.[0] || "Standard"}
+                      </span>
+                    );
+                  })()}
                 </div>
 
               </div>
@@ -353,7 +422,7 @@ Product ID: ${product.id}
                   onClick={handleAddToWishlist}
                 >
                   <span className="preloved-icon"><Heart /></span>
-                  {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
+                  {isWishlisted ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                 </button>
 
               </div>
@@ -659,51 +728,46 @@ Product ID: ${product.id}
                     <div className="preloved-accordion-content">
 
                       <div className="preloved-details-grid">
-
                         <div>
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Designer</span>
-                            <p>{product.designer}</p>
+                            <p>{product.designer || ' '}</p>
                           </div>
-
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Fabric</span>
-                            <p>{product.details?.fabric}</p>
+                            <p>{product.craft || product.details?.fabric || ' '}</p>
                           </div>
-
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Embroidery</span>
-                            <p>{product.details?.technique}</p>
+                            <p>{product.details?.technique || ' '}</p>
                           </div>
-
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Includes</span>
-                            <p>{product.details?.includes}</p>
+                            <p>{product.details?.includes || ' '}</p>
+                          </div>
+                          <div className="preloved-details-row">
+                            <span className="preloved-details-label">Delivery Time</span>
+                            <p>{product.details?.delivery || ' '}</p>
                           </div>
                         </div>
-
                         <div>
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Category</span>
-                            <p>{product.subTitle}</p>
+                            <p>{product.subTitle || ' '}</p>
                           </div>
-
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Colour</span>
-                            <p>{product.details?.color}</p>
+                            <p>{product.details?.color || ' '}</p>
                           </div>
-
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Occasion</span>
-                            <p>{product.details?.occasion}</p>
+                            <p>{product.details?.occasion || ' '}</p>
                           </div>
-
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Origin</span>
-                            <p>{product.details?.origin}</p>
+                            <p>{product.details?.origin || ' '}</p>
                           </div>
                         </div>
-
                       </div>
 
                     </div>
@@ -732,10 +796,8 @@ Product ID: ${product.id}
                   <div className="preloved-accordion-content">
 
                     <p className="preloved-story-text">
-                      {product.story ||
-                        "Worn once for a wedding celebration, this piece carries delicate handwork and timeless elegance. Carefully preserved and professionally cleaned, it remains in excellent condition with no visible damage."}
+                      {product.story || ' '}
                     </p>
-
                     {product.stylingNote && (
                       <p className="preloved-story-note">
                         {product.stylingNote}
@@ -765,9 +827,8 @@ Product ID: ${product.id}
                 {isOpen("size") && (
                   <div className="preloved-accordion-content">
 
-                    {/* INTRO */}
                     <p className="preloved-size-intro">
-                      {product.sizeNote || "Fits true to size. Blouse tailored for a 32\" bust with adjustable waist."}
+                      {product.sizeNote || ' '}
                     </p>
 
                     {/* TABLE */}
@@ -933,7 +994,7 @@ Product ID: ${product.id}
           </Col>
         </Row>
       </Container>
-      <RelatedProduct />
+      <RelatedProduct product={product} currentProductId={id} category={product?.category} />
     </section>
 
   )

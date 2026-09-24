@@ -93,49 +93,67 @@ const CheckoutLayout = () => {
 
       const storeState = import('../../../store/checkoutStore').then(m => m.default.getState());
       storeState.then(async (state) => {
-        const contact = state.contact;
         const address = state.address;
-        const orderData = {
-          orderId: `HOK-ORD-${Date.now()}`,
-          customerName: `${contact.firstName} ${contact.lastName}`,
-          customerEmail: contact.email,
-          customerPhone: contact.whatsapp,
-          customerCity: address.city,
-          customerState: address.state,
-          address: `${address.address1}, ${address.city}, ${address.state} - ${address.pin}`,
-          mode: hasRentalItem ? 'Rental' : 'Buy',
-          discount: activePromo ? activePromo.discount : 0,
-          items: checkoutItems.map(item => ({
-            productId: item.id || item._id,
-            productName: item.title || item.name,
-            designer: item.designer,
-            mode: item.type === 'rental' ? 'Rental' : 'Buy',
-            size: item.size || 'M',
-            quantity: item.quantity || 1,
-            rentalStartDate: item.rentalDates?.start,
-            rentalEndDate: item.rentalDates?.end,
-            amount: item.price || item.modes?.rent?.pricing?.pricePerDay,
-          }))
-        };
+        const addressString = `${address.address1}, ${address.city}, ${address.state} - ${address.pin}`;
+
+        const authStore = await import('../../../store/authStore').then(m => m.default.getState());
+        const token = authStore.token;
+
+        if (!token) {
+          console.error("No token available for checkout");
+          setIsProcessingOrder(false);
+          return;
+        }
 
         try {
-          const res = await fetch('/api/orders', {
+          const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+          const res = await fetch('/api/customer/auth/orders/place', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              items: checkoutItems,
+              totals: totals,
+              address: addressString
+            })
           });
           const result = await res.json();
           if (result.success) {
-            // clear cart if needed
+            // Clear checkout session
             localStorage.removeItem('checkoutData');
+            
+            // Clear cart
+            const cartStore = await import('../../../store/cartStore').then(m => m.default.getState());
+            cartStore.clearCart();
+
+            // Remove ordered items from wishlist
+            const wishlistStore = await import('../../../store/wishlistStore').then(m => m.default.getState());
+            const wishlistItems = wishlistStore.items;
+            
+            checkoutItems.forEach(item => {
+              const id = item.id || item._id;
+              if (wishlistItems.includes(id)) {
+                wishlistStore.toggleWishlist(id);
+              }
+            });
+
+            // Update order stats
+            const authStore = await import('../../../store/authStore').then(m => m.default.getState());
+            authStore.fetchOrderStats();
+
+            // Show confirmation overlay
+            setIsOrderConfirmed(true);
           } else {
             console.error("Order failed:", result.message);
+            alert("Failed to place order: " + result.message);
           }
         } catch (error) {
           console.error("Order network error:", error);
+          alert("Network error while placing order.");
         } finally {
           setIsProcessingOrder(false);
-          setIsOrderConfirmed(true);
         }
       });
 

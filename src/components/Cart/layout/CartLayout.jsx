@@ -2,10 +2,11 @@
 import React from "react";
 import "../../../styles/cart/layout/cart-layout.css";
 // import "../../../styles/cart/ui/mode-separator.css";
-import { products, makeProductDetail } from "../../ProductList";
+import { makeProductDetail } from "../../ProductList";
 import { calculateTotals } from "../../../utils/cart/calculateTotals";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import useCartStore from "../../../store/cartStore";
 import {
   CartItemDesktop,
   OrderSummary,
@@ -39,37 +40,14 @@ const CartLayout = () => {
     }
   }, [openRemoveDialog]);
 
-  // DEFAULT DATA
-  const defaultItems = [
-    {
-      id: 1,
-      type: "rental",
-      product: makeProductDetail(products[0]),
-      booking: {
-        size: "M",
-        window: "standard",
-        deliveryDate: "2026-04-20",
-        eventDate: "2026-04-23",
-        returnDate: "2026-04-25"
-      }
-    },
-    {
-      id: 2,
-      type: "new",
-      product: makeProductDetail(products[0])
-    },
-    {
-      id: 3,
-      type: "preloved",
-      product: makeProductDetail(products[0])
-    }
-  ];
+  const { items: storeItems, removeFromCart } = useCartStore();
+  
+  const [cartItemsState, setCartItemsState] = useState(storeItems);
 
-  const cartItems = incomingItem
-    ? [incomingItem, ...defaultItems.filter(item => item.type !== incomingItem.type)]
-    : defaultItems;
+  useEffect(() => {
+    setCartItemsState(storeItems);
+  }, [storeItems]);
 
-  const [cartItemsState, setCartItemsState] = useState(cartItems);
   const activeItems = cartItemsState.filter(item => item.active !== false);
   const visibleItems = cartItemsState.filter(item => item.active !== false);
 
@@ -97,13 +75,7 @@ const CartLayout = () => {
     );
 
     setTimeout(() => {
-      setCartItemsState(prev =>
-        prev.map(item =>
-          item.id === removeTarget.id
-            ? { ...item, active: false }
-            : item
-        )
-      );
+      removeFromCart(removeTarget.id);
     }, 300);
 
     setRemoveTarget(null);
@@ -111,14 +83,20 @@ const CartLayout = () => {
 
   const handleWishlist = () => {
     if (!removeTarget) return;
-    console.log("Wishlist:", removeTarget);
+    const { toggleWishlist } = import('../../../store/wishlistStore').then(m => m.default.getState().toggleWishlist(removeTarget.id));
+    
     setCartItemsState(prev =>
       prev.map(item =>
         item.id === removeTarget.id
-          ? { ...item, active: false }
+          ? { ...item, removing: true }
           : item
       )
     );
+    
+    setTimeout(() => {
+      removeFromCart(removeTarget.id);
+    }, 300);
+    
     setRemoveTarget(null);
   };
 
@@ -168,11 +146,22 @@ const CartLayout = () => {
       })
     );
 
-    navigate("/checkout", {
-      state: {
-        items: activeItems,
-        activePromo
+    const storeState = import('../../../store/authStore').then(m => {
+      const { isAuthenticated } = m.default.getState();
+      if (!isAuthenticated) {
+        import('react-hot-toast').then(toast => {
+          toast.default("Please login to proceed to checkout", { icon: "🔒" });
+        });
+        sessionStorage.setItem("returnTo", "/checkout");
+        navigate("/auth");
+        return;
       }
+      navigate("/checkout", {
+        state: {
+          items: activeItems,
+          activePromo
+        }
+      });
     });
   };
 
@@ -202,19 +191,34 @@ const CartLayout = () => {
             );
           })}
 
-          <div data-rise="5">
-            <PromoCode onApply={setActivePromo} />
-          </div>
+          {visibleItems.length > 0 ? (
+            <>
+              {activeItems.some(item => item.product?.promoCode || item.product?.promo_code || item.product?.coupon || item.product?.hasPromo) && (
+                <div data-rise="5">
+                  <PromoCode onApply={setActivePromo} />
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="empty-cart-message" style={{ padding: "40px 0", textAlign: "center", color: "var(--text-light)" }}>
+              <p>Your cart is empty.</p>
+              <button onClick={() => navigate("/products")} style={{ marginTop: "16px", padding: "12px 24px", background: "var(--primary-dark)", color: "#fff", border: "none", cursor: "pointer", letterSpacing: "1px", textTransform: "uppercase", fontSize: "12px" }}>
+                Continue Shopping
+              </button>
+            </div>
+          )}
 
         </div>
 
         {/* RIGHT SIDE */}
         <div className="cart-right" data-rise="2">
-          <OrderSummary
-            cartItems={activeItems}
-            activePromo={activePromo}
-            onCheckout={handleCheckout}
-          />
+          {activeItems.length > 0 && (
+            <OrderSummary
+              cartItems={activeItems}
+              activePromo={activePromo}
+              onCheckout={handleCheckout}
+            />
+          )}
         </div>
 
         <RemoveDialog

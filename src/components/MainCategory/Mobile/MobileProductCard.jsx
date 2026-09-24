@@ -64,22 +64,30 @@ const MobileProductCard = ({ item, onWishlistToggle }) => {
   const handleCardClick = () => {
     const { rent, preloved, isNew } = item;
     const productData = makeProductDetail(item);
-    /*TEMP FIX STILL APPLIES FOR ID*/
+    const productId = item._id || item.id || item.productId;
 
-    if (rent && preloved) {
-      navigate(`/rentalandpreloved/1`, { state: { product: productData } });
+    const listingModes = item.listingModes || [];
+    const isAllModes = (listingModes.includes("RENTAL") || rent) &&
+                       (listingModes.includes("PRELOVED") || listingModes.includes("RE-SELL") || preloved) &&
+                       (listingModes.includes("BUY NEW") || listingModes.includes("BUY") || isNew);
+
+    if (isAllModes) {
+      navigate(`/all-modes/${productId}`, { state: { product: productData } });
+    }
+    else if (rent && preloved) {
+      navigate(`/rentalandpreloved/${productId}`, { state: { product: productData } });
     }
     else if (rent && isNew) {
-      navigate(`/rentalandbuy/1`, { state: { product: productData } });
+      navigate(`/rentalandbuy/${productId}`, { state: { product: productData } });
     }
     else if (rent) {
-      navigate(`/onlyrental/1`, { state: { product: productData } });
+      navigate(`/onlyrental/${productId}`, { state: { product: productData } });
     }
     else if (preloved) {
-      navigate(`/preloved/1`, { state: { product: productData } });
+      navigate(`/preloved/${productId}`, { state: { product: productData } });
     }
     else {
-      navigate(`/buynew/1`, { state: { product: productData } });
+      navigate(`/buynew/${productId}`, { state: { product: productData } });
     }
   };
 

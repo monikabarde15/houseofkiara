@@ -1,12 +1,23 @@
 // src\components\Header\DesktopHeader.jsx
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo/logo.png";
 import "../../styles/Header/desktop-header.css";
 import useAuthStore from "../../store/authStore";
+import useWishlistStore from "../../store/wishlistStore";
+import useCartStore from "../../store/cartStore";
 
 const DesktopHeader = ({ onSearchOpen }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated } = useAuthStore();
+  const { items: wishlistItems, unseenCount } = useWishlistStore();
+  const { items: cartItems } = useCartStore();
+
+  const isWishlistPage = location.pathname === "/wishlist";
+  const isCartPage = location.pathname === "/cart";
+
+  const wishlistCount = wishlistItems.length;
+  const cartCount = cartItems.length;
 
   const handleProfileClick = () => {
     navigate("/auth")
@@ -76,11 +87,18 @@ const DesktopHeader = ({ onSearchOpen }) => {
         <div className="hok-desktop-header-right">
 
           <button
-            className="hok-desktop-header-btn"
+            className="hok-desktop-header-btn hok-desktop-header-cart-wrap"
             aria-label="Wishlist"
             onClick={handleWishlistClick}
           >
-            <svg viewBox="0 0 24 24">
+            {wishlistCount > 0 && !isWishlistPage && <span className="hok-desktop-header-badge">{wishlistCount}</span>}
+            <svg 
+              viewBox="0 0 24 24" 
+              style={{
+                fill: wishlistItems.length > 0 ? "#B85C38" : "none",
+                stroke: wishlistItems.length > 0 ? "#B85C38" : "currentColor"
+              }}
+            >
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
 
@@ -92,7 +110,7 @@ const DesktopHeader = ({ onSearchOpen }) => {
             aria-label="Bag"
             onClick={handleBagClick}
           >
-            <span className="hok-desktop-header-cart-dot" />
+            {cartCount > 0 && !isCartPage && <span className="hok-desktop-header-badge">{cartCount}</span>}
 
             <svg viewBox="0 0 24 24">
               <path d="M6 2h12l3 4v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6l3-4z" />

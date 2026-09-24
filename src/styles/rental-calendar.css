@@ -193,6 +193,29 @@
   background: transparent;
 }
 
+/* Conflict: hover range crosses a booked date */
+.calendar__day.conflict {
+  background: #FFF0EE;
+  color: #C0392B;
+  cursor: not-allowed;
+}
+
+/* Warning banner below legend */
+.calendar-conflict-warning {
+  margin: 0 20px 14px;
+  padding: 10px 14px;
+  background: #FFF5F4;
+  border: 1px solid #F5C6C2;
+  border-radius: 2px;
+  font-family: 'DM Sans';
+  font-size: 11px;
+  color: #B85C38;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* =========================
    CALENDAR LEGEND
 ========================= */

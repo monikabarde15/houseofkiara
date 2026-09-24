@@ -1,0 +1,262 @@
+/* src/styles/faq/faq-rental-calculator.css */
+/* Dated Rental Strip: Panel, Interactive Controls, and 5-Milestone Timeline (C5, C6) */
+
+/* Panel Container (C5) */
+.plan {
+  margin-top: 28px;
+  background-color: var(--hok-faq-deep-charcoal);
+  color: #faf7f2;
+  padding: 26px 30px 30px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: var(--hok-faq-font-sans);
+}
+
+.plan-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.plan-ttl {
+  font-family: var(--hok-faq-font-serif);
+  font-size: 26px;
+  font-weight: 300;
+  margin: 0;
+  color: #faf7f2;
+}
+
+.plan-ttl em {
+  font-style: italic;
+  color: var(--hok-faq-gold);
+}
+
+.plan-ctl {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: rgba(250, 247, 242, 0.6);
+}
+
+.plan-date-label {
+  font-size: 11px;
+}
+
+.plan-ctl input[type="date"] {
+  background: transparent;
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  color: #faf7f2;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-family: var(--hok-faq-font-sans);
+  color-scheme: dark;
+  outline: none;
+}
+
+.plan-win {
+  display: inline-flex;
+  border: 1px solid rgba(201, 169, 110, 0.4);
+}
+
+.plan-win button {
+  background: none;
+  border: none;
+  color: rgba(250, 247, 242, 0.6);
+  padding: 9px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: var(--hok-faq-font-sans);
+  transition: all 0.2s ease;
+}
+
+.plan-win button[aria-pressed="true"],
+.plan-win button[aria-checked="true"] {
+  background-color: var(--hok-faq-gold);
+  color: var(--hok-faq-deep-charcoal);
+}
+
+.plan-note {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--hok-faq-gold-light);
+  min-height: 18px;
+}
+
+/* Timeline Grid (C6) */
+.strip {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0px, 1fr));
+  margin-top: 22px;
+  box-sizing: border-box;
+}
+
+/* Connecting Line */
+.strip::before {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 22px;
+  height: 1px;
+  background-color: rgba(201, 169, 110, 0.28);
+}
+
+/* 9px Rental Window Band */
+.strip-band {
+  position: absolute;
+  top: 18px;
+  height: 9px;
+  background-color: rgba(201, 169, 110, 0.18);
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  left: 30%;
+  right: 30%;
+  pointer-events: none;
+}
+
+/* Step Milestone */
+.st {
+  position: relative;
+  text-align: center;
+  padding: 0px 6px;
+  box-sizing: border-box;
+}
+
+.st i {
+  display: block;
+  width: 45px;
+  height: 45px;
+  margin: 0px auto 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  background-color: var(--hok-faq-deep-charcoal);
+  font-style: normal;
+  font-family: var(--hok-faq-font-serif);
+  font-size: 18px;
+  line-height: 43px;
+  text-align: center;
+  color: var(--hok-faq-gold);
+  position: relative;
+  z-index: 1;
+}
+
+/* Event Step 3: Filled gold circle with halo */
+.st.st-ev i {
+  background-color: var(--hok-faq-gold);
+  color: var(--hok-faq-deep-charcoal);
+  border-color: var(--hok-faq-gold);
+  box-shadow: 0 0 0 7px rgba(201, 169, 110, 0.12);
+}
+
+/* Urgent Step 1 */
+.st.st-urgent i {
+  border-color: var(--hok-faq-terracotta);
+  color: #f0b49b;
+}
+
+.st .k {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(232, 213, 176, 0.6);
+}
+
+.st .d {
+  display: block;
+  font-family: var(--hok-faq-font-serif);
+  font-size: 26px;
+  line-height: 1.1;
+  margin-top: 4px;
+  color: #faf7f2;
+}
+
+.st.st-urgent .d {
+  color: #f0b49b;
+}
+
+.st .w {
+  display: block;
+  font-size: 11px;
+  color: rgba(250, 247, 242, 0.5);
+  margin-top: 2px;
+}
+
+/* Footnote */
+.plan-foot {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(201, 169, 110, 0.16);
+  font-size: 11px;
+  color: rgba(250, 247, 242, 0.5);
+  line-height: 1.7;
+}
+
+/* Mobile responsive (<=760px) */
+@media (max-width: 760px) {
+  .plan {
+    margin: 22px -18px 0px;
+    padding: 22px 18px 24px;
+  }
+
+  .plan-ctl {
+    width: 100%;
+  }
+
+  .plan-date-label {
+    width: 100%;
+  }
+
+  .plan-ctl input[type="date"] {
+    width: 100%;
+    margin-top: 6px;
+    box-sizing: border-box;
+  }
+
+  .plan-win {
+    width: 100%;
+  }
+
+  .plan-win button {
+    flex: 1 1 0%;
+  }
+
+  .strip {
+    grid-template-columns: 1fr;
+    margin-top: 18px;
+  }
+
+  .strip::before {
+    inset: 20px auto 20px 22px;
+    width: 1px;
+    height: auto;
+  }
+
+  .strip-band {
+    display: none;
+  }
+
+  .st {
+    display: grid;
+    grid-template-columns: 45px 1fr;
+    column-gap: 16px;
+    text-align: left;
+    align-items: center;
+    padding: 0px 0px 12px;
+  }
+
+  .st i {
+    grid-row: 1 / span 3;
+    margin: 0px;
+  }
+
+  .st .d {
+    font-size: 22px;
+    margin: 0;
+  }
+}

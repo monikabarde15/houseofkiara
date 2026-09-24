@@ -107,7 +107,14 @@ export default function App() {
   }, []);
   const [designers, setDesigners] = useState<Designer[]>([]);
   const [listers, setListers] = useState<any[]>([]);
-  useEffect(() => { listerApi.getListers().then((data) => setListers(Array.isArray(data) ? data : [])).catch((error) => { console.error('Unable to load listers:', error); setListers([]); }); }, []);
+  useEffect(() => {
+    const fetchAllListers = () => {
+      listerApi.getListers().then((data) => setListers(Array.isArray(data) ? data : [])).catch((error) => { console.error('Unable to load listers:', error); setListers([]); });
+    };
+    fetchAllListers();
+    window.addEventListener('refreshListers', fetchAllListers);
+    return () => window.removeEventListener('refreshListers', fetchAllListers);
+  }, []);
   const [calendarTasks, setCalendarTasks] = useState<any[]>([]);
   useEffect(() => {
     taskApi.getTasks()
@@ -398,7 +405,7 @@ export default function App() {
         <DashboardView 
           orders={orders}
           listerSubmissions={submissions}
-          activeListingsCount={products.filter(p => p.status !== 'Archived').length || products.length || 1}
+          activeListingsCount={products.filter(p => p.status !== 'Archived').length}
           setView={setView}
           setSelectedOrderId={setSelectedOrderId}
           onApproveSubmission={handleApproveSubmission}

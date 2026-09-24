@@ -81,21 +81,29 @@ const MobileWishlistImageArea = ({ item, mode, showToast,onRemove  }) => {
       {mode === 'rent' && !item.isAvailable && <MobileUnavailabilityVeil />}
 
       {/*  Inner container with placeholder art */}
-      <div className="wishlist-mobile-image-area__inner">
-        <svg className="wishlist-mobile-image-area__garment" viewBox="0 0 38 50" fill="none">
-          <path d="M10 12L19 6L28 12L31 21L28 31L19 44L10 31L7 21L10 12Z" 
-            stroke={getSvgStroke()} 
-            strokeWidth="0.65" 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            fill="none"/>
-          <path d="M19 6V44" stroke={getSvgStroke()} strokeWidth="0.65" strokeLinecap="round" fill="none"/>
-        </svg>
+      <div className="wishlist-mobile-image-area__inner" style={{ position: 'relative' }}>
+        {item.image ? (
+          <img 
+            src={item.image} 
+            alt={item.name || "Product"} 
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
+          />
+        ) : (
+          <svg className="wishlist-mobile-image-area__garment" viewBox="0 0 38 50" fill="none">
+            <path d="M10 12L19 6L28 12L31 21L28 31L19 44L10 31L7 21L10 12Z" 
+              stroke={getSvgStroke()} 
+              strokeWidth="0.65" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              fill="none"/>
+            <path d="M19 6V44" stroke={getSvgStroke()} strokeWidth="0.65" strokeLinecap="round" fill="none"/>
+          </svg>
+        )}
         
         {/* Designer label on image */}
         <span 
           className="wishlist-mobile-image-area__designer-label"
-          style={{ color: getDesignerLabelColor() }}
+          style={{ color: getDesignerLabelColor(), position: 'relative', zIndex: 1 }}
         >
           {item.designer}
         </span>

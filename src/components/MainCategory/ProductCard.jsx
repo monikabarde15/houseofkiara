@@ -3,92 +3,93 @@ import "../../styles/maincategorypage/productcard.css"
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { makeProductDetail } from "../ProductList";
+import useWishlistStore from "../../store/wishlistStore";
+import useCartStore from "../../store/cartStore";
+import useAuthStore from "../../store/authStore";
+import toast from 'react-hot-toast';
 
 const ProductCard = ({ item }) => {
-
-
     const navigate = useNavigate();
 
+    // Store hooks
+    const { toggleWishlist, items: wishlistItems } = useWishlistStore();
+    const { addToCart } = useCartStore();
+    const { isAuthenticated } = useAuthStore();
+
+    const productId = item._id || item.id;
+    const isWishlisted = wishlistItems.includes(productId);
 
     const handleClick = () => {
-        const { rent, preloved, isNew } = item;
+        const rent = item.rent;
+        const preloved = item.preloved;
+        const isNew = item.isNew;
 
         const productData = makeProductDetail(item); // 🔥 IMPORTANT
 
-        /*
-        ⚠️ TEMP FIX STILL APPLIES FOR ID
-        */
-
-        if (rent && preloved) {
-            navigate(`/rentalandpreloved/1`, { state: { product: productData } });
+        if (rent && preloved && isNew) {
+            navigate(`/all-modes/${productId}`, { state: { product: productData } });
+        }
+        else if (rent && preloved) {
+            navigate(`/rentalandpreloved/${productId}`, { state: { product: productData } });
         }
         else if (rent && isNew) {
-            navigate(`/rentalandbuy/1`, { state: { product: productData } });
+            navigate(`/rentalandbuy/${productId}`, { state: { product: productData } });
         }
         else if (rent) {
-            navigate(`/onlyrental/1`, { state: { product: productData } });
+            navigate(`/onlyrental/${productId}`, { state: { product: productData } });
         }
         else if (preloved) {
-            navigate(`/preloved/1`, { state: { product: productData } });
+            navigate(`/preloved/${productId}`, { state: { product: productData } });
         }
         else {
-            navigate(`/buynew/1`, { state: { product: productData } });
+            navigate(`/buynew/${productId}`, { state: { product: productData } });
         }
     };
 
-    // const handleClick = () => {
-    //     const { rent, preloved, isNew, } = item;
+    const handleWishlistClick = (e) => {
+        e.stopPropagation();
+        toggleWishlist(productId);
+        if (isWishlisted) {
+            toast.success("Removed from wishlist");
+        } else {
+            toast.success("Added to wishlist!");
+        }
+    };
 
-    //                 /*
-    //         ⚠️ TEMPORARY FIX:
-    //         Currently we have only static pages like:
-    //         /onlyrental/1, /preloved/1, /buy/1 etc.
-
-    //         But product cards are dynamic (id: 1–30),
-    //         so routes like /onlyrental/20 will break.
-
-    //         👉 For now, always redirect to `/1`
-
-    //         ✅ FUTURE:
-    //         Replace `/1` with `/${item.id}` once dynamic routing
-    //         and product detail pages are implemented, pass id to to the item.
-    //         */
-
-    //     if (rent && preloved) {
-    //         navigate(`/rentalandpreloved/1`);
-    //     }
-    //     else if (rent && isNew) {
-    //         navigate(`/rentalandbuy/1`);
-    //     }
-    //     else if (rent) {
-    //         navigate(`/onlyrental/1`);
-    //     }
-    //     else if (preloved) {
-    //         navigate(`/preloved/1`);
-    //     }
-    //     else {
-    //         navigate(`/product/1`);
-    //     }
-    // };
+    const handleQuickAdd = (e) => {
+        e.stopPropagation();
+        const details = {
+            price: item.rentPrice || item.buyPrice || 0,
+            type: item.rent ? 'rental' : (item.preloved ? 'preloved' : 'buy'),
+            size: item.sizes?.[0] || 'Default',
+            rentalDates: null
+        };
+        const added = addToCart(item, details);
+        if (added) {
+            toast.success("Added to cart!");
+        } else {
+            toast("Already in cart", { icon: "ℹ️" });
+        }
+    };
 
     // dynamic discount
     const discount =
         item.originalPrice && item.buyPrice
             ? Math.round(
-                ((parseInt(item.originalPrice.replace(/,/g, "")) -
-                    parseInt(item.buyPrice.replace(/,/g, ""))) /
-                    parseInt(item.originalPrice.replace(/,/g, ""))) *
+                ((parseInt(item.originalPrice.toString().replace(/,/g, "")) -
+                    parseInt(item.buyPrice.toString().replace(/,/g, ""))) /
+                    parseInt(item.originalPrice.toString().replace(/,/g, ""))) *
                 100
             )
             : null;
 
+    // Get image - support both item.images (from PDP fetch) and item.image (from listing fetch)
+    const imgSrc = (item.images?.[0] || item.image?.[0]);
+
     return (
-
         <div className="product-card" onClick={handleClick}>
-
             {/* IMAGE AREA */}
             <div className="product-image">
-
                 {/* BADGES */}
                 <div className="product-badges">
                     {item.rent && <span className="badge rent">RENT</span>}
@@ -97,40 +98,42 @@ const ProductCard = ({ item }) => {
                 </div>
 
                 {/* WISHLIST */}
-                <button className="wishlist-btn">
-                    <Heart className="wishlist-icon" />
+                <button className={`wishlist-btn ${isWishlisted ? 'active' : ''}`} onClick={handleWishlistClick}>
+                    <Heart 
+                        className="wishlist-icon" 
+                        style={{
+                            fill: isWishlisted ? "#B85C38" : "none",
+                            stroke: isWishlisted ? "#B85C38" : "currentColor",
+                            color: isWishlisted ? "#B85C38" : "inherit"
+                        }}
+                    />
                 </button>
 
                 {/* IMAGE AND TEXT(!image))*/}
                 <div className="product-img-inner">
-                    {item.image?.[0] ? (
-                        <img src={item.image[0]} alt={item.name} />
+                    {imgSrc ? (
+                        <img src={imgSrc} alt={item.name} />
                     ) : (
                         <span className="product-placeholder">Bridal Lehenga</span>
                     )}
                 </div>
 
                 {/* QUICK ADD */}
-                <div className="quick-add">
+                <div className="quick-add" onClick={handleQuickAdd}>
                     <svg className="quick-add-icon" viewBox="0 0 24 24">
                         <path d="M6 8h12l-1.2 11H7.2L6 8Z" />
                         <path d="M9 8V6a3 3 0 0 1 6 0v2" />
                     </svg>
-
                     <span>QUICK ADD</span>
                 </div>
-
             </div>
 
             {/* INFO */}
             <div className="product-info">
-
                 <p className="designer">{item.designer}</p>
-
                 <h3 className="product-name">{item.name}</h3>
 
                 <div className="price-block">
-
                     {/* RENT */}
                     {item.rentPrice && (
                         <div className="price-row">
@@ -158,11 +161,8 @@ const ProductCard = ({ item }) => {
                             )}
                         </>
                     )}
-
                 </div>
-
             </div>
-
         </div>
     );
 };

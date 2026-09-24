@@ -1,15 +1,28 @@
 import React from 'react';
 import { Clock, ShoppingBag, Heart, Tag, MapPin, FileText, Settings, HelpCircle } from 'lucide-react';
+import useAuthStore from '../../../store/authStore';
+import useWishlistStore from '../../../store/wishlistStore';
 import "../../../styles/Profile/left/LeftNav.css";
 
 const LeftNav = () => {
+  const user = useAuthStore((state) => state.user);
+  const wishlistItems = useWishlistStore((state) => state.items);
+  
+  const purchasesCount = user?.purchasesCount || 0;
+  const rentalsCount = user?.rentalsCount || 0;
+  const savedCount = wishlistItems?.length || 0;
+
+  const orderCountText = purchasesCount === 1 ? "1 order" : `${purchasesCount} orders`;
+  const rentalCountText = rentalsCount === 1 ? "1 booking" : `${rentalsCount} bookings`;
+  const savedCountText = savedCount === 1 ? "1 saved" : `${savedCount} saved`;
+
   const navItems = [
-    { id: "rentals", icon: Clock, label: "My Rentals", subLabel: "4 bookings", rightElement: "dot" },
-    { id: "purchases", icon: ShoppingBag, label: "My Purchases", subLabel: "2 orders", rightElement: "chevron" },
-    { id: "wishlist", icon: Heart, label: "Saved Pieces", subLabel: "7 saved", rightElement: "badge", badgeValue: "7", badgeClass: "lb-red" },
-    { id: "listed", icon: Tag, label: "My Listed Pieces", subLabel: "2 active listings", rightElement: "badge", badgeValue: "2", badgeClass: "lb-gold" },
-    { id: "addresses", icon: MapPin, label: "Saved Addresses", subLabel: "2 addresses", rightElement: "chevron" },
-    { id: "submissions", icon: FileText, label: "My Submissions", subLabel: "1 under review", rightElement: "badge", badgeValue: "1", badgeClass: "lb-submission" },
+    { id: "rentals", icon: Clock, label: "My Rentals", subLabel: rentalCountText, rightElement: rentalsCount > 0 ? "dot" : "none" },
+    { id: "purchases", icon: ShoppingBag, label: "My Purchases", subLabel: orderCountText, rightElement: "chevron" },
+    { id: "wishlist", icon: Heart, label: "Saved Pieces", subLabel: savedCountText, rightElement: "badge", badgeValue: savedCount.toString(), badgeClass: "lb-red" },
+    { id: "listed", icon: Tag, label: "My Listed Pieces", subLabel: "0 active listings", rightElement: "none", badgeValue: "0", badgeClass: "lb-gold" },
+    { id: "addresses", icon: MapPin, label: "Saved Addresses", subLabel: "0 addresses", rightElement: "chevron" },
+    { id: "submissions", icon: FileText, label: "My Submissions", subLabel: "0 under review", rightElement: "none", badgeValue: "0", badgeClass: "lb-submission" },
     { id: "settings", icon: Settings, label: "Account Settings", subLabel: "Profile, security, notifications", rightElement: "chevron" },
     { id: "support", icon: HelpCircle, label: "Help & Support", subLabel: "FAQ, chat, contact", rightElement: "chevron" },
   ];

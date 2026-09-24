@@ -1,0 +1,226 @@
+/* src/styles/faq/faq-moment.css */
+/* Open Moment Container, Header, Chips, and Care Note (C1-C4) */
+
+/* Moment Section Container (C1) */
+.mo {
+  max-width: 1280px;
+  margin: 0px auto;
+  padding: 72px 40px 32px;
+  scroll-margin-top: 140px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Moment Header (C2) */
+.mo-hd {
+  display: grid;
+  grid-template-columns: minmax(0px, 1fr) auto;
+  gap: 28px;
+  align-items: end;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--hok-faq-charcoal);
+  box-sizing: border-box;
+}
+
+.mo-k {
+  display: block;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hok-faq-gold);
+  margin-bottom: 10px;
+}
+
+.mo-h2 {
+  font-family: var(--hok-faq-font-serif);
+  font-weight: 300;
+  font-size: clamp(38px, 4vw, 54px);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: var(--hok-faq-charcoal);
+}
+
+.mo-h2 em {
+  font-style: italic;
+  color: var(--hok-faq-gold);
+}
+
+.mo-sub {
+  font-family: var(--hok-faq-font-sans);
+  font-size: 14px;
+  color: var(--hok-faq-muted);
+  font-weight: 300;
+  margin: 10px 0 0 0;
+  line-height: 1.7;
+  max-width: 520px;
+}
+
+/* Section Chips (C3) */
+.mo-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.mo-chip {
+  border: 1px solid var(--hok-faq-border);
+  background-color: var(--hok-faq-warm-white);
+  color: var(--hok-faq-body-brown);
+  padding: 9px 16px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+.mo-chip b {
+  font-weight: 400;
+  color: var(--hok-faq-light-label);
+  margin-left: 5px;
+  font-size: 11px;
+}
+
+.mo-chip:hover {
+  border-color: var(--hok-faq-gold);
+}
+
+.mo-chip[aria-pressed="true"] {
+  background-color: var(--hok-faq-charcoal);
+  color: #faf7f2;
+  border-color: var(--hok-faq-charcoal);
+}
+
+.mo-chip[aria-pressed="true"] b {
+  color: var(--hok-faq-gold-light);
+}
+
+/* Care Note: Treat it as your own (C4) */
+.pledge {
+  margin-top: 28px;
+  background-color: var(--hok-faq-cream);
+  border: 1px solid var(--hok-faq-border);
+  padding: 28px 34px;
+  display: grid;
+  grid-template-columns: minmax(0px, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.pledge::before {
+  content: "“";
+  position: absolute;
+  right: 150px;
+  top: -34px;
+  font-family: var(--hok-faq-font-serif);
+  font-size: 240px;
+  line-height: 1;
+  color: rgba(201, 169, 110, 0.12);
+  pointer-events: none;
+  user-select: none;
+}
+
+.pledge-h {
+  font-family: var(--hok-faq-font-serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 34px;
+  line-height: 1.1;
+  color: var(--hok-faq-charcoal);
+  margin: 0;
+}
+
+.pledge-p {
+  font-family: var(--hok-faq-font-sans);
+  font-size: 14px;
+  color: var(--hok-faq-body-brown);
+  margin: 10px 0 0 0;
+  line-height: 1.8;
+  font-weight: 300;
+  max-width: 640px;
+  position: relative;
+}
+
+.pledge-go {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--hok-faq-gold);
+  cursor: pointer;
+  padding: 0px 0px 3px;
+  font-family: var(--hok-faq-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hok-faq-charcoal);
+  white-space: nowrap;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.pledge-go:hover {
+  color: var(--hok-faq-gold);
+}
+
+/* Responsive adjustments (Section 11) */
+@media (max-width: 1199px) {
+  .mo {
+    scroll-margin-top: 84px;
+  }
+
+  .mo-hd {
+    grid-template-columns: 1fr;
+  }
+
+  .mo-chips {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .mo {
+    padding: 48px 18px 20px;
+    scroll-margin-top: 70px;
+  }
+
+  .mo-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin: 0px -18px;
+    padding: 2px 18px 4px;
+    scrollbar-width: none;
+  }
+
+  .mo-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pledge {
+    grid-template-columns: 1fr;
+    padding: 24px 20px;
+    gap: 16px;
+    margin-top: 22px;
+  }
+
+  .pledge::before {
+    right: 10px;
+    top: -30px;
+  }
+
+  .pledge-h {
+    font-size: 28px;
+  }
+
+  .pledge-go {
+    justify-self: start;
+  }
+}

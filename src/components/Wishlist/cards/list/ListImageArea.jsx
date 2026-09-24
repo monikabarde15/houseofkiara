@@ -43,15 +43,23 @@ const ListImageArea = ({ product, type, onRemove }) => {  // Remove onShowToast 
     <div className="desk-wishlist-list-image-column">
       <div className="desk-wishlist-list-image-wrapper">
         <div className={`desk-wishlist-list-image ${getImageClass()}`}>
-          <div className="desk-wishlist-list-image-inner">
-            <svg className="desk-wishlist-list-garment-svg" width="48" height="64" viewBox="0 0 48 64"
-              fill="none" stroke={getSvgStroke()} strokeOpacity={getSvgOpacity()}>
-              <path d="M24 8C20 8 16 12 16 16V20C16 24 18 28 24 28C30 28 32 24 32 20V16C32 12 28 8 24 8Z" />
-              <path d="M16 20L12 32C12 36 14 40 18 42L24 44L30 42C34 40 36 36 36 32L32 20" />
-              <path d="M24 28V44" />
-              <path d="M12 36H36" />
-            </svg>
-            <span className="desk-wishlist-list-image-designer" style={{ color: getDesignerColor() }}>
+          <div className="desk-wishlist-list-image-inner" style={{ position: 'relative' }}>
+            {product.image ? (
+              <img 
+                src={product.image} 
+                alt={product.name || "Product"} 
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
+              />
+            ) : (
+              <svg className="desk-wishlist-list-garment-svg" width="48" height="64" viewBox="0 0 48 64"
+                fill="none" stroke={getSvgStroke()} strokeOpacity={getSvgOpacity()}>
+                <path d="M24 8C20 8 16 12 16 16V20C16 24 18 28 24 28C30 28 32 24 32 20V16C32 12 28 8 24 8Z" />
+                <path d="M16 20L12 32C12 36 14 40 18 42L24 44L30 42C34 40 36 36 36 32L32 20" />
+                <path d="M24 28V44" />
+                <path d="M12 36H36" />
+              </svg>
+            )}
+            <span className="desk-wishlist-list-image-designer" style={{ color: getDesignerColor(), position: 'relative', zIndex: 1 }}>
               {product.designer}
             </span>
           </div>

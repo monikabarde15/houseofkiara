@@ -1,102 +1,70 @@
-import { useState, useCallback, useRef } from "react";
-import { wishlistItems } from "../data/wishlistData";
-
-// Helper functions
-const getRelativeDate = (dateString) => {
-  if (!dateString) return "Recently";
-  const savedDate = new Date(dateString);
-  const now = new Date();
-  const diffTime = Math.abs(now - savedDate);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays <= 7) return `${diffDays} days ago`;
-  if (diffDays <= 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-  return `${Math.floor(diffDays / 30)} months ago`;
-};
-
-const formatPrice = (price) => {
-  return price?.toLocaleString('en-IN') || price;
-};
-
-// Transform wishlistItems to card format
-const transformProducts = () => {
-  const allProducts = [];
-  
-  // Transform rent items
-  wishlistItems.rent.forEach(item => {
-    allProducts.push({
-      id: item.id,
-      type: item.mode,
-      designer: item.designer.toUpperCase(),
-      name: item.name,
-      price: formatPrice(item.price),
-      originalPrice: formatPrice(item.originalPrice),
-      savePercentage: `${item.savePercentage}%`,
-      duration: item.rentalDuration || "for 4 days",
-      savedDate: getRelativeDate(item.dateSaved),
-      condition: item.condition,
-      unavailable: item.isAvailable === false,
-      unavailableNote: item.isAvailable === false ? "Unavailable for your selected dates" : null,
-      stripTag: item.tag,
-      sizes: item.sizes,
-      originalData: item
-    });
-  });
-  
-  // Transform preloved items
-  wishlistItems.preloved.forEach(item => {
-    allProducts.push({
-      id: item.id,
-      type: item.mode,
-      designer: item.designer.toUpperCase(),
-      name: item.name,
-      price: formatPrice(item.price),
-      originalPrice: formatPrice(item.originalPrice),
-      savePercentage: `${item.savePercentage}%`,
-      duration: null,
-      savedDate: getRelativeDate(item.dateSaved),
-      condition: item.condition,
-      unavailable: item.isAvailable === false,
-      unavailableNote: null,
-      stripTag: null,
-      sizes: item.sizes,
-      originalData: item
-    });
-  });
-  
-  // Transform new items
-  wishlistItems.new.forEach(item => {
-    allProducts.push({
-      id: item.id,
-      type: item.mode,
-      designer: item.designer.toUpperCase(),
-      name: item.name,
-      price: formatPrice(item.price),
-      originalPrice: formatPrice(item.originalPrice),
-      savePercentage: null,
-      duration: null,
-      savedDate: getRelativeDate(item.dateSaved),
-      condition: null,
-      unavailable: false,
-      unavailableNote: null,
-      stripTag: null,
-      sizes: item.sizes,
-      originalData: item
-    });
-  });
-  
-  return allProducts;
-};
+import { useState, useCallback, useRef, useEffect } from "react";
+import useWishlistStore from "../../../store/wishlistStore";
 
 export const useWishlistProducts = () => {
-  const [products, setProducts] = useState(transformProducts());
+  const { items: wishlistIds, toggleWishlist } = useWishlistStore();
+  const [allWebProducts, setAllWebProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [pendingRemoval, setPendingRemoval] = useState(null);
   const timerRef = useRef(null);
 
+  // Fetch all products once
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/web-products');
+        const data = await response.json();
+        if (data.success) {
+          setAllWebProducts(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching web products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // Update displayed products when wishlistIds or allWebProducts changes
+  useEffect(() => {
+    const wishedProducts = allWebProducts.filter(p => wishlistIds.includes(p._id || p.id));
+    
+    const formatted = wishedProducts.map(item => {
+      const priceStr = item.buyPrice || item.rentPrice || '0';
+      const origPriceStr = item.originalPrice || '0';
+      let savePerc = null;
+      
+      if (item.originalPrice) {
+        const orig = parseInt(origPriceStr.toString().replace(/,/g, ""));
+        const curr = parseInt(priceStr.toString().replace(/,/g, ""));
+        if (orig > curr && orig > 0) {
+          savePerc = Math.round(((orig - curr) / orig) * 100) + '%';
+        }
+      }
+
+      return {
+        id: item._id || item.id,
+        type: item.type,
+        designer: (item.designer || '').toUpperCase(),
+        name: item.name,
+        price: priceStr,
+        originalPrice: item.originalPrice,
+        savePercentage: savePerc,
+        duration: item.rent ? "for 4 days" : null,
+        savedDate: "Recently",
+        condition: item.preloved ? "Preloved" : (item.isNew ? "New" : "Rental"),
+        unavailable: false,
+        unavailableNote: null,
+        stripTag: item.isNew ? "NEW ARRIVAL" : null,
+        sizes: item.size,
+        image: Array.isArray(item.image) ? item.image[0] : (item.images?.[0] || item.image),
+        originalData: item
+      };
+    });
+    
+    setProducts(formatted);
+  }, [wishlistIds, allWebProducts]);
+
   const removeProduct = useCallback((productId, productData, onShowToast) => {
-    // Clear any existing timer
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
@@ -104,19 +72,17 @@ export const useWishlistProducts = () => {
     }
 
     setPendingRemoval(productData);
-    
-    // Show undo toast
     onShowToast?.('Removed from your wishlist', true);
 
     setTimeout(() => {
-      setProducts(prev => prev.filter(p => p.id !== productId));
+      toggleWishlist(productId);
       
       timerRef.current = setTimeout(() => {
         setPendingRemoval(null);
         timerRef.current = null;
       }, 5000);
     }, 600);
-  }, []);
+  }, [toggleWishlist]);
 
   const undoRemove = useCallback(() => {
     if (timerRef.current) {
@@ -125,20 +91,16 @@ export const useWishlistProducts = () => {
     }
     
     if (pendingRemoval) {
-      const originalIndex = transformProducts().findIndex(p => p.id === pendingRemoval.id);
-      setProducts(prev => {
-        const newProducts = [...prev];
-        newProducts.splice(originalIndex, 0, pendingRemoval);
-        return newProducts;
-      });
+      toggleWishlist(pendingRemoval.id);
       setPendingRemoval(null);
     }
-  }, [pendingRemoval]);
+  }, [pendingRemoval, toggleWishlist]);
 
   const getProductsByType = useCallback((type) => {
-    if (type === "rent") return products.filter(p => p.type === "rent");
-    if (type === "preloved") return products.filter(p => p.type === "preloved");
-    if (type === "new") return products.filter(p => p.type === "new");
+    if (!type) return products;
+    if (type === "rent") return products.filter(p => p.originalData?.rent);
+    if (type === "preloved") return products.filter(p => p.originalData?.preloved);
+    if (type === "new") return products.filter(p => p.originalData?.isNew);
     return products;
   }, [products]);
 

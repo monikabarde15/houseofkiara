@@ -90,15 +90,15 @@ const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
         <div className="remove-preview">
 
           <div className="remove-thumb">
-            <img src={item?.product?.images?.[0]} alt="" />
+            <img src={item?.product?.images?.[0] || item?.product?.image?.[0] || "/placeholder.jpg"} alt={item?.product?.title || item?.product?.name || "Product"} />
           </div>
 
           <div className="remove-info">
             <div className="remove-brand">
-              {item?.product?.designer}
+              {item?.product?.designer || item?.product?.brand}
             </div>
             <div className="remove-name">
-              {item?.product?.title}
+              {item?.product?.title || item?.product?.name}
             </div>
           </div>
 

@@ -84,7 +84,7 @@ const OrderFulfilmentSection = () => {
                   <div key={item.id} className="checkout-piece">
                     <div className="checkout-piece-top">
                       <div className="checkout-piece-thumb">
-                        <img src={item.product?.images?.[0]} alt={item.product?.title} />
+                        <img src={item.product?.images?.[0] || item.product?.image?.[0] || item.image || "/placeholder.jpg"} alt={item.product?.title || "Product"} />
                         <span className={`checkout-piece-tag checkout-piece-tag--${item.type}`}>
                           {item.type === "rental" ? "Rent" : item.type === "preloved" ? "Preloved" : "New"}
                         </span>

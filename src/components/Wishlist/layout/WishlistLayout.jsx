@@ -104,6 +104,21 @@ const WishlistLayout = () => {
   const showPrelovedSection = activeTab === 'all' || activeTab === 'preloved';
   const showNewSection = activeTab === 'all' || activeTab === 'new';
 
+  const handleAddToBag = async (details) => {
+    const { useCartStore } = await import('../../../store/cartStore').then(m => ({ useCartStore: m.default }));
+    const product = details.product.originalData || details.product;
+    
+    // Normalize type string
+    const normalizedType = details.product.type === "rent" ? "rental" : (details.product.type || "rental");
+
+    useCartStore.getState().addToCart(product, {
+      type: normalizedType,
+      size: details.size,
+      rentalDates: details.startDate && details.endDate ? { start: details.startDate, end: details.endDate } : null,
+      price: details.product.price
+    });
+  };
+
   return (
     <div className="desk-wishlist-layout">
       <div className="desk-wishlist-container">
@@ -165,6 +180,7 @@ const WishlistLayout = () => {
         product={selectedProduct}
         type={selectedProductType}
         onShowToast={showGeneralToastMessage}
+        onAddToBag={handleAddToBag}
       />
 
       {showGeneralToast && (

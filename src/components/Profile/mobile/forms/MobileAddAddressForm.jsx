@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Plus } from "lucide-react";
+import useAuthStore from "../../../../store/authStore";
 
 import "../../../../styles/Profile/mobile/forms/MobileAddAddressForm.css";
 
@@ -10,32 +11,41 @@ const LABEL_OPTIONS = [
   "Other"
 ];
 
-const INITIAL_FORM = {
-  label: "Home",
-  recipientName: "",
-  line1: "",
-  line2: "",
-  city: "",
-  state: "",
-  pin: "",
-  mobile: "",
-  setAsDefault: false
-};
-
 const MobileAddAddressForm = ({
   isOpen,
   onClose,
   onSave,
-  onTriggerClick  // ← Add this prop
+  onTriggerClick
 }) => {
-  const [formData, setFormData] = useState(INITIAL_FORM);
+  const { user } = useAuthStore();
+  const [formData, setFormData] = useState({
+    label: "Home",
+    recipientName: user?.name || "",
+    line1: "",
+    line2: "",
+    city: user?.location || user?.city || "",
+    state: "",
+    pin: "",
+    mobile: user?.phone || user?.mobile || "",
+    setAsDefault: false
+  });
   const [errors, setErrors] = useState({});
   const formRef = useRef(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    setFormData(INITIAL_FORM);
+    setFormData({
+      label: "Home",
+      recipientName: user?.name || "",
+      line1: "",
+      line2: "",
+      city: user?.location || user?.city || "",
+      state: "",
+      pin: "",
+      mobile: user?.phone || user?.mobile || "",
+      setAsDefault: false
+    });
     setErrors({});
 
     requestAnimationFrame(() => {
@@ -44,7 +54,7 @@ const MobileAddAddressForm = ({
         block: "nearest"
       });
     });
-  }, [isOpen]);
+  }, [isOpen, user]);
 
   const validateField = (name, value) => {
     switch (name) {
@@ -101,8 +111,6 @@ const MobileAddAddressForm = ({
       return;
     }
     onSave(formData);
-    setFormData(INITIAL_FORM);
-    setErrors({});
     onClose();
   };
 

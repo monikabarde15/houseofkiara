@@ -26,6 +26,16 @@
   stroke: #1A1612;
 }
 
+.profile-wc-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
 /* Heart Button */
 .profile-wc-heart {
   position: absolute;
