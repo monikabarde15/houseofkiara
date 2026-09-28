@@ -33,6 +33,8 @@ import MainCategoryPage from "./pages/MainCategoryPage/MainCategoryPage";
 import HowItWorks from "./pages/HowItWorks/HowItWorks";
 import AboutUsPage from "./pages/AboutUsPage/AboutUsPage";
 import FAQPage from "./pages/FAQPage/FAQPage";
+import RefundsPage from "./pages/Refunds/RefundsPage";
+import TermsPage from "./pages/TermsPage";
 
 
 
@@ -87,7 +89,12 @@ export default function App() {
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/about-us" element={<AboutUsPage />} />
         <Route path="/faqs" element={<FAQPage />} />
-
+        <Route path="/refunds" element={<RefundsPage />} />
+        <Route path="/refunds-cancellations" element={<Navigate to="/refunds" replace />} />
+        <Route path="/refund" element={<Navigate to="/refunds" replace />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/terms-and-conditions" element={<Navigate to="/terms" replace />} />
+        <Route path="/terms-conditions" element={<Navigate to="/terms" replace />} />
 
       </Routes>
 

@@ -1,0 +1,421 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - TERMS & CONDITIONS HERO & SEARCH STYLES
+   Specification: v3.0 (hok_terms_v4)
+   ========================================================================== */
+
+/* Hero Container */
+.terms-hero {
+  background-color: var(--hok-cream);
+  padding: 40px 40px 96px 40px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.terms-hero-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* Small Tag Row */
+.terms-hero-tag-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.terms-hero-tag-line {
+  width: 32px;
+  height: 1px;
+  background-color: var(--hok-gold);
+}
+
+.terms-hero-tag-text {
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--hok-gold);
+  text-transform: uppercase;
+}
+
+/* Main Page Title */
+.terms-hero-title {
+  font-family: var(--font-heading);
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--hok-charcoal);
+  margin: 0 0 16px 0;
+  letter-spacing: -0.01em;
+}
+
+.terms-title-italic {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--hok-gold);
+}
+
+/* Intro Paragraph */
+.terms-hero-intro {
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--hok-soft-brown);
+  max-width: 640px;
+  margin: 0 auto 22px auto;
+}
+
+/* Version & Print Row */
+.terms-hero-version-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--hok-muted);
+  margin-bottom: 34px;
+}
+
+.terms-version-slash {
+  color: var(--hok-gold-light);
+  user-select: none;
+}
+
+.terms-version-item {
+  color: var(--hok-muted);
+}
+
+.terms-version-print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--hok-charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--hok-gold-light);
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.terms-version-print-btn:hover {
+  color: var(--hok-gold-deep);
+  text-decoration-color: var(--hok-gold);
+}
+
+.terms-print-icon {
+  flex-shrink: 0;
+}
+
+/* Search Box Container */
+.terms-search-box-wrapper {
+  position: relative;
+  max-width: 620px;
+  margin: 0 auto 18px auto;
+  width: 100%;
+}
+
+.terms-search-input-container {
+  display: flex;
+  align-items: center;
+  background-color: var(--hok-warm-white);
+  border: 1px solid var(--hok-border);
+  border-radius: 2px;
+  height: 48px;
+  padding: 0 16px;
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.terms-search-input-container:hover,
+.terms-search-input-container.terms-search-open {
+  border-color: var(--hok-charcoal);
+}
+
+.terms-search-icon {
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.terms-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  color: var(--hok-charcoal);
+  letter-spacing: 0.01em;
+}
+
+.terms-search-input::placeholder {
+  color: var(--hok-placeholder-grey);
+}
+
+.terms-search-clear-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  color: var(--hok-muted);
+  transition: color var(--transition-fast);
+}
+
+.terms-search-clear-btn:hover {
+  color: var(--hok-charcoal);
+}
+
+.terms-clear-text {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+/* Search Results Dropdown */
+.terms-search-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  background-color: var(--hok-warm-white);
+  border: 1px solid var(--hok-border);
+  border-radius: 2px;
+  box-shadow: 0 12px 36px rgba(26, 22, 18, 0.14);
+  max-height: 380px;
+  overflow-y: auto;
+  z-index: 100;
+  text-align: left;
+}
+
+.terms-search-dropdown-header {
+  padding: 12px 18px 8px 18px;
+  border-bottom: 1px solid var(--hok-border-light);
+}
+
+.terms-search-count {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--hok-gold-deep);
+}
+
+.terms-search-results-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.terms-search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--hok-border-light);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.terms-search-result-item:last-child {
+  border-bottom: none;
+}
+
+.terms-search-result-item:hover,
+.terms-search-result-item.terms-search-item-active {
+  background-color: var(--hok-cream);
+}
+
+.terms-search-item-left {
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.terms-search-item-num {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--hok-gold);
+}
+
+.terms-search-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.terms-search-item-title-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.terms-search-item-title {
+  font-family: var(--font-heading);
+  font-size: 16.5px;
+  font-weight: 500;
+  color: var(--hok-charcoal);
+  line-height: 1.3;
+}
+
+.terms-search-item-subtag {
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--hok-gold-deep);
+}
+
+.terms-search-item-snippet {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 300;
+  color: var(--hok-body-brown);
+  line-height: 1.5;
+  margin: 4px 0 0 0;
+}
+
+.terms-search-item-chevron {
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.terms-search-result-item:hover .terms-search-item-chevron {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* No Results State */
+.terms-search-no-results {
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.terms-no-res-title {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--hok-charcoal);
+  margin: 0 0 8px 0;
+}
+
+.terms-no-res-desc {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--hok-soft-brown);
+  max-width: 440px;
+  margin: 0 auto 18px auto;
+}
+
+.terms-no-res-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--hok-whatsapp);
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 2px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.terms-no-res-btn:hover {
+  background-color: var(--hok-whatsapp-hover);
+}
+
+/* Popular Searches Bar */
+.terms-popular-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--hok-soft-brown);
+  margin-top: 10px;
+}
+
+.terms-popular-label {
+  font-weight: 500;
+  color: var(--hok-soft-brown);
+}
+
+.terms-popular-list {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.terms-popular-dot {
+  color: var(--hok-gold-light);
+  user-select: none;
+}
+
+.terms-popular-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--hok-soft-brown);
+  text-decoration: underline;
+  text-decoration-color: var(--hok-gold-light);
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.terms-popular-link:hover {
+  color: var(--hok-gold-deep);
+  text-decoration-color: var(--hok-gold);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .terms-hero {
+    padding: 26px 18px 76px 18px;
+  }
+
+  .terms-hero-title {
+    font-size: 38px;
+  }
+
+  .terms-hero-intro {
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .terms-search-input-container {
+    height: 44px;
+    padding: 0 12px;
+  }
+
+  .terms-popular-container {
+    font-size: 11.5px;
+    line-height: 1.6;
+  }
+}

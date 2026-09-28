@@ -1,0 +1,294 @@
+/* ==========================================================================
+   REFUND & CANCELLATION POLICY PAGE - HERO SECTION & LIVE SEARCH STYLES
+   Spec v1.2 · Section 04.2 – 04.7
+   ========================================================================== */
+
+/* 04.3 Hero Layout */
+.rc-hero {
+  background-color: var(--cream);
+  padding: 40px 40px 96px 40px;
+  text-align: center;
+  position: relative;
+}
+
+@media (max-width: 760px) {
+  .rc-hero {
+    padding: 26px 18px 76px 18px;
+  }
+}
+
+.fq-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.fq-eyebrow i {
+  width: 32px;
+  height: 1px;
+  background-color: var(--gold);
+  display: inline-block;
+}
+
+.fq-eyebrow span {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.rc-h1 {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(42px, 5.6vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+  color: var(--charcoal);
+  margin: 0;
+}
+
+.rc-h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.rc-sub {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--text-soft);
+  max-width: 540px;
+  margin: 18px auto 0 auto;
+}
+
+@media (max-width: 760px) {
+  .rc-sub {
+    font-size: 14px;
+  }
+}
+
+/* 04.4 Search Field Wrapper */
+.ch-find {
+  position: relative;
+  max-width: 560px;
+  margin: 30px auto 0 auto;
+  text-align: left;
+  z-index: 80;
+}
+
+.ch-search {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--charcoal);
+  padding: 12px 2px;
+  background: transparent;
+}
+
+.ch-search svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--charcoal);
+  flex-shrink: 0;
+}
+
+.ch-search input {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: normal;
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--charcoal);
+}
+
+.ch-search input::placeholder {
+  color: var(--text-faint);
+  opacity: 1;
+}
+
+.ch-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.ch-x {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 10px;
+  line-height: normal;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  padding: 4px 0;
+  transition: color 0.2s ease;
+}
+
+.ch-x:hover {
+  color: var(--charcoal);
+}
+
+/* 04.5 Search Results Dropdown */
+.ch-drop {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  background-color: var(--warm-white);
+  border: 1px solid var(--border);
+  box-shadow: 0 22px 50px rgba(26, 22, 18, 0.12);
+  max-height: 420px;
+  overflow-y: auto;
+  z-index: 85;
+}
+
+.ch-find.open .ch-drop {
+  display: block;
+}
+
+.ch-drop-hd {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 10px;
+  line-height: normal;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--warm-white);
+}
+
+.ch-hit {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.ch-hit:hover,
+.ch-hit[aria-selected="true"] {
+  background-color: var(--cream);
+}
+
+.ch-hit b {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.3;
+  display: block;
+  color: var(--charcoal);
+}
+
+.ch-hit[aria-selected="true"] b {
+  color: var(--gold-deep);
+}
+
+.ch-hit small {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 10px;
+  line-height: normal;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+mark {
+  background-color: var(--gold-pale);
+  color: inherit;
+  padding: 0 1px;
+  box-shadow: inset 0 -1px 0 var(--gold);
+}
+
+/* 04.6 No Results Screen */
+.ch-none {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.7;
+  padding: 22px 20px;
+  color: var(--text-soft);
+  text-align: left;
+}
+
+.ch-none b {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 34px;
+  display: block;
+  color: var(--charcoal);
+  margin-bottom: 4px;
+}
+
+.ch-none .btn-wa {
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  margin-top: 14px;
+  padding: 11px 18px;
+}
+
+/* 04.7 Popular Questions */
+.ch-pop {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: normal;
+  margin-top: 18px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+
+@media (max-width: 760px) {
+  .ch-pop {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+.ch-pop-label {
+  color: var(--muted);
+}
+
+.ch-pop button {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: normal;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  padding: 0 0 1px 0;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.ch-pop button:hover {
+  color: var(--charcoal);
+  border-bottom-color: var(--gold);
+}

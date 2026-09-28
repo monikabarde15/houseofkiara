@@ -1,0 +1,116 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - TERMS & CONDITIONS DESIGN SYSTEM TOKENS
+   Specification: v3.0 (hok_terms_v4)
+   ========================================================================== */
+
+:root {
+  /* Brand Palette */
+  --hok-warm-white: #FFFEFB;
+  --hok-cream: #FAF7F2;
+  --hok-charcoal: #1A1612;
+  --hok-body-brown: #4F463E;
+  --hok-soft-brown: #5A4F46;
+  --hok-muted: #8A7E72;
+  --hok-placeholder-grey: #A79B8D;
+
+  /* Accent & Metallic Palette */
+  --hok-gold: #C9A96E;
+  --hok-gold-deep: #9C7C45;
+  --hok-gold-light: #E8D5B0;
+  --hok-gold-pale: #F5EDD8;
+
+  /* Architectural Lines & Borders */
+  --hok-border: #E8E0D4;
+  --hok-border-light: #F0EAE0;
+  --hok-chevron-grey: #CDBFA8;
+
+  /* Actions & Integrations */
+  --hok-whatsapp: #25D366;
+  --hok-whatsapp-hover: #22BF5B;
+
+  /* Typography */
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Motion & Transitions */
+  --ease-terms: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.15s var(--ease-terms);
+  --transition-normal: 0.2s var(--ease-terms);
+  --transition-slow: 0.3s var(--ease-terms);
+
+  /* Layout & Sizing */
+  --terms-max-width: 900px;
+  --terms-readable-width: 720px;
+  --header-offset: 80px;
+  --sticky-bar-height: 52px;
+}
+
+/* Base resets & utilities for Terms */
+.terms-theme {
+  background-color: var(--hok-warm-white);
+  color: var(--hok-body-brown);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Inline Links across Terms */
+.terms-inline-link {
+  color: var(--hok-charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--hok-gold-light);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: all var(--transition-normal);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.terms-inline-link:hover {
+  color: var(--hok-gold-deep);
+  text-decoration-color: var(--hok-gold);
+}
+
+/* Search match highlight */
+.terms-search-highlight {
+  background-color: var(--hok-gold-pale);
+  color: var(--hok-charcoal);
+  padding: 0 3px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+/* Clause Highlight Target Animation */
+@keyframes termsClauseHighlight {
+  0% {
+    background-color: var(--hok-gold-pale);
+  }
+  70% {
+    background-color: var(--hok-gold-pale);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.terms-clause-targeted {
+  animation: termsClauseHighlight 3s ease-out forwards;
+}
+
+/* Accessibility Focus Ring */
+.terms-focus-ring:focus-visible {
+  outline: 2px solid var(--hok-gold) !important;
+  outline-offset: 3px !important;
+}
+
+/* Print Overrides */
+@media print {
+  body {
+    background-color: #FFFFFF !important;
+    color: #1A1612 !important;
+  }
+  .terms-inline-link {
+    text-decoration: none !important;
+    color: #1A1612 !important;
+  }
+}

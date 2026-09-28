@@ -1,0 +1,99 @@
+/* ==========================================================================
+   REFUND & CANCELLATION POLICY PAGE - PRINT & SAVE AS PDF STYLES
+   Spec v1.2 · Section 11
+   ========================================================================== */
+
+#printAll {
+  display: none;
+}
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #1a1612 !important;
+  }
+
+  .refunds-page > *:not(#printAll) {
+    display: none !important;
+  }
+
+  .refunds-page #printAll,
+  #printAll {
+    display: block !important;
+    max-width: 760px;
+    margin: 0 auto;
+    color: #1a1612;
+    padding: 20px 0;
+  }
+
+  #printAll h1 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 34px;
+    margin-bottom: 4px;
+    color: #1a1612;
+  }
+
+  #printAll .pr-meta {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--print-meta);
+    margin-bottom: 20px;
+  }
+
+  #printAll h2.pr-mode {
+    font-family: var(--font-serif);
+    font-size: 30px;
+    border-bottom: 1px solid #1a1612;
+    padding-bottom: 6px;
+    margin-top: 24px;
+    margin-bottom: 12px;
+  }
+
+  #printAll .pr-intro {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  #printAll h2.pr-sec {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 26px;
+    margin: 28px 0 6px 0;
+    page-break-after: avoid;
+  }
+
+  #printAll .pr-q {
+    page-break-inside: avoid;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #printAll h3 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 17px;
+    margin-bottom: 4px;
+    color: #1a1612;
+  }
+
+  #printAll .ans {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    line-height: 1.65;
+    max-width: none;
+    color: #1a1612;
+  }
+
+  #printAll .steps4,
+  #printAll .rv-note,
+  #printAll .cq-foot {
+    display: none !important;
+  }
+
+  #printAll .pr-pre {
+    page-break-before: always;
+  }
+}

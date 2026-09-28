@@ -1,0 +1,135 @@
+/* ==========================================================================
+   REFUND & CANCELLATION POLICY PAGE - STICKY SECTION BAR STYLES
+   Spec v1.2 · Section 06
+   ========================================================================== */
+
+.secbar {
+  position: sticky;
+  top: 0; /* Updated dynamically via JS style.top */
+  z-index: 60;
+  background-color: var(--warm-white);
+  border-bottom: 1px solid var(--border);
+  margin-top: 40px;
+  width: 100%;
+}
+
+@media (max-width: 760px) {
+  .secbar {
+    margin-top: 28px;
+  }
+}
+
+.secbar-in {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  position: relative;
+}
+
+.secbar-in::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .secbar-in {
+    padding: 0 18px;
+    gap: 20px;
+  }
+}
+
+/* Centering rules */
+.secbar-in > :first-child {
+  margin-left: auto;
+}
+
+.secbar-in > :last-child {
+  margin-right: auto;
+}
+
+.secbar:not(.stuck) .sb-mode + .sb-link {
+  margin-left: auto;
+}
+
+/* Mini Switch */
+.sb-mode {
+  display: none;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background-color: var(--warm-white);
+}
+
+.secbar.stuck .sb-mode {
+  display: inline-flex;
+}
+
+.sb-mode button {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 9.5px;
+  line-height: normal;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 7px 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sb-mode button + button {
+  border-left: 1px solid var(--border);
+}
+
+.sb-mode button[aria-pressed="true"] {
+  background-color: var(--charcoal);
+  color: var(--cream);
+}
+
+/* Section Links */
+.sb-link {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: normal;
+  letter-spacing: 0.02em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 17px 0 16px 0;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sb-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.sb-link:hover {
+  color: var(--charcoal);
+}
+
+.sb-link.on {
+  color: var(--charcoal);
+}
+
+.sb-link.on::after {
+  background-color: var(--gold);
+}
