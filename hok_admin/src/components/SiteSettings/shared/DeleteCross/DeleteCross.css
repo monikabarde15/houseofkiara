@@ -1,0 +1,25 @@
+.hok-delete-cross {
+  border: none;
+  background: transparent;
+  padding: 2px 4px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--muted-l);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s ease, color 0.1s ease;
+  font-family: var(--sans);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Row hover reveals delete cross (Spec 8.5) */
+.hok-interactive-row:hover .hok-delete-cross,
+.hok-delete-cross.is-visible {
+  opacity: 1;
+}
+
+.hok-delete-cross:hover {
+  color: var(--terra);
+}

@@ -9,7 +9,7 @@
   border-bottom: 1px solid var(--hok-border);
   margin-top: 40px;
   position: sticky;
-  z-index: 150;
+  z-index: 60;
   box-shadow: 0 1px 3px rgba(26, 22, 18, 0.03);
   transition: box-shadow var(--transition-normal);
 }

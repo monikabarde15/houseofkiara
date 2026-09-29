@@ -28,8 +28,7 @@ import { MessagingView } from './components/Messaging/MessagingView';
 import { mockMessages } from './components/Messaging/data/mockMessages';
 import { Message } from './components/Messaging/types/messaging.types';
 import NotificationsView from './components/NotificationsView';
-// import SettingsView from './components/SettingsView';
-import SiteSettingsView from './components/SettingsView';
+import SiteSettingsView from './components/SiteSettings';
 
 // import HomepageView from './components/HomepageView';
 import HomepageView from "./components/Homepage/HomepageView";
@@ -631,14 +630,16 @@ export default function App() {
       return <NotificationsView />;
     }
 
-   if (currentView === 'settings') {
-  return (
-    <SiteSettingsView
-      siteSettings={siteSettings}
-      onUpdateSettings={setSiteSettings}
-    />
-  );
-}
+    if (currentView === 'settings') {
+      return (
+        <SiteSettingsView
+          siteSettings={siteSettings}
+          onUpdateSettings={setSiteSettings}
+          onBack={() => setView('homepage')}
+          onNavigateNotifications={() => setView('notifications')}
+        />
+      );
+    }
     if (currentView === 'homepage') {
       return (
         <HomepageView 

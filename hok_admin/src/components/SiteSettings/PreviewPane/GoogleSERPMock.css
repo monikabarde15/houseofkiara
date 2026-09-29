@@ -1,0 +1,135 @@
+.hok-serp-mock-container {
+  padding: 12px 10px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: var(--hok-font-sans);
+  box-sizing: border-box;
+}
+
+.hok-serp-section-title {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--hok-text-tertiary);
+  margin-bottom: 4px;
+}
+
+/* Google SERP card */
+.hok-serp-google-card {
+  background: #ffffff;
+  border: 1px solid var(--hok-border-subtle);
+  border-radius: var(--hok-radius-sm);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hok-serp-google-url-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: #202124;
+}
+
+.hok-serp-favicon {
+  width: 12px;
+  height: 12px;
+  background-color: var(--hok-accent-gold);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.hok-serp-site-name {
+  font-weight: 600;
+  font-size: 9.5px;
+}
+
+.hok-serp-url-breadcrumb {
+  color: #5f6368;
+  font-size: 8.5px;
+}
+
+.hok-serp-title-link {
+  font-family: var(--hok-font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: #1a0dab;
+  line-height: 1.3;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hok-serp-description {
+  font-size: 9.5px;
+  color: #4d5156;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Social Share Card */
+.hok-social-card {
+  background: #ffffff;
+  border: 1px solid var(--hok-border-subtle);
+  border-radius: var(--hok-radius-md);
+  overflow: hidden;
+  box-shadow: var(--hok-shadow-xs);
+}
+
+.hok-social-image-preview {
+  height: 90px;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 9px;
+  font-family: var(--hok-font-serif);
+  font-style: italic;
+  position: relative;
+  overflow: hidden;
+}
+
+.hok-social-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hok-social-meta-body {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background-color: #f8fafc;
+}
+
+.hok-social-domain {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--hok-text-tertiary);
+}
+
+.hok-social-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--hok-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hok-social-desc {
+  font-size: 8.5px;
+  color: var(--hok-text-secondary);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

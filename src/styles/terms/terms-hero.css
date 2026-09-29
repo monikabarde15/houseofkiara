@@ -124,6 +124,7 @@
   max-width: 620px;
   margin: 0 auto 18px auto;
   width: 100%;
+  z-index: 80;
 }
 
 .terms-search-input-container {
@@ -197,7 +198,7 @@
   box-shadow: 0 12px 36px rgba(26, 22, 18, 0.14);
   max-height: 380px;
   overflow-y: auto;
-  z-index: 100;
+  z-index: 90;
   text-align: left;
 }
 

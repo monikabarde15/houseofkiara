@@ -1,0 +1,61 @@
+.hok-hover-hint-portal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999999;
+  overflow: visible;
+}
+
+.hok-hover-hint-bubble {
+  position: fixed;
+  background-color: var(--charcoal);
+  color: #F3ECE1;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  line-height: 1.45;
+  padding: 5px 9px;
+  border-radius: 5px;
+  max-width: 240px;
+  box-shadow: var(--shadow-hint);
+  pointer-events: none;
+  white-space: normal;
+  word-break: normal;
+  text-align: center;
+  user-select: none;
+  animation: hokHintFadeIn 0.1s ease-out;
+  transform: translate(-50%, 0);
+}
+
+.hok-hover-hint-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hok-hover-hint-arrow.arrow-bottom {
+  bottom: -4px;
+  border-top: 4px solid var(--charcoal);
+  border-bottom: none;
+}
+
+.hok-hover-hint-arrow.arrow-top {
+  top: -4px;
+  border-bottom: 4px solid var(--charcoal);
+  border-top: none;
+}
+
+@keyframes hokHintFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

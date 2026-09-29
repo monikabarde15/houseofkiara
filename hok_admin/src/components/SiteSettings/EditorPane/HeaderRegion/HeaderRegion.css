@@ -1,0 +1,235 @@
+.hok-header-region {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: var(--sans);
+}
+
+/* Nav Table Header Row (Spec 10.2) */
+.hok-nav-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.hok-nav-table-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 6px 8px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--cb);
+  gap: 8px;
+  user-select: none;
+}
+
+/* Nav Item Row (Spec 10.2) */
+.hok-nav-row-wrapper {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--cb);
+}
+
+.hok-nav-row-wrapper:last-child {
+  border-bottom: none;
+}
+
+.hok-nav-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px 8px;
+  gap: 8px;
+  transition: background-color 0.1s ease;
+  min-height: 34px;
+}
+
+.hok-nav-row:hover {
+  background-color: var(--canvas);
+}
+
+.hok-nav-col-shown {
+  width: 15px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hok-nav-col-order {
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.hok-nav-col-label {
+  flex: 1.5;
+  min-width: 0;
+}
+
+.hok-nav-col-link {
+  flex: 1;
+  min-width: 0;
+}
+
+.hok-nav-col-badge {
+  width: 58px;
+  flex-shrink: 0;
+}
+
+.hok-nav-col-menu {
+  width: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hok-nav-col-style {
+  width: 74px;
+  flex-shrink: 0;
+}
+
+.hok-nav-col-remove {
+  width: 21px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Row Menu Summary Bar (Spec 10.2) */
+.hok-nav-summary-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 8px 6px 47px;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.hok-nav-summary-btn {
+  background: transparent;
+  border: none;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-family: var(--sans);
+  transition: color 0.1s ease;
+}
+
+.hok-nav-summary-btn:hover {
+  color: var(--charcoal);
+}
+
+.hok-nav-summary-terra {
+  color: var(--terra);
+}
+
+/* Expanded Menu Body (Spec 10.2) */
+.hok-menu-expanded-body {
+  padding: 9px 10px;
+  border-top: 1px solid var(--cb);
+  background-color: var(--canvas);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Column Card (Spec 10.2) */
+.hok-menu-col-card {
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  padding: 8px 9px;
+  background-color: var(--card);
+  margin-bottom: 7px;
+}
+
+.hok-menu-col-card:last-child {
+  margin-bottom: 0;
+}
+
+.hok-menu-col-header-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 5px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid var(--cb);
+}
+
+.hok-menu-col-count {
+  font-size: 9.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.hok-menu-col-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+/* Menu Link Row (Spec 10.2) */
+.hok-menu-link-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 4px;
+  border-radius: var(--r);
+  transition: background-color 0.1s ease;
+}
+
+.hok-menu-link-row:hover {
+  background-color: var(--canvas);
+}
+
+.hok-menu-link-slot {
+  width: 46px;
+  flex-shrink: 0;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.hok-sits-last-chip {
+  font-size: 8.5px;
+  font-style: italic;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+.hok-menu-dashed-plus {
+  width: 15px;
+  height: 15px;
+  border: 1px dashed var(--ib);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--sans);
+  transition: border-color 0.1s ease, color 0.1s ease;
+}
+
+.hok-menu-dashed-plus:hover {
+  border-color: var(--gold);
+  color: var(--charcoal);
+  border-style: solid;
+}

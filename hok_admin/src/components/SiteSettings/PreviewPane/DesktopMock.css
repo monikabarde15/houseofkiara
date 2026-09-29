@@ -1,0 +1,327 @@
+.hok-desktop-mock {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  min-height: 480px;
+  font-family: var(--hok-font-sans);
+  color: var(--hok-text-primary);
+  user-select: none;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* 1. Announcement Bar Mock */
+.hok-mock-announcement-bar {
+  position: relative;
+  width: 100%;
+  padding: 5px 12px;
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.hok-mock-announcement-bar.is-disabled {
+  background-color: var(--hok-bg-tertiary);
+  color: var(--hok-text-tertiary);
+  font-style: italic;
+  font-size: 9.5px;
+  border-bottom: 1px dashed var(--hok-border-subtle);
+}
+
+.hok-mock-announcement-fade-left,
+.hok-mock-announcement-fade-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hok-mock-announcement-fade-left {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.4), transparent);
+}
+
+.hok-mock-announcement-fade-right {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.4), transparent);
+}
+
+.hok-mock-announcement-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hok-mock-announcement-content.is-looping {
+  animation: hok-mock-marquee 14s linear infinite;
+}
+
+@keyframes hok-mock-marquee {
+  0% { transform: translateX(20%); }
+  100% { transform: translateX(-60%); }
+}
+
+.hok-mock-ann-serif {
+  font-family: var(--hok-font-serif);
+  font-style: italic;
+  font-size: 11px;
+}
+
+.hok-mock-ann-sep {
+  opacity: 0.5;
+  margin: 0 4px;
+}
+
+/* 2. Header Mock */
+.hok-mock-header {
+  border-bottom: 1px solid var(--hok-border-subtle);
+  background: #ffffff;
+  padding: 8px 10px 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hok-mock-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hok-mock-logo-text {
+  font-family: var(--hok-font-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hok-text-primary);
+}
+
+.hok-mock-header-utilities {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9.5px;
+  color: var(--hok-text-secondary);
+}
+
+.hok-mock-header-bag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 600;
+  color: var(--hok-text-primary);
+  background-color: var(--hok-bg-tertiary);
+  padding: 2px 5px;
+  border-radius: var(--hok-radius-sm);
+}
+
+.hok-mock-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: hidden;
+  font-size: 9.5px;
+  font-weight: 500;
+  padding-top: 2px;
+}
+
+.hok-mock-nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--hok-text-secondary);
+  white-space: nowrap;
+}
+
+.hok-mock-nav-item.is-active {
+  color: var(--hok-text-primary);
+  font-weight: 600;
+}
+
+.hok-mock-nav-badge {
+  font-size: 7.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0 3px;
+  border-radius: 2px;
+  line-height: 1.2;
+}
+
+.hok-mock-nav-badge.is-new {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.hok-mock-nav-badge.is-sale {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.hok-mock-nav-item.is-sit-last {
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--hok-accent-gold);
+}
+
+/* Mega-Menu Sub-panel preview */
+.hok-mock-mega-menu {
+  background-color: var(--hok-bg-secondary);
+  border: 1px solid var(--hok-border-subtle);
+  border-radius: var(--hok-radius-sm);
+  padding: 6px 8px;
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.hok-mock-mega-col-title {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--hok-text-tertiary);
+  margin-bottom: 2px;
+}
+
+.hok-mock-mega-col-link {
+  font-size: 8.5px;
+  color: var(--hok-text-secondary);
+  line-height: 1.3;
+}
+
+/* 3. Page Body Placeholder */
+.hok-mock-body {
+  padding: 14px 10px;
+  background-color: #fdfdfd;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hok-mock-body-hero {
+  background-color: var(--hok-bg-tertiary);
+  border-radius: var(--hok-radius-sm);
+  padding: 12px 10px;
+  text-align: center;
+}
+
+.hok-mock-hero-title {
+  font-family: var(--hok-font-serif);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hok-text-primary);
+  margin: 0 0 3px 0;
+}
+
+.hok-mock-hero-sub {
+  font-size: 8.5px;
+  color: var(--hok-text-tertiary);
+  margin: 0;
+}
+
+.hok-mock-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.hok-mock-product-card {
+  border: 1px solid var(--hok-border-subtle);
+  border-radius: var(--hok-radius-sm);
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.hok-mock-card-img-placeholder {
+  height: 60px;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: var(--hok-text-tertiary);
+}
+
+.hok-mock-card-details {
+  padding: 4px 6px;
+}
+
+.hok-mock-card-title {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: var(--hok-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hok-mock-card-price {
+  font-size: 8px;
+  color: var(--hok-text-secondary);
+}
+
+/* 4. Footer Mock */
+.hok-mock-footer {
+  background-color: #111827;
+  color: #f3f4f6;
+  padding: 12px 10px 8px 10px;
+  font-size: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hok-mock-footer-columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.hok-mock-footer-col-title {
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hok-mock-footer-link {
+  color: #9ca3af;
+  line-height: 1.4;
+  display: block;
+}
+
+.hok-mock-footer-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hok-mock-payment-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  padding: 1px 4px;
+  font-size: 7px;
+  color: #d1d5db;
+}
+
+.hok-mock-footer-copyright {
+  font-size: 7.5px;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 2px;
+}

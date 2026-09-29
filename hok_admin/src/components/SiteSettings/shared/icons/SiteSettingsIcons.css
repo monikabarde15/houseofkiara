@@ -1,0 +1,40 @@
+.hok-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.hok-region-icon {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  fill: none;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.hok-search-icon {
+  width: 12px;
+  height: 12px;
+  stroke: var(--muted);
+  stroke-width: 1.7;
+  fill: none;
+}
+
+.hok-chevron-icon {
+  opacity: 0.5;
+}
+
+.hok-hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 10px;
+}
+
+.hok-hamburger-bar {
+  width: 10px;
+  height: 1px;
+  background-color: currentColor;
+}

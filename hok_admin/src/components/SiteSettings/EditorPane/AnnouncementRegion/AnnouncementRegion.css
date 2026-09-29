@@ -1,0 +1,169 @@
+.hok-announcement-region {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: var(--sans);
+}
+
+/* Reference line (Spec 10.1) */
+.hok-ann-ref-line {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 11px;
+  line-height: 1.4;
+}
+
+/* Message block container (Spec 10.1) */
+.hok-msg-block {
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  background-color: var(--card);
+  margin-bottom: 9px;
+  overflow: hidden;
+}
+
+.hok-msg-header-strip {
+  padding: 7px 10px;
+  background-color: var(--ibg);
+  border-bottom: 1px solid var(--cb);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.hok-msg-index {
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* State pills (Spec 10.1) */
+.hok-msg-state-pill {
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.hok-msg-state-pill.state-live {
+  background-color: #E8EFE5;
+  color: var(--sage);
+  border: 1px solid #CFD8C6;
+}
+
+.hok-msg-state-pill.state-scheduled {
+  background-color: var(--scheduled-chip-bg);
+  color: var(--scheduled-chip-text);
+  border: 1px solid var(--scope-badge-border);
+}
+
+.hok-msg-state-pill.state-expired,
+.hok-msg-state-pill.state-off {
+  background-color: var(--expired-chip-bg);
+  color: var(--expired-chip-text);
+  border: 1px solid var(--cb);
+}
+
+.hok-msg-countdown {
+  font-size: 9.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Scope badge (Spec 10.1) */
+.hok-msg-scope-badge {
+  font-size: 8.5px;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.hok-msg-scope-badge.scope-all {
+  background-color: var(--canvas);
+  color: var(--muted);
+  border: 1px solid var(--cb);
+}
+
+.hok-msg-scope-badge.scope-specific {
+  background-color: var(--scope-badge-bg);
+  color: var(--scope-badge-text);
+  border: 1px solid var(--scope-badge-border);
+}
+
+.hok-msg-header-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hok-msg-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Color picker row (Spec 10.1 Card 3) */
+.hok-color-picker-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  background-color: var(--card);
+  padding: 4px 8px;
+}
+
+.hok-color-swatch-input {
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  border: 1px solid var(--cb);
+  padding: 0;
+  cursor: pointer;
+  background: none;
+}
+
+.hok-color-text-input {
+  border: none;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--charcoal);
+  width: 100%;
+  outline: none;
+}
+
+.hok-btn-text-action {
+  background: transparent;
+  border: none;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gold);
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--sans);
+  transition: text-decoration 0.1s ease;
+}
+
+.hok-btn-text-action:hover {
+  text-decoration: underline;
+}
+
+.hok-btn-text-action.is-destructive {
+  color: var(--muted);
+}
+
+.hok-btn-text-action.is-destructive:hover {
+  color: var(--terra);
+}

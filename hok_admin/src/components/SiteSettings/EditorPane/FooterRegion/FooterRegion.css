@@ -1,0 +1,130 @@
+.hok-footer-region {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: var(--sans);
+}
+
+/* 2x2 Grid for Link Columns (Spec 10.3) */
+.hok-footer-columns-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+  width: 100%;
+}
+
+.hok-footer-col-card {
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  background-color: var(--card);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hok-footer-col-header {
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid var(--cb);
+}
+
+.hok-footer-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hok-footer-link-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 4px;
+  border-radius: var(--r);
+  transition: background-color 0.1s ease;
+}
+
+.hok-footer-link-row:hover {
+  background-color: var(--canvas);
+}
+
+/* Legal Row List */
+.hok-footer-legal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hok-footer-legal-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: var(--r);
+  border-bottom: 1px solid var(--cb);
+  transition: background-color 0.1s ease;
+}
+
+.hok-footer-legal-row:last-child {
+  border-bottom: none;
+}
+
+.hok-footer-legal-row:hover {
+  background-color: var(--canvas);
+}
+
+/* Payment Method Chips (Spec 10.3 & 16.3) */
+.hok-payment-chips-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+  margin-bottom: 11px;
+}
+
+.hok-payment-chips-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hok-payment-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.hok-payment-pill-btn {
+  border-radius: var(--r);
+  padding: 4px 9px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background-color 0.1s ease, border-color 0.1s ease, color 0.1s ease;
+}
+
+.hok-payment-pill-btn.is-active {
+  background-color: #E8EFE5;
+  color: var(--sage);
+  border: 1px solid #CFD8C6;
+  font-weight: 600;
+}
+
+.hok-payment-pill-btn.is-muted {
+  background-color: var(--canvas);
+  color: var(--muted);
+  border: 1px solid var(--cb);
+}
+
+.hok-payment-pill-btn:hover {
+  border-color: var(--gold);
+}

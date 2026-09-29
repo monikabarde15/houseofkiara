@@ -1,0 +1,120 @@
+.hok-field-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 11px;
+  min-width: 0;
+}
+
+.hok-field-wrapper:last-child {
+  margin-bottom: 0;
+}
+
+.hok-field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.hok-field-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.hok-field-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.hok-field-input,
+.hok-field-textarea,
+.hok-field-select {
+  width: 100%;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  background-color: var(--card);
+  padding: 6px 9px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: var(--charcoal);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.hok-field-input:focus,
+.hok-field-textarea:focus,
+.hok-field-select:focus {
+  border-color: var(--gold);
+}
+
+.hok-field-input::placeholder,
+.hok-field-textarea::placeholder {
+  color: var(--muted-l);
+}
+
+.hok-field-textarea {
+  min-height: 58px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.hok-field-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 3px;
+}
+
+.hok-field-hint {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.hok-field-hint.is-warning {
+  color: var(--terra);
+}
+
+/* Multi-column grid utilities (Spec 5.2) */
+.hok-two-column-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+  margin-bottom: 11px;
+}
+
+.hok-three-column-group {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+  margin-bottom: 11px;
+}
+
+.hok-pointer-btn {
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  background-color: var(--card);
+  padding: 4px 7px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--pointer-code-color);
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.hok-pointer-btn:hover {
+  border-color: var(--gold);
+  background-color: var(--gold-pale);
+}
