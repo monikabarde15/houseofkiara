@@ -1,0 +1,69 @@
+.hok-token-popover {
+  position: absolute;
+  z-index: 100;
+  width: 320px;
+  max-height: 260px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border: 1px solid var(--gold);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-md);
+  padding: 4px 0;
+  font-family: var(--sans);
+}
+
+.hok-token-popover-header {
+  padding: 6px 10px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  background-color: var(--ibg);
+  border-bottom: 1px solid var(--border);
+}
+
+.hok-token-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--charcoal);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background-color var(--transition-fast);
+}
+
+.hok-token-item:last-child {
+  border-bottom: none;
+}
+
+.hok-token-item:hover {
+  background-color: var(--gold-pale);
+}
+
+.hok-token-code {
+  font-family: monospace;
+  font-size: 10.5px;
+  color: var(--charcoal);
+  font-weight: 600;
+}
+
+.hok-token-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.hok-token-prints {
+  font-size: 10px;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.hok-token-owner {
+  font-size: 8.5px;
+  color: var(--muted-l);
+}

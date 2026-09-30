@@ -645,6 +645,17 @@ export default function App() {
         <HomepageView 
           homepage={homepage}
           onUpdateHomepage={setHomepage}
+          onNavigateSiteSettings={() => setView('settings')}
+          onNavigateToModule={(mod) => {
+            const m = mod.toLowerCase();
+            if (m === 'orders' || m === 'order') setView('orders');
+            else if (m === 'products' || m === 'product' || m === 'catalogue') setView('products');
+            else if (m === 'designers' || m === 'designer') setView('designers');
+            else if (m === 'categories' || m === 'category') setView('categories');
+            else if (m === 'occasions' || m === 'occasion') setView('occasions');
+            else if (m === 'site settings' || m === 'settings') setView('settings');
+            else setView(m as any);
+          }}
         />
       );
     }

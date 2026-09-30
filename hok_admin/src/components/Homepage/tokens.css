@@ -1,0 +1,79 @@
+/* =========================================================
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · DESIGN TOKENS
+   Spec Section 3 (v213)
+   Declared on :root and scoped to .hok-homepage-root
+========================================================= */
+
+:root,
+.hok-homepage-root {
+  /* Typography */
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Color Tokens */
+  --charcoal: #1a1612;     /* Primary text, preview CTA pill background */
+  --gold: #c9a96e;         /* Selected state, eyebrow text, doors and links, emphasis word */
+  --gold-l: #e2c99a;       /* Preview band hover outline, tile hover */
+  --gold-pale: #f5efe4;    /* Selected icon background, preview tile fill, add-button hover */
+  --terra: #b85c38;        /* Warnings, destructive hover, zero-count figures */
+  --sage: #6b7e5a;         /* Confirmed asset border, sage badge */
+  --cream: #faf7f2;        /* Reads-as panel background, preview CTA pill text */
+  --muted: #8a7e72;        /* Secondary text, helper text */
+  --muted-l: #b4a99e;      /* Tertiary text, row index numbers, empty placeholder text */
+  --border: #e8e0d4;       /* General borders */
+  --canvas: #f7f4ef;       /* Page background, disabled input fill */
+  --card: #ffffff;         /* Card and row background */
+  --cb: #ede6dc;           /* Card border */
+  --ib: #ddd5c8;           /* Input border */
+  --ibg: #fffefb;          /* Inset background — row headers, derived blocks, visibility row */
+
+  /* Dimensions & Radius */
+  --r: 4px;                /* Border radius, applied to every rounded element */
+
+  /* Elevation Shadows */
+  --shadow-xs: 0 1px 2px rgba(26, 22, 18, 0.03);
+  --shadow-sm: 0 1px 3px rgba(26, 22, 18, 0.06), 0 1px 2px rgba(26, 22, 18, 0.04);
+  --shadow-md: 0 4px 12px rgba(26, 22, 18, 0.08);
+  --shadow-lg: 0 10px 24px rgba(26, 22, 18, 0.12);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+}
+
+/* Base resets within Homepage module */
+.hok-homepage-root {
+  box-sizing: border-box;
+  font-family: var(--sans);
+  color: var(--charcoal);
+  background-color: var(--canvas);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.hok-homepage-root *,
+.hok-homepage-root *::before,
+.hok-homepage-root *::after {
+  box-sizing: border-box;
+}
+
+/* Focus glow animation for search hit landing */
+@keyframes hok-gold-pulse {
+  0% {
+    outline-color: var(--gold);
+    box-shadow: 0 0 0 4px var(--gold-pale);
+  }
+  50% {
+    outline-color: var(--gold);
+    box-shadow: 0 0 0 6px rgba(201, 169, 110, 0.4);
+  }
+  100% {
+    outline-color: transparent;
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.hok-field-target-highlight {
+  animation: hok-gold-pulse 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  border-color: var(--gold) !important;
+}

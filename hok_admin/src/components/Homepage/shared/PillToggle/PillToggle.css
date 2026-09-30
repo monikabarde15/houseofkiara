@@ -1,0 +1,59 @@
+.hok-toggle-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hok-toggle-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.hok-toggle-track {
+  width: 34px;
+  height: 19px;
+  border-radius: 10px;
+  background-color: #d8d0c4;
+  position: relative;
+  transition: background-color 0.18s ease;
+  flex-shrink: 0;
+}
+
+.hok-toggle-track.is-on {
+  background-color: var(--gold);
+}
+
+.hok-toggle-knob {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.18s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.hok-toggle-track.is-on .hok-toggle-knob {
+  transform: translateX(15px);
+}
+
+.hok-toggle-label {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--charcoal);
+  line-height: 1.2;
+}
+
+.hok-toggle-hint {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--muted);
+  margin-left: 42px;
+  line-height: 1.35;
+}

@@ -1,0 +1,182 @@
+/* =========================================================
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · SHOP BY OCCASION CSS
+   Spec Section 8.5 (v213)
+========================================================= */
+
+.hok-shop-by-occasion-band {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Not Built on Storefront Status Banner */
+.hok-sbo-not-built-banner {
+  background: var(--gold-pale);
+  border: 1px solid var(--gold-l);
+  border-left: 4px solid var(--gold);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hok-sbo-banner-badge {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--charcoal);
+  text-transform: uppercase;
+}
+
+.hok-sbo-banner-text {
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--charcoal);
+}
+
+.hok-sbo-banner-text code {
+  font-family: monospace;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* Words Grid */
+.hok-sbo-words-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-sbo-words-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hok-sbo-mirror-box {
+  background: var(--cb);
+  border: 1px dashed var(--ibg);
+  border-radius: var(--r);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.hok-sbo-mirror-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.hok-sbo-reads-as {
+  margin: 0;
+}
+
+/* Links Grid */
+.hok-sbo-links-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-sbo-links-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Occasion Deck Wrapper */
+.hok-sbo-deck-wrapper {
+  margin-top: 12px;
+}
+
+/* Master Data Door */
+.hok-sbo-master-door {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--cb);
+  border: 1px solid var(--ibg);
+  border-radius: var(--r);
+  margin-bottom: 6px;
+}
+
+.hok-sbo-door-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hok-sbo-door-tag {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.hok-sbo-door-name {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.hok-sbo-door-slug {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.hok-sbo-door-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gold);
+  background: var(--card);
+  border: 1px solid var(--gold-pale);
+  padding: 6px 12px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-sbo-door-btn:hover {
+  background: var(--gold-pale);
+  border-color: var(--gold);
+}
+
+/* Inspector content */
+.hok-sbo-inspector-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Rules Grid */
+.hok-sbo-rules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .hok-sbo-rules-grid {
+    grid-template-columns: 1fr;
+  }
+}

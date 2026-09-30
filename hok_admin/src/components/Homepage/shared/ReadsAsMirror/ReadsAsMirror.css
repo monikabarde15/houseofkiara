@@ -1,0 +1,33 @@
+.hok-reads-as-panel {
+  background-color: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.hok-reads-as-caption {
+  font-family: var(--sans);
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.hok-reads-as-content {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.25;
+  color: var(--charcoal);
+  white-space: pre-line;
+}
+
+.hok-reads-as-italic-gold {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--gold);
+}

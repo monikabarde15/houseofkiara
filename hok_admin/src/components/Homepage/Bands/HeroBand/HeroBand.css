@@ -1,0 +1,45 @@
+/* =========================================================
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · HERO BAND
+   Spec Section 8.1 (v213)
+========================================================= */
+
+.hok-hero-band {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.hok-hero-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hok-hero-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hok-hero-badge-readback {
+  background-color: var(--ibg);
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.hok-hero-badge-renders-as {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.hok-hero-badge-renders-bold {
+  color: var(--charcoal);
+  font-weight: 600;
+}

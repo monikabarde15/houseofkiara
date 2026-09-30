@@ -35,6 +35,7 @@ import AboutUsPage from "./pages/AboutUsPage/AboutUsPage";
 import FAQPage from "./pages/FAQPage/FAQPage";
 import RefundsPage from "./pages/Refunds/RefundsPage";
 import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
 
 
 
@@ -95,6 +96,8 @@ export default function App() {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/terms-and-conditions" element={<Navigate to="/terms" replace />} />
         <Route path="/terms-conditions" element={<Navigate to="/terms" replace />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/privacy-policy" element={<Navigate to="/privacy" replace />} />
 
       </Routes>
 

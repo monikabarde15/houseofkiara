@@ -1,0 +1,336 @@
+/* =========================================================
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · DECK & INSPECTOR
+   Spec Section 4.10 (v213) — The one repeating-item pattern
+========================================================= */
+
+.hok-deck-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+/* Grid arrangements */
+.hok-deck-grid {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hok-deck-grid.is-d3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.hok-deck-grid.is-d4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.hok-deck-grid.is-d6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+/* Mosaic arrangement: 6 columns */
+.hok-deck-grid.is-mosaic {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.hok-deck-grid.is-mosaic .hok-deck-tile:nth-child(1) {
+  grid-column: span 4;
+}
+
+.hok-deck-grid.is-mosaic .hok-deck-tile:nth-child(2) {
+  grid-column: span 2;
+}
+
+.hok-deck-grid.is-mosaic .hok-deck-tile:nth-child(n+3) {
+  grid-column: span 2;
+}
+
+/* Single Tile */
+.hok-deck-tile {
+  background-color: var(--card);
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hok-deck-tile:hover {
+  border-color: var(--gold-l);
+}
+
+.hok-deck-tile.is-selected {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold-pale);
+}
+
+.hok-deck-tile.is-dimmed {
+  opacity: 0.6;
+}
+
+/* Picture Area */
+.hok-deck-tile-picture {
+  width: 100%;
+  background-color: var(--canvas);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hok-deck-tile-picture.no-pic {
+  border-bottom: 1px dashed var(--ib);
+  background-color: var(--ibg);
+}
+
+.hok-deck-tile-initials {
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--charcoal);
+  opacity: 0.72;
+}
+
+.hok-deck-tile-no-pic-label {
+  font-size: 9.5px;
+  color: var(--muted-l);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Badges on Tile */
+.hok-deck-pos-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: rgba(26, 22, 18, 0.75);
+  color: #ffffff;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.hok-deck-corner-flag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+}
+
+.hok-deck-flag-need {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--terra);
+  background-color: #fdf1ee;
+  padding: 1px 5px;
+  border-radius: var(--r);
+}
+
+.hok-deck-flag-off {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: rgba(26, 22, 18, 0.7);
+  padding: 1px 5px;
+  border-radius: var(--r);
+}
+
+/* Tile Text Content */
+.hok-deck-tile-content {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.hok-deck-tile-title {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--charcoal);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hok-deck-tile-sub {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  color: var(--muted);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Tile Controls Row */
+.hok-deck-tile-controls {
+  padding: 4px 8px;
+  border-top: 1px solid var(--cb);
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hok-deck-reorder-btns {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.hok-deck-arrow-btn {
+  background: transparent;
+  border: 1px solid var(--ib);
+  border-radius: 2px;
+  color: var(--muted);
+  font-size: 8px;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hok-deck-arrow-btn:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--charcoal);
+  background-color: var(--gold-pale);
+}
+
+.hok-deck-arrow-btn:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.hok-deck-remove-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--terra);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--r);
+  transition: background-color var(--transition-fast);
+}
+
+.hok-deck-remove-btn:hover {
+  background-color: #fdf1ee;
+}
+
+/* Add Tile */
+.hok-deck-add-tile {
+  background-color: var(--ibg);
+  border: 1px dashed var(--ib);
+  border-radius: var(--r);
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  cursor: pointer;
+  color: var(--muted);
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.hok-deck-add-tile:hover {
+  border-color: var(--gold);
+  background-color: var(--gold-pale);
+  color: var(--charcoal);
+}
+
+.hok-deck-add-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.hok-deck-add-count {
+  font-size: 9.5px;
+  color: var(--muted-l);
+}
+
+/* Inspector */
+.hok-inspector-container {
+  border: 1px solid var(--gold);
+  border-radius: var(--r);
+  background-color: #ffffff;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.hok-inspector-header {
+  padding: 8px 14px;
+  background-color: var(--gold-pale);
+  border-bottom: 1px solid var(--gold-l);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.hok-inspector-kicker {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--charcoal);
+}
+
+.hok-inspector-item-name {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.hok-inspector-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Empty Inspector Panel */
+.hok-inspector-empty {
+  border: 1px dashed var(--ib);
+  border-radius: var(--r);
+  padding: 16px;
+  background-color: var(--ibg);
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--muted);
+}

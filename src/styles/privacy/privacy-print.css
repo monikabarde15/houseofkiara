@@ -1,0 +1,293 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - PRIVACY POLICY A4 PRINT STYLESHEET
+   Specification: v2.0 (hok_privacy_v2) · Section 10
+   ========================================================================== */
+
+/* Screen default: print container is hidden */
+#privacyPrintDoc {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+
+  html, body {
+    background: #FFFFFF !important;
+    color: #1A1612 !important;
+    font-size: 11pt;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide entire application chrome & on-screen Privacy elements */
+  header,
+  footer,
+  .header,
+  .footer,
+  .floating-whatsapp-container,
+  .privacy-toast,
+  #chakra-toast-portal {
+    display: none !important;
+  }
+
+  .privacy-page > *:not(#privacyPrintDoc) {
+    display: none !important;
+  }
+
+  /* Show dedicated clean print document */
+  #privacyPrintDoc {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 760px !important;
+    margin: 0 auto !important;
+    background: #FFFFFF !important;
+    color: #1A1612 !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  }
+
+  /* Print Header */
+  .privacy-print-header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #1A1612;
+    padding-bottom: 14px;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .privacy-print-title {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 34px !important;
+    font-weight: 400 !important;
+    line-height: 1.1 !important;
+    color: #1A1612 !important;
+    margin: 0 0 4px 0 !important;
+  }
+
+  .privacy-print-meta {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+    color: #6B6259 !important;
+    margin: 0 0 12px 0 !important;
+  }
+
+  .privacy-print-intro {
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+    color: #4F463E !important;
+    margin: 0 !important;
+  }
+
+  /* Part Header */
+  .privacy-print-part-block {
+    margin-top: 24px;
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
+  .privacy-print-part-header {
+    margin-top: 20px;
+    margin-bottom: 12px;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .privacy-print-part-range {
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.2em !important;
+    color: #6B6259 !important;
+    text-transform: uppercase !important;
+    display: block !important;
+    margin-bottom: 4px !important;
+  }
+
+  .privacy-print-part-title {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 24px !important;
+    font-weight: 400 !important;
+    line-height: 1.2 !important;
+    color: #1A1612 !important;
+    margin: 0 0 6px 0 !important;
+  }
+
+  .privacy-print-part-line {
+    width: 100%;
+    height: 1px;
+    background-color: #1A1612;
+    margin-bottom: 10px;
+  }
+
+  /* Clause Block */
+  .privacy-print-clause-item {
+    padding: 10px 0 6px 0;
+    border-bottom: 1px solid #E8E0D4;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .privacy-print-clause-title {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 17px !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+    color: #1A1612 !important;
+    margin: 0 0 8px 0 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Subclause Layout */
+  .privacy-print-subclause-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin-bottom: 4px;
+    font-size: 11.5px !important;
+    line-height: 1.6 !important;
+    color: #4F463E !important;
+  }
+
+  .privacy-print-sub-num {
+    width: 40px;
+    flex-shrink: 0;
+    font-weight: 500;
+    color: #6B6259;
+  }
+
+  .privacy-print-sub-content {
+    flex: 1;
+  }
+
+  .privacy-print-sub-paragraph {
+    margin: 0;
+    font-size: 11.5px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Lettered Lists */
+  .privacy-print-lettered-list {
+    margin-top: 4px;
+  }
+
+  .privacy-print-lettered-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2px;
+  }
+
+  .privacy-print-letter {
+    width: 24px;
+    flex-shrink: 0;
+    color: #6B6259;
+  }
+
+  .privacy-print-letter-text {
+    flex: 1;
+  }
+
+  /* Definitions */
+  .privacy-print-def-table {
+    margin: 6px 0 8px 40px;
+    border-top: 1px solid #E8E0D4;
+  }
+
+  .privacy-print-def-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid #F0EAE0;
+  }
+
+  .privacy-print-def-term {
+    width: 130px;
+    flex-shrink: 0;
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #1A1612 !important;
+  }
+
+  .privacy-print-def-meaning {
+    flex: 1;
+    font-size: 11.5px !important;
+    line-height: 1.55 !important;
+  }
+
+  /* Register Rows (Clauses 7 & 8) */
+  .privacy-print-register-block {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
+  .privacy-print-reg-head {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-bottom: 3px;
+  }
+
+  .privacy-print-reg-num {
+    width: 40px;
+    flex-shrink: 0;
+    font-weight: 500;
+    color: #6B6259;
+    font-size: 11.5px;
+  }
+
+  .privacy-print-reg-title {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    color: #1A1612 !important;
+    margin: 0;
+  }
+
+  .privacy-print-reg-table {
+    margin-left: 40px;
+    border-top: 1px solid #E8E0D4;
+  }
+
+  .privacy-print-reg-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 3px 0;
+    border-bottom: 1px solid #F0EAE0;
+    font-size: 11.5px !important;
+    line-height: 1.55 !important;
+  }
+
+  .privacy-print-reg-label {
+    width: 66px;
+    flex-shrink: 0;
+    font-size: 9.5px !important;
+    color: #6B6259 !important;
+    font-weight: 600 !important;
+  }
+
+  .privacy-print-reg-never .privacy-print-reg-label {
+    color: #7A3A22 !important;
+  }
+
+  .privacy-print-reg-text {
+    flex: 1;
+  }
+
+  /* Strip underlines and link colors */
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+}

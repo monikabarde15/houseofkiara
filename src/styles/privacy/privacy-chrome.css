@@ -1,0 +1,145 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - PRIVACY POLICY BASE CHROME & GLOBAL STYLES
+   Specification: v2.0 (hok_privacy_v2) · Sections 3, 5, 9
+   ========================================================================== */
+
+.privacy-page {
+  background-color: var(--hok-warm-white);
+  color: var(--hok-body-brown);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Accessibility Focus Ring (Section 3.4 & 9) */
+.privacy-page :focus-visible {
+  outline: 2px solid var(--hok-gold);
+  outline-offset: 3px;
+}
+
+/* Inline Link Styling (Section 3.3, 5.10) */
+.privacy-inline-link {
+  color: var(--hok-charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--hok-gold-light);
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  transition: color var(--transition-normal), text-decoration-color var(--transition-normal);
+  cursor: pointer;
+}
+
+.privacy-inline-link:hover {
+  color: var(--hok-gold-deep);
+  text-decoration-color: var(--hok-gold);
+}
+
+/* Search Term Highlight Mark (Section 3.1 & 8.5) */
+mark.privacy-search-highlight {
+  background-color: var(--hok-gold-pale);
+  color: inherit;
+  padding: 0 1px;
+  border-bottom: 1px solid var(--hok-gold);
+}
+
+/* Arrival Highlight Glow Animation (Section 3.6 & 5.15) */
+@keyframes privacyArrivalGlow {
+  0% {
+    background-color: var(--hok-gold-pale);
+    box-shadow: 0 0 0 10px var(--hok-gold-pale);
+  }
+  35% {
+    background-color: var(--hok-gold-pale);
+    box-shadow: 0 0 0 10px var(--hok-gold-pale);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.privacy-arrival-highlight {
+  animation: privacyArrivalGlow var(--transition-highlight) forwards;
+}
+
+/* Screen Reader Only Utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Tabular lining figures for numbering consistency */
+.privacy-tabular-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Toast Notification (Section 3.4, 3.6, 5.14) */
+.privacy-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background-color: var(--hok-charcoal);
+  color: var(--hok-warm-white);
+  padding: 13px 26px;
+  border-radius: 2px;
+  box-shadow: var(--shadow-toast);
+  z-index: var(--z-toast);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease-privacy), transform 0.3s var(--ease-privacy);
+  max-width: calc(100vw - 36px);
+  text-align: center;
+}
+
+.privacy-toast-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.privacy-toast-text {
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .privacy-toast-text {
+    white-space: normal;
+  }
+}
+
+/* Reduced Motion Compliance (Section 3.6) */
+@media (prefers-reduced-motion: reduce) {
+  .privacy-page *,
+  .privacy-page *::before,
+  .privacy-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .privacy-arrival-highlight {
+    background-color: var(--hok-gold-pale) !important;
+    box-shadow: none !important;
+  }
+
+  .privacy-toast {
+    transition: opacity 0.01ms !important;
+    transform: translateX(-50%) translateY(0) !important;
+  }
+}
