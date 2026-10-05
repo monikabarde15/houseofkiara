@@ -1,0 +1,213 @@
+.hok-mobile-mock-container {
+  display: flex;
+  justify-content: center;
+  padding: 12px 6px;
+  background-color: var(--hok-bg-secondary);
+  box-sizing: border-box;
+}
+
+.hok-mobile-phone-frame {
+  width: 228px;
+  min-height: 460px;
+  background: #ffffff;
+  border: 1px solid var(--hok-border-subtle);
+  border-radius: 20px;
+  box-shadow: var(--hok-shadow-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  font-family: var(--hok-font-sans);
+}
+
+.hok-mobile-notch {
+  height: 14px;
+  background-color: #000000;
+  border-radius: 0 0 8px 8px;
+  width: 70px;
+  margin: 0 auto;
+}
+
+.hok-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--hok-border-subtle);
+  background: #ffffff;
+}
+
+.hok-mobile-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hok-mobile-hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+  width: 14px;
+}
+
+.hok-mobile-hamburger-line {
+  height: 1.5px;
+  background-color: var(--hok-text-primary);
+  border-radius: 1px;
+}
+
+.hok-mobile-logo-mark {
+  font-family: var(--hok-font-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.hok-mobile-header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+}
+
+.hok-mobile-cart-badge {
+  background-color: var(--hok-text-primary);
+  color: #ffffff;
+  font-size: 7.5px;
+  padding: 1px 4px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Drawer preview mode */
+.hok-mobile-drawer-view {
+  padding: 10px 12px;
+  background-color: #ffffff;
+  flex: 1;
+}
+
+.hok-mobile-drawer-heading {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--hok-text-tertiary);
+  margin-bottom: 6px;
+}
+
+.hok-mobile-drawer-item {
+  padding: 6px 0;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--hok-text-primary);
+  border-bottom: 1px solid var(--hok-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Mobile Body */
+.hok-mobile-body {
+  padding: 10px 8px;
+  flex: 1;
+  background-color: #fafafa;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hok-mobile-hero-banner {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #ffffff;
+  padding: 10px 8px;
+  border-radius: var(--hok-radius-sm);
+  text-align: center;
+}
+
+.hok-mobile-hero-title {
+  font-family: var(--hok-font-serif);
+  font-size: 11px;
+  margin: 0 0 2px 0;
+}
+
+.hok-mobile-hero-desc {
+  font-size: 7.5px;
+  opacity: 0.8;
+  margin: 0;
+}
+
+.hok-mobile-cards-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.hok-mobile-card {
+  background: #ffffff;
+  border: 1px solid var(--hok-border-subtle);
+  border-radius: var(--hok-radius-sm);
+  overflow: hidden;
+}
+
+.hok-mobile-card-img {
+  height: 48px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7.5px;
+  color: var(--hok-text-tertiary);
+}
+
+.hok-mobile-card-content {
+  padding: 3px 4px;
+}
+
+.hok-mobile-card-title {
+  font-size: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hok-mobile-card-price {
+  font-size: 7.5px;
+  color: var(--hok-text-secondary);
+}
+
+/* Fixed Bottom Tab Bar */
+.hok-mobile-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 6px 4px 8px 4px;
+  background: #ffffff;
+  border-top: 1px solid var(--hok-border-subtle);
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.hok-mobile-tab-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5px;
+  font-size: 7.5px;
+  color: var(--hok-text-tertiary);
+  position: relative;
+}
+
+.hok-mobile-tab-btn.is-active {
+  color: var(--hok-text-primary);
+  font-weight: 600;
+}
+
+.hok-mobile-tab-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background-color: var(--hok-bg-tertiary);
+}
+
+.hok-mobile-tab-btn.is-active .hok-mobile-tab-dot {
+  background-color: var(--hok-accent-gold);
+}

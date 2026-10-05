@@ -1,0 +1,233 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - COOKIE POLICY BREADCRUMB & HERO STYLES
+   Specification: v1.0 (hok_cookie_v4) · Section 5.1 & 5.2
+   ========================================================================== */
+
+/* 5.1 Breadcrumb Navigation */
+.cookie-breadcrumb-container {
+  background-color: var(--hok-cream);
+  padding: 18px 40px 0 80px;
+  width: 100%;
+}
+
+.cookie-breadcrumb-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  font-weight: 400;
+  color: var(--hok-muted);
+}
+
+.cookie-breadcrumb-link {
+  color: var(--hok-muted);
+  text-decoration: none;
+  transition: color var(--transition-normal);
+}
+
+.cookie-breadcrumb-link:hover {
+  color: var(--hok-charcoal);
+}
+
+.cookie-breadcrumb-slash {
+  color: var(--hok-gold-light);
+  user-select: none;
+}
+
+.cookie-breadcrumb-muted {
+  color: var(--hok-muted);
+}
+
+.cookie-breadcrumb-current {
+  color: var(--hok-charcoal);
+}
+
+/* 5.2 Hero Container */
+.cookie-hero {
+  background-color: var(--hok-cream);
+  padding: 40px 40px 96px 40px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.cookie-hero-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* Hero Entrance Animations (Section 3.6) */
+@keyframes cookieRiseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cookie-enter {
+  animation: cookieRiseIn 0.8s var(--ease-cookie) forwards;
+}
+
+.cookie-e1 { animation-delay: 0s; }
+.cookie-e2 { animation-delay: 0.08s; }
+.cookie-e3 { animation-delay: 0.16s; }
+
+/* Eyebrow Line */
+.cookie-hero-tag-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.cookie-hero-tag-line {
+  width: 32px;
+  height: 1px;
+  background-color: var(--hok-gold);
+}
+
+.cookie-hero-tag-text {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  color: var(--hok-gold);
+  text-transform: uppercase;
+}
+
+/* Main Page Heading (H1) */
+.cookie-hero-title {
+  font-family: var(--font-heading);
+  font-size: clamp(42px, 5.6vw, 76px);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+  color: var(--hok-charcoal);
+  margin: 0 0 18px 0;
+  white-space: nowrap;
+}
+
+.cookie-title-italic {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--hok-gold);
+}
+
+/* Hero Introduction Line */
+.cookie-hero-intro {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--hok-secondary-brown);
+  max-width: 540px;
+  margin: 0 auto 22px auto;
+}
+
+/* Version & Metadata Row (5 items) */
+.cookie-hero-version-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: var(--hok-muted);
+}
+
+.cookie-version-item {
+  padding: 0 14px;
+  color: var(--hok-muted);
+  position: relative;
+}
+
+.cookie-version-item + .cookie-version-item,
+.cookie-version-item + .cookie-version-link-btn {
+  border-left: 1px solid var(--hok-border);
+}
+
+.cookie-version-link-btn {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--hok-border);
+  padding: 0 14px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+  transition: color var(--transition-normal), text-decoration-color var(--transition-normal);
+}
+
+/* "Cookie settings" trigger */
+.cookie-version-settings-btn {
+  color: var(--hok-gold-deep);
+  text-decoration: underline;
+  text-decoration-color: var(--hok-gold-light);
+}
+
+.cookie-version-settings-btn:hover {
+  color: var(--hok-charcoal);
+  text-decoration-color: var(--hok-charcoal);
+}
+
+/* "Print or save a copy" trigger */
+.cookie-version-print-btn {
+  color: var(--hok-charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--hok-gold-light);
+}
+
+.cookie-version-print-btn:hover {
+  color: var(--hok-gold-deep);
+  text-decoration-color: var(--hok-gold);
+}
+
+/* Responsive Styles (Section 4.4 Phone <=760px) */
+@media (max-width: 760px) {
+  .cookie-breadcrumb-container {
+    padding: 14px 18px 0 18px;
+  }
+
+  .cookie-hero {
+    padding: 26px 18px 76px 18px;
+  }
+
+  .cookie-hero-title {
+    font-size: 42px;
+  }
+
+  .cookie-hero-intro {
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+
+  .cookie-hero-version-row {
+    gap: 8px 16px;
+  }
+
+  .cookie-version-item,
+  .cookie-version-link-btn {
+    border-left: none !important;
+    padding: 0 !important;
+  }
+}

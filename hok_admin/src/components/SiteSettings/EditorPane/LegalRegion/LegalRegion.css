@@ -1,0 +1,46 @@
+.hok-legal-region {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: var(--sans);
+}
+
+/* Consent category row (Spec 10.8) */
+.hok-consent-category-block {
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  padding: 10px 12px;
+  background-color: var(--card);
+  margin-bottom: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+.hok-consent-category-block:last-child {
+  margin-bottom: 0;
+}
+
+.hok-consent-category-block.is-dimmed {
+  opacity: 0.72;
+  background-color: var(--canvas);
+}
+
+.hok-consent-cat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hok-consent-cat-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.hok-consent-cat-status {
+  font-size: 10px;
+  color: var(--muted);
+}

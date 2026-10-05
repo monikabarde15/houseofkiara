@@ -1,0 +1,489 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - TERMS & CONDITIONS BODY & CLAUSES STYLES
+   Sections 3.3, 5.6, 5.7, 5.8, 5.9 & Clause 4 Definitions
+   Specification: v3.0 (hok_terms_v4)
+   ========================================================================== */
+
+/* Main Body Container (Section 3.4: max 880px with 40px padding, 18px on mobile) */
+.terms-main-container {
+  max-width: var(--terms-max-width);
+  margin: 0 auto;
+  padding: 0 40px 80px 40px;
+}
+
+/* Screen Reader Only Helper */
+.terms-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* 5.6 Opening Intro Paragraph */
+.terms-opening-intro-wrapper {
+  max-width: var(--terms-readable-width);
+  margin: 56px auto 0 auto;
+  text-align: left;
+}
+
+.terms-opening-text {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--hok-body-brown);
+  margin: 0;
+}
+
+/* 5.7 The Essentials Section */
+.terms-essentials-section {
+  max-width: var(--terms-readable-width);
+  margin: 44px auto 16px auto;
+}
+
+.terms-essentials-label-row {
+  margin-bottom: 16px;
+}
+
+.terms-essentials-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--hok-gold-deep);
+  text-transform: uppercase;
+}
+
+.terms-essentials-list {
+  border-top: 1px solid var(--hok-charcoal);
+}
+
+.terms-essentials-row {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--hok-border);
+  padding: 17px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transition-normal), padding var(--transition-normal);
+  outline: none;
+}
+
+.terms-essentials-row:focus-visible {
+  outline: 2px solid var(--hok-gold);
+  outline-offset: -2px;
+}
+
+.terms-essentials-row:hover {
+  background-color: var(--hok-cream);
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.terms-essentials-summary {
+  font-family: var(--font-heading);
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--hok-charcoal);
+  font-weight: 400;
+  flex: 1;
+}
+
+.terms-essentials-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.terms-essentials-ref {
+  font-family: var(--font-body);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--hok-gold-deep);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.terms-essentials-chevron {
+  transition: transform var(--transition-normal), color var(--transition-normal);
+}
+
+.terms-essentials-row:hover .terms-essentials-chevron {
+  color: var(--hok-gold);
+  transform: translateX(2px);
+}
+
+.terms-essentials-note {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--hok-muted);
+  margin-top: 14px;
+}
+
+/* 5.8 Part Headers */
+.terms-part-block {
+  margin-top: 20px;
+}
+
+.terms-part-header {
+  padding-top: 76px;
+  scroll-margin-top: 100px;
+}
+
+.terms-part-range-tag {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  color: var(--hok-gold-deep);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.terms-part-title {
+  font-family: var(--font-heading);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--hok-charcoal);
+  margin: 0 0 10px 0;
+  letter-spacing: -0.012em;
+}
+
+.terms-part-title-italic {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--hok-gold);
+}
+
+.terms-part-description {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--hok-muted);
+  max-width: 640px;
+  margin: 0 0 22px 0;
+}
+
+.terms-part-divider-line {
+  width: 100%;
+  height: 1px;
+  background-color: var(--hok-charcoal);
+}
+
+/* 5.9 Clause Items */
+.terms-clause-item {
+  border-bottom: 1px solid var(--hok-border);
+  padding-top: 32px;
+  padding-bottom: 28px;
+  scroll-margin-top: 110px;
+  transition: background-color 0.4s var(--ease-terms);
+}
+
+.terms-clause-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.terms-clause-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.terms-clause-number {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+  color: var(--hok-gold);
+  min-width: 28px;
+}
+
+.terms-clause-title {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--hok-charcoal);
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+
+.terms-copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--hok-muted);
+  transition: all var(--transition-normal);
+  padding: 4px 6px;
+  border-radius: 2px;
+}
+
+.terms-copy-btn:hover {
+  color: var(--hok-charcoal);
+  background: var(--hok-cream);
+}
+
+.terms-copy-btn-text {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+/* Sub-clauses List */
+.terms-subclauses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.terms-subclause-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  scroll-margin-top: 120px;
+  transition: background-color 0.4s var(--ease-terms);
+}
+
+.terms-subclause-num-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.terms-subclause-num-text {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+  color: var(--hok-gold-deep);
+  border-bottom: 1px dotted transparent;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.terms-subclause-num-btn:hover .terms-subclause-num-text {
+  color: var(--hok-charcoal);
+  border-bottom-color: var(--hok-gold-deep);
+}
+
+.terms-subclause-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.terms-subclause-text,
+.terms-subclause-lead {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--hok-body-brown);
+  margin: 0;
+}
+
+/* Bold text inside clauses */
+.terms-subclause-text strong,
+.terms-subclause-lead strong,
+.terms-list-text strong {
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--hok-charcoal);
+}
+
+/* Lettered Lists (a), (b), (c) */
+.terms-lettered-list {
+  list-style: none;
+  margin: 10px 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.terms-lettered-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.terms-list-marker {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--hok-gold-deep);
+  min-width: 26px;
+  flex-shrink: 0;
+  line-height: 1.9;
+}
+
+.terms-list-text {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--hok-body-brown);
+}
+
+/* Definitions Table (Clause 4) */
+.terms-definitions-container {
+  margin-top: 22px;
+  margin-bottom: 16px;
+}
+
+.terms-definitions-table {
+  border: 1px solid var(--hok-border);
+  border-radius: 2px;
+  overflow: hidden;
+  background-color: var(--hok-warm-white);
+}
+
+.terms-def-header-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  background-color: var(--hok-cream);
+  border-bottom: 1px solid var(--hok-border);
+  padding: 12px 18px;
+}
+
+.terms-def-th {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--hok-charcoal);
+  text-transform: uppercase;
+}
+
+.terms-def-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  border-bottom: 1px solid var(--hok-border-light);
+  padding: 14px 18px;
+  transition: background-color var(--transition-fast);
+  scroll-margin-top: 120px;
+}
+
+.terms-def-row:last-child {
+  border-bottom: none;
+}
+
+.terms-def-row:hover {
+  background-color: var(--hok-cream);
+}
+
+.terms-def-term-text {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--hok-charcoal);
+}
+
+.terms-def-meaning-text {
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--hok-body-brown);
+}
+
+/* Tablet & Mobile Responsive (Section 3.3 / 4.2) */
+@media (max-width: 768px) {
+  .terms-main-container {
+    padding: 0 18px 60px 18px;
+  }
+
+  .terms-opening-intro-wrapper {
+    margin-top: 40px;
+  }
+
+  .terms-opening-text {
+    font-size: 19px;
+  }
+
+  .terms-essentials-section {
+    margin-top: 36px;
+  }
+
+  .terms-essentials-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 15px 2px;
+  }
+
+  .terms-essentials-summary {
+    font-size: 18px;
+  }
+
+  .terms-essentials-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .terms-part-header {
+    padding-top: 54px;
+  }
+
+  .terms-part-title {
+    font-size: 30px;
+  }
+
+  .terms-clause-item {
+    padding-top: 26px;
+    padding-bottom: 22px;
+  }
+
+  .terms-clause-number {
+    font-size: 19px;
+    min-width: 24px;
+  }
+
+  .terms-clause-title {
+    font-size: 22px;
+  }
+
+  .terms-subclause-text,
+  .terms-subclause-lead,
+  .terms-list-text {
+    font-size: 14.5px;
+    line-height: 1.85;
+  }
+
+  .terms-def-header-row,
+  .terms-def-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 12px 14px;
+  }
+}

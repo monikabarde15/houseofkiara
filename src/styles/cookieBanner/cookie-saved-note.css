@@ -1,0 +1,104 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - COOKIE SAVED NOTE STYLES
+   Specification: v1.0 (hok_cookie_banner_spec_v1.docx) · Section 7
+   ========================================================================== */
+
+.cb-saved-note-region {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: var(--cb-z-index);
+  max-width: 404px;
+  width: max-content;
+  pointer-events: auto;
+}
+
+.cb-saved-note-surface {
+  background-color: var(--cb-charcoal);
+  border-radius: var(--cb-radius);
+  box-shadow: var(--cb-shadow-note);
+  padding: 15px 16px 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-sizing: border-box;
+}
+
+.cb-saved-note-icon-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.cb-saved-note-text {
+  font-family: var(--cb-font-body);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--cb-cream);
+  margin: 0;
+  flex: 1;
+}
+
+.cb-saved-note-close-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--cb-muted);
+  padding: 0;
+  flex-shrink: 0;
+  transition: color var(--cb-transition-hover);
+  margin-right: -4px;
+}
+
+.cb-saved-note-close-btn:hover {
+  color: var(--cb-cream);
+}
+
+/* Note Animations (Section 4.5: 400ms duration, rises/falls 10px) */
+.cb-note-arrive {
+  animation: cbNoteArrive 400ms var(--cb-ease) forwards;
+}
+
+.cb-note-leave {
+  animation: cbNoteLeave 400ms var(--cb-ease) forwards;
+}
+
+@keyframes cbNoteArrive {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cbNoteLeave {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 761px) and (max-width: 1199px) {
+  .cb-saved-note-region {
+    bottom: 24px;
+    right: 24px;
+    max-width: calc(100vw - 48px);
+  }
+}

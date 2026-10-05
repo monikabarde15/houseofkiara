@@ -1,0 +1,124 @@
+.hok-media-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: var(--ibg);
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  padding: 12px;
+}
+
+.hok-media-slot-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.hok-media-slot-name {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.hok-media-needed-chip {
+  font-family: var(--sans);
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--terra);
+  background-color: #fdf1ee;
+  padding: 1px 5px;
+  border-radius: var(--r);
+  line-height: 1.2;
+}
+
+.hok-media-spec-line {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.hok-media-slot-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.hok-media-preview-box {
+  border-radius: var(--r);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.hok-media-preview-box.is-empty {
+  border: 1px dashed var(--ib);
+  background-color: #ffffff;
+  color: var(--muted-l);
+  font-size: 9px;
+  text-align: center;
+  padding: 6px;
+  gap: 4px;
+}
+
+.hok-media-preview-box.is-filled {
+  border: 1px solid var(--cb);
+}
+
+.hok-media-preview-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hok-media-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.hok-media-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hok-media-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  background-color: #ffffff;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hok-media-btn:hover {
+  border-color: var(--gold);
+  background-color: var(--gold-pale);
+}
+
+.hok-media-btn.is-remove {
+  color: var(--terra);
+}
+
+.hok-media-btn.is-remove:hover {
+  border-color: var(--terra);
+  background-color: #fdf1ee;
+}

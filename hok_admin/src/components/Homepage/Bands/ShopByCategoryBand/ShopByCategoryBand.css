@@ -1,0 +1,209 @@
+/* =========================================================
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · SHOP BY CATEGORY CSS
+   Spec Section 8.4 (v213)
+========================================================= */
+
+.hok-shop-by-category-band {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Words Grid */
+.hok-sbc-words-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-sbc-words-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hok-sbc-mirror-box {
+  background: var(--cb);
+  border: 1px dashed var(--ibg);
+  border-radius: var(--r);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.hok-sbc-mirror-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.hok-sbc-reads-as {
+  margin: 0;
+}
+
+/* Links & CTA Grid */
+.hok-sbc-links-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-sbc-links-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Header Toggles */
+.hok-sbc-header-toggles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-sbc-header-toggles-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hok-sbc-header-toggle-item,
+.hok-sbc-count-toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--cb);
+  border: 1px solid var(--ibg);
+  border-radius: var(--r);
+  gap: 14px;
+}
+
+.hok-sbc-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hok-sbc-toggle-title {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.hok-sbc-toggle-desc {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Mosaic Deck Wrapper */
+.hok-sbc-deck-wrapper {
+  margin-top: 12px;
+}
+
+/* Master Data Door */
+.hok-sbc-master-door {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--cb);
+  border: 1px solid var(--ibg);
+  border-radius: var(--r);
+  margin-bottom: 6px;
+}
+
+.hok-sbc-door-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hok-sbc-door-tag {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.hok-sbc-door-name {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.hok-sbc-door-slug {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.hok-sbc-door-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gold);
+  background: var(--card);
+  border: 1px solid var(--gold-pale);
+  padding: 6px 12px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-sbc-door-btn:hover {
+  background: var(--gold-pale);
+  border-color: var(--gold);
+}
+
+/* Inspector content */
+.hok-sbc-inspector-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Layout & Piece Counts */
+.hok-sbc-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-sbc-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hok-sbc-counts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-sbc-counts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hok-sbc-template-row {
+  margin-top: 14px;
+}

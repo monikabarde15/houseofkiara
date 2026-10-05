@@ -1,6 +1,6 @@
 // src/data/faq/faqRegistry.js
 // Complete FAQ Registry (Appendix A & B) with all 120 answers, moments, sections, and exact copy.
-import { ADMIN_FIGURES } from "./adminFigures";
+import { ADMIN_FIGURES } from "./adminFigures.js";
 
 export const FAQ_MOMENTS = [
   {

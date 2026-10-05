@@ -1,0 +1,257 @@
+.hok-control-strip {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 13px;
+  margin-top: 12px;
+  margin-bottom: 11px;
+  width: 100%;
+  font-family: var(--sans);
+  z-index: 20;
+}
+
+/* 6.1 Search Field */
+.hok-search-container {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  background-color: var(--card);
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  padding: 0 10px;
+}
+
+.hok-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: var(--charcoal);
+  padding: 0;
+  min-width: 0;
+}
+
+.hok-search-input::placeholder {
+  color: var(--muted-l);
+}
+
+.hok-search-clear-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted-l);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.1s ease;
+}
+
+.hok-search-clear-btn:hover {
+  color: var(--charcoal);
+}
+
+/* 6.1 Search Results Overlay */
+.hok-search-results-overlay {
+  position: absolute;
+  top: 34px;
+  left: 0;
+  right: 0;
+  background-color: var(--card);
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-dropdown);
+  max-height: 270px;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.hok-search-result-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 11px;
+  font-size: 11.5px;
+  color: var(--charcoal);
+  border-bottom: 1px solid var(--cb);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.hok-search-result-row:last-child {
+  border-bottom: none;
+}
+
+.hok-search-result-row:hover {
+  background-color: var(--canvas);
+}
+
+.hok-search-result-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hok-search-result-region {
+  font-size: 9.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.hok-search-empty-row {
+  padding: 7px 11px;
+  font-size: 11.5px;
+  color: var(--muted);
+  user-select: none;
+}
+
+/* 6.2 Unsaved State & Actions */
+.hok-control-strip-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.hok-unsaved-text-clean {
+  font-size: 11px;
+  color: var(--muted);
+  user-select: none;
+}
+
+.hok-unsaved-btn-dirty {
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--sans);
+  transition: color 0.1s ease;
+}
+
+.hok-unsaved-btn-dirty:hover {
+  color: var(--charcoal);
+}
+
+/* 6.2 Changed List Dropdown */
+.hok-changed-list-dropdown {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  width: 230px;
+  background-color: var(--card);
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-dropdown);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hok-changed-list-heading {
+  padding: 8px 11px;
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--cb);
+  background-color: var(--ibg);
+}
+
+.hok-changed-list-row {
+  padding: 7px 11px;
+  font-size: 11.5px;
+  color: var(--charcoal);
+  border-bottom: 1px solid var(--cb);
+  user-select: none;
+}
+
+.hok-changed-list-row:last-child {
+  border-bottom: none;
+}
+
+/* 6.3 Publish & Discard Buttons */
+.hok-btn-secondary {
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  background-color: var(--card);
+  padding: 6px 12px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: background-color 0.1s ease, border-color 0.1s ease;
+}
+
+.hok-btn-secondary:hover {
+  background-color: var(--canvas);
+  border-color: var(--cb);
+}
+
+.hok-btn-publish {
+  border: 1px solid transparent;
+  border-radius: var(--r);
+  background-color: var(--gold);
+  padding: 6px 14px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+.hok-btn-publish:hover:not(:disabled) {
+  background-color: var(--gold-l);
+}
+
+.hok-btn-publish:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Search Land Highlight Animation (Spec 6.1) */
+@keyframes hokFieldSearchHighlight {
+  0% {
+    outline: 2px solid var(--gold);
+    background-color: var(--gold-pale);
+    box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.22);
+  }
+  85% {
+    outline: 2px solid var(--gold);
+    background-color: var(--gold-pale);
+    box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.22);
+  }
+  100% {
+    outline: 2px solid transparent;
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+.hok-field-target-highlight {
+  animation: hokFieldSearchHighlight 2.2s ease-in-out forwards;
+}

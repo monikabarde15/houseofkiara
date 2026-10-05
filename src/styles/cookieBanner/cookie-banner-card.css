@@ -1,0 +1,222 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - COOKIE BANNER CARD & FIRST VIEW STYLES
+   Specification: v1.0 (hok_cookie_banner_spec_v1.docx) · Section 4.3, 4.5, 5
+   ========================================================================== */
+
+/* Main Banner Fixed Positioning (Desktop & Tablet) */
+.cb-banner-region {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: var(--cb-z-index);
+  width: var(--cb-card-width);
+  max-width: calc(100vw - 64px);
+  pointer-events: auto;
+}
+
+/* Card Surface Container */
+.cb-card-surface {
+  background-color: var(--cb-warm-white);
+  border: 1px solid var(--cb-line);
+  border-radius: var(--cb-radius);
+  box-shadow: var(--cb-shadow-desktop);
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* 4.3 The Keyline Frame (1px solid #E8D5B0 set 5px inside edge) */
+.cb-keyline-frame {
+  position: absolute;
+  top: var(--cb-keyline-inset);
+  left: var(--cb-keyline-inset);
+  right: var(--cb-keyline-inset);
+  bottom: var(--cb-keyline-inset);
+  border: 1px solid var(--cb-gold-light);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 5. First View Content */
+.cb-first-view-content {
+  padding: 26px 28px 22px 28px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header Row */
+.cb-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.cb-card-title {
+  font-family: var(--cb-font-heading);
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--cb-charcoal);
+  margin: 0;
+}
+
+/* Close Button: 34x34px tap area pulled 8px up and 12px right */
+.cb-close-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--cb-muted);
+  margin-top: -8px;
+  margin-right: -12px;
+  padding: 0;
+  transition: color var(--cb-transition-hover);
+  flex-shrink: 0;
+}
+
+.cb-close-btn:hover {
+  color: var(--cb-charcoal);
+}
+
+/* Body Text */
+.cb-body-text {
+  font-family: var(--cb-font-body);
+  font-size: 13.5px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--cb-body);
+  margin: 0;
+}
+
+/* Links inside body text */
+.cb-inline-link {
+  color: var(--cb-charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--cb-gold-light);
+  text-underline-offset: 1px;
+  text-decoration-thickness: 1px;
+  transition: color var(--cb-transition-hover), text-decoration-color var(--cb-transition-hover);
+}
+
+.cb-inline-link:hover {
+  color: var(--cb-gold-deep);
+  text-decoration-color: var(--cb-gold);
+}
+
+/* Button Pair: Two equal columns, 10px apart, 22px below text */
+.cb-button-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.cb-btn-outline {
+  height: 46px;
+  border: 1px solid var(--cb-charcoal);
+  background-color: var(--cb-warm-white);
+  color: var(--cb-charcoal);
+  font-family: var(--cb-font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: var(--cb-radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--cb-transition-hover), color var(--cb-transition-hover);
+  text-decoration: none;
+  padding: 0 8px;
+}
+
+.cb-btn-outline:hover {
+  background-color: var(--cb-charcoal);
+  color: var(--cb-cream);
+}
+
+/* Cookie Settings Link: Centred, 16px below the buttons */
+.cb-settings-link-wrapper {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.cb-settings-link {
+  font-family: var(--cb-font-body);
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--cb-charcoal);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--cb-gold-light);
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  transition: color var(--cb-transition-hover), text-decoration-color var(--cb-transition-hover);
+}
+
+.cb-settings-link:hover {
+  color: var(--cb-gold-deep);
+  text-decoration-color: var(--cb-gold);
+}
+
+/* 4.5 Motion Transitions */
+.cb-animate-arrive {
+  animation: cbCardArrive var(--cb-transition-card) forwards;
+}
+
+.cb-animate-leave {
+  animation: cbCardLeave var(--cb-transition-card) forwards;
+}
+
+@keyframes cbCardArrive {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cbCardLeave {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* WhatsApp Float Coordination (Section 3.3) */
+.whatsapp-float.cb-wa-lift {
+  bottom: 361px !important;
+  transition: bottom 350ms var(--cb-ease) !important;
+}
+
+.whatsapp-float.cb-wa-fade {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 250ms linear !important;
+}
+
+@media (max-width: 760px) {
+  .whatsapp-float.cb-wa-lift {
+    bottom: calc(302px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+

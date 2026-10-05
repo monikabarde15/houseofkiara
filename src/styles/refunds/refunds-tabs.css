@@ -1,0 +1,139 @@
+/* ==========================================================================
+   REFUND & CANCELLATION POLICY PAGE - POLICY TABS STYLES
+   Spec v1.2 · Section 05
+   ========================================================================== */
+
+.mode-bar-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0 18px;
+  box-sizing: border-box;
+}
+
+.mode-bar {
+  max-width: 880px;
+  width: 100%;
+  margin: -44px auto 0 auto;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  background-color: var(--warm-white);
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 40px var(--charcoal-06);
+  box-sizing: border-box;
+}
+
+@media (max-width: 760px) {
+  .mode-bar {
+    margin: -36px auto 0 auto;
+  }
+}
+
+.mode-tab {
+  flex: 1;
+  padding: 22px 26px 20px 26px;
+  background-color: var(--warm-white);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  transition: background-color 0.25s ease;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 4px 12px;
+}
+
+.mode-tab + .mode-tab {
+  border-left: 1px solid var(--border);
+}
+
+@media (max-width: 760px) {
+  .mode-tab {
+    padding: 16px 14px 14px 14px;
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+
+.mode-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background-color: transparent;
+  transition: background-color 0.25s ease;
+}
+
+.mode-tab .mt-k {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 9px;
+  line-height: normal;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  grid-column: 1 / -1;
+  color: var(--muted);
+  transition: color 0.25s ease;
+}
+
+.mode-tab .mt-t {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.1;
+  letter-spacing: normal;
+  color: var(--charcoal);
+  transition: color 0.25s ease;
+}
+
+@media (max-width: 760px) {
+  .mode-tab .mt-t {
+    font-size: 21px;
+  }
+}
+
+.mode-tab .mt-n {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 10px;
+  line-height: normal;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.25s ease;
+  padding-bottom: 4px;
+}
+
+@media (max-width: 760px) {
+  .mode-tab .mt-n {
+    padding-bottom: 0;
+  }
+}
+
+.mode-tab:hover {
+  background-color: var(--cream);
+}
+
+.mode-tab[aria-pressed="true"] {
+  background-color: var(--charcoal);
+}
+
+.mode-tab[aria-pressed="true"] .mt-k {
+  color: var(--gold-light);
+}
+
+.mode-tab[aria-pressed="true"] .mt-t {
+  color: var(--cream);
+}
+
+.mode-tab[aria-pressed="true"] .mt-n {
+  color: var(--gold-light);
+}
+
+.mode-tab[aria-pressed="true"]::after {
+  background-color: var(--gold);
+}

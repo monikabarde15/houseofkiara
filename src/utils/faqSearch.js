@@ -1,11 +1,11 @@
 // src/utils/faqSearch.js
-// Whole-word fuzzy search & scoring algorithm strictly following Section 10.4 & Appendix C
+// Fuzzy search & prefix scoring algorithm supporting instant suggestions and partial queries
 import React from "react";
-import { ALL_QUESTIONS } from "../data/faq/faqRegistry";
-import { SEARCH_ALTERNATIVES } from "../data/faq/searchKeywords";
+import { ALL_QUESTIONS } from "../data/faq/faqRegistry.js";
+import { SEARCH_ALTERNATIVES } from "../data/faq/searchKeywords.js";
 
 /**
- * Normalizes text per Section 10.4:
+ * Normalizes text:
  * Lowercases, converts non-letter/number/space/₹ to space, removes extra spaces.
  */
 export function normalizeSearchQuery(query) {
@@ -18,30 +18,47 @@ export function normalizeSearchQuery(query) {
 }
 
 /**
- * Checks if a candidate word matches a target whole word with optional trailing 's' / singular.
+ * Splits text into individual words
  */
-function wordMatches(word, targetText) {
-  if (!word || !targetText) return false;
-  // Regex whole word match: \bword(s)?\b or if word ends with s, singular match
-  const variations = [word];
-  if (word.endsWith("s") && word.length > 3) {
-    variations.push(word.slice(0, -1));
-  }
-  if (!word.endsWith("s")) {
-    variations.push(word + "s");
-  }
+function getWords(text) {
+  if (!text) return [];
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9₹\s]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+}
 
-  for (const v of variations) {
-    const escaped = v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regex = new RegExp(
-      `(^|\\s|[^a-zA-Z0-9₹])${escaped}($|\\s|[^a-zA-Z0-9₹])`,
-      "i",
-    );
-    if (regex.test(targetText)) {
-      return true;
+/**
+ * Computes word match score for a search word against target words:
+ * 3 if exact match (or singular/plural match)
+ * 2 if any target word starts with searchWord (prefix match)
+ * 1.5 if searchWord >= 4 and target word contains searchWord
+ * 0 otherwise
+ */
+function scoreWordAgainstWords(searchWord, targetWords) {
+  if (!searchWord || !targetWords || targetWords.length === 0) return 0;
+  
+  let bestScore = 0;
+  for (const tw of targetWords) {
+    if (tw === searchWord) {
+      return 3;
+    }
+    // Singular / plural match
+    if (
+      (searchWord.endsWith("s") && tw === searchWord.slice(0, -1)) ||
+      (!searchWord.endsWith("s") && tw === searchWord + "s")
+    ) {
+      return 3;
+    }
+    // Prefix match
+    if (tw.startsWith(searchWord)) {
+      if (bestScore < 2) bestScore = 2;
+    } else if (searchWord.length >= 4 && tw.includes(searchWord)) {
+      if (bestScore < 1.5) bestScore = 1.5;
     }
   }
-  return false;
+  return bestScore;
 }
 
 /**
@@ -54,6 +71,29 @@ function getAnswerPlainText(answer) {
   if (answer.bullets) parts.push(...answer.bullets);
   if (answer.afterBullets) parts.push(...answer.afterBullets);
   return parts.join(" ");
+}
+
+/**
+ * Returns alternative synonym words for a given search word (including prefix matching keys)
+ */
+function getAlternativesForWord(searchWord) {
+  const alternatives = new Set();
+  
+  for (const [key, synList] of Object.entries(SEARCH_ALTERNATIVES)) {
+    const keyMatches =
+      key === searchWord ||
+      key.startsWith(searchWord) ||
+      (searchWord.length >= 4 && searchWord.startsWith(key));
+
+    if (keyMatches) {
+      for (const syn of synList) {
+        if (syn !== searchWord) {
+          alternatives.add(syn);
+        }
+      }
+    }
+  }
+  return Array.from(alternatives);
 }
 
 /**
@@ -70,12 +110,7 @@ export function searchQuestions(rawQuery) {
   const validWords = rawWords.filter((w) => w.length >= 2);
 
   if (validWords.length === 0) {
-    return {
-      results: [],
-      hasQuery: true,
-      validWords: [],
-      allQueryWords: rawWords,
-    };
+    return { results: [], hasQuery: true, validWords: [], allQueryWords: rawWords };
   }
 
   const isPhrase = validWords.length > 1;
@@ -83,19 +118,22 @@ export function searchQuestions(rawQuery) {
 
   // Collect all terms including synonyms for each word
   const wordTermGroups = validWords.map((word) => {
-    const alts = SEARCH_ALTERNATIVES[word] || [];
     return {
       exact: word,
-      alternatives: alts.filter((a) => a !== word),
+      alternatives: getAlternativesForWord(word),
     };
   });
 
   const matchingQuestions = [];
 
   for (const q of ALL_QUESTIONS) {
-    const questionText = q.question.toLowerCase();
+    const questionText = (q.question || "").toLowerCase();
     const topicText = (q.adminTopic || "").toLowerCase();
     const answerText = getAnswerPlainText(q.answer).toLowerCase();
+
+    const qWords = getWords(questionText);
+    const topicWords = getWords(topicText);
+    const aWords = getWords(answerText);
 
     let allWordsMatched = true;
     let totalScore = 0;
@@ -103,51 +141,56 @@ export function searchQuestions(rawQuery) {
 
     for (const group of wordTermGroups) {
       let groupMatched = false;
-      let wordScore = 0;
+      let bestWordScore = 0;
 
-      // 1. Check exact word
-      const inQ = wordMatches(group.exact, questionText);
-      const inK = wordMatches(group.exact, topicText);
-      const inA = wordMatches(group.exact, answerText);
+      // 1. Check exact word & prefix against question, topic, answer
+      const qScore = scoreWordAgainstWords(group.exact, qWords);
+      const topicScore = scoreWordAgainstWords(group.exact, topicWords);
+      const aScore = scoreWordAgainstWords(group.exact, aWords);
 
-      if (inQ || inK || inA) {
+      const directWeighted = qScore * 3 + topicScore * 1.5 + aScore * 1;
+
+      if (directWeighted > 0) {
         groupMatched = true;
         matchedTerms.add(group.exact);
-        if (inQ) wordScore += 6;
-        if (inK) wordScore += 3;
-        if (inA) wordScore += 2;
+        bestWordScore = directWeighted;
       } else {
-        // 2. Check alternatives
+        // 2. Check alternatives / synonyms
         for (const alt of group.alternatives) {
-          const altInQ = wordMatches(alt, questionText);
-          const altInK = wordMatches(alt, topicText);
-          const altInA = wordMatches(alt, answerText);
+          const altWords = getWords(alt);
+          let altQScore = 0;
+          let altTopicScore = 0;
+          let altAScore = 0;
 
-          if (altInQ || altInK || altInA) {
+          for (const aw of altWords) {
+            altQScore = Math.max(altQScore, scoreWordAgainstWords(aw, qWords));
+            altTopicScore = Math.max(altTopicScore, scoreWordAgainstWords(aw, topicWords));
+            altAScore = Math.max(altAScore, scoreWordAgainstWords(aw, aWords));
+          }
+
+          const altWeighted = (altQScore * 3 + altTopicScore * 1.5 + altAScore * 1) * 0.7;
+          if (altWeighted > bestWordScore) {
+            bestWordScore = altWeighted;
             groupMatched = true;
             matchedTerms.add(alt);
-            if (altInQ) wordScore = Math.max(wordScore, 4);
-            if (altInK) wordScore = Math.max(wordScore, 2);
-            if (altInA) wordScore = Math.max(wordScore, 1);
-            break;
           }
         }
       }
 
-      if (!groupMatched) {
+      if (!groupMatched || bestWordScore <= 0) {
         allWordsMatched = false;
         break;
       }
-      totalScore += wordScore;
+      totalScore += bestWordScore;
     }
 
     if (allWordsMatched && totalScore > 0) {
       // Phrase bonus
       if (isPhrase) {
         if (questionText.includes(fullPhrase)) {
-          totalScore += 8;
+          totalScore += 10;
         } else if (topicText.includes(fullPhrase)) {
-          totalScore += 4;
+          totalScore += 5;
         }
       }
 
@@ -159,7 +202,7 @@ export function searchQuestions(rawQuery) {
     }
   }
 
-  // Sort descending by score; equal scores maintain admin order
+  // Sort descending by score; equal scores maintain registry order
   matchingQuestions.sort((a, b) => b.score - a.score);
 
   return {
@@ -171,19 +214,19 @@ export function searchQuestions(rawQuery) {
 }
 
 /**
- * Highlights matching words inside question string
+ * Highlights matching words and prefixes inside question string
  */
 export function highlightText(text, terms = []) {
   if (!terms || terms.length === 0 || !text) return text;
 
   // Flatten and escape terms
   const escapedTerms = terms
-    .filter((t) => t && t.length > 0)
+    .filter((t) => t && t.length >= 2)
     .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
 
   if (escapedTerms.length === 0) return text;
 
-  const regex = new RegExp(`\\b(${escapedTerms.join("|")})(s)?\\b`, "gi");
+  const regex = new RegExp(`\\b(${escapedTerms.join("|")})[a-zA-Z0-9₹]*`, "gi");
   const parts = [];
   let lastIndex = 0;
   let match;
@@ -192,7 +235,9 @@ export function highlightText(text, terms = []) {
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index));
     }
-    parts.push(React.createElement("mark", { key: match.index }, match[0]));
+    parts.push(
+      React.createElement("mark", { key: match.index }, match[0])
+    );
     lastIndex = regex.lastIndex;
   }
 

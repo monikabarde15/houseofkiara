@@ -1,0 +1,161 @@
+.hok-mobile-bar-region {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: var(--sans);
+}
+
+/* Tabs Table (Spec 10.4) */
+.hok-mobile-tabs-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.hok-mobile-tab-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--cb);
+  transition: background-color 0.1s ease;
+  min-height: 32px;
+}
+
+.hok-mobile-tab-row:last-child {
+  border-bottom: none;
+}
+
+.hok-mobile-tab-row:hover {
+  background-color: var(--canvas);
+}
+
+.hok-mobile-tab-col-shown {
+  width: 15px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hok-mobile-tab-col-order {
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.hok-mobile-tab-col-label {
+  flex: 1.5;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hok-mobile-tab-col-path {
+  flex: 1;
+  min-width: 0;
+}
+
+.hok-mobile-tab-col-remove {
+  width: 21px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Linked marker chip (Spec 10.4) */
+.hok-linked-marker {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: var(--gold);
+  background-color: var(--gold-pale);
+  padding: 1px 4px;
+  border-radius: 2px;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.hok-read-only-field {
+  background-color: var(--canvas);
+  border: 1px solid transparent;
+  padding: 3px 6px;
+  border-radius: var(--r);
+  font-size: 11.5px;
+  color: var(--charcoal);
+  width: 100%;
+}
+
+.hok-inert-delete {
+  opacity: 0.18 !important;
+  cursor: not-allowed !important;
+  pointer-events: auto;
+}
+
+/* Drawer Row (Spec 10.4) */
+.hok-drawer-rows-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.hok-drawer-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--cb);
+  transition: background-color 0.1s ease;
+}
+
+.hok-drawer-row:last-child {
+  border-bottom: none;
+}
+
+.hok-drawer-row:hover:not(.is-dimmed) {
+  background-color: var(--canvas);
+}
+
+.hok-drawer-row.is-dimmed {
+  opacity: 0.45;
+}
+
+.hok-drawer-row-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hok-drawer-nav-jump-btn {
+  background: transparent;
+  border: none;
+  font-size: 11.5px;
+  color: var(--charcoal);
+  font-family: var(--sans);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.1s ease;
+}
+
+.hok-drawer-nav-jump-btn:hover {
+  color: var(--gold);
+}
+
+.hok-drawer-row-note {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.hok-drawer-divider {
+  height: 1px;
+  background-color: var(--cb);
+  margin: 12px 0;
+  border: none;
+}

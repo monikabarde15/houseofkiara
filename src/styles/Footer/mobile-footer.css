@@ -1,109 +1,104 @@
 .hok-mobile-footer {
-  background: #f5efe6;
-
-  border-top: 1px solid #e8e0d4;
-
-  padding: 76px 20px 48px;
+  background: #F5EFE6;
+  border-top: 1px solid #E8E0D4;
+  padding: 76px 20px max(48px, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  width: 100%;
 }
 
-/* =========================
-   BRAND BLOCK
-========================= */
+/* ==========================================================================
+   11.1 BRAND BLOCK
+   ========================================================================== */
 
 .hok-mobile-footer-brand {
   margin-bottom: 28px;
 }
 
-.hok-mobile-footer-brand h3 {
+.hok-mobile-footer-brand-name {
   margin: 0 0 2px;
-
-  font-family: "Cormorant Garamond";
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-
-  color: #1a1612;
+  color: #1A1612;
+  line-height: 1.2;
 }
 
-.hok-mobile-footer-brand span {
+.hok-mobile-footer-brand-sub {
   display: block;
-
   margin-bottom: 10px;
-
-  font-family: "DM Sans";
+  font-family: "DM Sans", sans-serif;
   font-size: 7px;
   font-weight: 400;
-
   letter-spacing: 0.28em;
   text-transform: uppercase;
-
-  color: #8a7e72;
+  color: #8A7E72;
 }
 
-.hok-mobile-footer-brand p {
-  margin: 0;
-
-  max-width: 280px;
-
-  font-family: "Cormorant Garamond";
+.hok-mobile-footer-tagline {
+  margin: 0 0 14px;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 13px;
+  font-weight: 400;
   font-style: italic;
   line-height: 1.8;
-
-  color: #8a7e72;
+  color: #8A7E72;
 }
 
-/* =========================
-   SOCIALS
-========================= */
+/* ==========================================================================
+   11.2 SOCIAL ICONS
+   ========================================================================== */
 
 .hok-mobile-footer-socials {
   display: flex;
   gap: 8px;
-  margin-top: 14px;
+  align-items: center;
 }
 
 .hok-mobile-footer-socials button {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid #e8e0d4;
-  background: #fffefb;
-  display: flex;
+  border: 1px solid #E8E0D4;
+  background: #FFFEFB;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  padding: 0;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.hok-mobile-footer-socials svg {
+.hok-mobile-footer-socials button svg {
   width: 13px;
   height: 13px;
-  stroke: var(--muted);
+  stroke: #8A7E72;
   fill: none;
-  stroke-width: 1.6;
-  transition: stroke 220ms ease;
-}
-.hok-mobile-footer-socials button:hover {
-  border-color: var(--gold);
-  background: var(--gold-pale);
+  stroke-width: 1.4;
+  transition: stroke 0.2s ease;
 }
 
-.hok-mobile-footer-socials button:hover svg {
-  stroke: var(--gold);
+.hok-mobile-footer-socials button:hover,
+.hok-mobile-footer-socials button:active {
+  border-color: #C9A96E;
+  background: #F5EDD8;
 }
 
-/* =========================
-   FOOTER GRID
-========================= */
+.hok-mobile-footer-socials button:hover svg,
+.hok-mobile-footer-socials button:active svg {
+  stroke: #C9A96E;
+}
+
+/* ==========================================================================
+   11.3 FOOTER LINK COLUMNS (2 COLUMNS)
+   ========================================================================== */
 
 .hok-mobile-footer-columns {
   display: grid;
-
   grid-template-columns: 1fr 1fr;
-
   gap: 24px 16px;
-
   margin: 28px 0;
 }
 
@@ -112,96 +107,91 @@
   flex-direction: column;
 }
 
-.hok-mobile-footer-column h4 {
+.hok-mobile-footer-column-heading {
   margin: 0 0 12px;
-
-  font-family: "DM Sans";
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 500;
-
   letter-spacing: 0.24em;
   text-transform: uppercase;
-
-  color: #1a1612;
+  color: #1A1612;
 }
 
-.hok-mobile-footer-column a {
-  margin-bottom: 9px;
+.hok-mobile-footer-column-links {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
 
+.hok-mobile-footer-link {
   text-decoration: none;
-
-  font-family: "DM Sans";
+  font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 300;
-
   line-height: 1.4;
-
-  color: #8a7e72;
+  color: #8A7E72;
+  transition: color 0.15s ease;
 }
 
-/* =========================
-   POLICY LINKS
-========================= */
+.hok-mobile-footer-link:hover,
+.hok-mobile-footer-link:active {
+  color: #1A1612;
+}
+
+/* ==========================================================================
+   11.4 POLICY LINKS
+   ========================================================================== */
 
 .hok-mobile-footer-policy {
   display: flex;
   flex-wrap: wrap;
-
   padding: 14px 0;
-
-  border-top: 1px solid #e8e0d4;
-  border-bottom: 1px solid #e8e0d4;
-
+  border-top: 1px solid #E8E0D4;
+  border-bottom: 1px solid #E8E0D4;
   margin-bottom: 16px;
 }
 
-.hok-mobile-footer-policy a {
-  margin-right: 10px;
+.hok-mobile-footer-policy-link {
   padding-right: 10px;
-
-  border-right: 1px solid #e8e0d4;
-
+  margin-right: 10px;
+  border-right: 1px solid #E8E0D4;
   text-decoration: none;
-
-  font-family: "DM Sans";
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 300;
-
   line-height: 2;
-
-  color: #8a7e72;
+  color: #8A7E72;
+  transition: color 0.15s ease;
 }
 
-.hok-mobile-footer-policy a.last {
+.hok-mobile-footer-policy-link:hover,
+.hok-mobile-footer-policy-link:active {
+  color: #1A1612;
+}
+
+.hok-mobile-footer-policy-link.last {
   border-right: none;
   margin-right: 0;
   padding-right: 0;
 }
 
-/* =========================
-   COPYRIGHT
-========================= */
+/* ==========================================================================
+   11.5 COPYRIGHT BAR
+   ========================================================================== */
 
 .hok-mobile-footer-copyright {
   display: flex;
   flex-direction: column;
-
   gap: 10px;
 }
 
-.hok-mobile-footer-copyright p {
+.hok-mobile-footer-copyright-text {
   margin: 0;
-
-  font-family: "DM Sans";
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 300;
-
-  color: #8a7e72;
+  color: #8A7E72;
 }
-
-/* =========================
-   BADGES
-========================= */
 
 .hok-mobile-footer-badges {
   display: flex;
@@ -209,21 +199,15 @@
   flex-wrap: wrap;
 }
 
-.hok-mobile-footer-badges span {
+.hok-mobile-footer-badge {
   padding: 5px 10px;
-
-  border: 1px solid #e8e0d4;
-
-  background: #fffefb;
-
+  border: 1px solid #E8E0D4;
+  background: #FFFEFB;
   border-radius: 1px;
-
-  font-family: "DM Sans";
+  font-family: "DM Sans", sans-serif;
   font-size: 8px;
   font-weight: 400;
-
   letter-spacing: 0.14em;
   text-transform: uppercase;
-
-  color: #8a7e72;
+  color: #8A7E72;
 }

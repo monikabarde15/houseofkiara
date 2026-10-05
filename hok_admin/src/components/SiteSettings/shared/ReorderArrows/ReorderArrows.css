@@ -1,0 +1,48 @@
+.hok-reorder-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex-shrink: 0;
+  width: 16px;
+}
+
+.hok-reorder-btn {
+  width: 16px;
+  height: 11px;
+  border: 1px solid var(--cb);
+  border-radius: 2px;
+  background-color: var(--card);
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: border-color 0.1s ease, color 0.1s ease;
+}
+
+.hok-reorder-btn:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--charcoal);
+}
+
+.hok-reorder-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.hok-reorder-glyph {
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+}
+
+.hok-reorder-glyph.glyph-up {
+  border-bottom: 4px solid currentColor;
+}
+
+.hok-reorder-glyph.glyph-down {
+  border-top: 4px solid currentColor;
+}

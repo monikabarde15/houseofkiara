@@ -1,0 +1,353 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - TERMS & CONDITIONS POLICIES & QUESTIONS BAND
+   Sections 5.10 & 5.11 of Build Specification v3.0
+   ========================================================================== */
+
+/* 5.10 Our Policies Footer Line */
+.terms-policies-section {
+  max-width: var(--terms-max-width);
+  margin: 0 auto;
+  padding: 40px 40px 88px 40px;
+}
+
+.terms-policies-top-divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--hok-border);
+}
+
+.terms-policies-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 22px;
+  row-gap: 10px;
+  margin-top: 24px;
+}
+
+.terms-policies-heading {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--hok-charcoal);
+  margin-right: 6px;
+  font-weight: 500;
+}
+
+.terms-policies-nav {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.terms-policy-link {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--hok-charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--hok-border);
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  transition: all var(--transition-normal);
+}
+
+.terms-policy-link:hover {
+  color: var(--hok-gold-deep);
+  text-decoration-color: var(--hok-gold);
+}
+
+.terms-policies-meta-block {
+  margin-top: 14px;
+}
+
+.terms-policies-meta-text {
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--hok-placeholder-grey);
+  margin: 0;
+}
+
+.terms-policies-print-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 4px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--hok-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--hok-border);
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.terms-policies-print-btn:hover {
+  color: var(--hok-charcoal);
+  text-decoration-color: var(--hok-gold);
+}
+
+/* 5.11 Questions Band */
+.terms-questions-band {
+  width: 100%;
+  background-color: var(--hok-charcoal);
+  color: var(--hok-cream);
+  position: relative;
+  overflow: hidden;
+  padding: 104px 80px;
+}
+
+.terms-band-watermark {
+  position: absolute;
+  font-family: var(--font-heading);
+  font-size: 420px;
+  line-height: 1;
+  color: rgba(201, 169, 110, 0.05);
+  left: 50px;
+  top: -90px;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.terms-questions-band-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Left Column */
+.terms-band-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.terms-band-tag-line {
+  width: 32px;
+  height: 1px;
+  background-color: var(--hok-gold);
+}
+
+.terms-band-tag-text {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  color: var(--hok-gold-light);
+  text-transform: uppercase;
+}
+
+.terms-band-title {
+  font-family: var(--font-heading);
+  font-size: 46px;
+  line-height: 1.1;
+  color: var(--hok-cream);
+  font-weight: 400;
+  margin: 0 0 22px 0;
+  letter-spacing: -0.01em;
+}
+
+.terms-band-title-italic {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--hok-gold);
+}
+
+.terms-band-paragraph {
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(250, 247, 242, 0.82);
+  max-width: 470px;
+  margin: 0 0 26px 0;
+}
+
+.terms-band-signoff {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--hok-gold-light);
+  margin: 0 0 36px 0;
+}
+
+.terms-band-buttons-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.terms-band-btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: var(--hok-whatsapp);
+  color: #FFFFFF;
+  border: none;
+  padding: 15px 26px;
+  border-radius: 1px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.terms-band-btn-whatsapp:hover {
+  background-color: #1FB859;
+  transform: translateY(-1px);
+}
+
+.terms-band-btn-email {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: transparent;
+  color: var(--hok-cream);
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  padding: 14px 24px;
+  border-radius: 1px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.terms-band-btn-email:hover {
+  color: var(--hok-gold);
+  border-color: var(--hok-gold);
+}
+
+.terms-band-btn-icon {
+  flex-shrink: 0;
+}
+
+/* Right Column: Channels */
+.terms-channels-list {
+  border-top: 1px solid rgba(201, 169, 110, 0.18);
+}
+
+.terms-channel-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.12);
+}
+
+.terms-channel-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 169, 110, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.terms-channel-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.terms-channel-name {
+  font-family: var(--font-heading);
+  font-size: 21px;
+  font-weight: 500;
+  color: var(--hok-cream);
+  margin: 0 0 3px 0;
+}
+
+.terms-channel-desc {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: rgba(250, 247, 242, 0.6);
+  margin: 0;
+}
+
+.terms-channel-action-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--hok-gold);
+  text-decoration: underline;
+  text-decoration-color: rgba(201, 169, 110, 0.35);
+  text-underline-offset: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.terms-channel-action-btn:hover {
+  color: var(--hok-gold-light);
+  text-decoration-color: var(--hok-gold-light);
+}
+
+/* Tablet & Mobile Responsive */
+@media (max-width: 1199px) {
+  .terms-questions-band {
+    padding: 88px 40px;
+  }
+
+  .terms-questions-band-inner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .terms-policies-section {
+    padding: 32px 18px 56px 18px;
+  }
+
+  .terms-questions-band {
+    padding: 72px 18px;
+  }
+
+  .terms-band-title {
+    font-size: 34px;
+  }
+
+  .terms-band-buttons-row {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .terms-band-btn-whatsapp,
+  .terms-band-btn-email {
+    width: 100%;
+  }
+
+  .terms-channel-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .terms-channel-action-btn {
+    align-self: flex-start;
+  }
+}

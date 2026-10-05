@@ -1,0 +1,104 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - COOKIE POLICY STICKY SECTION BAR
+   Specification: v1.0 (hok_cookie_v4) · Section 5.4 & 7.1-7.3
+   ========================================================================== */
+
+.cookie-section-bar {
+  width: 100%;
+  background-color: var(--hok-warm-white);
+  border-bottom: 1px solid var(--hok-border);
+  margin-top: 40px;
+  position: sticky;
+  z-index: var(--z-section-bar);
+  box-shadow: 0 1px 3px rgba(26, 22, 18, 0.03);
+  transition: box-shadow var(--transition-normal);
+}
+
+.cookie-section-bar.cookie-section-bar-stuck {
+  box-shadow: 0 4px 12px rgba(26, 22, 18, 0.06);
+}
+
+.cookie-section-bar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge */
+  -webkit-overflow-scrolling: touch;
+}
+
+.cookie-section-bar-inner::-webkit-scrollbar {
+  display: none; /* Chrome / Safari */
+}
+
+.cookie-section-links-row {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  white-space: nowrap;
+  padding: 0 40px;
+}
+
+.cookie-section-link {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 17px 0 16px 0;
+  background: none;
+  border: none;
+  color: var(--hok-muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: color var(--transition-normal);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.cookie-section-link:hover {
+  color: var(--hok-charcoal);
+}
+
+.cookie-section-link-active {
+  color: var(--hok-charcoal);
+  font-weight: 500;
+}
+
+.cookie-section-active-underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--hok-gold);
+}
+
+/* Tablet & Mobile Responsive */
+@media (max-width: 1024px) {
+  .cookie-section-bar-inner {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .cookie-section-bar {
+    margin-top: 28px;
+  }
+
+  .cookie-section-links-row {
+    gap: 20px;
+    padding: 0 18px;
+  }
+
+  .cookie-section-link {
+    font-size: 11.5px;
+    padding: 14px 0 13px 0;
+  }
+}

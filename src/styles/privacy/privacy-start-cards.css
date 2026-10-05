@@ -1,0 +1,139 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - PRIVACY POLICY WHERE TO START CARDS
+   Specification: v2.0 (hok_privacy_v2) · Section 5.5
+   ========================================================================== */
+
+.privacy-start-cards-region {
+  position: relative;
+  z-index: var(--z-start-cards);
+  max-width: 880px;
+  margin: -44px auto 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.privacy-start-cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: var(--hok-border);
+  gap: 1px;
+  border: 1px solid var(--hok-border);
+  border-radius: 0;
+  box-shadow: var(--shadow-cards);
+  overflow: hidden;
+}
+
+.privacy-start-card {
+  background-color: var(--hok-warm-white);
+  padding: 22px 26px 20px 26px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  transition: background-color var(--transition-card);
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.privacy-start-card:focus-visible {
+  outline: 2px solid var(--hok-gold);
+  outline-offset: -2px;
+}
+
+.privacy-card-tag {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--hok-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.privacy-card-main-row {
+  display: block;
+}
+
+.privacy-card-title {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--hok-charcoal);
+  margin: 0 0 10px 0;
+  transition: color var(--transition-card);
+}
+
+.privacy-card-range {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--hok-gold-deep);
+  text-transform: uppercase;
+  display: block;
+}
+
+.privacy-card-hover-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--hok-gold);
+  opacity: 0;
+  transition: opacity var(--transition-card);
+}
+
+/* Hover & Active States */
+.privacy-start-card:hover {
+  background-color: var(--hok-cream);
+}
+
+.privacy-start-card:hover .privacy-card-title {
+  color: var(--hok-gold-deep);
+}
+
+.privacy-start-card:hover .privacy-card-hover-line {
+  opacity: 1;
+}
+
+/* Tablet & Mobile Responsive (Section 4.4 Phone <=760px) */
+@media (max-width: 860px) {
+  .privacy-start-cards-container {
+    grid-template-columns: 1fr;
+    gap: 1px;
+  }
+
+  .privacy-start-cards-region {
+    margin-top: -36px;
+    padding: 0 18px;
+  }
+
+  .privacy-start-card {
+    padding: 14px 16px;
+  }
+
+  .privacy-card-tag {
+    margin-bottom: 4px;
+  }
+
+  .privacy-card-main-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .privacy-card-title {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .privacy-card-range {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+}

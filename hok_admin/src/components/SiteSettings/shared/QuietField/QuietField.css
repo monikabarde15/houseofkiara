@@ -1,0 +1,42 @@
+.hok-quiet-field {
+  border: 1px solid transparent;
+  background-color: transparent;
+  padding: 3px 6px;
+  border-radius: var(--r);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: var(--charcoal);
+  width: 100%;
+  min-width: 0;
+  outline: none;
+  transition: border-color 0.1s ease, background-color 0.1s ease;
+}
+
+.hok-quiet-field:hover {
+  border-color: var(--cb);
+  background-color: var(--card);
+}
+
+.hok-quiet-field:focus {
+  border-color: var(--gold);
+  background-color: var(--card);
+}
+
+.hok-quiet-field::placeholder {
+  color: var(--muted-l);
+}
+
+.hok-quiet-field.is-secondary {
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.hok-quiet-field.is-heading {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.hok-quiet-field.is-muted {
+  color: var(--muted-l);
+}

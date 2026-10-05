@@ -1,0 +1,374 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - COOKIE POLICY CLOSING BANDS
+   Specification: v1.0 (hok_cookie_v4) · Sections 4, 5.11, 11.4
+   ========================================================================== */
+
+/* 5.11 Policies Band */
+.cookie-policies-line-container {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 40px 40px 88px 40px;
+  width: 100%;
+}
+
+.cookie-policies-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+}
+
+.cookie-policies-row-1 {
+  border-top: 1px solid var(--hok-border);
+  padding-top: 24px;
+}
+
+.cookie-policies-row-2 {
+  padding-top: 12px;
+}
+
+.cookie-policies-label {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--hok-charcoal);
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.cookie-policies-links-group {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+}
+
+.cookie-policy-link {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--hok-charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--hok-border);
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  transition: color var(--transition-normal), text-decoration-color var(--transition-normal);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.cookie-policy-link:hover {
+  color: var(--hok-gold-deep);
+  text-decoration-color: var(--hok-gold);
+}
+
+.cookie-policy-btn-link {
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+.cookie-policies-note-row {
+  margin-top: 14px;
+}
+
+.cookie-policies-note-text {
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--hok-placeholder-grey);
+  margin: 0;
+}
+
+.cookie-policies-print-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 4px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--hok-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--hok-border);
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+  transition: color var(--transition-normal), text-decoration-color var(--transition-normal);
+}
+
+.cookie-policies-print-link:hover {
+  color: var(--hok-charcoal);
+  text-decoration-color: var(--hok-gold);
+}
+
+/* 5.11 Dark Questions Band */
+.cookie-questions-band {
+  background-color: var(--hok-charcoal);
+  color: var(--hok-cream);
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.cookie-questions-quote-mark {
+  position: absolute;
+  top: -90px;
+  left: 50px;
+  font-family: var(--font-heading);
+  font-size: 420px;
+  line-height: 1;
+  color: var(--hok-band-gold-quote);
+  pointer-events: none;
+  user-select: none;
+}
+
+.cookie-questions-band-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 104px 80px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Left Column */
+.cookie-questions-left-col {
+  text-align: left;
+}
+
+.cookie-questions-eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.cookie-questions-eyebrow-line {
+  width: 32px;
+  height: 1px;
+  background-color: var(--hok-gold);
+}
+
+.cookie-questions-eyebrow-text {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  color: var(--hok-gold-light);
+  text-transform: uppercase;
+}
+
+.cookie-questions-heading {
+  font-family: var(--font-heading);
+  font-size: clamp(42px, 4.6vw, 66px);
+  font-weight: 300;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--hok-cream);
+  margin: 0 0 22px 0;
+}
+
+.cookie-questions-heading-italic {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--hok-gold);
+}
+
+.cookie-questions-paragraph {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--hok-band-text);
+  max-width: 470px;
+  margin: 0 0 26px 0;
+}
+
+.cookie-questions-signature {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--hok-gold-light);
+  margin: 0 0 36px 0;
+}
+
+.cookie-questions-buttons-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cookie-band-btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--hok-whatsapp);
+  color: #FFFFFF;
+  border: none;
+  padding: 15px 26px;
+  border-radius: 1px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.cookie-band-btn-whatsapp:hover {
+  background-color: var(--hok-whatsapp-hover);
+  transform: translateY(-1px);
+}
+
+.cookie-band-btn-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  color: var(--hok-cream);
+  border: 1px solid var(--hok-band-gold-btn-border);
+  padding: 14px 24px;
+  border-radius: 1px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--transition-normal), border-color var(--transition-normal);
+}
+
+.cookie-band-btn-email:hover {
+  color: var(--hok-gold);
+  border-color: var(--hok-gold);
+}
+
+/* Right Column: Channels */
+.cookie-questions-right-col {
+  text-align: left;
+}
+
+.cookie-channels-list {
+  border-top: 1px solid var(--hok-band-gold-line-top);
+  display: flex;
+  flex-direction: column;
+}
+
+.cookie-channel-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--hok-band-gold-line-row);
+}
+
+.cookie-channel-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--hok-band-gold-icon-circle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cookie-channel-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.cookie-channel-title {
+  font-family: var(--font-heading);
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--hok-cream);
+  margin: 0 0 4px 0;
+}
+
+.cookie-channel-desc {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--hok-band-subtext);
+  margin: 0;
+}
+
+.cookie-channel-action-btn {
+  background: none;
+  border: none;
+  padding: 0 0 3px 0;
+  border-bottom: 1px solid var(--hok-band-gold-btn-border);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hok-gold);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--transition-normal), border-color var(--transition-normal);
+}
+
+.cookie-channel-action-btn:hover {
+  color: var(--hok-gold-light);
+  border-bottom-color: var(--hok-gold-light);
+}
+
+/* Tablet Responsive */
+@media (max-width: 1199px) {
+  .cookie-questions-band-inner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 88px 40px;
+  }
+}
+
+/* Phone Responsive */
+@media (max-width: 760px) {
+  .cookie-policies-line-container {
+    padding: 32px 18px 56px 18px;
+  }
+
+  .cookie-questions-band-inner {
+    padding: 72px 18px;
+    gap: 48px;
+  }
+
+  .cookie-questions-heading {
+    font-size: 42px;
+  }
+
+  .cookie-questions-buttons-row {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cookie-band-btn-whatsapp,
+  .cookie-band-btn-email {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cookie-channel-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px 0;
+  }
+
+  .cookie-channel-action-btn {
+    margin-top: 4px;
+  }
+}

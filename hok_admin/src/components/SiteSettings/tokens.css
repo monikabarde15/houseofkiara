@@ -1,0 +1,86 @@
+/* ==========================================================================
+   House of Kaira · Site Settings — Design Tokens (UI Spec Section 3)
+   ========================================================================== */
+
+:root {
+  /* 3.1 Colours */
+  --charcoal: #1A1612;
+  --gold: #C9A96E;
+  --gold-l: #E2C99A;
+  --gold-pale: #F5EFE4;
+  --terra: #B85C38;
+  --sage: #6B7E5A;
+
+  --cream: #FAF7F2;
+  --canvas: #F7F4EF;
+  --card: #FFFFFF;
+  --cb: #EDE6DC;
+  --ib: #DDD5C8;
+  --ibg: #FFFEFB;
+  --muted: #8A7E72;
+  --muted-l: #B4A99E;
+
+  /* Additional Spec Tokens */
+  --toggle-track-bg: #D4C8BC;
+  --warning-bg: #FBF0EC;
+  --warning-border: #EBD3C9;
+  --warning-text: #7A3418;
+  --soon-bg: #FBF5E9;
+  --soon-border: #EADCC2;
+  --soon-text: #7A5F2E;
+  --scheduled-chip-bg: #EFE7F5;
+  --scheduled-chip-text: #5B3D7A;
+  --scope-badge-bg: #F5F0FA;
+  --scope-badge-border: #D8C8E6;
+  --scope-badge-text: #5B3D7A;
+  --expired-chip-bg: #F0EBE5;
+  --expired-chip-text: var(--muted);
+  --hint-bubble-text: #F3ECE1;
+  --pointer-code-color: #7A5F2E;
+
+  /* 3.2 Typography */
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  /* 3.3 Radius and Elevation */
+  --r: 4px;
+  --r-checkbox: 3.5px;
+  --r-tile: 12px;
+  --shadow-card: 0 1px 4px rgba(26, 22, 18, 0.06);
+  --shadow-dropdown: 0 6px 20px rgba(26, 22, 18, 0.13);
+  --shadow-picker: 0 8px 26px rgba(26, 22, 18, 0.16);
+  --shadow-hint: 0 4px 14px rgba(26, 22, 18, 0.22);
+}
+
+/* Base resets & utilities for Site Settings scope */
+.hok-site-settings {
+  font-family: var(--sans);
+  color: var(--charcoal);
+  background-color: var(--cream);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+.hok-site-settings *,
+.hok-site-settings *::before,
+.hok-site-settings *::after {
+  box-sizing: border-box;
+}
+
+/* Button font inheritance rule (Spec 3.2 & 5.4) */
+.hok-site-settings button {
+  font-family: var(--sans);
+}
+
+.hok-site-settings input,
+.hok-site-settings select,
+.hok-site-settings textarea {
+  font-family: var(--sans);
+}
+
+.hok-site-settings code,
+.hok-site-settings .is-mono {
+  font-family: var(--mono);
+}

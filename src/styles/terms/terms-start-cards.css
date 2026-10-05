@@ -1,0 +1,119 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - TERMS & CONDITIONS WHERE TO START CARDS
+   Section 5.4 of Build Specification v3.0
+   ========================================================================== */
+
+.terms-start-cards-region {
+  position: relative;
+  z-index: 10;
+  max-width: 880px;
+  margin: -44px auto 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.terms-start-cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: var(--hok-border);
+  gap: 1px;
+  border: 1px solid var(--hok-border);
+  border-radius: 2px;
+  box-shadow: 0 6px 24px rgba(26, 22, 18, 0.07);
+  overflow: hidden;
+}
+
+.terms-start-card {
+  background-color: var(--hok-warm-white);
+  padding: 22px 26px 20px 26px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.25s var(--ease-terms);
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.terms-start-card:focus-visible {
+  outline: 2px solid var(--hok-gold);
+  outline-offset: -2px;
+}
+
+.terms-card-tag {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--hok-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.terms-card-title {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--hok-charcoal);
+  margin: 0 0 10px 0;
+  transition: color 0.25s var(--ease-terms);
+}
+
+.terms-card-range {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--hok-gold-deep);
+  text-transform: uppercase;
+  display: block;
+}
+
+.terms-card-hover-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--hok-gold);
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-terms);
+}
+
+/* Hover & Active States */
+.terms-start-card:hover {
+  background-color: var(--hok-cream);
+}
+
+.terms-start-card:hover .terms-card-title {
+  color: var(--hok-gold-deep);
+}
+
+.terms-start-card:hover .terms-card-hover-line {
+  opacity: 1;
+}
+
+/* Tablet & Mobile Responsive */
+@media (max-width: 860px) {
+  .terms-start-cards-container {
+    grid-template-columns: 1fr;
+    gap: 1px;
+  }
+
+  .terms-start-cards-region {
+    margin-top: -36px;
+    padding: 0 16px;
+  }
+
+  .terms-start-card {
+    padding: 18px 20px 16px 20px;
+  }
+
+  .terms-card-title {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+}

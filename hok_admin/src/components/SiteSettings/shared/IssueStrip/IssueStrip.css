@@ -1,0 +1,52 @@
+.hok-issue-strip {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 11px;
+  border-radius: var(--r);
+  margin-bottom: 9px;
+  border: 1px solid transparent;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.hok-issue-strip.is-warning {
+  background-color: var(--warning-bg);
+  border-color: var(--warning-border);
+  color: var(--warning-text);
+}
+
+.hok-issue-strip.is-soon {
+  background-color: var(--soon-bg);
+  border-color: var(--soon-border);
+  color: var(--soon-text);
+}
+
+.hok-issue-strip.is-information {
+  background-color: var(--ibg);
+  border-color: var(--cb);
+  color: var(--muted);
+}
+
+.hok-issue-strip-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.hok-issue-strip-action {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: inherit;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+  padding: 0;
+  flex-shrink: 0;
+  font-family: var(--sans);
+}

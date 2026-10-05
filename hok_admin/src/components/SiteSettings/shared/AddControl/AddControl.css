@@ -1,0 +1,21 @@
+.hok-add-control {
+  font-size: 10px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px dashed var(--cb);
+  border-radius: var(--r);
+  padding: 3px 9px;
+  margin-top: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--sans);
+  transition: border-color 0.15s ease, color 0.15s ease, border-style 0.15s ease;
+}
+
+.hok-add-control:hover {
+  border-style: solid;
+  border-color: var(--gold);
+  color: var(--charcoal);
+}

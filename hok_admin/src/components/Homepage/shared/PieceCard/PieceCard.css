@@ -1,0 +1,113 @@
+.hok-piece-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #ffffff;
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  padding: 8px 12px;
+  transition: all var(--transition-fast);
+}
+
+.hok-piece-card.is-dimmed {
+  background-color: var(--canvas);
+}
+
+.hok-piece-card.is-dimmed .hok-piece-name {
+  color: var(--muted);
+}
+
+.hok-piece-thumb {
+  width: 42px;
+  height: 56px;
+  border-radius: var(--r);
+  border: 1px solid var(--cb);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.hok-piece-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hok-piece-thumb.is-unknown {
+  border-style: dashed;
+  border-color: var(--ib);
+  background-color: var(--ibg);
+}
+
+.hok-piece-initials-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.72;
+}
+
+.hok-piece-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.hok-piece-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hok-piece-name {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--charcoal);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+
+.hok-piece-name:hover {
+  color: var(--gold);
+  text-decoration: underline;
+}
+
+.hok-piece-meta {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.hok-piece-price-line {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.hok-piece-price-figures {
+  font-weight: 600;
+  color: #4a423c;
+  font-variant-numeric: tabular-nums;
+}
+
+.hok-piece-unknown-msg {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--terra);
+  font-style: italic;
+}

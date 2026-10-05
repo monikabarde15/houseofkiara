@@ -1,0 +1,25 @@
+.hok-preview-pane {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--hok-bg-primary);
+  border: 1px solid var(--hok-border-subtle);
+  border-radius: var(--hok-radius-md);
+  box-shadow: var(--hok-shadow-sm);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.hok-preview-pane-content {
+  overflow-y: auto;
+  max-height: calc(100vh - 180px);
+  background-color: var(--hok-bg-secondary);
+}
+
+.hok-preview-pane-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.hok-preview-pane-content::-webkit-scrollbar-thumb {
+  background-color: var(--hok-border-subtle);
+  border-radius: 2px;
+}

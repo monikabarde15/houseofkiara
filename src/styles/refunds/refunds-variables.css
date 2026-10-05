@@ -1,0 +1,56 @@
+/* ==========================================================================
+   REFUND & CANCELLATION POLICY PAGE - DESIGN VARIABLES & FOUNDATIONS
+   Spec v1.2 · prototype hok_refund_cancellation_v7
+   ========================================================================== */
+
+:root {
+  /* 02.1 Colours */
+  --cream: #FAF7F2;
+  --warm-white: #FFFEFB;
+  --charcoal: #1A1612;
+  --deep: #0E0C0A;
+  --gold: #C9A96E;
+  --gold-light: #E8D5B0;
+  --gold-pale: #F5EDD8;
+  --terracotta: #B85C38;
+  --sage: #6B7E5A;
+  --muted: #8A7E72;
+  --border: #E8E0D4;
+  --border-light: #F0EAE0;
+  --gold-deep: #9C7C45;
+  --text-soft: #5A4F46;
+  --text-body: #4F463E;
+  --text-question: #3E362F;
+  --text-faint: #A79B8D;
+  --chevron-faint: #CDBFA8;
+  --whatsapp-green: #25D366;
+  --whatsapp-green-hover: #1FB859;
+  --rv-note-fill: #FBEFE9;
+  --rv-note-text: #7A3A22;
+  --print-meta: #6B6259;
+
+  /* 02.2 Transparent Colors */
+  --gold-35: rgba(201, 169, 110, 0.35);
+  --gold-18: rgba(201, 169, 110, 0.18);
+  --gold-12: rgba(201, 169, 110, 0.12);
+  --gold-25: rgba(201, 169, 110, 0.25);
+  --gold-16: rgba(201, 169, 110, 0.16);
+  --gold-05: rgba(201, 169, 110, 0.05);
+  --cream-72: rgba(250, 247, 242, 0.72);
+  --cream-70: rgba(250, 247, 242, 0.70);
+  --cream-60: rgba(250, 247, 242, 0.60);
+  --charcoal-12: rgba(26, 22, 18, 0.12);
+  --charcoal-06: rgba(26, 22, 18, 0.06);
+  --black-25: rgba(0, 0, 0, 0.25);
+
+  /* Typography Fonts */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* 02.8 Motion */
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.25s ease;
+  --transition-settle: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-hero: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}

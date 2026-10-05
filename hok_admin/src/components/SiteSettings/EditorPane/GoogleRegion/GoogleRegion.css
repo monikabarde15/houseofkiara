@@ -1,0 +1,188 @@
+.hok-google-region {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: var(--sans);
+}
+
+/* Character count labels (Spec 10.7) */
+.hok-char-count {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.hok-char-count.is-over {
+  color: var(--terra);
+  font-weight: 600;
+}
+
+/* Read-only Share Image Block (Spec 10.7) */
+.hok-share-picture-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 13px;
+  padding: 10px;
+  background-color: var(--canvas);
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+}
+
+.hok-share-picture-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hok-share-picture-thumb {
+  width: 75px;
+  height: 40px;
+  border-radius: var(--r);
+  border: 1px solid var(--cb);
+  object-fit: cover;
+}
+
+.hok-share-picture-empty {
+  width: 75px;
+  height: 40px;
+  border-radius: var(--r);
+  border: 1px dashed var(--ib);
+  background-color: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8.5px;
+  color: var(--muted-l);
+}
+
+/* Tracking Block (Spec 10.7) */
+.hok-tracking-block {
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  padding: 10px 11px;
+  background-color: var(--card);
+  margin-bottom: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hok-tracking-block:last-child {
+  margin-bottom: 0;
+}
+
+.hok-tracking-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hok-tracking-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.hok-tracking-chip {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hok-tracking-chip.chip-connected {
+  background-color: #F1F4EE;
+  color: var(--sage);
+  border: 1px solid #CFD8C6;
+}
+
+.hok-tracking-chip.chip-not-set {
+  background-color: var(--canvas);
+  color: var(--muted);
+  border: 1px solid var(--cb);
+}
+
+.hok-tracking-desc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 560px;
+  margin: 0;
+}
+
+.hok-tracking-quiet-box {
+  background-color: var(--canvas);
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  padding: 4px 8px;
+}
+
+.hok-tracking-quiet-input {
+  border: none;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--charcoal);
+  width: 100%;
+  outline: none;
+}
+
+.hok-tracking-quiet-input::placeholder {
+  color: var(--muted-l);
+}
+
+/* Developer Collapsible Group (Spec 10.7) */
+.hok-dev-group-box {
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  background-color: var(--card);
+  margin-top: 13px;
+  overflow: hidden;
+}
+
+.hok-dev-group-header {
+  padding: 11px 16px;
+  background-color: var(--ibg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.hok-dev-group-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.hok-dev-group-action {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--gold);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hok-dev-group-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  border-top: 1px solid var(--cb);
+}
+
+.hok-dev-explanation-statement {
+  background-color: var(--canvas);
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  padding: 8px 10px;
+  font-size: 11px;
+  color: var(--charcoal);
+  line-height: 1.45;
+}

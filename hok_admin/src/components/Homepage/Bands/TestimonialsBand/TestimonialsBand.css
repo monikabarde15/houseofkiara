@@ -1,0 +1,312 @@
+/* =========================================================
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · TESTIMONIALS CSS
+   Spec Section 8.8 (v213)
+========================================================= */
+
+.hok-testimonials-band {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Words Grid */
+.hok-testi-words-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-testi-words-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hok-testi-mirror-box {
+  background: var(--cb);
+  border: 1px dashed var(--ibg);
+  border-radius: var(--r);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.hok-testi-mirror-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.hok-testi-reads-as {
+  margin: 0;
+}
+
+/* Layout Grid */
+.hok-testi-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .hok-testi-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Add Testimonial Header Action */
+.hok-testi-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--card);
+  color: var(--charcoal);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-testi-add-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-pale);
+}
+
+/* Deck Wrapper */
+.hok-testi-deck-wrapper {
+  margin-top: 12px;
+}
+
+.hok-testi-tile {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+
+.hok-testi-tile-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hok-testi-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gold-pale);
+  border: 1px solid var(--gold-l);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hok-testi-author {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hok-testi-name {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.hok-testi-ctx {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.hok-testi-stars {
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 2px;
+}
+
+.hok-testi-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--charcoal);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hok-testi-tile-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px dashed var(--ibg);
+}
+
+.hok-testi-src-pill {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.hok-testi-src-pill.is-verified-order {
+  background: #edf7ed;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.hok-testi-src-pill.is-instagram {
+  background: #f3e5f5;
+  color: #7b1fa2;
+  border: 1px solid #e1bee7;
+}
+
+.hok-testi-src-pill.is-collected-directly {
+  background: var(--cb);
+  color: var(--muted);
+  border: 1px solid var(--ibg);
+}
+
+.hok-testi-hidden-tag {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--terra);
+}
+
+/* Inspector */
+.hok-testi-inspector-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hok-testi-name-grid,
+.hok-testi-location-grid,
+.hok-testi-stars-source-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .hok-testi-name-grid,
+  .hok-testi-location-grid,
+  .hok-testi-stars-source-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hok-testi-order-auth-box {
+  background: var(--cb);
+  border: 1px solid var(--ibg);
+  border-radius: var(--r);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hok-testi-order-input {
+  font-family: monospace;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.hok-testi-order-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--r);
+  font-family: var(--sans);
+  font-size: 11.5px;
+}
+
+.hok-testi-order-status.is-verified {
+  background: #edf7ed;
+  border: 1px solid #c8e6c9;
+  color: #1b5e20;
+}
+
+.hok-testi-order-status.is-unverified {
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  color: #b78103;
+}
+
+.hok-testi-status-icon {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.hok-testi-status-text {
+  flex: 1;
+}
+
+.hok-testi-order-door-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid #81c784;
+  color: #2e7d32;
+  padding: 4px 8px;
+  border-radius: var(--r);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hok-testi-order-door-btn:hover {
+  background: #e8f5e9;
+}
+
+.hok-testi-inspector-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ibg);
+}
+
+.hok-testi-remove-btn {
+  background: none;
+  border: 1px solid var(--terra);
+  color: var(--terra);
+  border-radius: var(--r);
+  padding: 6px 14px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-testi-remove-btn:hover {
+  background: #fdf2f2;
+}

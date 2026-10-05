@@ -1,0 +1,394 @@
+/* =========================================================
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · FEATURED DESIGNERS CSS
+   Spec Section 8.7 (v213)
+========================================================= */
+
+.hok-featured-designers-band {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Words Grid */
+.hok-des-words-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-des-words-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hok-des-mirror-box {
+  background: var(--cb);
+  border: 1px dashed var(--ibg);
+  border-radius: var(--r);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.hok-des-mirror-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.hok-des-reads-as {
+  margin: 0;
+}
+
+/* Links Grid */
+.hok-des-links-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-des-links-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Header Toggles */
+.hok-des-header-toggles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-des-header-toggles-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hok-des-header-toggle-item,
+.hok-des-count-toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--cb);
+  border: 1px solid var(--ibg);
+  border-radius: var(--r);
+  gap: 14px;
+}
+
+.hok-des-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hok-des-toggle-title {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.hok-des-toggle-desc {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Add Slot Header Action */
+.hok-des-add-slot-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--card);
+  color: var(--charcoal);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-des-add-slot-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-pale);
+}
+
+/* Deck Wrapper */
+.hok-des-deck-wrapper {
+  margin-top: 12px;
+}
+
+/* Master Data Door */
+.hok-des-master-door {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--cb);
+  border: 1px solid var(--ibg);
+  border-radius: var(--r);
+  margin-bottom: 6px;
+}
+
+.hok-des-door-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hok-des-door-tag {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.hok-des-door-name {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.hok-des-door-meta {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.hok-des-door-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gold);
+  background: var(--card);
+  border: 1px solid var(--gold-pale);
+  padding: 6px 12px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-des-door-btn:hover {
+  background: var(--gold-pale);
+  border-color: var(--gold);
+}
+
+/* Inspector content */
+.hok-des-inspector-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hok-des-inspector-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ibg);
+}
+
+.hok-des-remove-slot-btn {
+  background: none;
+  border: 1px solid var(--terra);
+  color: var(--terra);
+  border-radius: var(--r);
+  padding: 6px 14px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-des-remove-slot-btn:hover {
+  background: #fdf2f2;
+}
+
+/* Layout Grid */
+.hok-des-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-des-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hok-des-counts-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+@media (max-width: 768px) {
+  .hok-des-counts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Modal */
+.hok-des-picker-modal {
+  background: var(--card);
+  border-radius: 6px;
+  width: 90%;
+  max-width: 560px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.hok-des-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--cb);
+}
+
+.hok-des-modal-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--charcoal);
+  margin: 0 0 3px 0;
+}
+
+.hok-des-modal-sub {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.hok-des-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--muted);
+  padding: 4px;
+}
+
+.hok-des-modal-close-btn:hover {
+  color: var(--charcoal);
+}
+
+.hok-des-modal-search {
+  position: relative;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--ibg);
+  background: var(--card);
+}
+
+.hok-des-modal-search-icon {
+  position: absolute;
+  left: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.hok-des-modal-search-input {
+  padding-left: 34px;
+  width: 100%;
+}
+
+.hok-des-modal-list {
+  padding: 12px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hok-des-modal-empty {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--muted);
+  padding: 20px;
+  text-align: center;
+}
+
+.hok-des-modal-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1px solid var(--ibg);
+  border-radius: var(--r);
+  background: var(--card);
+  transition: all 0.15s ease;
+}
+
+.hok-des-modal-item:hover {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.hok-des-modal-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hok-des-modal-item-name {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.hok-des-modal-item-sub {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.hok-des-modal-select-btn {
+  padding: 6px 14px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--charcoal);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.hok-des-modal-select-btn:hover {
+  background: var(--gold);
+}

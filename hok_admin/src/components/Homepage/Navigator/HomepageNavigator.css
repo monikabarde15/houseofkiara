@@ -1,0 +1,361 @@
+/* =========================================================
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · LEFT NAVIGATOR
+   Spec Section 6 & 9.2 (v213)
+========================================================= */
+
+.hok-hp-nav-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  font-family: var(--sans);
+  user-select: none;
+}
+
+/* Header */
+.hok-hp-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 2px;
+  gap: 8px;
+}
+
+.hok-hp-nav-the-page-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.hok-hp-nav-device-switcher {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 2px;
+  gap: 2px;
+}
+
+.hok-hp-nav-device-btn {
+  padding: 2px 6px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hok-hp-nav-device-btn.is-active {
+  background-color: var(--gold-pale);
+  color: var(--charcoal);
+  font-weight: 600;
+}
+
+.hok-hp-nav-collapse-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--muted);
+  font-size: 12px;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hok-hp-nav-collapse-btn:hover {
+  border-color: var(--gold);
+  color: var(--charcoal);
+  background-color: var(--gold-pale);
+}
+
+/* Chrome Strips */
+.hok-hp-chrome-strip {
+  background-color: var(--ibg);
+  border: 1px dashed var(--border);
+  border-radius: var(--r);
+  padding: 6px 10px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hok-hp-chrome-strip:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background-color: var(--gold-pale);
+}
+
+.hok-hp-chrome-tag {
+  font-size: 8.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-l);
+}
+
+/* Bands List */
+.hok-hp-bands-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Band Card Row */
+.hok-hp-band-row-card {
+  background-color: var(--card);
+  border: 1px solid var(--cb);
+  border-radius: var(--r);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  position: relative;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hok-hp-band-row-card:hover {
+  border-color: var(--gold-l);
+}
+
+.hok-hp-band-row-card.is-selected {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold-pale);
+}
+
+.hok-hp-band-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hok-hp-band-label-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hok-hp-band-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  width: 14px;
+}
+
+.hok-hp-band-row-card.is-selected .hok-hp-band-num {
+  color: var(--gold);
+}
+
+.hok-hp-band-title-text {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--charcoal);
+}
+
+.hok-hp-band-row-card.is-hidden .hok-hp-band-title-text {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+/* Issue Dots */
+.hok-hp-issue-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.hok-hp-issue-dot.is-warn {
+  background-color: var(--terra);
+}
+
+.hok-hp-issue-dot.is-soon {
+  background-color: var(--gold);
+}
+
+.hok-hp-issue-dot.is-info {
+  background-color: var(--muted-l);
+}
+
+/* Reorder Arrows on Band Card */
+.hok-hp-reorder-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.hok-hp-band-row-card:hover .hok-hp-reorder-group,
+.hok-hp-band-row-card.is-selected .hok-hp-reorder-group {
+  opacity: 1;
+}
+
+.hok-hp-band-arrow-btn {
+  background: transparent;
+  border: none;
+  font-size: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 1px 3px;
+  line-height: 1;
+}
+
+.hok-hp-band-arrow-btn:hover:not(:disabled) {
+  color: var(--gold);
+}
+
+.hok-hp-band-arrow-btn:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+/* Structural Sketch Previews inside Band Cards (Spec 9.2) */
+.hok-hp-sketch-box {
+  background-color: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 6px;
+  font-size: 8px;
+  color: var(--muted);
+  min-height: 38px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+}
+
+.hok-hp-sketch-box.is-hatched {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--canvas),
+    var(--canvas) 6px,
+    #efe9e0 6px,
+    #efe9e0 12px
+  );
+  text-align: center;
+  font-style: italic;
+  font-size: 8.5px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hok-hp-sketch-headline {
+  font-family: var(--serif);
+  font-size: 9px;
+  color: var(--charcoal);
+}
+
+.hok-hp-sketch-gold {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.hok-hp-sketch-pills-row {
+  display: flex;
+  gap: 3px;
+}
+
+.hok-hp-sketch-pill {
+  background-color: var(--gold-pale);
+  border-radius: 2px;
+  padding: 1px 3px;
+  font-size: 7px;
+  color: var(--charcoal);
+}
+
+.hok-hp-sketch-tiles-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+}
+
+.hok-hp-sketch-tile {
+  height: 14px;
+  background-color: var(--card);
+  border: 1px solid var(--cb);
+  border-radius: 1px;
+}
+
+/* Footnote */
+.hok-hp-nav-footnote {
+  padding: 8px 4px;
+  font-size: 9.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.hok-hp-nav-footnote-door {
+  color: var(--gold);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Collapsed Focus Mode Spine (46px) */
+.hok-hp-spine-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 46px;
+  padding: 4px 0;
+}
+
+.hok-hp-spine-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.hok-hp-spine-btn:hover {
+  border-color: var(--gold-l);
+  color: var(--charcoal);
+}
+
+.hok-hp-spine-btn.is-selected {
+  border-color: var(--gold);
+  background-color: var(--gold-pale);
+  color: var(--charcoal);
+  box-shadow: 0 0 0 2px var(--gold);
+}
+
+.hok-hp-spine-dot {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
