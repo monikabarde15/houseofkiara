@@ -15,6 +15,7 @@ import {
   getMyOrderById,
   placeOrder,
   cancelOrder,
+  syncCart,
 } from "../controllers/customerAuthController.js";
 import { requireCustomerAuth } from "../middleware/authMiddleware.js";
 
@@ -39,6 +40,9 @@ router.get("/me", requireCustomerAuth, getMe);
 // Customer Wishlist
 router.post("/wishlist/:productId", requireCustomerAuth, toggleWishlist);
 router.get("/wishlist", requireCustomerAuth, getWishlist);
+
+// Customer Cart
+router.put("/cart", requireCustomerAuth, syncCart);
 
 // Customer Orders
 router.get("/orders", requireCustomerAuth, getMyOrders);

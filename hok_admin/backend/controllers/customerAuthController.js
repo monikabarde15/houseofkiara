@@ -408,6 +408,25 @@ export const getWishlist = async (req, res) => {
   }
 };
 
+export const syncCart = async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.user._id);
+    if (!customer)
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found" });
+
+    if (Array.isArray(req.body.cart)) {
+      customer.cart = req.body.cart;
+      await customer.save();
+    }
+    
+    res.json({ success: true, data: customer.cart });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 export const getMyOrders = async (req, res) => {
   try {
     const customerId = req.user.customerId;

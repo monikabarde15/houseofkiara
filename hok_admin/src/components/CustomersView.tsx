@@ -1294,7 +1294,7 @@ export default function CustomersView({
                             </span>
                           </td>
                           <td className="px-4 py-4 font-semibold text-stone-900">
-                            ₹{o.amount.toLocaleString("en-IN")}
+                            ₹{o.amount ? o.amount.toLocaleString("en-IN") : "0"}
                           </td>
                           <td className="px-4 py-4 text-stone-500">
                             {o.mode === "Rental" &&
@@ -1366,11 +1366,12 @@ export default function CustomersView({
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                     {products
-                      .filter((p) =>
-                        editingCustomer.wishlist?.includes(
-                          p.productId || p.id || "",
-                        ),
-                      )
+                      .filter((p) => {
+                        const w = editingCustomer.wishlist || [];
+                        return (p._id && w.includes(p._id)) ||
+                               (p.productId && w.includes(p.productId)) ||
+                               (p.id && w.includes(p.id));
+                      })
                       .map((p) => (
                         <div
                           key={p.id}
@@ -1424,12 +1425,20 @@ export default function CustomersView({
               <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
                 <div className="px-5 py-4 border-b border-stone-100">
                   <h3 className="font-serif font-bold text-stone-900 text-sm">
-                    Cart — {editingCustomer?.name || "New Customer"} (0 items)
+                    Cart — {editingCustomer?.name || "New Customer"} (
+                    {editingCustomer?.cart?.length || 0} item
+                    {(editingCustomer?.cart?.length || 0) === 1 ? "" : "s"})
                   </h3>
                 </div>
-                <div className="p-8 text-center text-stone-400">
-                  Her cart is empty right now.
-                </div>
+                {(!editingCustomer?.cart || editingCustomer.cart.length === 0) ? (
+                  <div className="p-8 text-center text-stone-400">
+                    Her cart is empty right now.
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-stone-600 font-medium">
+                    She has {editingCustomer.cart.length} item(s) waiting in her cart!
+                  </div>
+                )}
                 <div className="px-5 py-3 bg-stone-50 text-xs text-stone-500">
                   Opens a chat with a pre-filled note about what's waiting in
                   her bag — nothing is sent automatically.
@@ -1457,14 +1466,82 @@ export default function CustomersView({
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td
-                          colSpan={7}
-                          className="px-5 py-6 text-center text-stone-400"
-                        >
-                          Nothing in the cart.
-                        </td>
-                      </tr>
+                      {!editingCustomer?.cart || editingCustomer.cart.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={7}
+                            className="px-5 py-6 text-center text-stone-400"
+                          >
+                            Nothing in the cart.
+                          </td>
+                        </tr>
+                      ) : (
+                        editingCustomer.cart.map((item: any, idx: number) => {
+                          const p = item.product || {};
+                          return (
+                            <tr
+                              key={item.id + idx}
+                              className="border-b border-stone-100 last:border-0 hover:bg-stone-50/50"
+                            >
+                              <td className="px-5 py-4">
+                                <div className="flex items-center gap-3">
+                                  {(p.images && p.images[0]) || (p.image && p.image[0]) || (typeof p.image === 'string' && p.image) ? (
+                                    <img
+                                      src={(p.images && p.images[0]) || (p.image && p.image[0]) || p.image}
+                                      alt={p.name}
+                                      className="w-10 h-12 object-cover rounded-md border border-stone-200"
+                                    />
+                                  ) : (
+                                    <div className="w-10 h-12 bg-stone-100 rounded-md border border-stone-200 flex items-center justify-center">
+                                      <span className="text-[8px] text-stone-400">No Img</span>
+                                    </div>
+                                  )}
+                                  <div>
+                                    <div className="font-semibold text-stone-900">
+                                      {p.name || "Unknown Item"}
+                                    </div>
+                                    <div className="text-stone-500 text-[11px]">
+                                      {p.productId || p.id || ""}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-5 py-4 text-stone-600 capitalize">
+                                {item.type || "Rental"}
+                              </td>
+                              <td className="px-5 py-4 text-stone-600">
+                                {item.booking?.size || "—"}
+                              </td>
+                              <td className="px-5 py-4 text-stone-600">
+                                {item.booking?.deliveryDate
+                                  ? `${new Date(
+                                      item.booking.deliveryDate,
+                                    ).toLocaleDateString("en-GB", {
+                                      day: "numeric",
+                                      month: "short",
+                                    })} - ${new Date(
+                                      item.booking.returnDate,
+                                    ).toLocaleDateString("en-GB", {
+                                      day: "numeric",
+                                      month: "short",
+                                    })}`
+                                  : "—"}
+                              </td>
+                              <td className="px-5 py-4 font-medium text-stone-900">
+                                ₹{(item.price || 0).toLocaleString("en-IN")}
+                              </td>
+                              <td className="px-5 py-4 text-stone-600">
+                                ₹{(p.rentalDeposit || 0).toLocaleString("en-IN")}
+                              </td>
+                              <td className="px-5 py-4">
+                                <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700">
+                                  Available
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
                     </tbody>
                   </table>
                 </div>

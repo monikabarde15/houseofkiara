@@ -87,6 +87,7 @@ const useCartStore = create(
               wishlistStore.toggleWishlist(productId);
             }
           });
+          syncCartWithBackend(get().items);
         }
 
         return added;
@@ -96,14 +97,34 @@ const useCartStore = create(
         set((state) => ({
           items: state.items.filter((item) => item.id !== itemId),
         }));
+        syncCartWithBackend(get().items);
       },
 
-      clearCart: () => set({ items: [] }),
+      clearCart: () => {
+        set({ items: [] });
+        syncCartWithBackend([]);
+      },
     }),
     {
       name: "hok-cart",
     },
   ),
 );
+
+const syncCartWithBackend = (items) => {
+  import("./authStore").then((m) => {
+    const { token, isAuthenticated } = m.default.getState();
+    if (isAuthenticated && token) {
+      fetch("/api/customer/auth/cart", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ cart: items }),
+      }).catch(console.error);
+    }
+  });
+};
 
 export default useCartStore;
