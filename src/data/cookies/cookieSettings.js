@@ -1,9 +1,10 @@
 /**
- * House of Kaira - Privacy Policy Admin Settings & Tokens
- * Section 11.3 & Appendix A of Build Specification v2.0
+ * House of Kaira - Cookie Policy Admin Settings & Tokens
+ * Section 10.3 & Appendix A of Build Specification v1.0
+ * Includes confirmed values from Change Note 1
  */
 
-export const PRIVACY_SETTINGS = {
+export const COOKIE_SETTINGS = {
   // Site & Support Settings
   support_whatsapp: "+91 93401 39300",
   support_whatsapp_raw: "919340139300",
@@ -28,30 +29,26 @@ export const PRIVACY_SETTINGS = {
   trade_name: "Sebshine Apparels",
   business_address: "24, Dadi Dham (Basement), Joy Builders Colony, Old Palasiya, Indore, Madhya Pradesh 452001",
 
-  // Document Metadata (Updated per Change Note 1)
-  privacy_version: "Version 1.0",
-  privacy_effective: "7 October 2026",
-  privacy_updated: "30 September 2026",
+  // Document Metadata
+  cookie_version: "Version 1.0",
+  cookie_effective: "7 October 2026",
+  cookie_updated: "30 September 2026",
 
   // Legal & Retention Durations (Confirmed)
   age_min: "18 years",
-  courier_partners: "Blue Dart and Delhivery",
-  reg_keep: "180 days",
-  log_keep: "180 days",
-  processing_log_keep: "one year",
-  records_keep: "eight years",
   claims_keep: "three years",
   schedule_langs: "22",
-  annual_notice: "once a year",
-  duty_penalty: "₹10,000",
+  chrome_cap: "400 days",
+  safari_cap: "7 days",
 
-  // Retention Durations (Awaiting confirmation - placeholders configured)
-  short_keep: "90 days",
-  recording_keep: "six months",
-  inactive_after: "three years",
-  inactive_notice: "48 hours",
+  // Retention Durations & Cookie Lifetimes (Configured / Awaiting final check)
   analytics_keep: "14 months",
-  backup_cycle: "30 days"
+  signin_life: "30 days",
+  consent_life: "12 months",
+  ga_cookie_life: "13 months",
+  audit_freq: "once a year",
+  host_cookie_names: "[Names to be listed after the pre-launch cookie check]",
+  host_cookie_life: "[Lifetimes to be listed after the pre-launch cookie check]"
 };
 
-export default PRIVACY_SETTINGS;
+export default COOKIE_SETTINGS;

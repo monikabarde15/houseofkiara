@@ -21,6 +21,7 @@ import promotionRouter from "./promotionRoutes.js";
 import notificationRouter from "./notificationRoutes.js";
 import siteSettingsRouter from "./siteSettingsRoutes.js";
 import categoryRouter from "./categoryRoutes.js";
+import consentRouter from "./consentRoutes.js";
 
 const router = express.Router();
 
@@ -60,5 +61,6 @@ router.use(orderRouter);
 router.use(uploadRouter);
 router.use(messageRouter);
 router.use(customerRouter);
+router.use(consentRouter);
 
 export default router;

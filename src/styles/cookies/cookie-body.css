@@ -1,0 +1,573 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - COOKIE POLICY MAIN BODY & CLAUSE STYLES
+   Specification: v1.0 (hok_cookie_v4) · Sections 4, 5.5 – 5.10
+   ========================================================================== */
+
+/* Main Content Container */
+.cookie-policy-body-container {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 56px 40px 40px 40px;
+  width: 100%;
+}
+
+/* 5.5 Introduction Paragraph */
+.cookie-intro-section {
+  margin-bottom: 44px;
+}
+
+.cookie-intro-paragraph {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--hok-body-brown);
+  max-width: 800px;
+  margin: 0;
+}
+
+/* 5.6 The Essentials Section */
+.cookie-essentials-section {
+  margin-bottom: 54px;
+}
+
+.cookie-essentials-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  color: var(--hok-gold-deep);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.cookie-essentials-list {
+  border-top: 1px solid var(--hok-charcoal);
+  display: flex;
+  flex-direction: column;
+}
+
+.cookie-essentials-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 17px 4px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--hok-border);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transition-normal), padding var(--transition-normal);
+  outline: none;
+}
+
+.cookie-essentials-row:hover {
+  background-color: var(--hok-cream);
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.cookie-essentials-main-col {
+  flex: 1;
+  min-width: 0;
+  padding-right: 20px;
+}
+
+.cookie-essentials-text {
+  font-family: var(--font-heading);
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--hok-charcoal);
+  display: block;
+}
+
+.cookie-essentials-ref {
+  font-family: var(--font-body);
+  font-size: 9.5px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: var(--hok-gold-deep);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cookie-essentials-ref-desktop {
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.cookie-essentials-ref-mobile {
+  display: none;
+  margin-top: 6px;
+}
+
+.cookie-essentials-chevron-col {
+  width: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cookie-essentials-chevron {
+  color: var(--hok-chevron-sand);
+  transition: transform var(--transition-normal), color var(--transition-normal);
+}
+
+.cookie-essentials-row:hover .cookie-essentials-chevron {
+  color: var(--hok-gold);
+  transform: translateX(2px);
+}
+
+.cookie-essentials-note {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.75;
+  color: var(--hok-muted);
+  margin: 14px 0 0 0;
+}
+
+/* 5.7 Part Header */
+.cookie-part-section {
+  margin-top: 76px;
+}
+
+.cookie-part-section:first-child {
+  margin-top: 24px;
+}
+
+.cookie-part-header {
+  margin-bottom: 24px;
+}
+
+.cookie-part-range {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  color: var(--hok-gold-deep);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.cookie-part-title {
+  font-family: var(--font-heading);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.012em;
+  color: var(--hok-charcoal);
+  margin: 0 0 10px 0;
+}
+
+.cookie-part-title-italic {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--hok-gold);
+}
+
+.cookie-part-description {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--hok-muted);
+  max-width: 640px;
+  margin: 0 0 22px 0;
+}
+
+.cookie-part-rule {
+  width: 100%;
+  height: 1px;
+  background-color: var(--hok-charcoal);
+  margin-bottom: 0;
+}
+
+/* 5.8 Clause Layout */
+.cookie-clause-container {
+  padding: 32px 0 28px 0;
+  border-bottom: 1px solid var(--hok-border);
+}
+
+.cookie-clause-header-row {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 16px;
+}
+
+.cookie-clause-num-col {
+  width: 56px;
+  flex-shrink: 0;
+}
+
+.cookie-clause-number {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--hok-gold);
+}
+
+.cookie-clause-title-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.cookie-clause-title {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: var(--hok-charcoal);
+  margin: 0;
+}
+
+.cookie-clause-actions-col {
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+.cookie-clause-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 6px 0;
+  color: var(--hok-muted);
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  font-weight: 400;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.cookie-clause-copy-btn:hover {
+  color: var(--hok-charcoal);
+}
+
+.cookie-clause-copy-btn-mobile {
+  display: none;
+}
+
+/* Sub-clauses Layout */
+.cookie-subclause-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 3px 0;
+  margin-bottom: 10px;
+}
+
+.cookie-subclause-row:last-child {
+  margin-bottom: 0;
+}
+
+.cookie-subclause-num-col {
+  width: 56px;
+  flex-shrink: 0;
+  padding-top: 6px;
+}
+
+.cookie-subclause-num-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.05em;
+  color: var(--hok-gold-deep);
+  border-bottom: 1px dotted var(--hok-gold-light);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.cookie-subclause-num-btn:hover {
+  color: var(--hok-charcoal);
+  border-bottom: 1px solid var(--hok-gold);
+}
+
+.cookie-subclause-text-col {
+  flex: 1;
+  min-width: 0;
+  max-width: 680px;
+}
+
+.cookie-subclause-paragraph {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--hok-body-brown);
+  margin: 0;
+}
+
+.cookie-subclause-paragraph b,
+.cookie-subclause-paragraph strong {
+  font-weight: 500;
+  color: var(--hok-charcoal);
+}
+
+/* Lettered Lists */
+.cookie-lettered-list {
+  list-style: none;
+  margin: 8px 0 0 0;
+  padding: 0;
+}
+
+.cookie-lettered-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 3px 0;
+}
+
+.cookie-list-letter {
+  width: 30px;
+  flex-shrink: 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--hok-gold-deep);
+  padding-top: 2px;
+}
+
+.cookie-list-text {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--hok-body-brown);
+}
+
+/* 5.8 Clause 4 Definitions List */
+.cookie-definitions-container {
+  margin: 14px 0 18px 0;
+}
+
+.cookie-definitions-list {
+  border-top: 1px solid var(--hok-border);
+  margin: 0;
+  padding: 0;
+}
+
+.cookie-definition-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hok-border-light);
+}
+
+.cookie-definition-term {
+  width: 168px;
+  flex-shrink: 0;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--hok-charcoal);
+  margin: 0;
+}
+
+.cookie-definition-meaning {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--hok-body-brown);
+  margin: 0;
+}
+
+/* 5.9 Cookie Rows (Clauses 11, 12, 13, 15) */
+.cookie-row-block-container {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 26px;
+}
+
+.cookie-row-block-container:last-child {
+  margin-bottom: 0;
+}
+
+.cookie-row-num-col {
+  width: 56px;
+  flex-shrink: 0;
+  padding-top: 8px;
+}
+
+.cookie-row-body-col {
+  flex: 1;
+  min-width: 0;
+  max-width: 680px;
+}
+
+.cookie-row-title {
+  font-family: var(--font-heading);
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.003em;
+  color: var(--hok-charcoal);
+  margin: 0 0 10px 0;
+}
+
+.cookie-row-table {
+  border-top: 1px solid var(--hok-border);
+  margin: 0;
+  padding: 0;
+}
+
+.cookie-row-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 9px 0 10px 0;
+  border-bottom: 1px solid var(--hok-border-light);
+}
+
+.cookie-row-label {
+  width: 118px;
+  flex-shrink: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: var(--hok-gold-deep);
+  padding-top: 4px;
+}
+
+.cookie-row-text {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--hok-body-brown);
+  margin: 0;
+}
+
+/* Consent value starting with "Needed" highlighted in Gold deep */
+.cookie-row-consent-needed {
+  color: var(--hok-gold-deep) !important;
+  font-weight: 500;
+}
+
+/* Tablet & Mobile Responsive */
+@media (max-width: 1024px) {
+  .cookie-policy-body-container {
+    padding: 48px 40px 40px 40px;
+  }
+}
+
+@media (max-width: 760px) {
+  .cookie-policy-body-container {
+    padding: 36px 18px 24px 18px;
+  }
+
+  .cookie-intro-paragraph {
+    font-size: 19px;
+  }
+
+  .cookie-essentials-row {
+    padding: 15px 2px;
+  }
+
+  .cookie-essentials-text {
+    font-size: 18px;
+  }
+
+  .cookie-essentials-ref-desktop {
+    display: none;
+  }
+
+  .cookie-essentials-ref-mobile {
+    display: block;
+  }
+
+  .cookie-part-section {
+    margin-top: 54px;
+  }
+
+  .cookie-part-title {
+    font-size: 30px;
+  }
+
+  .cookie-clause-container {
+    padding: 26px 0 22px 0;
+  }
+
+  .cookie-clause-num-col {
+    width: 40px;
+  }
+
+  .cookie-clause-number {
+    font-size: 19px;
+  }
+
+  .cookie-clause-title {
+    font-size: 22px;
+  }
+
+  .cookie-clause-copy-btn-desktop {
+    display: none;
+  }
+
+  .cookie-clause-copy-btn-mobile {
+    display: inline-flex;
+    margin-top: 6px;
+  }
+
+  .cookie-subclause-num-col {
+    width: 40px;
+  }
+
+  .cookie-subclause-paragraph,
+  .cookie-list-text {
+    font-size: 14.5px;
+    line-height: 1.85;
+  }
+
+  .cookie-list-letter {
+    width: 26px;
+  }
+
+  .cookie-definition-row {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .cookie-definition-term {
+    width: 100%;
+  }
+
+  .cookie-row-num-col {
+    width: 40px;
+  }
+
+  .cookie-row-title {
+    font-size: 19px;
+  }
+
+  .cookie-row-item {
+    flex-direction: column;
+    gap: 1px;
+    padding: 9px 0;
+  }
+
+  .cookie-row-label {
+    width: 100%;
+    padding-top: 0;
+  }
+}

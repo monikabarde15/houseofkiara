@@ -1,0 +1,289 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - COOKIE POLICY A4 PRINT STYLESHEET
+   Specification: v1.0 (hok_cookie_v4) · Section 9
+   ========================================================================== */
+
+/* Screen default: print container is hidden */
+#cookiePrintDoc {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+
+  html, body {
+    background: #FFFFFF !important;
+    color: #1A1612 !important;
+    font-size: 11pt;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide entire application chrome & on-screen Cookie Policy elements */
+  header,
+  footer,
+  .header,
+  .footer,
+  .floating-whatsapp-container,
+  .cookie-toast,
+  #chakra-toast-portal {
+    display: none !important;
+  }
+
+  .cookie-page > *:not(#cookiePrintDoc) {
+    display: none !important;
+  }
+
+  /* Show dedicated clean print document */
+  #cookiePrintDoc {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 760px !important;
+    margin: 0 auto !important;
+    background: #FFFFFF !important;
+    color: #1A1612 !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  }
+
+  /* Print Header */
+  .cookie-print-header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #1A1612;
+    padding-bottom: 14px;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .cookie-print-title {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 34px !important;
+    font-weight: 400 !important;
+    line-height: 1.1 !important;
+    color: #1A1612 !important;
+    margin: 0 0 4px 0 !important;
+  }
+
+  .cookie-print-meta {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+    color: #6B6259 !important;
+    margin: 0 0 12px 0 !important;
+  }
+
+  .cookie-print-intro {
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+    color: #4F463E !important;
+    margin: 0 !important;
+  }
+
+  /* Part Header */
+  .cookie-print-part-block {
+    margin-top: 24px;
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
+  .cookie-print-part-header {
+    margin-top: 20px;
+    margin-bottom: 12px;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .cookie-print-part-range {
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.2em !important;
+    color: #6B6259 !important;
+    text-transform: uppercase !important;
+    display: block !important;
+    margin-bottom: 4px !important;
+  }
+
+  .cookie-print-part-title {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 24px !important;
+    font-weight: 400 !important;
+    line-height: 1.2 !important;
+    color: #1A1612 !important;
+    margin: 0 0 6px 0 !important;
+  }
+
+  .cookie-print-part-line {
+    width: 100%;
+    height: 1px;
+    background-color: #1A1612;
+    margin-bottom: 10px;
+  }
+
+  /* Clause Block */
+  .cookie-print-clause-item {
+    padding: 10px 0 6px 0;
+    border-bottom: 1px solid #E8E0D4;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .cookie-print-clause-title {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 17px !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+    color: #1A1612 !important;
+    margin: 0 0 8px 0 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Subclause Layout */
+  .cookie-print-subclause-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin-bottom: 4px;
+    font-size: 11.5px !important;
+    line-height: 1.6 !important;
+    color: #4F463E !important;
+  }
+
+  .cookie-print-sub-num {
+    width: 40px;
+    flex-shrink: 0;
+    font-weight: 500;
+    color: #6B6259;
+  }
+
+  .cookie-print-sub-content {
+    flex: 1;
+  }
+
+  .cookie-print-sub-paragraph {
+    margin: 0;
+    font-size: 11.5px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Lettered Lists */
+  .cookie-print-lettered-list {
+    margin-top: 4px;
+  }
+
+  .cookie-print-lettered-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2px;
+  }
+
+  .cookie-print-letter {
+    width: 24px;
+    flex-shrink: 0;
+    color: #6B6259;
+  }
+
+  .cookie-print-letter-text {
+    flex: 1;
+  }
+
+  /* Definitions */
+  .cookie-print-def-table {
+    margin: 6px 0 8px 40px;
+    border-top: 1px solid #E8E0D4;
+  }
+
+  .cookie-print-def-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid #F0EAE0;
+  }
+
+  .cookie-print-def-term {
+    width: 130px;
+    flex-shrink: 0;
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #1A1612 !important;
+  }
+
+  .cookie-print-def-meaning {
+    flex: 1;
+    font-size: 11.5px !important;
+    line-height: 1.55 !important;
+  }
+
+  /* Cookie Rows (Clauses 11, 12, 13, 15) */
+  .cookie-print-row-block {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
+  .cookie-print-row-head {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-bottom: 3px;
+  }
+
+  .cookie-print-row-num {
+    width: 40px;
+    flex-shrink: 0;
+    font-weight: 500;
+    color: #6B6259;
+    font-size: 11.5px;
+  }
+
+  .cookie-print-row-title {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    color: #1A1612 !important;
+    margin: 0;
+  }
+
+  .cookie-print-row-table {
+    margin-left: 40px;
+    border-top: 1px solid #E8E0D4;
+  }
+
+  .cookie-print-row-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 3px 0;
+    border-bottom: 1px solid #F0EAE0;
+    font-size: 11.5px !important;
+    line-height: 1.55 !important;
+  }
+
+  .cookie-print-row-label {
+    width: 96px;
+    flex-shrink: 0;
+    font-size: 9.5px !important;
+    color: #6B6259 !important;
+    font-weight: 600 !important;
+  }
+
+  .cookie-print-row-text {
+    flex: 1;
+  }
+
+  /* Strip underlines and link colors */
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+}

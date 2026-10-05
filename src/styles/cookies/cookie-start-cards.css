@@ -1,0 +1,139 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - COOKIE POLICY WHERE TO START CARDS
+   Specification: v1.0 (hok_cookie_v4) · Section 5.3
+   ========================================================================== */
+
+.cookie-start-cards-region {
+  position: relative;
+  z-index: var(--z-start-cards);
+  max-width: 880px;
+  margin: -44px auto 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.cookie-start-cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: var(--hok-border);
+  gap: 1px;
+  border: 1px solid var(--hok-border);
+  border-radius: 0;
+  box-shadow: var(--shadow-cards);
+  overflow: hidden;
+}
+
+.cookie-start-card {
+  background-color: var(--hok-warm-white);
+  padding: 22px 26px 20px 26px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  transition: background-color var(--transition-card);
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cookie-start-card:focus-visible {
+  outline: 2px solid var(--hok-gold);
+  outline-offset: -2px;
+}
+
+.cookie-card-tag {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--hok-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.cookie-card-main-row {
+  display: block;
+}
+
+.cookie-card-title {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--hok-charcoal);
+  margin: 0 0 10px 0;
+  transition: color var(--transition-card);
+}
+
+.cookie-card-range {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--hok-gold-deep);
+  text-transform: uppercase;
+  display: block;
+}
+
+.cookie-card-hover-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--hok-gold);
+  opacity: 0;
+  transition: opacity var(--transition-card);
+}
+
+/* Hover & Active States */
+.cookie-start-card:hover {
+  background-color: var(--hok-cream);
+}
+
+.cookie-start-card:hover .cookie-card-title {
+  color: var(--hok-gold-deep);
+}
+
+.cookie-start-card:hover .cookie-card-hover-line {
+  opacity: 1;
+}
+
+/* Tablet & Mobile Responsive (Section 4.4 Phone <=760px) */
+@media (max-width: 860px) {
+  .cookie-start-cards-container {
+    grid-template-columns: 1fr;
+    gap: 1px;
+  }
+
+  .cookie-start-cards-region {
+    margin-top: -36px;
+    padding: 0 18px;
+  }
+
+  .cookie-start-card {
+    padding: 14px 16px;
+  }
+
+  .cookie-card-tag {
+    margin-bottom: 4px;
+  }
+
+  .cookie-card-main-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .cookie-card-title {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .cookie-card-range {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+}

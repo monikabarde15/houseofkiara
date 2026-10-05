@@ -86,17 +86,36 @@ const DesktopFooter = () => {
 
       {/* Policy Links Row */}
       <div className="hok-footer-policy-row">
-        {desktopPolicyLinks.map((link, index) => (
-          <a
-            href={link.path}
-            key={link.label}
-            className={`hok-footer-policy-link ${
-              index === desktopPolicyLinks.length - 1 ? "last" : ""
-            }`}
-          >
-            {link.label}
-          </a>
-        ))}
+        {desktopPolicyLinks.map((link, index) => {
+          const isLast = index === desktopPolicyLinks.length - 1;
+          if (link.isButton) {
+            return (
+              <button
+                type="button"
+                key={link.label}
+                className={`hok-footer-policy-link ${isLast ? "last" : ""}`}
+                style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer' }}
+                onClick={() => {
+                  if (typeof window !== 'undefined' && window.HOK_CONSENT) {
+                    window.HOK_CONSENT.open();
+                  }
+                }}
+              >
+                {link.label}
+              </button>
+            );
+          }
+
+          return (
+            <a
+              href={link.path}
+              key={link.label}
+              className={`hok-footer-policy-link ${isLast ? "last" : ""}`}
+            >
+              {link.label}
+            </a>
+          );
+        })}
       </div>
 
       {/* Copyright Bar */}

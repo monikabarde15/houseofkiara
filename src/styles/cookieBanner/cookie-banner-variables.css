@@ -1,0 +1,110 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - COOKIE BANNER DESIGN TOKENS & VARIABLES
+   Specification: v1.0 (hok_cookie_banner_spec_v1.docx) · Section 4
+   ========================================================================== */
+
+:root {
+  /* 4.1 Colours */
+  --cb-charcoal: #1A1612;
+  --cb-warm-white: #FFFEFB;
+  --cb-cream: #FAF7F2;
+  --cb-gold: #C9A96E;
+  --cb-gold-light: #E8D5B0;
+  --cb-gold-pale: #F5EDD8;
+  --cb-gold-deep: #9C7C45;
+  --cb-body: #4F463E;
+  --cb-muted: #8A7E72;
+  --cb-line: #E8E0D4;
+  --cb-line-soft: #F0EAE0;
+  --cb-hover-charcoal: #2E2722;
+  --cb-whatsapp: #25D366;
+  --cb-whatsapp-hover: #1FB859;
+
+  /* Typography */
+  --cb-font-heading: 'Cormorant Garamond', Georgia, serif;
+  --cb-font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Dimensions & Shapes */
+  --cb-card-width: 404px;
+  --cb-radius: 1px;
+  --cb-keyline-inset: 5px;
+
+  /* Stacking & Shadows */
+  --cb-z-index: 400;
+  --cb-shadow-desktop: 0 2px 6px rgba(26, 22, 18, 0.04), 0 22px 48px rgba(26, 22, 18, 0.13);
+  --cb-shadow-phone: 0 -16px 40px rgba(26, 22, 18, 0.16);
+  --cb-shadow-note: 0 16px 40px rgba(26, 22, 18, 0.22);
+  --cb-shadow-knob: 0 1px 3px rgba(26, 22, 18, 0.22);
+
+  /* Motion & Easing */
+  --cb-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --cb-transition-card: 550ms var(--cb-ease);
+  --cb-transition-switch: 250ms var(--cb-ease);
+  --cb-transition-hover: 200ms linear;
+}
+
+/* Global Focus Outline for Banner Controls (Section 4.1 & 14) */
+.cb-focusable:focus-visible {
+  outline: 2px solid var(--cb-gold) !important;
+  outline-offset: 3px !important;
+}
+
+/* 6.3 Accessible Toggle Switch */
+.cb-switch-track {
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: background-color 250ms linear;
+  background-color: var(--cb-line);
+}
+
+.cb-switch-track.cb-switch-on {
+  background-color: var(--cb-charcoal);
+}
+
+.cb-switch-track:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.cb-switch-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--cb-warm-white);
+  box-shadow: var(--cb-shadow-knob);
+  transition: transform var(--cb-transition-switch), background-color var(--cb-transition-switch);
+}
+
+.cb-switch-knob.cb-knob-on {
+  transform: translateX(18px);
+  background-color: var(--cb-gold-pale);
+}
+
+.cb-switch-knob.cb-knob-off {
+  transform: translateX(0);
+  background-color: var(--cb-warm-white);
+}
+
+/* Reduced Motion Override (Section 4.5 & 14) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

@@ -89,7 +89,8 @@ export const desktopPolicyLinks = [
   { label: "Refund & Cancellation Policy", path: "/refunds" },
   { label: "Deposit Policy", path: "/deposit" },
   { label: "Care, Cleaning & Damage Policy", path: "/care-damage" },
-  { label: "Cookie Policy", path: "/cookie" },
+  { label: "Cookie Policy", path: "/cookies" },
+  { label: "Cookie settings", isButton: true, action: "open-cookie-settings" },
 ];
 
 export const mobilePolicyLinks = [
@@ -98,7 +99,8 @@ export const mobilePolicyLinks = [
   { label: "Refund Policy", path: "/refunds" },
   { label: "Deposit Policy", path: "/deposit" },
   { label: "Care & Damage Policy", path: "/care-damage" },
-  { label: "Cookie Policy", path: "/cookie" },
+  { label: "Cookie Policy", path: "/cookies" },
+  { label: "Cookie settings", isButton: true, action: "open-cookie-settings" },
 ];
 
 // Backwards compatibility defaults

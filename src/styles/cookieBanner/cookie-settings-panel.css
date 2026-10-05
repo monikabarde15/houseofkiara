@@ -1,0 +1,285 @@
+/* ==========================================================================
+   HOUSE OF KAIRA - COOKIE SETTINGS PANEL STYLES
+   Specification: v1.0 (hok_cookie_banner_spec_v1.docx) · Section 6
+   ========================================================================== */
+
+.cb-settings-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-height: min(720px, calc(100vh - 64px));
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+/* 6.1 Scrolling Area */
+.cb-settings-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 28px 4px 28px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cb-line) transparent;
+}
+
+.cb-settings-scroll-area::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cb-settings-scroll-area::-webkit-scrollbar-thumb {
+  background-color: var(--cb-line);
+  border-radius: 2px;
+}
+
+/* Back Button */
+.cb-back-btn-row {
+  margin-bottom: 14px;
+}
+
+.cb-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--cb-muted);
+  font-family: var(--cb-font-body);
+  font-size: 12px;
+  font-weight: 400;
+  transition: color var(--cb-transition-hover);
+}
+
+.cb-back-btn:hover {
+  color: var(--cb-charcoal);
+}
+
+/* Saved Date Line */
+.cb-saved-date-line {
+  font-family: var(--cb-font-body);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--cb-gold-deep);
+  margin: 10px 0 0 0;
+}
+
+/* Kinds List (Section 6.1 & 6.2) */
+.cb-kinds-list {
+  margin-top: 20px;
+  border-top: 1px solid var(--cb-charcoal);
+}
+
+.cb-kind-item-block {
+  padding: 16px 0 14px 0;
+  border-bottom: 1px solid var(--cb-line);
+}
+
+.cb-kind-main-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.cb-kind-info-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.cb-kind-name {
+  font-family: var(--cb-font-heading);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--cb-charcoal);
+  margin: 0 0 4px 0;
+}
+
+.cb-kind-desc {
+  font-family: var(--cb-font-body);
+  font-size: 12.5px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--cb-body);
+  margin: 0;
+}
+
+.cb-kind-control-col {
+  flex-shrink: 0;
+  padding-top: 3px;
+}
+
+.cb-always-on-label {
+  font-family: var(--cb-font-body);
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--cb-gold-deep);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Accordion Trigger (What this includes) */
+.cb-accordion-trigger-row {
+  margin-top: 10px;
+}
+
+.cb-accordion-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--cb-font-body);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--cb-charcoal);
+}
+
+.cb-accordion-count {
+  color: var(--cb-muted);
+}
+
+/* 6.4 Cookie List Panel */
+.cb-cookie-list-panel {
+  margin-top: 10px;
+  margin-bottom: 2px;
+  background-color: var(--cb-cream);
+  border-left: 1px solid var(--cb-gold-light);
+  padding: 4px 14px;
+  border-radius: var(--cb-radius);
+}
+
+.cb-cookie-row {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--cb-line-soft);
+}
+
+.cb-cookie-row:last-child {
+  border-bottom: none;
+}
+
+.cb-cookie-head-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cb-cookie-name {
+  font-family: var(--cb-font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cb-charcoal);
+}
+
+.cb-cookie-who {
+  font-family: var(--cb-font-body);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--cb-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cb-cookie-purpose {
+  font-family: var(--cb-font-body);
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--cb-body);
+  margin: 3px 0 0 0;
+}
+
+.cb-cookie-empty-text {
+  font-family: var(--cb-font-body);
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--cb-body);
+  margin: 0;
+  padding: 6px 0;
+}
+
+/* Lifetimes Line */
+.cb-lifetimes-line {
+  font-family: var(--cb-font-body);
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--cb-muted);
+  margin: 16px 0 6px 0;
+}
+
+/* 6.1 Pinned Save Bar */
+.cb-pinned-save-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  background-color: var(--cb-warm-white);
+  border-top: 1px solid var(--cb-line);
+  padding: 16px 28px 22px 28px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cb-btn-save-choices {
+  width: 100%;
+  height: 46px;
+  background-color: var(--cb-charcoal);
+  color: var(--cb-cream);
+  border: none;
+  font-family: var(--cb-font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: var(--cb-radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--cb-transition-hover);
+}
+
+.cb-btn-save-choices:hover {
+  background-color: var(--cb-hover-charcoal);
+}
+
+.cb-quick-links-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  margin-top: 14px;
+}
+
+.cb-quick-link {
+  font-family: var(--cb-font-body);
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--cb-charcoal);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--cb-gold-light);
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  transition: color var(--cb-transition-hover), text-decoration-color var(--cb-transition-hover);
+}
+
+.cb-quick-link:hover {
+  color: var(--cb-gold-deep);
+  text-decoration-color: var(--cb-gold);
+}
+
+.cb-quick-link-divider {
+  width: 1px;
+  height: 12px;
+  background-color: var(--cb-line);
+  flex-shrink: 0;
+}

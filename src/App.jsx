@@ -7,9 +7,7 @@ import useAuthStore from "./store/authStore";
 // Layout
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-
-
-
+import CookieBannerContainer from "./components/cookieBanner/CookieBannerContainer";
 
 import ProductList from "./components/Products";
 import BuyNew from "./components/ProductCategory/BuyNew";
@@ -18,8 +16,6 @@ import OnlyRentalDetail from "./components/ProductCategory/OnlyRentalDetail";
 import RentalAndPreloved from "./components/ProductCategory/RentalAndPreloved";
 import RentalAndBuy from "./components/ProductCategory/RentalAndBuy";
 import DummyGowns from "./components/DummyGowns";
-
-
 
 import HomePage from "./pages/HomePage/HomePage";
 import LypMain from "./components/LYP/LypMain";
@@ -36,8 +32,7 @@ import FAQPage from "./pages/FAQPage/FAQPage";
 import RefundsPage from "./pages/Refunds/RefundsPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
-
-
+import CookiePage from "./pages/CookiePage";
 
 export default function App() {
   useEffect(() => {
@@ -98,10 +93,16 @@ export default function App() {
         <Route path="/terms-conditions" element={<Navigate to="/terms" replace />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/privacy-policy" element={<Navigate to="/privacy" replace />} />
+        <Route path="/cookies" element={<CookiePage />} />
+        <Route path="/cookie" element={<Navigate to="/cookies" replace />} />
+        <Route path="/cookie-policy" element={<Navigate to="/cookies" replace />} />
 
       </Routes>
 
       <Footer />
+
+      {/* Global Cookie Banner & Consent Controller */}
+      <CookieBannerContainer />
     </>
   );
 }
