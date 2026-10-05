@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
-import { Trash2 } from 'lucide-react';
+import React, { useEffect } from "react";
+import { Trash2 } from "lucide-react";
 import "../../../../styles/Profile/mobile/modals/MobileDeleteAccountModal.css";
 
 const MobileDeleteAccountModal = ({ isOpen, onClose, onConfirm }) => {
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -25,13 +25,20 @@ const MobileDeleteAccountModal = ({ isOpen, onClose, onConfirm }) => {
         </div>
         <div className="profile-mobile-delete-title">Delete Account?</div>
         <div className="profile-mobile-delete-body">
-          This permanently removes your account, all booking history, and saved data. This cannot be undone.
+          This permanently removes your account, all booking history, and saved
+          data. This cannot be undone.
         </div>
         <div className="profile-mobile-delete-buttons">
-          <button className="profile-mobile-delete-btn-cancel" onClick={onClose}>
+          <button
+            className="profile-mobile-delete-btn-cancel"
+            onClick={onClose}
+          >
             Cancel
           </button>
-          <button className="profile-mobile-delete-btn-confirm" onClick={onConfirm}>
+          <button
+            className="profile-mobile-delete-btn-confirm"
+            onClick={onConfirm}
+          >
             Yes, Delete Account
           </button>
         </div>

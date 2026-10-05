@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import "../../../styles/Profile/ui/ToggleSwitch.css";
 
 const ToggleSwitch = ({ isOn, onToggle }) => {
@@ -13,8 +13,8 @@ const ToggleSwitch = ({ isOn, onToggle }) => {
   };
 
   return (
-    <button 
-      className={`profile-account-tog ${!onState ? 'profile-account-tog-off' : ''}`}
+    <button
+      className={`profile-account-tog ${!onState ? "profile-account-tog-off" : ""}`}
       onClick={handleToggle}
     />
   );

@@ -4,7 +4,7 @@ import {
   getDesignerById,
   createDesigner,
   updateDesigner,
-  deleteDesigner
+  deleteDesigner,
 } from "../controllers/designerController.js";
 
 const router = express.Router();

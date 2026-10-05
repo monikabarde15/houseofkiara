@@ -18,11 +18,15 @@ export default function PayoutTabs({
   onChange,
   payouts = [],
 }: PayoutTabsProps) {
-  const pendingCount = payouts.filter((p) => p.status === "Pending" || p.status === "Pending Approval").length;
+  const pendingCount = payouts.filter(
+    (p) => p.status === "Pending" || p.status === "Pending Approval",
+  ).length;
   const paidCount = payouts.filter((p) => p.status === "Paid").length;
-  const failedCount = payouts.filter((p) => p.status === "Failed" || p.status === "Reversed").length;
+  const failedCount = payouts.filter(
+    (p) => p.status === "Failed" || p.status === "Reversed",
+  ).length;
   const damageCompCount = payouts.filter(
-    (p) => (p.mode === "Damage Comp." || p.mode === "Damage Compensation")
+    (p) => p.mode === "Damage Comp." || p.mode === "Damage Compensation",
   ).length;
 
   const tabs: TabItem[] = [

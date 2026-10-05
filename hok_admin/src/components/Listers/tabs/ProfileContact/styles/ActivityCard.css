@@ -3,11 +3,11 @@
    ========================================================================== */
 
 .activity-card {
-    margin: 0;
-    background: #ffffff;
-    border: 1px solid #e7e0d8;
-    border-radius: 4px;
-    overflow: hidden;
+  margin: 0;
+  background: #ffffff;
+  border: 1px solid #e7e0d8;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 /* ==========================================================================
@@ -15,18 +15,18 @@
    ========================================================================== */
 
 .activity-card .card-hd {
-    height: 46px;
-    display: flex;
-    align-items: center;
-    padding: 0 18px;
-    border-bottom: 1px solid #e7e2db;
-    background: #fff;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border-bottom: 1px solid #e7e2db;
+  background: #fff;
 }
 
 .activity-card .card-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #2f2a27;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2f2a27;
 }
 
 /* ==========================================================================
@@ -34,25 +34,25 @@
    ========================================================================== */
 
 .activity-card .card-bd {
-    padding: 16px 20px;
+  padding: 16px 20px;
 }
 
 .activity-list {
-    max-height: 380px;
-    overflow-y: auto;
+  max-height: 380px;
+  overflow-y: auto;
 }
 
 .activity-list::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .activity-list::-webkit-scrollbar-thumb {
-    background: #d7cec4;
-    border-radius: 999px;
+  background: #d7cec4;
+  border-radius: 999px;
 }
 
 .activity-list::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 /* ==========================================================================
@@ -60,15 +60,15 @@
    ========================================================================== */
 
 .activity-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 12px 0;
-    border-bottom: 1px solid #ebe4dc;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid #ebe4dc;
 }
 
 .activity-item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 /* ==========================================================================
@@ -76,43 +76,43 @@
    ========================================================================== */
 
 .activity-dot {
-    width: 12px;
-    height: 12px;
-    margin-top: 5px;
-    border-radius: 50%;
-    flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  margin-top: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .activity-dot-sage {
-    background: #6f8461;
+  background: #6f8461;
 }
 
 .activity-dot-gold {
-    background: #c89d55;
+  background: #c89d55;
 }
 
 .activity-dot-terra {
-    background: #bb6547;
+  background: #bb6547;
 }
 
 .activity-dot-muted {
-    background: #8e7f73;
+  background: #8e7f73;
 }
 
 .activity-dot-blue {
-    background: #4A7FC1;
+  background: #4a7fc1;
 }
 
 .activity-dot-green {
-    background: #3E7A4A;
+  background: #3e7a4a;
 }
 
 .activity-dot-red {
-    background: #C04838;
+  background: #c04838;
 }
 
 .activity-dot-orange {
-    background: #D4872A;
+  background: #d4872a;
 }
 
 /* ==========================================================================
@@ -120,23 +120,23 @@
    ========================================================================== */
 
 .activity-content {
-    flex: 1;
-    min-width: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .activity-text {
-    font-size: 15px;
-    font-weight: 500;
-    color: #2d2926;
-    line-height: 1.45;
-    word-break: break-word;
+  font-size: 15px;
+  font-weight: 500;
+  color: #2d2926;
+  line-height: 1.45;
+  word-break: break-word;
 }
 
 .activity-time {
-    margin-top: 2px;
-    font-size: 12px;
-    color: #8c8278;
-    line-height: 1.4;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #8c8278;
+  line-height: 1.4;
 }
 
 /* ==========================================================================
@@ -144,10 +144,10 @@
    ========================================================================== */
 
 .activity-empty {
-    padding: 18px 0;
-    text-align: center;
-    color: #8c8278;
-    font-size: 14px;
+  padding: 18px 0;
+  text-align: center;
+  color: #8c8278;
+  font-size: 14px;
 }
 
 /* ==========================================================================
@@ -155,28 +155,26 @@
    ========================================================================== */
 
 @media (max-width: 768px) {
+  .activity-card .card-bd {
+    padding: 16px;
+  }
 
-    .activity-card .card-bd {
-        padding: 16px;
-    }
+  .activity-item {
+    gap: 12px;
+    padding: 14px 0;
+  }
 
-    .activity-item {
-        gap: 12px;
-        padding: 14px 0;
-    }
+  .activity-dot {
+    width: 10px;
+    height: 10px;
+    margin-top: 6px;
+  }
 
-    .activity-dot {
-        width: 10px;
-        height: 10px;
-        margin-top: 6px;
-    }
+  .activity-text {
+    font-size: 14px;
+  }
 
-    .activity-text {
-        font-size: 14px;
-    }
-
-    .activity-time {
-        font-size: 11px;
-    }
-
+  .activity-time {
+    font-size: 11px;
+  }
 }

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Order } from '../types';
-import toast from 'react-hot-toast';
-import './Dispatch/css/DispatchView.css';
-import './Dispatch/css/DispatchItemCard.css';
-import './Dispatch/css/DepositWarning.css';
+import React, { useState } from "react";
+import { Order } from "../types";
+import toast from "react-hot-toast";
+import "./Dispatch/css/DispatchView.css";
+import "./Dispatch/css/DispatchItemCard.css";
+import "./Dispatch/css/DepositWarning.css";
 
 // ============================================================
 // WHATSAPP ICON
@@ -21,8 +21,9 @@ function DepositWarning({ amount }: { amount: number }) {
     <div className="deposit-warning">
       <span className="deposit-warning-icon">⚠</span>
       <span>
-        Deposit ₹{Number(amount).toLocaleString('en-IN')} not yet collected — record it on the order
-        before this piece leaves the studio. Mark Dispatched will ask for an explicit override.
+        Deposit ₹{Number(amount).toLocaleString("en-IN")} not yet collected —
+        record it on the order before this piece leaves the studio. Mark
+        Dispatched will ask for an explicit override.
       </span>
     </div>
   );
@@ -35,31 +36,40 @@ interface DispatchViewProps {
   onUpdateOrder: (updatedOrder: Order) => void;
 }
 
-export default function DispatchView({ orders, setView, setSelectedOrderId, onUpdateOrder }: DispatchViewProps) {
-  const [activeTab, setActiveTab] = useState<'Today' | 'Tomorrow' | 'Week'>('Week');
+export default function DispatchView({
+  orders,
+  setView,
+  setSelectedOrderId,
+  onUpdateOrder,
+}: DispatchViewProps) {
+  const [activeTab, setActiveTab] = useState<"Today" | "Tomorrow" | "Week">(
+    "Week",
+  );
 
   // Helper to format date
   const formatDateForDisplay = (dateString: string) => {
-    if (!dateString) return { day: '--', month: '---' };
+    if (!dateString) return { day: "--", month: "---" };
     try {
       const d = new Date(dateString);
       return {
         day: d.getDate().toString(),
-        month: d.toLocaleString('default', { month: 'short' }).toUpperCase()
+        month: d.toLocaleString("default", { month: "short" }).toUpperCase(),
       };
     } catch (e) {
-      return { day: '--', month: '---' };
+      return { day: "--", month: "---" };
     }
   };
 
-  const [filterDateStr, setFilterDateStr] = useState<string>(new Date().toISOString().split('T')[0]);
-  
+  const [filterDateStr, setFilterDateStr] = useState<string>(
+    new Date().toISOString().split("T")[0],
+  );
+
   const todayDate = new Date(filterDateStr);
-  const todayKey = todayDate.toISOString().split('T')[0];
-  
+  const todayKey = todayDate.toISOString().split("T")[0];
+
   const tomorrowDate = new Date(todayDate);
   tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-  const tomorrowKey = tomorrowDate.toISOString().split('T')[0];
+  const tomorrowKey = tomorrowDate.toISOString().split("T")[0];
 
   const getDispatchDate = (order: any) => {
     const item = order.items?.[0] || order;
@@ -68,72 +78,113 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
     if (item.rentalStartDate) {
       const d = new Date(item.rentalStartDate);
       d.setDate(d.getDate() - 2);
-      return d.toISOString().split('T')[0];
+      return d.toISOString().split("T")[0];
     }
-    return '';
+    return "";
   };
 
   const isValidDispatch = (o: any) => {
     const pName = o.items?.[0]?.productName || o.productName;
-    return !!pName && !!o.customerName && pName !== 'Unknown Product';
+    return !!pName && !!o.customerName && pName !== "Unknown Product";
   };
 
   const weekEndDate = new Date(todayDate);
   weekEndDate.setDate(weekEndDate.getDate() + 7);
-  const weekEndKey = weekEndDate.toISOString().split('T')[0];
+  const weekEndKey = weekEndDate.toISOString().split("T")[0];
 
-  const dispatchToday = orders.filter(o => o.status === 'Confirmed' && getDispatchDate(o) <= todayKey && isValidDispatch(o));
-  const dispatchTomorrow = orders.filter(o => o.status === 'Confirmed' && getDispatchDate(o) === tomorrowKey && isValidDispatch(o));
-  
-  const dispatchWeek = orders.filter(o => {
-    if (!isValidDispatch(o)) return false;
-    if (o.status !== 'Confirmed' && o.status !== 'Dispatched' && o.status !== 'Shipped') return false;
-    const dDate = getDispatchDate(o);
-    if (!dDate) return false;
-    
-    if (o.status === 'Confirmed' && dDate <= weekEndKey) return true;
-    if ((o.status === 'Dispatched' || o.status === 'Shipped') && dDate >= todayKey && dDate <= weekEndKey) return true;
-    return false;
-  }).sort((a, b) => getDispatchDate(a).localeCompare(getDispatchDate(b)));
+  const dispatchToday = orders.filter(
+    (o) =>
+      o.status === "Confirmed" &&
+      getDispatchDate(o) <= todayKey &&
+      isValidDispatch(o),
+  );
+  const dispatchTomorrow = orders.filter(
+    (o) =>
+      o.status === "Confirmed" &&
+      getDispatchDate(o) === tomorrowKey &&
+      isValidDispatch(o),
+  );
 
-  const handleMarkDispatched = (order: Order, depositNeeded: boolean, depositCollected: boolean) => {
+  const dispatchWeek = orders
+    .filter((o) => {
+      if (!isValidDispatch(o)) return false;
+      if (
+        o.status !== "Confirmed" &&
+        o.status !== "Dispatched" &&
+        o.status !== "Shipped"
+      )
+        return false;
+      const dDate = getDispatchDate(o);
+      if (!dDate) return false;
+
+      if (o.status === "Confirmed" && dDate <= weekEndKey) return true;
+      if (
+        (o.status === "Dispatched" || o.status === "Shipped") &&
+        dDate >= todayKey &&
+        dDate <= weekEndKey
+      )
+        return true;
+      return false;
+    })
+    .sort((a, b) => getDispatchDate(a).localeCompare(getDispatchDate(b)));
+
+  const handleMarkDispatched = (
+    order: Order,
+    depositNeeded: boolean,
+    depositCollected: boolean,
+  ) => {
     if (depositNeeded && !depositCollected) {
-      if (!window.confirm(`Deposit for order ${order.id} has NOT been collected yet. Are you sure you want to mark this as Dispatched and override the block?`)) {
+      if (
+        !window.confirm(
+          `Deposit for order ${order.id} has NOT been collected yet. Are you sure you want to mark this as Dispatched and override the block?`,
+        )
+      ) {
         return;
       }
     }
     const updated: Order = {
       ...order,
-      status: 'Dispatched',
+      status: "Dispatched",
       dispatchDetails: {
         dispatchedBy: "DHL Express",
-        date: new Date().toISOString().split('T')[0],
-        trackingNumber: "DHL" + Math.floor(100000 + Math.random() * 900000) + "IN",
-        courierPartner: "DHL Express"
-      }
+        date: new Date().toISOString().split("T")[0],
+        trackingNumber:
+          "DHL" + Math.floor(100000 + Math.random() * 900000) + "IN",
+        courierPartner: "DHL Express",
+      },
     };
     onUpdateOrder(updated);
-    toast.success(`Order ${order.id} marked as Dispatched! Tracking number auto-generated.`);
+    toast.success(
+      `Order ${order.id} marked as Dispatched! Tracking number auto-generated.`,
+    );
   };
 
-  const handleWhatsApp = (phone: string | undefined, name: string | undefined) => {
+  const handleWhatsApp = (
+    phone: string | undefined,
+    name: string | undefined,
+  ) => {
     if (!phone) {
-      toast.error('No phone number found for this customer');
+      toast.error("No phone number found for this customer");
       return;
     }
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const cleanPhone = phone.replace(/[^0-9]/g, "");
     const url = `https://wa.me/${cleanPhone}`;
-    window.open(url, '_blank');
+    window.open(url, "_blank");
   };
 
   const handlePrintLabel = () => {
-    toast.success('Preparing shipping label for printing...');
+    toast.success("Preparing shipping label for printing...");
     setTimeout(() => {
       window.print();
     }, 500);
   };
 
-  const currentList = activeTab === 'Today' ? dispatchToday : activeTab === 'Tomorrow' ? dispatchTomorrow : dispatchWeek;
+  const currentList =
+    activeTab === "Today"
+      ? dispatchToday
+      : activeTab === "Tomorrow"
+        ? dispatchTomorrow
+        : dispatchWeek;
 
   return (
     <div className="dispatch-page">
@@ -141,8 +192,8 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
         <span className="dispatch-eyebrow">OPERATIONS</span>
         <h1 className="dispatch-title">Dispatch Schedule</h1>
         <p className="dispatch-subtitle">
-          Everything leaving the studio today, tomorrow, and this week. Mark dispatched, print labels, and jump
-          to any order.
+          Everything leaving the studio today, tomorrow, and this week. Mark
+          dispatched, print labels, and jump to any order.
         </p>
 
         <div className="dispatch-date-row">
@@ -157,13 +208,17 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
 
         <div className="dispatch-tabs">
           {[
-            { key: 'Today', label: 'Today', count: dispatchToday.length },
-            { key: 'Tomorrow', label: 'Tomorrow', count: dispatchTomorrow.length },
-            { key: 'Week', label: 'This Week', count: dispatchWeek.length }
+            { key: "Today", label: "Today", count: dispatchToday.length },
+            {
+              key: "Tomorrow",
+              label: "Tomorrow",
+              count: dispatchTomorrow.length,
+            },
+            { key: "Week", label: "This Week", count: dispatchWeek.length },
           ].map((tab) => (
             <button
               key={tab.key}
-              className={`dispatch-tab ${activeTab === tab.key ? 'active' : ''}`}
+              className={`dispatch-tab ${activeTab === tab.key ? "active" : ""}`}
               onClick={() => setActiveTab(tab.key as any)}
             >
               {tab.label} ({tab.count})
@@ -182,19 +237,38 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
                 const item = order.items?.[0] || order;
                 const dDate = getDispatchDate(order);
                 const dateParts = formatDateForDisplay(dDate || todayKey);
-                
-                const actualDeposit = Number(order.depositHeld ?? order.deposit ?? item?.deposit ?? order.securityDeposit ?? 0);
+
+                const actualDeposit = Number(
+                  order.depositHeld ??
+                    order.deposit ??
+                    item?.deposit ??
+                    order.securityDeposit ??
+                    0,
+                );
                 const depositNeeded = actualDeposit > 0;
-                const depositCollected = order.depositStatus === 'Held' || order.depositStatus === 'Released' || order.depositStatus === 'Partially Released' || order.paymentStatus === 'Paid';
+                const depositCollected =
+                  order.depositStatus === "Held" ||
+                  order.depositStatus === "Released" ||
+                  order.depositStatus === "Partially Released" ||
+                  order.paymentStatus === "Paid";
                 const pieces = order.items?.length || item.quantity || 1;
-                const rentalDates = item.rentalStartDate ? `${item.rentalStartDate} – ${item.rentalEndDate}` : 'Dates missing';
-                const pName = item.productName || order.productName || 'Unknown Product';
-                const pDesigner = item.designer || order.designer || 'Unknown';
+                const rentalDates = item.rentalStartDate
+                  ? `${item.rentalStartDate} – ${item.rentalEndDate}`
+                  : "Dates missing";
+                const pName =
+                  item.productName || order.productName || "Unknown Product";
+                const pDesigner = item.designer || order.designer || "Unknown";
                 const oId = order.orderId || order.id || order._id;
-                
-                const courier = item.dispatch?.courierPartner || order.dispatchDetails?.courierPartner || 'TBD';
-                const tracking = item.dispatch?.trackingNumber || order.dispatchDetails?.trackingNumber || '';
-                
+
+                const courier =
+                  item.dispatch?.courierPartner ||
+                  order.dispatchDetails?.courierPartner ||
+                  "TBD";
+                const tracking =
+                  item.dispatch?.trackingNumber ||
+                  order.dispatchDetails?.trackingNumber ||
+                  "";
+
                 return (
                   <div key={order.id}>
                     <div className="dispatch-card">
@@ -206,25 +280,49 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
                       <div className="dispatch-card-info">
                         <h3>
                           {pName} — {pDesigner}
-                          {pieces > 1 && <span className="pieces-badge">{pieces} PIECES</span>}
+                          {pieces > 1 && (
+                            <span className="pieces-badge">
+                              {pieces} PIECES
+                            </span>
+                          )}
                         </h3>
                         <p>
-                          {oId} · {order.customerName} · {(order.address || order.customerCity || "").substring(0, 20)}... · {rentalDates} · Size: {item.size || "M"} · Dep: ₹{Number(actualDeposit).toLocaleString("en-IN")}
+                          {oId} · {order.customerName} ·{" "}
+                          {(
+                            order.address ||
+                            order.customerCity ||
+                            ""
+                          ).substring(0, 20)}
+                          ... · {rentalDates} · Size: {item.size || "M"} · Dep:
+                          ₹{Number(actualDeposit).toLocaleString("en-IN")}
                         </p>
 
                         <p>
-                          Courier: {courier} · Tracking: {!tracking ? <span className="tracking-pending">awaiting AWB</span> : tracking}
+                          Courier: {courier} · Tracking:{" "}
+                          {!tracking ? (
+                            <span className="tracking-pending">
+                              awaiting AWB
+                            </span>
+                          ) : (
+                            tracking
+                          )}
                         </p>
                       </div>
 
                       <div className="dispatch-card-actions">
-                        <button 
-                          className="btn-whatsapp flex items-center" 
-                          onClick={() => handleWhatsApp(order.customerPhone, order.customerName)}
+                        <button
+                          className="btn-whatsapp flex items-center"
+                          onClick={() =>
+                            handleWhatsApp(
+                              order.customerPhone,
+                              order.customerName,
+                            )
+                          }
                         >
-                          <WhatsAppIcon /> WhatsApp {order.customerName?.split(' ')[0]}
+                          <WhatsAppIcon /> WhatsApp{" "}
+                          {order.customerName?.split(" ")[0]}
                         </button>
-                        <button 
+                        <button
                           className="btn-outline"
                           onClick={() => {
                             setSelectedOrderId(order.id || order._id);
@@ -233,17 +331,23 @@ export default function DispatchView({ orders, setView, setSelectedOrderId, onUp
                         >
                           View Order →
                         </button>
-                        <button 
+                        <button
                           className="btn-outline"
                           onClick={handlePrintLabel}
                         >
                           Print Label
                         </button>
-                        
-                        {order.status === 'Confirmed' && (
-                          <button 
+
+                        {order.status === "Confirmed" && (
+                          <button
                             className="btn-mark-dispatched"
-                            onClick={() => handleMarkDispatched(order, depositNeeded, depositCollected)}
+                            onClick={() =>
+                              handleMarkDispatched(
+                                order,
+                                depositNeeded,
+                                depositCollected,
+                              )
+                            }
                           >
                             Mark Dispatched
                           </button>

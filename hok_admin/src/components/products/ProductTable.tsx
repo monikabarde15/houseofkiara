@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Product, ProductTab } from '../types/product';
+import React, { useState } from "react";
+import { Product, ProductTab } from "../types/product";
 
 interface ProductTableProps {
   products: Product[];
@@ -13,7 +13,16 @@ function ProductThumbnail({ src, alt }: { src?: string; alt: string }) {
   if (!src || imgError) {
     return (
       <div className="h-11 w-11 shrink-0 rounded bg-[#2B231F] border border-[#423832] flex items-center justify-center shadow-xs">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C7A55C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#C7A55C"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
           <line x1="12" y1="2" x2="12" y2="22" />
         </svg>
@@ -34,9 +43,9 @@ function ProductThumbnail({ src, alt }: { src?: string; alt: string }) {
 export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
   const getMediaThumbnail = (images?: string[]) => {
     if (!images || images.length === 0) return undefined;
-    const img = images.find(url => !url.match(/\.(mp4|mov|webm)$/i));
+    const img = images.find((url) => !url.match(/\.(mp4|mov|webm)$/i));
     if (img) return img;
-    return images[0].replace(/\.(mp4|mov|webm)$/i, '.jpg');
+    return images[0].replace(/\.(mp4|mov|webm)$/i, ".jpg");
   };
 
   if (loading) {
@@ -70,103 +79,122 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
           </tr>
         </thead>
         <tbody className="divide-y divide-[#F2EDE7] text-[#2A241F]">
-          {products.map(p => {
+          {products.map((p) => {
             const sku = p.sku || p.id;
-            const material = p.material ? p.material.split(',')[0].trim() : (p.category || 'Silk organza');
-            const colorOccasion = p.color || p.occasion || 'Bridal';
+            const material = p.material
+              ? p.material.split(",")[0].trim()
+              : p.category || "Silk organza";
+            const colorOccasion = p.color || p.occasion || "Bridal";
             const subtitle = `${p.designer} · ${material} · ${colorOccasion} · ${sku}`;
 
             // Tag check (e.g. Booked this week / Idle 30d+)
-            let tagText = '';
-            let tagClass = '';
-            const pName = p.name || '';
+            let tagText = "";
+            let tagClass = "";
+            const pName = p.name || "";
             const pListingModes = p.listingModes || [];
 
-            if (pName.includes('Gulabi') || p.id === 'HOK-SAB-002') {
-              tagText = '• Booked this week';
-              tagClass = 'text-[#3E7A4A]';
-            } else if (pName.includes('Rajputana') || p.id === 'HOK-SAB-003') {
-              tagText = '• Idle 30d+';
-              tagClass = 'text-[#C04838]';
+            if (pName.includes("Gulabi") || p.id === "HOK-SAB-002") {
+              tagText = "• Booked this week";
+              tagClass = "text-[#3E7A4A]";
+            } else if (pName.includes("Rajputana") || p.id === "HOK-SAB-003") {
+              tagText = "• Idle 30d+";
+              tagClass = "text-[#C04838]";
             }
 
             // Condition text
-            const condition = p.condition ? p.condition.split(' ')[0] : 'Excellent';
+            const condition = p.condition
+              ? p.condition.split(" ")[0]
+              : "Excellent";
 
             // Prices
-            let priceMain = '';
-            let priceSub = '';
-            if (pListingModes.includes('Rental') && p.rentalPrice > 0) {
-              priceMain = `₹${p.rentalPrice.toLocaleString('en-IN')} / 4d`;
+            let priceMain = "";
+            let priceSub = "";
+            if (pListingModes.includes("Rental") && p.rentalPrice > 0) {
+              priceMain = `₹${p.rentalPrice.toLocaleString("en-IN")} / 4d`;
               if (p.listingPrice > 0) {
-                priceSub = `or buy ₹${p.listingPrice.toLocaleString('en-IN')}`;
+                priceSub = `or buy ₹${p.listingPrice.toLocaleString("en-IN")}`;
               }
             } else if (p.listingPrice > 0) {
-              priceMain = `₹${p.listingPrice.toLocaleString('en-IN')}`;
-              if (pName.includes('Sherwani') || p.id === 'HOK-MM-001') {
+              priceMain = `₹${p.listingPrice.toLocaleString("en-IN")}`;
+              if (pName.includes("Sherwani") || p.id === "HOK-MM-001") {
                 priceSub = `RRP ₹52,000`;
               }
             } else {
-              priceMain = `₹${(p.rentalPrice || 8500).toLocaleString('en-IN')} / 4d`;
+              priceMain = `₹${(p.rentalPrice || 8500).toLocaleString("en-IN")} / 4d`;
             }
 
             // Revenue
-            let revenueMain = '—';
-            let revenueSub = '';
-            if (pName.includes('Crimson') || p.id === 'HOK-SAB-001') {
-              revenueMain = '₹17,000';
-              revenueSub = 'HOK ₹6,375';
-            } else if (pName.includes('Sherwani') || p.id === 'HOK-MM-001') {
-              revenueMain = '₹38,000';
-              revenueSub = 'HOK ₹9,500';
+            let revenueMain = "—";
+            let revenueSub = "";
+            if (pName.includes("Crimson") || p.id === "HOK-SAB-001") {
+              revenueMain = "₹17,000";
+              revenueSub = "HOK ₹6,375";
+            } else if (pName.includes("Sherwani") || p.id === "HOK-MM-001") {
+              revenueMain = "₹38,000";
+              revenueSub = "HOK ₹9,500";
             } else if (p.bookingHistory && p.bookingHistory.length > 0) {
-              const sum = p.bookingHistory.reduce((acc, item) => acc + (item.amount || 0), 0);
+              const sum = p.bookingHistory.reduce(
+                (acc, item) => acc + (item.amount || 0),
+                0,
+              );
               if (sum > 0) {
-                revenueMain = `₹${sum.toLocaleString('en-IN')}`;
+                revenueMain = `₹${sum.toLocaleString("en-IN")}`;
                 const comm = Math.round(sum * ((p.commissionRate || 25) / 100));
-                revenueSub = `HOK ₹${comm.toLocaleString('en-IN')}`;
+                revenueSub = `HOK ₹${comm.toLocaleString("en-IN")}`;
               }
             }
 
             // Availability
-            let availMain = '';
-            let availSub = '';
-            let availClass = 'text-[#3E7A4A]';
+            let availMain = "";
+            let availSub = "";
+            let availClass = "text-[#3E7A4A]";
 
-            if (pName.includes('Crimson') || p.id === 'HOK-SAB-001') {
-              availMain = 'now → 25 Mar';
-              availSub = 'free 29 Mar';
-              availClass = 'text-[#C04838]';
-            } else if (pName.includes('Gulabi') || p.id === 'HOK-SAB-002') {
-              availMain = 'Available now';
-              availSub = 'booked 28 Mar · free 5 Apr';
-              availClass = 'text-[#3E7A4A]';
-            } else if ((p.status as string) === 'Sold' || pName.includes('Sherwani') || p.id === 'HOK-MM-001') {
-              availMain = '—';
-              availSub = '';
-              availClass = 'text-[#A0988E]';
+            if (pName.includes("Crimson") || p.id === "HOK-SAB-001") {
+              availMain = "now → 25 Mar";
+              availSub = "free 29 Mar";
+              availClass = "text-[#C04838]";
+            } else if (pName.includes("Gulabi") || p.id === "HOK-SAB-002") {
+              availMain = "Available now";
+              availSub = "booked 28 Mar · free 5 Apr";
+              availClass = "text-[#3E7A4A]";
+            } else if (
+              (p.status as string) === "Sold" ||
+              pName.includes("Sherwani") ||
+              p.id === "HOK-MM-001"
+            ) {
+              availMain = "—";
+              availSub = "";
+              availClass = "text-[#A0988E]";
             } else {
-              availMain = p.availability || 'Available now';
-              availClass = p.availability === 'Rented' ? 'text-[#C04838]' : 'text-[#3E7A4A]';
+              availMain = p.availability || "Available now";
+              availClass =
+                p.availability === "Rented"
+                  ? "text-[#C04838]"
+                  : "text-[#3E7A4A]";
             }
 
             return (
-              <tr 
-                key={p.id} 
+              <tr
+                key={p.id}
                 onClick={() => onEdit(p)}
                 className="hover:bg-[#FAF8F5] transition cursor-pointer"
               >
                 {/* PIECE */}
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-3">
-                    <ProductThumbnail src={getMediaThumbnail(p.images)} alt={pName} />
+                    <ProductThumbnail
+                      src={getMediaThumbnail(p.images)}
+                      alt={pName}
+                    />
                     <div>
                       <div className="flex items-center flex-wrap gap-x-1.5">
                         <span className="font-bold text-[#2A241F] text-[13px] hover:text-[#C7A55C] transition">
                           {pName}
                         </span>
                         {tagText && (
-                          <span className={`text-[11px] font-medium ${tagClass}`}>
+                          <span
+                            className={`text-[11px] font-medium ${tagClass}`}
+                          >
                             {tagText}
                           </span>
                         )}
@@ -181,15 +209,15 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
                 {/* LISTING */}
                 <td className="px-4 py-3.5 align-middle">
                   <div className="flex flex-wrap items-center gap-1 mb-1">
-                    {pListingModes.map(m => (
-                      <span 
+                    {pListingModes.map((m) => (
+                      <span
                         key={m}
                         className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium ${
-                          m === 'Rental'
-                            ? 'bg-[#E8F2E8] text-[#4E7A52]'
-                            : m === 'Preloved'
-                            ? 'bg-[#F7EBE4] text-[#9E5D46]'
-                            : 'bg-[#EBF3FA] text-[#3B669B]'
+                          m === "Rental"
+                            ? "bg-[#E8F2E8] text-[#4E7A52]"
+                            : m === "Preloved"
+                              ? "bg-[#F7EBE4] text-[#9E5D46]"
+                              : "bg-[#EBF3FA] text-[#3B669B]"
                         }`}
                       >
                         {m}
@@ -215,7 +243,9 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
 
                 {/* REVENUE */}
                 <td className="px-4 py-3.5 align-middle font-sans">
-                  <div className={`font-bold text-[13px] ${revenueMain === '—' ? 'text-[#A0988E] font-normal' : 'text-[#2A241F]'}`}>
+                  <div
+                    className={`font-bold text-[13px] ${revenueMain === "—" ? "text-[#A0988E] font-normal" : "text-[#2A241F]"}`}
+                  >
                     {revenueMain}
                   </div>
                   {revenueSub && (
@@ -239,16 +269,23 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
 
                 {/* STATUS */}
                 <td className="px-4 py-3.5 align-middle">
-                  <span className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-[11px] font-semibold ${
-                    p.status === 'Live' && !pName.includes('Sherwani')
-                      ? 'bg-[#EDF7ED] text-[#3E7A4A]'
-                      : (p.status as string) === 'Sold' || pName.includes('Sherwani')
-                      ? 'bg-[#EEF4FB] text-[#3B669B]'
-                      : p.status === 'Archived'
-                      ? 'bg-[#FEF6E6] text-[#B88422]'
-                      : 'bg-[#F4F3F1] text-[#736B63]'
-                  }`}>
-                    {p.status === 'Live' && !pName.includes('Sherwani') ? 'Live' : (pName.includes('Sherwani') ? 'Sold' : p.status)}
+                  <span
+                    className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-[11px] font-semibold ${
+                      p.status === "Live" && !pName.includes("Sherwani")
+                        ? "bg-[#EDF7ED] text-[#3E7A4A]"
+                        : (p.status as string) === "Sold" ||
+                            pName.includes("Sherwani")
+                          ? "bg-[#EEF4FB] text-[#3B669B]"
+                          : p.status === "Archived"
+                            ? "bg-[#FEF6E6] text-[#B88422]"
+                            : "bg-[#F4F3F1] text-[#736B63]"
+                    }`}
+                  >
+                    {p.status === "Live" && !pName.includes("Sherwani")
+                      ? "Live"
+                      : pName.includes("Sherwani")
+                        ? "Sold"
+                        : p.status}
                   </span>
                 </td>
 
@@ -257,7 +294,7 @@ export function ProductTable({ products, loading, onEdit }: ProductTableProps) {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onEdit(p, 'Calendar');
+                      onEdit(p, "Calendar");
                     }}
                     className="inline-flex items-center justify-center h-7 px-3 rounded-md border border-[#E2DAD1] bg-white text-[#524B43] hover:bg-[#FAF8F5] hover:border-[#C7A55C] text-[12px] font-medium transition cursor-pointer shadow-2xs"
                   >

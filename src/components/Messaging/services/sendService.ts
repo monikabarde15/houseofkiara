@@ -4,7 +4,7 @@ export interface SendRequest {
   messageId: string;
   promotionId?: string | null;
   wordingId?: string | null;
-  channel: 'whatsapp' | 'email';
+  channel: "whatsapp" | "email";
   personIds: string[];
 }
 
@@ -14,7 +14,7 @@ export interface SendResponse {
   heldCount: number;
   messages: Array<{
     personId: string;
-    status: 'sent' | 'held';
+    status: "sent" | "held";
     reason?: string;
   }>;
 }
@@ -23,21 +23,24 @@ export const sendService = {
   // Send a message to selected people
   send: async (request: SendRequest): Promise<SendResponse> => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    
+
     // Mock response
     return {
       success: true,
       sentCount: request.personIds.length,
       heldCount: 0,
-      messages: request.personIds.map(id => ({
+      messages: request.personIds.map((id) => ({
         personId: id,
-        status: 'sent',
+        status: "sent",
       })),
     };
   },
 
   // Send a test message
-  sendTest: async (wordingId: string, channel: 'whatsapp' | 'email'): Promise<boolean> => {
+  sendTest: async (
+    wordingId: string,
+    channel: "whatsapp" | "email",
+  ): Promise<boolean> => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     return true;
   },
@@ -48,19 +51,40 @@ export const sendService = {
     recordKind: string;
     list?: string;
     search?: string;
-  }): Promise<Array<{
-    id: string;
-    name: string;
-    contact: string;
-    summary: string;
-    available: boolean;
-    unavailableReason?: string;
-  }>> => {
+  }): Promise<
+    Array<{
+      id: string;
+      name: string;
+      contact: string;
+      summary: string;
+      available: boolean;
+      unavailableReason?: string;
+    }>
+  > => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     return [
-      { id: '1', name: 'Priya Sharma', contact: 'priya@email.com', summary: 'Customer since 2024', available: true },
-      { id: '2', name: 'Amit Patel', contact: '+91 98765 43210', summary: 'Customer since 2025', available: true },
-      { id: '3', name: 'Neha Kulkarni', contact: 'neha@email.com', summary: 'Customer since 2023', available: false, unavailableReason: 'Has not agreed to hear from us' },
+      {
+        id: "1",
+        name: "Priya Sharma",
+        contact: "priya@email.com",
+        summary: "Customer since 2024",
+        available: true,
+      },
+      {
+        id: "2",
+        name: "Amit Patel",
+        contact: "+91 98765 43210",
+        summary: "Customer since 2025",
+        available: true,
+      },
+      {
+        id: "3",
+        name: "Neha Kulkarni",
+        contact: "neha@email.com",
+        summary: "Customer since 2023",
+        available: false,
+        unavailableReason: "Has not agreed to hear from us",
+      },
     ];
   },
 
@@ -77,7 +101,7 @@ export const sendService = {
     who: string;
     contact: string;
     channel: string;
-    outcome: 'Delivered';
+    outcome: "Delivered";
     about: string;
     sentBy: string;
   }> => {
@@ -85,14 +109,14 @@ export const sendService = {
     return {
       id: `log_${Date.now()}`,
       when: new Date().toLocaleString(),
-      message: 'Hand-sent message',
-      wording: 'Default',
+      message: "Hand-sent message",
+      wording: "Default",
       who: data.name,
-      contact: '—',
+      contact: "—",
       channel: data.channel,
-      outcome: 'Delivered',
+      outcome: "Delivered",
       about: data.about,
-      sentBy: 'You',
+      sentBy: "You",
     };
   },
 };

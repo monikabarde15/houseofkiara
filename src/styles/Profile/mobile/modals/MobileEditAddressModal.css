@@ -12,8 +12,7 @@
 
   inset: 0;
 
-  background:
-    rgba(26, 22, 18, 0.4);
+  background: rgba(26, 22, 18, 0.4);
 
   z-index: 6000;
 }
@@ -39,33 +38,23 @@
 
   overflow-y: auto;
 
-  background: #FFFEFB;
+  background: #fffefb;
 
-  border-top:
-    2px solid #1A1612;
+  border-top: 2px solid #1a1612;
 
   z-index: 6001;
 
-  animation:
-    profile-mobile-editaddr-slide-up
-    0.38s
-    cubic-bezier(
-      0.16,
-      1,
-      0.3,
-      1
-    );
+  animation: profile-mobile-editaddr-slide-up 0.38s
+    cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes profile-mobile-editaddr-slide-up {
   from {
-    transform:
-      translateY(100%);
+    transform: translateY(100%);
   }
 
   to {
-    transform:
-      translateY(0);
+    transform: translateY(0);
   }
 }
 
@@ -84,12 +73,9 @@
   align-items: center;
   justify-content: space-between;
 
-  padding:
-    20px
-    20px
-    0;
+  padding: 20px 20px 0;
 
-  background: #FFFEFB;
+  background: #fffefb;
 }
 
 /* ============================================
@@ -97,9 +83,7 @@
    ============================================ */
 
 .profile-mobile-editaddr-title {
-  font-family:
-    "Cormorant Garamond",
-    serif;
+  font-family: "Cormorant Garamond", serif;
 
   font-size: 18px;
 
@@ -107,7 +91,7 @@
 
   line-height: 1.1;
 
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* ============================================
@@ -120,11 +104,9 @@
 
   border-radius: 999px;
 
-  border:
-    1px solid
-    rgba(201, 169, 110, 0.25);
+  border: 1px solid rgba(201, 169, 110, 0.25);
 
-  background: #FFFEFB;
+  background: #fffefb;
 
   display: flex;
   align-items: center;
@@ -134,7 +116,7 @@
 }
 
 .profile-mobile-editaddr-close svg {
-  stroke: #8A7E72;
+  stroke: #8a7e72;
 }
 
 /* ============================================
@@ -142,10 +124,7 @@
    ============================================ */
 
 .profile-mobile-editaddr-form {
-  padding:
-    18px
-    20px
-    28px;
+  padding: 18px 20px 28px;
 }
 
 /* ============================================
@@ -155,8 +134,7 @@
 .profile-mobile-editaddr-row {
   display: grid;
 
-  grid-template-columns:
-    1fr 1fr;
+  grid-template-columns: 1fr 1fr;
 
   gap: 14px;
 }
@@ -180,9 +158,7 @@
 
   margin-bottom: 6px;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 8px;
 
@@ -192,7 +168,7 @@
 
   text-transform: uppercase;
 
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* ============================================
@@ -202,7 +178,7 @@
 .profile-mobile-editaddr-required {
   margin-left: 2px;
 
-  color: #B85C38;
+  color: #b85c38;
 }
 
 /* ============================================
@@ -218,27 +194,23 @@
 
   border: none;
 
-  border-bottom:
-    1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
 
   background: transparent;
 
   outline: none;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 13px;
 
-  color: #1A1612;
+  color: #1a1612;
 
-  transition:
-    border-color 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .profile-mobile-editaddr-input:focus {
-  border-bottom-color: #C9A96E;
+  border-bottom-color: #c9a96e;
 }
 
 /* ============================================
@@ -254,16 +226,11 @@
 
   height: 44px;
 
-  padding:
-    0
-    22px
-    0
-    0;
+  padding: 0 22px 0 0;
 
   border: none;
 
-  border-bottom:
-    1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
 
   background: transparent;
 
@@ -277,20 +244,17 @@
 
   -moz-appearance: none;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 13px;
 
-  color: #1A1612;
+  color: #1a1612;
 
-  transition:
-    border-color 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .profile-mobile-editaddr-select:focus {
-  border-bottom-color: #C9A96E;
+  border-bottom-color: #c9a96e;
 }
 
 /* ============================================
@@ -303,10 +267,9 @@
   right: 4px;
   top: 50%;
 
-  transform:
-    translateY(-50%);
+  transform: translateY(-50%);
 
-  stroke: #B0A898;
+  stroke: #b0a898;
 
   pointer-events: none;
 }
@@ -315,16 +278,13 @@
    Error State
    ============================================ */
 
-.profile-mobile-editaddr-field.has-error
-.profile-mobile-editaddr-label {
-  color: #B85C38;
+.profile-mobile-editaddr-field.has-error .profile-mobile-editaddr-label {
+  color: #b85c38;
 }
 
-.profile-mobile-editaddr-field.has-error
-.profile-mobile-editaddr-input,
-.profile-mobile-editaddr-field.has-error
-.profile-mobile-editaddr-select {
-  border-bottom-color: #B85C38;
+.profile-mobile-editaddr-field.has-error .profile-mobile-editaddr-input,
+.profile-mobile-editaddr-field.has-error .profile-mobile-editaddr-select {
+  border-bottom-color: #b85c38;
 }
 
 /* ============================================
@@ -334,15 +294,13 @@
 .profile-mobile-editaddr-error {
   margin-top: 4px;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 9px;
 
   line-height: 1.4;
 
-  color: #B85C38;
+  color: #b85c38;
 }
 
 /* ============================================
@@ -361,24 +319,23 @@
   width: 100%;
   height: 54px;
   border: none;
-  background: #1A1612;
-  color: #E8D5B0;
+  background: #1a1612;
+  color: #e8d5b0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  font-family:"DM Sans",sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9.5px;
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  transition:
-    background-color 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .profile-mobile-editaddr-btn-save:active {
-  background: #2C2520;
+  background: #2c2520;
 }
 
 /* ============================================
@@ -401,10 +358,10 @@
   background: transparent;
   padding: 0;
   cursor: pointer;
-  font-family:"DM Sans",sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 400;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
 }

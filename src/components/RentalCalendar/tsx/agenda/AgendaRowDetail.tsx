@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { AgendaEntry } from '../../types';
-import '../../css/agenda/AgendaRowDetail.css';
+import React, { useState } from "react";
+import { AgendaEntry } from "../../types";
+import "../../css/agenda/AgendaRowDetail.css";
 
 const WhatsAppIcon = () => (
   <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm">
@@ -17,9 +17,12 @@ interface AgendaRowDetailProps {
 }
 
 const AgendaRowDetail: React.FC<AgendaRowDetailProps> = ({
-  entry, onMarkDone, onSaveNote, onNotifyCustomer,
+  entry,
+  onMarkDone,
+  onSaveNote,
+  onNotifyCustomer,
 }) => {
-  const [noteText, setNoteText] = useState(entry.savedNote || '');
+  const [noteText, setNoteText] = useState(entry.savedNote || "");
 
   return (
     <div className="agenda-detail">
@@ -35,8 +38,12 @@ const AgendaRowDetail: React.FC<AgendaRowDetailProps> = ({
         <div className="agenda-detail__section">
           <div className="agenda-detail__label">RELATED RECORDS</div>
           <div className="agenda-detail__links">
-            <a className="agenda-detail__link" href="#">{entry.detail.relatedOrderId}</a>
-            <a className="agenda-detail__link" href="#">{entry.detail.relatedCustomer}</a>
+            <a className="agenda-detail__link" href="#">
+              {entry.detail.relatedOrderId}
+            </a>
+            <a className="agenda-detail__link" href="#">
+              {entry.detail.relatedCustomer}
+            </a>
           </div>
         </div>
 
@@ -46,12 +53,14 @@ const AgendaRowDetail: React.FC<AgendaRowDetailProps> = ({
             onClick={() => onMarkDone(entry.id)}
             disabled={entry.done}
           >
-            {entry.done ? 'Done' : 'Mark Done'}
+            {entry.done ? "Done" : "Mark Done"}
           </button>
           <button
             className="agenda-btn agenda-btn--primary"
             onClick={() => onNotifyCustomer(entry.id)}
-          ><WhatsAppIcon /> Notify Customer</button>
+          >
+            <WhatsAppIcon /> Notify Customer
+          </button>
         </div>
       </div>
 
@@ -66,7 +75,9 @@ const AgendaRowDetail: React.FC<AgendaRowDetailProps> = ({
         <button
           className="agenda-btn agenda-btn--save"
           onClick={() => onSaveNote(entry.id, noteText)}
-        >Save Note</button>
+        >
+          Save Note
+        </button>
       </div>
     </div>
   );

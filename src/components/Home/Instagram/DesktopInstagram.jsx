@@ -9,9 +9,7 @@ const DesktopInstagram = () => {
   return (
     <section className="desk-instagram">
       <div className="desk-instagram-header">
-        <SectionEyebrow
-          text={instagramData.eyebrow}
-        />
+        <SectionEyebrow text={instagramData.eyebrow} />
 
         <SectionTitle>
           As seen on <em>Instagram</em>
@@ -27,10 +25,7 @@ const DesktopInstagram = () => {
             rel="noreferrer"
             className="desk-instagram-tile"
           >
-            <img
-              src={post.image}
-              alt={`Instagram ${post.id}`}
-            />
+            <img src={post.image} alt={`Instagram ${post.id}`} />
 
             <div className="desk-instagram-overlay">
               <FaInstagram />

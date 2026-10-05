@@ -1,10 +1,11 @@
 // types/messaging.types.ts
 
-export type MessageStatus = 'Live' | 'Paused' | 'Not written' | 'Delivered' | 'Bounced';
-export type Audience = 'Customer' | 'Lister' | 'Designer' | 'You';
-export type MessageClass = 'Required' | 'Optional' | 'Marketing';
-export type Channel = 'email' | 'whatsapp' | 'website';
-export type PillStatus = 'green' | 'amber' | 'grey' | 'blue' | 'terracotta';
+export type MessageStatus =
+  "Live" | "Paused" | "Not written" | "Delivered" | "Bounced";
+export type Audience = "Customer" | "Lister" | "Designer" | "You";
+export type MessageClass = "Required" | "Optional" | "Marketing";
+export type Channel = "email" | "whatsapp" | "website";
+export type PillStatus = "green" | "amber" | "grey" | "blue" | "terracotta";
 
 export interface Message {
   id: string;
@@ -39,7 +40,7 @@ export interface SendLog {
   who: string;
   contact: string;
   channel: string;
-  outcome: 'Delivered' | 'Opened' | 'Bounced' | 'Held' | 'Not sent';
+  outcome: "Delivered" | "Opened" | "Bounced" | "Held" | "Not sent";
   about: string;
   sentBy: string;
 }
@@ -66,7 +67,7 @@ export interface Variable {
 export interface StatTile {
   label: string;
   number: string | number;
-  numberColor: 'charcoal' | 'sage' | 'gold';
+  numberColor: "charcoal" | "sage" | "gold";
   caption: string;
   onClick?: () => void;
 }

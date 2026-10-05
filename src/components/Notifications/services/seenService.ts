@@ -1,6 +1,6 @@
 // src/components/Notifications/services/seenService.ts
 
-const SEEN_URL = '/admin/notifications/seen';
+const SEEN_URL = "/admin/notifications/seen";
 
 /**
  * §19.2 — "Mark what I have seen". Stores the current deduplicated record id
@@ -11,8 +11,8 @@ const SEEN_URL = '/admin/notifications/seen';
  */
 export async function markSeen(recordIds: string[]): Promise<void> {
   const res = await fetch(SEEN_URL, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ recordIds }),
   });
 

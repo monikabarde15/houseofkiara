@@ -3,10 +3,10 @@
   border: none !important;
 } */
 .related {
-    border: none !important;
-    background: #FAF7F2;
-    padding: 80px 0 10px;
-    border:1px solid #E8E0D4
+  border: none !important;
+  background: #faf7f2;
+  padding: 80px 0 10px;
+  border: 1px solid #e8e0d4;
 }
 
 .container {
@@ -17,7 +17,6 @@
 
 .block {
   margin-bottom: 60px;
-  
 }
 
 /* HEADER */
@@ -33,7 +32,7 @@
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
   margin-bottom: 8px;
 }
 
@@ -42,12 +41,12 @@
   font-family: "Cormorant Garamond";
   font-size: 42px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .title span {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* VIEW LINK (fix double line issue) */
@@ -56,20 +55,20 @@
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #1A1612;
+  color: #1a1612;
   text-decoration: underline;
   text-underline-offset: 4px;
-  border-bottom:  1px solid #1A1612;
+  border-bottom: 1px solid #1a1612;
 }
 
-.view:hover{
-    color: #C9A96E;
+.view:hover {
+  color: #c9a96e;
 }
 
 /* DIVIDER (ONLY ONE LINE) */
 .divider {
   height: 1px;
-  background: #E8E0D4;
+  background: #e8e0d4;
   /* background: red; */
   margin: 16px 0 32px;
 }
@@ -90,8 +89,8 @@
 .related-img {
   position: relative;
   aspect-ratio: 3 / 4;
-  background: #FAF7F2;
-  border: 1px solid #F0EAE0;
+  background: #faf7f2;
+  border: 1px solid #f0eae0;
   margin-bottom: 12px;
   overflow: hidden;
 }
@@ -121,28 +120,28 @@
 
 /* BASE (inferred, minimal) */
 .badge-wrap .badge {
-    font-size: 10px;
-    font-family: 'DM Sans';
-    font-weight: 500;
-    padding: 4px 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    border-radius: 1px;           
+  font-size: 10px;
+  font-family: "DM Sans";
+  font-weight: 500;
+  padding: 4px 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 1px;
 }
 
 /* COLORS (from spec) */
 .badge.new {
-  background: #8A9E7E;        
+  background: #8a9e7e;
   color: #fff;
 }
 
 .badge.rent {
-  background: #1A1612;        
-  color: #C9A96E;             
+  background: #1a1612;
+  color: #c9a96e;
 }
 
 .badge.preloved {
-  background: #A35C4B;   
+  background: #a35c4b;
   color: #fff;
 }
 /* WISHLIST */
@@ -188,15 +187,15 @@
 }
 
 .badge.new {
-  background: #8A9E7E;
+  background: #8a9e7e;
 }
 
 .badge.rent {
-  background: #1A1612;
+  background: #1a1612;
 }
 
 .badge.preloved {
-  background: #A35C4B;
+  background: #a35c4b;
 }
 
 /* INFO */
@@ -207,14 +206,14 @@
 .designer {
   font-size: 9px;
   letter-spacing: 0.18em;
-  color: #C9A96E;
+  color: #c9a96e;
   margin-bottom: 4px;
 }
 
 .name {
   font-family: "Cormorant Garamond";
   font-size: 16px;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 4px;
   line-height: 1.25;
 }
@@ -228,7 +227,7 @@
 .price span {
   font-family: "DM Sans";
   font-size: 11px;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* PRICE */
@@ -236,14 +235,14 @@
   font-family: "Cormorant Garamond";
   font-size: 14px;
   font-weight: 500;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* RENTAL TEXT */
 .price .rental {
   font-family: "DM Sans";
   font-size: 11px;
-  color: #8A7E72; /* muted */
+  color: #8a7e72; /* muted */
   margin-left: 4px;
 }
 
@@ -254,14 +253,13 @@
   justify-content: center;
   height: 100%;
   font-size: 12px;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* =========================
    MOBILE
 ========================= */
 @media (max-width: 767px) {
-
   .container {
     padding: 0 16px;
   }
@@ -314,7 +312,6 @@
    TABLET
 ========================= */
 @media (min-width: 768px) and (max-width: 1279px) {
-
   .container {
     padding: 0 24px;
   }

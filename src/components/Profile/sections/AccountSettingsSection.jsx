@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { User, Lock, Bell, Wallet, LogOut, Trash2, ChevronRight } from 'lucide-react';
-import SettingsCard from '../cards/SettingsCard';
-import SignOutModal from '../modals/SignOutModal';
-import DeleteAccountModal from '../modals/DeleteAccountModal';
-import EditProfileModal from '../modals/EditProfileModal';
-import Toast from '../ui/Toast';
-import useAuthStore from '../../../store/authStore';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  User,
+  Lock,
+  Bell,
+  Wallet,
+  LogOut,
+  Trash2,
+  ChevronRight,
+} from "lucide-react";
+import SettingsCard from "../cards/SettingsCard";
+import SignOutModal from "../modals/SignOutModal";
+import DeleteAccountModal from "../modals/DeleteAccountModal";
+import EditProfileModal from "../modals/EditProfileModal";
+import Toast from "../ui/Toast";
+import useAuthStore from "../../../store/authStore";
 import "../../../styles/Profile/sections/AccountSettingsSection.css";
 
 const AccountSettingsSection = () => {
@@ -15,7 +23,7 @@ const AccountSettingsSection = () => {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [isSendingReset, setIsSendingReset] = useState(false);
 
@@ -33,7 +41,7 @@ const AccountSettingsSection = () => {
       const res = await updateProfile({
         firstName: data.firstName,
         lastName: data.lastName,
-        name: `${data.firstName || ''} ${data.lastName || ''}`.trim(),
+        name: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
         email: data.email,
         phone: data.mobile,
         mobile: data.mobile,
@@ -58,10 +66,10 @@ const AccountSettingsSection = () => {
     const userEmail = user?.email;
 
     try {
-      let response = await fetch('/api/customer/profile/change-password', {
-        method: 'POST',
+      let response = await fetch("/api/customer/profile/change-password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({ email: userEmail }),
@@ -69,21 +77,29 @@ const AccountSettingsSection = () => {
 
       // Fallback to customer auth forgot-password if profile route fails
       if (!response.ok && userEmail) {
-        response = await fetch('/api/customer/auth/forgot-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        response = await fetch("/api/customer/auth/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: userEmail }),
         });
       }
 
       const res = await response.json().catch(() => ({}));
       if (response.ok && res.success) {
-        showToastMessage(res.message || `Password reset link sent to ${userEmail || 'your email'}. Check your inbox!`);
+        showToastMessage(
+          res.message ||
+            `Password reset link sent to ${userEmail || "your email"}. Check your inbox!`,
+        );
       } else {
-        showToastMessage(res.message || "Please restart backend server to apply route changes.");
+        showToastMessage(
+          res.message ||
+            "Please restart backend server to apply route changes.",
+        );
       }
     } catch (err) {
-      showToastMessage("Network error. Please check your connection and try again.");
+      showToastMessage(
+        "Network error. Please check your connection and try again.",
+      );
     } finally {
       setIsSendingReset(false);
     }
@@ -96,7 +112,7 @@ const AccountSettingsSection = () => {
   const handleConfirmSignOut = () => {
     setIsSignOutModalOpen(false);
     logout(true);
-    navigate('/auth');
+    navigate("/auth");
   };
 
   const handleDeleteAccount = () => {
@@ -113,7 +129,7 @@ const AccountSettingsSection = () => {
       preferences: {
         ...(user?.preferences || {}),
         whatsappNotifications: isOn,
-      }
+      },
     });
     showToastMessage(`WhatsApp updates ${isOn ? "enabled" : "disabled"}`);
   };
@@ -123,7 +139,7 @@ const AccountSettingsSection = () => {
       preferences: {
         ...(user?.preferences || {}),
         newsletter: isOn,
-      }
+      },
     });
     showToastMessage(`Email notifications ${isOn ? "enabled" : "disabled"}`);
   };
@@ -133,7 +149,7 @@ const AccountSettingsSection = () => {
       preferences: {
         ...(user?.preferences || {}),
         marketingOptIn: isOn,
-      }
+      },
     });
     showToastMessage(`Offer notifications ${isOn ? "enabled" : "disabled"}`);
   };
@@ -142,12 +158,16 @@ const AccountSettingsSection = () => {
     console.log("Open detail:", detailId);
   };
 
-  const firstName = user?.firstName || (user?.name ? user.name.split(' ')[0] : 'Customer');
-  const lastName = user?.lastName || (user?.name ? user.name.split(' ').slice(1).join(' ') : '');
-  const fullName = user?.name || [firstName, lastName].filter(Boolean).join(' ') || 'Customer';
-  const email = user?.email || 'customer@houseofkaira.com';
-  const mobile = user?.phone || user?.mobile || 'Not provided';
-  const city = user?.location || user?.city || 'India';
+  const firstName =
+    user?.firstName || (user?.name ? user.name.split(" ")[0] : "Customer");
+  const lastName =
+    user?.lastName ||
+    (user?.name ? user.name.split(" ").slice(1).join(" ") : "");
+  const fullName =
+    user?.name || [firstName, lastName].filter(Boolean).join(" ") || "Customer";
+  const email = user?.email || "customer@houseofkaira.com";
+  const mobile = user?.phone || user?.mobile || "Not provided";
+  const city = user?.location || user?.city || "India";
 
   const settingsCards = [
     {
@@ -158,65 +178,76 @@ const AccountSettingsSection = () => {
         { label: "Full Name", value: fullName, onClick: handleEditProfile },
         { label: "Email Address", value: email, onClick: handleEditProfile },
         { label: "Mobile Number", value: mobile, onClick: handleEditProfile },
-        { label: "City", value: city, onClick: handleEditProfile }
-      ]
+        { label: "City", value: city, onClick: handleEditProfile },
+      ],
     },
     {
       title: "Security",
       iconType: "charcoal",
       icon: <Lock size={13} strokeWidth={1.5} />,
       rows: [
-        { label: "Password", value: isSendingReset ? "Sending link..." : "Send reset link to email", onClick: handleChangePassword },
-        { label: "Login Method", value: user?.googleId ? "Google Account" : "Email / Mobile & Password" }
-      ]
+        {
+          label: "Password",
+          value: isSendingReset
+            ? "Sending link..."
+            : "Send reset link to email",
+          onClick: handleChangePassword,
+        },
+        {
+          label: "Login Method",
+          value: user?.googleId
+            ? "Google Account"
+            : "Email / Mobile & Password",
+        },
+      ],
     },
     {
       title: "Notifications",
       iconType: "sage",
       icon: <Bell size={13} strokeWidth={1.5} />,
       rows: [
-        { 
-          label: "WhatsApp Updates", 
-          subLabel: "Bookings, dispatch, returns", 
-          isToggle: true, 
-          value: user?.preferences?.whatsappNotifications !== false, 
-          onToggle: handleWhatsAppToggle 
+        {
+          label: "WhatsApp Updates",
+          subLabel: "Bookings, dispatch, returns",
+          isToggle: true,
+          value: user?.preferences?.whatsappNotifications !== false,
+          onToggle: handleWhatsAppToggle,
         },
-        { 
-          label: "Email Notifications", 
-          subLabel: "Orders, rentals, payouts", 
-          isToggle: true, 
-          value: user?.preferences?.newsletter !== false, 
-          onToggle: handleEmailToggle 
+        {
+          label: "Email Notifications",
+          subLabel: "Orders, rentals, payouts",
+          isToggle: true,
+          value: user?.preferences?.newsletter !== false,
+          onToggle: handleEmailToggle,
         },
-        { 
-          label: "New Arrivals & Offers", 
-          subLabel: "Curated picks, occasions", 
-          isToggle: true, 
-          value: Boolean(user?.preferences?.marketingOptIn), 
-          onToggle: handleOffersToggle 
-        }
-      ]
+        {
+          label: "New Arrivals & Offers",
+          subLabel: "Curated picks, occasions",
+          isToggle: true,
+          value: Boolean(user?.preferences?.marketingOptIn),
+          onToggle: handleOffersToggle,
+        },
+      ],
     },
     {
       title: "Deposit Tracker",
       iconType: "terracotta",
       icon: <Wallet size={13} strokeWidth={1.5} />,
       rows: [
-        { 
-          label: "Ivory Tissue Lehenga", 
-          value: "₹15,000 PENDING", 
+        {
+          label: "Ivory Tissue Lehenga",
+          value: "₹15,000 PENDING",
           valueClass: "profile-account-dpill-p",
-          onClick: () => handleOpenDetail("lehenga") 
+          onClick: () => handleOpenDetail("lehenga"),
         },
-        { 
-          label: "Blush Anarkali Set", 
-          value: "REFUNDED", 
+        {
+          label: "Blush Anarkali Set",
+          value: "REFUNDED",
           valueClass: "profile-account-dpill-r",
-          onClick: () => handleOpenDetail("anarkali") 
-        }
-      ]
-    }
+          onClick: () => handleOpenDetail("anarkali"),
+        },
+      ],
+    },
   ];
 
   const accountActions = [
@@ -226,7 +257,7 @@ const AccountSettingsSection = () => {
       icon: <Lock size={12} strokeWidth={1.5} />,
       iconBg: "rgba(26, 22, 18, 0.06)",
       iconStroke: "#3C3529",
-      onClick: handleChangePassword
+      onClick: handleChangePassword,
     },
     {
       label: "Sign Out",
@@ -234,7 +265,7 @@ const AccountSettingsSection = () => {
       icon: <LogOut size={12} strokeWidth={1.5} />,
       iconBg: "rgba(184, 92, 56, 0.08)",
       iconStroke: "#B85C38",
-      onClick: handleSignOut
+      onClick: handleSignOut,
     },
     {
       label: "Delete Account",
@@ -243,8 +274,8 @@ const AccountSettingsSection = () => {
       iconBg: "rgba(184, 92, 56, 0.06)",
       iconStroke: "#B85C38",
       isRed: true,
-      onClick: handleDeleteAccount
-    }
+      onClick: handleDeleteAccount,
+    },
   ];
 
   return (
@@ -261,22 +292,24 @@ const AccountSettingsSection = () => {
         <div className="profile-account-dz">
           <div className="profile-account-dz-head">Account Actions</div>
           {accountActions.map((action, index) => (
-            <div 
+            <div
               key={index}
               className="profile-account-di"
               onClick={action.onClick}
             >
-              <div 
+              <div
                 className="profile-account-di-ic"
-                style={{ 
+                style={{
                   background: action.iconBg,
-                  stroke: action.iconStroke
+                  stroke: action.iconStroke,
                 }}
               >
                 {action.icon}
               </div>
               <div className="profile-account-di-content">
-                <div className={`profile-account-di-l ${action.isRed ? 'profile-account-di-l-red' : ''}`}>
+                <div
+                  className={`profile-account-di-l ${action.isRed ? "profile-account-di-l-red" : ""}`}
+                >
                   {action.label}
                 </div>
                 <div className="profile-account-di-s">{action.subLabel}</div>
@@ -299,7 +332,7 @@ const AccountSettingsSection = () => {
           lastName,
           email,
           mobile,
-          city
+          city,
         }}
       />
 

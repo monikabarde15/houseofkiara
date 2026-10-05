@@ -9,7 +9,6 @@
 
   /* padding-bottom: 48px;
   margin-bottom: 32px; */
-
 }
 
 .confirmation-piece-card-last {
@@ -44,15 +43,15 @@
 }
 
 .confirmation-piece-card-thumb-rental {
-  background: #EFF4EC;
+  background: #eff4ec;
 }
 
 .confirmation-piece-card-thumb-preloved {
-  background: #F5EEF2;
+  background: #f5eef2;
 }
 
 .confirmation-piece-card-thumb-new {
-  background: #EEF1F7;
+  background: #eef1f7;
 }
 
 /* =========================
@@ -76,7 +75,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
 
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .confirmation-piece-card-mode-strip-rental {
@@ -119,7 +118,7 @@
 }
 
 .confirmation-piece-card-status-pending {
-  color: #9A7010;
+  color: #9a7010;
 }
 
 /* =========================
@@ -175,7 +174,6 @@
 
   margin-bottom: 24px;
 }
-
 
 /* =========================================================
    MOBILE: Piece Card 

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import PhoneNumberInput from '../ui/PhoneNumberInput';
-import PrimaryButton from '../ui/PrimaryButton';
-import FormAlert from '../ui/FormAlert';
-import '../../../styles/Auth/forms/MobileSignInForm.css';
+import React, { useState } from "react";
+import PhoneNumberInput from "../ui/PhoneNumberInput";
+import PrimaryButton from "../ui/PrimaryButton";
+import FormAlert from "../ui/FormAlert";
+import "../../../styles/Auth/forms/MobileSignInForm.css";
 
 const MobileSignInForm = ({ switchScreen, onSendOtp }) => {
-  const [mobile, setMobile] = useState('');
-  const [mobileError, setMobileError] = useState('');
-  const [formError, setFormError] = useState('');
+  const [mobile, setMobile] = useState("");
+  const [mobileError, setMobileError] = useState("");
+  const [formError, setFormError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Section 7.4A - Mobile validation regex
@@ -15,13 +15,13 @@ const MobileSignInForm = ({ switchScreen, onSendOtp }) => {
     // Regex: 10 digits, must start with 6, 7, 8, or 9
     const mobileRegex = /^[6-9]\d{9}$/;
     if (!mobile) {
-      setMobileError('Please enter a valid 10-digit mobile number.');
+      setMobileError("Please enter a valid 10-digit mobile number.");
       return false;
     } else if (!mobileRegex.test(mobile)) {
-      setMobileError('Please enter a valid 10-digit mobile number.');
+      setMobileError("Please enter a valid 10-digit mobile number.");
       return false;
     } else {
-      setMobileError('');
+      setMobileError("");
       return true;
     }
   };
@@ -29,13 +29,13 @@ const MobileSignInForm = ({ switchScreen, onSendOtp }) => {
   const handleMobileChange = (e) => {
     setMobile(e.target.value);
     if (mobileError) {
-      setMobileError('');
-      setFormError('');
+      setMobileError("");
+      setFormError("");
     }
   };
 
   const handleSendOtp = async () => {
-    setFormError('');
+    setFormError("");
     const isMobileValid = validateMobile();
 
     if (!isMobileValid) {
@@ -46,20 +46,20 @@ const MobileSignInForm = ({ switchScreen, onSendOtp }) => {
 
     // Call backend API
     try {
-      const response = await fetch('/api/customer/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: mobile })
+      const response = await fetch("/api/customer/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: mobile }),
       });
       const result = await response.json();
 
       if (result.success) {
         onSendOtp(mobile);
       } else {
-        setFormError(result.message || 'Failed to send OTP. Please try again.');
+        setFormError(result.message || "Failed to send OTP. Please try again.");
       }
     } catch (err) {
-      setFormError('Network error. Please try again later.');
+      setFormError("Network error. Please try again later.");
     } finally {
       setIsLoading(false);
     }

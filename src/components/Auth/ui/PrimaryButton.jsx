@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import '../../../styles/Auth/ui/PrimaryButton.css';
+import React, { useState } from "react";
+import "../../../styles/Auth/ui/PrimaryButton.css";
 
-const PrimaryButton = ({ 
-  children, 
-  onClick, 
-  isLoading = false, 
+const PrimaryButton = ({
+  children,
+  onClick,
+  isLoading = false,
   disabled = false,
-  type = 'button'
+  type = "button",
 }) => {
   const [isLoadingState, setIsLoadingState] = useState(false);
 
   const handleClick = async (e) => {
     if (isLoading || isLoadingState || disabled) return;
-    
+
     if (onClick) {
       setIsLoadingState(true);
       try {
@@ -28,7 +28,7 @@ const PrimaryButton = ({
   return (
     <button
       type={type}
-      className={`hok-auth-btn-primary ${loading ? 'loading' : ''}`}
+      className={`hok-auth-btn-primary ${loading ? "loading" : ""}`}
       onClick={handleClick}
       disabled={loading || disabled}
     >

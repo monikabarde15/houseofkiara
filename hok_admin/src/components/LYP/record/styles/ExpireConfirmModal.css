@@ -13,8 +13,12 @@
 }
 
 @keyframes expire-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* ── Modal card ── */
@@ -29,8 +33,14 @@
 }
 
 @keyframes expire-slide-up {
-  from { transform: translateY(12px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* ── Header ── */
@@ -44,7 +54,7 @@
 .expire-modal-title {
   font-size: 17px;
   font-weight: 700;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0;
   font-family: var(--sans);
 }
@@ -53,7 +63,7 @@
   background: none;
   border: none;
   font-size: 22px;
-  color: #9C9287;
+  color: #9c9287;
   cursor: pointer;
   line-height: 1;
   padding: 0 2px;
@@ -61,13 +71,13 @@
 }
 
 .expire-modal-close:hover {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* ── Divider ── */
 .expire-modal-divider {
   height: 1px;
-  background: #EDE6DC;
+  background: #ede6dc;
 }
 
 /* ── Body ── */
@@ -78,14 +88,14 @@
 .expire-modal-body p {
   margin: 0;
   font-size: 14px;
-  color: #3A3530;
+  color: #3a3530;
   line-height: 1.6;
   font-family: var(--sans);
 }
 
 .expire-modal-body p strong {
   font-weight: 700;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* ── Footer ── */
@@ -99,20 +109,22 @@
 
 .expire-btn-cancel {
   padding: 8px 20px;
-  border: 1px solid #D6CEC4;
+  border: 1px solid #d6cec4;
   background: #fff;
   border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
-  color: #3A3530;
+  color: #3a3530;
   cursor: pointer;
   font-family: var(--sans);
-  transition: background 0.12s, border-color 0.12s;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
 }
 
 .expire-btn-cancel:hover:not(:disabled) {
-  background: #FAF8F5;
-  border-color: #C3BAAF;
+  background: #faf8f5;
+  border-color: #c3baaf;
 }
 
 .expire-btn-cancel:disabled {
@@ -123,19 +135,21 @@
 /* Red-outlined confirm button matching design */
 .expire-btn-confirm {
   padding: 8px 20px;
-  border: 1.5px solid #C0392B;
+  border: 1.5px solid #c0392b;
   background: #fff;
   border-radius: 4px;
   font-size: 13px;
   font-weight: 600;
-  color: #C0392B;
+  color: #c0392b;
   cursor: pointer;
   font-family: var(--sans);
-  transition: background 0.12s, color 0.12s;
+  transition:
+    background 0.12s,
+    color 0.12s;
 }
 
 .expire-btn-confirm:hover:not(:disabled) {
-  background: #C0392B;
+  background: #c0392b;
   color: #fff;
 }
 

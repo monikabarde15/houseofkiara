@@ -3,7 +3,10 @@ import { promisify } from "util";
 import Admin from "../models/Admin.js";
 
 const scrypt = promisify(crypto.scrypt);
-const hashPassword = async (password, salt = crypto.randomBytes(16).toString("hex")) => ({
+const hashPassword = async (
+  password,
+  salt = crypto.randomBytes(16).toString("hex"),
+) => ({
   salt,
   hash: (await scrypt(password, salt, 64)).toString("hex"),
 });
@@ -186,7 +189,7 @@ export const getAdmins = async (_req, res) => {
     const admins = await Admin.find({}, { name: 1, email: 1 });
     return res.json({
       success: true,
-      data: admins.map(a => ({ id: a._id, name: a.name, email: a.email })),
+      data: admins.map((a) => ({ id: a._id, name: a.name, email: a.email })),
     });
   } catch (error) {
     return res.status(500).json({

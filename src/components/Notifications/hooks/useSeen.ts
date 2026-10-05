@@ -1,7 +1,7 @@
 // src/components/Notifications/hooks/useSeen.ts
-import { useCallback, useState } from 'react';
-import { markSeen } from '../services/seenService';
-import { UrgencyMap } from '../types/notification.types';
+import { useCallback, useState } from "react";
+import { markSeen } from "../services/seenService";
+import { UrgencyMap } from "../types/notification.types";
 
 /**
  * §17.6 / §10 interaction #3 — "Mark what I have seen". Stores exactly the
@@ -23,7 +23,7 @@ export function useSeen(repaint: () => Promise<void>) {
         setMarking(false);
       }
     },
-    [repaint]
+    [repaint],
   );
 
   return { markAllSeen, marking };

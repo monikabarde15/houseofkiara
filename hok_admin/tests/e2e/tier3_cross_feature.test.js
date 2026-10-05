@@ -36,9 +36,18 @@ describe("Tier 3: Cross-Feature Interactions & Multi-Domain Workflows", () => {
     assert.ok([200, 201].includes(orderRes.status));
 
     // 3. Step through workflow: Confirmed -> Dispatched -> Delivered -> Returned
-    await client.patch(`/orders/${orderPayload.orderId}/status`, { status: "Dispatched", user: "Logistics" });
-    await client.patch(`/orders/${orderPayload.orderId}/status`, { status: "Delivered", user: "Courier" });
-    await client.patch(`/orders/${orderPayload.orderId}/status`, { status: "Returned", user: "QC Team" });
+    await client.patch(`/orders/${orderPayload.orderId}/status`, {
+      status: "Dispatched",
+      user: "Logistics",
+    });
+    await client.patch(`/orders/${orderPayload.orderId}/status`, {
+      status: "Delivered",
+      user: "Courier",
+    });
+    await client.patch(`/orders/${orderPayload.orderId}/status`, {
+      status: "Returned",
+      user: "QC Team",
+    });
 
     // 4. Create / Verify Payout Record
     const payoutPayload = generateTestPayout({
@@ -55,10 +64,13 @@ describe("Tier 3: Cross-Feature Interactions & Multi-Domain Workflows", () => {
     assert.strictEqual(payoutRes.data.data.netPayout, 14400);
 
     // 5. Settle Payout
-    const settleRes = await client.patch(`/payouts/${payoutPayload.payoutId}/paid`, {
-      paidBy: "Finance",
-      paymentReference: "UTR-CROSS-FLOW-001",
-    });
+    const settleRes = await client.patch(
+      `/payouts/${payoutPayload.payoutId}/paid`,
+      {
+        paidBy: "Finance",
+        paymentReference: "UTR-CROSS-FLOW-001",
+      },
+    );
     assert.strictEqual(settleRes.status, 200);
     assert.strictEqual(settleRes.data.data.status, "Paid");
   });
@@ -73,28 +85,39 @@ describe("Tier 3: Cross-Feature Interactions & Multi-Domain Workflows", () => {
     assert.ok([200, 201].includes(prodRes.status));
 
     const today = new Date();
-    const startDate = new Date(today.getTime() + 30 * 24 * 3600 * 1000).toISOString().split("T")[0];
-    const endDate = new Date(today.getTime() + 34 * 24 * 3600 * 1000).toISOString().split("T")[0];
+    const startDate = new Date(today.getTime() + 30 * 24 * 3600 * 1000)
+      .toISOString()
+      .split("T")[0];
+    const endDate = new Date(today.getTime() + 34 * 24 * 3600 * 1000)
+      .toISOString()
+      .split("T")[0];
 
     // 2. Check initial availability (should be available)
-    const availBefore = await client.get(`/products/${prodPayload.productId}/availability?startDate=${startDate}&endDate=${endDate}&mode=Rental`);
+    const availBefore = await client.get(
+      `/products/${prodPayload.productId}/availability?startDate=${startDate}&endDate=${endDate}&mode=Rental`,
+    );
     assert.strictEqual(availBefore.status, 200);
     assert.strictEqual(availBefore.data.data.available, true);
 
     // 3. Book Product for dates
-    const bookRes = await client.post(`/products/${prodPayload.productId}/reserve`, {
-      orderId: uniqueId("HOK-ORD-LOCK"),
-      customerName: "Ritu Kumar",
-      startDate,
-      endDate,
-      amount: 15000,
-      deposit: 20000,
-      mode: "Rental",
-    });
+    const bookRes = await client.post(
+      `/products/${prodPayload.productId}/reserve`,
+      {
+        orderId: uniqueId("HOK-ORD-LOCK"),
+        customerName: "Ritu Kumar",
+        startDate,
+        endDate,
+        amount: 15000,
+        deposit: 20000,
+        mode: "Rental",
+      },
+    );
     assert.ok([200, 201].includes(bookRes.status));
 
     // 4. Verify calendar / booking reflection
-    const calendarRes = await client.get(`/products/${prodPayload.productId}/calendar`);
+    const calendarRes = await client.get(
+      `/products/${prodPayload.productId}/calendar`,
+    );
     assert.strictEqual(calendarRes.status, 200);
   });
 
@@ -120,10 +143,13 @@ describe("Tier 3: Cross-Feature Interactions & Multi-Domain Workflows", () => {
     assert.ok([200, 201].includes(offerRes.status));
 
     // 3. Accept Offer
-    const acceptRes = await client.patch(`/offers/${offerPayload.offerId}/status`, {
-      status: "Accepted",
-      remarks: "Offer approved at 22,000 INR.",
-    });
+    const acceptRes = await client.patch(
+      `/offers/${offerPayload.offerId}/status`,
+      {
+        status: "Accepted",
+        remarks: "Offer approved at 22,000 INR.",
+      },
+    );
     assert.strictEqual(acceptRes.status, 200);
 
     // 4. Generate Order from Accepted Offer
@@ -139,10 +165,13 @@ describe("Tier 3: Cross-Feature Interactions & Multi-Domain Workflows", () => {
     assert.ok([200, 201].includes(orderRes.status));
 
     // 5. Append communication log to customer profile
-    const commRes = await client.post(`/customers/${customerPayload.customerId}/communication-log`, {
-      message: `Offer ${offerPayload.offerId} accepted and converted to Order ${orderPayload.orderId}.`,
-      channel: "System",
-    });
+    const commRes = await client.post(
+      `/customers/${customerPayload.customerId}/communication-log`,
+      {
+        message: `Offer ${offerPayload.offerId} accepted and converted to Order ${orderPayload.orderId}.`,
+        channel: "System",
+      },
+    );
     assert.strictEqual(commRes.status, 200);
   });
 
@@ -170,22 +199,29 @@ describe("Tier 3: Cross-Feature Interactions & Multi-Domain Workflows", () => {
     assert.ok([200, 201].includes(orderRes.status));
 
     // QC reports minor embroidery fraying (Grade B)
-    const qcRes = await client.patch(`/orders/${orderPayload.orderId}/items/0/return`, {
-      receivedDate: new Date().toISOString().split("T")[0],
-      receivedBy: "Senior QC Lead",
-      grade: "B",
-      notes: "Minor embroidery snag on right cuff. Requires master artisan retouching.",
-    });
+    const qcRes = await client.patch(
+      `/orders/${orderPayload.orderId}/items/0/return`,
+      {
+        receivedDate: new Date().toISOString().split("T")[0],
+        receivedBy: "Senior QC Lead",
+        grade: "B",
+        notes:
+          "Minor embroidery snag on right cuff. Requires master artisan retouching.",
+      },
+    );
     assert.strictEqual(qcRes.status, 200);
 
     // Record Partial Deposit Decision: 4,000 INR deduction for repair, 16,000 INR refund
-    const depositRes = await client.patch(`/orders/${orderPayload.orderId}/items/0/deposit`, {
-      status: "Partial",
-      totalDeposit: 20000,
-      deductedAmount: 4000,
-      releasedAmount: 16000,
-      reason: "Artisanal embroidery repair deduction.",
-    });
+    const depositRes = await client.patch(
+      `/orders/${orderPayload.orderId}/items/0/deposit`,
+      {
+        status: "Partial",
+        totalDeposit: 20000,
+        deductedAmount: 4000,
+        releasedAmount: 16000,
+        reason: "Artisanal embroidery repair deduction.",
+      },
+    );
     assert.strictEqual(depositRes.status, 200);
 
     // Verify persisted state

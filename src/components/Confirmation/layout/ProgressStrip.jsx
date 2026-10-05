@@ -1,4 +1,3 @@
-
 // src\components\Confirmation\layout\ProgressStrip.jsx
 import { Check } from "lucide-react";
 import "../../../styles/confirmation/layout/progress-strip.css";
@@ -15,9 +14,7 @@ const ProgressStrip = () => {
             <Check size={8} strokeWidth={2.4} />
           </span>
 
-          <span className="confirmation-progress-label">
-            Cart
-          </span>
+          <span className="confirmation-progress-label">Cart</span>
         </a>
 
         <span className="confirmation-progress-separator" />
@@ -30,9 +27,7 @@ const ProgressStrip = () => {
             <Check size={8} strokeWidth={2.4} />
           </span>
 
-          <span className="confirmation-progress-label">
-            Checkout
-          </span>
+          <span className="confirmation-progress-label">Checkout</span>
         </a>
 
         <span className="confirmation-progress-separator" />
@@ -42,14 +37,11 @@ const ProgressStrip = () => {
             3
           </span>
 
-          <span className="confirmation-progress-label">
-            Confirmation
-          </span>
+          <span className="confirmation-progress-label">Confirmation</span>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default ProgressStrip;

@@ -1,12 +1,12 @@
 /* editor/styles/WhatsAppPreview.css */
 .msg-whatsapp-preview-body {
-  background: #E7F3E4;
+  background: #e7f3e4;
   border: 1px solid rgba(107, 126, 90, 0.3);
   border-radius: var(--msg-radius);
   padding: var(--msg-spacing-11) var(--msg-spacing-13);
   font-size: 12px;
   line-height: 1.65;
-  color: #2E3A26;
+  color: #2e3a26;
   white-space: pre-wrap;
   word-break: break-word;
   min-height: 80px;

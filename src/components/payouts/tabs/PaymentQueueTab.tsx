@@ -71,7 +71,9 @@ export default function PaymentQueueTab() {
           <span className="rounded bg-[#E6F4EA] px-2 py-0.5 text-xs font-semibold text-[#137333]">
             Rental
           </span>
-          <span className="ml-auto text-sm text-[#78716C]">due 24 Mar 2026</span>
+          <span className="ml-auto text-sm text-[#78716C]">
+            due 24 Mar 2026
+          </span>
         </div>
 
         <div className="p-6">
@@ -84,14 +86,17 @@ export default function PaymentQueueTab() {
             <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#8C827A]">
               DECISION CONTEXT
             </span>
-            Last split <strong className="text-[#1E1412]">55%</strong> (Rental #4 · 29 Mar 2026) · piece avg{" "}
+            Last split <strong className="text-[#1E1412]">55%</strong> (Rental
+            #4 · 29 Mar 2026) · piece avg{" "}
             <strong className="text-[#1E1412]">59%</strong> across 4 · default{" "}
-            <strong className="text-[#1E1412]">45%</strong> · condition Excellent · rented{" "}
-            <strong className="text-[#1E1412]">6×</strong>
+            <strong className="text-[#1E1412]">45%</strong> · condition
+            Excellent · rented <strong className="text-[#1E1412]">6×</strong>
           </div>
 
           <p className="mb-5 text-xs text-[#78716C]">
-            Order: <strong className="font-semibold text-[#1E1412]">Returned</strong> · Deposit:{" "}
+            Order:{" "}
+            <strong className="font-semibold text-[#1E1412]">Returned</strong> ·
+            Deposit:{" "}
             <strong className="font-semibold text-[#1E1412]">Released</strong>
           </p>
 
@@ -116,7 +121,8 @@ export default function PaymentQueueTab() {
                   className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
                 />
                 <p className="mt-1.5 text-xs text-[#78716C]">
-                  Suggested — type either the % or the ₹ below (piece default 45%)
+                  Suggested — type either the % or the ₹ below (piece default
+                  45%)
                 </p>
               </div>
 
@@ -205,19 +211,25 @@ export default function PaymentQueueTab() {
           <span className="rounded bg-[#EDE9FE] px-2 py-0.5 text-xs font-semibold text-[#5B21B6]">
             Damage Compensation
           </span>
-          <span className="ml-auto text-sm text-[#78716C]">due 24 Mar 2026</span>
+          <span className="ml-auto text-sm text-[#78716C]">
+            due 24 Mar 2026
+          </span>
         </div>
 
         <div className="p-6">
           <div className="mb-4 rounded-md border border-[#EFE8D8] bg-[#FAF5EB] p-3.5 text-xs leading-relaxed text-[#524B45]">
-            Customer deposit deduction of ₹15,000 was applied for damage. Standard payout for Rental #2 would be ₹9,075 (55% of ₹16,500). Who keeps the deduction is your call below — lister compensation vs the repair cost HOK bears.
+            Customer deposit deduction of ₹15,000 was applied for damage.
+            Standard payout for Rental #2 would be ₹9,075 (55% of ₹16,500). Who
+            keeps the deduction is your call below — lister compensation vs the
+            repair cost HOK bears.
           </div>
 
           <p className="mb-1 text-xs font-semibold text-[#B88E36] hover:underline cursor-pointer">
             Related order: HOK-ORD-008 →
           </p>
           <p className="mb-4 text-xs text-[#78716C]">
-            Return condition: Minor embroidery tear on hem — agreed deduction per rental agreement
+            Return condition: Minor embroidery tear on hem — agreed deduction
+            per rental agreement
           </p>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -400,7 +412,9 @@ export default function PaymentQueueTab() {
           <span className="rounded bg-[#E6F4EA] px-2 py-0.5 text-xs font-semibold text-[#137333]">
             Rental
           </span>
-          <span className="ml-auto text-sm text-[#78716C]">due 28 Mar 2026</span>
+          <span className="ml-auto text-sm text-[#78716C]">
+            due 28 Mar 2026
+          </span>
         </div>
 
         <div className="p-6">
@@ -413,14 +427,16 @@ export default function PaymentQueueTab() {
             <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#8C827A]">
               DECISION CONTEXT
             </span>
-            Last split <strong className="text-[#1E1412]">60%</strong> (Rental #1 · 28 Mar 2026) · default{" "}
-            <strong className="text-[#1E1412]">40%</strong> · condition Good · rented{" "}
-            <strong className="text-[#1E1412]">5×</strong>
+            Last split <strong className="text-[#1E1412]">60%</strong> (Rental
+            #1 · 28 Mar 2026) · default{" "}
+            <strong className="text-[#1E1412]">40%</strong> · condition Good ·
+            rented <strong className="text-[#1E1412]">5×</strong>
           </div>
 
           <div className="mb-5 rounded-md border border-[#F87171]/40 bg-[#FDF2F2] p-3 text-xs font-medium text-[#991B1B]">
-            ⚠ <strong>Not safe to pay yet.</strong> Piece not back yet — order is Shipped. Order:{" "}
-            <strong>Shipped</strong> · Deposit: <strong>Held</strong>
+            ⚠ <strong>Not safe to pay yet.</strong> Piece not back yet — order
+            is Shipped. Order: <strong>Shipped</strong> · Deposit:{" "}
+            <strong>Held</strong>
           </div>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -444,7 +460,8 @@ export default function PaymentQueueTab() {
                   className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
                 />
                 <p className="mt-1.5 text-xs text-[#78716C]">
-                  Suggested — type either the % or the ₹ below (piece default 40%)
+                  Suggested — type either the % or the ₹ below (piece default
+                  40%)
                 </p>
               </div>
 
@@ -533,7 +550,9 @@ export default function PaymentQueueTab() {
           <span className="rounded bg-[#E6F4EA] px-2 py-0.5 text-xs font-semibold text-[#137333]">
             Rental
           </span>
-          <span className="ml-auto text-sm text-[#78716C]">due 29 Mar 2026</span>
+          <span className="ml-auto text-sm text-[#78716C]">
+            due 29 Mar 2026
+          </span>
         </div>
 
         <div className="p-6">
@@ -546,15 +565,22 @@ export default function PaymentQueueTab() {
             <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#8C827A]">
               DECISION CONTEXT
             </span>
-            Last split <strong className="text-[#1E1412]">55%</strong> (Rental #4 · 29 Mar 2026) · piece avg{" "}
+            Last split <strong className="text-[#1E1412]">55%</strong> (Rental
+            #4 · 29 Mar 2026) · piece avg{" "}
             <strong className="text-[#1E1412]">59%</strong> across 4 · default{" "}
-            <strong className="text-[#1E1412]">45%</strong> · condition Excellent · rented{" "}
-            <strong className="text-[#1E1412]">6×</strong>
+            <strong className="text-[#1E1412]">45%</strong> · condition
+            Excellent · rented <strong className="text-[#1E1412]">6×</strong>
           </div>
 
           <p className="mb-5 text-xs text-[#78716C]">
-            Order: <strong className="font-semibold text-[#1E1412]">Partially Returned</strong> · Deposit:{" "}
-            <strong className="font-semibold text-[#1E1412]">Partially Released</strong>
+            Order:{" "}
+            <strong className="font-semibold text-[#1E1412]">
+              Partially Returned
+            </strong>{" "}
+            · Deposit:{" "}
+            <strong className="font-semibold text-[#1E1412]">
+              Partially Released
+            </strong>
           </p>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -578,7 +604,8 @@ export default function PaymentQueueTab() {
                   className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
                 />
                 <p className="mt-1.5 text-xs text-[#78716C]">
-                  Suggested — type either the % or the ₹ below (piece default 45%)
+                  Suggested — type either the % or the ₹ below (piece default
+                  45%)
                 </p>
               </div>
 
@@ -667,7 +694,9 @@ export default function PaymentQueueTab() {
           <span className="rounded bg-[#FDF3E7] px-2 py-0.5 text-xs font-semibold text-[#9A3412]">
             Preloved
           </span>
-          <span className="ml-auto text-sm text-[#78716C]">due 29 Mar 2026</span>
+          <span className="ml-auto text-sm text-[#78716C]">
+            due 29 Mar 2026
+          </span>
         </div>
 
         <div className="p-6">
@@ -680,14 +709,16 @@ export default function PaymentQueueTab() {
             <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#8C827A]">
               DECISION CONTEXT
             </span>
-            Last split <strong className="text-[#1E1412]">75%</strong> ( · 29 Mar 2026) · default{" "}
-            <strong className="text-[#1E1412]">40%</strong> · condition Excellent · rented{" "}
+            Last split <strong className="text-[#1E1412]">75%</strong> ( · 29
+            Mar 2026) · default <strong className="text-[#1E1412]">40%</strong>{" "}
+            · condition Excellent · rented{" "}
             <strong className="text-[#1E1412]">4×</strong>
           </div>
 
           <div className="mb-5 rounded-md border border-[#F87171]/40 bg-[#FDF2F2] p-3 text-xs font-medium text-[#991B1B]">
-            ⚠ <strong>Not safe to pay yet.</strong> Sale not delivered yet. Order:{" "}
-            <strong>Partially Returned</strong> · Deposit: <strong>Partially Released</strong>
+            ⚠ <strong>Not safe to pay yet.</strong> Sale not delivered yet.
+            Order: <strong>Partially Returned</strong> · Deposit:{" "}
+            <strong>Partially Released</strong>
           </div>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -697,9 +728,7 @@ export default function PaymentQueueTab() {
                 <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
                   TRANSACTION VALUE
                 </label>
-                <div className="text-2xl font-bold text-[#1E1412]">
-                  ₹95,000
-                </div>
+                <div className="text-2xl font-bold text-[#1E1412]">₹95,000</div>
               </div>
 
               <div>
@@ -713,7 +742,8 @@ export default function PaymentQueueTab() {
                   className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
                 />
                 <p className="mt-1.5 text-xs text-[#78716C]">
-                  Suggested — type either the % or the ₹ below (piece default 75%)
+                  Suggested — type either the % or the ₹ below (piece default
+                  75%)
                 </p>
               </div>
 

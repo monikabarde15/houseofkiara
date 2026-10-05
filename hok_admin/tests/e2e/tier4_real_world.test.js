@@ -102,15 +102,20 @@ describe("Tier 4: Real-World Application Workload Scenarios", () => {
       date: new Date().toISOString().split("T")[0],
     });
 
-    await client.patch(`/orders/${orderPayload.orderId}/status`, { status: "Shipped" });
-    await client.patch(`/orders/${orderPayload.orderId}/status`, { status: "Delivered" });
+    await client.patch(`/orders/${orderPayload.orderId}/status`, {
+      status: "Shipped",
+    });
+    await client.patch(`/orders/${orderPayload.orderId}/status`, {
+      status: "Delivered",
+    });
 
     // 5. Return Arrival, Flawless QC Grade A & Deposit Release
     await client.patch(`/orders/${orderPayload.orderId}/items/0/return`, {
       receivedDate: new Date().toISOString().split("T")[0],
       receivedBy: "Lead Quality Auditor",
       grade: "A",
-      notes: "Royal lehenga returned in pristine condition. Zero thread breaks or stains.",
+      notes:
+        "Royal lehenga returned in pristine condition. Zero thread breaks or stains.",
     });
 
     await client.patch(`/orders/${orderPayload.orderId}/items/0/deposit`, {
@@ -121,7 +126,9 @@ describe("Tier 4: Real-World Application Workload Scenarios", () => {
       reason: "Pristine Grade A return approved for 100% deposit release.",
     });
 
-    await client.patch(`/orders/${orderPayload.orderId}/status`, { status: "Complete" });
+    await client.patch(`/orders/${orderPayload.orderId}/status`, {
+      status: "Complete",
+    });
 
     // 6. Lister Payout Generation & Settlement
     const payoutPayload = generateTestPayout({
@@ -136,10 +143,13 @@ describe("Tier 4: Real-World Application Workload Scenarios", () => {
     const payoutRes = await client.post("/payouts", payoutPayload);
     assert.ok([200, 201].includes(payoutRes.status));
 
-    const settleRes = await client.patch(`/payouts/${payoutPayload.payoutId}/paid`, {
-      paidBy: "Finance Controller",
-      paymentReference: "UTR-HDFC-WED-SETTLE-8899",
-    });
+    const settleRes = await client.patch(
+      `/payouts/${payoutPayload.payoutId}/paid`,
+      {
+        paidBy: "Finance Controller",
+        paymentReference: "UTR-HDFC-WED-SETTLE-8899",
+      },
+    );
     assert.strictEqual(settleRes.status, 200);
     assert.strictEqual(settleRes.data.data.status, "Paid");
   });
@@ -178,7 +188,9 @@ describe("Tier 4: Real-World Application Workload Scenarios", () => {
     assert.ok([200, 201].includes(pieceRes.status));
 
     // 3. Verify Lister's pieces and payout history query
-    const payoutsRes = await client.get(`/payouts?listerId=${listerPayload.listerId}`);
+    const payoutsRes = await client.get(
+      `/payouts?listerId=${listerPayload.listerId}`,
+    );
     assert.strictEqual(payoutsRes.status, 200);
   });
 });

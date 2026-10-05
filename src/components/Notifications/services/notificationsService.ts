@@ -1,7 +1,7 @@
 // src/components/Notifications/services/notificationsService.ts
-import { NotificationsResponse } from '../types/notification.types';
+import { NotificationsResponse } from "../types/notification.types";
 
-const BASE_URL = '/admin/notifications';
+const BASE_URL = "/admin/notifications";
 
 /**
  * §19.1 — the single endpoint that returns the whole computed list.
@@ -9,8 +9,8 @@ const BASE_URL = '/admin/notifications';
  */
 export async function fetchNotifications(): Promise<NotificationsResponse> {
   const res = await fetch(BASE_URL, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {

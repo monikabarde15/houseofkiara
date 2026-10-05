@@ -26,13 +26,13 @@
   align-items: center;
   gap: 5px;
   padding: 5px 10px;
-  border: 1px solid #E8E0D4; /* --border */
+  border: 1px solid #e8e0d4; /* --border */
   border-radius: 1px;
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 400;
-  color: #1A1612; /* --charcoal */
-  background: #FFFFFB; /* --warm-white */
+  color: #1a1612; /* --charcoal */
+  background: #fffffb; /* --warm-white */
   flex-shrink: 0;
   white-space: nowrap;
   cursor: pointer;
@@ -41,9 +41,9 @@
 }
 
 .mob-active-tags-row__tag:active {
-  border-color: #B85C38; /* --terracotta */
-  color: #B85C38;
-  background: #FDF4F1;
+  border-color: #b85c38; /* --terracotta */
+  color: #b85c38;
+  background: #fdf4f1;
 }
 
 /* Close Icon - 8x8 px */
@@ -61,7 +61,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 400;
-  color: #B85C38; /* --terracotta */
+  color: #b85c38; /* --terracotta */
   border: 1px solid rgba(184, 92, 56, 0.3);
   background: rgba(184, 92, 56, 0.04);
   border-radius: 1px;
@@ -73,5 +73,5 @@
 
 .mob-active-tags-row__clear-all:active {
   background: rgba(184, 92, 56, 0.1);
-  border-color: #B85C38;
+  border-color: #b85c38;
 }

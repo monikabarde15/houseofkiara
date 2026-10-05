@@ -1,6 +1,6 @@
 /* Mode Cards (Mobile) - C9 */
 .hok-hiw-mobile-modes-section {
-  background: #FFFEFB;
+  background: #fffefb;
   padding: 48px 16px;
 }
 
@@ -20,30 +20,30 @@
 .hok-hiw-mobile-modes-line {
   width: 24px;
   height: 1px;
-  background: #C9A96E;
+  background: #c9a96e;
 }
 
 .hok-hiw-mobile-modes-eyebrow-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.28em;
-  color: #C9A96E;
+  color: #c9a96e;
   font-weight: 400;
 }
 
 .hok-hiw-mobile-modes-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: clamp(32px, 6vw, 52px);
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   letter-spacing: -0.01em;
   line-height: 1.1;
 }
 
 .hok-hiw-mobile-modes-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* Mode Cards Stack */
@@ -56,12 +56,14 @@
 /* Base Card */
 .hok-hiw-mobile-mcard {
   padding: 36px 24px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 1px;
-  background: #FFFFFB;
+  background: #fffffb;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    transform 0.3s ease;
 }
 
 .hok-hiw-mobile-mcard:hover {
@@ -71,7 +73,7 @@
 
 /* Ghost Letter */
 .hok-hiw-mobile-mcard-ghost {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 160px;
   font-weight: 300;
   color: rgba(201, 169, 110, 0.045);
@@ -103,20 +105,20 @@
 }
 
 .hok-hiw-mobile-mcard-swatch-rent {
-  background: #1A1612;
+  background: #1a1612;
 }
 
 .hok-hiw-mobile-mcard-swatch-preloved {
-  background: #B85C38;
+  background: #b85c38;
 }
 
 .hok-hiw-mobile-mcard-badge-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 0.28em;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .hok-hiw-mobile-mcard-badge-text-preloved {
@@ -125,35 +127,35 @@
 
 /* Title */
 .hok-hiw-mobile-mcard-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 36px;
   font-weight: 300;
   line-height: 1.05;
   letter-spacing: -0.02em;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 10px;
 }
 
 .hok-hiw-mobile-mcard-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .hok-hiw-mobile-mcard-title-preloved {
-  color: #FAF7F2;
+  color: #faf7f2;
 }
 
 .hok-hiw-mobile-mcard-title-preloved em {
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* Subtitle */
 .hok-hiw-mobile-mcard-subtitle {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 16px;
   font-weight: 300;
   font-style: italic;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.5;
   margin-bottom: 28px;
 }
@@ -173,7 +175,7 @@
   grid-template-columns: 18px 1fr;
   gap: 14px;
   padding: 16px 0;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 .hok-hiw-mobile-ms-row:last-child {
@@ -185,10 +187,10 @@
 }
 
 .hok-hiw-mobile-ms-n {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 13px;
   font-weight: 300;
-  color: #E8D5B0;
+  color: #e8d5b0;
   line-height: 1.4;
 }
 
@@ -206,10 +208,10 @@
 }
 
 .hok-hiw-mobile-ms-title {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 3px;
 }
 
@@ -218,10 +220,10 @@
 }
 
 .hok-hiw-mobile-ms-desc {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.6;
 }
 
@@ -237,8 +239,8 @@
   flex-direction: row;
   align-items: flex-start;
   gap: 8px;
-  background: #FAF7F2;
-  border-left: 2px solid #E8D5B0;
+  background: #faf7f2;
+  border-left: 2px solid #e8d5b0;
   border-radius: 1px;
 }
 
@@ -248,10 +250,10 @@
 }
 
 .hok-hiw-mobile-ms-note span {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.5;
 }
 
@@ -271,24 +273,26 @@
   align-items: center;
   gap: 8px;
   margin-top: 28px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9.5px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   text-decoration: none;
   border: none;
   background: transparent;
   border-bottom: 1px solid transparent;
   padding: 0 0 3px 0;
   cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .hok-hiw-mobile-mcard-cta:hover {
-  color: #C9A96E;
-  border-bottom-color: #C9A96E;
+  color: #c9a96e;
+  border-bottom-color: #c9a96e;
 }
 
 .hok-hiw-mobile-mcard-arrow {
@@ -301,17 +305,17 @@
 }
 
 .hok-hiw-mobile-mcard-cta-preloved {
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .hok-hiw-mobile-mcard-cta-preloved:hover {
-  color: #E8D5B0;
-  border-bottom-color: #E8D5B0;
+  color: #e8d5b0;
+  border-bottom-color: #e8d5b0;
 }
 
 /* Preloved Card - Dark Overrides */
 .hok-hiw-mobile-mcard-preloved {
-  background: #1A1612;
+  background: #1a1612;
   border-color: transparent;
 }
 

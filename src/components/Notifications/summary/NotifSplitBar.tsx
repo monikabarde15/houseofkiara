@@ -1,8 +1,12 @@
 // src/components/Notifications/summary/NotifSplitBar.tsx
-import React from 'react';
-import { BandKey, NarrowingState, SummaryCounts } from '../types/notification.types';
-import { Chip } from '../components/Chip';
-import './styles/NotifSplitBar.css';
+import React from "react";
+import {
+  BandKey,
+  NarrowingState,
+  SummaryCounts,
+} from "../types/notification.types";
+import { Chip } from "../components/Chip";
+import "./styles/NotifSplitBar.css";
 
 interface NotifSplitBarProps {
   summary: SummaryCounts;
@@ -41,32 +45,32 @@ export function NotifSplitBar({
           value={summary.today}
           tone="hot"
           label="dated or at risk"
-          active={narrowing.band === 'today'}
-          onClick={() => onToggleBand('today')}
+          active={narrowing.band === "today"}
+          onClick={() => onToggleBand("today")}
         />
         <span className="ntf-split-sep">+</span>
         <Figure
           value={summary.waiting}
           tone="warm"
           label="waiting on us"
-          active={narrowing.band === 'waiting'}
-          onClick={() => onToggleBand('waiting')}
+          active={narrowing.band === "waiting"}
+          onClick={() => onToggleBand("waiting")}
         />
         <span className="ntf-split-sep">+</span>
         <Figure
           value={summary.know}
           tone="plain"
           label="worth knowing"
-          active={narrowing.band === 'know'}
-          onClick={() => onToggleBand('know')}
+          active={narrowing.band === "know"}
+          onClick={() => onToggleBand("know")}
         />
         <span className="ntf-split-sep">+</span>
         <Figure
           value={summary.them}
           tone="cool"
           label="with them"
-          active={narrowing.band === 'them'}
-          onClick={() => onToggleBand('them')}
+          active={narrowing.band === "them"}
+          onClick={() => onToggleBand("them")}
         />
         <span className="ntf-split-sep">=</span>
         <Figure
@@ -79,7 +83,12 @@ export function NotifSplitBar({
         />
 
         {putDownCount > 0 && (
-          <button type="button" className="ntf-snz" onClick={onBringBack} disabled={bringingBack}>
+          <button
+            type="button"
+            className="ntf-snz"
+            onClick={onBringBack}
+            disabled={bringingBack}
+          >
             {putDownCount} put down · bring back
           </button>
         )}
@@ -103,8 +112,8 @@ export function NotifSplitBar({
           count={summary.nobodyYet}
           carrying={false}
           isNobody
-          selected={narrowing.person === 'nobody'}
-          onClick={() => onTogglePerson('nobody')}
+          selected={narrowing.person === "nobody"}
+          onClick={() => onTogglePerson("nobody")}
         />
       </div>
     </div>
@@ -113,7 +122,7 @@ export function NotifSplitBar({
 
 interface FigureProps {
   value: number;
-  tone: 'hot' | 'warm' | 'cool' | 'plain';
+  tone: "hot" | "warm" | "cool" | "plain";
   label: string;
   active: boolean;
   onClick: () => void;
@@ -126,15 +135,18 @@ interface FigureProps {
  */
 function Figure({ value, tone, label, active, onClick, title }: FigureProps) {
   const numberClass =
-    tone === 'hot' ? 'ntf-split-n ntf-split-n--hot'
-    : tone === 'warm' ? 'ntf-split-n ntf-split-n--warm'
-    : tone === 'cool' ? 'ntf-split-n ntf-split-n--cool'
-    : 'ntf-split-n';
+    tone === "hot"
+      ? "ntf-split-n ntf-split-n--hot"
+      : tone === "warm"
+        ? "ntf-split-n ntf-split-n--warm"
+        : tone === "cool"
+          ? "ntf-split-n ntf-split-n--cool"
+          : "ntf-split-n";
 
   return (
     <button
       type="button"
-      className={`ntf-fig${active ? ' ntf-fig--on' : ''}`}
+      className={`ntf-fig${active ? " ntf-fig--on" : ""}`}
       onClick={onClick}
       title={title ?? `Show only ${label}`}
     >

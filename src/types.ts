@@ -24,7 +24,7 @@ export interface Customer {
   lastOrderDate: string;
   wishlistCount: number;
   joinedDate: string;
-  status: 'Active' | 'Suspended';
+  status: "Active" | "Suspended";
   address?: string;
   gstin?: string;
   instagram?: string;
@@ -73,10 +73,35 @@ export interface Product {
   seoDescription?: string;
   urlSlug?: string;
   blockedDates?: { from: string; to: string; reason: string }[];
-  bookingHistory?: { orderId: string; customerName?: string; date?: string; amount?: number; status?: string }[];
-  sku?: string; color?: string; craft?: string; technique?: string; story?: string; tags?: string[]; measurements?: Record<string, string>;
-  taxRate?: number; gstRate?: number; cleaningFee?: number; extensionPrice?: number; payoutPercentage?: number; relatedProductIds?: string[];
-  _id?: string; productId?: string; reviewCount?: number; rentalStatus?: string; currentRenterName?: string; currentOrderId?: string; rentUntil?: string; nextFreeDate?: string; earnedAmount?: number;
+  bookingHistory?: {
+    orderId: string;
+    customerName?: string;
+    date?: string;
+    amount?: number;
+    status?: string;
+  }[];
+  sku?: string;
+  color?: string;
+  craft?: string;
+  technique?: string;
+  story?: string;
+  tags?: string[];
+  measurements?: Record<string, string>;
+  taxRate?: number;
+  gstRate?: number;
+  cleaningFee?: number;
+  extensionPrice?: number;
+  payoutPercentage?: number;
+  relatedProductIds?: string[];
+  _id?: string;
+  productId?: string;
+  reviewCount?: number;
+  rentalStatus?: string;
+  currentRenterName?: string;
+  currentOrderId?: string;
+  rentUntil?: string;
+  nextFreeDate?: string;
+  earnedAmount?: number;
 }
 
 export interface Order {
@@ -89,16 +114,30 @@ export interface Order {
   productName: string;
   invoiceNo?: string;
   invoiceDate?: string;
-  items?: { productName: string; productId?: string; mode?: string; amount?: number; deposit?: number }[];
+  items?: {
+    productName: string;
+    productId?: string;
+    mode?: string;
+    amount?: number;
+    deposit?: number;
+  }[];
   designer: string;
-  mode: 'Rental' | 'Preloved' | 'Buy';
+  mode: "Rental" | "Preloved" | "Buy";
   amount: number;
   deposit: number;
   discount: number;
   grandTotal: number;
   rentalStartDate?: string;
   rentalEndDate?: string;
-  status: 'Confirmed' | 'Dispatched' | 'Shipped' | 'Delivered' | 'Return Sent' | 'Returned' | 'Complete' | 'Processed';
+  status:
+    | "Confirmed"
+    | "Dispatched"
+    | "Shipped"
+    | "Delivered"
+    | "Return Sent"
+    | "Returned"
+    | "Complete"
+    | "Processed";
   address: string;
   dispatchDetails?: {
     dispatchedBy: string;
@@ -115,11 +154,11 @@ export interface Order {
   conditionAssessment?: {
     receivedDate: string;
     receivedBy: string;
-    grade: 'A' | 'B' | 'C' | 'D'; // A: Excellent, B: Good, C: Damaged, D: Signif. Damage
+    grade: "A" | "B" | "C" | "D"; // A: Excellent, B: Good, C: Damaged, D: Signif. Damage
     notes: string;
   };
   depositDecision?: {
-    status: 'Released' | 'Partial' | 'Forfeited' | 'Pending';
+    status: "Released" | "Partial" | "Forfeited" | "Pending";
     releasedAmount: number;
     deductedAmount: number;
     reason: string;
@@ -139,11 +178,18 @@ export interface Offer {
   offerPrice: number;
   askPercentage: number;
   date: string;
-    status: 'Pending' | 'Accepted' | 'Declined' | 'Countered' | 'Expired' | 'On Hold' | 'Enquiry';
-    counterPrice?: number;
-    channel?: string;
-    phone?: string;
-    note?: string;
+  status:
+    | "Pending"
+    | "Accepted"
+    | "Declined"
+    | "Countered"
+    | "Expired"
+    | "On Hold"
+    | "Enquiry";
+  counterPrice?: number;
+  channel?: string;
+  phone?: string;
+  note?: string;
 }
 
 export interface Designer {
@@ -152,7 +198,7 @@ export interface Designer {
   slug: string;
   activeListings: number;
   featured: boolean;
-  status: 'Active' | 'Suspended';
+  status: "Active" | "Suspended";
   bio?: string;
   foundedYear?: string;
   website?: string;
@@ -177,7 +223,7 @@ export interface Lister {
   totalEarnings: number;
   totalEarned?: number;
   pendingPayout: number;
-  status: 'Active' | 'Pending Review' | 'Suspended';
+  status: "Active" | "Pending Review" | "Suspended";
   joinedDate: string;
   instagram?: string;
   referrer?: string;
@@ -200,7 +246,7 @@ export interface ListerSubmission {
   retailPrice: number;
   originalYear: string;
   condition: string;
-  status: 'Pending' | 'Approved' | 'Rejected';
+  status: "Pending" | "Approved" | "Rejected";
   submittedDate: string;
   description: string;
 }
@@ -209,13 +255,13 @@ export interface PromoCode {
   id: string;
   code: string;
   discountValue: number;
-  discountType: 'Percentage' | 'Flat';
+  discountType: "Percentage" | "Flat";
   minOrderValue: number;
   usageCount: number;
   maxUses: number;
   expiryDate: string;
-  status: 'Active' | 'Expired';
-  applicableModes: ('Rental' | 'Preloved' | 'Buy')[];
+  status: "Active" | "Expired";
+  applicableModes: ("Rental" | "Preloved" | "Buy")[];
   maxUsesPerCustomer: number;
 }
 
@@ -253,5 +299,11 @@ export interface HomepageEditor {
     secondaryCtaUrl: string;
     backgroundImageUrl?: string;
   };
-  testimonials: { id: string; author: string; role: string; text: string; rating: number }[];
+  testimonials: {
+    id: string;
+    author: string;
+    role: string;
+    text: string;
+    rating: number;
+  }[];
 }

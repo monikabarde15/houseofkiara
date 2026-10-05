@@ -8,20 +8,13 @@ const INITIAL_FORM = {
   lastName: "",
   email: "",
   mobile: "",
-  city: ""
+  city: "",
 };
 
-const MobileEditProfileModal = ({
-  isOpen,
-  onClose,
-  onSave,
-  profileData
-}) => {
-  const [formData, setFormData] =
-    useState(INITIAL_FORM);
+const MobileEditProfileModal = ({ isOpen, onClose, onSave, profileData }) => {
+  const [formData, setFormData] = useState(INITIAL_FORM);
 
-  const [errors, setErrors] =
-    useState({});
+  const [errors, setErrors] = useState({});
 
   /* ============================================
      Populate Existing Data
@@ -33,30 +26,23 @@ const MobileEditProfileModal = ({
     }
 
     setFormData({
-      firstName:
-        profileData?.firstName || "",
+      firstName: profileData?.firstName || "",
 
-      lastName:
-        profileData?.lastName || "",
+      lastName: profileData?.lastName || "",
 
-      email:
-        profileData?.email || "",
+      email: profileData?.email || "",
 
-      mobile:
-        profileData?.mobile || "",
+      mobile: profileData?.mobile || "",
 
-      city:
-        profileData?.city || ""
+      city: profileData?.city || "",
     });
 
     setErrors({});
 
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow =
-        "";
+      document.body.style.overflow = "";
     };
   }, [isOpen, profileData]);
 
@@ -64,31 +50,20 @@ const MobileEditProfileModal = ({
      Validation
      ============================================ */
 
-  const validateField = (
-    name,
-    value
-  ) => {
+  const validateField = (name, value) => {
     switch (name) {
       case "firstName":
-        return !value.trim()
-          ? "Please enter a first name"
-          : "";
+        return !value.trim() ? "Please enter a first name" : "";
 
       case "lastName":
-        return !value.trim()
-          ? "Please enter a last name"
-          : "";
+        return !value.trim() ? "Please enter a last name" : "";
 
       case "mobile":
         if (!value.trim()) {
           return "Please enter a valid mobile number";
         }
 
-        if (
-          !/^[+\d][\d\s-]{7,}$/.test(
-            value
-          )
-        ) {
+        if (!/^[+\d][\d\s-]{7,}$/.test(value)) {
           return "Please enter a valid mobile number";
         }
 
@@ -106,15 +81,8 @@ const MobileEditProfileModal = ({
   const validateForm = () => {
     const newErrors = {};
 
-    [
-      "firstName",
-      "lastName",
-      "mobile"
-    ].forEach((field) => {
-      const error = validateField(
-        field,
-        formData[field]
-      );
+    ["firstName", "lastName", "mobile"].forEach((field) => {
+      const error = validateField(field, formData[field]);
 
       if (error) {
         newErrors[field] = error;
@@ -123,10 +91,7 @@ const MobileEditProfileModal = ({
 
     setErrors(newErrors);
 
-    return (
-      Object.keys(newErrors).length ===
-      0
-    );
+    return Object.keys(newErrors).length === 0;
   };
 
   /* ============================================
@@ -134,18 +99,17 @@ const MobileEditProfileModal = ({
      ============================================ */
 
   const handleChange = (e) => {
-    const { name, value } =
-      e.target;
+    const { name, value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
-        [name]: ""
+        [name]: "",
       }));
     }
   };
@@ -157,19 +121,17 @@ const MobileEditProfileModal = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const isValid =
-      validateForm();
+    const isValid = validateForm();
 
     if (!isValid) {
       requestAnimationFrame(() => {
-        const firstError =
-          document.querySelector(
-            ".profile-mobile-mfi.has-error"
-          );
+        const firstError = document.querySelector(
+          ".profile-mobile-mfi.has-error",
+        );
 
         firstError?.scrollIntoView({
           behavior: "smooth",
-          block: "nearest"
+          block: "nearest",
         });
       });
 
@@ -220,9 +182,7 @@ const MobileEditProfileModal = ({
            ================================= */}
 
         <div className="profile-mobile-editprof-header">
-          <div className="profile-mobile-editprof-title">
-            Edit Profile
-          </div>
+          <div className="profile-mobile-editprof-title">Edit Profile</div>
 
           <button
             type="button"
@@ -230,10 +190,7 @@ const MobileEditProfileModal = ({
             onClick={handleCancel}
             aria-label="Close modal"
           >
-            <X
-              size={14}
-              strokeWidth={1.7}
-            />
+            <X size={14} strokeWidth={1.7} />
           </button>
         </div>
 
@@ -241,10 +198,7 @@ const MobileEditProfileModal = ({
             Form
            ================================= */}
 
-        <form
-          className="profile-mobile-editprof-form"
-          onSubmit={handleSubmit}
-        >
+        <form className="profile-mobile-editprof-form" onSubmit={handleSubmit}>
           {/* First + Last Name */}
 
           <div className="profile-mobile-editprof-grid">
@@ -252,36 +206,24 @@ const MobileEditProfileModal = ({
 
             <div
               className={`profile-mobile-mfi ${
-                errors.firstName
-                  ? "has-error"
-                  : ""
+                errors.firstName ? "has-error" : ""
               }`}
             >
               <label className="profile-mobile-mfi-label">
                 First Name
-                <span className="profile-mobile-mfi-required">
-                  *
-                </span>
+                <span className="profile-mobile-mfi-required">*</span>
               </label>
 
               <input
                 type="text"
                 name="firstName"
-                value={
-                  formData.firstName
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.firstName}
+                onChange={handleChange}
                 className="profile-mobile-mfi-input"
               />
 
               {errors.firstName && (
-                <div className="profile-mobile-mfi-err">
-                  {
-                    errors.firstName
-                  }
-                </div>
+                <div className="profile-mobile-mfi-err">{errors.firstName}</div>
               )}
             </div>
 
@@ -289,36 +231,24 @@ const MobileEditProfileModal = ({
 
             <div
               className={`profile-mobile-mfi ${
-                errors.lastName
-                  ? "has-error"
-                  : ""
+                errors.lastName ? "has-error" : ""
               }`}
             >
               <label className="profile-mobile-mfi-label">
                 Last Name
-                <span className="profile-mobile-mfi-required">
-                  *
-                </span>
+                <span className="profile-mobile-mfi-required">*</span>
               </label>
 
               <input
                 type="text"
                 name="lastName"
-                value={
-                  formData.lastName
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.lastName}
+                onChange={handleChange}
                 className="profile-mobile-mfi-input"
               />
 
               {errors.lastName && (
-                <div className="profile-mobile-mfi-err">
-                  {
-                    errors.lastName
-                  }
-                </div>
+                <div className="profile-mobile-mfi-err">{errors.lastName}</div>
               )}
             </div>
           </div>
@@ -326,19 +256,13 @@ const MobileEditProfileModal = ({
           {/* Email */}
 
           <div className="profile-mobile-mfi">
-            <label className="profile-mobile-mfi-label">
-              Email Address
-            </label>
+            <label className="profile-mobile-mfi-label">Email Address</label>
 
             <input
               type="email"
               name="email"
-              value={
-                formData.email
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.email}
+              onChange={handleChange}
               className="profile-mobile-mfi-input"
             />
           </div>
@@ -346,54 +270,36 @@ const MobileEditProfileModal = ({
           {/* Mobile */}
 
           <div
-            className={`profile-mobile-mfi ${
-              errors.mobile
-                ? "has-error"
-                : ""
-            }`}
+            className={`profile-mobile-mfi ${errors.mobile ? "has-error" : ""}`}
           >
             <label className="profile-mobile-mfi-label">
               Mobile Number
-              <span className="profile-mobile-mfi-required">
-                *
-              </span>
+              <span className="profile-mobile-mfi-required">*</span>
             </label>
 
             <input
               type="tel"
               name="mobile"
-              value={
-                formData.mobile
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.mobile}
+              onChange={handleChange}
               className="profile-mobile-mfi-input"
             />
 
             {errors.mobile && (
-              <div className="profile-mobile-mfi-err">
-                {errors.mobile}
-              </div>
+              <div className="profile-mobile-mfi-err">{errors.mobile}</div>
             )}
           </div>
 
           {/* City */}
 
           <div className="profile-mobile-mfi">
-            <label className="profile-mobile-mfi-label">
-              City
-            </label>
+            <label className="profile-mobile-mfi-label">City</label>
 
             <input
               type="text"
               name="city"
-              value={
-                formData.city
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.city}
+              onChange={handleChange}
               className="profile-mobile-mfi-input"
             />
           </div>
@@ -403,10 +309,7 @@ const MobileEditProfileModal = ({
              ================================= */}
 
           <div className="profile-mobile-editprof-footer">
-            <button
-              type="submit"
-              className="profile-mobile-sbtn-p"
-            >
+            <button type="submit" className="profile-mobile-sbtn-p">
               Save Changes
             </button>
 

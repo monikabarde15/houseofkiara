@@ -19,8 +19,8 @@
    ============================================ */
 
 .profile-legal-block {
-  background: #FAF7F2;
-  border: 1px solid #E8E0D4;
+  background: #faf7f2;
+  border: 1px solid #e8e0d4;
   border-radius: 11px;
   padding: 18px 22px;
 }
@@ -30,7 +30,7 @@
   font-size: 8.5px;
   letter-spacing: 0.17em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   font-weight: 400;
   margin-bottom: 12px;
 }
@@ -44,9 +44,9 @@
 .profile-bl {
   display: inline-flex;
   padding: 7px 13px;
-  background: #FFFFFB;
-  color: #3C3529;
-  border: 1px solid #E8E0D4;
+  background: #fffffb;
+  color: #3c3529;
+  border: 1px solid #e8e0d4;
   border-radius: 5px;
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
@@ -58,7 +58,7 @@
 }
 
 .profile-bl:hover {
-  border-color: #E8D5B0;
-  background: #F5EDD8;
-  color: #A8844A;
+  border-color: #e8d5b0;
+  background: #f5edd8;
+  color: #a8844a;
 }

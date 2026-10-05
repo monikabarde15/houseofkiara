@@ -11,7 +11,7 @@
 .desk-wishlist-primary-cta {
   flex: 1;
   height: 38px;
-  background: #1A1612;
+  background: #1a1612;
   color: rgba(232, 213, 176, 0.9);
   font-family: "DM Sans", sans-serif;
   font-size: 9.5px;
@@ -27,19 +27,19 @@
 }
 
 .desk-wishlist-primary-cta:hover {
-  background: #2E2520;
+  background: #2e2520;
 }
 
 /* Disabled primary (Notify Me) */
 .desk-wishlist-primary-cta-disabled {
-  background: #FAF7F2;
-  color: #8A7E72;
+  background: #faf7f2;
+  color: #8a7e72;
   cursor: default;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
 }
 
 .desk-wishlist-primary-cta-disabled:hover {
-  background: #FAF7F2;
+  background: #faf7f2;
 }
 
 /* Secondary icon button (View Piece) */
@@ -47,8 +47,8 @@
   width: 38px;
   height: 38px;
   flex-shrink: 0;
-  border: 1px solid #E8E0D4;
-  background: #FAF7F2;
+  border: 1px solid #e8e0d4;
+  background: #faf7f2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,14 +57,14 @@
 }
 
 .desk-wishlist-secondary-cta:hover {
-  border: 1px solid #C9A96E;
-  background: #F5EDD8;
+  border: 1px solid #c9a96e;
+  background: #f5edd8;
 }
 
 .desk-wishlist-secondary-cta svg {
   width: 13px;
   height: 13px;
-  stroke: #8A7E72;
+  stroke: #8a7e72;
   fill: none;
   stroke-width: 1.5;
 }

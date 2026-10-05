@@ -23,11 +23,9 @@ import SidebarActions from "../../sidebar/SidebarActions";
 import ConfirmationTrustList from "../../sidebar/ConfirmationTrustList";
 import MobileOrderStatusModal from "../modal/MobileOrderStatusModal";
 
-
 import "../../../../styles/confirmation/mobile/layout/mobile-confirmation-layout.css";
 import DiscoveryStrip from "../../discovery/DiscoveryStrip";
 import ConfirmationPolicyStrip from "../../policy/ConfirmationPolicyStrip";
-
 
 const MobileConfirmationLayout = () => {
   const [isOrderStatusOpen, setIsOrderStatusOpen] = useState(false);
@@ -49,25 +47,26 @@ const MobileConfirmationLayout = () => {
     {
       type: "rental",
       title: "Rental Booking",
-      items: confirmationItems.filter(item => item.type === "rental"),
+      items: confirmationItems.filter((item) => item.type === "rental"),
       status: "Dispatching soon",
       tag: "soon",
     },
     {
       type: "preloved",
       title: "Preloved Purchase",
-      items: confirmationItems.filter(item => item.type === "preloved"),
+      items: confirmationItems.filter((item) => item.type === "preloved"),
       status: "Dispatching within 2 days",
       tag: "soon",
     },
     {
       type: "new",
       title: "New Purchase",
-      items: confirmationItems.filter(item => item.type === "new"),
-      status: deliveryType === "express" ? "Ships in 1–2 days" : "Ships in 3–5 days",
+      items: confirmationItems.filter((item) => item.type === "new"),
+      status:
+        deliveryType === "express" ? "Ships in 1–2 days" : "Ships in 3–5 days",
       tag: "new",
     },
-  ].filter(group => group.items.length > 0);
+  ].filter((group) => group.items.length > 0);
 
   const getRentalWindowLabel = (item) => {
     const start = new Date(item.booking?.deliveryDate);
@@ -76,10 +75,9 @@ const MobileConfirmationLayout = () => {
     return `${windowDays}-Day Window`;
   };
 
-  const hasRentalItems =
-    confirmationItems.some(
-        item => item.type === "rental"
-    );
+  const hasRentalItems = confirmationItems.some(
+    (item) => item.type === "rental",
+  );
 
   return (
     <div className="mobile-confirmation-layout" id="mobile-confirmation-page">
@@ -113,15 +111,18 @@ const MobileConfirmationLayout = () => {
 
       {/* Sections 01-03: Rental, Preloved, New */}
       {confirmationGroups.map((group, index) => (
-        <ConfirmationSection key={group.type} isLast={index === confirmationGroups.length - 1}>
+        <ConfirmationSection
+          key={group.type}
+          isLast={index === confirmationGroups.length - 1}
+        >
           <ConfirmationSectionHeader
             number={`0${index + 1}`}
             title={
               group.type === "rental"
                 ? "Rental"
                 : group.type === "preloved"
-                ? "Preloved"
-                : "Buy"
+                  ? "Preloved"
+                  : "Buy"
             }
             accent={group.type === "new" ? "New" : "Piece"}
             suffix={group.type === "new" ? "Piece" : ""}
@@ -135,8 +136,8 @@ const MobileConfirmationLayout = () => {
               group.type === "rental"
                 ? `Rental Booking · ${getRentalWindowLabel(group.items[0])}`
                 : group.type === "preloved"
-                ? "Preloved · Buy to Own · Final Sale"
-                : "Buy New · Brand Fulfilment"
+                  ? "Preloved · Buy to Own · Final Sale"
+                  : "Buy New · Brand Fulfilment"
             }
           />
 
@@ -154,10 +155,10 @@ const MobileConfirmationLayout = () => {
           {group.type === "preloved" && (
             <Notice variant="rose">
               <b>Final sale reminder:</b> The Ivory Tissue Organza Saree is a
-              preloved item sold on a non-returnable basis. You accepted this condition at
-              checkout. If you have any concerns about the piece on arrival, please
-              contact us on WhatsApp within 24 hours of delivery and we will do our best to
-              assist.
+              preloved item sold on a non-returnable basis. You accepted this
+              condition at checkout. If you have any concerns about the piece on
+              arrival, please contact us on WhatsApp within 24 hours of delivery
+              and we will do our best to assist.
             </Notice>
           )}
 
@@ -165,9 +166,10 @@ const MobileConfirmationLayout = () => {
           {group.type === "new" && (
             <Notice variant="navy">
               <b>Brand dispatch note:</b> This piece ships directly from
-              Manyavar's fulfilment centre. If you have any size concerns, please contact
-              us before the item dispatches. Once dispatched, returns follow the standard
-              7-day policy — contact HOK on WhatsApp to initiate.
+              Manyavar's fulfilment centre. If you have any size concerns,
+              please contact us before the item dispatches. Once dispatched,
+              returns follow the standard 7-day policy — contact HOK on WhatsApp
+              to initiate.
             </Notice>
           )}
 
@@ -175,23 +177,25 @@ const MobileConfirmationLayout = () => {
           {group.type === "rental" && group.items.length > 0 && (
             <>
               <ConfirmationTimeline item={group.items[0]} />
-              
+
               <Notice variant="amber">
-                <b>Security deposit — not yet due.</b> Our team will reach out on WhatsApp
-                within 24 hours of this confirmation to arrange the ₹15,000 deposit via
-                UPI or bank transfer. Your item will not be dispatched until the deposit
-                is received. The deposit is fully refundable within 3–5 business days
-                of a clean return inspection.
+                <b>Security deposit — not yet due.</b> Our team will reach out
+                on WhatsApp within 24 hours of this confirmation to arrange the
+                ₹15,000 deposit via UPI or bank transfer. Your item will not be
+                dispatched until the deposit is received. The deposit is fully
+                refundable within 3–5 business days of a clean return
+                inspection.
               </Notice>
 
               <Notice variant="slate">
-                <b>Return instructions:</b> A prepaid Blue Dart return label is included
-                in the packaging. Please drop off the garment at any Blue Dart service
-                centre by 18 November (Tuesday). Late returns attract ₹1,700 per
-                additional day. The garment must be returned in the same condition it
-                was received — we inspect every piece within 24 hours of receiving it.
+                <b>Return instructions:</b> A prepaid Blue Dart return label is
+                included in the packaging. Please drop off the garment at any
+                Blue Dart service centre by 18 November (Tuesday). Late returns
+                attract ₹1,700 per additional day. The garment must be returned
+                in the same condition it was received — we inspect every piece
+                within 24 hours of receiving it.
               </Notice>
-              
+
               {/* Rental Return Guide - Existing Component  */}
               <RentalReturnGuide />
             </>
@@ -199,7 +203,7 @@ const MobileConfirmationLayout = () => {
         </ConfirmationSection>
       ))}
 
-       {/*  What Happens Next - Existing Component  */}
+      {/*  What Happens Next - Existing Component  */}
       <ConfirmationNextStepsSection />
 
       {/* SideBar Actions - Existing Component  */}
@@ -208,7 +212,6 @@ const MobileConfirmationLayout = () => {
       {/* Confirmation Trust List - Existing Component  */}
       <ConfirmationTrustList />
 
-      
       {/* Confirmation Trust List - Existing Component (used Detial row & Status Pipeline old one)  */}
 
       <MobileOrderStatusModal
@@ -219,11 +222,10 @@ const MobileConfirmationLayout = () => {
       />
 
       {/* Mobile Discovery Strip - used old component */}
-      <DiscoveryStrip/>
+      <DiscoveryStrip />
 
       {/* Mobile Policy Strip - used old component */}
       {hasRentalItems && <ConfirmationPolicyStrip />}
-
     </div>
   );
 };

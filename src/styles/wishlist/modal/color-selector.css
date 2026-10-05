@@ -10,7 +10,7 @@
   font-size: 8.5px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 10px;
 }
 
@@ -37,6 +37,8 @@
 }
 
 .desk-wishlist-color-selected {
-  border: 2px solid #C9A96E;
-  box-shadow: 0 0 0 2px #FFFFFB, 0 0 0 4px #C9A96E;
+  border: 2px solid #c9a96e;
+  box-shadow:
+    0 0 0 2px #fffffb,
+    0 0 0 4px #c9a96e;
 }

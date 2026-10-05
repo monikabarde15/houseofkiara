@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import PurchaseCard from '../cards/PurchaseCard';
-import PurchaseDetailPanel from '../panels/PurchaseDetailPanel';
-import useAuthStore from '../../../store/authStore';
+import React, { useState, useRef, useEffect } from "react";
+import PurchaseCard from "../cards/PurchaseCard";
+import PurchaseDetailPanel from "../panels/PurchaseDetailPanel";
+import useAuthStore from "../../../store/authStore";
 import "../../../styles/Profile/sections/MyPurchasesSection.css";
 
 const MyPurchasesSection = () => {
@@ -19,15 +19,17 @@ const MyPurchasesSection = () => {
       try {
         const token = useAuthStore.getState().token;
         if (!token) return;
-        
+
         const res = await fetch(`/api/customer/auth/orders`, {
           headers: {
-            "Authorization": `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = await res.json();
         if (data.success) {
-          const purchases = data.data.filter(order => order.type !== "Rental" && order.typeDetail !== "Rental");
+          const purchases = data.data.filter(
+            (order) => order.type !== "Rental" && order.typeDetail !== "Rental",
+          );
           setPurchaseOrders(purchases);
         }
       } catch (err) {
@@ -49,7 +51,7 @@ const MyPurchasesSection = () => {
 
   const handleDetailsClick = async (orderId) => {
     const isOpening = activeCardId !== orderId;
-    
+
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
@@ -57,29 +59,29 @@ const MyPurchasesSection = () => {
     if (isOpening) {
       setActiveCardId(orderId);
       setActiveOrder(null);
-      
+
       try {
         const token = useAuthStore.getState().token;
         if (!token) return;
-        
+
         const res = await fetch(`/api/customer/auth/orders/${orderId}`, {
           headers: {
-            "Authorization": `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = await res.json();
-          if (data.success) {
-            setActiveOrder(data.data);
-          }
+        if (data.success) {
+          setActiveOrder(data.data);
+        }
       } catch (err) {
         console.error("Error fetching order detail:", err);
       }
-      
+
       scrollTimeoutRef.current = setTimeout(() => {
         if (panelRef.current) {
-          panelRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'nearest' 
+          panelRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
           });
         }
         scrollTimeoutRef.current = null;
@@ -87,13 +89,13 @@ const MyPurchasesSection = () => {
     } else {
       const currentCardId = activeCardId;
       setActiveCardId(null);
-      
+
       scrollTimeoutRef.current = setTimeout(() => {
         const cardElement = cardRefs.current[currentCardId];
         if (cardElement) {
-          cardElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'nearest' 
+          cardElement.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
           });
         }
         scrollTimeoutRef.current = null;
@@ -105,9 +107,11 @@ const MyPurchasesSection = () => {
     <div className="profile-right-my-purchases-section" id="purchases">
       <div className="profile-right-purchases-grid">
         {loading ? (
-          <div style={{ padding: '20px', color: '#666' }}>Loading orders...</div>
+          <div style={{ padding: "20px", color: "#666" }}>
+            Loading orders...
+          </div>
         ) : purchaseOrders.length === 0 ? (
-          <div style={{ padding: '20px', color: '#666' }}>No orders found.</div>
+          <div style={{ padding: "20px", color: "#666" }}>No orders found.</div>
         ) : (
           purchaseOrders.slice(0, 3).map((order) => (
             <div
@@ -118,16 +122,16 @@ const MyPurchasesSection = () => {
             >
               <PurchaseCard
                 order={order}
-                isActive={activeCardId === order.id}
+                isActive={activeCardId === (order.orderId || order.id || order._id)}
                 onDetailsClick={handleDetailsClick}
               />
             </div>
           ))
         )}
       </div>
-      
+
       <div ref={panelRef}>
-        <PurchaseDetailPanel 
+        <PurchaseDetailPanel
           order={activeOrder}
           isOpen={!!activeCardId}
           onClose={() => handleDetailsClick(activeCardId)}

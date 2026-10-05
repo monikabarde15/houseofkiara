@@ -2,12 +2,18 @@
 
 // ---- Bands (§7.1) ----
 // Order matters — this is the fixed render order and the urgency order (§6.2.1, §17.3)
-export type BandKey = 'today' | 'waiting' | 'them' | 'know' | 'blocked';
+export type BandKey = "today" | "waiting" | "them" | "know" | "blocked";
 
-export const BAND_ORDER: BandKey[] = ['today', 'waiting', 'them', 'know', 'blocked'];
+export const BAND_ORDER: BandKey[] = [
+  "today",
+  "waiting",
+  "them",
+  "know",
+  "blocked",
+];
 
 // Urgency order, most urgent first — used to dedupe a record into exactly one band (§6.2.1)
-export const URGENCY_ORDER: BandKey[] = ['today', 'waiting', 'them', 'know'];
+export const URGENCY_ORDER: BandKey[] = ["today", "waiting", "them", "know"];
 
 export interface BandMeta {
   key: BandKey;
@@ -17,36 +23,38 @@ export interface BandMeta {
 
 export const BAND_META: Record<BandKey, BandMeta> = {
   today: {
-    key: 'today',
-    header: 'Needs doing today',
-    explanation: 'Dated, breached, or money at risk. Nothing here can be put down.',
+    key: "today",
+    header: "Needs doing today",
+    explanation:
+      "Dated, breached, or money at risk. Nothing here can be put down.",
   },
   waiting: {
-    key: 'waiting',
-    header: 'Waiting on us',
-    explanation: 'Someone is waiting and we have not broken a promise yet.',
+    key: "waiting",
+    header: "Waiting on us",
+    explanation: "Someone is waiting and we have not broken a promise yet.",
   },
   them: {
-    key: 'them',
-    header: 'Waiting on them',
+    key: "them",
+    header: "Waiting on them",
     explanation:
-      'The ball is in their court. Not our failure — but it still needs nudging or closing.',
+      "The ball is in their court. Not our failure — but it still needs nudging or closing.",
   },
   know: {
-    key: 'know',
-    header: 'Worth knowing',
-    explanation: 'No deadline. These can be put down for a week, in the open.',
+    key: "know",
+    header: "Worth knowing",
+    explanation: "No deadline. These can be put down for a week, in the open.",
   },
   blocked: {
-    key: 'blocked',
-    header: 'Cannot be seen yet',
+    key: "blocked",
+    header: "Cannot be seen yet",
     explanation:
-      'Asked for, and not derivable from what the panel holds today.',
+      "Asked for, and not derivable from what the panel holds today.",
   },
 };
 
 // ---- Row kinds (§9) — derived at render time, never stored ----
-export type RowKind = 'standard' | 'routed' | 'clear' | 'putDown' | 'blocked' | 'folded';
+export type RowKind =
+  "standard" | "routed" | "clear" | "putDown" | "blocked" | "folded";
 
 // ---- Target / doors (§16) ----
 export interface AlertTarget {
@@ -73,7 +81,7 @@ export interface AlertRecord {
 export interface Alert {
   key: string; // stable alert key, e.g. "overdue"
   band: BandKey;
-  surface: 'desk' | 'record'; // 'record' alerts render only on the record page, never here (§17.2)
+  surface: "desk" | "record"; // 'record' alerts render only on the record page, never here (§17.2)
   title: string;
   what: string; // the explanation line (§8.5)
   elsewhere?: string | null; // "the Return Pipeline" — non-null when routed (§8.4)
@@ -149,7 +157,7 @@ export interface SummaryCounts {
 export interface AlertRecordView extends AlertRecord {
   ownerId: string | null;
 }
-export interface AlertDef extends Omit<Alert, 'records'> {
+export interface AlertDef extends Omit<Alert, "records"> {
   records: AlertRecordView[];
   putDown: boolean;
 }

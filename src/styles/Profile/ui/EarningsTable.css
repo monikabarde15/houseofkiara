@@ -11,7 +11,7 @@
   font-size: 8.5px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   margin-bottom: 10px;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .profile-earnings-table thead tr {
-  border-bottom: 1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
 }
 
 .profile-earnings-table th {
@@ -29,7 +29,7 @@
   font-size: 8px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   font-weight: 400;
   padding: 0 0 8px 0;
   text-align: left;
@@ -42,9 +42,9 @@
 .profile-earnings-table td {
   font-family: "DM Sans", sans-serif;
   font-size: 11.5px;
-  color: #3C3529;
+  color: #3c3529;
   padding: 10px 0;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
   font-weight: 300;
 }
 
@@ -55,7 +55,7 @@
 
 .profile-earnings-empty {
   text-align: center !important;
-  color: #B0A898 !important;
+  color: #b0a898 !important;
   padding: 20px 0 !important;
 }
 
@@ -63,7 +63,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #1A1612;
+  color: #1a1612;
   padding-top: 12px;
   border-bottom: none;
 }
@@ -73,7 +73,7 @@
 }
 
 .profile-earnings-pending {
-  color: #A8844A;
+  color: #a8844a;
   font-size: 10px;
   font-weight: 400;
 }

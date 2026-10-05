@@ -1,8 +1,8 @@
 // sendlog/SendLogTable.tsx
-import React from 'react';
-import { Table, TableRow, TableCell } from '../components/Table';
-import { SendLogRow } from './SendLogRow';
-import './styles/SendLogTable.css';
+import React from "react";
+import { Table, TableRow, TableCell } from "../components/Table";
+import { SendLogRow } from "./SendLogRow";
+import "./styles/SendLogTable.css";
 
 export interface SendLogEntry {
   id: string;
@@ -10,10 +10,16 @@ export interface SendLogEntry {
   message: string;
   wording: string;
   who: string;
-  whoType?: 'customer' | 'lister'; // present only when WHO should link to that record
+  whoType?: "customer" | "lister"; // present only when WHO should link to that record
   contact: string;
   channel: string;
-  outcome: 'Delivered' | 'Opened' | 'Bounced' | 'Held' | 'Not sent' | 'Opened in WhatsApp';
+  outcome:
+    | "Delivered"
+    | "Opened"
+    | "Bounced"
+    | "Held"
+    | "Not sent"
+    | "Opened in WhatsApp";
   about: string;
   sentBy: string;
 }
@@ -26,13 +32,13 @@ interface SendLogTableProps {
 }
 
 const COLUMNS = [
-  { key: 'when', header: 'WHEN' },
-  { key: 'message', header: 'MESSAGE' },
-  { key: 'who', header: 'WHO' },
-  { key: 'channel', header: 'CHANNEL' },
-  { key: 'outcome', header: 'OUTCOME' },
-  { key: 'about', header: 'ABOUT' },
-  { key: 'sentBy', header: 'SENT BY' },
+  { key: "when", header: "WHEN" },
+  { key: "message", header: "MESSAGE" },
+  { key: "who", header: "WHO" },
+  { key: "channel", header: "CHANNEL" },
+  { key: "outcome", header: "OUTCOME" },
+  { key: "about", header: "ABOUT" },
+  { key: "sentBy", header: "SENT BY" },
 ];
 
 export const SendLogTable: React.FC<SendLogTableProps> = ({
@@ -43,18 +49,12 @@ export const SendLogTable: React.FC<SendLogTableProps> = ({
   isLoading = false,
 }) => {
   if (isLoading) {
-    return (
-      <div className="msg-sendlog-loading">
-        Loading sends...
-      </div>
-    );
+    return <div className="msg-sendlog-loading">Loading sends...</div>;
   }
 
   if (logs.length === 0) {
     return (
-      <div className="msg-sendlog-empty">
-        Nothing matches these filters.
-      </div>
+      <div className="msg-sendlog-empty">Nothing matches these filters.</div>
     );
   }
 

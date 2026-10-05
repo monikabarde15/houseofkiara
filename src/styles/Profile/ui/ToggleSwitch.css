@@ -6,7 +6,7 @@
   width: 34px;
   height: 20px;
   border-radius: 10px;
-  background: #6B7E5A;
+  background: #6b7e5a;
   position: relative;
   cursor: pointer;
   border: none;
@@ -29,7 +29,7 @@
 
 /* OFF state */
 .profile-account-tog-off {
-  background: #E8E0D4;
+  background: #e8e0d4;
 }
 
 .profile-account-tog-off::after {

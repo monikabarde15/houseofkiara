@@ -6,7 +6,7 @@ import {
   updateDesigner,
   deleteDesigner,
   reorderFeaturedDesigners,
-  updateDesignerType
+  updateDesignerType,
 } from "../controllers/designerController.js";
 
 const router = express.Router();

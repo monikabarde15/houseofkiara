@@ -9,10 +9,7 @@ import "../../../styles/Home/Designers/mobile-designers.css";
 
 const FeaturedDesigners = () => {
   return (
-    <section
-      className="hok-featured-designers"
-      data-header-theme="dark"
-    >
+    <section className="hok-featured-designers" data-header-theme="dark">
       <div className="hok-designers-desktop">
         <DesktopFeaturedDesigners />
       </div>

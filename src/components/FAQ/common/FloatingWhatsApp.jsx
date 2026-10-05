@@ -9,7 +9,9 @@ export default function FloatingWhatsApp({ onShowToast }) {
     if (onShowToast) {
       onShowToast("Opening WhatsApp");
     }
-    const message = encodeURIComponent("Hello House of Kaira, I have a question.");
+    const message = encodeURIComponent(
+      "Hello House of Kaira, I have a question.",
+    );
     const url = `https://wa.me/${ADMIN_FIGURES.support_whatsapp_raw}?text=${message}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };

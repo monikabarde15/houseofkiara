@@ -3,7 +3,7 @@
    ============================================ */
 
 .profile-mobile-hero-card {
-  background: linear-gradient(160deg, #1A1612 0%, #2C2418 100%);
+  background: linear-gradient(160deg, #1a1612 0%, #2c2418 100%);
   padding: 20px 20px 18px;
   position: relative;
   overflow: hidden;
@@ -32,35 +32,40 @@
 }
 
 [data-rise="1"] {
-  animation:
-    rise
-    0.5s
-    cubic-bezier(0.16, 1, 0.3, 1)
-    forwards;
+  animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Radial glow top-right */
 .profile-mobile-hero-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -40px;
   right: -40px;
   width: 130px;
   height: 130px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(201, 169, 110, 0.1) 0%, transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(201, 169, 110, 0.1) 0%,
+    transparent 65%
+  );
   pointer-events: none;
 }
 
 /* Bottom shimmer line */
 .profile-mobile-hero-card::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 169, 110, 0.3),
+    transparent
+  );
 }
 
 .profile-mobile-hero-inner {
@@ -97,7 +102,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3C3025, #2A2018);
+  background: linear-gradient(135deg, #3c3025, #2a2018);
   border: 1px solid rgba(201, 169, 110, 0.25);
   display: flex;
   align-items: center;
@@ -105,7 +110,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 16px;
   font-weight: 500;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* Name & Info Block - Section 3.1.2 */
@@ -120,7 +125,7 @@
   font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
   margin-bottom: 3px;
 }
 
@@ -128,7 +133,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 18px;
   font-weight: 500;
-  color: #FFFFFB;
+  color: #fffffb;
   line-height: 1.2;
   margin-bottom: 2px;
 }
@@ -183,7 +188,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 18px;
   font-weight: 400;
-  color: #E8D5B0;
+  color: #e8d5b0;
   line-height: 1;
   margin-bottom: 2px;
 }

@@ -10,9 +10,8 @@
 
   padding-bottom: 64px;
   margin-bottom: 48px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
-
 
 /* IMAGE */
 .cart-item__image {
@@ -53,15 +52,15 @@
 }
 
 .cart-item__label {
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .cart-item__value {
-  color: #3C3529;
+  color: #3c3529;
 }
 
 .cart-item__meta .separator {
-  color: #B8B1A6;
+  color: #b8b1a6;
 }
 
 .cart-item__condition {
@@ -69,7 +68,7 @@
 }
 
 .cart-item__condition[data-grade="pristine"] {
-  color: #5A7549;
+  color: #5a7549;
 }
 
 /* EXCELLENT → mulberry */
@@ -96,17 +95,17 @@
 
 /* RENTAL */
 .cart-item[data-item-id="rental"] .cart-item__thumb {
-  background: #EFF4EC;
+  background: #eff4ec;
 }
 
 /* PRELOVED */
 .cart-item[data-item-id="preloved"] .cart-item__thumb {
-  background: #F5EEF2;
+  background: #f5eef2;
 }
 
 /* NEW */
 .cart-item[data-item-id="new"] .cart-item__thumb {
-  background: #EEF1F7;
+  background: #eef1f7;
 }
 
 /* CONTENT COLUMN */
@@ -138,7 +137,7 @@
   font-weight: 400;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
 
   margin-bottom: 6px;
 }
@@ -149,7 +148,7 @@
   font-size: 22px;
   font-weight: 400;
   line-height: 1.2;
-  color: #18140F;
+  color: #18140f;
 
   margin-bottom: 5px;
 }
@@ -160,7 +159,7 @@
   font-size: 11.5px;
   font-weight: 300;
   line-height: 1.6;
-  color: #B0A898;
+  color: #b0a898;
 
   margin: 0;
 }
@@ -175,10 +174,10 @@
   justify-content: center;
 
   border-radius: 50%;
-  border: 1px solid #E8E0D4;
-  background: #FFFEFB;
+  border: 1px solid #e8e0d4;
+  background: #fffefb;
 
-  color: #D8D0C4;
+  color: #d8d0c4;
   cursor: pointer;
 
   margin-top: -1px;
@@ -196,9 +195,9 @@
 
 /* HOVER STATE */
 .cart-item__remove:hover {
-  color: #B85C38;
-  background: #FDF3EF;
-  border-color: #B85C38;
+  color: #b85c38;
+  background: #fdf3ef;
+  border-color: #b85c38;
 }
 
 /* META */
@@ -211,17 +210,15 @@
   flex-wrap: wrap;
 
   font-size: 11px;
-  color: #4A453E;
+  color: #4a453e;
   font-family: "DM Sans", sans-serif;
 }
-
 
 /* META DOT */
 .cart-item__meta-dot {
   font-size: 9px;
-  color: #F0EAE0;
+  color: #f0eae0;
 }
-
 
 /* NOTICE WRAPPER */
 .cart-item__notice-wrap {
@@ -231,7 +228,7 @@
 }
 
 /* GAP BETWEEN MULTIPLE NOTICES */
-.cart-item__notice-wrap>*+* {
+.cart-item__notice-wrap > * + * {
   margin-top: 8px;
 }
 
@@ -244,7 +241,7 @@
   margin-top: 48px;
   padding-top: 24px;
 
-  border-top: 1px dashed #D8D0C4;
+  border-top: 1px dashed #d8d0c4;
 }
 
 /* PRICE SIDE */
@@ -266,20 +263,20 @@
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   border-bottom: 1px solid transparent;
   cursor: pointer;
 }
 
 /* HOVER */
 .cart-item__action:hover {
-  color: #3C3529;
-  border-bottom: 1px solid #B0A898;
+  color: #3c3529;
+  border-bottom: 1px solid #b0a898;
 }
 
 /* SAVED STATE */
 .cart-item__action.saved {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 /* =================================Mobile================================ */
@@ -289,7 +286,6 @@
 ========================================================= */
 
 @media (max-width: 430px) {
-  
   /* Grid layout - 96px thumbnail instead of 140px */
   .cart-item {
     grid-template-columns: 96px 1fr;

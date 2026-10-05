@@ -5,8 +5,8 @@
   min-width: 360px;
   flex-shrink: 0;
 
-  border-right: 1px solid #E8E0D4;
-  background: #FFFFFB;
+  border-right: 1px solid #e8e0d4;
+  background: #fffffb;
 
   overflow-y: auto;
   overflow-x: hidden;

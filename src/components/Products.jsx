@@ -2,9 +2,7 @@ import React from "react";
 import ProductSection from "./ProductList";
 import MoreAnarkalis from "./MoreAnarkalis";
 
-
 export default function Products() {
-
   const rahulMishraProducts = [
     {
       id: 1,
@@ -30,7 +28,7 @@ export default function Products() {
 
   return (
     <>
-    <br/>
+      <br />
       <ProductSection
         subtitle="FROM THE SAME HOUSE"
         title="More by"
@@ -43,7 +41,6 @@ export default function Products() {
         highlight="More Anarkali"
         isImage={true}
       />
-     
     </>
   );
 }

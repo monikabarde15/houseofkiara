@@ -19,7 +19,9 @@
   color: var(--charcoal);
   background: var(--ibg);
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .withdraw-row .fld-input:focus {

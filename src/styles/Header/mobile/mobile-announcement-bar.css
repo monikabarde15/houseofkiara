@@ -5,7 +5,7 @@
   position: relative;
   width: 100%;
   height: 30px;
-  background: #1A1612;
+  background: #1a1612;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -30,7 +30,7 @@
 
 /* Plain text */
 .mobile-announce-item {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 400;
   text-transform: uppercase;
@@ -42,12 +42,12 @@
 
 /* Italic text */
 .mobile-announce-item.italic {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 11.5px;
   font-weight: 400;
   font-style: italic;
   text-transform: none;
-  color: #E8D5B0;
+  color: #e8d5b0;
   letter-spacing: 0.05em;
 }
 
@@ -75,12 +75,12 @@
 
 .mobile-announce-bar::before {
   left: 0;
-  background: linear-gradient(to right, #1A1612 10%, transparent 100%);
+  background: linear-gradient(to right, #1a1612 10%, transparent 100%);
 }
 
 .mobile-announce-bar::after {
   right: 0;
-  background: linear-gradient(to left, #1A1612 10%, transparent 100%);
+  background: linear-gradient(to left, #1a1612 10%, transparent 100%);
 }
 
 @keyframes hokMobileMarquee {

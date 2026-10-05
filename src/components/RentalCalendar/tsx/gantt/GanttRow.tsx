@@ -1,6 +1,6 @@
-import React from 'react';
-import { GanttOrderRow } from '../../types';
-import '../../css/gantt/GanttRow.css';
+import React from "react";
+import { GanttOrderRow } from "../../types";
+import "../../css/gantt/GanttRow.css";
 
 interface GanttRowProps {
   row: GanttOrderRow;
@@ -8,10 +8,10 @@ interface GanttRowProps {
 }
 
 const SEGMENT_CONTENT: Record<string, string> = {
-  dispatch: 'D',
-  return: 'R',
-  deposit: '₹',
-  rental: '',
+  dispatch: "D",
+  return: "R",
+  deposit: "₹",
+  rental: "",
 };
 
 const GanttRow: React.FC<GanttRowProps> = ({ row, daysInMonth }) => {
@@ -21,14 +21,22 @@ const GanttRow: React.FC<GanttRowProps> = ({ row, daysInMonth }) => {
     <div className="gantt-row">
       <div className="gantt-row__label">
         <div className="gantt-row__order-id">{row.orderId}</div>
-        <div className="gantt-row__meta">{row.customer} · {row.product}</div>
+        <div className="gantt-row__meta">
+          {row.customer} · {row.product}
+        </div>
       </div>
-      <div className="gantt-row__timeline" style={{ gridTemplateColumns: `repeat(${daysInMonth}, 1fr)` }}>
+      <div
+        className="gantt-row__timeline"
+        style={{ gridTemplateColumns: `repeat(${daysInMonth}, 1fr)` }}
+      >
         {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
           const type = segmentByDay.get(day);
           return (
-            <div key={day} className={`gantt-cell${type ? ` gantt-cell--${type}` : ''}`}>
-              {type ? SEGMENT_CONTENT[type] : ''}
+            <div
+              key={day}
+              className={`gantt-cell${type ? ` gantt-cell--${type}` : ""}`}
+            >
+              {type ? SEGMENT_CONTENT[type] : ""}
             </div>
           );
         })}

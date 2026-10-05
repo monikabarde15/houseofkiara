@@ -1,24 +1,35 @@
 // src/components/LYP/record/WorksheetCard.tsx
 
-import React, { useState } from 'react';
-import { Submission, Assessment, Mode, Grade, Size } from '../types/submission.types';
-import { WorksheetGrid } from './WorksheetGrid';
-import { TapeBlock } from './TapeBlock';
-import { StorefrontPreview } from './StorefrontPreview';
-import { inr } from '../utils/formatter';
-import { GRADES, MODES } from '../utils/constants';
-import './styles/WorksheetCard.css';
+import React, { useState } from "react";
+import {
+  Submission,
+  Assessment,
+  Mode,
+  Grade,
+  Size,
+} from "../types/submission.types";
+import { WorksheetGrid } from "./WorksheetGrid";
+import { TapeBlock } from "./TapeBlock";
+import { StorefrontPreview } from "./StorefrontPreview";
+import { inr } from "../utils/formatter";
+import { GRADES, MODES } from "../utils/constants";
+import "./styles/WorksheetCard.css";
 
 interface WorksheetCardProps {
   submission: Submission;
   onUpdate: () => void;
 }
 
-export const WorksheetCard: React.FC<WorksheetCardProps> = ({ submission, onUpdate }) => {
-  const [assessment, setAssessment] = useState<Assessment>(submission.assessment);
+export const WorksheetCard: React.FC<WorksheetCardProps> = ({
+  submission,
+  onUpdate,
+}) => {
+  const [assessment, setAssessment] = useState<Assessment>(
+    submission.assessment,
+  );
 
   const handleAssessmentChange = (updates: Partial<Assessment>) => {
-    setAssessment(prev => ({ ...prev, ...updates }));
+    setAssessment((prev) => ({ ...prev, ...updates }));
   };
 
   const handleSave = () => {
@@ -26,14 +37,14 @@ export const WorksheetCard: React.FC<WorksheetCardProps> = ({ submission, onUpda
     onUpdate();
   };
 
-  const isCustomSize = assessment.sizeLabel === 'Custom / Free Size';
+  const isCustomSize = assessment.sizeLabel === "Custom / Free Size";
   const mode = assessment.mode;
   const grade = assessment.grade;
-  const isFair = grade === 'Fair';
+  const isFair = grade === "Fair";
 
   // Calculate meaning lines
-  const hasRental = mode === 'Rental' || mode === 'Rental/Preloved';
-  const hasPreloved = mode === 'Preloved' || mode === 'Rental/Preloved';
+  const hasRental = mode === "Rental" || mode === "Rental/Preloved";
+  const hasPreloved = mode === "Preloved" || mode === "Rental/Preloved";
   const hasRentalPrice = assessment.priceStd > 0 || assessment.priceExt > 0;
   const hasPrelovedPrice = assessment.resalePrice > 0;
 
@@ -41,11 +52,13 @@ export const WorksheetCard: React.FC<WorksheetCardProps> = ({ submission, onUpda
     <div className="worksheet-card card">
       <div className="worksheet-header">
         <span className="worksheet-title">Assessment & Pricing Worksheet</span>
-        <span className="worksheet-note">Approving turns exactly this into the Draft product</span>
+        <span className="worksheet-note">
+          Approving turns exactly this into the Draft product
+        </span>
       </div>
 
       <div className="card-bd">
-        <WorksheetGrid 
+        <WorksheetGrid
           assessment={assessment}
           submission={submission}
           onChange={handleAssessmentChange}
@@ -53,15 +66,17 @@ export const WorksheetCard: React.FC<WorksheetCardProps> = ({ submission, onUpda
 
         {/* Tape Block - hidden until Custom size */}
         {isCustomSize && (
-          <TapeBlock 
+          <TapeBlock
             measurements={assessment.measurements}
-            onChange={(measurements) => handleAssessmentChange({ measurements })}
+            onChange={(measurements) =>
+              handleAssessmentChange({ measurements })
+            }
           />
         )}
 
         {/* Storefront Preview */}
         {isCustomSize && (
-          <StorefrontPreview 
+          <StorefrontPreview
             measurements={assessment.measurements}
             sizeLabel={assessment.sizeLabel}
           />
@@ -73,11 +88,21 @@ export const WorksheetCard: React.FC<WorksheetCardProps> = ({ submission, onUpda
             <div className="meaning-line">
               {hasRentalPrice ? (
                 <>
-                  Per standard rental: lister earns <strong>{inr(assessment.priceStd * (assessment.payoutPctRental / 100))}</strong> · HOK <strong>{inr(assessment.priceStd * (60 / 100))}</strong> · customer pays <strong>{inr(assessment.priceStd)}</strong> + 18% GST · deposit <strong>{inr(assessment.deposit)}</strong> on WhatsApp/UPI
+                  Per standard rental: lister earns{" "}
+                  <strong>
+                    {inr(
+                      assessment.priceStd * (assessment.payoutPctRental / 100),
+                    )}
+                  </strong>{" "}
+                  · HOK <strong>{inr(assessment.priceStd * (60 / 100))}</strong>{" "}
+                  · customer pays <strong>{inr(assessment.priceStd)}</strong> +
+                  18% GST · deposit <strong>{inr(assessment.deposit)}</strong>{" "}
+                  on WhatsApp/UPI
                 </>
               ) : (
                 <span className="meaning-line-empty">
-                  No rental pricing yet — you can still approve; the Draft holds publish until pricing is done.
+                  No rental pricing yet — you can still approve; the Draft holds
+                  publish until pricing is done.
                 </span>
               )}
             </div>
@@ -87,8 +112,19 @@ export const WorksheetCard: React.FC<WorksheetCardProps> = ({ submission, onUpda
             <div className="meaning-line">
               {hasPrelovedPrice ? (
                 <>
-                  On the preloved sale: lister earns <strong>{inr(assessment.resalePrice * (assessment.payoutPctResale / 100))}</strong> · HOK <strong>{inr(assessment.resalePrice * (25 / 100))}</strong> · customer pays <strong>{inr(assessment.resalePrice)}</strong> + 5% GST
-                  {assessment.minOffer > 0 && ` · offers floor ${inr(assessment.minOffer)}`}
+                  On the preloved sale: lister earns{" "}
+                  <strong>
+                    {inr(
+                      assessment.resalePrice *
+                        (assessment.payoutPctResale / 100),
+                    )}
+                  </strong>{" "}
+                  · HOK{" "}
+                  <strong>{inr(assessment.resalePrice * (25 / 100))}</strong> ·
+                  customer pays <strong>{inr(assessment.resalePrice)}</strong> +
+                  5% GST
+                  {assessment.minOffer > 0 &&
+                    ` · offers floor ${inr(assessment.minOffer)}`}
                 </>
               ) : (
                 <span className="meaning-line-empty">

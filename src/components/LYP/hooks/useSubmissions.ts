@@ -1,9 +1,9 @@
 // src/components/LYP/hooks/useSubmissions.ts
 
-import { useState, useEffect, useCallback } from 'react';
-import { Submission, SubmissionFilters } from '../types/submission.types';
-import { submissionService } from '../services/submissionService';
-import { getSubmissionStatus, getLiveClockHours } from '../utils/derived';
+import { useState, useEffect, useCallback } from "react";
+import { Submission, SubmissionFilters } from "../types/submission.types";
+import { submissionService } from "../services/submissionService";
+import { getSubmissionStatus, getLiveClockHours } from "../utils/derived";
 
 export const useSubmissions = (filters?: SubmissionFilters) => {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
@@ -19,7 +19,9 @@ export const useSubmissions = (filters?: SubmissionFilters) => {
       setSubmissions(result.data);
       setTotalCount(result.total);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch submissions');
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch submissions",
+      );
     } finally {
       setLoading(false);
     }
@@ -39,17 +41,17 @@ export const useSubmissions = (filters?: SubmissionFilters) => {
       // Undecided first
       const aDecided = !!a.decision;
       const bDecided = !!b.decision;
-      
+
       if (aDecided && !bDecided) return 1;
       if (!aDecided && bDecided) return -1;
-      
+
       if (!aDecided && !bDecided) {
         // Oldest live clock first
         const aClock = getLiveClockHours(a);
         const bClock = getLiveClockHours(b);
         return bClock - aClock;
       }
-      
+
       // Decided: newest verdicts first
       const aDate = new Date(a.decision?.on || 0).getTime();
       const bDate = new Date(b.decision?.on || 0).getTime();
@@ -58,9 +60,12 @@ export const useSubmissions = (filters?: SubmissionFilters) => {
     return sorted;
   }, [submissions]);
 
-  const getSubmissionById = useCallback((id: string) => {
-    return submissions.find(s => s.subid === id) || null;
-  }, [submissions]);
+  const getSubmissionById = useCallback(
+    (id: string) => {
+      return submissions.find((s) => s.subid === id) || null;
+    },
+    [submissions],
+  );
 
   return {
     submissions,

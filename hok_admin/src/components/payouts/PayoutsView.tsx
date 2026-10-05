@@ -21,8 +21,7 @@ export type PayoutTab =
   | "damage-compensation";
 
 export default function PayoutsView() {
-  const [activeTab, setActiveTab] =
-    useState<PayoutTab>("payment-queue");
+  const [activeTab, setActiveTab] = useState<PayoutTab>("payment-queue");
 
   const [payoutsList, setPayoutsList] = useState<payoutApi.Payout[]>([]);
   const [pendingPayoutsTotal, setPendingPayoutsTotal] = useState(0);
@@ -30,20 +29,28 @@ export default function PayoutsView() {
   const [hokCommissionTotal, setHokCommissionTotal] = useState(0);
 
   useEffect(() => {
-    payoutApi.getPayouts()
+    payoutApi
+      .getPayouts()
       .then((result) => {
         setPayoutsList(result.data || []);
         setPendingPayoutsTotal(result.summary?.pending || 0);
         setPaidPayoutsTotal(result.summary?.paid || 0);
         setHokCommissionTotal(result.summary?.hokCommission || 0);
       })
-      .catch((error) => console.error('Unable to load payouts:', error));
+      .catch((error) => console.error("Unable to load payouts:", error));
   }, []);
 
   const renderActiveTab = () => {
     switch (activeTab) {
       case "payment-queue":
-        return <PaymentQueueTab payouts={payoutsList} setPayouts={setPayoutsList} setPending={setPendingPayoutsTotal} setPaid={setPaidPayoutsTotal} />;
+        return (
+          <PaymentQueueTab
+            payouts={payoutsList}
+            setPayouts={setPayoutsList}
+            setPending={setPendingPayoutsTotal}
+            setPaid={setPaidPayoutsTotal}
+          />
+        );
 
       case "all-payouts":
         return <AllPayoutsTab payouts={payoutsList} />;
@@ -55,19 +62,32 @@ export default function PayoutsView() {
         return <ByProductTab payouts={payoutsList} />;
 
       case "damage-compensation":
-        return <DamageCompensationTab payouts={payoutsList} setPayouts={setPayoutsList} setPending={setPendingPayoutsTotal} setPaid={setPaidPayoutsTotal} />;
+        return (
+          <DamageCompensationTab
+            payouts={payoutsList}
+            setPayouts={setPayoutsList}
+            setPending={setPendingPayoutsTotal}
+            setPaid={setPaidPayoutsTotal}
+          />
+        );
 
       default:
-        return <PaymentQueueTab payouts={payoutsList} setPayouts={setPayoutsList} setPending={setPendingPayoutsTotal} setPaid={setPaidPayoutsTotal} />;
+        return (
+          <PaymentQueueTab
+            payouts={payoutsList}
+            setPayouts={setPayoutsList}
+            setPending={setPendingPayoutsTotal}
+            setPaid={setPaidPayoutsTotal}
+          />
+        );
     }
   };
 
   return (
     <div className="min-h-screen bg-[#F8F5F1]">
-    {/* <PayoutPageHeader /> */}
+      {/* <PayoutPageHeader /> */}
 
-    <div className="mx-auto max-w-[1600px] px-0 py-0">
-
+      <div className="mx-auto max-w-[1600px] px-0 py-0">
         {/* Header */}
         <div className="pt-0">
           <PayoutHeader />
@@ -79,7 +99,9 @@ export default function PayoutsView() {
             pendingTotal={pendingPayoutsTotal}
             paidTotal={paidPayoutsTotal}
             hokCommissionTotal={hokCommissionTotal}
-            pendingCount={payoutsList.filter(p => p.status === 'Pending').length}
+            pendingCount={
+              payoutsList.filter((p) => p.status === "Pending").length
+            }
             payouts={payoutsList}
           />
         </div>
@@ -99,9 +121,7 @@ export default function PayoutsView() {
         </div>
 
         {/* Active Tab */}
-        <div className="mt-6">
-          {renderActiveTab()}
-        </div>
+        <div className="mt-6">{renderActiveTab()}</div>
       </div>
     </div>
   );

@@ -2,9 +2,9 @@
 /* Dark charcoal footer */
 
 .mob-footer {
-  background: #1A1612; /* --charcoal */
+  background: #1a1612; /* --charcoal */
   padding: 28px 16px;
-  padding-bottom: max(28px, env(safe-area-inset-bottom)); 
+  padding-bottom: max(28px, env(safe-area-inset-bottom));
   width: 100%;
 }
 
@@ -13,7 +13,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 12px;
   letter-spacing: 0.1em;
-  color: #D4C5B0;
+  color: #d4c5b0;
   margin-bottom: 20px;
   text-align: center;
 }
@@ -33,14 +33,14 @@
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8A7E72; /* --muted */
+  color: #8a7e72; /* --muted */
   text-decoration: none;
   transition: color 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .mob-footer__links a:active {
-  color: #D4C5B0;
+  color: #d4c5b0;
 }
 
 /* Copyright - Spec §14.2 */
@@ -48,6 +48,6 @@
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
   letter-spacing: 0.06em;
-  color: #5A4F46;
+  color: #5a4f46;
   text-align: center;
 }

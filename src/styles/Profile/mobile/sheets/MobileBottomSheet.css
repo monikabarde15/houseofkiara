@@ -12,14 +12,11 @@
 
   inset: 0;
 
-  background:
-    rgba(26, 22, 18, 0.4);
+  background: rgba(26, 22, 18, 0.4);
 
   z-index: 500;
 
-  animation:
-    profile-mobile-sheet-backdrop-fade-in
-    0.3s ease;
+  animation: profile-mobile-sheet-backdrop-fade-in 0.3s ease;
 }
 
 /* ============================================
@@ -59,22 +56,13 @@
 
   overscroll-behavior: contain;
 
-  background: #FFFEFB;
+  background: #fffefb;
 
-  border-top:
-    2px solid #1A1612;
+  border-top: 2px solid #1a1612;
 
   z-index: 501;
 
-  animation:
-    profile-mobile-sheet-slide-up
-    0.38s
-    cubic-bezier(
-      0.16,
-      1,
-      0.3,
-      1
-    );
+  animation: profile-mobile-sheet-slide-up 0.38s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ============================================
@@ -83,13 +71,11 @@
 
 @keyframes profile-mobile-sheet-slide-up {
   from {
-    transform:
-      translateY(100%);
+    transform: translateY(100%);
   }
 
   to {
-    transform:
-      translateY(0);
+    transform: translateY(0);
   }
 }
 
@@ -111,7 +97,7 @@
 
   padding: 16px 16px 0;
 
-  background: #FFFEFB;
+  background: #fffefb;
 }
 
 /* ============================================
@@ -119,9 +105,7 @@
    ============================================ */
 
 .profile-mobile-sheet-title {
-  font-family:
-    "Cormorant Garamond",
-    serif;
+  font-family: "Cormorant Garamond", serif;
 
   font-size: 20px;
 
@@ -129,7 +113,7 @@
 
   line-height: 1.1;
 
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* ============================================
@@ -140,12 +124,11 @@
   width: 30px;
   height: 30px;
 
-  border:
-    1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
 
   border-radius: 999px;
 
-  background: #FFFEFB;
+  background: #fffefb;
 
   display: flex;
   align-items: center;
@@ -161,7 +144,7 @@
 }
 
 .profile-mobile-sheet-close:active {
-  background: #FAF7F2;
+  background: #faf7f2;
 }
 
 /* ============================================
@@ -172,7 +155,7 @@
   width: 11px;
   height: 11px;
 
-  stroke: #8A7E72;
+  stroke: #8a7e72;
 
   stroke-width: 1.8;
 }
@@ -182,8 +165,5 @@
    ============================================ */
 
 .profile-mobile-sheet-body {
-  padding:
-    14px
-    16px
-    24px;
+  padding: 14px 16px 24px;
 }

@@ -16,7 +16,7 @@ const WishlistHeader = ({ piecesSaved, designers, toRent }) => {
       </div>
 
       {/* Section 4.2: Right - Stats */}
-      <WishlistStats 
+      <WishlistStats
         piecesSaved={piecesSaved}
         designers={designers}
         toRent={toRent}

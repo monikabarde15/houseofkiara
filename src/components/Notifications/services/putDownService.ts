@@ -1,6 +1,6 @@
 // src/components/Notifications/services/putDownService.ts
 
-const PUT_DOWN_URL = '/admin/notifications/put-down';
+const PUT_DOWN_URL = "/admin/notifications/put-down";
 
 /**
  * §19.2 / §17.7 — put an alert down for seven days. Must only ever be called
@@ -10,8 +10,8 @@ const PUT_DOWN_URL = '/admin/notifications/put-down';
  */
 export async function putAlertDown(alertKey: string): Promise<void> {
   const res = await fetch(PUT_DOWN_URL, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ key: alertKey }),
   });
 
@@ -26,8 +26,8 @@ export async function putAlertDown(alertKey: string): Promise<void> {
  */
 export async function bringBackAll(): Promise<void> {
   const res = await fetch(PUT_DOWN_URL, {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {

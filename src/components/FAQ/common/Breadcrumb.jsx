@@ -15,7 +15,9 @@ export default function Breadcrumb({ onSelectMoment }) {
       >
         Home
       </button>
-      <i className="crumb-slash" aria-hidden="true">/</i>
+      <i className="crumb-slash" aria-hidden="true">
+        /
+      </i>
       <button
         type="button"
         className="crumb-link"
@@ -25,7 +27,9 @@ export default function Breadcrumb({ onSelectMoment }) {
       >
         Support
       </button>
-      <i className="crumb-slash" aria-hidden="true">/</i>
+      <i className="crumb-slash" aria-hidden="true">
+        /
+      </i>
       <span className="crumb-current" aria-current="page">
         Help & FAQs
       </span>

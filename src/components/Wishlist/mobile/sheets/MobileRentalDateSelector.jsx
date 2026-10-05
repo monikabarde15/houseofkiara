@@ -1,20 +1,29 @@
-import '../../../../styles/wishlist/mobile/sheets/mobile-rental-date-selector.css';
+import "../../../../styles/wishlist/mobile/sheets/mobile-rental-date-selector.css";
 
-const MobileRentalDateSelector = ({ startDate, endDate, onStartDateChange, onEndDateChange }) => {
+const MobileRentalDateSelector = ({
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange,
+}) => {
   // Get today's date in YYYY-MM-DD format for min attribute
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="wishlist-mobile-rental-date-selector">
       {/* Section label: "SELECT RENTAL DATES" */}
-      <div className="wishlist-mobile-rental-date-selector__label">SELECT RENTAL DATES</div>
-      
+      <div className="wishlist-mobile-rental-date-selector__label">
+        SELECT RENTAL DATES
+      </div>
+
       {/* Two-column grid, gap 10px */}
       <div className="wishlist-mobile-rental-date-selector__grid">
         {/* From Date Field */}
         <div className="wishlist-mobile-rental-date-selector__field">
-          <label className="wishlist-mobile-rental-date-selector__field-label">FROM</label>
-          <input 
+          <label className="wishlist-mobile-rental-date-selector__field-label">
+            FROM
+          </label>
+          <input
             type="date"
             className="wishlist-mobile-rental-date-selector__input"
             value={startDate}
@@ -22,11 +31,13 @@ const MobileRentalDateSelector = ({ startDate, endDate, onStartDateChange, onEnd
             min={today}
           />
         </div>
-        
+
         {/* To Date Field */}
         <div className="wishlist-mobile-rental-date-selector__field">
-          <label className="wishlist-mobile-rental-date-selector__field-label">TO</label>
-          <input 
+          <label className="wishlist-mobile-rental-date-selector__field-label">
+            TO
+          </label>
+          <input
             type="date"
             className="wishlist-mobile-rental-date-selector__input"
             value={endDate}

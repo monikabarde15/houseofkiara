@@ -49,10 +49,8 @@ export default function MobileBarTab() {
   const toggleTab = (id: string) => {
     setTabs((prev) =>
       prev.map((tab) =>
-        tab.id === id
-          ? { ...tab, enabled: !tab.enabled }
-          : tab
-      )
+        tab.id === id ? { ...tab, enabled: !tab.enabled } : tab,
+      ),
     );
   };
 
@@ -60,13 +58,9 @@ export default function MobileBarTab() {
     setTabs((prev) => {
       const newTabs = [...prev];
 
-      const targetIndex =
-        direction === "up" ? index - 1 : index + 1;
+      const targetIndex = direction === "up" ? index - 1 : index + 1;
 
-      if (
-        targetIndex < 0 ||
-        targetIndex >= newTabs.length
-      ) {
+      if (targetIndex < 0 || targetIndex >= newTabs.length) {
         return prev;
       }
 
@@ -80,26 +74,22 @@ export default function MobileBarTab() {
   };
 
   const deleteTab = (id: string) => {
-    setTabs((prev) =>
-      prev.filter((tab) => tab.id !== id)
-    );
+    setTabs((prev) => prev.filter((tab) => tab.id !== id));
   };
 
   return (
     <div className="mobile-bar-tab">
-
       {/* BOTTOM BAR CARD */}
       <section className="mobile-bar-card">
-
         {/* Card Header */}
         <div className="mobile-bar-card-header">
           <div>
             <h2>Bottom bar</h2>
 
             <p>
-              {visibleCount} of {tabs.length} tabs showing.
-              The bag entry follows {"{{cart_label}}"} so it
-              cannot drift from the desktop word.
+              {visibleCount} of {tabs.length} tabs showing. The bag entry
+              follows {"{{cart_label}}"} so it cannot drift from the desktop
+              word.
             </p>
           </div>
         </div>
@@ -115,7 +105,6 @@ export default function MobileBarTab() {
 
           {/* Tab Rows */}
           <div className="mobile-tab-list">
-
             {tabs.map((tab, index) => (
               <div
                 key={tab.id}
@@ -123,13 +112,10 @@ export default function MobileBarTab() {
                   !tab.enabled ? "mobile-tab-hidden" : ""
                 }`}
               >
-
                 {/* Checkbox */}
                 <button
                   type="button"
-                  className={`mobile-checkbox ${
-                    tab.enabled ? "checked" : ""
-                  }`}
+                  className={`mobile-checkbox ${tab.enabled ? "checked" : ""}`}
                   onClick={() => toggleTab(tab.id)}
                   aria-label={`Toggle ${tab.label}`}
                 >
@@ -138,12 +124,9 @@ export default function MobileBarTab() {
 
                 {/* Reorder Buttons */}
                 <div className="mobile-reorder-buttons">
-
                   <button
                     type="button"
-                    onClick={() =>
-                      moveTab(index, "up")
-                    }
+                    onClick={() => moveTab(index, "up")}
                     disabled={index === 0}
                     aria-label={`Move ${tab.label} up`}
                   >
@@ -152,15 +135,12 @@ export default function MobileBarTab() {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      moveTab(index, "down")
-                    }
+                    onClick={() => moveTab(index, "down")}
                     disabled={index === tabs.length - 1}
                     aria-label={`Move ${tab.label} down`}
                   >
                     <ArrowDown size={11} />
                   </button>
-
                 </div>
 
                 {/* Label */}
@@ -178,14 +158,12 @@ export default function MobileBarTab() {
                               ...item,
                               label: value,
                             }
-                          : item
-                      )
+                          : item,
+                      ),
                     );
                   }}
                   className={`mobile-quiet-field ${
-                    tab.isBag
-                      ? "mobile-linked-field"
-                      : ""
+                    tab.isBag ? "mobile-linked-field" : ""
                   }`}
                 />
 
@@ -203,8 +181,8 @@ export default function MobileBarTab() {
                               ...item,
                               link: value,
                             }
-                          : item
-                      )
+                          : item,
+                      ),
                     );
                   }}
                   className="mobile-quiet-field mobile-link-field"
@@ -212,18 +190,14 @@ export default function MobileBarTab() {
 
                 {/* Bag Linked Marker */}
                 {tab.isBag && (
-                  <span className="mobile-linked-marker">
-                    linked
-                  </span>
+                  <span className="mobile-linked-marker">linked</span>
                 )}
 
                 {/* Delete */}
                 <button
                   type="button"
                   className={`mobile-delete-button ${
-                    tab.isBag
-                      ? "mobile-delete-disabled"
-                      : ""
+                    tab.isBag ? "mobile-delete-disabled" : ""
                   }`}
                   disabled={tab.isBag}
                   onClick={() => deleteTab(tab.id)}
@@ -236,10 +210,8 @@ export default function MobileBarTab() {
                 >
                   <X size={12} />
                 </button>
-
               </div>
             ))}
-
           </div>
 
           {/* Add Tab */}
@@ -254,81 +226,57 @@ export default function MobileBarTab() {
                 enabled: true,
               };
 
-              setTabs((prev) => [
-                ...prev,
-                newTab,
-              ]);
+              setTabs((prev) => [...prev, newTab]);
             }}
           >
             + Add tab
           </button>
-
         </div>
-
       </section>
-
 
       {/* HAMBURGER DRAWER CARD */}
       <section className="mobile-bar-card hamburger-drawer-card">
-
         <div className="mobile-bar-card-header">
           <div>
             <h2>Hamburger drawer</h2>
 
             <p>
-              10 of the header's items appear here.
-              Tapping one slides in a panel carrying the
-              same columns the desktop menu uses — there
-              is no second list.
+              10 of the header's items appear here. Tapping one slides in a
+              panel carrying the same columns the desktop menu uses — there is
+              no second list.
             </p>
           </div>
         </div>
 
         {/* Drawer Settings */}
         <div className="drawer-settings">
-
           {/* Search Toggle */}
           <label className="drawer-toggle-row">
-            <input
-              type="checkbox"
-              defaultChecked
-            />
+            <input type="checkbox" defaultChecked />
 
-            <span>
-              Show the search field at the top of the drawer
-            </span>
+            <span>Show the search field at the top of the drawer</span>
           </label>
 
           <p className="drawer-hint">
-            Uses the same wording as the desktop search box:
-            “Search lehengas, designers, occasions...”.
+            Uses the same wording as the desktop search box: “Search lehengas,
+            designers, occasions...”.
           </p>
-
 
           {/* Mode Shortcut Toggle */}
           <label className="drawer-toggle-row">
-            <input
-              type="checkbox"
-              defaultChecked
-            />
+            <input type="checkbox" defaultChecked />
 
-            <span>
-              Show the mode shortcuts under it
-            </span>
+            <span>Show the mode shortcuts under it</span>
           </label>
 
           <p className="drawer-hint">
-            The Rent / Buy Preloved / Buy New row.
-            These are the transaction modes, not nav items,
-            so they are not part of the list below.
+            The Rent / Buy Preloved / Buy New row. These are the transaction
+            modes, not nav items, so they are not part of the list below.
           </p>
-
         </div>
-
 
         {/* Drawer Items */}
         <div className="drawer-items">
-
           {[
             ["Rent", "same 16 links as desktop"],
             ["Buy Preloved", "same 17 links as desktop"],
@@ -343,47 +291,30 @@ export default function MobileBarTab() {
             ["New Arrivals", "goes straight to /new-arrivals"],
             ["List Your Piece", "goes straight to /list-your-piece"],
           ].map(([label, note], index) => {
-
-            const isOff =
-              note ===
-              "off in the header, so not in the drawer";
+            const isOff = note === "off in the header, so not in the drawer";
 
             return (
               <div
                 key={`${label}-${index}`}
-                className={`drawer-item ${
-                  isOff ? "drawer-item-off" : ""
-                }`}
+                className={`drawer-item ${isOff ? "drawer-item-off" : ""}`}
               >
-
                 <button
                   type="button"
-                  className={`drawer-checkbox ${
-                    !isOff ? "checked" : ""
-                  }`}
+                  className={`drawer-checkbox ${!isOff ? "checked" : ""}`}
                 >
                   {!isOff && "✓"}
                 </button>
 
-                <button
-                  type="button"
-                  className="drawer-item-label"
-                >
+                <button type="button" className="drawer-item-label">
                   {label}
                 </button>
 
-                <span className="drawer-item-note">
-                  {note}
-                </span>
-
+                <span className="drawer-item-note">{note}</span>
               </div>
             );
           })}
-
         </div>
-
       </section>
-
     </div>
   );
 }

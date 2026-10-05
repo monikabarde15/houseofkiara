@@ -1,6 +1,6 @@
 /* Section 6 - Right Form Panel Shared Elements */
 .hok-auth-right-panel {
-  background: var(--warm-white, #FFFEFB);
+  background: var(--warm-white, #fffefb);
   padding: 60px 48px;
   display: flex;
   align-items: center;

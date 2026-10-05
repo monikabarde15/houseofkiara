@@ -1,13 +1,22 @@
-import React from 'react';
+import React from "react";
 import "../../../../styles/Profile/mobile/ui/MobileSectionLabel.css";
 
-const MobileSectionLabel = ({ title, count, countLabel,linkText, onLinkClick }) => {
+const MobileSectionLabel = ({
+  title,
+  count,
+  countLabel,
+  linkText,
+  onLinkClick,
+}) => {
   return (
     <div className="profile-mobile-section-eyebrow">
       <div className="profile-mobile-section-left">
         {title}
         {count !== undefined && (
-          <span className="profile-mobile-section-count"> • {count} {countLabel} </span>
+          <span className="profile-mobile-section-count">
+            {" "}
+            • {count} {countLabel}{" "}
+          </span>
         )}
       </div>
       {linkText && (

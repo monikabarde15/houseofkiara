@@ -1,16 +1,19 @@
 // src/components/Listers/tabs/SubmittedPieces/MediaPicker.tsx
 
-import React, { useRef } from 'react';
-import { Media } from '../../types/lister.types';
-import { pluralize } from '../../utils/formatter';
-import './styles/MediaPicker.css';
+import React, { useRef } from "react";
+import { Media } from "../../types/lister.types";
+import { pluralize } from "../../utils/formatter";
+import "./styles/MediaPicker.css";
 
 interface MediaPickerProps {
   media: Media[];
   onChange: (media: Media[]) => void;
 }
 
-export const MediaPicker: React.FC<MediaPickerProps> = ({ media, onChange }) => {
+export const MediaPicker: React.FC<MediaPickerProps> = ({
+  media,
+  onChange,
+}) => {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
@@ -18,15 +21,15 @@ export const MediaPicker: React.FC<MediaPickerProps> = ({ media, onChange }) => 
     const files = e.target.files;
     if (!files) return;
 
-    const newMedia: Media[] = Array.from(files).map(file => ({
+    const newMedia: Media[] = Array.from(files).map((file) => ({
       name: file.name,
       url: URL.createObjectURL(file),
-      kind: 'image',
+      kind: "image",
     }));
 
     onChange([...media, ...newMedia]);
     if (photoInputRef.current) {
-      photoInputRef.current.value = '';
+      photoInputRef.current.value = "";
     }
   };
 
@@ -34,15 +37,15 @@ export const MediaPicker: React.FC<MediaPickerProps> = ({ media, onChange }) => 
     const files = e.target.files;
     if (!files) return;
 
-    const newMedia: Media[] = Array.from(files).map(file => ({
+    const newMedia: Media[] = Array.from(files).map((file) => ({
       name: file.name,
       url: URL.createObjectURL(file),
-      kind: 'video',
+      kind: "video",
     }));
 
     onChange([...media, ...newMedia]);
     if (videoInputRef.current) {
-      videoInputRef.current.value = '';
+      videoInputRef.current.value = "";
     }
   };
 
@@ -54,8 +57,8 @@ export const MediaPicker: React.FC<MediaPickerProps> = ({ media, onChange }) => 
     onChange(newMedia);
   };
 
-  const photos = media.filter(m => m.kind === 'image');
-  const videos = media.filter(m => m.kind === 'video');
+  const photos = media.filter((m) => m.kind === "image");
+  const videos = media.filter((m) => m.kind === "video");
 
   return (
     <div className="media-picker">
@@ -68,7 +71,7 @@ export const MediaPicker: React.FC<MediaPickerProps> = ({ media, onChange }) => 
             accept="image/*"
             multiple
             onChange={handleAddPhotos}
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
         </label>
         <label className="btn btn-sec btn-sm">
@@ -79,17 +82,17 @@ export const MediaPicker: React.FC<MediaPickerProps> = ({ media, onChange }) => 
             accept="video/*"
             multiple
             onChange={handleAddVideos}
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
         </label>
         <span className="media-picker-count">
           {media.length === 0 ? (
-            'No media added yet — save WhatsApp photos to this device and add them here.'
+            "No media added yet — save WhatsApp photos to this device and add them here."
           ) : (
             <>
-              {pluralize(photos.length, 'photo')}
-              {videos.length > 0 && ` · ${pluralize(videos.length, 'video')}`}
-              {' attached'}
+              {pluralize(photos.length, "photo")}
+              {videos.length > 0 && ` · ${pluralize(videos.length, "video")}`}
+              {" attached"}
             </>
           )}
         </span>
@@ -99,8 +102,8 @@ export const MediaPicker: React.FC<MediaPickerProps> = ({ media, onChange }) => 
         <div className="media-picker-grid">
           {media.map((item, index) => (
             <div key={index} className="media-picker-item">
-              {item.kind === 'image' ? (
-                <div 
+              {item.kind === "image" ? (
+                <div
                   className="media-picker-thumb"
                   style={{ backgroundImage: `url(${item.url})` }}
                 />
@@ -110,7 +113,7 @@ export const MediaPicker: React.FC<MediaPickerProps> = ({ media, onChange }) => 
                   <div className="media-picker-video-name">{item.name}</div>
                 </div>
               )}
-              <button 
+              <button
                 className="media-picker-remove"
                 onClick={() => handleRemove(index)}
               >

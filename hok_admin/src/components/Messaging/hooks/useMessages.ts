@@ -1,7 +1,7 @@
 // hooks/useMessages.ts
-import { useState, useEffect, useCallback } from 'react';
-import { messageService } from '../services/messageService';
-import { Message } from '../types/messaging.types';
+import { useState, useEffect, useCallback } from "react";
+import { messageService } from "../services/messageService";
+import { Message } from "../types/messaging.types";
 
 interface UseMessagesOptions {
   search?: string;
@@ -22,8 +22,8 @@ export const useMessages = (options: UseMessagesOptions = {}) => {
       setMessages(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in useMessages:', err);
-      setError(err.message || 'Failed to load messages');
+      console.error("Error in useMessages:", err);
+      setError(err.message || "Failed to load messages");
     } finally {
       setLoading(false);
     }

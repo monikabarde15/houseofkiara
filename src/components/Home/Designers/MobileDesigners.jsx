@@ -1,25 +1,13 @@
-import React, {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import {
-  ChevronLeft,
-  ChevronRight,
-  ArrowRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 import featuredDesignersData from "../../../data/home/featuredDesignersData";
 
 const MobileDesigners = () => {
-  const designers = useMemo(
-    () => featuredDesignersData.designers,
-    []
-  );
+  const designers = useMemo(() => featuredDesignersData.designers, []);
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -28,16 +16,11 @@ const MobileDesigners = () => {
   const totalSlides = designers.length;
 
   const nextSlide = () => {
-    setActiveIndex(
-      (prev) => (prev + 1) % totalSlides
-    );
+    setActiveIndex((prev) => (prev + 1) % totalSlides);
   };
 
   const prevSlide = () => {
-    setActiveIndex(
-      (prev) =>
-        (prev - 1 + totalSlides) % totalSlides
-    );
+    setActiveIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
 
   useEffect(() => {
@@ -49,16 +32,13 @@ const MobileDesigners = () => {
   }, []);
 
   const handleTouchStart = (event) => {
-    touchStartX.current =
-      event.changedTouches[0].clientX;
+    touchStartX.current = event.changedTouches[0].clientX;
   };
 
   const handleTouchEnd = (event) => {
-    const touchEndX =
-      event.changedTouches[0].clientX;
+    const touchEndX = event.changedTouches[0].clientX;
 
-    const swipeDistance =
-      touchStartX.current - touchEndX;
+    const swipeDistance = touchStartX.current - touchEndX;
 
     if (Math.abs(swipeDistance) < 44) {
       return;
@@ -71,11 +51,8 @@ const MobileDesigners = () => {
     }
   };
 
-
   const handleHomeDesignersClick = (designer) => {
-    navigate(
-      `/main-page?section=designers&designer=${designer.variant}`
-    );
+    navigate(`/main-page?section=designers&designer=${designer.variant}`);
 
     setTimeout(() => {
       window.scrollTo({
@@ -95,9 +72,7 @@ const MobileDesigners = () => {
         <div
           key={designer.id}
           className={`mobile-designer-slide ${
-            activeIndex === index
-              ? "mobile-designer-slide-active"
-              : ""
+            activeIndex === index ? "mobile-designer-slide-active" : ""
           }`}
         >
           <img
@@ -113,16 +88,13 @@ const MobileDesigners = () => {
               {featuredDesignersData.eyebrow}
             </span>
 
-            <h2 className="mobile-designer-title">
-              {designer.name}
-            </h2>
+            <h2 className="mobile-designer-title">{designer.name}</h2>
 
-            <p className="mobile-designer-count">
-              {designer.pieces}
-            </p>
+            <p className="mobile-designer-count">{designer.pieces}</p>
 
-            <button className="mobile-designer-cta"
-            onClick={() => handleHomeDesignersClick(designer)}
+            <button
+              className="mobile-designer-cta"
+              onClick={() => handleHomeDesignersClick(designer)}
             >
               <span>Explore Designer</span>
 
@@ -137,9 +109,7 @@ const MobileDesigners = () => {
           <button
             key={designer.id}
             className={`mobile-designer-dot ${
-              activeIndex === index
-                ? "mobile-designer-dot-active"
-                : ""
+              activeIndex === index ? "mobile-designer-dot-active" : ""
             }`}
             onClick={() => setActiveIndex(index)}
           />

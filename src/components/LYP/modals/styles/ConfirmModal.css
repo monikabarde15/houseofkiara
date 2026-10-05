@@ -125,13 +125,13 @@
 }
 
 .btn-danger {
-  background: #FDF1EE;
+  background: #fdf1ee;
   color: var(--terra);
-  border-color: #F5C5B5;
+  border-color: #f5c5b5;
 }
 
 .btn-danger:hover {
-  background: #F5DDD7;
+  background: #f5ddd7;
   border-color: var(--terra);
 }
 

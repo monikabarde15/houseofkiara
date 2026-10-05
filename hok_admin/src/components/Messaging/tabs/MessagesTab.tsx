@@ -1,16 +1,16 @@
 // tabs/MessagesTab.tsx (UPDATED)
-import React, { useState } from 'react';
-import { Card } from '../components/Card';
-import { MessagesToolbar } from '../messages/MessagesToolbar';
-import { MessagesTable } from '../messages/MessagesTable';
-import { MessagesFooter } from '../messages/MessagesFooter';
-import { ProblemBanner } from '../messages/ProblemBanner';
-import { ConfirmModal } from '../modals/ConfirmModal';
-import { ALERTS } from '../utils/alerts';
-import { Message } from '../types/messaging.types';
-import { useMessages } from '../hooks/useMessages';
-import { useMessageActions } from '../hooks/useMessageActions';
-import './styles/MessagesTab.css';
+import React, { useState } from "react";
+import { Card } from "../components/Card";
+import { MessagesToolbar } from "../messages/MessagesToolbar";
+import { MessagesTable } from "../messages/MessagesTable";
+import { MessagesFooter } from "../messages/MessagesFooter";
+import { ProblemBanner } from "../messages/ProblemBanner";
+import { ConfirmModal } from "../modals/ConfirmModal";
+import { ALERTS } from "../utils/alerts";
+import { Message } from "../types/messaging.types";
+import { useMessages } from "../hooks/useMessages";
+import { useMessageActions } from "../hooks/useMessageActions";
+import "./styles/MessagesTab.css";
 
 interface MessagesTabProps {
   messages?: Message[];
@@ -20,20 +20,20 @@ interface MessagesTabProps {
   onSelectMessage?: (id: string) => void;
 }
 
-export const MessagesTab: React.FC<MessagesTabProps> = ({ 
+export const MessagesTab: React.FC<MessagesTabProps> = ({
   messages: propMessages,
   setMessages: propSetMessages,
-  onOpenEditor, 
+  onOpenEditor,
   onNewMessageCreated,
-  onSelectMessage 
+  onSelectMessage,
 }) => {
-  const [search, setSearch] = useState('');
-  const [audience, setAudience] = useState('Everyone');
-  const [type, setType] = useState('Required and optional');
-  const [status, setStatus] = useState('Any status');
+  const [search, setSearch] = useState("");
+  const [audience, setAudience] = useState("Everyone");
+  const [type, setType] = useState("Required and optional");
+  const [status, setStatus] = useState("Any status");
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
-  const [confirmMessage, setConfirmMessage] = useState('');
+  const [confirmMessage, setConfirmMessage] = useState("");
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   const { messages, loading, refetch } = useMessages({
@@ -73,7 +73,7 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
   };
 
   const handleCopyMessage = async (messageId: string) => {
-    const msg = messages.find(m => m.id === messageId);
+    const msg = messages.find((m) => m.id === messageId);
     if (msg) {
       const copied = await copyMessage(msg);
       if (copied) {
@@ -84,7 +84,7 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
   };
 
   const handleRemoveMessage = (messageId: string) => {
-    const msg = messages.find(m => m.id === messageId);
+    const msg = messages.find((m) => m.id === messageId);
     if (!msg) return;
 
     if (msg.sentCount && msg.sentCount > 0) {
@@ -97,7 +97,9 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
       return;
     }
 
-    setConfirmMessage(`Remove "${msg.name}"? It has never been sent, so nothing is lost.`);
+    setConfirmMessage(
+      `Remove "${msg.name}"? It has never been sent, so nothing is lost.`,
+    );
     setConfirmAction(() => async () => {
       const success = await removeMessage(msg);
       if (success) {
@@ -110,14 +112,14 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
 
   const handleExport = () => {
     // Export CSV logic
-    console.log('Exporting messages...');
+    console.log("Exporting messages...");
   };
 
   // UPDATED: Problem banner with Setup reference
   const hasProblems = false;
   const problems = [
     // UPDATED: Now references Setup instead of Settings
-    'Care Card has no file, so it would arrive empty. Upload it in Setup.',
+    "Care Card has no file, so it would arrive empty. Upload it in Setup.",
   ];
 
   return (
@@ -126,7 +128,7 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
         <ProblemBanner>
           <strong>Alert</strong>
           <div>{alertMessage}</div>
-          <button 
+          <button
             className="msg-alert-dismiss"
             onClick={() => setAlertMessage(null)}
           >
@@ -137,7 +139,10 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
 
       {hasProblems && (
         <ProblemBanner>
-          <strong>{problems.length} message{problems.length > 1 ? 's' : ''} would not send properly</strong>
+          <strong>
+            {problems.length} message{problems.length > 1 ? "s" : ""} would not
+            send properly
+          </strong>
           {problems.slice(0, 6).map((problem, i) => (
             <div key={i}>· {problem}</div>
           ))}
@@ -159,8 +164,8 @@ export const MessagesTab: React.FC<MessagesTabProps> = ({
           loading={loading}
         />
 
-        <MessagesTable 
-          messages={messages} 
+        <MessagesTable
+          messages={messages}
           onRowClick={onOpenEditor}
           onCopy={handleCopyMessage}
           onRemove={handleRemoveMessage}

@@ -1,9 +1,9 @@
 // messages/MessagesTable.tsx
-import React from 'react';
-import { MessagesRow } from './MessagesRow';
-import { GroupHeading } from './GroupHeading';
-import './styles/MessagesTable.css';
-import { Message } from '../types/messaging.types';
+import React from "react";
+import { MessagesRow } from "./MessagesRow";
+import { GroupHeading } from "./GroupHeading";
+import "./styles/MessagesTable.css";
+import { Message } from "../types/messaging.types";
 
 interface MessagesTableProps {
   messages: Message[];
@@ -13,58 +13,70 @@ interface MessagesTableProps {
 }
 
 const GROUP_ORDER = [
-  'Customer - Account',
-  'Customer - Orders',
-  'Customer - Returns',
-  'Customer - Deposits',
-  'Customer - Receivables',
-  'Customer - Offers',
-  'Customer - Keeping in touch',
-  'Quick notes',
-  'Lister',
-  'Designer partners',
-  'Your own desk',
+  "Customer - Account",
+  "Customer - Orders",
+  "Customer - Returns",
+  "Customer - Deposits",
+  "Customer - Receivables",
+  "Customer - Offers",
+  "Customer - Keeping in touch",
+  "Quick notes",
+  "Lister",
+  "Designer partners",
+  "Your own desk",
 ];
 
 // Map messages to their exact groups
 const getGroupForMessage = (msg: Message): string => {
-  const cleanId = String(msg.id || '').replace('msg_', '');
+  const cleanId = String(msg.id || "").replace("msg_", "");
   const idNum = parseInt(cleanId, 10);
-  
+
   if (!isNaN(idNum)) {
-    if (idNum >= 1 && idNum <= 8) return 'Customer - Account';
-    if (idNum >= 9 && idNum <= 16) return 'Customer - Orders';
-    if (idNum >= 17 && idNum <= 23) return 'Customer - Returns';
-    if (idNum >= 24 && idNum <= 29) return 'Customer - Deposits';
-    if (idNum >= 30 && idNum <= 32) return 'Customer - Receivables';
-    if (idNum >= 33 && idNum <= 39) return 'Customer - Offers';
-    if (idNum >= 40 && idNum <= 46) return 'Customer - Keeping in touch';
-    if (idNum >= 47 && idNum <= 50) return 'Quick notes';
-    if (idNum >= 51 && idNum <= 66) return 'Lister';
-    if (idNum >= 67 && idNum <= 68) return 'Designer partners';
-    if (idNum >= 69 && idNum <= 75) return 'Your own desk';
+    if (idNum >= 1 && idNum <= 8) return "Customer - Account";
+    if (idNum >= 9 && idNum <= 16) return "Customer - Orders";
+    if (idNum >= 17 && idNum <= 23) return "Customer - Returns";
+    if (idNum >= 24 && idNum <= 29) return "Customer - Deposits";
+    if (idNum >= 30 && idNum <= 32) return "Customer - Receivables";
+    if (idNum >= 33 && idNum <= 39) return "Customer - Offers";
+    if (idNum >= 40 && idNum <= 46) return "Customer - Keeping in touch";
+    if (idNum >= 47 && idNum <= 50) return "Quick notes";
+    if (idNum >= 51 && idNum <= 66) return "Lister";
+    if (idNum >= 67 && idNum <= 68) return "Designer partners";
+    if (idNum >= 69 && idNum <= 75) return "Your own desk";
   }
 
   // Audience fallback
-  if (msg.audience === 'You') return 'Your own desk';
-  if (msg.audience === 'Lister') return 'Lister';
-  if (msg.audience === 'Designer') return 'Designer partners';
-  if (msg.isYours) return 'Quick notes';
-  
-  const name = msg.name || '';
-  if (name.includes('Welcome') || name.includes('Email') || name.includes('OTP') || name.includes('Password')) return 'Customer - Account';
-  if (name.includes('Order') || name.includes('Dispatched') || name.includes('Delivered')) return 'Customer - Orders';
-  if (name.includes('Return')) return 'Customer - Returns';
-  if (name.includes('Deposit')) return 'Customer - Deposits';
-  if (name.includes('Offer') || name.includes('Enquiry')) return 'Customer - Offers';
-  return 'Customer - Keeping in touch';
+  if (msg.audience === "You") return "Your own desk";
+  if (msg.audience === "Lister") return "Lister";
+  if (msg.audience === "Designer") return "Designer partners";
+  if (msg.isYours) return "Quick notes";
+
+  const name = msg.name || "";
+  if (
+    name.includes("Welcome") ||
+    name.includes("Email") ||
+    name.includes("OTP") ||
+    name.includes("Password")
+  )
+    return "Customer - Account";
+  if (
+    name.includes("Order") ||
+    name.includes("Dispatched") ||
+    name.includes("Delivered")
+  )
+    return "Customer - Orders";
+  if (name.includes("Return")) return "Customer - Returns";
+  if (name.includes("Deposit")) return "Customer - Deposits";
+  if (name.includes("Offer") || name.includes("Enquiry"))
+    return "Customer - Offers";
+  return "Customer - Keeping in touch";
 };
 
-export const MessagesTable: React.FC<MessagesTableProps> = ({ 
-  messages, 
+export const MessagesTable: React.FC<MessagesTableProps> = ({
+  messages,
   onRowClick,
   onCopy,
-  onRemove
+  onRemove,
 }) => {
   // Group messages
   const groupedMessages: Record<string, Message[]> = {};

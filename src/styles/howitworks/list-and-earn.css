@@ -1,13 +1,13 @@
 /* List & Earn Section - B10 */
 .hok-hiw-list-earn {
-  background: #1A1612;
+  background: #1a1612;
   position: relative;
   overflow: hidden;
 }
 
 /* Earn Watermark */
 .hok-hiw-le-watermark {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 280px;
   font-weight: 300;
   color: rgba(201, 169, 110, 0.035);
@@ -49,7 +49,7 @@
 }
 
 .hok-hiw-le-eyebrow-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.28em;
@@ -58,10 +58,10 @@
 }
 
 .hok-hiw-le-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: clamp(36px, 4vw, 52px);
   font-weight: 400;
-  color: #FAF7F2;
+  color: #faf7f2;
   line-height: 1;
   letter-spacing: -0.01em;
   margin-bottom: 20px;
@@ -69,11 +69,11 @@
 
 .hok-hiw-le-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .hok-hiw-le-lead {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 14px;
   font-weight: 300;
   color: rgba(250, 247, 242, 0.72);
@@ -105,7 +105,7 @@
 }
 
 .hok-hiw-le-mode-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.22em;
@@ -114,7 +114,7 @@
 }
 
 .hok-hiw-le-sub-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 300;
   color: rgba(250, 247, 242, 0.65);
@@ -122,10 +122,10 @@
 }
 
 .hok-hiw-le-figure {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 28px;
   font-weight: 300;
-  color: #FAF7F2;
+  color: #faf7f2;
   letter-spacing: -0.02em;
   text-align: right;
   align-self: center;
@@ -133,11 +133,11 @@
 
 .hok-hiw-le-figure em {
   font-style: normal;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .hok-hiw-le-working-days {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 300;
   color: rgba(250, 247, 242, 0.6);
@@ -151,18 +151,20 @@
 
 /* CTA Button */
 .hok-hiw-le-cta {
-  background: #C9A96E;
-  color: #1A1612;
+  background: #c9a96e;
+  color: #1a1612;
   border: none;
   padding: 16px 40px;
   border-radius: 1px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-weight: 400;
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.25s ease;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -175,7 +177,7 @@
 }
 
 .hok-hiw-le-cta:hover {
-  background: #EBD5B0;
+  background: #ebd5b0;
   transform: translateY(-1px);
 }
 
@@ -192,7 +194,7 @@
 }
 
 .hok-hiw-le-right-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.28em;
@@ -221,7 +223,11 @@
   top: 60px;
   bottom: -32px;
   width: 1px;
-  background: linear-gradient(to bottom, rgba(201, 169, 110, 0.15), transparent);
+  background: linear-gradient(
+    to bottom,
+    rgba(201, 169, 110, 0.15),
+    transparent
+  );
 }
 
 .hok-hiw-sstep:last-child .hok-hiw-sstep-connector {
@@ -254,10 +260,10 @@
 }
 
 .hok-hiw-sstep-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 21px;
   font-weight: 400;
-  color: #FAF7F2;
+  color: #faf7f2;
   margin-bottom: 8px;
   line-height: 1.25;
 }
@@ -267,7 +273,7 @@
   flex-direction: row;
   align-items: center;
   gap: 6px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -282,7 +288,7 @@
 }
 
 .hok-hiw-sstep-desc {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
   font-weight: 300;
   color: rgba(250, 247, 242, 0.72);

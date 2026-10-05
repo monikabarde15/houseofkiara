@@ -1,5 +1,5 @@
-import React from 'react';
-import { Plus, ExternalLink } from 'lucide-react';
+import React from "react";
+import { Plus, ExternalLink } from "lucide-react";
 
 interface ProductHeaderProps {
   isEditing: boolean;
@@ -60,13 +60,12 @@ export function ProductHeader({
   earnedAmount,
 
   isSaving = false, // ✅ Default false rakho
-  onDuplicate,      // ✅ Naya prop
-  onArchive,        // ✅ Naya prop
+  onDuplicate, // ✅ Naya prop
+  onArchive, // ✅ Naya prop
   onSave,
   onAdd,
-  showAddButton = true
+  showAddButton = true,
 }: ProductHeaderProps) {
-
   if (isEditing || isAdding) {
     return (
       <div className="space-y-5">
@@ -92,7 +91,7 @@ export function ProductHeader({
                   <span>·</span>
                 </>
               )}
-              <span>{listingMode || 'RENTAL'}</span>
+              <span>{listingMode || "RENTAL"}</span>
             </div>
 
             {/* LISTER, CONDITION, SIZE, RENTED COUNT */}
@@ -100,15 +99,15 @@ export function ProductHeader({
               <span>
                 Lister:
                 <span className="ml-1 font-medium text-[#6C645B]">
-                  {listerName || 'Select a lister'}
+                  {listerName || "Select a lister"}
                 </span>
               </span>
 
               <span>•</span>
-              <span>{condition || 'Excellent'}</span>
+              <span>{condition || "Excellent"}</span>
 
               <span>•</span>
-              <span>Size {size || 'S'}</span>
+              <span>Size {size || "S"}</span>
 
               <span>•</span>
               <span>Rented {rentedCount || 0}×</span>
@@ -117,17 +116,16 @@ export function ProductHeader({
 
           {/* Right */}
           <div className="flex items-center gap-2.5 self-start shrink-0">
-
             {/* STATUS */}
             <span className="inline-flex h-6 items-center rounded-md bg-[#EEF8EE] px-2.5 text-[11px] font-semibold text-[#4E8E58]">
-              {status || 'Live'}
+              {status || "Live"}
             </span>
 
             {/* ✅ DUPLICATE BUTTON (Ab clickable hai!) */}
             <button
               onClick={onDuplicate}
               disabled={isSaving}
-              className={`inline-flex h-8 items-center rounded-md border border-[#E7DED2] bg-white px-3.5 text-[12px] font-medium text-[#3D3832] transition hover:bg-[#FBF9F6] ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`inline-flex h-8 items-center rounded-md border border-[#E7DED2] bg-white px-3.5 text-[12px] font-medium text-[#3D3832] transition hover:bg-[#FBF9F6] ${isSaving ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               Duplicate as Draft
             </button>
@@ -136,7 +134,7 @@ export function ProductHeader({
             <button
               onClick={onArchive}
               disabled={isSaving}
-              className={`inline-flex h-8 items-center rounded-md border border-[#F3D5CF] bg-white px-3.5 text-[12px] font-medium text-[#CC6E56] transition hover:bg-[#FFF8F6] ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`inline-flex h-8 items-center rounded-md border border-[#F3D5CF] bg-white px-3.5 text-[12px] font-medium text-[#CC6E56] transition hover:bg-[#FFF8F6] ${isSaving ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               Archive
             </button>
@@ -149,15 +147,16 @@ export function ProductHeader({
             <button
               onClick={onSave}
               disabled={isSaving}
-              className={`inline-flex h-8 items-center rounded-md px-4 text-[12px] font-semibold shadow-sm transition ${isSaving
-                ? 'bg-gray-400 text-gray-100 cursor-not-allowed opacity-70'
-                : 'bg-[#C9A75B] text-[#2A2118] hover:bg-[#BC9A4F]'
-                }`}
+              className={`inline-flex h-8 items-center rounded-md px-4 text-[12px] font-semibold shadow-sm transition ${
+                isSaving
+                  ? "bg-gray-400 text-gray-100 cursor-not-allowed opacity-70"
+                  : "bg-[#C9A75B] text-[#2A2118] hover:bg-[#BC9A4F]"
+              }`}
             >
-              {isSaving ? 'Saving...' : 'Save Changes'}
+              {isSaving ? "Saving..." : "Save Changes"}
             </button>
-          </div >
-        </div >
+          </div>
+        </div>
 
         {/* Rental Status Banner */}
         <div className="rounded-md border border-[#E8DDD0] bg-[#FFF9F2] px-4 py-3">
@@ -167,15 +166,16 @@ export function ProductHeader({
             </div>
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-2">
-
                 {/* RENTAL STATUS, RENTER, ORDER ID */}
                 <span className="text-[13px] font-semibold text-[#2E2923]">
-                  {rentalStatus || 'Not Rented'}
+                  {rentalStatus || "Not Rented"}
                 </span>
                 {currentRenterName && (
                   <>
                     <span className="text-[#B2A79A]">—</span>
-                    <span className="text-[13px] text-[#2D241D]">{currentRenterName}</span>
+                    <span className="text-[13px] text-[#2D241D]">
+                      {currentRenterName}
+                    </span>
                   </>
                 )}
                 {currentOrderId && (
@@ -185,17 +185,31 @@ export function ProductHeader({
                 )}
               </div>
               <div className="mt-1.5 flex flex-wrap items-center gap-x-3 text-[13px] text-[#4E4740]">
-
                 {/* DATES, RENTED COUNT, EARNED AMOUNT */}
-                {rentUntil && <span>Until <strong>{rentUntil}</strong></span>}
-                {nextFreeDate && <span>Next free <strong>{nextFreeDate}</strong></span>}
-                <span>Rented <strong>{rentedCount || 0}×</strong></span>
-                <span>Earned <strong>₹{(earnedAmount || 0).toLocaleString('en-IN')}</strong></span>
+                {rentUntil && (
+                  <span>
+                    Until <strong>{rentUntil}</strong>
+                  </span>
+                )}
+                {nextFreeDate && (
+                  <span>
+                    Next free <strong>{nextFreeDate}</strong>
+                  </span>
+                )}
+                <span>
+                  Rented <strong>{rentedCount || 0}×</strong>
+                </span>
+                <span>
+                  Earned{" "}
+                  <strong>
+                    ₹{(earnedAmount || 0).toLocaleString("en-IN")}
+                  </strong>
+                </span>
               </div>
             </div>
           </div>
         </div>
-      </div >
+      </div>
     );
   }
 
@@ -209,7 +223,9 @@ export function ProductHeader({
         Products
       </h1>
       <p className="text-xs sm:text-[13px] text-[#8C847A] mt-1 max-w-2xl leading-relaxed">
-        Full catalogue across Rental, Preloved and Buy New. Click any row to open the full product editor with availability calendar. Use Cal button to jump straight to the calendar.
+        Full catalogue across Rental, Preloved and Buy New. Click any row to
+        open the full product editor with availability calendar. Use Cal button
+        to jump straight to the calendar.
       </p>
     </div>
   );

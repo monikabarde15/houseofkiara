@@ -9,7 +9,7 @@
   padding: 14px 16px;
   cursor: pointer;
   transition: background 0.12s;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 .profile-mobile-prow:last-child {
@@ -17,7 +17,7 @@
 }
 
 .profile-mobile-prow:active {
-  background: #FAF7F2;
+  background: #faf7f2;
 }
 
 /* Thumbnail - Section 5.2.1 */
@@ -27,7 +27,7 @@
   flex-shrink: 0;
   border-radius: 3px;
   overflow: hidden;
-  background: linear-gradient(135deg, #F0EAE0, #E8E0D4);
+  background: linear-gradient(135deg, #f0eae0, #e8e0d4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,7 +37,7 @@
   width: 20px;
   height: 20px;
   opacity: 0.18;
-  stroke: #1A1612;
+  stroke: #1a1612;
 }
 
 /* Body - Section 5.2.2 */
@@ -69,34 +69,34 @@
 
 .profile-mobile-b-dis {
   background: rgba(201, 169, 110, 0.12);
-  color: #A8844A;
+  color: #a8844a;
 }
 
 .profile-mobile-b-con {
   background: rgba(42, 68, 102, 0.1);
-  color: #2A4466;
+  color: #2a4466;
 }
 
 .profile-mobile-b-com {
   background: rgba(26, 22, 18, 0.06);
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .profile-mobile-b-ret {
   background: rgba(176, 168, 152, 0.18);
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .profile-mobile-b-can {
   background: rgba(138, 126, 114, 0.12);
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .profile-mobile-prow-name {
   font-family: "Cormorant Garamond", serif;
   font-size: 16px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.25;
   margin-bottom: 2px;
 }
@@ -105,7 +105,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
   font-weight: 300;
-  color: #B0A898;
+  color: #b0a898;
   line-height: 1.6;
   margin-bottom: 4px;
 }
@@ -120,25 +120,25 @@
   padding: 2px 7px;
   border-radius: 9px;
   margin-top: 4px;
-  background: #FAF7F2;
-  color: #B0A898;
+  background: #faf7f2;
+  color: #b0a898;
 }
 
 .profile-mobile-pill-p {
   background: rgba(201, 169, 110, 0.12);
-  color: #A8844A;
+  color: #a8844a;
 }
 
 .profile-mobile-pill-r {
   background: rgba(107, 126, 90, 0.1);
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 .profile-mobile-prow-price {
   font-family: "Cormorant Garamond", serif;
   font-size: 16px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   margin-top: 6px;
 }
 
@@ -147,7 +147,7 @@
 .profile-mobile-prow-arrow {
   width: 16px;
   height: 16px;
-  stroke: #E8E0D4;
+  stroke: #e8e0d4;
   stroke-width: 1.5;
   flex-shrink: 0;
 }

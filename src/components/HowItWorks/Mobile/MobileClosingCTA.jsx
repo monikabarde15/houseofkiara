@@ -1,16 +1,16 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../../../styles/howitworks/mobile/mobile-closing-cta.css';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "../../../styles/howitworks/mobile/mobile-closing-cta.css";
 
 const MobileClosingCTA = () => {
   const navigate = useNavigate();
 
   const handleBrowseCollection = () => {
-    navigate('/main-page');
+    navigate("/main-page");
   };
 
   const handleListYourPiece = () => {
-    navigate('/list-your-piece/');
+    navigate("/list-your-piece/");
   };
 
   return (
@@ -34,21 +34,21 @@ const MobileClosingCTA = () => {
 
         {/* Body */}
         <p className="hok-hiw-mobile-closing-body">
-          Whether you're dressing for a celebration or giving a beautiful piece another moment to shine – 
-          this is where that story continues.
+          Whether you're dressing for a celebration or giving a beautiful piece
+          another moment to shine – this is where that story continues.
         </p>
 
         {/* Buttons */}
         <div className="hok-hiw-mobile-closing-buttons">
-          <button 
-            className="hok-hiw-mobile-closing-btn-primary" 
+          <button
+            className="hok-hiw-mobile-closing-btn-primary"
             onClick={handleBrowseCollection}
           >
             Browse the Collection
           </button>
-          
-          <button 
-            className="hok-hiw-mobile-closing-btn-secondary" 
+
+          <button
+            className="hok-hiw-mobile-closing-btn-secondary"
             onClick={handleListYourPiece}
           >
             List Your Piece →

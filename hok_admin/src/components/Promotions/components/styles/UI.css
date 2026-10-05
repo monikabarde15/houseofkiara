@@ -60,7 +60,9 @@
   font-size: 11.5px;
   font-weight: 500;
   font-family: var(--promo-sans);
-  transition: background 0.12s, border-color 0.12s;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
@@ -273,7 +275,9 @@
   background: var(--promo-ibg);
   width: 100%;
   outline: none;
-  transition: border-color 0.12s, box-shadow 0.12s;
+  transition:
+    border-color 0.12s,
+    box-shadow 0.12s;
 }
 
 .form-field__input:focus {

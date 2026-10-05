@@ -3,12 +3,20 @@ import GridImageArea from "./grid/GridImageArea";
 import GridCardBody from "./grid/GridCardBody";
 import "../../../styles/wishlist/cards/grid/grid-card.css";
 
-const WishlistGridCard = ({ product, type, index, onRemove, onOpenModal, isRestored }) => {  // Remove onShowToast
+const WishlistGridCard = ({
+  product,
+  type,
+  index,
+  onRemove,
+  onOpenModal,
+  isRestored,
+}) => {
+  // Remove onShowToast
   const cardRef = useRef(null);
   const [isRemoving, setIsRemoving] = useState(false);
   const [isCollapsing, setIsCollapsing] = useState(false);
 
-  const staggerDelays = [0.04, 0.10, 0.16, 0.22, 0.28, 0.34, 0.40, 0.46];
+  const staggerDelays = [0.04, 0.1, 0.16, 0.22, 0.28, 0.34, 0.4, 0.46];
   const animationDelay = index < 8 ? `${staggerDelays[index]}s` : "0s";
 
   const handleRemove = () => {
@@ -45,13 +53,13 @@ const WishlistGridCard = ({ product, type, index, onRemove, onOpenModal, isResto
       data-designer={product.designer}
       style={{ animationDelay }}
     >
-      <GridImageArea 
+      <GridImageArea
         product={product}
         type={type}
         onRemove={handleRemove}
         onOpenModal={onOpenModal}
       />
-      <GridCardBody 
+      <GridCardBody
         product={product}
         type={type}
         onRemove={handleRemove}

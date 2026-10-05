@@ -16,12 +16,13 @@ const PromoCode = ({ onApply }) => {
     if (!code) return;
     setLoading(true);
     setError("");
-    
+
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+      const backendUrl =
+        import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
       const res = await fetch(`${backendUrl}/api/promotions/${code}`);
       const data = await res.json();
-      
+
       if (!data.success || !data.data) {
         setError("This code is not valid or has expired.");
         setApplied(null);
@@ -36,7 +37,12 @@ const PromoCode = ({ onApply }) => {
       }
 
       const promo = data.data;
-      const appliedData = { code: promo.code, type: promo.type, value: promo.value, label: promo.reason };
+      const appliedData = {
+        code: promo.code,
+        type: promo.type,
+        value: promo.value,
+        label: promo.reason,
+      };
 
       setApplied(appliedData);
       onApply(appliedData);
@@ -65,9 +71,7 @@ const PromoCode = ({ onApply }) => {
     <div className="promo-wrapper">
       <div className="promo-zone">
         {/* Label */}
-        <div className="promo-label">
-          Promo code
-        </div>
+        <div className="promo-label">Promo code</div>
 
         {/* Input */}
         <input
@@ -115,9 +119,7 @@ const PromoCode = ({ onApply }) => {
   ${applied ? "success show" : ""} 
   ${error ? "error show" : ""}`}
         >
-          {applied
-            ? `${applied.code} applied — ${applied.label}`
-            : error}
+          {applied ? `${applied.code} applied — ${applied.label}` : error}
         </div>
       )}
 

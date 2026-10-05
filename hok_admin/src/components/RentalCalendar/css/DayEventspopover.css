@@ -1,8 +1,8 @@
 .day-events-popover {
   position: fixed;
   z-index: 1000;
-  background: #FFFFFF;
-  border: 1px solid #EBE5D8;
+  background: #ffffff;
+  border: 1px solid #ebe5d8;
   border-radius: 8px;
   box-shadow: 0 12px 32px rgba(43, 33, 24, 0.18);
   max-height: 360px;
@@ -14,21 +14,21 @@
   align-items: baseline;
   justify-content: space-between;
   padding: 10px 12px;
-  border-bottom: 1px solid #EBE5D8;
+  border-bottom: 1px solid #ebe5d8;
   position: sticky;
   top: 0;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .day-events-popover__date {
   font-size: 13px;
   font-weight: 700;
-  color: #2B2118;
+  color: #2b2118;
 }
 
 .day-events-popover__count {
   font-size: 11px;
-  color: #A69C8B;
+  color: #a69c8b;
 }
 
 .day-events-popover__list {

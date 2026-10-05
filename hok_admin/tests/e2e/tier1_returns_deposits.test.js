@@ -23,9 +23,13 @@ describe("Tier 1: Feature Coverage — Returns & Deposits Settlement", () => {
           designer: "Anita Dongre",
           mode: "Rental",
           size: "Free Size",
-          rentalStartDate: new Date(today.getTime() - 4 * 24 * 3600 * 1000).toISOString().split("T")[0],
+          rentalStartDate: new Date(today.getTime() - 4 * 24 * 3600 * 1000)
+            .toISOString()
+            .split("T")[0],
           rentalEndDate: returnDateStr,
-          dispatchDate: new Date(today.getTime() - 5 * 24 * 3600 * 1000).toISOString().split("T")[0],
+          dispatchDate: new Date(today.getTime() - 5 * 24 * 3600 * 1000)
+            .toISOString()
+            .split("T")[0],
           returnDueDate: returnDateStr,
           amount: 12000,
           deposit: 25000,
@@ -59,10 +63,13 @@ describe("Tier 1: Feature Coverage — Returns & Deposits Settlement", () => {
     const orders = res.data?.data || [];
 
     const returnsDue = orders.filter((o) =>
-      ["Shipped", "Delivered", "Return Due", "Return Sent"].includes(o.status)
+      ["Shipped", "Delivered", "Return Due", "Return Sent"].includes(o.status),
     );
     assert.ok(Array.isArray(returnsDue), "Returns due should be an array");
-    assert.ok(returnsDue.some((o) => o.orderId === returnOrder.orderId), "Our return order should appear in returns list");
+    assert.ok(
+      returnsDue.some((o) => o.orderId === returnOrder.orderId),
+      "Our return order should appear in returns list",
+    );
   });
 
   test("Feature 12: PATCH /api/orders/:id/items/:index/return records return QC assessment and grading", async () => {
@@ -70,11 +77,19 @@ describe("Tier 1: Feature Coverage — Returns & Deposits Settlement", () => {
       receivedDate: new Date().toISOString().split("T")[0],
       receivedBy: "Senior QC Inspector",
       grade: "A",
-      notes: "Flawless condition, verified under UV light. No stains or missing tassels.",
+      notes:
+        "Flawless condition, verified under UV light. No stains or missing tassels.",
     };
 
-    const res = await client.patch(`/orders/${returnOrder.orderId}/items/0/return`, qcPayload);
-    assert.strictEqual(res.status, 200, "QC grading update should return 200 OK");
+    const res = await client.patch(
+      `/orders/${returnOrder.orderId}/items/0/return`,
+      qcPayload,
+    );
+    assert.strictEqual(
+      res.status,
+      200,
+      "QC grading update should return 200 OK",
+    );
     assert.strictEqual(res.data?.success, true);
   });
 
@@ -88,7 +103,10 @@ describe("Tier 1: Feature Coverage — Returns & Deposits Settlement", () => {
       videoUrl: "https://example.com/videos/qc-return-inspection.mp4",
     };
 
-    const res = await client.patch(`/orders/${returnOrder.orderId}/items/0/evidence`, evidencePayload);
+    const res = await client.patch(
+      `/orders/${returnOrder.orderId}/items/0/evidence`,
+      evidencePayload,
+    );
     assert.strictEqual(res.status, 200, "Saving evidence should return 200 OK");
     assert.strictEqual(res.data?.success, true);
   });
@@ -103,7 +121,10 @@ describe("Tier 1: Feature Coverage — Returns & Deposits Settlement", () => {
       releaseNote: "Processed via original payment method.",
     };
 
-    const res = await client.patch(`/orders/${returnOrder.orderId}/items/0/deposit`, depositPayload);
+    const res = await client.patch(
+      `/orders/${returnOrder.orderId}/items/0/deposit`,
+      depositPayload,
+    );
     assert.strictEqual(res.status, 200, "Deposit release should return 200 OK");
     assert.strictEqual(res.data?.success, true);
 
@@ -113,8 +134,8 @@ describe("Tier 1: Feature Coverage — Returns & Deposits Settlement", () => {
     const item = detailRes.data.data.items[0];
     assert.ok(
       item.depositDecision?.status === "Released" ||
-      item.depositDecision?.releasedAmount === 25000,
-      "Deposit decision must persist in database"
+        item.depositDecision?.releasedAmount === 25000,
+      "Deposit decision must persist in database",
     );
   });
 

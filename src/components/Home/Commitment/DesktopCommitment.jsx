@@ -11,13 +11,10 @@ const DesktopCommitment = () => {
       <div className="desk-commitment-layout">
         {/* LEFT SIDE */}
         <div className="desk-commitment-content">
-          <SectionEyebrow
-            text={commitmentData.eyebrow}
-          />
+          <SectionEyebrow text={commitmentData.eyebrow} />
 
           <SectionTitle>
-            {commitmentData.title.normal}{" "}
-            <em>{commitmentData.title.accent}</em>
+            {commitmentData.title.normal} <em>{commitmentData.title.accent}</em>
           </SectionTitle>
 
           <p className="desk-commitment-description">
@@ -26,10 +23,7 @@ const DesktopCommitment = () => {
 
           <div className="desk-commitment-pills">
             {commitmentData.servicePills.map((pill) => (
-              <div
-                key={pill}
-                className="desk-commitment-pill"
-              >
+              <div key={pill} className="desk-commitment-pill">
                 <span className="desk-commitment-pill-dot" />
                 {pill}
               </div>
@@ -43,21 +37,14 @@ const DesktopCommitment = () => {
             const Icon = card.icon;
 
             return (
-              <article
-                key={card.id}
-                className="desk-commitment-card"
-              >
+              <article key={card.id} className="desk-commitment-card">
                 <div className="desk-commitment-icon-circle">
                   <Icon />
                 </div>
 
-                <h3 className="desk-commitment-card-title">
-                  {card.headline}
-                </h3>
+                <h3 className="desk-commitment-card-title">{card.headline}</h3>
 
-                <p className="desk-commitment-card-body">
-                  {card.body}
-                </p>
+                <p className="desk-commitment-card-body">{card.body}</p>
               </article>
             );
           })}

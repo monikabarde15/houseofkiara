@@ -1,15 +1,18 @@
 // src/components/LYP/record/TapeBlock.tsx
 
-import React from 'react';
-import { Measurements } from '../types/submission.types';
-import './styles/TapeBlock.css';
+import React from "react";
+import { Measurements } from "../types/submission.types";
+import "./styles/TapeBlock.css";
 
 interface TapeBlockProps {
   measurements: Measurements | null;
   onChange: (measurements: Measurements) => void;
 }
 
-export const TapeBlock: React.FC<TapeBlockProps> = ({ measurements, onChange }) => {
+export const TapeBlock: React.FC<TapeBlockProps> = ({
+  measurements,
+  onChange,
+}) => {
   const handleChange = (field: keyof Measurements, value: string) => {
     const updated = { ...(measurements || {}), [field]: value };
     onChange(updated);
@@ -20,16 +23,22 @@ export const TapeBlock: React.FC<TapeBlockProps> = ({ measurements, onChange }) 
     onChange(updated);
   };
 
-  const hasValues = measurements && Object.keys(measurements).some(
-    k => k !== 'notes' && measurements[k as keyof Measurements]
-  );
+  const hasValues =
+    measurements &&
+    Object.keys(measurements).some(
+      (k) => k !== "notes" && measurements[k as keyof Measurements],
+    );
 
   return (
     <div className="tape-block">
       <div className="tape-header">
-        <span className="tape-header-label">MEASUREMENTS — AS FITTED (INCHES)</span>
+        <span className="tape-header-label">
+          MEASUREMENTS — AS FITTED (INCHES)
+        </span>
         {hasValues && (
-          <span className="tape-header-echo">— they said {formatMeasurementEcho(measurements)}</span>
+          <span className="tape-header-echo">
+            — they said {formatMeasurementEcho(measurements)}
+          </span>
         )}
       </div>
 
@@ -39,8 +48,8 @@ export const TapeBlock: React.FC<TapeBlockProps> = ({ measurements, onChange }) 
           <input
             type="text"
             className="fld-input"
-            value={measurements?.bust || ''}
-            onChange={(e) => handleChange('bust', e.target.value)}
+            value={measurements?.bust || ""}
+            onChange={(e) => handleChange("bust", e.target.value)}
             placeholder="e.g. 36"
           />
         </div>
@@ -50,8 +59,8 @@ export const TapeBlock: React.FC<TapeBlockProps> = ({ measurements, onChange }) 
           <input
             type="text"
             className="fld-input"
-            value={measurements?.waist || ''}
-            onChange={(e) => handleChange('waist', e.target.value)}
+            value={measurements?.waist || ""}
+            onChange={(e) => handleChange("waist", e.target.value)}
             placeholder="e.g. 30"
           />
         </div>
@@ -61,8 +70,8 @@ export const TapeBlock: React.FC<TapeBlockProps> = ({ measurements, onChange }) 
           <input
             type="text"
             className="fld-input"
-            value={measurements?.hips || ''}
-            onChange={(e) => handleChange('hips', e.target.value)}
+            value={measurements?.hips || ""}
+            onChange={(e) => handleChange("hips", e.target.value)}
             placeholder="e.g. 40"
           />
         </div>
@@ -72,8 +81,8 @@ export const TapeBlock: React.FC<TapeBlockProps> = ({ measurements, onChange }) 
           <input
             type="text"
             className="fld-input"
-            value={measurements?.shoulder || ''}
-            onChange={(e) => handleChange('shoulder', e.target.value)}
+            value={measurements?.shoulder || ""}
+            onChange={(e) => handleChange("shoulder", e.target.value)}
             placeholder="e.g. 14.5"
           />
         </div>
@@ -83,8 +92,8 @@ export const TapeBlock: React.FC<TapeBlockProps> = ({ measurements, onChange }) 
           <input
             type="text"
             className="fld-input"
-            value={measurements?.length || ''}
-            onChange={(e) => handleChange('length', e.target.value)}
+            value={measurements?.length || ""}
+            onChange={(e) => handleChange("length", e.target.value)}
             placeholder="e.g. 42"
           />
         </div>
@@ -94,8 +103,8 @@ export const TapeBlock: React.FC<TapeBlockProps> = ({ measurements, onChange }) 
           <input
             type="text"
             className="fld-input"
-            value={measurements?.sleeve || ''}
-            onChange={(e) => handleChange('sleeve', e.target.value)}
+            value={measurements?.sleeve || ""}
+            onChange={(e) => handleChange("sleeve", e.target.value)}
             placeholder="e.g. 18"
           />
         </div>
@@ -106,7 +115,7 @@ export const TapeBlock: React.FC<TapeBlockProps> = ({ measurements, onChange }) 
         <input
           type="text"
           className="fld-input"
-          value={measurements?.notes || ''}
+          value={measurements?.notes || ""}
           onChange={(e) => handleNotesChange(e.target.value)}
           placeholder="Let-out margins, blouse fit, alteration room — storefront-worthy honesty"
         />
@@ -117,13 +126,22 @@ export const TapeBlock: React.FC<TapeBlockProps> = ({ measurements, onChange }) 
 
 // Helper function to format measurement echo
 const formatMeasurementEcho = (measurements: Measurements | null): string => {
-  if (!measurements) return '';
+  if (!measurements) return "";
   const parts: string[] = [];
-  const keys: (keyof Measurements)[] = ['bust', 'waist', 'hips', 'shoulder', 'length', 'sleeve'];
+  const keys: (keyof Measurements)[] = [
+    "bust",
+    "waist",
+    "hips",
+    "shoulder",
+    "length",
+    "sleeve",
+  ];
   for (const key of keys) {
     if (measurements[key]) {
-      parts.push(`${(key as string).charAt(0).toUpperCase()} ${measurements[key]}"`);
+      parts.push(
+        `${(key as string).charAt(0).toUpperCase()} ${measurements[key]}"`,
+      );
     }
   }
-  return parts.join(' · ');
+  return parts.join(" · ");
 };

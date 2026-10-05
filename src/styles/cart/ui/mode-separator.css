@@ -9,7 +9,7 @@
   gap: 18px;
   padding-bottom: 24px;
   margin-bottom: 32px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 .mode-separator-dot {
@@ -25,13 +25,13 @@
   font-weight: 400;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   line-height: 1;
 }
 
 /* Colour variants */
 .mode-separator[data-type="rental"] .mode-separator-dot {
-  background: #6B7E5A;
+  background: #6b7e5a;
 }
 
 .mode-separator[data-type="preloved"] .mode-separator-dot {
@@ -39,7 +39,7 @@
 }
 
 .mode-separator[data-type="new"] .mode-separator-dot {
-  background: #2A4466;
+  background: #2a4466;
 }
 
 /* =========================================================

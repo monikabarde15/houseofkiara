@@ -5,9 +5,9 @@ import { showToast } from "../shared/Toast";
 
 const DesktopClosingCTA = () => {
   const sectionRef = useRef(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  // Reveal animation observer 
+  // Reveal animation observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -17,7 +17,7 @@ const DesktopClosingCTA = () => {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
 
     const elements = sectionRef.current?.querySelectorAll(".reveal");
@@ -29,50 +29,49 @@ const DesktopClosingCTA = () => {
   // Handle button clicks
   const handleExploreClick = () => {
     showToast("Opening the Collection...");
-    navigate("/main-page")
+    navigate("/main-page");
 
     setTimeout(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, 0);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }, 0);
   };
 
   const handleListClick = () => {
     showToast("Opening List Your Piece...");
-    navigate("/list-your-piece")
+    navigate("/list-your-piece");
   };
 
   return (
     <section className="au-closing" ref={sectionRef}>
-      
       {/* Background Glow  */}
       <div className="au-closing__glow"></div>
 
       {/* Inner Content  */}
       <div className="au-closing__inner reveal">
-        
         {/* H2  */}
         <h2 className="au-closing__title">
           Your piece's <em>next chapter</em> starts here.
         </h2>
-        
+
         {/* Paragraph  */}
         <p className="au-closing__paragraph">
-          Whether you're here to wear something unforgettable or to give something 
-          unforgettable a second life, there's a place for you at House of Kaira.
+          Whether you're here to wear something unforgettable or to give
+          something unforgettable a second life, there's a place for you at
+          House of Kaira.
         </p>
 
         {/* Buttons */}
         <div className="au-closing__buttons">
-          <button 
+          <button
             className="au-closing__btn au-closing__btn--gold"
             onClick={handleExploreClick}
           >
             Explore The Collection
           </button>
-          <button 
+          <button
             className="au-closing__btn au-closing__btn--outline"
             onClick={handleListClick}
           >
@@ -83,17 +82,15 @@ const DesktopClosingCTA = () => {
         {/* Instagram Line */}
         <div className="au-closing__instagram">
           <span>Follow our story at </span>
-          <a 
-            href="https://instagram.com/house_of_kaira" 
-            target="_blank" 
+          <a
+            href="https://instagram.com/house_of_kaira"
+            target="_blank"
             rel="noopener noreferrer"
           >
             @house_of_kaira
           </a>
         </div>
-
       </div>
-
     </section>
   );
 };

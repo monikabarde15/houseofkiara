@@ -1,23 +1,25 @@
 // src/components/LYP/record/PriceVerification.tsx
 
-import React from 'react';
-import { Submission } from '../types/submission.types';
-import { inr } from '../utils/formatter';
-import './styles/PriceVerification.css';
+import React from "react";
+import { Submission } from "../types/submission.types";
+import { inr } from "../utils/formatter";
+import "./styles/PriceVerification.css";
 
 interface PriceVerificationProps {
   submission: Submission;
   onUpdate: () => void;
 }
 
-export const PriceVerification: React.FC<PriceVerificationProps> = ({ 
-  submission, 
-  onUpdate 
+export const PriceVerification: React.FC<PriceVerificationProps> = ({
+  submission,
+  onUpdate,
 }) => {
   const isDecided = !!submission.decision;
   const retailPrice = submission.assessment?.retailPrice || 0;
   const verifiedVia = submission.assessment?.retailVerifiedVia;
-  const originalPrice = parseFloat(submission.originalPrice?.replace(/[^0-9.]/g, '') || '0');
+  const originalPrice = parseFloat(
+    submission.originalPrice?.replace(/[^0-9.]/g, "") || "0",
+  );
   const isVerified = retailPrice > 0 && verifiedVia;
 
   if (isDecided && !isVerified) {
@@ -36,8 +38,9 @@ export const PriceVerification: React.FC<PriceVerificationProps> = ({
           Verified — {inr(retailPrice)} — {verifiedVia}
         </span>
         {showDiff && (
-          <span className={`tchip ${diff > 0 ? 'warn' : 'bad'}`}>
-            {diff > 0 ? '+' : '-'}{inr(diffAbs)} vs claim
+          <span className={`tchip ${diff > 0 ? "warn" : "bad"}`}>
+            {diff > 0 ? "+" : "-"}
+            {inr(diffAbs)} vs claim
           </span>
         )}
       </div>

@@ -7,7 +7,7 @@
 
 /* Right Form Panel - Section 6 */
 .hok-auth-right-panel {
-  background: var(--warm-white, #FFFFFB);
+  background: var(--warm-white, #fffffb);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,7 +32,7 @@
   .hok-auth-layout {
     grid-template-columns: 1fr;
   }
-  
+
   .hok-auth-right-panel {
     padding: 48px 32px;
   }

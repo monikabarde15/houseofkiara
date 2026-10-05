@@ -11,55 +11,55 @@
   border: 1px solid transparent;
   font-size: 11.5px;
   font-weight: 500;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   transition: all 0.12s;
   white-space: nowrap;
   cursor: pointer;
 }
 
 .btn-gold {
-  background: #C9A96E;
-  color: #1A1612;
-  border-color: #C9A96E;
+  background: #c9a96e;
+  color: #1a1612;
+  border-color: #c9a96e;
   font-weight: 600;
 }
 
 .btn-gold:hover {
-  background: #B89058;
-  border-color: #B89058;
+  background: #b89058;
+  border-color: #b89058;
 }
 
 .btn-sec {
   background: white;
-  color: #1A1612;
-  border-color: #E8E0D4;
+  color: #1a1612;
+  border-color: #e8e0d4;
 }
 
 .btn-sec:hover {
-  border-color: #C9A96E;
-  background: #F5EFE4;
+  border-color: #c9a96e;
+  background: #f5efe4;
 }
 
 .btn-danger {
-  background: #FDF1EE;
-  color: #B85C38;
-  border-color: #F5C5B5;
+  background: #fdf1ee;
+  color: #b85c38;
+  border-color: #f5c5b5;
 }
 
 .btn-danger:hover {
-  background: #F5DDD7;
-  border-color: #B85C38;
+  background: #f5ddd7;
+  border-color: #b85c38;
 }
 
 .btn-wa {
-  background: #25D366;
+  background: #25d366;
   color: white;
-  border-color: #25D366;
+  border-color: #25d366;
 }
 
 .btn-wa:hover {
-  background: #1EB558;
-  border-color: #1EB558;
+  background: #1eb558;
+  border-color: #1eb558;
 }
 
 .btn-sm {
@@ -84,28 +84,28 @@
 }
 
 .s-live {
-  background: #EAF0E5;
-  color: #3D6B30;
+  background: #eaf0e5;
+  color: #3d6b30;
 }
 
 .s-pend {
-  background: #FDF5E7;
-  color: #8B6A1E;
+  background: #fdf5e7;
+  color: #8b6a1e;
 }
 
 .s-paused {
-  background: #F5EFE4;
-  color: #9A7E52;
+  background: #f5efe4;
+  color: #9a7e52;
 }
 
 .s-draft {
-  background: #F0EDE8;
-  color: #8A7E72;
+  background: #f0ede8;
+  color: #8a7e72;
 }
 
 .s-sold {
-  background: #E9EFF6;
-  color: #3B5C8A;
+  background: #e9eff6;
+  color: #3b5c8a;
 }
 
 /* ===== TAGS ===== */
@@ -118,26 +118,26 @@
 }
 
 .t-r {
-  background: #E9F2EF;
-  color: #2D6B5C;
+  background: #e9f2ef;
+  color: #2d6b5c;
 }
 
 .t-p {
-  background: #F5EDE8;
-  color: #8B4A2E;
+  background: #f5ede8;
+  color: #8b4a2e;
 }
 
 .t-n {
-  background: #E9EFF6;
-  color: #3B5C8A;
+  background: #e9eff6;
+  color: #3b5c8a;
 }
 
 /* ===== SUBID CHIP ===== */
 .subid-chip {
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 10px;
-  color: #C9A96E;
-  background: #F5EFE4;
+  color: #c9a96e;
+  background: #f5efe4;
   border: 1px solid rgba(201, 169, 110, 0.35);
   border-radius: 4px;
   padding: 1px 6px;
@@ -153,7 +153,7 @@
 /* ===== CARDS ===== */
 .card {
   background: white;
-  border: 1px solid #EDE6DC;
+  border: 1px solid #ede6dc;
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 1px 4px rgba(26, 22, 18, 0.06);
@@ -164,19 +164,19 @@
   justify-content: space-between;
   align-items: center;
   padding: 11px 16px;
-  border-bottom: 1px solid #EDE6DC;
+  border-bottom: 1px solid #ede6dc;
   gap: 8px;
 }
 
 .card-title {
   font-size: 12.5px;
   font-weight: 600;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .card-sub {
   font-size: 10.5px;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-top: 1px;
 }
 
@@ -186,35 +186,35 @@
 
 .card-ft {
   padding: 10px 16px;
-  border-top: 1px solid #EDE6DC;
+  border-top: 1px solid #ede6dc;
   display: flex;
   justify-content: flex-end;
   gap: 7px;
-  background: #F7F4EF;
+  background: #f7f4ef;
 }
 
 /* ===== EMPTY STATES ===== */
 .empty-state-inline {
   font-size: 11px;
-  color: #8A7E72;
+  color: #8a7e72;
   padding: 8px 0 5px;
   line-height: 1.5;
 }
 
 .empty-state-boxed {
   font-size: 11px;
-  color: #8A7E72;
+  color: #8a7e72;
   padding: 24px 18px;
   text-align: center;
-  border: 1px dashed #E8E0D4;
+  border: 1px dashed #e8e0d4;
   border-radius: 4px;
-  background: #F7F4EF;
+  background: #f7f4ef;
   line-height: 1.6;
 }
 
 /* ===== QLNK (Gold Door) ===== */
 .qlnk {
-  color: #C9A96E;
+  color: #c9a96e;
   font-weight: 500;
   cursor: pointer;
 }
@@ -229,8 +229,8 @@
   align-items: center;
   font-size: 11px;
   font-weight: 500;
-  color: #8B6A1E;
-  background: #FDF5E7;
+  color: #8b6a1e;
+  background: #fdf5e7;
   border: 1px solid rgba(201, 169, 110, 0.4);
   border-radius: 3px;
   padding: 2px 8px;
@@ -238,7 +238,7 @@
 }
 
 .attn-overflow {
-  color: #8A7E72;
-  background: #F0EDE8;
-  border-color: #D9D0C6;
+  color: #8a7e72;
+  background: #f0ede8;
+  border-color: #d9d0c6;
 }

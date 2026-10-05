@@ -20,7 +20,10 @@ describe("Tier 2: Boundary, Corner & Adversarial Edge Cases", () => {
     };
 
     const res = await client.post("/customers", invalidCustomer);
-    assert.ok([400, 422, 500].includes(res.status), `Expected 400/422 on invalid customer, got ${res.status}`);
+    assert.ok(
+      [400, 422, 500].includes(res.status),
+      `Expected 400/422 on invalid customer, got ${res.status}`,
+    );
     assert.strictEqual(res.data?.success, false);
   });
 
@@ -32,7 +35,10 @@ describe("Tier 2: Boundary, Corner & Adversarial Edge Cases", () => {
     // Attempt duplicate creation with exact same customerId
     const dupRes = await client.post("/customers", custPayload);
     // Should either update gracefully with 200 or return 409 Conflict
-    assert.ok([200, 400, 409, 422].includes(dupRes.status), `Duplicate ID status: ${dupRes.status}`);
+    assert.ok(
+      [200, 400, 409, 422].includes(dupRes.status),
+      `Duplicate ID status: ${dupRes.status}`,
+    );
   });
 
   test("Corner Case 3: Duplicate designer slug prevents database integrity corruption", async () => {
@@ -42,7 +48,10 @@ describe("Tier 2: Boundary, Corner & Adversarial Edge Cases", () => {
 
     // Attempt second designer with same designerId and slug
     const dupRes = await client.post("/designers", designerPayload);
-    assert.ok([400, 409, 422, 500].includes(dupRes.status), `Duplicate slug should fail, got ${dupRes.status}`);
+    assert.ok(
+      [400, 409, 422, 500].includes(dupRes.status),
+      `Duplicate slug should fail, got ${dupRes.status}`,
+    );
   });
 
   test("Corner Case 4: Double Booking Concurrency Lock prevents overlapping rental dates", async () => {
@@ -52,8 +61,12 @@ describe("Tier 2: Boundary, Corner & Adversarial Edge Cases", () => {
     const prodId = createProdRes.data?.data?.productId || prodPayload.productId;
 
     const today = new Date();
-    const startDate = new Date(today.getTime() + 20 * 24 * 3600 * 1000).toISOString().split("T")[0];
-    const endDate = new Date(today.getTime() + 25 * 24 * 3600 * 1000).toISOString().split("T")[0];
+    const startDate = new Date(today.getTime() + 20 * 24 * 3600 * 1000)
+      .toISOString()
+      .split("T")[0];
+    const endDate = new Date(today.getTime() + 25 * 24 * 3600 * 1000)
+      .toISOString()
+      .split("T")[0];
 
     // First reservation for date range
     const firstRes = await client.post(`/products/${prodId}/reserve`, {
@@ -65,23 +78,37 @@ describe("Tier 2: Boundary, Corner & Adversarial Edge Cases", () => {
       deposit: 20000,
       mode: "Rental",
     });
-    assert.ok([200, 201].includes(firstRes.status), `First reservation should succeed, got ${firstRes.status}`);
+    assert.ok(
+      [200, 201].includes(firstRes.status),
+      `First reservation should succeed, got ${firstRes.status}`,
+    );
 
     // Second reservation for overlapping date range (same product)
     const overlappingRes = await client.post(`/products/${prodId}/reserve`, {
       orderId: uniqueId("HOK-RES-2"),
       customerName: "Second Customer (Overlapping)",
-      startDate: new Date(today.getTime() + 22 * 24 * 3600 * 1000).toISOString().split("T")[0],
-      endDate: new Date(today.getTime() + 27 * 24 * 3600 * 1000).toISOString().split("T")[0],
+      startDate: new Date(today.getTime() + 22 * 24 * 3600 * 1000)
+        .toISOString()
+        .split("T")[0],
+      endDate: new Date(today.getTime() + 27 * 24 * 3600 * 1000)
+        .toISOString()
+        .split("T")[0],
       amount: 15000,
       deposit: 20000,
       mode: "Rental",
     });
 
     // Second reservation must be rejected with 409 Conflict or 400
-    assert.ok([400, 409, 422].includes(overlappingRes.status), `Overlapping reservation must return 409 Conflict, got ${overlappingRes.status}`);
+    assert.ok(
+      [400, 409, 422].includes(overlappingRes.status),
+      `Overlapping reservation must return 409 Conflict, got ${overlappingRes.status}`,
+    );
     if (overlappingRes.data) {
-      assert.strictEqual(overlappingRes.data.success, false, "Overlapping reservation success must be false");
+      assert.strictEqual(
+        overlappingRes.data.success,
+        false,
+        "Overlapping reservation success must be false",
+      );
     }
   });
 
@@ -102,13 +129,19 @@ describe("Tier 2: Boundary, Corner & Adversarial Edge Cases", () => {
       "'; DROP TABLE orders; --",
       "<script>alert(1)</script>",
       "🌸 Sabyasachi Heritage 🌸",
-      "{\"status\": \"Paid\"}",
+      '{"status": "Paid"}',
       "O'Connor & Sons Couture",
     ];
 
     for (const term of specialSearchTerms) {
-      const res = await client.get(`/customers?search=${encodeURIComponent(term)}`);
-      assert.strictEqual(res.status, 200, `Search with term '${term}' must execute safely and return 200`);
+      const res = await client.get(
+        `/customers?search=${encodeURIComponent(term)}`,
+      );
+      assert.strictEqual(
+        res.status,
+        200,
+        `Search with term '${term}' must execute safely and return 200`,
+      );
       assert.strictEqual(res.data?.success, true);
     }
   });
@@ -122,7 +155,10 @@ describe("Tier 2: Boundary, Corner & Adversarial Edge Cases", () => {
 
     for (const id of fakeIds) {
       const res = await client.get(`/orders/${id}`);
-      assert.ok([200, 404].includes(res.status), `Querying fake ID ${id} should return 404 or empty 200, got ${res.status}`);
+      assert.ok(
+        [200, 404].includes(res.status),
+        `Querying fake ID ${id} should return 404 or empty 200, got ${res.status}`,
+      );
       if (res.status === 200) {
         assert.ok(res.data?.data === null || res.data?.data === undefined);
       }
@@ -130,13 +166,18 @@ describe("Tier 2: Boundary, Corner & Adversarial Edge Cases", () => {
   });
 
   test("Corner Case 8: Large payload notes and descriptions persistence", async () => {
-    const longNotes = "A".repeat(3000) + " Luxury Bridal Rental History " + "B".repeat(2000);
+    const longNotes =
+      "A".repeat(3000) + " Luxury Bridal Rental History " + "B".repeat(2000);
     const custPayload = generateTestCustomer({
       internalNotes: longNotes,
     });
 
     const res = await client.post("/customers", custPayload);
     assert.ok([200, 201].includes(res.status));
-    assert.strictEqual(res.data.data.internalNotes?.length, longNotes.length, "5000-char string must be stored without truncation");
+    assert.strictEqual(
+      res.data.data.internalNotes?.length,
+      longNotes.length,
+      "5000-char string must be stored without truncation",
+    );
   });
 });

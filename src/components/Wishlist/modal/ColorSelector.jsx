@@ -14,7 +14,7 @@ const ColorSelector = ({ colors, selectedColor, onColorChange }) => {
           <button
             key={color.value}
             type="button"
-            className={`desk-wishlist-color-swatch ${selectedColor === color.value ? 'desk-wishlist-color-selected' : ''}`}
+            className={`desk-wishlist-color-swatch ${selectedColor === color.value ? "desk-wishlist-color-selected" : ""}`}
             style={{ backgroundColor: color.value }}
             onClick={() => onColorChange(color.value)}
             aria-label={color.label}

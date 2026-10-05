@@ -1,9 +1,9 @@
 // send/SendReadBackCard.tsx
-import React from 'react';
-import { Card } from '../components/Card';
-import { Button } from '../components/Button';
-import { SendCardItem } from './SendCardItem';
-import './styles/SendReadBackCard.css';
+import React from "react";
+import { Card } from "../components/Card";
+import { Button } from "../components/Button";
+import { SendCardItem } from "./SendCardItem";
+import "./styles/SendReadBackCard.css";
 
 interface Person {
   id: string;
@@ -39,22 +39,25 @@ export const SendReadBackCard: React.FC<SendReadBackCardProps> = ({
           </div>
         ) : (
           <div className="msg-send-readback-list">
-            {children || people.map((person) => (
-              <SendCardItem
-                key={person.id}
-                name={person.name}
-                contact={person.contact}
-                status="ready"
-                body={`Dear ${person.name},\n\nThank you for choosing House of Kaira.`}
-              />
-            ))}
+            {children ||
+              people.map((person) => (
+                <SendCardItem
+                  key={person.id}
+                  name={person.name}
+                  contact={person.contact}
+                  status="ready"
+                  body={`Dear ${person.name},\n\nThank you for choosing House of Kaira.`}
+                />
+              ))}
           </div>
         )}
       </div>
 
       <div className="msg-send-readback-footer">
         <div className="msg-send-readback-footer-note">
-          {isEmpty ? '' : `${people.length} people on WhatsApp - all on "Default"`}
+          {isEmpty
+            ? ""
+            : `${people.length} people on WhatsApp - all on "Default"`}
         </div>
         <Button
           variant="primary"
@@ -62,7 +65,7 @@ export const SendReadBackCard: React.FC<SendReadBackCardProps> = ({
           onClick={onSend}
           disabled={isEmpty || sending}
         >
-          {sending ? 'Sending...' : 'Send'}
+          {sending ? "Sending..." : "Send"}
         </Button>
       </div>
     </Card>

@@ -42,7 +42,7 @@ export default function FeedbackRow({ question, onShowToast }) {
     if (onShowToast) onShowToast("Opening WhatsApp");
     const text = `Hello House of Kaira, I have a question: "${question.question}"`;
     const url = `https://wa.me/${ADMIN_FIGURES.support_whatsapp_raw}?text=${encodeURIComponent(
-      text
+      text,
     )}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
@@ -87,12 +87,10 @@ export default function FeedbackRow({ question, onShowToast }) {
 
       {/* Ask box on Not quite (D6) */}
       <div className="fb-more" role="status">
-        <span>Sorry this didn’t cover it. Ask us and a real person will reply.</span>
-        <button
-          type="button"
-          className="btn-wa sm"
-          onClick={handleAskWhatsApp}
-        >
+        <span>
+          Sorry this didn’t cover it. Ask us and a real person will reply.
+        </span>
+        <button type="button" className="btn-wa sm" onClick={handleAskWhatsApp}>
           <WhatsAppGlyphIcon fill="#FFFFFF" style={{ width: 13, height: 13 }} />
           <span>Ask about this</span>
         </button>

@@ -161,23 +161,23 @@
 }
 
 .s-live {
-  background: #EAF0E5;
-  color: #3D6B30;
+  background: #eaf0e5;
+  color: #3d6b30;
 }
 
 .s-pend {
-  background: #FDF5E7;
-  color: #8B6A1E;
+  background: #fdf5e7;
+  color: #8b6a1e;
 }
 
 .s-sold {
-  background: #E9EFF6;
-  color: #3B5C8A;
+  background: #e9eff6;
+  color: #3b5c8a;
 }
 
 .s-draft {
-  background: #F0EDE8;
-  color: #8A7E72;
+  background: #f0ede8;
+  color: #8a7e72;
 }
 
 .agec {
@@ -197,7 +197,7 @@
 
 .agec-due {
   background: var(--gold-pale);
-  color: #6B5730;
+  color: #6b5730;
 }
 
 .agec-over {
@@ -215,18 +215,18 @@
 }
 
 .t-r {
-  background: #E9F2EF;
-  color: #2D6B5C;
+  background: #e9f2ef;
+  color: #2d6b5c;
 }
 
 .t-p {
-  background: #F5EDE8;
-  color: #8B4A2E;
+  background: #f5ede8;
+  color: #8b4a2e;
 }
 
 .t-n {
-  background: #E9EFF6;
-  color: #3B5C8A;
+  background: #e9eff6;
+  color: #3b5c8a;
 }
 
 /* ===== BUTTONS ===== */
@@ -255,8 +255,8 @@
 }
 
 .btn-gold:hover {
-  background: #B89058;
-  border-color: #B89058;
+  background: #b89058;
+  border-color: #b89058;
 }
 
 .btn-sec {
@@ -285,16 +285,16 @@
   .record-head {
     flex-direction: column;
   }
-  
+
   .record-head-right {
     width: 100%;
     align-items: stretch;
   }
-  
+
   .record-actions {
     justify-content: flex-end;
   }
-  
+
   .record-nav {
     justify-content: flex-end;
   }
@@ -304,17 +304,17 @@
   .record-back {
     flex-wrap: wrap;
   }
-  
+
   .record-actions {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .record-actions .btn {
     width: 100%;
     justify-content: center;
   }
-  
+
   .record-nav {
     flex-wrap: wrap;
     justify-content: center;

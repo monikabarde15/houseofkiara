@@ -2,13 +2,28 @@
 // Date math engine for the Rental Dates Strip strictly following Section 10.7
 
 const MONTH_NAMES = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 const WEEKDAY_NAMES = [
-  "Sunday", "Monday", "Tuesday", "Wednesday",
-  "Thursday", "Friday", "Saturday"
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ];
 
 /**
@@ -94,11 +109,13 @@ export function calculateRentalTimeline(eventDateStr, windowDays = 4) {
   // Note determination (Section 10.7 order: Arrives close -> Urgent -> Peak season -> empty)
   let noteMessage = "";
   if (isArrivesClose) {
-    noteMessage = "This date is very close. Message us and we’ll check what can still reach you in time.";
+    noteMessage =
+      "This date is very close. Message us and we’ll check what can still reach you in time.";
   } else if (isUrgent) {
     noteMessage = "Your event is close, so it’s best to book today.";
   } else if (peak) {
-    noteMessage = "Peak wedding season: the most loved pieces go early, so we suggest booking 3 to 4 weeks ahead.";
+    noteMessage =
+      "Peak wedding season: the most loved pieces go early, so we suggest booking 3 to 4 weeks ahead.";
   }
 
   return {
@@ -110,7 +127,9 @@ export function calculateRentalTimeline(eventDateStr, windowDays = 4) {
       {
         num: 1,
         label: "Book by",
-        date: isUrgent ? formatDateDisplay(today) : formatDateDisplay(bookByDate),
+        date: isUrgent
+          ? formatDateDisplay(today)
+          : formatDateDisplay(bookByDate),
         isUrgent,
         showToday: isUrgent,
       },

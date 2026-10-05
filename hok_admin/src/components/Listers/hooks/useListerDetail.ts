@@ -1,18 +1,18 @@
 // src/components/Listers/hooks/useListerDetail.ts
 
-import { useState, useEffect, useCallback } from 'react';
-import { 
-  Lister, 
-  Submission, 
-  PayoutTransaction, 
+import { useState, useEffect, useCallback } from "react";
+import {
+  Lister,
+  Submission,
+  PayoutTransaction,
   ActivityEntry,
   CommunicationEntry,
   RecallRequest,
   ListerLedger,
-  AttentionFlag
-} from '../types/lister.types';
-import { listerService } from '../services/listerService';
-import { calculateLedger, calculateAttentionFlags } from '../utils/derived';
+  AttentionFlag,
+} from "../types/lister.types";
+import { listerService } from "../services/listerService";
+import { calculateLedger, calculateAttentionFlags } from "../utils/derived";
 
 interface ListerDetailData {
   lister: Lister | null;
@@ -28,7 +28,10 @@ interface ListerDetailData {
   error: string | null;
 }
 
-export const useListerDetail = (listerId: string, isCreateMode: boolean = false) => {
+export const useListerDetail = (
+  listerId: string,
+  isCreateMode: boolean = false,
+) => {
   const [data, setData] = useState<ListerDetailData>({
     lister: null,
     submissions: [],
@@ -53,11 +56,11 @@ export const useListerDetail = (listerId: string, isCreateMode: boolean = false)
 
   const fetchListerDetail = useCallback(async () => {
     if (isCreateMode) {
-      setData(prev => ({ ...prev, loading: false }));
+      setData((prev) => ({ ...prev, loading: false }));
       return;
     }
 
-    setData(prev => ({ ...prev, loading: true, error: null }));
+    setData((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
       const [
@@ -79,7 +82,12 @@ export const useListerDetail = (listerId: string, isCreateMode: boolean = false)
       ]);
 
       const ledger = calculateLedger(payouts);
-      const attentionFlags = calculateAttentionFlags(lister, submissions, recalls, payouts);
+      const attentionFlags = calculateAttentionFlags(
+        lister,
+        submissions,
+        recalls,
+        payouts,
+      );
 
       setData({
         lister,
@@ -95,10 +103,11 @@ export const useListerDetail = (listerId: string, isCreateMode: boolean = false)
         error: null,
       });
     } catch (err) {
-      setData(prev => ({
+      setData((prev) => ({
         ...prev,
         loading: false,
-        error: err instanceof Error ? err.message : 'Failed to fetch lister details',
+        error:
+          err instanceof Error ? err.message : "Failed to fetch lister details",
       }));
     }
   }, [listerId, isCreateMode]);

@@ -77,10 +77,7 @@ export default function QuestionRow({
             answer={question.answer}
             onSelectQuestion={onSelectQuestion}
           />
-          <FeedbackRow
-            question={question}
-            onShowToast={onShowToast}
-          />
+          <FeedbackRow question={question} onShowToast={onShowToast} />
           {isReviewMode && question.decisionNote && (
             <div className="rv-note" role="note">
               <strong>Open decision (internal):</strong> {question.decisionNote}

@@ -1,8 +1,8 @@
 // src/components/Listers/components/AttentionStrip.tsx
 
-import React from 'react';
-import { AttentionFlag } from '../types/lister.types';
-import './styles/AttentionStrip.css';
+import React from "react";
+import { AttentionFlag } from "../types/lister.types";
+import "./styles/AttentionStrip.css";
 
 interface AttentionStripProps {
   flags: AttentionFlag[];
@@ -10,10 +10,10 @@ interface AttentionStripProps {
   onFlagClick?: (flag: AttentionFlag) => void;
 }
 
-export const AttentionStrip: React.FC<AttentionStripProps> = ({ 
-  flags, 
-  listerId, 
-  onFlagClick 
+export const AttentionStrip: React.FC<AttentionStripProps> = ({
+  flags,
+  listerId,
+  onFlagClick,
 }) => {
   if (!flags || flags.length === 0) {
     return null;
@@ -29,8 +29,8 @@ export const AttentionStrip: React.FC<AttentionStripProps> = ({
     <div className="attention-strip">
       <span className="attention-strip-label">Needs Attention</span>
       {flags.map((flag, index) => (
-        <span 
-          key={index} 
+        <span
+          key={index}
           className="attn-pill attn-go"
           onClick={() => handleFlagClick(flag)}
         >

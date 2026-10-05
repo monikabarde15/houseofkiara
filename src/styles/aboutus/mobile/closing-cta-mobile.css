@@ -2,7 +2,7 @@
 /* Mobile Spec §14 - Pages 15-16 */
 
 .mob-closing {
-  background: #1A1612; /* --charcoal */
+  background: #1a1612; /* --charcoal */
   padding: 72px 24px;
   text-align: center;
   position: relative;
@@ -15,7 +15,11 @@
   inset: 0;
   opacity: 0.7;
   pointer-events: none;
-  background: radial-gradient(circle at 50% 0%, rgba(201, 169, 110, 0.14), transparent 55%);
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(201, 169, 110, 0.14),
+    transparent 55%
+  );
 }
 
 /* Inner Content - Mobile Spec §14 */
@@ -33,13 +37,13 @@
   font-size: clamp(28px, 7vw, 42px);
   font-weight: 400;
   line-height: 1.2;
-  color: #FFFFFB;
+  color: #fffffb;
   margin: 0 0 18px 0;
 }
 
 .mob-closing__title em {
   font-style: italic;
-  color: #E8D5B0; /* --gold-light */
+  color: #e8d5b0; /* --gold-light */
 }
 
 /* ===== PARAGRAPH - Mobile Spec §14.1 ===== */
@@ -49,7 +53,7 @@
   font-size: 15px;
   font-weight: 300;
   line-height: 1.8;
-  color: #B8AA9A;
+  color: #b8aa9a;
   max-width: 100%;
   margin: 0 auto 32px;
   padding: 0 4px;
@@ -90,27 +94,27 @@
 
 /* Gold Button - Mobile Spec §14.2 */
 .mob-closing__btn--gold {
-  background: #C9A96E;
-  color: #1A1612;
-  border: 1px solid #C9A96E;
+  background: #c9a96e;
+  color: #1a1612;
+  border: 1px solid #c9a96e;
 }
 
 .mob-closing__btn--gold:active {
-  background: #E8D5B0;
-  border-color: #E8D5B0;
+  background: #e8d5b0;
+  border-color: #e8d5b0;
 }
 
 /* Outline Button - Mobile Spec §14.2 */
 .mob-closing__btn--outline {
   background: transparent;
-  color: #FFFFFB;
+  color: #fffffb;
   border: 1px solid rgba(255, 255, 255, 0.28);
 }
 
 .mob-closing__btn--outline:active {
-  background: #6B7E5A;
-  border-color: #6B7E5A;
-  color: #FFFFFB;
+  background: #6b7e5a;
+  border-color: #6b7e5a;
+  color: #fffffb;
 }
 
 /* ===== INSTAGRAM LINE - Mobile Spec §14.3 ===== */
@@ -119,11 +123,11 @@
   margin-top: 32px;
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
-  color: #8A7A6A;
+  color: #8a7a6a;
 }
 
 .mob-closing__instagram a {
-  color: #E8D5B0;
+  color: #e8d5b0;
   text-decoration: none;
   border-bottom: 1px solid rgba(232, 213, 176, 0.3);
   transition: border-color 0.3s ease;
@@ -137,7 +141,9 @@
 .mob-closing .reveal {
   opacity: 0;
   transform: translateY(28px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
 }
 
 .mob-closing .reveal.in-view {
@@ -164,15 +170,15 @@
   }
 
   .mob-closing__btn--gold:hover {
-    background: #E8D5B0;
-    border-color: #E8D5B0;
+    background: #e8d5b0;
+    border-color: #e8d5b0;
     transform: translateY(-2px);
   }
 
   .mob-closing__btn--outline:hover {
-    background: #6B7E5A;
-    border-color: #6B7E5A;
-    color: #FFFFFB;
+    background: #6b7e5a;
+    border-color: #6b7e5a;
+    color: #fffffb;
     transform: translateY(-2px);
   }
 

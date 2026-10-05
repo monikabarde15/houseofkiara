@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
-import BackLink from '../ui/BackLink';
-import FormEyebrow from '../ui/FormEyebrow';
-import FormHeading from '../ui/FormHeading';
-import PrimaryButton from '../ui/PrimaryButton';
-import '../../../styles/Auth/screens/OtpScreen.css';
+import React, { useState, useEffect, useRef } from "react";
+import BackLink from "../ui/BackLink";
+import FormEyebrow from "../ui/FormEyebrow";
+import FormHeading from "../ui/FormHeading";
+import PrimaryButton from "../ui/PrimaryButton";
+import "../../../styles/Auth/screens/OtpScreen.css";
 
-const OtpScreen = ({ switchScreen, otpSource = 'register', userData = {} }) => {
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [error, setError] = useState('');
+const OtpScreen = ({ switchScreen, otpSource = "register", userData = {} }) => {
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
@@ -15,12 +15,16 @@ const OtpScreen = ({ switchScreen, otpSource = 'register', userData = {} }) => {
 
   // Get the phone number for display
   const phoneNumber = userData?.mobile || userData?.otpDestination;
-const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumber : `+91 ${phoneNumber}`) : '';
+  const formattedPhone = phoneNumber
+    ? phoneNumber.startsWith("+91")
+      ? phoneNumber
+      : `+91 ${phoneNumber}`
+    : "";
   // Section 9.4 - Timer logic (30 seconds countdown)
   useEffect(() => {
     if (timer > 0 && !canResend) {
       const interval = setInterval(() => {
-        setTimer(prev => prev - 1);
+        setTimer((prev) => prev - 1);
       }, 1000);
       return () => clearInterval(interval);
     } else if (timer === 0) {
@@ -33,50 +37,50 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
     // Clear OTP timer
     setTimer(30);
     setCanResend(false);
-    
-    if (otpSource === 'register') {
-      switchScreen('register');
-    } else if (otpSource === 'signin') {
-      switchScreen('signin');
+
+    if (otpSource === "register") {
+      switchScreen("register");
+    } else if (otpSource === "signin") {
+      switchScreen("signin");
     } else {
-      switchScreen('signin');
+      switchScreen("signin");
     }
   };
 
   // Section 9.3 - Auto-advance on digit entry
   const handleInputChange = (index, value) => {
     // Strip non-numeric characters
-    const cleanedValue = value.replace(/\D/g, '');
+    const cleanedValue = value.replace(/\D/g, "");
     if (cleanedValue.length > 1) return;
-    
+
     const newOtp = [...otp];
     newOtp[index] = cleanedValue;
     setOtp(newOtp);
-    
+
     // Clear error when user starts typing
     if (error) {
-      setError('');
+      setError("");
     }
-    
+
     // Remove error class from all boxes when typing
-    const boxes = document.querySelectorAll('.hok-auth-otp-input');
-    boxes.forEach(box => box.classList.remove('error'));
-    
+    const boxes = document.querySelectorAll(".hok-auth-otp-input");
+    boxes.forEach((box) => box.classList.remove("error"));
+
     // Auto-advance to next box
     if (cleanedValue && index < 5) {
       inputRefs.current[index + 1].focus();
     }
-    
+
     // Section 9.3 - Auto-submit when all 6 boxes are filled
-    const allFilled = newOtp.every(digit => digit !== '');
+    const allFilled = newOtp.every((digit) => digit !== "");
     if (allFilled) {
-      handleVerifyOtp(newOtp.join(''));
+      handleVerifyOtp(newOtp.join(""));
     }
   };
 
   // Section 9.3 - Backspace on empty box
   const handleKeyDown = (index, e) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1].focus();
     }
   };
@@ -84,20 +88,20 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
   // Section 9.3 - Paste support (paste into first box)
   const handlePaste = (e) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text');
-    const pastedDigits = pastedData.replace(/\D/g, '').slice(0, 6);
-    
+    const pastedData = e.clipboardData.getData("text");
+    const pastedDigits = pastedData.replace(/\D/g, "").slice(0, 6);
+
     if (pastedDigits.length === 6) {
-      const newOtp = pastedDigits.split('');
+      const newOtp = pastedDigits.split("");
       setOtp(newOtp);
-      
+
       // Auto-fill all boxes
       newOtp.forEach((digit, idx) => {
         if (inputRefs.current[idx]) {
           inputRefs.current[idx].value = digit;
         }
       });
-      
+
       // Section 9.3 - Auto-trigger verification
       handleVerifyOtp(pastedDigits);
     }
@@ -105,27 +109,27 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
 
   // Section 9.5 - OTP Validation
   const handleVerifyOtp = async (otpValue = null) => {
-    const otpToVerify = otpValue || otp.join('');
-    
+    const otpToVerify = otpValue || otp.join("");
+
     // Check if all boxes are filled
     if (otpToVerify.length !== 6) {
       return;
     }
-    
+
     // Remove error class at start of verification attempt
-    const boxes = document.querySelectorAll('.hok-auth-otp-input');
-    boxes.forEach(box => box.classList.remove('error'));
-    
+    const boxes = document.querySelectorAll(".hok-auth-otp-input");
+    boxes.forEach((box) => box.classList.remove("error"));
+
     setIsLoading(true);
-    setError('');
-    
-    const phone = userData?.mobile || userData?.phone || '';
+    setError("");
+
+    const phone = userData?.mobile || userData?.phone || "";
 
     try {
       // 1. Verify OTP with backend
-      const verifyResponse = await fetch('/api/customer/auth/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const verifyResponse = await fetch("/api/customer/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           phone,
           otp: otpToVerify,
@@ -135,20 +139,24 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
       const verifyResult = await verifyResponse.json();
 
       if (!verifyResponse.ok || !verifyResult.success) {
-        boxes.forEach(box => box.classList.add('error'));
-        setError(verifyResult.message || 'Incorrect OTP. Please check and try again.');
+        boxes.forEach((box) => box.classList.add("error"));
+        setError(
+          verifyResult.message || "Incorrect OTP. Please check and try again.",
+        );
         return;
       }
 
       // 2. If register flow, complete registration
-      if (otpSource === 'register') {
-        const regResponse = await fetch('/api/customer/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+      if (otpSource === "register") {
+        const regResponse = await fetch("/api/customer/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             firstName: userData.firstName,
             lastName: userData.lastName,
-            name: `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'Customer',
+            name:
+              `${userData.firstName || ""} ${userData.lastName || ""}`.trim() ||
+              "Customer",
             email: userData.email,
             password: userData.password,
             phone: userData.mobile || phone,
@@ -163,37 +171,42 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
         const regResult = await regResponse.json();
 
         if (!regResponse.ok || !regResult.success) {
-          setError(regResult.message || 'Account registration failed. Please try again.');
+          setError(
+            regResult.message ||
+              "Account registration failed. Please try again.",
+          );
           return;
         }
 
         // Save to Auth Store
-        const authStore = (await import('../../../store/authStore')).default;
+        const authStore = (await import("../../../store/authStore")).default;
         authStore.getState().login(regResult.data, regResult.data.token);
 
         setCanResend(true);
-        switchScreen('success', {
+        switchScreen("success", {
           userData: {
             ...regResult.data,
-            flow: 'register',
+            flow: "register",
           },
         });
       } else {
         // Mobile Sign In API flow
-        const authStore = (await import('../../../store/authStore')).default;
+        const authStore = (await import("../../../store/authStore")).default;
         authStore.getState().login(verifyResult.data, verifyResult.data.token);
 
         setCanResend(true);
-        switchScreen('success', {
+        switchScreen("success", {
           userData: {
             ...verifyResult.data,
-            flow: 'otp-signin',
+            flow: "otp-signin",
           },
         });
       }
     } catch (err) {
-      boxes.forEach(box => box.classList.add('error'));
-      setError(err.message || 'An unexpected error occurred. Please try again.');
+      boxes.forEach((box) => box.classList.add("error"));
+      setError(
+        err.message || "An unexpected error occurred. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -202,22 +215,22 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
   // Section 9.4 - Resend OTP
   const handleResendOtp = async () => {
     if (!canResend) return;
-    
+
     // Clear all OTP boxes
-    setOtp(['', '', '', '', '', '']);
-    setError('');
-    
+    setOtp(["", "", "", "", "", ""]);
+    setError("");
+
     // Clear input fields
-    inputRefs.current.forEach(ref => {
-      if (ref) ref.value = '';
+    inputRefs.current.forEach((ref) => {
+      if (ref) ref.value = "";
     });
-    
-    const phone = userData?.mobile || userData?.phone || '';
+
+    const phone = userData?.mobile || userData?.phone || "";
 
     try {
-      const res = await fetch('/api/customer/auth/resend-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/customer/auth/resend-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone, mobile: phone }),
       });
       const result = await res.json();
@@ -226,30 +239,30 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
         // Reset timer
         setTimer(30);
         setCanResend(false);
-        
+
         // Show "Sent!" temporarily
-        const resendButton = document.querySelector('.hok-auth-resend-btn');
+        const resendButton = document.querySelector(".hok-auth-resend-btn");
         if (resendButton) {
           const originalText = resendButton.textContent;
-          resendButton.textContent = 'Sent!';
+          resendButton.textContent = "Sent!";
           setTimeout(() => {
             resendButton.textContent = originalText;
           }, 2000);
         }
       } else {
-        setError(result.message || 'Failed to resend OTP. Please try again.');
+        setError(result.message || "Failed to resend OTP. Please try again.");
       }
     } catch (err) {
-      setError('Failed to resend OTP. Please check your network connection.');
+      setError("Failed to resend OTP. Please check your network connection.");
     }
-    
+
     // Focus on first input
     inputRefs.current[0]?.focus();
   };
 
   // Section 9.1 - Method hint (dynamic based on otpSource)
   const getMethodHint = () => {
-    if (otpSource === 'register') {
+    if (otpSource === "register") {
       return `We've sent a 6-digit OTP to ${formattedPhone} via SMS to verify your mobile number`;
     } else {
       return `We've sent a 6-digit OTP to ${formattedPhone} via SMS`;
@@ -262,23 +275,21 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
       <BackLink onClick={handleBack} label=" BACK" />
       <FormEyebrow text="VERIFICATION" />
       <FormHeading text="Enter " italicText="OTP" />
-      
+
       {/* Method hint - Section 9.1 */}
-      <p className="hok-auth-otp-method-hint">
-        {getMethodHint()}
-      </p>
+      <p className="hok-auth-otp-method-hint">{getMethodHint()}</p>
 
       {/* Section 9.2 - OTP Input Grid */}
       <div className="hok-auth-otp-grid">
         {otp.map((digit, index) => (
           <input
             key={index}
-            ref={(el) => inputRefs.current[index] = el}
+            ref={(el) => (inputRefs.current[index] = el)}
             type="text"
             inputMode="numeric"
             pattern="[0-9]"
             maxLength="1"
-            className={`hok-auth-otp-input ${digit ? 'filled' : ''}`}
+            className={`hok-auth-otp-input ${digit ? "filled" : ""}`}
             value={digit}
             onChange={(e) => handleInputChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
@@ -288,11 +299,7 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
       </div>
 
       {/* Section 9.5 - Field-level error */}
-      {error && (
-        <div className="hok-auth-otp-error">
-          {error}
-        </div>
-      )}
+      {error && <div className="hok-auth-otp-error">{error}</div>}
 
       {/* Section 9.4 - OTP Footer Row */}
       <div className="hok-auth-otp-footer">
@@ -300,10 +307,7 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
           {!canResend ? (
             <span className="hok-auth-timer">Resend in {timer}s</span>
           ) : (
-            <button 
-              className="hok-auth-resend-btn"
-              onClick={handleResendOtp}
-            >
+            <button className="hok-auth-resend-btn" onClick={handleResendOtp}>
               Resend OTP
             </button>
           )}
@@ -311,10 +315,7 @@ const formattedPhone = phoneNumber ? (phoneNumber.startsWith('+91') ? phoneNumbe
       </div>
 
       {/* Section 9.6 - Verify & Continue CTA */}
-      <PrimaryButton 
-        onClick={() => handleVerifyOtp()} 
-        isLoading={isLoading}
-      >
+      <PrimaryButton onClick={() => handleVerifyOtp()} isLoading={isLoading}>
         VERIFY & CONTINUE
       </PrimaryButton>
     </div>

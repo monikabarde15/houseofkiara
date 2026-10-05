@@ -30,7 +30,7 @@ router.put("/:id/read", async (req, res) => {
     const updated = await Notification.findOneAndUpdate(
       { $or: [{ notificationId: id }, { _id: id }] },
       { $set: { unread: false } },
-      { new: true }
+      { new: true },
     );
     res.json({ success: true, data: updated });
   } catch (error) {
@@ -42,7 +42,9 @@ router.put("/:id/read", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await Notification.deleteOne({ $or: [{ notificationId: id }, { _id: id }] });
+    await Notification.deleteOne({
+      $or: [{ notificationId: id }, { _id: id }],
+    });
     res.json({ success: true, message: "Deleted notification successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

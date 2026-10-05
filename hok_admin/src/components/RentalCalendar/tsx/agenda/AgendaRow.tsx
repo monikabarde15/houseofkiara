@@ -1,7 +1,7 @@
-import React from 'react';
-import { AgendaEntry } from '../../types';
-import AgendaRowDetail from './AgendaRowDetail';
-import '../../css/agenda/AgendaRow.css';
+import React from "react";
+import { AgendaEntry } from "../../types";
+import AgendaRowDetail from "./AgendaRowDetail";
+import "../../css/agenda/AgendaRow.css";
 
 const WhatsAppIcon = () => (
   <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm">
@@ -13,21 +13,41 @@ const WhatsAppIcon = () => (
 
 const ChevronIcon = ({ expanded }: { expanded: boolean }) => (
   <svg
-    className={`agenda-chevron${expanded ? ' agenda-chevron--expanded' : ''}`}
-    width="16" height="16" viewBox="0 0 24 24"
-    fill="none" stroke="currentColor" strokeWidth="2.5"
-    strokeLinecap="round" strokeLinejoin="round"
+    className={`agenda-chevron${expanded ? " agenda-chevron--expanded" : ""}`}
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <polyline points="6 9 12 15 18 9" />
   </svg>
 );
 
-const TYPE_CONFIG: Record<string, { label: string; icon: string; className: string }> = {
-  'prep-dispatch': { label: 'Prep Dispatch', icon: '▶', className: 'badge-prep' },
-  'dispatched':    { label: 'Dispatched',    icon: '▶', className: 'badge-dispatched' },
-  'rental-starts': { label: 'Rental Starts', icon: '●', className: 'badge-rental-starts' },
-  'return-due':    { label: 'Return Due',    icon: '↩', className: 'badge-return-due' },
-  'cleaning':      { label: 'Cleaning',      icon: '↻', className: 'badge-cleaning' },
+const TYPE_CONFIG: Record<
+  string,
+  { label: string; icon: string; className: string }
+> = {
+  "prep-dispatch": {
+    label: "Prep Dispatch",
+    icon: "▶",
+    className: "badge-prep",
+  },
+  dispatched: { label: "Dispatched", icon: "▶", className: "badge-dispatched" },
+  "rental-starts": {
+    label: "Rental Starts",
+    icon: "●",
+    className: "badge-rental-starts",
+  },
+  "return-due": {
+    label: "Return Due",
+    icon: "↩",
+    className: "badge-return-due",
+  },
+  cleaning: { label: "Cleaning", icon: "↻", className: "badge-cleaning" },
 };
 
 interface AgendaRowProps {
@@ -40,21 +60,27 @@ interface AgendaRowProps {
 }
 
 const AgendaRow: React.FC<AgendaRowProps> = ({
-  entry, isExpanded, onToggle, onMarkDone, onSaveNote, onNotifyCustomer,
+  entry,
+  isExpanded,
+  onToggle,
+  onMarkDone,
+  onSaveNote,
+  onNotifyCustomer,
 }) => {
   const cfg = TYPE_CONFIG[entry.type];
 
   return (
     <>
       <div
-        className={`agenda-row ${entry.done ? 'agenda-row--done' : ''} ${isExpanded ? 'agenda-row--expanded' : ''}`}
+        className={`agenda-row ${entry.done ? "agenda-row--done" : ""} ${isExpanded ? "agenda-row--expanded" : ""}`}
         onClick={() => onToggle(entry.id)}
       >
-        <div className="agenda-row__icon">{entry.done ? '✦' : '👗'}</div>
+        <div className="agenda-row__icon">{entry.done ? "✦" : "👗"}</div>
         <div className="agenda-row__date">{entry.date}</div>
         <div className="agenda-row__type">
           <span className={`agenda-badge ${cfg.className}`}>
-            <span className="agenda-badge__icon">{cfg.icon}</span>{cfg.label}
+            <span className="agenda-badge__icon">{cfg.icon}</span>
+            {cfg.label}
           </span>
         </div>
         <div className="agenda-row__order">{entry.orderId}</div>
@@ -62,7 +88,10 @@ const AgendaRow: React.FC<AgendaRowProps> = ({
         <div className="agenda-row__chat">
           <button
             className="agenda-chat-btn"
-            onClick={(e) => { e.stopPropagation(); onNotifyCustomer(entry.id); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onNotifyCustomer(entry.id);
+            }}
           >
             <WhatsAppIcon />
           </button>
@@ -72,7 +101,10 @@ const AgendaRow: React.FC<AgendaRowProps> = ({
         <div className="agenda-row__menu">
           <button
             className="agenda-menu-btn"
-            onClick={(e) => { e.stopPropagation(); onToggle(entry.id); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle(entry.id);
+            }}
             aria-label="Toggle details"
           >
             <ChevronIcon expanded={isExpanded} />

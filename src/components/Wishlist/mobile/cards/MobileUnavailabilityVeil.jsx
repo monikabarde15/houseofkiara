@@ -1,4 +1,4 @@
-import '../../../../styles/wishlist/mobile/cards/mobile-unavailability-veil.css';
+import "../../../../styles/wishlist/mobile/cards/mobile-unavailability-veil.css";
 
 const MobileUnavailabilityVeil = () => {
   return (

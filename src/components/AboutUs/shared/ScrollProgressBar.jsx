@@ -10,7 +10,7 @@ const ScrollProgressBar = () => {
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = document.documentElement.clientHeight;
       const progress = (scrollTop / (scrollHeight - clientHeight)) * 100;
-      
+
       if (progressRef.current) {
         progressRef.current.style.width = `${progress}%`;
       }
@@ -18,7 +18,7 @@ const ScrollProgressBar = () => {
 
     // Update on scroll (passive listener)
     window.addEventListener("scroll", updateProgress, { passive: true });
-    
+
     // Update on load
     updateProgress();
 
@@ -27,9 +27,7 @@ const ScrollProgressBar = () => {
     };
   }, []);
 
-  return (
-    <div className="scroll-progress-bar" ref={progressRef}></div>
-  );
+  return <div className="scroll-progress-bar" ref={progressRef}></div>;
 };
 
 export default ScrollProgressBar;

@@ -4,7 +4,7 @@ import "../../../styles/aboutus/desktop/manifesto-desktop.css";
 const DesktopManifesto = () => {
   const sectionRef = useRef(null);
 
-  // Reveal animation observer 
+  // Reveal animation observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -14,7 +14,7 @@ const DesktopManifesto = () => {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
 
     // Observe the entire section
@@ -27,22 +27,20 @@ const DesktopManifesto = () => {
 
   return (
     <section className="au-manifesto reveal" ref={sectionRef}>
-      
       {/* Quote Mark */}
       <div className="au-manifesto__quote-mark">"</div>
-      
+
       {/* Blockquote */}
       <blockquote className="au-manifesto__blockquote">
         Every garment deserves a second <em>standing ovation</em>.
       </blockquote>
-      
+
       {/* Supporting Paragraph  */}
       <p className="au-manifesto__paragraph">
-        We don't sell clothes — we give them somewhere to go next. 
-        A lehenga that watched one wedding doesn't retire after it. 
-        It waits, carefully kept, for its next entrance.
+        We don't sell clothes — we give them somewhere to go next. A lehenga
+        that watched one wedding doesn't retire after it. It waits, carefully
+        kept, for its next entrance.
       </p>
-
     </section>
   );
 };

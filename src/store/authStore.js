@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import toast from 'react-hot-toast';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import toast from "react-hot-toast";
 
 const useAuthStore = create(
   persist(
@@ -11,38 +11,41 @@ const useAuthStore = create(
       isCheckingAuth: true,
 
       login: (userData, token) => {
-        set({ 
-          user: userData, 
-          token: token || get().token, 
+        set({
+          user: userData,
+          token: token || get().token,
           isAuthenticated: true,
           isCheckingAuth: false,
         });
-        toast.success('Successfully logged in!');
-        
+        toast.success("Successfully logged in!");
+
         // Sync wishlist
-        import('./wishlistStore').then(m => {
+        import("./wishlistStore").then((m) => {
           m.default.getState().fetchWishlist();
         });
-        
+
         // Fetch order stats
         get().fetchOrderStats();
       },
-      
+
       setUser: (userData) => {
         set((state) => ({
-          user: typeof userData === 'function' ? userData(state.user) : { ...state.user, ...userData },
+          user:
+            typeof userData === "function"
+              ? userData(state.user)
+              : { ...state.user, ...userData },
         }));
       },
 
       updateProfile: async (profileUpdates) => {
         const { token, user } = get();
-        if (!token) return { success: false, message: 'Not authenticated' };
+        if (!token) return { success: false, message: "Not authenticated" };
 
         try {
-          const response = await fetch('/api/customer/profile', {
-            method: 'PUT',
+          const response = await fetch("/api/customer/profile", {
+            method: "PUT",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(profileUpdates),
@@ -55,37 +58,48 @@ const useAuthStore = create(
             });
             return { success: true, data: result.data };
           } else {
-            return { success: false, message: result.message || 'Failed to update profile' };
+            return {
+              success: false,
+              message: result.message || "Failed to update profile",
+            };
           }
         } catch (error) {
-          return { success: false, message: error.message || 'Network error while updating profile' };
+          return {
+            success: false,
+            message: error.message || "Network error while updating profile",
+          };
         }
       },
 
       logout: (showToast = true) => {
-        set({ 
-          user: null, 
-          token: null, 
+        set({
+          user: null,
+          token: null,
           isAuthenticated: false,
           isCheckingAuth: false,
         });
         if (showToast) {
-          toast.success('Successfully logged out!');
+          toast.success("Successfully logged out!");
         }
       },
 
       checkAuth: async () => {
         const { token } = get();
         if (!token) {
-          set({ user: null, token: null, isAuthenticated: false, isCheckingAuth: false });
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isCheckingAuth: false,
+          });
           return null;
         }
 
         try {
-          const response = await fetch('/api/customer/profile', {
-            method: 'GET',
+          const response = await fetch("/api/customer/profile", {
+            method: "GET",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
           });
@@ -98,15 +112,15 @@ const useAuthStore = create(
               isAuthenticated: true,
               isCheckingAuth: false,
             });
-            
+
             // Sync wishlist on app load if authenticated
-            import('./wishlistStore').then(m => {
+            import("./wishlistStore").then((m) => {
               m.default.getState().fetchWishlist();
             });
-            
+
             // Fetch order stats async
             get().fetchOrderStats();
-            
+
             return result.data;
           } else if (response.status === 401 || response.status === 403) {
             // Explicit authentication failure / expired token / suspended account
@@ -134,19 +148,23 @@ const useAuthStore = create(
         if (!token || !get().user) return;
         try {
           const res = await fetch(`/api/customer/auth/orders`, {
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
           const data = await res.json();
           if (data.success) {
-            const rentals = data.data.filter(o => o.type === "Rental" || o.typeDetail === "Rental").length;
-            const purchases = data.data.filter(o => o.type !== "Rental" && o.typeDetail !== "Rental").length;
-            
+            const rentals = data.data.filter(
+              (o) => o.type === "Rental" || o.typeDetail === "Rental",
+            ).length;
+            const purchases = data.data.filter(
+              (o) => o.type !== "Rental" && o.typeDetail !== "Rental",
+            ).length;
+
             set({
               user: {
                 ...get().user,
                 rentalsCount: rentals,
-                purchasesCount: purchases
-              }
+                purchasesCount: purchases,
+              },
             });
           }
         } catch (err) {
@@ -155,14 +173,14 @@ const useAuthStore = create(
       },
     }),
     {
-      name: 'hok-customer-auth',
+      name: "hok-customer-auth",
       partialize: (state) => ({
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );
 
 export default useAuthStore;

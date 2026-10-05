@@ -11,13 +11,13 @@ const HomePage = () => {
   return (
     <>
       <HokHero />
-      <HowItWorks/>
+      <HowItWorks />
       <Featured />
-      <Categories/>
-      <Commitment/>
-      <FeaturedDesigners/>
-      <Testimonials/>
-      <InstagramSection/>
+      <Categories />
+      <Commitment />
+      <FeaturedDesigners />
+      <Testimonials />
+      <InstagramSection />
     </>
   );
 };

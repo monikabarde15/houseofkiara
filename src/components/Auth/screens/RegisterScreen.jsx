@@ -1,50 +1,50 @@
-import React, { useState } from 'react';
-import BackLink from '../ui/BackLink';
-import FormEyebrow from '../ui/FormEyebrow';
-import FormHeading from '../ui/FormHeading';
-import FormSubText from '../ui/FormSubText';
-import TextInput from '../ui/TextInput';
-import PhoneNumberInput from '../ui/PhoneNumberInput';
-import PasswordInput from '../ui/PasswordInput';
-import CheckboxField from '../ui/CheckboxField';
-import PrimaryButton from '../ui/PrimaryButton';
-import GoogleButton from '../ui/GoogleButton';
-import PasswordStrengthMeter from '../ui/PasswordStrengthMeter';
-import FormAlert from '../ui/FormAlert';
-import '../../../styles/Auth/screens/RegisterScreen.css';
+import React, { useState } from "react";
+import BackLink from "../ui/BackLink";
+import FormEyebrow from "../ui/FormEyebrow";
+import FormHeading from "../ui/FormHeading";
+import FormSubText from "../ui/FormSubText";
+import TextInput from "../ui/TextInput";
+import PhoneNumberInput from "../ui/PhoneNumberInput";
+import PasswordInput from "../ui/PasswordInput";
+import CheckboxField from "../ui/CheckboxField";
+import PrimaryButton from "../ui/PrimaryButton";
+import GoogleButton from "../ui/GoogleButton";
+import PasswordStrengthMeter from "../ui/PasswordStrengthMeter";
+import FormAlert from "../ui/FormAlert";
+import "../../../styles/Auth/screens/RegisterScreen.css";
 
 const RegisterScreen = ({ switchScreen }) => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    mobile: '',
-    password: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    mobile: "",
+    password: "",
   });
 
   const [errors, setErrors] = useState({});
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [marketingAccepted, setMarketingAccepted] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [generalError, setGeneralError] = useState('');
+  const [generalError, setGeneralError] = useState("");
 
   // Validation functions
   const validateFirstName = () => {
     if (!formData.firstName.trim()) {
-      setErrors(prev => ({ ...prev, firstName: 'First name is required.' }));
+      setErrors((prev) => ({ ...prev, firstName: "First name is required." }));
       return false;
     } else {
-      setErrors(prev => ({ ...prev, firstName: '' }));
+      setErrors((prev) => ({ ...prev, firstName: "" }));
       return true;
     }
   };
 
   const validateLastName = () => {
     if (!formData.lastName.trim()) {
-      setErrors(prev => ({ ...prev, lastName: 'Last name is required.' }));
+      setErrors((prev) => ({ ...prev, lastName: "Last name is required." }));
       return false;
     } else {
-      setErrors(prev => ({ ...prev, lastName: '' }));
+      setErrors((prev) => ({ ...prev, lastName: "" }));
       return true;
     }
   };
@@ -52,13 +52,19 @@ const RegisterScreen = ({ switchScreen }) => {
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email) {
-      setErrors(prev => ({ ...prev, email: 'Please enter a valid email address.' }));
+      setErrors((prev) => ({
+        ...prev,
+        email: "Please enter a valid email address.",
+      }));
       return false;
     } else if (!emailRegex.test(formData.email)) {
-      setErrors(prev => ({ ...prev, email: 'Please enter a valid email address.' }));
+      setErrors((prev) => ({
+        ...prev,
+        email: "Please enter a valid email address.",
+      }));
       return false;
     } else {
-      setErrors(prev => ({ ...prev, email: '' }));
+      setErrors((prev) => ({ ...prev, email: "" }));
       return true;
     }
   };
@@ -66,64 +72,79 @@ const RegisterScreen = ({ switchScreen }) => {
   const validateMobile = () => {
     const mobileRegex = /^[6-9]\d{9}$/;
     if (!formData.mobile) {
-      setErrors(prev => ({ ...prev, mobile: 'Please enter a valid 10-digit mobile number.' }));
+      setErrors((prev) => ({
+        ...prev,
+        mobile: "Please enter a valid 10-digit mobile number.",
+      }));
       return false;
     } else if (!mobileRegex.test(formData.mobile)) {
-      setErrors(prev => ({ ...prev, mobile: 'Please enter a valid 10-digit mobile number.' }));
+      setErrors((prev) => ({
+        ...prev,
+        mobile: "Please enter a valid 10-digit mobile number.",
+      }));
       return false;
     } else {
-      setErrors(prev => ({ ...prev, mobile: '' }));
+      setErrors((prev) => ({ ...prev, mobile: "" }));
       return true;
     }
   };
 
   const validatePassword = () => {
     if (!formData.password) {
-      setErrors(prev => ({ ...prev, password: 'Password must be at least 8 characters.' }));
+      setErrors((prev) => ({
+        ...prev,
+        password: "Password must be at least 8 characters.",
+      }));
       return false;
     } else if (formData.password.length < 8) {
-      setErrors(prev => ({ ...prev, password: 'Password must be at least 8 characters.' }));
+      setErrors((prev) => ({
+        ...prev,
+        password: "Password must be at least 8 characters.",
+      }));
       return false;
     } else {
-      setErrors(prev => ({ ...prev, password: '' }));
+      setErrors((prev) => ({ ...prev, password: "" }));
       return true;
     }
   };
 
   const validateTerms = () => {
     if (!termsAccepted) {
-      setErrors(prev => ({ ...prev, terms: 'Please accept the terms to continue.' }));
+      setErrors((prev) => ({
+        ...prev,
+        terms: "Please accept the terms to continue.",
+      }));
       return false;
     } else {
-      setErrors(prev => ({ ...prev, terms: '' }));
+      setErrors((prev) => ({ ...prev, terms: "" }));
       return true;
     }
   };
 
   // Live error clearing
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-      setGeneralError('');
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setGeneralError("");
     }
   };
 
   const handlePasswordChange = (value) => {
-    setFormData(prev => ({ ...prev, password: value }));
+    setFormData((prev) => ({ ...prev, password: value }));
     if (errors.password) {
-      setErrors(prev => ({ ...prev, password: '' }));
-      setGeneralError('');
+      setErrors((prev) => ({ ...prev, password: "" }));
+      setGeneralError("");
     }
   };
 
   const handleTermsChange = (e) => {
-  setTermsAccepted(e.target.checked);
-  if (errors.terms) {
-    setErrors(prev => ({ ...prev, terms: '' }));
-    setGeneralError('');
-  }
-};
+    setTermsAccepted(e.target.checked);
+    if (errors.terms) {
+      setErrors((prev) => ({ ...prev, terms: "" }));
+      setGeneralError("");
+    }
+  };
 
   // Validate all fields
   const validateAllFields = () => {
@@ -134,13 +155,19 @@ const RegisterScreen = ({ switchScreen }) => {
     const isPasswordValid = validatePassword();
     const isTermsValid = validateTerms();
 
-    return isFirstNameValid && isLastNameValid && isEmailValid &&
-      isMobileValid && isPasswordValid && isTermsValid;
+    return (
+      isFirstNameValid &&
+      isLastNameValid &&
+      isEmailValid &&
+      isMobileValid &&
+      isPasswordValid &&
+      isTermsValid
+    );
   };
 
   // Section 8.5 - Create Account → OTP Flow
   const handleCreateAccount = async () => {
-    setGeneralError('');
+    setGeneralError("");
 
     // Step 1: All fields valid + terms checked
     const isValid = validateAllFields();
@@ -151,10 +178,10 @@ const RegisterScreen = ({ switchScreen }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/customer/auth/send-otp', {
-        method: 'POST',
+      const response = await fetch("/api/customer/auth/send-otp", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           phone: formData.mobile,
@@ -165,20 +192,25 @@ const RegisterScreen = ({ switchScreen }) => {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        switchScreen('otp', {
-          otpSource: 'register',
+        switchScreen("otp", {
+          otpSource: "register",
           userData: {
             ...formData,
             marketingAccepted,
-            flow: 'register',
+            flow: "register",
             otpDestination: `+91 ${formData.mobile}`,
           },
         });
       } else {
-        setGeneralError(result.message || 'Failed to send verification code. Please try again.');
+        setGeneralError(
+          result.message ||
+            "Failed to send verification code. Please try again.",
+        );
       }
     } catch (err) {
-      setGeneralError('Network error. Please check your connection and try again.');
+      setGeneralError(
+        "Network error. Please check your connection and try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -186,12 +218,15 @@ const RegisterScreen = ({ switchScreen }) => {
 
   return (
     <div className="hok-auth-register-screen">
-      <BackLink onClick={() => switchScreen('signin')} label="BACK TO SIGN IN" />
+      <BackLink
+        onClick={() => switchScreen("signin")}
+        label="BACK TO SIGN IN"
+      />
       <FormEyebrow text="CREATE ACCOUNT" />
       <FormHeading text="Join " italicText="House of Kaira" />
       <FormSubText>
-        Already have an account?{' '}
-        <span className="hok-auth-link" onClick={() => switchScreen('signin')}>
+        Already have an account?{" "}
+        <span className="hok-auth-link" onClick={() => switchScreen("signin")}>
           Sign in
         </span>
       </FormSubText>
@@ -207,7 +242,7 @@ const RegisterScreen = ({ switchScreen }) => {
           required={true}
           placeholder="Priya"
           value={formData.firstName}
-          onChange={(e) => handleInputChange('firstName', e.target.value)}
+          onChange={(e) => handleInputChange("firstName", e.target.value)}
           onBlur={validateFirstName}
           error={errors.firstName}
           autoComplete="given-name"
@@ -221,7 +256,7 @@ const RegisterScreen = ({ switchScreen }) => {
           required={true}
           placeholder="Sharma"
           value={formData.lastName}
-          onChange={(e) => handleInputChange('lastName', e.target.value)}
+          onChange={(e) => handleInputChange("lastName", e.target.value)}
           onBlur={validateLastName}
           error={errors.lastName}
           autoComplete="family-name"
@@ -236,7 +271,7 @@ const RegisterScreen = ({ switchScreen }) => {
         required={true}
         placeholder="you@example.com"
         value={formData.email}
-        onChange={(e) => handleInputChange('email', e.target.value)}
+        onChange={(e) => handleInputChange("email", e.target.value)}
         onBlur={validateEmail}
         error={errors.email}
         autoComplete="email"
@@ -249,7 +284,7 @@ const RegisterScreen = ({ switchScreen }) => {
         required={true}
         placeholder="10-digit number (WhatsApp preferred)"
         value={formData.mobile}
-        onChange={(e) => handleInputChange('mobile', e.target.value)}
+        onChange={(e) => handleInputChange("mobile", e.target.value)}
         onBlur={validateMobile}
         error={errors.mobile}
       />
@@ -288,7 +323,10 @@ const RegisterScreen = ({ switchScreen }) => {
         CREATE ACCOUNT
       </PrimaryButton>
 
-      <GoogleButton onClick={() => console.log('Google OAuth clicked')} marginTop="12px" />
+      <GoogleButton
+        onClick={() => console.log("Google OAuth clicked")}
+        marginTop="12px"
+      />
     </div>
   );
 };

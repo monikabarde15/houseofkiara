@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../../../styles/LYP/wizard/wizardLayout.css";
 
 import Step1 from "./FormPanels/Step1";
@@ -15,7 +15,6 @@ import Testimonial from "./Sidebar/Testimonial";
 import FAQ from "./Sidebar/FAQ";
 
 const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
-  
   const [isEditMode, setIsEditMode] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
@@ -28,7 +27,7 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
     size: "",
     original_price: "",
     condition: "",
-    outcome: ""
+    outcome: "",
   });
 
   const [photos, setPhotos] = useState([]);
@@ -58,8 +57,7 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
     setStep(targetStep);
   };
 
-
-  //  Going Forward and Backward 
+  //  Going Forward and Backward
   const goNext = (nextStep) => {
     setDirection("forward");
     setStep(nextStep);
@@ -75,18 +73,14 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
     setStep(prevStep);
   };
 
-
-  // scroll function 
+  // scroll function
   const scrollToWizardTop = (isSuccess = false) => {
     const el = document.getElementById("progWrap");
 
     if (el) {
       const yOffset = isSuccess ? -20 : -120;
 
-      const y =
-        el.getBoundingClientRect().top +
-        window.pageYOffset +
-        yOffset;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
 
       window.scrollTo({
         top: y,
@@ -95,23 +89,21 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
     }
   };
 
-
   useEffect(() => {
     scrollToWizardTop(submitted); // ✅ THIS is important
   }, [step, submitted]);
 
   return (
-    <section id="progWrap" className={`lyp-wizard ${submitted ? "submitted" : ""}`}>
-
+    <section
+      id="progWrap"
+      className={`lyp-wizard ${submitted ? "submitted" : ""}`}
+    >
       {/* ================= GRID ================= */}
       <div className="lyp-wizard__grid">
-
         {/* LEFT */}
         <div className="lyp-wizard__left">
-
           {/* ================= STEP TABS ================= */}
           <div className="lyp-wizard-header">
-
             <div className="lyp-wizard-tabs">
               {steps.map((s) => {
                 const isActive = !submitted && step === s.id;
@@ -148,20 +140,18 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
               <div
                 className="lyp-tab-line-fill"
                 style={{
-                  width: `${submitted
-                    ? 100
-                    : ((step - 1) / (steps.length - 1)) * 100}%`
+                  width: `${
+                    submitted ? 100 : ((step - 1) / (steps.length - 1)) * 100
+                  }%`,
                 }}
               />
             </div>
-
           </div>
 
           {/* PANEL */}
           <div className="lyp-wizard__panel">
             <div className={`step-container direction-${direction}`}>
               <div key={submitted ? "success" : step} className="step-panel">
-
                 {!submitted ? (
                   <>
                     {step === 1 && (
@@ -202,7 +192,6 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
                 ) : (
                   <SuccessPanel />
                 )}
-
               </div>
             </div>
           </div>
@@ -211,9 +200,6 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
         {/* RIGHT SIDEBAR*/}
         <div className="lyp-wizard__right">
           <div className="lyp-sidebar">
-
-
-
             {/* Block 1 — Timeline */}
             <Timeline submitted={submitted} />
 
@@ -227,9 +213,7 @@ const WizardLayout = ({ step, setStep, submitted, setSubmitted }) => {
             <FAQ />
           </div>
         </div>
-
       </div>
-
     </section>
   );
 };

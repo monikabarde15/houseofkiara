@@ -238,7 +238,9 @@
   font-size: 12px;
   color: var(--hok-faq-body-brown);
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .ch-pop-link:hover {

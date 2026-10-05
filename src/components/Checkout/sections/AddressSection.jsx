@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 
 // All Indian States and Union Territories
 const INDIAN_STATES_AND_UTS = [
-
   "Andaman and Nicobar Islands",
   "Andhra Pradesh",
   "Arunachal Pradesh",
@@ -44,19 +43,16 @@ const INDIAN_STATES_AND_UTS = [
   "Uttar Pradesh",
   "Uttarakhand",
   "West Bengal",
-
 ];
 
 import useCheckoutStore from "../../../store/checkoutStore";
 
-export default function DeliveryAddress({
-  submitCount,
-  setFieldErrors,
-}) {
+export default function DeliveryAddress({ submitCount, setFieldErrors }) {
   const [sameBilling, setSameBilling] = useState(true);
   const [gstEnabled, setGstEnabled] = useState(false);
 
-  const { address: formData, setAddress: setFormDataStore } = useCheckoutStore();
+  const { address: formData, setAddress: setFormDataStore } =
+    useCheckoutStore();
 
   const [errors, setErrors] = useState({});
 
@@ -79,37 +75,28 @@ export default function DeliveryAddress({
   // VALIDATION FUNCTION
 
   const validateAddressFields = () => {
-
     const nextErrors = {};
 
     /* address */
     if (!formData.address1.trim()) {
-      nextErrors.address1 =
-        "Address line 1 is required";
+      nextErrors.address1 = "Address line 1 is required";
     }
 
     /* city */
     if (!formData.city.trim()) {
-      nextErrors.city =
-        "City is required";
+      nextErrors.city = "City is required";
     }
 
     /* state */
     if (!formData.state.trim()) {
-      nextErrors.state =
-        "Please select a state";
+      nextErrors.state = "Please select a state";
     }
 
     /* pin */
     if (!formData.pin.trim()) {
-
-      nextErrors.pin =
-        "PIN code is required";
-
+      nextErrors.pin = "PIN code is required";
     } else if (!/^\d{6}$/.test(formData.pin)) {
-
-      nextErrors.pin =
-        "PIN code must be 6 digits";
+      nextErrors.pin = "PIN code must be 6 digits";
     }
 
     setErrors(nextErrors);
@@ -118,36 +105,25 @@ export default function DeliveryAddress({
   };
 
   useEffect(() => {
-
     const nextErrors = {};
 
     if (!formData.address1.trim()) {
-      nextErrors[
-        "Address line 1 (Delivery Address)"
-      ] = true;
+      nextErrors["Address line 1 (Delivery Address)"] = true;
     }
 
     if (!formData.city.trim()) {
-      nextErrors[
-        "City (Delivery Address)"
-      ] = true;
+      nextErrors["City (Delivery Address)"] = true;
     }
 
-    if (!formData.pin.trim() ||
-      !/^\d{6}$/.test(formData.pin)
-    ) {
-      nextErrors[
-        "PIN code (Delivery Address)"
-      ] = true;
+    if (!formData.pin.trim() || !/^\d{6}$/.test(formData.pin)) {
+      nextErrors["PIN code (Delivery Address)"] = true;
     }
 
     setFieldErrors((prev) => {
-
       const updated = { ...prev };
 
       /* clear old section errors */
       Object.keys(updated).forEach((key) => {
-
         if (key.includes("Delivery Address")) {
           delete updated[key];
         }
@@ -162,14 +138,11 @@ export default function DeliveryAddress({
     if (submitCount > 0) {
       validateAddressFields();
     }
-
   }, [submitCount, formData]);
-
 
   return (
     <FormSection>
       <div className="address-section">
-
         {/* HEADER */}
         <div className="checkout-section-header">
           <div className="checkout-section-number">02</div>
@@ -180,22 +153,14 @@ export default function DeliveryAddress({
 
         {/* ADDRESS LINE 1 */}
         <div className="checkout-fg">
-
-          <Field
-            label="ADDRESS LINE 1"
-            required
-            error={errors.address1}
-          >
+          <Field label="ADDRESS LINE 1" required error={errors.address1}>
             <input
               id="address-line-1"
               placeholder="Flat / house number, building name"
               value={formData.address1}
-              onChange={(e) =>
-                handleChange("address1", e.target.value)
-              }
+              onChange={(e) => handleChange("address1", e.target.value)}
             />
           </Field>
-
         </div>
 
         {/* ADDRESS LINE 2 */}
@@ -211,58 +176,31 @@ export default function DeliveryAddress({
 
         {/* CITY + STATE + PIN */}
         <div className="checkout-fg checkout-fg--c3">
-
-          <Field
-            label="CITY"
-            required
-            error={errors.city}
-          >
+          <Field label="CITY" required error={errors.city}>
             <input
               id="city"
               placeholder="City"
               value={formData.city}
-              onChange={(e) =>
-                handleChange("city", e.target.value)
-              }
+              onChange={(e) => handleChange("city", e.target.value)}
             />
           </Field>
 
-
-
-          <Field
-            label="STATE"
-            required
-            error={errors.state}
-          >
+          <Field label="STATE" required error={errors.state}>
             <select
               id="state"
               value={formData.state}
-              onChange={(e) =>
-                handleChange("state", e.target.value)
-              }
-
+              onChange={(e) => handleChange("state", e.target.value)}
             >
               <option value="">Select state</option>
               {INDIAN_STATES_AND_UTS.map((state) => (
-
-                <option
-                  key={state}
-                  value={state}
-                >
+                <option key={state} value={state}>
                   {state}
                 </option>
-
               ))}
             </select>
           </Field>
 
-
-
-          <Field
-            label="PIN CODE"
-            required
-            error={errors.pin}
-          >
+          <Field label="PIN CODE" required error={errors.pin}>
             <input
               id="pin-code"
               inputMode="numeric"
@@ -271,24 +209,15 @@ export default function DeliveryAddress({
               maxLength={6}
               value={formData.pin}
               onChange={(e) => {
-
                 /*
                   allow digits only
                 */
-                const numeric =
-                  e.target.value
-                    .replace(/\D/g, "")
-                    .slice(0, 6);
+                const numeric = e.target.value.replace(/\D/g, "").slice(0, 6);
 
-                handleChange(
-                  "pin",
-                  numeric
-                );
-
+                handleChange("pin", numeric);
               }}
             />
           </Field>
-
         </div>
 
         {/* DELIVERY INSTRUCTIONS */}
@@ -304,7 +233,6 @@ export default function DeliveryAddress({
 
         {/* BILLING TOGGLE */}
         <div className="checkout-toggle-block">
-
           <label className="checkout-checkbox">
             <input
               type="checkbox"
@@ -317,7 +245,6 @@ export default function DeliveryAddress({
 
           {/* Billing PANEL */}
           <div className={`checkout-panel ${!sameBilling ? "open" : ""}`}>
-
             {/* Address line 1 */}
             <div className="checkout-fg">
               <div className="checkout-field">
@@ -327,7 +254,6 @@ export default function DeliveryAddress({
 
             {/* City + State + PIN */}
             <div className="checkout-fg checkout-fg--c3">
-
               <div className="checkout-field">
                 <input placeholder="City" />
               </div>
@@ -335,14 +261,9 @@ export default function DeliveryAddress({
               <div className="checkout-field">
                 <select defaultValue="Madhya Pradesh">
                   {INDIAN_STATES_AND_UTS.map((state) => (
-
-                    <option
-                      key={state}
-                      value={state}
-                    >
+                    <option key={state} value={state}>
                       {state}
                     </option>
-
                   ))}
                 </select>
               </div>
@@ -350,16 +271,12 @@ export default function DeliveryAddress({
               <div className="checkout-field">
                 <input maxLength={6} />
               </div>
-
             </div>
-
           </div>
-
         </div>
 
         {/* GST TOGGLE */}
         <div className="checkout-toggle-block">
-
           <label className="checkout-checkbox">
             <input
               type="checkbox"
@@ -378,9 +295,7 @@ export default function DeliveryAddress({
 
           {/* GST SECTION */}
           <div className={`checkout-panel gst ${gstEnabled ? "open" : ""}`}>
-
             <div className="checkout-fg checkout-fg--c2">
-
               <div className="checkout-field">
                 <input placeholder="Business / Company Name" />
               </div>
@@ -391,13 +306,9 @@ export default function DeliveryAddress({
                   15-character GST Identification Number
                 </div>
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
     </FormSection>
   );

@@ -6,7 +6,7 @@ import {
   Wallet,
   MessageCircle,
   Mail,
-  Bell
+  Bell,
 } from "lucide-react";
 
 import MobileSectionLabel from "../ui/MobileSectionLabel";
@@ -30,11 +30,14 @@ const MobileAccountSettingsSection = () => {
     setShowToast(true);
   };
 
-  const firstName = user?.firstName || (user?.name ? user.name.split(' ')[0] : 'Customer');
-  const lastName = user?.lastName || (user?.name ? user.name.split(' ').slice(1).join(' ') : '');
-  const email = user?.email || 'customer@houseofkaira.com';
-  const mobile = user?.phone || user?.mobile || '';
-  const city = user?.location || user?.city || 'India';
+  const firstName =
+    user?.firstName || (user?.name ? user.name.split(" ")[0] : "Customer");
+  const lastName =
+    user?.lastName ||
+    (user?.name ? user.name.split(" ").slice(1).join(" ") : "");
+  const email = user?.email || "customer@houseofkaira.com";
+  const mobile = user?.phone || user?.mobile || "";
+  const city = user?.location || user?.city || "India";
 
   const whatsAppOn = user?.preferences?.whatsappNotifications !== false;
   const emailOn = user?.preferences?.newsletter !== false;
@@ -48,7 +51,7 @@ const MobileAccountSettingsSection = () => {
     await updateProfile({
       firstName: updatedData.firstName,
       lastName: updatedData.lastName,
-      name: `${updatedData.firstName || ''} ${updatedData.lastName || ''}`.trim(),
+      name: `${updatedData.firstName || ""} ${updatedData.lastName || ""}`.trim(),
       email: updatedData.email,
       phone: updatedData.mobile,
       mobile: updatedData.mobile,
@@ -64,7 +67,7 @@ const MobileAccountSettingsSection = () => {
       preferences: {
         ...(user?.preferences || {}),
         whatsappNotifications: val,
-      }
+      },
     });
     showToastMsg(`WhatsApp updates ${val ? "enabled" : "disabled"}`);
   };
@@ -74,7 +77,7 @@ const MobileAccountSettingsSection = () => {
       preferences: {
         ...(user?.preferences || {}),
         newsletter: val,
-      }
+      },
     });
     showToastMsg(`Email notifications ${val ? "enabled" : "disabled"}`);
   };
@@ -84,7 +87,7 @@ const MobileAccountSettingsSection = () => {
       preferences: {
         ...(user?.preferences || {}),
         marketingOptIn: val,
-      }
+      },
     });
     showToastMsg(`Offer notifications ${val ? "enabled" : "disabled"}`);
   };
@@ -93,10 +96,10 @@ const MobileAccountSettingsSection = () => {
     if (isSendingReset) return;
     setIsSendingReset(true);
     try {
-      const response = await fetch('/api/customer/profile/change-password', {
-        method: 'POST',
+      const response = await fetch("/api/customer/profile/change-password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -140,45 +143,28 @@ const MobileAccountSettingsSection = () => {
            ================================= */}
 
           <MobileSettingsRow
-            icon={
-              <User
-                size={13}
-                strokeWidth={1.5}
-              />
-            }
+            icon={<User size={13} strokeWidth={1.5} />}
             label="Personal Details"
             subLabel={`${firstName} ${lastName}, ${email}`}
-            onClick={
-              handleEditProfile
-            }
+            onClick={handleEditProfile}
           />
 
           <MobileSettingsRow
-            icon={
-              <Lock
-                size={13}
-                strokeWidth={1.5}
-              />
-            }
+            icon={<Lock size={13} strokeWidth={1.5} />}
             label="Security & Password"
-            subLabel={isSendingReset ? "Sending reset link..." : "Send password reset link to email"}
-            onClick={
-              handleSecurity
+            subLabel={
+              isSendingReset
+                ? "Sending reset link..."
+                : "Send password reset link to email"
             }
+            onClick={handleSecurity}
           />
 
           <MobileSettingsRow
-            icon={
-              <CreditCard
-                size={13}
-                strokeWidth={1.5}
-              />
-            }
+            icon={<CreditCard size={13} strokeWidth={1.5} />}
             label="Payment Methods"
             subLabel="Saved cards, UPI, wallets"
-            onClick={
-              handlePaymentMethods
-            }
+            onClick={handlePaymentMethods}
           />
 
           {/* =================================
@@ -186,37 +172,25 @@ const MobileAccountSettingsSection = () => {
            ================================= */}
 
           <div className="profile-mobile-subsec">
-            <div className="profile-mobile-subsec-label">
-              Deposit Tracker
-            </div>
+            <div className="profile-mobile-subsec-label">Deposit Tracker</div>
 
             {/* Row 1 */}
 
             <button
               type="button"
               className="profile-mobile-deposit-row"
-              onClick={() =>
-                handleOpenRentalDetail(
-                  "lehenga"
-                )
-              }
+              onClick={() => handleOpenRentalDetail("lehenga")}
             >
               <div className="profile-mobile-set-icon">
-                <Wallet
-                  size={13}
-                  strokeWidth={1.5}
-                />
+                <Wallet size={13} strokeWidth={1.5} />
               </div>
 
               <div className="profile-mobile-deposit-text">
                 <div className="profile-mobile-deposit-name">
-                  Ivory Tissue
-                  Lehenga
+                  Ivory Tissue Lehenga
                 </div>
 
-                <span className="profile-mobile-dpill-p">
-                  ₹15,000 pending
-                </span>
+                <span className="profile-mobile-dpill-p">₹15,000 pending</span>
               </div>
             </button>
 
@@ -225,28 +199,18 @@ const MobileAccountSettingsSection = () => {
             <button
               type="button"
               className="profile-mobile-deposit-row"
-              onClick={() =>
-                handleOpenRentalDetail(
-                  "anarkali"
-                )
-              }
+              onClick={() => handleOpenRentalDetail("anarkali")}
             >
               <div className="profile-mobile-set-icon">
-                <Wallet
-                  size={13}
-                  strokeWidth={1.5}
-                />
+                <Wallet size={13} strokeWidth={1.5} />
               </div>
 
               <div className="profile-mobile-deposit-text">
                 <div className="profile-mobile-deposit-name">
-                  Blush Anarkali
-                  Set
+                  Blush Anarkali Set
                 </div>
 
-                <span className="profile-mobile-dpill-r">
-                  Refunded
-                </span>
+                <span className="profile-mobile-dpill-r">Refunded</span>
               </div>
             </button>
           </div>
@@ -256,18 +220,13 @@ const MobileAccountSettingsSection = () => {
            ================================= */}
 
           <div className="profile-mobile-subsec">
-            <div className="profile-mobile-subsec-label">
-              Notifications
-            </div>
+            <div className="profile-mobile-subsec-label">Notifications</div>
 
             {/* WhatsApp */}
 
             <div className="profile-mobile-noti-row">
               <div className="profile-mobile-set-icon">
-                <MessageCircle
-                  size={13}
-                  strokeWidth={1.5}
-                />
+                <MessageCircle size={13} strokeWidth={1.5} />
               </div>
 
               <div className="profile-mobile-noti-text">
@@ -276,73 +235,51 @@ const MobileAccountSettingsSection = () => {
                 </div>
 
                 <div className="profile-mobile-noti-sub">
-                  Bookings,
-                  dispatch,
-                  returns
+                  Bookings, dispatch, returns
                 </div>
               </div>
 
-              <MobileToggle
-                isOn={whatsAppOn}
-                onToggle={handleToggleWhatsApp}
-              />
+              <MobileToggle isOn={whatsAppOn} onToggle={handleToggleWhatsApp} />
             </div>
 
             {/* Email */}
 
             <div className="profile-mobile-noti-row">
               <div className="profile-mobile-set-icon">
-                <Mail
-                  size={13}
-                  strokeWidth={1.5}
-                />
+                <Mail size={13} strokeWidth={1.5} />
               </div>
 
               <div className="profile-mobile-noti-text">
                 <div className="profile-mobile-noti-title">
-                  Email
-                  Notifications
+                  Email Notifications
                 </div>
 
                 <div className="profile-mobile-noti-sub">
-                  Orders,
-                  rentals,
-                  payouts
+                  Orders, rentals, payouts
                 </div>
               </div>
 
-              <MobileToggle
-                isOn={emailOn}
-                onToggle={handleToggleEmail}
-              />
+              <MobileToggle isOn={emailOn} onToggle={handleToggleEmail} />
             </div>
 
             {/* Offers */}
 
             <div className="profile-mobile-noti-row">
               <div className="profile-mobile-set-icon">
-                <Bell
-                  size={13}
-                  strokeWidth={1.5}
-                />
+                <Bell size={13} strokeWidth={1.5} />
               </div>
 
               <div className="profile-mobile-noti-text">
                 <div className="profile-mobile-noti-title">
-                  New Arrivals &
-                  Offers
+                  New Arrivals & Offers
                 </div>
 
                 <div className="profile-mobile-noti-sub">
-                  Curated picks,
-                  occasions
+                  Curated picks, occasions
                 </div>
               </div>
 
-              <MobileToggle
-                isOn={offersOn}
-                onToggle={handleToggleOffers}
-              />
+              <MobileToggle isOn={offersOn} onToggle={handleToggleOffers} />
             </div>
           </div>
         </div>
@@ -350,16 +287,14 @@ const MobileAccountSettingsSection = () => {
 
       <MobileEditProfileModal
         isOpen={isEditProfileOpen}
-        onClose={() =>
-          setIsEditProfileOpen(false)
-        }
+        onClose={() => setIsEditProfileOpen(false)}
         onSave={handleSaveProfile}
         profileData={{
           firstName,
           lastName,
           email,
           mobile,
-          city
+          city,
         }}
       />
 

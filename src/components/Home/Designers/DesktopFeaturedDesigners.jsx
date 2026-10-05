@@ -10,9 +10,7 @@ const DesktopFeaturedDesigners = () => {
   const navigate = useNavigate();
 
   const handleHomeDesignersClick = (designer) => {
-    navigate(
-      `/main-page?section=designers&designer=${designer.variant}`
-    );
+    navigate(`/main-page?section=designers&designer=${designer.variant}`);
 
     setTimeout(() => {
       window.scrollTo({
@@ -26,58 +24,48 @@ const DesktopFeaturedDesigners = () => {
     <section className="desk-featured-designers">
       <div className="desk-featured-designers-header">
         <div>
-          <SectionEyebrow
-            text={featuredDesignersData.eyebrow}
-          />
+          <SectionEyebrow text={featuredDesignersData.eyebrow} />
 
           <SectionTitle>
             Featured <em>Designers</em>
           </SectionTitle>
         </div>
 
-        <ViewAllLink text="View All →"
-        href="/main-page?section=designers"
-        />
+        <ViewAllLink text="View All →" href="/main-page?section=designers" />
       </div>
 
       <div className="desk-designers-grid">
-        {featuredDesignersData.designers.map(
-          (designer) => (
-            <article
-              key={designer.id}
-              className="desk-designer-card"
-            >
-              <img 
-                src={designer.image} 
-                alt={designer.name}
-                loading="lazy"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  zIndex: 0
-                }}
-              />
-              <div className="desk-designer-overlay" />
+        {featuredDesignersData.designers.map((designer) => (
+          <article key={designer.id} className="desk-designer-card">
+            <img
+              src={designer.image}
+              alt={designer.name}
+              loading="lazy"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                zIndex: 0,
+              }}
+            />
+            <div className="desk-designer-overlay" />
 
-              <div className="desk-designer-content">
-                <h3>{designer.name}</h3>
+            <div className="desk-designer-content">
+              <h3>{designer.name}</h3>
 
-                <span className="desk-designer-count">
-                  {designer.pieces}
-                </span>
+              <span className="desk-designer-count">{designer.pieces}</span>
 
-                <span className="desk-designer-cta"
+              <span
+                className="desk-designer-cta"
                 onClick={() => handleHomeDesignersClick(designer)}
-                >
-                  Shop Now
-                </span>
-              </div>
-            </article>
-          )
-        )}
+              >
+                Shop Now
+              </span>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );

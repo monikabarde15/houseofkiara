@@ -1,10 +1,7 @@
 export type DesignerType =
-  | 'Couture House'
-  | 'Contemporary Label'
-  | 'Heritage Weave'
-  | 'Indie Designer';
+  "Couture House" | "Contemporary Label" | "Heritage Weave" | "Indie Designer";
 
-export type DesignerStatus = 'Active' | 'Inactive';
+export type DesignerStatus = "Active" | "Inactive";
 
 export interface Designer {
   id: string;
@@ -12,7 +9,7 @@ export interface Designer {
   bio: string;
   slug: string;
   type: DesignerType;
-  joinedAt: string;          // ISO date, e.g. "2025-01-09"
+  joinedAt: string; // ISO date, e.g. "2025-01-09"
   isNewToHOK: boolean;
   isFeatured: boolean;
   featuredOrder: number | null;
@@ -29,7 +26,7 @@ export interface Designer {
 export interface UnmappedLabel {
   id: string;
   name: string;
-  code: string;              // e.g. "HOK-RK-001"
+  code: string; // e.g. "HOK-RK-001"
   pieceCount: number;
 }
 

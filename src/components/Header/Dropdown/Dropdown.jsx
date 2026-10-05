@@ -9,14 +9,7 @@ import DropdownOccasions from "./DropdownOccasions";
 import DropdownDesigners from "./DropdownDesigners";
 import { useEffect } from "react";
 
-const Dropdown = ({
-  activeDropdown,
-  inDropdown,
-  scheduleClose,
-
-}) => {
-
-
+const Dropdown = ({ activeDropdown, inDropdown, scheduleClose }) => {
   if (!activeDropdown) return null;
 
   const renderDropdown = () => {
@@ -58,9 +51,7 @@ const Dropdown = ({
         scheduleClose();
       }}
     >
-      <div className="dropdown-inner">
-        {renderDropdown()}
-      </div>
+      <div className="dropdown-inner">{renderDropdown()}</div>
     </div>
   );
 };

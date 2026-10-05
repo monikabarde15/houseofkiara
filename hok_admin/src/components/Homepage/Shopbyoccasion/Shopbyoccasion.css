@@ -30,7 +30,6 @@
   box-sizing: border-box;
 }
 
-
 /* =====================================================
    HEADER
 ===================================================== */
@@ -62,7 +61,6 @@
   font-size: 12px;
   color: var(--occasion-ink-muted);
 }
-
 
 /* =====================================================
    VISIBILITY SWITCH
@@ -181,10 +179,12 @@
   height: 15px;
 }
 
-.occasion-toggle-small input:checked + .occasion-toggle-track .occasion-toggle-thumb {
+.occasion-toggle-small
+  input:checked
+  + .occasion-toggle-track
+  .occasion-toggle-thumb {
   transform: translateX(13px);
 }
-
 
 /* =====================================================
    ALERT — the flag needs a home
@@ -220,7 +220,6 @@
   cursor: pointer;
 }
 
-
 /* =====================================================
    INFO
 ===================================================== */
@@ -242,7 +241,6 @@
 .occasion-info strong {
   color: var(--occasion-ink);
 }
-
 
 /* =====================================================
    CARD (shared by "The words", "Which occasions…",
@@ -284,7 +282,6 @@
   font-size: 12.5px;
   color: var(--occasion-ink-muted);
 }
-
 
 /* =====================================================
    FIELDS
@@ -350,7 +347,6 @@
   color: var(--occasion-ink-muted);
 }
 
-
 /* =====================================================
    READS AS
 ===================================================== */
@@ -384,7 +380,6 @@
   color: var(--occasion-gold);
   font-style: italic;
 }
-
 
 /* =====================================================
    OCCASION GRID
@@ -497,7 +492,6 @@
   color: var(--occasion-ink-muted);
 }
 
-
 /* =====================================================
    LAYOUT CARD — switch row
 ===================================================== */
@@ -510,7 +504,6 @@
   font-weight: 500;
   cursor: pointer;
 }
-
 
 /* =====================================================
    REDUCED MOTION

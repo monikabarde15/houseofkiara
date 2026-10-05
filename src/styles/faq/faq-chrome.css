@@ -79,7 +79,9 @@
   cursor: pointer;
   border: none;
   padding: 0;
-  transition: transform 0.2s var(--hok-faq-ease), box-shadow 0.2s var(--hok-faq-ease);
+  transition:
+    transform 0.2s var(--hok-faq-ease),
+    box-shadow 0.2s var(--hok-faq-ease);
 }
 
 .whatsapp-float:hover {
@@ -131,7 +133,9 @@
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s var(--hok-faq-ease), transform 0.3s var(--hok-faq-ease);
+  transition:
+    opacity 0.3s var(--hok-faq-ease),
+    transform 0.3s var(--hok-faq-ease);
   z-index: 998;
   white-space: nowrap;
   font-family: var(--hok-faq-font-sans);
@@ -158,7 +162,9 @@
   border-radius: 1px;
   text-decoration: none;
   font-family: var(--hok-faq-font-sans);
-  transition: background-color 0.2s ease, transform 0.15s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
 }
 
 .btn-wa:hover {
@@ -199,7 +205,9 @@
   border-radius: 1px;
   text-decoration: none;
   font-family: var(--hok-faq-font-sans);
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .btn-line:hover {

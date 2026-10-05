@@ -4,12 +4,17 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.9
    ======================================== */
 
-import React from 'react';
-import './styles/PromotionsTableRow.css';
-import { PromoCode, DerivedPromoState } from '../types/promotions.types';
-import { StatusBadge, AttentionPill, Button } from './UI';
-import { formatOfferLine, formatAudiencePhrase, formatUsedCell, formatWindowDate } from '../utils/formatter';
-import { AttentionFlag } from '../utils/derived';
+import React from "react";
+import "./styles/PromotionsTableRow.css";
+import { PromoCode, DerivedPromoState } from "../types/promotions.types";
+import { StatusBadge, AttentionPill, Button } from "./UI";
+import {
+  formatOfferLine,
+  formatAudiencePhrase,
+  formatUsedCell,
+  formatWindowDate,
+} from "../utils/formatter";
+import { AttentionFlag } from "../utils/derived";
 
 interface PromotionsTableRowProps {
   code: PromoCode;
@@ -40,13 +45,13 @@ export const PromotionsTableRow: React.FC<PromotionsTableRowProps> = ({
   };
 
   // Format window cell
-  let windowText = 'no expiry';
-  if (derivedState === 'Scheduled' && code.validFrom) {
-    windowText = formatWindowDate(code.validFrom, 'starts');
-  } else if (derivedState === 'Expired' && code.validUntil) {
-    windowText = formatWindowDate(code.validUntil, 'ended');
+  let windowText = "no expiry";
+  if (derivedState === "Scheduled" && code.validFrom) {
+    windowText = formatWindowDate(code.validFrom, "starts");
+  } else if (derivedState === "Expired" && code.validUntil) {
+    windowText = formatWindowDate(code.validUntil, "ended");
   } else if (code.validUntil) {
-    windowText = formatWindowDate(code.validUntil, 'ends');
+    windowText = formatWindowDate(code.validUntil, "ends");
   }
 
   const displayFlags = flags.slice(0, 2);
@@ -54,7 +59,10 @@ export const PromotionsTableRow: React.FC<PromotionsTableRowProps> = ({
 
   return (
     <tr className="table-row" onClick={handleRowClick}>
-      <td className="table-row__cell table-row__cell--checkbox" onClick={(e) => e.stopPropagation()}>
+      <td
+        className="table-row__cell table-row__cell--checkbox"
+        onClick={(e) => e.stopPropagation()}
+      >
         <input
           type="checkbox"
           checked={selected}
@@ -71,24 +79,22 @@ export const PromotionsTableRow: React.FC<PromotionsTableRowProps> = ({
       <td className="table-row__cell table-row__cell--used">
         {formatUsedCell(redemptions, code.usesTotalCap)}
       </td>
-      <td className="table-row__cell table-row__cell--window">
-        {windowText}
-      </td>
+      <td className="table-row__cell table-row__cell--window">{windowText}</td>
       <td className="table-row__cell table-row__cell--status">
         <StatusBadge status={derivedState} />
       </td>
       <td className="table-row__cell table-row__cell--attention">
-        {displayFlags.map(flag => (
+        {displayFlags.map((flag) => (
           <AttentionPill key={flag.key} title={flag.trigger}>
             {flag.chip}
           </AttentionPill>
         ))}
-        {overflowCount > 0 && (
-          <AttentionPill>+{overflowCount}</AttentionPill>
-        )}
+        {overflowCount > 0 && <AttentionPill>+{overflowCount}</AttentionPill>}
       </td>
       <td className="table-row__cell table-row__cell--action">
-        <Button variant="secondary" size="small">View →</Button>
+        <Button variant="secondary" size="small">
+          View →
+        </Button>
       </td>
     </tr>
   );

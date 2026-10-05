@@ -4,7 +4,7 @@
   top: 108px; /* 36px announcement bar + 72px header */
   z-index: 100;
   background: rgba(250, 247, 242, 0.97);
-  border-bottom: 1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -18,12 +18,12 @@
 }
 
 .hok-hiw-cn-btn {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-weight: 400;
-  color: #8A7E72;
+  color: #8a7e72;
   padding: 18px 0;
   margin-right: 40px;
   margin-bottom: -1px;
@@ -31,7 +31,9 @@
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -45,12 +47,12 @@
 }
 
 .hok-hiw-cn-btn:hover {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .hok-hiw-cn-btn.hok-hiw-lit {
-  color: #1A1612;
-  border-bottom-color: #C9A96E;
+  color: #1a1612;
+  border-bottom-color: #c9a96e;
 }
 
 .hok-hiw-cn-dot {

@@ -1,6 +1,6 @@
 /* Closing CTA Band - B13 */
 .hok-hiw-closing-cta {
-  background: #1A1612;
+  background: #1a1612;
   padding: 120px 80px;
   text-align: center;
   position: relative;
@@ -9,7 +9,7 @@
 
 /* Decorative watermark */
 .hok-hiw-closing-watermark {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 500px;
   font-weight: 300;
   color: rgba(201, 169, 110, 0.025);
@@ -46,7 +46,7 @@
 }
 
 .hok-hiw-closing-eyebrow-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.28em;
@@ -56,10 +56,10 @@
 
 /* Title */
 .hok-hiw-closing-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: clamp(44px, 5.5vw, 76px);
   font-weight: 300;
-  color: #FAF7F2;
+  color: #faf7f2;
   line-height: 1.04;
   letter-spacing: -0.025em;
   margin-bottom: 24px;
@@ -67,12 +67,12 @@
 
 .hok-hiw-closing-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* Body */
 .hok-hiw-closing-body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 15px;
   font-weight: 300;
   color: rgba(250, 247, 242, 0.72);
@@ -92,22 +92,24 @@
 
 /* Primary Button */
 .hok-hiw-closing-btn-primary {
-  background: #C9A96E;
-  color: #1A1612;
+  background: #c9a96e;
+  color: #1a1612;
   border: none;
   padding: 16px 48px;
   border-radius: 1px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-weight: 400;
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.25s ease;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
 }
 
 .hok-hiw-closing-btn-primary:hover {
-  background: #E8D5B0;
+  background: #e8d5b0;
   transform: translateY(-2px);
 }
 
@@ -118,7 +120,7 @@
   border: 1px solid rgba(201, 169, 110, 0.2);
   padding: 15px 40px;
   border-radius: 1px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -128,7 +130,7 @@
 }
 
 .hok-hiw-closing-btn-secondary:hover {
-  border-color: #C9A96E;
-  color: #C9A96E;
+  border-color: #c9a96e;
+  color: #c9a96e;
   transform: translateY(-2px);
 }

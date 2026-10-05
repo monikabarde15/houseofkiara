@@ -1,26 +1,23 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from "react";
 
-import { useNotifications } from './hooks/useNotifications';
-import { useAssignment } from './hooks/useAssignment';
-import { useSeen } from './hooks/useSeen';
-import { usePutDown } from './hooks/usePutDown';
-import { useNarrowing } from './hooks/useNarrowing';
+import { useNotifications } from "./hooks/useNotifications";
+import { useAssignment } from "./hooks/useAssignment";
+import { useSeen } from "./hooks/useSeen";
+import { usePutDown } from "./hooks/usePutDown";
+import { useNarrowing } from "./hooks/useNarrowing";
 
-import { NotifLeadCard } from './summary/NotifLeadCard';
-import { NotifSplitBar } from './summary/NotifSplitBar';
-import { NotifBandList } from './bands/NotifBandList';
+import { NotifLeadCard } from "./summary/NotifLeadCard";
+import { NotifSplitBar } from "./summary/NotifSplitBar";
+import { NotifBandList } from "./bands/NotifBandList";
 
-import { NotifMessageJoinPanel } from './msgjoin/NotifMessageJoinPanel';
-import { NotifHistoryPanel } from './history/NotifHistoryPanel';
+import { NotifMessageJoinPanel } from "./msgjoin/NotifMessageJoinPanel";
+import { NotifHistoryPanel } from "./history/NotifHistoryPanel";
 
-import { groupAlertsForRender } from './utils/counting';
-import type {
-  AlertDef,
-  BandKey,
-} from './types/notification.types';
+import { groupAlertsForRender } from "./utils/counting";
+import type { AlertDef, BandKey } from "./types/notification.types";
 
-import './styles/NotificationsShared.css';
-import './NotificationsView.css';
+import "./styles/NotificationsShared.css";
+import "./NotificationsView.css";
 
 /**
  * Notifications page
@@ -50,18 +47,11 @@ export function NotificationsView() {
   const { markAllSeen, marking } = useSeen(repaint);
   const { putDown, bringBack, bringingBack } = usePutDown(repaint);
 
-  const {
-    narrowing,
-    toggleBand,
-    togglePerson,
-    clearAll,
-    isNarrowed,
-  } = useNarrowing();
+  const { narrowing, toggleBand, togglePerson, clearAll, isNarrowed } =
+    useNarrowing();
 
   // Local UI state — which alert rows are expanded.
-  const [openRowKeys, setOpenRowKeys] = useState<Set<string>>(
-    new Set(),
-  );
+  const [openRowKeys, setOpenRowKeys] = useState<Set<string>>(new Set());
 
   const toggleRow = useCallback((alertKey: string) => {
     setOpenRowKeys((previous) => {
@@ -126,9 +116,7 @@ export function NotificationsView() {
       };
     }
 
-    const newIds = Object.keys(urgency).filter((id) =>
-      isRecordNew(id),
-    );
+    const newIds = Object.keys(urgency).filter((id) => isRecordNew(id));
 
     return {
       list: newIds,
@@ -143,9 +131,7 @@ export function NotificationsView() {
   if (loading && !data) {
     return (
       <div className="sp" id="sec-notifications">
-        <div className="ntf-loading">
-          Loading…
-        </div>
+        <div className="ntf-loading">Loading…</div>
       </div>
     );
   }
@@ -153,9 +139,7 @@ export function NotificationsView() {
   if (error && !data) {
     return (
       <div className="sp" id="sec-notifications">
-        <div className="ntf-error">
-          Could not load notifications: {error}
-        </div>
+        <div className="ntf-error">Could not load notifications: {error}</div>
       </div>
     );
   }
@@ -165,36 +149,26 @@ export function NotificationsView() {
   }
 
   return (
-    <div
-      className="sp"
-      id="sec-notifications"
-    >
+    <div className="sp" id="sec-notifications">
       {/* =========================================================
           BLOCK 1 — SECTION HEADER
          ========================================================= */}
       <div className="mod-hd">
-        <div className="mod-ey">
-          Operations
-        </div>
+        <div className="mod-ey">Operations</div>
 
-        <h1 className="mod-ttl">
-          Notifications
-        </h1>
+        <h1 className="mod-ttl">Notifications</h1>
 
         <p className="mod-sub">
-          Everything the desk needs to act on, in one place.
-          Each line is read from the records themselves rather
-          than stored, so it appears when something needs doing
-          and disappears when it is done. This is the only place
-          an alert is defined — the lister strip, the promo chips,
-          the dashboard and the messages that reach you off-panel
-          are all views of this same list, never a second opinion
-          about it.
+          Everything the desk needs to act on, in one place. Each line is read
+          from the records themselves rather than stored, so it appears when
+          something needs doing and disappears when it is done. This is the only
+          place an alert is defined — the lister strip, the promo chips, the
+          dashboard and the messages that reach you off-panel are all views of
+          this same list, never a second opinion about it.
         </p>
       </div>
 
       <div id="notif-host">
-
         {/* =====================================================
             BLOCK 2 — SUMMARY CARD
            ===================================================== */}
@@ -256,60 +230,37 @@ export function NotificationsView() {
             §26.3 — ALERT HISTORY
            ===================================================== */}
         <NotifHistoryPanel />
-
       </div>
 
       {/* =======================================================
           BLOCK 10 — FOOTER NOTE
          ======================================================= */}
-      <div
-        className="card ntf-footer-card"
-      >
+      <div className="card ntf-footer-card">
         <div className="card-bd">
           <div className="prebuilt-note">
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <circle
-                cx="12"
-                cy="12"
-                r="10"
-              />
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
 
-              <line
-                x1="12"
-                y1="8"
-                x2="12"
-                y2="12"
-              />
+              <line x1="12" y1="8" x2="12" y2="12" />
 
-              <circle
-                cx="12"
-                cy="16"
-                r="0.5"
-              />
+              <circle cx="12" cy="16" r="0.5" />
             </svg>
 
             <div>
-              <strong>
-                This page is about us, not about them
-              </strong>
+              <strong>This page is about us, not about them</strong>
 
               <p>
-                These are the alerts for the House of Kaira desk.
-                What a customer or a lister is told is set on the
-                message itself in <span className="ntf-inline-link">Messaging</span> —
-                and so is what <em>you</em> are told when you are
-                not looking at this screen, because seven of those
-                messages are addressed to this desk. They are not
-                a second set of rules: each one reads an alert
-                defined here, and the join is listed at the foot
-                of this page. What counts as late is decided here;
-                how it reads is decided there. The counts on the
-                Dashboard, the bell, the lister profiles and the
-                promo codes are all read from this list rather than
-                counted again.
+                These are the alerts for the House of Kaira desk. What a
+                customer or a lister is told is set on the message itself in{" "}
+                <span className="ntf-inline-link">Messaging</span> — and so is
+                what <em>you</em> are told when you are not looking at this
+                screen, because seven of those messages are addressed to this
+                desk. They are not a second set of rules: each one reads an
+                alert defined here, and the join is listed at the foot of this
+                page. What counts as late is decided here; how it reads is
+                decided there. The counts on the Dashboard, the bell, the lister
+                profiles and the promo codes are all read from this list rather
+                than counted again.
               </p>
             </div>
           </div>
@@ -344,44 +295,34 @@ function NarrowingBar({
   onClear: () => void;
 }) {
   const bandLabel: Record<string, string> = {
-    today: 'Needs doing today',
-    waiting: 'Waiting on us',
-    them: 'Waiting on them',
-    know: 'Worth knowing',
-    blocked: 'Blocked',
+    today: "Needs doing today",
+    waiting: "Waiting on us",
+    them: "Waiting on them",
+    know: "Worth knowing",
+    blocked: "Blocked",
   };
 
   const parts: string[] = [];
 
   if (narrowing.band) {
-    parts.push(
-      bandLabel[narrowing.band] ??
-        narrowing.band,
-    );
+    parts.push(bandLabel[narrowing.band] ?? narrowing.band);
   }
 
   if (narrowing.person) {
     parts.push(
-      narrowing.person === 'nobody'
-        ? 'nobody has picked up'
-        : narrowing.person,
+      narrowing.person === "nobody" ? "nobody has picked up" : narrowing.person,
     );
   }
 
   return (
     <div className="ntf-filt">
       <div className="ntf-filt-t">
-        Showing{' '}
-        <b>{parts.join(' · ')}</b>
-        {' — '}
+        Showing <b>{parts.join(" · ")}</b>
+        {" — "}
         {summary.open} items of {summary.open}
       </div>
 
-      <button
-        type="button"
-        className="ntf-filt-x"
-        onClick={onClear}
-      >
+      <button type="button" className="ntf-filt-x" onClick={onClear}>
         Show everything
       </button>
     </div>

@@ -1,6 +1,6 @@
 /* Closing CTA Band (Mobile) - C14 */
 .hok-hiw-mobile-closing-cta {
-  background: #1A1612;
+  background: #1a1612;
   padding: 60px 20px;
   text-align: center;
   position: relative;
@@ -9,7 +9,7 @@
 
 /* Decorative watermark */
 .hok-hiw-mobile-closing-watermark {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 360px;
   font-weight: 300;
   color: rgba(201, 169, 110, 0.025);
@@ -46,7 +46,7 @@
 }
 
 .hok-hiw-mobile-closing-eyebrow-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.28em;
@@ -56,10 +56,10 @@
 
 /* Title */
 .hok-hiw-mobile-closing-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 36px;
   font-weight: 300;
-  color: #FAF7F2;
+  color: #faf7f2;
   line-height: 1.04;
   letter-spacing: -0.025em;
   margin-bottom: 24px;
@@ -67,12 +67,12 @@
 
 .hok-hiw-mobile-closing-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* Body */
 .hok-hiw-mobile-closing-body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 14px;
   font-weight: 300;
   color: rgba(250, 247, 242, 0.72);
@@ -91,29 +91,31 @@
 
 /* Primary Button */
 .hok-hiw-mobile-closing-btn-primary {
-  background: #C9A96E;
-  color: #1A1612;
+  background: #c9a96e;
+  color: #1a1612;
   border: none;
   padding: 16px 48px;
   min-height: 52px;
   width: 100%;
   border-radius: 1px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-weight: 400;
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.25s ease;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
 }
 
 .hok-hiw-mobile-closing-btn-primary:hover {
-  background: #E8D5B0;
+  background: #e8d5b0;
   transform: translateY(-2px);
 }
 
 .hok-hiw-mobile-closing-btn-primary:active {
-  background: #E8D5B0;
+  background: #e8d5b0;
 }
 
 /* Secondary Button (Ghost) */
@@ -125,7 +127,7 @@
   min-height: 52px;
   width: 100%;
   border-radius: 1px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -135,14 +137,14 @@
 }
 
 .hok-hiw-mobile-closing-btn-secondary:hover {
-  border-color: #C9A96E;
-  color: #C9A96E;
+  border-color: #c9a96e;
+  color: #c9a96e;
   transform: translateY(-2px);
 }
 
 .hok-hiw-mobile-closing-btn-secondary:active {
-  border-color: #C9A96E;
-  color: #C9A96E;
+  border-color: #c9a96e;
+  color: #c9a96e;
 }
 
 /* Tablet Breakpoint - @media (min-width: 680px) */

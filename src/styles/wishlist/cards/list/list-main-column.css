@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   padding-right: 24px;
-  border-right: 1px solid #F0EAE0;
+  border-right: 1px solid #f0eae0;
 }
 
 /* Designer Label */
@@ -15,7 +15,7 @@
   font-size: 9px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #A8844A;
+  color: #a8844a;
 }
 
 /* Product Name */
@@ -24,7 +24,7 @@
   font-size: 19px;
   font-weight: 400;
   line-height: 1.3;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 10px;
 }
 
@@ -37,15 +37,15 @@
 }
 
 .desk-wishlist-list-condition-pristine {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 .desk-wishlist-list-condition-excellent {
-  color: #A8844A;
+  color: #a8844a;
 }
 
 .desk-wishlist-list-condition-good {
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* Bottom Meta */
@@ -58,7 +58,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 9.5px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 8px;
 }
 
@@ -75,7 +75,7 @@
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .desk-wishlist-list-remove-link svg {

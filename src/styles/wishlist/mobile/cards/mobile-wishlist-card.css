@@ -4,8 +4,8 @@
   display: flex;
   flex-direction: row;
   padding: 14px 16px;
-  background: #FFFEFB;
-  border-bottom: 1px solid #F0EAE0;
+  background: #fffefb;
+  border-bottom: 1px solid #f0eae0;
   cursor: pointer;
 }
 

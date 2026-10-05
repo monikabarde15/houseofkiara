@@ -1,22 +1,22 @@
 // src/components/LYP/record/RecordHeader.tsx
 
-import React, { useState, useEffect } from 'react';
-import { Submission } from '../types/submission.types';
-import { 
-  formatDate, 
-  formatTime, 
+import React, { useState, useEffect } from "react";
+import { Submission } from "../types/submission.types";
+import {
+  formatDate,
+  formatTime,
   getFirstName,
-  formatDateTime
-} from '../utils/formatter';
-import { 
-  getSubmissionStatus, 
-  getStatusClass, 
+  formatDateTime,
+} from "../utils/formatter";
+import {
+  getSubmissionStatus,
+  getStatusClass,
   getAgeChip,
-  getChannelClass
-} from '../utils/derived';
-import { useJourneyStack } from '../hooks/useJourneyStack';
-import { submissionService } from '../services/submissionService';
-import './styles/RecordHeader.css';
+  getChannelClass,
+} from "../utils/derived";
+import { useJourneyStack } from "../hooks/useJourneyStack";
+import { submissionService } from "../services/submissionService";
+import "./styles/RecordHeader.css";
 
 interface RecordHeaderProps {
   submission: Submission;
@@ -46,10 +46,12 @@ export const RecordHeader: React.FC<RecordHeaderProps> = ({
   const { goBack, getBackDestination } = useJourneyStack();
   const backDest = getBackDestination();
 
-  const [localAssignedTo, setLocalAssignedTo] = useState(submission.assignedTo || 'Unassigned');
+  const [localAssignedTo, setLocalAssignedTo] = useState(
+    submission.assignedTo || "Unassigned",
+  );
 
   useEffect(() => {
-    setLocalAssignedTo(submission.assignedTo || 'Unassigned');
+    setLocalAssignedTo(submission.assignedTo || "Unassigned");
   }, [submission.assignedTo]);
 
   const status = getSubmissionStatus(submission);
@@ -81,24 +83,34 @@ export const RecordHeader: React.FC<RecordHeaderProps> = ({
             )}
           </div>
           <div className="record-meta mt-1.5 flex items-center gap-1.5 text-[#8C847A] text-[11px]">
-            <span className="subid font-mono text-[#C7A55C] font-semibold">{submission.subid}</span>
+            <span className="subid font-mono text-[#C7A55C] font-semibold">
+              {submission.subid}
+            </span>
             <span>Submitted {formatDateTime(submission.submittedAt)}</span>
             <span className="record-meta-sep">·</span>
             <span className={`tag ${channelClass}`}>{submission.channel}</span>
             <span className="record-meta-sep">·</span>
-            <span className="qlnk text-[#C7A55C]" onClick={() => onNavigate(submission.listerID)}>from {getFirstName(submission.listerID)}</span>
+            <span
+              className="qlnk text-[#C7A55C]"
+              onClick={() => onNavigate(submission.listerID)}
+            >
+              from {getFirstName(submission.listerID)}
+            </span>
             <span className="record-meta-sep">·</span>
             <span className="flex items-center gap-1">
               Assigned to:
-              <select 
+              <select
                 className="bg-transparent border-b border-dashed border-[#C7A55C] text-[#C7A55C] outline-none cursor-pointer"
                 value={localAssignedTo}
                 onChange={(e) => {
                   const newVal = e.target.value;
                   setLocalAssignedTo(newVal);
-                  submissionService.updateSubmission(submission.subid, { assignedTo: newVal })
+                  submissionService
+                    .updateSubmission(submission.subid, { assignedTo: newVal })
                     .then(() => onSave?.())
-                    .catch(() => setLocalAssignedTo(submission.assignedTo || 'Unassigned'));
+                    .catch(() =>
+                      setLocalAssignedTo(submission.assignedTo || "Unassigned"),
+                    );
                 }}
               >
                 <option value="Unassigned">Unassigned</option>
@@ -112,7 +124,7 @@ export const RecordHeader: React.FC<RecordHeaderProps> = ({
         <div className="record-head-right justify-center">
           {/* Navigation - matches design: < Previous counter Next > */}
           <div className="record-nav">
-            <button 
+            <button
               className="btn btn-sec btn-sm"
               onClick={onPrev}
               disabled={!hasPrev}
@@ -122,7 +134,7 @@ export const RecordHeader: React.FC<RecordHeaderProps> = ({
             <span className="record-counter">
               {currentIndex} of {totalCount}
             </span>
-            <button 
+            <button
               className="btn btn-sec btn-sm"
               onClick={onNext}
               disabled={!hasNext}

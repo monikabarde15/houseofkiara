@@ -54,12 +54,12 @@
   .promotions-header {
     flex-direction: column;
   }
-  
+
   .promotions-header__right {
     width: 100%;
     margin-top: 12px;
   }
-  
+
   .promotions-header__right .button {
     flex: 1;
   }

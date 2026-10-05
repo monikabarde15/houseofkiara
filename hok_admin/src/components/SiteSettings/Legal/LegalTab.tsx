@@ -21,14 +21,12 @@ const initialForm: LegalForm = {
   registeredName: "House of Kaira Retail Pvt Ltd",
   gstin: "23AABCH1234K1ZV",
   cin: "U52609MP2025PTC071482",
-  registeredAddress:
-    "14 Vijay Nagar, Scheme 54, Indore, Madhya Pradesh",
+  registeredAddress: "14 Vijay Nagar, Scheme 54, Indore, Madhya Pradesh",
 
   consentEnabled: false,
   heading: "We use cookies",
   position: "Bottom bar",
-  body:
-    "We use cookies to run the site, remember your bag, and understand what people browse. You can accept all, or take only what the site needs to work.",
+  body: "We use cookies to run the site, remember your bag, and understand what people browse. You can accept all, or take only what the site needs to work.",
   acceptLabel: "Accept all",
   rejectLabel: "Only essential",
   manageLabel: "Manage",
@@ -41,7 +39,7 @@ export default function LegalTab() {
 
   const updateField = <K extends keyof LegalForm>(
     field: K,
-    value: LegalForm[K]
+    value: LegalForm[K],
   ) => {
     setForm((prev) => ({
       ...prev,
@@ -57,14 +55,12 @@ export default function LegalTab() {
           <div className="legal-title-row">
             <h2>Legal &amp; consent</h2>
 
-            <span className="legal-meta">
-              Priya (Ops) · 2 days ago
-            </span>
+            <span className="legal-meta">Priya (Ops) · 2 days ago</span>
           </div>
 
           <p>
-            The registered entity, and the cookie banner the storefront does
-            not have yet.
+            The registered entity, and the cookie banner the storefront does not
+            have yet.
           </p>
         </div>
       </div>
@@ -91,9 +87,7 @@ export default function LegalTab() {
             <LegalField
               label="REGISTERED NAME"
               value={form.registeredName}
-              onChange={(value) =>
-                updateField("registeredName", value)
-              }
+              onChange={(value) => updateField("registeredName", value)}
             />
 
             <LegalField
@@ -113,9 +107,7 @@ export default function LegalTab() {
             <LegalField
               label="REGISTERED ADDRESS"
               value={form.registeredAddress}
-              onChange={(value) =>
-                updateField("registeredAddress", value)
-              }
+              onChange={(value) => updateField("registeredAddress", value)}
             />
           </div>
         </div>
@@ -136,14 +128,9 @@ export default function LegalTab() {
           <label className="legal-toggle-row">
             <button
               type="button"
-              className={`legal-toggle ${
-                form.consentEnabled ? "on" : ""
-              }`}
+              className={`legal-toggle ${form.consentEnabled ? "on" : ""}`}
               onClick={() =>
-                updateField(
-                  "consentEnabled",
-                  !form.consentEnabled
-                )
+                updateField("consentEnabled", !form.consentEnabled)
               }
               aria-pressed={form.consentEnabled}
             >
@@ -157,9 +144,7 @@ export default function LegalTab() {
             <LegalField
               label="HEADING"
               value={form.heading}
-              onChange={(value) =>
-                updateField("heading", value)
-              }
+              onChange={(value) => updateField("heading", value)}
             />
 
             <div className="legal-field">
@@ -168,9 +153,7 @@ export default function LegalTab() {
               <select
                 className="legal-input"
                 value={form.position}
-                onChange={(e) =>
-                  updateField("position", e.target.value)
-                }
+                onChange={(e) => updateField("position", e.target.value)}
               >
                 <option>Bottom bar</option>
                 <option>Top bar</option>
@@ -184,9 +167,7 @@ export default function LegalTab() {
             <textarea
               rows={3}
               value={form.body}
-              onChange={(e) =>
-                updateField("body", e.target.value)
-              }
+              onChange={(e) => updateField("body", e.target.value)}
             />
           </div>
 
@@ -194,25 +175,19 @@ export default function LegalTab() {
             <LegalField
               label="ACCEPT"
               value={form.acceptLabel}
-              onChange={(value) =>
-                updateField("acceptLabel", value)
-              }
+              onChange={(value) => updateField("acceptLabel", value)}
             />
 
             <LegalField
               label="REJECT"
               value={form.rejectLabel}
-              onChange={(value) =>
-                updateField("rejectLabel", value)
-              }
+              onChange={(value) => updateField("rejectLabel", value)}
             />
 
             <LegalField
               label="MANAGE"
               value={form.manageLabel}
-              onChange={(value) =>
-                updateField("manageLabel", value)
-              }
+              onChange={(value) => updateField("manageLabel", value)}
             />
           </div>
 
@@ -222,9 +197,7 @@ export default function LegalTab() {
             <input
               className="legal-input"
               value={form.policyLink}
-              onChange={(e) =>
-                updateField("policyLink", e.target.value)
-              }
+              onChange={(e) => updateField("policyLink", e.target.value)}
             />
           </div>
 
@@ -282,9 +255,7 @@ export default function LegalTab() {
           <button
             type="button"
             className="legal-show-button"
-            onClick={() =>
-              setShowManageDetails((prev) => !prev)
-            }
+            onClick={() => setShowManageDetails((prev) => !prev)}
           >
             {showManageDetails ? "hide" : "show"}
           </button>
@@ -304,11 +275,7 @@ interface LegalFieldProps {
   onChange: (value: string) => void;
 }
 
-function LegalField({
-  label,
-  value,
-  onChange,
-}: LegalFieldProps) {
+function LegalField({ label, value, onChange }: LegalFieldProps) {
   return (
     <div className="legal-field">
       <label>{label}</label>
@@ -347,19 +314,13 @@ function ConsentCategory({
         <div className="consent-name">
           <h4>{title}</h4>
 
-          <span className={`consent-status ${statusClass}`}>
-            {status}
-          </span>
+          <span className={`consent-status ${statusClass}`}>{status}</span>
         </div>
 
-        <span className="consent-right-text">
-          {rightText}
-        </span>
+        <span className="consent-right-text">{rightText}</span>
       </div>
 
-      <div className="consent-description">
-        {description}
-      </div>
+      <div className="consent-description">{description}</div>
     </div>
   );
 }

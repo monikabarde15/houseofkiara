@@ -20,23 +20,17 @@ const ProductCard = ({ product }) => {
         </div>
 
         <div className="hok-product-wishlist-wrapper">
-          <WishlistButton />
+          <WishlistButton productId={product.id || product._id} />
         </div>
       </div>
 
       <div className="hok-product-content">
-        <p className="hok-product-designer">
-          {product.designer}
-        </p>
+        <p className="hok-product-designer">{product.designer}</p>
 
-        <h3 className="hok-product-name">
-          {product.name}
-        </h3>
+        <h3 className="hok-product-name">{product.name}</h3>
 
         <div className="hok-product-price-row">
-          <span className="hok-product-price">
-            {product.price}
-          </span>
+          <span className="hok-product-price">{product.price}</span>
 
           {product.priceSuffix && (
             <span className="hok-product-price-suffix">

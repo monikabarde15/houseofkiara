@@ -20,8 +20,7 @@ const initialForm: MaintenanceForm = {
 
   expectedBack: "",
 
-  body:
-    "House of Kaira is briefly down for scheduled work. Rentals already booked are unaffected.",
+  body: "House of Kaira is briefly down for scheduled work. Rentals already booked are unaffected.",
 
   allowList: "Soumya, Priya (Ops)",
 
@@ -38,7 +37,7 @@ export default function MaintenanceTab() {
 
   const updateField = <K extends keyof MaintenanceForm>(
     field: K,
-    value: MaintenanceForm[K]
+    value: MaintenanceForm[K],
   ) => {
     setForm((prev) => ({
       ...prev,
@@ -63,9 +62,7 @@ export default function MaintenanceTab() {
             </p>
           </div>
 
-          <span className="maintenance-meta">
-            Priya (Ops) · 2 days ago
-          </span>
+          <span className="maintenance-meta">Priya (Ops) · 2 days ago</span>
         </div>
       </div>
 
@@ -88,19 +85,14 @@ export default function MaintenanceTab() {
                 form.maintenanceEnabled ? "on" : ""
               }`}
               onClick={() =>
-                updateField(
-                  "maintenanceEnabled",
-                  !form.maintenanceEnabled
-                )
+                updateField("maintenanceEnabled", !form.maintenanceEnabled)
               }
               aria-pressed={form.maintenanceEnabled}
             >
               <span />
             </button>
 
-            <span>
-              Take the storefront down and show a holding page
-            </span>
+            <span>Take the storefront down and show a holding page</span>
           </label>
 
           {/* HEADING + EXPECTED BACK */}
@@ -109,9 +101,7 @@ export default function MaintenanceTab() {
             <MaintenanceField
               label="HEADING"
               value={form.heading}
-              onChange={(value) =>
-                updateField("heading", value)
-              }
+              onChange={(value) => updateField("heading", value)}
             />
 
             <div className="maintenance-field">
@@ -120,9 +110,7 @@ export default function MaintenanceTab() {
               <input
                 className="maintenance-input"
                 value={form.expectedBack}
-                onChange={(e) =>
-                  updateField("expectedBack", e.target.value)
-                }
+                onChange={(e) => updateField("expectedBack", e.target.value)}
               />
 
               <span className="maintenance-help">
@@ -139,9 +127,7 @@ export default function MaintenanceTab() {
             <textarea
               rows={3}
               value={form.body}
-              onChange={(e) =>
-                updateField("body", e.target.value)
-              }
+              onChange={(e) => updateField("body", e.target.value)}
             />
           </div>
 
@@ -153,9 +139,7 @@ export default function MaintenanceTab() {
             <input
               className="maintenance-input"
               value={form.allowList}
-              onChange={(e) =>
-                updateField("allowList", e.target.value)
-              }
+              onChange={(e) => updateField("allowList", e.target.value)}
             />
 
             <span className="maintenance-help">
@@ -178,9 +162,7 @@ export default function MaintenanceTab() {
           <MaintenanceField
             label="HEADING"
             value={form.notFoundHeading}
-            onChange={(value) =>
-              updateField("notFoundHeading", value)
-            }
+            onChange={(value) => updateField("notFoundHeading", value)}
           />
 
           <div className="maintenance-field maintenance-body-field">
@@ -189,9 +171,7 @@ export default function MaintenanceTab() {
             <textarea
               rows={3}
               value={form.notFoundBody}
-              onChange={(e) =>
-                updateField("notFoundBody", e.target.value)
-              }
+              onChange={(e) => updateField("notFoundBody", e.target.value)}
             />
           </div>
 
@@ -201,17 +181,12 @@ export default function MaintenanceTab() {
             <input
               className="maintenance-input"
               value={form.suggestedLinks}
-              onChange={(e) =>
-                updateField(
-                  "suggestedLinks",
-                  e.target.value
-                )
-              }
+              onChange={(e) => updateField("suggestedLinks", e.target.value)}
             />
 
             <span className="maintenance-help">
-              A solid preloved piece leaves a dead URL behind, so this page
-              sees more traffic than it should.
+              A solid preloved piece leaves a dead URL behind, so this page sees
+              more traffic than it should.
             </span>
           </div>
         </div>
@@ -230,11 +205,7 @@ interface MaintenanceFieldProps {
   onChange: (value: string) => void;
 }
 
-function MaintenanceField({
-  label,
-  value,
-  onChange,
-}: MaintenanceFieldProps) {
+function MaintenanceField({ label, value, onChange }: MaintenanceFieldProps) {
   return (
     <div className="maintenance-field">
       <label>{label}</label>

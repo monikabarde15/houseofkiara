@@ -83,7 +83,9 @@
   width: 12px;
   height: 12px;
   color: var(--hok-faq-soft-label);
-  transition: transform 0.25s var(--hok-faq-ease), color 0.2s ease;
+  transition:
+    transform 0.25s var(--hok-faq-ease),
+    color 0.2s ease;
   flex-shrink: 0;
 }
 
@@ -219,7 +221,9 @@
   font-size: inherit;
   font-weight: 400;
   line-height: inherit;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .ans .lnk:hover {
@@ -248,7 +252,9 @@
   color: var(--hok-faq-charcoal);
   cursor: pointer;
   text-align: left;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .next button:hover {
@@ -377,7 +383,7 @@
   border-left: 2px solid var(--hok-faq-terracotta);
   font-size: 12px;
   line-height: 1.6;
-  color: #7A3A22;
+  color: #7a3a22;
 }
 
 /* Responsive adjustments (Section 11) */

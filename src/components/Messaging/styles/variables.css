@@ -5,38 +5,39 @@
 
 :root {
   /* ---- COLOURS (A1) ---- */
-  --msg-charcoal: #1A1612;
-  --msg-gold: #C9A96E;
-  --msg-gold-light: #E2C99A;
-  --msg-gold-pale: #F5EFE4;
-  --msg-terracotta: #B85C38;
-  --msg-sage: #6B7E5A;
-  --msg-cream: #FAF7F2;
-  --msg-muted: #8A7E72;
-  --msg-muted-light: #B4A99E;
-  --msg-border: #E8E0D4;
-  --msg-canvas: #F7F4EF;
-  --msg-card: #FFFFFF;
-  --msg-card-border: #EDE6DC;
-  --msg-input-border: #DDD5C8;
-  --msg-input-bg: #FFFFFB;
+  --msg-charcoal: #1a1612;
+  --msg-gold: #c9a96e;
+  --msg-gold-light: #e2c99a;
+  --msg-gold-pale: #f5efe4;
+  --msg-terracotta: #b85c38;
+  --msg-sage: #6b7e5a;
+  --msg-cream: #faf7f2;
+  --msg-muted: #8a7e72;
+  --msg-muted-light: #b4a99e;
+  --msg-border: #e8e0d4;
+  --msg-canvas: #f7f4ef;
+  --msg-card: #ffffff;
+  --msg-card-border: #ede6dc;
+  --msg-input-border: #ddd5c8;
+  --msg-input-bg: #fffffb;
 
   /* ---- STATUS COLOURS (A1) ---- */
-  --msg-status-green-bg: #EAF0E5;
-  --msg-status-green-text: #3D6B30;
-  --msg-status-amber-bg: #FDF5E7;
-  --msg-status-amber-text: #8B6A1E;
-  --msg-status-grey-bg: #F0EDE8;
-  --msg-status-grey-text: #8A7E72;
-  --msg-status-blue-bg: #E9EFF6;
-  --msg-status-blue-text: #3B5C8A;
-  --msg-status-terracotta-bg: #FDF1EE;
-  --msg-status-terracotta-text: #B85C38;
+  --msg-status-green-bg: #eaf0e5;
+  --msg-status-green-text: #3d6b30;
+  --msg-status-amber-bg: #fdf5e7;
+  --msg-status-amber-text: #8b6a1e;
+  --msg-status-grey-bg: #f0ede8;
+  --msg-status-grey-text: #8a7e72;
+  --msg-status-blue-bg: #e9eff6;
+  --msg-status-blue-text: #3b5c8a;
+  --msg-status-terracotta-bg: #fdf1ee;
+  --msg-status-terracotta-text: #b85c38;
 
   /* ---- TYPOGRAPHY (A2) ---- */
-  --msg-font-display: 'Cormorant Garamond', Georgia, serif;
-  --msg-font-interface: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --msg-font-monospace: ui-monospace, 'SF Mono', 'Menlo', monospace;
+  --msg-font-display: "Cormorant Garamond", Georgia, serif;
+  --msg-font-interface:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --msg-font-monospace: ui-monospace, "SF Mono", "Menlo", monospace;
 
   /* ---- CORNERS & BORDERS (A3) ---- */
   --msg-radius: 4px;

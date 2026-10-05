@@ -1,9 +1,9 @@
 // src/components/Listers/hooks/useJourneyStack.ts
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 interface JourneyState {
-  type: 'section' | 'detail';
+  type: "section" | "detail";
   id: string;
   tab?: string;
   scroll?: number;
@@ -21,7 +21,7 @@ export const useJourneyStack = () => {
   });
 
   const pushState = useCallback((state: JourneyState) => {
-    setStack(prev => {
+    setStack((prev) => {
       // Remove any forward states if we're not at the end
       const newStates = prev.states.slice(0, prev.currentIndex + 1);
       newStates.push(state);
@@ -33,7 +33,7 @@ export const useJourneyStack = () => {
   }, []);
 
   const goBack = useCallback(() => {
-    setStack(prev => {
+    setStack((prev) => {
       if (prev.currentIndex <= 0) return prev;
       return {
         ...prev,
@@ -43,7 +43,7 @@ export const useJourneyStack = () => {
   }, []);
 
   const goForward = useCallback(() => {
-    setStack(prev => {
+    setStack((prev) => {
       if (prev.currentIndex >= prev.states.length - 1) return prev;
       return {
         ...prev,
@@ -61,10 +61,10 @@ export const useJourneyStack = () => {
 
   const getBackDestination = useCallback(() => {
     if (stack.currentIndex <= 0 || stack.currentIndex >= stack.states.length) {
-      return '';
+      return "";
     }
     const prevState = stack.states[stack.currentIndex - 1];
-    if (prevState.type === 'section') {
+    if (prevState.type === "section") {
       // Capitalize section name
       return prevState.id.charAt(0).toUpperCase() + prevState.id.slice(1);
     }
@@ -75,7 +75,7 @@ export const useJourneyStack = () => {
   const canGoForward = stack.currentIndex < stack.states.length - 1;
 
   const updateCurrentState = useCallback((updates: Partial<JourneyState>) => {
-    setStack(prev => {
+    setStack((prev) => {
       if (prev.currentIndex < 0 || prev.currentIndex >= prev.states.length) {
         return prev;
       }
@@ -91,9 +91,12 @@ export const useJourneyStack = () => {
     });
   }, []);
 
-  const saveScroll = useCallback((scroll: number) => {
-    updateCurrentState({ scroll });
-  }, [updateCurrentState]);
+  const saveScroll = useCallback(
+    (scroll: number) => {
+      updateCurrentState({ scroll });
+    },
+    [updateCurrentState],
+  );
 
   const getSavedScroll = useCallback(() => {
     const current = getCurrentState();

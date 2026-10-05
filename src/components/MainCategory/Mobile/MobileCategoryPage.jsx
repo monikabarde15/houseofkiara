@@ -24,7 +24,7 @@ const MobileCategoryPage = ({ productsData }) => {
   const [visibleItems, setVisibleItems] = useState(6);
   const [isLoading, setIsLoading] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
+
   // Products state is passed down as a prop (productsData)
   const [filters, setFilters] = useState({
     rentType: [],
@@ -36,7 +36,7 @@ const MobileCategoryPage = ({ productsData }) => {
     availabilityTo: "",
     size: [],
     colour: [],
-    gender: []
+    gender: [],
   });
 
   // Get URL parameters
@@ -66,7 +66,7 @@ const MobileCategoryPage = ({ productsData }) => {
       availabilityTo: "",
       size: [],
       colour: [],
-      gender: []
+      gender: [],
     };
 
     // Set mode filter based on section
@@ -87,12 +87,12 @@ const MobileCategoryPage = ({ productsData }) => {
     if (gender) {
       preAppliedFilters.gender = [gender];
     }
-    
+
     // Set size filter
     if (size) {
       preAppliedFilters.size = [size];
     }
-    
+
     // Set color filter
     if (color) {
       preAppliedFilters.colour = [color];
@@ -109,7 +109,7 @@ const MobileCategoryPage = ({ productsData }) => {
   const filteredProducts = (productsData || []).filter((product) => {
     // Rent type filter
     if (filters.rentType.length > 0) {
-      const match = filters.rentType.some(type => {
+      const match = filters.rentType.some((type) => {
         if (type === "rent") return product.rent;
         if (type === "preloved") return product.preloved;
         if (type === "new") return product.isNew;
@@ -117,28 +117,45 @@ const MobileCategoryPage = ({ productsData }) => {
       });
       if (!match) return false;
     }
-    
+
     // Category filter
-    if (filters.category.length > 0 && !filters.category.includes(product.category)) return false;
-    
+    if (
+      filters.category.length > 0 &&
+      !filters.category.includes(product.category)
+    )
+      return false;
+
     // Occasion filter
-    if (filters.occasion.length > 0 && !filters.occasion.includes(product.occasion)) return false;
-    
+    if (
+      filters.occasion.length > 0 &&
+      !filters.occasion.includes(product.occasion)
+    )
+      return false;
+
     // Designer filter
-    if (filters.designer.length > 0 && !filters.designer.includes(product.designer)) return false;
+    if (
+      filters.designer.length > 0 &&
+      !filters.designer.includes(product.designer)
+    )
+      return false;
 
     // Gender filter
     if (filters.gender && filters.gender.length > 0) {
       const itemGender = product.gender ? product.gender.toLowerCase() : "";
-      const match = filters.gender.some(g => g.toLowerCase() === itemGender);
+      const match = filters.gender.some((g) => g.toLowerCase() === itemGender);
       if (!match) return false;
     }
-    
+
     // Size filter
     if (filters.size && filters.size.length > 0) {
       const itemSizes = product.size || [];
       const match = filters.size.some((s) =>
-        itemSizes.some((is) => is && typeof is === 'string' && is.trim().toLowerCase() === s.trim().toLowerCase())
+        itemSizes.some(
+          (is) =>
+            is &&
+            typeof is === "string" &&
+            is.trim().toLowerCase() === s.trim().toLowerCase(),
+        ),
       );
       if (!match) return false;
     }
@@ -147,15 +164,21 @@ const MobileCategoryPage = ({ productsData }) => {
     if (filters.colour && filters.colour.length > 0) {
       const itemColors = product.color || [];
       const match = filters.colour.some((c) =>
-        itemColors.some((ic) => ic.toLowerCase() === c.toLowerCase())
+        itemColors.some((ic) => ic.toLowerCase() === c.toLowerCase()),
       );
       if (!match) return false;
     }
-    
+
     // Budget filter
-    const price = product.buyPrice ? parseInt(product.buyPrice.replace(/,/g, "")) : 0;
-    if (price < filters.budget.min || (filters.budget.max !== Infinity && price > filters.budget.max)) return false;
-    
+    const price = product.buyPrice
+      ? parseInt(product.buyPrice.replace(/,/g, ""))
+      : 0;
+    if (
+      price < filters.budget.min ||
+      (filters.budget.max !== Infinity && price > filters.budget.max)
+    )
+      return false;
+
     return true;
   });
 
@@ -163,7 +186,7 @@ const MobileCategoryPage = ({ productsData }) => {
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     const priceA = a.buyPrice ? parseInt(a.buyPrice.replace(/,/g, "")) : 0;
     const priceB = b.buyPrice ? parseInt(b.buyPrice.replace(/,/g, "")) : 0;
-    
+
     switch (sortBy) {
       case "low":
         return priceA - priceB;
@@ -191,7 +214,7 @@ const MobileCategoryPage = ({ productsData }) => {
     if (isLoading) return;
     setIsLoading(true);
     setTimeout(() => {
-      setVisibleItems(prev => prev + 6);
+      setVisibleItems((prev) => prev + 6);
       setIsLoading(false);
     }, 500);
   };
@@ -211,26 +234,42 @@ const MobileCategoryPage = ({ productsData }) => {
 
   // Remove individual filter tag
   const handleRemoveTag = (tagToRemove) => {
-    if (tagToRemove === "Rent") setFilters(prev => ({ ...prev, rentType: [] }));
-    else if (tagToRemove === "Preloved") setFilters(prev => ({ ...prev, rentType: [] }));
-    else if (tagToRemove === "New") setFilters(prev => ({ ...prev, rentType: [] }));
+    if (tagToRemove === "Rent")
+      setFilters((prev) => ({ ...prev, rentType: [] }));
+    else if (tagToRemove === "Preloved")
+      setFilters((prev) => ({ ...prev, rentType: [] }));
+    else if (tagToRemove === "New")
+      setFilters((prev) => ({ ...prev, rentType: [] }));
     else if (filters.category.includes(tagToRemove)) {
-      setFilters(prev => ({ ...prev, category: prev.category.filter(c => c !== tagToRemove) }));
-    }
-    else if (filters.occasion.includes(tagToRemove)) {
-      setFilters(prev => ({ ...prev, occasion: prev.occasion.filter(o => o !== tagToRemove) }));
-    }
-    else if (filters.designer.includes(tagToRemove)) {
-      setFilters(prev => ({ ...prev, designer: prev.designer.filter(d => d !== tagToRemove) }));
-    }
-    else if (filters.gender && filters.gender.includes(tagToRemove)) {
-      setFilters(prev => ({ ...prev, gender: prev.gender.filter(g => g !== tagToRemove) }));
-    }
-    else if (filters.size && filters.size.includes(tagToRemove)) {
-      setFilters(prev => ({ ...prev, size: prev.size.filter(s => s !== tagToRemove) }));
-    }
-    else if (filters.colour && filters.colour.includes(tagToRemove)) {
-      setFilters(prev => ({ ...prev, colour: prev.colour.filter(c => c !== tagToRemove) }));
+      setFilters((prev) => ({
+        ...prev,
+        category: prev.category.filter((c) => c !== tagToRemove),
+      }));
+    } else if (filters.occasion.includes(tagToRemove)) {
+      setFilters((prev) => ({
+        ...prev,
+        occasion: prev.occasion.filter((o) => o !== tagToRemove),
+      }));
+    } else if (filters.designer.includes(tagToRemove)) {
+      setFilters((prev) => ({
+        ...prev,
+        designer: prev.designer.filter((d) => d !== tagToRemove),
+      }));
+    } else if (filters.gender && filters.gender.includes(tagToRemove)) {
+      setFilters((prev) => ({
+        ...prev,
+        gender: prev.gender.filter((g) => g !== tagToRemove),
+      }));
+    } else if (filters.size && filters.size.includes(tagToRemove)) {
+      setFilters((prev) => ({
+        ...prev,
+        size: prev.size.filter((s) => s !== tagToRemove),
+      }));
+    } else if (filters.colour && filters.colour.includes(tagToRemove)) {
+      setFilters((prev) => ({
+        ...prev,
+        colour: prev.colour.filter((c) => c !== tagToRemove),
+      }));
     }
   };
 
@@ -246,24 +285,24 @@ const MobileCategoryPage = ({ productsData }) => {
       availabilityTo: "",
       size: [],
       colour: [],
-      gender: []
+      gender: [],
     });
   };
 
   // ===== BUILD ACTIVE TAGS FOR DISPLAY =====
   const buildActiveTags = () => {
     const tags = [];
-    filters.rentType.forEach(type => {
+    filters.rentType.forEach((type) => {
       if (type === "rent") tags.push("Rent");
       else if (type === "preloved") tags.push("Preloved");
       else if (type === "new") tags.push("New");
     });
-    filters.category.forEach(cat => tags.push(cat));
-    filters.occasion.forEach(occ => tags.push(occ));
-    filters.designer.forEach(des => tags.push(des));
-    if (filters.gender) filters.gender.forEach(gen => tags.push(gen));
-    if (filters.size) filters.size.forEach(s => tags.push(s));
-    if (filters.colour) filters.colour.forEach(c => tags.push(c));
+    filters.category.forEach((cat) => tags.push(cat));
+    filters.occasion.forEach((occ) => tags.push(occ));
+    filters.designer.forEach((des) => tags.push(des));
+    if (filters.gender) filters.gender.forEach((gen) => tags.push(gen));
+    if (filters.size) filters.size.forEach((s) => tags.push(s));
+    if (filters.colour) filters.colour.forEach((c) => tags.push(c));
     return tags;
   };
 
@@ -277,8 +316,10 @@ const MobileCategoryPage = ({ productsData }) => {
 
   return (
     <div className="mob-category-page">
-      
-      <MobileBreadcrumb parent={breadcrumb.parent} current={breadcrumb.current} />
+      <MobileBreadcrumb
+        parent={breadcrumb.parent}
+        current={breadcrumb.current}
+      />
 
       <div className="mob-heading-zone">
         <h1 className="mob-heading-zone__title">
@@ -290,25 +331,25 @@ const MobileCategoryPage = ({ productsData }) => {
       </div>
 
       <div className="mob-control-bar-wrapper">
-        <MobileControlBar 
+        <MobileControlBar
           onFilterClick={handleFilterClick}
           sortBy={sortBy}
           onSortChange={setSortBy}
         />
       </div>
 
-      <MobileActiveTagsRow 
+      <MobileActiveTagsRow
         activeTags={activeTags}
         onRemoveTag={handleRemoveTag}
         onClearAll={handleClearAll}
       />
 
-      <MobileProductGrid 
+      <MobileProductGrid
         products={visibleProducts}
         onWishlistToggle={handleWishlistToggle}
       />
 
-      <MobileContinueBrowsing 
+      <MobileContinueBrowsing
         onClick={handleLoadMore}
         isLoading={isLoading}
         hasMore={hasMore}
@@ -316,14 +357,13 @@ const MobileCategoryPage = ({ productsData }) => {
 
       {/* <MobileFooter /> */}
 
-      <MobileFilterSheet 
+      <MobileFilterSheet
         isOpen={isFilterOpen}
         onClose={handleFilterClose}
         onApply={handleFilterApply}
         filters={filters}
         setFilters={setFilters}
       />
-
     </div>
   );
 };

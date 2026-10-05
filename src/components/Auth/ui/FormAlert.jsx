@@ -1,15 +1,15 @@
-import React, { useEffect, useRef } from 'react';
-import '../../../styles/Auth/ui/FormAlert.css';
+import React, { useEffect, useRef } from "react";
+import "../../../styles/Auth/ui/FormAlert.css";
 
-const FormAlert = ({ type = 'error', message, show = false }) => {
+const FormAlert = ({ type = "error", message, show = false }) => {
   const alertRef = useRef(null);
 
   useEffect(() => {
     if (alertRef.current) {
       if (show && message) {
-        alertRef.current.classList.add('show');
+        alertRef.current.classList.add("show");
       } else {
-        alertRef.current.classList.remove('show');
+        alertRef.current.classList.remove("show");
       }
     }
   }, [show, message]);
@@ -17,7 +17,7 @@ const FormAlert = ({ type = 'error', message, show = false }) => {
   if (!message) return null;
 
   return (
-    <div 
+    <div
       ref={alertRef}
       className={`hok-auth-form-alert hok-auth-alert-${type}`}
     >

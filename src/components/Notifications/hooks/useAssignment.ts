@@ -1,6 +1,6 @@
 // src/components/Notifications/hooks/useAssignment.ts
-import { useCallback, useState } from 'react';
-import { setAssignment } from '../services/assignmentService';
+import { useCallback, useState } from "react";
+import { setAssignment } from "../services/assignmentService";
 
 /**
  * §10.6 / §17.5 — assign or clear a record's owner. Keyed to the record id
@@ -22,7 +22,7 @@ export function useAssignment(repaint: () => Promise<void>) {
         setPendingRecordId(null);
       }
     },
-    [repaint]
+    [repaint],
   );
 
   return {

@@ -13,7 +13,8 @@ const validatePhoneString = (rawPhone, helpers) => {
   }
   if (!/^[6-9]\d{9}$/.test(normalized)) {
     return helpers.error("any.custom", {
-      message: "Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9",
+      message:
+        "Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9",
     });
   }
   return true;
@@ -24,13 +25,9 @@ export const validateProfileUpdate = (data) => {
     name: Joi.string().trim().max(255).allow("", null),
     firstName: Joi.string().trim().max(100).allow("", null),
     lastName: Joi.string().trim().max(100).allow("", null),
-    email: Joi.string()
-      .trim()
-      .pattern(emailRegex)
-      .allow("", null)
-      .messages({
-        "string.pattern.base": "Please enter a valid email address",
-      }),
+    email: Joi.string().trim().pattern(emailRegex).allow("", null).messages({
+      "string.pattern.base": "Please enter a valid email address",
+    }),
     phone: Joi.string().trim().allow("", null),
     mobile: Joi.string().trim().allow("", null),
     city: Joi.string().trim().max(100).allow("", null),
@@ -43,7 +40,9 @@ export const validateProfileUpdate = (data) => {
       preferredSize: Joi.string().allow("", null),
       preferredOccasions: Joi.string().allow("", null),
       preferredSilhouettes: Joi.string().allow("", null),
-    }).unknown(true).allow(null),
+    })
+      .unknown(true)
+      .allow(null),
   })
     .custom((value, helpers) => {
       const rawPhone = value.phone || value.mobile;

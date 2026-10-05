@@ -453,7 +453,7 @@ export const migrationQueries = [
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories__id ON categories(_id);`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_category_id ON categories(category_id);`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);`,
-  `CREATE INDEX IF NOT EXISTS idx_categories_data_gin ON categories USING GIN (data);`
+  `CREATE INDEX IF NOT EXISTS idx_categories_data_gin ON categories USING GIN (data);`,
 ];
 
 export const runMigrations = async () => {
@@ -465,7 +465,9 @@ export const runMigrations = async () => {
       await client.query(sql);
     }
     await client.query("COMMIT;");
-    console.log("PostgreSQL schema migration completed successfully for all 15 tables.");
+    console.log(
+      "PostgreSQL schema migration completed successfully for all 15 tables.",
+    );
   } catch (error) {
     await client.query("ROLLBACK;");
     console.error("PostgreSQL schema migration failed:", error.message);

@@ -1,11 +1,10 @@
 /* src/styles/wishlist/layout/wishlist-header.css */
 
-
 /* Section 4 - Container */
 .desk-wishlist-page-title-section {
   padding-top: 72px;
   padding-bottom: 48px;
-  border-bottom: 1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -19,7 +18,7 @@
 
 /* H1 font styles */
 .desk-wishlist-page-h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-weight: 300;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -29,21 +28,21 @@
 
 /* H1 normal text "My" */
 .desk-wishlist-page-h1-normal {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* H1 italic text "Wishlist" */
 .desk-wishlist-page-h1-italic {
-  color: #C9A96E;
+  color: #c9a96e;
   font-style: italic;
 }
 
 /* Subtitle styles */
 .desk-wishlist-page-subtitle {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.7;
   max-width: 380px;
   margin-top: 14px;

@@ -49,7 +49,9 @@
   background: var(--ibg);
   outline: none;
   width: 100%;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .fld-input:focus {
@@ -94,8 +96,8 @@
 }
 
 .btn-gold:hover {
-  background: #B89058;
-  border-color: #B89058;
+  background: #b89058;
+  border-color: #b89058;
 }
 
 .btn-gold:disabled {
@@ -128,7 +130,7 @@
   .more-info-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .g2 {
     grid-template-columns: 1fr;
     gap: 8px;

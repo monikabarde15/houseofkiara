@@ -135,7 +135,9 @@
   text-transform: uppercase;
 
   border-radius: 2px;
-  transition: background 0.2s ease, transform 0.15s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 
 .lyp-success__cta:hover {
@@ -143,12 +145,10 @@
   transform: translateY(-1px);
 }
 
-
 /* =========================================
    SUCCESS — MOBILE 
 ========================================= */
-@media (max-width: 960px){
-
+@media (max-width: 960px) {
   /* ---------- Container ---------- */
 
   .lyp-success {
@@ -164,13 +164,19 @@
 
     font-size: 26px;
 
-    animation: sucPop 0.5s cubic-bezier(.22,1.2,.36,1) both;
+    animation: sucPop 0.5s cubic-bezier(0.22, 1.2, 0.36, 1) both;
   }
 
   @keyframes sucPop {
-    0%   { transform: scale(0.6); }
-    60%  { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(0.6);
+    }
+    60% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   /* ---------- Tag ---------- */
@@ -225,5 +231,4 @@
     width: 100%;
     text-align: center;
   }
-
 }

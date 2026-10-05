@@ -85,7 +85,7 @@
 }
 
 .video-tile {
-  background: #14100C;
+  background: #14100c;
   cursor: default;
 }
 
@@ -106,7 +106,7 @@
 
 .video-name {
   font-size: 8.5px;
-  color: #B8AD9E;
+  color: #b8ad9e;
   padding: 0 4px;
   text-align: center;
   overflow: hidden;
@@ -124,7 +124,7 @@
 .video-chip {
   display: inline-flex;
   padding: 2px 8px;
-  background: #14100C;
+  background: #14100c;
   color: var(--gold);
   border-radius: var(--r);
   font-size: 8.5px;

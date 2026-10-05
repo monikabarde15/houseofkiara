@@ -29,7 +29,7 @@
 }
 
 .confirmation-mode-separator-dot-new {
-  background: #2A4466;
+  background: #2a4466;
 }
 
 .confirmation-mode-separator-label {
@@ -42,7 +42,6 @@
 
   color: var(--ink-4);
 }
-
 
 /* =========================================================
    MOBILE: Mode Separator 

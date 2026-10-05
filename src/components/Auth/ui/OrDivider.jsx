@@ -1,5 +1,5 @@
-import React from 'react';
-import '../../../styles/Auth/ui/OrDivider.css';
+import React from "react";
+import "../../../styles/Auth/ui/OrDivider.css";
 
 const OrDivider = () => {
   return (

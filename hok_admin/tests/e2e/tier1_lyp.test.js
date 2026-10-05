@@ -1,7 +1,10 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { createApiClient } from "./helpers/api_client.js";
-import { generateTestLYPSubmission, uniqueId } from "./helpers/test_fixtures.js";
+import {
+  generateTestLYPSubmission,
+  uniqueId,
+} from "./helpers/test_fixtures.js";
 
 describe("Tier 1: Feature Coverage — LYP (List Your Piece) Submissions", () => {
   const client = createApiClient();
@@ -27,7 +30,9 @@ describe("Tier 1: Feature Coverage — LYP (List Your Piece) Submissions", () =>
     const res = await client.get("/lyp/submissions");
     if (res.status === 200) {
       assert.strictEqual(res.data?.success, true);
-      assert.ok(Array.isArray(res.data?.data) || typeof res.data?.data === "object");
+      assert.ok(
+        Array.isArray(res.data?.data) || typeof res.data?.data === "object",
+      );
     } else {
       assert.ok([200, 404].includes(res.status));
     }
@@ -65,7 +70,8 @@ describe("Tier 1: Feature Coverage — LYP (List Your Piece) Submissions", () =>
   test("Feature 18: Rejection / modification requests update submission status with feedback note", () => {
     const submissionState = {
       status: "Awaiting Reply",
-      feedback: "Please provide clearer photos of embroidery near neckline and original purchase receipt.",
+      feedback:
+        "Please provide clearer photos of embroidery near neckline and original purchase receipt.",
       updatedAt: new Date().toISOString(),
     };
 

@@ -7,7 +7,7 @@ import {
   deleteCustomer,
   addCustomerAddress,
   addCustomerOccasion,
-  addCustomerCommLog
+  addCustomerCommLog,
 } from "../controllers/customerController.js";
 
 const router = express.Router();

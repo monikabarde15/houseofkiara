@@ -1,16 +1,12 @@
 // src/components/Header/mobile/MobileDrawer.jsx
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../../../styles/Header/mobile/mobile-drawer.css';
-import logo from '../../../assets/logo/logo.png';
-import MobileSubPanel from './MobileSubPanel';
-import SubPanelRenderer from './SubPanelRenderer';
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../../../styles/Header/mobile/mobile-drawer.css";
+import logo from "../../../assets/logo/logo.png";
+import MobileSubPanel from "./MobileSubPanel";
+import SubPanelRenderer from "./SubPanelRenderer";
 
-const MobileDrawer = ({ 
-  isOpen, 
-  onClose,
-  onSearchOpen 
-}) => {
+const MobileDrawer = ({ isOpen, onClose, onSearchOpen }) => {
   const navigate = useNavigate();
   const drawerRef = useRef(null);
   const [activeSubPanel, setActiveSubPanel] = useState(null);
@@ -22,14 +18,14 @@ const MobileDrawer = ({
   // Body scroll lock when drawer is open (per spec 12.1)
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
       // Close any open sub-panel when drawer closes (per spec 12.2)
       setActiveSubPanel(null);
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -49,15 +45,15 @@ const MobileDrawer = ({
 
   // Mode pill handlers (per spec 6.3)
   const handleRentClick = () => {
-    navigateAndClose('/main-page?section=rent');
+    navigateAndClose("/main-page?section=rent");
   };
 
   const handlePrelovedClick = () => {
-    navigateAndClose('/main-page?section=preloved');
+    navigateAndClose("/main-page?section=preloved");
   };
 
   const handleNewClick = () => {
-    navigateAndClose('/main-page?section=new');
+    navigateAndClose("/main-page?section=new");
   };
 
   // 12.3 openSubPanel - removes .open from all, adds to target
@@ -85,7 +81,7 @@ const MobileDrawer = ({
 
   const handleTouchEnd = () => {
     if (touchStartX.current === null || touchCurrentX.current === null) return;
-    
+
     const dx = touchCurrentX.current - touchStartX.current;
     const dy = Math.abs(touchCurrentY.current - touchStartY.current);
     const isHorizontalSwipe = dy < 40;
@@ -112,9 +108,9 @@ const MobileDrawer = ({
   return (
     <>
       {/* Section 4: Drawer Overlay (Scrim) */}
-      <div 
+      <div
         id="drawer-overlay"
-        className={`drawer-overlay ${isOpen ? 'open' : ''}`}
+        className={`drawer-overlay ${isOpen ? "open" : ""}`}
         onClick={onClose}
       />
 
@@ -122,7 +118,7 @@ const MobileDrawer = ({
       <aside
         id="nav-drawer"
         ref={drawerRef}
-        className={`nav-drawer ${isOpen ? 'open' : ''}`}
+        className={`nav-drawer ${isOpen ? "open" : ""}`}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -133,12 +129,18 @@ const MobileDrawer = ({
             <img className="drawer-logo-img" src={logo} alt="House of Kaira" />
             <span className="drawer-logo-name">HOUSE OF KAIRA</span>
           </div>
-          <button 
-            className="drawer-close" 
+          <button
+            className="drawer-close"
             onClick={onClose}
             aria-label="Close menu"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
               <line x1="4" y1="4" x2="20" y2="20" />
               <line x1="20" y1="4" x2="4" y2="20" />
             </svg>
@@ -147,7 +149,15 @@ const MobileDrawer = ({
 
         {/* 5.3 Drawer Search Bar */}
         <div className="drawer-search" onClick={handleSearchClick}>
-          <svg className="drawer-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            className="drawer-search-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <circle cx="11" cy="11" r="7" />
             <line x1="16.5" y1="16.5" x2="20" y2="20" />
           </svg>
@@ -164,19 +174,19 @@ const MobileDrawer = ({
         <div className="drawer-body">
           {/* Section 6: Mode Pills */}
           <div className="drawer-mode-pills">
-            <button 
+            <button
               className="mode-pill mode-pill--rent"
               onClick={handleRentClick}
             >
               Rent
             </button>
-            <button 
+            <button
               className="mode-pill mode-pill--preloved"
               onClick={handlePrelovedClick}
             >
               Buy Preloved
             </button>
-            <button 
+            <button
               className="mode-pill mode-pill--new"
               onClick={handleNewClick}
             >
@@ -186,63 +196,119 @@ const MobileDrawer = ({
 
           {/* Section 7: Section Navigation Rows */}
           <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-rent')}>
+            <button
+              className="drawer-section-head"
+              onClick={() => openSubPanel("sub-rent")}
+            >
               <span className="drawer-section-label accent">Rent</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg
+                className="drawer-chev"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
                 <polyline points="9 6 15 12 9 18" />
               </svg>
             </button>
           </div>
 
           <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-preloved')}>
+            <button
+              className="drawer-section-head"
+              onClick={() => openSubPanel("sub-preloved")}
+            >
               <span className="drawer-section-label">Buy Preloved</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg
+                className="drawer-chev"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
                 <polyline points="9 6 15 12 9 18" />
               </svg>
             </button>
           </div>
 
           <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-new')}>
+            <button
+              className="drawer-section-head"
+              onClick={() => openSubPanel("sub-new")}
+            >
               <span className="drawer-section-label green">Buy New</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg
+                className="drawer-chev"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
                 <polyline points="9 6 15 12 9 18" />
               </svg>
             </button>
           </div>
 
           <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-women')}>
+            <button
+              className="drawer-section-head"
+              onClick={() => openSubPanel("sub-women")}
+            >
               <span className="drawer-section-label">Women</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg
+                className="drawer-chev"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
                 <polyline points="9 6 15 12 9 18" />
               </svg>
             </button>
           </div>
 
           <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-men')}>
+            <button
+              className="drawer-section-head"
+              onClick={() => openSubPanel("sub-men")}
+            >
               <span className="drawer-section-label">Men</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg
+                className="drawer-chev"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
                 <polyline points="9 6 15 12 9 18" />
               </svg>
             </button>
           </div>
 
           <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-occasions')}>
+            <button
+              className="drawer-section-head"
+              onClick={() => openSubPanel("sub-occasions")}
+            >
               <span className="drawer-section-label">Occasions</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg
+                className="drawer-chev"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
                 <polyline points="9 6 15 12 9 18" />
               </svg>
             </button>
           </div>
 
           <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-designers')}>
+            <button
+              className="drawer-section-head"
+              onClick={() => openSubPanel("sub-designers")}
+            >
               <span className="drawer-section-label">Designers</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg
+                className="drawer-chev"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
                 <polyline points="9 6 15 12 9 18" />
               </svg>
             </button>
@@ -250,13 +316,19 @@ const MobileDrawer = ({
 
           {/* Section 11: Standalone Links */}
           <div className="drawer-standalone">
-            <button className="drawer-section-head" onClick={() => navigateAndClose('/profile')}>
+            <button
+              className="drawer-section-head"
+              onClick={() => navigateAndClose("/profile")}
+            >
               <span className="drawer-section-label">My Profile</span>
             </button>
           </div>
 
           <div className="drawer-standalone">
-            <button className="drawer-section-head" onClick={() => navigateAndClose('/main-page?section=new')}>
+            <button
+              className="drawer-section-head"
+              onClick={() => navigateAndClose("/main-page?section=new")}
+            >
               <span className="drawer-section-label">
                 New Arrivals
                 <span className="drawer-pill-new">New</span>
@@ -265,8 +337,13 @@ const MobileDrawer = ({
           </div>
 
           <div className="drawer-standalone">
-            <button className="drawer-section-head" onClick={() => navigateAndClose('/list-your-piece')}>
-              <span className="drawer-section-label green">List Your Piece</span>
+            <button
+              className="drawer-section-head"
+              onClick={() => navigateAndClose("/list-your-piece")}
+            >
+              <span className="drawer-section-label green">
+                List Your Piece
+              </span>
             </button>
           </div>
         </div>
@@ -277,10 +354,18 @@ const MobileDrawer = ({
             House of Kaira - Circular Luxury Fashion
           </div>
           <div className="drawer-footer-links">
-            <a onClick={() => navigateAndClose('/main-page?section=rent')}>Rent</a>
-            <a onClick={() => navigateAndClose('/main-page?section=preloved')}>Preloved</a>
-            <a onClick={() => navigateAndClose('/main-page?section=new')}>Buy New</a>
-            <a onClick={() => navigateAndClose('/list-your-piece')}>List Your Piece</a>
+            <a onClick={() => navigateAndClose("/main-page?section=rent")}>
+              Rent
+            </a>
+            <a onClick={() => navigateAndClose("/main-page?section=preloved")}>
+              Preloved
+            </a>
+            <a onClick={() => navigateAndClose("/main-page?section=new")}>
+              Buy New
+            </a>
+            <a onClick={() => navigateAndClose("/list-your-piece")}>
+              List Your Piece
+            </a>
           </div>
         </div>
 
@@ -290,75 +375,95 @@ const MobileDrawer = ({
         {/* ========================================== */}
 
         {/* Sub-Panel: Rent */}
-        <MobileSubPanel 
-          isOpen={activeSubPanel === 'sub-rent'} 
-          title="Rent" 
-          titleColor="accent" 
+        <MobileSubPanel
+          isOpen={activeSubPanel === "sub-rent"}
+          title="Rent"
+          titleColor="accent"
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-rent" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer
+            panelId="sub-rent"
+            navigateAndClose={navigateAndClose}
+          />
         </MobileSubPanel>
 
         {/* Sub-Panel: Buy Preloved */}
-        <MobileSubPanel 
-          isOpen={activeSubPanel === 'sub-preloved'} 
-          title="Buy Preloved" 
-          titleColor="default" 
+        <MobileSubPanel
+          isOpen={activeSubPanel === "sub-preloved"}
+          title="Buy Preloved"
+          titleColor="default"
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-preloved" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer
+            panelId="sub-preloved"
+            navigateAndClose={navigateAndClose}
+          />
         </MobileSubPanel>
 
         {/* Sub-Panel: Buy New */}
-        <MobileSubPanel 
-          isOpen={activeSubPanel === 'sub-new'} 
-          title="Buy New" 
-          titleColor="green" 
+        <MobileSubPanel
+          isOpen={activeSubPanel === "sub-new"}
+          title="Buy New"
+          titleColor="green"
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-new" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer
+            panelId="sub-new"
+            navigateAndClose={navigateAndClose}
+          />
         </MobileSubPanel>
 
         {/* Sub-Panel: Women */}
-        <MobileSubPanel 
-          isOpen={activeSubPanel === 'sub-women'} 
-          title="Women" 
-          titleColor="default" 
+        <MobileSubPanel
+          isOpen={activeSubPanel === "sub-women"}
+          title="Women"
+          titleColor="default"
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-women" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer
+            panelId="sub-women"
+            navigateAndClose={navigateAndClose}
+          />
         </MobileSubPanel>
 
         {/* Sub-Panel: Men */}
-        <MobileSubPanel 
-          isOpen={activeSubPanel === 'sub-men'} 
-          title="Men" 
-          titleColor="default" 
+        <MobileSubPanel
+          isOpen={activeSubPanel === "sub-men"}
+          title="Men"
+          titleColor="default"
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-men" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer
+            panelId="sub-men"
+            navigateAndClose={navigateAndClose}
+          />
         </MobileSubPanel>
 
         {/* Sub-Panel: Occasions */}
-        <MobileSubPanel 
-          isOpen={activeSubPanel === 'sub-occasions'} 
-          title="Occasions" 
-          titleColor="default" 
+        <MobileSubPanel
+          isOpen={activeSubPanel === "sub-occasions"}
+          title="Occasions"
+          titleColor="default"
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-occasions" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer
+            panelId="sub-occasions"
+            navigateAndClose={navigateAndClose}
+          />
         </MobileSubPanel>
 
         {/* Sub-Panel: Designers */}
-        <MobileSubPanel 
-          isOpen={activeSubPanel === 'sub-designers'} 
-          title="Designers" 
-          titleColor="default" 
+        <MobileSubPanel
+          isOpen={activeSubPanel === "sub-designers"}
+          title="Designers"
+          titleColor="default"
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-designers" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer
+            panelId="sub-designers"
+            navigateAndClose={navigateAndClose}
+          />
         </MobileSubPanel>
-
       </aside>
     </>
   );

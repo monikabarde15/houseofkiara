@@ -8,17 +8,17 @@ const ConfirmationPage = () => {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 430px)");
-    
+
     const handleChange = (e) => {
       setIsMobile(e.matches);
     };
-    
+
     // Set initial value
     setIsMobile(mediaQuery.matches);
-    
+
     // Add listener
     mediaQuery.addEventListener("change", handleChange);
-    
+
     // Cleanup
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);

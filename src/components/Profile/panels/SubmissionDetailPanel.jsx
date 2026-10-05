@@ -1,22 +1,27 @@
-import React from 'react';
-import { X } from 'lucide-react';
+import React from "react";
+import { X } from "lucide-react";
 import "../../../styles/Profile/panels/SubmissionDetailPanel.css";
 
 const SubmissionDetailPanel = ({ submission, isOpen, onClose }) => {
   if (!submission) return null;
 
   const getStatusClass = () => {
-    switch(submission.status) {
-      case 'Under Review': return 'profile-sb-rev';
-      case 'Approved': return 'profile-sb-app';
-      case 'Listed': return 'profile-sb-lst';
-      case 'Rejected': return 'profile-sb-rej';
-      default: return '';
+    switch (submission.status) {
+      case "Under Review":
+        return "profile-sb-rev";
+      case "Approved":
+        return "profile-sb-app";
+      case "Listed":
+        return "profile-sb-lst";
+      case "Rejected":
+        return "profile-sb-rej";
+      default:
+        return "";
     }
   };
 
   return (
-    <div className={`profile-sub-dpane ${isOpen ? 'open' : ''}`}>
+    <div className={`profile-sub-dpane ${isOpen ? "open" : ""}`}>
       {/* Panel Header */}
       <div className="profile-sub-dpn">
         <div className="profile-sub-dpn-title">{submission.name}</div>
@@ -29,9 +34,20 @@ const SubmissionDetailPanel = ({ submission, isOpen, onClose }) => {
       {/* Panel Body */}
       <div className="profile-sub-dpb">
         {/* Image Cell */}
-        <div className="profile-sub-dp-img-cell" style={{ background: submission.imageGradient }}>
+        <div
+          className="profile-sub-dp-img-cell"
+          style={{ background: submission.imageGradient }}
+        >
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-            <rect x="4" y="4" width="28" height="28" stroke="currentColor" strokeWidth="1" opacity="0.18" />
+            <rect
+              x="4"
+              y="4"
+              width="28"
+              height="28"
+              stroke="currentColor"
+              strokeWidth="1"
+              opacity="0.18"
+            />
           </svg>
         </div>
 
@@ -42,7 +58,9 @@ const SubmissionDetailPanel = ({ submission, isOpen, onClose }) => {
             <span className={`profile-sub-badge ${getStatusClass()}`}>
               {submission.status}
             </span>
-            <span className="profile-sub-dp-date">Submitted {submission.submittedDate}</span>
+            <span className="profile-sub-dp-date">
+              Submitted {submission.submittedDate}
+            </span>
           </div>
 
           <div className="profile-sub-dp-name">{submission.name}</div>
@@ -79,11 +97,15 @@ const SubmissionDetailPanel = ({ submission, isOpen, onClose }) => {
           </div>
           <div className="profile-sub-dp-row">
             <div className="profile-sub-dp-rl">Preferred Outcome</div>
-            <div className="profile-sub-dp-rv">{submission.preferredOutcome}</div>
+            <div className="profile-sub-dp-rv">
+              {submission.preferredOutcome}
+            </div>
           </div>
           <div className="profile-sub-dp-row">
             <div className="profile-sub-dp-rl">Photos Submitted</div>
-            <div className="profile-sub-dp-rv">{submission.photosSubmitted}</div>
+            <div className="profile-sub-dp-rv">
+              {submission.photosSubmitted}
+            </div>
           </div>
           <div className="profile-sub-dp-row">
             <div className="profile-sub-dp-rl">Pickup City</div>
@@ -94,7 +116,9 @@ const SubmissionDetailPanel = ({ submission, isOpen, onClose }) => {
           <div className="profile-sub-dp-note">
             <div className="profile-sub-dp-note-h">What Happens Next</div>
             <div className="profile-sub-dp-note-t">
-              Our curation team will review your piece and reach out on WhatsApp within 48 hours with pricing guidance and next steps. Submission is non-binding — nothing is locked in until you confirm.
+              Our curation team will review your piece and reach out on WhatsApp
+              within 48 hours with pricing guidance and next steps. Submission
+              is non-binding — nothing is locked in until you confirm.
             </div>
           </div>
 

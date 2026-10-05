@@ -1,9 +1,15 @@
 // src/components/LYP/hooks/useIntake.ts
 
-import { useState, useCallback } from 'react';
-import { Submission, Media, Measurements, Channel, Intent } from '../types/submission.types';
-import { submissionService } from '../services/submissionService';
-import { generateSubId, generateSKU } from '../utils/generators';
+import { useState, useCallback } from "react";
+import {
+  Submission,
+  Media,
+  Measurements,
+  Channel,
+  Intent,
+} from "../types/submission.types";
+import { submissionService } from "../services/submissionService";
+import { generateSubId, generateSKU } from "../utils/generators";
 
 interface IntakeData {
   listerId: string;
@@ -32,7 +38,7 @@ export const useIntake = () => {
   const createSubmission = useCallback(async (data: IntakeData) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Generate SUB-ID
       const existingIds = await submissionService.getAllSubmissionIds();
@@ -45,19 +51,29 @@ export const useIntake = () => {
         sku = generateSKU(data.designer, existingSKUs);
       }
 
-      const photos = data.media.filter(m => m.kind === 'image').length;
-      const videos = data.media.filter(m => m.kind === 'video').length;
+      const photos = data.media.filter((m) => m.kind === "image").length;
+      const videos = data.media.filter((m) => m.kind === "video").length;
 
-      const priceStd = data.askRent ? parseFloat(String(data.askRent).replace(/,/g, '')) || 0 : 0;
-      const resalePrice = data.askSell ? parseFloat(String(data.askSell).replace(/,/g, '')) || 0 : 0;
-      const retailPrice = data.originalPrice ? parseFloat(String(data.originalPrice).replace(/,/g, '')) || 0 : 0;
+      const priceStd = data.askRent
+        ? parseFloat(String(data.askRent).replace(/,/g, "")) || 0
+        : 0;
+      const resalePrice = data.askSell
+        ? parseFloat(String(data.askSell).replace(/,/g, "")) || 0
+        : 0;
+      const retailPrice = data.originalPrice
+        ? parseFloat(String(data.originalPrice).replace(/,/g, "")) || 0
+        : 0;
 
       const assessment = {
-        sku: sku || '',
+        sku: sku || "",
         name: data.piece,
-        mode: data.intent === 'Rent it' ? 'Rental' : 
-              data.intent === 'Sell it' ? 'Preloved' : 'Rental/Preloved',
-        grade: 'Good',
+        mode:
+          data.intent === "Rent it"
+            ? "Rental"
+            : data.intent === "Sell it"
+              ? "Preloved"
+              : "Rental/Preloved",
+        grade: "Good",
         sizeLabel: data.size as any,
         measurements: data.measurements,
         priceStd,
@@ -75,8 +91,8 @@ export const useIntake = () => {
 
       const submission: Partial<Submission> = {
         subid,
-        listerId: data.listerId || 'LST-GENERAL',
-        listerID: data.listerId || 'LST-GENERAL',
+        listerId: data.listerId || "LST-GENERAL",
+        listerID: data.listerId || "LST-GENERAL",
         channel: data.channel,
         submittedAt: new Date().toISOString(),
         piece: data.piece,
@@ -92,9 +108,9 @@ export const useIntake = () => {
         expectation: data.expectation,
         selfGrade: data.selfGrade,
         conditionClaim: data.conditionClaim,
-        story: '',
+        story: "",
         notes: data.notes,
-        city: '', // Will be filled from lister profile
+        city: "", // Will be filled from lister profile
         photos,
         videos,
         media: data.media,
@@ -105,17 +121,21 @@ export const useIntake = () => {
         assessment,
         history: [
           {
-            c: 'muted',
+            c: "muted",
             e: `Submission recorded via ${data.channel} — by Soumya`,
             t: new Date().toISOString(),
-          }
+          },
         ],
       };
 
-      const created = await submissionService.createSubmission(submission as Submission);
+      const created = await submissionService.createSubmission(
+        submission as Submission,
+      );
       return created;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create submission');
+      setError(
+        err instanceof Error ? err.message : "Failed to create submission",
+      );
       throw err;
     } finally {
       setLoading(false);

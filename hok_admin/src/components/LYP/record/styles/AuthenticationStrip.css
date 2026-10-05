@@ -15,12 +15,12 @@
 
 /* ── Unmapped label warning — amber card, matching design ── */
 .auth-strip-unmapped {
-  background: #FBF6EC;
-  border: 1px solid #E6D5A7;
+  background: #fbf6ec;
+  border: 1px solid #e6d5a7;
   border-radius: var(--r);
   padding: 13px 15px;
   font-size: 11.5px;
-  color: #5C4A1E;
+  color: #5c4a1e;
   line-height: 1.6;
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@
 }
 
 .auth-strip-text strong {
-  color: #3A2E10;
+  color: #3a2e10;
   font-weight: 700;
 }
 
@@ -52,7 +52,7 @@
 }
 
 .auth-strip-medium {
-  border-left: 3px solid #8B6A1E;
+  border-left: 3px solid #8b6a1e;
 }
 
 .auth-strip-low {
@@ -73,9 +73,15 @@
   letter-spacing: 0.07em;
 }
 
-.auth-strip-high .auth-strip-risk { color: var(--terra); }
-.auth-strip-medium .auth-strip-risk { color: #8B6A1E; }
-.auth-strip-low .auth-strip-risk { color: var(--sage); }
+.auth-strip-high .auth-strip-risk {
+  color: var(--terra);
+}
+.auth-strip-medium .auth-strip-risk {
+  color: #8b6a1e;
+}
+.auth-strip-low .auth-strip-risk {
+  color: var(--sage);
+}
 
 .auth-strip-designer {
   font-size: 11px;

@@ -5,8 +5,8 @@
    Based on HOK_Promotions_Logic_Spec_v150.pdf Section 22
    ======================================== */
 
-import { useState, useEffect, useCallback } from 'react';
-import { RefusedAttempt } from '../types/promotions.types';
+import { useState, useEffect, useCallback } from "react";
+import { RefusedAttempt } from "../types/promotions.types";
 
 interface UseRefusedAttemptsReturn {
   attempts: RefusedAttempt[];
@@ -27,39 +27,41 @@ export const useRefusedAttempts = (): UseRefusedAttemptsReturn => {
     setError(null);
     try {
       // In production: await promotionService.getRefusedAttempts()
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
       // Mock data
       const mockAttempts: RefusedAttempt[] = [
         {
-          timestamp: '2026-03-23T10:30:00',
-          code: 'KAIRA10',
-          customer: 'cust_001',
+          timestamp: "2026-03-23T10:30:00",
+          code: "KAIRA10",
+          customer: "cust_001",
           check: 11,
-          messageKey: 'minimum',
+          messageKey: "minimum",
           bagValue: 2500,
         },
         {
-          timestamp: '2026-03-23T11:15:00',
-          code: 'KAIRA20',
+          timestamp: "2026-03-23T11:15:00",
+          code: "KAIRA20",
           customer: null,
           check: 1,
-          messageKey: 'exists',
+          messageKey: "exists",
           bagValue: 5000,
         },
         {
-          timestamp: '2026-03-20T22:35:00',
-          code: 'BRIDAL500',
-          customer: 'Riya Mehta',
+          timestamp: "2026-03-20T22:35:00",
+          code: "BRIDAL500",
+          customer: "Riya Mehta",
           check: 11,
-          messageKey: 'minimum',
+          messageKey: "minimum",
           bagValue: 4200,
         },
       ];
-      
+
       setAttempts(mockAttempts);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch refused attempts');
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch refused attempts",
+      );
     } finally {
       setLoading(false);
     }
@@ -69,16 +71,22 @@ export const useRefusedAttempts = (): UseRefusedAttemptsReturn => {
     fetchAttempts();
   }, [fetchAttempts]);
 
-  const getAttemptsForCode = useCallback((code: string): RefusedAttempt[] => {
-    return attempts.filter(a => a.code === code);
-  }, [attempts]);
+  const getAttemptsForCode = useCallback(
+    (code: string): RefusedAttempt[] => {
+      return attempts.filter((a) => a.code === code);
+    },
+    [attempts],
+  );
 
   const getUnknownCodes = useCallback(() => {
-    const unknownMap = new Map<string, { count: number; lastAttempt: string }>();
-    
+    const unknownMap = new Map<
+      string,
+      { count: number; lastAttempt: string }
+    >();
+
     // In production: these are codes that don't exist in the registry
-    const unknownCodes = attempts.filter(a => a.code === 'KAIRA20');
-    
+    const unknownCodes = attempts.filter((a) => a.code === "KAIRA20");
+
     for (const attempt of unknownCodes) {
       const existing = unknownMap.get(attempt.code);
       if (existing) {
@@ -93,7 +101,7 @@ export const useRefusedAttempts = (): UseRefusedAttemptsReturn => {
         });
       }
     }
-    
+
     return Array.from(unknownMap.entries()).map(([code, data]) => ({
       code,
       count: data.count,

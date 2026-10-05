@@ -2,7 +2,7 @@
 
 .profile-identity-card {
   margin: 0 20px 14px;
-  background: linear-gradient(160deg, #1A1612 0%, #2C2520 100%);
+  background: linear-gradient(160deg, #1a1612 0%, #2c2520 100%);
   border-radius: 14px;
   overflow: hidden;
   position: relative;
@@ -49,7 +49,6 @@
   padding: 24px 22px 20px;
 }
 
-
 /* Avatar */
 
 .profile-avatar-container {
@@ -81,12 +80,12 @@
   border-radius: 50%;
   border: 1px solid rgba(201, 169, 110, 0.3);
 
-  background: linear-gradient(135deg, #3C3025, #2A2018);
+  background: linear-gradient(135deg, #3c3025, #2a2018);
 
   font-family: "Cormorant Garamond", serif;
   font-size: 18px;
   font-weight: 500;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* Identity Text */
@@ -103,7 +102,7 @@
   font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .profile-name {
@@ -113,7 +112,7 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 1.2;
-  color: #FFFFFB;
+  color: #fffffb;
 }
 
 .profile-email {
@@ -159,7 +158,7 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 1;
-  color: #E8D5B0;
+  color: #e8d5b0;
 }
 
 .profile-stat-label {
@@ -214,6 +213,6 @@
 
 .profile-edit-btn:hover {
   background: rgba(201, 169, 110, 0.1);
-  color: #E8D5B0;
+  color: #e8d5b0;
   border-color: rgba(201, 169, 110, 0.45);
 }

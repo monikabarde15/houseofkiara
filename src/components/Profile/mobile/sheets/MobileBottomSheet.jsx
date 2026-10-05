@@ -4,12 +4,7 @@ import { X } from "lucide-react";
 
 import "../../../../styles/Profile/mobile/sheets/MobileBottomSheet.css";
 
-const MobileBottomSheet = ({
-  isOpen,
-  onClose,
-  title,
-  children
-}) => {
+const MobileBottomSheet = ({ isOpen, onClose, title, children }) => {
   /* =========================================
      Lock Body Scroll
      ========================================= */
@@ -21,12 +16,10 @@ const MobileBottomSheet = ({
       return;
     }
 
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow =
-        "";
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -45,16 +38,10 @@ const MobileBottomSheet = ({
       }
     };
 
-    window.addEventListener(
-      "keydown",
-      handleKeyDown
-    );
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown
-      );
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, onClose]);
 
@@ -93,9 +80,7 @@ const MobileBottomSheet = ({
            ================================= */}
 
         <header className="profile-mobile-sheet-header">
-          <div className="profile-mobile-sheet-title">
-            {title}
-          </div>
+          <div className="profile-mobile-sheet-title">{title}</div>
 
           <button
             type="button"
@@ -103,9 +88,7 @@ const MobileBottomSheet = ({
             onClick={onClose}
             aria-label="Close sheet"
           >
-            <X
-              className="profile-mobile-sheet-close-icon"
-            />
+            <X className="profile-mobile-sheet-close-icon" />
           </button>
         </header>
 
@@ -113,9 +96,7 @@ const MobileBottomSheet = ({
             Sheet Body
            ================================= */}
 
-        <div className="profile-mobile-sheet-body">
-          {children}
-        </div>
+        <div className="profile-mobile-sheet-body">{children}</div>
       </section>
     </>
   );

@@ -32,42 +32,66 @@ const save = async (product, action, data) => {
 export const getAvailabilityCalendar = async (req, res) => {
   try {
     const p = await findProduct(req.params.id);
-    if (!p) return res.status(404).json({ success: false, message: "Product not found" });
+    if (!p)
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
 
     const targetProdId = String(p.productId || req.params.id || "").trim();
     const targetMongoId = String(p._id || "").trim();
-    const targetProdName = String(p.name || "").trim().toLowerCase();
+    const targetProdName = String(p.name || "")
+      .trim()
+      .toLowerCase();
 
     const rawDbOrders = await Order.find({}).sort({ createdAt: -1 });
-    const allDbOrders = rawDbOrders.map((o) => (typeof o.toObject === "function" ? o.toObject() : o));
+    const allDbOrders = rawDbOrders.map((o) =>
+      typeof o.toObject === "function" ? o.toObject() : o,
+    );
 
     const matchedDbOrders = allDbOrders.filter((o) => {
       const topProdId = String(o.productId || "").trim();
-      const topProdName = String(o.productName || "").trim().toLowerCase();
+      const topProdName = String(o.productName || "")
+        .trim()
+        .toLowerCase();
       const topMatch =
-        (topProdId && (topProdId === targetProdId || topProdId === targetMongoId || topProdId === req.params.id)) ||
+        (topProdId &&
+          (topProdId === targetProdId ||
+            topProdId === targetMongoId ||
+            topProdId === req.params.id)) ||
         (topProdName && targetProdName && topProdName === targetProdName);
       if (topMatch) return true;
       const items = Array.isArray(o.items) ? o.items : [];
       return items.some((item) => {
         const itemProdId = String(item.productId || "").trim();
-        const itemProdName = String(item.productName || "").trim().toLowerCase();
-        const idMatches = itemProdId && (itemProdId === targetProdId || itemProdId === targetMongoId || itemProdId === req.params.id);
-        const nameMatches = itemProdName && targetProdName && itemProdName === targetProdName;
+        const itemProdName = String(item.productName || "")
+          .trim()
+          .toLowerCase();
+        const idMatches =
+          itemProdId &&
+          (itemProdId === targetProdId ||
+            itemProdId === targetMongoId ||
+            itemProdId === req.params.id);
+        const nameMatches =
+          itemProdName && targetProdName && itemProdName === targetProdName;
         return idMatches || nameMatches;
       });
     });
 
     const formattedDbOrders = matchedDbOrders.map((o) => {
-      const firstItem = Array.isArray(o.items) && o.items.length > 0 ? o.items[0] : {};
+      const firstItem =
+        Array.isArray(o.items) && o.items.length > 0 ? o.items[0] : {};
       return {
         orderId: o.orderId || o.id,
         customerName: o.customerName || firstItem.customerName || "",
-        whatsappNumber: o.customerPhone || o.whatsappNumber || firstItem.whatsappNumber || "",
+        whatsappNumber:
+          o.customerPhone || o.whatsappNumber || firstItem.whatsappNumber || "",
         city: o.customerCity || o.city || o.address || firstItem.city || "",
-        amount: Number(firstItem.amount || o.orderValue || o.grandTotal || o.amount || 0),
+        amount: Number(
+          firstItem.amount || o.orderValue || o.grandTotal || o.amount || 0,
+        ),
         deposit: Number(firstItem.deposit || o.depositHeld || o.deposit || 0),
-        startDate: firstItem.rentalStartDate || o.rentalStartDate || o.startDate || "",
+        startDate:
+          firstItem.rentalStartDate || o.rentalStartDate || o.startDate || "",
         endDate: firstItem.rentalEndDate || o.rentalEndDate || o.endDate || "",
         status: o.status || firstItem.status || "Confirmed",
         depositStatus: o.depositStatus || "Pending",
@@ -109,12 +133,30 @@ export const getAvailabilityCalendar = async (req, res) => {
 export const addBlockedDate = async (req, res) => {
   try {
     const p = await findProduct(req.params.id);
-    if (!p) return res.status(404).json({ success: false, message: "Product not found" });
+    if (!p)
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
     const { from, to, reason } = req.body;
     if (!from || !to || !reason || new Date(to) < new Date(from))
-      return res.status(422).json({ success: false, message: "Valid from date, to date and reason are required" });
-    if ((p.blockedDates || []).some((b) => new Date(from) <= new Date(b.to) && new Date(to) >= new Date(b.from)))
-      return res.status(409).json({ success: false, message: "Blocked date range overlaps an existing range" });
+      return res
+        .status(422)
+        .json({
+          success: false,
+          message: "Valid from date, to date and reason are required",
+        });
+    if (
+      (p.blockedDates || []).some(
+        (b) =>
+          new Date(from) <= new Date(b.to) && new Date(to) >= new Date(b.from),
+      )
+    )
+      return res
+        .status(409)
+        .json({
+          success: false,
+          message: "Blocked date range overlaps an existing range",
+        });
     p.blockedDates.push({ from, to, reason });
     await save(p, "Blocked dates added", req.body);
     res.status(201).json({ success: true, data: p.blockedDates.at(-1) });
@@ -126,10 +168,15 @@ export const addBlockedDate = async (req, res) => {
 export const removeBlockedDate = async (req, res) => {
   try {
     const p = await findProduct(req.params.id);
-    if (!p) return res.status(404).json({ success: false, message: "Product not found" });
+    if (!p)
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
     const index = Number(req.params.index);
     if (!Number.isInteger(index) || index < 0 || index >= p.blockedDates.length)
-      return res.status(404).json({ success: false, message: "Blocked range not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Blocked range not found" });
     p.blockedDates.splice(index, 1);
     await save(p, "Blocked dates removed", req.body || {});
     res.json({ success: true, data: p.blockedDates });
@@ -141,7 +188,10 @@ export const removeBlockedDate = async (req, res) => {
 export const getProductActivity = async (req, res) => {
   try {
     const p = await findProduct(req.params.id);
-    if (!p) return res.status(404).json({ success: false, message: "Product not found" });
+    if (!p)
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
     res.json({ success: true, data: p.activityLog || [] });
   } catch (e) {
     res.status(500).json({ success: false, message: e.message });
@@ -152,7 +202,10 @@ export const getProductPayoutHistory = async (req, res) => {
   try {
     const prodIdParam = req.params.productId || req.params.id;
     const p = await findProduct(prodIdParam);
-    if (!p) return res.status(404).json({ success: false, message: "Product not found" });
+    if (!p)
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
 
     const targetProdId = String(p.productId || p._id || prodIdParam).trim();
 
@@ -173,11 +226,25 @@ export const getProductPayoutHistory = async (req, res) => {
     const defaultSplit = Number(p.payoutPercentage || 45);
 
     const formatted = rows.map((r, idx) => {
-      const txVal = Number(r.transactionAmount || r.transactionValue || r.amount || defaultPrice);
-      const split = Number(r.listerSplitPercent || r.payoutPercent || r.splitPercent || defaultSplit);
-      const amt = Number(r.listerShare || r.payoutAmount || r.netPayout || Math.round((txVal * split) / 100));
+      const txVal = Number(
+        r.transactionAmount || r.transactionValue || r.amount || defaultPrice,
+      );
+      const split = Number(
+        r.listerSplitPercent ||
+          r.payoutPercent ||
+          r.splitPercent ||
+          defaultSplit,
+      );
+      const amt = Number(
+        r.listerShare ||
+          r.payoutAmount ||
+          r.netPayout ||
+          Math.round((txVal * split) / 100),
+      );
 
-      const matchedOrder = orders.find((o) => o.orderId === r.orderId || o.id === r.orderId);
+      const matchedOrder = orders.find(
+        (o) => o.orderId === r.orderId || o.id === r.orderId,
+      );
 
       const rawId = r.orderId || matchedOrder?.orderId || matchedOrder?.id;
       const formattedOrderId = rawId?.startsWith("HOK-ORD-")
@@ -210,13 +277,28 @@ export const getProductPayoutHistory = async (req, res) => {
 export const updateRelatedProducts = async (req, res) => {
   try {
     const p = await findProduct(req.params.id);
-    if (!p) return res.status(404).json({ success: false, message: "Product not found" });
+    if (!p)
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
     if (!Array.isArray(req.body.relatedProductIds))
-      return res.status(422).json({ success: false, message: "relatedProductIds must be an array" });
-    const ids = [...new Set(req.body.relatedProductIds.filter((id) => id !== p.productId))];
+      return res
+        .status(422)
+        .json({
+          success: false,
+          message: "relatedProductIds must be an array",
+        });
+    const ids = [
+      ...new Set(req.body.relatedProductIds.filter((id) => id !== p.productId)),
+    ];
     const count = await Product.countDocuments({ productId: { $in: ids } });
     if (count !== ids.length)
-      return res.status(422).json({ success: false, message: "One or more related products do not exist" });
+      return res
+        .status(422)
+        .json({
+          success: false,
+          message: "One or more related products do not exist",
+        });
     p.relatedProductIds = ids;
     await save(p, "Related products updated", req.body);
     res.json({ success: true, data: ids });
@@ -228,18 +310,37 @@ export const updateRelatedProducts = async (req, res) => {
 export const updateProductLister = async (req, res) => {
   try {
     const p = await findProduct(req.params.id);
-    if (!p) return res.status(404).json({ success: false, message: "Product not found" });
+    if (!p)
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
     const l = await Lister.findOne({ listerId: req.body.listerId });
-    if (!l) return res.status(404).json({ success: false, message: "Lister not found" });
+    if (!l)
+      return res
+        .status(404)
+        .json({ success: false, message: "Lister not found" });
     p.listerId = l.listerId;
     p.listerName = l.name;
     if (req.body.payoutPercentage != null) {
       const rate = Number(req.body.payoutPercentage);
-      if (rate < 0 || rate > 100) return res.status(422).json({ success: false, message: "Payout percentage must be between 0 and 100" });
+      if (rate < 0 || rate > 100)
+        return res
+          .status(422)
+          .json({
+            success: false,
+            message: "Payout percentage must be between 0 and 100",
+          });
       p.payoutPercentage = rate;
     }
     await save(p, "Product lister mapping updated", req.body);
-    res.json({ success: true, data: { listerId: p.listerId, listerName: p.listerName, payoutPercentage: p.payoutPercentage } });
+    res.json({
+      success: true,
+      data: {
+        listerId: p.listerId,
+        listerName: p.listerName,
+        payoutPercentage: p.payoutPercentage,
+      },
+    });
   } catch (e) {
     res.status(422).json({ success: false, message: e.message });
   }
@@ -248,26 +349,59 @@ export const updateProductLister = async (req, res) => {
 export const addExternalBooking = async (req, res) => {
   try {
     const p = await findProduct(req.params.id);
-    if (!p) return res.status(404).json({ success: false, message: "Product not found" });
+    if (!p)
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
 
-    const { customerName, startDate, endDate, status = "Confirmed", amount = 0, whatsappNumber, city, channel, listerSplitPercent, splitNote } = req.body;
+    const {
+      customerName,
+      startDate,
+      endDate,
+      status = "Confirmed",
+      amount = 0,
+      whatsappNumber,
+      city,
+      channel,
+      listerSplitPercent,
+      splitNote,
+    } = req.body;
     let orderId = req.body.orderId;
     if (!orderId || orderId.startsWith("EXT-")) {
       const totalOrdersCount = await Order.countDocuments();
       orderId = `HOK-ORD-${String(totalOrdersCount + 440).padStart(3, "0")}`;
     }
-    if (!customerName || !startDate || !endDate || new Date(endDate) < new Date(startDate)) {
-      return res.status(422).json({ success: false, message: "Customer name and valid dates are required" });
+    if (
+      !customerName ||
+      !startDate ||
+      !endDate ||
+      new Date(endDate) < new Date(startDate)
+    ) {
+      return res
+        .status(422)
+        .json({
+          success: false,
+          message: "Customer name and valid dates are required",
+        });
     }
 
     const parseToStartOfDay = (d) => {
       if (!d) return new Date(NaN);
       if (typeof d === "string") {
         const match = d.match(/^(\d{4})-(\d{2})-(\d{2})/);
-        if (match) return new Date(parseInt(match[1], 10), parseInt(match[2], 10) - 1, parseInt(match[3], 10));
+        if (match)
+          return new Date(
+            parseInt(match[1], 10),
+            parseInt(match[2], 10) - 1,
+            parseInt(match[3], 10),
+          );
       }
       const dateObj = new Date(d);
-      return new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+      return new Date(
+        dateObj.getFullYear(),
+        dateObj.getMonth(),
+        dateObj.getDate(),
+      );
     };
     const addDays = (d, n) => {
       const copy = new Date(d);
@@ -298,7 +432,8 @@ export const addExternalBooking = async (req, res) => {
     if (hasBookingOverlap || hasBlockOverlap) {
       return res.status(409).json({
         success: false,
-        message: "Selected dates (or required buffer period) overlap with an existing rental, buffer, or block. Only available dates can be booked.",
+        message:
+          "Selected dates (or required buffer period) overlap with an existing rental, buffer, or block. Only available dates can be booked.",
       });
     }
 
@@ -306,27 +441,40 @@ export const addExternalBooking = async (req, res) => {
     const selectedOfferId = String(req.body.offerId || "").trim();
     if (selectedOfferId) {
       selectedOffer = await Offer.findOne({ offerId: selectedOfferId });
-      if (!selectedOffer) selectedOffer = await Offer.findOne({ _id: selectedOfferId });
+      if (!selectedOffer)
+        selectedOffer = await Offer.findOne({ _id: selectedOfferId });
       if (!selectedOffer) {
-        return res.status(422).json({ success: false, message: "The selected offer could not be found." });
+        return res
+          .status(422)
+          .json({
+            success: false,
+            message: "The selected offer could not be found.",
+          });
       }
-
     }
 
     let selectedPromo = null;
-    const selectedPromoCode = String(req.body.promoCode || "").trim().toUpperCase();
+    const selectedPromoCode = String(req.body.promoCode || "")
+      .trim()
+      .toUpperCase();
     if (selectedPromoCode) {
       selectedPromo = await PromoCode.findOne({ code: selectedPromoCode });
       if (!selectedPromo || selectedPromo.status !== "Active") {
-        return res.status(422).json({ success: false, message: "The selected promo code is not active." });
+        return res
+          .status(422)
+          .json({
+            success: false,
+            message: "The selected promo code is not active.",
+          });
       }
     }
 
     const defaultPrice = Number(p.rentalPrice || p.listingPrice || 8500);
-    const offerAmount = Number(selectedOffer?.finalAmount || selectedOffer?.offeredAmount || 0);
-    const priceBeforePromo = selectedOffer && offerAmount > 0
-      ? offerAmount
-      : defaultPrice;
+    const offerAmount = Number(
+      selectedOffer?.finalAmount || selectedOffer?.offeredAmount || 0,
+    );
+    const priceBeforePromo =
+      selectedOffer && offerAmount > 0 ? offerAmount : defaultPrice;
     const splitPct = Number(listerSplitPercent || p.payoutPercentage || 45);
 
     const bookingEntry = {
@@ -347,8 +495,12 @@ export const addExternalBooking = async (req, res) => {
     // Customer handling
     let cust = null;
     let customerId = "";
-    const selectedOfferEmail = String(selectedOffer?.customerEmail || "").trim().toLowerCase();
-    const selectedOfferCustomerId = String(selectedOffer?.customerId || "").trim();
+    const selectedOfferEmail = String(selectedOffer?.customerEmail || "")
+      .trim()
+      .toLowerCase();
+    const selectedOfferCustomerId = String(
+      selectedOffer?.customerId || "",
+    ).trim();
 
     if (req.body.customerId) {
       cust = await Customer.findOne({ customerId: req.body.customerId });
@@ -359,7 +511,8 @@ export const addExternalBooking = async (req, res) => {
     // customer ID and email over generating a placeholder address.
     if (!cust && selectedOfferCustomerId) {
       cust = await Customer.findOne({ customerId: selectedOfferCustomerId });
-      if (!cust) cust = await Customer.findOne({ _id: selectedOfferCustomerId });
+      if (!cust)
+        cust = await Customer.findOne({ _id: selectedOfferCustomerId });
     }
     if (!cust && selectedOfferEmail) {
       cust = await Customer.findOne({ email: selectedOfferEmail });
@@ -374,17 +527,24 @@ export const addExternalBooking = async (req, res) => {
         const allCustomers = await Customer.find({});
         cust = allCustomers.find((c) => {
           const cPhone = (c.phone || "").replace(/\D/g, "");
-          return cPhone && (cPhone === cleanPhone || cPhone.endsWith(cleanPhone) || cleanPhone.endsWith(cPhone));
+          return (
+            cPhone &&
+            (cPhone === cleanPhone ||
+              cPhone.endsWith(cleanPhone) ||
+              cleanPhone.endsWith(cPhone))
+          );
         });
       }
     }
 
     if (!cust && name) {
-      cust = await Customer.findOne({ name: new RegExp("^" + name + "$", "i") });
+      cust = await Customer.findOne({
+        name: new RegExp("^" + name + "$", "i"),
+      });
     }
 
     if (cust) {
-// Update customer statistics is now handled by syncCustomerOrderStats. Skipping manual increments.
+      // Update customer statistics is now handled by syncCustomerOrderStats. Skipping manual increments.
       // The following updates are removed to avoid double counting.
       // cust.totalRentals = Number(cust.totalRentals || 0) + 1;
       // cust.ordersCount = Number(cust.ordersCount || 0) + 1;
@@ -395,7 +555,10 @@ export const addExternalBooking = async (req, res) => {
       // customerId = cust.customerId || cust._id?.toString() || "";
       // Instead, we ensure the order document references the correct customerId.
       customerId = cust.customerId || cust._id?.toString() || "";
-      if (selectedOfferEmail && /_\d+@houseofkaira\.com$/i.test(String(cust.email || ""))) {
+      if (
+        selectedOfferEmail &&
+        /_\d+@houseofkaira\.com$/i.test(String(cust.email || ""))
+      ) {
         cust.email = selectedOfferEmail;
         await cust.save();
       }
@@ -408,10 +571,12 @@ export const addExternalBooking = async (req, res) => {
         .filter((n) => !isNaN(n));
       const maxNum = existingNums.length > 0 ? Math.max(...existingNums) : 0;
       customerId = `CUST-${String(maxNum + 1).padStart(5, "0")}`;
-      const generatedEmail = `${name
-        .toLowerCase()
-        .replace(/\s+/g, "")
-        .replace(/[^a-z0-9]/g, "") || "renter"}_${maxNum + 1}@houseofkaira.com`;
+      const generatedEmail = `${
+        name
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .replace(/[^a-z0-9]/g, "") || "renter"
+      }_${maxNum + 1}@houseofkaira.com`;
       const safeEmail = selectedOfferEmail || generatedEmail;
       cust = await Customer.create({
         customerId,
@@ -440,36 +605,93 @@ export const addExternalBooking = async (req, res) => {
       const today = new Date().toISOString().slice(0, 10);
       const validFrom = String(selectedPromo.validFrom || "").slice(0, 10);
       const validUntil = String(selectedPromo.validUntil || "").slice(0, 10);
-      if ((validFrom && today < validFrom) || (validUntil && today > validUntil)) {
-        return res.status(422).json({ success: false, message: "This promo code is outside its validity period." });
+      if (
+        (validFrom && today < validFrom) ||
+        (validUntil && today > validUntil)
+      ) {
+        return res
+          .status(422)
+          .json({
+            success: false,
+            message: "This promo code is outside its validity period.",
+          });
       }
       if (Number(selectedPromo.minOrder || 0) > priceBeforePromo) {
-        return res.status(422).json({ success: false, message: `This promo requires a minimum order of ₹${Number(selectedPromo.minOrder).toLocaleString("en-IN")}.` });
+        return res
+          .status(422)
+          .json({
+            success: false,
+            message: `This promo requires a minimum order of ₹${Number(selectedPromo.minOrder).toLocaleString("en-IN")}.`,
+          });
       }
-      if (selectedPromo.audience === "private" && !(selectedPromo.customerIds || []).includes(customerId)) {
-        return res.status(422).json({ success: false, message: "This promo code is not available for the selected customer." });
+      if (
+        selectedPromo.audience === "private" &&
+        !(selectedPromo.customerIds || []).includes(customerId)
+      ) {
+        return res
+          .status(422)
+          .json({
+            success: false,
+            message:
+              "This promo code is not available for the selected customer.",
+          });
       }
       const previousOrders = await Order.find({ customerId });
       if (selectedPromo.firstOrderOnly && previousOrders.length > 0) {
-        return res.status(422).json({ success: false, message: "This promo code is valid only for a customer's first order." });
+        return res
+          .status(422)
+          .json({
+            success: false,
+            message:
+              "This promo code is valid only for a customer's first order.",
+          });
       }
-      const allPromoOrders = await Order.find({ promoCode: selectedPromo.code });
-      if (selectedPromo.usesTotalCap != null && allPromoOrders.length >= Number(selectedPromo.usesTotalCap)) {
-        return res.status(422).json({ success: false, message: "This promo code has reached its usage limit." });
+      const allPromoOrders = await Order.find({
+        promoCode: selectedPromo.code,
+      });
+      if (
+        selectedPromo.usesTotalCap != null &&
+        allPromoOrders.length >= Number(selectedPromo.usesTotalCap)
+      ) {
+        return res
+          .status(422)
+          .json({
+            success: false,
+            message: "This promo code has reached its usage limit.",
+          });
       }
-      const customerPromoOrders = allPromoOrders.filter((order) => String(order.customerId || "") === String(customerId));
-      if (selectedPromo.usesPerCustomer != null && customerPromoOrders.length >= Number(selectedPromo.usesPerCustomer)) {
-        return res.status(422).json({ success: false, message: "This customer has already used this promo code the allowed number of times." });
+      const customerPromoOrders = allPromoOrders.filter(
+        (order) => String(order.customerId || "") === String(customerId),
+      );
+      if (
+        selectedPromo.usesPerCustomer != null &&
+        customerPromoOrders.length >= Number(selectedPromo.usesPerCustomer)
+      ) {
+        return res
+          .status(422)
+          .json({
+            success: false,
+            message:
+              "This customer has already used this promo code the allowed number of times.",
+          });
       }
 
       const promoType = String(selectedPromo.type || "").toLowerCase();
       if (promoType === "percent" || promoType === "percentage") {
-        promoDiscount = (priceBeforePromo * Number(selectedPromo.value || 0)) / 100;
+        promoDiscount =
+          (priceBeforePromo * Number(selectedPromo.value || 0)) / 100;
       } else if (promoType === "flat" || promoType === "fixed") {
         promoDiscount = Number(selectedPromo.value || 0);
       }
-      if (selectedPromo.maxDiscount != null) promoDiscount = Math.min(promoDiscount, Number(selectedPromo.maxDiscount));
-      promoDiscount = Math.max(0, Math.min(Math.round(promoDiscount), priceBeforePromo));
+      if (selectedPromo.maxDiscount != null)
+        promoDiscount = Math.min(
+          promoDiscount,
+          Number(selectedPromo.maxDiscount),
+        );
+      promoDiscount = Math.max(
+        0,
+        Math.min(Math.round(promoDiscount), priceBeforePromo),
+      );
     }
 
     const rentalVal = Math.max(0, priceBeforePromo - promoDiscount);
@@ -510,7 +732,9 @@ export const addExternalBooking = async (req, res) => {
       customerId,
       customerName: cust?.name || customerName || "External Renter",
       customerPhone: cust?.phone || whatsappNumber || "",
-      customerEmail: cust?.email || `${(customerName || "renter").toLowerCase().replace(/\s+/g, "")}@houseofkaira.com`,
+      customerEmail:
+        cust?.email ||
+        `${(customerName || "renter").toLowerCase().replace(/\s+/g, "")}@houseofkaira.com`,
       productId: p.productId || p._id,
       productName: p.name,
       designer: p.designer || "House of Kaira",
@@ -574,9 +798,18 @@ export const addExternalBooking = async (req, res) => {
       createdAt: new Date(),
     });
 
-    await save(p, `External booking added for ${customerName} (${orderId})`, req.body);
+    await save(
+      p,
+      `External booking added for ${customerName} (${orderId})`,
+      req.body,
+    );
 
-    const formattedCust = cust ? { ...(typeof cust.toObject === "function" ? cust.toObject() : cust), id: cust.customerId || cust._id?.toString() } : null;
+    const formattedCust = cust
+      ? {
+          ...(typeof cust.toObject === "function" ? cust.toObject() : cust),
+          id: cust.customerId || cust._id?.toString(),
+        }
+      : null;
 
     res.status(201).json({
       success: true,

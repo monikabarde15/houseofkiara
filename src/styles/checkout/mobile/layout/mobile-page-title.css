@@ -12,7 +12,7 @@
   align-items: flex-end;
   justify-content: space-between;
   padding: 24px 0 18px;
-  border-bottom: 1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
 }
 
 /* =========================
@@ -24,14 +24,14 @@
   font-size: 36px;
   line-height: 1;
   letter-spacing: -0.01em;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0;
 }
 
 /* Italic "Checkout" in gold */
 .mobile-page-title__heading em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* =========================
@@ -44,7 +44,7 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   text-align: right;
-  color: #B0A898;
+  color: #b0a898;
   padding-bottom: 5px;
   /* line-height: 1.4; */
 }
@@ -54,7 +54,7 @@
 ========================= */
 [data-rise="1"] {
   animation: mobileRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: 0.00s;
+  animation-delay: 0s;
 }
 
 @keyframes mobileRise {

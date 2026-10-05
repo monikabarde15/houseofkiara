@@ -1,16 +1,19 @@
 // src/components/LYP/intake/IntakeMedia.tsx
 
-import React, { useRef } from 'react';
-import { Media } from '../types/submission.types';
-import { pluralize } from '../utils/formatter';
-import './styles/IntakeMedia.css';
+import React, { useRef } from "react";
+import { Media } from "../types/submission.types";
+import { pluralize } from "../utils/formatter";
+import "./styles/IntakeMedia.css";
 
 interface IntakeMediaProps {
   media: Media[];
   onChange: (media: Media[]) => void;
 }
 
-export const IntakeMedia: React.FC<IntakeMediaProps> = ({ media, onChange }) => {
+export const IntakeMedia: React.FC<IntakeMediaProps> = ({
+  media,
+  onChange,
+}) => {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
@@ -18,15 +21,15 @@ export const IntakeMedia: React.FC<IntakeMediaProps> = ({ media, onChange }) => 
     const files = e.target.files;
     if (!files) return;
 
-    const newMedia: Media[] = Array.from(files).map(file => ({
+    const newMedia: Media[] = Array.from(files).map((file) => ({
       name: file.name,
       url: URL.createObjectURL(file),
-      kind: 'image',
+      kind: "image",
     }));
 
     onChange([...media, ...newMedia]);
     if (photoInputRef.current) {
-      photoInputRef.current.value = '';
+      photoInputRef.current.value = "";
     }
   };
 
@@ -34,15 +37,15 @@ export const IntakeMedia: React.FC<IntakeMediaProps> = ({ media, onChange }) => 
     const files = e.target.files;
     if (!files) return;
 
-    const newMedia: Media[] = Array.from(files).map(file => ({
+    const newMedia: Media[] = Array.from(files).map((file) => ({
       name: file.name,
       url: URL.createObjectURL(file),
-      kind: 'video',
+      kind: "video",
     }));
 
     onChange([...media, ...newMedia]);
     if (videoInputRef.current) {
-      videoInputRef.current.value = '';
+      videoInputRef.current.value = "";
     }
   };
 
@@ -53,8 +56,8 @@ export const IntakeMedia: React.FC<IntakeMediaProps> = ({ media, onChange }) => 
     onChange(newMedia);
   };
 
-  const photos = media.filter(m => m.kind === 'image');
-  const videos = media.filter(m => m.kind === 'video');
+  const photos = media.filter((m) => m.kind === "image");
+  const videos = media.filter((m) => m.kind === "video");
 
   return (
     <div className="intake-media">
@@ -69,7 +72,7 @@ export const IntakeMedia: React.FC<IntakeMediaProps> = ({ media, onChange }) => 
             accept="image/*"
             multiple
             onChange={handleAddPhotos}
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
         </label>
         <label className="btn btn-sec btn-sm">
@@ -79,17 +82,17 @@ export const IntakeMedia: React.FC<IntakeMediaProps> = ({ media, onChange }) => 
             type="file"
             accept="video/*"
             onChange={handleAddVideo}
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
         </label>
         <span className="intake-media-count">
           {media.length === 0 ? (
-            'No media added yet — save WhatsApp photos to this device and add them here.'
+            "No media added yet — save WhatsApp photos to this device and add them here."
           ) : (
             <>
-              {pluralize(photos.length, 'photo')}
-              {videos.length > 0 && ` · ${pluralize(videos.length, 'video')}`}
-              {' attached'}
+              {pluralize(photos.length, "photo")}
+              {videos.length > 0 && ` · ${pluralize(videos.length, "video")}`}
+              {" attached"}
             </>
           )}
         </span>
@@ -99,8 +102,8 @@ export const IntakeMedia: React.FC<IntakeMediaProps> = ({ media, onChange }) => 
         <div className="intake-media-grid">
           {media.map((item, index) => (
             <div key={index} className="intake-media-item">
-              {item.kind === 'image' ? (
-                <div 
+              {item.kind === "image" ? (
+                <div
                   className="intake-media-thumb"
                   style={{ backgroundImage: `url(${item.url})` }}
                 />
@@ -110,7 +113,7 @@ export const IntakeMedia: React.FC<IntakeMediaProps> = ({ media, onChange }) => 
                   <span className="intake-media-video-name">{item.name}</span>
                 </div>
               )}
-              <button 
+              <button
                 className="intake-media-remove"
                 onClick={() => handleRemove(index)}
                 title="Remove"

@@ -3,7 +3,7 @@
 /* ====================================================== */
 
 .desk-wishlist-recommendations {
-  background: #F5EDD8  ;
+  background: #f5edd8;
   /* background: #F5EFE6; */
   border-top: 1px solid #e8e0d4;
   padding: 72px 80px 80px;
@@ -60,7 +60,9 @@
   border: none;
   /* cursor: pointer;
   font-weight: 400; */
-  transition:color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .desk-wishlist-rec-explore-link:hover {
@@ -75,10 +77,7 @@
 .desk-wishlist-rec-grid {
   display: grid;
 
-  grid-template-columns: repeat(
-    4,
-    minmax(0, 1fr)
-  );
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 28px;
 }

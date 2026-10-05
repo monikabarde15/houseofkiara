@@ -1,7 +1,7 @@
 // editor/WordingFields.tsx
-import React from 'react';
-import { FormField, Input, Textarea } from '../components/FormField';
-import './styles/WordingFields.css';
+import React from "react";
+import { FormField, Input, Textarea } from "../components/FormField";
+import "./styles/WordingFields.css";
 
 interface WordingFieldsProps {
   subject: string;
@@ -35,32 +35,32 @@ export const WordingFields: React.FC<WordingFieldsProps> = ({
   return (
     <div className="msg-wording-fields">
       <FormField label="SUBJECT LINE">
-        <Input 
-          value={subject} 
+        <Input
+          value={subject}
           onChange={(e) => onSubjectChange(e.target.value)}
           onFocus={onSubjectFocus}
           placeholder="Enter subject line"
         />
       </FormField>
 
-      <FormField 
+      <FormField
         label="PREVIEW LINE"
         hint="The grey line the inbox shows beside the subject. Left empty, the inbox grabs the greeting instead."
       >
-        <Input 
-          value={previewLine} 
+        <Input
+          value={previewLine}
           onChange={(e) => onPreviewChange(e.target.value)}
           onFocus={onPreviewFocus}
           placeholder="Enter preview line"
         />
       </FormField>
 
-      <FormField 
+      <FormField
         label="EMAIL"
         hint="The sign-off and footer are added for you from Settings. Do not retype them here."
       >
-        <Textarea 
-          value={email} 
+        <Textarea
+          value={email}
           onChange={(e) => onEmailChange(e.target.value)}
           onFocus={onEmailFocus}
           minHeight={200}
@@ -68,12 +68,12 @@ export const WordingFields: React.FC<WordingFieldsProps> = ({
         />
       </FormField>
 
-      <FormField 
+      <FormField
         label="WHATSAPP"
         hint="Same facts, fewer words. This is what keeps the two channels one message rather than two stories."
       >
-        <Textarea 
-          value={whatsapp} 
+        <Textarea
+          value={whatsapp}
           onChange={(e) => onWhatsappChange(e.target.value)}
           onFocus={onWhatsappFocus}
           minHeight={88}

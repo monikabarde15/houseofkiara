@@ -12,8 +12,8 @@
   right: 0;
   max-width: 430px;
   margin: 0 auto;
-  background: #FFFFFB;
-  border-top: 2px solid #1A1612;
+  background: #fffffb;
+  border-top: 2px solid #1a1612;
   z-index: 1001;
   max-height: 92vh;
   overflow-y: auto;
@@ -43,14 +43,14 @@
 }
 
 .profile-mobile-delete-icon svg {
-  stroke: #B85C38;
+  stroke: #b85c38;
 }
 
 .profile-mobile-delete-title {
   font-family: "Cormorant Garamond", serif;
   font-size: 20px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 7px;
 }
 
@@ -58,7 +58,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 11.5px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.65;
   margin-bottom: 18px;
 }
@@ -73,24 +73,24 @@
   width: 100%;
   background: none;
   border: none;
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
   padding: 15px 20px;
   font-family: "DM Sans", sans-serif;
   font-size: 9.5px;
   font-weight: 300;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   cursor: pointer;
 }
 
 .profile-mobile-delete-btn-cancel:active {
-  background: #FAF7F2;
+  background: #faf7f2;
 }
 
 .profile-mobile-delete-btn-confirm {
   width: 100%;
-  background: #B85C38;
+  background: #b85c38;
   border: none;
   padding: 15px 20px;
   font-family: "DM Sans", sans-serif;
@@ -98,7 +98,7 @@
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
 }
 

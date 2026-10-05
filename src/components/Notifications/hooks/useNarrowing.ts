@@ -1,6 +1,6 @@
 // src/components/Notifications/hooks/useNarrowing.ts
-import { useCallback, useMemo, useState } from 'react';
-import { BandKey, NarrowingState } from '../types/notification.types';
+import { useCallback, useMemo, useState } from "react";
+import { BandKey, NarrowingState } from "../types/notification.types";
 
 /**
  * §28 — narrowing to a band and/or a person. This is purely a client-side
@@ -9,7 +9,10 @@ import { BandKey, NarrowingState } from '../types/notification.types';
  * start from the sidebar, but carried across a Back-trail return.
  */
 export function useNarrowing() {
-  const [narrowing, setNarrowing] = useState<NarrowingState>({ band: null, person: null });
+  const [narrowing, setNarrowing] = useState<NarrowingState>({
+    band: null,
+    person: null,
+  });
 
   // §28.1 — clicking the same band figure/header again shows everything.
   const toggleBand = useCallback((band: BandKey) => {
@@ -34,7 +37,7 @@ export function useNarrowing() {
 
   const isNarrowed = useMemo(
     () => narrowing.band !== null || narrowing.person !== null,
-    [narrowing]
+    [narrowing],
   );
 
   return { narrowing, toggleBand, togglePerson, clearAll, isNarrowed };

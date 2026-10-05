@@ -3,8 +3,8 @@
    ============================================ */
 
 .profile-ac {
-  background: #FFFFFB;
-  border: 1px solid #E8E0D4;
+  background: #fffffb;
+  border: 1px solid #e8e0d4;
   border-radius: 11px;
   padding: 16px;
 }
@@ -14,7 +14,7 @@
 }
 
 .profile-ac:hover {
-  border-color: #E8D5B0;
+  border-color: #e8d5b0;
 }
 
 /* Top Row */
@@ -29,14 +29,14 @@
   width: 30px;
   height: 30px;
   border-radius: 7px;
-  background: #F5EDD8;
+  background: #f5edd8;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .profile-ac-icon svg {
-  stroke: #A8844A;
+  stroke: #a8844a;
   fill: none;
 }
 
@@ -47,7 +47,7 @@
 
 .profile-acbtn {
   background: none;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 5px;
   width: 24px;
   height: 24px;
@@ -59,12 +59,12 @@
 }
 
 .profile-acbtn:hover {
-  background: #FAF7F2;
-  border-color: #E8D5B0;
+  background: #faf7f2;
+  border-color: #e8d5b0;
 }
 
 .profile-acbtn svg {
-  stroke: #8A7E72;
+  stroke: #8a7e72;
 }
 
 /* Type Row */
@@ -79,7 +79,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #3C3529;
+  color: #3c3529;
 }
 
 .profile-ac-dbadge {
@@ -87,8 +87,8 @@
   font-size: 7.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: #F5EDD8;
-  color: #A8844A;
+  background: #f5edd8;
+  color: #a8844a;
   padding: 2px 6px;
   border-radius: 8px;
   font-weight: 500;
@@ -99,7 +99,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.7;
 }
 
@@ -110,7 +110,7 @@
   cursor: pointer;
   font-family: "DM Sans", sans-serif;
   font-size: 9.5px;
-  color: #A8844A;
+  color: #a8844a;
   padding: 0;
   margin-top: 7px;
   display: block;
@@ -119,5 +119,5 @@
 }
 
 .profile-ac-setdef:hover {
-  color: #3C3529;
+  color: #3c3529;
 }

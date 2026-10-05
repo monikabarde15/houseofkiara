@@ -1,11 +1,11 @@
 // src/components/Listers/tabs/SubmittedPieces/SubmissionForm.tsx
 
-import React, { useState } from 'react';
-import { Channel, Intent, Media } from '../../types/lister.types';
-import { MediaPicker } from './MediaPicker';
-import { CHANNELS, INTENTS, CONDITION_GRADES } from '../../utils/constants';
-import { useSubmissions } from '../../hooks/useSubmissions';
-import './styles/SubmissionForm.css';
+import React, { useState } from "react";
+import { Channel, Intent, Media } from "../../types/lister.types";
+import { MediaPicker } from "./MediaPicker";
+import { CHANNELS, INTENTS, CONDITION_GRADES } from "../../utils/constants";
+import { useSubmissions } from "../../hooks/useSubmissions";
+import "./styles/SubmissionForm.css";
 
 interface SubmissionFormProps {
   listerId: string;
@@ -14,8 +14,16 @@ interface SubmissionFormProps {
 }
 
 const CATEGORIES = [
-  'Bridal Lehenga', 'Lehenga', 'Saree', 'Anarkali', 'Sherwani',
-  'Gown', 'Sharara', 'Suit', 'Dupatta', 'Co-ord Set',
+  "Bridal Lehenga",
+  "Lehenga",
+  "Saree",
+  "Anarkali",
+  "Sherwani",
+  "Gown",
+  "Sharara",
+  "Suit",
+  "Dupatta",
+  "Co-ord Set",
 ];
 
 export const SubmissionForm: React.FC<SubmissionFormProps> = ({
@@ -24,40 +32,41 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
   onCancel,
 }) => {
   const { createSubmission, loading } = useSubmissions(listerId);
-  
+
   const [formData, setFormData] = useState({
-    piece: '',
-    designer: '',
-    category: '',
-    intent: 'Rent + Sell' as Intent,
-    askRent: '',
-    askSell: '',
-    colour: '',
-    size: '',
-    timesWorn: '',
-    originalPrice: '',
-    conditionClaim: '',
-    initialGrade: 'Pristine' as string,
-    channel: 'WhatsApp' as Channel,
-    notes: '',
+    piece: "",
+    designer: "",
+    category: "",
+    intent: "Rent + Sell" as Intent,
+    askRent: "",
+    askSell: "",
+    colour: "",
+    size: "",
+    timesWorn: "",
+    originalPrice: "",
+    conditionClaim: "",
+    initialGrade: "Pristine" as string,
+    channel: "WhatsApp" as Channel,
+    notes: "",
     media: [] as Media[],
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    setErrors(prev => ({ ...prev, [field]: '' }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const handleMediaChange = (media: Media[]) => {
-    setFormData(prev => ({ ...prev, media }));
+    setFormData((prev) => ({ ...prev, media }));
   };
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.piece.trim()) newErrors.piece = 'Piece name is required.';
-    if (!formData.designer.trim()) newErrors.designer = 'Designer label is required.';
+    if (!formData.piece.trim()) newErrors.piece = "Piece name is required.";
+    if (!formData.designer.trim())
+      newErrors.designer = "Designer label is required.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -68,22 +77,26 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
       await createSubmission(formData);
       onSuccess();
     } catch (error) {
-      setErrors({ submit: error instanceof Error ? error.message : 'Failed to create submission' });
+      setErrors({
+        submit:
+          error instanceof Error
+            ? error.message
+            : "Failed to create submission",
+      });
     }
   };
 
   return (
     <div className="submission-form">
-
       {/* Row 1: Piece Name + Designer Label */}
       <div className="sf-row sf-g2">
         <div className="fld">
           <label className="fld-label">Piece Name *</label>
           <input
             type="text"
-            className={`fld-input ${errors.piece ? 'fld-error' : ''}`}
+            className={`fld-input ${errors.piece ? "fld-error" : ""}`}
             value={formData.piece}
-            onChange={(e) => handleChange('piece', e.target.value)}
+            onChange={(e) => handleChange("piece", e.target.value)}
             placeholder="e.g. Emerald Silk Anarkali"
           />
           {errors.piece && <div className="fld-error-text">{errors.piece}</div>}
@@ -92,13 +105,18 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
           <label className="fld-label">Designer Label *</label>
           <input
             type="text"
-            className={`fld-input ${errors.designer ? 'fld-error' : ''}`}
+            className={`fld-input ${errors.designer ? "fld-error" : ""}`}
             value={formData.designer}
-            onChange={(e) => handleChange('designer', e.target.value)}
+            onChange={(e) => handleChange("designer", e.target.value)}
             placeholder="e.g. Sabyasachi, bespoke"
           />
-          {errors.designer && <div className="fld-error-text">{errors.designer}</div>}
-          <div className="fld-hint">Drives the SKU and auto-maps to the registry on approval; unknown labels land in Unmapped Labels.</div>
+          {errors.designer && (
+            <div className="fld-error-text">{errors.designer}</div>
+          )}
+          <div className="fld-hint">
+            Drives the SKU and auto-maps to the registry on approval; unknown
+            labels land in Unmapped Labels.
+          </div>
         </div>
       </div>
 
@@ -106,15 +124,31 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
       <div className="sf-row sf-g2">
         <div className="fld">
           <label className="fld-label">Category</label>
-          <select className="fld-input" value={formData.category} onChange={(e) => handleChange('category', e.target.value)}>
+          <select
+            className="fld-input"
+            value={formData.category}
+            onChange={(e) => handleChange("category", e.target.value)}
+          >
             <option value="">Select category</option>
-            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
         </div>
         <div className="fld">
           <label className="fld-label">Intent</label>
-          <select className="fld-input" value={formData.intent} onChange={(e) => handleChange('intent', e.target.value)}>
-            {INTENTS.map(i => <option key={i} value={i}>{i}</option>)}
+          <select
+            className="fld-input"
+            value={formData.intent}
+            onChange={(e) => handleChange("intent", e.target.value)}
+          >
+            {INTENTS.map((i) => (
+              <option key={i} value={i}>
+                {i}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -127,7 +161,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
             type="text"
             className="fld-input"
             value={formData.askRent}
-            onChange={(e) => handleChange('askRent', e.target.value)}
+            onChange={(e) => handleChange("askRent", e.target.value)}
             placeholder="e.g. ₹3,500 / 4 days"
           />
         </div>
@@ -137,7 +171,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
             type="text"
             className="fld-input"
             value={formData.askSell}
-            onChange={(e) => handleChange('askSell', e.target.value)}
+            onChange={(e) => handleChange("askSell", e.target.value)}
             placeholder="e.g. ₹28,000"
           />
         </div>
@@ -151,7 +185,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
             type="text"
             className="fld-input"
             value={formData.colour}
-            onChange={(e) => handleChange('colour', e.target.value)}
+            onChange={(e) => handleChange("colour", e.target.value)}
             placeholder=""
           />
         </div>
@@ -161,7 +195,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
             type="text"
             className="fld-input"
             value={formData.size}
-            onChange={(e) => handleChange('size', e.target.value)}
+            onChange={(e) => handleChange("size", e.target.value)}
             placeholder="e.g. M / Free Size"
           />
         </div>
@@ -175,7 +209,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
             type="text"
             className="fld-input"
             value={formData.timesWorn}
-            onChange={(e) => handleChange('timesWorn', e.target.value)}
+            onChange={(e) => handleChange("timesWorn", e.target.value)}
             placeholder="e.g. 2"
           />
         </div>
@@ -185,7 +219,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
             type="text"
             className="fld-input"
             value={formData.originalPrice}
-            onChange={(e) => handleChange('originalPrice', e.target.value)}
+            onChange={(e) => handleChange("originalPrice", e.target.value)}
             placeholder="e.g. ₹42,000"
           />
         </div>
@@ -198,7 +232,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
           <textarea
             className="fld-input"
             value={formData.conditionClaim}
-            onChange={(e) => handleChange('conditionClaim', e.target.value)}
+            onChange={(e) => handleChange("conditionClaim", e.target.value)}
             placeholder="e.g. worn once at a cousin's sangeet, dry-cleaned and stored in muslin since"
             rows={3}
           />
@@ -208,7 +242,9 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
       {/* Row 7: Media — Photos & In-Store Video */}
       <div className="sf-row">
         <div className="fld">
-          <label className="fld-label">Media — Photos &amp; In-Store Video</label>
+          <label className="fld-label">
+            Media — Photos &amp; In-Store Video
+          </label>
           <MediaPicker media={formData.media} onChange={handleMediaChange} />
         </div>
       </div>
@@ -217,15 +253,33 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
       <div className="sf-row sf-g2">
         <div className="fld">
           <label className="fld-label">Initial Grade — Our First Read</label>
-          <select className="fld-input" value={formData.initialGrade} onChange={(e) => handleChange('initialGrade', e.target.value)}>
-            {CONDITION_GRADES.map(g => <option key={g} value={g}>{g}</option>)}
+          <select
+            className="fld-input"
+            value={formData.initialGrade}
+            onChange={(e) => handleChange("initialGrade", e.target.value)}
+          >
+            {CONDITION_GRADES.map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
           </select>
-          <div className="fld-hint">Fair stays rental-only. The final grade is set at authentication.</div>
+          <div className="fld-hint">
+            Fair stays rental-only. The final grade is set at authentication.
+          </div>
         </div>
         <div className="fld">
           <label className="fld-label">Channel</label>
-          <select className="fld-input" value={formData.channel} onChange={(e) => handleChange('channel', e.target.value)}>
-            {CHANNELS.map(c => <option key={c} value={c}>{c}</option>)}
+          <select
+            className="fld-input"
+            value={formData.channel}
+            onChange={(e) => handleChange("channel", e.target.value)}
+          >
+            {CHANNELS.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -238,22 +292,28 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({
             type="text"
             className="fld-input"
             value={formData.notes}
-            onChange={(e) => handleChange('notes', e.target.value)}
+            onChange={(e) => handleChange("notes", e.target.value)}
             placeholder="anything they flagged — stains, alterations, pickup constraints"
           />
         </div>
       </div>
 
-      {errors.submit && (
-        <div className="sf-error">{errors.submit}</div>
-      )}
+      {errors.submit && <div className="sf-error">{errors.submit}</div>}
 
       {/* Actions */}
       <div className="sf-actions">
-        <button className="btn btn-gold btn-sm" onClick={handleSubmit} disabled={loading}>
-          {loading ? 'Saving...' : 'Save to Approvals Queue'}
+        <button
+          className="btn btn-gold btn-sm"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save to Approvals Queue"}
         </button>
-        <button className="btn btn-sec btn-sm" onClick={onCancel} disabled={loading}>
+        <button
+          className="btn btn-sec btn-sm"
+          onClick={onCancel}
+          disabled={loading}
+        >
           Cancel
         </button>
       </div>

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Heart, Star, TrendingUp, Gift, User, Calendar, Box, CreditCard, MessageCircleCheck, Shield, CircleAlert, ArrowRight, ShoppingBag, X, Plus, Truck } from "lucide-react";
 import GalleryColumn from "../GalleryColumn";
 import '../../styles/productcategory/rental-and-buy.css'
 import RentalCalendar from "../RentalCalendar";
 import RelatedProduct from "../RelatedProduct";
-import useWishlistStore from "../../store/wishlistStore";
+import useCartStore from "../../store/cartStore";import useWishlistStore from "../../store/wishlistStore";
 
 
 
@@ -44,7 +44,9 @@ const gradeConfig = {
 export default function RentalAndBuy() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
 
+    const addToCart = useCartStore((state) => state.addToCart);
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -53,7 +55,8 @@ export default function RentalAndBuy() {
 
     const wishlistItems = useWishlistStore((state) => state.items);
     const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
-    const isWishlisted = wishlistItems.includes(id);
+    const productId = product?._id || product?.id || id;
+    const isWishlisted = wishlistItems.includes(productId);
 
     const [selectedWindow, setSelectedWindow] = useState("standard");
     const [selectedStart, setSelectedStart] = useState(null);
@@ -140,60 +143,24 @@ export default function RentalAndBuy() {
         const eventDate = new Date(selectedStart);
         eventDate.setDate(eventDate.getDate() + 2);
 
-        const newItem = {
-            id: Date.now(),
+        const details = {
             type: "rental",
-
-            product,
-
-            booking: {
-                size: selectedSize || sizes?.[0]?.label || "M",
-                color: selectedColor || product?.colors?.[0]?.code || "Standard",
-
-                deliveryDate: formatDate(selectedStart),
-
-                eventDate: formatDate(eventDate),
-
-                returnDate: formatDate(selectedEnd),
-
-                rentalWindowDays:
-                    Math.ceil(
-                        (selectedEnd - selectedStart) /
-                        (1000 * 60 * 60 * 24)
-                    ) + 1
-            }
+            size: selectedSize || sizes?.[0]?.label || "M",
+            color: selectedColor || product?.colors?.[0]?.code || "Standard",
+            rentalDates: {
+                start: formatDate(selectedStart),
+                end: formatDate(selectedEnd),
+            },
+            price: selectedWindowData?.price || 0,
         };
 
-        navigate("/cart", {
-            state: { newItem }
-        });
+        addToCart(product, details);
+        navigate("/cart");
     };
 
     // Wishlist Handler Rental
     const handleRentalWishlist = () => {
-        const item = {
-            id: product.id,
-            title: product.title,
-            designer: product.designer,
-            image: product.images?.[0],
-            type: "rental",
-            rentalPrice: selectedWindowData?.price
-        };
-
-        const wishlist = JSON.parse(
-            localStorage.getItem("wishlist") || "[]"
-        );
-
-        if (!wishlist.some((i) => i.id === item.id)) {
-            wishlist.push(item);
-
-            localStorage.setItem(
-                "wishlist",
-                JSON.stringify(wishlist)
-            );
-        }
-
-        navigate("/wishlist");
+        toggleWishlist(productId);
     };
 
     //  WhatsApp Handler
@@ -215,71 +182,21 @@ Duration: ${selectedWindowData?.days} Days
 
     // Handle ADD to cart Buy new
     const handleAddToCart = () => {
-        const cartItem = {
-            id: product.id,
-            title: product.title,
-            price,
+        const details = {
+            type: "new",
             size: selectedSize || sizes?.[0]?.label || "M",
             color: selectedColor || product?.colors?.[0]?.code || "Standard",
-            image: product.images?.[0],
-            quantity: 1,
-            designer: product.designer,
-            type: "buy-new"
+            price: price,
         };
 
-        const existingCart = JSON.parse(
-            localStorage.getItem("cart") || "[]"
-        );
-
-        const existingIndex = existingCart.findIndex(
-            (item) =>
-                item.id === cartItem.id &&
-                item.size === cartItem.size &&
-                item.color === cartItem.color
-        );
-
-        if (existingIndex > -1) {
-            existingCart[existingIndex].quantity += 1;
-        } else {
-            existingCart.push(cartItem);
-        }
-
-        localStorage.setItem(
-            "cart",
-            JSON.stringify(existingCart)
-        );
-
+        addToCart(product, details);
         navigate("/cart");
     };
 
     // Buy Wishlist Handler
 
     const handleBuyWishlist = () => {
-        const item = {
-            id: product.id,
-            title: product.title,
-            price,
-            size: selectedSize,
-            color: selectedColor,
-            image: product.images?.[0],
-            designer: product.designer,
-            type: "buy-new"
-        };
-
-        const wishlist = JSON.parse(
-            localStorage.getItem("wishlist") || "[]"
-        );
-
-        if (!wishlist.some((i) => i.id === item.id)) {
-            wishlist.push(item);
-
-            localStorage.setItem(
-                "wishlist",
-                JSON.stringify(wishlist)
-            );
-        }
-
-        navigate("/wishlist");
+        toggleWishlist(productId);
     };
 
     // Buy New Whatsapp Handler
@@ -330,6 +247,7 @@ Color: ${selectedColor || "Not Selected"}
                             images={product.images}
                             video={product.video}
                             variant={mode === "rent" ? "rent" : "buy"}
+                            productId={productId}
                         />
 
                     </Col>
@@ -443,16 +361,18 @@ Color: ${selectedColor || "Not Selected"}
                                 <div className="rap-rental-size-options">
                                     {(() => {
                                         const displaySizes = (sizes?.length > 0 ? sizes : (product?.sizes?.map(s => ({label: s, available: true})) || [])).filter(s => s && s.label && String(s.label).trim() !== "");
-                                        return displaySizes.length > 0 ? displaySizes.map((size, i) => (
+                                        return displaySizes.length > 0 ? displaySizes.map((size, i) => {
+                                            const isAvail = size.available !== false;
+                                            return (
                                             <button
                                                 key={i}
-                                                disabled={!size.available}
-                                                onClick={() => size.available && setSelectedSize(size.label)}
-                                                className={`rap-rental-size-pill ${!size.available ? "unavailable" : ""} ${selectedSize === size.label ? "active" : ""}`}
+                                                disabled={!isAvail}
+                                                onClick={() => isAvail && setSelectedSize(size.label)}
+                                                className={`rap-rental-size-pill ${!isAvail ? "unavailable" : ""} ${selectedSize === size.label ? "active" : ""}`}
                                             >
                                                 {size.label}
                                             </button>
-                                        )) : <span className="rab-size-disabled">Size not available</span>;
+                                        )}) : <span className="rab-size-disabled">Size not available</span>;
                                     })()}
                                 </div>
                             </div>

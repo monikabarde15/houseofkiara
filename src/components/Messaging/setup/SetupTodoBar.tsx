@@ -1,7 +1,7 @@
 // setup/SetupTodoBar.tsx
-import React from 'react';
-import { Button } from '../components/Button';
-import './styles/SetupTodoBar.css';
+import React from "react";
+import { Button } from "../components/Button";
+import "./styles/SetupTodoBar.css";
 
 interface TodoItem {
   id: string;
@@ -24,7 +24,7 @@ export const SetupTodoBar: React.FC<SetupTodoBarProps> = ({ items }) => {
   return (
     <div className="msg-todo-bar">
       <div className="msg-todo-bar-heading">
-        {count} thing{count > 1 ? 's' : ''} to do
+        {count} thing{count > 1 ? "s" : ""} to do
       </div>
       {items.map((item) => (
         <div key={item.id} className="msg-todo-row">

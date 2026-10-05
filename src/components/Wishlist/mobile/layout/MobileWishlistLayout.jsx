@@ -1,40 +1,46 @@
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import MobilePageTitle from '../ui/MobilePageTitle';
-import MobileWishlistToolbar from '../toolbar/MobileWishlistToolbar';
-import MobileRentSection from '../sections/MobileRentSection';
-import MobilePrelovedSection from '../sections/MobilePrelovedSection';
-import MobileNewSection from '../sections/MobileNewSection';
-import MobileToast from '../common/MobileToast';
-import MobileBottomSheet from '../sheets/MobileBottomSheet';
-import MobileAddToBagSheet from '../sheets/MobileAddToBagSheet';
-import MobileShareSheet from '../sheets/MobileShareSheet';
-import MobileEmptyState from '../common/MobileEmptyState';
-import MobileRecommendations from '../sections/MobileRecommendations';
-import { useMobileWishlistProducts } from '../hooks/useMobileWishlistProducts';
-import '../../../../styles/wishlist/mobile/layout/mobile-wishlist-layout.css';
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import MobilePageTitle from "../ui/MobilePageTitle";
+import MobileWishlistToolbar from "../toolbar/MobileWishlistToolbar";
+import MobileRentSection from "../sections/MobileRentSection";
+import MobilePrelovedSection from "../sections/MobilePrelovedSection";
+import MobileNewSection from "../sections/MobileNewSection";
+import MobileToast from "../common/MobileToast";
+import MobileBottomSheet from "../sheets/MobileBottomSheet";
+import MobileAddToBagSheet from "../sheets/MobileAddToBagSheet";
+import MobileShareSheet from "../sheets/MobileShareSheet";
+import MobileEmptyState from "../common/MobileEmptyState";
+import MobileRecommendations from "../sections/MobileRecommendations";
+import { useMobileWishlistProducts } from "../hooks/useMobileWishlistProducts";
+import "../../../../styles/wishlist/mobile/layout/mobile-wishlist-layout.css";
 
 const MobileWishlistLayout = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('all');
-  const [sortBy, setSortBy] = useState('newest');
+  const [activeTab, setActiveTab] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
   const [toastMessage, setToastMessage] = useState(null);
   const [toastWithUndo, setToastWithUndo] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(false);
-  
+
   // Section 9: Add to Bag sheet state
   const [isAddToBagSheetOpen, setIsAddToBagSheetOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedMode, setSelectedMode] = useState(null);
-  
+
   // Section 10: Share sheet state
   const [isShareSheetOpen, setIsShareSheetOpen] = useState(false);
-  
+
   const toastTimeoutRef = useRef(null);
-  
+
   // Use the mobile products hook
-  const { removeProduct, undoRemove, getProductsByMode, getCounts, pendingRemoval } = useMobileWishlistProducts();
-  
+  const {
+    removeProduct,
+    undoRemove,
+    getProductsByMode,
+    getCounts,
+    pendingRemoval,
+  } = useMobileWishlistProducts();
+
   // Get current counts
   const counts = getCounts();
   const totalCount = counts.total;
@@ -51,11 +57,11 @@ const MobileWishlistLayout = () => {
 
   const getActiveSectionCardsCount = () => {
     switch (activeTab) {
-      case 'rent':
+      case "rent":
         return rentProducts.length;
-      case 'preloved':
+      case "preloved":
         return prelovedProducts.length;
-      case 'new':
+      case "new":
         return newProducts.length;
       default:
         return totalCount;
@@ -70,7 +76,13 @@ const MobileWishlistLayout = () => {
 
   useEffect(() => {
     updateEmptyState();
-  }, [activeTab, rentProducts.length, prelovedProducts.length, newProducts.length, totalCount]);
+  }, [
+    activeTab,
+    rentProducts.length,
+    prelovedProducts.length,
+    newProducts.length,
+    totalCount,
+  ]);
 
   // Section 9: Open Add to Bag sheet
   const handleOpenAddToBagSheet = (item, mode) => {
@@ -99,7 +111,7 @@ const MobileWishlistLayout = () => {
   // Section 7.1: Remove sequence
   const handleRemoveCard = (item, cardElement) => {
     removeProduct(item.id, item, showToast);
-    
+
     setTimeout(() => {
       if (cardElement && cardElement.remove) {
         cardElement.remove();
@@ -124,10 +136,10 @@ const MobileWishlistLayout = () => {
     if (toastTimeoutRef.current) {
       clearTimeout(toastTimeoutRef.current);
     }
-    
+
     setToastMessage(message);
     setToastWithUndo(withUndo);
-    
+
     const duration = withUndo ? 4000 : 3000;
     toastTimeoutRef.current = setTimeout(() => {
       setToastMessage(null);
@@ -140,12 +152,15 @@ const MobileWishlistLayout = () => {
     all: totalCount,
     rent: rentCount,
     preloved: prelovedCount,
-    new: newCount
+    new: newCount,
   };
 
-  const showRentSection = (activeTab === 'all' || activeTab === 'rent') && !showEmptyState;
-  const showPrelovedSection = (activeTab === 'all' || activeTab === 'preloved') && !showEmptyState;
-  const showNewSection = (activeTab === 'all' || activeTab === 'new') && !showEmptyState;
+  const showRentSection =
+    (activeTab === "all" || activeTab === "rent") && !showEmptyState;
+  const showPrelovedSection =
+    (activeTab === "all" || activeTab === "preloved") && !showEmptyState;
+  const showNewSection =
+    (activeTab === "all" || activeTab === "new") && !showEmptyState;
 
   return (
     <div className="wishlist-mobile">
@@ -155,90 +170,99 @@ const MobileWishlistLayout = () => {
           designersCount={uniqueDesigners}
           toRentCount={toRentCount}
         />
-        <MobileWishlistToolbar 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
+        <MobileWishlistToolbar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
           tabCounts={tabCounts}
           onSortChange={setSortBy}
           onShare={handleOpenShareSheet}
         />
-        
+
         {showRentSection && (
-          <MobileRentSection 
-            viewMode="list" 
-            showToast={showToast} 
+          <MobileRentSection
+            viewMode="list"
+            showToast={showToast}
             activeTab={activeTab}
             products={rentProducts}
             onRemoveCard={handleRemoveCard}
             onOpenAddToBagSheet={handleOpenAddToBagSheet}
           />
         )}
-        
+
         {showPrelovedSection && (
-          <MobilePrelovedSection 
-            viewMode="list" 
+          <MobilePrelovedSection
+            viewMode="list"
             showToast={showToast}
             products={prelovedProducts}
             onRemoveCard={handleRemoveCard}
             onOpenAddToBagSheet={handleOpenAddToBagSheet}
           />
         )}
-        
+
         {showNewSection && (
-          <MobileNewSection 
-            viewMode="list" 
+          <MobileNewSection
+            viewMode="list"
             showToast={showToast}
             products={newProducts}
             onRemoveCard={handleRemoveCard}
             onOpenAddToBagSheet={handleOpenAddToBagSheet}
           />
         )}
-        
-        <MobileEmptyState 
+
+        <MobileEmptyState
           isVisible={showEmptyState}
-          onBrowseClick={() => navigate('/main-page')}
+          onBrowseClick={() => navigate("/main-page")}
         />
       </div>
-      
-      <MobileBottomSheet 
+
+      <MobileBottomSheet
         isOpen={isAddToBagSheetOpen}
         onClose={handleCloseAddToBagSheet}
         mode={selectedMode}
       >
-        <MobileAddToBagSheet 
+        <MobileAddToBagSheet
           item={selectedItem}
           mode={selectedMode}
           showToast={showToast}
           onClose={handleCloseAddToBagSheet}
           onAddToBag={async (details) => {
-            const { useCartStore } = await import('../../../../store/cartStore').then(m => ({ useCartStore: m.default }));
+            const { useCartStore } =
+              await import("../../../../store/cartStore").then((m) => ({
+                useCartStore: m.default,
+              }));
             const product = details.product.originalData || details.product;
-            
+
             // Normalize type string
-            const normalizedType = details.product.type === "rent" ? "rental" : (details.product.type || "rental");
+            const normalizedType =
+              details.product.type === "rent"
+                ? "rental"
+                : details.product.type || "rental";
 
             useCartStore.getState().addToCart(product, {
               type: normalizedType,
               size: details.size,
-              rentalDates: details.startDate && details.endDate ? { start: details.startDate, end: details.endDate } : null,
-              price: details.product.price
+              rentalDates:
+                details.startDate && details.endDate
+                  ? { start: details.startDate, end: details.endDate }
+                  : null,
+              price: details.product.price,
             });
           }}
         />
       </MobileBottomSheet>
-      
-      <MobileShareSheet 
+
+      <MobileShareSheet
         isOpen={isShareSheetOpen}
         onClose={handleCloseShareSheet}
         showToast={showToast}
       />
 
       <MobileRecommendations showToast={showToast} />
-      
+
       {toastMessage && (
-        <MobileToast 
-          message={toastMessage} 
-          withUndo={toastWithUndo} 
+        <MobileToast
+          message={toastMessage}
+          withUndo={toastWithUndo}
           onUndo={handleUndo}
           onClose={() => {
             if (toastTimeoutRef.current) {

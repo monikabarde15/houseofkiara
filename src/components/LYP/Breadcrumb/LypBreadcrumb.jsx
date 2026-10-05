@@ -5,7 +5,6 @@ const LypBreadcrumb = () => {
   return (
     <div className="lyp-breadcrumb">
       <div className="lyp-breadcrumb-inner">
-        
         <a href="/" data-route="homepage" className="crumb-link">
           Home
         </a>
@@ -18,10 +17,7 @@ const LypBreadcrumb = () => {
 
         <span className="crumb-separator">›</span>
 
-        <span className="crumb-current">
-          List Your Piece
-        </span>
-
+        <span className="crumb-current">List Your Piece</span>
       </div>
     </div>
   );

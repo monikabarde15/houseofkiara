@@ -18,21 +18,12 @@ export const calculateCheckoutSummary = ({
   promoDiscount = 0,
   deliveryType = "std",
 }) => {
-
   const delivery =
-    deliveryType === "exp"
-      ? DELIVERY_EXPRESS
-      : DELIVERY_STANDARD;
+    deliveryType === "exp" ? DELIVERY_EXPRESS : DELIVERY_STANDARD;
 
-  const grandTotal =
-    subtotal -
-    promoDiscount +
-    delivery.amount;
+  const grandTotal = subtotal - promoDiscount + delivery.amount;
 
-  const gstTotal =
-    deliveryType === "exp"
-      ? 5506
-      : 5452;
+  const gstTotal = deliveryType === "exp" ? 5506 : 5452;
 
   return {
     delivery,

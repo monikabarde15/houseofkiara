@@ -13,7 +13,10 @@ describe("Tier 1: Feature Coverage — Customers CRUD & Subdocuments", () => {
     testCustomerId = customerPayload.customerId;
 
     const res = await client.post("/customers", customerPayload);
-    assert.ok([200, 201].includes(res.status), `Create customer expected 200/201, got ${res.status}`);
+    assert.ok(
+      [200, 201].includes(res.status),
+      `Create customer expected 200/201, got ${res.status}`,
+    );
     assert.strictEqual(res.data?.success, true);
     assert.ok(res.data?.data);
     assert.strictEqual(res.data.data.customerId, testCustomerId);
@@ -21,18 +24,29 @@ describe("Tier 1: Feature Coverage — Customers CRUD & Subdocuments", () => {
   });
 
   test("Feature 14: GET /api/customers lists customers and supports multi-field search", async () => {
-    const res = await client.get(`/customers?search=${encodeURIComponent(createdCustomer.name)}`);
+    const res = await client.get(
+      `/customers?search=${encodeURIComponent(createdCustomer.name)}`,
+    );
     assert.strictEqual(res.status, 200, "Get customers should return 200 OK");
     assert.strictEqual(res.data?.success, true);
     const customers = res.data?.data || [];
     assert.ok(Array.isArray(customers), "Customers data must be an array");
-    const found = customers.some((c) => c.customerId === testCustomerId || c.id === testCustomerId);
-    assert.ok(found, `Customer ${testCustomerId} should be returned in search results`);
+    const found = customers.some(
+      (c) => c.customerId === testCustomerId || c.id === testCustomerId,
+    );
+    assert.ok(
+      found,
+      `Customer ${testCustomerId} should be returned in search results`,
+    );
   });
 
   test("Feature 14: GET /api/customers/:id retrieves customer profile by customerId", async () => {
     const res = await client.get(`/customers/${testCustomerId}`);
-    assert.strictEqual(res.status, 200, "Get customer detail should return 200 OK");
+    assert.strictEqual(
+      res.status,
+      200,
+      "Get customer detail should return 200 OK",
+    );
     assert.strictEqual(res.data?.success, true);
     assert.strictEqual(res.data.data.customerId, testCustomerId);
     assert.strictEqual(res.data.data.email, createdCustomer.email);
@@ -59,13 +73,19 @@ describe("Tier 1: Feature Coverage — Customers CRUD & Subdocuments", () => {
       isDefault: false,
     };
 
-    const res = await client.post(`/customers/${testCustomerId}/addresses`, addressPayload);
+    const res = await client.post(
+      `/customers/${testCustomerId}/addresses`,
+      addressPayload,
+    );
     assert.strictEqual(res.status, 200, "Add address should return 200 OK");
     assert.strictEqual(res.data?.success, true);
 
     const detailRes = await client.get(`/customers/${testCustomerId}`);
     const addresses = detailRes.data.data.addresses || [];
-    assert.ok(addresses.some((a) => a.label === "Studio Address"), "Appended address must exist in customer addresses");
+    assert.ok(
+      addresses.some((a) => a.label === "Studio Address"),
+      "Appended address must exist in customer addresses",
+    );
   });
 
   test("Feature 14: POST /api/customers/:id/occasions appends special occasion", async () => {
@@ -75,7 +95,10 @@ describe("Tier 1: Feature Coverage — Customers CRUD & Subdocuments", () => {
       date: "2026-12-15",
     };
 
-    const res = await client.post(`/customers/${testCustomerId}/occasions`, occasionPayload);
+    const res = await client.post(
+      `/customers/${testCustomerId}/occasions`,
+      occasionPayload,
+    );
     assert.strictEqual(res.status, 200, "Add occasion should return 200 OK");
     assert.strictEqual(res.data?.success, true);
   });
@@ -86,7 +109,10 @@ describe("Tier 1: Feature Coverage — Customers CRUD & Subdocuments", () => {
       channel: "WhatsApp",
     };
 
-    const res = await client.post(`/customers/${testCustomerId}/communication-log`, commPayload);
+    const res = await client.post(
+      `/customers/${testCustomerId}/communication-log`,
+      commPayload,
+    );
     assert.strictEqual(res.status, 200, "Add comm log should return 200 OK");
     assert.strictEqual(res.data?.success, true);
   });
@@ -100,7 +126,11 @@ describe("Tier 1: Feature Coverage — Customers CRUD & Subdocuments", () => {
     const getRes = await client.get(`/customers/${testCustomerId}`);
     assert.ok([404, 200].includes(getRes.status));
     if (getRes.status === 200) {
-      assert.strictEqual(getRes.data?.data, null, "Deleted customer data should be null");
+      assert.strictEqual(
+        getRes.data?.data,
+        null,
+        "Deleted customer data should be null",
+      );
     }
   });
 });

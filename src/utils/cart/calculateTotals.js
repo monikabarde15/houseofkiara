@@ -7,7 +7,11 @@ const cleanPrice = (price) => {
   return Number(String(price).replace(/[^\d]/g, ""));
 };
 
-export const calculateTotals = (cartItems, activePromo,deliveryType = "standard",) => {
+export const calculateTotals = (
+  cartItems,
+  activePromo,
+  deliveryType = "standard",
+) => {
   let subtotal = 0;
 
   const itemsGrouped = {
@@ -17,7 +21,7 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
   };
 
   cartItems.forEach((item) => {
-    const { product, booking, type } = item;
+    let { product, booking, type } = item;
 
     let basePrice = 0;
     let days = 0;
@@ -33,9 +37,7 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
           const start = new Date(booking.deliveryDate);
           const end = new Date(booking.returnDate);
 
-          const diff = Math.ceil(
-            (end - start) / (1000 * 60 * 60 * 24)
-          );
+          const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
 
           // Add +1 to include both start and end dates in the count
           const totalDays = diff + 1;
@@ -47,7 +49,8 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
 
       days = getRentalDays(booking);
 
-      const perDay = product?.rent?.pricing?.pricePerDay || (cleanPrice(item.price) / 4) || 0;
+      const perDay =
+        product?.rent?.pricing?.pricePerDay || cleanPrice(item.price) / 4 || 0;
 
       basePrice = days * perDay;
     }
@@ -55,12 +58,16 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
     // PRELOVED
     if (type === "preloved") {
       // basePrice = cleanPrice(product?.price);
-      basePrice = cleanPrice(product?.preloved?.pricing?.price) || cleanPrice(item.price) || 0;
+      basePrice =
+        cleanPrice(product?.preloved?.pricing?.price) ||
+        cleanPrice(item.price) ||
+        0;
     }
 
     // NEW
-    if (type === "new") {
+    if (type === "new" || type === "buy-new") {
       basePrice = cleanPrice(product?.price) || cleanPrice(item.price) || 0;
+      type = "new"; // normalize for itemsGrouped
     }
 
     if (basePrice <= 0) return;
@@ -75,7 +82,10 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
       size: booking?.size || product?.size,
       startDate: booking?.deliveryDate,
       endDate: booking?.returnDate,
-      windowDays: type === "rental" ? days : (booking?.rentalWindowDays || booking?.windowDays),
+      windowDays:
+        type === "rental"
+          ? days
+          : booking?.rentalWindowDays || booking?.windowDays,
     });
   });
 
@@ -102,22 +112,23 @@ export const calculateTotals = (cartItems, activePromo,deliveryType = "standard"
   });
 
   /* DELIVERY */
-  const deliveryCharge =
-    deliveryType === "express"
-      ? 299
-      : 0;
+  const deliveryCharge = deliveryType === "express" ? 299 : 0;
 
   /* DELIVERY GST */
   const deliveryGST =
-    deliveryCharge > 0
-      ? Math.round(deliveryCharge * 0.18)
-      : 0;
+    deliveryCharge > 0 ? Math.round(deliveryCharge * 0.18) : 0;
 
-  const totalGST = rentalGST + prelovedGST + newGST + deliveryGST ;
+  const totalGST = rentalGST + prelovedGST + newGST + deliveryGST;
 
   const grandTotal = Math.max(
     0,
-    subtotal - discount + rentalGST + prelovedGST + newGST + deliveryCharge + deliveryGST
+    subtotal -
+      discount +
+      rentalGST +
+      prelovedGST +
+      newGST +
+      deliveryCharge +
+      deliveryGST,
   );
 
   return {

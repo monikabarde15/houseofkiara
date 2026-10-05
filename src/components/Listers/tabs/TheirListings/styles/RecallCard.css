@@ -11,9 +11,9 @@
 /* Recall Form */
 .recall-form {
   padding: 10px 12px;
-  border: 1px dashed #E8E0D4;
+  border: 1px dashed #e8e0d4;
   border-radius: 4px;
-  background: #F7F4EF;
+  background: #f7f4ef;
   margin-bottom: 12px;
 }
 
@@ -35,8 +35,8 @@
 /* Recall Item */
 .recall-item {
   padding: 11px 13px;
-  background: #FFFFFB;
-  border: 1px solid #EDE6DC;
+  background: #fffffb;
+  border: 1px solid #ede6dc;
   border-radius: 4px;
   margin-bottom: 8px;
 }
@@ -57,7 +57,7 @@
 .recall-piece-name {
   font-size: 12px;
   font-weight: 500;
-  color: #C9A96E;
+  color: #c9a96e;
   cursor: pointer;
 }
 
@@ -67,22 +67,22 @@
 
 .recall-requested-date {
   font-size: 10px;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .recall-reason {
   font-size: 11.5px;
   font-style: italic;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 8px;
 }
 
 /* Recall States */
 .recall-state {
   padding: 8px 11px;
-  border: 1px solid #EDE6DC;
+  border: 1px solid #ede6dc;
   border-radius: 4px;
-  background: #F7F4EF;
+  background: #f7f4ef;
   font-size: 11.5px;
   display: flex;
   flex-direction: column;
@@ -90,31 +90,31 @@
 }
 
 .recall-requested {
-  border-left: 3px solid #C9A96E;
+  border-left: 3px solid #c9a96e;
 }
 
 .recall-scheduled {
-  border-left: 3px solid #C9A96E;
+  border-left: 3px solid #c9a96e;
 }
 
 .recall-returned {
-  border-left: 3px solid #6B7E5A;
+  border-left: 3px solid #6b7e5a;
 }
 
 .recall-declined {
-  border-left: 3px solid #B85C38;
+  border-left: 3px solid #b85c38;
 }
 
 .recall-conflict {
-  color: #B85C38;
+  color: #b85c38;
 }
 
 .recall-clear {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 .recall-state-label {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .recall-actions {
@@ -125,7 +125,7 @@
 
 .recall-empty {
   font-size: 11px;
-  color: #8A7E72;
+  color: #8a7e72;
   padding: 4px 0;
 }
 

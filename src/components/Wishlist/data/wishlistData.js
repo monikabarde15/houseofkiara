@@ -17,7 +17,7 @@ export const wishlistItems = {
       isAvailable: true,
       dateSaved: "2025-05-20",
       tag: "In Demand",
-      sizes: ["XS", "S", "M", "L"]
+      sizes: ["XS", "S", "M", "L"],
     },
     {
       id: 2,
@@ -32,7 +32,7 @@ export const wishlistItems = {
       isAvailable: true,
       dateSaved: "2025-05-28",
       tag: null,
-      sizes: ["S", "M", "L", "XL"]
+      sizes: ["S", "M", "L", "XL"],
     },
     {
       id: 3,
@@ -47,7 +47,7 @@ export const wishlistItems = {
       isAvailable: false,
       dateSaved: "2025-05-15",
       tag: null,
-      sizes: ["XS", "S", "M", "L"]
+      sizes: ["XS", "S", "M", "L"],
     },
     {
       id: 4,
@@ -62,7 +62,7 @@ export const wishlistItems = {
       isAvailable: true,
       dateSaved: "2025-05-08",
       tag: null,
-      sizes: ["XS", "S", "M"]
+      sizes: ["XS", "S", "M"],
     },
     {
       id: 9,
@@ -77,7 +77,7 @@ export const wishlistItems = {
       isAvailable: true,
       dateSaved: "2025-05-26",
       tag: null,
-      sizes: ["S", "M"]
+      sizes: ["S", "M"],
     },
     {
       id: 10,
@@ -92,7 +92,7 @@ export const wishlistItems = {
       isAvailable: true,
       dateSaved: "2026-05-21",
       tag: null,
-      sizes: ["XS", "S", "M", "L"]
+      sizes: ["XS", "S", "M", "L"],
     },
     {
       id: 11,
@@ -107,8 +107,8 @@ export const wishlistItems = {
       isAvailable: true,
       dateSaved: "2026-05-17",
       tag: "Popular",
-      sizes: ["Free Size"]
-    }
+      sizes: ["Free Size"],
+    },
   ],
 
   // Section 18.2: Buy Preloved Section (3 cards)
@@ -124,7 +124,7 @@ export const wishlistItems = {
       condition: "Pristine condition",
       isAvailable: true,
       dateSaved: "2026-05-26",
-      sizes: ["Free Size"]
+      sizes: ["Free Size"],
     },
     {
       id: 6,
@@ -137,7 +137,7 @@ export const wishlistItems = {
       condition: "Excellent condition",
       isAvailable: true,
       dateSaved: "2025-05-19",
-      sizes: ["S", "M", "L"]
+      sizes: ["S", "M", "L"],
     },
     {
       id: 7,
@@ -150,8 +150,8 @@ export const wishlistItems = {
       condition: "Good condition",
       isAvailable: true,
       dateSaved: "2025-05-01",
-      sizes: ["S", "M", "L"]
-    }
+      sizes: ["S", "M", "L"],
+    },
   ],
 
   // Section 18.3: Buy New Section (1 card)
@@ -167,9 +167,9 @@ export const wishlistItems = {
       condition: null,
       isAvailable: true,
       dateSaved: "2025-05-27",
-      sizes: ["XS", "S", "M", "L", "XL"]
-    }
-  ]
+      sizes: ["XS", "S", "M", "L", "XL"],
+    },
+  ],
 };
 
 // Limited availability items for notice (Section 5.2)
@@ -177,20 +177,20 @@ export const limitedAvailabilityItems = [
   {
     id: 1,
     name: "Crimson Zardozi Bridal Lehenga",
-    designer: "Sabyasachi"
+    designer: "Sabyasachi",
   },
   {
     id: 3,
     name: "Rose Embroidered Anarkali Gown",
-    designer: "Tarun Tahiliani"
-  }
+    designer: "Tarun Tahiliani",
+  },
 ];
 
 // Stats for the page
 export const wishlistStats = {
   totalPieces: 11,
   totalDesigners: 9,
-  toRent: 7
+  toRent: 7,
 };
 
 // Tab counts
@@ -198,5 +198,5 @@ export const tabCounts = {
   all: 11,
   rent: 7,
   buyPreloved: 3,
-  buyNew: 1
+  buyNew: 1,
 };

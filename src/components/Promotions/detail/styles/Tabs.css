@@ -23,7 +23,9 @@
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
   white-space: nowrap;
-  transition: color 0.12s, border-color 0.12s;
+  transition:
+    color 0.12s,
+    border-color 0.12s;
 }
 
 .tabs__tab:hover {

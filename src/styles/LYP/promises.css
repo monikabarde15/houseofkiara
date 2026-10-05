@@ -1,7 +1,7 @@
 /* Section */
 
 .lyp-promises {
-  background: #FAF7F2;
+  background: #faf7f2;
   padding: 80px;
 }
 
@@ -85,8 +85,8 @@
 
 .lyp-promise-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(201,169,110,0.4);
-  box-shadow: 0 20px 40px -20px rgba(26,22,18,0.1);
+  border-color: rgba(201, 169, 110, 0.4);
+  box-shadow: 0 20px 40px -20px rgba(26, 22, 18, 0.1);
 }
 
 /* TOP ACCENT STRIPE */
@@ -100,7 +100,7 @@
 
   height: 2px;
 
-  background: linear-gradient(90deg, var(--gold), #C86B4A);
+  background: linear-gradient(90deg, var(--gold), #c86b4a);
   opacity: 0;
 
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -129,7 +129,7 @@
   content: "";
   flex: 1;
   height: 1px;
-  background: rgba(201,169,110,0.3);
+  background: rgba(201, 169, 110, 0.3);
 }
 
 /* ICON */
@@ -138,8 +138,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(201,169,110,0.3);
-  background:var(--gold-pale);
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  background: var(--gold-pale);
 
   display: flex;
   align-items: center;
@@ -147,13 +147,11 @@
   margin-bottom: 20px;
 }
 
-.lyp-promise-icon svg{
+.lyp-promise-icon svg {
   height: 18px;
   width: 18px;
   stroke: var(--gold);
-
 }
-
 
 /* TITLE + BODY */
 
@@ -196,8 +194,7 @@
 /* =========================================
    PROMISES — MOBILE 
 ========================================= */
-@media (max-width: 960px){
-
+@media (max-width: 960px) {
   /* ---------- Section ---------- */
 
   .lyp-promises {
@@ -274,5 +271,4 @@
     font-size: 13px;
     line-height: 1.85;
   }
-
 }

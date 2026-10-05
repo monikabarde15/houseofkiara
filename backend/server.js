@@ -21,11 +21,11 @@ app.use("/api", offersRouter);
 app.use("/api", authRouter);
 
 // ✅ FIX: SABSE PEHLE LISTER ROUTE REGISTER KARO (Taaki /api/listers product router se na takraye)
-app.use("/api/listers", listerRouter); 
+app.use("/api/listers", listerRouter);
 app.use("/api/designers", designerRouter);
 
 app.use("/api", payoutRouter);
-app.use("/api", productRouter); 
+app.use("/api", productRouter);
 app.use("/api", orderRouter);
 app.use("/api", uploadRouter);
 app.use("/api", messageRouter);
@@ -33,7 +33,9 @@ app.use("/api", customerRouter);
 
 // ✅ 404 handler (SABSE LAST MEIN)
 app.use((req, res) => {
-  res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found` });
+  res
+    .status(404)
+    .json({ success: false, message: `Route ${req.originalUrl} not found` });
 });
 
 // ✅ Error handler (SABSE LAST MEIN)

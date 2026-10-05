@@ -1,6 +1,4 @@
 function MobileDrawerFooter() {
-  return (
-    <div>MobileDrawerFooter</div>
-  )
+  return <div>MobileDrawerFooter</div>;
 }
-export default MobileDrawerFooter
+export default MobileDrawerFooter;

@@ -1,5 +1,5 @@
-import React from 'react';
-import { ChevronLeft } from 'lucide-react';
+import React from "react";
+import { ChevronLeft } from "lucide-react";
 import "../../../../styles/Profile/mobile/common/MobileFullViewBar.css";
 
 const MobileFullViewBar = ({ title, count, onBack }) => {

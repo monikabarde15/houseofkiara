@@ -1,9 +1,9 @@
 // src/components/Listers/components/SupplyInsightCard.tsx
 
-import React from 'react';
-import { Lister } from '../types/lister.types';
-import { calculateSupplyInsight } from '../utils/derived';
-import './styles/SupplyInsightCard.css';
+import React from "react";
+import { Lister } from "../types/lister.types";
+import { calculateSupplyInsight } from "../utils/derived";
+import "./styles/SupplyInsightCard.css";
 
 // removed mock imports
 
@@ -11,7 +11,9 @@ interface SupplyInsightCardProps {
   listers: Lister[];
 }
 
-export const SupplyInsightCard: React.FC<SupplyInsightCardProps> = ({ listers }) => {
+export const SupplyInsightCard: React.FC<SupplyInsightCardProps> = ({
+  listers,
+}) => {
   // In real implementation, pass products and transactions
   // For now, using empty arrays as backend is being connected
   const insight = calculateSupplyInsight(listers, [], []);
@@ -29,10 +31,13 @@ export const SupplyInsightCard: React.FC<SupplyInsightCardProps> = ({ listers })
           {isRisk ? (
             <>
               <span className="supply-insight-risk">
-                Supply concentration:{' '}
-                <span className="qlnk">{lister?.name}</span> holds {liveShare}% of {totalLive} live pieces ({liveShare}%) and {tvShare}% of lifetime transaction value.{' '}
+                Supply concentration:{" "}
+                <span className="qlnk">{lister?.name}</span> holds {liveShare}%
+                of {totalLive} live pieces ({liveShare}%) and {tvShare}% of
+                lifetime transaction value.{" "}
                 <span className="supply-insight-risk-highlight">
-                  Single-lister dependency – a recall or exit would thin the rental rail; keep the acquisition push warm.
+                  Single-lister dependency – a recall or exit would thin the
+                  rental rail; keep the acquisition push warm.
                 </span>
               </span>
             </>

@@ -22,8 +22,8 @@ const GoldParticles = ({ trigger, anchorElement }) => {
 
     if (anchorElement) {
       const rect = anchorElement.getBoundingClientRect();
-      spawnX = rect.left + rect.width / 2;  // Centre horizontally
-      spawnY = rect.top;                     // Top vertically
+      spawnX = rect.left + rect.width / 2; // Centre horizontally
+      spawnY = rect.top; // Top vertically
     }
 
     const particles = [];
@@ -34,14 +34,14 @@ const GoldParticles = ({ trigger, anchorElement }) => {
       particles.push({
         x: spawnX,
         y: spawnY,
-        vx: (Math.random() - 0.5) * 2.4,           // ±1.2
-        vy: -Math.random() * 5.2 - 1.2,            // -1.2 to -6.4 (upward burst)
-        size: Math.random() * 3.5 + 1.5,           // 1.5px to 5px
+        vx: (Math.random() - 0.5) * 2.4, // ±1.2
+        vy: -Math.random() * 5.2 - 1.2, // -1.2 to -6.4 (upward burst)
+        size: Math.random() * 3.5 + 1.5, // 1.5px to 5px
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
         rotation: Math.random() * Math.PI,
         vr: (Math.random() - 0.5) * 0.1,
         alpha: 1,
-        shape: isDiamond ? "diamond" : "circle"
+        shape: isDiamond ? "diamond" : "circle",
       });
     }
 
@@ -53,7 +53,7 @@ const GoldParticles = ({ trigger, anchorElement }) => {
 
       let allDead = true;
 
-      particles.forEach(p => {
+      particles.forEach((p) => {
         if (p.alpha <= 0) return;
 
         allDead = false;
@@ -113,7 +113,7 @@ const GoldParticles = ({ trigger, anchorElement }) => {
         top: 0,
         left: 0,
         pointerEvents: "none",
-        zIndex: 9999
+        zIndex: 9999,
       }}
     />
   );

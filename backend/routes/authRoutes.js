@@ -1,5 +1,9 @@
 import express from "express";
-import { getAuthStatus, loginAdmin, registerAdmin } from "../controllers/authController.js";
+import {
+  getAuthStatus,
+  loginAdmin,
+  registerAdmin,
+} from "../controllers/authController.js";
 
 const router = express.Router();
 router.get("/auth/status", getAuthStatus);

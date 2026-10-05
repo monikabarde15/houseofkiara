@@ -4,7 +4,14 @@ import ListMainColumn from "./list/ListMainColumn";
 import ListAsideColumn from "./list/ListAsideColumn";
 import "../../../styles/wishlist/cards/list/list-card.css";
 
-const WishlistListCard = ({ product, type, onRemove, onOpenModal, isRestored }) => {  // Remove onShowToast
+const WishlistListCard = ({
+  product,
+  type,
+  onRemove,
+  onOpenModal,
+  isRestored,
+}) => {
+  // Remove onShowToast
   const cardRef = useRef(null);
   const [isRemoving, setIsRemoving] = useState(false);
   const [isCollapsing, setIsCollapsing] = useState(false);
@@ -42,17 +49,9 @@ const WishlistListCard = ({ product, type, onRemove, onOpenModal, isRestored }) 
       data-mode={type}
       data-designer={product.designer}
     >
-      <ListImageArea 
-        product={product}
-        type={type}
-        onRemove={handleRemove}
-      />
-      <ListMainColumn 
-        product={product}
-        type={type}
-        onRemove={handleRemove}
-      />
-      <ListAsideColumn 
+      <ListImageArea product={product} type={type} onRemove={handleRemove} />
+      <ListMainColumn product={product} type={type} onRemove={handleRemove} />
+      <ListAsideColumn
         product={product}
         type={type}
         onOpenModal={onOpenModal}

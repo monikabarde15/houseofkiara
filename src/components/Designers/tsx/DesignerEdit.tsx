@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ExternalLink } from 'lucide-react';
-import { Designer } from '../types/designer.types';
-import ProfileTab from '../tabs/ProfileTab';
-import PerformancePiecesTab from '../tabs/PerformancePiecesTab';
-import AuthenticationTab, { AuthenticationData } from '../tabs/AuthenticationTab';
-import ContactCommercialTab, { ContactCommercialData } from '../tabs/ContactCommercialTab';
+import React, { useState, useEffect } from "react";
+import { ChevronLeft, ExternalLink } from "lucide-react";
+import { Designer } from "../types/designer.types";
+import ProfileTab from "../tabs/ProfileTab";
+import PerformancePiecesTab from "../tabs/PerformancePiecesTab";
+import AuthenticationTab, {
+  AuthenticationData,
+} from "../tabs/AuthenticationTab";
+import ContactCommercialTab, {
+  ContactCommercialData,
+} from "../tabs/ContactCommercialTab";
 
-type TabKey = 'profile' | 'performance' | 'authentication' | 'contact';
+type TabKey = "profile" | "performance" | "authentication" | "contact";
 
 const TABS: { key: TabKey; label: string }[] = [
-  { key: 'profile', label: 'Profile' },
-  { key: 'performance', label: 'Performance & Pieces' },
-  { key: 'authentication', label: 'Authentication' },
-  { key: 'contact', label: 'Contact & Commercial' },
+  { key: "profile", label: "Profile" },
+  { key: "performance", label: "Performance & Pieces" },
+  { key: "authentication", label: "Authentication" },
+  { key: "contact", label: "Contact & Commercial" },
 ];
 
 interface DesignerEditProps {
@@ -33,7 +37,7 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
   onMergeProfile,
   onDeleteProfile,
 }) => {
-  const [activeTab, setActiveTab] = useState<TabKey>('profile');
+  const [activeTab, setActiveTab] = useState<TabKey>("profile");
   const [currentDesigner, setCurrentDesigner] = useState<Designer>(designer);
   const [isSavedRecently, setIsSavedRecently] = useState(false);
 
@@ -42,9 +46,15 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
   }, [designer]);
 
   const isCreateMode = !currentDesigner.id || !currentDesigner.name;
-  const designerName = currentDesigner.name ? currentDesigner.name : 'New Designer';
-  const slug = currentDesigner.slug ? currentDesigner.slug : (currentDesigner.name ? currentDesigner.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '');
-  const bio = currentDesigner.bio || '';
+  const designerName = currentDesigner.name
+    ? currentDesigner.name
+    : "New Designer";
+  const slug = currentDesigner.slug
+    ? currentDesigner.slug
+    : currentDesigner.name
+      ? currentDesigner.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+      : "";
+  const bio = currentDesigner.bio || "";
 
   const handleTabChangeData = (partialData: Partial<Designer>) => {
     setCurrentDesigner((prev) => ({
@@ -55,7 +65,7 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
 
   const handleMasterSave = () => {
     if (!currentDesigner.name || !currentDesigner.name.trim()) {
-      alert('Designer name is required to save.');
+      alert("Designer name is required to save.");
       return;
     }
     onSaveProfile(currentDesigner);
@@ -83,7 +93,7 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
     onSaveProfile(updated);
     setIsSavedRecently(true);
     setTimeout(() => setIsSavedRecently(false), 3000);
-    alert('Authentication details saved successfully to MongoDB database!');
+    alert("Authentication details saved successfully to MongoDB database!");
   };
 
   const handleSaveContactData = (contactData: ContactCommercialData) => {
@@ -104,7 +114,9 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
     onSaveProfile(updated);
     setIsSavedRecently(true);
     setTimeout(() => setIsSavedRecently(false), 3000);
-    alert('Contact & Commercial details saved successfully to MongoDB database!');
+    alert(
+      "Contact & Commercial details saved successfully to MongoDB database!",
+    );
   };
 
   return (
@@ -133,7 +145,7 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
           {/* Right: Actions */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => slug && window.open(`/designer/${slug}`, '_blank')}
+              onClick={() => slug && window.open(`/designer/${slug}`, "_blank")}
               className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E5DDD3] bg-white px-3.5 text-[12px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition shadow-2xs cursor-pointer"
             >
               <ExternalLink className="h-3.5 w-3.5 text-[#6F675D]" />
@@ -143,7 +155,7 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
               onClick={handleMasterSave}
               className="inline-flex h-8 items-center rounded-md bg-[#C7A55C] hover:bg-[#B9974B] px-4 text-[12px] font-semibold text-[#2A2118] transition shadow-2xs cursor-pointer"
             >
-              {isSavedRecently ? 'Saved ✓' : 'Save Changes'}
+              {isSavedRecently ? "Saved ✓" : "Save Changes"}
             </button>
           </div>
         </div>
@@ -159,10 +171,10 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
             </h1>
             <p className="mt-1.5 text-[13px] text-[#8C847A] font-normal max-w-3xl leading-relaxed">
               {isCreateMode ? (
-                'Fill in the Profile tab and Save to create it.'
+                "Fill in the Profile tab and Save to create it."
               ) : (
                 <>
-                  {bio ? `${bio} · ` : ''}
+                  {bio ? `${bio} · ` : ""}
                   <span className="text-[#A0988E]">slug: {slug}</span>
                 </>
               )}
@@ -172,7 +184,7 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
           {/* Right: Section Action Buttons */}
           <div className="flex items-center gap-2 shrink-0">
             <button
-              onClick={() => slug && window.open(`/designer/${slug}`, '_blank')}
+              onClick={() => slug && window.open(`/designer/${slug}`, "_blank")}
               className="inline-flex h-8 items-center rounded-md border border-[#E2DAD1] bg-white px-3.5 text-[12px] font-medium text-[#524B43] hover:bg-[#FAF8F5] transition shadow-2xs cursor-pointer"
             >
               View Listing →
@@ -181,7 +193,7 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
               onClick={handleMasterSave}
               className="inline-flex h-8 items-center rounded-md bg-[#C7A55C] hover:bg-[#B9974B] px-4 text-[12px] font-semibold text-[#2A2118] transition shadow-2xs cursor-pointer"
             >
-              {isSavedRecently ? 'Saved ✓' : 'Save'}
+              {isSavedRecently ? "Saved ✓" : "Save"}
             </button>
           </div>
         </div>
@@ -190,7 +202,8 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
       {/* Disclaimer Rectangle Banner (Renders ONLY in create mode; disappears once designer is saved!) */}
       {isCreateMode && (
         <div className="mx-6 mt-3 p-3.5 bg-[#F9F6F0] border border-[#E5DEC9] rounded-md text-[12px] text-[#5C5346] leading-relaxed">
-          Creating a new designer profile — fill the Profile tab and Save to create it. The other tabs unlock once the profile exists.
+          Creating a new designer profile — fill the Profile tab and Save to
+          create it. The other tabs unlock once the profile exists.
         </div>
       )}
 
@@ -205,8 +218,8 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
                 onClick={() => setActiveTab(tab.key)}
                 className={`py-3 text-[13px] transition cursor-pointer relative font-medium ${
                   isActive
-                    ? 'text-[#2B2520] font-semibold'
-                    : 'text-[#8C847A] hover:text-[#2B2520]'
+                    ? "text-[#2B2520] font-semibold"
+                    : "text-[#8C847A] hover:text-[#2B2520]"
                 }`}
               >
                 {tab.label}
@@ -221,7 +234,7 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
 
       {/* Tab Body Content */}
       <div className="p-6">
-        {activeTab === 'profile' && (
+        {activeTab === "profile" && (
           <ProfileTab
             designer={currentDesigner}
             otherDesigners={allDesigners
@@ -233,32 +246,54 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
             onDelete={onDeleteProfile}
           />
         )}
-        {activeTab === 'performance' && <PerformancePiecesTab designer={currentDesigner} />}
-        {activeTab === 'authentication' && (
+        {activeTab === "performance" && (
+          <PerformancePiecesTab designer={currentDesigner} />
+        )}
+        {activeTab === "authentication" && (
           <AuthenticationTab
             designer={currentDesigner}
             authentication={{
-              riskTier: (currentDesigner as any).counterfeitRiskTier || (currentDesigner as any).riskTier || 'Low',
-              checklist: (currentDesigner as any).authenticationChecklist || (currentDesigner as any).checklist || '',
-              brandWebsite: (currentDesigner as any).websiteUrl || (currentDesigner as any).brandWebsite || '',
-              brandInstagram: (currentDesigner as any).instagramHandle || (currentDesigner as any).brandInstagram || '',
+              riskTier:
+                (currentDesigner as any).counterfeitRiskTier ||
+                (currentDesigner as any).riskTier ||
+                "Low",
+              checklist:
+                (currentDesigner as any).authenticationChecklist ||
+                (currentDesigner as any).checklist ||
+                "",
+              brandWebsite:
+                (currentDesigner as any).websiteUrl ||
+                (currentDesigner as any).brandWebsite ||
+                "",
+              brandInstagram:
+                (currentDesigner as any).instagramHandle ||
+                (currentDesigner as any).brandInstagram ||
+                "",
             }}
             onSave={handleSaveAuthenticationData}
             onChange={handleTabChangeData}
           />
         )}
-        {activeTab === 'contact' && (
+        {activeTab === "contact" && (
           <ContactCommercialTab
             designer={currentDesigner}
             data={{
-              isBuyNewPartner: currentDesigner.commercialTerms?.suppliesFreshStockBuyNow ?? false,
-              commissionPercent: currentDesigner.commercialTerms?.commissionRateBuyNow || '',
-              paymentTerms: (currentDesigner.commercialTerms?.paymentTerms as any) || 'Standard T+3',
-              fulfilmentReturnsPolicy: currentDesigner.commercialTerms?.brandFulfilmentPolicy || '',
-              accountManagerName: currentDesigner.commercialTerms?.accountManagerName || '',
-              contactEmail: currentDesigner.commercialTerms?.contactEmail || '',
-              contactPhone: currentDesigner.commercialTerms?.contactPhone || '',
-              internalNotes: currentDesigner.commercialTerms?.internalNotes || '',
+              isBuyNewPartner:
+                currentDesigner.commercialTerms?.suppliesFreshStockBuyNow ??
+                false,
+              commissionPercent:
+                currentDesigner.commercialTerms?.commissionRateBuyNow || "",
+              paymentTerms:
+                (currentDesigner.commercialTerms?.paymentTerms as any) ||
+                "Standard T+3",
+              fulfilmentReturnsPolicy:
+                currentDesigner.commercialTerms?.brandFulfilmentPolicy || "",
+              accountManagerName:
+                currentDesigner.commercialTerms?.accountManagerName || "",
+              contactEmail: currentDesigner.commercialTerms?.contactEmail || "",
+              contactPhone: currentDesigner.commercialTerms?.contactPhone || "",
+              internalNotes:
+                currentDesigner.commercialTerms?.internalNotes || "",
             }}
             onSave={handleSaveContactData}
             onChange={handleTabChangeData}

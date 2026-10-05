@@ -1,5 +1,5 @@
-import React from 'react';
-import '../../../styles/Auth/ui/CheckboxField.css';
+import React from "react";
+import "../../../styles/Auth/ui/CheckboxField.css";
 
 const CheckboxField = ({
   id,
@@ -8,7 +8,7 @@ const CheckboxField = ({
   checked,
   onChange,
   required = false,
-  error = ''
+  error = "",
 }) => {
   return (
     <div className="hok-auth-checkbox-container">
@@ -26,11 +26,7 @@ const CheckboxField = ({
           {label}
         </label>
       </div>
-      {error && (
-        <div className="hok-auth-checkbox-error">
-          {error}
-        </div>
-      )}
+      {error && <div className="hok-auth-checkbox-error">{error}</div>}
     </div>
   );
 };

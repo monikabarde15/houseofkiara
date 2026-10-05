@@ -1,7 +1,7 @@
 /* Layout */
 
 .lyp-calc {
-  background: #FAF7F2;
+  background: #faf7f2;
   padding: 80px;
 }
 
@@ -21,17 +21,17 @@
 }
 
 /* eyebrow */
-.lyp-calc-eyebrow{
-    font-family: var(--sans);
-    font-size: 9px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--gold);
+.lyp-calc-eyebrow {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
 
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 /* eyebrow-line */
@@ -47,7 +47,7 @@
 .lyp-calc-title {
   font-family: var(--serif);
   font-size: 40px;
-  font-weight: 400; 
+  font-weight: 400;
   color: var(--charcoal);
   margin-bottom: 12px;
 }
@@ -59,13 +59,13 @@
 
 /* Subtitle Body */
 
-.lyp-calc-sub{
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 300;
-    color: var(--muted);
-    line-height: 1.85;
-    margin-bottom: 16px;
+.lyp-calc-sub {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.85;
+  margin-bottom: 16px;
 }
 
 /* Disclaimer Note */
@@ -77,11 +77,11 @@
   font-family: var(--sans);
   font-size: 11px;
   font-style: italic;
-  line-height: 1.6; 
+  line-height: 1.6;
 
   color: var(--muted);
 
-  margin-top: 12px; 
+  margin-top: 12px;
 }
 
 .lyp-calc-note svg {
@@ -96,8 +96,8 @@
 
 /* Card */
 .lyp-calc-card {
-  background: #EEF2EA;
-  border: 1px solid rgba(107,126,90,0.2);
+  background: #eef2ea;
+  border: 1px solid rgba(107, 126, 90, 0.2);
   padding: 36px 40px 36px 40px;
   position: relative;
 }
@@ -116,23 +116,23 @@
 
 /* PRICE LABEL TEXT  */
 
-.lyp-calc-row{
-    display: flex;
-    justify-content: space-between;
+.lyp-calc-row {
+  display: flex;
+  justify-content: space-between;
 }
-.lyp-calc-row-left{
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--charcoal);
-    font-weight: 500;
+.lyp-calc-row-left {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--charcoal);
+  font-weight: 500;
 }
 
-.lyp-calc-row-right{
-    font-family: var(--serif);
-    font-size: 20px;
-    font-weight: 400;
-    color: var(--charcoal);
+.lyp-calc-row-right {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--charcoal);
 }
 
 /* Slider */
@@ -156,7 +156,7 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   border: 3px solid white;
 
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   cursor: pointer;
 }
 
@@ -187,7 +187,7 @@ input[type="range"]::-webkit-slider-thumb {
   letter-spacing: 0.2em;
   text-transform: uppercase;
 
-  border: 1px solid rgba(107,126,90,0.3);
+  border: 1px solid rgba(107, 126, 90, 0.3);
   background: var(--warm-white);
   color: var(--charcoal);
 
@@ -211,7 +211,7 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: 24px;
   padding-top: 24px;
 
-  border-top: 1px solid rgba(107,126,90,0.2);
+  border-top: 1px solid rgba(107, 126, 90, 0.2);
 }
 
 /* RESULT BOX */
@@ -259,7 +259,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .box.highlight .sub {
-  color: rgba(232,213,176,0.7);
+  color: rgba(232, 213, 176, 0.7);
 }
 
 /* PRICE ROW */
@@ -271,13 +271,10 @@ input[type="range"]::-webkit-slider-thumb {
   margin-bottom: 8px;
 }
 
-
-
 /* =========================================
    CALCULATOR — MOBILE 
 ========================================= */
-@media (max-width: 960px){
-
+@media (max-width: 960px) {
   /* ---------- Section ---------- */
 
   .lyp-calc {
@@ -391,5 +388,4 @@ input[type="range"]::-webkit-slider-thumb {
   .box .sub {
     font-size: 10px;
   }
-
 }

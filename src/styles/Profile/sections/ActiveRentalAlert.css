@@ -68,14 +68,14 @@
   font-family: "DM Sans", sans-serif;
   font-size: 12.5px;
   font-weight: 500;
-  color: #3C3529;
+  color: #3c3529;
 }
 
 .profile-alert-subtitle {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* CTA */
@@ -96,7 +96,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
 
-  color: #6B7E5A;
+  color: #6b7e5a;
 
   cursor: pointer;
 }
@@ -110,7 +110,3 @@
 
   stroke-width: 1.5;
 }
-
-
-
-  

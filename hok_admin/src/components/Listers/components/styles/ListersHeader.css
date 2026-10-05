@@ -19,22 +19,22 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.13em;
-  color: #C9A96E;
+  color: #c9a96e;
   margin-bottom: 4px;
 }
 
 .listers-header-title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 22px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0 0 4px 0;
   line-height: 1.2;
 }
 
 .listers-header-sub {
   font-size: 11.5px;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.5;
   max-width: 560px;
   margin: 0;

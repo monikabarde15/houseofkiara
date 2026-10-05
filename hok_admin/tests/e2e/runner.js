@@ -12,7 +12,7 @@ import { checkServerLiveness } from "./helpers/server_harness.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:5003/api';
+const BASE_URL = process.env.TEST_BASE_URL || "http://localhost:5003/api";
 
 const TEST_FILES = [
   "tier1_auth.test.js",
@@ -32,18 +32,28 @@ const TEST_FILES = [
 ];
 
 async function main() {
-  console.log("===============================================================");
+  console.log(
+    "===============================================================",
+  );
   console.log("    HOK ADMIN PANEL — 4-TIER E2E TEST SUITE RUNNER           ");
-  console.log("===============================================================");
+  console.log(
+    "===============================================================",
+  );
   console.log(`Target Base URL : ${BASE_URL}`);
   console.log(`Test Files      : ${TEST_FILES.length} suites`);
-  console.log("---------------------------------------------------------------");
+  console.log(
+    "---------------------------------------------------------------",
+  );
 
   // Verify server reachability
   const health = await checkServerLiveness(BASE_URL);
   if (!health.alive) {
-    console.warn(`⚠️ WARNING: Server at ${BASE_URL} is not currently responding.`);
-    console.warn(`   Ensure the backend server is running via 'npm run server' or 'node backend/server.js'.`);
+    console.warn(
+      `⚠️ WARNING: Server at ${BASE_URL} is not currently responding.`,
+    );
+    console.warn(
+      `   Ensure the backend server is running via 'npm run server' or 'node backend/server.js'.`,
+    );
     console.warn(`   Running tests in standalone mode...\n`);
   } else {
     console.log(`✅ Backend server active and reachable at ${BASE_URL}\n`);

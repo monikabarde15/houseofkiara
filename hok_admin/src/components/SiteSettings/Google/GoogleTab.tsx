@@ -3,11 +3,11 @@ import "./GoogleTab.css";
 
 export default function GoogleTab() {
   const [headline, setHeadline] = useState(
-    "House of Kaira — Rent, Buy & List Luxury Indian Occasion Wear"
+    "House of Kaira — Rent, Buy & List Luxury Indian Occasion Wear",
   );
 
   const [description, setDescription] = useState(
-    "Discover India's most curated platform for luxury occasion wear — rent, buy preloved, or list your own Sabyasachi, Manish Malhotra, and more."
+    "Discover India's most curated platform for luxury occasion wear — rent, buy preloved, or list your own Sabyasachi, Manish Malhotra, and more.",
   );
 
   const [allowIndexing, setAllowIndexing] = useState(true);
@@ -22,14 +22,10 @@ export default function GoogleTab() {
   const descriptionCount = description.length;
 
   const truncatedHeadline =
-    headline.length > 60
-      ? `${headline.slice(0, 60)}…`
-      : headline;
+    headline.length > 60 ? `${headline.slice(0, 60)}…` : headline;
 
   const truncatedDescription =
-    description.length > 155
-      ? `${description.slice(0, 155)}…`
-      : description;
+    description.length > 155 ? `${description.slice(0, 155)}…` : description;
 
   return (
     <div className="google-tab">
@@ -42,9 +38,7 @@ export default function GoogleTab() {
           <div className="google-title-row">
             <h2>Google &amp; sharing</h2>
 
-            <span className="google-meta">
-              Priya (Ops) · 2 days ago
-            </span>
+            <span className="google-meta">Priya (Ops) · 2 days ago</span>
           </div>
 
           <p>
@@ -64,8 +58,8 @@ export default function GoogleTab() {
           <h3>What people see in Google</h3>
 
           <p>
-            The two lines under your name in a search result. The preview on
-            the right shows exactly how it reads.
+            The two lines under your name in a search result. The preview on the
+            right shows exactly how it reads.
           </p>
         </div>
 
@@ -82,9 +76,7 @@ export default function GoogleTab() {
 
             {headlineCount > 60 ? (
               <div className="google-field-hint warning">
-                <span className="count-chip">
-                  {headlineCount} / 60
-                </span>
+                <span className="count-chip">{headlineCount} / 60</span>
 
                 <span>
                   Too long — Google shows about 60 characters, so the end will
@@ -93,9 +85,7 @@ export default function GoogleTab() {
               </div>
             ) : (
               <div className="google-field-hint">
-                <span className="count-chip">
-                  {headlineCount} / 60
-                </span>
+                <span className="count-chip">{headlineCount} / 60</span>
 
                 <span>Google shows about 60 characters.</span>
               </div>
@@ -114,9 +104,7 @@ export default function GoogleTab() {
             />
 
             <div className="google-field-hint">
-              <span className="count-chip">
-                {descriptionCount} / 155
-              </span>
+              <span className="count-chip">{descriptionCount} / 155</span>
 
               <span>
                 Used on any page that has not written its own. Google shows
@@ -144,19 +132,15 @@ export default function GoogleTab() {
 
             <div className="google-share-info">
               <div className="google-share-title">
-                Link preview image{" "}
-                <strong>· not set</strong>
+                Link preview image <strong>· not set</strong>
               </div>
 
               <p>
-                No page carries one, so every link pasted into WhatsApp
-                arrives as a bare grey address.
+                No page carries one, so every link pasted into WhatsApp arrives
+                as a bare grey address.
               </p>
 
-              <button
-                type="button"
-                className="google-secondary-button"
-              >
+              <button type="button" className="google-secondary-button">
                 Set it in Brand
               </button>
             </div>
@@ -177,24 +161,20 @@ export default function GoogleTab() {
           <label className="google-toggle-row">
             <button
               type="button"
-              className={`google-toggle ${
-                allowIndexing ? "on" : ""
-              }`}
+              className={`google-toggle ${allowIndexing ? "on" : ""}`}
               onClick={() => setAllowIndexing((prev) => !prev)}
               aria-pressed={allowIndexing}
             >
               <span />
             </button>
 
-            <span>
-              Allow Google and other search engines to list the site
-            </span>
+            <span>Allow Google and other search engines to list the site</span>
           </label>
 
           {allowIndexing ? (
             <p className="google-toggle-hint">
-              On, which is what you want once the site is live. Switching it
-              off removes House of Kaira from Google within a few days.
+              On, which is what you want once the site is live. Switching it off
+              removes House of Kaira from Google within a few days.
             </p>
           ) : (
             <p className="google-toggle-hint warning-text">
@@ -213,9 +193,9 @@ export default function GoogleTab() {
           <h3>Tracking codes</h3>
 
           <p>
-            Each is a short code you paste in once, from a free account you
-            set up elsewhere. Leave any of them blank and nothing breaks —
-            you simply get no data from that source.
+            Each is a short code you paste in once, from a free account you set
+            up elsewhere. Leave any of them blank and nothing breaks — you
+            simply get no data from that source.
           </p>
         </div>
 
@@ -260,16 +240,12 @@ export default function GoogleTab() {
       ========================= */}
 
       <section
-        className={`google-developer-card ${
-          showDeveloperSetup ? "open" : ""
-        }`}
+        className={`google-developer-card ${showDeveloperSetup ? "open" : ""}`}
       >
         <button
           type="button"
           className="google-developer-header"
-          onClick={() =>
-            setShowDeveloperSetup((prev) => !prev)
-          }
+          onClick={() => setShowDeveloperSetup((prev) => !prev)}
         >
           <div>
             <h3>Set up once — your developer handles these</h3>
@@ -280,41 +256,31 @@ export default function GoogleTab() {
             </p>
           </div>
 
-          <span>
-            {showDeveloperSetup ? "hide" : "show"}
-          </span>
+          <span>{showDeveloperSetup ? "hide" : "show"}</span>
         </button>
 
         {showDeveloperSetup && (
           <div className="google-developer-content">
             <div className="developer-explanation">
-              Each page puts its own name first, then a separator, then the
-              site name.
+              Each page puts its own name first, then a separator, then the site
+              name.
             </div>
 
             <div className="developer-example">
               <span>Example</span>
-              <strong>
-                Rent Sabyasachi — House of Kaira
-              </strong>
+              <strong>Rent Sabyasachi — House of Kaira</strong>
             </div>
 
             <div className="developer-template">
               {"{{page_title}}"} — House of Kaira
             </div>
 
-            <p>
-              Only the words inside double braces are swapped out.
-            </p>
+            <p>Only the words inside double braces are swapped out.</p>
 
             <div className="developer-row">
               <label>TITLE SEPARATOR</label>
 
-              <input
-                className="developer-input"
-                value="—"
-                readOnly
-              />
+              <input className="developer-input" value="—" readOnly />
             </div>
 
             <div className="developer-row">
@@ -375,18 +341,12 @@ function TrackingBlock({
       <div className="tracking-name-row">
         <h4>{name}</h4>
 
-        <span
-          className={`tracking-status ${
-            connected ? "connected" : ""
-          }`}
-        >
+        <span className={`tracking-status ${connected ? "connected" : ""}`}>
           {connected ? "CONNECTED" : "NOT SET UP"}
         </span>
       </div>
 
-      <p className="tracking-description">
-        {description}
-      </p>
+      <p className="tracking-description">{description}</p>
 
       <input
         className="tracking-input"

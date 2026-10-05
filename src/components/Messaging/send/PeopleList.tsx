@@ -1,7 +1,7 @@
 // send/PeopleList.tsx
-import React, { useState } from 'react';
-import { PeopleRow } from './PeopleRow';
-import './styles/PeopleList.css';
+import React, { useState } from "react";
+import { PeopleRow } from "./PeopleRow";
+import "./styles/PeopleList.css";
 
 interface Person {
   id: string;
@@ -23,13 +23,14 @@ export const PeopleList: React.FC<PeopleListProps> = ({
   people,
   selectedIds,
   onToggle,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder = "Search...",
 }) => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
-  const filtered = people.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.contact.toLowerCase().includes(search.toLowerCase())
+  const filtered = people.filter(
+    (p) =>
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.contact.toLowerCase().includes(search.toLowerCase()),
   );
 
   if (filtered.length === 0) {

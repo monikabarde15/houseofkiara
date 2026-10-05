@@ -2,12 +2,7 @@ import { Heart } from "lucide-react";
 
 import "../../../../styles/Profile/mobile/rows/MobileWishlistCard.css";
 
-const MobileWishlistCard = ({
-  piece,
-  onAddToBag,
-  onViewProduct,
-  onRemove
-}) => {
+const MobileWishlistCard = ({ piece, onAddToBag, onViewProduct, onRemove }) => {
   const handleRemove = (e) => {
     e.stopPropagation();
 
@@ -17,21 +12,13 @@ const MobileWishlistCard = ({
   const handleAddToBag = (e) => {
     e.stopPropagation();
 
-    const needsSize =
-      piece.sizes &&
-      piece.sizes.length > 1;
+    const needsSize = piece.sizes && piece.sizes.length > 1;
 
-    const needsColor =
-      piece.colors &&
-      piece.colors.length > 1;
+    const needsColor = piece.colors && piece.colors.length > 1;
 
-    const isRental =
-      piece.mode === "Rental";
+    const isRental = piece.mode === "Rental";
 
-    const needsModal =
-      needsSize ||
-      needsColor ||
-      isRental;
+    const needsModal = needsSize || needsColor || isRental;
 
     if (needsModal) {
       onAddToBag(piece);
@@ -52,9 +39,7 @@ const MobileWishlistCard = ({
   };
 
   return (
-    <article
-      className="profile-mobile-wl-item"
-    >
+    <article className="profile-mobile-wl-item">
       {/* =========================================
           Product Thumbnail
          ========================================= */}
@@ -62,7 +47,7 @@ const MobileWishlistCard = ({
       <div
         className="profile-mobile-wl-thumb"
         style={{
-          "--wl-bg": piece.imageGradient
+          "--wl-bg": piece.imageGradient,
         }}
       >
         <svg
@@ -92,10 +77,7 @@ const MobileWishlistCard = ({
           onClick={handleRemove}
           aria-label="Remove from wishlist"
         >
-          <Heart
-            className="profile-mobile-wl-heart-icon"
-            strokeWidth={1.7}
-          />
+          <Heart className="profile-mobile-wl-heart-icon" strokeWidth={1.7} />
         </button>
       </div>
 
@@ -103,9 +85,7 @@ const MobileWishlistCard = ({
           Product Metadata
          ========================================= */}
 
-      <div className="profile-mobile-wl-name">
-        {piece.name}
-      </div>
+      <div className="profile-mobile-wl-name">{piece.name}</div>
 
       <div className="profile-mobile-wl-price">
         {piece.mode === "Rental"
@@ -113,9 +93,7 @@ const MobileWishlistCard = ({
           : `₹${piece.price.toLocaleString()}`}
       </div>
 
-      <div className="profile-mobile-wl-mode">
-        {piece.mode}
-      </div>
+      <div className="profile-mobile-wl-mode">{piece.mode}</div>
 
       {/* =========================================
           CTA Row

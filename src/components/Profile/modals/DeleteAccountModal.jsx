@@ -1,5 +1,5 @@
-import React from 'react';
-import { Trash2 } from 'lucide-react';
+import React from "react";
+import { Trash2 } from "lucide-react";
 import "../../../styles/Profile/modals/DeleteAccountModal.css";
 
 const DeleteAccountModal = ({ isOpen, onClose, onConfirm }) => {
@@ -14,11 +14,16 @@ const DeleteAccountModal = ({ isOpen, onClose, onConfirm }) => {
         </div>
         <div className="profile-delete-title">Delete Account?</div>
         <div className="profile-delete-body">
-          This action cannot be undone. All your data will be permanently removed.
+          This action cannot be undone. All your data will be permanently
+          removed.
         </div>
         <div className="profile-delete-buttons">
-          <button className="profile-delete-btn-cancel" onClick={onClose}>Cancel</button>
-          <button className="profile-delete-btn-confirm" onClick={onConfirm}>Yes, Delete Account</button>
+          <button className="profile-delete-btn-cancel" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="profile-delete-btn-confirm" onClick={onConfirm}>
+            Yes, Delete Account
+          </button>
         </div>
       </div>
     </>

@@ -9,7 +9,7 @@
 /* DIVIDER */
 .final-divider {
   height: 1px;
-  background: #F0EAE0;
+  background: #f0eae0;
   margin-bottom: 30px;
   margin-top: 20px;
 }
@@ -28,7 +28,7 @@
   gap: 8px;
 
   font-size: 10px;
-  color: #B0A898;
+  color: #b0a898;
   line-height: 1.4;
 }
 
@@ -38,7 +38,7 @@
   height: 12px;
 
   stroke-width: 1.5;
-  color: #C9A96E;
+  color: #c9a96e;
 
   opacity: 0.8;
 }
@@ -59,14 +59,11 @@
 
   padding: 4px 8px;
 
-  border: 1px solid #F0EAE0;
-  color: #B0A898;
+  border: 1px solid #f0eae0;
+  color: #b0a898;
 }
 
-
-
 @media (max-width: 430px) {
-
   /* =========================
      CONTAINER
   ========================= */
@@ -91,7 +88,7 @@
   .final-trust-list {
     display: flex;
     flex-direction: column;
-    gap: 12px; 
+    gap: 12px;
   }
 
   .final-trust-item {
@@ -117,7 +114,7 @@
     opacity: 0.85;
     flex-shrink: 0;
 
-    margin-top: 3px; 
+    margin-top: 3px;
   }
 
   /* =========================
@@ -132,14 +129,13 @@
   }
 
   .final-payments span {
-    font-size: 7px;             
+    font-size: 7px;
     letter-spacing: 0.08em;
 
-    padding: 3px 7px;           
+    padding: 3px 7px;
     border-radius: 2px;
 
     border: 1px solid var(--border-light);
     color: var(--ink-4);
   }
-
 }

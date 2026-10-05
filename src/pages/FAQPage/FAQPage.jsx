@@ -1,6 +1,16 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FAQ_MOMENTS, ALL_QUESTIONS, QUESTION_MAP } from "../../data/faq/faqRegistry";
+import {
+  FAQ_MOMENTS,
+  ALL_QUESTIONS,
+  QUESTION_MAP,
+} from "../../data/faq/faqRegistry";
 import { ADMIN_FIGURES } from "../../data/faq/adminFigures";
 import Breadcrumb from "../../components/FAQ/common/Breadcrumb";
 import FloatingWhatsApp from "../../components/FAQ/common/FloatingWhatsApp";
@@ -70,8 +80,15 @@ export default function FAQPage() {
     if (currentQuestionId && QUESTION_MAP[currentQuestionId]) {
       return QUESTION_MAP[currentQuestionId];
     }
-    if (currentSection && currentSection.questions && currentSection.questions.length > 0) {
-      return QUESTION_MAP[currentSection.questions[0].id] || currentSection.questions[0];
+    if (
+      currentSection &&
+      currentSection.questions &&
+      currentSection.questions.length > 0
+    ) {
+      return (
+        QUESTION_MAP[currentSection.questions[0].id] ||
+        currentSection.questions[0]
+      );
     }
     return ALL_QUESTIONS[0];
   }, [currentQuestionId, currentSection]);
@@ -119,9 +136,14 @@ export default function FAQPage() {
 
   // Ensure current question belongs to the active section when section/moment changes
   useEffect(() => {
-    if (!currentSection || !currentSection.questions || currentSection.questions.length === 0) return;
+    if (
+      !currentSection ||
+      !currentSection.questions ||
+      currentSection.questions.length === 0
+    )
+      return;
     const exists = currentSection.questions.some(
-      (q) => q.id === currentQuestionId || q.originalId === currentQuestionId
+      (q) => q.id === currentQuestionId || q.originalId === currentQuestionId,
     );
     if (!exists) {
       setCurrentQuestionId(currentSection.questions[0].id);
@@ -129,66 +151,63 @@ export default function FAQPage() {
   }, [currentSection, currentQuestionId]);
 
   // Handler to select a question & update address bar hash without polluting history (Section 10.1)
-  const handleSelectQuestion = useCallback(
-    (qId, shouldScroll = false) => {
-      if (qId === null) {
-        // Only on mobile can an inline accordion row be collapsed
-        if (window.innerWidth <= 900) {
-          setCurrentQuestionId(null);
-        }
-        return;
+  const handleSelectQuestion = useCallback((qId, shouldScroll = false) => {
+    if (qId === null) {
+      // Only on mobile can an inline accordion row be collapsed
+      if (window.innerWidth <= 900) {
+        setCurrentQuestionId(null);
       }
+      return;
+    }
 
-      const target = QUESTION_MAP[qId];
-      if (!target) return;
+    const target = QUESTION_MAP[qId];
+    if (!target) return;
 
-      setMomentId(target.momentId);
-      setSectionId(target.sectionId);
-      setCurrentQuestionId(target.id);
+    setMomentId(target.momentId);
+    setSectionId(target.sectionId);
+    setCurrentQuestionId(target.id);
 
-      const searchParams = new URLSearchParams(window.location.search);
-      const reviewQuery = searchParams.get("review") === "1" ? "?review=1" : "";
-      window.history.replaceState(null, "", `/faqs${reviewQuery}#${target.id}`);
+    const searchParams = new URLSearchParams(window.location.search);
+    const reviewQuery = searchParams.get("review") === "1" ? "?review=1" : "";
+    window.history.replaceState(null, "", `/faqs${reviewQuery}#${target.id}`);
 
-      if (shouldScroll) {
-        setTimeout(() => {
-          const el = document.getElementById(`q-${target.id}`) || document.getElementById("moment-section");
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth" });
-          }
-        }, 50);
-      }
-    },
-    []
-  );
-
-  // Handler to select a moment card or account link (Section 10.3)
-  const handleSelectMoment = useCallback(
-    (mId) => {
-      const moment = FAQ_MOMENTS.find((m) => m.id === mId);
-      if (!moment) return;
-      setMomentId(moment.id);
-      const firstSec = moment.sections[0];
-      setSectionId(firstSec.id);
-      const firstQ = firstSec.questions[0];
-      setCurrentQuestionId(firstQ.id);
-
-      const searchParams = new URLSearchParams(window.location.search);
-      const reviewQuery = searchParams.get("review") === "1" ? "?review=1" : "";
-      window.history.replaceState(null, "", `/faqs${reviewQuery}#${firstQ.id}`);
-
-      // Smooth scroll to moment section (140px offset on desktop, 70px on mobile)
+    if (shouldScroll) {
       setTimeout(() => {
-        const momentEl = document.getElementById("moment-section");
-        if (momentEl) {
-          const yOffset = window.innerWidth <= 760 ? -70 : -140;
-          const y = momentEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: y, behavior: "smooth" });
+        const el =
+          document.getElementById(`q-${target.id}`) ||
+          document.getElementById("moment-section");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
         }
       }, 50);
-    },
-    []
-  );
+    }
+  }, []);
+
+  // Handler to select a moment card or account link (Section 10.3)
+  const handleSelectMoment = useCallback((mId) => {
+    const moment = FAQ_MOMENTS.find((m) => m.id === mId);
+    if (!moment) return;
+    setMomentId(moment.id);
+    const firstSec = moment.sections[0];
+    setSectionId(firstSec.id);
+    const firstQ = firstSec.questions[0];
+    setCurrentQuestionId(firstQ.id);
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const reviewQuery = searchParams.get("review") === "1" ? "?review=1" : "";
+    window.history.replaceState(null, "", `/faqs${reviewQuery}#${firstQ.id}`);
+
+    // Smooth scroll to moment section (140px offset on desktop, 70px on mobile)
+    setTimeout(() => {
+      const momentEl = document.getElementById("moment-section");
+      if (momentEl) {
+        const yOffset = window.innerWidth <= 760 ? -70 : -140;
+        const y =
+          momentEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    }, 50);
+  }, []);
 
   // Handler to select a section chip (Section 10.3)
   const handleSelectSection = useCallback(
@@ -203,11 +222,13 @@ export default function FAQPage() {
       const reviewQuery = searchParams.get("review") === "1" ? "?review=1" : "";
       window.history.replaceState(null, "", `/faqs${reviewQuery}#${firstQ.id}`);
     },
-    [currentMoment]
+    [currentMoment],
   );
 
   return (
-    <main className={`hok-faq-page ${isReviewMode ? "review" : ""} ${isDecisionsOnly ? "rv-only" : ""}`}>
+    <main
+      className={`hok-faq-page ${isReviewMode ? "review" : ""} ${isDecisionsOnly ? "rv-only" : ""}`}
+    >
       {/* Breadcrumb (A8) */}
       <Breadcrumb onSelectMoment={handleSelectMoment} />
 

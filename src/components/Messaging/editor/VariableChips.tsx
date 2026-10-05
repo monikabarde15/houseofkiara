@@ -1,33 +1,46 @@
 // editor/VariableChips.tsx
-import React from 'react';
-import { Chip } from '../components/Chip';
-import './styles/VariableChips.css';
+import React from "react";
+import { Chip } from "../components/Chip";
+import "./styles/VariableChips.css";
 
 const VARIABLE_GROUPS = [
   {
-    name: 'GLOBAL',
-    variables: ['brand_name', 'support_email', 'support_whatsapp', 'instagram_handle', 'site_url', 'today'],
-  },
-  {
-    name: 'CUSTOMER',
+    name: "GLOBAL",
     variables: [
-      'customer_name', 
-      'customer_first_name', 
-      'customer_email', 
-      'customer_phone', 
-      'customer_city', 
-      'occasion', 
-      'occasion_date', 
-      'occasion_in_days', 
-      'wishlist_piece', 
-      'wishlist_designer', 
-      'wishlist_count', 
-      'bag_piece'
+      "brand_name",
+      "support_email",
+      "support_whatsapp",
+      "instagram_handle",
+      "site_url",
+      "today",
     ],
   },
   {
-    name: 'AUTH',
-    variables: ['verify_url', 'otp_code', 'otp_expiry_minutes', 'reset_url', 'reset_expiry_minutes'],
+    name: "CUSTOMER",
+    variables: [
+      "customer_name",
+      "customer_first_name",
+      "customer_email",
+      "customer_phone",
+      "customer_city",
+      "occasion",
+      "occasion_date",
+      "occasion_in_days",
+      "wishlist_piece",
+      "wishlist_designer",
+      "wishlist_count",
+      "bag_piece",
+    ],
+  },
+  {
+    name: "AUTH",
+    variables: [
+      "verify_url",
+      "otp_code",
+      "otp_expiry_minutes",
+      "reset_url",
+      "reset_expiry_minutes",
+    ],
   },
 ];
 

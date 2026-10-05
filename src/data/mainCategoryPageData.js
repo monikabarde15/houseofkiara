@@ -4,7 +4,9 @@ const bridalLehengaProducts = [
     id: 1,
     name: "Gulabi Silk Bridal Lehenga",
     designer: "Sabyasachi",
-    image: ["https://i.pinimg.com/736x/1a/c8/5b/1ac85b6db4980e7279c43ebb569afb3c.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/1a/c8/5b/1ac85b6db4980e7279c43ebb569afb3c.jpg",
+    ],
     rent: true,
     preloved: true,
     rentPrice: "12,000",
@@ -15,13 +17,15 @@ const bridalLehengaProducts = [
     occasion: "Wedding",
     size: ["S", "M"],
     color: ["red", "gold"],
-    video: "https://your-video-url.mp4"
+    video: "https://your-video-url.mp4",
   },
   {
     id: 2,
     name: "Ivory Zardosi Bridal Lehenga",
     designer: "Manish Malhotra",
-    image: ["https://i.pinimg.com/736x/e8/0a/fb/e80afbb97e03195973cb07ccee77e8b4.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/e8/0a/fb/e80afbb97e03195973cb07ccee77e8b4.jpg",
+    ],
     rent: true,
     isNew: true,
     rentPrice: "15,000",
@@ -30,26 +34,30 @@ const bridalLehengaProducts = [
     category: "Salwar Suits",
     occasion: "Wedding",
     size: ["XXL", "M"],
-    color: ["pink", "orange"]
+    color: ["pink", "orange"],
   },
   {
     id: 3,
     name: "Royal Red Wedding Lehenga",
     designer: "Tarun Tahiliani",
-    image: ["https://i.pinimg.com/736x/c8/59/fb/c859fbc8a0d67baf213921e88f5c0829.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/c8/59/fb/c859fbc8a0d67baf213921e88f5c0829.jpg",
+    ],
     buyPrice: "2,10,000",
     originalPrice: "2,80,000",
     gender: "Women",
     category: "Party Lehengas",
     occasion: "Festive",
     size: ["S", "XS"],
-    color: ["yellow", "green"]
+    color: ["yellow", "green"],
   },
   {
     id: 4,
     name: "Pastel Pink Bridal Lehenga",
     designer: "Anita Dongre",
-    image: ["https://i.pinimg.com/736x/0b/38/6d/0b386d4ad511c3191adc8e0d8e347652.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/0b/38/6d/0b386d4ad511c3191adc8e0d8e347652.jpg",
+    ],
     rent: true,
     rentPrice: "10,000",
     buyPrice: "90,000",
@@ -57,13 +65,15 @@ const bridalLehengaProducts = [
     category: "Indo-Western",
     occasion: "Festive",
     size: ["L"],
-    color: ["red", "yellow"]
+    color: ["red", "yellow"],
   },
   {
     id: 5,
     name: "Gold Embroidered Lehenga",
     designer: "Falguni Shane Peacock",
-    image: ["https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg",
+    ],
     preloved: true,
     rentPrice: "11,000",
     buyPrice: "1,20,000",
@@ -71,13 +81,15 @@ const bridalLehengaProducts = [
     category: "Party Lehengas",
     occasion: "Haldi",
     size: ["S", "Custom"],
-    color: ["blue", "green"]
+    color: ["blue", "green"],
   },
   {
     id: 6,
     name: "Velvet Maroon Bridal Lehenga",
     designer: "Abu Jani Sandeep Khosla",
-    image: ["https://i.pinimg.com/736x/5c/96/c0/5c96c0d3a91b73a6d6d02d4964332876.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/5c/96/c0/5c96c0d3a91b73a6d6d02d4964332876.jpg",
+    ],
     rent: true,
     isNew: true,
     rentPrice: "18,000",
@@ -86,13 +98,15 @@ const bridalLehengaProducts = [
     category: "Indo-Western",
     occasion: "Haldi",
     size: ["XS", "XXL"],
-    color: ["purple"]
+    color: ["purple"],
   },
   {
     id: 7,
     name: "Peach Floral Lehenga",
     designer: "Ritu Kumar",
-    image: ["https://i.pinimg.com/736x/e8/0a/fb/e80afbb97e03195973cb07ccee77e8b4.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/e8/0a/fb/e80afbb97e03195973cb07ccee77e8b4.jpg",
+    ],
     rent: true,
     rentPrice: "9,000",
     buyPrice: "85,000",
@@ -100,26 +114,30 @@ const bridalLehengaProducts = [
     category: "Sarees",
     occasion: "Reception",
     size: ["XS", "M", "L"],
-    color: ["maroon", "gold"]
+    color: ["maroon", "gold"],
   },
   {
     id: 8,
     name: "Beige Minimal Bridal Lehenga",
     designer: "Masaba Gupta",
-    image: ["https://i.pinimg.com/736x/c8/59/fb/c859fbc8a0d67baf213921e88f5c0829.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/c8/59/fb/c859fbc8a0d67baf213921e88f5c0829.jpg",
+    ],
     isNew: true,
     buyPrice: "75,000",
     gender: "Women",
     category: "Sherwanis",
     occasion: "Reception",
     size: ["S", "Free"],
-    color: ["maroon", "pink"]
+    color: ["maroon", "pink"],
   },
   {
     id: 9,
     name: "Heavy Red Zari Lehenga",
     designer: "Sabyasachi",
-    image: ["https://i.pinimg.com/736x/1a/c8/5b/1ac85b6db4980e7279c43ebb569afb3c.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/1a/c8/5b/1ac85b6db4980e7279c43ebb569afb3c.jpg",
+    ],
     rent: true,
     preloved: true,
     rentPrice: "13,000",
@@ -127,27 +145,31 @@ const bridalLehengaProducts = [
     gender: "Women",
     category: "Sherwanis",
     occasion: "Sangeet",
-    size: [ "M"],
-    color: ["ivory", "black"]
+    size: ["M"],
+    color: ["ivory", "black"],
   },
   {
     id: 10,
     name: "Ivory Pearl Bridal Lehenga",
     designer: "Tarun Tahiliani",
-    image: ["https://i.pinimg.com/736x/0b/38/6d/0b386d4ad511c3191adc8e0d8e347652.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/0b/38/6d/0b386d4ad511c3191adc8e0d8e347652.jpg",
+    ],
     isNew: true,
     buyPrice: "2,00,000",
     gender: "Women",
     category: "Anarkalis",
     occasion: "Sangeet",
     size: ["XL", "XXL", "L"],
-    color: ["ivory", "white"]
+    color: ["ivory", "white"],
   },
   {
     id: 11,
     name: "Blue Indo-Western Lehenga",
     designer: "Anamika Khanna",
-    image: ["https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg",
+    ],
     rent: true,
     rentPrice: "14,000",
     buyPrice: "1,30,000",
@@ -155,13 +177,15 @@ const bridalLehengaProducts = [
     category: "Sarees",
     occasion: "Mehendi",
     size: ["XS", "M"],
-    color: ["black", "maroon"]
+    color: ["black", "maroon"],
   },
   {
     id: 12,
     name: "Classic Bridal Red Lehenga",
     designer: "Sabyasachi",
-    image: ["https://i.pinimg.com/736x/5c/96/c0/5c96c0d3a91b73a6d6d02d4964332876.jpg"],
+    image: [
+      "https://i.pinimg.com/736x/5c/96/c0/5c96c0d3a91b73a6d6d02d4964332876.jpg",
+    ],
     rent: true,
     preloved: true,
     rentPrice: "16,000",
@@ -170,112 +194,128 @@ const bridalLehengaProducts = [
     category: "Anarkalis",
     occasion: "Mehendi",
     size: ["XS", "L"],
-    color: ["red", "gold"]
+    color: ["red", "gold"],
   },
   {
-  id: 13,
-  name: "Blush Zardozi Anarkali",
-  designer: "Rahul Mishra",
-  image: ["https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg"],
-  isNew: true,
-  buyPrice: "2,40,000",
-  gender: "Women",
-  category: "Anarkalis",
-  occasion: "Wedding",
-  size: ["S", "M"],
-  color: ["pink"]
-},
-{
-  id: 14,
-  name: "Midnight Threadwork Sharara Set",
-  designer: "Rahul Mishra",
-  image: ["https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg"],
-  isNew: true,
-  buyPrice: "3,10,000",
-  gender: "Women",
-  category: "Anarkalis",
-  occasion: "Reception",
-  size: ["M"],
-  color: ["black"]
-},
-{
-  id: 15,
-  name: "Crimson Embroidered Lehenga",
-  designer: "Rahul Mishra",
-  image: ["https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg"],
-  isNew: true,
-  buyPrice: "4,20,000",
-  gender: "Women",
-  category: "Bridal Lehengas",
-  occasion: "Wedding",
-  size: ["L"],
-  color: ["red"]
-},
-{
-  id: 16,
-  name: "Ivory Resham Kurta Set",
-  designer: "Rahul Mishra",
-  image: ["https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg"],
-  isNew: true,
-  buyPrice: "1,65,000",
-  gender: "Women",
-  category: "Anarkalis",
-  occasion: "Festive",
-  size: ["S"],
-  color: ["ivory"]
-},
-{
-  id: 17,
-  name: "Rose Gold Draped Anarkali",
-  designer: "Tarun Tahiliani",
-  image: ["https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg"],
-  isNew: true,
-  buyPrice: "3,60,000",
-  gender: "Women",
-  category: "Anarkalis",
-  occasion: "Wedding",
-  size: ["M"],
-  color: ["gold"]
-},
-{
-  id: 18,
-  name: "Sage Floral Anarkali Set",
-  designer: "Anita Dongre",
-  image: ["https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg"],
-  rent: true,
-  rentPrice: "6,500",
-  buyPrice: "1,20,000",
-  gender: "Women",
-  category: "Anarkalis",
-  occasion: "Festive",
-  size: ["S"],
-  color: ["green"]
-},
-{
-  id: 19,
-  name: "Forest Green Structured Anarkali",
-  designer: "Gaurav Gupta",
-  image: ["https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg"],
-  buyPrice: "2,80,000",
-  gender: "Women",
-  category: "Anarkalis",
-  occasion: "Reception",
-  size: ["L"],
-  color: ["green"]
-},
-{
-  id: 20,
-  name: "Deep Burgundy Sequin Anarkali",
-  designer: "Manish Malhotra",
-  image: ["https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg"],
-  preloved: true,
-  buyPrice: "68,000",
-  gender: "Women",
-  category: "Anarkalis",
-  occasion: "Sangeet",
-  size: ["M"],
-  color: ["burgundy"]
-}
+    id: 13,
+    name: "Blush Zardozi Anarkali",
+    designer: "Rahul Mishra",
+    image: [
+      "https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg",
+    ],
+    isNew: true,
+    buyPrice: "2,40,000",
+    gender: "Women",
+    category: "Anarkalis",
+    occasion: "Wedding",
+    size: ["S", "M"],
+    color: ["pink"],
+  },
+  {
+    id: 14,
+    name: "Midnight Threadwork Sharara Set",
+    designer: "Rahul Mishra",
+    image: [
+      "https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg",
+    ],
+    isNew: true,
+    buyPrice: "3,10,000",
+    gender: "Women",
+    category: "Anarkalis",
+    occasion: "Reception",
+    size: ["M"],
+    color: ["black"],
+  },
+  {
+    id: 15,
+    name: "Crimson Embroidered Lehenga",
+    designer: "Rahul Mishra",
+    image: [
+      "https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg",
+    ],
+    isNew: true,
+    buyPrice: "4,20,000",
+    gender: "Women",
+    category: "Bridal Lehengas",
+    occasion: "Wedding",
+    size: ["L"],
+    color: ["red"],
+  },
+  {
+    id: 16,
+    name: "Ivory Resham Kurta Set",
+    designer: "Rahul Mishra",
+    image: [
+      "https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg",
+    ],
+    isNew: true,
+    buyPrice: "1,65,000",
+    gender: "Women",
+    category: "Anarkalis",
+    occasion: "Festive",
+    size: ["S"],
+    color: ["ivory"],
+  },
+  {
+    id: 17,
+    name: "Rose Gold Draped Anarkali",
+    designer: "Tarun Tahiliani",
+    image: [
+      "https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg",
+    ],
+    isNew: true,
+    buyPrice: "3,60,000",
+    gender: "Women",
+    category: "Anarkalis",
+    occasion: "Wedding",
+    size: ["M"],
+    color: ["gold"],
+  },
+  {
+    id: 18,
+    name: "Sage Floral Anarkali Set",
+    designer: "Anita Dongre",
+    image: [
+      "https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg",
+    ],
+    rent: true,
+    rentPrice: "6,500",
+    buyPrice: "1,20,000",
+    gender: "Women",
+    category: "Anarkalis",
+    occasion: "Festive",
+    size: ["S"],
+    color: ["green"],
+  },
+  {
+    id: 19,
+    name: "Forest Green Structured Anarkali",
+    designer: "Gaurav Gupta",
+    image: [
+      "https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg",
+    ],
+    buyPrice: "2,80,000",
+    gender: "Women",
+    category: "Anarkalis",
+    occasion: "Reception",
+    size: ["L"],
+    color: ["green"],
+  },
+  {
+    id: 20,
+    name: "Deep Burgundy Sequin Anarkali",
+    designer: "Manish Malhotra",
+    image: [
+      "https://i.pinimg.com/736x/72/41/16/7241160a89d381e15af363914b23bd99.jpg",
+    ],
+    preloved: true,
+    buyPrice: "68,000",
+    gender: "Women",
+    category: "Anarkalis",
+    occasion: "Sangeet",
+    size: ["M"],
+    color: ["burgundy"],
+  },
 ];
 
 const formattedProducts = bridalLehengaProducts.map((item) => ({
@@ -283,11 +323,10 @@ const formattedProducts = bridalLehengaProducts.map((item) => ({
   type: item.preloved
     ? "preloved"
     : item.rent
-    ? "rent"
-    : item.isNew
-    ? "new"
-    : "new"
+      ? "rent"
+      : item.isNew
+        ? "new"
+        : "new",
 }));
 
 export default formattedProducts;
-

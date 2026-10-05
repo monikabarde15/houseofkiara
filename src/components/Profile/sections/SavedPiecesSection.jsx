@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import WishlistCard from '../cards/WishlistCard';
-import AttributeSelectorModal from '../forms/AttributeSelectorModal';
-import Toast from '../ui/Toast';
+import React, { useState } from "react";
+import WishlistCard from "../cards/WishlistCard";
+import AttributeSelectorModal from "../forms/AttributeSelectorModal";
+import Toast from "../ui/Toast";
 import "../../../styles/Profile/sections/SavedPiecesSection.css";
 
-import { useWishlistProducts } from '../../Wishlist/hooks/useWishlistProducts';
+import { useWishlistProducts } from "../../Wishlist/hooks/useWishlistProducts";
 
 const SavedPiecesSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPiece, setSelectedPiece] = useState(null);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
 
   const { products, removeProduct } = useWishlistProducts();
@@ -27,10 +27,10 @@ const SavedPiecesSection = () => {
     // Check if modal is needed or direct add
     const needsSize = piece.sizes && piece.sizes.length > 1;
     const needsColor = piece.colors && piece.colors.length > 1;
-    const isRental = piece.mode === 'Rental';
-    
+    const isRental = piece.mode === "Rental";
+
     const needsModal = needsSize || needsColor || isRental;
-    
+
     if (needsModal) {
       setSelectedPiece(piece);
       setIsModalOpen(true);
@@ -49,9 +49,10 @@ const SavedPiecesSection = () => {
     let message = selectedPiece.name;
     if (selections.size) message += ` · Size ${selections.size}`;
     if (selections.color) message += ` · ${selections.color}`;
-    if (selections.startDate && selections.endDate) message += ` · ${selections.startDate} - ${selections.endDate}`;
+    if (selections.startDate && selections.endDate)
+      message += ` · ${selections.startDate} - ${selections.endDate}`;
     message += ` added to your bag`;
-    
+
     showToastMessage(message);
     setIsModalOpen(false);
     setSelectedPiece(null);

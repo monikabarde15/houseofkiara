@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import { X } from "lucide-react";
 import "../../../styles/Profile/modals/EditProfileModal.css";
 
 const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
@@ -8,7 +8,7 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
     lastName: "",
     email: "",
     mobile: "",
-    city: ""
+    city: "",
   });
   const [errors, setErrors] = useState({});
   const formRef = useRef(null);
@@ -20,7 +20,7 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
         lastName: userData.lastName || "",
         email: userData.email || "",
         mobile: userData.mobile || "",
-        city: userData.city || ""
+        city: userData.city || "",
       });
       setErrors({});
     }
@@ -28,23 +28,24 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
 
   const validateField = (name, value) => {
     switch (name) {
-      case 'firstName':
-        return !value.trim() ? 'First name is required' : '';
-      case 'lastName':
-        return !value.trim() ? 'Last name is required' : '';
-      case 'mobile':
-        if (!value.trim()) return 'Mobile number is required';
-        if (!/^[+\d][\d\s-]{7,}$/.test(value)) return 'Enter a valid mobile number';
-        return '';
+      case "firstName":
+        return !value.trim() ? "First name is required" : "";
+      case "lastName":
+        return !value.trim() ? "Last name is required" : "";
+      case "mobile":
+        if (!value.trim()) return "Mobile number is required";
+        if (!/^[+\d][\d\s-]{7,}$/.test(value))
+          return "Enter a valid mobile number";
+        return "";
       default:
-        return '';
+        return "";
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    const fieldsToValidate = ['firstName', 'lastName', 'mobile'];
-    fieldsToValidate.forEach(field => {
+    const fieldsToValidate = ["firstName", "lastName", "mobile"];
+    fieldsToValidate.forEach((field) => {
       const error = validateField(field, formData[field]);
       if (error) newErrors[field] = error;
     });
@@ -54,10 +55,10 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear error for this field when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -72,10 +73,13 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
       onClose();
     } else {
       // Scroll to first error after 40ms
-      const firstErrorField = document.querySelector('.profile-edit-has-error');
+      const firstErrorField = document.querySelector(".profile-edit-has-error");
       if (firstErrorField) {
         setTimeout(() => {
-          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          firstErrorField.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
         }, 40);
       }
     }
@@ -102,7 +106,9 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
           <div className="profile-edit-mbdy">
             {/* Row 1: First Name + Last Name */}
             <div className="profile-edit-row">
-              <div className={`profile-edit-field ${errors.firstName ? 'profile-edit-has-error' : ''}`}>
+              <div
+                className={`profile-edit-field ${errors.firstName ? "profile-edit-has-error" : ""}`}
+              >
                 <label className="profile-edit-label">
                   First Name <span className="profile-edit-required">*</span>
                 </label>
@@ -113,9 +119,13 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
                   onChange={handleChange}
                   className="profile-edit-input"
                 />
-                {errors.firstName && <span className="profile-edit-error">{errors.firstName}</span>}
+                {errors.firstName && (
+                  <span className="profile-edit-error">{errors.firstName}</span>
+                )}
               </div>
-              <div className={`profile-edit-field ${errors.lastName ? 'profile-edit-has-error' : ''}`}>
+              <div
+                className={`profile-edit-field ${errors.lastName ? "profile-edit-has-error" : ""}`}
+              >
                 <label className="profile-edit-label">
                   Last Name <span className="profile-edit-required">*</span>
                 </label>
@@ -126,7 +136,9 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
                   onChange={handleChange}
                   className="profile-edit-input"
                 />
-                {errors.lastName && <span className="profile-edit-error">{errors.lastName}</span>}
+                {errors.lastName && (
+                  <span className="profile-edit-error">{errors.lastName}</span>
+                )}
               </div>
             </div>
 
@@ -143,7 +155,9 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
             </div>
 
             {/* Row 3: Mobile (full width - required) */}
-            <div className={`profile-edit-field-full ${errors.mobile ? 'profile-edit-has-error' : ''}`}>
+            <div
+              className={`profile-edit-field-full ${errors.mobile ? "profile-edit-has-error" : ""}`}
+            >
               <label className="profile-edit-label">
                 Mobile Number <span className="profile-edit-required">*</span>
               </label>
@@ -154,7 +168,9 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
                 onChange={handleChange}
                 className="profile-edit-input"
               />
-              {errors.mobile && <span className="profile-edit-error">{errors.mobile}</span>}
+              {errors.mobile && (
+                <span className="profile-edit-error">{errors.mobile}</span>
+              )}
             </div>
 
             {/* Row 4: City (full width - optional) */}
@@ -170,7 +186,11 @@ const EditProfileModal = ({ isOpen, onClose, onSave, userData }) => {
             </div>
           </div>
           <div className="profile-edit-mftr">
-            <button type="button" className="profile-edit-btn-cancel" onClick={handleCancel}>
+            <button
+              type="button"
+              className="profile-edit-btn-cancel"
+              onClick={handleCancel}
+            >
               Cancel
             </button>
             <button type="submit" className="profile-edit-btn-save">

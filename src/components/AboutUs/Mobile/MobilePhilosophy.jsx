@@ -15,10 +15,12 @@ const MobilePhilosophy = () => {
           }
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.12 },
     );
 
-    const elements = sectionRef.current?.querySelectorAll(".reveal, .reveal-stagger");
+    const elements = sectionRef.current?.querySelectorAll(
+      ".reveal, .reveal-stagger",
+    );
     elements?.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
@@ -29,25 +31,25 @@ const MobilePhilosophy = () => {
     {
       id: 1,
       icon: "star",
-      heading: 'Celebration, <em>not ownership</em>',
+      heading: "Celebration, <em>not ownership</em>",
       desc: "You don't need to own a moment to live it fully. Wear the showstopper for the night it was made for, then let it move on to someone else's celebration.",
     },
     {
       id: 2,
       icon: "document",
-      heading: 'Curation, <em>not catalogue</em>',
+      heading: "Curation, <em>not catalogue</em>",
       desc: "Every piece is chosen, not just accepted. If it doesn't meet our standard of craft and condition, it doesn't make it onto House of Kaira — no exceptions.",
     },
     {
       id: 3,
       icon: "refresh",
-      heading: 'Renewal, <em>not relinquishment</em>',
+      heading: "Renewal, <em>not relinquishment</em>",
       desc: "Preloved, never pre-owned. Every piece that passes through House of Kaira leaves more storied than it arrived, never less valuable.",
     },
     {
       id: 4,
       icon: "trust",
-      heading: 'Trust, <em>both ways</em>',
+      heading: "Trust, <em>both ways</em>",
       desc: "A bride trusts us with her biggest day. A lister trusts us with her wardrobe's legacy. We hold both with exactly the same care.",
     },
   ];
@@ -93,7 +95,6 @@ const MobilePhilosophy = () => {
 
   return (
     <section className="mob-philosophy" ref={sectionRef}>
-      
       {/* Section Head - Mobile Spec §09.1 */}
       <div className="mob-philosophy__head reveal">
         <div className="mob-philosophy__eyebrow">
@@ -109,8 +110,8 @@ const MobilePhilosophy = () => {
       {/* Card Grid - Mobile Spec §09.2: flex column, gap: 1px */}
       <div className="mob-philosophy__grid reveal-stagger">
         {philosophyCards.map((card, index) => (
-          <div 
-            key={card.id} 
+          <div
+            key={card.id}
             className="mob-philosophy__card"
             style={{ animationDelay: `${index * 0.08}s` }}
           >
@@ -118,21 +119,18 @@ const MobilePhilosophy = () => {
             <div className="mob-philosophy__card-icon">
               {renderIcon(card.icon)}
             </div>
-            
+
             {/* Heading - Mobile: 19px */}
-            <h3 
+            <h3
               className="mob-philosophy__card-heading"
               dangerouslySetInnerHTML={{ __html: card.heading }}
             />
-            
+
             {/* Description - Mobile: 13px */}
-            <p className="mob-philosophy__card-desc">
-              {card.desc}
-            </p>
+            <p className="mob-philosophy__card-desc">{card.desc}</p>
           </div>
         ))}
       </div>
-
     </section>
   );
 };

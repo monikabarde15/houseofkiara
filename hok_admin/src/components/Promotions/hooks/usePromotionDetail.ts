@@ -5,11 +5,11 @@
    Based on HOK_Promotions_Logic_Spec_v150.pdf Section 15
    ======================================== */
 
-import { useState, useEffect, useCallback } from 'react';
-import { PromoCode, DerivedPromoState } from '../types/promotions.types';
-import { deriveState } from '../utils/derived';
-import { promotionService } from '../services/promotionService';
-import * as orderApi from '../../../services/orderApi';
+import { useState, useEffect, useCallback } from "react";
+import { PromoCode, DerivedPromoState } from "../types/promotions.types";
+import { deriveState } from "../utils/derived";
+import { promotionService } from "../services/promotionService";
+import * as orderApi from "../../../services/orderApi";
 
 interface UsePromotionDetailReturn {
   code: PromoCode | null;
@@ -22,7 +22,9 @@ interface UsePromotionDetailReturn {
   refresh: () => void;
 }
 
-export const usePromotionDetail = (initialCodeId?: string): UsePromotionDetailReturn => {
+export const usePromotionDetail = (
+  initialCodeId?: string,
+): UsePromotionDetailReturn => {
   const [code, setCode] = useState<PromoCode | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,17 +47,24 @@ export const usePromotionDetail = (initialCodeId?: string): UsePromotionDetailRe
       ]);
       if (found) {
         setCode(found);
-        const normalizedCode = String(found.code || id).trim().toUpperCase();
-        setPromotionOrders((allOrders || []).filter((order: any) =>
-          String(order.promoCode || '').trim().toUpperCase() === normalizedCode
-        ));
+        const normalizedCode = String(found.code || id)
+          .trim()
+          .toUpperCase();
+        setPromotionOrders(
+          (allOrders || []).filter(
+            (order: any) =>
+              String(order.promoCode || "")
+                .trim()
+                .toUpperCase() === normalizedCode,
+          ),
+        );
       } else {
         setError(`Code ${id} not found`);
         setCode(null);
         setPromotionOrders([]);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch code');
+      setError(err instanceof Error ? err.message : "Failed to fetch code");
       setCode(null);
     } finally {
       setLoading(false);

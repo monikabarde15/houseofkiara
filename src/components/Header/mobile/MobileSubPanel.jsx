@@ -1,14 +1,14 @@
 // src/components/Header/mobile/MobileSubPanel.jsx
-import React, { useRef } from 'react';
-import '../../../styles/Header/mobile/mobile-drawer.css';
+import React, { useRef } from "react";
+import "../../../styles/Header/mobile/mobile-drawer.css";
 
-const MobileSubPanel = ({ 
-  isOpen, 
-  title, 
-  titleColor = 'default',
-  onBack, 
+const MobileSubPanel = ({
+  isOpen,
+  title,
+  titleColor = "default",
+  onBack,
   onSwipeBack,
-  children 
+  children,
 }) => {
   const panelRef = useRef(null);
   const touchStartX = useRef(null);
@@ -31,16 +31,16 @@ const MobileSubPanel = ({
 
   const handleTouchEnd = () => {
     if (touchStartX.current === null || touchCurrentX.current === null) return;
-    
+
     const dx = touchCurrentX.current - touchStartX.current;
     const dy = Math.abs(touchCurrentY.current - touchStartY.current);
-    
+
     // Swipe right to go back (dx > 60px, dy < 40px per spec)
     if (dx > 60 && dy < 40) {
       if (onSwipeBack) onSwipeBack();
       if (onBack) onBack();
     }
-    
+
     touchStartX.current = null;
     touchCurrentX.current = null;
   };
@@ -48,7 +48,7 @@ const MobileSubPanel = ({
   return (
     <div
       ref={panelRef}
-      className={`drawer-sub-panel ${isOpen ? 'open' : ''}`}
+      className={`drawer-sub-panel ${isOpen ? "open" : ""}`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -56,12 +56,14 @@ const MobileSubPanel = ({
       {/* 8.2 Sub-Panel Header */}
       <div className="sub-panel-head">
         {/* 8.3 Back Button */}
-        <button 
-          className="sub-panel-back" 
-          onClick={onBack}
-          aria-label="Back"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        <button className="sub-panel-back" onClick={onBack} aria-label="Back">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          >
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
@@ -71,9 +73,7 @@ const MobileSubPanel = ({
       </div>
 
       {/* 8.5 Sub-Panel Body */}
-      <div className="sub-panel-body">
-        {children}
-      </div>
+      <div className="sub-panel-body">{children}</div>
     </div>
   );
 };

@@ -72,7 +72,11 @@ The House of Kaira Team`;
     wordingUpdated: (messageName: string, wordingName: string): string => {
       return `Wording "${wordingName}" was updated in "${messageName}"`;
     },
-    channelToggled: (messageName: string, channel: string, state: string): string => {
+    channelToggled: (
+      messageName: string,
+      channel: string,
+      state: string,
+    ): string => {
       return `Channel "${channel}" was ${state} for "${messageName}"`;
     },
     statusChanged: (messageName: string, from: string, to: string): string => {
@@ -83,11 +87,11 @@ The House of Kaira Team`;
   // Communication templates
   communication: {
     requestMoreInfo: (messageName: string, presets: string[]): string => {
-      const presetList = presets.map(p => `"${p}"`).join(', ');
+      const presetList = presets.map((p) => `"${p}"`).join(", ");
       return `Requested more info on "${messageName}" using presets: ${presetList}`;
     },
     rejectMessage: (messageName: string, reasons: string[]): string => {
-      const reasonList = reasons.map(r => `"${r}"`).join(', ');
+      const reasonList = reasons.map((r) => `"${r}"`).join(", ");
       return `Rejected "${messageName}" with reasons: ${reasonList}`;
     },
     approveMessage: (messageName: string): string => {

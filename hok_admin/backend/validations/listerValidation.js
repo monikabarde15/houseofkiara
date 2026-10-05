@@ -23,7 +23,11 @@ export const validateListerInput = (data, isUpdate = false) => {
   }
 
   // Email validation (optional, but if provided must be valid)
-  if (data.email && typeof data.email === "string" && data.email.trim().length > 0) {
+  if (
+    data.email &&
+    typeof data.email === "string" &&
+    data.email.trim().length > 0
+  ) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email.trim())) {
       errors.push("Invalid email address format.");
@@ -32,7 +36,11 @@ export const validateListerInput = (data, isUpdate = false) => {
 
   // Contact Address PIN validation (6 digits)
   const contactPin = data.address?.pin || data.pin;
-  if (contactPin && typeof contactPin === "string" && contactPin.trim().length > 0) {
+  if (
+    contactPin &&
+    typeof contactPin === "string" &&
+    contactPin.trim().length > 0
+  ) {
     if (!/^\d{6}$/.test(contactPin.trim())) {
       errors.push("PIN code must be 6 digits.");
     }
@@ -40,14 +48,25 @@ export const validateListerInput = (data, isUpdate = false) => {
 
   // Pickup Address PIN validation (6 digits)
   const pickupPin = data.pickup?.pin;
-  if (pickupPin && typeof pickupPin === "string" && pickupPin.trim().length > 0) {
+  if (
+    pickupPin &&
+    typeof pickupPin === "string" &&
+    pickupPin.trim().length > 0
+  ) {
     if (!/^\d{6}$/.test(pickupPin.trim())) {
       errors.push("Pickup PIN code must be 6 digits.");
     }
   }
 
   // Status validation
-  const validStatuses = ["Verified", "Pending Review", "Paused", "Suspended", "Rejected", "Exited"];
+  const validStatuses = [
+    "Verified",
+    "Pending Review",
+    "Paused",
+    "Suspended",
+    "Rejected",
+    "Exited",
+  ];
   if (data.status && !validStatuses.includes(data.status)) {
     errors.push(`Status must be one of: ${validStatuses.join(", ")}`);
   }

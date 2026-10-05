@@ -1,10 +1,10 @@
 // src/components/Listers/tabs/Compliance/ComplianceTab.tsx
 
-import React, { useState } from 'react';
-import { Lister, ListerStatus } from '../../types/lister.types';
-import { LISTER_STATUSES } from '../../utils/constants';
-import { inr } from '../../utils/formatter';
-import './styles/ComplianceTab.css';
+import React, { useState } from "react";
+import { Lister, ListerStatus } from "../../types/lister.types";
+import { LISTER_STATUSES } from "../../utils/constants";
+import { inr } from "../../utils/formatter";
+import "./styles/ComplianceTab.css";
 
 interface ComplianceTabProps {
   lister: Lister | null;
@@ -17,15 +17,17 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({
   onSave,
   isCreateMode = false,
 }) => {
-  const [status, setStatus] = useState<ListerStatus>(lister?.status || 'Verified');
-  const [statusReason, setStatusReason] = useState(lister?.statusReason || '');
-  const [notes, setNotes] = useState(lister?.notes || '');
+  const [status, setStatus] = useState<ListerStatus>(
+    lister?.status || "Verified",
+  );
+  const [statusReason, setStatusReason] = useState(lister?.statusReason || "");
+  const [notes, setNotes] = useState(lister?.notes || "");
   const [loading, setLoading] = useState(false);
 
   const handleStatusChange = (value: ListerStatus) => {
     setStatus(value);
-    if (value === 'Verified' || value === 'Pending Review') {
-      setStatusReason('');
+    if (value === "Verified" || value === "Pending Review") {
+      setStatusReason("");
     }
   };
 
@@ -34,7 +36,7 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({
     try {
       onSave();
     } catch (error) {
-      console.error('Failed to save:', error);
+      console.error("Failed to save:", error);
     } finally {
       setLoading(false);
     }
@@ -54,20 +56,28 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({
               <select
                 className="fld-input"
                 value={status}
-                onChange={(e) => handleStatusChange(e.target.value as ListerStatus)}
+                onChange={(e) =>
+                  handleStatusChange(e.target.value as ListerStatus)
+                }
               >
-                {LISTER_STATUSES.map(s => (
-                  <option key={s} value={s}>{s}</option>
+                {LISTER_STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>
               <div className="fld-hint">
-                Suspended pauses every live piece (existing bookings honored). Exited runs the offboarding check below first.
+                Suspended pauses every live piece (existing bookings honored).
+                Exited runs the offboarding check below first.
               </div>
             </div>
 
             <div className="fld">
               <label className="fld-label">
-                Status Reason <span className="fld-label-internal">– internal, on the record</span>
+                Status Reason{" "}
+                <span className="fld-label-internal">
+                  – internal, on the record
+                </span>
               </label>
               <input
                 type="text"
@@ -80,20 +90,29 @@ export const ComplianceTab: React.FC<ComplianceTabProps> = ({
           </div>
 
           <div className="compliance-authority-note">
-            Payout splits are never set at the lister level — the piece default suggests, the deal may pre-decide, and payout approval is the only binding moment. Anything negotiated with this lister belongs on the piece or the transaction.
+            Payout splits are never set at the lister level — the piece default
+            suggests, the deal may pre-decide, and payout approval is the only
+            binding moment. Anything negotiated with this lister belongs on the
+            piece or the transaction.
           </div>
 
           <div className="compliance-terms-line">
             <span className="terms-label">Lister Terms</span>
             <span className="terms-value">
-              {lister?.terms?.version || 'LST-2026-01'} accepted {lister?.terms?.acceptedAt ? new Date(lister.terms.acceptedAt).toLocaleDateString() : '12 Mar 2024'} via {lister?.terms?.channel || 'Website (List Your Piece)'} — the lister-side mirror of the customer DPDP trail.
+              {lister?.terms?.version || "LST-2026-01"} accepted{" "}
+              {lister?.terms?.acceptedAt
+                ? new Date(lister.terms.acceptedAt).toLocaleDateString()
+                : "12 Mar 2024"}{" "}
+              via {lister?.terms?.channel || "Website (List Your Piece)"} — the
+              lister-side mirror of the customer DPDP trail.
             </span>
           </div>
 
           <div className="compliance-offboarding-line">
             <span className="offboarding-label">Offboarding readiness</span>
             <span className="offboarding-value">
-              pending payouts {inr(0)} · pieces in HOK custody 0. Both must read zero before Exited is honest.
+              pending payouts {inr(0)} · pieces in HOK custody 0. Both must read
+              zero before Exited is honest.
             </span>
           </div>
 

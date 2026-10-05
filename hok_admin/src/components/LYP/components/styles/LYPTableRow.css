@@ -2,7 +2,6 @@
 
 .lyp-td-submission {
   padding-top: 13px !important;
-  
 }
 
 .lyp-td-submitted {
@@ -108,7 +107,7 @@
   padding: 1px 6px;
   border-radius: var(--r);
   margin-top: 3px;
-  margin-left: 10PX;
+  margin-left: 10px;
   white-space: nowrap;
 }
 
@@ -119,7 +118,7 @@
 
 .agec-due {
   background: var(--gold-pale);
-  color: #6B5730;
+  color: #6b5730;
 }
 
 .agec-over {

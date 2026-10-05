@@ -48,7 +48,6 @@
   font-weight: 300;
 }
 
-
 /* ============================= */
 /* PRELOVED FINAL NOTE */
 /* ============================= */
@@ -76,9 +75,7 @@
   font-weight: 300;
 }
 
-
 @media (max-width: 430px) {
-
   /* ============================= */
   /* BASE NOTICE (ALL TYPES) */
   /* ============================= */
@@ -113,17 +110,17 @@
 
   /* AMBER (Deposit) */
   .cart-deposit {
-    border-left-color: var(--amber); 
+    border-left-color: var(--amber);
   }
 
   .cart-deposit__amount {
     font-weight: 400;
-    color: var(--amber); 
+    color: var(--amber);
   }
 
   /* ROSE (Disclosure) */
   .preloved-disclosure {
-    border-left-color: var(--mulberry); 
+    border-left-color: var(--mulberry);
   }
 
   .preloved-disclosure__label {
@@ -140,5 +137,4 @@
     font-weight: 400;
     color: var(--ink-3);
   }
-
 }

@@ -1,8 +1,8 @@
 // src/components/products/tabs/RelatedProductsTab.tsx
 
-import React, { useMemo, useState } from 'react';
-import { X, Search, Shirt } from 'lucide-react';
-import { Product } from '../../types/product';
+import React, { useMemo, useState } from "react";
+import { X, Search, Shirt } from "lucide-react";
+import { Product } from "../../types/product";
 
 interface RelatedProductsTabProps {
   formData: Partial<Product>;
@@ -19,42 +19,47 @@ export function RelatedProductsTab({
   currentProductId,
   onSave,
 }: RelatedProductsTabProps) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const relatedIds = formData.relatedProductIds || [];
 
   const availableProducts = useMemo(
-    () => allProducts.filter(p => p.id !== currentProductId),
-    [allProducts, currentProductId]
+    () => allProducts.filter((p) => p.id !== currentProductId),
+    [allProducts, currentProductId],
   );
 
   const relatedProducts = useMemo(
-    () => relatedIds
-      .map(id => availableProducts.find(p => p.id === id))
-      .filter((p): p is Product => Boolean(p)),
-    [relatedIds, availableProducts]
+    () =>
+      relatedIds
+        .map((id) => availableProducts.find((p) => p.id === id))
+        .filter((p): p is Product => Boolean(p)),
+    [relatedIds, availableProducts],
   );
 
   const searchResults = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
     return availableProducts
-      .filter(p => !relatedIds.includes(p.id))
-      .filter(p =>
-        (p.name || '').toLowerCase().includes(q) ||
-        p.designer?.toLowerCase().includes(q) ||
-        p.sku?.toLowerCase().includes(q)
+      .filter((p) => !relatedIds.includes(p.id))
+      .filter(
+        (p) =>
+          (p.name || "").toLowerCase().includes(q) ||
+          p.designer?.toLowerCase().includes(q) ||
+          p.sku?.toLowerCase().includes(q),
       )
       .slice(0, 8);
   }, [query, availableProducts, relatedIds]);
 
   const handleAddRelated = (productId: string) => {
-    onFieldChange('relatedProductIds', [...relatedIds, productId]);
-    setQuery('');
+    onFieldChange("relatedProductIds", [...relatedIds, productId]);
+    setQuery("");
   };
 
   const handleRemoveRelated = (productId: string) => {
-    onFieldChange('relatedProductIds', relatedIds.filter(id => id !== productId));
+    onFieldChange(
+      "relatedProductIds",
+      relatedIds.filter((id) => id !== productId),
+    );
   };
 
   return (
@@ -62,8 +67,9 @@ export function RelatedProductsTab({
       {/* Info banner */}
       <div className="rounded-md border border-amber-200/70 bg-amber-50/60 p-3">
         <p className="text-xs text-stone-600 leading-relaxed">
-          Pieces added here appear in the &ldquo;You May Also Like&rdquo; section on this product&apos;s PDP.
-          Aim for 4-8 relevant pieces &mdash; similar silhouette, same designer, or matching occasion.
+          Pieces added here appear in the &ldquo;You May Also Like&rdquo;
+          section on this product&apos;s PDP. Aim for 4-8 relevant pieces
+          &mdash; similar silhouette, same designer, or matching occasion.
         </p>
       </div>
 
@@ -77,7 +83,7 @@ export function RelatedProductsTab({
           <input
             type="text"
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name, SKU, or designer..."
             className="w-full rounded-md border border-stone-200 pl-9 pr-3 py-2.5 text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-300"
           />
@@ -85,9 +91,11 @@ export function RelatedProductsTab({
           {query.trim() && (
             <div className="absolute z-10 mt-1 w-full rounded-md border border-stone-200 bg-white shadow-lg max-h-64 overflow-y-auto">
               {searchResults.length === 0 ? (
-                <p className="px-3 py-3 text-xs text-stone-400">No matching products found.</p>
+                <p className="px-3 py-3 text-xs text-stone-400">
+                  No matching products found.
+                </p>
               ) : (
-                searchResults.map(p => (
+                searchResults.map((p) => (
                   <button
                     key={p.id}
                     type="button"
@@ -98,9 +106,12 @@ export function RelatedProductsTab({
                       <Shirt className="w-4 h-4 text-stone-400" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-stone-800 truncate">{p.name}</p>
+                      <p className="text-xs font-medium text-stone-800 truncate">
+                        {p.name}
+                      </p>
                       <p className="text-[10px] text-stone-400 truncate">
-                        {p.designer}{p.sku ? ` · ${p.sku}` : ''}
+                        {p.designer}
+                        {p.sku ? ` · ${p.sku}` : ""}
                       </p>
                     </div>
                   </button>
@@ -118,10 +129,12 @@ export function RelatedProductsTab({
         </h4>
 
         {relatedProducts.length === 0 ? (
-          <p className="text-stone-400 text-xs">No related products selected yet.</p>
+          <p className="text-stone-400 text-xs">
+            No related products selected yet.
+          </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {relatedProducts.map(p => (
+            {relatedProducts.map((p) => (
               <div
                 key={p.id}
                 className="relative flex items-center gap-3 rounded-md border border-stone-200 p-3"
@@ -138,9 +151,12 @@ export function RelatedProductsTab({
                   <Shirt className="w-5 h-5 text-stone-500" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-medium text-stone-800 truncate">{p.name}</p>
+                  <p className="text-xs font-medium text-stone-800 truncate">
+                    {p.name}
+                  </p>
                   <p className="text-[10px] text-stone-400 truncate">
-                    {p.designer}{p.sku ? ` · ${p.sku}` : ''}
+                    {p.designer}
+                    {p.sku ? ` · ${p.sku}` : ""}
                   </p>
                 </div>
               </div>

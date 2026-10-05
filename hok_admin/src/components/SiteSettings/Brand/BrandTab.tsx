@@ -47,7 +47,8 @@ const initialAssets: Asset[] = [
   {
     id: "inverseMark",
     name: "Inverse mark",
-    description: "A light version of the mark, for placing on a dark background.",
+    description:
+      "A light version of the mark, for placing on a dark background.",
     dimensions: "76 × 76",
     accepted: "Same shape as the mark, light ink.",
     showsIn: "Nothing carries the logo on dark today",
@@ -113,7 +114,7 @@ export default function BrandTab() {
   const [siteName, setSiteName] = useState("House of Kaira");
   const [tagline, setTagline] = useState("Circular Luxury Fashion");
   const [brandQuote, setBrandQuote] = useState(
-    "Every outfit has a story. We make sure it’s never the last chapter."
+    "Every outfit has a story. We make sure it’s never the last chapter.",
   );
 
   const [assets, setAssets] = useState<Asset[]>(initialAssets);
@@ -130,9 +131,7 @@ export default function BrandTab() {
     }
   };
 
-  const handleFileChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (!file || !uploadingAsset) return;
@@ -152,13 +151,10 @@ export default function BrandTab() {
                 fileType: file.type
                   ? file.type.split("/")[1]?.toUpperCase()
                   : "FILE",
-                fileSize: `${Math.max(
-                  1,
-                  Math.ceil(file.size / 1024)
-                )} KB`,
+                fileSize: `${Math.max(1, Math.ceil(file.size / 1024))} KB`,
               }
-            : asset
-        )
+            : asset,
+        ),
       );
 
       setUploadingAsset(null);
@@ -178,8 +174,8 @@ export default function BrandTab() {
               fileSize: undefined,
               src: undefined,
             }
-          : asset
-      )
+          : asset,
+      ),
     );
   };
 
@@ -198,8 +194,8 @@ export default function BrandTab() {
               fileType: "PNG",
               fileSize: "2 KB",
             }
-          : asset
-      )
+          : asset,
+      ),
     );
   };
 
@@ -214,8 +210,7 @@ export default function BrandTab() {
     document.body.removeChild(link);
   };
 
-  const getAsset = (id: AssetId) =>
-    assets.find((asset) => asset.id === id);
+  const getAsset = (id: AssetId) => assets.find((asset) => asset.id === id);
 
   return (
     <div className="brand-tab">
@@ -230,9 +225,7 @@ export default function BrandTab() {
         </div>
 
         <div className="brand-region-meta">
-          <span className="brand-user">
-            Priya (Ops) · 2 days ago
-          </span>
+          <span className="brand-user">Priya (Ops) · 2 days ago</span>
 
           <div className="brand-view-toggle">
             <button className="active">Desktop</button>
@@ -248,24 +241,22 @@ export default function BrandTab() {
             <option>Buy New</option>
           </select>
 
-          <button className="brand-hide-preview">
-            Hide
-          </button>
+          <button className="brand-hide-preview">Hide</button>
         </div>
       </div>
 
       {/* WARNINGS */}
       <div className="brand-warning">
         <span>
-          No share image is set. Every link shared to WhatsApp renders as a
-          bare URL with no picture.
+          No share image is set. Every link shared to WhatsApp renders as a bare
+          URL with no picture.
         </span>
       </div>
 
       <div className="brand-warning">
         <span>
-          No favicon is set, so the browser tab shows a blank page icon.
-          None of the storefront pages carries one today.
+          No favicon is set, so the browser tab shows a blank page icon. None of
+          the storefront pages carries one today.
         </span>
       </div>
 
@@ -309,11 +300,7 @@ export default function BrandTab() {
 
             <div className="brand-field-hint">
               Prints: {brandQuote || "nothing yet"}
-              <button
-                type="button"
-                className="pointer-button"
-                title="Pointer"
-              >
+              <button type="button" className="pointer-button" title="Pointer">
                 {"{}"}
               </button>
             </div>
@@ -327,8 +314,8 @@ export default function BrandTab() {
           <div>
             <h3>Assets</h3>
             <p>
-              Replace a file here and every page picks it up. Nothing else
-              needs touching.
+              Replace a file here and every page picks it up. Nothing else needs
+              touching.
             </p>
           </div>
         </div>
@@ -354,9 +341,9 @@ export default function BrandTab() {
           <div>
             <h3>Palette &amp; type</h3>
             <p>
-              Built into the stylesheet, not switchable from here —
-              changing one is a development change, not a setting. Listed so
-              there is one place to read them off.
+              Built into the stylesheet, not switchable from here — changing one
+              is a development change, not a setting. Listed so there is one
+              place to read them off.
             </p>
           </div>
         </div>
@@ -370,13 +357,9 @@ export default function BrandTab() {
                   style={{ backgroundColor: item.hex }}
                 />
 
-                <span className="palette-name">
-                  {item.name}
-                </span>
+                <span className="palette-name">{item.name}</span>
 
-                <span className="palette-hex">
-                  {item.hex}
-                </span>
+                <span className="palette-hex">{item.hex}</span>
               </div>
             ))}
           </div>
@@ -397,9 +380,8 @@ export default function BrandTab() {
           </div>
 
           <div className="palette-note">
-            The announcement bar colours on{" "}
-            <strong>Announcement</strong> default to Charcoal and Gold from
-            this palette.
+            The announcement bar colours on <strong>Announcement</strong>{" "}
+            default to Charcoal and Gold from this palette.
           </div>
         </div>
       </section>
@@ -451,9 +433,7 @@ function AssetRow({
       <div className="asset-info">
         <h4>{asset.name}</h4>
 
-        <p className="asset-description">
-          {asset.description}
-        </p>
+        <p className="asset-description">{asset.description}</p>
 
         <div className="shows-in">
           <span>SHOWS IN</span>
@@ -462,9 +442,7 @@ function AssetRow({
 
         {isFilled ? (
           <>
-            <div className="asset-file-name">
-              {asset.fileName}
-            </div>
+            <div className="asset-file-name">{asset.fileName}</div>
 
             <div className="asset-file-meta">
               {asset.dimensions} · {asset.fileSize} · added from the live site
@@ -474,41 +452,27 @@ function AssetRow({
           <>
             <div className="asset-not-set">Not set</div>
 
-            <div className="asset-requirement">
-              {asset.accepted}
-            </div>
+            <div className="asset-requirement">{asset.accepted}</div>
           </>
         )}
 
         <div className="asset-actions">
           {isFilled ? (
             <>
-              <button
-                type="button"
-                onClick={() => onUpload(asset.id)}
-              >
+              <button type="button" onClick={() => onUpload(asset.id)}>
                 Replace
               </button>
 
-              <button
-                type="button"
-                onClick={() => onDownload(asset)}
-              >
+              <button type="button" onClick={() => onDownload(asset)}>
                 Download
               </button>
 
-              <button
-                type="button"
-                onClick={() => onRemove(asset.id)}
-              >
+              <button type="button" onClick={() => onRemove(asset.id)}>
                 Remove
               </button>
             </>
           ) : (
-            <button
-              type="button"
-              onClick={() => onUpload(asset.id)}
-            >
+            <button type="button" onClick={() => onUpload(asset.id)}>
               Upload
             </button>
           )}
@@ -526,36 +490,34 @@ function AssetRow({
             )}
         </div>
 
-      {asset.id !== "logoMark" && (
-  <div className="prepare-note">
-    <span>WHAT TO PREPARE</span>
+        {asset.id !== "logoMark" && (
+          <div className="prepare-note">
+            <span>WHAT TO PREPARE</span>
 
-    <p>
-      {asset.id === "wordmark" &&
-        "Only if you want the lettering locked as artwork instead of live type. Most brands leave this empty."}
+            <p>
+              {asset.id === "wordmark" &&
+                "Only if you want the lettering locked as artwork instead of live type. Most brands leave this empty."}
 
-      {asset.id === "inverseMark" &&
-        "Not needed yet. Prepare one when a dark section starts carrying the logo."}
+              {asset.id === "inverseMark" &&
+                "Not needed yet. Prepare one when a dark section starts carrying the logo."}
 
-      {asset.id === "favicon" &&
-        "Your HK monogram, cropped square, on a solid background. No wordmark — at this size letters turn to mush."}
+              {asset.id === "favicon" &&
+                "Your HK monogram, cropped square, on a solid background. No wordmark — at this size letters turn to mush."}
 
-      {asset.id === "homeIcon" &&
-        "The same monogram, larger, on a solid cream or charcoal square. No transparency — iPhones turn transparent areas black."}
+              {asset.id === "homeIcon" &&
+                "The same monogram, larger, on a solid cream or charcoal square. No transparency — iPhones turn transparent areas black."}
 
-      {asset.id === "shareImage" &&
-        "Landscape artwork that reads at thumbnail size: the wordmark on cream, or one strong piece photographed wide."}
-    </p>
-  </div>
-)}
+              {asset.id === "shareImage" &&
+                "Landscape artwork that reads at thumbnail size: the wordmark on cream, or one strong piece photographed wide."}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* CONTEXT MOCKS */}
       {(asset.id === "favicon" ||
         asset.id === "homeIcon" ||
-        asset.id === "shareImage") && (
-        <AssetMock asset={asset} />
-      )}
+        asset.id === "shareImage") && <AssetMock asset={asset} />}
     </div>
   );
 }
@@ -578,9 +540,7 @@ function AssetMock({ asset }: { asset: Asset }) {
           </div>
         </div>
 
-        <p className="mock-warning">
-          Blank sheet is what customers see now.
-        </p>
+        <p className="mock-warning">Blank sheet is what customers see now.</p>
       </div>
     );
   }
@@ -608,20 +568,14 @@ function AssetMock({ asset }: { asset: Asset }) {
 
       <div className="chat-preview">
         <div className="chat-image">
-          {asset.src ? (
-            <img src={asset.src} alt="" />
-          ) : (
-            <span>no picture</span>
-          )}
+          {asset.src ? <img src={asset.src} alt="" /> : <span>no picture</span>}
         </div>
 
         <div className="chat-title">
           House of Kaira — Rent, Buy &amp; List Luxury
         </div>
 
-        <div className="chat-domain">
-          houseofkaira.com
-        </div>
+        <div className="chat-domain">houseofkaira.com</div>
       </div>
 
       <p className="mock-warning">

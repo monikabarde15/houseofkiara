@@ -1,9 +1,9 @@
 // src/components/Notifications/components/Chip.tsx
-import React from 'react';
-import './styles/Chip.css';
+import React from "react";
+import "./styles/Chip.css";
 
 interface PersonChipProps {
-  kind: 'person';
+  kind: "person";
   label: string;
   count: number;
   /** true when this person is carrying at least one item (§6.4 green fill) */
@@ -16,7 +16,7 @@ interface PersonChipProps {
 }
 
 interface DashboardChipProps {
-  kind: 'dashboard';
+  kind: "dashboard";
   count: number;
   /** alert title, already forced to lower case (§13.2) */
   label: string;
@@ -32,14 +32,14 @@ type ChipProps = PersonChipProps | DashboardChipProps;
  * or navigates on click.
  */
 export function Chip(props: ChipProps) {
-  if (props.kind === 'person') {
+  if (props.kind === "person") {
     const classes = [
-      'ntf-who',
-      props.isNobody ? 'ntf-who--none' : props.carrying ? 'ntf-who--on' : '',
-      props.selected ? 'ntf-who--sel' : '',
+      "ntf-who",
+      props.isNobody ? "ntf-who--none" : props.carrying ? "ntf-who--on" : "",
+      props.selected ? "ntf-who--sel" : "",
     ]
       .filter(Boolean)
-      .join(' ');
+      .join(" ");
 
     return (
       <button
@@ -48,7 +48,7 @@ export function Chip(props: ChipProps) {
         onClick={props.onClick}
         title={
           props.isNobody
-            ? 'Show only what nobody has picked up'
+            ? "Show only what nobody has picked up"
             : `Show only what ${props.label} is carrying`
         }
       >

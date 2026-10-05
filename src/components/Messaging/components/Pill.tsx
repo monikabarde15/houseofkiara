@@ -1,9 +1,9 @@
 // components/Pill.tsx
-import React from 'react';
-import './styles/Pill.css';
+import React from "react";
+import "./styles/Pill.css";
 
-export type PillStatus = 'green' | 'amber' | 'grey' | 'blue' | 'terracotta';
-export type PillType = 'status' | 'class';
+export type PillStatus = "green" | "amber" | "grey" | "blue" | "terracotta";
+export type PillType = "status" | "class";
 
 interface PillProps {
   type?: PillType;
@@ -13,13 +13,15 @@ interface PillProps {
 }
 
 export const Pill: React.FC<PillProps> = ({
-  type = 'status',
-  status = 'grey',
+  type = "status",
+  status = "grey",
   children,
-  className = '',
+  className = "",
 }) => {
   return (
-    <span className={`msg-pill msg-pill--${type} msg-pill--${status} ${className}`}>
+    <span
+      className={`msg-pill msg-pill--${type} msg-pill--${status} ${className}`}
+    >
       {children}
     </span>
   );

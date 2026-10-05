@@ -8,24 +8,21 @@
    ============================================ */
 
 .profile-mobile-b-lst {
-  background:
-    rgba(201, 169, 110, 0.15);
+  background: rgba(201, 169, 110, 0.15);
 
-  color: #A8844A;
+  color: #a8844a;
 }
 
 .profile-mobile-b-ren {
-  background:
-    rgba(42, 68, 102, 0.10);
+  background: rgba(42, 68, 102, 0.1);
 
-  color: #2A4466;
+  color: #2a4466;
 }
 
 .profile-mobile-b-resale {
-  background:
-    rgba(107, 126, 90, 0.12);
+  background: rgba(107, 126, 90, 0.12);
 
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 /* ============================================
@@ -51,8 +48,7 @@
 
   padding-top: 10px;
 
-  border-top:
-    1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
 }
 
 /* ============================================
@@ -62,9 +58,7 @@
 .profile-mobile-section-title {
   margin-bottom: 8px;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 8px;
 
@@ -74,7 +68,7 @@
 
   text-transform: uppercase;
 
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* ============================================
@@ -94,12 +88,9 @@
 
   padding-bottom: 6px;
 
-  border-bottom:
-    1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 8px;
 
@@ -109,20 +100,18 @@
 
   text-transform: uppercase;
 
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* ============================================
    Booking History drow Overrides
    ============================================ */
 
-.profile-mobile-booking-history
-.profile-mobile-drow {
+.profile-mobile-booking-history .profile-mobile-drow {
   padding: 8px 0;
 }
 
-.profile-mobile-booking-history
-.profile-mobile-dl {
+.profile-mobile-booking-history .profile-mobile-dl {
   min-width: 0;
 
   font-size: 10px;
@@ -133,7 +122,7 @@
 
   letter-spacing: normal;
 
-  color: #3C3529;
+  color: #3c3529;
 }
 
 /* ============================================
@@ -142,7 +131,7 @@
    ============================================ */
 
 .profile-mobile-dv-paid {
-  color: #A8844A;
+  color: #a8844a;
 
   font-weight: 500;
 }
@@ -153,7 +142,7 @@
    ============================================ */
 
 .profile-mobile-dv-pending {
-  color: #8A7E72;
+  color: #8a7e72;
 
   font-weight: 500;
 }
@@ -177,8 +166,7 @@
 
   padding-top: 10px;
 
-  border-top:
-    1px solid #E8E0D4;
+  border-top: 1px solid #e8e0d4;
 }
 
 /* ============================================
@@ -186,7 +174,7 @@
    ============================================ */
 
 .profile-mobile-total-amount {
-  color: #1A1612;
+  color: #1a1612;
 
   font-weight: 500;
 }
@@ -202,7 +190,7 @@
 
   font-weight: 400;
 
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* ============================================
@@ -210,13 +198,13 @@
    ============================================ */
 
 .profile-mobile-dv-gold {
-  color: #A8844A;
+  color: #a8844a;
 
   font-weight: 500;
 }
 
 .profile-mobile-dv-sage {
-  color: #6B7E5A;
+  color: #6b7e5a;
 
   font-weight: 500;
 }

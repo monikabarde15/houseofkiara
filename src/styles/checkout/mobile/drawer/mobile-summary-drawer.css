@@ -32,8 +32,8 @@
   max-width: 430px;
   margin: 0 auto;
   z-index: 500;
-  background: #FFFFFB;
-  border-top: 2px solid #1A1612;
+  background: #fffffb;
+  border-top: 2px solid #1a1612;
   max-height: 86vh;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -55,7 +55,7 @@
   padding: 16px 16px 0;
   position: sticky;
   top: 0;
-  background: #FFFFFB;
+  background: #fffffb;
   z-index: 2;
 }
 
@@ -63,20 +63,20 @@
   font-family: "Cormorant Garamond", serif;
   font-weight: 400;
   font-size: 20px;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .mobile-drawer-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .mobile-drawer-close {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid #E8E0D4;
-  background: #FFFFFB;
+  border: 1px solid #e8e0d4;
+  background: #fffffb;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,7 +84,7 @@
 }
 
 .mobile-drawer-close svg {
-  stroke: #8A7E72;
+  stroke: #8a7e72;
   stroke-width: 1.8;
 }
 
@@ -103,13 +103,13 @@
 /* Price Section */
 .mobile-drawer-price {
   padding-top: 16px;
-  border-top: 1px solid #E8E0D4;
+  border-top: 1px solid #e8e0d4;
 }
 
 /* Divider */
 .mobile-drawer-divider {
   height: 1px;
-  background: #1A1612;
+  background: #1a1612;
   margin: 16px 0;
 }
 
@@ -129,7 +129,7 @@
   font-family: "Cormorant Garamond", serif;
   font-weight: 400;
   font-size: 15px;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .mobile-drawer-total-amount {
@@ -137,14 +137,14 @@
   font-weight: 300;
   font-size: 38px;
   line-height: 1;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .mobile-drawer-total-sub {
   font-family: "DM Sans", sans-serif;
   font-weight: 300;
   font-size: 8.5px;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* Deposit Note */
@@ -157,13 +157,13 @@
   font-weight: 300;
   font-size: 10px;
   line-height: 1.7;
-  color: #B0A898;
+  color: #b0a898;
   margin: 0;
 }
 
 .mobile-drawer-deposit-note strong {
   font-weight: 400;
-  color: #8A6010;
+  color: #8a6010;
 }
 
 /* Estimated Delivery */
@@ -171,13 +171,13 @@
   display: flex;
   gap: 12px;
   padding: 14px;
-  background: #FAF7F2;
-  border: 1px solid #F0EAE0;
+  background: #faf7f2;
+  border: 1px solid #f0eae0;
   margin: 16px 0;
 }
 
 .mobile-drawer-delivery svg {
-  stroke: #6B7E5A;
+  stroke: #6b7e5a;
   flex-shrink: 0;
 }
 
@@ -189,7 +189,7 @@
   font-family: "DM Sans", sans-serif;
   font-weight: 400;
   font-size: 12px;
-  color: #3C3529;
+  color: #3c3529;
   display: block;
   margin-bottom: 4px;
 }
@@ -199,7 +199,7 @@
   font-weight: 300;
   font-size: 10px;
   line-height: 1.6;
-  color: #8A7E72;
+  color: #8a7e72;
   margin: 0;
 }
 
@@ -212,7 +212,7 @@
   gap: 11px;
   margin-top: 18px;
   padding-top: 16px;
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
 }
 
 .mobile-drawer-trust-item {
@@ -223,11 +223,11 @@
   font-weight: 300;
   font-size: 10.5px;
   line-height: 1.45;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .mobile-drawer-trust-item svg {
-  stroke: #C9A96E;
+  stroke: #c9a96e;
   flex-shrink: 0;
   margin-top: 1px;
 }
@@ -246,7 +246,7 @@
   font-size: 7.5px;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: #E8E0D4;
-  border: 1px solid #F0EAE0;
+  color: #e8e0d4;
+  border: 1px solid #f0eae0;
   padding: 2.5px 7px;
 }

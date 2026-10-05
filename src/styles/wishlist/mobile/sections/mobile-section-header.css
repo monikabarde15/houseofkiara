@@ -1,9 +1,9 @@
 /* Section 5.1: Mode Section Header Row */
 
 .wishlist-mobile-section-header {
-  background: #FFFEFB;
+  background: #fffefb;
   padding: 18px 16px 14px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -20,35 +20,35 @@
 
 /* Dot — Rent*/
 .wishlist-mobile-section-header__dot--rent {
-  background: #B85C38;
+  background: #b85c38;
 }
 
 /* Dot — Preloved*/
 .wishlist-mobile-section-header__dot--preloved {
-  background: #C9A96E;
+  background: #c9a96e;
 }
 
 /* Dot — Buy New */
 .wishlist-mobile-section-header__dot--new {
-  background: #6B7E5A;
+  background: #6b7e5a;
 }
 
 /* Mode label */
 .wishlist-mobile-section-header__label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8px;
   font-weight: 400;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* Piece count */
 .wishlist-mobile-section-header__count {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8px;
   letter-spacing: 0.1em;
-  color: #8A7E72;
+  color: #8a7e72;
   font-weight: 300;
   margin-left: auto;
 }

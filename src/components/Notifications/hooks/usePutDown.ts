@@ -1,6 +1,6 @@
 // src/components/Notifications/hooks/usePutDown.ts
-import { useCallback, useState } from 'react';
-import { putAlertDown, bringBackAll } from '../services/putDownService';
+import { useCallback, useState } from "react";
+import { putAlertDown, bringBackAll } from "../services/putDownService";
 
 /**
  * §17.7 / §10.7 — "Put down for 7 days", limited to the four alerts flagged
@@ -22,7 +22,7 @@ export function usePutDown(repaint: () => Promise<void>) {
         setPendingKey(null);
       }
     },
-    [repaint]
+    [repaint],
   );
 
   const bringBack = useCallback(async () => {

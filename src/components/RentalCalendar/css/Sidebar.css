@@ -1,8 +1,8 @@
 .rental-sidebar {
   width: 280px;
   flex-shrink: 0;
-  border-left: 1px solid #EBE5D8;
-  background: #FFFFFF;
+  border-left: 1px solid #ebe5d8;
+  background: #ffffff;
   padding: 14px 14px 0;
   overflow-y: auto;
 
@@ -15,7 +15,7 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #2B2118;
+  color: #2b2118;
   margin-bottom: 10px;
 }
 
@@ -23,7 +23,7 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #C24A2E;
+  color: #c24a2e;
   margin-bottom: 10px;
 }
 
@@ -46,20 +46,20 @@
   appearance: none;
   -webkit-appearance: none;
 
-  background: #FBFAF6;
-  border: 1px solid #EBE5D8;
+  background: #fbfaf6;
+  border: 1px solid #ebe5d8;
   border-radius: 8px;
   padding: 10px 12px;
   cursor: pointer;
 }
 
 .dispatch-card:hover {
-  border-color: #D8CFB9;
+  border-color: #d8cfb9;
 }
 
 .dispatch-card--today {
-  background: #FFF3E4;
-  border-color: #E8B378;
+  background: #fff3e4;
+  border-color: #e8b378;
 }
 
 .dispatch-card__date {
@@ -70,17 +70,17 @@
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.03em;
-  color: #A69C8B;
+  color: #a69c8b;
   margin-bottom: 4px;
   white-space: nowrap;
 }
 
 .dispatch-card--today .dispatch-card__date {
-  color: #C24A2E;
+  color: #c24a2e;
 }
 
 .dispatch-card__star {
-  color: #C24A2E;
+  color: #c24a2e;
   flex-shrink: 0;
 }
 
@@ -89,7 +89,7 @@
   width: 100%;
   font-size: 13px;
   font-weight: 600;
-  color: #2B2118;
+  color: #2b2118;
   margin-bottom: 3px;
   line-height: 1.35;
 }
@@ -98,7 +98,7 @@
   display: block;
   width: 100%;
   font-size: 12px;
-  color: #6B6254;
+  color: #6b6254;
   line-height: 1.4;
   margin-bottom: 4px;
 }
@@ -107,5 +107,5 @@
   display: block;
   width: 100%;
   font-size: 11px;
-  color: #A69C8B;
+  color: #a69c8b;
 }

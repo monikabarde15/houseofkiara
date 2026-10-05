@@ -1,18 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import MobileBottomSheet from "./MobileBottomSheet";
-import MobileCancelBookingModal from '../modals/MobileCancelBookingModal';
+import MobileCancelBookingModal from "../modals/MobileCancelBookingModal";
 import "../../../../styles/Profile/mobile/sheets/MobileRentalDetailSheet.css";
-import Toast from '../../ui/Toast';
-const MobileRentalDetailSheet = ({
-  isOpen,
-  onClose,
-  booking,
-  onRefresh
-}) => {
-  const useAuthStore = require('../../../../store/authStore').default;
+import Toast from "../../ui/Toast";
+const MobileRentalDetailSheet = ({ isOpen, onClose, booking, onRefresh }) => {
+  const useAuthStore = require("../../../../store/authStore").default;
 
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const handleCancelBooking = () => {
     setIsCancelModalOpen(true);
@@ -23,23 +18,26 @@ const MobileRentalDetailSheet = ({
 
     try {
       const token = useAuthStore.getState().token;
-      const res = await fetch(`/api/customer/auth/orders/${booking.id || booking.orderId || booking._id}/cancel`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const res = await fetch(
+        `/api/customer/auth/orders/${booking.id || booking.orderId || booking._id}/cancel`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       const data = await res.json();
       if (data.success) {
-          setToastMessage("Booking has been cancelled successfully");
-          setShowToast(true);
-          onClose?.();
-          if (onRefresh) onRefresh();
+        setToastMessage("Booking has been cancelled successfully");
+        setShowToast(true);
+        onClose?.();
+        if (onRefresh) onRefresh();
       } else {
-          setToastMessage(data.message || "Failed to cancel booking");
-          setShowToast(true);
+        setToastMessage(data.message || "Failed to cancel booking");
+        setShowToast(true);
       }
     } catch (err) {
-        setToastMessage("Network error occurred");
-        setShowToast(true);
+      setToastMessage("Network error occurred");
+      setShowToast(true);
     }
   };
 
@@ -52,8 +50,7 @@ const MobileRentalDetailSheet = ({
       setShowToast(false);
     }, 3200);
 
-    return () =>
-      clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [showToast]);
   /* =========================================
      Guard
@@ -97,160 +94,143 @@ const MobileRentalDetailSheet = ({
     Dispatched: [
       {
         label: "Booking ID",
-        value: booking.id
+        value: booking.id,
       },
       {
         label: "Rental Dates",
-        value: booking.dates
+        value: booking.dates,
       },
       {
         label: "Size",
-        value: booking.size || "M"
+        value: booking.size || "M",
       },
       {
         label: "Rental Fee",
-        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`
+        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`,
       },
       {
         label: "Security Deposit",
-        value: `₹${booking.depositAmount || 15000
-          } — Pending refund`,
-        valueClass:
-          "profile-mobile-dv-gold"
+        value: `₹${booking.depositAmount || 15000} — Pending refund`,
+        valueClass: "profile-mobile-dv-gold",
       },
       {
         label: "Delivery Address",
-        value:
-          "204 Suncity Towers, Vijay Nagar, Indore"
+        value: "204 Suncity Towers, Vijay Nagar, Indore",
       },
       {
         label: "Return By",
-        value: "28 May 2025"
-      }
+        value: "28 May 2025",
+      },
     ],
 
     Confirmed: [
       {
         label: "Booking ID",
-        value: booking.id
+        value: booking.id,
       },
       {
         label: "Rental Dates",
-        value: booking.dates
+        value: booking.dates,
       },
       {
         label: "Size",
-        value:
-          booking.size || "S/M"
+        value: booking.size || "S/M",
       },
       {
         label: "Rental Fee",
-        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`
+        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`,
       },
       {
         label: "Deposit Due",
-        value: `₹${booking.depositAmount || 8000
-          } — Due at pickup`,
-        valueClass:
-          "profile-mobile-dv-gold"
+        value: `₹${booking.depositAmount || 8000} — Due at pickup`,
+        valueClass: "profile-mobile-dv-gold",
       },
       {
         label: "Expected Dispatch",
-        value:
-          "Within 3-5 business days"
-      }
+        value: "Within 3-5 business days",
+      },
     ],
 
     Completed: [
       {
         label: "Booking ID",
-        value: booking.id
+        value: booking.id,
       },
       {
         label: "Rental Dates",
-        value: booking.dates
+        value: booking.dates,
       },
       {
         label: "Rental Fee",
-        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`
+        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`,
       },
       {
         label: "Security Deposit",
-        value: `₹${booking.depositAmount || 10000
-          } — Refunded 20 Feb 2025`,
-        valueClass:
-          "profile-mobile-dv-sage"
+        value: `₹${booking.depositAmount || 10000} — Refunded 20 Feb 2025`,
+        valueClass: "profile-mobile-dv-sage",
       },
       {
         label: "Return Condition",
-        value:
-          "Excellent — no damage noted"
-      }
+        value: "Excellent — no damage noted",
+      },
     ],
 
     Returned: [
       {
         label: "Booking ID",
-        value: booking.id
+        value: booking.id,
       },
       {
         label: "Rental Dates",
-        value: booking.dates
+        value: booking.dates,
       },
       {
         label: "Rental Fee",
-        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`
+        value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()}`,
       },
       {
         label: "Security Deposit",
-        value: `₹${booking.depositAmount || 6000
-          } — Refunded`,
-        valueClass:
-          "profile-mobile-dv-sage"
+        value: `₹${booking.depositAmount || 6000} — Refunded`,
+        valueClass: "profile-mobile-dv-sage",
       },
       {
         label: "Return Condition",
-        value:
-          "Good — minor hem wear noted"
-      }
+        value: "Good — minor hem wear noted",
+      },
     ],
 
     Cancelled: [
       {
         label: "Booking ID",
-        value: booking.id
+        value: booking.id,
       },
       {
         label: "Requested Dates",
-        value: booking.dates
+        value: booking.dates,
       },
       {
         label: "Rental Fee",
         value: `₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()} (cancelled)`,
-        valueClass:
-          "profile-mobile-dv-cancelled"
+        valueClass: "profile-mobile-dv-cancelled",
       },
       {
         label: "Cancellation Date",
-        value: "28 Nov 2024"
+        value: "28 Nov 2024",
       },
       {
         label: "Cancelled By",
-        value: "Customer"
+        value: "Customer",
       },
       {
         label: "Reason",
-        value:
-          "Event rescheduled"
+        value: "Event rescheduled",
       },
       {
         label: "Refund Status",
-        value:
-          "Full refund — processed 2 Dec 2024",
-        valueClass:
-          "profile-mobile-dv-sage"
-      }
-    ]
+        value: "Full refund — processed 2 Dec 2024",
+        valueClass: "profile-mobile-dv-sage",
+      },
+    ],
   };
 
   /* =========================================
@@ -259,31 +239,22 @@ const MobileRentalDetailSheet = ({
 
   const notes = {
     Dispatched: {
-      variant:
-        "profile-mobile-note-default",
-      title:
-        "Return Instructions",
-      text:
-        "Pack in the original dust bag and WhatsApp us to schedule a pickup. Deposit refunded within 3–5 business days after inspection."
+      variant: "profile-mobile-note-default",
+      title: "Return Instructions",
+      text: "Pack in the original dust bag and WhatsApp us to schedule a pickup. Deposit refunded within 3–5 business days after inspection.",
     },
 
     Confirmed: {
-      variant:
-        "profile-mobile-note-gold",
-      title:
-        "What Happens Next",
-      text:
-        "Your piece is confirmed. It will be dispatched 2 days before your start date. You’ll receive a WhatsApp notification when it ships."
+      variant: "profile-mobile-note-gold",
+      title: "What Happens Next",
+      text: "Your piece is confirmed. It will be dispatched 2 days before your start date. You’ll receive a WhatsApp notification when it ships.",
     },
 
     Cancelled: {
-      variant:
-        "profile-mobile-note-muted",
-      title:
-        "Cancellation Policy",
-      text:
-        `Cancelled more than 7 days before the rental start date. Full refund of ₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()} was processed to the original payment method within 5–7 business days.`
-    }
+      variant: "profile-mobile-note-muted",
+      title: "Cancellation Policy",
+      text: `Cancelled more than 7 days before the rental start date. Full refund of ₹${(booking.grandTotal || booking.amount || booking.fee || 0).toLocaleString()} was processed to the original payment method within 5–7 business days.`,
+    },
   };
 
   /* =========================================
@@ -292,40 +263,33 @@ const MobileRentalDetailSheet = ({
 
   const actions = {
     Dispatched: {
-      primary:
-        "WhatsApp Support",
-      secondary:
-        "Email Instructions"
+      primary: "WhatsApp Support",
+      secondary: "Email Instructions",
     },
 
     Confirmed: {
       primary: "Contact Us",
-      secondary:
-        "Cancel Booking"
+      secondary: "Cancel Booking",
     },
 
     Completed: {
-      secondary: "Rent Again"
+      secondary: "Rent Again",
     },
 
     Returned: {
-      secondary: "Rent Again"
+      secondary: "Rent Again",
     },
 
     Cancelled: {
-      secondary:
-        "Browse Similar Pieces"
-    }
+      secondary: "Browse Similar Pieces",
+    },
   };
 
-  const currentRows =
-    detailRows[booking.status] || [];
+  const currentRows = detailRows[booking.status] || [];
 
-  const currentNote =
-    notes[booking.status];
+  const currentNote = notes[booking.status];
 
-  const currentActions =
-    actions[booking.status];
+  const currentActions = actions[booking.status];
 
   return (
     <>
@@ -345,7 +309,7 @@ const MobileRentalDetailSheet = ({
             style={{
               "--sheet-bg":
                 booking.imageGradient ||
-                "linear-gradient(160deg, #F0EAE0, #E8E0D4)"
+                "linear-gradient(160deg, #F0EAE0, #E8E0D4)",
             }}
           >
             <svg
@@ -369,7 +333,7 @@ const MobileRentalDetailSheet = ({
           <div className="profile-mobile-sheet-product-info">
             <div
               className={`profile-mobile-badge ${getBadgeClass(
-                booking.status
+                booking.status,
               )}`}
             >
               <span className="profile-mobile-bdot" />
@@ -394,18 +358,10 @@ const MobileRentalDetailSheet = ({
 
         <div className="profile-mobile-sheet-detail-body">
           {currentRows.map((row) => (
-            <div
-              key={row.label}
-              className="profile-mobile-drow"
-            >
-              <div className="profile-mobile-dl">
-                {row.label}
-              </div>
+            <div key={row.label} className="profile-mobile-drow">
+              <div className="profile-mobile-dl">{row.label}</div>
 
-              <div
-                className={`profile-mobile-dv ${row.valueClass || ""
-                  }`}
-              >
+              <div className={`profile-mobile-dv ${row.valueClass || ""}`}>
                 {row.value}
               </div>
             </div>
@@ -417,16 +373,12 @@ const MobileRentalDetailSheet = ({
            ================================= */}
 
           {currentNote && (
-            <div
-              className={`profile-mobile-note ${currentNote.variant}`}
-            >
+            <div className={`profile-mobile-note ${currentNote.variant}`}>
               <div className="profile-mobile-note-title">
                 {currentNote.title}
               </div>
 
-              <div className="profile-mobile-note-text">
-                {currentNote.text}
-              </div>
+              <div className="profile-mobile-note-text">{currentNote.text}</div>
             </div>
           )}
 
@@ -436,10 +388,7 @@ const MobileRentalDetailSheet = ({
            ================================= */}
 
           {currentActions?.primary && (
-            <button
-              type="button"
-              className="profile-mobile-sbtn-p active"
-            >
+            <button type="button" className="profile-mobile-sbtn-p active">
               {currentActions.primary}
             </button>
           )}
@@ -449,18 +398,13 @@ const MobileRentalDetailSheet = ({
               type="button"
               className="profile-mobile-sbtn-s"
               onClick={() => {
-                if (
-                  currentActions.secondary ===
-                  "Cancel Booking"
-                ) {
+                if (currentActions.secondary === "Cancel Booking") {
                   handleCancelBooking();
 
                   return;
                 }
 
-                console.log(
-                  currentActions.secondary
-                );
+                console.log(currentActions.secondary);
               }}
             >
               {currentActions.secondary}

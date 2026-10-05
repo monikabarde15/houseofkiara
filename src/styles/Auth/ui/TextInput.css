@@ -11,54 +11,56 @@
   width: 100%;
   height: 46px;
   padding: 0 16px;
-  
+
   /* Default state */
-  background: var(--cream, #FAF7F2);
-  border: 1px solid var(--border, #E8E0D4);
+  background: var(--cream, #faf7f2);
+  border: 1px solid var(--border, #e8e0d4);
   border-radius: 1px;
-  
+
   /* Typography */
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
-  color: var(--charcoal, #1A1612);
-  
+  color: var(--charcoal, #1a1612);
+
   /* Transitions - Section 1.5 */
-  transition: border-color 0.2s ease, background 0.2s ease;
-  
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+
   /* Remove outline */
   outline: none;
 }
 
 /* Placeholder styling */
 .hok-auth-text-input::placeholder {
-  color: #C4B9B0;
-  font-family: 'DM Sans', sans-serif;
+  color: #c4b9b0;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
 }
 
 /* Focus State */
 .hok-auth-text-input:focus {
-  border: 1px solid var(--gold, #C9A96E);
-  background: var(--warm-white, #FFFEFB);
+  border: 1px solid var(--gold, #c9a96e);
+  background: var(--warm-white, #fffefb);
 }
 
 /* Error State */
 .hok-auth-text-input.hok-auth-error {
-  border: 1px solid var(--error, #C0392B);
-  background: var(--error-bg, #FDF3F2);
+  border: 1px solid var(--error, #c0392b);
+  background: var(--error-bg, #fdf3f2);
 }
 
 /* Success State */
 .hok-auth-text-input.hok-auth-success {
-  border: 1px solid #B5D5C0;
-  background: var(--success-bg, #F0F7F3);
+  border: 1px solid #b5d5c0;
+  background: var(--success-bg, #f0f7f3);
 }
 
 /* Field Error Message - Section 6.6 */
 .hok-auth-field-error-message {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
-  color: var(--error, #C0392B);
+  color: var(--error, #c0392b);
   line-height: 1.4;
   margin-top: 5px;
   display: block;
@@ -70,7 +72,7 @@
     padding: 0 14px;
     font-size: 16px;
   }
-  
+
   .hok-auth-field-container {
     margin-bottom: 16px;
   }

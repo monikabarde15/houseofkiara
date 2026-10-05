@@ -1,44 +1,44 @@
 // src/components/Header/mobile/MobileHeader.jsx
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import '../../../styles/Header/mobile/mobile-header.css';
-import logo from '../../../assets/logo/logo.png';
-import useWishlistStore from '../../../store/wishlistStore';
-import useCartStore from '../../../store/cartStore';
+import React from "react";
+import { useLocation } from "react-router-dom";
+import "../../../styles/Header/mobile/mobile-header.css";
+import logo from "../../../assets/logo/logo.png";
+import useWishlistStore from "../../../store/wishlistStore";
+import useCartStore from "../../../store/cartStore";
 
-const MobileHeader = ({ 
-  theme = 'light',
+const MobileHeader = ({
+  theme = "light",
   isScrolled = false,
   isMenuOpen = false,
-  onMenuOpen, 
-  onSearchOpen, 
-  onWishlistClick, 
-  onBagClick 
+  onMenuOpen,
+  onSearchOpen,
+  onWishlistClick,
+  onBagClick,
 }) => {
-  const isDark = theme === 'dark';
+  const isDark = theme === "dark";
   const location = useLocation();
   const { items: wishlistItems, unseenCount } = useWishlistStore();
   const { items: cartItems } = useCartStore();
 
-  const isWishlistPage = location.pathname === '/wishlist';
-  const isCartPage = location.pathname === '/cart';
+  const isWishlistPage = location.pathname === "/wishlist";
+  const isCartPage = location.pathname === "/cart";
 
   const wishlistCount = wishlistItems.length;
   const cartCount = cartItems.length;
 
   return (
-    <header 
-      className={`hok-mobile-header ${isDark ? 'dark' : 'light'} ${
-        isScrolled ? 'hok-mobile-header--scrolled' : ''
+    <header
+      className={`hok-mobile-header ${isDark ? "dark" : "light"} ${
+        isScrolled ? "hok-mobile-header--scrolled" : ""
       }`}
     >
       <div className="hok-header-inner">
         {/* Burger Button */}
         <button
           id="burger"
-          className={`burger-btn ${isMenuOpen ? 'open' : ''}`}
+          className={`burger-btn ${isMenuOpen ? "open" : ""}`}
           onClick={onMenuOpen}
-          aria-label={isMenuOpen ? 'Close Menu' : 'Open Menu'}
+          aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
         >
           <span className="burger-bar"></span>
           <span className="burger-bar"></span>
@@ -46,7 +46,10 @@ const MobileHeader = ({
         </button>
 
         {/* Header Logo */}
-        <div className="header-logo" onClick={() => window.location.href = '/'}>
+        <div
+          className="header-logo"
+          onClick={() => (window.location.href = "/")}
+        >
           <img className="logo-img" src={logo} alt="House of Kaira" />
           <span className="logo-wordmark">HOUSE OF KAIRA</span>
         </div>
@@ -54,8 +57,19 @@ const MobileHeader = ({
         {/* Header Icon Cluster */}
         <div className="header-icons">
           {/* Search */}
-          <button className="hdr-btn" onClick={onSearchOpen} aria-label="Search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <button
+            className="hdr-btn"
+            onClick={onSearchOpen}
+            aria-label="Search"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <circle cx="11" cy="11" r="7" />
               <line x1="16.5" y1="16.5" x2="20" y2="20" />
             </svg>
@@ -63,31 +77,50 @@ const MobileHeader = ({
 
           {/* Wishlist */}
           <div className="cart-wrap">
-            <button className="hdr-btn" onClick={onWishlistClick} aria-label="Wishlist">
-              <svg 
-                viewBox="0 0 24 24" 
+            <button
+              className="hdr-btn"
+              onClick={onWishlistClick}
+              aria-label="Wishlist"
+            >
+              <svg
+                viewBox="0 0 24 24"
                 style={{
                   fill: wishlistItems.length > 0 ? "#B85C38" : "none",
-                  stroke: wishlistItems.length > 0 ? "#B85C38" : "currentColor"
+                  stroke: wishlistItems.length > 0 ? "#B85C38" : "currentColor",
                 }}
-                strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
             </button>
-            {wishlistCount > 0 && !isWishlistPage && <div className="cart-dot">{wishlistCount}</div>}
+            {wishlistCount > 0 && !isWishlistPage && (
+              <div className="cart-dot">{wishlistCount}</div>
+            )}
           </div>
 
           {/* Cart */}
           <div className="cart-wrap">
-            <button className="hdr-btn" onClick={onBagClick} aria-label="Shopping bag">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
+            <button
+              className="hdr-btn"
+              onClick={onBagClick}
+              aria-label="Shopping bag"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.4"
+              >
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
             </button>
-            {cartCount > 0 && !isCartPage && <div className="cart-dot">{cartCount}</div>}
+            {cartCount > 0 && !isCartPage && (
+              <div className="cart-dot">{cartCount}</div>
+            )}
           </div>
         </div>
       </div>

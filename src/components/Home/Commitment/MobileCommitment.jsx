@@ -8,13 +8,10 @@ import SectionTitle from "../../shared/SectionTitle";
 const MobileCommitment = () => {
   return (
     <section className="mobile-commitment">
-      <SectionEyebrow
-        text={commitmentData.eyebrow}
-      />
+      <SectionEyebrow text={commitmentData.eyebrow} />
 
       <SectionTitle>
-        {commitmentData.title.normal}{" "}
-        <em>{commitmentData.title.accent}</em>
+        {commitmentData.title.normal} <em>{commitmentData.title.accent}</em>
       </SectionTitle>
 
       <p className="mobile-commitment-description">
@@ -23,10 +20,7 @@ const MobileCommitment = () => {
 
       <div className="mobile-commitment-pills">
         {commitmentData.servicePills.map((pill) => (
-          <div
-            key={pill}
-            className="mobile-commitment-pill"
-          >
+          <div key={pill} className="mobile-commitment-pill">
             <span className="mobile-commitment-pill-dot" />
             {pill}
           </div>
@@ -38,21 +32,14 @@ const MobileCommitment = () => {
           const Icon = card.icon;
 
           return (
-            <article
-              key={card.id}
-              className="mobile-commitment-card"
-            >
+            <article key={card.id} className="mobile-commitment-card">
               <div className="mobile-commitment-icon-circle">
                 <Icon />
               </div>
 
-              <h3 className="mobile-commitment-card-title">
-                {card.headline}
-              </h3>
+              <h3 className="mobile-commitment-card-title">{card.headline}</h3>
 
-              <p className="mobile-commitment-card-body">
-                {card.body}
-              </p>
+              <p className="mobile-commitment-card-body">{card.body}</p>
             </article>
           );
         })}

@@ -4,10 +4,10 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.12
    ======================================== */
 
-import React from 'react';
-import './styles/LifecycleCard.css';
-import { Card, Button } from '../../components/UI';
-import { PromoCode } from '../../types/promotions.types';
+import React from "react";
+import "./styles/LifecycleCard.css";
+import { Card, Button } from "../../components/UI";
+import { PromoCode } from "../../types/promotions.types";
 
 interface LifecycleCardProps {
   code: PromoCode;
@@ -24,17 +24,19 @@ export const LifecycleCard: React.FC<LifecycleCardProps> = ({
   onDelete,
   redemptions,
 }) => {
-  const isPaused = code.status === 'Paused';
-  const isActive = code.status === 'Active';
+  const isPaused = code.status === "Paused";
+  const isActive = code.status === "Active";
   const canDelete = redemptions === 0;
 
   return (
-    <Card 
+    <Card
       header={<span className="card__title">Lifecycle — retire & delete</span>}
       className="lifecycle-card"
     >
       <div className="lifecycle-card__body">
-        Pausing stops new redemptions instantly and is always reversible. Deleting is only allowed when no order has ever carried the code — used codes are history, and history keeps them.
+        Pausing stops new redemptions instantly and is always reversible.
+        Deleting is only allowed when no order has ever carried the code — used
+        codes are history, and history keeps them.
       </div>
 
       <div className="lifecycle-card__actions">
@@ -49,7 +51,12 @@ export const LifecycleCard: React.FC<LifecycleCardProps> = ({
         ) : null}
 
         {canDelete ? (
-          <Button variant="secondary" size="small" className="lifecycle-card__delete-btn" onClick={onDelete}>
+          <Button
+            variant="secondary"
+            size="small"
+            className="lifecycle-card__delete-btn"
+            onClick={onDelete}
+          >
             Delete Code
           </Button>
         ) : null}
@@ -57,7 +64,8 @@ export const LifecycleCard: React.FC<LifecycleCardProps> = ({
 
       {!canDelete && (
         <div className="lifecycle-card__hint warning">
-          {redemptions} order{redemptions > 1 ? 's' : ''} carry this code — it can be paused, but not deleted.
+          {redemptions} order{redemptions > 1 ? "s" : ""} carry this code — it
+          can be paused, but not deleted.
         </div>
       )}
 

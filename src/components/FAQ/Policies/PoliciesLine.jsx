@@ -36,7 +36,9 @@ export default function PoliciesLine({ onShowToast }) {
         ))}
       </div>
       <p>
-        These answers explain our policies in plain words. Where the two ever differ, the full policy applies. Last reviewed {ADMIN_FIGURES.last_reviewed_date}.
+        These answers explain our policies in plain words. Where the two ever
+        differ, the full policy applies. Last reviewed{" "}
+        {ADMIN_FIGURES.last_reviewed_date}.
       </p>
     </section>
   );

@@ -1,6 +1,6 @@
 // setup/SetupDrawer.tsx
-import React, { useState } from 'react';
-import './styles/SetupDrawer.css';
+import React, { useState } from "react";
+import "./styles/SetupDrawer.css";
 
 interface SetupDrawerProps {
   title: string;
@@ -20,10 +20,10 @@ export const SetupDrawer: React.FC<SetupDrawerProps> = ({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className={`msg-drawer ${isOpen ? 'msg-drawer--open' : ''}`}>
+    <div className={`msg-drawer ${isOpen ? "msg-drawer--open" : ""}`}>
       <div className="msg-drawer-header" onClick={() => setIsOpen(!isOpen)}>
         <svg
-          className={`msg-drawer-chevron ${isOpen ? 'msg-drawer-chevron--open' : ''}`}
+          className={`msg-drawer-chevron ${isOpen ? "msg-drawer-chevron--open" : ""}`}
           viewBox="0 0 12 12"
           fill="none"
           stroke="currentColor"

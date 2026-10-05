@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
-import { CalendarEvent } from '../types';
-import EventPill from './EventPill';
-import '../css/DayEventsPopover.css';
+import React, { useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
+import { CalendarEvent } from "../types";
+import EventPill from "./EventPill";
+import "../css/DayEventsPopover.css";
 
 interface DayEventsPopoverProps {
   dateLabel: string; // e.g. "25 March 2026"
@@ -35,13 +35,13 @@ const DayEventsPopover: React.FC<DayEventsPopoverProps> = ({
       }
     };
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscape);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
     };
   }, [onClose]);
 
@@ -58,12 +58,14 @@ const DayEventsPopover: React.FC<DayEventsPopoverProps> = ({
         top,
         left,
         width: POPOVER_WIDTH,
-        transform: showBelow ? 'translateY(0)' : 'translateY(-100%)',
+        transform: showBelow ? "translateY(0)" : "translateY(-100%)",
       }}
     >
       <div className="day-events-popover__header">
         <span className="day-events-popover__date">{dateLabel}</span>
-        <span className="day-events-popover__count">{events.length} events</span>
+        <span className="day-events-popover__count">
+          {events.length} events
+        </span>
       </div>
       <div className="day-events-popover__list">
         {events.map((event) => (
@@ -77,7 +79,7 @@ const DayEventsPopover: React.FC<DayEventsPopoverProps> = ({
         ))}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
 

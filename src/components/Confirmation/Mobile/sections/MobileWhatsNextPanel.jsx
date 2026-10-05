@@ -39,9 +39,8 @@ const MobileWhatsNextPanel = () => {
                 <span className="mobile-wn-badge-soon">Within 24 hrs</span>
               </div>
               <p className="mobile-wn-step-text">
-                Our ops team will arrange the{" "}
-                <b>₹15,000 security deposit</b> for your rental and confirm
-                dispatch timing.
+                Our ops team will arrange the <b>₹15,000 security deposit</b>{" "}
+                for your rental and confirm dispatch timing.
               </p>
             </div>
           </div>

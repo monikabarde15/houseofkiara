@@ -17,7 +17,7 @@
   letter-spacing: 0.3em;
   text-transform: uppercase;
   font-weight: 300;
-  color: #B0A898;
+  color: #b0a898;
   margin-bottom: 48px;
 }
 
@@ -31,7 +31,7 @@
 .summary-total {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid #18140F;
+  border-top: 1px solid #18140f;
   padding-top: 20px;
   margin-top: 8px;
 }
@@ -46,39 +46,38 @@
 .summary-total-label {
   font-family: "Cormorant Garamond", serif;
   font-size: 17px;
-  color: #18140F;
+  color: #18140f;
 }
 
 .summary-total-value {
   font-family: "Cormorant Garamond", serif;
   font-size: 44px;
   font-weight: 300;
-  color: #18140F;
+  color: #18140f;
   letter-spacing: -0.5px;
 }
 
 .summary-total-sub {
   font-size: 9.5px;
-  color: #B0A898;
+  color: #b0a898;
 }
-
 
 /* Notes */
 .summary-notes {
   margin-top: 24px;
   padding-top: 16px;
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
 }
 
 .summary-notes p {
   font-size: 10px;
   line-height: 1.6;
-  color: #B0A898;
+  color: #b0a898;
   margin-bottom: 12px;
 }
 
 .summary-notes strong {
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* CTA Button - Desktop only (hidden on mobile) */
@@ -86,8 +85,8 @@
   margin-top: 32px;
   width: 100%;
   padding: 14px;
-  background: linear-gradient(90deg, #18140F, #2B2118);
-  color: #C8C0B4;
+  background: linear-gradient(90deg, #18140f, #2b2118);
+  color: #c8c0b4;
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -104,7 +103,12 @@
   left: -80%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  background: linear-gradient(
+    105deg,
+    transparent,
+    rgba(255, 255, 255, 0.18),
+    transparent
+  );
   transition: left 0.6s linear;
 }
 
@@ -116,7 +120,7 @@
 .ssl-note {
   margin-top: 10px;
   font-size: 9px;
-  color: #D8D0C4;
+  color: #d8d0c4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,7 +141,7 @@
 @media (max-width: 430px) {
   .order-summary {
     margin-top: 32px;
-    border-top: 2px solid #1A1612;
+    border-top: 2px solid #1a1612;
     padding-top: 28px;
   }
 
@@ -145,9 +149,8 @@
     font-size: 8px;
     letter-spacing: 0.3em;
     margin-bottom: 20px;
-    color: #B0A898;
+    color: #b0a898;
   }
-
 
   .summary-total {
     padding: 16px 0 12px;
@@ -155,21 +158,20 @@
 
   .summary-total-label {
     font-size: 15px;
-    color: #1A1612;
+    color: #1a1612;
   }
 
   .summary-total-value {
     font-size: 38px;
     letter-spacing: -0.4px;
-    color: #1A1612;
+    color: #1a1612;
   }
 
   .summary-total-sub {
     font-size: 8.5px;
-    color: #B0A898;
+    color: #b0a898;
     margin-top: 2px;
   }
-
 
   .summary-notes {
     margin-top: 14px;
@@ -179,11 +181,11 @@
     font-size: 10px;
     line-height: 1.8;
     margin-bottom: 10px;
-    color: #B0A898;
+    color: #b0a898;
   }
 
   .summary-notes strong {
-    color: #C9A96E;
+    color: #c9a96e;
   }
 
   /* Hide desktop CTA and SSL on mobile */

@@ -8,26 +8,24 @@ import SectionTitle from "../../shared/SectionTitle";
 import { Heart } from "lucide-react";
 
 const MobileFeatured = () => {
-
   const navigate = useNavigate();
 
-  const handleFeaturedViewAll=()=>{
-    navigate("/main-page?section=designers")
-  }
+  const handleFeaturedViewAll = () => {
+    navigate("/main-page?section=designers");
+  };
   return (
     <section className="mobile-featured">
       <div className="mobile-featured-header">
         <div>
-          <SectionEyebrow
-            text={featuredProductsData.eyebrow}
-          />
+          <SectionEyebrow text={featuredProductsData.eyebrow} />
 
           <SectionTitle>
             Featured <em>Pieces</em>
           </SectionTitle>
         </div>
 
-        <button className="mobile-featured-view-all"
+        <button
+          className="mobile-featured-view-all"
           onClick={handleFeaturedViewAll}
         >
           View All →
@@ -36,10 +34,7 @@ const MobileFeatured = () => {
 
       <div className="mobile-featured-grid">
         {featuredProductsData.products.map((product) => (
-          <article
-            key={product.id}
-            className="mobile-featured-card"
-          >
+          <article key={product.id} className="mobile-featured-card">
             <div className="mobile-featured-image-wrapper">
               <img
                 src={product.image}
@@ -47,9 +42,7 @@ const MobileFeatured = () => {
                 className="mobile-featured-image"
               />
 
-              <div className="mobile-featured-badge">
-                {product.badge}
-              </div>
+              <div className="mobile-featured-badge">{product.badge}</div>
 
               <button className="mobile-featured-wishlist">
                 <Heart size={12} />
@@ -57,19 +50,13 @@ const MobileFeatured = () => {
             </div>
 
             <div className="mobile-featured-content">
-              <p className="mobile-featured-designer">
-                {product.designer}
-              </p>
+              <p className="mobile-featured-designer">{product.designer}</p>
 
-              <h3 className="mobile-featured-name">
-                {product.name}
-              </h3>
+              <h3 className="mobile-featured-name">{product.name}</h3>
 
               <div className="mobile-featured-price-block">
                 <div className="mobile-featured-price-row">
-                  <span className="mobile-featured-price">
-                    {product.price}
-                  </span>
+                  <span className="mobile-featured-price">{product.price}</span>
 
                   {product.priceSuffix && (
                     <span className="mobile-featured-price-suffix">

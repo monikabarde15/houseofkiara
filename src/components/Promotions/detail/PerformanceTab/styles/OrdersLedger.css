@@ -19,7 +19,7 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   border-bottom: 1px solid var(--promo-cb);
-  background:  var(--promo-cream);
+  background: var(--promo-cream);
 }
 
 .orders-ledger__td {
@@ -45,9 +45,8 @@
   color: var(--promo-muted);
   margin-top: 8px;
   font-family: var(--promo-sans);
-  background:  var(--promo-cream);
+  background: var(--promo-cream);
   margin-bottom: 0px;
-
 }
 
 .orders-ledger__empty {
@@ -55,7 +54,6 @@
   color: var(--promo-muted);
   font-family: var(--promo-sans);
   padding: 8px 0;
-  
 }
 
 .orders-ledger__empty-cell {
@@ -64,5 +62,4 @@
   font-size: 11px;
   color: var(--promo-muted);
   font-family: var(--promo-sans);
-  
 }

@@ -2,7 +2,7 @@
 /* How It Works Cards */
 
 .au-ways {
-  background: #FAF7F2; 
+  background: #faf7f2;
   padding: 140px 80px;
   position: relative;
 }
@@ -25,7 +25,7 @@
 .au-ways__eyebrow-line {
   width: 40px;
   height: 1px;
-  background: #C9A96E; 
+  background: #c9a96e;
 }
 
 .au-ways__eyebrow span {
@@ -33,7 +33,7 @@
   font-size: 11px;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .au-ways__title {
@@ -41,13 +41,13 @@
   font-size: clamp(32px, 4vw, 48px);
   font-weight: 400;
   line-height: 1.15;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0;
 }
 
 .au-ways__title em {
   font-style: italic;
-  color: #C9A96E; 
+  color: #c9a96e;
 }
 
 .au-ways__sub {
@@ -55,7 +55,7 @@
   font-size: 15.5px;
   font-weight: 300;
   line-height: 1.8;
-  color: #8A7E72; 
+  color: #8a7e72;
   max-width: 540px;
   margin: 16px auto 0;
 }
@@ -71,8 +71,8 @@
 
 /* ===== CARD  ===== */
 .au-ways__card {
-  background: #FFFEFB; 
-  border-top: 3px solid #E8E0D4; 
+  background: #fffefb;
+  border-top: 3px solid #e8e0d4;
   padding: 48px 36px;
   transition: all 0.3s ease;
   cursor: default;
@@ -86,17 +86,17 @@
 
 /* Rent Card Border Color on Hover */
 .au-ways__card--terracotta:hover {
-  border-top-color: #B85C38; 
+  border-top-color: #b85c38;
 }
 
 /* Preloved Card Border Color on Hover */
 .au-ways__card--gold:hover {
-  border-top-color: #C9A96E;
+  border-top-color: #c9a96e;
 }
 
 /* List & Sell Card Border Color on Hover */
 .au-ways__card--sage:hover {
-  border-top-color: #6B7E5A; 
+  border-top-color: #6b7e5a;
 }
 
 /* ===== CARD TOP ROW  ===== */
@@ -111,7 +111,7 @@
   font-family: "Cormorant Garamond", serif;
   font-style: italic;
   font-size: 20px;
-  color: #C9A96E; 
+  color: #c9a96e;
 }
 
 .au-ways__card-dot {
@@ -123,15 +123,15 @@
 }
 
 .au-ways__card-dot--terracotta {
-  background: #B85C38;
+  background: #b85c38;
 }
 
 .au-ways__card-dot--gold {
-  background: #C9A96E;
+  background: #c9a96e;
 }
 
 .au-ways__card-dot--sage {
-  background: #6B7E5A;
+  background: #6b7e5a;
 }
 
 /* ===== CARD CONTENT  ===== */
@@ -139,7 +139,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 23px;
   font-weight: 400;
-  color: #1A1612; 
+  color: #1a1612;
   margin: 0 0 14px 0;
 }
 
@@ -147,7 +147,7 @@
   font-family: "Cormorant Garamond", serif;
   font-style: italic;
   font-size: 18px;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.45;
   margin: 0 0 16px 0;
 }
@@ -157,7 +157,7 @@
   font-size: 13px;
   font-weight: 300;
   line-height: 1.8;
-  color: #8A7E72; 
+  color: #8a7e72;
   margin: 0 0 24px 0;
 }
 
@@ -171,7 +171,7 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 500;
-  color: #1A1612; 
+  color: #1a1612;
   background: none;
   border: none;
   padding: 0;
@@ -192,7 +192,7 @@
 }
 
 .au-ways__card-link:hover {
-  color: #C9A96E; 
+  color: #c9a96e;
 }
 
 .au-ways__card-link:hover svg {
@@ -208,7 +208,7 @@
   font-family: "Cormorant Garamond", serif;
   font-style: italic;
   font-size: 13.5px;
-  color: #8A7E72; 
+  color: #8a7e72;
   text-align: center;
   margin-top: 40px;
 }
@@ -217,7 +217,9 @@
 .au-ways__grid.reveal-stagger {
   opacity: 0;
   transform: translateY(22px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
 }
 
 .au-ways__grid.reveal-stagger.in-view {

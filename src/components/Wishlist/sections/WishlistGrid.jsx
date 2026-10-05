@@ -6,7 +6,13 @@ import WishlistGridCard from "../cards/WishlistGridCard";
 import WishlistListCard from "../cards/WishlistListCard";
 import EmptyWishlistState from "./EmptyWishlistState";
 
-const WishlistGrid = ({ viewMode, type, products, onRemoveCard, onOpenModal }) => {
+const WishlistGrid = ({
+  viewMode,
+  type,
+  products,
+  onRemoveCard,
+  onOpenModal,
+}) => {
   const [showUndoToast, setShowUndoToast] = useState(false);
   const [showGeneralToast, setShowGeneralToast] = useState(false);
   const [generalToastMessage, setGeneralToastMessage] = useState("");
@@ -39,7 +45,7 @@ const WishlistGrid = ({ viewMode, type, products, onRemoveCard, onOpenModal }) =
       <div ref={gridContainerRef} className={`desk-wishlist-grid-${viewMode}`}>
         {products.map((product, index) => {
           const isRestored = restoredCardId === product.id;
-          
+
           if (viewMode === "grid") {
             return (
               <WishlistGridCard
@@ -77,7 +83,7 @@ const WishlistGrid = ({ viewMode, type, products, onRemoveCard, onOpenModal }) =
           onClose={() => setShowUndoToast(false)}
         />
       )}
-      
+
       {showGeneralToast && (
         <WishlistToast
           message={generalToastMessage}

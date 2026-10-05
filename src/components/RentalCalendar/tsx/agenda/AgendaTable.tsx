@@ -1,7 +1,7 @@
-import React from 'react';
-import { AgendaEntry } from '../../types';
-import AgendaRow from './AgendaRow';
-import '../../css/agenda/AgendaTable.css';
+import React from "react";
+import { AgendaEntry } from "../../types";
+import AgendaRow from "./AgendaRow";
+import "../../css/agenda/AgendaTable.css";
 
 interface AgendaTableProps {
   entries: AgendaEntry[];
@@ -13,20 +13,25 @@ interface AgendaTableProps {
 }
 
 const AgendaTable: React.FC<AgendaTableProps> = ({
-  entries, expandedId, onToggleRow, onMarkDone, onSaveNote, onNotifyCustomer,
+  entries,
+  expandedId,
+  onToggleRow,
+  onMarkDone,
+  onSaveNote,
+  onNotifyCustomer,
 }) => (
   <div className="agenda-table">
     <div className="agenda-table__header">
-  <div />
-  <div>DATE</div>
-  <div>TYPE</div>
-  <div>ORDER</div>
-  <div>CUSTOMER</div>
-  <div />
-  <div>PRODUCT</div>
-  <div>NOTE</div>
-  <div />
-</div>
+      <div />
+      <div>DATE</div>
+      <div>TYPE</div>
+      <div>ORDER</div>
+      <div>CUSTOMER</div>
+      <div />
+      <div>PRODUCT</div>
+      <div>NOTE</div>
+      <div />
+    </div>
     <div className="agenda-table__body">
       {entries.map((entry) => (
         <AgendaRow

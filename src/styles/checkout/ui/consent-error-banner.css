@@ -12,7 +12,7 @@
   margin-top: 20px;
   padding: 16px 20px 16px 18px;
   background: rgba(184, 92, 56, 0.04);
-  border-left: 2px solid #B85C38;
+  border-left: 2px solid #b85c38;
 }
 
 /* ========================================
@@ -24,7 +24,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #B85C38;
+  color: #b85c38;
 }
 
 /* ========================================
@@ -41,7 +41,7 @@
   font-size: 11px;
   font-weight: 300;
   line-height: 1.6;
-  color: #3C3529;
+  color: #3c3529;
 }
 
 /* first item - DESKTOP */
@@ -59,7 +59,7 @@
   height: 4px;
   margin-top: 6px;
   border-radius: 999px;
-  background: #B85C38;
+  background: #b85c38;
   flex-shrink: 0;
 }
 
@@ -74,7 +74,7 @@
   font-size: 10.5px;
   font-weight: 300;
   line-height: 1.6;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* ========================================
@@ -85,7 +85,7 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: #B85C38;
+  color: #b85c38;
   font-family: inherit;
   font-size: inherit;
   font-weight: 400;
@@ -95,7 +95,7 @@
 }
 
 .checkout-ceb-link:hover {
-  color: #3C3529;
+  color: #3c3529;
 }
 
 /* =========================================================

@@ -165,12 +165,12 @@ const ShopByCategoryBand: React.FC = () => {
 
   const selectedTile = useMemo(
     () => tiles.find((tile) => tile.id === selectedTileId) ?? null,
-    [tiles, selectedTileId]
+    [tiles, selectedTileId],
   );
 
   const updateTile = (id: number, patch: Partial<CategoryTile>) => {
     setTiles((current) =>
-      current.map((tile) => (tile.id === id ? { ...tile, ...patch } : tile))
+      current.map((tile) => (tile.id === id ? { ...tile, ...patch } : tile)),
     );
   };
 
@@ -234,8 +234,7 @@ const ShopByCategoryBand: React.FC = () => {
           tone: "warning",
           text: (
             <>
-              No picture set for the <strong>{tile.registryName}</strong>{" "}
-              tile.
+              No picture set for the <strong>{tile.registryName}</strong> tile.
             </>
           ),
         });
@@ -250,9 +249,9 @@ const ShopByCategoryBand: React.FC = () => {
           text: (
             <>
               The tile reads <strong>{tile.label}</strong> while the registry
-              calls it <strong>{tile.registryName}</strong>. The storefront
-              sets these in the plural, so this is expected — clear the tile
-              label to follow the registry instead.
+              calls it <strong>{tile.registryName}</strong>. The storefront sets
+              these in the plural, so this is expected — clear the tile label to
+              follow the registry instead.
             </>
           ),
         });
@@ -352,8 +351,8 @@ const ShopByCategoryBand: React.FC = () => {
             onChange={(event) => setHeading(event.target.value)}
           />
           <span className="sbc-field-hint">
-            A line break starts a new line. Wrap one word in *asterisks* to
-            set it in the italic gold serif, the way the storefront does.
+            A line break starts a new line. Wrap one word in *asterisks* to set
+            it in the italic gold serif, the way the storefront does.
           </span>
         </label>
 
@@ -396,8 +395,8 @@ const ShopByCategoryBand: React.FC = () => {
           <div>
             <h3 className="sbc-panel-title">The tiles</h3>
             <p className="sbc-panel-subtitle">
-              Laid out the way the homepage lays them out. Click a tile to
-              set its picture and wording.
+              Laid out the way the homepage lays them out. Click a tile to set
+              its picture and wording.
             </p>
           </div>
 
@@ -436,9 +435,7 @@ const ShopByCategoryBand: React.FC = () => {
                       <span className="sbc-tile-picture-icon" aria-hidden>
                         ▢
                       </span>
-                      <span className="sbc-tile-picture-label">
-                        No picture
-                      </span>
+                      <span className="sbc-tile-picture-label">No picture</span>
                     </>
                   )}
                 </div>
@@ -597,20 +594,20 @@ const ShopByCategoryBand: React.FC = () => {
                       }
                     />
                     <span className="sbc-field-hint">
-                      The small line above the name on the app carousel.
-                      Desktop tiles carry none.
+                      The small line above the name on the app carousel. Desktop
+                      tiles carry none.
                     </span>
                   </label>
                 </div>
 
                 <p className="sbc-field-hint sbc-master-data-note">
-                  The category itself — its name, slug and whether it is
-                  active — belongs to{" "}
+                  The category itself — its name, slug and whether it is active
+                  — belongs to{" "}
                   <button type="button" className="sbc-inline-link">
                     Master Data
                   </button>
-                  . The picture, the label and the kicker have no home but
-                  this one.
+                  . The picture, the label and the kicker have no home but this
+                  one.
                 </p>
               </div>
             </div>
@@ -637,8 +634,8 @@ const ShopByCategoryBand: React.FC = () => {
               <option value="grid">Grid</option>
             </select>
             <span className="sbc-field-hint">
-              One wide tile and one tall, then three across. Needs exactly
-              five tiles — there are {tiles.length}.
+              One wide tile and one tall, then three across. Needs exactly five
+              tiles — there are {tiles.length}.
             </span>
           </label>
 

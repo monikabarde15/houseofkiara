@@ -151,8 +151,8 @@
 
 .tchip.ok {
   border-color: rgba(107, 126, 90, 0.4);
-  color: #3E4A34;
-  background: #F4F7EF;
+  color: #3e4a34;
+  background: #f4f7ef;
 }
 
 .tchip.warn {
@@ -180,7 +180,9 @@
   background: var(--ibg);
   outline: none;
   width: 100%;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .fld-input:focus {

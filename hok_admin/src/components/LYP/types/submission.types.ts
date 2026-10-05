@@ -1,40 +1,49 @@
 // src/components/LYP/types/submission.types.ts
 
-export type Channel = 'Website' | 'WhatsApp' | 'Instagram' | 'In Person';
-export type Intent = 'Rent it' | 'Sell it' | 'Open to both';
-export type Mode = 'Rental' | 'Preloved' | 'Rental/Preloved';
-export type Grade = 'Pristine' | 'Excellent' | 'Good' | 'Fair';
-export type Size = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'Custom / Free Size' | 'Free Size';
-export type Category = 
-  | 'Bridal Lehenga' 
-  | 'Reception Lehenga' 
-  | 'Saree' 
-  | 'Anarkali / Gown' 
-  | 'Sherwani' 
-  | 'Indo-Western' 
-  | 'Suit Set' 
-  | 'Other Occasion Wear';
-export type Colour = 
-  | 'Red / Maroon' 
-  | 'Pink / Blush' 
-  | 'Ivory / Cream' 
-  | 'Gold / Champagne' 
-  | 'Pastel Mint / Sage' 
-  | 'Blue / Teal' 
-  | 'Purple / Mauve' 
-  | 'Black / Charcoal' 
-  | 'Multi-colour';
-export type TimesWorn = 'Never worn (tags on)' | 'Worn once' | 'Worn 2-3 times' | 'Worn 4+ times';
-export type RejectReasonCode = 
-  | 'Authenticity could not be verified' 
-  | 'Condition below platform standard' 
-  | 'Category not accepted' 
-  | 'Outside serviceable cities' 
-  | 'Expectations misaligned on pricing' 
-  | 'Duplicate submission' 
-  | 'Other';
-export type VerificationMethod = 'Invoice seen' | 'Retail listing' | 'Brand confirmation' | 'Lister attested';
-export type ListerStatus = 'Verified' | 'Pending Review' | 'Paused' | 'Suspended' | 'Rejected' | 'Exited';
+export type Channel = "Website" | "WhatsApp" | "Instagram" | "In Person";
+export type Intent = "Rent it" | "Sell it" | "Open to both";
+export type Mode = "Rental" | "Preloved" | "Rental/Preloved";
+export type Grade = "Pristine" | "Excellent" | "Good" | "Fair";
+export type Size =
+  "XS" | "S" | "M" | "L" | "XL" | "XXL" | "Custom / Free Size" | "Free Size";
+export type Category =
+  | "Bridal Lehenga"
+  | "Reception Lehenga"
+  | "Saree"
+  | "Anarkali / Gown"
+  | "Sherwani"
+  | "Indo-Western"
+  | "Suit Set"
+  | "Other Occasion Wear";
+export type Colour =
+  | "Red / Maroon"
+  | "Pink / Blush"
+  | "Ivory / Cream"
+  | "Gold / Champagne"
+  | "Pastel Mint / Sage"
+  | "Blue / Teal"
+  | "Purple / Mauve"
+  | "Black / Charcoal"
+  | "Multi-colour";
+export type TimesWorn =
+  "Never worn (tags on)" | "Worn once" | "Worn 2-3 times" | "Worn 4+ times";
+export type RejectReasonCode =
+  | "Authenticity could not be verified"
+  | "Condition below platform standard"
+  | "Category not accepted"
+  | "Outside serviceable cities"
+  | "Expectations misaligned on pricing"
+  | "Duplicate submission"
+  | "Other";
+export type VerificationMethod =
+  "Invoice seen" | "Retail listing" | "Brand confirmation" | "Lister attested";
+export type ListerStatus =
+  | "Verified"
+  | "Pending Review"
+  | "Paused"
+  | "Suspended"
+  | "Rejected"
+  | "Exited";
 
 export interface Measurements {
   bust?: string;
@@ -49,7 +58,7 @@ export interface Measurements {
 export interface Media {
   name: string;
   url: string;
-  kind: 'image' | 'video';
+  kind: "image" | "video";
 }
 
 export interface TermsAcceptance {
@@ -64,7 +73,7 @@ export interface MoreInfo {
 }
 
 export interface Decision {
-  what: 'Approved' | 'Rejected' | 'Withdrawn' | 'Expired';
+  what: "Approved" | "Rejected" | "Withdrawn" | "Expired";
   on: string;
   by: string;
   reasonCode?: string;
@@ -92,7 +101,7 @@ export interface Assessment {
 }
 
 export interface HistoryEntry {
-  c: 'gold' | 'sage' | 'terra' | 'muted';
+  c: "gold" | "sage" | "terra" | "muted";
   e: string;
   t: string;
 }
@@ -150,7 +159,7 @@ export interface SubmissionFilters {
   channel?: Channel;
   dateFrom?: string;
   dateTo?: string;
-  view?: 'review' | 'reply' | 'apps' | 'pieces' | 'apprmonth' | 'slowfirst';
+  view?: "review" | "reply" | "apps" | "pieces" | "apprmonth" | "slowfirst";
 }
 
 export interface SubmissionStats {

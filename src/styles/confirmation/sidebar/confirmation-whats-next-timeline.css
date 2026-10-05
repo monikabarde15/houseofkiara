@@ -46,7 +46,7 @@
 }
 
 .confirmation-whats-next-dot-amber {
-  background: #C2A040;
+  background: #c2a040;
 }
 
 .confirmation-whats-next-dot-muted {
@@ -64,8 +64,7 @@
   background: var(--border-light);
 }
 
-.confirmation-whats-next-step-last
-.confirmation-whats-next-line {
+.confirmation-whats-next-step-last .confirmation-whats-next-line {
   display: none;
 }
 
@@ -73,8 +72,7 @@
   padding-bottom: var(--s3);
 }
 
-.confirmation-whats-next-step-last
-.confirmation-whats-next-step-body {
+.confirmation-whats-next-step-last .confirmation-whats-next-step-body {
   padding-bottom: 0;
 }
 
@@ -134,5 +132,5 @@
 .confirmation-whats-next-badge-soon {
   background: rgba(194, 160, 64, 0.12);
 
-  color: #8A6010;
+  color: #8a6010;
 }

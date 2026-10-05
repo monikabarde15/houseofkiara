@@ -12,21 +12,21 @@
 }
 
 .tax-strip-pan {
-  background: #FDF5E7;
+  background: #fdf5e7;
   border: 1px solid rgba(139, 106, 30, 0.25);
-  color: #6B5730;
+  color: #6b5730;
 }
 
 .tax-strip-warning {
-  background: #FBEFEA;
+  background: #fbefea;
   border: 1px solid rgba(184, 92, 56, 0.3);
-  color: #7A2E1D;
+  color: #7a2e1d;
 }
 
 .tax-strip-empty {
-  background: #F7F4EF;
-  border: 1px solid #EDE6DC;
-  color: #8A7E72;
+  background: #f7f4ef;
+  border: 1px solid #ede6dc;
+  color: #8a7e72;
 }
 
 .tax-strip-label {
@@ -34,7 +34,7 @@
 }
 
 .tax-strip-pan {
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-weight: 700;
 }
 
@@ -43,11 +43,11 @@
 }
 
 .tax-verified {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 .tax-unverified {
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .tax-strip-detail {

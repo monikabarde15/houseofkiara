@@ -4,34 +4,34 @@
    ============================================================ */
 
 #sec-notifications {
-  --ntf-charcoal: #1A1612;
-  --ntf-gold: #C9A96E;
-  --ntf-gold-l: #E2C99A;
-  --ntf-gold-pale: #F5EFE4;
-  --ntf-terra: #B85C38;
-  --ntf-canvas: #F7F4EF;
-  --ntf-card: #FFFFFF;
-  --ntf-border: #EDE6DC;
-  --ntf-border-button: #E8E0D4;
-  --ntf-expanded: #FFFEFB;
-  --ntf-muted: #8A7E72;
-  --ntf-muted-light: #B4A99E;
+  --ntf-charcoal: #1a1612;
+  --ntf-gold: #c9a96e;
+  --ntf-gold-l: #e2c99a;
+  --ntf-gold-pale: #f5efe4;
+  --ntf-terra: #b85c38;
+  --ntf-canvas: #f7f4ef;
+  --ntf-card: #ffffff;
+  --ntf-border: #ede6dc;
+  --ntf-border-button: #e8e0d4;
+  --ntf-expanded: #fffefb;
+  --ntf-muted: #8a7e72;
+  --ntf-muted-light: #b4a99e;
 
-  --ntf-alarm-bg: #FDF1EE;
-  --ntf-alarm-text: #7A2E1D;
+  --ntf-alarm-bg: #fdf1ee;
+  --ntf-alarm-text: #7a2e1d;
 
-  --ntf-clear-bg: #EAF0E5;
-  --ntf-clear-text: #3D6B30;
+  --ntf-clear-bg: #eaf0e5;
+  --ntf-clear-text: #3d6b30;
 
-  --ntf-them-bg: #EEF3EA;
-  --ntf-assigned-bg: #F7FAF5;
+  --ntf-them-bg: #eef3ea;
+  --ntf-assigned-bg: #f7faf5;
 
-  --ntf-amber-text: #6B5730;
-  --ntf-amber-figure: #8B6A1E;
+  --ntf-amber-text: #6b5730;
+  --ntf-amber-figure: #8b6a1e;
 
   --ntf-radius: 4px;
 
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   color: var(--ntf-charcoal);
 }
 
@@ -41,10 +41,7 @@
 #sec-notifications .mod-ttl,
 #sec-notifications .ntf-lead-t,
 #sec-notifications .ntf-lead-n {
-  font-family:
-    'Cormorant Garamond',
-    Georgia,
-    serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
 }
 
 /* Buttons and controls should inherit the admin font. */
@@ -65,7 +62,7 @@
 /* Inline Messaging reference in the footer note. */
 
 .ntf-inline-link {
-  color: #C9A96E;
+  color: #c9a96e;
   font-weight: 600;
   cursor: pointer;
 }

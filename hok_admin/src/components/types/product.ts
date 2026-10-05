@@ -124,7 +124,7 @@ export interface Lister {
   state?: string;
   pincode?: string;
   payoutPercentage?: number;
-  status?: 'active' | 'inactive' | 'pending';
+  status?: "active" | "inactive" | "pending";
   createdAt?: string;
   updatedAt?: string;
 }
@@ -141,7 +141,6 @@ export interface BookingHistory {
   amount: number;
   status: string;
 }
-
 
 export interface PayoutRecord {
   id?: string;
@@ -169,12 +168,12 @@ export interface ActivityLog {
   timestamp: string;
 }
 
-export type ProductTab = 
-  | 'Core' 
-  | 'Pricing' 
-  | 'Images' 
-  | 'Related Products'
-  | 'SEO' 
-  | 'Calendar' 
-  |  'Payout History'
-  | 'Activity Log';
+export type ProductTab =
+  | "Core"
+  | "Pricing"
+  | "Images"
+  | "Related Products"
+  | "SEO"
+  | "Calendar"
+  | "Payout History"
+  | "Activity Log";

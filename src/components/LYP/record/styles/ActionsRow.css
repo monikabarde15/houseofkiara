@@ -38,7 +38,7 @@
 }
 
 .actions-expire:hover {
-  color: #8A2E1D;
+  color: #8a2e1d;
 }
 
 .btn {
@@ -66,8 +66,8 @@
 }
 
 .btn-gold:hover {
-  background: #B89058;
-  border-color: #B89058;
+  background: #b89058;
+  border-color: #b89058;
 }
 
 .btn-sec {
@@ -82,30 +82,30 @@
 }
 
 .btn-danger {
-  background: #FDF1EE;
+  background: #fdf1ee;
   color: var(--terra);
-  border-color: #F5C5B5;
+  border-color: #f5c5b5;
 }
 
 .btn-danger:hover {
-  background: #F5DDD7;
+  background: #f5ddd7;
   border-color: var(--terra);
 }
 
 .btn-wa {
-  background: #25D366;
-  border-color: #20BD5B;
-  color: #FFFFFF;
+  background: #25d366;
+  border-color: #20bd5b;
+  color: #ffffff;
   font-weight: 600;
 }
 
 .btn-wa:hover {
-  background: #1DAD57;
-  border-color: #1DAD57;
+  background: #1dad57;
+  border-color: #1dad57;
 }
 
 .btn-wa svg {
-  stroke: #FFFFFF;
+  stroke: #ffffff;
 }
 
 .btn-wa:disabled {

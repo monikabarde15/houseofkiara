@@ -10,10 +10,7 @@ const DesktopTestimonials = () => {
   return (
     <section className="desk-testimonials">
       <div className="desk-testimonials-header">
-        <SectionEyebrow
-          text={testimonialsData.eyebrow}
-          centered
-        />
+        <SectionEyebrow text={testimonialsData.eyebrow} centered />
 
         <SectionTitle centered>
           What our customers <em>say</em>
@@ -22,10 +19,7 @@ const DesktopTestimonials = () => {
 
       <div className="desk-testimonials-grid">
         {testimonialsData.testimonials.map((testimonial) => (
-          <article
-            key={testimonial.id}
-            className="desk-testimonial-card"
-          >
+          <article key={testimonial.id} className="desk-testimonial-card">
             <div className="desk-testimonial-stars">
               {[...Array(5)].map((_, index) => (
                 <Star
@@ -36,13 +30,9 @@ const DesktopTestimonials = () => {
               ))}
             </div>
 
-            <div className="desk-testimonial-quote-mark">
-              "
-            </div>
+            <div className="desk-testimonial-quote-mark">"</div>
 
-            <p className="desk-testimonial-text">
-              {testimonial.review}
-            </p>
+            <p className="desk-testimonial-text">{testimonial.review}</p>
 
             <div className="desk-testimonial-author">
               <div className="desk-testimonial-avatar">
@@ -52,9 +42,7 @@ const DesktopTestimonials = () => {
               <div className="desk-testimonial-author-info">
                 <h4>{testimonial.name}</h4>
 
-                <span>
-                  {testimonial.meta}
-                </span>
+                <span>{testimonial.meta}</span>
               </div>
             </div>
           </article>

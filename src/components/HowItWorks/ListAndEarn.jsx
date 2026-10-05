@@ -1,12 +1,12 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../../styles/howitworks/list-and-earn.css';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "../../styles/howitworks/list-and-earn.css";
 
 const ListAndEarn = () => {
   const navigate = useNavigate();
 
   const handleListYourPiece = () => {
-    navigate('/list-your-piece/');
+    navigate("/list-your-piece/");
   };
 
   return (
@@ -30,8 +30,9 @@ const ListAndEarn = () => {
 
           {/* Lead */}
           <p className="hok-hiw-le-lead">
-            The wedding lehenga in the back of your cupboard. The bridal set that deserves another evening. 
-            Every designer piece you loved and wore once is a piece someone is searching for right now.
+            The wedding lehenga in the back of your cupboard. The bridal set
+            that deserves another evening. Every designer piece you loved and
+            wore once is a piece someone is searching for right now.
           </p>
 
           {/* Commission Table */}
@@ -49,7 +50,9 @@ const ListAndEarn = () => {
             <div className="hok-hiw-le-row">
               <div className="hok-hiw-le-row-left">
                 <div className="hok-hiw-le-mode-label">Preloved resale</div>
-                <div className="hok-hiw-le-sub-label">Of sale price, to you</div>
+                <div className="hok-hiw-le-sub-label">
+                  Of sale price, to you
+                </div>
               </div>
               <div className="hok-hiw-le-figure">75%</div>
             </div>
@@ -61,7 +64,8 @@ const ListAndEarn = () => {
                 <div className="hok-hiw-le-sub-label">Direct bank transfer</div>
               </div>
               <div className="hok-hiw-le-figure">
-                T+<em>3</em> <span className="hok-hiw-le-working-days">working days</span>
+                T+<em>3</em>{" "}
+                <span className="hok-hiw-le-working-days">working days</span>
               </div>
             </div>
 
@@ -69,9 +73,13 @@ const ListAndEarn = () => {
             <div className="hok-hiw-le-row">
               <div className="hok-hiw-le-row-left">
                 <div className="hok-hiw-le-mode-label">Listing fee</div>
-                <div className="hok-hiw-le-sub-label">It costs nothing to list</div>
+                <div className="hok-hiw-le-sub-label">
+                  It costs nothing to list
+                </div>
               </div>
-              <div className="hok-hiw-le-figure hok-hiw-le-figure-none">None</div>
+              <div className="hok-hiw-le-figure hok-hiw-le-figure-none">
+                None
+              </div>
             </div>
           </div>
 
@@ -79,23 +87,56 @@ const ListAndEarn = () => {
           <button className="hok-hiw-le-cta" onClick={handleListYourPiece}>
             List Your Piece
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M6 1L6 11M6 11L10 7M6 11L2 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path
+                d="M6 1L6 11M6 11L10 7M6 11L2 7"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </div>
 
         {/* Right Column */}
         <div className="hok-hiw-le-right">
-          <div className="hok-hiw-le-right-label">The Lister Journey — four steps</div>
+          <div className="hok-hiw-le-right-label">
+            The Lister Journey — four steps
+          </div>
 
           {/* Step 1 */}
           <div className="hok-hiw-sstep">
             <div className="hok-hiw-sstep-connector"></div>
             <div className="hok-hiw-sstep-icon">
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                <rect width="11" height="11" x="2" y="2" rx="1.5" ry="1.5" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="6" cy="6" r="1.2" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M14 9.5l-2.1-2.1a1.4 1.4 0 0 0-2 0L4 14" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                <rect
+                  width="11"
+                  height="11"
+                  x="2"
+                  y="2"
+                  rx="1.5"
+                  ry="1.5"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <circle
+                  cx="6"
+                  cy="6"
+                  r="1.2"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M14 9.5l-2.1-2.1a1.4 1.4 0 0 0-2 0L4 14"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </div>
             <div className="hok-hiw-sstep-content">
@@ -105,9 +146,10 @@ const ListAndEarn = () => {
                 Under 10 minutes to list
               </div>
               <div className="hok-hiw-sstep-desc">
-                Upload photos of your piece and set your price. For preloved pieces, complete 
-                the Honest Disclosure block — condition, wear count, alterations. Your listing goes 
-                live after our team reviews it.
+                Upload photos of your piece and set your price. For preloved
+                pieces, complete the Honest Disclosure block — condition, wear
+                count, alterations. Your listing goes live after our team
+                reviews it.
               </div>
             </div>
           </div>
@@ -117,12 +159,37 @@ const ListAndEarn = () => {
             <div className="hok-hiw-sstep-connector"></div>
             <div className="hok-hiw-sstep-icon">
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                <path d="M10 13v-1.3a2.6 2.6 0 0 0-2.6-2.6H3.9A2.6 2.6 0 0 0 1.3 11.7V13" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M10 1.9a2.6 2.6 0 0 1 0 5" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M14 13v-1.3a2.6 2.6 0 0 0-2-2.5" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="5.6" cy="4.4" r="2.6" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M10 13v-1.3a2.6 2.6 0 0 0-2.6-2.6H3.9A2.6 2.6 0 0 0 1.3 11.7V13"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M10 1.9a2.6 2.6 0 0 1 0 5"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M14 13v-1.3a2.6 2.6 0 0 0-2-2.5"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <circle
+                  cx="5.6"
+                  cy="4.4"
+                  r="2.6"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
-
             </div>
             <div className="hok-hiw-sstep-content">
               <div className="hok-hiw-sstep-title">HOK Reviews & Features</div>
@@ -131,9 +198,9 @@ const ListAndEarn = () => {
                 You do nothing at this stage
               </div>
               <div className="hok-hiw-sstep-desc">
-                Our curation team reviews every listing before it goes live. Approved pieces are 
-                promoted to the right audience — featured in the editorial, surfaced in searches. 
-                Reviewed within 48 hours.
+                Our curation team reviews every listing before it goes live.
+                Approved pieces are promoted to the right audience — featured in
+                the editorial, surfaced in searches. Reviewed within 48 hours.
               </div>
             </div>
           </div>
@@ -143,12 +210,39 @@ const ListAndEarn = () => {
             <div className="hok-hiw-sstep-connector"></div>
             <div className="hok-hiw-sstep-icon">
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                <path d="M7.5 4.4v9.2" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M12.5 6.9v5.2a1.3 1.3 0 0 1-1.3 1.3H3.8a1.3 1.3 0 0 1-1.3-1.3V6.9" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M4.7 4.4a0.7 0.7 0 0 1 0-3.3A3.2 5.3 0 0 1 7.5 4.4a3.2 5.3 0 0 1 2.8-3.3 0.7 0.7 0 0 1 0 3.3" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                <rect x="2" y="4.4" width="11" height="2.6" rx="0.7" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M7.5 4.4v9.2"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M12.5 6.9v5.2a1.3 1.3 0 0 1-1.3 1.3H3.8a1.3 1.3 0 0 1-1.3-1.3V6.9"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M4.7 4.4a0.7 0.7 0 0 1 0-3.3A3.2 5.3 0 0 1 7.5 4.4a3.2 5.3 0 0 1 2.8-3.3 0.7 0.7 0 0 1 0 3.3"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <rect
+                  x="2"
+                  y="4.4"
+                  width="11"
+                  height="2.6"
+                  rx="0.7"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
-
             </div>
             <div className="hok-hiw-sstep-content">
               <div className="hok-hiw-sstep-title">A Buyer Finds It</div>
@@ -157,9 +251,9 @@ const ListAndEarn = () => {
                 Prepaid logistics label provided
               </div>
               <div className="hok-hiw-sstep-desc">
-                When a buyer commits, you receive dispatch instructions and a prepaid logistics 
-                label. For rental pieces, HOK coordinates all logistics end-to-end — you don't 
-                need to arrange anything.
+                When a buyer commits, you receive dispatch instructions and a
+                prepaid logistics label. For rental pieces, HOK coordinates all
+                logistics end-to-end — you don't need to arrange anything.
               </div>
             </div>
           </div>
@@ -168,10 +262,28 @@ const ListAndEarn = () => {
           <div className="hok-hiw-sstep">
             <div className="hok-hiw-sstep-icon">
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                <rect width="12.5" height="9" x="1.3" y="3.1" rx="1.3" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                <line x1="1.3" x2="13.7" y1="6.3" y2="6.3" stroke="#EBD5B0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                <rect
+                  width="12.5"
+                  height="9"
+                  x="1.3"
+                  y="3.1"
+                  rx="1.3"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <line
+                  x1="1.3"
+                  x2="13.7"
+                  y1="6.3"
+                  y2="6.3"
+                  stroke="#EBD5B0"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
-
             </div>
             <div className="hok-hiw-sstep-content">
               <div className="hok-hiw-sstep-title">Paid in 3 Working Days</div>
@@ -180,9 +292,9 @@ const ListAndEarn = () => {
                 Direct to your bank account
               </div>
               <div className="hok-hiw-sstep-desc">
-                Once the buyer confirms receipt (or the rental period concludes), earnings are 
-                processed directly to your registered bank account. T+3 working days. No 
-                chasing, no ambiguity.
+                Once the buyer confirms receipt (or the rental period
+                concludes), earnings are processed directly to your registered
+                bank account. T+3 working days. No chasing, no ambiguity.
               </div>
             </div>
           </div>

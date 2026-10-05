@@ -1,8 +1,8 @@
 .event-detail-card {
   position: fixed;
   z-index: 1000;
-  background: #1C1815;
-  color: #EDE7DC;
+  background: #1c1815;
+  color: #ede7dc;
   border-radius: 8px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
   font-size: 13px;
@@ -19,19 +19,19 @@
 
 .event-detail-card__date {
   padding: 10px 14px 0;
-  color: #A69C8B;
+  color: #a69c8b;
   font-size: 12px;
 }
 
 .event-detail-card__section {
   padding: 12px 14px;
-  border-top: 1px solid #2E2A25;
+  border-top: 1px solid #2e2a25;
 }
 
 .event-detail-card__label {
   font-size: 10px;
   letter-spacing: 0.06em;
-  color: #A69C8B;
+  color: #a69c8b;
   margin-bottom: 4px;
 }
 
@@ -43,7 +43,7 @@
 
 .event-detail-card__muted {
   font-size: 12px;
-  color: #A69C8B;
+  color: #a69c8b;
   margin-bottom: 2px;
 }
 
@@ -55,20 +55,20 @@
 }
 
 .event-detail-card__row span:first-child {
-  color: #A69C8B;
+  color: #a69c8b;
 }
 
 .event-detail-card__value--gold {
-  color: #D9B25A;
+  color: #d9b25a;
 }
 
 .event-detail-card__value--danger {
-  color: #C24A2E;
+  color: #c24a2e;
 }
 
 .event-detail-card__warning {
-  background: #3A1E18;
-  color: #E08B76;
+  background: #3a1e18;
+  color: #e08b76;
   padding: 10px 14px;
   font-size: 12.5px;
   line-height: 1.4;
@@ -77,6 +77,6 @@
 .event-detail-card__footer {
   padding: 8px 14px;
   font-size: 11px;
-  color: #6E655A;
-  border-top: 1px solid #2E2A25;
+  color: #6e655a;
+  border-top: 1px solid #2e2a25;
 }

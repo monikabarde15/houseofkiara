@@ -17,7 +17,10 @@ const normalizePhone = (rawPhone) => {
 };
 
 const sanitizeCustomer = (customer) => {
-  const obj = typeof customer.toObject === "function" ? customer.toObject() : { ...customer };
+  const obj =
+    typeof customer.toObject === "function"
+      ? customer.toObject()
+      : { ...customer };
   delete obj.passwordHash;
   delete obj.otp;
   delete obj.otpExpiresAt;
@@ -124,8 +127,10 @@ export const updateProfile = async (req, res) => {
     }
 
     // Name resolution
-    if (value.firstName !== undefined) customer.firstName = (value.firstName || "").trim();
-    if (value.lastName !== undefined) customer.lastName = (value.lastName || "").trim();
+    if (value.firstName !== undefined)
+      customer.firstName = (value.firstName || "").trim();
+    if (value.lastName !== undefined)
+      customer.lastName = (value.lastName || "").trim();
 
     if (value.name && value.name.trim()) {
       customer.name = value.name.trim();
@@ -135,7 +140,10 @@ export const updateProfile = async (req, res) => {
         customer.lastName = parts.slice(1).join(" ") || "";
       }
     } else {
-      customer.name = [customer.firstName, customer.lastName].filter(Boolean).join(" ") || customer.name || "Customer";
+      customer.name =
+        [customer.firstName, customer.lastName].filter(Boolean).join(" ") ||
+        customer.name ||
+        "Customer";
     }
 
     // Location / City
@@ -185,7 +193,10 @@ export const requestPasswordReset = async (req, res) => {
     }
 
     const resetToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
 
     customer.resetPasswordToken = hashedToken;
     customer.resetPasswordExpiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
@@ -195,19 +206,24 @@ export const requestPasswordReset = async (req, res) => {
     const origin = req.get("origin") || `http://${host}`;
     const resetLink = `${origin}/auth?resetToken=${resetToken}`;
 
-    console.log(`\n================== [PROFILE CHANGE PASSWORD REQUEST] ==================`);
+    console.log(
+      `\n================== [PROFILE CHANGE PASSWORD REQUEST] ==================`,
+    );
     console.log(`👤 Customer Name  : ${customer.name}`);
     console.log(`📧 Customer Email : ${customer.email}`);
     console.log(`🔑 Reset Token    : ${resetToken}`);
     console.log(`🔗 Reset Link     : ${resetLink}`);
-    console.log(`========================================================================\n`);
+    console.log(
+      `========================================================================\n`,
+    );
 
     return res.json({
       success: true,
       message: `A password reset link has been sent to ${customer.email}.`,
       data: {
         email: customer.email,
-        resetToken: process.env.NODE_ENV === "production" ? undefined : resetToken,
+        resetToken:
+          process.env.NODE_ENV === "production" ? undefined : resetToken,
       },
     });
   } catch (error) {
@@ -273,7 +289,15 @@ export const addAddress = async (req, res) => {
       });
     }
 
-    const fullAddress = [value.line1, value.line2, value.city, value.state, value.pin].filter(Boolean).join(", ");
+    const fullAddress = [
+      value.line1,
+      value.line2,
+      value.city,
+      value.state,
+      value.pin,
+    ]
+      .filter(Boolean)
+      .join(", ");
 
     const newAddress = {
       id: `addr_${Date.now()}`,
@@ -346,14 +370,29 @@ export const updateAddress = async (req, res) => {
       });
     }
 
-    const existingAddr = typeof customer.addresses[index].toObject === "function" ? customer.addresses[index].toObject() : customer.addresses[index];
-    const mergedLine1 = value.line1 !== undefined ? value.line1 : existingAddr.line1;
-    const mergedLine2 = value.line2 !== undefined ? value.line2 : existingAddr.line2;
-    const mergedCity = value.city !== undefined ? value.city : existingAddr.city;
-    const mergedState = value.state !== undefined ? value.state : existingAddr.state;
+    const existingAddr =
+      typeof customer.addresses[index].toObject === "function"
+        ? customer.addresses[index].toObject()
+        : customer.addresses[index];
+    const mergedLine1 =
+      value.line1 !== undefined ? value.line1 : existingAddr.line1;
+    const mergedLine2 =
+      value.line2 !== undefined ? value.line2 : existingAddr.line2;
+    const mergedCity =
+      value.city !== undefined ? value.city : existingAddr.city;
+    const mergedState =
+      value.state !== undefined ? value.state : existingAddr.state;
     const mergedPin = value.pin !== undefined ? value.pin : existingAddr.pin;
 
-    const fullAddress = [mergedLine1, mergedLine2, mergedCity, mergedState, mergedPin].filter(Boolean).join(", ");
+    const fullAddress = [
+      mergedLine1,
+      mergedLine2,
+      mergedCity,
+      mergedState,
+      mergedPin,
+    ]
+      .filter(Boolean)
+      .join(", ");
 
     customer.addresses[index] = {
       ...existingAddr,
@@ -395,15 +434,27 @@ export const deleteAddress = async (req, res) => {
       });
     }
 
-    customer.addresses = (customer.addresses || []).filter((a) => a.id !== addressId);
-    if (customer.addresses.length > 0 && !customer.addresses.some((a) => a.isDefault)) {
+    customer.addresses = (customer.addresses || []).filter(
+      (a) => a.id !== addressId,
+    );
+    if (
+      customer.addresses.length > 0 &&
+      !customer.addresses.some((a) => a.isDefault)
+    ) {
       customer.addresses[0].isDefault = true;
     }
 
     const defaultAddr = customer.addresses.find((a) => a.isDefault);
     if (defaultAddr) {
-      const addrObj = typeof defaultAddr.toObject === "function" ? defaultAddr.toObject() : defaultAddr;
-      customer.location = addrObj.address || [addrObj.line1, addrObj.line2, addrObj.city, addrObj.state, addrObj.pin].filter(Boolean).join(", ");
+      const addrObj =
+        typeof defaultAddr.toObject === "function"
+          ? defaultAddr.toObject()
+          : defaultAddr;
+      customer.location =
+        addrObj.address ||
+        [addrObj.line1, addrObj.line2, addrObj.city, addrObj.state, addrObj.pin]
+          .filter(Boolean)
+          .join(", ");
     } else {
       customer.location = "";
     }
@@ -457,7 +508,17 @@ export const setDefaultAddress = async (req, res) => {
     }
 
     if (selectedAddr) {
-      customer.location = selectedAddr.address || [selectedAddr.line1, selectedAddr.line2, selectedAddr.city, selectedAddr.state, selectedAddr.pin].filter(Boolean).join(", ");
+      customer.location =
+        selectedAddr.address ||
+        [
+          selectedAddr.line1,
+          selectedAddr.line2,
+          selectedAddr.city,
+          selectedAddr.state,
+          selectedAddr.pin,
+        ]
+          .filter(Boolean)
+          .join(", ");
     }
 
     await customer.save();

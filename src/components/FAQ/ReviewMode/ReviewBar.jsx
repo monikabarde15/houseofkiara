@@ -6,7 +6,8 @@ export default function ReviewBar({ isDecisionsOnly, onToggleDecisionsOnly }) {
   return (
     <div className="rv-bar" role="toolbar" aria-label="Internal Review Toolbar">
       <span>
-        Review mode · 120 answers · 2 open decisions · 2 figures awaiting confirmation
+        Review mode · 120 answers · 2 open decisions · 2 figures awaiting
+        confirmation
       </span>
       <button
         type="button"

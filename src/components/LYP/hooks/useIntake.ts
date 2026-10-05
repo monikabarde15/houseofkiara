@@ -1,9 +1,15 @@
 // src/components/LYP/hooks/useIntake.ts
 
-import { useState, useCallback } from 'react';
-import { Submission, Media, Measurements, Channel, Intent } from '../types/submission.types';
-import { submissionService } from '../services/submissionService';
-import { generateSubId, generateSKU } from '../utils/generators';
+import { useState, useCallback } from "react";
+import {
+  Submission,
+  Media,
+  Measurements,
+  Channel,
+  Intent,
+} from "../types/submission.types";
+import { submissionService } from "../services/submissionService";
+import { generateSubId, generateSKU } from "../utils/generators";
 
 interface IntakeData {
   listerId: string;
@@ -32,7 +38,7 @@ export const useIntake = () => {
   const createSubmission = useCallback(async (data: IntakeData) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Generate SUB-ID
       const existingIds = await submissionService.getAllSubmissionIds();
@@ -45,8 +51,8 @@ export const useIntake = () => {
         sku = generateSKU(data.designer, existingSKUs);
       }
 
-      const photos = data.media.filter(m => m.kind === 'image').length;
-      const videos = data.media.filter(m => m.kind === 'video').length;
+      const photos = data.media.filter((m) => m.kind === "image").length;
+      const videos = data.media.filter((m) => m.kind === "video").length;
 
       const submission: Partial<Submission> = {
         subid,
@@ -66,9 +72,9 @@ export const useIntake = () => {
         expectation: data.expectation,
         selfGrade: data.selfGrade,
         conditionClaim: data.conditionClaim,
-        story: '',
+        story: "",
         notes: data.notes,
-        city: '', // Will be filled from lister profile
+        city: "", // Will be filled from lister profile
         photos,
         videos,
         media: data.media,
@@ -77,11 +83,15 @@ export const useIntake = () => {
         replyAt: null,
         decision: null,
         assessment: {
-          sku: sku || '',
+          sku: sku || "",
           name: data.piece,
-          mode: data.intent === 'Rent it' ? 'Rental' : 
-                data.intent === 'Sell it' ? 'Preloved' : 'Rental/Preloved',
-          grade: 'Good',
+          mode:
+            data.intent === "Rent it"
+              ? "Rental"
+              : data.intent === "Sell it"
+                ? "Preloved"
+                : "Rental/Preloved",
+          grade: "Good",
           sizeLabel: data.size as any,
           measurements: data.measurements,
           priceStd: 0,
@@ -98,17 +108,21 @@ export const useIntake = () => {
         },
         history: [
           {
-            c: 'muted',
+            c: "muted",
             e: `Submission recorded via ${data.channel} — by Soumya`,
             t: new Date().toISOString(),
-          }
+          },
         ],
       };
 
-      const created = await submissionService.createSubmission(submission as Submission);
+      const created = await submissionService.createSubmission(
+        submission as Submission,
+      );
       return created;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create submission');
+      setError(
+        err instanceof Error ? err.message : "Failed to create submission",
+      );
       throw err;
     } finally {
       setLoading(false);

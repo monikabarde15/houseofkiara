@@ -1,5 +1,5 @@
 // hooks/useMessages.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 
 export interface Message {
   id: string;
@@ -8,10 +8,10 @@ export interface Message {
   isYours: boolean;
   trigger: string;
   subject: string;
-  audience: 'Customer' | 'Lister' | 'Designer' | 'You';
-  class: 'Required' | 'Optional' | 'Marketing';
-  channels: ('email' | 'whatsapp' | 'website')[];
-  status: 'Live' | 'Paused' | 'Not written';
+  audience: "Customer" | "Lister" | "Designer" | "You";
+  class: "Required" | "Optional" | "Marketing";
+  channels: ("email" | "whatsapp" | "website")[];
+  status: "Live" | "Paused" | "Not written";
   lastEdited: string;
   editor: string;
 }
@@ -36,18 +36,18 @@ export const useMessages = (options: UseMessagesOptions = {}) => {
         setTimeout(() => {
           resolve([
             {
-              id: '1',
-              name: 'Welcome Email',
+              id: "1",
+              name: "Welcome Email",
               wordingCount: 2,
               isYours: false,
-              trigger: 'Sent when a customer creates an account',
-              subject: 'Welcome to House of Kaira',
-              audience: 'Customer',
-              class: 'Required',
-              channels: ['email', 'whatsapp', 'website'],
-              status: 'Live',
-              lastEdited: '22 Mar 2026',
-              editor: 'Priya Sharma',
+              trigger: "Sent when a customer creates an account",
+              subject: "Welcome to House of Kaira",
+              audience: "Customer",
+              class: "Required",
+              channels: ["email", "whatsapp", "website"],
+              status: "Live",
+              lastEdited: "22 Mar 2026",
+              editor: "Priya Sharma",
             },
             // ... more messages
           ]);
@@ -56,7 +56,7 @@ export const useMessages = (options: UseMessagesOptions = {}) => {
       setMessages(response);
       setError(null);
     } catch (err) {
-      setError('Failed to load messages');
+      setError("Failed to load messages");
     } finally {
       setLoading(false);
     }
@@ -67,17 +67,29 @@ export const useMessages = (options: UseMessagesOptions = {}) => {
   }, [fetchMessages]);
 
   const filteredMessages = messages.filter((msg) => {
-    if (options.search && !msg.name.toLowerCase().includes(options.search.toLowerCase())) {
+    if (
+      options.search &&
+      !msg.name.toLowerCase().includes(options.search.toLowerCase())
+    ) {
       return false;
     }
-    if (options.audience && options.audience !== 'Everyone' && msg.audience !== options.audience) {
+    if (
+      options.audience &&
+      options.audience !== "Everyone" &&
+      msg.audience !== options.audience
+    ) {
       return false;
     }
-    if (options.type && options.type !== 'Required and optional') {
-      if (options.type === 'Required' && msg.class !== 'Required') return false;
-      if (options.type === 'Marketing' && msg.class !== 'Marketing') return false;
+    if (options.type && options.type !== "Required and optional") {
+      if (options.type === "Required" && msg.class !== "Required") return false;
+      if (options.type === "Marketing" && msg.class !== "Marketing")
+        return false;
     }
-    if (options.status && options.status !== 'Any status' && msg.status !== options.status) {
+    if (
+      options.status &&
+      options.status !== "Any status" &&
+      msg.status !== options.status
+    ) {
       return false;
     }
     return true;

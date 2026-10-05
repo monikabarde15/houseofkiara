@@ -10,7 +10,7 @@
   display: flex;
   gap: 14px;
   padding: 18px 0;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
   margin-bottom: 18px;
 }
 
@@ -18,7 +18,7 @@
   width: 52px;
   height: 66px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #F0EAE0, #E8E0D4);
+  background: linear-gradient(135deg, #f0eae0, #e8e0d4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,14 +28,14 @@
   width: 18px;
   height: 18px;
   opacity: 0.25;
-  stroke: #1A1612;
+  stroke: #1a1612;
 }
 
 .profile-attr-product-name {
   font-family: "Cormorant Garamond", serif;
   font-size: 17px;
   font-weight: 500;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 3px;
 }
 
@@ -43,7 +43,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 /* Section common styles */
 .profile-attr-section {
@@ -55,7 +55,7 @@
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   margin-bottom: 10px;
 }
 
@@ -68,7 +68,7 @@
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   margin-bottom: 10px;
 }
 
@@ -80,25 +80,25 @@
 
 .profile-attr-pill {
   padding: 7px 14px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 6px;
-  background: #FFFFFB;
+  background: #fffffb;
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
-  color: #3C3529;
+  color: #3c3529;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .profile-attr-pill:hover {
-  border-color: #E8D5B0;
-  background: #FAF7F2;
+  border-color: #e8d5b0;
+  background: #faf7f2;
 }
 
 .profile-attr-pill.selected {
-  border-color: #1A1612;
-  background: #1A1612;
-  color: #E8D5B0;
+  border-color: #1a1612;
+  background: #1a1612;
+  color: #e8d5b0;
 }
 
 /* Unavailable pill - disabled state */
@@ -109,8 +109,8 @@
 }
 
 .profile-attr-pill.unavailable:hover {
-  border-color: #E8E0D4;
-  background: #FFFFFB;
+  border-color: #e8e0d4;
+  background: #fffffb;
 }
 
 /* ============================================
@@ -137,8 +137,10 @@
 }
 
 .profile-attr-swatch.selected {
-  border-color: #1A1612;
-  box-shadow: 0 0 0 2px #FFFFEB, 0 0 0 4px #1A1612;
+  border-color: #1a1612;
+  box-shadow:
+    0 0 0 2px #ffffeb,
+    0 0 0 4px #1a1612;
 }
 
 .profile-attr-dates {
@@ -157,33 +159,33 @@
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   margin-bottom: 6px;
 }
 
 .profile-attr-date-input {
   height: 40px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 7px;
   padding: 0 12px;
   font-family: "DM Sans", sans-serif;
   font-size: 13px;
-  color: #1A1612;
-  background: #FFFFFB;
+  color: #1a1612;
+  background: #fffffb;
   transition: border-color 0.2s;
 }
 
 .profile-attr-date-input:focus {
   outline: none;
-  border-color: #C9A96E;
+  border-color: #c9a96e;
 }
 
 /* Add to Bag Button */
 .profile-attr-add-btn {
   width: 100%;
   height: 48px;
-  background: #E8E0D4;
-  color: #B0A898;
+  background: #e8e0d4;
+  color: #b0a898;
   border-radius: 8px;
   border: none;
   font-family: "DM Sans", sans-serif;
@@ -207,20 +209,20 @@
 }
 
 .profile-attr-add-btn.active {
-  background: #1A1612;
-  color: #E8D5B0;
+  background: #1a1612;
+  color: #e8d5b0;
   cursor: pointer;
 }
 
 .profile-attr-add-btn.active:hover {
-  background: #3C3529;
+  background: #3c3529;
 }
 
 /* Validation Message */
 .profile-attr-validation {
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
-  color: #B85C38;
+  color: #b85c38;
   text-align: center;
   margin-top: 8px;
   min-height: 16px;

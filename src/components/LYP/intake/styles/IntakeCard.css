@@ -19,8 +19,8 @@
 
 .intake-error {
   padding: 8px 12px;
-  background: #FDF1EE;
-  border: 1px solid #F5C5B5;
+  background: #fdf1ee;
+  border: 1px solid #f5c5b5;
   border-radius: var(--r);
   color: var(--terra);
   font-size: 11px;
@@ -90,8 +90,8 @@
 }
 
 .btn-gold:hover {
-  background: #B89058;
-  border-color: #B89058;
+  background: #b89058;
+  border-color: #b89058;
 }
 
 .btn-gold:disabled {

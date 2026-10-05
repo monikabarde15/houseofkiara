@@ -1,4 +1,4 @@
-import pkg from 'pg';
+import pkg from "pg";
 const { Client } = pkg;
 import crypto from "crypto";
 import { promisify } from "util";
@@ -12,7 +12,10 @@ const connectionString =
   "postgresql://postgres.qfwrxdgjywseodbtadnx:DpUpEOIutDJo6l41@aws-0-ap-south-1.pooler.supabase.com:6543/postgres";
 
 const scrypt = promisify(crypto.scrypt);
-const hashPassword = async (password, salt = crypto.randomBytes(16).toString("hex")) => ({
+const hashPassword = async (
+  password,
+  salt = crypto.randomBytes(16).toString("hex"),
+) => ({
   salt,
   hash: (await scrypt(password, salt, 64)).toString("hex"),
 });
@@ -21,20 +24,20 @@ async function run() {
   const client = new Client({
     connectionString,
   });
-  
+
   try {
     await client.connect();
-    
+
     const credentials = await hashPassword("password123");
     const email = "admin@houseofkaira.com";
-    
+
     // First, let's delete any broken rows
-    await client.query('DELETE FROM admins WHERE email = $1', [email]);
-    
+    await client.query("DELETE FROM admins WHERE email = $1", [email]);
+
     // Now create it properly with both columns AND the `data` JSONB populated
     const sessionToken = crypto.randomBytes(32).toString("hex");
     const id = crypto.randomUUID();
-    
+
     const dataObj = {
       _id: id,
       name: "Admin",
@@ -43,14 +46,24 @@ async function run() {
       passwordSalt: credentials.salt,
       sessionToken: sessionToken,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
-    
+
     await client.query(
-      'INSERT INTO admins (_id, name, email, password_hash, password_salt, session_token, data, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-      [id, "Admin", email, credentials.hash, credentials.salt, sessionToken, JSON.stringify(dataObj), new Date(), new Date()]
+      "INSERT INTO admins (_id, name, email, password_hash, password_salt, session_token, data, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+      [
+        id,
+        "Admin",
+        email,
+        credentials.hash,
+        credentials.salt,
+        sessionToken,
+        JSON.stringify(dataObj),
+        new Date(),
+        new Date(),
+      ],
     );
-    
+
     console.log("Admin created perfectly with password 'password123'");
   } catch (error) {
     console.error("Error:", error.message);

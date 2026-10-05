@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import "./HomepageView.css";
 
@@ -37,14 +36,12 @@ const HomepageView: React.FC<HomepageViewProps> = ({
      NAVIGATOR STATE
   ===================================================== */
 
-  const [selectedBand, setSelectedBand] =
-    useState<string>("hero");
+  const [selectedBand, setSelectedBand] = useState<string>("hero");
 
   const [isNavigatorCollapsed, setIsNavigatorCollapsed] =
     useState<boolean>(false);
 
-  const [deviceMode, setDeviceMode] =
-    useState<DeviceMode>("desktop");
+  const [deviceMode, setDeviceMode] = useState<DeviceMode>("desktop");
 
   /* =====================================================
      HOMEPAGE BANDS
@@ -55,8 +52,7 @@ const HomepageView: React.FC<HomepageViewProps> = ({
       id: "hero",
       number: 1,
       title: "HERO",
-      eyebrow:
-        "INDIA'S PREMIER CIRCULAR FASHION PLATFORM",
+      eyebrow: "INDIA'S PREMIER CIRCULAR FASHION PLATFORM",
       preview: (
         <>
           Wear it with <em>love.</em>
@@ -113,8 +109,7 @@ const HomepageView: React.FC<HomepageViewProps> = ({
       eyebrow: "",
       preview: (
         <>
-          Shop by Occasion —{" "}
-          <em>not showing (not built)</em>
+          Shop by Occasion — <em>not showing (not built)</em>
         </>
       ),
       status: "soon",
@@ -240,9 +235,7 @@ const HomepageView: React.FC<HomepageViewProps> = ({
      STATUS CLASS
   ===================================================== */
 
-  const getStatusClass = (
-    status: HomepageBand["status"]
-  ) => {
+  const getStatusClass = (status: HomepageBand["status"]) => {
     return `homepage-band-status-${status}`;
   };
 
@@ -252,40 +245,23 @@ const HomepageView: React.FC<HomepageViewProps> = ({
 
   return (
     <div className="homepage-view">
-
       {/* =================================================
           HOMEPAGE TOP BAR
       ================================================= */}
 
       <header className="homepage-topbar">
-
         <div className="homepage-topbar-left">
+          <button type="button" className="homepage-back-button">
+            <span className="back-icon">‹</span>
 
-          <button
-            type="button"
-            className="homepage-back-button"
-          >
-            <span className="back-icon">
-              ‹
-            </span>
-
-            <span>
-              Back to Dashboard
-            </span>
+            <span>Back to Dashboard</span>
           </button>
 
-          <span className="homepage-page-name">
-            Homepage
-          </span>
-
+          <span className="homepage-page-name">Homepage</span>
         </div>
 
         <div className="homepage-topbar-right">
-
-          <button
-            type="button"
-            className="homepage-topbar-button"
-          >
+          <button type="button" className="homepage-topbar-button">
             <span>↗</span>
             View Live Site
           </button>
@@ -296,21 +272,13 @@ const HomepageView: React.FC<HomepageViewProps> = ({
           >
             <span>♧</span>
             Notifications
-
-            <span className="homepage-notification-count">
-              12
-            </span>
+            <span className="homepage-notification-count">12</span>
           </button>
 
-          <button
-            type="button"
-            className="homepage-save-button"
-          >
+          <button type="button" className="homepage-save-button">
             Save Changes
           </button>
-
         </div>
-
       </header>
 
       {/* =================================================
@@ -318,58 +286,41 @@ const HomepageView: React.FC<HomepageViewProps> = ({
       ================================================= */}
 
       <main className="homepage-main">
-
         {/* PAGE INTRO */}
 
         <section className="homepage-intro">
+          <div className="homepage-intro-eyebrow">SITE SETTINGS</div>
 
-          <div className="homepage-intro-eyebrow">
-            SITE SETTINGS
-          </div>
-
-          <h1>
-            Homepage
-          </h1>
+          <h1>Homepage</h1>
 
           <p>
-            Everything between the header and the footer.
-            Pick a band, change it, watch the preview. The
-            top bar, the menu and the footer are the chrome
-            and live in Site Settings; anything another
-            module owns is pointed at here, never retyped.
+            Everything between the header and the footer. Pick a band, change
+            it, watch the preview. The top bar, the menu and the footer are the
+            chrome and live in Site Settings; anything another module owns is
+            pointed at here, never retyped.
           </p>
-
         </section>
 
         {/* TOOLBAR */}
 
         <section className="homepage-toolbar">
-
           <div className="homepage-search-wrapper">
-
-            <span className="homepage-search-icon">
-              ⌕
-            </span>
+            <span className="homepage-search-icon">⌕</span>
 
             <input
               type="text"
-              placeholder='Find a setting — “hero”, “quotes”, “layout”'
+              placeholder="Find a setting — “hero”, “quotes”, “layout”"
               className="homepage-search-input"
             />
-
           </div>
 
           <div className="homepage-save-status">
             Everything here is live on the site
           </div>
 
-          <button
-            type="button"
-            className="homepage-publish-button"
-          >
+          <button type="button" className="homepage-publish-button">
             Publish
           </button>
-
         </section>
 
         {/* =================================================
@@ -379,12 +330,9 @@ const HomepageView: React.FC<HomepageViewProps> = ({
         <section
           className={[
             "homepage-workspace",
-            isNavigatorCollapsed
-              ? "homepage-workspace-collapsed"
-              : "",
+            isNavigatorCollapsed ? "homepage-workspace-collapsed" : "",
           ].join(" ")}
         >
-
           {/* =================================================
               LEFT NAVIGATOR
           ================================================= */}
@@ -392,36 +340,25 @@ const HomepageView: React.FC<HomepageViewProps> = ({
           <aside
             className={[
               "homepage-navigator",
-              isNavigatorCollapsed
-                ? "homepage-navigator-collapsed"
-                : "",
+              isNavigatorCollapsed ? "homepage-navigator-collapsed" : "",
               `homepage-navigator-${deviceMode}`,
             ].join(" ")}
           >
-
             {/* NAVIGATOR HEADER */}
 
             <div className="homepage-navigator-header">
-
               {!isNavigatorCollapsed && (
-                <span className="homepage-navigator-label">
-                  THE PAGE
-                </span>
+                <span className="homepage-navigator-label">THE PAGE</span>
               )}
 
               {!isNavigatorCollapsed && (
                 <div className="homepage-device-switcher">
-
                   <button
                     type="button"
                     className={
-                      deviceMode === "desktop"
-                        ? "homepage-device-active"
-                        : ""
+                      deviceMode === "desktop" ? "homepage-device-active" : ""
                     }
-                    onClick={() =>
-                      handleDeviceChange("desktop")
-                    }
+                    onClick={() => handleDeviceChange("desktop")}
                   >
                     Desktop
                   </button>
@@ -429,17 +366,12 @@ const HomepageView: React.FC<HomepageViewProps> = ({
                   <button
                     type="button"
                     className={
-                      deviceMode === "mobile"
-                        ? "homepage-device-active"
-                        : ""
+                      deviceMode === "mobile" ? "homepage-device-active" : ""
                     }
-                    onClick={() =>
-                      handleDeviceChange("mobile")
-                    }
+                    onClick={() => handleDeviceChange("mobile")}
                   >
                     Mobile
                   </button>
-
                 </div>
               )}
 
@@ -458,7 +390,6 @@ const HomepageView: React.FC<HomepageViewProps> = ({
               >
                 {isNavigatorCollapsed ? "»" : "«"}
               </button>
-
             </div>
 
             {/* =================================================
@@ -471,22 +402,17 @@ const HomepageView: React.FC<HomepageViewProps> = ({
                 `homepage-page-preview-${deviceMode}`,
               ].join(" ")}
             >
-
               {/* TOP CHROME */}
 
               <div className="homepage-preview-chrome">
-                {!isNavigatorCollapsed &&
-                  "ANNOUNCEMENT · HEADER"}
+                {!isNavigatorCollapsed && "ANNOUNCEMENT · HEADER"}
               </div>
 
               {/* HOMEPAGE BANDS */}
 
               <div className="homepage-band-list">
-
                 {homepageBands.map((band) => {
-
-                  const isSelected =
-                    selectedBand === band.id;
+                  const isSelected = selectedBand === band.id;
 
                   return (
                     <button
@@ -495,27 +421,18 @@ const HomepageView: React.FC<HomepageViewProps> = ({
                       className={[
                         "homepage-band-item",
 
-                        isSelected
-                          ? "homepage-band-item-selected"
-                          : "",
+                        isSelected ? "homepage-band-item-selected" : "",
 
-                        band.hidden
-                          ? "homepage-band-item-hidden"
-                          : "",
+                        band.hidden ? "homepage-band-item-hidden" : "",
                       ]
                         .filter(Boolean)
                         .join(" ")}
 
-                      onClick={() =>
-                        handleBandSelect(band.id)
-                      }
+                      onClick={() => handleBandSelect(band.id)}
 
                       aria-label={`Select ${band.title}`}
-                      aria-current={
-                        isSelected ? "page" : undefined
-                      }
+                      aria-current={isSelected ? "page" : undefined}
                     >
-
                       {/* BAND NUMBER */}
 
                       <span className="homepage-band-number">
@@ -526,7 +443,6 @@ const HomepageView: React.FC<HomepageViewProps> = ({
 
                       {!isNavigatorCollapsed && (
                         <span className="homepage-band-content">
-
                           <span className="homepage-band-title">
                             {band.title}
                           </span>
@@ -579,8 +495,8 @@ const HomepageView: React.FC<HomepageViewProps> = ({
                               </span>
 
                               <span className="homepage-band-meta">
-                                Bridal Lehengas · Sherwanis · Sarees ·
-                                Anarkalis · Indo-Western
+                                Bridal Lehengas · Sherwanis · Sarees · Anarkalis
+                                · Indo-Western
                               </span>
                             </>
                           )}
@@ -620,65 +536,49 @@ const HomepageView: React.FC<HomepageViewProps> = ({
                               <span />
                             </span>
                           )}
-
                         </span>
                       )}
 
                       {/* STATUS DOT */}
 
-                      {!isNavigatorCollapsed &&
-                        band.status !== "clean" && (
-                          <span
-                            className={[
-                              "homepage-band-status-dot",
-                              getStatusClass(band.status),
-                            ].join(" ")}
-                          />
-                        )}
-
+                      {!isNavigatorCollapsed && band.status !== "clean" && (
+                        <span
+                          className={[
+                            "homepage-band-status-dot",
+                            getStatusClass(band.status),
+                          ].join(" ")}
+                        />
+                      )}
                     </button>
                   );
                 })}
-
               </div>
 
               {/* BOTTOM CHROME */}
 
               {!isNavigatorCollapsed && (
-                <div className="homepage-preview-chrome">
-                  FOOTER
-                </div>
+                <div className="homepage-preview-chrome">FOOTER</div>
               )}
-
             </div>
 
             {/* NAVIGATOR HINT */}
 
             {!isNavigatorCollapsed && (
               <p className="homepage-navigator-hint">
-                The page in order. Click a band to edit it;
-                use the arrows on the left of a band to move
-                it. Photography is drawn where the band
-                carries it.
+                The page in order. Click a band to edit it; use the arrows on
+                the left of a band to move it. Photography is drawn where the
+                band carries it.
               </p>
             )}
-
           </aside>
 
           {/* =================================================
               RIGHT EDITOR
           ================================================= */}
 
-          <section className="homepage-editor">
-
-            {renderSelectedBand()}
-
-          </section>
-
+          <section className="homepage-editor">{renderSelectedBand()}</section>
         </section>
-
       </main>
-
     </div>
   );
 };

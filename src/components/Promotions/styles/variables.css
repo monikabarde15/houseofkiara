@@ -7,59 +7,59 @@
 
 /* --- Typefaces (Section 2.1) --- */
 :root {
-  --promo-serif: 'Cormorant Garamond', Georgia, serif;
-  --promo-sans: 'Inter', system-ui, sans-serif;
-  --promo-mono: ui-monospace, 'SF Mono', monospace;
+  --promo-serif: "Cormorant Garamond", Georgia, serif;
+  --promo-sans: "Inter", system-ui, sans-serif;
+  --promo-mono: ui-monospace, "SF Mono", monospace;
 }
 
 /* --- Colour Tokens (Section 2.2) --- */
 :root {
   /* Primary */
-  --promo-charcoal: #1A1612;
-  --promo-gold: #C9A96E;
-  --promo-gold-1: #E2C99A;
-  --promo-gold-pale: #F5EFE4;
-  --promo-gold-hover: #B89058;
-  
+  --promo-charcoal: #1a1612;
+  --promo-gold: #c9a96e;
+  --promo-gold-1: #e2c99a;
+  --promo-gold-pale: #f5efe4;
+  --promo-gold-hover: #b89058;
+
   /* Status */
-  --promo-terra: #B85C38;
-  --promo-sage: #6B7E5A;
-  
+  --promo-terra: #b85c38;
+  --promo-sage: #6b7e5a;
+
   /* Backgrounds */
-  --promo-cream: #FAF7F2;
-  --promo-canvas: #F7F4EF;
-  --promo-card: #FFFFFF;
-  
+  --promo-cream: #faf7f2;
+  --promo-canvas: #f7f4ef;
+  --promo-card: #ffffff;
+
   /* Text */
-  --promo-muted: #8A7E72;
-  --promo-muted-1: #B4A99E;
-  
+  --promo-muted: #8a7e72;
+  --promo-muted-1: #b4a99e;
+
   /* Borders */
-  --promo-border: #E8E0D4;
-  --promo-cb: #EDE6DC;
-  --promo-ib: #DDD5C8;
-  --promo-ibg: #FFFFFB;
-  
+  --promo-border: #e8e0d4;
+  --promo-cb: #ede6dc;
+  --promo-ib: #ddd5c8;
+  --promo-ibg: #fffffb;
+
   /* Toggle */
-  --promo-toggle-off: #D4C8BC;
-  
+  --promo-toggle-off: #d4c8bc;
+
   /* Status Badges */
-  --promo-status-live-bg: #EAF0E5;
-  --promo-status-live-text: #3D6B30;
-  --promo-status-neutral-bg: #F0EDE8;
-  --promo-status-neutral-text: #8A7E72;
-  
+  --promo-status-live-bg: #eaf0e5;
+  --promo-status-live-text: #3d6b30;
+  --promo-status-neutral-bg: #f0ede8;
+  --promo-status-neutral-text: #8a7e72;
+
   /* Chips */
   --promo-chip-positive-border: rgba(107, 126, 90, 0.4);
-  --promo-chip-positive-bg: #F4F7EF;
-  --promo-chip-positive-text: #3E4A34;
+  --promo-chip-positive-bg: #f4f7ef;
+  --promo-chip-positive-text: #3e4a34;
   --promo-chip-warning-border: rgba(201, 169, 110, 0.55);
-  --promo-chip-warning-bg: #F5EFE4;
-  --promo-chip-warning-text: #6B5730;
-  
+  --promo-chip-warning-bg: #f5efe4;
+  --promo-chip-warning-text: #6b5730;
+
   /* Attention Pill */
-  --promo-attention-bg: #F5EFE4;
-  --promo-attention-text: #8A3E22;
+  --promo-attention-bg: #f5efe4;
+  --promo-attention-text: #8a3e22;
   --promo-attention-border: rgba(184, 92, 56, 0.3);
 }
 
@@ -73,7 +73,7 @@
   --promo-card-body-padding: 16px;
   --promo-card-header-padding: 11px 16px;
   --promo-card-footer-padding: 10px 16px;
-  
+
   /* Shadows (Section 2.4) */
   --promo-shadow-card: 0 1px 4px rgba(26, 22, 18, 0.06);
   --promo-shadow-stat: 0 1px 4px rgba(26, 22, 18, 0.05);

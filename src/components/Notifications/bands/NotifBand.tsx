@@ -1,37 +1,41 @@
 // src/components/Notifications/bands/NotifBand.tsx
-import React from 'react';
-import { AlertDef, BandKey, NarrowingState } from '../types/notification.types';
-import { NotifRow } from '../rows/NotifRow'; // next file — not yet built
-import { pluralize } from '../utils/formatting';
-import './styles/NotifBand.css';
+import React from "react";
+import { AlertDef, BandKey, NarrowingState } from "../types/notification.types";
+import { NotifRow } from "../rows/NotifRow"; // next file — not yet built
+import { pluralize } from "../utils/formatting";
+import "./styles/NotifBand.css";
 
-const BAND_META: Record<BandKey, { label: string; explanation: string; cls: string }> = {
+const BAND_META: Record<
+  BandKey,
+  { label: string; explanation: string; cls: string }
+> = {
   today: {
-    label: 'Needs doing today',
-    explanation: 'Dated, breached, or money at risk. Nothing here can be put down.',
-    cls: 'ntf-band--today',
+    label: "Needs doing today",
+    explanation:
+      "Dated, breached, or money at risk. Nothing here can be put down.",
+    cls: "ntf-band--today",
   },
   waiting: {
-    label: 'Waiting on us',
-    explanation: 'Someone is waiting and we have not broken a promise yet.',
-    cls: 'ntf-band--waiting',
+    label: "Waiting on us",
+    explanation: "Someone is waiting and we have not broken a promise yet.",
+    cls: "ntf-band--waiting",
   },
   them: {
-    label: 'Waiting on them',
+    label: "Waiting on them",
     explanation:
-      'The ball is in their court. Not our failure — but it still needs nudging or closing.',
-    cls: 'ntf-band--them',
+      "The ball is in their court. Not our failure — but it still needs nudging or closing.",
+    cls: "ntf-band--them",
   },
   know: {
-    label: 'Worth knowing',
-    explanation: 'No deadline. These can be put down for a week, in the open.',
-    cls: 'ntf-band--know',
+    label: "Worth knowing",
+    explanation: "No deadline. These can be put down for a week, in the open.",
+    cls: "ntf-band--know",
   },
   blocked: {
-    label: 'Cannot be seen yet',
+    label: "Cannot be seen yet",
     explanation:
-      'Asked for, and not derivable from what the panel holds today. Built anyway — it is how the panel admits a gap rather than showing a reassuring zero.',
-    cls: 'ntf-band--know', // blocked band reuses the "know" (canvas) header colours per §7.1
+      "Asked for, and not derivable from what the panel holds today. Built anyway — it is how the panel admits a gap rather than showing a reassuring zero.",
+    cls: "ntf-band--know", // blocked band reuses the "know" (canvas) header colours per §7.1
   },
 };
 
@@ -77,19 +81,19 @@ export function NotifBand({
   if (isNarrowedAway) return null;
 
   const meta = BAND_META[bandKey];
-  const isFoldingBand = bandKey === 'them' || bandKey === 'know';
+  const isFoldingBand = bandKey === "them" || bandKey === "know";
 
   // Under a person-narrowing, an alert with none of that person's records is
   // dropped from the page entirely — not shown empty (§28.7). Clear/put-down/
   // folded rows are suppressed under an owner filter, since they describe
   // absence, and absence isn't something a person carries.
- const personFilter = narrowing.person;
+  const personFilter = narrowing.person;
 
-const visibleAlerts = personFilter
-  ? alerts.filter((a) =>
-      a.records.some((r) => matchesPersonFilter(r.ownerId, personFilter))
-    )
-  : alerts;
+  const visibleAlerts = personFilter
+    ? alerts.filter((a) =>
+        a.records.some((r) => matchesPersonFilter(r.ownerId, personFilter)),
+      )
+    : alerts;
 
   if (narrowing.person && visibleAlerts.length === 0) {
     return null; // whole band drops when every alert in it drops (§28.7)
@@ -97,26 +101,32 @@ const visibleAlerts = personFilter
 
   const totalCount = countBand(visibleAlerts, narrowing.person);
 
-  const standardAlerts = isFoldingBand && !narrowing.person
-    ? visibleAlerts.filter((a) => a.records.length > 0 && !a.putDown)
-    : visibleAlerts;
+  const standardAlerts =
+    isFoldingBand && !narrowing.person
+      ? visibleAlerts.filter((a) => a.records.length > 0 && !a.putDown)
+      : visibleAlerts;
 
-  const foldedAlerts = isFoldingBand && !narrowing.person
-    ? visibleAlerts.filter((a) => a.records.length === 0 || a.putDown)
-    : [];
+  const foldedAlerts =
+    isFoldingBand && !narrowing.person
+      ? visibleAlerts.filter((a) => a.records.length === 0 || a.putDown)
+      : [];
 
   return (
     <div className={`ntf-band ${meta.cls}`}>
       <div
-        className={`ntf-band-hd${bandKey !== 'blocked' ? ' ntf-band-hd--go' : ''}`}
-        onClick={bandKey !== 'blocked' ? onSelectBand : undefined}
+        className={`ntf-band-hd${bandKey !== "blocked" ? " ntf-band-hd--go" : ""}`}
+        onClick={bandKey !== "blocked" ? onSelectBand : undefined}
       >
         <span>
           {meta.label}
-          {narrowing.band === bandKey && <span className="ntf-only">only this band · clear</span>}
+          {narrowing.band === bandKey && (
+            <span className="ntf-only">only this band · clear</span>
+          )}
         </span>
         {/* §7.2 — "Cannot be seen yet" shows no count in its header; all others do */}
-        {bandKey !== 'blocked' && <span className="ntf-band-n">{totalCount}</span>}
+        {bandKey !== "blocked" && (
+          <span className="ntf-band-n">{totalCount}</span>
+        )}
       </div>
       <div className="ntf-band-s">{meta.explanation}</div>
 
@@ -142,7 +152,7 @@ const visibleAlerts = personFilter
 }
 
 function matchesPersonFilter(ownerId: string | null, filter: string): boolean {
-  if (filter === 'nobody') return ownerId === null;
+  if (filter === "nobody") return ownerId === null;
   return ownerId === filter;
 }
 
@@ -160,7 +170,7 @@ function countBand(alerts: AlertDef[], personFilter: string | null): number {
   alerts.forEach((a) =>
     a.records
       .filter((r) => matchesPersonFilter(r.ownerId, personFilter))
-      .forEach((r) => ids.add(r.id))
+      .forEach((r) => ids.add(r.id)),
   );
   return ids.size;
 }
@@ -174,7 +184,7 @@ function FoldedSummaryRow({ alerts }: { alerts: AlertDef[] }) {
   const n = alerts.length;
   const titleLine = alerts
     .map((a) => (a.putDown ? `${a.title} (put down)` : a.title))
-    .join(' · ');
+    .join(" · ");
 
   return (
     <div className="ntf-row ntf-row--clear">
@@ -183,7 +193,7 @@ function FoldedSummaryRow({ alerts }: { alerts: AlertDef[] }) {
         <div className="ntf-row-body">
           <div className="ntf-t ntf-t--muted">
             {n === 1
-              ? '1 more check is clear or put down'
+              ? "1 more check is clear or put down"
               : `${n} more checks are clear or put down`}
           </div>
           <div className="ntf-w ntf-w--muted">{titleLine}</div>

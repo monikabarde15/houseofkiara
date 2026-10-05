@@ -2,51 +2,42 @@
 import "../../../styles/confirmation/layout/confirmation-section-header.css";
 
 const ConfirmationSectionHeader = ({
-    number,
-    title,
-    accent,
-    suffix,
-    status,
-    tag,
+  number,
+  title,
+  accent,
+  suffix,
+  status,
+  tag,
 }) => {
-    return (
-        <div className="confirmation-section-header">
+  return (
+    <div className="confirmation-section-header">
+      <div className="confirmation-section-header-number">{number}</div>
 
-            <div className="confirmation-section-header-number">
-                {number}
-            </div>
+      <h2 className="confirmation-section-header-title">
+        {title}
 
-            <h2 className="confirmation-section-header-title">
-                {title}
+        {accent && (
+          <>
+            {" "}
+            <em>{accent}</em>
+          </>
+        )}
 
-                {accent && (
-                    <>
-                        {" "}
-                        <em>{accent}</em>
-                    </>
-                )}
+        {suffix && <> {suffix}</>}
+      </h2>
 
-                {suffix && (
-                    <>
-                        {" "}
-                        {suffix}
-                    </>
-                )}
-            </h2>
-
-            {status && (
-                <div
-                    className={`
+      {status && (
+        <div
+          className={`
             confirmation-section-tag
             confirmation-section-tag-${tag}
           `}
-                >
-                    {status}
-                </div>
-            )}
-
+        >
+          {status}
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default ConfirmationSectionHeader;

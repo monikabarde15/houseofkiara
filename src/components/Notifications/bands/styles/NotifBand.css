@@ -3,10 +3,10 @@
 /* §7.2 — band container and header */
 .ntf-band {
   margin-bottom: 15px;
-  border: 1px solid #EDE6DC;
+  border: 1px solid #ede6dc;
   border-radius: 4px;
   overflow: hidden;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .ntf-band-hd {
@@ -14,20 +14,33 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 14px;
-  background: #F7F4EF;
-  border-bottom: 1px solid #EDE6DC;
+  background: #f7f4ef;
+  border-bottom: 1px solid #ede6dc;
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: .11em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
 }
-.ntf-band-hd--go { cursor: pointer; }
-.ntf-band-hd--go:hover { filter: brightness(.97); }
+.ntf-band-hd--go {
+  cursor: pointer;
+}
+.ntf-band-hd--go:hover {
+  filter: brightness(0.97);
+}
 
-.ntf-band--today .ntf-band-hd { background: #FDF1EE; color: #7A2E1D; }
-.ntf-band--waiting .ntf-band-hd { background: #F5EFE4; color: #6B5730; }
-.ntf-band--them .ntf-band-hd { background: #EEF3EA; color: #3D6B30; }
+.ntf-band--today .ntf-band-hd {
+  background: #fdf1ee;
+  color: #7a2e1d;
+}
+.ntf-band--waiting .ntf-band-hd {
+  background: #f5efe4;
+  color: #6b5730;
+}
+.ntf-band--them .ntf-band-hd {
+  background: #eef3ea;
+  color: #3d6b30;
+}
 /* --know reuses the default canvas header colours already set above */
 
 .ntf-band-n {
@@ -39,22 +52,22 @@
 .ntf-only {
   margin-left: 8px;
   font-size: 8.5px;
-  letter-spacing: .04em;
-  opacity: .75;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
   text-transform: none;
 }
 
 .ntf-band-s {
   padding: 7px 14px;
   font-size: 10.5px;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.6;
-  background: #FFFEFB;
-  border-bottom: 1px solid #EDE6DC;
+  background: #fffefb;
+  border-bottom: 1px solid #ede6dc;
 }
 
 /* §9.6 — folded summary row (reuses the "clear" row look) */
 .ntf-row--clear .ntf-t--muted,
 .ntf-row--clear .ntf-w--muted {
-  color: #8A7E72;
+  color: #8a7e72;
 }

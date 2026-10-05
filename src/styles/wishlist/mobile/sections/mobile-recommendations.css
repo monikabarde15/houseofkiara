@@ -1,7 +1,7 @@
 /* Section 12: Recommendations Section */
 
 .wishlist-mobile-recommendations {
-  background: #F5EFE6;
+  background: #f5efe6;
   padding: 36px 16px 48px;
   margin-top: 20px;
 }
@@ -23,54 +23,55 @@
 
 /* Eyebrow*/
 .wishlist-mobile-recommendations__eyebrow {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8px;
   font-weight: 400;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #A8844A;
+  color: #a8844a;
   margin-bottom: 6px;
 }
 
 /* Title */
 .wishlist-mobile-recommendations__title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 26px;
   font-weight: 300;
   line-height: 1;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0;
 }
 
 /* "love" in italic*/
 .wishlist-mobile-recommendations__title-italic {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* Explore link */
 .wishlist-mobile-recommendations__explore {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #1A1612;
+  color: #1a1612;
   background: none;
   border: none;
   padding-bottom: 2px;
   cursor: pointer;
-  transition: color 0.15s, border-bottom 0.15s;
+  transition:
+    color 0.15s,
+    border-bottom 0.15s;
   border-bottom: 1px solid transparent;
 }
 
 .wishlist-mobile-recommendations__explore:hover {
-  color: #C9A96E;
-  border-bottom-color: #C9A96E;
+  color: #c9a96e;
+  border-bottom-color: #c9a96e;
 }
 
 /* Section 12.2: Recommendation Cards Scroll */
-
 
 .wishlist-mobile-recommendations__scroll {
   margin: 0 -16px;

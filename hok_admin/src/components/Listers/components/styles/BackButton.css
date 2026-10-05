@@ -5,18 +5,18 @@
   align-items: center;
   gap: 5px;
   padding: 5px 10px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 4px;
   background: white;
   font-size: 11px;
-  color: #8A7E72;
+  color: #8a7e72;
   cursor: pointer;
   transition: all 0.1s;
 }
 
 .back-button:hover {
-  border-color: #C9A96E;
-  color: #1A1612;
+  border-color: #c9a96e;
+  color: #1a1612;
 }
 
 .back-button svg {

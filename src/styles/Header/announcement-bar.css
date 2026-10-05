@@ -67,20 +67,12 @@
 
 .announce-bar::before {
   left: 0;
-  background: linear-gradient(
-    to right,
-    #1a1612 10%,
-    transparent 100%
-  );
+  background: linear-gradient(to right, #1a1612 10%, transparent 100%);
 }
 
 .announce-bar::after {
   right: 0;
-  background: linear-gradient(
-    to left,
-    #1a1612 10%,
-    transparent 100%
-  );
+  background: linear-gradient(to left, #1a1612 10%, transparent 100%);
 }
 
 @keyframes hokMarquee {

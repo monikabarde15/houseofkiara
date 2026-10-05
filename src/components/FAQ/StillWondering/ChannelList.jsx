@@ -2,7 +2,11 @@
 // Contact channels list (F3) per Section F3 & Appendix F
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { WhatsAppGlyphIcon, EmailIcon, YourOrderIcon } from "../common/FaqIcons";
+import {
+  WhatsAppGlyphIcon,
+  EmailIcon,
+  YourOrderIcon,
+} from "../common/FaqIcons";
 import { ADMIN_FIGURES } from "../../../data/faq/adminFigures";
 
 export default function ChannelList({ onShowToast }) {
@@ -17,7 +21,7 @@ export default function ChannelList({ onShowToast }) {
 
   const handleEmail = () => {
     window.location.href = `mailto:${ADMIN_FIGURES.support_email}?subject=${encodeURIComponent(
-      "A question for House of Kaira"
+      "A question for House of Kaira",
     )}`;
   };
 
@@ -30,19 +34,21 @@ export default function ChannelList({ onShowToast }) {
       {/* Channel 1: WhatsApp */}
       <div className="chan-row">
         <div className="chan-ic" aria-hidden="true">
-          <WhatsAppGlyphIcon className="chan-svg fill" fill="#E8D5B0" style={{ width: 17, height: 17 }} />
+          <WhatsAppGlyphIcon
+            className="chan-svg fill"
+            fill="#E8D5B0"
+            style={{ width: 17, height: 17 }}
+          />
         </div>
         <div className="chan-info">
           <h4 className="chan-k">WhatsApp</h4>
           <p className="chan-v">
-            The fastest way to reach us. {ADMIN_FIGURES.support_days}, {ADMIN_FIGURES.support_hours}, with replies usually within {ADMIN_FIGURES.support_sla}.
+            The fastest way to reach us. {ADMIN_FIGURES.support_days},{" "}
+            {ADMIN_FIGURES.support_hours}, with replies usually within{" "}
+            {ADMIN_FIGURES.support_sla}.
           </p>
         </div>
-        <button
-          type="button"
-          className="chan-go"
-          onClick={handleWhatsApp}
-        >
+        <button type="button" className="chan-go" onClick={handleWhatsApp}>
           Start a chat
         </button>
       </div>
@@ -55,14 +61,11 @@ export default function ChannelList({ onShowToast }) {
         <div className="chan-info">
           <h4 className="chan-k">Email</h4>
           <p className="chan-v">
-            {ADMIN_FIGURES.support_email}. Best for anything with photos or documents attached.
+            {ADMIN_FIGURES.support_email}. Best for anything with photos or
+            documents attached.
           </p>
         </div>
-        <button
-          type="button"
-          className="chan-go"
-          onClick={handleEmail}
-        >
+        <button type="button" className="chan-go" onClick={handleEmail}>
           Send an email
         </button>
       </div>
@@ -78,11 +81,7 @@ export default function ChannelList({ onShowToast }) {
             Booking status, tracking and your deposit, all inside My Account.
           </p>
         </div>
-        <button
-          type="button"
-          className="chan-go"
-          onClick={handleAccount}
-        >
+        <button type="button" className="chan-go" onClick={handleAccount}>
           Go to my account
         </button>
       </div>

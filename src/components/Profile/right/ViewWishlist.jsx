@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { ChevronLeft } from 'lucide-react';
-import WishlistCard from '../cards/WishlistCard';
-import AttributeSelectorModal from '../forms/AttributeSelectorModal';
-import Toast from '../ui/Toast';
+import React, { useState } from "react";
+import { ChevronLeft } from "lucide-react";
+import WishlistCard from "../cards/WishlistCard";
+import AttributeSelectorModal from "../forms/AttributeSelectorModal";
+import Toast from "../ui/Toast";
 import "../../../styles/Profile/right/ViewWishlist.css";
-import { useWishlistProducts } from '../../Wishlist/hooks/useWishlistProducts';
+import { useWishlistProducts } from "../../Wishlist/hooks/useWishlistProducts";
 
 const ViewWishlist = ({ onBack }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPiece, setSelectedPiece] = useState(null);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
 
   const { products, removeProduct } = useWishlistProducts();
@@ -24,10 +24,10 @@ const ViewWishlist = ({ onBack }) => {
     // Check if modal is needed or direct add
     const needsSize = piece.sizes && piece.sizes.length > 1;
     const needsColor = piece.colors && piece.colors.length > 1;
-    const isRental = piece.mode === 'Rental';
-    
+    const isRental = piece.mode === "Rental";
+
     const needsModal = needsSize || needsColor || isRental;
-    
+
     if (needsModal) {
       setSelectedPiece(piece);
       setIsModalOpen(true);
@@ -46,9 +46,10 @@ const ViewWishlist = ({ onBack }) => {
     let message = selectedPiece.name;
     if (selections.size) message += ` · Size ${selections.size}`;
     if (selections.color) message += ` · ${selections.color}`;
-    if (selections.startDate && selections.endDate) message += ` · ${selections.startDate} - ${selections.endDate}`;
+    if (selections.startDate && selections.endDate)
+      message += ` · ${selections.startDate} - ${selections.endDate}`;
     message += ` added to your bag`;
-    
+
     showToastMessage(message);
     setIsModalOpen(false);
     setSelectedPiece(null);
@@ -73,7 +74,9 @@ const ViewWishlist = ({ onBack }) => {
             Back to overview
           </button>
           <div className="profile-fv-wishlist-bar-title">Saved Pieces</div>
-          <div className="profile-fv-wishlist-bar-count">{savedPieces.length} saved</div>
+          <div className="profile-fv-wishlist-bar-count">
+            {savedPieces.length} saved
+          </div>
         </div>
 
         <div className="profile-fv-wishlist-grid">

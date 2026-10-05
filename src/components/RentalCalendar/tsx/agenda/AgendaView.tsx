@@ -1,28 +1,32 @@
-import React, { useState } from 'react';
-import { AgendaEntry } from '../../types';
-import { agendaMockData } from './agendaMockData';
-import AgendaFilterBar from './AgendaFilterBar';
-import AgendaTable from './AgendaTable';
-import '../../css/agenda/AgendaView.css';
+import React, { useState } from "react";
+import { AgendaEntry } from "../../types";
+import { agendaMockData } from "./agendaMockData";
+import AgendaFilterBar from "./AgendaFilterBar";
+import AgendaTable from "./AgendaTable";
+import "../../css/agenda/AgendaView.css";
 
 const AgendaView: React.FC = () => {
   const [entries, setEntries] = useState<AgendaEntry[]>(agendaMockData);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [actionType, setActionType] = useState('All Action Types');
-  const [upcomingFilter, setUpcomingFilter] = useState('All Upcoming');
+  const [actionType, setActionType] = useState("All Action Types");
+  const [upcomingFilter, setUpcomingFilter] = useState("All Upcoming");
 
   const handleToggleRow = (id: string) =>
     setExpandedId((prev) => (prev === id ? null : id));
 
   const handleMarkDone = (id: string) =>
-    setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, done: true } : e)));
+    setEntries((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, done: true } : e)),
+    );
 
   const handleSaveNote = (id: string, note: string) =>
-    setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, savedNote: note } : e)));
+    setEntries((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, savedNote: note } : e)),
+    );
 
   const handleNotifyCustomer = (id: string) => {
     // wire up to real notify action later
-    console.log('Notify customer for', id);
+    console.log("Notify customer for", id);
   };
 
   return (

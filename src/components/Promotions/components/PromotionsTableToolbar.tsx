@@ -4,11 +4,10 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.9
    ======================================== */
 
-import React, { useState } from 'react';
-import './styles/PromotionsTableToolbar.css';
-import { Button } from './UI';
-import { Search } from 'lucide-react';
-
+import React, { useState } from "react";
+import "./styles/PromotionsTableToolbar.css";
+import { Button } from "./UI";
+import { Search } from "lucide-react";
 
 interface PromotionsTableToolbarProps {
   search: string;
@@ -24,12 +23,12 @@ interface PromotionsTableToolbarProps {
 }
 
 const statusOptions = [
-  'All Statuses',
-  'Active',
-  'Scheduled',
-  'Paused',
-  'Fully redeemed',
-  'Expired',
+  "All Statuses",
+  "Active",
+  "Scheduled",
+  "Paused",
+  "Fully redeemed",
+  "Expired",
 ];
 
 export const PromotionsTableToolbar: React.FC<PromotionsTableToolbarProps> = ({
@@ -48,7 +47,9 @@ export const PromotionsTableToolbar: React.FC<PromotionsTableToolbarProps> = ({
     <div className="table-toolbar">
       <div className="table-toolbar__top">
         <div className="table-toolbar__search">
-          <span className="table-toolbar__search-icon"><Search /></span>
+          <span className="table-toolbar__search-icon">
+            <Search />
+          </span>
           <input
             type="text"
             className="table-toolbar__search-input"
@@ -62,8 +63,10 @@ export const PromotionsTableToolbar: React.FC<PromotionsTableToolbarProps> = ({
           value={statusFilter}
           onChange={(e) => onStatusFilterChange(e.target.value)}
         >
-          {statusOptions.map(opt => (
-            <option key={opt} value={opt}>{opt}</option>
+          {statusOptions.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
           ))}
         </select>
         <Button variant="secondary" size="small" onClick={onExport}>
@@ -73,7 +76,9 @@ export const PromotionsTableToolbar: React.FC<PromotionsTableToolbarProps> = ({
 
       {showBulkBar && (
         <div className="table-toolbar__bulk">
-          <span className="table-toolbar__bulk-count">{selectedCount} selected</span>
+          <span className="table-toolbar__bulk-count">
+            {selectedCount} selected
+          </span>
           <Button variant="secondary" size="small" onClick={onBulkPause}>
             Pause
           </Button>

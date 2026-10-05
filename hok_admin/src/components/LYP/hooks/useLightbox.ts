@@ -1,7 +1,7 @@
 // src/components/LYP/hooks/useLightbox.ts
 
-import { useState, useCallback } from 'react';
-import { Media } from '../types/submission.types';
+import { useState, useCallback } from "react";
+import { Media } from "../types/submission.types";
 
 export const useLightbox = (media: Media[]) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,22 +21,22 @@ export const useLightbox = (media: Media[]) => {
 
   const goPrev = useCallback(() => {
     if (media.length <= 1) return;
-    setCurrentIndex(prev => (prev - 1 + media.length) % media.length);
+    setCurrentIndex((prev) => (prev - 1 + media.length) % media.length);
     setZoom(1);
   }, [media.length]);
 
   const goNext = useCallback(() => {
     if (media.length <= 1) return;
-    setCurrentIndex(prev => (prev + 1) % media.length);
+    setCurrentIndex((prev) => (prev + 1) % media.length);
     setZoom(1);
   }, [media.length]);
 
   const zoomIn = useCallback(() => {
-    setZoom(prev => Math.min(prev + 0.5, 3));
+    setZoom((prev) => Math.min(prev + 0.5, 3));
   }, []);
 
   const zoomOut = useCallback(() => {
-    setZoom(prev => Math.max(prev - 0.5, 1));
+    setZoom((prev) => Math.max(prev - 0.5, 1));
   }, []);
 
   const hasPrev = media.length > 1 && currentIndex > 0;

@@ -1,7 +1,7 @@
 // src/components/Listers/components/ListerTabs.tsx
 
-import React from 'react';
-import './styles/ListerTabs.css';
+import React from "react";
+import "./styles/ListerTabs.css";
 
 interface ListerTabsProps {
   activeTab: string;
@@ -10,16 +10,16 @@ interface ListerTabsProps {
 }
 
 const TABS = [
-  'Profile & Contact',
-  'Submitted Pieces',
-  'Their Listings',
-  'Payout History',
-  'Communication Log',
-  'Account & Compliance',
+  "Profile & Contact",
+  "Submitted Pieces",
+  "Their Listings",
+  "Payout History",
+  "Communication Log",
+  "Account & Compliance",
 ];
 
-export const ListerTabs: React.FC<ListerTabsProps> = ({ 
-  activeTab, 
+export const ListerTabs: React.FC<ListerTabsProps> = ({
+  activeTab,
   onTabChange,
   isCreateMode = false,
 }) => {
@@ -28,7 +28,7 @@ export const ListerTabs: React.FC<ListerTabsProps> = ({
       {TABS.map((tab) => (
         <button
           key={tab}
-          className={`it ${activeTab === tab ? 'it-active' : ''}`}
+          className={`it ${activeTab === tab ? "it-active" : ""}`}
           onClick={() => onTabChange(tab)}
         >
           {tab}

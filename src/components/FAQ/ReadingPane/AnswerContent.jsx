@@ -38,7 +38,7 @@ export default function AnswerContent({ answer, onSelectQuestion }) {
                     onClick={(e) => handleLinkClick(e, link)}
                   >
                     {link.text}
-                  </button>
+                  </button>,
                 );
               }
             });

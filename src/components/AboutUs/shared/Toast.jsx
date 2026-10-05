@@ -13,12 +13,12 @@ const Toast = () => {
     window.showAboutToast = (msg, callback) => {
       setMessage(msg);
       setIsVisible(true);
-      
+
       if (toastCallback) {
         toastCallback();
         toastCallback = null;
       }
-      
+
       if (callback) {
         toastCallback = callback;
       }

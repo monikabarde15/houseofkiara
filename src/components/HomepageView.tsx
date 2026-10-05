@@ -1,26 +1,42 @@
-import React, { useState } from 'react';
-import { Sparkles, Save, Trash2, Plus, Edit, Image } from 'lucide-react';
-import { HomepageEditor } from '../types';
+import React, { useState } from "react";
+import { Sparkles, Save, Trash2, Plus, Edit, Image } from "lucide-react";
+import { HomepageEditor } from "../types";
 
 interface HomepageViewProps {
   homepage: HomepageEditor;
   onUpdateHomepage: (updated: HomepageEditor) => void;
 }
 
-export default function HomepageView({ homepage, onUpdateHomepage }: HomepageViewProps) {
-  const [heroHeading, setHeroHeading] = useState(homepage.hero?.heading || 'Luxury Couture Rentals');
-  const [heroSubheading, setHeroSubheading] = useState(homepage.hero?.subheading || 'Access the finest wardrobes from India’s top designers.');
-  const [ctaLabel, setCtaLabel] = useState(homepage.hero?.primaryCtaLabel || 'Rent Bridalwear');
-  const [ctaUrl, setCtaUrl] = useState(homepage.hero?.primaryCtaUrl || '/rentals');
-  const [ctaLabelSec, setCtaLabelSec] = useState(homepage.hero?.secondaryCtaLabel || 'Consign Clothes');
-  const [ctaUrlSec, setCtaUrlSec] = useState(homepage.hero?.secondaryCtaUrl || '/consign');
+export default function HomepageView({
+  homepage,
+  onUpdateHomepage,
+}: HomepageViewProps) {
+  const [heroHeading, setHeroHeading] = useState(
+    homepage.hero?.heading || "Luxury Couture Rentals",
+  );
+  const [heroSubheading, setHeroSubheading] = useState(
+    homepage.hero?.subheading ||
+      "Access the finest wardrobes from India’s top designers.",
+  );
+  const [ctaLabel, setCtaLabel] = useState(
+    homepage.hero?.primaryCtaLabel || "Rent Bridalwear",
+  );
+  const [ctaUrl, setCtaUrl] = useState(
+    homepage.hero?.primaryCtaUrl || "/rentals",
+  );
+  const [ctaLabelSec, setCtaLabelSec] = useState(
+    homepage.hero?.secondaryCtaLabel || "Consign Clothes",
+  );
+  const [ctaUrlSec, setCtaUrlSec] = useState(
+    homepage.hero?.secondaryCtaUrl || "/consign",
+  );
 
   const [testimonials, setTestimonials] = useState(homepage.testimonials || []);
 
-  const [newAuthor, setNewAuthor] = useState('');
-  const [newRole, setNewRole] = useState('');
-  const [newText, setNewText] = useState('');
-  const [newRating, setNewRating] = useState('5');
+  const [newAuthor, setNewAuthor] = useState("");
+  const [newRole, setNewRole] = useState("");
+  const [newText, setNewText] = useState("");
+  const [newRating, setNewRating] = useState("5");
 
   const handleSave = () => {
     const updated: HomepageEditor = {
@@ -31,9 +47,9 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
         primaryCtaUrl: ctaUrl,
         secondaryCtaLabel: ctaLabelSec,
         secondaryCtaUrl: ctaUrlSec,
-        backgroundImageUrl: homepage.hero?.backgroundImageUrl
+        backgroundImageUrl: homepage.hero?.backgroundImageUrl,
       },
-      testimonials
+      testimonials,
     };
     onUpdateHomepage(updated);
     alert("Homepage CMS modifications saved successfully!");
@@ -49,26 +65,29 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
       author: newAuthor,
       role: newRole || "Client",
       text: newText,
-      rating: Number(newRating)
+      rating: Number(newRating),
     };
     setTestimonials([...testimonials, newTest]);
-    setNewAuthor('');
-    setNewRole('');
-    setNewText('');
+    setNewAuthor("");
+    setNewRole("");
+    setNewText("");
     alert("Review testimonial added!");
   };
 
   const handleDeleteTestimonial = (id: string) => {
-    setTestimonials(testimonials.filter(t => t.id !== id));
+    setTestimonials(testimonials.filter((t) => t.id !== id));
   };
 
   return (
     <div className="space-y-6 text-xs font-sans">
       <div className="flex justify-between items-center border-b border-stone-100 pb-3">
         <div>
-          <h2 className="text-2xl font-serif text-stone-900 font-medium">Homepage Editor (CMS)</h2>
+          <h2 className="text-2xl font-serif text-stone-900 font-medium">
+            Homepage Editor (CMS)
+          </h2>
           <p className="text-xs text-stone-500 mt-1">
-            Modify storefront hero content blocks, call to actions (CTAs), and customer testimonials instantly.
+            Modify storefront hero content blocks, call to actions (CTAs), and
+            customer testimonials instantly.
           </p>
         </div>
         <button
@@ -84,10 +103,14 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
         {/* Hero Section */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
-            <h3 className="font-serif font-bold text-stone-900 text-sm">Hero Banner Content Block</h3>
+            <h3 className="font-serif font-bold text-stone-900 text-sm">
+              Hero Banner Content Block
+            </h3>
             <div className="grid grid-cols-1 gap-4 font-sans">
               <div className="space-y-1">
-                <label className="text-stone-500 font-medium">Hero Display Heading</label>
+                <label className="text-stone-500 font-medium">
+                  Hero Display Heading
+                </label>
                 <input
                   type="text"
                   value={heroHeading}
@@ -96,7 +119,9 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-stone-500 font-medium">Hero Sub-heading / Description</label>
+                <label className="text-stone-500 font-medium">
+                  Hero Sub-heading / Description
+                </label>
                 <textarea
                   value={heroSubheading}
                   onChange={(e) => setHeroSubheading(e.target.value)}
@@ -107,7 +132,9 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Primary CTA Button Label</label>
+                  <label className="text-stone-500 font-medium">
+                    Primary CTA Button Label
+                  </label>
                   <input
                     type="text"
                     value={ctaLabel}
@@ -116,7 +143,9 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Primary CTA URL Link</label>
+                  <label className="text-stone-500 font-medium">
+                    Primary CTA URL Link
+                  </label>
                   <input
                     type="text"
                     value={ctaUrl}
@@ -125,7 +154,9 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Secondary CTA Button Label</label>
+                  <label className="text-stone-500 font-medium">
+                    Secondary CTA Button Label
+                  </label>
                   <input
                     type="text"
                     value={ctaLabelSec}
@@ -134,7 +165,9 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-stone-500 font-medium">Secondary CTA URL Link</label>
+                  <label className="text-stone-500 font-medium">
+                    Secondary CTA URL Link
+                  </label>
                   <input
                     type="text"
                     value={ctaUrlSec}
@@ -148,14 +181,23 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
 
           {/* Testimonial List Editor */}
           <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
-            <h3 className="font-serif font-bold text-stone-900 text-sm border-b border-stone-100 pb-2">Renters Testimonials reviews</h3>
+            <h3 className="font-serif font-bold text-stone-900 text-sm border-b border-stone-100 pb-2">
+              Renters Testimonials reviews
+            </h3>
             <div className="space-y-2">
-              {testimonials.map(t => (
-                <div key={t.id} className="p-3 bg-stone-50 border border-stone-150 rounded flex justify-between items-start">
+              {testimonials.map((t) => (
+                <div
+                  key={t.id}
+                  className="p-3 bg-stone-50 border border-stone-150 rounded flex justify-between items-start"
+                >
                   <div>
                     <span className="font-bold text-stone-800">{t.author}</span>
-                    <span className="text-[10px] text-stone-400 ml-1.5 font-sans">({t.role}) | {t.rating} Stars</span>
-                    <p className="text-stone-500 mt-1 italic leading-relaxed">"{t.text}"</p>
+                    <span className="text-[10px] text-stone-400 ml-1.5 font-sans">
+                      ({t.role}) | {t.rating} Stars
+                    </span>
+                    <p className="text-stone-500 mt-1 italic leading-relaxed">
+                      "{t.text}"
+                    </p>
                   </div>
                   <button
                     onClick={() => handleDeleteTestimonial(t.id)}
@@ -170,7 +212,9 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
 
             {/* Testimonial Addition Form */}
             <div className="border-t border-stone-100 pt-4 space-y-3 font-sans">
-              <h4 className="font-bold text-stone-800">Add New Review Testimonial</h4>
+              <h4 className="font-bold text-stone-800">
+                Add New Review Testimonial
+              </h4>
               <div className="grid grid-cols-3 gap-2">
                 <input
                   type="text"
@@ -218,14 +262,24 @@ export default function HomepageView({ homepage, onUpdateHomepage }: HomepageVie
         <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4 h-fit">
           <div className="flex items-center gap-1.5 border-b border-stone-100 pb-2 text-[#c5a880]">
             <Sparkles className="h-4 w-4" />
-            <h3 className="font-serif font-bold text-stone-900 text-sm">Storefront Preview Mockup</h3>
+            <h3 className="font-serif font-bold text-stone-900 text-sm">
+              Storefront Preview Mockup
+            </h3>
           </div>
           <div className="border border-stone-200 rounded p-4 space-y-3 bg-[#1e1412] text-white text-center">
-            <h4 className="text-sm font-serif font-bold leading-tight">{heroHeading}</h4>
-            <p className="text-[10px] text-stone-300 leading-relaxed font-sans">{heroSubheading}</p>
+            <h4 className="text-sm font-serif font-bold leading-tight">
+              {heroHeading}
+            </h4>
+            <p className="text-[10px] text-stone-300 leading-relaxed font-sans">
+              {heroSubheading}
+            </p>
             <div className="flex justify-center gap-2 pt-1 select-none">
-              <span className="px-3 py-1 bg-[#c5a880] text-white text-[9px] rounded font-bold">{ctaLabel}</span>
-              <span className="px-3 py-1 border border-white text-white text-[9px] rounded font-bold">{ctaLabelSec}</span>
+              <span className="px-3 py-1 bg-[#c5a880] text-white text-[9px] rounded font-bold">
+                {ctaLabel}
+              </span>
+              <span className="px-3 py-1 border border-white text-white text-[9px] rounded font-bold">
+                {ctaLabelSec}
+              </span>
             </div>
           </div>
         </div>

@@ -20,7 +20,9 @@ export default function RentalTimelineStrip({ steps }) {
             <i>{st.num}</i>
             <span className="k">{st.label}</span>
             <span className="d">{st.date.dayMonth}</span>
-            <span className="w">{st.showToday ? "Today" : st.date.weekday}</span>
+            <span className="w">
+              {st.showToday ? "Today" : st.date.weekday}
+            </span>
           </div>
         );
       })}

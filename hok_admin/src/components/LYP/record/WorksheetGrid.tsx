@@ -1,10 +1,17 @@
 // src/components/LYP/record/WorksheetGrid.tsx
 
-import React from 'react';
-import { Submission, Assessment, Mode, Grade, Size, VerificationMethod } from '../types/submission.types';
-import { GRADES, MODES, SIZES, VERIFICATION_METHODS } from '../utils/constants';
-import { inr } from '../utils/formatter';
-import './styles/WorksheetGrid.css';
+import React from "react";
+import {
+  Submission,
+  Assessment,
+  Mode,
+  Grade,
+  Size,
+  VerificationMethod,
+} from "../types/submission.types";
+import { GRADES, MODES, SIZES, VERIFICATION_METHODS } from "../utils/constants";
+import { inr } from "../utils/formatter";
+import "./styles/WorksheetGrid.css";
 
 interface WorksheetGridProps {
   assessment: Assessment;
@@ -17,35 +24,46 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
   submission,
   onChange,
 }) => {
-  const isFair = assessment.grade === 'Fair';
-  const isRental = assessment.mode === 'Rental' || assessment.mode === 'Rental/Preloved';
-  const isPreloved = assessment.mode === 'Preloved' || assessment.mode === 'Rental/Preloved';
-  const isCustomSize = assessment.sizeLabel === 'Custom / Free Size';
+  const isFair = assessment.grade === "Fair";
+  const isRental =
+    assessment.mode === "Rental" || assessment.mode === "Rental/Preloved";
+  const isPreloved =
+    assessment.mode === "Preloved" || assessment.mode === "Rental/Preloved";
+  const isCustomSize = assessment.sizeLabel === "Custom / Free Size";
 
   const isRentalDeviation = assessment.payoutPctRental !== 40;
   const isPrelovedDeviation = assessment.payoutPctResale !== 75;
 
   const handleModeChange = (mode: Mode) => {
-    if (isFair && (mode === 'Preloved' || mode === 'Rental/Preloved')) {
+    if (isFair && (mode === "Preloved" || mode === "Rental/Preloved")) {
       // Fair grade forces Rental mode
-      onChange({ mode: 'Rental' });
+      onChange({ mode: "Rental" });
       return;
     }
     onChange({ mode });
   };
 
   const handleGradeChange = (grade: Grade) => {
-    if (grade === 'Fair' && (assessment.mode === 'Preloved' || assessment.mode === 'Rental/Preloved')) {
+    if (
+      grade === "Fair" &&
+      (assessment.mode === "Preloved" || assessment.mode === "Rental/Preloved")
+    ) {
       // Fair grade forces Rental mode
-      onChange({ grade, mode: 'Rental' });
+      onChange({ grade, mode: "Rental" });
     } else {
       onChange({ grade });
     }
   };
 
   const generateSku = () => {
-    const designerStr = submission.designer || 'UNK';
-    const initials = designerStr.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase() || 'UNK';
+    const designerStr = submission.designer || "UNK";
+    const initials =
+      designerStr
+        .split(" ")
+        .map((w) => w[0])
+        .join("")
+        .substring(0, 3)
+        .toUpperCase() || "UNK";
     const num = Math.floor(100 + Math.random() * 900);
     onChange({ sku: `HOK-${initials}-${num}` });
   };
@@ -59,19 +77,23 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
           <input
             type="text"
             className="fld-input"
-            value={assessment.sku || ''}
+            value={assessment.sku || ""}
             onChange={(e) => onChange({ sku: e.target.value })}
             placeholder="HOK-XXX-001"
           />
-          <button 
-            className="btn btn-sec btn-sm" 
+          <button
+            className="btn btn-sec btn-sm"
             title="Fills the next free number in the house pattern"
             onClick={generateSku}
           >
             Suggest
           </button>
         </div>
-        <div className="fhint">House pattern HOK-initials-nnn — Suggest writes the next free number. Once written, a number is reserved forever — withdrawn pieces keep theirs on record.</div>
+        <div className="fhint">
+          House pattern HOK-initials-nnn — Suggest writes the next free number.
+          Once written, a number is reserved forever — withdrawn pieces keep
+          theirs on record.
+        </div>
       </div>
 
       {/* Storefront Name */}
@@ -80,7 +102,7 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
         <input
           type="text"
           className="fld-input"
-          value={assessment.name || submission.piece || ''}
+          value={assessment.name || submission.piece || ""}
           onChange={(e) => onChange({ name: e.target.value })}
         />
       </div>
@@ -89,49 +111,66 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
       <div className="ws-field">
         <label className="fld-label">Mode</label>
         <select
-          className={`fld-input ${isFair ? 'ws-disabled' : ''}`}
+          className={`fld-input ${isFair ? "ws-disabled" : ""}`}
           value={assessment.mode}
           onChange={(e) => handleModeChange(e.target.value as Mode)}
           disabled={isFair}
         >
-          {MODES.map(m => (
-            <option key={m} value={m}>{m}</option>
+          {MODES.map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
           ))}
         </select>
         {isFair && (
-          <div className="fhint fhint-terra">Fair grade is rental-only — Preloved stays off until the grade improves at authentication.</div>
+          <div className="fhint fhint-terra">
+            Fair grade is rental-only — Preloved stays off until the grade
+            improves at authentication.
+          </div>
         )}
       </div>
 
       {/* Our Grade */}
       <div className="ws-field">
         <label className="fld-label">Our Grade — first read</label>
-        <div className="fhint fhint-echo">They chose “{submission.selfGrade || '— not self-graded'}”</div>
+        <div className="fhint fhint-echo">
+          They chose “{submission.selfGrade || "— not self-graded"}”
+        </div>
         <select
           className="fld-input"
           value={assessment.grade}
           onChange={(e) => handleGradeChange(e.target.value as Grade)}
         >
-          {GRADES.map(g => (
-            <option key={g} value={g}>{g}</option>
+          {GRADES.map((g) => (
+            <option key={g} value={g}>
+              {g}
+            </option>
           ))}
         </select>
         {isFair && (
-          <div className="fhint fhint-terra">Fair grade is rental-only — Preloved stays off until the grade improves at authentication.</div>
+          <div className="fhint fhint-terra">
+            Fair grade is rental-only — Preloved stays off until the grade
+            improves at authentication.
+          </div>
         )}
       </div>
 
       {/* Size */}
       <div className="ws-field">
         <label className="fld-label">Size — as verified</label>
-        <div className="fhint fhint-echo">Lister said “{submission.size || '—'}” — corrections from the call land here and flow to the Draft.</div>
+        <div className="fhint fhint-echo">
+          Lister said “{submission.size || "—"}” — corrections from the call
+          land here and flow to the Draft.
+        </div>
         <select
           className="fld-input"
           value={assessment.sizeLabel}
           onChange={(e) => onChange({ sizeLabel: e.target.value as Size })}
         >
-          {SIZES.map(s => (
-            <option key={s} value={s}>{s}</option>
+          {SIZES.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
         </select>
       </div>
@@ -142,13 +181,13 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
         <input
           type="number"
           className="fld-input"
-          value={assessment.priceStd || ''}
+          value={assessment.priceStd || ""}
           onChange={(e) => {
             const priceStd = parseFloat(e.target.value) || 0;
-            onChange({ 
+            onChange({
               priceStd,
               priceExt: Math.round(priceStd * 1.5),
-              perDay: Math.round(priceStd / 4)
+              perDay: Math.round(priceStd / 4),
             });
           }}
           placeholder="0"
@@ -162,8 +201,10 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
         <input
           type="number"
           className="fld-input"
-          value={assessment.priceExt || ''}
-          onChange={(e) => onChange({ priceExt: parseFloat(e.target.value) || 0 })}
+          value={assessment.priceExt || ""}
+          onChange={(e) =>
+            onChange({ priceExt: parseFloat(e.target.value) || 0 })
+          }
           placeholder="0"
         />
       </div>
@@ -174,8 +215,10 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
         <input
           type="number"
           className="fld-input"
-          value={assessment.perDay || ''}
-          onChange={(e) => onChange({ perDay: parseFloat(e.target.value) || 0 })}
+          value={assessment.perDay || ""}
+          onChange={(e) =>
+            onChange({ perDay: parseFloat(e.target.value) || 0 })
+          }
           placeholder="0"
         />
       </div>
@@ -186,8 +229,10 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
         <input
           type="number"
           className="fld-input"
-          value={assessment.deposit || ''}
-          onChange={(e) => onChange({ deposit: parseFloat(e.target.value) || 0 })}
+          value={assessment.deposit || ""}
+          onChange={(e) =>
+            onChange({ deposit: parseFloat(e.target.value) || 0 })
+          }
           placeholder="0"
         />
         <div className="fhint">Collected & released on WhatsApp / UPI</div>
@@ -199,12 +244,12 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
         <input
           type="number"
           className="fld-input"
-          value={assessment.resalePrice || ''}
+          value={assessment.resalePrice || ""}
           onChange={(e) => {
             const resalePrice = parseFloat(e.target.value) || 0;
             onChange({
               resalePrice,
-              minOffer: Math.round(resalePrice * 0.8)
+              minOffer: Math.round(resalePrice * 0.8),
             });
           }}
           placeholder="0"
@@ -218,8 +263,10 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
         <input
           type="number"
           className="fld-input"
-          value={assessment.minOffer || ''}
-          onChange={(e) => onChange({ minOffer: parseFloat(e.target.value) || 0 })}
+          value={assessment.minOffer || ""}
+          onChange={(e) =>
+            onChange({ minOffer: parseFloat(e.target.value) || 0 })
+          }
           placeholder="0"
         />
         <div className="fhint">Make an Offer floor — Preloved only</div>
@@ -231,17 +278,21 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
         <input
           type="number"
           className="fld-input"
-          value={assessment.retailPrice || ''}
+          value={assessment.retailPrice || ""}
           onChange={(e) => {
             const retailPrice = parseFloat(e.target.value) || 0;
             onChange({
               retailPrice,
-              deposit: Math.round(retailPrice * 0.2)
+              deposit: Math.round(retailPrice * 0.2),
             });
           }}
           placeholder="0"
         />
-        <div className="fhint">Lister claimed {submission.originalPrice || '—'} · bought {submission.yearOfPurchase || '—'} — this becomes the storefront strike-through.</div>
+        <div className="fhint">
+          Lister claimed {submission.originalPrice || "—"} · bought{" "}
+          {submission.yearOfPurchase || "—"} — this becomes the storefront
+          strike-through.
+        </div>
       </div>
 
       {/* Verified via */}
@@ -249,45 +300,59 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
         <label className="fld-label">Verified via</label>
         <select
           className="fld-input"
-          value={assessment.retailVerifiedVia || ''}
-          onChange={(e) => onChange({ retailVerifiedVia: e.target.value as VerificationMethod || null })}
+          value={assessment.retailVerifiedVia || ""}
+          onChange={(e) =>
+            onChange({
+              retailVerifiedVia: (e.target.value as VerificationMethod) || null,
+            })
+          }
         >
           <option value="">— not yet verified</option>
-          {VERIFICATION_METHODS.map(m => (
-            <option key={m} value={m}>{m}</option>
+          {VERIFICATION_METHODS.map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
           ))}
         </select>
       </div>
 
       {/* Lister % — Rental */}
-      <div className={`ws-field ${isRentalDeviation ? 'ws-dev' : ''}`}>
+      <div className={`ws-field ${isRentalDeviation ? "ws-dev" : ""}`}>
         <label className="fld-label">Lister % — Rental</label>
         <input
           type="number"
           className="fld-input"
           value={assessment.payoutPctRental || 40}
-          onChange={(e) => onChange({ payoutPctRental: parseFloat(e.target.value) || 40 })}
+          onChange={(e) =>
+            onChange({ payoutPctRental: parseFloat(e.target.value) || 40 })
+          }
           min="0"
           max="100"
         />
         {isRentalDeviation && (
-          <div className="ws-devnote">Non-standard split — platform standard is 40</div>
+          <div className="ws-devnote">
+            Non-standard split — platform standard is 40
+          </div>
         )}
       </div>
 
       {/* Lister % — Preloved */}
-      <div className={`ws-field ${isPrelovedDeviation ? 'ws-dev' : ''}`}>
+      <div className={`ws-field ${isPrelovedDeviation ? "ws-dev" : ""}`}>
         <label className="fld-label">Lister % — Preloved</label>
         <input
           type="number"
           className="fld-input"
           value={assessment.payoutPctResale || 75}
-          onChange={(e) => onChange({ payoutPctResale: parseFloat(e.target.value) || 75 })}
+          onChange={(e) =>
+            onChange({ payoutPctResale: parseFloat(e.target.value) || 75 })
+          }
           min="0"
           max="100"
         />
         {isPrelovedDeviation && (
-          <div className="ws-devnote">Non-standard split — platform standard is 75</div>
+          <div className="ws-devnote">
+            Non-standard split — platform standard is 75
+          </div>
         )}
       </div>
 
@@ -298,7 +363,9 @@ export const WorksheetGrid: React.FC<WorksheetGridProps> = ({
           type="number"
           className="fld-input"
           value={assessment.minDays || 4}
-          onChange={(e) => onChange({ minDays: parseFloat(e.target.value) || 4 })}
+          onChange={(e) =>
+            onChange({ minDays: parseFloat(e.target.value) || 4 })
+          }
           min="1"
         />
       </div>

@@ -14,11 +14,10 @@ import {
   ModeSeparator,
   RemoveDialog,
   CartHeader,
-  PolicyStrip
+  PolicyStrip,
 } from "../index";
 
 const CartLayout = () => {
-
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -41,17 +40,17 @@ const CartLayout = () => {
   }, [openRemoveDialog]);
 
   const { items: storeItems, removeFromCart } = useCartStore();
-  
+
   const [cartItemsState, setCartItemsState] = useState(storeItems);
 
   useEffect(() => {
     setCartItemsState(storeItems);
   }, [storeItems]);
 
-  const activeItems = cartItemsState.filter(item => item.active !== false);
-  const visibleItems = cartItemsState.filter(item => item.active !== false);
+  const activeItems = cartItemsState.filter((item) => item.active !== false);
+  const visibleItems = cartItemsState.filter((item) => item.active !== false);
 
-  const hasRentalItem = activeItems.some(item => item.type === "rental");
+  const hasRentalItem = activeItems.some((item) => item.type === "rental");
   const totals = calculateTotals(activeItems, activePromo);
   const { grandTotal } = totals;
 
@@ -66,12 +65,10 @@ const CartLayout = () => {
   const handleConfirmRemove = () => {
     if (!removeTarget) return;
 
-    setCartItemsState(prev =>
-      prev.map(item =>
-        item.id === removeTarget.id
-          ? { ...item, removing: true }
-          : item
-      )
+    setCartItemsState((prev) =>
+      prev.map((item) =>
+        item.id === removeTarget.id ? { ...item, removing: true } : item,
+      ),
     );
 
     setTimeout(() => {
@@ -83,20 +80,20 @@ const CartLayout = () => {
 
   const handleWishlist = () => {
     if (!removeTarget) return;
-    const { toggleWishlist } = import('../../../store/wishlistStore').then(m => m.default.getState().toggleWishlist(removeTarget.id));
-    
-    setCartItemsState(prev =>
-      prev.map(item =>
-        item.id === removeTarget.id
-          ? { ...item, removing: true }
-          : item
-      )
+    const { toggleWishlist } = import("../../../store/wishlistStore").then(
+      (m) => m.default.getState().toggleWishlist(removeTarget.id),
     );
-    
+
+    setCartItemsState((prev) =>
+      prev.map((item) =>
+        item.id === removeTarget.id ? { ...item, removing: true } : item,
+      ),
+    );
+
     setTimeout(() => {
       removeFromCart(removeTarget.id);
     }, 300);
-    
+
     setRemoveTarget(null);
   };
 
@@ -113,7 +110,7 @@ const CartLayout = () => {
         ctaBar.classList.toggle("docked", shouldDock);
         document.body.classList.toggle("cta-docked", shouldDock);
       },
-      { threshold: 0.01 }
+      { threshold: 0.01 },
     );
 
     observer.observe(footer);
@@ -125,7 +122,7 @@ const CartLayout = () => {
     if (!openRemoveDialog || !removeItemType || autoDialogHandled) return;
 
     const targetItem = cartItemsState.find(
-      item => item.type === removeItemType && item.active !== false
+      (item) => item.type === removeItemType && item.active !== false,
     );
 
     if (!targetItem) return;
@@ -142,14 +139,14 @@ const CartLayout = () => {
       "checkoutData",
       JSON.stringify({
         items: activeItems,
-        activePromo
-      })
+        activePromo,
+      }),
     );
 
-    const storeState = import('../../../store/authStore').then(m => {
+    const storeState = import("../../../store/authStore").then((m) => {
       const { isAuthenticated } = m.default.getState();
       if (!isAuthenticated) {
-        import('react-hot-toast').then(toast => {
+        import("react-hot-toast").then((toast) => {
           toast.default("Please login to proceed to checkout", { icon: "🔒" });
         });
         sessionStorage.setItem("returnTo", "/checkout");
@@ -159,8 +156,8 @@ const CartLayout = () => {
       navigate("/checkout", {
         state: {
           items: activeItems,
-          activePromo
-        }
+          activePromo,
+        },
       });
     });
   };
@@ -169,10 +166,8 @@ const CartLayout = () => {
     <div className="cart-container cart-page-body">
       <CartHeader cartItems={cartItemsState} />
       <div className="cart-layout">
-
         {/* LEFT SIDE */}
         <div className="cart-left" data-rise="1">
-          
           {/* DESKTOP RENDER */}
           {visibleItems.map((item, index) => {
             const prevItem = visibleItems[index - 1];
@@ -180,34 +175,46 @@ const CartLayout = () => {
 
             return (
               <React.Fragment key={item.id}>
-                {isNewSection && (
-                  <ModeSeparator type={item.type} />
-                )}
-                <CartItemDesktop
-                  item={item}
-                  onRemove={handleOpenRemove}
-                />
+                {isNewSection && <ModeSeparator type={item.type} source={item.source} />}
+                <CartItemDesktop item={item} onRemove={handleOpenRemove} />
               </React.Fragment>
             );
           })}
 
           {visibleItems.length > 0 ? (
             <>
-              {activeItems.some(item => item.product?.promoCode || item.product?.promo_code || item.product?.coupon || item.product?.hasPromo) && (
-                <div data-rise="5">
-                  <PromoCode onApply={setActivePromo} />
-                </div>
-              )}
+              <div data-rise="5">
+                <PromoCode onApply={setActivePromo} />
+              </div>
             </>
           ) : (
-            <div className="empty-cart-message" style={{ padding: "40px 0", textAlign: "center", color: "var(--text-light)" }}>
+            <div
+              className="empty-cart-message"
+              style={{
+                padding: "40px 0",
+                textAlign: "center",
+                color: "var(--text-light)",
+              }}
+            >
               <p>Your cart is empty.</p>
-              <button onClick={() => navigate("/products")} style={{ marginTop: "16px", padding: "12px 24px", background: "var(--primary-dark)", color: "#fff", border: "none", cursor: "pointer", letterSpacing: "1px", textTransform: "uppercase", fontSize: "12px" }}>
+              <button
+                onClick={() => navigate("/products")}
+                style={{
+                  marginTop: "16px",
+                  padding: "12px 24px",
+                  background: "var(--primary-dark)",
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                  fontSize: "12px",
+                }}
+              >
                 Continue Shopping
               </button>
             </div>
           )}
-
         </div>
 
         {/* RIGHT SIDE */}
@@ -228,7 +235,6 @@ const CartLayout = () => {
           onConfirm={handleConfirmRemove}
           onWishlist={handleWishlist}
         />
-
       </div>
 
       {hasRentalItem && (
@@ -236,8 +242,6 @@ const CartLayout = () => {
           <PolicyStrip />
         </div>
       )}
-
-
     </div>
   );
 };

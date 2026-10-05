@@ -103,7 +103,7 @@ export default function ContactTab() {
 
   const updateField = <K extends keyof ContactForm>(
     field: K,
-    value: ContactForm[K]
+    value: ContactForm[K],
   ) => {
     setForm((prev) => ({
       ...prev,
@@ -140,14 +140,12 @@ export default function ContactTab() {
         <div>
           <div className="contact-title-row">
             <h2>Contact &amp; social</h2>
-            <span className="contact-meta">
-              Priya (Ops) · 2 days ago
-            </span>
+            <span className="contact-meta">Priya (Ops) · 2 days ago</span>
           </div>
 
           <p>
-            What the site promises about reaching you. These print inside
-            order confirmations, so a change here changes a promise.
+            What the site promises about reaching you. These print inside order
+            confirmations, so a change here changes a promise.
           </p>
         </div>
       </div>
@@ -159,14 +157,8 @@ export default function ContactTab() {
 
           <p>
             These print inside order confirmations through{" "}
-            <span className="pointer-chip">
-              {"{{support_hours}}"}
-            </span>{" "}
-            and{" "}
-            <span className="pointer-chip">
-              {"{{support_whatsapp}}"}
-            </span>
-            .
+            <span className="pointer-chip">{"{{support_hours}}"}</span> and{" "}
+            <span className="pointer-chip">{"{{support_whatsapp}}"}</span>.
           </p>
         </div>
 
@@ -175,9 +167,7 @@ export default function ContactTab() {
             <ContactField
               label="SUPPORT EMAIL"
               value={form.supportEmail}
-              onChange={(value) =>
-                updateField("supportEmail", value)
-              }
+              onChange={(value) => updateField("supportEmail", value)}
             />
 
             <ContactField
@@ -189,9 +179,7 @@ export default function ContactTab() {
             <ContactField
               label="WHATSAPP"
               value={form.whatsapp}
-              onChange={(value) =>
-                updateField("whatsapp", value)
-              }
+              onChange={(value) => updateField("whatsapp", value)}
             />
           </div>
 
@@ -199,9 +187,7 @@ export default function ContactTab() {
             <ContactField
               label="DAYS OPEN"
               value={form.daysOpen}
-              onChange={(value) =>
-                updateField("daysOpen", value)
-              }
+              onChange={(value) => updateField("daysOpen", value)}
             />
 
             <ContactField
@@ -213,9 +199,7 @@ export default function ContactTab() {
             <ContactField
               label="REPLY WITHIN (HRS)"
               value={form.replyWithin}
-              onChange={(value) =>
-                updateField("replyWithin", value)
-              }
+              onChange={(value) => updateField("replyWithin", value)}
             />
           </div>
         </div>
@@ -227,9 +211,9 @@ export default function ContactTab() {
           <h3>Returns address</h3>
 
           <p>
-            Where a customer sends a piece back, and where the courier
-            collects from. Distinct from the registered address on Legal,
-            which is for invoices.
+            Where a customer sends a piece back, and where the courier collects
+            from. Distinct from the registered address on Legal, which is for
+            invoices.
           </p>
         </div>
 
@@ -238,9 +222,7 @@ export default function ContactTab() {
             <ContactField
               label="ADDRESSED TO"
               value={form.addressedTo}
-              onChange={(value) =>
-                updateField("addressedTo", value)
-              }
+              onChange={(value) => updateField("addressedTo", value)}
             />
 
             <span className="contact-hint">
@@ -253,9 +235,7 @@ export default function ContactTab() {
             <ContactField
               label="ADDRESS LINE 1"
               value={form.addressLine1}
-              onChange={(value) =>
-                updateField("addressLine1", value)
-              }
+              onChange={(value) => updateField("addressLine1", value)}
             />
           </div>
 
@@ -263,9 +243,7 @@ export default function ContactTab() {
             <ContactField
               label="ADDRESS LINE 2"
               value={form.addressLine2}
-              onChange={(value) =>
-                updateField("addressLine2", value)
-              }
+              onChange={(value) => updateField("addressLine2", value)}
             />
 
             <span className="contact-hint">
@@ -277,9 +255,7 @@ export default function ContactTab() {
             <ContactField
               label="LANDMARK"
               value={form.landmark}
-              onChange={(value) =>
-                updateField("landmark", value)
-              }
+              onChange={(value) => updateField("landmark", value)}
             />
 
             <span className="contact-hint">
@@ -292,9 +268,7 @@ export default function ContactTab() {
               <ContactField
                 label="CITY"
                 value={form.city}
-                onChange={(value) =>
-                  updateField("city", value)
-                }
+                onChange={(value) => updateField("city", value)}
               />
             </div>
 
@@ -304,9 +278,7 @@ export default function ContactTab() {
               <select
                 className="contact-input"
                 value={form.state}
-                onChange={(e) =>
-                  updateField("state", e.target.value)
-                }
+                onChange={(e) => updateField("state", e.target.value)}
               >
                 {states.map((state) => (
                   <option key={state} value={state}>
@@ -323,25 +295,18 @@ export default function ContactTab() {
                 label="PIN CODE"
                 value={form.pinCode}
                 onChange={(value) =>
-                  updateField(
-                    "pinCode",
-                    value.replace(/\D/g, "").slice(0, 6)
-                  )
+                  updateField("pinCode", value.replace(/\D/g, "").slice(0, 6))
                 }
               />
 
-              <span className="contact-hint">
-                Six digits.
-              </span>
+              <span className="contact-hint">Six digits.</span>
             </div>
 
             <div>
               <ContactField
                 label="CONTACT NUMBER"
                 value={form.contactNumber}
-                onChange={(value) =>
-                  updateField("contactNumber", value)
-                }
+                onChange={(value) => updateField("contactNumber", value)}
               />
 
               <span className="contact-hint">
@@ -351,18 +316,12 @@ export default function ContactTab() {
           </div>
 
           <div className="address-print-preview">
-            <div className="address-print-label">
-              HOW IT PRINTS ON A LABEL
-            </div>
+            <div className="address-print-label">HOW IT PRINTS ON A LABEL</div>
 
             {printedAddress ? (
-              <div className="address-print-value">
-                {printedAddress}
-              </div>
+              <div className="address-print-value">{printedAddress}</div>
             ) : (
-              <div className="address-print-empty">
-                nothing to print yet
-              </div>
+              <div className="address-print-empty">nothing to print yet</div>
             )}
 
             {missingParts.length > 0 && (
@@ -384,14 +343,9 @@ export default function ContactTab() {
           <label className="contact-toggle-row">
             <button
               type="button"
-              className={`contact-toggle ${
-                form.whatsappEnabled ? "on" : ""
-              }`}
+              className={`contact-toggle ${form.whatsappEnabled ? "on" : ""}`}
               onClick={() =>
-                updateField(
-                  "whatsappEnabled",
-                  !form.whatsappEnabled
-                )
+                updateField("whatsappEnabled", !form.whatsappEnabled)
               }
               aria-pressed={form.whatsappEnabled}
             >
@@ -405,17 +359,13 @@ export default function ContactTab() {
             <ContactField
               label="TOOLTIP"
               value={form.whatsappTooltip}
-              onChange={(value) =>
-                updateField("whatsappTooltip", value)
-              }
+              onChange={(value) => updateField("whatsappTooltip", value)}
             />
 
             <ContactField
               label="PRE-FILLED MESSAGE"
               value={form.whatsappMessage}
-              onChange={(value) =>
-                updateField("whatsappMessage", value)
-              }
+              onChange={(value) => updateField("whatsappMessage", value)}
             />
           </div>
         </div>
@@ -437,23 +387,19 @@ export default function ContactTab() {
               <ContactField
                 label="INSTAGRAM"
                 value={form.instagram}
-                onChange={(value) =>
-                  updateField("instagram", value)
-                }
+                onChange={(value) => updateField("instagram", value)}
               />
 
               <span className="contact-hint">
-                The homepage prototype shows @houseofkaira; the live handle
-                is @house_of_kaira.
+                The homepage prototype shows @houseofkaira; the live handle is
+                @house_of_kaira.
               </span>
             </div>
 
             <ContactField
               label="FOLLOW LABEL"
               value={form.followLabel}
-              onChange={(value) =>
-                updateField("followLabel", value)
-              }
+              onChange={(value) => updateField("followLabel", value)}
             />
           </div>
 
@@ -461,17 +407,13 @@ export default function ContactTab() {
             <ContactField
               label="FACEBOOK"
               value={form.facebook}
-              onChange={(value) =>
-                updateField("facebook", value)
-              }
+              onChange={(value) => updateField("facebook", value)}
             />
 
             <ContactField
               label="PINTEREST"
               value={form.pinterest}
-              onChange={(value) =>
-                updateField("pinterest", value)
-              }
+              onChange={(value) => updateField("pinterest", value)}
             />
           </div>
 
@@ -479,17 +421,13 @@ export default function ContactTab() {
             <ContactField
               label="YOUTUBE"
               value={form.youtube}
-              onChange={(value) =>
-                updateField("youtube", value)
-              }
+              onChange={(value) => updateField("youtube", value)}
             />
 
             <ContactField
               label="LINKEDIN"
               value={form.linkedin}
-              onChange={(value) =>
-                updateField("linkedin", value)
-              }
+              onChange={(value) => updateField("linkedin", value)}
             />
           </div>
         </div>
@@ -504,11 +442,7 @@ interface ContactFieldProps {
   onChange: (value: string) => void;
 }
 
-function ContactField({
-  label,
-  value,
-  onChange,
-}: ContactFieldProps) {
+function ContactField({ label, value, onChange }: ContactFieldProps) {
   return (
     <div className="contact-field">
       <label className="contact-label">{label}</label>

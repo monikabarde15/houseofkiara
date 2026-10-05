@@ -1,61 +1,68 @@
 // src/components/LYP/services/submissionService.ts
 
-import { Submission, SubmissionFilters, PaginatedResponse } from '../types/submission.types';
-import { mockSubmissions } from '../data/mockSubmissions';
+import {
+  Submission,
+  SubmissionFilters,
+  PaginatedResponse,
+} from "../types/submission.types";
+import { mockSubmissions } from "../data/mockSubmissions";
 
 export const submissionService = {
-  getSubmissions: async (filters?: SubmissionFilters): Promise<PaginatedResponse<Submission>> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
+  getSubmissions: async (
+    filters?: SubmissionFilters,
+  ): Promise<PaginatedResponse<Submission>> => {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
     let data = [...mockSubmissions];
-    
+
     // Apply filters
     if (filters?.search) {
       const search = filters.search.toLowerCase();
-      data = data.filter(s => 
-        s.subid.toLowerCase().includes(search) ||
-        s.piece.toLowerCase().includes(search) ||
-        s.designer.toLowerCase().includes(search) ||
-        s.category.toLowerCase().includes(search)
+      data = data.filter(
+        (s) =>
+          s.subid.toLowerCase().includes(search) ||
+          s.piece.toLowerCase().includes(search) ||
+          s.designer.toLowerCase().includes(search) ||
+          s.category.toLowerCase().includes(search),
       );
     }
-    
+
     if (filters?.status) {
       // Status is derived, so we need to compute it
       // For mock, we'll filter by decision presence
-      if (filters.status === 'Approved') {
-        data = data.filter(s => s.decision?.what === 'Approved');
-      } else if (filters.status === 'Rejected') {
-        data = data.filter(s => s.decision?.what === 'Rejected');
-      } else if (filters.status === 'Withdrawn') {
-        data = data.filter(s => s.decision?.what === 'Withdrawn');
-      } else if (filters.status === 'Expired') {
-        data = data.filter(s => s.decision?.what === 'Expired');
-      } else if (filters.status === 'Awaiting Reply') {
-        data = data.filter(s => s.moreInfo && !s.decision);
-      } else if (filters.status === 'In Review') {
-        data = data.filter(s => s.replyAt && !s.moreInfo && !s.decision);
-      } else if (filters.status === 'New') {
-        data = data.filter(s => !s.replyAt && !s.moreInfo && !s.decision);
+      if (filters.status === "Approved") {
+        data = data.filter((s) => s.decision?.what === "Approved");
+      } else if (filters.status === "Rejected") {
+        data = data.filter((s) => s.decision?.what === "Rejected");
+      } else if (filters.status === "Withdrawn") {
+        data = data.filter((s) => s.decision?.what === "Withdrawn");
+      } else if (filters.status === "Expired") {
+        data = data.filter((s) => s.decision?.what === "Expired");
+      } else if (filters.status === "Awaiting Reply") {
+        data = data.filter((s) => s.moreInfo && !s.decision);
+      } else if (filters.status === "In Review") {
+        data = data.filter((s) => s.replyAt && !s.moreInfo && !s.decision);
+      } else if (filters.status === "New") {
+        data = data.filter((s) => !s.replyAt && !s.moreInfo && !s.decision);
       }
     }
-    
+
     if (filters?.intent) {
-      data = data.filter(s => s.intent === filters.intent);
+      data = data.filter((s) => s.intent === filters.intent);
     }
-    
+
     if (filters?.channel) {
-      data = data.filter(s => s.channel === filters.channel);
+      data = data.filter((s) => s.channel === filters.channel);
     }
-    
+
     if (filters?.dateFrom) {
-      data = data.filter(s => s.submittedAt >= filters.dateFrom!);
+      data = data.filter((s) => s.submittedAt >= filters.dateFrom!);
     }
-    
+
     if (filters?.dateTo) {
-      data = data.filter(s => s.submittedAt <= filters.dateTo!);
+      data = data.filter((s) => s.submittedAt <= filters.dateTo!);
     }
-    
+
     return {
       data,
       total: data.length,
@@ -65,42 +72,45 @@ export const submissionService = {
   },
 
   getSubmissionById: async (id: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const submission = mockSubmissions.find(s => s.subid === id);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    const submission = mockSubmissions.find((s) => s.subid === id);
     if (!submission) {
-      throw new Error('Submission not found');
+      throw new Error("Submission not found");
     }
     return submission;
   },
 
   getAllSubmissionIds: async (): Promise<string[]> => {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    return mockSubmissions.map(s => s.subid);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return mockSubmissions.map((s) => s.subid);
   },
 
   getAllSKUs: async (): Promise<string[]> => {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     return mockSubmissions
-      .filter(s => s.assessment?.sku)
-      .map(s => s.assessment!.sku);
+      .filter((s) => s.assessment?.sku)
+      .map((s) => s.assessment!.sku);
   },
 
   createSubmission: async (submission: Submission): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     // In production, this would POST to the server
     return submission;
   },
 
-  approveSubmission: async (submissionId: string, by: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
+  approveSubmission: async (
+    submissionId: string,
+    by: string,
+  ): Promise<Submission> => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const submission = mockSubmissions.find((s) => s.subid === submissionId);
     if (!submission) {
-      throw new Error('Submission not found');
+      throw new Error("Submission not found");
     }
     return {
       ...submission,
       decision: {
-        what: 'Approved',
+        what: "Approved",
         on: new Date().toISOString(),
         by,
         reason: undefined,
@@ -109,18 +119,23 @@ export const submissionService = {
     };
   },
 
-  rejectSubmission: async (submissionId: string, reasonCode: string, optionalNote?: string, by?: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
+  rejectSubmission: async (
+    submissionId: string,
+    reasonCode: string,
+    optionalNote?: string,
+    by?: string,
+  ): Promise<Submission> => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const submission = mockSubmissions.find((s) => s.subid === submissionId);
     if (!submission) {
-      throw new Error('Submission not found');
+      throw new Error("Submission not found");
     }
     return {
       ...submission,
       decision: {
-        what: 'Rejected',
+        what: "Rejected",
         on: new Date().toISOString(),
-        by: by || 'Soumya',
+        by: by || "Soumya",
         reasonCode,
         reason: optionalNote,
       },
@@ -128,47 +143,56 @@ export const submissionService = {
     };
   },
 
-  withdrawSubmission: async (submissionId: string, reason: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
+  withdrawSubmission: async (
+    submissionId: string,
+    reason: string,
+  ): Promise<Submission> => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const submission = mockSubmissions.find((s) => s.subid === submissionId);
     if (!submission) {
-      throw new Error('Submission not found');
+      throw new Error("Submission not found");
     }
     return {
       ...submission,
       decision: {
-        what: 'Withdrawn',
+        what: "Withdrawn",
         on: new Date().toISOString(),
-        by: 'Lister',
+        by: "Lister",
         reason,
       },
       moreInfo: null,
     };
   },
 
-  expireSubmission: async (submissionId: string, reason: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
+  expireSubmission: async (
+    submissionId: string,
+    reason: string,
+  ): Promise<Submission> => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const submission = mockSubmissions.find((s) => s.subid === submissionId);
     if (!submission) {
-      throw new Error('Submission not found');
+      throw new Error("Submission not found");
     }
     return {
       ...submission,
       decision: {
-        what: 'Expired',
+        what: "Expired",
         on: new Date().toISOString(),
-        by: 'Soumya',
+        by: "Soumya",
         reason,
       },
       moreInfo: null,
     };
   },
 
-  requestMoreInfo: async (submissionId: string, message: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
+  requestMoreInfo: async (
+    submissionId: string,
+    message: string,
+  ): Promise<Submission> => {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const submission = mockSubmissions.find((s) => s.subid === submissionId);
     if (!submission) {
-      throw new Error('Submission not found');
+      throw new Error("Submission not found");
     }
     return {
       ...submission,
@@ -180,10 +204,10 @@ export const submissionService = {
   },
 
   replyReceived: async (submissionId: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const submission = mockSubmissions.find((s) => s.subid === submissionId);
     if (!submission) {
-      throw new Error('Submission not found');
+      throw new Error("Submission not found");
     }
     return {
       ...submission,
@@ -193,10 +217,10 @@ export const submissionService = {
   },
 
   sendNudge: async (submissionId: string): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const submission = mockSubmissions.find((s) => s.subid === submissionId);
     if (!submission) {
-      throw new Error('Submission not found');
+      throw new Error("Submission not found");
     }
     return {
       ...submission,
@@ -207,11 +231,14 @@ export const submissionService = {
     };
   },
 
-  updateAssessment: async (submissionId: string, assessment: any): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
+  updateAssessment: async (
+    submissionId: string,
+    assessment: any,
+  ): Promise<Submission> => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const submission = mockSubmissions.find((s) => s.subid === submissionId);
     if (!submission) {
-      throw new Error('Submission not found');
+      throw new Error("Submission not found");
     }
     return {
       ...submission,
@@ -223,16 +250,18 @@ export const submissionService = {
   },
 
   addMedia: async (submissionId: string, media: any[]): Promise<Submission> => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const submission = mockSubmissions.find(s => s.subid === submissionId);
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const submission = mockSubmissions.find((s) => s.subid === submissionId);
     if (!submission) {
-      throw new Error('Submission not found');
+      throw new Error("Submission not found");
     }
     return {
       ...submission,
       media: [...submission.media, ...media],
-      photos: submission.photos + media.filter(m => m.kind === 'image').length,
-      videos: submission.videos + media.filter(m => m.kind === 'video').length,
+      photos:
+        submission.photos + media.filter((m) => m.kind === "image").length,
+      videos:
+        submission.videos + media.filter((m) => m.kind === "video").length,
     };
   },
 };

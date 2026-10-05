@@ -1,9 +1,9 @@
 // src/components/Notifications/bands/NotifBandList.tsx
-import React from 'react';
-import { AlertDef, BandKey, NarrowingState } from '../types/notification.types';
-import { NotifBand } from './NotifBand';
+import React from "react";
+import { AlertDef, BandKey, NarrowingState } from "../types/notification.types";
+import { NotifBand } from "./NotifBand";
 
-const BAND_ORDER: BandKey[] = ['today', 'waiting', 'them', 'know', 'blocked'];
+const BAND_ORDER: BandKey[] = ["today", "waiting", "them", "know", "blocked"];
 
 interface NotifBandListProps {
   alertsByBand: Record<BandKey, AlertDef[]>;
@@ -40,7 +40,7 @@ export function NotifBandList({
     <>
       {BAND_ORDER.map((bandKey) => {
         const alerts = alertsByBand[bandKey] ?? [];
-        if (bandKey === 'blocked' && alerts.length === 0) return null; // §7.1
+        if (bandKey === "blocked" && alerts.length === 0) return null; // §7.1
 
         return (
           <NotifBand
@@ -50,7 +50,9 @@ export function NotifBandList({
             openRowKeys={openRowKeys}
             onToggleRow={onToggleRow}
             narrowing={narrowing}
-            isNarrowedAway={narrowing.band !== null && narrowing.band !== bandKey}
+            isNarrowedAway={
+              narrowing.band !== null && narrowing.band !== bandKey
+            }
             onSelectBand={() => onSelectBand(bandKey)}
             currentUser={currentUser}
             team={team}

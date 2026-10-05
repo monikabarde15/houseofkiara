@@ -21,15 +21,24 @@ describe("Tier 1: Feature Coverage — Designers Catalog Integration", () => {
     testDesignerId = designerPayload.designerId;
 
     const res = await client.post("/designers", designerPayload);
-    assert.ok([200, 201].includes(res.status), `Create designer expected 200/201, got ${res.status}`);
+    assert.ok(
+      [200, 201].includes(res.status),
+      `Create designer expected 200/201, got ${res.status}`,
+    );
     assert.strictEqual(res.data?.success, true);
     assert.ok(res.data?.data);
     createdDesigner = res.data.data;
   });
 
   test("Feature 16: GET /api/designers/:id retrieves designer profile by slug or designerId", async () => {
-    const res = await client.get(`/designers/${createdDesigner.slug || testDesignerId}`);
-    assert.strictEqual(res.status, 200, "Get designer detail should return 200 OK");
+    const res = await client.get(
+      `/designers/${createdDesigner.slug || testDesignerId}`,
+    );
+    assert.strictEqual(
+      res.status,
+      200,
+      "Get designer detail should return 200 OK",
+    );
     assert.strictEqual(res.data?.success, true);
     assert.ok(res.data.data.name, "Designer name should be present");
   });
@@ -58,7 +67,11 @@ describe("Tier 1: Feature Coverage — Designers Catalog Integration", () => {
     const getRes = await client.get(`/designers/${testDesignerId}`);
     assert.ok([404, 200].includes(getRes.status));
     if (getRes.status === 200) {
-      assert.strictEqual(getRes.data?.data, null, "Deleted designer should return null");
+      assert.strictEqual(
+        getRes.data?.data,
+        null,
+        "Deleted designer should return null",
+      );
     }
   });
 });

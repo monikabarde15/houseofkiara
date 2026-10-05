@@ -12,17 +12,18 @@ const MainCategoryPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+    const backendUrl =
+      import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
     fetch(`${backendUrl}/api/web-products${location.search}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.success && Array.isArray(data.data)) {
           setProducts(data.data);
         } else {
           setProducts([]);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error loading products:", err);
         setProducts([]);
       })
@@ -31,22 +32,39 @@ const MainCategoryPage = () => {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 430px)");
-    
+
     const handleChange = (e) => {
       setIsMobile(e.matches);
     };
-    
+
     setIsMobile(mediaQuery.matches);
     mediaQuery.addEventListener("change", handleChange);
-    
+
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
   if (loading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#F7F4EF', color: '#B8A98E' }}>Loading Products...</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          backgroundColor: "#F7F4EF",
+          color: "#B8A98E",
+        }}
+      >
+        Loading Products...
+      </div>
+    );
   }
 
-  return isMobile ? <MobileCategoryPage productsData={products} /> : <DesktopCategoryPage productsData={products} />;
+  return isMobile ? (
+    <MobileCategoryPage productsData={products} />
+  ) : (
+    <DesktopCategoryPage productsData={products} />
+  );
 };
 
 export default MainCategoryPage;

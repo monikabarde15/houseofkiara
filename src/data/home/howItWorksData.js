@@ -28,7 +28,7 @@ const howItWorksData = {
     },
     {
       number: "02",
-      icon: MapPin ,
+      icon: MapPin,
       title: "Pick Your Path",
       description:
         "Choose whether you'd like to rent, buy preloved, or purchase new based on your occasion and style.",

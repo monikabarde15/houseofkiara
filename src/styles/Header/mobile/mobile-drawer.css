@@ -32,7 +32,7 @@
   left: 0;
   bottom: 0;
   width: min(88vw, 360px);
-  background: #FFFFFB;
+  background: #fffffb;
   z-index: 400;
   transform: translateX(-100%);
   transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
@@ -48,7 +48,7 @@
 /* 5.2 Drawer Header Zone */
 .drawer-head {
   padding: 20px 20px 16px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -69,11 +69,11 @@
 }
 
 .drawer-logo-name {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #1A1612;
+  color: #1a1612;
   font-weight: 500;
 }
 
@@ -92,7 +92,7 @@
 .drawer-close svg {
   width: 18px;
   height: 18px;
-  stroke: #1A1612;
+  stroke: #1a1612;
   stroke-width: 1.5;
   fill: none;
   stroke-linecap: round;
@@ -113,7 +113,7 @@
   transform: translateY(-50%);
   width: 14px;
   height: 14px;
-  stroke: #8A7E72;
+  stroke: #8a7e72;
   fill: none;
   stroke-width: 1.5;
   pointer-events: none;
@@ -121,24 +121,24 @@
 
 .drawer-search-input {
   width: 100%;
-  background: #FAF7F2;
-  border: 1px solid #E8E0D4;
+  background: #faf7f2;
+  border: 1px solid #e8e0d4;
   border-radius: 1px;
   padding: 10px 12px 10px 36px;
   font-size: 16px;
-  font-family: 'DM Sans', sans-serif;
-  color: #1A1612;
+  font-family: "DM Sans", sans-serif;
+  color: #1a1612;
   cursor: pointer;
 }
 
 .drawer-search-input::placeholder {
-  color: #B0A394;
+  color: #b0a394;
   font-size: 13px;
 }
 
 .drawer-search-input:focus {
   outline: none;
-  border-color: #C9A96E;
+  border-color: #c9a96e;
 }
 
 /* 5.4 Drawer Body */
@@ -169,9 +169,9 @@
 /* 6.2 Pill Base Styles */
 .mode-pill {
   padding: 7px 16px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 1px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -185,32 +185,31 @@
 }
 
 .mode-pill:active {
-  background: #FAF7F2;
+  background: #faf7f2;
 }
 
 /* 6.3 Individual Pill Colours */
 
 /* Rent Pill */
 .mode-pill--rent {
-  background: #1A1612;
-  color: #D4C5B0;
-  border-color: #1A1612;
+  background: #1a1612;
+  color: #d4c5b0;
+  border-color: #1a1612;
 }
 
 /* Buy Preloved Pill */
 .mode-pill--preloved {
-  background: #B85C38;
-  color: #FFFFFF;
-  border-color: #B85C38;
+  background: #b85c38;
+  color: #ffffff;
+  border-color: #b85c38;
 }
 
 /* Buy New Pill */
 .mode-pill--new {
-  background: #6B7E5A;
-  color: #FFFFFF;
-  border-color: #6B7E5A;
+  background: #6b7e5a;
+  color: #ffffff;
+  border-color: #6b7e5a;
 }
-
 
 /* ==========================================
    SECTION 7: SECTION NAVIGATION ROWS
@@ -218,7 +217,7 @@
 
 /* 7.1 Row Container */
 .drawer-section {
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 /* 7.2 Row Head */
@@ -238,34 +237,34 @@
 }
 
 .drawer-section-head:active {
-  background: #FAF7F2;
+  background: #faf7f2;
 }
 
 /* 7.3 Row Label */
 .drawer-section-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* Rent row modifier - terracotta color */
 .drawer-section-label.accent {
-  color: #B85C38;
+  color: #b85c38;
 }
 
 /* Buy New row modifier - sage color */
 .drawer-section-label.green {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 /* 7.4 Chevron Icon */
 .drawer-chev {
   width: 16px;
   height: 16px;
-  stroke: #8A7E72;
+  stroke: #8a7e72;
   stroke-width: 1.5;
   fill: none;
   stroke-linecap: round;
@@ -283,7 +282,7 @@
   left: 100%;
   bottom: 0;
   width: 100%;
-  background: #FFFFFB;
+  background: #fffffb;
   z-index: 10;
   transform: translateX(0);
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -300,7 +299,7 @@
 /* 8.2 Sub-Panel Header */
 .sub-panel-head {
   padding: 18px 20px 16px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -324,7 +323,7 @@
 .sub-panel-back svg {
   width: 18px;
   height: 18px;
-  stroke: #1A1612;
+  stroke: #1a1612;
   stroke-width: 1.5;
   fill: none;
   stroke-linecap: round;
@@ -332,22 +331,22 @@
 
 /* 8.4 Sub-Panel Title */
 .sub-panel-title {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* Rent panel modifier */
 .sub-panel-title.accent {
-  color: #B85C38;
+  color: #b85c38;
 }
 
 /* Buy New panel modifier */
 .sub-panel-title.green {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 /* 8.5 Sub-Panel Body */
@@ -363,20 +362,18 @@
   display: none;
 }
 
-
-
 /* ==========================================
    SECTION 9: SUB-PANEL ITEM STYLES
 ========================================== */
 
 /* 9.1 Sub-Label (Gold group headings) */
 .drawer-sub-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   font-weight: 400;
-  color: #C9A96E;
+  color: #c9a96e;
   display: block;
   margin: 12px 0 8px;
   padding-left: 20px;
@@ -391,7 +388,7 @@
   padding: 11px 0;
   padding-left: 20px;
   padding-right: 20px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
   min-height: 44px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -412,34 +409,34 @@
 /* 9.2 Pressed state - text turns gold */
 .drawer-link:active .drawer-link-serif,
 .drawer-link:active .drawer-link-sans {
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* 9.3 Link Text - ALL Items (shared styles) */
 .drawer-link-serif,
 .drawer-link-sans {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 16px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   transition: color 0.15s ease;
 }
 
 /* 9.4 Utility Links - Exception Rule */
 /* "See all →" and "A-Z index →" links use DM Sans, 11px, muted color */
 .drawer-link-sans[data-utility="true"] {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.06em;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* 9.5 Link Arrow Icon */
 .drawer-link-arrow {
   width: 12px;
   height: 12px;
-  stroke: #8A7E72;
+  stroke: #8a7e72;
   stroke-width: 1.5;
   fill: none;
   stroke-linecap: round;
@@ -457,8 +454,6 @@
   padding-right: 20px;
 }
 
-
-
 /* ==========================================
    SECTION 11: STANDALONE LINKS & DRAWER FOOTER
 ========================================== */
@@ -469,7 +464,7 @@
   align-items: center;
   padding: 16px 20px;
   min-height: 52px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
   transition: background 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
@@ -480,7 +475,7 @@
 }
 
 .drawer-standalone:active {
-  background: #FAF7F2;
+  background: #faf7f2;
 }
 
 .drawer-standalone .drawer-section-head {
@@ -489,23 +484,23 @@
 }
 
 .drawer-standalone .drawer-section-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* List Your Piece has sage color */
 .drawer-standalone .drawer-section-label.green {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 /* 11.3 New Pill Badge */
 .drawer-pill-new {
-  background: #B85C38;
-  color: #FFFFFF;
+  background: #b85c38;
+  color: #ffffff;
   font-size: 7px;
   font-weight: 500;
   letter-spacing: 0.08em;
@@ -517,15 +512,15 @@
 /* 11.4 Drawer Footer */
 .drawer-footer {
   padding: 20px;
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
   flex-shrink: 0;
 }
 
 .drawer-footer-brand {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 11px;
   letter-spacing: 0.1em;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 12px;
 }
 
@@ -536,11 +531,11 @@
 }
 
 .drawer-footer-links a {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   text-decoration: none;
   cursor: pointer;
   background: none;

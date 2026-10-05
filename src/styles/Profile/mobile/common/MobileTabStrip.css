@@ -8,8 +8,8 @@
   position: sticky;
   top: 56px;
   z-index: 190;
-  background: #FFFFFB;
-  border-bottom: 1px solid #F0EAE0;
+  background: #fffffb;
+  border-bottom: 1px solid #f0eae0;
   height: 42px;
   display: flex;
   overflow-x: auto;
@@ -38,15 +38,17 @@
   font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .profile-mobile-tab.active {
   font-weight: 500;
-  color: #3C3529;
-  border-bottom-color: #1A1612;
+  color: #3c3529;
+  border-bottom-color: #1a1612;
 }
 
 .profile-mobile-tab-badge {
@@ -60,13 +62,13 @@
   font-family: "DM Sans", sans-serif;
   font-size: 8px;
   font-weight: 500;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .profile-mobile-tab-badge.red {
-  background: #B85C38;
+  background: #b85c38;
 }
 
 .profile-mobile-tab-badge.gold {
-  background: #A8844A;
+  background: #a8844a;
 }

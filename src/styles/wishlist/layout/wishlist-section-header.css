@@ -6,7 +6,7 @@
   align-items: center;
   gap: 14px;
   padding-bottom: 18px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
   margin-bottom: 36px;
 }
 
@@ -18,19 +18,19 @@
 }
 
 .desk-wishlist-section-mode-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8.5px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   font-weight: 400;
 }
 
 .desk-wishlist-section-piece-count {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8.5px;
   letter-spacing: 0.1em;
-  color: #8A7E72;
+  color: #8a7e72;
   font-weight: 300;
   margin-left: auto;
 }

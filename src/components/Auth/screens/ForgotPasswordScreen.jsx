@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import BackLink from '../ui/BackLink';
-import FormEyebrow from '../ui/FormEyebrow';
-import FormHeading from '../ui/FormHeading';
-import FormSubText from '../ui/FormSubText';
-import TextInput from '../ui/TextInput';
-import PrimaryButton from '../ui/PrimaryButton';
-import FormAlert from '../ui/FormAlert';
-import '../../../styles/Auth/screens/ForgotPasswordScreen.css';
+import React, { useState } from "react";
+import BackLink from "../ui/BackLink";
+import FormEyebrow from "../ui/FormEyebrow";
+import FormHeading from "../ui/FormHeading";
+import FormSubText from "../ui/FormSubText";
+import TextInput from "../ui/TextInput";
+import PrimaryButton from "../ui/PrimaryButton";
+import FormAlert from "../ui/FormAlert";
+import "../../../styles/Auth/screens/ForgotPasswordScreen.css";
 
 const ForgotPasswordScreen = ({ switchScreen }) => {
-  const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLinkSent, setIsLinkSent] = useState(false);
 
@@ -20,13 +20,13 @@ const ForgotPasswordScreen = ({ switchScreen }) => {
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
-      setEmailError('Please enter a valid email address.');
+      setEmailError("Please enter a valid email address.");
       return false;
     } else if (!emailRegex.test(email)) {
-      setEmailError('Please enter a valid email address.');
+      setEmailError("Please enter a valid email address.");
       return false;
     } else {
-      setEmailError('');
+      setEmailError("");
       return true;
     }
   };
@@ -35,17 +35,17 @@ const ForgotPasswordScreen = ({ switchScreen }) => {
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     if (emailError) {
-      setEmailError('');
-      setErrorMessage('');
+      setEmailError("");
+      setErrorMessage("");
     }
   };
 
   // Handle send reset link
   const handleSendResetLink = async () => {
     // Clear previous messages
-    setErrorMessage('');
-    setSuccessMessage('');
-    
+    setErrorMessage("");
+    setSuccessMessage("");
+
     // Validate email
     const isValid = validateEmail();
     if (!isValid) {
@@ -55,10 +55,10 @@ const ForgotPasswordScreen = ({ switchScreen }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/customer/auth/forgot-password', {
-        method: 'POST',
+      const response = await fetch("/api/customer/auth/forgot-password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email: email.trim().toLowerCase() }),
       });
@@ -66,13 +66,21 @@ const ForgotPasswordScreen = ({ switchScreen }) => {
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.success) {
-        setSuccessMessage(result.message || `A password reset link has been sent to ${email}. Please check your inbox.`);
+        setSuccessMessage(
+          result.message ||
+            `A password reset link has been sent to ${email}. Please check your inbox.`,
+        );
         setIsLinkSent(true);
       } else {
-        setErrorMessage(result.message || 'Failed to process password recovery request. Please try again.');
+        setErrorMessage(
+          result.message ||
+            "Failed to process password recovery request. Please try again.",
+        );
       }
     } catch (err) {
-      setErrorMessage('Network error. Please check your internet connection and try again.');
+      setErrorMessage(
+        "Network error. Please check your internet connection and try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -80,38 +88,35 @@ const ForgotPasswordScreen = ({ switchScreen }) => {
 
   // Back link navigates to Sign In (Screen 1)
   const handleBack = () => {
-    switchScreen('signin');
+    switchScreen("signin");
   };
 
   return (
     <div className="hok-auth-forgot-screen">
       {/* Section 10 - Back link */}
       <BackLink onClick={handleBack} label="BACK TO SIGN IN" />
-      
+
       {/* Form Eyebrow */}
       <FormEyebrow text="PASSWORD RECOVERY" />
-      
+
       {/* Form Heading */}
       <FormHeading text="Reset " italicText="password" />
-      
+
       {/* Form Sub-text */}
       <FormSubText>
-        Enter the email address associated with your account. We'll send you a reset link.
+        Enter the email address associated with your account. We'll send you a
+        reset link.
       </FormSubText>
 
       {/* Success Alert - Section 10 */}
-      <FormAlert 
-        type="success" 
-        message={successMessage} 
-        show={!!successMessage} 
+      <FormAlert
+        type="success"
+        message={successMessage}
+        show={!!successMessage}
       />
 
       {/* Error Alert - Section 10 (for server errors in production) */}
-      <FormAlert 
-        type="error" 
-        message={errorMessage} 
-        show={!!errorMessage} 
-      />
+      <FormAlert type="error" message={errorMessage} show={!!errorMessage} />
 
       {/* Email Field */}
       <TextInput
@@ -130,12 +135,12 @@ const ForgotPasswordScreen = ({ switchScreen }) => {
       />
 
       {/* CTA Button - Disabled after link sent */}
-      <PrimaryButton 
-        onClick={handleSendResetLink} 
+      <PrimaryButton
+        onClick={handleSendResetLink}
         isLoading={isLoading}
         disabled={isLinkSent}
       >
-        {isLinkSent ? 'Link sent' : 'SEND RESET LINK'}
+        {isLinkSent ? "Link sent" : "SEND RESET LINK"}
       </PrimaryButton>
     </div>
   );

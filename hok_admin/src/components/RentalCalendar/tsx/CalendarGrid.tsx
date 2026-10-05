@@ -1,9 +1,9 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { CalendarEvent } from '../types';
-import EventPill from './EventPill';
-import EventDetailCard from './EventDetailCard';
-import DayEventsPopover from './DayEventspopover';
-import '../css/CalendarGrid.css';
+import React, { useMemo, useRef, useState } from "react";
+import { CalendarEvent } from "../types";
+import EventPill from "./EventPill";
+import EventDetailCard from "./EventDetailCard";
+import DayEventsPopover from "./DayEventspopover";
+import "../css/CalendarGrid.css";
 
 interface CalendarGridProps {
   /** First-of-month reference date, e.g. new Date(2026, 2, 1) */
@@ -14,12 +14,12 @@ interface CalendarGridProps {
   onEventClick?: (event: CalendarEvent) => void;
 }
 
-const DAY_LABELS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+const DAY_LABELS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
-const FULL_DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
-  day: '2-digit',
-  month: 'long',
-  year: 'numeric',
+const FULL_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
 });
 
 function toISODate(date: Date): string {
@@ -39,7 +39,11 @@ function buildMonthWeeks(month: Date): Date[][] {
 
   const lastOfMonth = new Date(year, monthIndex + 1, 0);
   const trailingOffset = (7 - ((lastOfMonth.getDay() + 6) % 7) - 1 + 7) % 7;
-  const gridEnd = new Date(year, monthIndex, lastOfMonth.getDate() + trailingOffset);
+  const gridEnd = new Date(
+    year,
+    monthIndex,
+    lastOfMonth.getDate() + trailingOffset,
+  );
 
   const weeks: Date[][] = [];
   let cursor = new Date(gridStart);
@@ -76,7 +80,10 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   const currentMonthIndex = month.getMonth();
 
   // --- Hover card state (individual event pills) ---
-  const [hoverState, setHoverState] = useState<{ event: CalendarEvent; anchor: DOMRect } | null>(null);
+  const [hoverState, setHoverState] = useState<{
+    event: CalendarEvent;
+    anchor: DOMRect;
+  } | null>(null);
   const showTimer = useRef<number | null>(null);
   const hideTimer = useRef<number | null>(null);
 
@@ -87,7 +94,10 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   const handleHoverStart = (event: CalendarEvent, anchor: DOMRect) => {
     cancelHide();
     if (showTimer.current) window.clearTimeout(showTimer.current);
-    showTimer.current = window.setTimeout(() => setHoverState({ event, anchor }), 250);
+    showTimer.current = window.setTimeout(
+      () => setHoverState({ event, anchor }),
+      250,
+    );
   };
 
   const handleHoverEnd = () => {
@@ -141,20 +151,26 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
               return (
                 <div
                   className={[
-                    'calendar-grid__cell',
-                    isOutsideMonth ? 'calendar-grid__cell--outside' : '',
-                    isToday ? 'calendar-grid__cell--today' : '',
+                    "calendar-grid__cell",
+                    isOutsideMonth ? "calendar-grid__cell--outside" : "",
+                    isToday ? "calendar-grid__cell--today" : "",
                   ]
                     .filter(Boolean)
-                    .join(' ')}
+                    .join(" ")}
                   key={iso}
                 >
                   <div className="calendar-grid__date">
-                    <span className={isToday ? 'calendar-grid__date-badge' : undefined}>
+                    <span
+                      className={
+                        isToday ? "calendar-grid__date-badge" : undefined
+                      }
+                    >
                       {date.getDate()}
                     </span>
                     {dayEvents.length > 1 && (
-                      <span className="calendar-grid__date-count">{dayEvents.length}</span>
+                      <span className="calendar-grid__date-count">
+                        {dayEvents.length}
+                      </span>
                     )}
                   </div>
 

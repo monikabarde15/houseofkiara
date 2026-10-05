@@ -1,24 +1,24 @@
 // src/components/LYP/record/SubmissionRecord.tsx
 
-import React, { useState } from 'react';
-import { Submission } from '../types/submission.types';
-import { RecordHeader } from './RecordHeader';
-import { RecordChips } from './RecordChips';
-import { ApplicantBanner } from './ApplicantBanner';
-import { FactsLeft } from './FactsLeft';
-import { FactsRight } from './FactsRight';
-import { WorksheetCard } from './WorksheetCard';
-import { AwaitingBanner } from './AwaitingBanner';
-import { ActionsRow } from './ActionsRow';
-import { VerdictBlock } from './VerdictBlock';
-import { ReviewHistory } from './ReviewHistory';
-import { SKUReservationLine } from './SKUReservationLine';
-import { MoreInfoComposer } from './MoreInfoComposer';
-import { RejectPanel } from './RejectPanel';
-import { WithdrawRow } from './WithdrawRow';
-import { ExpireConfirmModal } from './ExpireConfirmModal';
-import { getSubmissionStatus } from '../utils/derived';
-import './styles/SubmissionRecord.css';
+import React, { useState } from "react";
+import { Submission } from "../types/submission.types";
+import { RecordHeader } from "./RecordHeader";
+import { RecordChips } from "./RecordChips";
+import { ApplicantBanner } from "./ApplicantBanner";
+import { FactsLeft } from "./FactsLeft";
+import { FactsRight } from "./FactsRight";
+import { WorksheetCard } from "./WorksheetCard";
+import { AwaitingBanner } from "./AwaitingBanner";
+import { ActionsRow } from "./ActionsRow";
+import { VerdictBlock } from "./VerdictBlock";
+import { ReviewHistory } from "./ReviewHistory";
+import { SKUReservationLine } from "./SKUReservationLine";
+import { MoreInfoComposer } from "./MoreInfoComposer";
+import { RejectPanel } from "./RejectPanel";
+import { WithdrawRow } from "./WithdrawRow";
+import { ExpireConfirmModal } from "./ExpireConfirmModal";
+import { getSubmissionStatus } from "../utils/derived";
+import "./styles/SubmissionRecord.css";
 
 interface SubmissionRecordProps {
   submission: Submission;
@@ -51,7 +51,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
   const status = getSubmissionStatus(submission);
   const isDecided = !!submission.decision;
   const isUndecided = !isDecided;
-  const isAwaitingReply = status === 'Awaiting Reply';
+  const isAwaitingReply = status === "Awaiting Reply";
   const isPendingReview = false; // Would check lister status
 
   const handleActionSuccess = () => {
@@ -64,19 +64,22 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
 
   const handleExpireConfirm = async () => {
     try {
-      const { submissionService } = await import('../services/submissionService');
-      const { toast } = await import('react-hot-toast');
+      const { submissionService } =
+        await import("../services/submissionService");
+      const { toast } = await import("react-hot-toast");
       await submissionService.expireSubmission(submission.subid);
-      toast.success('Submission marked as expired');
+      toast.success("Submission marked as expired");
       handleActionSuccess();
     } catch (err: any) {
-      import('react-hot-toast').then(({ toast }) => toast.error(err.message || 'Failed to expire submission'));
+      import("react-hot-toast").then(({ toast }) =>
+        toast.error(err.message || "Failed to expire submission"),
+      );
     }
   };
 
   return (
     <div className="submission-record">
-      <RecordHeader 
+      <RecordHeader
         submission={submission}
         onNavigate={onNavigate}
         hasPrev={hasPrev}
@@ -96,37 +99,41 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
             <ApplicantBanner submission={submission} />
           )}
 
-                  <div className="submission-record-facts g2">
-                      <FactsLeft submission={submission} onUpdate={handleActionSuccess} />
-                      <FactsRight submission={submission} onUpdate={handleActionSuccess} />
-                  </div>
+          <div className="submission-record-facts g2">
+            <FactsLeft submission={submission} onUpdate={handleActionSuccess} />
+            <FactsRight
+              submission={submission}
+              onUpdate={handleActionSuccess}
+            />
+          </div>
 
           {isUndecided && (
             <>
-              <WorksheetCard 
-                submission={submission} 
-                onUpdate={onUpdate}
-              />
+              <WorksheetCard submission={submission} onUpdate={onUpdate} />
 
               {isAwaitingReply && (
-                <AwaitingBanner 
+                <AwaitingBanner
                   submission={submission}
                   onUpdate={handleActionSuccess}
                 />
               )}
 
-              <ActionsRow 
+              <ActionsRow
                 submission={submission}
                 onApprove={async () => {
                   try {
-                    const { submissionService } = await import('../services/submissionService');
-                    const { toast } = await import('react-hot-toast');
-                    await submissionService.approveSubmission(submission.subid, 'Admin');
-                    toast.success('Submission approved successfully!');
+                    const { submissionService } =
+                      await import("../services/submissionService");
+                    const { toast } = await import("react-hot-toast");
+                    await submissionService.approveSubmission(
+                      submission.subid,
+                      "Admin",
+                    );
+                    toast.success("Submission approved successfully!");
                     handleActionSuccess();
                   } catch (err: any) {
-                    const { toast } = await import('react-hot-toast');
-                    toast.error(err.message || 'Failed to approve submission');
+                    const { toast } = await import("react-hot-toast");
+                    toast.error(err.message || "Failed to approve submission");
                   }
                 }}
                 onMoreInfo={() => setShowMoreInfo(!showMoreInfo)}
@@ -145,7 +152,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
               )}
 
               {showMoreInfo && (
-                <MoreInfoComposer 
+                <MoreInfoComposer
                   submission={submission}
                   onSuccess={handleActionSuccess}
                   onCancel={() => setShowMoreInfo(false)}
@@ -153,7 +160,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
               )}
 
               {showReject && (
-                <RejectPanel 
+                <RejectPanel
                   submission={submission}
                   onSuccess={handleActionSuccess}
                   onCancel={() => setShowReject(false)}
@@ -161,7 +168,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
               )}
 
               {showWithdraw && (
-                <WithdrawRow 
+                <WithdrawRow
                   submission={submission}
                   onSuccess={handleActionSuccess}
                   onCancel={() => setShowWithdraw(false)}

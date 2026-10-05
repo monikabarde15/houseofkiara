@@ -5,12 +5,14 @@ interface PayoutIntegrityBannerProps {
   payouts?: Payout[];
 }
 
-export default function PayoutIntegrityBanner({ payouts = [] }: PayoutIntegrityBannerProps) {
+export default function PayoutIntegrityBanner({
+  payouts = [],
+}: PayoutIntegrityBannerProps) {
   // TODO: We need to cross-reference with live Orders to find missing payouts.
   // For now, since we don't have static data and we don't want to show dummy data,
   // we return null. Once the missing payouts API is ready, we can render them here.
-  const missingPayouts: any[] = []; 
-  
+  const missingPayouts: any[] = [];
+
   if (missingPayouts.length === 0) return null;
 
   return (
@@ -19,7 +21,8 @@ export default function PayoutIntegrityBanner({ payouts = [] }: PayoutIntegrityB
         <div className="flex items-start gap-2">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#B45309]" />
           <h3 className="text-xs font-bold uppercase tracking-wide text-[#92400E]">
-            Payout Integrity — {missingPayouts.length} Completed Orders with No Payout on Record
+            Payout Integrity — {missingPayouts.length} Completed Orders with No
+            Payout on Record
           </h3>
         </div>
 
@@ -31,7 +34,9 @@ export default function PayoutIntegrityBanner({ payouts = [] }: PayoutIntegrityB
             >
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                 <span className="font-medium text-[#B45309]">{order.id}</span>
-                <span className="font-semibold text-[#1E1412]">{order.lister}</span>
+                <span className="font-semibold text-[#1E1412]">
+                  {order.lister}
+                </span>
                 <span className="text-[#1E1412]">{order.product}</span>
                 <span className="text-stone-500">for {order.customer}</span>
               </div>

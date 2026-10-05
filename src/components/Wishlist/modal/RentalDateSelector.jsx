@@ -12,9 +12,7 @@ const RentalDateSelector = ({
 
   return (
     <div className="desk-wishlist-date-selector">
-      <label className="desk-wishlist-date-label">
-        Select Rental Dates
-      </label>
+      <label className="desk-wishlist-date-label">Select Rental Dates</label>
 
       <div className="desk-wishlist-date-inputs">
         <div className="desk-wishlist-date-field">

@@ -1,6 +1,6 @@
 // src/components/Notifications/components/NoteBar.tsx
-import React from 'react';
-import './styles/NoteBar.css';
+import React from "react";
+import "./styles/NoteBar.css";
 
 interface NoteBarProps {
   heading: string;

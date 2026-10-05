@@ -1,6 +1,6 @@
 // send/MessageSelect.tsx
-import React from 'react';
-import './styles/MessageSelect.css';
+import React from "react";
+import "./styles/MessageSelect.css";
 
 interface MessageOption {
   id: string;
@@ -18,17 +18,17 @@ interface MessageSelectProps {
 }
 
 const GROUP_ORDER = [
-  'Customer - Account',
-  'Customer - Orders',
-  'Customer - Returns',
-  'Customer - Deposits',
-  'Customer - Receivables',
-  'Customer - Offers',
-  'Customer - Keeping in touch',
-  'Quick notes',
-  'Lister',
-  'Designer partners',
-  'Your own desk',
+  "Customer - Account",
+  "Customer - Orders",
+  "Customer - Returns",
+  "Customer - Deposits",
+  "Customer - Receivables",
+  "Customer - Offers",
+  "Customer - Keeping in touch",
+  "Quick notes",
+  "Lister",
+  "Designer partners",
+  "Your own desk",
 ];
 
 export const MessageSelect: React.FC<MessageSelectProps> = ({
@@ -59,7 +59,8 @@ export const MessageSelect: React.FC<MessageSelectProps> = ({
           <optgroup key={group} label={group}>
             {grouped[group].map((opt) => (
               <option key={opt.id} value={opt.id}>
-                {opt.name}{opt.isOptional ? ' (optional)' : ''}
+                {opt.name}
+                {opt.isOptional ? " (optional)" : ""}
               </option>
             ))}
           </optgroup>

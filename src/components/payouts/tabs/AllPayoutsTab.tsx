@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search } from 'lucide-react';
+import React, { useState } from "react";
+import { Search } from "lucide-react";
 
 // ============================================================
 // WHATSAPP ICON
@@ -24,8 +24,8 @@ const WhatsAppIcon = () => (
 // payouts endpoint exists. Shape mirrors the reference PDF
 // exactly (Payouts & Reconciliation > All Payouts).
 // ============================================================
-type PayoutType = 'Rental' | 'Preloved Sale' | 'Damage Comp.';
-type PayoutStatus = 'Paid' | 'Pending Approval';
+type PayoutType = "Rental" | "Preloved Sale" | "Damage Comp.";
+type PayoutStatus = "Paid" | "Pending Approval";
 
 interface Payout {
   id: string;
@@ -38,7 +38,7 @@ interface Payout {
   payoutPercent: string;
   payoutAmount: number;
   hokCommission: number;
-  mode: 'UPI' | null;
+  mode: "UPI" | null;
   status: PayoutStatus;
   processedOn: string | null;
   processedBy?: string;
@@ -46,28 +46,141 @@ interface Payout {
 
 // TODO(backend): swap for real fetched data
 const MOCK_PAYOUTS: Payout[] = [
-  { id: '1', listerName: 'Aishwarya Sharma', orderId: 'HOK-ORD-002', productName: 'Ivory Embroidered Sherwani', rentalNumber: null, type: 'Preloved Sale', transactionValue: 38000, payoutPercent: '75%', payoutAmount: 28500, hokCommission: 9500, mode: 'UPI', status: 'Paid', processedOn: '21 Mar 2026' },
-  { id: '2', listerName: 'Meera Joshi', orderId: 'HOK-ORD-006', productName: 'Crimson Zardozi Bridal Lehenga', rentalNumber: 'Rental #1', type: 'Rental', transactionValue: 8500, payoutPercent: '65%', payoutAmount: 5525, hokCommission: 2975, mode: 'UPI', status: 'Paid', processedOn: '10 Jan 2026', processedBy: 'Priya (Ops) · UTR529814' },
-  { id: '3', listerName: 'Meera Joshi', orderId: 'HOK-ORD-007', productName: 'Crimson Zardozi Bridal Lehenga', rentalNumber: 'Rental #2', type: 'Rental', transactionValue: 8500, payoutPercent: '60%', payoutAmount: 5100, hokCommission: 3400, mode: 'UPI', status: 'Paid', processedOn: '5 Feb 2026' },
-  { id: '4', listerName: 'Meera Joshi', orderId: 'HOK-ORD-001', productName: 'Crimson Zardozi Bridal Lehenga', rentalNumber: 'Rental #3', type: 'Rental', transactionValue: 8500, payoutPercent: '55%', payoutAmount: 4675, hokCommission: 3825, mode: null, status: 'Pending Approval', processedOn: null },
-  { id: '5', listerName: 'Aishwarya Sharma', orderId: 'HOK-ORD-003', productName: 'Rose Georgette Anarkali', rentalNumber: 'Rental #1', type: 'Rental', transactionValue: 6500, payoutPercent: '60%', payoutAmount: 3900, hokCommission: 2600, mode: null, status: 'Pending Approval', processedOn: null },
-  { id: '6', listerName: 'Meera Joshi', orderId: 'HOK-ORD-008', productName: 'Rajputana Silk Bridal Lehenga', rentalNumber: 'Comp.', type: 'Damage Comp.', transactionValue: 16500, payoutPercent: '55%+60% comp', payoutAmount: 18075, hokCommission: 7425, mode: null, status: 'Pending Approval', processedOn: null },
-  { id: '7', listerName: 'Meera Joshi', orderId: 'HOK-ORD-009', productName: 'Crimson Zardozi Bridal Lehenga', rentalNumber: 'Rental #4', type: 'Rental', transactionValue: 8500, payoutPercent: '55%', payoutAmount: 4675, hokCommission: 3825, mode: null, status: 'Pending Approval', processedOn: null },
-  { id: '8', listerName: 'Meera Joshi', orderId: 'HOK-ORD-009', productName: 'Gulabi Silk Bridal', rentalNumber: null, type: 'Preloved Sale', transactionValue: 95000, payoutPercent: '75%', payoutAmount: 71250, hokCommission: 23750, mode: null, status: 'Pending Approval', processedOn: null },
+  {
+    id: "1",
+    listerName: "Aishwarya Sharma",
+    orderId: "HOK-ORD-002",
+    productName: "Ivory Embroidered Sherwani",
+    rentalNumber: null,
+    type: "Preloved Sale",
+    transactionValue: 38000,
+    payoutPercent: "75%",
+    payoutAmount: 28500,
+    hokCommission: 9500,
+    mode: "UPI",
+    status: "Paid",
+    processedOn: "21 Mar 2026",
+  },
+  {
+    id: "2",
+    listerName: "Meera Joshi",
+    orderId: "HOK-ORD-006",
+    productName: "Crimson Zardozi Bridal Lehenga",
+    rentalNumber: "Rental #1",
+    type: "Rental",
+    transactionValue: 8500,
+    payoutPercent: "65%",
+    payoutAmount: 5525,
+    hokCommission: 2975,
+    mode: "UPI",
+    status: "Paid",
+    processedOn: "10 Jan 2026",
+    processedBy: "Priya (Ops) · UTR529814",
+  },
+  {
+    id: "3",
+    listerName: "Meera Joshi",
+    orderId: "HOK-ORD-007",
+    productName: "Crimson Zardozi Bridal Lehenga",
+    rentalNumber: "Rental #2",
+    type: "Rental",
+    transactionValue: 8500,
+    payoutPercent: "60%",
+    payoutAmount: 5100,
+    hokCommission: 3400,
+    mode: "UPI",
+    status: "Paid",
+    processedOn: "5 Feb 2026",
+  },
+  {
+    id: "4",
+    listerName: "Meera Joshi",
+    orderId: "HOK-ORD-001",
+    productName: "Crimson Zardozi Bridal Lehenga",
+    rentalNumber: "Rental #3",
+    type: "Rental",
+    transactionValue: 8500,
+    payoutPercent: "55%",
+    payoutAmount: 4675,
+    hokCommission: 3825,
+    mode: null,
+    status: "Pending Approval",
+    processedOn: null,
+  },
+  {
+    id: "5",
+    listerName: "Aishwarya Sharma",
+    orderId: "HOK-ORD-003",
+    productName: "Rose Georgette Anarkali",
+    rentalNumber: "Rental #1",
+    type: "Rental",
+    transactionValue: 6500,
+    payoutPercent: "60%",
+    payoutAmount: 3900,
+    hokCommission: 2600,
+    mode: null,
+    status: "Pending Approval",
+    processedOn: null,
+  },
+  {
+    id: "6",
+    listerName: "Meera Joshi",
+    orderId: "HOK-ORD-008",
+    productName: "Rajputana Silk Bridal Lehenga",
+    rentalNumber: "Comp.",
+    type: "Damage Comp.",
+    transactionValue: 16500,
+    payoutPercent: "55%+60% comp",
+    payoutAmount: 18075,
+    hokCommission: 7425,
+    mode: null,
+    status: "Pending Approval",
+    processedOn: null,
+  },
+  {
+    id: "7",
+    listerName: "Meera Joshi",
+    orderId: "HOK-ORD-009",
+    productName: "Crimson Zardozi Bridal Lehenga",
+    rentalNumber: "Rental #4",
+    type: "Rental",
+    transactionValue: 8500,
+    payoutPercent: "55%",
+    payoutAmount: 4675,
+    hokCommission: 3825,
+    mode: null,
+    status: "Pending Approval",
+    processedOn: null,
+  },
+  {
+    id: "8",
+    listerName: "Meera Joshi",
+    orderId: "HOK-ORD-009",
+    productName: "Gulabi Silk Bridal",
+    rentalNumber: null,
+    type: "Preloved Sale",
+    transactionValue: 95000,
+    payoutPercent: "75%",
+    payoutAmount: 71250,
+    hokCommission: 23750,
+    mode: null,
+    status: "Pending Approval",
+    processedOn: null,
+  },
 ];
 
 // ============================================================
 // STYLE HELPERS
 // ============================================================
 const typeBadgeClasses: Record<PayoutType, string> = {
-  'Rental': 'bg-green-50 text-green-700',
-  'Preloved Sale': 'bg-[#f6ede0] text-[#8a6a2c]',
-  'Damage Comp.': 'bg-purple-50 text-purple-700',
+  Rental: "bg-green-50 text-green-700",
+  "Preloved Sale": "bg-[#f6ede0] text-[#8a6a2c]",
+  "Damage Comp.": "bg-purple-50 text-purple-700",
 };
 
 const statusBadgeClasses: Record<PayoutStatus, string> = {
-  'Paid': 'bg-green-100 text-green-700',
-  'Pending Approval': 'bg-[#fff3d6] text-[#8a6a2c]',
+  Paid: "bg-green-100 text-green-700",
+  "Pending Approval": "bg-[#fff3d6] text-[#8a6a2c]",
 };
 
 // ============================================================
@@ -79,38 +192,49 @@ const statusBadgeClasses: Record<PayoutStatus, string> = {
 // export button, and the table.
 // ============================================================
 export default function AllPayoutsTab() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All');
-  const [timeFilter, setTimeFilter] = useState('All time');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [timeFilter, setTimeFilter] = useState("All time");
 
-  const filteredPayouts = MOCK_PAYOUTS.filter(p => {
+  const filteredPayouts = MOCK_PAYOUTS.filter((p) => {
     const term = searchTerm.toLowerCase();
     const matchesSearch =
       p.listerName.toLowerCase().includes(term) ||
       p.orderId.toLowerCase().includes(term) ||
       p.productName.toLowerCase().includes(term);
-    const matchesStatus = statusFilter === 'All' || p.status === statusFilter;
+    const matchesStatus = statusFilter === "All" || p.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const paidPayouts = filteredPayouts.filter(p => p.status === 'Paid');
-  const listerPaidTotal = paidPayouts.reduce((sum, p) => sum + p.payoutAmount, 0);
-  const hokRetainedTotal = paidPayouts.reduce((sum, p) => sum + p.hokCommission, 0);
-  const avgSplit = paidPayouts.length > 0
-    ? Math.round(
-        (paidPayouts.reduce((sum, p) => sum + p.payoutAmount / (p.payoutAmount + p.hokCommission), 0) /
-          paidPayouts.length) * 100
-      )
-    : 0;
+  const paidPayouts = filteredPayouts.filter((p) => p.status === "Paid");
+  const listerPaidTotal = paidPayouts.reduce(
+    (sum, p) => sum + p.payoutAmount,
+    0,
+  );
+  const hokRetainedTotal = paidPayouts.reduce(
+    (sum, p) => sum + p.hokCommission,
+    0,
+  );
+  const avgSplit =
+    paidPayouts.length > 0
+      ? Math.round(
+          (paidPayouts.reduce(
+            (sum, p) =>
+              sum + p.payoutAmount / (p.payoutAmount + p.hokCommission),
+            0,
+          ) /
+            paidPayouts.length) *
+            100,
+        )
+      : 0;
 
   const handleExportCsv = () => {
     // TODO(backend): wire up to a real CSV export endpoint / blob download.
-    alert('Export CSV — hook this up to your export endpoint.');
+    alert("Export CSV — hook this up to your export endpoint.");
   };
 
   return (
     <div className="space-y-4 text-xs font-sans">
-
       {/* Search + status filter + time filter + export row */}
       <div className="flex flex-col lg:flex-row lg:items-center gap-3">
         <div className="relative flex-1 min-w-[280px]">
@@ -180,12 +304,14 @@ export default function AllPayoutsTab() {
               {filteredPayouts.map((p, idx) => (
                 <tr
                   key={p.id}
-                  className={`hover:bg-[#fcf9f5] transition-colors ${idx % 2 === 1 ? 'bg-stone-50/40' : ''}`}
+                  className={`hover:bg-[#fcf9f5] transition-colors ${idx % 2 === 1 ? "bg-stone-50/40" : ""}`}
                 >
                   {/* Lister — real WhatsApp glyph icon */}
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-[#8a6a2c]">{p.listerName}</span>
+                      <span className="font-semibold text-[#8a6a2c]">
+                        {p.listerName}
+                      </span>
                       <WhatsAppIcon />
                     </div>
                   </td>
@@ -199,37 +325,39 @@ export default function AllPayoutsTab() {
                   </td>
 
                   <td className="px-4 py-3 text-stone-500">
-                    {p.rentalNumber ?? '—'}
+                    {p.rentalNumber ?? "—"}
                   </td>
 
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded text-[10px] font-medium ${typeBadgeClasses[p.type]}`}>
+                    <span
+                      className={`px-2 py-1 rounded text-[10px] font-medium ${typeBadgeClasses[p.type]}`}
+                    >
                       {p.type}
                     </span>
                   </td>
 
                   <td className="px-4 py-3 font-medium">
-                    ₹{p.transactionValue.toLocaleString('en-IN')}
+                    ₹{p.transactionValue.toLocaleString("en-IN")}
+                  </td>
+
+                  <td className="px-4 py-3">{p.payoutPercent}</td>
+
+                  <td
+                    className={`px-4 py-3 font-semibold ${p.status === "Paid" ? "text-green-600" : "text-orange-500"}`}
+                  >
+                    ₹{p.payoutAmount.toLocaleString("en-IN")}
                   </td>
 
                   <td className="px-4 py-3">
-                    {p.payoutPercent}
+                    ₹{p.hokCommission.toLocaleString("en-IN")}
                   </td>
 
-                  <td className={`px-4 py-3 font-semibold ${p.status === 'Paid' ? 'text-green-600' : 'text-orange-500'}`}>
-                    ₹{p.payoutAmount.toLocaleString('en-IN')}
-                  </td>
+                  <td className="px-4 py-3 text-stone-500">{p.mode ?? "—"}</td>
 
                   <td className="px-4 py-3">
-                    ₹{p.hokCommission.toLocaleString('en-IN')}
-                  </td>
-
-                  <td className="px-4 py-3 text-stone-500">
-                    {p.mode ?? '—'}
-                  </td>
-
-                  <td className="px-4 py-3">
-                    <span className={`px-2.5 py-1 rounded text-[10px] font-medium ${statusBadgeClasses[p.status]}`}>
+                    <span
+                      className={`px-2.5 py-1 rounded text-[10px] font-medium ${statusBadgeClasses[p.status]}`}
+                    >
                       {p.status}
                     </span>
                   </td>
@@ -239,17 +367,24 @@ export default function AllPayoutsTab() {
                       <div>
                         <div>{p.processedOn}</div>
                         {p.processedBy && (
-                          <div className="text-[10px] text-stone-400">{p.processedBy}</div>
+                          <div className="text-[10px] text-stone-400">
+                            {p.processedBy}
+                          </div>
                         )}
                       </div>
-                    ) : '—'}
+                    ) : (
+                      "—"
+                    )}
                   </td>
                 </tr>
               ))}
 
               {filteredPayouts.length === 0 && (
                 <tr>
-                  <td colSpan={12} className="px-4 py-8 text-center text-stone-400">
+                  <td
+                    colSpan={12}
+                    className="px-4 py-8 text-center text-stone-400"
+                  >
                     No payouts match your search.
                   </td>
                 </tr>
@@ -260,13 +395,17 @@ export default function AllPayoutsTab() {
 
         {/* Footer summary strip */}
         <div className="px-4 py-3 bg-stone-50 border-t border-stone-200 text-stone-500">
-          {timeFilter} · {paidPayouts.length} paid · Lister paid ₹{listerPaidTotal.toLocaleString('en-IN')} · HOK retained ₹{hokRetainedTotal.toLocaleString('en-IN')} · avg split {avgSplit}%
+          {timeFilter} · {paidPayouts.length} paid · Lister paid ₹
+          {listerPaidTotal.toLocaleString("en-IN")} · HOK retained ₹
+          {hokRetainedTotal.toLocaleString("en-IN")} · avg split {avgSplit}%
         </div>
       </div>
 
       {/* Explanatory note */}
       <p className="text-stone-400 px-1">
-        Payout % varies per transaction based on rental number, condition, and any deposit deduction events. All payouts require individual approval before processing.
+        Payout % varies per transaction based on rental number, condition, and
+        any deposit deduction events. All payouts require individual approval
+        before processing.
       </p>
     </div>
   );

@@ -8,7 +8,7 @@
   flex-direction: column;
   padding-bottom: 32px;
   margin-bottom: 28px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 /* TOP ROW - Thumbnail + Header side by side */
@@ -41,13 +41,13 @@
 
 /* Background tints by type */
 .mobile-cart-item[data-type="rental"] .mobile-cart-item__thumb {
-  background: #EFF4EC;
+  background: #eff4ec;
 }
 .mobile-cart-item[data-type="preloved"] .mobile-cart-item__thumb {
-  background: #F5EEF2;
+  background: #f5eef2;
 }
 .mobile-cart-item[data-type="new"] .mobile-cart-item__thumb {
-  background: #EEF1F7;
+  background: #eef1f7;
 }
 
 /* Mode tag at bottom of thumbnail */
@@ -87,7 +87,7 @@
   font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
   margin-bottom: 4px;
 }
 
@@ -96,7 +96,7 @@
   font-size: 17px;
   font-weight: 400;
   line-height: 1.2;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 3px;
 }
 
@@ -105,7 +105,7 @@
   font-size: 10.5px;
   font-weight: 300;
   line-height: 1.5;
-  color: #B0A898;
+  color: #b0a898;
   margin: 0;
 }
 
@@ -118,16 +118,16 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 1px solid #E8E0D4;
-  background: #FFFFFB;
+  border: 1px solid #e8e0d4;
+  background: #fffffb;
   cursor: pointer;
   transition: all 0.15s linear;
 }
 
 .mobile-cart-item__remove:hover {
-  color: #B85C38;
-  background: #FDF3EF;
-  border-color: #B85C38;
+  color: #b85c38;
+  background: #fdf3ef;
+  border-color: #b85c38;
 }
 
 .mobile-cart-item__remove svg {
@@ -143,16 +143,16 @@
   margin-top: 14px;
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .mobile-cart-item__meta-dot {
   font-size: 8px;
-  color: #F0EAE0;
+  color: #f0eae0;
 }
 
 .mobile-cart-item__condition[data-grade="pristine"] {
-  color: #6B7E5A;
+  color: #6b7e5a;
   font-weight: 400;
 }
 
@@ -199,16 +199,16 @@
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   border-bottom: 1px solid transparent;
   cursor: pointer;
 }
 
 .mobile-cart-item__action:hover {
-  color: #3C3529;
-  border-bottom-color: #B0A898;
+  color: #3c3529;
+  border-bottom-color: #b0a898;
 }
 
 .mobile-cart-item__action.saved {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }

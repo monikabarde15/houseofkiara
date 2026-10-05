@@ -2,34 +2,113 @@ import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 import Payout from "../models/Payout.js";
 
-const findOrder = (id) => Order.findOne({ $or: [{ orderId: id }, { _id: id }] });
+const findOrder = (id) =>
+  Order.findOne({ $or: [{ orderId: id }, { _id: id }] });
 const itemOf = (order, index) => order.items?.[Number(index)];
-const saveLog = (order, message, type = "Workflow") => { order.logs.push({ message, type, user: "Admin" }); };
-const validTransition = { 
-  Confirmed: ["Packed", "Dispatched", "Shipped", "Delivered", "Return Due", "Returned", "Complete", "Processing", "Cancelled"], 
-  Packed: ["Confirmed", "Dispatched", "Shipped", "Delivered", "Complete", "Cancelled"], 
-  Dispatched: ["Confirmed", "Packed", "Shipped", "Delivered", "Complete"], 
-  Shipped: ["Confirmed", "Dispatched", "Delivered", "Return Due", "Returned", "Complete"], 
-  Delivered: ["Confirmed", "Dispatched", "Shipped", "Return Due", "Return Sent", "Returned", "Complete"], 
-  "Return Due": ["Confirmed", "Delivered", "Return Sent", "Returned", "Complete"], 
-  "Return Sent": ["Confirmed", "Return Due", "Returned", "Complete"], 
-  Returned: ["Confirmed", "Delivered", "Partially Returned", "Complete"], 
-  "Partially Returned": ["Returned", "Complete"], 
-  Processing: ["Confirmed", "Packed", "Dispatched", "Shipped", "Delivered", "Complete", "Cancelled"] 
+const saveLog = (order, message, type = "Workflow") => {
+  order.logs.push({ message, type, user: "Admin" });
 };
-const createPayoutsForOrder = async (order) => { for (const item of order.items || []) { if (!item.productId || !["Rental", "Preloved", "Buy"].includes(item.mode)) continue; const exists = await Payout.findOne({ orderId: order.orderId, productId: item.productId }); if (exists) continue; const product = await Product.findOne({ productId: item.productId }); const percentage = Number(product?.payoutPercentage ?? 80); const transaction = Number(item.amount || 0); const share = Math.round(transaction * percentage) / 100; await Payout.create({ payoutId: `PAY-${order.orderId}-${item.productId}`, productId: item.productId, listerId: product?.listerId || "UNASSIGNED", listerName: product?.listerName || "Unassigned Lister", orderId: order.orderId, productName: item.productName, mode: item.mode, transactionAmount: transaction, payoutPercentage: percentage, listerShare: share, hokCommission: Math.round((transaction - share) * 100) / 100, netPayout: share, dueDate: new Date(), status: "Pending" }); } };
+const validTransition = {
+  Confirmed: [
+    "Packed",
+    "Dispatched",
+    "Shipped",
+    "Delivered",
+    "Return Due",
+    "Returned",
+    "Complete",
+    "Processing",
+    "Cancelled",
+  ],
+  Packed: [
+    "Confirmed",
+    "Dispatched",
+    "Shipped",
+    "Delivered",
+    "Complete",
+    "Cancelled",
+  ],
+  Dispatched: ["Confirmed", "Packed", "Shipped", "Delivered", "Complete"],
+  Shipped: [
+    "Confirmed",
+    "Dispatched",
+    "Delivered",
+    "Return Due",
+    "Returned",
+    "Complete",
+  ],
+  Delivered: [
+    "Confirmed",
+    "Dispatched",
+    "Shipped",
+    "Return Due",
+    "Return Sent",
+    "Returned",
+    "Complete",
+  ],
+  "Return Due": [
+    "Confirmed",
+    "Delivered",
+    "Return Sent",
+    "Returned",
+    "Complete",
+  ],
+  "Return Sent": ["Confirmed", "Return Due", "Returned", "Complete"],
+  Returned: ["Confirmed", "Delivered", "Partially Returned", "Complete"],
+  "Partially Returned": ["Returned", "Complete"],
+  Processing: [
+    "Confirmed",
+    "Packed",
+    "Dispatched",
+    "Shipped",
+    "Delivered",
+    "Complete",
+    "Cancelled",
+  ],
+};
+const createPayoutsForOrder = async (order) => {
+  for (const item of order.items || []) {
+    if (!item.productId || !["Rental", "Preloved", "Buy"].includes(item.mode))
+      continue;
+    const exists = await Payout.findOne({
+      orderId: order.orderId,
+      productId: item.productId,
+    });
+    if (exists) continue;
+    const product = await Product.findOne({ productId: item.productId });
+    const percentage = Number(product?.payoutPercentage ?? 80);
+    const transaction = Number(item.amount || 0);
+    const share = Math.round(transaction * percentage) / 100;
+    await Payout.create({
+      payoutId: `PAY-${order.orderId}-${item.productId}`,
+      productId: item.productId,
+      listerId: product?.listerId || "UNASSIGNED",
+      listerName: product?.listerName || "Unassigned Lister",
+      orderId: order.orderId,
+      productName: item.productName,
+      mode: item.mode,
+      transactionAmount: transaction,
+      payoutPercentage: percentage,
+      listerShare: share,
+      hokCommission: Math.round((transaction - share) * 100) / 100,
+      netPayout: share,
+      dueDate: new Date(),
+      status: "Pending",
+    });
+  }
+};
 
 // Helper to remove blocked dates for this order
 const unblockOrderProductDates = async (order) => {
   for (const item of order.items || []) {
     if (!item.productId || item.mode?.toLowerCase() !== "rental") continue;
     const product = await Product.findOne({
-      $or: [{ productId: item.productId }, { _id: item.productId }]
+      $or: [{ productId: item.productId }, { _id: item.productId }],
     });
     if (!product || !Array.isArray(product.blockedDates)) continue;
     const orderTag = `Order ${order.orderId}`;
     product.blockedDates = product.blockedDates.filter(
-      bd => !(bd.reason && bd.reason.includes(orderTag))
+      (bd) => !(bd.reason && bd.reason.includes(orderTag)),
     );
     await product.save();
   }
@@ -38,10 +117,18 @@ const unblockOrderProductDates = async (order) => {
 export const transitionOrder = async (req, res) => {
   try {
     const o = await findOrder(req.params.id);
-    if (!o) return res.status(404).json({ success: false, message: "Order not found" });
+    if (!o)
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     const next = req.body.status;
     if (!validTransition[o.status]?.includes(next) && o.status !== next)
-      return res.status(422).json({ success: false, message: `Invalid order transition: ${o.status} → ${next}` });
+      return res
+        .status(422)
+        .json({
+          success: false,
+          message: `Invalid order transition: ${o.status} → ${next}`,
+        });
     o.status = next;
     saveLog(o, `Order status changed to ${next}`);
     await o.save();
@@ -53,41 +140,111 @@ export const transitionOrder = async (req, res) => {
 
     if (next === "Complete") await createPayoutsForOrder(o);
     res.json({ success: true, data: { ...o.toObject(), id: o.orderId } });
-  } catch (e) { res.status(422).json({ success: false, message: e.message }); }
+  } catch (e) {
+    res.status(422).json({ success: false, message: e.message });
+  }
 };
 
-export const updateOrderItem = async (req, res) => { try { const o = await findOrder(req.params.id); if (!o) return res.status(404).json({ success: false, message: "Order not found" }); const item = itemOf(o, req.params.index); if (!item) return res.status(404).json({ success: false, message: "Order item not found" }); Object.assign(item, req.body); saveLog(o, `Order item ${Number(req.params.index) + 1} updated`); await o.save(); res.json({ success: true, data: item }); } catch (e) { res.status(422).json({ success: false, message: e.message }); } };
-export const updateDispatch = async (req, res) => { try { const o = await findOrder(req.params.id); const item = o && itemOf(o, req.params.index); if (!item) return res.status(404).json({ success: false, message: "Order item not found" }); item.dispatch = { ...item.dispatch?.toObject?.(), ...req.body, status: req.body.status || "Dispatched" }; item.status = item.dispatch.status; item.preDispatch = { ...(item.preDispatch?.toObject?.() || {}), documented: Boolean(req.body.documented ?? item.preDispatch?.documented), documentedBy: req.body.documentedBy || item.preDispatch?.documentedBy }; saveLog(o, `Item ${Number(req.params.index) + 1} dispatch details updated`); await o.save(); res.json({ success: true, data: item }); } catch (e) { res.status(422).json({ success: false, message: e.message }); } };
+export const updateOrderItem = async (req, res) => {
+  try {
+    const o = await findOrder(req.params.id);
+    if (!o)
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    const item = itemOf(o, req.params.index);
+    if (!item)
+      return res
+        .status(404)
+        .json({ success: false, message: "Order item not found" });
+    Object.assign(item, req.body);
+    saveLog(o, `Order item ${Number(req.params.index) + 1} updated`);
+    await o.save();
+    res.json({ success: true, data: item });
+  } catch (e) {
+    res.status(422).json({ success: false, message: e.message });
+  }
+};
+export const updateDispatch = async (req, res) => {
+  try {
+    const o = await findOrder(req.params.id);
+    const item = o && itemOf(o, req.params.index);
+    if (!item)
+      return res
+        .status(404)
+        .json({ success: false, message: "Order item not found" });
+    item.dispatch = {
+      ...item.dispatch?.toObject?.(),
+      ...req.body,
+      status: req.body.status || "Dispatched",
+    };
+    item.status = item.dispatch.status;
+    item.preDispatch = {
+      ...(item.preDispatch?.toObject?.() || {}),
+      documented: Boolean(req.body.documented ?? item.preDispatch?.documented),
+      documentedBy: req.body.documentedBy || item.preDispatch?.documentedBy,
+    };
+    saveLog(o, `Item ${Number(req.params.index) + 1} dispatch details updated`);
+    await o.save();
+    res.json({ success: true, data: item });
+  } catch (e) {
+    res.status(422).json({ success: false, message: e.message });
+  }
+};
 export const updateReturnCondition = async (req, res) => {
   try {
     const o = await findOrder(req.params.id);
     const item = o && itemOf(o, req.params.index);
-    if (!item) return res.status(404).json({ success: false, message: "Order not found" });
+    if (!item)
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     if (item.mode === "Preloved" || item.mode === "Buy")
-      return res.status(422).json({ success: false, message: "Sale items do not have a rental return assessment" });
+      return res
+        .status(422)
+        .json({
+          success: false,
+          message: "Sale items do not have a rental return assessment",
+        });
     if (!["A", "B", "C", "D"].includes(req.body.grade))
-      return res.status(422).json({ success: false, message: "Condition grade must be A, B, C or D" });
+      return res
+        .status(422)
+        .json({
+          success: false,
+          message: "Condition grade must be A, B, C or D",
+        });
 
-    item.returnCondition = { ...req.body, receivedDate: req.body.receivedDate || new Date().toISOString() };
+    item.returnCondition = {
+      ...req.body,
+      receivedDate: req.body.receivedDate || new Date().toISOString(),
+    };
     item.status = "Returned";
-    saveLog(o, `Item ${Number(req.params.index) + 1} return assessed as grade ${req.body.grade}`);
+    saveLog(
+      o,
+      `Item ${Number(req.params.index) + 1} return assessed as grade ${req.body.grade}`,
+    );
 
     // Early or on-time return: unblock product dates
     if (item.productId) {
       const product = await Product.findOne({
-        $or: [{ productId: item.productId }, { _id: item.productId }]
+        $or: [{ productId: item.productId }, { _id: item.productId }],
       });
       if (product && Array.isArray(product.blockedDates)) {
         const orderTag = `Order ${o.orderId}`;
         product.blockedDates = product.blockedDates.filter(
-          bd => !(bd.reason && bd.reason.includes(orderTag))
+          (bd) => !(bd.reason && bd.reason.includes(orderTag)),
         );
         await product.save();
       }
     }
 
-    const rentalItems = (o.items || []).filter(i => i.mode?.toLowerCase() === "rental");
-    if (rentalItems.length > 0 && rentalItems.every(i => i.status === "Returned")) {
+    const rentalItems = (o.items || []).filter(
+      (i) => i.mode?.toLowerCase() === "rental",
+    );
+    if (
+      rentalItems.length > 0 &&
+      rentalItems.every((i) => i.status === "Returned")
+    ) {
       o.status = "Returned";
     }
 
@@ -97,6 +254,132 @@ export const updateReturnCondition = async (req, res) => {
     res.status(422).json({ success: false, message: e.message });
   }
 };
-export const decideDeposit = async (req, res) => { try { const o = await findOrder(req.params.id); const item = o && itemOf(o, req.params.index); if (!item) return res.status(404).json({ success: false, message: "Order item not found" }); const held = Number(item.deposit || item.depositDecision?.totalDeposit || 0); if (item.mode !== "Rental" || held <= 0) return res.status(422).json({ success: false, message: "Deposit decision is only available for rental items with a deposit" }); const status = req.body.status; if (!["Released", "Partial", "Forfeited"].includes(status)) return res.status(422).json({ success: false, message: "Invalid deposit decision" }); const deducted = status === "Released" ? 0 : status === "Forfeited" ? held : Number(req.body.deductedAmount || 0); if (deducted < 0 || deducted > held) return res.status(422).json({ success: false, message: "Deduction cannot exceed deposit held" }); const released = held - deducted; item.depositDecision = { status, totalDeposit: held, deductedAmount: deducted, releasedAmount: released, reason: req.body.reason || "", releaseNote: req.body.releaseNote || "", processedAt: new Date() }; saveLog(o, `Deposit ${status.toLowerCase()} for item ${Number(req.params.index) + 1}: ₹${released} released`); o.depositStatus = o.items.some(i => i.depositDecision?.status === "Partial" || i.depositDecision?.status === "Forfeited") ? "Partially Released" : "Released"; o.depositHeld = o.items.reduce((sum, i) => sum + Number(i.deposit || 0), 0); await o.save(); res.json({ success: true, data: item.depositDecision }); } catch (e) { res.status(422).json({ success: false, message: e.message }); } };
-export const getInvoice = async (req, res) => { try { const o = await findOrder(req.params.id); if (!o) return res.status(404).json({ success: false, message: "Order not found" }); const items = (o.items || []).map(i => ({ productName: i.productName, mode: i.mode, amount: Number(i.amount || 0), gst: Number(i.gst || (i.mode === "Rental" ? i.amount * .18 : i.amount * .05)), deposit: Number(i.deposit || 0) })); res.json({ success: true, data: { invoiceNo: o.invoiceNo || `HOK-INV-${o.orderId.replace(/\W/g, "")}`, invoiceDate: o.invoiceDate || o.createdAt, orderId: o.orderId, customer: { name: o.customerName, email: o.customerEmail, phone: o.customerPhone, address: o.address }, items, orderValue: items.reduce((s, i) => s + i.amount, 0), gst: items.reduce((s, i) => s + i.gst, 0), deposit: items.reduce((s, i) => s + i.deposit, 0), grandTotal: o.grandTotal } }); } catch (e) { res.status(500).json({ success: false, message: e.message }); } };
-export const saveOrderEvidence = async (req, res) => { try { const o = await findOrder(req.params.id); const item = o && itemOf(o, req.params.index); if (!item) return res.status(404).json({ success: false, message: "Order item not found" }); const target = req.body.stage === "return" ? "returnCondition" : "preDispatch"; item[target] = { ...(item[target]?.toObject?.() || item[target] || {}), photos: req.body.photos || item[target]?.photos || [], videoUrl: req.body.videoUrl || item[target]?.videoUrl }; saveLog(o, `${req.body.stage || "dispatch"} evidence updated for item ${Number(req.params.index) + 1}`); await o.save(); res.json({ success: true, data: item[target] }); } catch (e) { res.status(422).json({ success: false, message: e.message }); } };
+export const decideDeposit = async (req, res) => {
+  try {
+    const o = await findOrder(req.params.id);
+    const item = o && itemOf(o, req.params.index);
+    if (!item)
+      return res
+        .status(404)
+        .json({ success: false, message: "Order item not found" });
+    const held = Number(
+      item.deposit || item.depositDecision?.totalDeposit || 0,
+    );
+    if (item.mode !== "Rental" || held <= 0)
+      return res
+        .status(422)
+        .json({
+          success: false,
+          message:
+            "Deposit decision is only available for rental items with a deposit",
+        });
+    const status = req.body.status;
+    if (!["Released", "Partial", "Forfeited"].includes(status))
+      return res
+        .status(422)
+        .json({ success: false, message: "Invalid deposit decision" });
+    const deducted =
+      status === "Released"
+        ? 0
+        : status === "Forfeited"
+          ? held
+          : Number(req.body.deductedAmount || 0);
+    if (deducted < 0 || deducted > held)
+      return res
+        .status(422)
+        .json({
+          success: false,
+          message: "Deduction cannot exceed deposit held",
+        });
+    const released = held - deducted;
+    item.depositDecision = {
+      status,
+      totalDeposit: held,
+      deductedAmount: deducted,
+      releasedAmount: released,
+      reason: req.body.reason || "",
+      releaseNote: req.body.releaseNote || "",
+      processedAt: new Date(),
+    };
+    saveLog(
+      o,
+      `Deposit ${status.toLowerCase()} for item ${Number(req.params.index) + 1}: ₹${released} released`,
+    );
+    o.depositStatus = o.items.some(
+      (i) =>
+        i.depositDecision?.status === "Partial" ||
+        i.depositDecision?.status === "Forfeited",
+    )
+      ? "Partially Released"
+      : "Released";
+    o.depositHeld = o.items.reduce((sum, i) => sum + Number(i.deposit || 0), 0);
+    await o.save();
+    res.json({ success: true, data: item.depositDecision });
+  } catch (e) {
+    res.status(422).json({ success: false, message: e.message });
+  }
+};
+export const getInvoice = async (req, res) => {
+  try {
+    const o = await findOrder(req.params.id);
+    if (!o)
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    const items = (o.items || []).map((i) => ({
+      productName: i.productName,
+      mode: i.mode,
+      amount: Number(i.amount || 0),
+      gst: Number(
+        i.gst || (i.mode === "Rental" ? i.amount * 0.18 : i.amount * 0.05),
+      ),
+      deposit: Number(i.deposit || 0),
+    }));
+    res.json({
+      success: true,
+      data: {
+        invoiceNo: o.invoiceNo || `HOK-INV-${o.orderId.replace(/\W/g, "")}`,
+        invoiceDate: o.invoiceDate || o.createdAt,
+        orderId: o.orderId,
+        customer: {
+          name: o.customerName,
+          email: o.customerEmail,
+          phone: o.customerPhone,
+          address: o.address,
+        },
+        items,
+        orderValue: items.reduce((s, i) => s + i.amount, 0),
+        gst: items.reduce((s, i) => s + i.gst, 0),
+        deposit: items.reduce((s, i) => s + i.deposit, 0),
+        grandTotal: o.grandTotal,
+      },
+    });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+};
+export const saveOrderEvidence = async (req, res) => {
+  try {
+    const o = await findOrder(req.params.id);
+    const item = o && itemOf(o, req.params.index);
+    if (!item)
+      return res
+        .status(404)
+        .json({ success: false, message: "Order item not found" });
+    const target =
+      req.body.stage === "return" ? "returnCondition" : "preDispatch";
+    item[target] = {
+      ...(item[target]?.toObject?.() || item[target] || {}),
+      photos: req.body.photos || item[target]?.photos || [],
+      videoUrl: req.body.videoUrl || item[target]?.videoUrl,
+    };
+    saveLog(
+      o,
+      `${req.body.stage || "dispatch"} evidence updated for item ${Number(req.params.index) + 1}`,
+    );
+    await o.save();
+    res.json({ success: true, data: item[target] });
+  } catch (e) {
+    res.status(422).json({ success: false, message: e.message });
+  }
+};

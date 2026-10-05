@@ -7,8 +7,7 @@ import MobileSubmissionDetailSheet from "../sheets/MobileSubmissionDetailSheet";
 import "../../../../styles/Profile/mobile/sections/MobileSubmissionsSection.css";
 
 const MobileSubmissionsSection = () => {
-  const [selectedSubmission, setSelectedSubmission] =
-    useState(null);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   const submissions = [
     {
@@ -25,50 +24,30 @@ const MobileSubmissionsSection = () => {
       originalPrice: 250000,
       photosSubmitted: "5 Photos",
       pickupCity: "Indore",
-      imageGradient:
-        "linear-gradient(160deg, #F0E8D8, #E0CDA8)"
-    }
+      imageGradient: "linear-gradient(160deg, #F0E8D8, #E0CDA8)",
+    },
   ];
 
   return (
     <>
       <section className="profile-mobile-submissions-section">
-        <MobileSectionLabel
-          title="MY SUBMISSIONS"
-          count={submissions.length}
-        />
+        <MobileSectionLabel title="MY SUBMISSIONS" count={submissions.length} />
 
         <div className="profile-mobile-submissions-list">
-          {submissions.map(
-            (submission) => (
-              <MobileSubmissionRow
-                key={submission.id}
-                submission={
-                  submission
-                }
-                onClick={() =>
-                  setSelectedSubmission(
-                    submission
-                  )
-                }
-              />
-            )
-          )}
+          {submissions.map((submission) => (
+            <MobileSubmissionRow
+              key={submission.id}
+              submission={submission}
+              onClick={() => setSelectedSubmission(submission)}
+            />
+          ))}
         </div>
       </section>
 
       <MobileSubmissionDetailSheet
-        isOpen={
-          !!selectedSubmission
-        }
-        onClose={() =>
-          setSelectedSubmission(
-            null
-          )
-        }
-        submission={
-          selectedSubmission
-        }
+        isOpen={!!selectedSubmission}
+        onClose={() => setSelectedSubmission(null)}
+        submission={selectedSubmission}
       />
     </>
   );

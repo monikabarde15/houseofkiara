@@ -11,24 +11,14 @@ const DropdownCard = ({
   return (
     <article className="dd-card">
       <div className="dd-card-img">
-        <span
-          className={`dd-badge ${badgeClass}`}
-        >
-          {badge}
-        </span>
+        <span className={`dd-badge ${badgeClass}`}>{badge}</span>
 
-        <div
-          className={`dd-card-inner ${imageClass}`}
-        />
+        <div className={`dd-card-inner ${imageClass}`} />
       </div>
 
-      <div className="dd-card-designer">
-        {designer}
-      </div>
+      <div className="dd-card-designer">{designer}</div>
 
-      <h4 className="dd-card-name">
-        {name}
-      </h4>
+      <h4 className="dd-card-name">{name}</h4>
 
       <div className="dd-card-price">
         <strong>{price}</strong>

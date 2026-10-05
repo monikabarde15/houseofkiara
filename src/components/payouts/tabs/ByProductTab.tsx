@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from "react";
 
 // ============================================================
 // BY PRODUCT TAB
@@ -15,13 +15,13 @@ import React, { useMemo, useState } from 'react';
 // so both tabs always show the same numbers.
 // ============================================================
 
-type PayoutStatus = 'Paid' | 'Pending Approval';
+type PayoutStatus = "Paid" | "Pending Approval";
 
 interface RentalTransaction {
   id: string;
   productName: string;
-  rentalNumber: string;   // "Rental #1", "Rental #2"...
-  date: string | null;    // null = not yet processed
+  rentalNumber: string; // "Rental #1", "Rental #2"...
+  date: string | null; // null = not yet processed
   orderId: string;
   listerName: string;
   transactionValue: number;
@@ -34,35 +34,93 @@ interface RentalTransaction {
 // transactions only (By Product groups rental history per piece —
 // preloved sales and damage comp rows don't belong in this view).
 const MOCK_TRANSACTIONS: RentalTransaction[] = [
-  { id: 't1', productName: 'Crimson Zardozi Bridal Lehenga', rentalNumber: 'Rental #1', date: '10 Jan 2026', orderId: 'HOK-ORD-006', listerName: 'Meera Joshi', transactionValue: 8500, payoutPercent: '65%', amount: 5525, status: 'Paid' },
-  { id: 't2', productName: 'Crimson Zardozi Bridal Lehenga', rentalNumber: 'Rental #2', date: '5 Feb 2026', orderId: 'HOK-ORD-007', listerName: 'Meera Joshi', transactionValue: 8500, payoutPercent: '60%', amount: 5100, status: 'Paid' },
-  { id: 't3', productName: 'Crimson Zardozi Bridal Lehenga', rentalNumber: 'Rental #3', date: null, orderId: 'HOK-ORD-001', listerName: 'Meera Joshi', transactionValue: 8500, payoutPercent: '55%', amount: 4675, status: 'Pending Approval' },
-  { id: 't4', productName: 'Crimson Zardozi Bridal Lehenga', rentalNumber: 'Rental #4', date: null, orderId: 'HOK-ORD-009', listerName: 'Meera Joshi', transactionValue: 8500, payoutPercent: '55%', amount: 4675, status: 'Pending Approval' },
-  { id: 't5', productName: 'Rose Georgette Anarkali', rentalNumber: 'Rental #1', date: null, orderId: 'HOK-ORD-003', listerName: 'Aishwarya Sharma', transactionValue: 6500, payoutPercent: '60%', amount: 3900, status: 'Pending Approval' },
+  {
+    id: "t1",
+    productName: "Crimson Zardozi Bridal Lehenga",
+    rentalNumber: "Rental #1",
+    date: "10 Jan 2026",
+    orderId: "HOK-ORD-006",
+    listerName: "Meera Joshi",
+    transactionValue: 8500,
+    payoutPercent: "65%",
+    amount: 5525,
+    status: "Paid",
+  },
+  {
+    id: "t2",
+    productName: "Crimson Zardozi Bridal Lehenga",
+    rentalNumber: "Rental #2",
+    date: "5 Feb 2026",
+    orderId: "HOK-ORD-007",
+    listerName: "Meera Joshi",
+    transactionValue: 8500,
+    payoutPercent: "60%",
+    amount: 5100,
+    status: "Paid",
+  },
+  {
+    id: "t3",
+    productName: "Crimson Zardozi Bridal Lehenga",
+    rentalNumber: "Rental #3",
+    date: null,
+    orderId: "HOK-ORD-001",
+    listerName: "Meera Joshi",
+    transactionValue: 8500,
+    payoutPercent: "55%",
+    amount: 4675,
+    status: "Pending Approval",
+  },
+  {
+    id: "t4",
+    productName: "Crimson Zardozi Bridal Lehenga",
+    rentalNumber: "Rental #4",
+    date: null,
+    orderId: "HOK-ORD-009",
+    listerName: "Meera Joshi",
+    transactionValue: 8500,
+    payoutPercent: "55%",
+    amount: 4675,
+    status: "Pending Approval",
+  },
+  {
+    id: "t5",
+    productName: "Rose Georgette Anarkali",
+    rentalNumber: "Rental #1",
+    date: null,
+    orderId: "HOK-ORD-003",
+    listerName: "Aishwarya Sharma",
+    transactionValue: 6500,
+    payoutPercent: "60%",
+    amount: 3900,
+    status: "Pending Approval",
+  },
 ];
 
 // Distinct product list for the dropdown, derived from the mock
 // transactions so it never falls out of sync with the table below.
 // TODO(backend): once real data lands, derive this the same way
 // (unique productName values) or fetch a dedicated products list.
-const PRODUCT_NAMES = Array.from(new Set(MOCK_TRANSACTIONS.map(t => t.productName)));
+const PRODUCT_NAMES = Array.from(
+  new Set(MOCK_TRANSACTIONS.map((t) => t.productName)),
+);
 
 const statusBadgeClasses: Record<PayoutStatus, string> = {
-  'Paid': 'bg-green-100 text-green-700',
-  'Pending Approval': 'bg-[#fff3d6] text-[#8a6a2c]',
+  Paid: "bg-green-100 text-green-700",
+  "Pending Approval": "bg-[#fff3d6] text-[#8a6a2c]",
 };
 
 export default function ByProductTab() {
-  const [selectedProduct, setSelectedProduct] = useState<string>(PRODUCT_NAMES[0] ?? '');
+  const [selectedProduct, setSelectedProduct] = useState<string>(
+    PRODUCT_NAMES[0] ?? "",
+  );
 
   const productTransactions = useMemo(
-    () => MOCK_TRANSACTIONS.filter(t => t.productName === selectedProduct),
-    [selectedProduct]
+    () => MOCK_TRANSACTIONS.filter((t) => t.productName === selectedProduct),
+    [selectedProduct],
   );
 
   return (
     <div className="space-y-4 text-xs font-sans">
-
       {/* Product selector */}
       <div className="space-y-1 max-w-md">
         <label className="uppercase text-[11px] tracking-wider font-bold text-stone-400">
@@ -73,8 +131,10 @@ export default function ByProductTab() {
           onChange={(e) => setSelectedProduct(e.target.value)}
           className="w-full px-3 py-2 border border-stone-200 rounded-md text-sm bg-white focus:outline-none focus:border-[#c5a880]"
         >
-          {PRODUCT_NAMES.map(name => (
-            <option key={name} value={name}>{name}</option>
+          {PRODUCT_NAMES.map((name) => (
+            <option key={name} value={name}>
+              {name}
+            </option>
           ))}
         </select>
       </div>
@@ -99,7 +159,7 @@ export default function ByProductTab() {
               {productTransactions.map((t, idx) => (
                 <tr
                   key={t.id}
-                  className={`hover:bg-[#fcf9f5] transition-colors ${idx % 2 === 1 ? 'bg-stone-50/40' : ''}`}
+                  className={`hover:bg-[#fcf9f5] transition-colors ${idx % 2 === 1 ? "bg-stone-50/40" : ""}`}
                 >
                   <td className="px-4 py-3 font-semibold text-stone-900">
                     {t.rentalNumber}
@@ -111,9 +171,7 @@ export default function ByProductTab() {
                       (date field is genuinely null, just not guarded).
                       Using "—" instead so it reads as "not processed yet"
                       rather than looking like a bug. */}
-                  <td className="px-4 py-3">
-                    {t.date ?? '—'}
-                  </td>
+                  <td className="px-4 py-3">{t.date ?? "—"}</td>
 
                   <td className="px-4 py-3 text-[#8a6a2c] font-mono text-[10px]">
                     {t.orderId}
@@ -124,7 +182,7 @@ export default function ByProductTab() {
                   </td>
 
                   <td className="px-4 py-3">
-                    ₹{t.transactionValue.toLocaleString('en-IN')}
+                    ₹{t.transactionValue.toLocaleString("en-IN")}
                   </td>
 
                   <td className="px-4 py-3 font-semibold text-stone-900">
@@ -132,11 +190,13 @@ export default function ByProductTab() {
                   </td>
 
                   <td className="px-4 py-3 font-medium">
-                    ₹{t.amount.toLocaleString('en-IN')}
+                    ₹{t.amount.toLocaleString("en-IN")}
                   </td>
 
                   <td className="px-4 py-3">
-                    <span className={`px-2.5 py-1 rounded text-[10px] font-medium ${statusBadgeClasses[t.status]}`}>
+                    <span
+                      className={`px-2.5 py-1 rounded text-[10px] font-medium ${statusBadgeClasses[t.status]}`}
+                    >
                       {t.status}
                     </span>
                   </td>
@@ -145,7 +205,10 @@ export default function ByProductTab() {
 
               {productTransactions.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-stone-400">
+                  <td
+                    colSpan={8}
+                    className="px-4 py-8 text-center text-stone-400"
+                  >
                     No rental history for this product yet.
                   </td>
                 </tr>
@@ -154,7 +217,6 @@ export default function ByProductTab() {
           </table>
         </div>
       </div>
-
     </div>
   );
 }

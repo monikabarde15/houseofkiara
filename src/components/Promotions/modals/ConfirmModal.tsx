@@ -4,9 +4,9 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 8.3
    ======================================== */
 
-import React from 'react';
-import './styles/ConfirmModal.css';
-import { Button } from '../components/UI';
+import React from "react";
+import "./styles/ConfirmModal.css";
+import { Button } from "../components/UI";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -23,8 +23,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isOpen,
   title,
   message,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
   onConfirm,
   onCancel,
   isDestructive = false,
@@ -40,11 +40,18 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <Button variant="secondary" size="small" onClick={onCancel}>
             {cancelLabel}
           </Button>
-          <Button 
-            variant={isDestructive ? 'secondary' : 'primary'} 
-            size="small" 
+          <Button
+            variant={isDestructive ? "secondary" : "primary"}
+            size="small"
             onClick={onConfirm}
-            style={isDestructive ? { borderColor: 'var(--promo-terra)', color: 'var(--promo-terra)' } : {}}
+            style={
+              isDestructive
+                ? {
+                    borderColor: "var(--promo-terra)",
+                    color: "var(--promo-terra)",
+                  }
+                : {}
+            }
           >
             {confirmLabel}
           </Button>

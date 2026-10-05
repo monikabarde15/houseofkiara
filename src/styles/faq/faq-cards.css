@@ -39,7 +39,9 @@
   text-align: left;
   box-sizing: border-box;
   font-family: var(--hok-faq-font-sans);
-  transition: transform 0.4s var(--hok-faq-ease), box-shadow 0.4s var(--hok-faq-ease);
+  transition:
+    transform 0.4s var(--hok-faq-ease),
+    box-shadow 0.4s var(--hok-faq-ease);
 }
 
 /* Card Gold Bottom Line (B9) */
@@ -67,7 +69,9 @@
   stroke: rgba(201, 169, 110, 0.42);
   fill: none;
   stroke-width: 1;
-  transition: stroke 0.3s ease, transform 0.4s var(--hok-faq-ease);
+  transition:
+    stroke 0.3s ease,
+    transform 0.4s var(--hok-faq-ease);
   pointer-events: none;
 }
 
@@ -129,12 +133,24 @@
 }
 
 /* Card Entrance Stagger Delays (B13 & 10.8) */
-.c-delay-1 { animation-delay: 0.30s; }
-.c-delay-2 { animation-delay: 0.36s; }
-.c-delay-3 { animation-delay: 0.42s; }
-.c-delay-4 { animation-delay: 0.48s; }
-.c-delay-5 { animation-delay: 0.54s; }
-.c-delay-6 { animation-delay: 0.60s; }
+.c-delay-1 {
+  animation-delay: 0.3s;
+}
+.c-delay-2 {
+  animation-delay: 0.36s;
+}
+.c-delay-3 {
+  animation-delay: 0.42s;
+}
+.c-delay-4 {
+  animation-delay: 0.48s;
+}
+.c-delay-5 {
+  animation-delay: 0.54s;
+}
+.c-delay-6 {
+  animation-delay: 0.6s;
+}
 
 /* Hygiene Promise (B11) */
 .promise {
@@ -247,7 +263,9 @@
   font-size: 12px;
   color: var(--hok-faq-charcoal);
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .ch-else-btn:hover {

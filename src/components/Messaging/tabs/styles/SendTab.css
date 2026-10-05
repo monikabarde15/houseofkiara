@@ -39,7 +39,7 @@
 .msg-chip--wordgroup.msg-chip--selected {
   background: var(--msg-gold-pale);
   border-color: var(--msg-gold);
-  color: #6B5730;
+  color: #6b5730;
   font-weight: 600;
 }
 

@@ -75,7 +75,7 @@
 .msg-template-modal-word-name {
   font-family: var(--msg-font-monospace);
   font-size: 10.5px;
-  color: #6B5730;
+  color: #6b5730;
   background: var(--msg-gold-pale);
   padding: 1px var(--msg-spacing-5);
   border-radius: var(--msg-radius-tight);
@@ -119,7 +119,7 @@
   background: var(--msg-status-terracotta-bg);
   border: 1px solid rgba(184, 92, 56, 0.28);
   border-radius: var(--msg-radius);
-  color: #7A2E1D;
+  color: #7a2e1d;
   margin-bottom: var(--msg-spacing-13);
 }
 

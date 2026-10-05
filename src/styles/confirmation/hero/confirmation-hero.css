@@ -7,7 +7,7 @@
 
   background: var(--warm-white);
 
-  border-bottom: 1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
 
   text-align: center;
 }
@@ -24,16 +24,14 @@
   width: 600px;
   height: 300px;
 
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgba(201, 169, 110, 0.07) 0%,
-      transparent 70%
-    );
+  background: radial-gradient(
+    ellipse at center,
+    rgba(201, 169, 110, 0.07) 0%,
+    transparent 70%
+  );
 
   pointer-events: none;
 }
-
 
 /* =========================
    4.2 Animated Checkmark
@@ -49,7 +47,7 @@
 
   border-radius: 50%;
 
-  border: 1.5px solid #E8E0D4;
+  border: 1.5px solid #e8e0d4;
 
   background: var(--warm-white);
 
@@ -57,8 +55,8 @@
   align-items: center;
   justify-content: center;
 
-  animation:
-    confirmationCirclePulse 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  animation: confirmationCirclePulse 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s
+    both;
 }
 
 .confirmation-hero-check-ring::after {
@@ -84,8 +82,7 @@
   stroke-dasharray: 36;
   stroke-dashoffset: 36;
 
-  animation:
-    confirmationCheckDraw 0.5s ease 0.75s forwards;
+  animation: confirmationCheckDraw 0.5s ease 0.75s forwards;
 }
 
 /* =========================
@@ -104,8 +101,7 @@
 
   color: var(--sage);
 
-  animation:
-    confirmationFadeIn 0.6s ease 0.4s both;
+  animation: confirmationFadeIn 0.6s ease 0.4s both;
 }
 
 /* =========================
@@ -124,15 +120,13 @@
 
   color: var(--ink);
 
-  animation:
-    confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+  animation: confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
 }
 
 .confirmation-hero-heading em {
   font-style: italic;
   color: var(--gold);
 }
-
 
 /* =========================
    4.5 Gold Rule
@@ -149,8 +143,8 @@
 
   opacity: 0;
 
-  animation:
-    confirmationGoldLine 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+  animation: confirmationGoldLine 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.9s
+    forwards;
 }
 
 /* =========================
@@ -169,8 +163,7 @@
 
   color: var(--ink-3);
 
-  animation:
-    confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+  animation: confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
 }
 
 .confirmation-hero-subcopy strong {
@@ -195,8 +188,7 @@
 
   background: var(--cream);
 
-  animation:
-    confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
+  animation: confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
 }
 
 .confirmation-hero-order-pill-label {
@@ -242,8 +234,7 @@
   justify-content: center;
   gap: 12px;
 
-  animation:
-    confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.75s both;
+  animation: confirmationHeroRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.75s both;
 }
 
 .confirmation-hero-btn {
@@ -324,13 +315,12 @@
 
   pointer-events: none;
 
-  background:
-    linear-gradient(
-      105deg,
-      transparent 40%,
-      rgba(201, 160, 90, 0.08) 50%,
-      transparent 60%
-    );
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(201, 160, 90, 0.08) 50%,
+    transparent 60%
+  );
 
   animation: confirmationShimmer 4s linear infinite;
 
@@ -399,9 +389,9 @@
   }
 }
 
- /* 4.8 Hero CTA Row */
+/* 4.8 Hero CTA Row */
 
- @keyframes confirmationShimmer {
+@keyframes confirmationShimmer {
   from {
     transform: translateX(-100%);
   }

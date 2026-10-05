@@ -1,6 +1,6 @@
 .mobile-instagram {
   padding: 76px 20px 48px;
-  background: #FFFEFB;
+  background: #fffefb;
 }
 
 .mobile-instagram-header {
@@ -26,7 +26,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
 
-  color: #1A1612;
+  color: #1a1612;
 
   cursor: pointer;
 }
@@ -41,7 +41,7 @@
 
   margin-top: 4px;
 
-  background: #1A1612;
+  background: #1a1612;
 }
 
 .mobile-instagram-header .hok-section-eyebrow {
@@ -106,7 +106,7 @@
   width: 20px;
   height: 20px;
 
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .mobile-instagram-handle-row {
@@ -123,7 +123,7 @@
 
   height: 1px;
 
-  background: #E8E0D4;
+  background: #e8e0d4;
 }
 
 .mobile-instagram-handle {
@@ -136,11 +136,11 @@
   font-style: italic;
   font-weight: 400;
 
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .mobile-instagram-handle a {
-  color: #1A1612;
+  color: #1a1612;
 
   text-decoration: none;
 }

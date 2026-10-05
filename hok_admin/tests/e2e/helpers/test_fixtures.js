@@ -162,10 +162,18 @@ export const generateTestOrder = (overrides = {}) => {
   const custId = uniqueId("HOK-CUST");
   const prodId = uniqueId("HOK-PRD");
   const today = new Date();
-  const startDate = new Date(today.getTime() + 5 * 24 * 3600 * 1000).toISOString().split("T")[0];
-  const endDate = new Date(today.getTime() + 9 * 24 * 3600 * 1000).toISOString().split("T")[0];
-  const dispatchDate = new Date(today.getTime() + 3 * 24 * 3600 * 1000).toISOString().split("T")[0];
-  const returnDueDate = new Date(today.getTime() + 10 * 24 * 3600 * 1000).toISOString().split("T")[0];
+  const startDate = new Date(today.getTime() + 5 * 24 * 3600 * 1000)
+    .toISOString()
+    .split("T")[0];
+  const endDate = new Date(today.getTime() + 9 * 24 * 3600 * 1000)
+    .toISOString()
+    .split("T")[0];
+  const dispatchDate = new Date(today.getTime() + 3 * 24 * 3600 * 1000)
+    .toISOString()
+    .split("T")[0];
+  const returnDueDate = new Date(today.getTime() + 10 * 24 * 3600 * 1000)
+    .toISOString()
+    .split("T")[0];
 
   return {
     orderId,
@@ -307,9 +315,7 @@ export const generateTestLYPSubmission = (overrides = {}) => {
     suggestedRentalPrice: 12000,
     condition: "Flawless / Like New",
     status: "New",
-    photos: [
-      "https://images.unsplash.com/photo-1566174053879-31528523f8ae",
-    ],
+    photos: ["https://images.unsplash.com/photo-1566174053879-31528523f8ae"],
     submissionDate: new Date().toISOString(),
     ...overrides,
   };

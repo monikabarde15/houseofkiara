@@ -5,7 +5,7 @@ import { showToast } from "../shared/Toast";
 const DesktopPhilosophy = () => {
   const sectionRef = useRef(null);
 
-  // Reveal animation observer 
+  // Reveal animation observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -15,44 +15,46 @@ const DesktopPhilosophy = () => {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
 
-    const elements = sectionRef.current?.querySelectorAll(".reveal, .reveal-stagger");
+    const elements = sectionRef.current?.querySelectorAll(
+      ".reveal, .reveal-stagger",
+    );
     elements?.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
   }, []);
 
-  // Philosophy cards data 
+  // Philosophy cards data
   const philosophyCards = [
     {
       id: 1,
       icon: "star",
-      heading: 'Celebration, <em>not ownership</em>',
+      heading: "Celebration, <em>not ownership</em>",
       desc: "You don't need to own a moment to live it fully. Wear the showstopper for the night it was made for, then let it move on to someone else's celebration.",
     },
     {
       id: 2,
       icon: "document",
-      heading: 'Curation, <em>not catalogue</em>',
+      heading: "Curation, <em>not catalogue</em>",
       desc: "Every piece is chosen, not just accepted. If it doesn't meet our standard of craft and condition, it doesn't make it onto House of Kaira — no exceptions.",
     },
     {
       id: 3,
       icon: "refresh",
-      heading: 'Renewal, <em>not relinquishment</em>',
+      heading: "Renewal, <em>not relinquishment</em>",
       desc: "Preloved, never pre-owned. Every piece that passes through House of Kaira leaves more storied than it arrived, never less valuable.",
     },
     {
       id: 4,
       icon: "trust",
-      heading: 'Trust, <em>both ways</em>',
+      heading: "Trust, <em>both ways</em>",
       desc: "A bride trusts us with her biggest day. A lister trusts us with her wardrobe's legacy. We hold both with exactly the same care.",
     },
   ];
 
-  // Icon SVG components - 
+  // Icon SVG components -
   const renderIcon = (iconType) => {
     switch (iconType) {
       case "star":
@@ -93,7 +95,6 @@ const DesktopPhilosophy = () => {
 
   return (
     <section className="au-philosophy" ref={sectionRef}>
-      
       {/* Section Head -  */}
       <div className="au-philosophy__head reveal">
         <div className="au-philosophy__eyebrow">
@@ -109,8 +110,8 @@ const DesktopPhilosophy = () => {
       {/* Card Grid -  */}
       <div className="au-philosophy__grid reveal-stagger">
         {philosophyCards.map((card, index) => (
-          <div 
-            key={card.id} 
+          <div
+            key={card.id}
             className="au-philosophy__card"
             style={{ animationDelay: `${index * 0.1}s` }}
           >
@@ -118,21 +119,18 @@ const DesktopPhilosophy = () => {
             <div className="au-philosophy__card-icon">
               {renderIcon(card.icon)}
             </div>
-            
+
             {/* Heading */}
-            <h3 
+            <h3
               className="au-philosophy__card-heading"
               dangerouslySetInnerHTML={{ __html: card.heading }}
             />
-            
+
             {/* Description */}
-            <p className="au-philosophy__card-desc">
-              {card.desc}
-            </p>
+            <p className="au-philosophy__card-desc">{card.desc}</p>
           </div>
         ))}
       </div>
-
     </section>
   );
 };

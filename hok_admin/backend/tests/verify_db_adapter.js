@@ -13,10 +13,14 @@ import Payout from "../models/Payout.js";
 import Product from "../models/Product.js";
 
 const runTests = async () => {
-  console.log("=== RUNNING POSTGRESQL & MONGOOSE-JSONB ADAPTER VERIFICATION SUITE ===");
+  console.log(
+    "=== RUNNING POSTGRESQL & MONGOOSE-JSONB ADAPTER VERIFICATION SUITE ===",
+  );
 
   // 1. Connection & Migration Test
-  console.log("\n[Test 1] Connecting to Supabase PostgreSQL & Running Migrations...");
+  console.log(
+    "\n[Test 1] Connecting to Supabase PostgreSQL & Running Migrations...",
+  );
   await connectDB();
 
   // Verify all 8 tables exist
@@ -29,9 +33,20 @@ const runTests = async () => {
   const tablesRes = await pool.query(tableCheckSql);
   const foundTables = tablesRes.rows.map((r) => r.table_name).sort();
   console.log("Found tables in PostgreSQL:", foundTables);
-  const expectedTables = ["admins", "customers", "designers", "listers", "offers", "orders", "payouts", "products"].sort();
+  const expectedTables = [
+    "admins",
+    "customers",
+    "designers",
+    "listers",
+    "offers",
+    "orders",
+    "payouts",
+    "products",
+  ].sort();
   if (JSON.stringify(foundTables) !== JSON.stringify(expectedTables)) {
-    throw new Error(`Tables mismatch! Found: ${foundTables.join(", ")}, Expected: ${expectedTables.join(", ")}`);
+    throw new Error(
+      `Tables mismatch! Found: ${foundTables.join(", ")}, Expected: ${expectedTables.join(", ")}`,
+    );
   }
   console.log("✓ All 8 tables verified in PostgreSQL schema.");
 
@@ -72,7 +87,9 @@ const runTests = async () => {
   console.log("✓ Admin.exists verified:", adminExists);
 
   // 3. Customer Model Test
-  console.log("\n[Test 3] Customer Model (create, find, nested push, save, delete)...");
+  console.log(
+    "\n[Test 3] Customer Model (create, find, nested push, save, delete)...",
+  );
   const testCustId = `${testPrefix}-CUST-1`;
   const customer = await Customer.create({
     customerId: testCustId,
@@ -89,12 +106,24 @@ const runTests = async () => {
   console.log("✓ Customer created:", customer.customerId, customer.preferences);
 
   // Mutate nested arrays & in-place save
-  customer.addresses.push({ id: "ADDR-1", label: "Home", address: "Bandra West, Mumbai", isDefault: true });
-  customer.communicationLog.unshift({ id: "COMM-1", message: "WhatsApp welcome sent", channel: "WhatsApp" });
+  customer.addresses.push({
+    id: "ADDR-1",
+    label: "Home",
+    address: "Bandra West, Mumbai",
+    isDefault: true,
+  });
+  customer.communicationLog.unshift({
+    id: "COMM-1",
+    message: "WhatsApp welcome sent",
+    channel: "WhatsApp",
+  });
   await customer.save();
 
   const fetchedCust = await Customer.findOne({ customerId: testCustId });
-  if (fetchedCust.addresses.length !== 1 || fetchedCust.communicationLog.length !== 1) {
+  if (
+    fetchedCust.addresses.length !== 1 ||
+    fetchedCust.communicationLog.length !== 1
+  ) {
     throw new Error("Customer array mutation/save failed");
   }
   console.log("✓ Customer address & communicationLog push verified.");
@@ -102,16 +131,26 @@ const runTests = async () => {
   // Customer findOneAndUpdate
   const updatedCust = await Customer.findOneAndUpdate(
     { customerId: testCustId },
-    { $set: { location: "Mumbai Suburban", "preferences.preferredSilhouettes": "A-line" } },
-    { new: true }
+    {
+      $set: {
+        location: "Mumbai Suburban",
+        "preferences.preferredSilhouettes": "A-line",
+      },
+    },
+    { new: true },
   );
-  if (updatedCust.location !== "Mumbai Suburban" || updatedCust.preferences.preferredSilhouettes !== "A-line") {
+  if (
+    updatedCust.location !== "Mumbai Suburban" ||
+    updatedCust.preferences.preferredSilhouettes !== "A-line"
+  ) {
     throw new Error("Customer.findOneAndUpdate $set failed");
   }
   console.log("✓ Customer.findOneAndUpdate verified.");
 
   // 4. Designer Model Test
-  console.log("\n[Test 4] Designer Model (countDocuments, insertMany, find, regex)...");
+  console.log(
+    "\n[Test 4] Designer Model (countDocuments, insertMany, find, regex)...",
+  );
   const testDesId = `${testPrefix}-DES-1`;
   const designer = await Designer.create({
     designerId: testDesId,
@@ -122,7 +161,10 @@ const runTests = async () => {
     sortOrder: 10,
     commercialTerms: { commissionRateBuyNow: "20%", paymentTerms: "Net 15" },
   });
-  if (!designer.slug || designer.commercialTerms.commissionRateBuyNow !== "20%") {
+  if (
+    !designer.slug ||
+    designer.commercialTerms.commissionRateBuyNow !== "20%"
+  ) {
     throw new Error("Designer.create failed");
   }
   console.log("✓ Designer created with commercialTerms.");
@@ -148,7 +190,11 @@ const runTests = async () => {
     email: `${testListerId.toLowerCase()}@example.com`,
     phone: "+91 9998887776",
     city: "Delhi",
-    bankDetails: { accountHolder: "Ritu Kumar", accountNumber: "1234567890", ifsc: "HDFC0000123" },
+    bankDetails: {
+      accountHolder: "Ritu Kumar",
+      accountNumber: "1234567890",
+      ifsc: "HDFC0000123",
+    },
   });
   if (lister.bankDetails.ifsc !== "HDFC0000123") {
     throw new Error("Lister.create flexible schema failed");
@@ -156,7 +202,9 @@ const runTests = async () => {
   console.log("✓ Lister created with bankDetails.");
 
   // 6. Offer Model Test (Query chaining, Aggregation, updateMany, deleteMany)
-  console.log("\n[Test 6] Offer Model (chaining, aggregation pipelines, updateMany)...");
+  console.log(
+    "\n[Test 6] Offer Model (chaining, aggregation pipelines, updateMany)...",
+  );
   const testOffer1Id = `${testPrefix}-OFF-1`;
   const testOffer2Id = `${testPrefix}-OFF-2`;
   await Offer.create({
@@ -180,7 +228,9 @@ const runTests = async () => {
   });
 
   // Query chaining: sort, limit, skip, select, lean
-  const chainedOffers = await Offer.find({ offerId: { $in: [testOffer1Id, testOffer2Id] } })
+  const chainedOffers = await Offer.find({
+    offerId: { $in: [testOffer1Id, testOffer2Id] },
+  })
     .sort({ finalAmount: -1 })
     .limit(2)
     .lean();
@@ -202,12 +252,19 @@ const runTests = async () => {
 
   // Aggregation 2: Overall Accepted Revenue
   const acceptedRevenue = await Offer.aggregate([
-    { $match: { offerId: { $in: [testOffer1Id, testOffer2Id] }, status: "Accepted" } },
+    {
+      $match: {
+        offerId: { $in: [testOffer1Id, testOffer2Id] },
+        status: "Accepted",
+      },
+    },
     { $group: { _id: null, revenue: { $sum: "$finalAmount" } } },
   ]);
   console.log("✓ Offer aggregate accepted revenue:", acceptedRevenue);
   if (acceptedRevenue[0]?.revenue !== 15000) {
-    throw new Error(`Offer aggregate revenue expected 15000, got ${acceptedRevenue[0]?.revenue}`);
+    throw new Error(
+      `Offer aggregate revenue expected 15000, got ${acceptedRevenue[0]?.revenue}`,
+    );
   }
 
   // Aggregation 3: Monthly Statistics
@@ -223,22 +280,30 @@ const runTests = async () => {
     { $sort: { "_id.year": 1, "_id.month": 1 } },
   ]);
   console.log("✓ Offer aggregate monthly statistics:", monthlyStats);
-  if (!monthlyStats[0] || monthlyStats[0].totalOffers !== 2 || monthlyStats[0].totalRevenue !== 40000) {
+  if (
+    !monthlyStats[0] ||
+    monthlyStats[0].totalOffers !== 2 ||
+    monthlyStats[0].totalRevenue !== 40000
+  ) {
     throw new Error("Offer aggregate monthly statistics failed");
   }
 
   // updateMany
   const updateManyRes = await Offer.updateMany(
     { offerId: { $in: [testOffer1Id, testOffer2Id] } },
-    { $set: { currency: "INR" } }
+    { $set: { currency: "INR" } },
   );
   if (updateManyRes.modifiedCount !== 2) {
-    throw new Error(`Offer.updateMany expected 2 modified, got ${updateManyRes.modifiedCount}`);
+    throw new Error(
+      `Offer.updateMany expected 2 modified, got ${updateManyRes.modifiedCount}`,
+    );
   }
   console.log("✓ Offer.updateMany verified.");
 
   // 7. Order Model Test (Workflow, subdocuments, logs $push)
-  console.log("\n[Test 7] Order Model (items subdocuments, status transitions, logs)...");
+  console.log(
+    "\n[Test 7] Order Model (items subdocuments, status transitions, logs)...",
+  );
   const testOrderId = `${testPrefix}-ORD-1`;
   const order = await Order.create({
     orderId: testOrderId,
@@ -275,9 +340,15 @@ const runTests = async () => {
     { orderId: testOrderId },
     {
       $set: { status: "Shipped" },
-      $push: { logs: { message: "Order marked as Shipped", type: "Status Change", user: "Admin" } },
+      $push: {
+        logs: {
+          message: "Order marked as Shipped",
+          type: "Status Change",
+          user: "Admin",
+        },
+      },
     },
-    { new: true }
+    { new: true },
   );
   if (updatedOrder.status !== "Shipped" || updatedOrder.logs.length !== 2) {
     throw new Error("Order.findOneAndUpdate with $set and $push log failed");
@@ -306,19 +377,28 @@ const runTests = async () => {
   if (!payout.payoutId || payout.listerShare !== 9600) {
     throw new Error("Payout.create failed");
   }
-  console.log("✓ Payout created:", payout.payoutId, "netPayout:", payout.netPayout);
+  console.log(
+    "✓ Payout created:",
+    payout.payoutId,
+    "netPayout:",
+    payout.netPayout,
+  );
 
   const pendingPayoutTotal = await Payout.aggregate([
     { $match: { payoutId: testPayoutId, status: "Pending" } },
     { $group: { _id: null, total: { $sum: "$listerShare" } } },
   ]);
   if (pendingPayoutTotal[0]?.total !== 9600) {
-    throw new Error(`Payout aggregate expected 9600, got ${pendingPayoutTotal[0]?.total}`);
+    throw new Error(
+      `Payout aggregate expected 9600, got ${pendingPayoutTotal[0]?.total}`,
+    );
   }
   console.log("✓ Payout aggregate verified:", pendingPayoutTotal);
 
   // 9. Product Model & Atomic Booking Concurrency Test
-  console.log("\n[Test 9] Product Model & Concurrency Lock with $not $elemMatch...");
+  console.log(
+    "\n[Test 9] Product Model & Concurrency Lock with $not $elemMatch...",
+  );
   const testProdId = `${testPrefix}-PRD-1`;
   const product = await Product.create({
     productId: testProdId,
@@ -371,17 +451,27 @@ const runTests = async () => {
     {
       $push: {
         bookingHistory: booking1,
-        activityLog: { action: "Booking reserved", user: "Admin", remarks: "Oct 1 - Oct 5" },
+        activityLog: {
+          action: "Booking reserved",
+          user: "Admin",
+          remarks: "Oct 1 - Oct 5",
+        },
       },
       $inc: { timesRented: 1 },
     },
-    { new: true }
+    { new: true },
   );
 
-  if (!lockedProd1 || lockedProd1.bookingHistory.length !== 1 || lockedProd1.timesRented !== 1) {
+  if (
+    !lockedProd1 ||
+    lockedProd1.bookingHistory.length !== 1 ||
+    lockedProd1.timesRented !== 1
+  ) {
     throw new Error("Initial Product booking lock failed");
   }
-  console.log("✓ Initial booking lock succeeded (bookingHistory count: 1, timesRented: 1).");
+  console.log(
+    "✓ Initial booking lock succeeded (bookingHistory count: 1, timesRented: 1).",
+  );
 
   // Attempt second overlapping booking: 2026-10-03 to 2026-10-08 -> MUST FAIL (return null)
   const overlappingStart = new Date("2026-10-03T00:00:00.000Z");
@@ -415,13 +505,17 @@ const runTests = async () => {
         },
       },
     },
-    { new: true }
+    { new: true },
   );
 
   if (lockedProd2 !== null) {
-    throw new Error("Double-booking conflict detection failed! Expected null due to date overlap.");
+    throw new Error(
+      "Double-booking conflict detection failed! Expected null due to date overlap.",
+    );
   }
-  console.log("✓ Overlapping booking collision successfully blocked with null return (Atomic Concurrency Verified).");
+  console.log(
+    "✓ Overlapping booking collision successfully blocked with null return (Atomic Concurrency Verified).",
+  );
 
   // 10. Clean up Test Records
   console.log("\n[Test 10] Cleaning up test records from database...");
@@ -435,9 +529,15 @@ const runTests = async () => {
   await Product.findOneAndDelete({ productId: testProdId });
   console.log("✓ Test cleanup completed.");
 
-  console.log("\n==========================================================================");
-  console.log("🎉 ALL 10 INTEGRATION & CRUD VERIFICATION TESTS PASSED SUCCESSFULLY! 🎉");
-  console.log("==========================================================================");
+  console.log(
+    "\n==========================================================================",
+  );
+  console.log(
+    "🎉 ALL 10 INTEGRATION & CRUD VERIFICATION TESTS PASSED SUCCESSFULLY! 🎉",
+  );
+  console.log(
+    "==========================================================================",
+  );
 };
 
 runTests()

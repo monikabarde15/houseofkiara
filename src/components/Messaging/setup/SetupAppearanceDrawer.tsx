@@ -1,20 +1,20 @@
 // setup/SetupAppearanceDrawer.tsx
-import React, { useState } from 'react';
-import { SetupDrawer } from './SetupDrawer';
-import { Button } from '../components/Button';
-import { FormField, Input, Textarea } from '../components/FormField';
-import { LiveLink } from '../components/LiveLink';
-import './styles/SetupAppearanceDrawer.css';
+import React, { useState } from "react";
+import { SetupDrawer } from "./SetupDrawer";
+import { Button } from "../components/Button";
+import { FormField, Input, Textarea } from "../components/FormField";
+import { LiveLink } from "../components/LiveLink";
+import "./styles/SetupAppearanceDrawer.css";
 
 export const SetupAppearanceDrawer: React.FC = () => {
-  const [headerBg, setHeaderBg] = useState('#1A1612');
-  const [logoColor, setLogoColor] = useState('#C9A96E');
-  const [signOff, setSignOff] = useState('With love,\nThe House of Kaira Team');
+  const [headerBg, setHeaderBg] = useState("#1A1612");
+  const [logoColor, setLogoColor] = useState("#C9A96E");
+  const [signOff, setSignOff] = useState("With love,\nThe House of Kaira Team");
   const [footer, setFooter] = useState(
-    'House of Kaira\n123 Luxury Lane, Mumbai\nGSTIN: 27AABCK1234D1Z5\nContact: +91 98765 43210'
+    "House of Kaira\n123 Luxury Lane, Mumbai\nGSTIN: 27AABCK1234D1Z5\nContact: +91 98765 43210",
   );
   const [unsubscribe, setUnsubscribe] = useState(
-    'You are receiving this because you opted in. Unsubscribe here.'
+    "You are receiving this because you opted in. Unsubscribe here.",
   );
 
   // NEW — tracks whether the "Saved ✓" chip should be showing right now
@@ -22,7 +22,7 @@ export const SetupAppearanceDrawer: React.FC = () => {
 
   // NEW — this drawer had no save handler at all before; it just always showed "Saved ✓"
   const handleSave = () => {
-    console.log('Saved!');
+    console.log("Saved!");
     setJustSaved(true);
     setTimeout(() => setJustSaved(false), 2000);
   };
@@ -32,7 +32,7 @@ export const SetupAppearanceDrawer: React.FC = () => {
       title="How messages look"
       summary={
         <>
-          Signed off “{signOff.split('\n')[0]}” · logo from{' '}
+          Signed off “{signOff.split("\n")[0]}” · logo from{" "}
           <LiveLink to="Site Settings → Brand & Logo" section="Site Settings">
             Site Settings
           </LiveLink>
@@ -41,14 +41,19 @@ export const SetupAppearanceDrawer: React.FC = () => {
       defaultOpen={false}
       // CHANGED — wired to handleSave, and saved is now driven by state
       footer={
-        <Button variant="primary" size="small" onClick={handleSave} saved={justSaved}>
+        <Button
+          variant="primary"
+          size="small"
+          onClick={handleSave}
+          saved={justSaved}
+        >
           Save
         </Button>
       }
     >
       <FormField label="Logo">
         <div className="msg-appearance-logo-hint">
-          Reads the logo uploaded in{' '}
+          Reads the logo uploaded in{" "}
           <LiveLink to="Site Settings → Brand & Logo" section="Site Settings">
             Site Settings, Brand & Logo
           </LiveLink>
@@ -57,7 +62,7 @@ export const SetupAppearanceDrawer: React.FC = () => {
       </FormField>
 
       <div className="msg-appearance-grid">
-       <FormField label="Header Background">
+        <FormField label="Header Background">
           <input
             type="color"
             className="msg-appearance-color-input"
@@ -107,8 +112,9 @@ export const SetupAppearanceDrawer: React.FC = () => {
       <div className="msg-appearance-type">
         <div className="msg-appearance-type-label">Type</div>
         <div className="msg-appearance-type-text">
-          Display: Cormorant Garamond, then Georgia, then serif. Body: DM Sans, then Inter, then system UI.
-          Webfonts are not relied on. Body held at 16px so mobile clients do not shrink it.
+          Display: Cormorant Garamond, then Georgia, then serif. Body: DM Sans,
+          then Inter, then system UI. Webfonts are not relied on. Body held at
+          16px so mobile clients do not shrink it.
         </div>
       </div>
     </SetupDrawer>

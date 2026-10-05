@@ -4,13 +4,13 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.14
    ======================================== */
 
-import React from 'react';
-import './styles/OfferDrawerRow.css';
+import React from "react";
+import "./styles/OfferDrawerRow.css";
 
 interface OfferDrawerRowProps {
   code: string;
   publicDesc: string;
-  discount: number | 'free';
+  discount: number | "free";
   isCurrent: boolean;
   isNearMiss: boolean;
   gapMessage?: string;
@@ -26,13 +26,14 @@ export const OfferDrawerRow: React.FC<OfferDrawerRowProps> = ({
   gapMessage,
   onClick,
 }) => {
-  const discountDisplay = discount === 'free' 
-    ? 'Free delivery' 
-    : `₹${discount.toLocaleString('en-IN')}`;
+  const discountDisplay =
+    discount === "free"
+      ? "Free delivery"
+      : `₹${discount.toLocaleString("en-IN")}`;
 
   return (
     <div
-      className={`offer-drawer-row ${isCurrent ? 'current' : ''} ${isNearMiss ? 'near-miss' : ''}`}
+      className={`offer-drawer-row ${isCurrent ? "current" : ""} ${isNearMiss ? "near-miss" : ""}`}
       onClick={onClick}
     >
       <div className="offer-drawer-row__left">
@@ -41,12 +42,10 @@ export const OfferDrawerRow: React.FC<OfferDrawerRowProps> = ({
         {isNearMiss && gapMessage && (
           <span className="offer-drawer-row__gap">{gapMessage}</span>
         )}
-        {isCurrent && (
-          <span className="offer-drawer-row__tag">this code</span>
-        )}
+        {isCurrent && <span className="offer-drawer-row__tag">this code</span>}
       </div>
-      <div className={`offer-drawer-row__right ${isNearMiss ? 'locked' : ''}`}>
-        {isNearMiss ? 'Locked' : discountDisplay}
+      <div className={`offer-drawer-row__right ${isNearMiss ? "locked" : ""}`}>
+        {isNearMiss ? "Locked" : discountDisplay}
       </div>
     </div>
   );

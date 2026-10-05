@@ -18,7 +18,7 @@
   width: 32px;
   height: 18px;
   border-radius: var(--msg-radius-toggle);
-  background: #D4C8BC;
+  background: #d4c8bc;
   transition: background 0.2s ease;
   position: relative;
 }
@@ -31,7 +31,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   position: absolute;
   top: 3px;

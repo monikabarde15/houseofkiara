@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Search } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { Search } from "lucide-react";
+import toast from "react-hot-toast";
 import { Payout } from "../../../services/payoutApi";
 import * as payoutApi from "../../../services/payoutApi";
 
@@ -13,16 +13,16 @@ const WhatsAppIcon = () => (
 );
 
 const typeBadgeClasses: Record<string, string> = {
-  'Rental': 'bg-green-50 text-green-700',
-  'Preloved Sale': 'bg-[#f6ede0] text-[#8a6a2c]',
-  'Damage Comp.': 'bg-purple-50 text-purple-700',
+  Rental: "bg-green-50 text-green-700",
+  "Preloved Sale": "bg-[#f6ede0] text-[#8a6a2c]",
+  "Damage Comp.": "bg-purple-50 text-purple-700",
 };
 
 const statusBadgeClasses: Record<string, string> = {
-  'Paid': 'bg-green-100 text-green-700',
-  'Pending': 'bg-[#fff3d6] text-[#8a6a2c]',
-  'Failed': 'bg-red-100 text-red-700',
-  'Reversed': 'bg-gray-100 text-gray-700',
+  Paid: "bg-green-100 text-green-700",
+  Pending: "bg-[#fff3d6] text-[#8a6a2c]",
+  Failed: "bg-red-100 text-red-700",
+  Reversed: "bg-gray-100 text-gray-700",
 };
 
 interface AllPayoutsTabProps {
@@ -30,29 +30,43 @@ interface AllPayoutsTabProps {
 }
 
 export default function AllPayoutsTab({ payouts = [] }: AllPayoutsTabProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All');
-  const [timeFilter, setTimeFilter] = useState('All time');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [timeFilter, setTimeFilter] = useState("All time");
 
-  const filteredPayouts = payouts.filter(p => {
+  const filteredPayouts = payouts.filter((p) => {
     const term = searchTerm.toLowerCase();
     const matchesSearch =
-      (p.listerName || '').toLowerCase().includes(term) ||
-      (p.orderId || '').toLowerCase().includes(term) ||
-      (p.productName || '').toLowerCase().includes(term);
-    const matchesStatus = statusFilter === 'All' || p.status === statusFilter;
+      (p.listerName || "").toLowerCase().includes(term) ||
+      (p.orderId || "").toLowerCase().includes(term) ||
+      (p.productName || "").toLowerCase().includes(term);
+    const matchesStatus = statusFilter === "All" || p.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const paidPayouts = filteredPayouts.filter(p => p.status === 'Paid');
-  const listerPaidTotal = paidPayouts.reduce((sum, p) => sum + p.listerShare, 0);
-  const hokRetainedTotal = paidPayouts.reduce((sum, p) => sum + p.hokCommission, 0);
-  const avgSplit = paidPayouts.length > 0
-    ? Math.round(
-        (paidPayouts.reduce((sum, p) => sum + p.listerShare / ((p.transactionAmount || p.listerShare + p.hokCommission) || 1), 0) /
-          paidPayouts.length) * 100
-      )
-    : 0;
+  const paidPayouts = filteredPayouts.filter((p) => p.status === "Paid");
+  const listerPaidTotal = paidPayouts.reduce(
+    (sum, p) => sum + p.listerShare,
+    0,
+  );
+  const hokRetainedTotal = paidPayouts.reduce(
+    (sum, p) => sum + p.hokCommission,
+    0,
+  );
+  const avgSplit =
+    paidPayouts.length > 0
+      ? Math.round(
+          (paidPayouts.reduce(
+            (sum, p) =>
+              sum +
+              p.listerShare /
+                (p.transactionAmount || p.listerShare + p.hokCommission || 1),
+            0,
+          ) /
+            paidPayouts.length) *
+            100,
+        )
+      : 0;
 
   const handleExportCsv = () => {
     window.location.href = payoutApi.exportPayoutsUrl;
@@ -63,12 +77,31 @@ export default function AllPayoutsTab({ payouts = [] }: AllPayoutsTabProps) {
       {/* Status Counts Summary */}
       <div className="flex flex-wrap gap-3 pb-1">
         {[
-          { label: 'Pending', count: payouts.filter(p => p.status === 'Pending').length, color: 'bg-amber-50 text-amber-700 border-amber-200' },
-          { label: 'Paid', count: payouts.filter(p => p.status === 'Paid').length, color: 'bg-green-50 text-green-700 border-green-200' },
-          { label: 'Failed', count: payouts.filter(p => p.status === 'Failed').length, color: 'bg-red-50 text-red-700 border-red-200' },
-          { label: 'Reversed', count: payouts.filter(p => p.status === 'Reversed').length, color: 'bg-gray-50 text-gray-700 border-gray-200' },
-        ].map(s => (
-          <span key={s.label} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded border text-xs font-semibold ${s.color}`}>
+          {
+            label: "Pending",
+            count: payouts.filter((p) => p.status === "Pending").length,
+            color: "bg-amber-50 text-amber-700 border-amber-200",
+          },
+          {
+            label: "Paid",
+            count: payouts.filter((p) => p.status === "Paid").length,
+            color: "bg-green-50 text-green-700 border-green-200",
+          },
+          {
+            label: "Failed",
+            count: payouts.filter((p) => p.status === "Failed").length,
+            color: "bg-red-50 text-red-700 border-red-200",
+          },
+          {
+            label: "Reversed",
+            count: payouts.filter((p) => p.status === "Reversed").length,
+            color: "bg-gray-50 text-gray-700 border-gray-200",
+          },
+        ].map((s) => (
+          <span
+            key={s.label}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded border text-xs font-semibold ${s.color}`}
+          >
             {s.label}: <span className="font-bold">{s.count}</span>
           </span>
         ))}
@@ -144,27 +177,51 @@ export default function AllPayoutsTab({ payouts = [] }: AllPayoutsTabProps) {
               {filteredPayouts.map((p, idx) => (
                 <tr
                   key={p.id}
-                  className={`hover:bg-[#fcf9f5] transition-colors ${idx % 2 === 1 ? 'bg-stone-50/40' : ''}`}
+                  className={`hover:bg-[#fcf9f5] transition-colors ${idx % 2 === 1 ? "bg-stone-50/40" : ""}`}
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-[#8a6a2c]">{p.listerName}</span>
+                      <span className="font-semibold text-[#8a6a2c]">
+                        {p.listerName}
+                      </span>
                       <WhatsAppIcon />
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-[#8a6a2c] font-mono text-[10px]">{p.orderId}</td>
-                  <td className="px-4 py-3 font-medium text-stone-800 max-w-[160px] whitespace-normal">{p.productName}</td>
+                  <td className="px-4 py-3 text-[#8a6a2c] font-mono text-[10px]">
+                    {p.orderId}
+                  </td>
+                  <td className="px-4 py-3 font-medium text-stone-800 max-w-[160px] whitespace-normal">
+                    {p.productName}
+                  </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded text-[10px] font-medium ${typeBadgeClasses[p.mode] || typeBadgeClasses['Rental']}`}>
+                    <span
+                      className={`px-2 py-1 rounded text-[10px] font-medium ${typeBadgeClasses[p.mode] || typeBadgeClasses["Rental"]}`}
+                    >
                       {p.mode}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-medium">₹{(Number(p.transactionAmount ?? ((p.listerShare ?? 0) + (p.hokCommission ?? 0))) || 0).toLocaleString('en-IN')}</td>
-                  <td className={`px-4 py-3 font-semibold ${p.status === 'Paid' ? 'text-green-600' : 'text-orange-500'}`}>₹{(Number(p.listerShare) || 0).toLocaleString('en-IN')}</td>
-                  <td className="px-4 py-3">₹{(Number(p.hokCommission) || 0).toLocaleString('en-IN')}</td>
+                  <td className="px-4 py-3 font-medium">
+                    ₹
+                    {(
+                      Number(
+                        p.transactionAmount ??
+                          (p.listerShare ?? 0) + (p.hokCommission ?? 0),
+                      ) || 0
+                    ).toLocaleString("en-IN")}
+                  </td>
+                  <td
+                    className={`px-4 py-3 font-semibold ${p.status === "Paid" ? "text-green-600" : "text-orange-500"}`}
+                  >
+                    ₹{(Number(p.listerShare) || 0).toLocaleString("en-IN")}
+                  </td>
+                  <td className="px-4 py-3">
+                    ₹{(Number(p.hokCommission) || 0).toLocaleString("en-IN")}
+                  </td>
                   <td className="px-4 py-3 text-stone-500">{p.mode}</td>
                   <td className="px-4 py-3">
-                    <span className={`px-2.5 py-1 rounded text-[10px] font-medium ${statusBadgeClasses[p.status]}`}>
+                    <span
+                      className={`px-2.5 py-1 rounded text-[10px] font-medium ${statusBadgeClasses[p.status]}`}
+                    >
                       {p.status}
                     </span>
                   </td>
@@ -175,7 +232,10 @@ export default function AllPayoutsTab({ payouts = [] }: AllPayoutsTabProps) {
               ))}
               {filteredPayouts.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="px-4 py-8 text-center text-stone-400">
+                  <td
+                    colSpan={10}
+                    className="px-4 py-8 text-center text-stone-400"
+                  >
                     No payouts match your search.
                   </td>
                 </tr>
@@ -184,11 +244,15 @@ export default function AllPayoutsTab({ payouts = [] }: AllPayoutsTabProps) {
           </table>
         </div>
         <div className="px-4 py-3 bg-stone-50 border-t border-stone-200 text-stone-500">
-          {timeFilter} · {paidPayouts.length} paid · Lister paid ₹{listerPaidTotal.toLocaleString('en-IN')} · HOK retained ₹{hokRetainedTotal.toLocaleString('en-IN')} · avg split {avgSplit}%
+          {timeFilter} · {paidPayouts.length} paid · Lister paid ₹
+          {listerPaidTotal.toLocaleString("en-IN")} · HOK retained ₹
+          {hokRetainedTotal.toLocaleString("en-IN")} · avg split {avgSplit}%
         </div>
       </div>
       <p className="text-stone-400 px-1">
-        Payout % varies per transaction based on rental number, condition, and any deposit deduction events. All payouts require individual approval before processing.
+        Payout % varies per transaction based on rental number, condition, and
+        any deposit deduction events. All payouts require individual approval
+        before processing.
       </p>
     </div>
   );

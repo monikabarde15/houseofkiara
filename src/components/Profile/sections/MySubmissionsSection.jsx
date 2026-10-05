@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus } from 'lucide-react';
-import SubmissionCard from '../cards/SubmissionCard';
-import SubmissionDetailPanel from '../panels/SubmissionDetailPanel';
+import { Plus } from "lucide-react";
+import SubmissionCard from "../cards/SubmissionCard";
+import SubmissionDetailPanel from "../panels/SubmissionDetailPanel";
 import "../../../styles/Profile/sections/MySubmissionsSection.css";
 
 const MySubmissionsSection = () => {
@@ -23,13 +23,14 @@ const MySubmissionsSection = () => {
       imageGradient: "linear-gradient(160deg, #F0E8D8, #E0CDA8)",
       pieceType: "Bridal Lehenga",
       colourFamily: "Red / Maroon",
-      size: "M (Blouse 36\")",
+      size: 'M (Blouse 36")',
       condition: "Excellent — worn once, no visible wear",
       timesWorn: "Worn once",
       originalPrice: "2,50,000",
-      photosSubmitted: "5 photos (full view, detail, back view + 2 worn photos)",
-      pickupCity: "Indore"
-    }
+      photosSubmitted:
+        "5 photos (full view, detail, back view + 2 worn photos)",
+      pickupCity: "Indore",
+    },
   ];
 
   const navigate = useNavigate();
@@ -48,19 +49,19 @@ const MySubmissionsSection = () => {
 
   const handleCardClick = (cardId) => {
     const isOpening = activeCardId !== cardId;
-    
+
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
 
     if (isOpening) {
       setActiveCardId(cardId);
-      
+
       scrollTimeoutRef.current = setTimeout(() => {
         if (panelRef.current) {
-          panelRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'nearest' 
+          panelRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
           });
         }
         scrollTimeoutRef.current = null;
@@ -68,13 +69,13 @@ const MySubmissionsSection = () => {
     } else {
       const currentCardId = activeCardId;
       setActiveCardId(null);
-      
+
       scrollTimeoutRef.current = setTimeout(() => {
         const cardElement = cardRefs.current[currentCardId];
         if (cardElement) {
-          cardElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'nearest' 
+          cardElement.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
           });
         }
         scrollTimeoutRef.current = null;
@@ -82,7 +83,7 @@ const MySubmissionsSection = () => {
     }
   };
 
-  const activeSubmission = submissions.find(s => s.id === activeCardId);
+  const activeSubmission = submissions.find((s) => s.id === activeCardId);
 
   return (
     <div className="profile-submissions-section" id="submissions">
@@ -117,15 +118,14 @@ const MySubmissionsSection = () => {
       <div className="profile-sub-empty">
         <div className="profile-se-h">List another piece?</div>
         <div className="profile-se-s">
-          Your wardrobe can earn for you. We handle pickup, photography, delivery, and returns.
+          Your wardrobe can earn for you. We handle pickup, photography,
+          delivery, and returns.
         </div>
         <button className="profile-se-btn" onClick={handleSubmitNewPiece}>
           <Plus size={14} strokeWidth={1.5} />
           Submit a New Piece
         </button>
       </div>
-
-      
     </div>
   );
 };

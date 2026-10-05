@@ -1,9 +1,9 @@
 // src/components/LYP/hooks/useSubmissionDetail.ts
 
-import { useState, useEffect, useCallback } from 'react';
-import { Submission } from '../types/submission.types';
-import { submissionService } from '../services/submissionService';
-import { useSubmissions } from './useSubmissions';
+import { useState, useEffect, useCallback } from "react";
+import { Submission } from "../types/submission.types";
+import { submissionService } from "../services/submissionService";
+import { useSubmissions } from "./useSubmissions";
 
 export const useSubmissionDetail = (submissionId: string) => {
   const [submission, setSubmission] = useState<Submission | null>(null);
@@ -21,15 +21,17 @@ export const useSubmissionDetail = (submissionId: string) => {
     try {
       const data = await submissionService.getSubmissionById(submissionId);
       setSubmission(data);
-      
+
       // Get all IDs for navigation
-      const ids = submissions.map(s => s.subid);
+      const ids = submissions.map((s) => s.subid);
       setAllIds(ids);
       const index = ids.indexOf(submissionId);
       setCurrentIndex(index >= 0 ? index + 1 : 1);
       setTotalCount(ids.length || 1);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch submission');
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch submission",
+      );
     } finally {
       setLoading(false);
     }

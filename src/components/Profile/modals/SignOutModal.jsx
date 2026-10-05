@@ -1,5 +1,5 @@
-import React from 'react';
-import { LogOut } from 'lucide-react';
+import React from "react";
+import { LogOut } from "lucide-react";
 import "../../../styles/Profile/modals/SignOutModal.css";
 
 const SignOutModal = ({ isOpen, onClose, onConfirm }) => {
@@ -17,8 +17,12 @@ const SignOutModal = ({ isOpen, onClose, onConfirm }) => {
           You'll need to sign in again to access your account.
         </div>
         <div className="profile-signout-buttons">
-          <button className="profile-signout-btn-cancel" onClick={onClose}>Cancel</button>
-          <button className="profile-signout-btn-confirm" onClick={onConfirm}>Yes, Sign Out</button>
+          <button className="profile-signout-btn-cancel" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="profile-signout-btn-confirm" onClick={onConfirm}>
+            Yes, Sign Out
+          </button>
         </div>
       </div>
     </>

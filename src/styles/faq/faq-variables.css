@@ -3,32 +3,33 @@
 
 :root {
   /* 3.1 Brand Colours */
-  --hok-faq-cream: #FAF7F2;
-  --hok-faq-warm-white: #FFFEFB;
-  --hok-faq-charcoal: #1A1612;
-  --hok-faq-deep-charcoal: #0E0C0A;
-  --hok-faq-gold: #C9A96E;
-  --hok-faq-gold-light: #E8D5B0;
-  --hok-faq-gold-pale: #F5EDD8;
-  --hok-faq-terracotta: #B85C38;
-  --hok-faq-sage: #6B7E5A;
-  --hok-faq-muted: #8A7E72;
-  --hok-faq-border: #E8E0D4;
-  --hok-faq-border-light: #F0EAE0;
+  --hok-faq-cream: #faf7f2;
+  --hok-faq-warm-white: #fffefb;
+  --hok-faq-charcoal: #1a1612;
+  --hok-faq-deep-charcoal: #0e0c0a;
+  --hok-faq-gold: #c9a96e;
+  --hok-faq-gold-light: #e8d5b0;
+  --hok-faq-gold-pale: #f5edd8;
+  --hok-faq-terracotta: #b85c38;
+  --hok-faq-sage: #6b7e5a;
+  --hok-faq-muted: #8a7e72;
+  --hok-faq-border: #e8e0d4;
+  --hok-faq-border-light: #f0eae0;
 
   /* 3.2 Other Colours */
-  --hok-faq-wa-green: #25D366;
-  --hok-faq-wa-green-hover: #1FB859;
-  --hok-faq-deep-gold: #8C6B3A;
-  --hok-faq-body-brown: #5A4F46;
-  --hok-faq-answer-brown: #4F463E;
-  --hok-faq-soft-label: #A79B8D;
-  --hok-faq-light-label: #B0A394;
-  --hok-faq-decision-fill: #FBEFE9;
+  --hok-faq-wa-green: #25d366;
+  --hok-faq-wa-green-hover: #1fb859;
+  --hok-faq-deep-gold: #8c6b3a;
+  --hok-faq-body-brown: #5a4f46;
+  --hok-faq-answer-brown: #4f463e;
+  --hok-faq-soft-label: #a79b8d;
+  --hok-faq-light-label: #b0a394;
+  --hok-faq-decision-fill: #fbefe9;
 
   /* 3.3 Typefaces */
   --hok-faq-font-serif: "Cormorant Garamond", Georgia, serif;
-  --hok-faq-font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --hok-faq-font-sans:
+    "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* 3.4 Motion & Ease */
   --hok-faq-ease: cubic-bezier(0.16, 1, 0.3, 1);

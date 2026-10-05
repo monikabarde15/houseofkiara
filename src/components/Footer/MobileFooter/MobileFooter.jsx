@@ -31,8 +31,7 @@ const MobileFooter = () => {
         <h3>House of Kaira</h3>
         <span>Circular Luxury Fashion</span>
         <p>
-          Every outfit has a story.
-          We make sure it's never the last chapter.
+          Every outfit has a story. We make sure it's never the last chapter.
         </p>
         <div className="hok-mobile-footer-socials">
           <button
@@ -42,19 +41,21 @@ const MobileFooter = () => {
               window.open(
                 "https://instagram.com/house_of_kaira",
                 "_blank",
-                "noopener,noreferrer"
+                "noopener,noreferrer",
               );
             }}
           >
             <InstagramIcon />
           </button>
-          <button aria-label="Facebook"
-          onClick={() => showToast("Facebook coming soon")}
+          <button
+            aria-label="Facebook"
+            onClick={() => showToast("Facebook coming soon")}
           >
             <FacebookIcon />
           </button>
-          <button aria-label="LinkedIn"
-          onClick={() => showToast("LinkedIn coming soon")}
+          <button
+            aria-label="LinkedIn"
+            onClick={() => showToast("LinkedIn coming soon")}
           >
             <LinkedinIcon />
           </button>

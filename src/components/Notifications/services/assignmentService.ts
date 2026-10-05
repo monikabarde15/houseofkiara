@@ -1,6 +1,6 @@
 // src/components/Notifications/services/assignmentService.ts
 
-const ASSIGN_URL = '/admin/notifications/assign';
+const ASSIGN_URL = "/admin/notifications/assign";
 
 /**
  * §19.2 — assign or clear a record's owner. Keyed on recordId ALONE, never
@@ -9,10 +9,13 @@ const ASSIGN_URL = '/admin/notifications/assign';
  *
  * Passing `to: null` clears the assignment (§10.6 "Nobody yet").
  */
-export async function setAssignment(recordId: string, to: string | null): Promise<void> {
+export async function setAssignment(
+  recordId: string,
+  to: string | null,
+): Promise<void> {
   const res = await fetch(ASSIGN_URL, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ recordId, to }),
   });
 

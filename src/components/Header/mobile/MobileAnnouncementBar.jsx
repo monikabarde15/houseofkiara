@@ -1,6 +1,6 @@
 // src/components/Header/mobile/MobileAnnouncementBar.jsx
-import React from 'react';
-import '../../../styles/Header/mobile/mobile-announcement-bar.css';
+import React from "react";
+import "../../../styles/Header/mobile/mobile-announcement-bar.css";
 
 const announcementItems = [
   { text: "FREE SHIPPING ON ORDERS ABOVE ₹10,000", type: "plain" },

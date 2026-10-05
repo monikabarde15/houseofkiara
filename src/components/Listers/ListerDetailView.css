@@ -18,7 +18,7 @@
   justify-content: center;
   align-items: center;
   min-height: 400px;
-  color: #8A7E72;
+  color: #8a7e72;
   font-size: 14px;
 }
 
@@ -27,7 +27,7 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: linear-gradient(135deg, #1A1612, #2A2018);
+  background: linear-gradient(135deg, #1a1612, #2a2018);
   border-radius: 4px;
   margin-bottom: 16px;
 }
@@ -36,20 +36,20 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #4A4035;
+  background: #4a4035;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  color: #8A7E72;
+  color: #8a7e72;
   flex-shrink: 0;
 }
 
 .lister-detail-create-info h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 20px;
   font-weight: 300;
-  color: #FFFFFF;
+  color: #ffffff;
   margin: 0;
 }
 

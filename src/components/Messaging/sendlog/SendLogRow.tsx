@@ -1,9 +1,9 @@
 // sendlog/SendLogRow.tsx
-import React from 'react';
-import { Pill } from '../components/Pill';
-import { TableRow, TableCell } from '../components/Table';
-import { SendLogEntry } from './SendLogTable';
-import './styles/SendLogRow.css';
+import React from "react";
+import { Pill } from "../components/Pill";
+import { TableRow, TableCell } from "../components/Table";
+import { SendLogEntry } from "./SendLogTable";
+import "./styles/SendLogRow.css";
 
 interface SendLogRowProps {
   log: SendLogEntry;
@@ -12,12 +12,12 @@ interface SendLogRowProps {
   onAboutClick: (about: string) => void;
 }
 const OUTCOME_PILL_MAP = {
-  'Delivered': 'blue' as const,
-  'Opened': 'green' as const,
-  'Bounced': 'terracotta' as const,
-  'Held': 'amber' as const,
-  'Not sent': 'grey' as const,
-  'Opened in WhatsApp': 'grey' as const,
+  Delivered: "blue" as const,
+  Opened: "green" as const,
+  Bounced: "terracotta" as const,
+  Held: "amber" as const,
+  "Not sent": "grey" as const,
+  "Opened in WhatsApp": "grey" as const,
 };
 export const SendLogRow: React.FC<SendLogRowProps> = ({
   log,
@@ -44,20 +44,20 @@ export const SendLogRow: React.FC<SendLogRowProps> = ({
     <TableRow className="msg-sendlog-row">
       <TableCell>{log.when}</TableCell>
       <TableCell>
-        <span
-          className="msg-sendlog-message-name"
-          onClick={handleMessageClick}
-        >
+        <span className="msg-sendlog-message-name" onClick={handleMessageClick}>
           {log.message}
         </span>
-        {log.wording !== 'Default' && (
+        {log.wording !== "Default" && (
           <div className="msg-sendlog-wording">{log.wording}</div>
         )}
       </TableCell>
-     <TableCell>
+      <TableCell>
         {/* Only customer/lister sends get the clickable Gold link — anything else is plain text */}
         {log.whoType ? (
-          <span className="msg-sendlog-who msg-sendlog-who--link" onClick={handlePersonClick}>
+          <span
+            className="msg-sendlog-who msg-sendlog-who--link"
+            onClick={handlePersonClick}
+          >
             {log.who}
           </span>
         ) : (
@@ -65,18 +65,13 @@ export const SendLogRow: React.FC<SendLogRowProps> = ({
         )}
         <div className="msg-sendlog-contact">{log.contact}</div>
       </TableCell>
-      
+
       <TableCell>{log.channel}</TableCell>
       <TableCell>
-        <Pill status={OUTCOME_PILL_MAP[log.outcome]}>
-          {log.outcome}
-        </Pill>
+        <Pill status={OUTCOME_PILL_MAP[log.outcome]}>{log.outcome}</Pill>
       </TableCell>
       <TableCell>
-        <span
-          className="msg-sendlog-about"
-          onClick={handleAboutClick}
-        >
+        <span className="msg-sendlog-about" onClick={handleAboutClick}>
           {log.about}
         </span>
       </TableCell>

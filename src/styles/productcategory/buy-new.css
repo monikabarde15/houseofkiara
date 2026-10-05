@@ -6,7 +6,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   color: #2b2b2b;
   background: #fff;
 }
@@ -14,7 +14,7 @@ body {
 h1,
 h2,
 h3 {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
 }
 
 /* ===== CONTAINER (CENTER FIX) ===== */
@@ -38,16 +38,16 @@ h3 {
   transform: translateX(-50%);
   width: 100vw;
   height: 1px;
-  background: #F0EAE0;
+  background: #f0eae0;
   bottom: 0;
 }
 
 .pdp .breadcrumb {
   padding: 16px 0;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   letter-spacing: 0.04em;
-  color: #8A7E72;
+  color: #8a7e72;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -56,20 +56,19 @@ h3 {
 
 /* normal items */
 .crumb {
-  color: #8A7E72;
+  color: #8a7e72;
   font-weight: 400;
-
 }
 
 /* separator */
 .breadcrumb .sep {
-  color: #EDE0D4;
+  color: #ede0d4;
 }
 
 .pdp .breadcrumb .crumb.current {
-  color: #1A1612;
+  color: #1a1612;
   font-weight: 400;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
 }
 
 /* ===== GRID LAYOUT ===== */
@@ -84,10 +83,9 @@ h3 {
 
 /* {INFO} */
 .buynew-pdp-info {
-  border-left: 1px solid #E8E0D4;
+  border-left: 1px solid #e8e0d4;
   padding-left: 40px;
   padding-bottom: 60px;
-
 }
 
 /* ===== EYEBROW Top Tag ===== */
@@ -97,32 +95,31 @@ h3 {
   gap: 12px;
   margin-bottom: 24px;
   /* margin-top: 20px; */
-
 }
 
 .buynew-eyebrow .buynew-line {
   width: 24px;
   height: 2px;
-  background: #6B7E5A;
+  background: #6b7e5a;
   margin-top: 36px;
 }
 
 .buynew-eyebrow-text {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #6B7E5A;
+  color: #6b7e5a;
   line-height: 1;
   margin-top: 36px;
 }
 
 /* badge */
 .buynew-never-worn-badge {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 8px;
   letter-spacing: 0.14em;
-  background: #6B7E5A;
+  background: #6b7e5a;
   color: #fff;
   padding: 3px 10px;
   text-transform: uppercase;
@@ -132,22 +129,22 @@ h3 {
 }
 
 .buynew-designer-name {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #C9A96E;
+  color: #c9a96e;
   margin-bottom: 8px;
 }
 
 .buynew-product-title {
-  font-family: 'Cormorant Garamond';
+  font-family: "Cormorant Garamond";
   font-size: 38px;
   font-weight: 400;
   line-height: 1.15;
   letter-spacing: -0.01em;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 6px;
   display: flex;
   flex-direction: column;
@@ -155,24 +152,24 @@ h3 {
 
 .buynew-product-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .buynew-product-subtitle {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 13px;
   font-weight: 300;
   letter-spacing: 0.04em;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 20px;
 }
 
 .buynew-product-desc {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 13px;
   font-weight: 400;
   line-height: 1.5;
-  color: #2B2B2B;
+  color: #2b2b2b;
   margin-bottom: 20px;
 }
 
@@ -188,9 +185,8 @@ h3 {
   margin-bottom: 24px;
   padding-bottom: 24px;
 
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
-
 
 .buynew-rating-row svg {
   width: 12px;
@@ -198,25 +194,23 @@ h3 {
 }
 
 .buynew-rating-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .buynew-reviews {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
-  color: #8A7E72;
+  color: #8a7e72;
 }
-
 
 .rating-separator {
   width: 1px;
   height: 12px;
-  background: #E8E0D4;
+  background: #e8e0d4;
 }
-
 
 /* =========================
    NEVER WORN (SOFT BADGE)
@@ -229,21 +223,20 @@ h3 {
 
   margin-left: 8px;
 
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.14em;
 
-  color: #6B7E5A;
+  color: #6b7e5a;
 
-  background: rgba(107, 126, 90, 0.10);
-  border: 1px solid rgba(107, 126, 90, 0.30);
+  background: rgba(107, 126, 90, 0.1);
+  border: 1px solid rgba(107, 126, 90, 0.3);
 
   padding: 4px 10px;
   border-radius: 1px;
 }
-
 
 /* dot inside badge */
 .buynew-never-worn-soft::before {
@@ -251,9 +244,8 @@ h3 {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #6B7E5A;
+  background: #6b7e5a;
 }
-
 
 /* =========================
    PRICE BLOCK
@@ -263,34 +255,32 @@ h3 {
   margin-bottom: 14px;
 }
 
-
 /* label */
 .buynew-price-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #8A7E72;
+  color: #8a7e72;
   margin: 0 0 2px 0;
 }
 
 /* main price */
 .buynew-main-price {
-  font-family: 'Cormorant Garamond';
+  font-family: "Cormorant Garamond";
   font-size: 40px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0;
   line-height: 0.95;
 }
 
-
 /* meta text */
 .buynew-price-meta {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   margin: 2px 0 0 0;
 }
 
@@ -319,7 +309,7 @@ h3 {
 .buynew-delivery-icon svg {
   width: 12px;
   height: 12px;
-  stroke: #6B7E5A;
+  stroke: #6b7e5a;
   stroke-width: 1;
   opacity: 0.8;
   display: block;
@@ -328,10 +318,10 @@ h3 {
 
 /* text */
 .buynew-delivery-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   white-space: nowrap;
   line-height: 1.8;
   margin: 0;
@@ -339,7 +329,7 @@ h3 {
 
 /* highlight */
 .buynew-delivery-text .buynew-strong {
-  color: #6B7E5A;
+  color: #6b7e5a;
   font-weight: 500;
 }
 
@@ -351,26 +341,24 @@ h3 {
   margin-bottom: 24px;
 }
 
-
 /* ===== LABEL ===== */
 .buynew-section-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 10px;
 }
-
 
 /* ===== SWATCH GRID ===== */
 
 .buynew-swatches-details {
   display: flex;
-  flex-direction: row;     
+  flex-direction: row;
   align-items: flex-start;
-  gap: 16px;               
+  gap: 16px;
 }
 .buynew-swatches-details > div {
   display: flex;
@@ -379,7 +367,7 @@ h3 {
 }
 /* ===== CIRCLE ===== */
 .buynew-swatch-circle-details {
- width: 32px;
+  width: 32px;
   height: 32px;
   border-radius: 50%;
   position: relative;
@@ -388,12 +376,10 @@ h3 {
   border: 2px solid transparent;
 }
 
-
 /* ===== ACTIVE STATE (OUTER BORDER) ===== */
 .buynew-swatches-details.active .buynew-swatch-circle-details {
-  border: 2px solid #1A1612;
+  border: 2px solid #1a1612;
 }
-
 
 /* ===== INNER RING ===== */
 .swatches-details.active .swatch-circle-details::after {
@@ -406,12 +392,12 @@ h3 {
 
 /* ===== SWATCH NAME ===== */
 .buynew-swatch-name {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   letter-spacing: 0.06em;
-  color: #8A7E72;
+  color: #8a7e72;
   text-align: center;
-  margin-top: 0px; 
+  margin-top: 0px;
 }
 
 /* TAG */
@@ -420,7 +406,6 @@ h3 {
   padding: 4px 10px;
   font-size: 11px;
 }
-
 
 /* =========================
    SIZE SECTION
@@ -435,25 +420,24 @@ h3 {
 
 /* Size label  */
 .buynew-size-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #8A7E72;
+  color: #8a7e72;
   display: flex;
   justify-content: space-between;
 }
 
 /* size guide link */
 .buynew-size-guide {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
-  color: #C9A96E;
-  border-bottom: 1px solid #E8D5B0;
+  color: #c9a96e;
+  border-bottom: 1px solid #e8d5b0;
   cursor: pointer;
   margin-bottom: 10px;
 }
-
 
 /* =========================
    SIZE PILLS
@@ -468,12 +452,12 @@ h3 {
 }
 
 .buynew-sizes span {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
-  color: #1A1612;
+  color: #1a1612;
 
   padding: 9px 18px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 1px;
 
   cursor: pointer;
@@ -482,16 +466,16 @@ h3 {
 
 /* hover */
 .buynew-sizes span:hover {
-  border-color: #C9A96E;
-  background: #1A1612;
+  border-color: #c9a96e;
+  background: #1a1612;
   color: #fff;
 }
 
 /* active */
 .buynew-sizes span.active {
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
-  border-color: #1A1612;
+  border-color: #1a1612;
 }
 
 /* disabled */
@@ -501,18 +485,17 @@ h3 {
   text-decoration: line-through;
 } */
 
-
 .buynew-size-note {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   line-height: 1.6;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-top: 16px;
 }
 
 /* help link */
 .buynew-size-help {
-  color: #1A1612;
+  color: #1a1612;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -531,11 +514,11 @@ h3 {
 .buynew-pdp-btn-primary {
   width: 100%;
   padding: 14px;
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
   border: none;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -547,11 +530,11 @@ h3 {
 .buynew-pdp-btn-outline {
   width: 100%;
   padding: 14px;
-  border: 1px solid #1A1612;
+  border: 1px solid #1a1612;
   background: transparent;
-  color: #1A1612;
+  color: #1a1612;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -563,11 +546,11 @@ h3 {
 .buynew-pdp-btn-whatsapp {
   width: 100%;
   padding: 14px;
-  border: 1px solid #25D366;
+  border: 1px solid #25d366;
   background: transparent;
-  color: #25D366;
+  color: #25d366;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -577,7 +560,7 @@ h3 {
 
 /* HOVER */
 .buynew-pdp-btn-whatsapp:hover {
-  background: #25D366;
+  background: #25d366;
   color: #fff;
 }
 
@@ -598,26 +581,26 @@ h3 {
   align-items: center;
   gap: 6px;
   padding: 12px 8px;
-  border: 1px solid #F0EAE0;
+  border: 1px solid #f0eae0;
   border-radius: 1px;
-  background: #FAF7F2;
+  background: #faf7f2;
   text-align: center;
 }
 
 .buynew-trust-item svg {
   height: 18px;
   width: 18px;
-  stroke: #C9A96E;
+  stroke: #c9a96e;
   fill: none;
   stroke-width: 1.4;
 }
 
 .buynew-trust-item span {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.4;
   text-align: center;
 }
@@ -632,12 +615,11 @@ h3 {
   justify-content: space-between;
   gap: 20px;
   padding: 18px 20px;
-  background: #F5EDD8;
-  border: 1px solid #E8D5B0;
+  background: #f5edd8;
+  border: 1px solid #e8d5b0;
   border-radius: 1px;
   margin-bottom: 28px;
 }
-
 
 /* LEFT SIDE */
 .buynew-consult-left {
@@ -646,14 +628,13 @@ h3 {
   gap: 16px;
 }
 
-
 /* ICON BOX */
 .buynew-consult-icon {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #FFFEFB;
-  border: 1px solid #E8D5B0;
+  background: #fffefb;
+  border: 1px solid #e8d5b0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -663,37 +644,35 @@ h3 {
 .buynew-consult-icon svg {
   width: 18px;
   height: 18px;
-  stroke: #C9A96E;
+  stroke: #c9a96e;
   stroke-width: 1.4;
   fill: none;
 }
 
-
 /* TEXT */
 .buynew-consult-title {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 12px;
   font-weight: 500;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 3px;
 }
 
 .buynew-consult-subtitle {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.5;
 }
 
-
 /* BUTTON */
 .buynew-consult-btn {
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
   border: none;
   padding: 10px 18px;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -703,15 +682,13 @@ h3 {
 }
 
 .buynew-consult-btn:hover {
-  background: #2E2520;
+  background: #2e2520;
   transition: background 0.2s;
 }
-
 
 /* -------------------------------------------- */
 /* ------------BUY NEW PDP ACCORDION---------------- */
 /* --------------------------------------------- */
-
 
 /*---------- PRODUCT PAGE DETAILS---------- */
 /* ================= ROOT ================= */
@@ -723,21 +700,20 @@ h3 {
 
 .buynew-pdp-item {
   border-bottom: 1px solid #e8e0d4;
-  
 }
 
 /* HEADER */
- .buynew-pdp-header{
+.buynew-pdp-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 18px 0;
   cursor: pointer;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .buynew-pdp-header:hover {
@@ -758,7 +734,7 @@ h3 {
 }
 
 .pdp-header:hover .icon {
-  stroke: #C9A96E;
+  stroke: #c9a96e;
 }
 
 /* CONTENT */
@@ -774,19 +750,19 @@ h3 {
 }
 
 .buynew-pdp-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 3px;
 }
 
 .buynew-pdp-row p {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 13px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0;
   line-height: 1.55;
 }
@@ -796,7 +772,7 @@ h3 {
   font-family: "Cormorant Garamond";
   font-size: 16px;
   font-style: italic;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.9;
 }
 
@@ -808,7 +784,7 @@ h3 {
 /* SIZE */
 .buynew-size-intro {
   font-size: 12px;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 14px;
   line-height: 1.8;
   font-weight: 300;
@@ -820,28 +796,28 @@ h3 {
 }
 
 .buynew-size-table th {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
-  background: #FAF7F2;
+  background: #faf7f2;
   letter-spacing: 0.14em;
-  color: #8A7E72;
-  padding: 8PX 12PX;
-  border: 1px solid #F0EAE0;
+  color: #8a7e72;
+  padding: 8px 12px;
+  border: 1px solid #f0eae0;
 }
 
 .buynew-size-table td {
   font-size: 12px;
   padding: 9px 12px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   padding: 9px 12px;
-  border: 1px solid #F0EAE0;
+  border: 1px solid #f0eae0;
 }
 
 .buynew-active-row {
   font-weight: 400;
-  background: #F5EDD8;
+  background: #f5edd8;
 }
 
 /* CARE */
@@ -854,10 +830,10 @@ h3 {
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 13px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.6;
 }
 
@@ -873,39 +849,35 @@ h3 {
 }
 
 .buynew-shipping-table th {
-  font-family: 'DM Sans';
-  background: #FAF7F2;
+  font-family: "DM Sans";
+  background: #faf7f2;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: #8A7E72;
+  color: #8a7e72;
   padding: 8px 12px;
-  border: 1px solid #F0EAE0;
+  border: 1px solid #f0eae0;
 }
 
 .buynew-shipping-table td {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 12px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   padding: 9px 12px;
-  border: 1px solid #F0EAE0;
-
+  border: 1px solid #f0eae0;
 }
 
 .buynew-shipping-table .buynew-cost {
-  color: #6B7E5A;
+  color: #6b7e5a;
   font-weight: 400;
 }
-
-
 
 /* =========================
    RESPONSIVE BREAKPOINTS
 ========================= */
 
 @media (max-width: 767px) {
-
   .buynew-pdp-left-wrap {
     flex-direction: column;
   }
@@ -934,7 +906,6 @@ h3 {
 }
 
 @media (min-width: 768px) and (max-width: 1279px) {
-
   .buynew-pdp-left-wrap {
     flex-direction: column;
   }
@@ -951,13 +922,12 @@ h3 {
 }
 
 @media (min-width: 1280px) {
-
   .buynew-pdp-left-wrap {
     display: flex;
     gap: 15px;
     position: sticky;
     /* top: 120px; */
-    top:0px;
+    top: 0px;
     align-self: flex-start;
   }
 }

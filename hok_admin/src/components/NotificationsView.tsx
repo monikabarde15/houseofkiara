@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { 
-  Bell, 
-  ShieldAlert, 
-  PhoneCall, 
-  Check, 
-  Clock, 
-  Trash2, 
-  Mail, 
-  MessageSquare, 
-  CheckCheck, 
+import React, { useState } from "react";
+import {
+  Bell,
+  ShieldAlert,
+  PhoneCall,
+  Check,
+  Clock,
+  Trash2,
+  Mail,
+  MessageSquare,
+  CheckCheck,
   AlertTriangle,
   RefreshCw,
   Search,
@@ -17,8 +17,8 @@ import {
   User,
   Package,
   Calendar,
-  DollarSign
-} from 'lucide-react';
+  DollarSign,
+} from "lucide-react";
 
 interface NotificationItem {
   id: string;
@@ -26,20 +26,23 @@ interface NotificationItem {
   message: string;
   time: string;
   date: string;
-  category: 'System' | 'Order' | 'Lister' | 'Customer' | 'Security' | 'WhatsApp';
-  channel: 'Email' | 'WhatsApp' | 'System' | 'KYC' | 'Dashboard';
+  category:
+    "System" | "Order" | "Lister" | "Customer" | "Security" | "WhatsApp";
+  channel: "Email" | "WhatsApp" | "System" | "KYC" | "Dashboard";
   unread: boolean;
-  priority: 'High' | 'Medium' | 'Low';
+  priority: "High" | "Medium" | "Low";
   actionUrl?: string;
   actionText?: string;
 }
 
-import { notificationApi } from '../services/notificationApi';
+import { notificationApi } from "../services/notificationApi";
 
 export default function NotificationsView() {
-  const [activeTab, setActiveTab] = useState<'all' | 'unread' | 'system' | 'whatsapp'>('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState<
+    "all" | "unread" | "system" | "whatsapp"
+  >("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -63,7 +66,7 @@ export default function NotificationsView() {
   const handleMarkAllRead = async () => {
     try {
       await notificationApi.markAllRead();
-      setNotifications(notifications.map(n => ({ ...n, unread: false })));
+      setNotifications(notifications.map((n) => ({ ...n, unread: false })));
     } catch (err) {
       console.error("Error marking all read:", err);
     }
@@ -72,7 +75,9 @@ export default function NotificationsView() {
   const handleMarkAsRead = async (id: string) => {
     try {
       await notificationApi.markAsRead(id);
-      setNotifications(notifications.map(n => n.id === id ? { ...n, unread: false } : n));
+      setNotifications(
+        notifications.map((n) => (n.id === id ? { ...n, unread: false } : n)),
+      );
     } catch (err) {
       console.error("Error marking read:", err);
     }
@@ -81,57 +86,73 @@ export default function NotificationsView() {
   const handleClear = async (id: string) => {
     try {
       await notificationApi.deleteNotification(id);
-      setNotifications(notifications.filter(n => n.id !== id));
+      setNotifications(notifications.filter((n) => n.id !== id));
     } catch (err) {
       console.error("Error deleting notification:", err);
     }
   };
 
   // Filtered notifications logic
-  const filteredNotifications = notifications.filter(n => {
+  const filteredNotifications = notifications.filter((n) => {
     // Tab filter
-    if (activeTab === 'unread' && !n.unread) return false;
-    if (activeTab === 'system' && n.category !== 'System' && n.category !== 'Security') return false;
-    if (activeTab === 'whatsapp' && n.channel !== 'WhatsApp' && n.category !== 'WhatsApp') return false;
+    if (activeTab === "unread" && !n.unread) return false;
+    if (
+      activeTab === "system" &&
+      n.category !== "System" &&
+      n.category !== "Security"
+    )
+      return false;
+    if (
+      activeTab === "whatsapp" &&
+      n.channel !== "WhatsApp" &&
+      n.category !== "WhatsApp"
+    )
+      return false;
 
     // Category dropdown filter
-    if (selectedCategory !== 'all' && n.category.toLowerCase() !== selectedCategory.toLowerCase()) return false;
+    if (
+      selectedCategory !== "all" &&
+      n.category.toLowerCase() !== selectedCategory.toLowerCase()
+    )
+      return false;
 
     // Search query filter
     if (searchTerm.trim()) {
       const query = searchTerm.toLowerCase();
-      return n.title.toLowerCase().includes(query) || 
-             n.message.toLowerCase().includes(query) ||
-             n.channel.toLowerCase().includes(query);
+      return (
+        n.title.toLowerCase().includes(query) ||
+        n.message.toLowerCase().includes(query) ||
+        n.channel.toLowerCase().includes(query)
+      );
     }
 
     return true;
   });
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  const unreadCount = notifications.filter((n) => n.unread).length;
 
   const getPriorityStyle = (priority: string) => {
     switch (priority) {
-      case 'High':
-        return 'bg-rose-50 text-rose-700 border-rose-200';
-      case 'Medium':
-        return 'bg-amber-50 text-amber-700 border-amber-200';
+      case "High":
+        return "bg-rose-50 text-rose-700 border-rose-200";
+      case "Medium":
+        return "bg-amber-50 text-amber-700 border-amber-200";
       default:
-        return 'bg-stone-100 text-stone-600 border-stone-200';
+        return "bg-stone-100 text-stone-600 border-stone-200";
     }
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'Order':
+      case "Order":
         return <Package className="h-4 w-4 text-stone-700" />;
-      case 'Lister':
+      case "Lister":
         return <User className="h-4 w-4 text-amber-700" />;
-      case 'Customer':
+      case "Customer":
         return <DollarSign className="h-4 w-4 text-emerald-700" />;
-      case 'WhatsApp':
+      case "WhatsApp":
         return <MessageSquare className="h-4 w-4 text-green-600" />;
-      case 'Security':
+      case "Security":
         return <ShieldAlert className="h-4 w-4 text-rose-600" />;
       default:
         return <Bell className="h-4 w-4 text-stone-600" />;
@@ -144,7 +165,9 @@ export default function NotificationsView() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 pb-5">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-serif text-stone-900 font-semibold tracking-tight">Notifications & Messaging Log</h2>
+            <h2 className="text-2xl font-serif text-stone-900 font-semibold tracking-tight">
+              Notifications & Messaging Log
+            </h2>
             {unreadCount > 0 && (
               <span className="px-2.5 py-0.5 rounded-full bg-[#C7A55C] text-[#2A2118] text-[11px] font-bold">
                 {unreadCount} Unread
@@ -152,7 +175,8 @@ export default function NotificationsView() {
             )}
           </div>
           <p className="text-xs text-stone-500 mt-1">
-            Real-time activity logs, automated background alerts, WhatsApp status logs, and staff task updates.
+            Real-time activity logs, automated background alerts, WhatsApp
+            status logs, and staff task updates.
           </p>
         </div>
 
@@ -174,21 +198,21 @@ export default function NotificationsView() {
         {/* Navigation Tabs */}
         <div className="flex items-center gap-1 bg-stone-100/80 p-1 rounded-md">
           <button
-            onClick={() => setActiveTab('all')}
+            onClick={() => setActiveTab("all")}
             className={`px-3 py-1.5 rounded-md font-medium text-xs transition cursor-pointer ${
-              activeTab === 'all' 
-                ? 'bg-white text-stone-900 shadow-2xs' 
-                : 'text-stone-600 hover:text-stone-900'
+              activeTab === "all"
+                ? "bg-white text-stone-900 shadow-2xs"
+                : "text-stone-600 hover:text-stone-900"
             }`}
           >
             All Logs ({notifications.length})
           </button>
           <button
-            onClick={() => setActiveTab('unread')}
+            onClick={() => setActiveTab("unread")}
             className={`px-3 py-1.5 rounded-md font-medium text-xs transition cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'unread' 
-                ? 'bg-white text-stone-900 shadow-2xs' 
-                : 'text-stone-600 hover:text-stone-900'
+              activeTab === "unread"
+                ? "bg-white text-stone-900 shadow-2xs"
+                : "text-stone-600 hover:text-stone-900"
             }`}
           >
             <span>Unread</span>
@@ -199,21 +223,21 @@ export default function NotificationsView() {
             )}
           </button>
           <button
-            onClick={() => setActiveTab('whatsapp')}
+            onClick={() => setActiveTab("whatsapp")}
             className={`px-3 py-1.5 rounded-md font-medium text-xs transition cursor-pointer ${
-              activeTab === 'whatsapp' 
-                ? 'bg-white text-stone-900 shadow-2xs' 
-                : 'text-stone-600 hover:text-stone-900'
+              activeTab === "whatsapp"
+                ? "bg-white text-stone-900 shadow-2xs"
+                : "text-stone-600 hover:text-stone-900"
             }`}
           >
             WhatsApp Logs
           </button>
           <button
-            onClick={() => setActiveTab('system')}
+            onClick={() => setActiveTab("system")}
             className={`px-3 py-1.5 rounded-md font-medium text-xs transition cursor-pointer ${
-              activeTab === 'system' 
-                ? 'bg-white text-stone-900 shadow-2xs' 
-                : 'text-stone-600 hover:text-stone-900'
+              activeTab === "system"
+                ? "bg-white text-stone-900 shadow-2xs"
+                : "text-stone-600 hover:text-stone-900"
             }`}
           >
             System & Security
@@ -253,23 +277,30 @@ export default function NotificationsView() {
         {filteredNotifications.length === 0 ? (
           <div className="p-12 text-center">
             <Bell className="h-8 w-8 text-stone-300 mx-auto mb-3" />
-            <h3 className="text-sm font-semibold text-stone-700">No Notifications Found</h3>
+            <h3 className="text-sm font-semibold text-stone-700">
+              No Notifications Found
+            </h3>
             <p className="text-xs text-stone-500 mt-1">
-              There are no activity logs matching your selected filters or search parameters.
+              There are no activity logs matching your selected filters or
+              search parameters.
             </p>
           </div>
         ) : (
           filteredNotifications.map((n) => (
-            <div 
-              key={n.id} 
+            <div
+              key={n.id}
               onClick={() => n.unread && handleMarkAsRead(n.id)}
               className={`p-4 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer ${
-                n.unread ? 'bg-[#FCF9F5]/90 hover:bg-[#F9F4EB]' : 'hover:bg-stone-50/70'
+                n.unread
+                  ? "bg-[#FCF9F5]/90 hover:bg-[#F9F4EB]"
+                  : "hover:bg-stone-50/70"
               }`}
             >
               {/* Left Column: Icon + Text */}
               <div className="flex gap-3.5 items-start">
-                <div className={`p-2.5 rounded-lg shrink-0 border ${getPriorityStyle(n.priority)}`}>
+                <div
+                  className={`p-2.5 rounded-lg shrink-0 border ${getPriorityStyle(n.priority)}`}
+                >
                   {getCategoryIcon(n.category)}
                 </div>
 
@@ -278,12 +309,12 @@ export default function NotificationsView() {
                     <span className="font-semibold text-stone-900 text-xs">
                       {n.title}
                     </span>
-                    
+
                     <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-stone-100 text-stone-600 border border-stone-200">
                       {n.channel}
                     </span>
 
-                    {n.priority === 'High' && (
+                    {n.priority === "High" && (
                       <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-rose-100 text-rose-700 border border-rose-200 uppercase tracking-wider">
                         High Priority
                       </span>
@@ -314,9 +345,15 @@ export default function NotificationsView() {
                 )}
 
                 {n.unread ? (
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#C7A55C] shadow-2xs" title="Unread" />
+                  <span
+                    className="h-2.5 w-2.5 rounded-full bg-[#C7A55C] shadow-2xs"
+                    title="Unread"
+                  />
                 ) : (
-                  <span className="h-2.5 w-2.5 rounded-full bg-stone-200" title="Read" />
+                  <span
+                    className="h-2.5 w-2.5 rounded-full bg-stone-200"
+                    title="Read"
+                  />
                 )}
 
                 <button

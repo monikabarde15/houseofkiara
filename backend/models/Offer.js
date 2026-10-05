@@ -21,7 +21,7 @@ const noteSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 /* ===========================
@@ -54,7 +54,7 @@ const counterOfferSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 /* ===========================
@@ -74,7 +74,7 @@ const timelineSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 /* ===========================
@@ -94,7 +94,7 @@ const assignmentHistorySchema = new mongoose.Schema(
 
     remarks: String,
   },
-  { _id: false }
+  { _id: false },
 );
 
 /* ===========================
@@ -188,11 +188,7 @@ const offerSchema = new mongoose.Schema(
 
     negotiationStatus: {
       type: String,
-      enum: [
-        "Not Started",
-        "In Progress",
-        "Completed",
-      ],
+      enum: ["Not Started", "In Progress", "Completed"],
       default: "Not Started",
     },
 
@@ -242,7 +238,7 @@ const offerSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model("Offer", offerSchema);

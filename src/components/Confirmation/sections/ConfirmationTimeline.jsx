@@ -34,42 +34,27 @@ const formatDay = (date) => {
 ========================================= */
 
 const ConfirmationTimeline = ({ item }) => {
-
   const booking = item?.booking || {};
 
   if (!item?.booking) return null;
 
-  const start = new Date(
-    booking?.deliveryDate
-  );
+  const start = new Date(booking?.deliveryDate);
 
-  const end = new Date(
-    booking?.returnDate
-  );
+  const end = new Date(booking?.returnDate);
 
-  const windowDays =
-    Math.round(
-      (end - start) /
-      (1000 * 60 * 60 * 24)
-    ) + 1 ;
+  const windowDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
 
   const windowLabel = `${windowDays}-Day Window`;
 
   return (
     <div className="confirmation-timeline">
-
       {/* =========================================
           DELIVERY NODE
       ========================================= */}
 
       <div className="confirmation-timeline__node">
-
         <div className="confirmation-timeline__header">
-
-          <div className="confirmation-timeline__label">
-            DELIVERY
-          </div>
-
+          <div className="confirmation-timeline__label">DELIVERY</div>
         </div>
 
         <div className="confirmation-timeline__circle confirmation-timeline__circle--filled" />
@@ -81,7 +66,6 @@ const ConfirmationTimeline = ({ item }) => {
         <div className="confirmation-timeline__day">
           {formatDay(booking?.deliveryDate)}
         </div>
-
       </div>
 
       {/* =========================================
@@ -89,17 +73,10 @@ const ConfirmationTimeline = ({ item }) => {
       ========================================= */}
 
       <div className="confirmation-timeline__node">
-
         <div className="confirmation-timeline__header">
+          <div className="confirmation-timeline__window">{windowLabel}</div>
 
-          <div className="confirmation-timeline__window">
-            {windowLabel}
-          </div>
-
-          <div className="confirmation-timeline__label">
-            YOUR EVENT
-          </div>
-
+          <div className="confirmation-timeline__label">YOUR EVENT</div>
         </div>
 
         <div className="confirmation-timeline__circle confirmation-timeline__circle--filled" />
@@ -111,7 +88,6 @@ const ConfirmationTimeline = ({ item }) => {
         <div className="confirmation-timeline__day">
           {formatDay(booking?.eventDate)}
         </div>
-
       </div>
 
       {/* =========================================
@@ -119,13 +95,8 @@ const ConfirmationTimeline = ({ item }) => {
       ========================================= */}
 
       <div className="confirmation-timeline__node">
-
         <div className="confirmation-timeline__header">
-
-          <div className="confirmation-timeline__label">
-            RETURN BY
-          </div>
-
+          <div className="confirmation-timeline__label">RETURN BY</div>
         </div>
 
         <div className="confirmation-timeline__circle confirmation-timeline__circle--urgent" />
@@ -137,9 +108,7 @@ const ConfirmationTimeline = ({ item }) => {
         <div className="confirmation-timeline__day">
           {formatDay(booking?.returnDate)}
         </div>
-
       </div>
-
     </div>
   );
 };

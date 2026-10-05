@@ -9,7 +9,7 @@ export const recommendationItems = [
     rentalDuration: "4 days",
     imageBg: "#242019",
     strokeColor: "rgba(201, 169, 110, 0.22)",
-    labelColor: "rgba(232, 213, 176, 0.30)"
+    labelColor: "rgba(232, 213, 176, 0.30)",
   },
   {
     id: 102,
@@ -21,7 +21,7 @@ export const recommendationItems = [
     condition: "Pristine",
     imageBg: "#FAF7F2",
     strokeColor: "rgba(201, 169, 110, 0.16)",
-    labelColor: "rgba(138, 126, 114, 0.35)"
+    labelColor: "rgba(138, 126, 114, 0.35)",
   },
   {
     id: 103,
@@ -33,7 +33,7 @@ export const recommendationItems = [
     rentalDuration: "4 days",
     imageBg: "#242019",
     strokeColor: "rgba(201, 169, 110, 0.22)",
-    labelColor: "rgba(232, 213, 176, 0.30)"
+    labelColor: "rgba(232, 213, 176, 0.30)",
   },
   {
     id: 104,
@@ -44,6 +44,6 @@ export const recommendationItems = [
     priceLabel: "Buy",
     imageBg: "#EDEBE4",
     strokeColor: "rgba(107, 126, 90, 0.20)",
-    labelColor: "rgba(107, 126, 90, 0.30)"
-  }
+    labelColor: "rgba(107, 126, 90, 0.30)",
+  },
 ];

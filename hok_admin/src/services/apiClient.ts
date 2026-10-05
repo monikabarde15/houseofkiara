@@ -1,13 +1,13 @@
 // All browser API requests go through the port-3000 reverse proxy. This keeps
 // the admin portal on one origin and avoids stale hard-coded backend ports.
-export const API_BASE_URL = '/api';
+export const API_BASE_URL = "/api";
 
 export const getAuthToken = (): string | null => {
   try {
-    const raw = localStorage.getItem('hok_admin_session');
+    const raw = localStorage.getItem("hok_admin_session");
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    return parsed?.token || (typeof parsed === 'string' ? parsed : null);
+    return parsed?.token || (typeof parsed === "string" ? parsed : null);
   } catch {
     return null;
   }
@@ -15,27 +15,33 @@ export const getAuthToken = (): string | null => {
 
 export const apiRequest = async <T = any>(
   path: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<{ success: boolean; data: T; message?: string }> => {
   const token = getAuthToken();
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
+    "Content-Type": "application/json",
+    Accept: "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...(options?.headers as Record<string, string> || {}),
+    ...((options?.headers as Record<string, string>) || {}),
   };
 
-  const response = await fetch(`${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`, {
-    ...options,
-    headers,
-  });
+  const response = await fetch(
+    `${API_BASE_URL}${path.startsWith("/") ? "" : "/"}${path}`,
+    {
+      ...options,
+      headers,
+    },
+  );
 
   const body = await response.json().catch(() => ({}));
   if (!response.ok || body.success === false) {
     if (response.status === 401) {
-      localStorage.removeItem('hok_admin_session');
+      localStorage.removeItem("hok_admin_session");
     }
-    throw new Error(body.message || `Request to ${path} failed with status ${response.status}`);
+    throw new Error(
+      body.message ||
+        `Request to ${path} failed with status ${response.status}`,
+    );
   }
 
   return body;

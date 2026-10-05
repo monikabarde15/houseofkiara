@@ -3,8 +3,8 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px 16px;
-  border-top: 1px solid #EBE5D8;
-  background: #FDFBF7;
+  border-top: 1px solid #ebe5d8;
+  background: #fdfbf7;
 }
 
 .calendar-legend__row {
@@ -19,7 +19,7 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #5C5347;
+  color: #5c5347;
   white-space: nowrap;
 }
 

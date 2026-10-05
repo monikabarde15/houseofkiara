@@ -13,7 +13,10 @@ describe("Tier 1: Feature Coverage — Listers Management & KYC", () => {
     testListerId = listerPayload.listerId;
 
     const res = await client.post("/listers", listerPayload);
-    assert.ok([200, 201].includes(res.status), `Create lister expected 200/201, got ${res.status}`);
+    assert.ok(
+      [200, 201].includes(res.status),
+      `Create lister expected 200/201, got ${res.status}`,
+    );
     assert.strictEqual(res.data?.success, true);
     assert.ok(res.data?.data);
     createdLister = res.data.data;
@@ -25,13 +28,19 @@ describe("Tier 1: Feature Coverage — Listers Management & KYC", () => {
     assert.strictEqual(res.data?.success, true);
     const listers = res.data?.data || [];
     assert.ok(Array.isArray(listers), "Listers data must be an array");
-    const found = listers.some((l) => l.listerId === testListerId || l.id === testListerId);
+    const found = listers.some(
+      (l) => l.listerId === testListerId || l.id === testListerId,
+    );
     assert.ok(found, `Lister ${testListerId} should appear in listers list`);
   });
 
   test("Feature 17: GET /api/listers/:id retrieves lister profile details", async () => {
     const res = await client.get(`/listers/${testListerId}`);
-    assert.strictEqual(res.status, 200, "Get lister by ID should return 200 OK");
+    assert.strictEqual(
+      res.status,
+      200,
+      "Get lister by ID should return 200 OK",
+    );
     assert.strictEqual(res.data?.success, true);
     assert.strictEqual(res.data.data.listerId, testListerId);
   });
@@ -60,12 +69,23 @@ describe("Tier 1: Feature Coverage — Listers Management & KYC", () => {
       verified: true,
     };
 
-    const res = await client.put(`/listers/${testListerId}/bank-details`, bankPayload);
-    assert.strictEqual(res.status, 200, "Update bank details should return 200 OK");
+    const res = await client.put(
+      `/listers/${testListerId}/bank-details`,
+      bankPayload,
+    );
+    assert.strictEqual(
+      res.status,
+      200,
+      "Update bank details should return 200 OK",
+    );
     assert.strictEqual(res.data?.success, true);
 
     const getRes = await client.get(`/listers/${testListerId}`);
-    assert.strictEqual(getRes.data.data.bankDetails?.ifsc, "ICIC0000001", "Updated IFSC code must be persisted");
+    assert.strictEqual(
+      getRes.data.data.bankDetails?.ifsc,
+      "ICIC0000001",
+      "Updated IFSC code must be persisted",
+    );
   });
 
   test("Feature 17: DELETE /api/listers/:id removes lister from database", async () => {
@@ -76,7 +96,11 @@ describe("Tier 1: Feature Coverage — Listers Management & KYC", () => {
     const getRes = await client.get(`/listers/${testListerId}`);
     assert.ok([404, 200].includes(getRes.status));
     if (getRes.status === 200) {
-      assert.strictEqual(getRes.data?.data, null, "Deleted lister should return null");
+      assert.strictEqual(
+        getRes.data?.data,
+        null,
+        "Deleted lister should return null",
+      );
     }
   });
 });

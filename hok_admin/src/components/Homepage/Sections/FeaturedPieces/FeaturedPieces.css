@@ -1,4 +1,3 @@
-
 .featured-editor {
   width: 100%;
   color: #29231f;
@@ -201,7 +200,9 @@
   font-size: 14px;
   color: #302a25;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .featured-field input:focus,
@@ -280,7 +281,9 @@
   background: #fff;
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .featured-piece-card:hover {

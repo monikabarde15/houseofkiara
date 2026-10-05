@@ -19,7 +19,7 @@ const DesktopSortShareRow = ({
   const handleSortChange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex].text;
     onSortChange(e.target.value);
-    
+
     // Section 5.4: Toast appears: "Sorted by: [selected option label]"
     const toastEvent = new CustomEvent("showToast", {
       detail: { message: `Sorted by: ${selectedOption}` },
@@ -49,22 +49,56 @@ const DesktopSortShareRow = ({
       </div>
 
       {/* Share Button */}
-      <button
-        className="desktop-sort-share-row__share"
-        onClick={onShareClick}
-      >
+      <button className="desktop-sort-share-row__share" onClick={onShareClick}>
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-          <circle cx="3" cy="6.5" r="1.5" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="9.5" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="9.5" cy="10" r="1.5" stroke="currentColor" strokeWidth="1.5" />
-          <line x1="4.5" y1="7.5" x2="8" y2="9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <line x1="4.5" y1="5.5" x2="8" y2="4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <circle
+            cx="3"
+            cy="6.5"
+            r="1.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+          <circle
+            cx="9.5"
+            cy="3"
+            r="1.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+          <circle
+            cx="9.5"
+            cy="10"
+            r="1.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+          <line
+            x1="4.5"
+            y1="7.5"
+            x2="8"
+            y2="9"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <line
+            x1="4.5"
+            y1="5.5"
+            x2="8"
+            y2="4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
         </svg>
         SHARE
       </button>
 
       {/* View Toggle */}
-      <DesktopViewToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
+      <DesktopViewToggle
+        viewMode={viewMode}
+        onViewModeChange={onViewModeChange}
+      />
     </div>
   );
 };

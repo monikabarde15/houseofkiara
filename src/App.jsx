@@ -1,15 +1,12 @@
 // src\App.jsx
 import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 import useAuthStore from "./store/authStore";
 
 // Layout
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-
-
-
 
 import ProductList from "./components/Products";
 import BuyNew from "./components/ProductCategory/BuyNew";
@@ -18,8 +15,6 @@ import OnlyRentalDetail from "./components/ProductCategory/OnlyRentalDetail";
 import RentalAndPreloved from "./components/ProductCategory/RentalAndPreloved";
 import RentalAndBuy from "./components/ProductCategory/RentalAndBuy";
 import DummyGowns from "./components/DummyGowns";
-
-
 
 import HomePage from "./pages/HomePage/HomePage";
 import LypMain from "./components/LYP/LypMain";
@@ -34,8 +29,6 @@ import HowItWorks from "./pages/HowItWorks/HowItWorks";
 import AboutUsPage from "./pages/AboutUsPage/AboutUsPage";
 import FAQPage from "./pages/FAQPage/FAQPage";
 
-
-
 export default function App() {
   useEffect(() => {
     useAuthStore.getState().checkAuth();
@@ -43,21 +36,21 @@ export default function App() {
 
   return (
     <>
-      <Toaster 
+      <Toaster
         position="top-right"
         toastOptions={{
           style: {
-            background: '#1e1412',
-            color: '#fcf9f5',
-            border: '1px solid #c5a880',
-            fontSize: '13px',
-            fontFamily: 'sans-serif',
+            background: "#1e1412",
+            color: "#fcf9f5",
+            border: "1px solid #c5a880",
+            fontSize: "13px",
+            fontFamily: "sans-serif",
             zIndex: 9999,
           },
           success: {
             iconTheme: {
-              primary: '#c5a880',
-              secondary: '#1e1412',
+              primary: "#c5a880",
+              secondary: "#1e1412",
             },
           },
         }}
@@ -67,18 +60,18 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         {/* Products Page */}
         <Route path="/products" element={<ProductList />} />
-        <Route path="/main-page" element={<MainCategoryPage/>} />
+        <Route path="/main-page" element={<MainCategoryPage />} />
 
         <Route path="/buynew/:id" element={<BuyNew />} />
         <Route path="/preloved/:id" element={<Preloved />} />
         <Route path="/onlyrental/:id" element={<OnlyRentalDetail />} />
         <Route path="/rentalandpreloved/:id" element={<RentalAndPreloved />} />
-        <Route path="/rentalandbuy/:id" element = {<RentalAndBuy/>} />
+        <Route path="/rentalandbuy/:id" element={<RentalAndBuy />} />
 
         {/* <Route path="/rent/gowns" element={<DummyGowns />} /> */}
         <Route path="/list-your-piece/" element={<LypMain />} />
-        <Route path="/cart" element={<CartPage/>} />
-        <Route path="/checkout" element={<CheckoutPage/>}/>
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
@@ -87,8 +80,6 @@ export default function App() {
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/about-us" element={<AboutUsPage />} />
         <Route path="/faqs" element={<FAQPage />} />
-
-
       </Routes>
 
       <Footer />

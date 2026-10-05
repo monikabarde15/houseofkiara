@@ -13,18 +13,18 @@ const addressSchema = new mongoose.Schema(
     mobile: { type: String, default: "" },
     phone: { type: String, default: "" },
     address: { type: String, default: "" },
-    isDefault: { type: Boolean, default: false }
+    isDefault: { type: Boolean, default: false },
   },
-  { _id: false, strict: false }
+  { _id: false, strict: false },
 );
 
 const occasionSchema = new mongoose.Schema(
   {
     id: String,
     occasion: String,
-    date: String
+    date: String,
   },
-  { _id: false }
+  { _id: false },
 );
 
 const commLogSchema = new mongoose.Schema(
@@ -32,9 +32,12 @@ const commLogSchema = new mongoose.Schema(
     id: String,
     message: String,
     channel: { type: String, default: "WhatsApp" },
-    timestamp: { type: String, default: () => new Date().toLocaleString("en-IN") }
+    timestamp: {
+      type: String,
+      default: () => new Date().toLocaleString("en-IN"),
+    },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const customerSchema = new mongoose.Schema(
@@ -61,14 +64,19 @@ const customerSchema = new mongoose.Schema(
       preferredSilhouettes: { type: String, default: "" },
       newsletter: { type: Boolean, default: false },
       whatsappNotifications: { type: Boolean, default: false },
-      marketingOptIn: { type: Boolean, default: false }
+      marketingOptIn: { type: Boolean, default: false },
     },
     addresses: [addressSchema],
     occasions: [occasionSchema],
     communicationLog: [commLogSchema],
     joinedDate: {
       type: String,
-      default: () => new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+      default: () =>
+        new Date().toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
     },
     ordersCount: { type: Number, default: 0 },
     totalSpent: { type: Number, default: 0 },
@@ -86,9 +94,9 @@ const customerSchema = new mongoose.Schema(
     resetPasswordToken: { type: String, default: "" },
     resetPasswordExpiresAt: { type: Date },
     wishlist: [{ type: String }],
-    cart: [{ type: mongoose.Schema.Types.Mixed }]
+    cart: [{ type: mongoose.Schema.Types.Mixed }],
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 export default mongoose.model("Customer", customerSchema);

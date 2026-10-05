@@ -5,14 +5,13 @@ import LypBreadcrumb from "./Breadcrumb/LypBreadcrumb";
 import LypHero from "./hero/LypHero";
 import WizardLayout from "./Wizard/WizardLayout";
 
-// CSS 
+// CSS
 import "../../styles/LYP/lypMain.css";
 import LypPromises from "./Promises/LypPromises";
 import LypHowItWorks from "./HowItWorks/LypHowItWorks";
 import LypCalculator from "./Calculator/LypCalculator";
 
 const LypMain = () => {
-
   const [step, setStep] = React.useState(1);
   const [submitted, setSubmitted] = React.useState(false);
 
@@ -29,11 +28,8 @@ const LypMain = () => {
 
   return (
     <div className="lyp-main">
-
       <LypBreadcrumb />
-      {(!isMobile || (isMobile && step === 1 && !submitted)) && (
-        <LypHero />
-      )}
+      {(!isMobile || (isMobile && step === 1 && !submitted)) && <LypHero />}
 
       <WizardLayout
         step={step}
@@ -49,7 +45,6 @@ const LypMain = () => {
           <LypCalculator />
         </>
       )}
-
     </div>
   );
 };

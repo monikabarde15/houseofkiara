@@ -6,7 +6,6 @@
   border-top: 1px solid var(--ink-6);
 }
 
-
 /* =========================================
    NEXT STEPS CONTAINER
 ========================================= */
@@ -96,8 +95,6 @@
   color: var(--ink-2);
 }
 
-
-
 /* =========================================================
    MOBILE: Section 04 What Happens Next 
    @media (max-width: 430px)
@@ -115,7 +112,6 @@
     gap: 14px;
     padding: 18px 0;
   }
-
 
   .confirmation-next-step-number {
     font-size: 24px;

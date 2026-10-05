@@ -16,24 +16,24 @@ const formatDate = (date) => {
 };
 
 const formatDay = (date) => {
-    if (!date) return "Select Date";
-    return new Date(date).toLocaleDateString("en-IN", {
-        weekday: "long"
-    });
+  if (!date) return "Select Date";
+  return new Date(date).toLocaleDateString("en-IN", {
+    weekday: "long",
+  });
 };
 
 // ✅ Calculate window days from deliveryDate and returnDate
 const calculateWindowDays = (deliveryDate, returnDate) => {
-    if (!deliveryDate || !returnDate) return 5;
-    
-    const start = new Date(deliveryDate);
-    const end = new Date(returnDate);
-    const diffTime = Math.abs(end - start);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    // +1 to include both start and end days
-    // Example: April 20 to April 25 = 6 days (20,21,22,23,24,25)
-    return diffDays + 1;
+  if (!deliveryDate || !returnDate) return 5;
+
+  const start = new Date(deliveryDate);
+  const end = new Date(returnDate);
+  const diffTime = Math.abs(end - start);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  // +1 to include both start and end days
+  // Example: April 20 to April 25 = 6 days (20,21,22,23,24,25)
+  return diffDays + 1;
 };
 
 /* ============================= */
@@ -41,90 +41,75 @@ const calculateWindowDays = (deliveryDate, returnDate) => {
 /* ============================= */
 
 const RentalTimeline = ({ booking }) => {
+  if (!booking || !booking.deliveryDate || !booking.returnDate) return null;
 
-    if (!booking || !booking.deliveryDate || !booking.returnDate) return null;
+  // ✅ Calculate - don't look for stored value
+  const windowDays = calculateWindowDays(
+    booking.deliveryDate,
+    booking.returnDate,
+  );
 
-    // ✅ Calculate - don't look for stored value
-    const windowDays = calculateWindowDays(
-        booking.deliveryDate, 
-        booking.returnDate
-    );
-    
-    // Calculate eventDate as exactly 1 day before the return date (standard rental policy)
-    let eventDate = booking.eventDate;
-    if (!eventDate) {
-        const end = new Date(booking.returnDate);
-        end.setDate(end.getDate() - 1); // Event is 1 day before return
-        eventDate = end.toISOString().split('T')[0];
-    }
-    
-    const windowLabel = `${windowDays}-Day Window`;
+  // Calculate eventDate as exactly 1 day before the return date (standard rental policy)
+  let eventDate = booking.eventDate;
+  if (!eventDate) {
+    const end = new Date(booking.returnDate);
+    end.setDate(end.getDate() - 1); // Event is 1 day before return
+    eventDate = end.toISOString().split("T")[0];
+  }
 
-    return (
-        <div className="cart-timeline">
+  const windowLabel = `${windowDays}-Day Window`;
 
-            {/* DELIVERY */}
-            <div className="cart-timeline__node">
-                <div className="cart-timeline__header">
-                    <div className="cart-timeline__node-label">
-                        DELIVERY
-                    </div>
-                </div>
-
-                <div className="cart-timeline__circle cart-timeline__circle--filled" />
-
-                <div className="cart-timeline__date">
-                    {formatDate(booking?.deliveryDate)}
-                </div>
-
-                <div className="cart-timeline__sub">
-                    {formatDay(booking?.deliveryDate)}
-                </div>
-            </div>
-
-            {/* EVENT */}
-            <div className="cart-timeline__node">
-                <div className="cart-timeline__header">
-                    <div className="cart-timeline__window">
-                        {windowLabel}
-                    </div>
-                    <div className="cart-timeline__node-label">
-                        EVENT
-                    </div>
-                </div>
-
-                <div className="cart-timeline__circle cart-timeline__circle--filled" />
-
-                <div className="cart-timeline__date">
-                    {formatDate(eventDate)}
-                </div>
-
-                <div className="cart-timeline__sub">
-                    {formatDay(eventDate)}
-                </div>
-            </div>
-
-            {/* RETURN */}
-            <div className="cart-timeline__node">
-                <div className="cart-timeline__header">
-                    <div className="cart-timeline__node-label">
-                        RETURN BY
-                    </div>
-                </div>
-
-                <div className="cart-timeline__circle" />
-
-                <div className="cart-timeline__date">
-                    {formatDate(booking?.returnDate)}
-                </div>
-
-                <div className="cart-timeline__sub">
-                    {formatDay(booking?.returnDate)}
-                </div>
-            </div>
-
+  return (
+    <div className="cart-timeline">
+      {/* DELIVERY */}
+      <div className="cart-timeline__node">
+        <div className="cart-timeline__header">
+          <div className="cart-timeline__node-label">DELIVERY</div>
         </div>
-    );
+
+        <div className="cart-timeline__circle cart-timeline__circle--filled" />
+
+        <div className="cart-timeline__date">
+          {formatDate(booking?.deliveryDate)}
+        </div>
+
+        <div className="cart-timeline__sub">
+          {formatDay(booking?.deliveryDate)}
+        </div>
+      </div>
+
+      {/* EVENT */}
+      <div className="cart-timeline__node">
+        <div className="cart-timeline__header">
+          <div className="cart-timeline__window">{windowLabel}</div>
+          <div className="cart-timeline__node-label">EVENT</div>
+        </div>
+
+        <div className="cart-timeline__circle cart-timeline__circle--filled" />
+
+        <div className="cart-timeline__date">{formatDate(eventDate)}</div>
+
+        <div className="cart-timeline__sub">{formatDay(eventDate)}</div>
+      </div>
+
+      {/* RETURN */}
+      <div className="cart-timeline__node">
+        <div className="cart-timeline__header">
+          <div className="cart-timeline__node-label">RETURN BY</div>
+        </div>
+
+        <div className="cart-timeline__circle" />
+
+        <div className="cart-timeline__date">
+          {formatDate(booking?.returnDate)}
+        </div>
+
+        <div className="cart-timeline__sub">
+          {formatDay(booking?.returnDate)}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default RentalTimeline;

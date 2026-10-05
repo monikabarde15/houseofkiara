@@ -4,11 +4,7 @@ import MobileBottomSheet from "./MobileBottomSheet";
 
 import "../../../../styles/Profile/mobile/sheets/MobileSubmissionDetailSheet.css";
 
-const MobileSubmissionDetailSheet = ({
-  isOpen,
-  onClose,
-  submission
-}) => {
+const MobileSubmissionDetailSheet = ({ isOpen, onClose, submission }) => {
   if (!submission) {
     return null;
   }
@@ -22,17 +18,11 @@ const MobileSubmissionDetailSheet = ({
     ["Times Worn", submission.timesWorn],
     [
       "Original Price (Approx.)",
-      `₹${submission.originalPrice.toLocaleString()}`
+      `₹${submission.originalPrice.toLocaleString()}`,
     ],
-    [
-      "Preferred Outcome",
-      submission.preferredOutcome
-    ],
-    [
-      "Photos Submitted",
-      submission.photosSubmitted
-    ],
-    ["Pickup City", submission.pickupCity]
+    ["Preferred Outcome", submission.preferredOutcome],
+    ["Photos Submitted", submission.photosSubmitted],
+    ["Pickup City", submission.pickupCity],
   ];
 
   return (
@@ -47,8 +37,7 @@ const MobileSubmissionDetailSheet = ({
         <div
           className="profile-mobile-sheet-product-img"
           style={{
-            "--sheet-bg":
-              submission.imageGradient
+            "--sheet-bg": submission.imageGradient,
           }}
         />
 
@@ -56,9 +45,7 @@ const MobileSubmissionDetailSheet = ({
           <div className="profile-mobile-sub-status">
             <span className="profile-mobile-sub-dot" />
 
-            <span className="profile-mobile-sub-badge">
-              Under Review
-            </span>
+            <span className="profile-mobile-sub-badge">Under Review</span>
           </div>
 
           <div className="profile-mobile-sheet-product-name">
@@ -66,12 +53,7 @@ const MobileSubmissionDetailSheet = ({
           </div>
 
           <div className="profile-mobile-sheet-product-meta">
-            Submitted{" "}
-            {
-              submission.submittedDate
-            }{" "}
-            · #
-            {submission.id}
+            Submitted {submission.submittedDate} · #{submission.id}
           </div>
         </div>
       </div>
@@ -79,59 +61,33 @@ const MobileSubmissionDetailSheet = ({
       {/* Detail Rows */}
 
       <div className="profile-mobile-sheet-detail-body">
-        {detailRows.map(
-          ([label, value]) => (
-            <div
-              key={label}
-              className="profile-mobile-sub-drow"
-            >
-              <div className="profile-mobile-sub-dl">
-                {label}
-              </div>
+        {detailRows.map(([label, value]) => (
+          <div key={label} className="profile-mobile-sub-drow">
+            <div className="profile-mobile-sub-dl">{label}</div>
 
-              <div className="profile-mobile-sub-dv">
-                {value}
-              </div>
-            </div>
-          )
-        )}
+            <div className="profile-mobile-sub-dv">{value}</div>
+          </div>
+        ))}
 
         {/* Note */}
 
         <div className="profile-mobile-sub-note">
-          <div className="profile-mobile-sub-note-title">
-            What Happens Next
-          </div>
+          <div className="profile-mobile-sub-note-title">What Happens Next</div>
 
           <div className="profile-mobile-sub-note-text">
-            Our curation team
-            reviews submissions
-            within 48 hours and
-            coordinates next
-            steps on WhatsApp.
-            This submission is
-            non-binding.
+            Our curation team reviews submissions within 48 hours and
+            coordinates next steps on WhatsApp. This submission is non-binding.
           </div>
         </div>
 
         {/* Buttons */}
 
-        <button
-          type="button"
-          className="profile-mobile-sbtn-p"
-        >
-          <MessageCircle
-            size={11}
-            strokeWidth={1.8}
-          />
-
+        <button type="button" className="profile-mobile-sbtn-p">
+          <MessageCircle size={11} strokeWidth={1.8} />
           WhatsApp Team
         </button>
 
-        <button
-          type="button"
-          className="profile-mobile-sbtn-s"
-        >
+        <button type="button" className="profile-mobile-sbtn-s">
           Withdraw Submission
         </button>
       </div>

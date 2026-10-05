@@ -1,9 +1,17 @@
 // src/components/Notifications/hooks/useNotifications.ts
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { NotificationsResponse, SummaryCounts, UrgencyMap } from '../types/notification.types';
-import { fetchNotifications } from '../services/notificationsService';
-import { mockNotificationsResponse } from '../data/mockAlerts';
-import { buildUrgencyMap, buildSummaryCounts, getPutDownCount } from '../utils/counting';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  NotificationsResponse,
+  SummaryCounts,
+  UrgencyMap,
+} from "../types/notification.types";
+import { fetchNotifications } from "../services/notificationsService";
+import { mockNotificationsResponse } from "../data/mockAlerts";
+import {
+  buildUrgencyMap,
+  buildSummaryCounts,
+  getPutDownCount,
+} from "../utils/counting";
 
 // Flip to false once the real backend endpoint (§19.1) is live.
 const USE_MOCK_DATA = true;
@@ -44,7 +52,9 @@ export function useNotifications(): UseNotificationsResult {
       // §15.1 — a computation failing must never take the page down; the
       // page still has to render something. We surface the error but do
       // not fabricate a partial alert list to hide it.
-      setError(err instanceof Error ? err.message : 'Failed to load notifications');
+      setError(
+        err instanceof Error ? err.message : "Failed to load notifications",
+      );
     } finally {
       setLoading(false);
     }
@@ -89,7 +99,7 @@ export function useNotifications(): UseNotificationsResult {
       if (!data.seen.at) return false;
       return !data.seen.list.includes(recordId);
     },
-    [data]
+    [data],
   );
 
   return {

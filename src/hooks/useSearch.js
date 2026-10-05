@@ -1,10 +1,7 @@
 // src\hooks\useSearch.js
 import { useEffect, useRef, useState } from "react";
 import { designerPageMap } from "../data/designerMap";
-import {
-  products,
-  searchCatalogue,
-} from "../data/searchData";
+import { products, searchCatalogue } from "../data/searchData";
 
 // const DESIGNER_PAGE_MAP = {
 //   sabyasachi: {
@@ -51,123 +48,70 @@ import {
 // };
 
 export const useSearch = () => {
-  const [isOpen, setIsOpen] =
-    useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const [query, setQuery] =
-    useState("");
+  const [query, setQuery] = useState("");
 
-  const [results, setResults] =
-    useState([]);
+  const [results, setResults] = useState([]);
 
-  const [
-    suggestions,
-    setSuggestions,
-  ] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
 
-  const [
-    highlightedIndex,
-    setHighlightedIndex,
-  ] = useState(-1);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
-  const [
-    showResults,
-    setShowResults,
-  ] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
-  const focusTimerRef =
-    useRef(null);
+  const focusTimerRef = useRef(null);
 
   /* ==========================
      SCORING
   ========================== */
 
-  const scoreItem = (
-    item,
-    value
-  ) => {
+  const scoreItem = (item, value) => {
     if (!value) return 0;
 
-    const query =
-      value.toLowerCase();
+    const query = value.toLowerCase();
 
-    const label =
-      item.label?.toLowerCase() ||
-      "";
+    const label = item.label?.toLowerCase() || "";
 
-    const designer =
-      item.designer?.toLowerCase() ||
-      "";
+    const designer = item.designer?.toLowerCase() || "";
 
-    const tags = (
-      item.tags || []
-    )
-      .join(" ")
-      .toLowerCase();
+    const tags = (item.tags || []).join(" ").toLowerCase();
 
-    if (
-      label === query ||
-      designer === query
-    ) {
+    if (label === query || designer === query) {
       return 150;
     }
 
-    if (
-      label.startsWith(
-        query
-      )
-    ) {
+    if (label.startsWith(query)) {
       return 100;
     }
 
-    if (
-      designer.startsWith(
-        query
-      )
-    ) {
+    if (designer.startsWith(query)) {
       return 95;
     }
 
-    if (
-      label.includes(query)
-    ) {
+    if (label.includes(query)) {
       return 75;
     }
 
-    if (
-      designer.includes(
-        query
-      )
-    ) {
+    if (designer.includes(query)) {
       return 70;
     }
 
-    const words =
-      query.split(" ");
+    const words = query.split(" ");
 
-    const allMatch =
-      words.every(
-        (word) =>
-          label.includes(word) ||
-          designer.includes(
-            word
-          ) ||
-          tags.includes(word)
-      );
+    const allMatch = words.every(
+      (word) =>
+        label.includes(word) || designer.includes(word) || tags.includes(word),
+    );
 
     if (allMatch) {
       return 50;
     }
 
-    const anyMatch =
-      words.some(
-        (word) =>
-          label.includes(word) ||
-          designer.includes(
-            word
-          ) ||
-          tags.includes(word)
-      );
+    const anyMatch = words.some(
+      (word) =>
+        label.includes(word) || designer.includes(word) || tags.includes(word),
+    );
 
     if (anyMatch) {
       return 25;
@@ -180,99 +124,55 @@ export const useSearch = () => {
      SUGGESTIONS
   ========================== */
 
-  const generateSuggestions =
-    (value) => {
-      const matches =
-        searchCatalogue
-          .map((item) => ({
-            ...item,
-            score:
-              scoreItem(
-                item,
-                value
-              ),
-          }))
-          .filter(
-            (item) =>
-              item.score > 0
-          )
-          .sort(
-            (a, b) =>
-              b.score -
-              a.score
-          );
+  const generateSuggestions = (value) => {
+    const matches = searchCatalogue
+      .map((item) => ({
+        ...item,
+        score: scoreItem(item, value),
+      }))
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score);
 
-      const unique = [];
+    const unique = [];
 
-      matches.forEach(
-        (item) => {
-          const exists =
-            unique.find(
-              (u) =>
-                u.label ===
-                  item.label &&
-                u.type ===
-                  item.type
-            );
-
-          if (!exists) {
-            unique.push(item);
-          }
-        }
+    matches.forEach((item) => {
+      const exists = unique.find(
+        (u) => u.label === item.label && u.type === item.type,
       );
 
-      return unique.slice(
-        0,
-        6
-      );
-    };
+      if (!exists) {
+        unique.push(item);
+      }
+    });
+
+    return unique.slice(0, 6);
+  };
 
   /* ==========================
      SEARCH
   ========================== */
 
-  const runSearch = (
-    value
-  ) => {
-    const matches =
-      products
-        .map((item) => ({
-          ...item,
-          score:
-            scoreItem(
-              item,
-              value
-            ),
-        }))
-        .filter(
-          (item) =>
-            item.score > 0
-        )
-        .sort(
-          (a, b) =>
-            b.score -
-            a.score
-        )
-        .slice(0, 5);
+  const runSearch = (value) => {
+    const matches = products
+      .map((item) => ({
+        ...item,
+        score: scoreItem(item, value),
+      }))
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
 
     setResults(matches);
     setShowResults(true);
   };
 
-  const selectSuggestion =
-    (suggestion) => {
-      setQuery(
-        suggestion.label
-      );
+  const selectSuggestion = (suggestion) => {
+    setQuery(suggestion.label);
 
-      runSearch(
-        suggestion.label
-      );
+    runSearch(suggestion.label);
 
-      setHighlightedIndex(
-        -1
-      );
-    };
+    setHighlightedIndex(-1);
+  };
 
   /* ==========================
      OPEN / CLOSE
@@ -281,41 +181,28 @@ export const useSearch = () => {
   const openSearch = () => {
     setIsOpen(true);
 
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
 
-    focusTimerRef.current =
-      setTimeout(() => {
-        document
-          .getElementById(
-            "search-input"
-          )
-          ?.focus();
-      }, 80);
+    focusTimerRef.current = setTimeout(() => {
+      document.getElementById("search-input")?.focus();
+    }, 80);
   };
 
   const closeSearch = () => {
     setIsOpen(false);
 
-    document.body.style.overflow =
-      "";
+    document.body.style.overflow = "";
 
     setQuery("");
     setSuggestions([]);
     setResults([]);
 
-    setHighlightedIndex(
-      -1
-    );
+    setHighlightedIndex(-1);
 
     setShowResults(false);
 
-    if (
-      focusTimerRef.current
-    ) {
-      clearTimeout(
-        focusTimerRef.current
-      );
+    if (focusTimerRef.current) {
+      clearTimeout(focusTimerRef.current);
     }
   };
 
@@ -323,119 +210,61 @@ export const useSearch = () => {
      DESIGNER DETECTION
   ========================== */
 
-  const detectDesigner =
-    (value) => {
-      const query =
-        value.toLowerCase();
+  const detectDesigner = (value) => {
+    const query = value.toLowerCase();
 
-      return Object.keys(
-        designerPageMap
-      ).find(
-        (designer) =>
-          query.includes(
-            designer
-          )
-      );
-    };
+    return Object.keys(designerPageMap).find((designer) =>
+      query.includes(designer),
+    );
+  };
 
-  const detectMode = (
-    value
-  ) => {
-    const query =
-      value.toLowerCase();
+  const detectMode = (value) => {
+    const query = value.toLowerCase();
 
-    if (
-      query.includes(
-        "rent"
-      )
-    )
-      return "rent";
+    if (query.includes("rent")) return "rent";
 
-    if (
-      query.includes(
-        "preloved"
-      ) ||
-      query.includes(
-        "pre-loved"
-      )
-    )
+    if (query.includes("preloved") || query.includes("pre-loved"))
       return "preloved";
 
-    if (
-      query.includes(
-        "new"
-      )
-    )
-      return "new";
+    if (query.includes("new")) return "new";
 
     return "all";
   };
 
-  const viewFullCollection =
-    () => {
-      const designer =
-        detectDesigner(
-          query
-        );
+  const viewFullCollection = () => {
+    const designer = detectDesigner(query);
 
-      const mode =
-        detectMode(query);
+    const mode = detectMode(query);
 
-      if (
-        designer &&
-        designerPageMap[
-          designer
-        ]
-      ) {
-        const page =
-          designerPageMap[
-            designer
-          ]?.[mode] ||
-          designerPageMap[
-            designer
-          ]?.all;
+    if (designer && designerPageMap[designer]) {
+      const page =
+        designerPageMap[designer]?.[mode] || designerPageMap[designer]?.all;
 
-        console.log(
-          "Navigate:",
-          page
-        );
+      console.log("Navigate:", page);
 
-        return;
-      }
+      return;
+    }
 
-      console.log(
-        "Navigate collection:",
-        query
-      );
-    };
+    console.log("Navigate collection:", query);
+  };
 
   /* ==========================
      LIVE SUGGESTIONS
   ========================== */
 
   useEffect(() => {
-    if (
-      !query.trim()
-    ) {
+    if (!query.trim()) {
       setSuggestions([]);
       setResults([]);
-      setShowResults(
-        false
-      );
+      setShowResults(false);
       return;
     }
 
-    const timer =
-      setTimeout(() => {
-        setSuggestions(
-          generateSuggestions(
-            query
-          )
-        );
-      }, 120);
+    const timer = setTimeout(() => {
+      setSuggestions(generateSuggestions(query));
+    }, 120);
 
-    return () =>
-      clearTimeout(timer);
+    return () => clearTimeout(timer);
   }, [query]);
 
   /* ==========================
@@ -443,156 +272,79 @@ export const useSearch = () => {
   ========================== */
 
   useEffect(() => {
-    const handleKeyDown =
-      (event) => {
-        if (!isOpen)
-          return;
+    const handleKeyDown = (event) => {
+      if (!isOpen) return;
 
-        if (
-          event.key ===
-          "Escape"
-        ) {
-          closeSearch();
-          return;
+      if (event.key === "Escape") {
+        closeSearch();
+        return;
+      }
+
+      if (suggestions.length === 0) {
+        if (event.key === "Enter") {
+          runSearch(query);
         }
+        return;
+      }
 
-        if (
-          suggestions.length ===
-          0
-        ) {
-          if (
-            event.key ===
-            "Enter"
-          ) {
-            runSearch(
-              query
-            );
-          }
-          return;
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+
+        setHighlightedIndex((prev) =>
+          prev < suggestions.length - 1 ? prev + 1 : 0,
+        );
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+
+        setHighlightedIndex((prev) =>
+          prev > 0 ? prev - 1 : suggestions.length - 1,
+        );
+      }
+
+      if (event.key === "Enter") {
+        event.preventDefault();
+
+        if (highlightedIndex >= 0) {
+          selectSuggestion(suggestions[highlightedIndex]);
+        } else {
+          runSearch(query);
         }
+      }
+    };
 
-        if (
-          event.key ===
-          "ArrowDown"
-        ) {
-          event.preventDefault();
+    window.addEventListener("keydown", handleKeyDown);
 
-          setHighlightedIndex(
-            (prev) =>
-              prev <
-              suggestions.length -
-                1
-                ? prev + 1
-                : 0
-          );
-        }
-
-        if (
-          event.key ===
-          "ArrowUp"
-        ) {
-          event.preventDefault();
-
-          setHighlightedIndex(
-            (prev) =>
-              prev > 0
-                ? prev - 1
-                : suggestions.length -
-                  1
-          );
-        }
-
-        if (
-          event.key ===
-          "Enter"
-        ) {
-          event.preventDefault();
-
-          if (
-            highlightedIndex >=
-            0
-          ) {
-            selectSuggestion(
-              suggestions[
-                highlightedIndex
-              ]
-            );
-          } else {
-            runSearch(
-              query
-            );
-          }
-        }
-      };
-
-    window.addEventListener(
-      "keydown",
-      handleKeyDown
-    );
-
-    return () =>
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown
-      );
-  }, [
-    isOpen,
-    query,
-    suggestions,
-    highlightedIndex,
-  ]);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, query, suggestions, highlightedIndex]);
 
   /* ==========================
      HOTKEYS
   ========================== */
 
   useEffect(() => {
-    const openHotkey =
-      (event) => {
-        const target =
-          event.target;
+    const openHotkey = (event) => {
+      const target = event.target;
 
-        const typing =
-          target instanceof
-            HTMLElement &&
-          target.matches(
-            "input, textarea"
-          );
+      const typing =
+        target instanceof HTMLElement && target.matches("input, textarea");
 
-        const slash =
-          event.key === "/" &&
-          !typing;
+      const slash = event.key === "/" && !typing;
 
-        const ctrlK =
-          event.ctrlKey &&
-          event.key.toLowerCase() ===
-            "k";
+      const ctrlK = event.ctrlKey && event.key.toLowerCase() === "k";
 
-        const cmdK =
-          event.metaKey &&
-          event.key.toLowerCase() ===
-            "k";
+      const cmdK = event.metaKey && event.key.toLowerCase() === "k";
 
-        if (
-          slash ||
-          ctrlK ||
-          cmdK
-        ) {
-          event.preventDefault();
-          openSearch();
-        }
-      };
+      if (slash || ctrlK || cmdK) {
+        event.preventDefault();
+        openSearch();
+      }
+    };
 
-    window.addEventListener(
-      "keydown",
-      openHotkey
-    );
+    window.addEventListener("keydown", openHotkey);
 
-    return () =>
-      window.removeEventListener(
-        "keydown",
-        openHotkey
-      );
+    return () => window.removeEventListener("keydown", openHotkey);
   }, []);
 
   /* ==========================

@@ -9,7 +9,8 @@ export const FAQ_MOMENTS = [
     kicker: "BEFORE YOU BOOK",
     title: "Before you book",
     italicWord: "book",
-    subline: "Choosing a piece, getting the fit right, your rental dates, and paying.",
+    subline:
+      "Choosing a piece, getting the fit right, your rental dates, and paying.",
     appliesTo: "both", // 'both' | 'rent' | 'pre'
     appliesToLabel: "RENT & PRELOVED",
     bgGradient: "linear-gradient(162deg, #43322A 0%, #1B120D 100%)",
@@ -36,7 +37,8 @@ export const FAQ_MOMENTS = [
           {
             id: "rent-vs-buy",
             code: "A002",
-            question: "What is the difference between renting and buying preloved?",
+            question:
+              "What is the difference between renting and buying preloved?",
             appliesTo: "both",
             adminTopic: "Choosing a piece",
             answer: {
@@ -63,7 +65,8 @@ export const FAQ_MOMENTS = [
           {
             id: "worn-before",
             code: "A004",
-            question: "Someone has worn this piece before me. Is it really fresh?",
+            question:
+              "Someone has worn this piece before me. Is it really fresh?",
             appliesTo: "rent",
             adminTopic: "Choosing a piece",
             answer: {
@@ -448,7 +451,8 @@ export const FAQ_MOMENTS = [
           {
             id: "for-someone",
             code: "A033",
-            question: "Can I rent for someone else or send it to a different address?",
+            question:
+              "Can I rent for someone else or send it to a different address?",
             appliesTo: "rent",
             adminTopic: "Booking a rental",
             answer: {
@@ -607,7 +611,8 @@ export const FAQ_MOMENTS = [
           {
             id: "payment-failed",
             code: "A045",
-            question: "Money left my account but I did not get a confirmation. What now?",
+            question:
+              "Money left my account but I did not get a confirmation. What now?",
             appliesTo: "both",
             adminTopic: "Payments & pricing",
             answer: {
@@ -640,7 +645,8 @@ export const FAQ_MOMENTS = [
     kicker: "ON ITS WAY",
     title: "It’s on its way",
     italicWord: "its way",
-    subline: "When it arrives, how it travels, and what to do if something looks wrong.",
+    subline:
+      "When it arrives, how it travels, and what to do if something looks wrong.",
     appliesTo: "both",
     appliesToLabel: "RENT & PRELOVED",
     bgGradient: "linear-gradient(162deg, #353025 0%, #13100B 100%)",
@@ -718,9 +724,7 @@ export const FAQ_MOMENTS = [
             appliesTo: "both",
             adminTopic: "Delivery & tracking",
             answer: {
-              paragraphs: [
-                "Not yet. For now, we deliver within India only.",
-              ],
+              paragraphs: ["Not yet. For now, we deliver within India only."],
             },
           },
         ],
@@ -793,7 +797,8 @@ export const FAQ_MOMENTS = [
           {
             id: "parcel-damaged",
             code: "A058",
-            question: "What if my parcel arrives damaged or looks tampered with?",
+            question:
+              "What if my parcel arrives damaged or looks tampered with?",
             appliesTo: "both",
             adminTopic: "Delivery & tracking",
             answer: {
@@ -826,7 +831,8 @@ export const FAQ_MOMENTS = [
     kicker: "WHILE IT’S WITH YOU",
     title: "While you’re wearing it",
     italicWord: "wearing it",
-    subline: "Looking after your rental, from the first fitting to the last dance.",
+    subline:
+      "Looking after your rental, from the first fitting to the last dance.",
     appliesTo: "rent",
     appliesToLabel: "RENTING",
     bgGradient: "linear-gradient(162deg, #432A2E 0%, #170B0E 100%)",
@@ -1008,7 +1014,8 @@ export const FAQ_MOMENTS = [
     kicker: "SENDING IT HOME",
     title: "Sending it home",
     italicWord: "home",
-    subline: "Returning your rental, getting your deposit back, and what counts as damage.",
+    subline:
+      "Returning your rental, getting your deposit back, and what counts as damage.",
     appliesTo: "rent",
     appliesToLabel: "RENTING",
     bgGradient: "linear-gradient(162deg, #2B362F 0%, #0D1310 100%)",
@@ -1079,7 +1086,8 @@ export const FAQ_MOMENTS = [
           {
             id: "lost-label",
             code: "A075",
-            question: "I have lost the return label or garment bag. What do I do?",
+            question:
+              "I have lost the return label or garment bag. What do I do?",
             appliesTo: "rent",
             adminTopic: "Returns, deposits & damage",
             answer: {
@@ -1314,7 +1322,8 @@ export const FAQ_MOMENTS = [
           {
             id: "original-packaging",
             code: "A088",
-            question: "Will it come with its original tags, box or certificate?",
+            question:
+              "Will it come with its original tags, box or certificate?",
             appliesTo: "pre",
             adminTopic: "Buying preloved",
             answer: {
@@ -1620,7 +1629,8 @@ export const FAQ_MOMENTS = [
             question: "How long do refunds take?",
             appliesTo: "both",
             adminTopic: "Cancellations & changes",
-            decisionNote: "The refund timeline is not stated anywhere in the storefront yet.",
+            decisionNote:
+              "The refund timeline is not stated anywhere in the storefront yet.",
             answer: {
               paragraphs: [
                 `We process refunds as soon as a cancellation is confirmed. The money goes back to your original payment method and usually appears within ${ADMIN_FIGURES.refund_timeline}, depending on your bank.`,
@@ -1749,7 +1759,8 @@ export const FAQ_MOMENTS = [
             question: "How do I delete my account?",
             appliesTo: "both",
             adminTopic: "Your account & help",
-            decisionNote: "Confirm deletion is held while a rental or deposit is open.",
+            decisionNote:
+              "Confirm deletion is held while a rental or deposit is open.",
             answer: {
               paragraphs: [
                 "Go to My Account and choose Delete Account. This is permanent and removes your booking history and saved details. If you have a rental in progress or a deposit waiting to be refunded, we settle that first.",
@@ -1783,7 +1794,8 @@ export const FAQ_MOMENTS = [
           {
             id: "list-mine",
             code: "A120",
-            question: "I would like to rent out or sell my own piece. Where do I start?",
+            question:
+              "I would like to rent out or sell my own piece. Where do I start?",
             appliesTo: "both",
             adminTopic: "Your account & help",
             answer: {

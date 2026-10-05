@@ -35,16 +35,16 @@
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .compliance-authority-note {
-  background: #F5EFE4;
+  background: #f5efe4;
   border: 1px solid rgba(201, 169, 110, 0.35);
   border-radius: 4px;
   padding: 8px 11px;
   font-size: 11px;
-  color: #6B5730;
+  color: #6b5730;
   margin-bottom: 11px;
   line-height: 1.5;
 }
@@ -56,9 +56,9 @@
   align-items: center;
   gap: 6px 12px;
   padding: 8px 11px;
-  border: 1px solid #EDE6DC;
+  border: 1px solid #ede6dc;
   border-radius: 4px;
-  background: #F7F4EF;
+  background: #f7f4ef;
   font-size: 11.5px;
   margin-bottom: 11px;
 }
@@ -66,25 +66,25 @@
 .terms-label,
 .offboarding-label {
   font-weight: 600;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .terms-value,
 .offboarding-value {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .save-check {
   font-size: 10px;
-  color: #6B7E5A;
+  color: #6b7e5a;
   font-weight: 600;
 }
 
 .card-ft {
   padding: 10px 16px;
-  border-top: 1px solid #EDE6DC;
+  border-top: 1px solid #ede6dc;
   display: flex;
   justify-content: flex-end;
   gap: 7px;
-  background: #F7F4EF;
+  background: #f7f4ef;
 }

@@ -1,38 +1,38 @@
-import React, { useState } from 'react';
-import TextInput from '../ui/TextInput';
-import PasswordInput from '../ui/PasswordInput';
-import PrimaryButton from '../ui/PrimaryButton';
-import FormAlert from '../ui/FormAlert';
-import '../../../styles/Auth/forms/EmailSignInForm.css';
+import React, { useState } from "react";
+import TextInput from "../ui/TextInput";
+import PasswordInput from "../ui/PasswordInput";
+import PrimaryButton from "../ui/PrimaryButton";
+import FormAlert from "../ui/FormAlert";
+import "../../../styles/Auth/forms/EmailSignInForm.css";
 
 const EmailSignInForm = ({ switchScreen, onSuccess }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [formError, setFormError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [formError, setFormError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
-      setEmailError('Please enter a valid email address.');
+      setEmailError("Please enter a valid email address.");
       return false;
     } else if (!emailRegex.test(email)) {
-      setEmailError('Please enter a valid email address.');
+      setEmailError("Please enter a valid email address.");
       return false;
     } else {
-      setEmailError('');
+      setEmailError("");
       return true;
     }
   };
 
   const validatePassword = () => {
     if (!password) {
-      setPasswordError('Password is required.');
+      setPasswordError("Password is required.");
       return false;
     } else {
-      setPasswordError('');
+      setPasswordError("");
       return true;
     }
   };
@@ -41,21 +41,21 @@ const EmailSignInForm = ({ switchScreen, onSuccess }) => {
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     if (emailError) {
-      setEmailError('');
-      setFormError('');
+      setEmailError("");
+      setFormError("");
     }
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
     if (passwordError) {
-      setPasswordError('');
-      setFormError('');
+      setPasswordError("");
+      setFormError("");
     }
   };
 
   const handleSignIn = async () => {
-    setFormError('');
+    setFormError("");
     const isEmailValid = validateEmail();
     const isPasswordValid = validatePassword();
 
@@ -67,27 +67,32 @@ const EmailSignInForm = ({ switchScreen, onSuccess }) => {
 
     // Call backend API
     try {
-      const response = await fetch('/api/customer/auth/login', {
-        method: 'POST',
+      const response = await fetch("/api/customer/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: email.trim(), password })
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
       const result = await response.json();
 
       if (!response.ok || !result.success) {
-        setFormError(result.message || 'The email or password you entered is incorrect. Please try again.');
-        setEmailError(' ');
-        setPasswordError(' ');
+        setFormError(
+          result.message ||
+            "The email or password you entered is incorrect. Please try again.",
+        );
+        setEmailError(" ");
+        setPasswordError(" ");
       } else {
-        const authStore = (await import('../../../store/authStore')).default;
+        const authStore = (await import("../../../store/authStore")).default;
         authStore.getState().login(result.data, result.data.token);
         onSuccess(result.data);
       }
     } catch (err) {
-      setFormError('Network error. Please check your internet connection and try again.');
+      setFormError(
+        "Network error. Please check your internet connection and try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -126,7 +131,7 @@ const EmailSignInForm = ({ switchScreen, onSuccess }) => {
 
       {/* Section 7.3 - Forgot password link */}
       <div className="hok-auth-forgot-link">
-        <a onClick={() => switchScreen('forgot')}>Forgot password?</a>
+        <a onClick={() => switchScreen("forgot")}>Forgot password?</a>
       </div>
 
       <PrimaryButton onClick={handleSignIn} isLoading={isLoading}>

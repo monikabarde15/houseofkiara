@@ -1,16 +1,21 @@
-import React from 'react';
-import { ChevronRight } from 'lucide-react';
-import ToggleSwitch from '../ui/ToggleSwitch';
+import React from "react";
+import { ChevronRight } from "lucide-react";
+import ToggleSwitch from "../ui/ToggleSwitch";
 import "../../../styles/Profile/cards/SettingsCard.css";
 
 const SettingsCard = ({ card }) => {
   const getIconClass = () => {
-    switch(card.iconType) {
-      case 'gold': return 'profile-account-shi-g';
-      case 'charcoal': return 'profile-account-shi-k';
-      case 'sage': return 'profile-account-shi-s';
-      case 'terracotta': return 'profile-account-shi-t';
-      default: return 'profile-account-shi-g';
+    switch (card.iconType) {
+      case "gold":
+        return "profile-account-shi-g";
+      case "charcoal":
+        return "profile-account-shi-k";
+      case "sage":
+        return "profile-account-shi-s";
+      case "terracotta":
+        return "profile-account-shi-t";
+      default:
+        return "profile-account-shi-g";
     }
   };
 
@@ -32,9 +37,9 @@ const SettingsCard = ({ card }) => {
 
       {/* Setting Rows */}
       {card.rows.map((row, index) => (
-        <div 
+        <div
           key={index}
-          className={`profile-account-sf ${row.isToggle ? 'profile-account-tog-row' : ''}`}
+          className={`profile-account-sf ${row.isToggle ? "profile-account-tog-row" : ""}`}
           onClick={() => !row.isToggle && handleRowClick(row)}
         >
           {row.isToggle ? (
@@ -42,7 +47,9 @@ const SettingsCard = ({ card }) => {
             <>
               <div className="profile-account-tog-content">
                 <div className="profile-account-tog-l">{row.label}</div>
-                {row.subLabel && <div className="profile-account-tog-s">{row.subLabel}</div>}
+                {row.subLabel && (
+                  <div className="profile-account-tog-s">{row.subLabel}</div>
+                )}
               </div>
               <ToggleSwitch isOn={row.value} onToggle={row.onToggle} />
             </>
@@ -51,7 +58,7 @@ const SettingsCard = ({ card }) => {
             <>
               <div className="profile-account-sf-l">{row.label}</div>
               {row.value && (
-                <div className={`profile-account-sf-v ${row.valueClass || ''}`}>
+                <div className={`profile-account-sf-v ${row.valueClass || ""}`}>
                   {row.value}
                 </div>
               )}

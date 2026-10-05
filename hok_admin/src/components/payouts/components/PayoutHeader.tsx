@@ -31,8 +31,8 @@ export default function PayoutHeader() {
         "
       >
         T+3 payout cycle. Every payout percentage is individually confirmed
-        before processing — click a lister name <br/> to view their full profile, or
-        click an order ID to view the order.
+        before processing — click a lister name <br /> to view their full
+        profile, or click an order ID to view the order.
       </p>
     </header>
   );

@@ -30,8 +30,8 @@
 }
 
 .msg-btn--primary:hover:not(:disabled) {
-  background: #B89058;
-  border-color: #B89058;
+  background: #b89058;
+  border-color: #b89058;
 }
 
 .msg-btn--secondary {

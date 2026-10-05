@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Check } from 'lucide-react';
+import React, { useEffect } from "react";
+import { Check } from "lucide-react";
 import "../../../styles/Profile/ui/Toast.css";
 
 const Toast = ({ message, isVisible, onClose }) => {
@@ -8,7 +8,7 @@ const Toast = ({ message, isVisible, onClose }) => {
       const timer = setTimeout(() => {
         onClose();
       }, 2600);
-      
+
       return () => clearTimeout(timer);
     }
   }, [isVisible, onClose]);

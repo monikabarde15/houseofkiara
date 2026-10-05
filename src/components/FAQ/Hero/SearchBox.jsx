@@ -46,12 +46,18 @@ export default function SearchBox({ onSelectQuestion, onShowToast }) {
   // Handle global "/" shortcut (Section 10.4)
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
-      if (e.key === "/" && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) {
+      if (
+        e.key === "/" &&
+        !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)
+      ) {
         e.preventDefault();
         if (inputRef.current) {
           inputRef.current.focus();
           // Scroll to center smoothly
-          inputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+          inputRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
         }
       }
     };
@@ -89,7 +95,9 @@ export default function SearchBox({ onSelectQuestion, onShowToast }) {
       setSelectedIndex((prev) => (prev + 1) % searchResults.length);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setSelectedIndex((prev) => (prev - 1 + searchResults.length) % searchResults.length);
+      setSelectedIndex(
+        (prev) => (prev - 1 + searchResults.length) % searchResults.length,
+      );
     } else if (e.key === "Enter") {
       e.preventDefault();
       if (searchResults[selectedIndex]) {
@@ -105,7 +113,7 @@ export default function SearchBox({ onSelectQuestion, onShowToast }) {
         onSelectQuestion(questionId, true);
       }
     },
-    [onSelectQuestion]
+    [onSelectQuestion],
   );
 
   const handleClear = () => {
@@ -136,7 +144,7 @@ export default function SearchBox({ onSelectQuestion, onShowToast }) {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onFocus={() => {
-            if (searchResults.length > 0 || (inputValue.trim().length >= 2)) {
+            if (searchResults.length > 0 || inputValue.trim().length >= 2) {
               setIsOpen(true);
             }
           }}

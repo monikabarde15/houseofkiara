@@ -15,7 +15,7 @@ export const footerColumns = [
     title: "SELL WITH US",
     links: [
       { label: "List Your Piece", path: "/list-your-piece" },
-      { label: "How It Works", path: "/how-it-works" }, 
+      { label: "How It Works", path: "/how-it-works" },
       { label: "Seller Guidelines", path: "/seller-guidelines" },
       { label: "Pricing & Fees", path: "/pricing-fees" },
       { label: "Designer Partners", path: "/designer-partners" },

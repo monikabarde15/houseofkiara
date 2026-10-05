@@ -1,6 +1,6 @@
 // src/components/LYP/utils/templates.ts
 
-import { getFirstName } from './formatter';
+import { getFirstName } from "./formatter";
 
 // WhatsApp Message Templates
 export const WHATSAPP_TEMPLATES = {
@@ -15,7 +15,7 @@ export const WHATSAPP_TEMPLATES = {
   },
 
   MORE_INFO_PURCHASE: (firstName: string, designer: string): string => {
-    return `Hi ${firstName}! For a ${designer || 'designer'} piece we do a quick authenticity check - could you share the purchase invoice or any proof of purchase?`;
+    return `Hi ${firstName}! For a ${designer || "designer"} piece we do a quick authenticity check - could you share the purchase invoice or any proof of purchase?`;
   },
 
   MORE_INFO_CARE: (firstName: string, piece: string): string => {
@@ -32,8 +32,13 @@ export const WHATSAPP_TEMPLATES = {
   },
 
   // Rejection
-  REJECTION: (firstName: string, piece: string, reasonCode: string, optionalNote?: string): string => {
-    const note = optionalNote ? ` — ${optionalNote}` : '';
+  REJECTION: (
+    firstName: string,
+    piece: string,
+    reasonCode: string,
+    optionalNote?: string,
+  ): string => {
+    const note = optionalNote ? ` — ${optionalNote}` : "";
     return `Hi ${firstName}, thank you for offering ${piece} to House of Kaira. We took a careful look — ${reasonCode}${note}. We'd truly love to see the next one.`;
   },
 
@@ -150,7 +155,7 @@ export const COMM_TEMPLATES = {
   },
 
   REJECTED: (subid: string, code: string, note?: string): string => {
-    const noteText = note ? ` — ${note}` : '';
+    const noteText = note ? ` — ${note}` : "";
     return `Submission ${subid} declined — ${code}${noteText}`;
   },
 

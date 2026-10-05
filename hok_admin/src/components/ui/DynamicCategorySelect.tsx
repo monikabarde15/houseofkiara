@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { getCategories, createCategory, Category } from '../../services/categoryApi';
-import { ChevronDown, Plus, Search } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  getCategories,
+  createCategory,
+  Category,
+} from "../../services/categoryApi";
+import { ChevronDown, Plus, Search } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface Props {
   value: string;
@@ -10,10 +14,15 @@ interface Props {
   placeholder?: string;
 }
 
-export default function DynamicCategorySelect({ value, onChange, className = '', placeholder = "Select or type category..." }: Props) {
+export default function DynamicCategorySelect({
+  value,
+  onChange,
+  className = "",
+  placeholder = "Select or type category...",
+}: Props) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -23,12 +32,15 @@ export default function DynamicCategorySelect({ value, onChange, className = '',
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const fetchCategories = async () => {
@@ -48,34 +60,40 @@ export default function DynamicCategorySelect({ value, onChange, className = '',
     setIsLoading(true);
     try {
       const newCat = await createCategory(search.trim());
-      setCategories(prev => [...prev, newCat].sort((a, b) => a.name.localeCompare(b.name)));
+      setCategories((prev) =>
+        [...prev, newCat].sort((a, b) => a.name.localeCompare(b.name)),
+      );
       onChange(newCat.name);
       setIsOpen(false);
-      setSearch('');
+      setSearch("");
       toast.success(`Category "${newCat.name}" added successfully`);
     } catch (err: any) {
-      toast.error(err.message || 'Failed to add category');
+      toast.error(err.message || "Failed to add category");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const filtered = categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
-  const exactMatch = categories.find(c => c.name.toLowerCase() === search.toLowerCase().trim());
+  const filtered = categories.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase()),
+  );
+  const exactMatch = categories.find(
+    (c) => c.name.toLowerCase() === search.toLowerCase().trim(),
+  );
 
   return (
     <div className="relative" ref={wrapperRef}>
-      <div 
+      <div
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center justify-between cursor-text bg-[#fcf9f5] border border-stone-200 rounded px-3 py-2 text-xs ${className}`}
       >
         {isOpen ? (
-          <input 
+          <input
             type="text"
             className="w-full bg-transparent focus:outline-none placeholder-stone-400"
             placeholder={placeholder}
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             autoFocus
           />
         ) : (
@@ -89,21 +107,27 @@ export default function DynamicCategorySelect({ value, onChange, className = '',
       {isOpen && (
         <div className="absolute z-50 mt-1 w-full bg-white border border-stone-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
           {filtered.length > 0 ? (
-            filtered.map(cat => (
+            filtered.map((cat) => (
               <div
                 key={cat.id}
-                onClick={() => { onChange(cat.name); setIsOpen(false); setSearch(''); }}
-                className={`px-3 py-2 text-xs cursor-pointer hover:bg-stone-50 ${value === cat.name ? 'bg-amber-50 text-amber-900 font-medium' : 'text-stone-700'}`}
+                onClick={() => {
+                  onChange(cat.name);
+                  setIsOpen(false);
+                  setSearch("");
+                }}
+                className={`px-3 py-2 text-xs cursor-pointer hover:bg-stone-50 ${value === cat.name ? "bg-amber-50 text-amber-900 font-medium" : "text-stone-700"}`}
               >
                 {cat.name}
               </div>
             ))
           ) : (
-            <div className="px-3 py-2 text-xs text-stone-500 italic">No exact matches found</div>
+            <div className="px-3 py-2 text-xs text-stone-500 italic">
+              No exact matches found
+            </div>
           )}
 
           {search.trim() && !exactMatch && (
-            <div 
+            <div
               onClick={handleAddNew}
               className="px-3 py-2 text-xs cursor-pointer border-t border-stone-100 bg-stone-50 hover:bg-amber-50 text-amber-700 font-semibold flex items-center gap-1.5"
             >

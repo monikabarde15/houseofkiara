@@ -2,18 +2,18 @@
    SECTION LABEL (ABOVE CALENDAR)
 ========================= */
 .calendar-section-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 10px;
 }
 /* =========================
    CALENDAR CONTAINER
 ========================= */
 .calendar {
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 1px;
   overflow: hidden;
   margin-bottom: 24px;
@@ -23,7 +23,7 @@
    CALENDAR HEADER
 ========================= */
 .calendar__header {
-  background: #1A1612;
+  background: #1a1612;
   padding: 14px 20px;
   display: flex;
   align-items: center;
@@ -39,13 +39,13 @@
 .calendar__icon svg {
   width: 15px;
   height: 15px;
-  stroke: #C9A96E;
+  stroke: #c9a96e;
   stroke-width: 1.5;
   fill: none;
 }
 
 .calendar__title {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -78,12 +78,12 @@
 
 /* hover */
 .calendar__nav:hover {
-  border-color: #C9A96E;
-  color: #C9A96E;
+  border-color: #c9a96e;
+  color: #c9a96e;
 }
 
 .calendar__month {
-  font-family: 'Cormorant Garamond';
+  font-family: "Cormorant Garamond";
   font-size: 15px;
   font-weight: 400;
   color: #fff;
@@ -94,7 +94,7 @@
    CALENDAR BODY
 ========================= */
 .calendar__body {
-  background: #FFFEFB;
+  background: #fffefb;
   padding: 16px 20px 20px;
 }
 
@@ -110,11 +110,11 @@
 .calendar__week-day {
   text-align: center;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* =========================
@@ -127,7 +127,7 @@
 }
 
 .calendar__day {
-  aspect-ratio: 1 / 1;   /* 🔥 makes it square */
+  aspect-ratio: 1 / 1; /* 🔥 makes it square */
   width: 100%;
 
   display: flex;
@@ -135,8 +135,8 @@
   justify-content: center;
 
   font-size: 12px;
-  font-family: 'DM Sans';
-  color: #1A1612;
+  font-family: "DM Sans";
+  color: #1a1612;
 
   cursor: pointer;
   position: relative;
@@ -150,14 +150,14 @@
 }
 
 .calendar__day.available:hover {
-  border: 1px solid #C9A96E;
+  border: 1px solid #c9a96e;
 }
 
 /* (unavailable)  days blocked */
 
 .calendar__day.blocked {
-  background: #FAF7F2;
-  color: #E8E0D4;
+  background: #faf7f2;
+  color: #e8e0d4;
   cursor: not-allowed;
 }
 
@@ -168,23 +168,23 @@
   width: 60%;
   height: 1px;
 
-  background: #E8E0D4;
+  background: #e8e0d4;
   transform: rotate(-45deg);
 }
 
 .calendar__day.start,
 .calendar__day.end {
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
 }
 
 .calendar__day.range {
-  background: #F5EDD8;
-  color: #1A1612;
+  background: #f5edd8;
+  color: #1a1612;
 }
 
 .calendar__day.today {
-  border: 1px solid #E8D5B0;
+  border: 1px solid #e8d5b0;
 }
 
 .calendar__day.empty {
@@ -195,8 +195,8 @@
 
 /* Conflict: hover range crosses a booked date */
 .calendar__day.conflict {
-  background: #FFF0EE;
-  color: #C0392B;
+  background: #fff0ee;
+  color: #c0392b;
   cursor: not-allowed;
 }
 
@@ -204,12 +204,12 @@
 .calendar-conflict-warning {
   margin: 0 20px 14px;
   padding: 10px 14px;
-  background: #FFF5F4;
-  border: 1px solid #F5C6C2;
+  background: #fff5f4;
+  border: 1px solid #f5c6c2;
   border-radius: 2px;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
-  color: #B85C38;
+  color: #b85c38;
   letter-spacing: 0.02em;
   display: flex;
   align-items: center;
@@ -235,7 +235,7 @@
   padding-left: 4px;
   padding-right: 4px;
 
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
 }
 
 .legend-item {
@@ -243,10 +243,10 @@
   align-items: center;
   gap: 6px;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   letter-spacing: 0.08em;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .dot {
@@ -257,22 +257,22 @@
 }
 
 .dot.available {
-  background: #FAF7F2;
-  border: 1px solid #E8E0D4;
+  background: #faf7f2;
+  border: 1px solid #e8e0d4;
 }
 
 .dot.selected {
-  background: #1A1612;
+  background: #1a1612;
 }
 
 .dot.range {
-  background: #F5EDD8;
-  border: 1px solid #E8D5B0;
+  background: #f5edd8;
+  border: 1px solid #e8d5b0;
 }
 
 .dot.blocked {
-  background: #FAF7F2;
-  border: 1px solid #E8E0D4;
+  background: #faf7f2;
+  border: 1px solid #e8e0d4;
   position: relative;
 }
 
@@ -283,7 +283,7 @@
   width: 100%;
   height: 1px;
 
-  background: #E8E0D4;
+  background: #e8e0d4;
   transform: rotate(-45deg);
   top: 50%;
   left: 0;
@@ -293,8 +293,8 @@
    BOOKING SUMMARY
 ========================= */
 .calendar-summary {
-  background: #FAF7F2;
-  border: 1px solid #E8E0D4;
+  background: #faf7f2;
+  border: 1px solid #e8e0d4;
   border-radius: 1px;
 
   padding: 16px 20px;
@@ -308,7 +308,7 @@
 
   padding: 6px 0;
 
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
 }
 
 .summary-row:first-child {
@@ -317,40 +317,38 @@
 
 /* LEFT */
 .summary-row span:first-child {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* Right */
 .summary-row span:last-child {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 12px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
-
 .summary-row.total span:first-child {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   font-weight: 500;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .summary-row.total span:last-child {
-  font-family: 'Cormorant Garamond';
+  font-family: "Cormorant Garamond";
   font-size: 22px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* =========================
    CALENDAR MOBILE FIX
 ========================= */
 @media (max-width: 767px) {
-
   .calendar__body {
     padding: 12px;
   }

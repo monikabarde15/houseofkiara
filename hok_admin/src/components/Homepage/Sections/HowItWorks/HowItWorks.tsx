@@ -24,9 +24,7 @@ const HowItWorks: React.FC = () => {
 
   const [eyebrow, setEyebrow] = useState("Simple by Design");
 
-  const [heading, setHeading] = useState(
-    "How House of Kaira *works*"
-  );
+  const [heading, setHeading] = useState("How House of Kaira *works*");
 
   const [shopTab, setShopTab] = useState("I want to shop");
   const [sellTab, setSellTab] = useState("I want to sell");
@@ -90,8 +88,7 @@ const HowItWorks: React.FC = () => {
     {
       id: 3,
       title: "Ship & Get Paid",
-      description:
-        "Once sold, ship it out. Payment lands in your account.",
+      description: "Once sold, ship it out. Payment lands in your account.",
       icon: "card",
     },
   ]);
@@ -103,24 +100,20 @@ const HowItWorks: React.FC = () => {
   const [showSellCard, setShowSellCard] = useState(true);
 
   const [sellCardHeadline, setSellCardHeadline] = useState(
-    "The hours of *craftsmanship* on that piece deserve more than a dark wardrobe shelf."
+    "The hours of *craftsmanship* on that piece deserve more than a dark wardrobe shelf.",
   );
 
   const [sellCardBody, setSellCardBody] = useState(
-    "Give your occasion wear another life. Let someone else fall in love with it — and earn while you do."
+    "Give your occasion wear another life. Let someone else fall in love with it — and earn while you do.",
   );
 
   const [sellCardQuote, setSellCardQuote] = useState(
-    '"Every piece has a story. Don’t let it end with you."'
+    '"Every piece has a story. Don’t let it end with you."',
   );
 
-  const [sellCardButton, setSellCardButton] = useState(
-    "List Your Piece →"
-  );
+  const [sellCardButton, setSellCardButton] = useState("List Your Piece →");
 
-  const [sellCardLink, setSellCardLink] = useState(
-    "/list-your-piece"
-  );
+  const [sellCardLink, setSellCardLink] = useState("/list-your-piece");
 
   /* =====================================================
      SELECTED STEP
@@ -128,8 +121,7 @@ const HowItWorks: React.FC = () => {
 
   const [selectedStep, setSelectedStep] = useState(0);
 
-  const activeSteps =
-    activePane === "shop" ? shopSteps : sellSteps;
+  const activeSteps = activePane === "shop" ? shopSteps : sellSteps;
 
   const selectedStepData = activeSteps[selectedStep];
 
@@ -166,25 +158,18 @@ const HowItWorks: React.FC = () => {
      UPDATE STEP
   ===================================================== */
 
-  const updateStep = (
-    field: "title" | "description",
-    value: string
-  ) => {
+  const updateStep = (field: "title" | "description", value: string) => {
     if (activePane === "shop") {
       setShopSteps((previous) =>
         previous.map((step, index) =>
-          index === selectedStep
-            ? { ...step, [field]: value }
-            : step
-        )
+          index === selectedStep ? { ...step, [field]: value } : step,
+        ),
       );
     } else {
       setSellSteps((previous) =>
         previous.map((step, index) =>
-          index === selectedStep
-            ? { ...step, [field]: value }
-            : step
-        )
+          index === selectedStep ? { ...step, [field]: value } : step,
+        ),
       );
     }
   };
@@ -197,19 +182,13 @@ const HowItWorks: React.FC = () => {
     const currentSteps =
       activePane === "shop" ? [...shopSteps] : [...sellSteps];
 
-    const newIndex =
-      direction === "up"
-        ? selectedStep - 1
-        : selectedStep + 1;
+    const newIndex = direction === "up" ? selectedStep - 1 : selectedStep + 1;
 
     if (newIndex < 0 || newIndex >= currentSteps.length) {
       return;
     }
 
-    [
-      currentSteps[selectedStep],
-      currentSteps[newIndex],
-    ] = [
+    [currentSteps[selectedStep], currentSteps[newIndex]] = [
       currentSteps[newIndex],
       currentSteps[selectedStep],
     ];
@@ -253,62 +232,44 @@ const HowItWorks: React.FC = () => {
       setSellSteps(filtered);
     }
 
-    setSelectedStep(
-      Math.min(selectedStep, filtered.length - 1)
-    );
+    setSelectedStep(Math.min(selectedStep, filtered.length - 1));
   };
 
   return (
     <div className="hiw-editor">
-
       {/* =====================================================
           HEADER
       ===================================================== */}
 
       <div className="hiw-editor-heading">
-
         <div>
           <h2>How It Works</h2>
 
           <p>
-            Two panes behind one toggle — one for somebody
-            buying, one for somebody listing. The sell pane
-            ends on a card, not a step.
+            Two panes behind one toggle — one for somebody buying, one for
+            somebody listing. The sell pane ends on a card, not a step.
           </p>
         </div>
 
-        <span className="hiw-band-counter">
-          Band 2 of 9
-        </span>
-
+        <span className="hiw-band-counter">Band 2 of 9</span>
       </div>
-
 
       {/* =====================================================
           VISIBILITY
       ===================================================== */}
 
       <div className="hiw-visibility-row">
-
         <div className="hiw-visibility-left">
-
           <button
             type="button"
-            className={
-              showBand
-                ? "hiw-toggle hiw-toggle-active"
-                : "hiw-toggle"
-            }
+            className={showBand ? "hiw-toggle hiw-toggle-active" : "hiw-toggle"}
             onClick={() => setShowBand(!showBand)}
             aria-label="Toggle homepage band visibility"
           >
             <span />
           </button>
 
-          <span>
-            Show this band on the homepage
-          </span>
-
+          <span>Show this band on the homepage</span>
         </div>
 
         <span className="hiw-visibility-consequence">
@@ -316,22 +277,16 @@ const HowItWorks: React.FC = () => {
             ? "Showing on the live homepage, in position 2."
             : "Hidden from the live homepage."}
         </span>
-
       </div>
-
 
       {/* =====================================================
           PANE SWITCH BAR
       ===================================================== */}
 
       <div className="hiw-mode-bar">
-
-        <span className="hiw-mode-label">
-          EDITING
-        </span>
+        <span className="hiw-mode-label">EDITING</span>
 
         <div className="hiw-mode-tabs">
-
           <button
             type="button"
             className={
@@ -355,7 +310,6 @@ const HowItWorks: React.FC = () => {
           >
             {sellTab}
           </button>
-
         </div>
 
         <span className="hiw-mode-description">
@@ -363,170 +317,115 @@ const HowItWorks: React.FC = () => {
             ? "What somebody buying sees. 4 steps."
             : "What somebody selling sees. 3 steps + card."}
         </span>
-
       </div>
-
 
       {/* =====================================================
           WORDS
       ===================================================== */}
 
       <section className="hiw-card">
-
         <div className="hiw-card-header">
-
-          <h3>
-            The words above both panes
-          </h3>
+          <h3>The words above both panes</h3>
 
           <p>
-            Shared by both. The tab labels are what the
-            customer clicks between.
+            Shared by both. The tab labels are what the customer clicks between.
           </p>
-
         </div>
 
-
         <div className="hiw-card-body">
-
           {/* EYEBROW */}
 
           <div className="hiw-field">
-
             <label>EYEBROW</label>
 
             <input
               type="text"
               value={eyebrow}
-              onChange={(event) =>
-                setEyebrow(event.target.value)
-              }
+              onChange={(event) => setEyebrow(event.target.value)}
             />
-
           </div>
-
 
           {/* HEADING */}
 
           <div className="hiw-field">
-
             <label>HEADING</label>
 
             <textarea
               value={heading}
-              onChange={(event) =>
-                setHeading(event.target.value)
-              }
+              onChange={(event) => setHeading(event.target.value)}
               rows={3}
             />
 
             <p className="hiw-helper">
-              A line break starts a new line. Wrap one word
-              in *asterisks* to set it in the italic gold serif,
-              the way the storefront does.
+              A line break starts a new line. Wrap one word in *asterisks* to
+              set it in the italic gold serif, the way the storefront does.
             </p>
-
           </div>
-
 
           {/* READS AS */}
 
           <div className="hiw-reads-card">
-
-            <span className="hiw-reads-label">
-              READS AS
-            </span>
+            <span className="hiw-reads-label">READS AS</span>
 
             <div className="hiw-reads-heading">
               {renderFormattedText(heading)}
             </div>
-
           </div>
-
 
           {/* TABS */}
 
           <div className="hiw-tab-fields">
-
             <div className="hiw-field">
-
               <label>LEFT TAB</label>
 
               <input
                 type="text"
                 value={shopTab}
-                onChange={(event) =>
-                  setShopTab(event.target.value)
-                }
+                onChange={(event) => setShopTab(event.target.value)}
               />
-
             </div>
 
-
             <div className="hiw-field">
-
               <label>RIGHT TAB</label>
 
               <input
                 type="text"
                 value={sellTab}
-                onChange={(event) =>
-                  setSellTab(event.target.value)
-                }
+                onChange={(event) => setSellTab(event.target.value)}
               />
-
             </div>
-
           </div>
-
 
           {/* OPEN FIRST */}
 
           <div className="hiw-field">
-
-            <label>
-              WHICH PANE OPENS FIRST
-            </label>
+            <label>WHICH PANE OPENS FIRST</label>
 
             <select
               className="hiw-select"
               value={openPane}
-              onChange={(event) =>
-                setOpenPane(event.target.value as Pane)
-              }
+              onChange={(event) => setOpenPane(event.target.value as Pane)}
             >
-              <option value="shop">
-                Shop
-              </option>
+              <option value="shop">Shop</option>
 
-              <option value="sell">
-                Sell
-              </option>
+              <option value="sell">Sell</option>
             </select>
 
             <p className="hiw-helper">
-              Whichever is open on load is the story most
-              visitors read. Currently{" "}
-              {openPane === "shop"
-                ? "I want to shop."
-                : "I want to sell."}
+              Whichever is open on load is the story most visitors read.
+              Currently{" "}
+              {openPane === "shop" ? "I want to shop." : "I want to sell."}
             </p>
-
           </div>
-
         </div>
-
       </section>
-
 
       {/* =====================================================
           STEPS
       ===================================================== */}
 
       <section className="hiw-card">
-
         <div className="hiw-card-header">
-
           <h3>
             {activePane === "shop"
               ? "“I want to shop” — the steps"
@@ -538,12 +437,9 @@ const HowItWorks: React.FC = () => {
               ? "Four steps across on desktop, stacked in the app."
               : "Three steps across, then the card below fills the fourth column."}
           </p>
-
         </div>
 
-
         <div className="hiw-card-body">
-
           {/* STEP DECK */}
 
           <div
@@ -553,9 +449,7 @@ const HowItWorks: React.FC = () => {
                 : "hiw-step-deck hiw-step-deck-sell"
             }
           >
-
             {activeSteps.map((step, index) => (
-
               <article
                 key={step.id}
                 className={
@@ -565,32 +459,17 @@ const HowItWorks: React.FC = () => {
                 }
                 onClick={() => setSelectedStep(index)}
               >
-
                 <div className="hiw-step-top">
+                  <span className="hiw-step-number">{step.id}</span>
 
-                  <span className="hiw-step-number">
-                    {step.id}
-                  </span>
-
-                  <div
-                    className={`hiw-step-icon hiw-icon-${step.icon}`}
-                  />
-
+                  <div className={`hiw-step-icon hiw-icon-${step.icon}`} />
                 </div>
 
+                <h4>{step.title}</h4>
 
-                <h4>
-                  {step.title}
-                </h4>
-
-
-                <p>
-                  {step.description}
-                </p>
-
+                <p>{step.description}</p>
 
                 <div className="hiw-step-actions">
-
                   <button
                     type="button"
                     disabled={index === 0}
@@ -605,9 +484,7 @@ const HowItWorks: React.FC = () => {
 
                   <button
                     type="button"
-                    disabled={
-                      index === activeSteps.length - 1
-                    }
+                    disabled={index === activeSteps.length - 1}
                     onClick={(event) => {
                       event.stopPropagation();
                       moveStep("down");
@@ -628,15 +505,10 @@ const HowItWorks: React.FC = () => {
                   >
                     Remove
                   </button>
-
                 </div>
-
               </article>
-
             ))}
-
           </div>
-
 
           <p className="hiw-step-note">
             {activePane === "shop"
@@ -644,82 +516,55 @@ const HowItWorks: React.FC = () => {
               : "3 steps is the most this row fits on the storefront. Remove one to add another."}
           </p>
 
-
           {/* =================================================
               STEP INSPECTOR
           ================================================= */}
 
           {selectedStepData && (
-
             <div className="hiw-inspector">
-
               <div className="hiw-inspector-header">
+                <span>EDITING STEP {selectedStepData.id}</span>
 
-                <span>
-                  EDITING STEP {selectedStepData.id}
-                </span>
-
-                <strong>
-                  {selectedStepData.title}
-                </strong>
-
+                <strong>{selectedStepData.title}</strong>
               </div>
 
-
               <div className="hiw-inspector-fields">
-
                 {/* TITLE */}
 
                 <div className="hiw-field">
-
                   <label>TITLE</label>
 
                   <input
                     type="text"
                     value={selectedStepData.title}
                     onChange={(event) =>
-                      updateStep(
-                        "title",
-                        event.target.value
-                      )
+                      updateStep("title", event.target.value)
                     }
                   />
-
                 </div>
-
 
                 {/* DESCRIPTION */}
 
                 <div className="hiw-field">
-
                   <label>DESCRIPTION</label>
 
                   <textarea
                     value={selectedStepData.description}
                     onChange={(event) =>
-                      updateStep(
-                        "description",
-                        event.target.value
-                      )
+                      updateStep("description", event.target.value)
                     }
                     rows={4}
                   />
 
-                  <p className="hiw-helper">
-                    Accepts {"{{tokens}}"}.
-                  </p>
-
+                  <p className="hiw-helper">Accepts {"{{tokens}}"}.</p>
                 </div>
-
 
                 {/* ICON */}
 
                 <div className="hiw-field">
-
                   <label>ICON</label>
 
                   <div className="hiw-icon-options">
-
                     {[
                       "search",
                       "location",
@@ -729,7 +574,6 @@ const HowItWorks: React.FC = () => {
                       "users",
                       "card",
                     ].map((icon) => (
-
                       <button
                         type="button"
                         key={icon}
@@ -739,20 +583,17 @@ const HowItWorks: React.FC = () => {
                             : "hiw-icon-option"
                         }
                         onClick={() => {
-
                           const update =
                             activePane === "shop"
-                              ? shopSteps.map(
-                                  (step, index) =>
-                                    index === selectedStep
-                                      ? { ...step, icon }
-                                      : step
+                              ? shopSteps.map((step, index) =>
+                                  index === selectedStep
+                                    ? { ...step, icon }
+                                    : step,
                                 )
-                              : sellSteps.map(
-                                  (step, index) =>
-                                    index === selectedStep
-                                      ? { ...step, icon }
-                                      : step
+                              : sellSteps.map((step, index) =>
+                                  index === selectedStep
+                                    ? { ...step, icon }
+                                    : step,
                                 );
 
                           if (activePane === "shop") {
@@ -762,57 +603,39 @@ const HowItWorks: React.FC = () => {
                           }
                         }}
                       >
-                        <span
-                          className={`hiw-small-icon hiw-icon-${icon}`}
-                        />
+                        <span className={`hiw-small-icon hiw-icon-${icon}`} />
                       </button>
-
                     ))}
-
                   </div>
 
                   <p className="hiw-helper">
-                    The storefront draws stroked line icons.
-                    There is no emoji anywhere on the page.
+                    The storefront draws stroked line icons. There is no emoji
+                    anywhere on the page.
                   </p>
-
                 </div>
-
               </div>
-
             </div>
-
           )}
-
 
           {/* =================================================
               SELL CLOSING CARD
           ================================================= */}
 
           {activePane === "sell" && (
-
             <div className="hiw-sell-card">
-
               <div className="hiw-card-header">
-
-                <h3>
-                  The card at the end of this pane
-                </h3>
+                <h3>The card at the end of this pane</h3>
 
                 <p>
-                  Not a step — the argument for listing,
-                  and the button that acts on it.
+                  Not a step — the argument for listing, and the button that
+                  acts on it.
                 </p>
-
               </div>
 
-
               <div className="hiw-sell-card-body">
-
                 {/* SHOW CARD */}
 
                 <div className="hiw-sell-toggle-row">
-
                   <button
                     type="button"
                     className={
@@ -820,156 +643,111 @@ const HowItWorks: React.FC = () => {
                         ? "hiw-toggle hiw-toggle-active"
                         : "hiw-toggle"
                     }
-                    onClick={() =>
-                      setShowSellCard(!showSellCard)
-                    }
+                    onClick={() => setShowSellCard(!showSellCard)}
                   >
                     <span />
                   </button>
 
-                  <span>
-                    Show the card
-                  </span>
-
+                  <span>Show the card</span>
                 </div>
-
 
                 {showSellCard && (
                   <>
                     {/* HEADLINE */}
 
                     <div className="hiw-field">
-
                       <label>HEADLINE</label>
 
                       <textarea
                         value={sellCardHeadline}
                         onChange={(event) =>
-                          setSellCardHeadline(
-                            event.target.value
-                          )
+                          setSellCardHeadline(event.target.value)
                         }
                         rows={3}
                       />
 
                       <p className="hiw-helper">
-                        A line break starts a new line. Wrap
-                        one word in *asterisks* for italic gold serif.
+                        A line break starts a new line. Wrap one word in
+                        *asterisks* for italic gold serif.
                       </p>
-
                     </div>
-
 
                     {/* READS AS */}
 
                     <div className="hiw-reads-card">
-
-                      <span className="hiw-reads-label">
-                        READS AS
-                      </span>
+                      <span className="hiw-reads-label">READS AS</span>
 
                       <div className="hiw-reads-heading hiw-sell-preview">
-                        {renderFormattedText(
-                          sellCardHeadline
-                        )}
+                        {renderFormattedText(sellCardHeadline)}
                       </div>
-
                     </div>
-
 
                     {/* BODY */}
 
                     <div className="hiw-field">
-
                       <label>BODY</label>
 
                       <textarea
                         value={sellCardBody}
                         onChange={(event) =>
-                          setSellCardBody(
-                            event.target.value
-                          )
+                          setSellCardBody(event.target.value)
                         }
                         rows={3}
                       />
-
                     </div>
-
 
                     {/* QUOTE */}
 
                     <div className="hiw-field">
-
                       <label>PULL QUOTE</label>
 
                       <input
                         type="text"
                         value={sellCardQuote}
                         onChange={(event) =>
-                          setSellCardQuote(
-                            event.target.value
-                          )
+                          setSellCardQuote(event.target.value)
                         }
                       />
 
                       <p className="hiw-helper">
                         Set in italics under the body, in gold.
                       </p>
-
                     </div>
-
 
                     {/* BUTTON */}
 
                     <div className="hiw-two-column-fields">
-
                       <div className="hiw-field">
-
                         <label>BUTTON LABEL</label>
 
                         <input
                           type="text"
                           value={sellCardButton}
                           onChange={(event) =>
-                            setSellCardButton(
-                              event.target.value
-                            )
+                            setSellCardButton(event.target.value)
                           }
                         />
-
                       </div>
 
-
                       <div className="hiw-field">
-
                         <label>BUTTON LINK</label>
 
                         <input
                           type="text"
                           value={sellCardLink}
                           onChange={(event) =>
-                            setSellCardLink(
-                              event.target.value
-                            )
+                            setSellCardLink(event.target.value)
                           }
                         />
-
                       </div>
-
                     </div>
                   </>
                 )}
-
               </div>
-
             </div>
-
           )}
-
         </div>
-
       </section>
-
     </div>
   );
 };

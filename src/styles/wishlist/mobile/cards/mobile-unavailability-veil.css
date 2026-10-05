@@ -1,6 +1,5 @@
 /* Section 6.4: Unavailability Veil (Rent cards only) */
 
-
 .wishlist-mobile-unavailability-veil {
   position: absolute;
   top: 0;
@@ -16,7 +15,7 @@
 
 /* Text */
 .wishlist-mobile-unavailability-veil__text {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-style: italic;
   font-size: 11px;
   color: rgba(255, 254, 251, 0.78);

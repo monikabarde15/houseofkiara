@@ -43,7 +43,7 @@
 .intake-media-video {
   width: 100%;
   height: 100%;
-  background: #14100C;
+  background: #14100c;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -58,7 +58,7 @@
 
 .intake-media-video-name {
   font-size: 8.5px;
-  color: #B8AD9E;
+  color: #b8ad9e;
   padding: 0 4px;
   text-align: center;
   overflow: hidden;

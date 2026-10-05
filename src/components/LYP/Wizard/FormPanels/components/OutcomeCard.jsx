@@ -1,13 +1,6 @@
 import React from "react";
 
-const OutcomeCard = ({
-  icon,
-  title,
-  desc,
-  selected,
-  variant,
-  onClick,
-}) => {
+const OutcomeCard = ({ icon, title, desc, selected, variant, onClick }) => {
   return (
     <div
       className={`lyp-outcome-card 

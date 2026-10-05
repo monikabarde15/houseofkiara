@@ -19,51 +19,78 @@ interface PaymentQueueTabProps {
   setPaid?: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function PaymentQueueTab({ payouts = [], setPayouts, setPending, setPaid }: PaymentQueueTabProps) {
-  const pendingPayouts = payouts.filter(p => p.status === 'Pending' || p.status === 'Pending Approval');
+export default function PaymentQueueTab({
+  payouts = [],
+  setPayouts,
+  setPending,
+  setPaid,
+}: PaymentQueueTabProps) {
+  const pendingPayouts = payouts.filter(
+    (p) => p.status === "Pending" || p.status === "Pending Approval",
+  );
   const [assignees, setAssignees] = useState<string[]>([]);
 
   useEffect(() => {
-    payoutApi.getAdmins().then(admins => {
-      // Deduplicate admin names for a clean UI
-      const uniqueNames = Array.from(new Set(admins.map(a => a.name).filter(Boolean)));
-      if (uniqueNames.length === 0) uniqueNames.push('Master Admin');
-      setAssignees(uniqueNames);
-    }).catch(() => {});
+    payoutApi
+      .getAdmins()
+      .then((admins) => {
+        // Deduplicate admin names for a clean UI
+        const uniqueNames = Array.from(
+          new Set(admins.map((a) => a.name).filter(Boolean)),
+        );
+        if (uniqueNames.length === 0) uniqueNames.push("Master Admin");
+        setAssignees(uniqueNames);
+      })
+      .catch(() => {});
   }, []);
 
-  const handleApprove = async (payout: Payout, amtStr: string, approvedBy: string) => {
+  const handleApprove = async (
+    payout: Payout,
+    amtStr: string,
+    approvedBy: string,
+  ) => {
     if (!setPayouts || !setPending || !setPaid) return;
     try {
-      const updated = await payoutApi.markPaid(payout.id, { paidBy: approvedBy });
-      setPayouts(prev => prev.map(p => p.id === payout.id ? updated : p));
-      setPending(value => Math.max(0, value - updated.listerShare));
-      setPaid(value => value + updated.listerShare);
+      const updated = await payoutApi.markPaid(payout.id, {
+        paidBy: approvedBy,
+      });
+      setPayouts((prev) => prev.map((p) => (p.id === payout.id ? updated : p)));
+      setPending((value) => Math.max(0, value - updated.listerShare));
+      setPaid((value) => value + updated.listerShare);
       toast.success("Payout saved successfully.");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to mark payout paid');
+      toast.error(
+        error instanceof Error ? error.message : "Unable to mark payout paid",
+      );
     }
   };
 
-  const handleSaveDraft = async (payout: Payout, amtStr: string, pctStr: string, approvedBy: string) => {
+  const handleSaveDraft = async (
+    payout: Payout,
+    amtStr: string,
+    pctStr: string,
+    approvedBy: string,
+  ) => {
     if (!setPayouts) return;
     try {
-      const parsedAmt = Number(amtStr.replace(/,/g, ''));
+      const parsedAmt = Number(amtStr.replace(/,/g, ""));
       const parsedPct = Number(pctStr);
       const transactionAmount = payout.transactionAmount || 0;
-      
+
       const payload: Partial<Payout> = {
         listerShare: parsedAmt,
         payoutPercentage: parsedPct,
         submissionAssignedTo: approvedBy,
         hokCommission: Math.max(0, transactionAmount - parsedAmt),
       };
-      
+
       const updated = await payoutApi.updatePayout(payout.id, payload);
-      setPayouts(prev => prev.map(p => p.id === payout.id ? updated : p));
+      setPayouts((prev) => prev.map((p) => (p.id === payout.id ? updated : p)));
       toast.success("Draft saved successfully.");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to save draft');
+      toast.error(
+        error instanceof Error ? error.message : "Unable to save draft",
+      );
     }
   };
 
@@ -74,30 +101,53 @@ export default function PaymentQueueTab({ payouts = [], setPayouts, setPending, 
       </div>
 
       {pendingPayouts.length === 0 && (
-        <div className="py-8 text-center text-sm text-stone-500">No pending payouts awaiting approval.</div>
+        <div className="py-8 text-center text-sm text-stone-500">
+          No pending payouts awaiting approval.
+        </div>
       )}
 
-      {pendingPayouts.map(payout => (
-        <PayoutCard key={payout.id} payout={payout} assignees={assignees} onApprove={handleApprove} onSaveDraft={handleSaveDraft} />
+      {pendingPayouts.map((payout) => (
+        <PayoutCard
+          key={payout.id}
+          payout={payout}
+          assignees={assignees}
+          onApprove={handleApprove}
+          onSaveDraft={handleSaveDraft}
+        />
       ))}
     </div>
   );
 }
 
-function PayoutCard({ payout, assignees, onApprove, onSaveDraft }: {
+function PayoutCard({
+  payout,
+  assignees,
+  onApprove,
+  onSaveDraft,
+}: {
   payout: Payout;
   assignees: string[];
   onApprove: (payout: Payout, amtStr: string, approvedBy: string) => void;
-  onSaveDraft: (payout: Payout, amtStr: string, pctStr: string, approvedBy: string) => void;
+  onSaveDraft: (
+    payout: Payout,
+    amtStr: string,
+    pctStr: string,
+    approvedBy: string,
+  ) => void;
 }) {
   const [pct, setPct] = useState("55");
   const [amt, setAmt] = useState((payout.listerShare ?? 0).toString());
   const [approvedBy, setApprovedBy] = useState(
-    payout.submissionAssignedTo || (assignees.length > 0 ? assignees[0] : "Unassigned")
+    payout.submissionAssignedTo ||
+      (assignees.length > 0 ? assignees[0] : "Unassigned"),
   );
-  const [reason, setReason] = useState("Automated pending payout generation for completed order.");
+  const [reason, setReason] = useState(
+    "Automated pending payout generation for completed order.",
+  );
 
-  const transactionAmt = payout.transactionAmount || ((payout.listerShare ?? 0) + (payout.hokCommission ?? 0));
+  const transactionAmt =
+    payout.transactionAmount ||
+    (payout.listerShare ?? 0) + (payout.hokCommission ?? 0);
   const proposedHokCommission = transactionAmt - Number(amt);
 
   return (
@@ -107,17 +157,24 @@ function PayoutCard({ payout, assignees, onApprove, onSaveDraft }: {
         <WhatsAppIcon />
         <span className="text-stone-300">·</span>
         <span className="font-medium text-[#B88E36]">{payout.productName}</span>
-        <span className="rounded bg-[#E6F4EA] px-2 py-0.5 text-xs font-semibold text-[#137333]">{payout.mode}</span>
-        <span className="ml-auto text-sm text-[#78716C]">due {new Date(payout.dueDate).toLocaleDateString()}</span>
+        <span className="rounded bg-[#E6F4EA] px-2 py-0.5 text-xs font-semibold text-[#137333]">
+          {payout.mode}
+        </span>
+        <span className="ml-auto text-sm text-[#78716C]">
+          due {new Date(payout.dueDate).toLocaleDateString()}
+        </span>
       </div>
 
       <div className="p-6">
         <p className="mb-3 text-xs text-[#78716C]">
-          Order ID: <span className="font-medium text-[#B88E36]">{payout.orderId}</span>
+          Order ID:{" "}
+          <span className="font-medium text-[#B88E36]">{payout.orderId}</span>
         </p>
 
         <div className="mb-4 rounded-md border border-[#EFE8D8] bg-[#FAF5EB] p-3 text-xs leading-relaxed text-[#524B45]">
-          <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#8C827A]">DECISION CONTEXT</span>
+          <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#8C827A]">
+            DECISION CONTEXT
+          </span>
           <textarea
             rows={2}
             value={reason}
@@ -130,23 +187,40 @@ function PayoutCard({ payout, assignees, onApprove, onSaveDraft }: {
           {/* Left Column */}
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">TRANSACTION VALUE</label>
-              <div className="text-2xl font-bold text-[#1E1412]">₹{transactionAmt.toLocaleString('en-IN')}</div>
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
+                TRANSACTION VALUE
+              </label>
+              <div className="text-2xl font-bold text-[#1E1412]">
+                ₹{transactionAmt.toLocaleString("en-IN")}
+              </div>
             </div>
 
             <div>
-              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">PAYOUT %</label>
-              <input type="text" value={pct} onChange={(e) => setPct(e.target.value)} className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none" />
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
+                PAYOUT %
+              </label>
+              <input
+                type="text"
+                value={pct}
+                onChange={(e) => setPct(e.target.value)}
+                className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
+              />
             </div>
 
             <div>
-              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">APPROVED BY</label>
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
+                APPROVED BY
+              </label>
               <select
                 value={approvedBy}
                 onChange={(e) => setApprovedBy(e.target.value)}
                 className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
               >
-                {assignees.map(a => <option key={a} value={a}>{a}</option>)}
+                {assignees.map((a) => (
+                  <option key={a} value={a}>
+                    {a}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -154,28 +228,50 @@ function PayoutCard({ payout, assignees, onApprove, onSaveDraft }: {
           {/* Right Column */}
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">PAYOUT AMOUNT (₹)</label>
-              <input type="text" value={amt} onChange={(e) => setAmt(e.target.value)} className="w-full rounded-md border-[#C39A38] bg-[#FAF8F5] px-3 py-2 text-2xl font-bold text-[#C39A38] focus:outline-none shadow-[0_0_0_1px_#C39A38]" />
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
+                PAYOUT AMOUNT (₹)
+              </label>
+              <input
+                type="text"
+                value={amt}
+                onChange={(e) => setAmt(e.target.value)}
+                className="w-full rounded-md border-[#C39A38] bg-[#FAF8F5] px-3 py-2 text-2xl font-bold text-[#C39A38] focus:outline-none shadow-[0_0_0_1px_#C39A38]"
+              />
             </div>
 
             <div className="rounded border border-[#E5DFD5] p-3 text-xs text-[#78716C] bg-[#FAFAFA]">
               <div className="flex justify-between border-b border-[#E5DFD5] pb-2 mb-2">
-                <span>Proposed Payout Amount</span><span className="font-medium text-[#1E1412]">₹{Number(amt).toLocaleString('en-IN')}</span>
+                <span>Proposed Payout Amount</span>
+                <span className="font-medium text-[#1E1412]">
+                  ₹{Number(amt).toLocaleString("en-IN")}
+                </span>
               </div>
               <div className="flex justify-between border-b border-[#E5DFD5] pb-2 mb-2">
-                <span>Current HOK Commission</span><span className="font-medium text-[#1E1412]">₹{(Number(payout.hokCommission) || 0).toLocaleString('en-IN')}</span>
+                <span>Current HOK Commission</span>
+                <span className="font-medium text-[#1E1412]">
+                  ₹{(Number(payout.hokCommission) || 0).toLocaleString("en-IN")}
+                </span>
               </div>
               <div className="flex justify-between pt-1">
-                <span>Proposed HOK Commission</span><span className="font-medium text-[#1E1412]">₹{proposedHokCommission.toLocaleString('en-IN')}</span>
+                <span>Proposed HOK Commission</span>
+                <span className="font-medium text-[#1E1412]">
+                  ₹{proposedHokCommission.toLocaleString("en-IN")}
+                </span>
               </div>
             </div>
 
             <div className="flex gap-2 pt-2">
-              <button onClick={() => onSaveDraft(payout, amt, pct, approvedBy)} className="flex-1 rounded-md border border-[#E5DFD5] bg-white px-4 py-3 text-sm font-medium text-[#78716C] transition hover:bg-[#F8F5F1]">
+              <button
+                onClick={() => onSaveDraft(payout, amt, pct, approvedBy)}
+                className="flex-1 rounded-md border border-[#E5DFD5] bg-white px-4 py-3 text-sm font-medium text-[#78716C] transition hover:bg-[#F8F5F1]"
+              >
                 Save Draft
               </button>
-              <button onClick={() => onApprove(payout, amt, approvedBy)} className="flex-1 rounded-md border border-transparent bg-[#1E1412] px-4 py-3 text-sm font-bold tracking-wide text-white transition hover:bg-[#3E2923] shadow-md">
-                APPROVE & PAY ₹{Number(amt).toLocaleString('en-IN')}
+              <button
+                onClick={() => onApprove(payout, amt, approvedBy)}
+                className="flex-1 rounded-md border border-transparent bg-[#1E1412] px-4 py-3 text-sm font-bold tracking-wide text-white transition hover:bg-[#3E2923] shadow-md"
+              >
+                APPROVE & PAY ₹{Number(amt).toLocaleString("en-IN")}
               </button>
             </div>
           </div>

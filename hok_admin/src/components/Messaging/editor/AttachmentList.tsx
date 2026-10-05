@@ -1,21 +1,21 @@
 // editor/AttachmentList.tsx (UPDATED)
-import React, { useState } from 'react';
-import { Chip } from '../components/Chip';
-import { Button } from '../components/Button';
-import { LiveLink } from '../components/LiveLink';
-import './styles/AttachmentList.css';
+import React, { useState } from "react";
+import { Chip } from "../components/Chip";
+import { Button } from "../components/Button";
+import { LiveLink } from "../components/LiveLink";
+import "./styles/AttachmentList.css";
 
 interface Document {
   id: string;
   name: string;
-  tag?: 'required-by-law' | 'added-by-you';
+  tag?: "required-by-law" | "added-by-you";
   reason?: string;
   isTaxDocument?: boolean;
   // NEW: Addendum fields
   isTemplate?: boolean;
   wordCount?: number;
   hasFile?: boolean;
-  fileState?: 'held' | 'missing' | 'builtin' | 'record' | 'uploaded';
+  fileState?: "held" | "missing" | "builtin" | "record" | "uploaded";
 }
 
 interface AttachmentListProps {
@@ -37,7 +37,7 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
   const [crossedOff, setCrossedOff] = useState<Set<string>>(new Set());
 
   const handleToggle = (id: string) => {
-    if (documents.find(d => d.id === id)?.isTaxDocument) {
+    if (documents.find((d) => d.id === id)?.isTaxDocument) {
       // Show alert - tax document cannot be crossed off
       return;
     }
@@ -68,11 +68,11 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
         const isTemplate = doc.isTemplate;
         const wordCount = doc.wordCount || 0;
         const hasFile = doc.hasFile !== false;
-        const fileState = doc.fileState || 'held';
+        const fileState = doc.fileState || "held";
 
         // Determine file state pill
         let fileStatePill: React.ReactNode = null;
-        if (fileState === 'missing') {
+        if (fileState === "missing") {
           fileStatePill = (
             <span className="msg-attachment-pill msg-attachment-pill--missing">
               not uploaded yet
@@ -80,7 +80,7 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
           );
         } else if (isTemplate) {
           fileStatePill = (
-            <span 
+            <span
               className="msg-attachment-pill msg-attachment-pill--template"
               onClick={(e) => {
                 e.stopPropagation();
@@ -96,7 +96,7 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
         return (
           <div
             key={doc.id}
-            className={`msg-attachment-list-row ${isCrossed ? 'msg-attachment-list-row--crossed' : ''}`}
+            className={`msg-attachment-list-row ${isCrossed ? "msg-attachment-list-row--crossed" : ""}`}
           >
             <Chip
               variant="document"
@@ -107,7 +107,7 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
             </Chip>
 
             {/* Tag: required by law */}
-            {doc.tag === 'required-by-law' && (
+            {doc.tag === "required-by-law" && (
               <span className="msg-attachment-pill msg-attachment-pill--required">
                 required by law
               </span>
@@ -115,7 +115,7 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
 
             {/* NEW: Template pill - filled in per recipient */}
             {isTemplate && (
-              <span 
+              <span
                 className="msg-attachment-pill msg-attachment-pill--template"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -135,7 +135,7 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
             )}
 
             {/* Tag: added by you */}
-            {doc.tag === 'added-by-you' && (
+            {doc.tag === "added-by-you" && (
               <span className="msg-attachment-pill msg-attachment-pill--added">
                 added by you
               </span>
@@ -146,12 +146,12 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
             )}
 
             <button
-              className={`msg-attachment-list-remove ${isTax ? 'msg-attachment-list-remove--locked' : ''}`}
+              className={`msg-attachment-list-remove ${isTax ? "msg-attachment-list-remove--locked" : ""}`}
               onClick={() => !isTax && handleToggle(doc.id)}
               disabled={isTax}
-              title={isTax ? 'A tax document cannot be turned off' : undefined}
+              title={isTax ? "A tax document cannot be turned off" : undefined}
             >
-              {isCrossed ? '○' : '×'}
+              {isCrossed ? "○" : "×"}
             </button>
           </div>
         );
@@ -159,8 +159,8 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
 
       {/* NEW: "Change the document" button */}
       <div className="msg-attachment-list-actions">
-        <Button 
-          variant="secondary" 
+        <Button
+          variant="secondary"
           size="small"
           onClick={() => {
             if (documents.length > 0) {
@@ -174,12 +174,12 @@ export const AttachmentList: React.FC<AttachmentListProps> = ({
 
       {/* UPDATED: Hint referencing Setup → Documents */}
       <div className="msg-attachment-list-hint">
-        Worked out from the rules in{' '}
+        Worked out from the rules in{" "}
         <LiveLink to="Setup → Documents" section="Setup">
           Setup → Documents
         </LiveLink>
-        , read against this record and this wording. Cross one off to stop it going with this message. 
-        Tax documents cannot be crossed off.
+        , read against this record and this wording. Cross one off to stop it
+        going with this message. Tax documents cannot be crossed off.
       </div>
     </div>
   );

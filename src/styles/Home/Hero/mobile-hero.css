@@ -2,7 +2,7 @@
   position: relative;
   height: 100dvh;
   overflow: hidden;
-  background: #1A1208;
+  background: #1a1208;
 }
 
 .mobile-hero-image {
@@ -53,7 +53,7 @@
   width: 18px;
   height: 1px;
 
-  background: #C9A96E;
+  background: #c9a96e;
 
   flex-shrink: 0;
 }
@@ -66,7 +66,7 @@
   letter-spacing: 0.28em;
   text-transform: uppercase;
 
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .mobile-hero-title {
@@ -78,12 +78,12 @@
   line-height: 1.05;
   letter-spacing: -0.01em;
 
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .mobile-hero-love {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .mobile-hero-description {
@@ -122,8 +122,8 @@
   padding: 13px;
   border: none;
   border-radius: 1px;
-  background: #C9A96E;
-  color: #1A1612;
+  background: #c9a96e;
+  color: #1a1612;
   font-weight: 500;
 }
 

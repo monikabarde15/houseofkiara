@@ -8,7 +8,7 @@
   padding: 18px 20px;
   border-radius: 6px;
   margin-bottom: 10px;
-  background: linear-gradient(135deg, #1A1612, #2A2018);
+  background: linear-gradient(135deg, #1a1612, #2a2018);
   flex-wrap: wrap;
 }
 
@@ -24,20 +24,20 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #C9A96E;
+  background: #c9a96e;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 17px;
   font-weight: 700;
-  color: #1A1612;
+  color: #1a1612;
   flex-shrink: 0;
   letter-spacing: 0.02em;
 }
 
 .lh-avatar-create {
-  background: #3A3228;
-  color: #6F675D;
+  background: #3a3228;
+  color: #6f675d;
   font-size: 24px;
   font-weight: 300;
 }
@@ -48,10 +48,10 @@
 }
 
 .lh-name {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 22px;
   font-weight: 300;
-  color: #FFFFFF;
+  color: #ffffff;
   line-height: 1.2;
   letter-spacing: 0.01em;
 }
@@ -85,15 +85,15 @@
 }
 
 .lh-stat-value {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 18px;
   font-weight: 300;
-  color: #FFFFFF;
+  color: #ffffff;
   line-height: 1;
 }
 
 .lh-stat-pending {
-  color: #C0624A;
+  color: #c0624a;
 }
 
 .lh-stat-label {
@@ -135,7 +135,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #C9A96E;
+  color: #c9a96e;
   border: 1px solid rgba(201, 169, 110, 0.6);
   padding: 4px 10px;
   border-radius: 4px;
@@ -153,7 +153,7 @@
 .lh-btn-email {
   background: transparent !important;
   border: 1px solid rgba(255, 255, 255, 0.28) !important;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
   display: inline-flex;
   align-items: center;
   gap: 5px;

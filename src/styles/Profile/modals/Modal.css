@@ -32,7 +32,7 @@
   width: min(520px, calc(100vw - 48px));
   max-width: 480px;
 
-  background: #FFFEFB;
+  background: #fffefb;
 
   border-radius: 14px;
 
@@ -70,7 +70,7 @@
 
   padding: 20px 24px 16px;
 
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 /* Title (.mtit) */
@@ -80,7 +80,7 @@
   font-size: 20px;
   font-weight: 500;
 
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* Close Button (.mcls) */
@@ -89,7 +89,7 @@
   width: 28px;
   height: 28px;
 
-  background: #FAF7F2;
+  background: #faf7f2;
 
   border: none;
   border-radius: 50%;
@@ -100,7 +100,7 @@
 /* Hover */
 
 .profile-attr-mcls:hover {
-  background: #E8E0D4;
+  background: #e8e0d4;
 }
 
 /* X Icon */
@@ -109,7 +109,7 @@
   width: 13px;
   height: 13px;
 
-  stroke: #3C3529;
+  stroke: #3c3529;
   stroke-width: 2;
 
   /* fill: none; */

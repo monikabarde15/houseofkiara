@@ -1,5 +1,5 @@
 // src/components/Header/Header.jsx
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropdown } from "../../hooks/useDropdown";
 import { useSearch } from "../../hooks/useSearch";
@@ -19,7 +19,6 @@ const Header = () => {
   const dropdown = useDropdown();
   const search = useSearch();
   const theme = useHeaderTheme();
-
 
   // const [isScrolled, setIsScrolled] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -46,9 +45,8 @@ const Header = () => {
       {/* ==================== DESKTOP ==================== */}
       {/* Desktop */}
       <div className="desktop-only-announce">
-      <AnnouncementBar/>
+        <AnnouncementBar />
       </div>
-
 
       <div
         className="hok-header-desktop"
@@ -79,18 +77,18 @@ const Header = () => {
       <div className="hok-mobile-only">
         {/* Section 2: Announcement Bar */}
         <MobileAnnouncementBar />
-        </div>
-        
-        {/* Section 3: Sticky Header */}
-        <MobileHeader
-          theme={theme}
-          // isScrolled={isScrolled}
-          isMenuOpen={isDrawerOpen}
-          onMenuOpen={handleDrawerOpen}
-          onSearchOpen={search.openSearch}
-          onWishlistClick={handleWishlistClick}
-          onBagClick={handleBagClick}
-        />
+      </div>
+
+      {/* Section 3: Sticky Header */}
+      <MobileHeader
+        theme={theme}
+        // isScrolled={isScrolled}
+        isMenuOpen={isDrawerOpen}
+        onMenuOpen={handleDrawerOpen}
+        onSearchOpen={search.openSearch}
+        onWishlistClick={handleWishlistClick}
+        onBagClick={handleBagClick}
+      />
 
       {/* Sections 4 & 5: Drawer Overlay + Navigation Drawer */}
       <MobileDrawer
@@ -98,8 +96,6 @@ const Header = () => {
         onClose={handleDrawerClose}
         onSearchOpen={search.openSearch}
       />
-
-      
 
       {/* Search Overlay - Shared between desktop and mobile */}
       <SearchOverlay

@@ -10,20 +10,21 @@ import { useWishlistProducts } from "../hooks/useWishlistProducts";
 import "../../../styles/wishlist/layout/wishlist-layout.css";
 
 const WishlistLayout = () => {
-  const [activeTab, setActiveTab] = useState('all');
-  const [sortBy, setSortBy] = useState('newest');
-  const [viewMode, setViewMode] = useState('grid');
+  const [activeTab, setActiveTab] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+  const [viewMode, setViewMode] = useState("grid");
   const [showGeneralToast, setShowGeneralToast] = useState(false);
   const [generalToastMessage, setGeneralToastMessage] = useState("");
   const [toastWithUndo, setToastWithUndo] = useState(false);
-  
+
   // Add to Bag Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedProductType, setSelectedProductType] = useState(null);
-  
+
   // Use the wishlist products hook
-  const { getProductsByType, removeProduct, undoRemove, pendingRemoval } = useWishlistProducts();
+  const { getProductsByType, removeProduct, undoRemove, pendingRemoval } =
+    useWishlistProducts();
 
   const toastTimeoutRef = useRef(null);
 
@@ -32,14 +33,14 @@ const WishlistLayout = () => {
   const rentProducts = getProductsByType("rent");
   const prelovedProducts = getProductsByType("preloved");
   const newProducts = getProductsByType("new");
-  
+
   const totalPieces = allProducts.length;
   const rentCount = rentProducts.length;
   const prelovedCount = prelovedProducts.length;
   const newCount = newProducts.length;
-  
+
   // Get unique designers count
-  const uniqueDesigners = new Set(allProducts.map(p => p.designer)).size;
+  const uniqueDesigners = new Set(allProducts.map((p) => p.designer)).size;
   const toRentCount = rentCount;
 
   // Open Add to Bag Modal
@@ -85,7 +86,7 @@ const WishlistLayout = () => {
     all: totalPieces,
     rent: rentCount,
     preloved: prelovedCount,
-    new: newCount
+    new: newCount,
   };
 
   const handleTabChange = (tabId) => {
@@ -100,29 +101,37 @@ const WishlistLayout = () => {
     setViewMode(mode);
   };
 
-  const showRentSection = activeTab === 'all' || activeTab === 'rent';
-  const showPrelovedSection = activeTab === 'all' || activeTab === 'preloved';
-  const showNewSection = activeTab === 'all' || activeTab === 'new';
+  const showRentSection = activeTab === "all" || activeTab === "rent";
+  const showPrelovedSection = activeTab === "all" || activeTab === "preloved";
+  const showNewSection = activeTab === "all" || activeTab === "new";
 
   const handleAddToBag = async (details) => {
-    const { useCartStore } = await import('../../../store/cartStore').then(m => ({ useCartStore: m.default }));
+    const { useCartStore } = await import("../../../store/cartStore").then(
+      (m) => ({ useCartStore: m.default }),
+    );
     const product = details.product.originalData || details.product;
-    
+
     // Normalize type string
-    const normalizedType = details.product.type === "rent" ? "rental" : (details.product.type || "rental");
+    const normalizedType =
+      details.product.type === "rent"
+        ? "rental"
+        : details.product.type || "rental";
 
     useCartStore.getState().addToCart(product, {
       type: normalizedType,
       size: details.size,
-      rentalDates: details.startDate && details.endDate ? { start: details.startDate, end: details.endDate } : null,
-      price: details.product.price
+      rentalDates:
+        details.startDate && details.endDate
+          ? { start: details.startDate, end: details.endDate }
+          : null,
+      price: details.product.price,
     });
   };
 
   return (
     <div className="desk-wishlist-layout">
       <div className="desk-wishlist-container">
-        <WishlistHeader 
+        <WishlistHeader
           piecesSaved={totalPieces}
           designers={uniqueDesigners}
           toRent={toRentCount}
@@ -134,15 +143,15 @@ const WishlistLayout = () => {
           tabCounts={tabCounts}
           sortBy={sortBy}
           onSortChange={handleSortChange}
-          onShareClick={() => showGeneralToastMessage('Share wishlist')}
+          onShareClick={() => showGeneralToastMessage("Share wishlist")}
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
           showGeneralToastMessage={showGeneralToastMessage}
         />
 
         {showRentSection && (
-          <RentWishlistSection 
-            viewMode={viewMode} 
+          <RentWishlistSection
+            viewMode={viewMode}
             showGeneralToastMessage={showGeneralToastMessage}
             onRemoveCard={handleRemoveCard}
             onOpenModal={handleOpenModal}
@@ -152,7 +161,7 @@ const WishlistLayout = () => {
         )}
 
         {showPrelovedSection && (
-          <PrelovedWishlistSection 
+          <PrelovedWishlistSection
             viewMode={viewMode}
             onRemoveCard={handleRemoveCard}
             onOpenModal={handleOpenModal}
@@ -162,7 +171,7 @@ const WishlistLayout = () => {
         )}
 
         {showNewSection && (
-          <NewWishlistSection 
+          <NewWishlistSection
             viewMode={viewMode}
             onRemoveCard={handleRemoveCard}
             onOpenModal={handleOpenModal}
@@ -171,7 +180,7 @@ const WishlistLayout = () => {
           />
         )}
       </div>
-      
+
       <WishlistRecommendations onShowToast={showGeneralToastMessage} />
 
       <AddToBagModal
@@ -184,10 +193,14 @@ const WishlistLayout = () => {
       />
 
       {showGeneralToast && (
-        <div className={`desk-wishlist-toast ${toastWithUndo ? 'with-undo' : ''}`}>
+        <div
+          className={`desk-wishlist-toast ${toastWithUndo ? "with-undo" : ""}`}
+        >
           <span>{generalToastMessage}</span>
           {toastWithUndo && (
-            <button className="desk-wishlist-toast-undo" onClick={handleUndo}>UNDO</button>
+            <button className="desk-wishlist-toast-undo" onClick={handleUndo}>
+              UNDO
+            </button>
           )}
         </div>
       )}

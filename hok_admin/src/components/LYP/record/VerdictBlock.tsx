@@ -1,9 +1,9 @@
 // src/components/LYP/record/VerdictBlock.tsx
 
-import React from 'react';
-import { Submission } from '../types/submission.types';
-import { formatDate } from '../utils/formatter';
-import './styles/VerdictBlock.css';
+import React from "react";
+import { Submission } from "../types/submission.types";
+import { formatDate } from "../utils/formatter";
+import "./styles/VerdictBlock.css";
 
 interface VerdictBlockProps {
   submission: Submission;
@@ -14,8 +14,8 @@ export const VerdictBlock: React.FC<VerdictBlockProps> = ({ submission }) => {
   if (!decision) return null;
 
   const renderApproved = () => {
-    const sku = submission.assessment?.sku || (submission as any).sku || '—';
-    const productStatus = 'Draft - pricing pending'; // Would check product status
+    const sku = submission.assessment?.sku || (submission as any).sku || "—";
+    const productStatus = "Draft - pricing pending"; // Would check product status
 
     return (
       <div className="verdict-strip verdict-sage">
@@ -41,8 +41,13 @@ export const VerdictBlock: React.FC<VerdictBlockProps> = ({ submission }) => {
         <span className="verdict-details">
           {formatDate(decision.on)} by {decision.by}
           {decision.reasonCode && ` — ${decision.reasonCode}`}
-          {decision.reason && <span className="verdict-reason-note"> — {decision.reason}</span>}
-          <span className="verdict-notification"> · Lister notified on WhatsApp.</span>
+          {decision.reason && (
+            <span className="verdict-reason-note"> — {decision.reason}</span>
+          )}
+          <span className="verdict-notification">
+            {" "}
+            · Lister notified on WhatsApp.
+          </span>
         </span>
       </div>
     );
@@ -54,7 +59,9 @@ export const VerdictBlock: React.FC<VerdictBlockProps> = ({ submission }) => {
         <span className="verdict-label">Withdrawn by the lister</span>
         <span className="verdict-details">
           {formatDate(decision.on)}
-          {decision.reason && <span className="verdict-reason-note"> — {decision.reason}</span>}
+          {decision.reason && (
+            <span className="verdict-reason-note"> — {decision.reason}</span>
+          )}
         </span>
       </div>
     );
@@ -66,8 +73,13 @@ export const VerdictBlock: React.FC<VerdictBlockProps> = ({ submission }) => {
         <span className="verdict-label">Expired</span>
         <span className="verdict-details">
           no response {formatDate(decision.on)}
-          {decision.reason && <span className="verdict-reason-note"> — {decision.reason}</span>}
-          <span className="verdict-door-open"> · The door stays open for a fresh submission</span>
+          {decision.reason && (
+            <span className="verdict-reason-note"> — {decision.reason}</span>
+          )}
+          <span className="verdict-door-open">
+            {" "}
+            · The door stays open for a fresh submission
+          </span>
         </span>
       </div>
     );
@@ -75,13 +87,13 @@ export const VerdictBlock: React.FC<VerdictBlockProps> = ({ submission }) => {
 
   const renderVerdict = () => {
     switch (decision.what) {
-      case 'Approved':
+      case "Approved":
         return renderApproved();
-      case 'Rejected':
+      case "Rejected":
         return renderRejected();
-      case 'Withdrawn':
+      case "Withdrawn":
         return renderWithdrawn();
-      case 'Expired':
+      case "Expired":
         return renderExpired();
       default:
         return null;

@@ -4,7 +4,6 @@ import "../../../styles/maincategorypage/mobile/mobile-product-card.css";
 import { makeProductDetail } from "../../ProductList";
 
 const MobileProductCard = ({ item, onWishlistToggle }) => {
-  
   const navigate = useNavigate();
   // Helper to format price
   const formatPrice = (price) => {
@@ -29,7 +28,9 @@ const MobileProductCard = ({ item, onWishlistToggle }) => {
         label: "Preloved",
         badgeClass: "mob-card__badge--preloved",
         priceMain: formatPrice(item.buyPrice),
-        priceSub: item.originalPrice ? `retail ${formatPrice(item.originalPrice)}` : "",
+        priceSub: item.originalPrice
+          ? `retail ${formatPrice(item.originalPrice)}`
+          : "",
       };
     }
     if (item.isNew) {
@@ -67,36 +68,38 @@ const MobileProductCard = ({ item, onWishlistToggle }) => {
     const productId = item._id || item.id || item.productId;
 
     const listingModes = item.listingModes || [];
-    const isAllModes = (listingModes.includes("RENTAL") || rent) &&
-                       (listingModes.includes("PRELOVED") || listingModes.includes("RE-SELL") || preloved) &&
-                       (listingModes.includes("BUY NEW") || listingModes.includes("BUY") || isNew);
+    const isAllModes =
+      (listingModes.includes("RENTAL") || rent) &&
+      (listingModes.includes("PRELOVED") ||
+        listingModes.includes("RE-SELL") ||
+        preloved) &&
+      (listingModes.includes("BUY NEW") ||
+        listingModes.includes("BUY") ||
+        isNew);
 
     if (isAllModes) {
       navigate(`/all-modes/${productId}`, { state: { product: productData } });
-    }
-    else if (rent && preloved) {
-      navigate(`/rentalandpreloved/${productId}`, { state: { product: productData } });
-    }
-    else if (rent && isNew) {
-      navigate(`/rentalandbuy/${productId}`, { state: { product: productData } });
-    }
-    else if (rent) {
+    } else if (rent && preloved) {
+      navigate(`/rentalandpreloved/${productId}`, {
+        state: { product: productData },
+      });
+    } else if (rent && isNew) {
+      navigate(`/rentalandbuy/${productId}`, {
+        state: { product: productData },
+      });
+    } else if (rent) {
       navigate(`/onlyrental/${productId}`, { state: { product: productData } });
-    }
-    else if (preloved) {
+    } else if (preloved) {
       navigate(`/preloved/${productId}`, { state: { product: productData } });
-    }
-    else {
+    } else {
       navigate(`/buynew/${productId}`, { state: { product: productData } });
     }
   };
 
   return (
     <div className="mob-card" onClick={handleCardClick}>
-      
       {/* Image Zone - Spec §16.3 */}
       <div className="mob-card__image-zone">
-        
         {/* Mode Badges - Spec §16.4 */}
         <div className="mob-card__badges">
           <span className={`mob-card__badge ${mode.badgeClass}`}>
@@ -105,12 +108,12 @@ const MobileProductCard = ({ item, onWishlistToggle }) => {
         </div>
 
         {/* Wishlist Button - Spec §16.5 */}
-        <button 
+        <button
           className={`mob-card__wishlist-btn ${isWishlisted ? "active" : ""}`}
           onClick={handleWishlistClick}
           aria-label="Add to wishlist"
         >
-          <svg 
+          <svg
             className="mob-card__wishlist-icon"
             viewBox="0 0 24 24"
             fill="none"
@@ -126,18 +129,32 @@ const MobileProductCard = ({ item, onWishlistToggle }) => {
         {/* Product Image / Placeholder */}
         <div className="mob-card__image-inner">
           {item.image?.[0] ? (
-            <img 
-              src={item.image[0]} 
+            <img
+              src={item.image[0]}
               alt={item.name}
               className="mob-card__image"
             />
           ) : (
-            <div className={`mob-card__placeholder ci-${item.placeholderClass || 'a'}`}>
-              <svg className="mob-card__placeholder-icon" viewBox="0 0 24 24" fill="none">
+            <div
+              className={`mob-card__placeholder ci-${item.placeholderClass || "a"}`}
+            >
+              <svg
+                className="mob-card__placeholder-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
                 <path d="M20 7L4 7" stroke="currentColor" strokeWidth="1" />
                 <path d="M20 12L4 12" stroke="currentColor" strokeWidth="1" />
                 <path d="M20 17L4 17" stroke="currentColor" strokeWidth="1" />
-                <rect x="6" y="4" width="12" height="16" rx="1" stroke="currentColor" strokeWidth="1" />
+                <rect
+                  x="6"
+                  y="4"
+                  width="12"
+                  height="16"
+                  rx="1"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                />
               </svg>
             </div>
           )}
@@ -146,13 +163,12 @@ const MobileProductCard = ({ item, onWishlistToggle }) => {
 
       {/* Info Zone - Spec §16.6 */}
       <div className="mob-card__info">
-        
         {/* Designer Label */}
         <p className="mob-card__designer">{item.designer}</p>
-        
+
         {/* Product Name */}
         <h3 className="mob-card__name">{item.name}</h3>
-        
+
         {/* Price Block */}
         <div className="mob-card__price-block">
           <div className="mob-card__price-row">
@@ -162,9 +178,7 @@ const MobileProductCard = ({ item, onWishlistToggle }) => {
             )}
           </div>
         </div>
-
       </div>
-
     </div>
   );
 };

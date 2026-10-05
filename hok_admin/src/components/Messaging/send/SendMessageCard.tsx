@@ -1,17 +1,17 @@
 // send/SendMessageCard.tsx
-import React, { useState } from 'react';
-import { Card } from '../components/Card';
-import { FormField } from '../components/FormField';
-import { MessageSelect } from './MessageSelect';
-import { Chip } from '../components/Chip';
-import './styles/SendMessageCard.css';
-import { AboutSelect } from './AboutSelect';
+import React, { useState } from "react";
+import { Card } from "../components/Card";
+import { FormField } from "../components/FormField";
+import { MessageSelect } from "./MessageSelect";
+import { Chip } from "../components/Chip";
+import "./styles/SendMessageCard.css";
+import { AboutSelect } from "./AboutSelect";
 
 // One selectable message (e.g. "Welcome Email", "Verify Email")
 interface MessageOption {
   id: string;
   name: string;
-  group: string;       // used to sort into optgroups AND to detect customer messages
+  group: string; // used to sort into optgroups AND to detect customer messages
   isOptional?: boolean;
   hasWording: boolean;
 }
@@ -29,9 +29,15 @@ interface SendMessageCardProps {
   messages: MessageOption[];
   promotionId: string | null;
   onPromotionChange: (id: string | null) => void;
-  promotions: Array<{ id: string; code: string; description: string; endDate: string; limited?: string }>;
-  channel: 'whatsapp' | 'email';
-  onChannelChange: (channel: 'whatsapp' | 'email') => void;
+  promotions: Array<{
+    id: string;
+    code: string;
+    description: string;
+    endDate: string;
+    limited?: string;
+  }>;
+  channel: "whatsapp" | "email";
+  onChannelChange: (channel: "whatsapp" | "email") => void;
   messageHint?: string;
   aboutOptions?: AboutOption[]; // designers/categories/pieces to populate "What it is about"
 }
@@ -45,7 +51,7 @@ export const SendMessageCard: React.FC<SendMessageCardProps> = ({
   promotions,
   channel,
   onChannelChange,
-  messageHint = 'Carried over from the message you were on. Change it above if you meant something else.',
+  messageHint = "Carried over from the message you were on. Change it above if you meant something else.",
   aboutOptions = [],
 }) => {
   // Tracks which designer/category/piece is selected in "What it is about"
@@ -55,7 +61,7 @@ export const SendMessageCard: React.FC<SendMessageCardProps> = ({
   const selectedMessage = messages.find((m) => m.id === messageId);
 
   // "What it is about" only shows when the selected message is addressed to a customer
-  const isCustomerMessage = !!selectedMessage?.group?.startsWith('Customer');
+  const isCustomerMessage = !!selectedMessage?.group?.startsWith("Customer");
 
   return (
     <Card header="1 · What to send">
@@ -76,7 +82,7 @@ export const SendMessageCard: React.FC<SendMessageCardProps> = ({
       >
         <select
           className="msg-select"
-          value={promotionId || ''}
+          value={promotionId || ""}
           onChange={(e) => onPromotionChange(e.target.value || null)}
         >
           <option value="">No promotion</option>
@@ -101,14 +107,14 @@ export const SendMessageCard: React.FC<SendMessageCardProps> = ({
       <FormField label="Send on">
         <div className="msg-send-chips">
           <span
-            className={`msg-chip msg-chip--wordgroup ${channel === 'whatsapp' ? 'msg-chip--selected' : ''}`}
-            onClick={() => onChannelChange('whatsapp')}
+            className={`msg-chip msg-chip--wordgroup ${channel === "whatsapp" ? "msg-chip--selected" : ""}`}
+            onClick={() => onChannelChange("whatsapp")}
           >
             WhatsApp
           </span>
           <span
-            className={`msg-chip msg-chip--wordgroup ${channel === 'email' ? 'msg-chip--selected' : ''}`}
-            onClick={() => onChannelChange('email')}
+            className={`msg-chip msg-chip--wordgroup ${channel === "email" ? "msg-chip--selected" : ""}`}
+            onClick={() => onChannelChange("email")}
           >
             Email
           </span>

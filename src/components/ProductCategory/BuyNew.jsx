@@ -1,21 +1,75 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Heart, Star, Truck, Shield, User, Box, Plus, X } from "lucide-react";
-import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useLocation,useParams,useNavigate } from "react-router-dom";
 import "../../styles/productcategory/buy-new.css";
 import RelatedProduct from "../RelatedProduct";
 import GalleryColumn from "../GalleryColumn";
+import { makeProductDetail } from "../ProductList";
+import useCartStore from "../../store/cartStore";
+import useWishlistStore from "../../store/wishlistStore";
+import products from "../../data/mainCategoryPageData"; 
 
 export default function BuyNew() {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const addToCart = useCartStore((state) => state.addToCart);
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [product, setProduct] = useState(() => {
+    if (location.state?.product) {
+      return makeProductDetail(location.state.product);
+    }
+    const localFound = products.find(
+      (p) => String(p.id) === String(id) || String(p._id) === String(id)
+    );
+    return localFound ? makeProductDetail(localFound) : null;
+  });
 
-  const [wish, setWish] = useState(false);
+  const [loading, setLoading] = useState(!product);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchProduct = async () => {
+      try {
+        if (!location.state?.product) setLoading(true);
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+        const res = await fetch(`${backendUrl}/api/web-products/${id}`);
+        const data = await res.json();
+
+        if (isMounted) {
+          if (data.success && data.data) {
+            setProduct(makeProductDetail(data.data));
+          } else {
+            const localFound = products.find(
+              (p) => String(p.id) === String(id) || String(p._id) === String(id)
+            );
+            if (localFound) setProduct(makeProductDetail(localFound));
+            else setError("Failed to load product");
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching product:", err);
+        if (isMounted) {
+          const localFound = products.find(
+            (p) => String(p.id) === String(id) || String(p._id) === String(id)
+          );
+          if (localFound) setProduct(makeProductDetail(localFound));
+          else setError("Failed to load product");
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchProduct();
+    return () => {
+      isMounted = false;
+    };
+  }, [id, location.state]);
+
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [rating, setRating] = useState(4);
@@ -23,36 +77,24 @@ export default function BuyNew() {
   const [tab, setTab] = useState("highlights");
   const [openSections, setOpenSections] = useState(["details"]);
 
-  const [price, setPrice] = useState(null);
-  const [activeImage, setActiveImage] = useState(null);
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const productId = product?._id || product?.id || id;
+  const wish = productId ? wishlistItems.includes(productId) : false;
+
+  const displayPrice = product?.buy?.pricing?.price || product?.price || 0;
+  const [price, setPrice] = useState(displayPrice);
+  const [activeImage, setActiveImage] = useState(product?.images?.[0]);
 
   useEffect(() => {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-    fetch(`${backendUrl}/api/web-products/${id}`)
-      .then(res => {
-        if (!res.ok) throw new Error("Not found");
-        return res.json();
-      })
-      .then(data => {
-        if (data && data.success && data.data) {
-          setProduct(data.data);
-          setPrice(`₹${data.data.modes?.buy?.pricing?.price?.toLocaleString() || 0}`);
-          if (data.data.colors?.length > 0 && data.data.colors[0].images?.length > 0) {
-              setActiveImage(data.data.colors[0].images[0]);
-          } else if (data.data.images?.length > 0) {
-              setActiveImage(data.data.images[0]);
-          }
-          setLoading(false);
-        } else {
-          throw new Error("No data returned");
-        }
-      })
-      .catch(err => {
-        console.error("API error:", err);
-        setError(true);
-        setLoading(false);
-      });
-  }, [id]);
+    if (product) {
+       setPrice(product.buy?.pricing?.price || product.price || 0);
+       setActiveImage(product.images?.[0]);
+    }
+  }, [product]);
+
+  if (loading) return <h2 style={{ padding: 40 }}>Loading...</h2>;
+  if (error || !product) return <h2 style={{ padding: 40 }}>{error || "Product not found"}</h2>;
 
   const toggle = (key) => {
     setOpenSections((prev) => {
@@ -67,59 +109,27 @@ export default function BuyNew() {
   const isOpen = (key) => openSections.includes(key);
 
   useEffect(() => {
-    if (product && product.colors?.length) {
+    if (product.colors?.length) {
       setSelectedColor(product.colors[0].code);
-      if (product.colors[0].images?.length) {
-        setActiveImage(product.colors[0].images[0]);
-      }
+      setActiveImage(product.colors[0].images[0]);
     }
   }, [product]);
 
-  if (loading) return <h2 style={{ padding: 40 }}>Loading product...</h2>;
-  if (error || !product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
-
   const handleSize = (size) => {
     setSelectedSize(size);
-    let base = product.modes?.buy?.pricing?.price || 0;
-    if (size === "M") base += 2000;
-    if (size === "L") base += 5000;
-    setPrice(`₹${base.toLocaleString()}`);
+    // You can add size-based price adjustments here if backend supports it
+    setPrice(displayPrice);
   };
 
-  // Function to add item in cart 
   const handleAddToCart = () => {
-    // if (!selectedSize) return alert("Please select size");
-
-    // Create cart item
-    const cartItem = {
-      id: product.id,
-      title: product.title,
-      price: price,
-      size: selectedSize || product?.sizeTable?.[0]?.label || product?.sizes?.[0] || "M",
+    const details = {
+      type: "new",
+      size: selectedSize || product.sizes?.[0] || "M",
       color: selectedColor || product?.colors?.[0]?.code || "Standard",
-      image: product.images?.[0],
-      quantity: 1,
-      designer: product.designer,
-      type: "buy-new"
+      price: price,
     };
 
-    // Get existing cart
-    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
-
-    // Check for duplicate
-    const existingIndex = existingCart.findIndex(item =>
-      item.id === cartItem.id && item.size === cartItem.size && item.color === cartItem.color
-    );
-
-    if (existingIndex > -1) {
-      existingCart[existingIndex].quantity += 1;
-    } else {
-      existingCart.push(cartItem);
-    }
-
-    // Save to localStorage
-    localStorage.setItem('cart', JSON.stringify(existingCart));
-
+    addToCart(product, details);
     setAdded(true);
 
     // Navigate to cart page
@@ -131,41 +141,7 @@ export default function BuyNew() {
   // Add Wishlist Function
 
   const handleAddToWishlist = () => {
-    const wishlistItem = {
-      id: product.id,
-      title: product.title,
-      price: price,
-      size: selectedSize || product?.sizeTable?.[0]?.label || product?.sizes?.[0] || "M",
-      color: selectedColor || product?.colors?.[0]?.code || "Standard",
-      image: product.images?.[0],
-      designer: product.designer,
-      type: "buy-new"
-    };
-
-    const existingWishlist = JSON.parse(
-      localStorage.getItem("wishlist") || "[]"
-    );
-
-    const alreadyExists = existingWishlist.some(
-      (item) =>
-        item.id === wishlistItem.id &&
-        item.size === wishlistItem.size &&
-        item.color === wishlistItem.color
-    );
-
-    if (!alreadyExists) {
-      existingWishlist.push(wishlistItem);
-      localStorage.setItem(
-        "wishlist",
-        JSON.stringify(existingWishlist)
-      );
-    }
-
-    setWish(true);
-
-    setTimeout(() => {
-      navigate("/wishlist");
-    }, 300);
+    toggleWishlist(productId);
   };
 
   // Add WhatsApp Function
@@ -223,6 +199,7 @@ Product ID: ${product.id}
               images={product.images}
               video={product.video}
               variant="buy"
+              productId={productId}
             />
           </Col>
 
@@ -322,27 +299,25 @@ Product ID: ${product.id}
               <div className="buynew-color-section">
                 <p className="buynew-section-label">SELECT COLOUR</p>
                 <div className="buynew-swatches-details">
-                  {(() => {
-                    const displayColors = product?.colors?.length > 0 ? product.colors : [{ code: '#000000', name: 'Standard' }];
-                    return displayColors.map((c, i) => (
+                  {product.colors?.map((c, i) => (
+                    <div
+                      key={i}
+                      className={`buynew-swatches-details ${selectedColor === c.code ? "active" : ""}`}
+                      onClick={() => {
+                        console.log(product.colors)
+                        setSelectedColor(c.code);
+                        setActiveImage(c.images[0]);
+                      }}
+                    >
                       <div
-                        key={i}
-                        className={`buynew-swatches-details ${selectedColor === c.code ? "active" : ""}`}
-                        onClick={() => {
-                          setSelectedColor(c.code);
-                          if (c.images && c.images.length > 0) setActiveImage(c.images[0]);
-                        }}
-                      >
-                        <div
-                          className="buynew-swatch-circle-details"
-                          style={{ backgroundColor: c.code }}
-                        ></div>
-                        <span className="buynew-swatch-name">
-                          {c.name}
-                        </span>
-                      </div>
-                    ));
-                  })()}
+                        className="buynew-swatch-circle-details"
+                        style={{ backgroundColor: c.code }}
+                      ></div>
+                      <span className="buynew-swatch-name">
+                        {c.name}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -353,7 +328,7 @@ Product ID: ${product.id}
                   <span className="buynew-size-guide">Size Guide & Measurements</span>
                 </div>
                 <div className="buynew-sizes">
-                  {(product.sizeTable || (product.sizes ? product.sizes.map(s => ({label: s, available: true})) : []))?.map((s, i) => (
+                  {product.sizeTable?.map((s, i) => (
                     <span
                       key={i}
                       className={`${selectedSize === s.label ? "active" : ""} ${!s.available ? "disabled" : ""}`}
@@ -450,25 +425,30 @@ Product ID: ${product.id}
                 <div className="buynew-pdp-item">
                   <div className="buynew-pdp-header" onClick={() => toggle("details")}>
                     <span>PRODUCT DETAILS</span>
+
                     <Plus className={`buynew-pdp-icon ${isOpen("details") ? "open" : ""}`} />
                   </div>
+
                   {isOpen("details") && (
                     <div className="buynew-pdp-content">
                       <div className="buynew-pdp-grid">
+
                         <div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Designer</span><p>{product.designer || ' '}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Fabric</span><p>{product.craft || product.details?.fabric || ' '}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Craft Technique</span><p>{product.details?.technique || ' '}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Includes</span><p>{product.details?.includes || ' '}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Delivery Time</span><p>{product.details?.delivery || ' '}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Designer</span><p>{product.designer}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Fabric</span><p>{product.details?.fabric}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Craft Technique</span><p>{product.details?.technique}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Includes</span><p>{product.details?.includes}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Delivery Time</span><p>{product.details?.delivery}</p></div>
                         </div>
+
                         <div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Category</span><p>{product.subTitle || ' '}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Colour</span><p>{product.details?.color || ' '}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Thread</span><p>{product.details?.thread || ' '}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Occasion</span><p>{product.details?.occasion || ' '}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Origin</span><p>{product.details?.origin || ' '}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Category</span><p>{product.subTitle}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Colour</span><p>{product.details?.color}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Thread</span><p>{product.details?.thread}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Occasion</span><p>{product.details?.occasion}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Origin</span><p>{product.details?.origin}</p></div>
                         </div>
+
                       </div>
                     </div>
                   )}
@@ -478,11 +458,15 @@ Product ID: ${product.id}
                 <div className="buynew-pdp-item">
                   <div className="buynew-pdp-header" onClick={() => toggle("craft")}>
                     <span>THE CRAFT</span>
+
                     <Plus className={`buynew-pdp-icon ${isOpen("craft") ? "open" : ""}`} />
                   </div>
+
                   {isOpen("craft") && (
                     <div className="buynew-pdp-content">
-                      <p className="buynew-craft-text">{product.craft || ' '}</p>
+                      <p className="buynew-craft-text">
+                        {product.craft}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -491,11 +475,15 @@ Product ID: ${product.id}
                 <div className="buynew-pdp-item">
                   <div className="buynew-pdp-header" onClick={() => toggle("size")}>
                     <span>SIZE & FIT</span>
+
                     <Plus className={`buynew-pdp-icon ${isOpen("size") ? "open" : ""}`} />
                   </div>
+
                   {isOpen("size") && (
                     <div className="buynew-pdp-content">
-                      <p className="buynew-size-intro">{product.sizeNote || ' '}</p>
+
+                      <p className="buynew-size-intro">{product.sizeNote}</p>
+
                       <table className="buynew-size-table">
                         <thead>
                           <tr>
@@ -506,18 +494,20 @@ Product ID: ${product.id}
                             <th>Height</th>
                           </tr>
                         </thead>
+
                         <tbody>
                           {product.sizeTable?.map((row, i) => (
                             <tr key={i} className={row.recommended ? "buynew-active-row" : ""}>
-                              <td>{row.size || row.label || row}</td>
-                              <td>{row.bust || '-'}</td>
-                              <td>{row.waist || '-'}</td>
-                              <td>{row.hips || '-'}</td>
-                              <td>{row.height || '-'}</td>
+                              <td>{row.size}</td>
+                              <td>{row.bust}</td>
+                              <td>{row.waist}</td>
+                              <td>{row.hips}</td>
+                              <td>{row.height}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
+
                     </div>
                   )}
                 </div>
@@ -526,8 +516,10 @@ Product ID: ${product.id}
                 <div className="buynew-pdp-item">
                   <div className="buynew-pdp-header" onClick={() => toggle("care")}>
                     <span>CARE INSTRUCTIONS</span>
+
                     <Plus className={`buynew-pdp-icon ${isOpen("care") ? "open" : ""}`} />
                   </div>
+
                   {isOpen("care") && (
                     <div className="buynew-pdp-content">
                       <ul className="buynew-care-list">
@@ -546,10 +538,13 @@ Product ID: ${product.id}
                 <div className="buynew-pdp-item">
                   <div className="buynew-pdp-header" onClick={() => toggle("shipping")}>
                     <span>SHIPPING & DELIVERY</span>
+
                     <Plus className={`buynew-pdp-icon ${isOpen("shipping") ? "open" : ""}`} />
                   </div>
+
                   {isOpen("shipping") && (
                     <div className="buynew-pdp-content">
+
                       <table className="buynew-shipping-table">
                         <thead>
                           <tr>
@@ -558,6 +553,7 @@ Product ID: ${product.id}
                             <th>Cost</th>
                           </tr>
                         </thead>
+
                         <tbody>
                           {product.shipping?.map((item, i) => (
                             <tr key={i}>
@@ -568,6 +564,7 @@ Product ID: ${product.id}
                           ))}
                         </tbody>
                       </table>
+
                     </div>
                   )}
                 </div>
@@ -580,7 +577,11 @@ Product ID: ${product.id}
       </Container>
 
       {/* ================= RELATED PRODUCT SECTION ================= */}
-      <RelatedProduct product={product} currentProductId={id} category={product?.category} />
+      <RelatedProduct 
+         product={product} 
+         currentProductId={id} 
+         category={product.subTitle || product.category} 
+      />
 
       
       

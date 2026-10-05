@@ -1,6 +1,6 @@
 /* Shopping Journey - Horizontal Scroll - B7 */
 .hok-hiw-shop-section {
-  background: #FAF7F2;
+  background: #faf7f2;
   padding: 96px 80px;
   overflow: hidden;
 }
@@ -21,23 +21,23 @@
 .hok-hiw-shop-line {
   width: 24px;
   height: 1px;
-  background: #C9A96E;
+  background: #c9a96e;
 }
 
 .hok-hiw-shop-eyebrow-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.28em;
-  color: #C9A96E;
+  color: #c9a96e;
   font-weight: 400;
 }
 
 .hok-hiw-shop-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: clamp(36px, 4vw, 52px);
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   letter-spacing: -0.01em;
   line-height: 1.1;
   /* margin-bottom: 14px; */
@@ -45,14 +45,14 @@
 
 .hok-hiw-shop-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .hok-hiw-shop-lead {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 14px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.9;
   max-width: 520px;
   margin-bottom: 14px;
@@ -68,15 +68,15 @@
 .hok-hiw-shop-scroll-bar {
   width: 20px;
   height: 1px;
-  background: #E8E0D4;
+  background: #e8e0d4;
   display: inline-block;
 }
 
 .hok-hiw-shop-scroll-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   letter-spacing: 0.14em;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* Journey Track */
@@ -109,10 +109,12 @@
   flex-shrink: 0;
   scroll-snap-align: start;
   padding: 52px 44px 44px;
-  background: #FFFEFB;
-  border: 1px solid #E8E0D4;
+  background: #fffefb;
+  border: 1px solid #e8e0d4;
   overflow: hidden;
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    transform 0.3s ease;
   position: relative;
 }
 
@@ -123,7 +125,7 @@
 
 /* Ghost Number */
 .hok-hiw-jcard-ghost {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 140px;
   font-weight: 300;
   color: rgba(201, 169, 110, 0.055);
@@ -137,30 +139,30 @@
 
 /* Step Identifier */
 .hok-hiw-jstep-num {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.26em;
-  color: #C9A96E;
+  color: #c9a96e;
   margin-bottom: 28px;
   position: relative;
 }
 
 .hok-hiw-jstep-num::after {
-  content: '';
+  content: "";
   display: block;
   max-width: 40px;
   height: 1px;
-  background: #E8D5B0;
+  background: #e8d5b0;
   margin-top: 12px;
 }
 
 /* Step Title */
 .hok-hiw-jstep-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 28px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.2;
   letter-spacing: -0.01em;
   margin-bottom: 16px;
@@ -168,22 +170,22 @@
 
 .hok-hiw-jstep-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* Step Body */
 .hok-hiw-jstep-body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.9;
   margin-bottom: 28px;
 }
 
 /* Details List */
 .hok-hiw-jstep-details {
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
   padding-top: 22px;
 }
 
@@ -192,7 +194,7 @@
   flex-direction: row;
   gap: 10px;
   padding: 9px 0;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 .hok-hiw-jspd:last-child {
@@ -203,22 +205,22 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #E8D5B0;
+  background: #e8d5b0;
   margin-top: 5px;
   flex-shrink: 0;
 }
 
 .hok-hiw-jspd-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.55;
 }
 
 /* Dark Card (5th card - Loop) */
 .hok-hiw-jcard-dark {
-  background: #1A1612;
+  background: #1a1612;
   border-color: transparent;
 }
 
@@ -227,7 +229,7 @@
 }
 
 .hok-hiw-jcard-dark .hok-hiw-jstep-num {
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .hok-hiw-jcard-dark .hok-hiw-jstep-num::after {
@@ -235,11 +237,11 @@
 }
 
 .hok-hiw-jcard-dark .hok-hiw-jstep-title {
-  color: #FAF7F2;
+  color: #faf7f2;
 }
 
 .hok-hiw-jcard-dark .hok-hiw-jstep-title em {
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .hok-hiw-jcard-dark .hok-hiw-jstep-body {
@@ -280,16 +282,18 @@
 .hok-hiw-jdot {
   width: 20px;
   height: 2px;
-  background: #E8E0D4;
+  background: #e8e0d4;
   border-radius: 1px;
   cursor: pointer;
-  transition: background 0.2s ease, width 0.2s ease;
+  transition:
+    background 0.2s ease,
+    width 0.2s ease;
   display: inline-block;
 }
 
 .hok-hiw-jdot.hok-hiw-on {
   width: 36px;
-  background: #C9A96E;
+  background: #c9a96e;
 }
 
 .hok-hiw-jdot:hover {

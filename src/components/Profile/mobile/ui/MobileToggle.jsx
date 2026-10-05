@@ -1,18 +1,11 @@
 import "../../../../styles/Profile/mobile/ui/MobileToggle.css";
 
-const MobileToggle = ({
-  isOn,
-  onToggle
-}) => {
+const MobileToggle = ({ isOn, onToggle }) => {
   return (
     <button
       type="button"
-      className={`profile-mobile-tog ${
-        isOn ? "on" : "off"
-      }`}
-      onClick={() =>
-        onToggle?.(!isOn)
-      }
+      className={`profile-mobile-tog ${isOn ? "on" : "off"}`}
+      onClick={() => onToggle?.(!isOn)}
     />
   );
 };

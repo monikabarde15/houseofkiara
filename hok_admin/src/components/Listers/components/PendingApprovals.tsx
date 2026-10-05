@@ -1,21 +1,25 @@
 // src/components/Listers/components/PendingApprovals.tsx
 
-import React, { useState, useEffect } from 'react';
-import  useListers  from '../hooks/useListers';
-import  {ApplicantCard}  from './ApplicantCard';
-import { Lister } from '../types/lister.types';
-import './styles/PendingApprovals.css';
+import React, { useState, useEffect } from "react";
+import useListers from "../hooks/useListers";
+import { ApplicantCard } from "./ApplicantCard";
+import { Lister } from "../types/lister.types";
+import "./styles/PendingApprovals.css";
 
 interface PendingApprovalsProps {
   limit?: number;
 }
 
-export const PendingApprovals: React.FC<PendingApprovalsProps> = ({ limit = 5 }) => {
-  const { listers, loading } = useListers({ status: 'Pending Review' });
+export const PendingApprovals: React.FC<PendingApprovalsProps> = ({
+  limit = 5,
+}) => {
+  const { listers, loading } = useListers({ status: "Pending Review" });
   const [showAll, setShowAll] = useState(false);
 
-  const pendingListers = listers.filter(l => l.status === 'Pending Review');
-  const displayListers = showAll ? pendingListers : pendingListers.slice(0, limit);
+  const pendingListers = listers.filter((l) => l.status === "Pending Review");
+  const displayListers = showAll
+    ? pendingListers
+    : pendingListers.slice(0, limit);
   const count = pendingListers.length;
 
   if (loading) {
@@ -53,7 +57,7 @@ export const PendingApprovals: React.FC<PendingApprovalsProps> = ({ limit = 5 })
           <ApplicantCard key={lister.id} lister={lister} />
         ))}
         {count > limit && !showAll && (
-          <button 
+          <button
             className="pending-approvals-show-more"
             onClick={() => setShowAll(true)}
           >
@@ -61,7 +65,7 @@ export const PendingApprovals: React.FC<PendingApprovalsProps> = ({ limit = 5 })
           </button>
         )}
         {showAll && count > limit && (
-          <button 
+          <button
             className="pending-approvals-show-less"
             onClick={() => setShowAll(false)}
           >

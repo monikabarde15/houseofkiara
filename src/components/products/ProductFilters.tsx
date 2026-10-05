@@ -1,5 +1,5 @@
-import React from 'react';
-import { Search, Plus } from 'lucide-react';
+import React from "react";
+import { Search, Plus } from "lucide-react";
 
 interface ProductFiltersProps {
   searchTerm: string;
@@ -16,11 +16,11 @@ interface ProductFiltersProps {
   onAddProduct: () => void;
 }
 
-export function ProductFilters({ 
-  searchTerm, 
-  onSearchChange, 
-  selectedCategory, 
-  onCategoryChange, 
+export function ProductFilters({
+  searchTerm,
+  onSearchChange,
+  selectedCategory,
+  onCategoryChange,
   categories,
   selectedMode,
   onModeChange,
@@ -28,7 +28,7 @@ export function ProductFilters({
   onStatusChange,
   sortOption,
   onSortChange,
-  onAddProduct
+  onAddProduct,
 }: ProductFiltersProps) {
   return (
     <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center">
@@ -90,8 +90,10 @@ export function ProductFilters({
           onChange={(e) => onCategoryChange(e.target.value)}
           className="py-2 px-3 bg-white border border-[#E2DAD1] rounded-md text-xs text-[#38332D] font-medium outline-none focus:border-[#C7A55C] cursor-pointer hover:bg-[#FAF8F5] transition shadow-2xs"
         >
-          {categories.map(c => (
-            <option key={c} value={c}>{c}</option>
+          {categories.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
 

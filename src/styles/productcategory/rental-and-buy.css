@@ -8,13 +8,11 @@
   padding: 0 20px;
 }
 
-
 /* =========================
    BREADCRUMB
 ========================= */
 .rap-pdp-breadcrumb-wrapper {
   position: relative;
-
 }
 
 .rap-pdp-breadcrumb-wrapper::after {
@@ -24,38 +22,36 @@
   transform: translateX(-50%);
   width: 100vw;
   height: 1px;
-  background: #F0EAE0;
+  background: #f0eae0;
   bottom: 0;
 }
 
 .rap-root .rap-breadcrumb {
   padding: 16px 0;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   letter-spacing: 0.04em;
-  color: #8A7E72;
+  color: #8a7e72;
   display: flex;
   align-items: center;
   gap: 6px;
-  
 }
 
 /* normal items */
 .rap-crumb {
-  color: #8A7E72;
+  color: #8a7e72;
   font-weight: 400;
-
 }
 
 /* separator */
 .rap-breadcrumb .rap-sep {
-  color: #EDE0D4;
+  color: #ede0d4;
 }
 
 .rap-root .rap-breadcrumb .rap-crumb.current {
-  color: #1A1612;
+  color: #1a1612;
   font-weight: 400;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
 }
 
 /* ================= LEFT ================= */
@@ -67,7 +63,7 @@
 
 /* ================= RIGHT ================= */
 .rap-right {
-  border-left: 1px solid #E8E0D4;
+  border-left: 1px solid #e8e0d4;
   padding-left: 40px;
   padding-bottom: 60px;
 }
@@ -86,11 +82,11 @@
   flex: 1;
   padding: 8px;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-    border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   background: #fff;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -98,18 +94,18 @@
 
 /* DIVIDER */
 .rap-toggle-btn:not(:last-child) {
-  border-right: 1px solid #E8E0D4;
+  border-right: 1px solid #e8e0d4;
 }
 
 /* ACTIVE */
 .rap-toggle-btn.active {
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
-  border-color: #1A1612;
+  border-color: #1a1612;
 }
 
-.rap-toggle-btn:hover{
-    border-color: #C9A96E;
+.rap-toggle-btn:hover {
+  border-color: #c9a96e;
 }
 /* ================= MODE ================= */
 .rap-rent {
@@ -123,21 +119,21 @@
 /* ================= COMMON PRODUCT INFO ================= */
 
 .rap-rental-designer-name {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #C9A96E;
+  color: #c9a96e;
   margin-bottom: 8px;
 }
 
 .rap-rental-product-title {
-  font-family: 'Cormorant Garamond';
+  font-family: "Cormorant Garamond";
   font-size: 38px;
   font-weight: 400;
   line-height: 1.15;
   letter-spacing: -0.01em;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 6px;
   display: flex;
   flex-direction: column;
@@ -145,27 +141,26 @@
 
 .rap-rental-product-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .rap-product-subtitle {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 13px;
   font-weight: 300;
   letter-spacing: 0.04em;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 20px;
 }
 
 .rap-rental-product-desc {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 13px;
   font-weight: 400;
   line-height: 1.5;
-  color: #2B2B2B;
+  color: #2b2b2b;
   margin-bottom: 20px;
 }
-
 
 /* =========================
    RATING ROW
@@ -177,37 +172,35 @@
   gap: 10px;
   margin-bottom: 24px;
   padding-bottom: 24px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
-
-.rap-rental-star-icon{
+.rap-rental-star-icon {
   width: 12px;
   height: 12px;
 }
 
 .rap-rental-rating-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .rap-rental-reviews {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .rap-rental-rating-separator {
   width: 4px;
   height: 4px;
-  background: #E8E0D4;
+  background: #e8e0d4;
   border-radius: 50%;
   display: inline-block;
   margin: 0 6px;
 }
-
 
 /* =========================
    NEVER WORN (SOFT BADGE)
@@ -220,21 +213,20 @@
 
   margin-left: 8px;
 
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.14em;
 
-  color:  #1A1612;
+  color: #1a1612;
 
-  background: #FAF7F2 ;
-  border: 1px solid #E8E0D4;
+  background: #faf7f2;
+  border: 1px solid #e8e0d4;
 
   padding: 5px 12px;
   border-radius: 1px;
 }
-
 
 /* dot inside badge */
 .rap-rental-never-worn-soft::before {
@@ -242,11 +234,10 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--dot-color, #C9A96E);
+  background: var(--dot-color, #c9a96e);
   display: inline-block;
   margin-right: 6px;
 }
-
 
 /* ========================================================================================================== */
 /* ============================================= RENT MODE ================================================== */
@@ -259,39 +250,39 @@
 
 /* label */
 .rap-rental-price-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 0px;
 }
 
 /* main price */
 .rap-rental-main-price {
   /* margin-top: 0px; */
-  font-family: 'Cormorant Garamond';
+  font-family: "Cormorant Garamond";
   font-size: 36px;
   font-weight: 400;
-  color: #1A1612;
-  line-height: 1.05; 
-  margin-bottom: 0px; 
+  color: #1a1612;
+  line-height: 1.05;
+  margin-bottom: 0px;
 }
 
 /* duration */
 .rap-rental-main-price .rap-onlyduration {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 18px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* subline */
 .rap-rental-price-subline {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 12px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   /* margin-top: -6px;  */
   /* margin-bottom: 6px; */
 }
@@ -301,14 +292,12 @@
   display: flex;
   gap: 12px;
   margin-top: 0px;
-  
-  
 }
 
 /* card */
 .rap-rental-rental-block {
   flex: 1;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   padding: 8px 14px;
   padding-bottom: 0px;
   border-radius: 1px;
@@ -318,23 +307,23 @@
 
 /* hover */
 .rap-rental-rental-block:hover {
-  border-color: #C9A96E;
+  border-color: #c9a96e;
 }
 
 /* selected */
 .rap-rental-rental-block.selected {
-  border-color: #1A1612;
-  background: #FAF7F2;
+  border-color: #1a1612;
+  background: #faf7f2;
 }
 
 /* label */
 .rap-rental-option-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: #8A7E72;
-  margin-bottom: 4px; 
+  color: #8a7e72;
+  margin-bottom: 4px;
 }
 
 /* amount */
@@ -342,17 +331,16 @@
   font-family: "Cormorant Garamond";
   font-size: 20px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 2px;
 }
 
 /* days */
 .rap-rental-option-days {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   font-weight: 300;
-  color: #8A7E72;
-  
+  color: #8a7e72;
 }
 
 /* ===== DEPOSIT BLOCK ===== */
@@ -360,11 +348,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #F5EDD8;
-  border: 1px solid #E8D5B0;
-  padding: 10px 16px; 
+  background: #f5edd8;
+  border: 1px solid #e8d5b0;
+  padding: 10px 16px;
   border-radius: 1px;
-  margin-top: 14px; 
+  margin-top: 14px;
   padding-bottom: 0px;
 }
 
@@ -372,17 +360,17 @@
 .rap-rental-deposit-icon {
   width: 14px;
   height: 14px;
-  stroke: #C9A96E;
+  stroke: #c9a96e;
   stroke-width: 1.5;
   flex-shrink: 0;
 }
 
 /* text */
 .rap-rental-deposit-text {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.5;
   padding-top: 10px;
 }
@@ -391,7 +379,6 @@
 .rap-rental-deposit-bold {
   font-weight: 500;
 }
-
 
 /* ======================SIZE BLOCK============================== */
 /* =========================
@@ -408,17 +395,17 @@
   margin-bottom: 12px;
 }
 .rap-rental-size-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 .rap-rental-size-guide {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
-  color: #C9A96E;
-  border-bottom: 1px solid #E8D5B0;
+  color: #c9a96e;
+  border-bottom: 1px solid #e8d5b0;
   cursor: pointer;
 }
 .rap-rental-size-options {
@@ -428,33 +415,31 @@
 }
 .rap-rental-size-pill {
   padding: 9px 18px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 1px;
 
   background: transparent;
-  color: #1A1612;
+  color: #1a1612;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
 
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .rap-rental-size-pill:hover {
-  border-color: #C9A96E;
+  border-color: #c9a96e;
 }
 .rap-rental-size-pill.active {
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
-  border-color: #1A1612;
+  border-color: #1a1612;
 }
 .rap-rental-size-pill.unavailable {
   opacity: 0.35;
   cursor: not-allowed;
   text-decoration: line-through;
 }
-
-
 
 /* =====================CTA BUTTOMS ========================== */
 /* =========================
@@ -473,7 +458,7 @@
   justify-content: center;
   gap: 8px;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -482,17 +467,16 @@
   transition: all 0.25s ease;
 }
 
-
 .rap-rental-cta-primary {
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
   border: none;
 }
 
 /* disabled */
 .rap-rental-cta-primary.disabled {
-  background: #E8E0D4;
-  color: #8A7E72;
+  background: #e8e0d4;
+  color: #8a7e72;
   cursor: not-allowed;
 }
 
@@ -503,28 +487,28 @@
 .rap-rental-cta-wishlist {
   margin-top: 12px;
 
-  border: 1px solid #1A1612;
+  border: 1px solid #1a1612;
   background: transparent;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* hover */
 .rap-rental-cta-wishlist:hover {
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
 }
 
 .rap-rental-cta-whatsapp {
   margin-top: 12px;
 
-  border: 1px solid #25D366;
+  border: 1px solid #25d366;
   background: transparent;
-  color: #25D366;
+  color: #25d366;
 }
 
 /* hover */
 .rap-rental-cta-whatsapp:hover {
-  background: #25D366;
+  background: #25d366;
   color: #fff;
 }
 
@@ -553,30 +537,29 @@
   align-items: center;
   gap: 6px;
   padding: 12px 8px;
-  border: 1px solid #F0EAE0;
+  border: 1px solid #f0eae0;
   border-radius: 1px;
-  background: #FAF7F2;
+  background: #faf7f2;
   text-align: center;
 }
 
 .rap-rental-trust-item svg {
   height: 18px;
   width: 18px;
-  stroke: #C9A96E;
+  stroke: #c9a96e;
   fill: none;
   stroke-width: 1.4;
 }
 
 .rap-rental-trust-item span {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.4;
   text-align: center;
 }
-
 
 /* =========================
    PDP ACCORDANCE 
@@ -592,7 +575,6 @@
 
 .rap-pdp-rental-item {
   border-bottom: 1px solid #e8e0d4;
-  
 }
 
 /* HEADER */
@@ -602,12 +584,11 @@
   align-items: center;
   padding: 18px 0;
   cursor: pointer;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #1A1612;
-  
+  color: #1a1612;
 }
 
 .rap-pdp-rental-header:hover {
@@ -618,13 +599,13 @@
 .rap-onlyrental-icon {
   width: 16px;
   height: 16px;
-  stroke: #8A7E72;
+  stroke: #8a7e72;
   stroke-width: 1.5;
   transition: all 0.2s ease;
 }
 
 .rap-pdp-header:hover .rap-onlyrental-icon {
-  stroke: #C9A96E;
+  stroke: #c9a96e;
 }
 
 .rap-onlyrental-icon.open {
@@ -644,19 +625,19 @@
 }
 
 .rap-rental-pdp-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 3px;
 }
 
 .rap-rental-pdp-row p {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 13px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0;
   line-height: 1.55;
 }
@@ -666,7 +647,7 @@
   font-family: "Cormorant Garamond";
   font-size: 16px;
   font-style: italic;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.9;
 }
 
@@ -678,7 +659,7 @@
 /* SIZE */
 .rap-rental-size-intro {
   font-size: 12px;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 14px;
   line-height: 1.8;
   font-weight: 300;
@@ -690,28 +671,28 @@
 }
 
 .rap-rental-size-table th {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
-  background: #FAF7F2;
+  background: #faf7f2;
   letter-spacing: 0.14em;
-  color: #8A7E72;
-  padding: 8PX 12PX;
-  border: 1px solid #F0EAE0;
+  color: #8a7e72;
+  padding: 8px 12px;
+  border: 1px solid #f0eae0;
 }
 
 .rap-rental-size-table td {
   font-size: 12px;
   padding: 9px 12px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   padding: 9px 12px;
-  border: 1px solid #F0EAE0;
+  border: 1px solid #f0eae0;
 }
 
 .rap-rental-active-row {
   font-weight: 400;
-  background: #F5EDD8;
+  background: #f5edd8;
 }
 
 /* CARE */
@@ -724,10 +705,10 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 13px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.6;
 }
 
@@ -743,36 +724,33 @@
 }
 
 .rap-rental-shipping-table th {
-  font-family: 'DM Sans';
-  background: #FAF7F2;
+  font-family: "DM Sans";
+  background: #faf7f2;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: #8A7E72;
+  color: #8a7e72;
   padding: 8px 12px;
-  border: 1px solid #F0EAE0;
+  border: 1px solid #f0eae0;
 }
 
 .rap-rental-shipping-table td {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 12px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   padding: 9px 12px;
-  border: 1px solid #F0EAE0;
-
+  border: 1px solid #f0eae0;
 }
 
 .rap-rental-shipping-table .rental-cost {
-  color: #6B7E5A;
+  color: #6b7e5a;
   font-weight: 400;
 }
-
 
 /* =========================================================================================================== */
 /* ============================================= BUY MODE ============================================ */
 /* ============================================================================================================ */
-
 
 /* =========================
    PRICE BLOCK
@@ -782,34 +760,32 @@
   margin-bottom: 24px;
 }
 
-
 /* label */
 .rab-price-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #8A7E72;
+  color: #8a7e72;
   margin: 0 0 2px 0;
 }
 
 /* main price */
 .rab-main-price {
-  font-family: 'Cormorant Garamond';
+  font-family: "Cormorant Garamond";
   font-size: 40px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0;
   line-height: 0.95;
 }
 
-
 /* meta text */
 .rab-price-meta {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   margin: 2px 0 0 0;
 }
 
@@ -838,7 +814,7 @@
 .rab-delivery-icon svg {
   width: 12px;
   height: 12px;
-  stroke: #6B7E5A;
+  stroke: #6b7e5a;
   stroke-width: 1;
   opacity: 0.8;
   display: block;
@@ -847,10 +823,10 @@
 
 /* text */
 .rab-delivery-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   white-space: nowrap;
   line-height: 1.8;
   margin: 0;
@@ -858,10 +834,9 @@
 
 /* highlight */
 .rab-delivery-text .buynew-strong {
-  color: #6B7E5A;
+  color: #6b7e5a;
   font-weight: 500;
 }
-
 
 /* =========================
    COLOR SECTION
@@ -871,26 +846,24 @@
   margin-bottom: 24px;
 }
 
-
 /* ===== LABEL ===== */
 .rab-section-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 10px;
 }
-
 
 /* ===== SWATCH GRID ===== */
 
 .rab-swatches-details {
   display: flex;
-  flex-direction: row;     
+  flex-direction: row;
   align-items: flex-start;
-  gap: 16px;               
+  gap: 16px;
 }
 .rab-swatches-details > div {
   display: flex;
@@ -899,7 +872,7 @@
 }
 /* ===== CIRCLE ===== */
 .rab-swatch-circle-details {
- width: 32px;
+  width: 32px;
   height: 32px;
   border-radius: 50%;
   position: relative;
@@ -908,12 +881,10 @@
   border: 2px solid transparent;
 }
 
-
 /* ===== ACTIVE STATE (OUTER BORDER) ===== */
 .rab-swatches-details.active .rab-swatch-circle-details {
-  border: 2px solid #1A1612;
+  border: 2px solid #1a1612;
 }
-
 
 /* ===== INNER RING ===== */
 .swatches-details.active .swatch-circle-details::after {
@@ -926,12 +897,12 @@
 
 /* ===== SWATCH NAME ===== */
 .rab-swatch-name {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   letter-spacing: 0.06em;
-  color: #8A7E72;
+  color: #8a7e72;
   text-align: center;
-  margin-top: 0px; 
+  margin-top: 0px;
 }
 
 /* TAG */
@@ -954,25 +925,24 @@
 
 /* Size label  */
 .rab-size-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #8A7E72;
+  color: #8a7e72;
   display: flex;
   justify-content: space-between;
 }
 
 /* size guide link */
 .rab-size-guide {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
-  color: #C9A96E;
-  border-bottom: 1px solid #E8D5B0;
+  color: #c9a96e;
+  border-bottom: 1px solid #e8d5b0;
   cursor: pointer;
   margin-bottom: 10px;
 }
-
 
 /* =========================
    SIZE PILLS
@@ -987,12 +957,12 @@
 }
 
 .rab-sizes span {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
-  color: #1A1612;
+  color: #1a1612;
 
   padding: 9px 18px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 1px;
 
   cursor: pointer;
@@ -1001,16 +971,16 @@
 
 /* hover */
 .rab-sizes span:hover {
-  border-color: #C9A96E;
-  background: #1A1612;
+  border-color: #c9a96e;
+  background: #1a1612;
   color: #fff;
 }
 
 /* active */
 .rab-sizes span.active {
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
-  border-color: #1A1612;
+  border-color: #1a1612;
 }
 
 /* disabled
@@ -1020,18 +990,17 @@
   text-decoration: line-through;
 } */
 
-
 .rab-size-note {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   line-height: 1.6;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-top: 16px;
 }
 
 /* help link */
 .rab-size-help {
-  color: #1A1612;
+  color: #1a1612;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -1050,11 +1019,11 @@
 .rab-pdp-btn-primary {
   width: 100%;
   padding: 14px;
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
   border: none;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -1066,11 +1035,11 @@
 .rab-pdp-btn-outline {
   width: 100%;
   padding: 14px;
-  border: 1px solid #1A1612;
+  border: 1px solid #1a1612;
   background: transparent;
-  color: #1A1612;
+  color: #1a1612;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -1082,11 +1051,11 @@
 .rab-pdp-btn-whatsapp {
   width: 100%;
   padding: 14px;
-  border: 1px solid #25D366;
+  border: 1px solid #25d366;
   background: transparent;
-  color: #25D366;
+  color: #25d366;
 
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -1096,10 +1065,9 @@
 
 /* HOVER */
 .rab-pdp-btn-whatsapp:hover {
-  background: #25D366;
+  background: #25d366;
   color: #fff;
 }
-
 
 /* ----------------------------------- */
 /*---------- Trust Section -----------*/
@@ -1118,26 +1086,26 @@
   align-items: center;
   gap: 6px;
   padding: 12px 8px;
-  border: 1px solid #F0EAE0;
+  border: 1px solid #f0eae0;
   border-radius: 1px;
-  background: #FAF7F2;
+  background: #faf7f2;
   text-align: center;
 }
 
 .rab-trust-item svg {
   height: 18px;
   width: 18px;
-  stroke: #C9A96E;
+  stroke: #c9a96e;
   fill: none;
   stroke-width: 1.4;
 }
 
 .rab-trust-item span {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.4;
   text-align: center;
 }
@@ -1152,12 +1120,11 @@
   justify-content: space-between;
   gap: 20px;
   padding: 18px 20px;
-  background: #F5EDD8;
-  border: 1px solid #E8D5B0;
+  background: #f5edd8;
+  border: 1px solid #e8d5b0;
   border-radius: 1px;
   margin-bottom: 28px;
 }
-
 
 /* LEFT SIDE */
 .rab-consult-left {
@@ -1166,14 +1133,13 @@
   gap: 16px;
 }
 
-
 /* ICON BOX */
 .rab-consult-icon {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #FFFEFB;
-  border: 1px solid #E8D5B0;
+  background: #fffefb;
+  border: 1px solid #e8d5b0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1183,37 +1149,35 @@
 .rab-consult-icon svg {
   width: 18px;
   height: 18px;
-  stroke: #C9A96E;
+  stroke: #c9a96e;
   stroke-width: 1.4;
   fill: none;
 }
 
-
 /* TEXT */
 .rab-consult-title {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 12px;
   font-weight: 500;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 3px;
 }
 
 .rab-consult-subtitle {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.5;
 }
 
-
 /* BUTTON */
 .rab-consult-btn {
-  background: #1A1612;
+  background: #1a1612;
   color: #fff;
   border: none;
   padding: 10px 18px;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -1223,14 +1187,13 @@
 }
 
 .rab-consult-btn:hover {
-  background: #2E2520;
+  background: #2e2520;
   transition: background 0.2s;
 }
 
 /* -------------------------------------------- */
 /* ------------BUY NEW PDP ACCORDION---------------- */
 /* --------------------------------------------- */
-
 
 /*---------- PRODUCT PAGE DETAILS---------- */
 /* ================= ROOT ================= */
@@ -1242,21 +1205,20 @@
 
 .rab-pdp-item {
   border-bottom: 1px solid #e8e0d4;
-  
 }
 
 /* HEADER */
- .rab-pdp-header{
+.rab-pdp-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 18px 0;
   cursor: pointer;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .rab-pdp-header:hover {
@@ -1277,7 +1239,7 @@
 }
 
 .rab-pdp-header:hover .icon {
-  stroke: #C9A96E;
+  stroke: #c9a96e;
 }
 
 /* CONTENT */
@@ -1293,19 +1255,19 @@
 }
 
 .rab-pdp-label {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 3px;
 }
 
 .rab-pdp-row p {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 13px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0;
   line-height: 1.55;
 }
@@ -1315,7 +1277,7 @@
   font-family: "Cormorant Garamond";
   font-size: 16px;
   font-style: italic;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.9;
 }
 
@@ -1327,7 +1289,7 @@
 /* SIZE */
 .rab-size-intro {
   font-size: 12px;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 14px;
   line-height: 1.8;
   font-weight: 300;
@@ -1339,28 +1301,28 @@
 }
 
 .rab-size-table th {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   text-transform: uppercase;
-  background: #FAF7F2;
+  background: #faf7f2;
   letter-spacing: 0.14em;
-  color: #8A7E72;
-  padding: 8PX 12PX;
-  border: 1px solid #F0EAE0;
+  color: #8a7e72;
+  padding: 8px 12px;
+  border: 1px solid #f0eae0;
 }
 
 .rab-size-table td {
   font-size: 12px;
   padding: 9px 12px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   padding: 9px 12px;
-  border: 1px solid #F0EAE0;
+  border: 1px solid #f0eae0;
 }
 
 .rab-active-row {
   font-weight: 400;
-  background: #F5EDD8;
+  background: #f5edd8;
 }
 
 /* CARE */
@@ -1373,10 +1335,10 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 13px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.6;
 }
 
@@ -1392,33 +1354,29 @@
 }
 
 .rab-shipping-table th {
-  font-family: 'DM Sans';
-  background: #FAF7F2;
+  font-family: "DM Sans";
+  background: #faf7f2;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: #8A7E72;
+  color: #8a7e72;
   padding: 8px 12px;
-  border: 1px solid #F0EAE0;
+  border: 1px solid #f0eae0;
 }
 
 .rab-shipping-table td {
-  font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 12px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
   padding: 9px 12px;
-  border: 1px solid #F0EAE0;
-
+  border: 1px solid #f0eae0;
 }
 
 .rab-shipping-table .buynew-cost {
-  color: #6B7E5A;
+  color: #6b7e5a;
   font-weight: 400;
 }
-
-
-
 
 /* FOR CHANGES IN GALLERY BADAGE AND TEXT */
 
@@ -1426,22 +1384,19 @@
 
 /* BUY MODE */
 .rap-root.buy-mode .gallery-badge {
-  background: #1A1612 !important;
+  background: #1a1612 !important;
   color: #fff !important;
 }
 
-
 .rap-root.buy-mode .gallery-badge::after {
-    font-family: 'DM Sans';
+  font-family: "DM Sans";
   font-size: 9px;
   letter-spacing: 0.14em;
 }
 
-
 /* ================= RESPONSIVE ================= */
 
 @media (min-width: 1280px) {
-
   /* Slight premium scaling */
   .rab-main-price {
     font-size: 42px;
@@ -1454,11 +1409,9 @@
   .rab-consult-box {
     padding: 20px 24px;
   }
-
 }
 
 @media (min-width: 768px) and (max-width: 1279px) {
-
   /* PRICE */
   .rab-main-price {
     font-size: 34px;
@@ -1490,12 +1443,9 @@
   .rab-trust-badages {
     grid-template-columns: repeat(3, 1fr);
   }
-
 }
 
-
 @media (max-width: 767px) {
-
   /* ===== BUY SECTION ===== */
   .rab-main-price {
     font-size: 30px;
@@ -1571,5 +1521,4 @@
   .rab-pdp-grid {
     grid-template-columns: 1fr;
   }
-
 }

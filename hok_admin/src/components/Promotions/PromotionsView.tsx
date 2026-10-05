@@ -4,33 +4,36 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 5
    ======================================== */
 
-import React, { useState, useCallback, useEffect } from 'react';
-import './PromotionsView.css';
-import './styles/variables.css';
-import { PromotionsHeader } from './components/PromotionsHeader';
-import { SnapshotCards } from './components/SnapshotCards';
-import { CheckoutRulesCard } from './components/CheckoutRulesCard';
-import { ShopperMessagesCard } from './components/ShopperMessagesCard';
-import { UnknownCodesCard } from './components/UnknownCodesCard';
-import { ComposerCard } from './components/ComposerCard';
-import { PromotionsTable } from './components/PromotionsTable';
-import { PromotionsDetailView } from './PromotionsDetailView';
-import { usePromotions } from './hooks/usePromotions';
-import { useCheckoutRules } from './hooks/useCheckoutRules';
-import { useShopperMessages } from './hooks/useShopperMessages';
-import { useRefusedAttempts } from './hooks/useRefusedAttempts';
-import { usePromotionActions } from './hooks/usePromotionActions';
+import React, { useState, useCallback, useEffect } from "react";
+import "./PromotionsView.css";
+import "./styles/variables.css";
+import { PromotionsHeader } from "./components/PromotionsHeader";
+import { SnapshotCards } from "./components/SnapshotCards";
+import { CheckoutRulesCard } from "./components/CheckoutRulesCard";
+import { ShopperMessagesCard } from "./components/ShopperMessagesCard";
+import { UnknownCodesCard } from "./components/UnknownCodesCard";
+import { ComposerCard } from "./components/ComposerCard";
+import { PromotionsTable } from "./components/PromotionsTable";
+import { PromotionsDetailView } from "./PromotionsDetailView";
+import { usePromotions } from "./hooks/usePromotions";
+import { useCheckoutRules } from "./hooks/useCheckoutRules";
+import { useShopperMessages } from "./hooks/useShopperMessages";
+import { useRefusedAttempts } from "./hooks/useRefusedAttempts";
+import { usePromotionActions } from "./hooks/usePromotionActions";
 
 interface PromotionsViewProps {
   orders?: any[];
   onEditingChange?: (isEditing: boolean) => void;
 }
 
-export const PromotionsView: React.FC<PromotionsViewProps> = ({ orders = [], onEditingChange }) => {
+export const PromotionsView: React.FC<PromotionsViewProps> = ({
+  orders = [],
+  onEditingChange,
+}) => {
   const [selectedCodeId, setSelectedCodeId] = useState<string | null>(null);
   const [composerOpen, setComposerOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All Statuses');
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All Statuses");
   const [activeSnapshot, setActiveSnapshot] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,27 +42,50 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({ orders = [], onE
     }
   }, [selectedCodeId, onEditingChange]);
 
-  const { codes, loading, getRedemptions, getDerivedState, promotionOrders, setFilter, setSort, refresh } = usePromotions();
+  const {
+    codes,
+    loading,
+    getRedemptions,
+    getDerivedState,
+    promotionOrders,
+    setFilter,
+    setSort,
+    refresh,
+  } = usePromotions();
   const { rules, updateRules } = useCheckoutRules();
-  const { messages, updateMessages, resetMessage, getCustomizedCount } = useShopperMessages();
+  const { messages, updateMessages, resetMessage, getCustomizedCount } =
+    useShopperMessages();
   const { getUnknownCodes } = useRefusedAttempts();
   const { createCode } = usePromotionActions();
 
   // Compute stats for snapshot cards
-  const liveCodes = codes.filter(c => getDerivedState(c) === 'Active').length;
-  
+  const liveCodes = codes.filter((c) => getDerivedState(c) === "Active").length;
+
   let dynamicRedemptions = 0;
   let dynamicOrderValue = 0;
   let dynamicDiscountFunded = 0;
 
   const liveOrderData = promotionOrders.length > 0 ? promotionOrders : orders;
-  codes.forEach(c => {
-    const promoCode = String(c.code || c.id || '').trim().toUpperCase();
-    const matchingOrders = liveOrderData.filter((o: any) => String(o.promoCode || '').trim().toUpperCase() === promoCode);
+  codes.forEach((c) => {
+    const promoCode = String(c.code || c.id || "")
+      .trim()
+      .toUpperCase();
+    const matchingOrders = liveOrderData.filter(
+      (o: any) =>
+        String(o.promoCode || "")
+          .trim()
+          .toUpperCase() === promoCode,
+    );
     dynamicRedemptions += matchingOrders.length;
     matchingOrders.forEach((o: any) => {
-      dynamicOrderValue += Math.max(0, Number(o.priceBeforePromo ?? o.orderValue ?? o.amount ?? o.price ?? 0));
-      dynamicDiscountFunded += Math.max(0, Number(o.promoDiscount ?? o.discount ?? 0));
+      dynamicOrderValue += Math.max(
+        0,
+        Number(o.priceBeforePromo ?? o.orderValue ?? o.amount ?? o.price ?? 0),
+      );
+      dynamicDiscountFunded += Math.max(
+        0,
+        Number(o.promoDiscount ?? o.discount ?? 0),
+      );
     });
   });
 
@@ -78,7 +104,7 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({ orders = [], onE
 
   const handleDigestClick = () => {
     // Compose WhatsApp digest
-    console.log('Digest on WhatsApp');
+    console.log("Digest on WhatsApp");
   };
 
   const handleCreateClick = () => {
@@ -125,7 +151,7 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({ orders = [], onE
         isOpen={composerOpen}
         onClose={() => setComposerOpen(false)}
         onCreate={handleCreateCode}
-        existingCodes={codes.map(c => c.code)}
+        existingCodes={codes.map((c) => c.code)}
         loading={false}
       />
 
@@ -156,7 +182,7 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({ orders = [], onE
         onSearchChange={setSearch}
         statusFilter={statusFilter}
         onStatusFilterChange={setStatusFilter}
-        onExport={() => console.log('Export CSV')}
+        onExport={() => console.log("Export CSV")}
         snapshotFilter={activeSnapshot}
         onSnapshotClear={() => handleSnapshotClick(null)}
       />

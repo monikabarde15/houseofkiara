@@ -1,12 +1,11 @@
 /* Section 6.1: Product Image Area */
 
-
 .wishlist-mobile-image-area {
   position: relative;
   width: 108px;
   height: 144px;
   flex-shrink: 0;
-  border: 1px solid #F0EAE0;
+  border: 1px solid #f0eae0;
   overflow: hidden;
   margin-right: 14px;
 }
@@ -30,7 +29,7 @@
 
 /* Designer label on image */
 .wishlist-mobile-image-area__designer-label {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-style: italic;
   font-size: 9.5px;
   letter-spacing: 0.06em;
@@ -40,7 +39,6 @@
 
 /* Section 6.3: Remove Heart Button */
 
-
 .wishlist-mobile-image-area__heart {
   position: absolute;
   top: 7px;
@@ -49,14 +47,16 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(255, 254, 251, 0.90);
-  border: 1px solid #E8E0D4;
+  background: rgba(255, 254, 251, 0.9);
+  border: 1px solid #e8e0d4;
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
 }
 
 /* Heart icon */

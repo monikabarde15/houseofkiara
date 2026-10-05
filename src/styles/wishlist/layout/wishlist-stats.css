@@ -19,27 +19,27 @@
 
 /* Stat number */
 .desk-wishlist-stat-number {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 34px;
   font-weight: 300;
   line-height: 1;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* Stat label */
 .desk-wishlist-stat-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   letter-spacing: 0.22em;
   font-weight: 400;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* Separator between stats */
 .desk-wishlist-stat-separator {
   width: 1px;
   height: 38px;
-  background-color: #E8E0D4;
+  background-color: #e8e0d4;
   align-self: center;
 }

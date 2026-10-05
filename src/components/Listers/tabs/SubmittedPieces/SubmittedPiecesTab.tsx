@@ -1,10 +1,10 @@
 // src/components/Listers/tabs/SubmittedPieces/SubmittedPiecesTab.tsx
 
-import React, { useState } from 'react';
-import { Submission } from '../../types/lister.types';
-import { SubmissionForm } from './SubmissionForm';
-import { SubmissionCard } from './SubmissionCard';
-import './styles/SubmittedPiecesTab.css';
+import React, { useState } from "react";
+import { Submission } from "../../types/lister.types";
+import { SubmissionForm } from "./SubmissionForm";
+import { SubmissionCard } from "./SubmissionCard";
+import "./styles/SubmittedPiecesTab.css";
 
 interface SubmittedPiecesTabProps {
   submissions: Submission[];
@@ -30,9 +30,12 @@ export const SubmittedPiecesTab: React.FC<SubmittedPiecesTabProps> = ({
     <div className="submitted-pieces-tab">
       <div className="submitted-pieces-header">
         <p className="submitted-pieces-intro">
-          Every piece this lister has put forward — the List Your Piece form, WhatsApp, Instagram, or a walk-in — with the story they told, what they asked, and where each piece stands now. Click a SUB-ID to open the full record in the Approvals queue.
+          Every piece this lister has put forward — the List Your Piece form,
+          WhatsApp, Instagram, or a walk-in — with the story they told, what
+          they asked, and where each piece stands now. Click a SUB-ID to open
+          the full record in the Approvals queue.
         </p>
-        <button 
+        <button
           className="btn btn-sec btn-sm"
           onClick={() => setShowForm(!showForm)}
         >
@@ -41,8 +44,8 @@ export const SubmittedPiecesTab: React.FC<SubmittedPiecesTabProps> = ({
       </div>
 
       {showForm && (
-        <SubmissionForm 
-          listerId={listerId} 
+        <SubmissionForm
+          listerId={listerId}
           onSuccess={handleFormSuccess}
           onCancel={() => setShowForm(false)}
         />
@@ -50,19 +53,23 @@ export const SubmittedPiecesTab: React.FC<SubmittedPiecesTabProps> = ({
 
       <div className="submitted-pieces-list">
         {isCreateMode ? (
-          <div className="empty-state-inline" style={{ marginTop: '16px', fontSize: '11px', color: '#8A7E72' }}>
+          <div
+            className="empty-state-inline"
+            style={{ marginTop: "16px", fontSize: "11px", color: "#8A7E72" }}
+          >
             Submissions appear once the lister exists.
           </div>
         ) : submissions.length === 0 ? (
           <div className="empty-state-boxed">
             No submissions yet from this lister.
             <br />
-            When a piece comes in over WhatsApp or a walk-in, record it above — it lands in the Approvals queue with a full record.
+            When a piece comes in over WhatsApp or a walk-in, record it above —
+            it lands in the Approvals queue with a full record.
           </div>
         ) : (
           submissions.map((submission) => (
-            <SubmissionCard 
-              key={submission.subid} 
+            <SubmissionCard
+              key={submission.subid}
               submission={submission}
               listerId={listerId}
               onUpdate={onUpdate}

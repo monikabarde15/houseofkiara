@@ -1,13 +1,12 @@
 /* Section 7.2: Remove Toast */
 
-
 .wishlist-mobile-toast {
   position: fixed;
   bottom: 72px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 500;
-  background: #1A1612;
+  background: #1a1612;
   border-radius: 1px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.22);
   max-width: calc(430px - 32px);
@@ -42,7 +41,7 @@
 .wishlist-mobile-toast__icon {
   width: 12px;
   height: 12px;
-  stroke: #C9A96E;
+  stroke: #c9a96e;
   stroke-width: 1.8;
   fill: none;
   flex-shrink: 0;
@@ -50,11 +49,11 @@
 
 /* Message text*/
 .wishlist-mobile-toast__message {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.03em;
-  color: #D4C5B0;
+  color: #d4c5b0;
 }
 
 /* Divider */
@@ -67,12 +66,12 @@
 
 /* UNDO link*/
 .wishlist-mobile-toast__undo {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9.5px;
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
   background: none;
   border: none;
   padding: 0;

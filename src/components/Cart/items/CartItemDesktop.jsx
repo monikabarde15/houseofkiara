@@ -63,7 +63,7 @@ const CartItemDesktop = ({ item, onRemove }) => {
       const productId = localProduct._id || localProduct.id;
       const res = await fetch(`/api/products/${productId}`);
       const data = await res.json();
-      
+
       let fullProduct = localProduct;
       if (data && data.success && data.data) {
         fullProduct = data.data;
@@ -77,15 +77,15 @@ const CartItemDesktop = ({ item, onRemove }) => {
       let url = `/onlyrental/${productId}`;
 
       if (rent && preloved) {
-          url = `/rentalandpreloved/${productId}`;
+        url = `/rentalandpreloved/${productId}`;
       } else if (rent && isNew) {
-          url = `/rentalandbuy/${productId}`;
+        url = `/rentalandbuy/${productId}`;
       } else if (rent) {
-          url = `/onlyrental/${productId}`;
+        url = `/onlyrental/${productId}`;
       } else if (preloved) {
-          url = `/preloved/${productId}`;
+        url = `/preloved/${productId}`;
       } else {
-          url = `/buynew/${productId}`;
+        url = `/buynew/${productId}`;
       }
 
       navigate(url, {
@@ -106,71 +106,99 @@ const CartItemDesktop = ({ item, onRemove }) => {
 
   return (
     <div className="cart-item" data-item-id={type}>
-      
       {/* LEFT — IMAGE */}
       <div className="cart-item__image">
         <div className="cart-item__thumb">
           <img
-            src={localProduct?.images?.[0] || localProduct?.image?.[0] || "/placeholder.jpg"}
+            src={
+              localProduct?.images?.[0] ||
+              localProduct?.image?.[0] ||
+              "/placeholder.jpg"
+            }
             alt={name || "Product"}
             className="cart-item__img"
           />
           {isSaved && (
-            <Heart 
-              className="cart-item__heart-icon" 
-              fill="#b85c38" 
+            <Heart
+              className="cart-item__heart-icon"
+              fill="#b85c38"
               stroke="#b85c38"
-              size={18} 
-              style={{ position: 'absolute', top: 8, right: 8 }} 
+              size={18}
+              style={{ position: "absolute", top: 8, right: 8 }}
             />
           )}
           <span className="cart-item__mode-tag">
-            {type === "rental"
-              ? "Rent"
-              : type === "preloved"
-              ? "Preloved"
-              : "New"}
+            {item.source === "rentandpreloved" ||
+            (localProduct?.modes?.rent?.enabled && localProduct?.modes?.preloved?.enabled)
+              ? "Rent & Preloved"
+              : type === "rental"
+                ? "Rent"
+                : type === "preloved"
+                  ? "Preloved"
+                  : "New"}
           </span>
         </div>
       </div>
 
       {/* RIGHT — CONTENT */}
       <div className="cart-item__content">
-
         {/* HEADER */}
         <div className="cart-item__header">
           <div className="cart-item__info">
             <div className="cart-item__brand">{brand}</div>
             <h3 className="cart-item__name">{name}</h3>
             {localProduct?.rating != null && (
-              <div className="cart-item__rating" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#666', marginTop: '4px', marginBottom: '8px' }}>
+              <div
+                className="cart-item__rating"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  fontSize: "12px",
+                  color: "#666",
+                  marginTop: "4px",
+                  marginBottom: "8px",
+                }}
+              >
                 <Star size={12} fill="#c5a46d" stroke="#c5a46d" />
                 <span>{localProduct.rating}</span>
-                {localProduct?.reviews != null && <span>({localProduct.reviews} reviews)</span>}
+                {localProduct?.reviews != null && (
+                  <span>({localProduct.reviews} reviews)</span>
+                )}
               </div>
             )}
             <p className="cart-item__desc">{desc}</p>
           </div>
 
-          <button
-            className="cart-item__remove"
-            onClick={() => onRemove(item)}
-          >
+          <button className="cart-item__remove" onClick={() => onRemove(item)}>
             <X size={12} strokeWidth={1.8} />
           </button>
         </div>
 
         {/* META */}
         <div className="cart-item__meta">
-          <span>{booking?.size === 'Default' ? 'Free Size' : `Size ${booking?.size || "-"}`}</span>
+          <span>
+            {booking?.size === "Default"
+              ? "Free Size"
+              : `Size ${booking?.size || "-"}`}
+          </span>
+          {booking?.color && (
+            <>
+              <span className="cart-item__meta-dot">•</span>
+              <span>Color: {booking.color}</span>
+            </>
+          )}
+          {booking?.measurements && (
+            <>
+              <span className="cart-item__meta-dot">•</span>
+              <span>Measurements added</span>
+            </>
+          )}
 
           {(type === "rental" || type === "preloved") && condition && (
             <>
               <span className="cart-item__meta-dot">•</span>
-              <span
-                className="cart-item__condition"
-                data-grade={condition}
-              >
+              <span className="cart-item__condition" data-grade={condition}>
                 {gradeLabel[condition] || condition}
               </span>
             </>
@@ -203,68 +231,60 @@ const CartItemDesktop = ({ item, onRemove }) => {
         )} */}
 
         {/* NOTICES */}
-{(type === "rental" || type === "preloved") && (
-  <div className="cart-item__notice-wrap">
+        {(type === "rental" || type === "preloved") && (
+          <div className="cart-item__notice-wrap">
+            {/* RENTAL */}
+            {type === "rental" &&
+              (() => {
+                const deposit = localProduct?.rent?.deposit;
 
-    {/* RENTAL */}
-    {type === "rental" && (() => {
+                const amount = deposit?.amount || 0;
+                const returnDays = deposit?.returnDays || 5;
 
-      const deposit = localProduct?.rent?.deposit;
+                if (amount <= 0) return null;
 
-      const amount = deposit?.amount || 0;
-      const returnDays = deposit?.returnDays || 5;
+                return (
+                  <Notice
+                    variant="amber"
+                    title={`₹${amount.toLocaleString()} refundable security deposit`}
+                  >
+                    — not collected at checkout. Our team will reach out via
+                    WhatsApp before dispatch. Refunded in full within{" "}
+                    {returnDays - 2}-{returnDays} business days of return
+                    inspection.
+                  </Notice>
+                );
+              })()}
 
-      if (amount <= 0) return null;
+            {/* PRELOVED */}
+            {type === "preloved" && (
+              <>
+                {localProduct?.preloved?.disclosure && (
+                  <Notice variant="rose" title="Condition disclosure:">
+                    {localProduct?.preloved?.disclosure}
+                  </Notice>
+                )}
 
-      return (
-        <Notice
-          variant="amber"
-          title={`₹${amount.toLocaleString()} refundable security deposit`}
-        >
-          — not collected at checkout. Our team will reach
-          out via WhatsApp before dispatch. Refunded in full
-          within {returnDays - 2}-{returnDays} business days
-          of return inspection.
-        </Notice>
-      );
-
-    })()}
-
-    {/* PRELOVED */}
-    {type === "preloved" && (
-      <>
-
-        {localProduct?.preloved?.disclosure && (
-          <Notice
-            variant="rose"
-            title="Condition disclosure:"
-          >
-            {localProduct?.preloved?.disclosure}
-          </Notice>
+                {localProduct?.preloved?.finalSaleNote && (
+                  <Notice variant="slate" title="Final sale.">
+                    {localProduct?.preloved?.finalSaleNote}
+                  </Notice>
+                )}
+              </>
+            )}
+          </div>
         )}
-
-        {localProduct?.preloved?.finalSaleNote && (
-          <Notice
-            variant="slate"
-            title="Final sale."
-          >
-            {localProduct?.preloved?.finalSaleNote}
-          </Notice>
-        )}
-
-      </>
-    )}
-
-  </div>
-)}
 
         {/* FOOTER */}
         <div className="cart-item__footer">
-
           {/* PRICE */}
           <div className="cart-item__price">
             {type === "rental" && (
-              <RentalPriceBlock item={item} product={localProduct} booking={booking} />
+              <RentalPriceBlock
+                item={item}
+                product={localProduct}
+                booking={booking}
+              />
             )}
 
             {type === "preloved" && (
@@ -280,23 +300,20 @@ const CartItemDesktop = ({ item, onRemove }) => {
           <div className="cart-item__actions">
             <span
               className={`cart-item__action ${isSaved ? "saved" : ""}`}
-              onClick={() => toggleWishlist(localProduct._id || localProduct.id)}
+              onClick={() =>
+                toggleWishlist(localProduct._id || localProduct.id)
+              }
             >
               {isSaved ? "Saved ✓" : "Save to wishlist"}
             </span>
 
             {type === "rental" && (
-              <span
-                className="cart-item__action"
-                onClick={handleEditDates}
-              >
+              <span className="cart-item__action" onClick={handleEditDates}>
                 Edit dates
               </span>
             )}
           </div>
-
         </div>
-
       </div>
     </div>
   );

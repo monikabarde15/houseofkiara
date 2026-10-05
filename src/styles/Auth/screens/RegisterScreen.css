@@ -18,7 +18,7 @@
 
 /* Custom link style for register screen */
 .hok-auth-register-screen .hok-auth-link {
-  color: var(--charcoal, #1A1612);
+  color: var(--charcoal, #1a1612);
   font-weight: 400;
   text-decoration: underline;
   text-underline-offset: 3px;

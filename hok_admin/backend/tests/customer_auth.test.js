@@ -35,9 +35,16 @@ describe("Customer Authentication Security & Sequence Audit Test Suite", () => {
     });
 
     const data = await res.json();
-    assert.strictEqual(res.status, 400, "Direct registration without OTP verification must fail");
+    assert.strictEqual(
+      res.status,
+      400,
+      "Direct registration without OTP verification must fail",
+    );
     assert.strictEqual(data.success, false);
-    assert.ok(data.message.includes("verification is required") || data.message.includes("verify OTP first"));
+    assert.ok(
+      data.message.includes("verification is required") ||
+        data.message.includes("verify OTP first"),
+    );
   });
 
   test("2. POST /api/customer/auth/send-otp creates stub and sends valid OTP", async () => {
@@ -87,7 +94,10 @@ describe("Customer Authentication Security & Sequence Audit Test Suite", () => {
     const data = await res.json();
     assert.strictEqual(res.status, 200);
     assert.strictEqual(data.success, true);
-    assert.ok(data.data.verificationToken, "verificationToken should be present in response");
+    assert.ok(
+      data.data.verificationToken,
+      "verificationToken should be present in response",
+    );
     verificationToken = data.data.verificationToken;
   });
 
@@ -99,7 +109,11 @@ describe("Customer Authentication Security & Sequence Audit Test Suite", () => {
     });
 
     const data = await res.json();
-    assert.strictEqual(res.status, 400, "Consumed OTP cannot be verified a second time");
+    assert.strictEqual(
+      res.status,
+      400,
+      "Consumed OTP cannot be verified a second time",
+    );
     assert.strictEqual(data.success, false);
   });
 
@@ -114,9 +128,16 @@ describe("Customer Authentication Security & Sequence Audit Test Suite", () => {
     });
 
     const data = await res.json();
-    assert.strictEqual(res.status, 201, `Status should be 201: ${JSON.stringify(data)}`);
+    assert.strictEqual(
+      res.status,
+      201,
+      `Status should be 201: ${JSON.stringify(data)}`,
+    );
     assert.strictEqual(data.success, true);
-    assert.ok(data.data.token, "JWT token must be issued on successful registration");
+    assert.ok(
+      data.data.token,
+      "JWT token must be issued on successful registration",
+    );
     assert.strictEqual(data.data.email, testCustomer.email.toLowerCase());
     assert.strictEqual(data.data.firstName, "Aarav");
     assert.strictEqual(data.data.lastName, "Kapoor");
@@ -159,7 +180,9 @@ describe("Customer Authentication Security & Sequence Audit Test Suite", () => {
     const dataMobile = await resMobile.json();
     assert.strictEqual(resMobile.status, 409);
     assert.strictEqual(dataMobile.success, false);
-    assert.ok(dataMobile.message.includes("Mobile number is already registered"));
+    assert.ok(
+      dataMobile.message.includes("Mobile number is already registered"),
+    );
   });
 
   test("9. POST /api/customer/auth/login validates newly created account", async () => {
@@ -236,20 +259,25 @@ describe("Customer Authentication Security & Sequence Audit Test Suite", () => {
     const data = await res.json();
     assert.strictEqual(res.status, 400);
     assert.strictEqual(data.success, false);
-    assert.ok(data.message.includes("invalid") || data.message.includes("expired"));
+    assert.ok(
+      data.message.includes("invalid") || data.message.includes("expired"),
+    );
   });
 
   test("14. POST /api/customer/auth/reset-password with valid token updates password successfully", async () => {
     const { default: Customer } = await import("../models/Customer.js");
     const { default: crypto } = await import("crypto");
 
-    const hashedToken = crypto.createHash("sha256").update(validResetToken).digest("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(validResetToken)
+      .digest("hex");
     await Customer.updateOne(
       { email: testCustomer.email.toLowerCase() },
       {
         resetPasswordToken: hashedToken,
         resetPasswordExpiresAt: new Date(Date.now() + 60 * 60 * 1000),
-      }
+      },
     );
 
     const res = await fetch(`${BASE_URL}/reset-password`, {
@@ -263,7 +291,11 @@ describe("Customer Authentication Security & Sequence Audit Test Suite", () => {
     });
 
     const data = await res.json();
-    assert.strictEqual(res.status, 200, `Reset failed: ${JSON.stringify(data)}`);
+    assert.strictEqual(
+      res.status,
+      200,
+      `Reset failed: ${JSON.stringify(data)}`,
+    );
     assert.strictEqual(data.success, true);
     assert.ok(data.message.includes("successfully updated"));
   });

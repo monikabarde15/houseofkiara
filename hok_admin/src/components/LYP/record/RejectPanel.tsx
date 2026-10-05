@@ -1,10 +1,10 @@
 // src/components/LYP/record/RejectPanel.tsx
 
-import React, { useState } from 'react';
-import { Submission } from '../types/submission.types';
-import { REJECT_REASON_CODES } from '../utils/constants';
-import { getFirstName } from '../utils/formatter';
-import './styles/RejectPanel.css';
+import React, { useState } from "react";
+import { Submission } from "../types/submission.types";
+import { REJECT_REASON_CODES } from "../utils/constants";
+import { getFirstName } from "../utils/formatter";
+import "./styles/RejectPanel.css";
 
 interface RejectPanelProps {
   submission: Submission;
@@ -17,30 +17,38 @@ export const RejectPanel: React.FC<RejectPanelProps> = ({
   onSuccess,
   onCancel,
 }) => {
-  const [reasonCode, setReasonCode] = useState<string>('');
-  const [optionalNote, setOptionalNote] = useState('');
+  const [reasonCode, setReasonCode] = useState<string>("");
+  const [optionalNote, setOptionalNote] = useState("");
   const [loading, setLoading] = useState(false);
 
   const firstName = getFirstName(submission.listerID);
 
   const getPreviewMessage = () => {
-    const code = reasonCode || '[reason code]';
-    const note = optionalNote ? ` — ${optionalNote}` : '';
+    const code = reasonCode || "[reason code]";
+    const note = optionalNote ? ` — ${optionalNote}` : "";
     return `Hi ${firstName}, thank you for offering ${submission.piece} to House of Kaira. We took a careful look — ${code}${note}. We'd truly love to see the next one.`;
   };
 
   const handleConfirm = async () => {
     if (!reasonCode) return;
     setLoading(true);
-    
+
     try {
-      const { submissionService } = await import('../services/submissionService');
-      const { toast } = await import('react-hot-toast');
-      await submissionService.rejectSubmission(submission.subid, 'Admin', reasonCode, optionalNote);
-      toast.success('Submission rejected');
+      const { submissionService } =
+        await import("../services/submissionService");
+      const { toast } = await import("react-hot-toast");
+      await submissionService.rejectSubmission(
+        submission.subid,
+        "Admin",
+        reasonCode,
+        optionalNote,
+      );
+      toast.success("Submission rejected");
       onSuccess();
     } catch (err: any) {
-      import('react-hot-toast').then(({ toast }) => toast.error(err.message || 'Failed to reject'));
+      import("react-hot-toast").then(({ toast }) =>
+        toast.error(err.message || "Failed to reject"),
+      );
     } finally {
       setLoading(false);
     }
@@ -50,7 +58,9 @@ export const RejectPanel: React.FC<RejectPanelProps> = ({
     <div className="reject-panel">
       <div className="reject-grid g2">
         <div className="fld">
-          <label className="fld-label">Reason code - drives the note & reports</label>
+          <label className="fld-label">
+            Reason code - drives the note & reports
+          </label>
           <select
             className="fld-input"
             value={reasonCode}
@@ -58,7 +68,9 @@ export const RejectPanel: React.FC<RejectPanelProps> = ({
           >
             <option value="">Pick a reason...</option>
             {REJECT_REASON_CODES.map((code) => (
-              <option key={code} value={code}>{code}</option>
+              <option key={code} value={code}>
+                {code}
+              </option>
             ))}
           </select>
         </div>
@@ -81,15 +93,15 @@ export const RejectPanel: React.FC<RejectPanelProps> = ({
       </div>
 
       <div className="reject-actions">
-        <button 
-          className="btn btn-danger btn-sm" 
+        <button
+          className="btn btn-danger btn-sm"
           onClick={handleConfirm}
           disabled={!reasonCode || loading}
         >
-          {loading ? 'Processing...' : 'Confirm Reject'}
+          {loading ? "Processing..." : "Confirm Reject"}
         </button>
-        <button 
-          className="btn btn-sec btn-sm" 
+        <button
+          className="btn btn-sec btn-sm"
           onClick={onCancel}
           disabled={loading}
         >

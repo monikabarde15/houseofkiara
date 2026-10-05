@@ -38,13 +38,19 @@ export const connectDB = async (retries = 3) => {
 
       // Auto-migrate tables on connection
       const migrationModule = await import("../db/migrate.js");
-      const run = migrationModule.migrate || migrationModule.runMigrations || migrationModule.default;
+      const run =
+        migrationModule.migrate ||
+        migrationModule.runMigrations ||
+        migrationModule.default;
       if (typeof run === "function") {
         await run();
       }
       return;
     } catch (error) {
-      console.error(`PostgreSQL connection attempt ${attempt} failed:`, error.message);
+      console.error(
+        `PostgreSQL connection attempt ${attempt} failed:`,
+        error.message,
+      );
       if (attempt === retries) {
         throw error;
       }

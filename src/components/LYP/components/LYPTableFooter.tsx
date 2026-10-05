@@ -1,7 +1,7 @@
 // src/components/LYP/components/LYPTableFooter.tsx
 
-import React from 'react';
-import './styles/LYPTableFooter.css';
+import React from "react";
+import "./styles/LYPTableFooter.css";
 
 interface LYPTableFooterProps {
   shownCount: number;
@@ -26,7 +26,8 @@ export const LYPTableFooter: React.FC<LYPTableFooterProps> = ({
         Showing {shownCount} of {totalCount} submissions
         {isFiltered && (
           <span className="qlnk" onClick={onShowAll}>
-            {' '}· Show all
+            {" "}
+            · Show all
           </span>
         )}
       </span>

@@ -7,8 +7,8 @@
   gap: 0;
   margin: 0 0 10px 0;
   padding: 8px 14px;
-  background: #FAF7F2;
-  border: 1px solid #EBE5DF;
+  background: #faf7f2;
+  border: 1px solid #ebe5df;
   border-radius: 4px;
 }
 
@@ -17,10 +17,10 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #8A7E72;
+  color: #8a7e72;
   padding-right: 10px;
   margin-right: 6px;
-  border-right: 1px solid #D9D0C6;
+  border-right: 1px solid #d9d0c6;
 }
 
 .attn-go {
@@ -30,7 +30,7 @@
 }
 
 .attn-go:hover {
-  color: #B85C38;
+  color: #b85c38;
   text-decoration: underline;
 }
 

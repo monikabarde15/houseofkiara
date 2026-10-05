@@ -1,17 +1,17 @@
 // Types shared across the Rental Calendar section
 
 export type EventType =
-  | 'prep-dispatch'
-  | 'dispatched'
-  | 'rental-starts'
-  | 'return-due'
-  | 'cleaning'
-  | 'back-in-rotation'
-  | 'deposit-due'
-  | 'payout-due'
-  | 'offer-response-due'
-  | 'delivery-followup'
-  | 'internal-task';
+  | "prep-dispatch"
+  | "dispatched"
+  | "rental-starts"
+  | "return-due"
+  | "cleaning"
+  | "back-in-rotation"
+  | "deposit-due"
+  | "payout-due"
+  | "offer-response-due"
+  | "delivery-followup"
+  | "internal-task";
 
 export interface CalendarEventDetail {
   customerName: string;
@@ -45,7 +45,7 @@ export interface CalendarEvent {
   detail?: CalendarEventDetail;
 }
 
-export type CalendarViewMode = 'month' | 'agenda' | 'gantt';
+export type CalendarViewMode = "month" | "agenda" | "gantt";
 
 export interface DispatchCard {
   id: string;
@@ -58,23 +58,29 @@ export interface DispatchCard {
 }
 
 /** Display label + color for every event type, used by both pills and the legend. */
-export const EVENT_STYLES: Record<EventType, { label: string; color: string }> = {
-  'prep-dispatch': { label: 'Prep Dispatch', color: '#A6822E' },
-  dispatched: { label: 'Dispatched', color: '#B54A34' },
-  'rental-starts': { label: 'Rental Starts', color: '#3B5D42' },
-  'return-due': { label: 'Return Due', color: '#707A3A' },
-  cleaning: { label: 'Cleaning', color: '#6B6E76' },
-  'back-in-rotation': { label: 'Back in Rotation', color: '#4F7A52' },
-  'deposit-due': { label: 'Deposit Due', color: '#C79A2E' },
-  'payout-due': { label: 'Payout Due', color: '#211C18' },
-  'offer-response-due': { label: 'Offer Response Due', color: '#7A3B5E' },
-  'delivery-followup': { label: 'Delivery Follow-up', color: '#3B5A8A' },
-  'internal-task': { label: 'Internal Task', color: '#7A4331' },
-};
+export const EVENT_STYLES: Record<EventType, { label: string; color: string }> =
+  {
+    "prep-dispatch": { label: "Prep Dispatch", color: "#A6822E" },
+    dispatched: { label: "Dispatched", color: "#B54A34" },
+    "rental-starts": { label: "Rental Starts", color: "#3B5D42" },
+    "return-due": { label: "Return Due", color: "#707A3A" },
+    cleaning: { label: "Cleaning", color: "#6B6E76" },
+    "back-in-rotation": { label: "Back in Rotation", color: "#4F7A52" },
+    "deposit-due": { label: "Deposit Due", color: "#C79A2E" },
+    "payout-due": { label: "Payout Due", color: "#211C18" },
+    "offer-response-due": { label: "Offer Response Due", color: "#7A3B5E" },
+    "delivery-followup": { label: "Delivery Follow-up", color: "#3B5A8A" },
+    "internal-task": { label: "Internal Task", color: "#7A4331" },
+  };
 
 //Agenda
 export type AgendaActionType =
-  | 'prep-dispatch' | 'dispatched' | 'rental-starts' | 'return-due' | 'cleaning' | 'internal-task';
+  | "prep-dispatch"
+  | "dispatched"
+  | "rental-starts"
+  | "return-due"
+  | "cleaning"
+  | "internal-task";
 
 export interface AgendaEntryDetail {
   title: string;
@@ -99,7 +105,8 @@ export interface AgendaEntry {
 }
 
 // Gantt
-export type GanttSegmentType = 'dispatch' | 'rental' | 'return' | 'deposit' | 'cleaning';
+export type GanttSegmentType =
+  "dispatch" | "rental" | "return" | "deposit" | "cleaning";
 
 export interface GanttSegment {
   /** Day of month, 1-31 */

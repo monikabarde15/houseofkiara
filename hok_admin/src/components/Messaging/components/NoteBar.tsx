@@ -1,24 +1,30 @@
 // components/NoteBar.tsx
-import React from 'react';
-import './styles/NoteBar.css';
+import React from "react";
+import "./styles/NoteBar.css";
 
 interface NoteBarProps {
-  type?: 'info' | 'problem';
+  type?: "info" | "problem";
   heading?: string;
   children: React.ReactNode;
   className?: string;
 }
 
 export const NoteBar: React.FC<NoteBarProps> = ({
-  type = 'info',
+  type = "info",
   heading,
   children,
-  className = '',
+  className = "",
 }) => {
   return (
     <div className={`msg-note-bar msg-note-bar--${type} ${className}`}>
-      {type === 'info' && (
-        <svg className="msg-note-bar-icon" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.5">
+      {type === "info" && (
+        <svg
+          className="msg-note-bar-icon"
+          viewBox="0 0 15 15"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        >
           <circle cx="7.5" cy="7.5" r="6.5" />
           <line x1="7.5" y1="6.5" x2="7.5" y2="10.5" />
           <line x1="7.5" y1="3.5" x2="7.5" y2="4.5" />

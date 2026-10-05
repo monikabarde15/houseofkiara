@@ -26,7 +26,7 @@ const notificationSchema = new mongoose.Schema(
     actionText: { type: String, default: "" },
     actionUrl: { type: String, default: "" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 notificationSchema.set("toJSON", {

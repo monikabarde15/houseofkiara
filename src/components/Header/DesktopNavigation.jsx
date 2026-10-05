@@ -3,26 +3,16 @@ import "../../styles/Header/desktop-navigation.css";
 import { navigationItems } from "../../data/navigationData";
 import { useNavigate } from "react-router-dom";
 
-const DesktopNavigation = ({
-  activeDropdown,
-  openDropdown,
-}) => {
-
+const DesktopNavigation = ({ activeDropdown, openDropdown }) => {
   const navigate = useNavigate();
   return (
-    <nav
-      className="hok-navigation"
-      aria-label="Main navigation"
-    >
+    <nav className="hok-navigation" aria-label="Main navigation">
       <div className="nav-inner">
-
         {navigationItems.map((item) => (
           <div
             key={item.id}
             className={`nav-group ${
-              activeDropdown === item.id
-                ? "dd-open"
-                : ""
+              activeDropdown === item.id ? "dd-open" : ""
             }`}
             // onMouseEnter={() =>
             //   openDropdown(item.id)
@@ -34,13 +24,9 @@ const DesktopNavigation = ({
             }}
           >
             <button
-              className={`nav-item ${item.variant || ""
-                }`}
+              className={`nav-item ${item.variant || ""}`}
               onClick={() => {
-                if (
-                  item.standalone &&
-                  item.route
-                ) {
+                if (item.standalone && item.route) {
                   navigate(item.route);
                 }
               }}
@@ -57,15 +43,10 @@ const DesktopNavigation = ({
                 </svg>
               )}
 
-              {item.badge && (
-                <span className="nav-pill">
-                  {item.badge}
-                </span>
-              )}
+              {item.badge && <span className="nav-pill">{item.badge}</span>}
             </button>
           </div>
         ))}
-
       </div>
     </nav>
   );

@@ -1,10 +1,10 @@
 // src/components/Listers/tabs/PayoutHistory/PayoutTable.tsx
 
-import React from 'react';
-import { PayoutTransaction } from '../../types/lister.types';
-import { inr, formatDate, pluralize } from '../../utils/formatter';
-import { PAYOUT_STATUS_CHIP_MAPPING } from '../../utils/constants';
-import './styles/PayoutTable.css';
+import React from "react";
+import { PayoutTransaction } from "../../types/lister.types";
+import { inr, formatDate, pluralize } from "../../utils/formatter";
+import { PAYOUT_STATUS_CHIP_MAPPING } from "../../utils/constants";
+import "./styles/PayoutTable.css";
 
 interface PayoutTableProps {
   payouts: PayoutTransaction[];
@@ -36,25 +36,36 @@ export const PayoutTable: React.FC<PayoutTableProps> = ({ payouts }) => {
   };
 
   const getStatusChip = (status: string) => {
-    const mapping = PAYOUT_STATUS_CHIP_MAPPING[status as keyof typeof PAYOUT_STATUS_CHIP_MAPPING];
-    return mapping || PAYOUT_STATUS_CHIP_MAPPING['Pending Approval'];
+    const mapping =
+      PAYOUT_STATUS_CHIP_MAPPING[
+        status as keyof typeof PAYOUT_STATUS_CHIP_MAPPING
+      ];
+    return mapping || PAYOUT_STATUS_CHIP_MAPPING["Pending Approval"];
   };
 
   const getStatusLabel = (status: string) => {
-    if (status === 'Pending Approval' || status === 'Approved' || status === 'On Hold') {
-      return 'Pending Approval';
+    if (
+      status === "Pending Approval" ||
+      status === "Approved" ||
+      status === "On Hold"
+    ) {
+      return "Pending Approval";
     }
     return status;
   };
 
   const getAmountColor = (tx: PayoutTransaction) => {
-    if (tx.isDamage) return 'payout-amount-damage';
-    if (tx.status === 'Paid') return 'payout-amount-paid';
-    return 'payout-amount-pending';
+    if (tx.isDamage) return "payout-amount-damage";
+    if (tx.status === "Paid") return "payout-amount-paid";
+    return "payout-amount-pending";
   };
 
   const isUndecided = (status: string) => {
-    return status === 'Pending Approval' || status === 'Approved' || status === 'On Hold';
+    return (
+      status === "Pending Approval" ||
+      status === "Approved" ||
+      status === "On Hold"
+    );
   };
 
   return (
@@ -103,7 +114,9 @@ export const PayoutTable: React.FC<PayoutTableProps> = ({ payouts }) => {
                     {isUndecided(tx.status) ? (
                       <button className="btn btn-gold btn-xs">Review →</button>
                     ) : (
-                      <button className="btn btn-sec btn-xs">View Payout →</button>
+                      <button className="btn btn-sec btn-xs">
+                        View Payout →
+                      </button>
                     )}
                   </td>
                 </tr>
@@ -113,7 +126,7 @@ export const PayoutTable: React.FC<PayoutTableProps> = ({ payouts }) => {
         </table>
       </div>
       <div className="ftot">
-        <span>{pluralize(payouts.length, 'transaction')}</span>
+        <span>{pluralize(payouts.length, "transaction")}</span>
       </div>
     </div>
   );

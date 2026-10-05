@@ -61,7 +61,7 @@
   gap: var(--msg-spacing-7);
   padding: var(--msg-spacing-6) var(--msg-spacing-11);
   background: var(--msg-gold-pale);
-  color: #6B5730;
+  color: #6b5730;
   font-size: 10.5px;
   border-bottom: var(--msg-border-standard);
 }

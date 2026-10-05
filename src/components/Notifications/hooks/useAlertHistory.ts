@@ -1,6 +1,6 @@
 // src/components/Notifications/hooks/useAlertHistory.ts
-import { useMemo } from 'react';
-import { Alert } from '../types/notification.types';
+import { useMemo } from "react";
+import { Alert } from "../types/notification.types";
 
 interface HistoryLedgerEntry {
   key: string; // alert key
@@ -75,13 +75,16 @@ export function useAlertHistory(alerts: Alert[], ledger: HistoryLedgerEntry[]) {
 
   const totalClearedInWindow = useMemo(
     () => rows.reduce((sum, r) => sum + r.cleared, 0),
-    [rows]
+    [rows],
   );
 
   const averageAcrossAll = useMemo(() => {
     const withAverages = rows.filter((r) => r.averageDays !== null);
     if (withAverages.length === 0) return null;
-    const total = withAverages.reduce((sum, r) => sum + (r.averageDays as number), 0);
+    const total = withAverages.reduce(
+      (sum, r) => sum + (r.averageDays as number),
+      0,
+    );
     return Math.round(total / withAverages.length);
   }, [rows]);
 

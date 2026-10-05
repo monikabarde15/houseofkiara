@@ -1,11 +1,24 @@
 // editor/WordGroupChips.tsx
-import React, { useState } from 'react';
-import './styles/WordGroupChips.css';
+import React, { useState } from "react";
+import "./styles/WordGroupChips.css";
 
 const WORD_GROUPS = [
-  'global', 'customer', 'order', 'item', 'rental', 'deposit', 'shipping',
-  'customfit', 'lister', 'payout', 'offer', 'auth', 'receivable', 
-  'internal', 'designer', 'promo'
+  "global",
+  "customer",
+  "order",
+  "item",
+  "rental",
+  "deposit",
+  "shipping",
+  "customfit",
+  "lister",
+  "payout",
+  "offer",
+  "auth",
+  "receivable",
+  "internal",
+  "designer",
+  "promo",
 ];
 
 interface WordGroupChipsProps {
@@ -13,11 +26,11 @@ interface WordGroupChipsProps {
 }
 
 export const WordGroupChips: React.FC<WordGroupChipsProps> = ({ onChange }) => {
-  const [selected, setSelected] = useState<string[]>(['global', 'customer']);
+  const [selected, setSelected] = useState<string[]>(["global", "customer"]);
 
   const toggleGroup = (group: string) => {
     const newSelected = selected.includes(group)
-      ? selected.filter(g => g !== group)
+      ? selected.filter((g) => g !== group)
       : [...selected, group];
     setSelected(newSelected);
     if (onChange) {
@@ -27,12 +40,14 @@ export const WordGroupChips: React.FC<WordGroupChipsProps> = ({ onChange }) => {
 
   return (
     <div className="msg-wordgroup-chips">
-      <div className="msg-wordgroup-chips-label">Word-groups this message may use</div>
+      <div className="msg-wordgroup-chips-label">
+        Word-groups this message may use
+      </div>
       <div className="msg-wordgroup-chips-box">
         {WORD_GROUPS.map((group) => (
           <div
             key={group}
-            className={`msg-wordgroup-chip ${selected.includes(group) ? 'msg-wordgroup-chip--selected' : ''}`}
+            className={`msg-wordgroup-chip ${selected.includes(group) ? "msg-wordgroup-chip--selected" : ""}`}
             onClick={() => toggleGroup(group)}
           >
             <input
@@ -46,7 +61,8 @@ export const WordGroupChips: React.FC<WordGroupChipsProps> = ({ onChange }) => {
         ))}
       </div>
       <div className="msg-wordgroup-chips-hint">
-        Tick a group and its words become available below. Untick one and any word from it has to come out of the wording first.
+        Tick a group and its words become available below. Untick one and any
+        word from it has to come out of the wording first.
       </div>
     </div>
   );

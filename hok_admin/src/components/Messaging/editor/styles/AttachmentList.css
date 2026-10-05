@@ -38,26 +38,26 @@
 
 /* Required by law - Terracotta */
 .msg-attachment-pill--required {
-  color: #7A2E1D;
+  color: #7a2e1d;
   background: var(--msg-status-terracotta-bg);
 }
 
 /* Template - Blue (filled in per recipient) */
 .msg-attachment-pill--template {
-  color: #3B5C8A;
-  background: #E9EFF6;
+  color: #3b5c8a;
+  background: #e9eff6;
   cursor: pointer;
   transition: all 0.12s ease;
 }
 
 .msg-attachment-pill--template:hover {
-  background: #385C8A;
-  color: #FFFFFF;
+  background: #385c8a;
+  color: #ffffff;
 }
 
 /* Missing file - Terracotta */
 .msg-attachment-pill--missing {
-  color: #7A2E1D;
+  color: #7a2e1d;
   background: var(--msg-status-terracotta-bg);
 }
 

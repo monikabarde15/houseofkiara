@@ -6,12 +6,12 @@
 
 // --- Core Types (Section 3.1) ---
 
-export type PromoCodeType = 'percent' | 'flat' | 'freedel';
-export type PromoCodeStatus = 'Active' | 'Paused';
-export type PromoCodeVisibility = 'share' | 'drawer';
-export type PromoAudience = 'public' | 'private';
-export type PromoMode = 'Rental' | 'Preloved' | 'Buy New';
-export type PromoRedemptionSource = 'entered' | 'drawer';
+export type PromoCodeType = "percent" | "flat" | "freedel";
+export type PromoCodeStatus = "Active" | "Paused";
+export type PromoCodeVisibility = "share" | "drawer";
+export type PromoAudience = "public" | "private";
+export type PromoMode = "Rental" | "Preloved" | "Buy New";
+export type PromoRedemptionSource = "entered" | "drawer";
 
 export interface PromoCodeScope {
   categories: string[];
@@ -25,30 +25,30 @@ export interface PromoCode {
   type: PromoCodeType;
   value: number; // Percentage (1-100) or rupee amount
   maxDiscount: number | null; // Ceiling in rupees, only for percent
-  
+
   // Eligibility
   minOrder: number | null;
   modes: PromoMode[]; // At least one
   scope: PromoCodeScope; // All empty = all products
   stacksWith: string[]; // Array of code strings
-  
+
   // Audience
   audience: PromoAudience;
   customerIds: string[]; // Required when private, empty when public
   firstOrderOnly: boolean;
-  
+
   // Usage caps
   usesTotalCap: number | null; // Max redemptions across all customers
   usesPerCustomer: number | null; // Max redemptions by one customer
-  
+
   // Validity
   validFrom: string | null; // ISO YYYY-MM-DD
   validUntil: string | null; // ISO YYYY-MM-DD
-  
+
   // Status & Visibility
   status: PromoCodeStatus;
   visibility: PromoCodeVisibility;
-  
+
   // Meta fields (Section 3.2)
   publicDesc: string; // Shopper-facing, max 60 chars
   reason: string; // Internal only, required
@@ -57,7 +57,7 @@ export interface PromoCode {
   createdOn: string; // Display date "23 Mar 2026"
   history: PromoHistoryEntry[];
   attnSnooze: Record<string, string>; // flagKey: YYYY-MM-DD
-  
+
   // Supersede (Section 3.2)
   supersedes?: string; // Code it was copied from
   supersededBy?: string; // Copy that replaced it
@@ -87,11 +87,11 @@ export interface PromoRefund {
 // --- Platform Settings (Section 3.3) ---
 
 export interface CheckoutRules {
-  stacking: 'single' | 'stackable';
+  stacking: "single" | "stackable";
   maxCombinedFlat: number | null; // Rupee ceiling
   maxCombinedPct: number | null; // Percentage ceiling (25 default)
   freeShipThreshold: number | null; // 2999 default
-  freeShipBasis: 'pre' | 'post'; // 'pre' default
+  freeShipBasis: "pre" | "post"; // 'pre' default
 }
 
 // --- Shopper Messages (Section 10.2) ---
@@ -116,12 +116,8 @@ export interface ShopperMessages {
 
 // --- Derived Types ---
 
-export type DerivedPromoState = 
-  | 'Paused'
-  | 'Scheduled'
-  | 'Expired'
-  | 'Fully redeemed'
-  | 'Active';
+export type DerivedPromoState =
+  "Paused" | "Scheduled" | "Expired" | "Fully redeemed" | "Active";
 
 export interface PromoSnapshot {
   liveCodes: number;
@@ -152,7 +148,7 @@ export interface TestBagItem {
   isAcceptedOffer: boolean;
 }
 
-export type ShopperArchetype = 'first-time' | 'returning' | 'already-used';
+export type ShopperArchetype = "first-time" | "returning" | "already-used";
 
 export interface TestBagResult {
   qualifies: boolean;
@@ -175,11 +171,11 @@ export interface TestBagLineResult {
 
 export interface PromoCodeFilter {
   status?: DerivedPromoState;
-  snapshot?: 'live' | 'redemptions' | 'orderValue' | 'discountFunded';
+  snapshot?: "live" | "redemptions" | "orderValue" | "discountFunded";
   search?: string;
 }
 
 export interface PromoCodeSort {
-  field: 'code' | 'used' | 'window' | 'status';
-  direction: 'asc' | 'desc';
+  field: "code" | "used" | "window" | "status";
+  direction: "asc" | "desc";
 }

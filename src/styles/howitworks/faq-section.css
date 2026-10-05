@@ -1,6 +1,6 @@
 /* FAQ Section - B12 */
 .hok-hiw-faq {
-  background: #FAF7F2;
+  background: #faf7f2;
   padding: 96px 80px;
 }
 
@@ -27,30 +27,30 @@
 .hok-hiw-faq-line {
   width: 24px;
   height: 1px;
-  background: #C9A96E;
+  background: #c9a96e;
 }
 
 .hok-hiw-faq-eyebrow-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.28em;
-  color: #C9A96E;
+  color: #c9a96e;
   font-weight: 400;
 }
 
 .hok-hiw-faq-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 44px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.1;
   margin: 0;
 }
 
 .hok-hiw-faq-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* FAQ Items */
@@ -60,11 +60,11 @@
 }
 
 .hok-hiw-faq-item {
-  border-bottom: 1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
 }
 
 .hok-hiw-faq-item-first {
-  border-top: 1px solid #E8E0D4;
+  border-top: 1px solid #e8e0d4;
 }
 
 /* Question Row */
@@ -80,16 +80,16 @@
 }
 
 .hok-hiw-faq-txt {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 19px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.35;
   transition: color 0.2s ease;
 }
 
 .hok-hiw-faq-q:hover .hok-hiw-faq-txt {
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* Toggle Icon */
@@ -97,29 +97,31 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: background 0.25s ease, border-color 0.25s ease;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
   cursor: pointer;
 }
 
 .hok-hiw-faq-icon svg {
   width: 12px;
   height: 12px;
-  color: #8A7E72;
+  color: #8a7e72;
   transition: transform 0.25s ease;
 }
 
 .hok-hiw-faq-icon.hok-hiw-open {
-  background: #1A1612;
-  border-color: #1A1612;
+  background: #1a1612;
+  border-color: #1a1612;
 }
 
 .hok-hiw-faq-icon.hok-hiw-open svg {
-  color: #FAF7F2;
+  color: #faf7f2;
   transform: rotate(45deg);
 }
 
@@ -135,10 +137,10 @@
 }
 
 .hok-hiw-faq-answer-inner {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.9;
   padding: 0 0 24px 0;
   max-width: 640px;
@@ -146,5 +148,5 @@
 
 .hok-hiw-faq-answer-inner strong {
   font-weight: 500;
-  color: #1A1612;
+  color: #1a1612;
 }

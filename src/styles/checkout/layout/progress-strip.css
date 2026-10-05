@@ -1,8 +1,8 @@
 /* progress-strip.css */
 
 .progress-strip {
-  background: #FFFEFB;
-  border-bottom: 1px solid #F0EAE0;
+  background: #fffefb;
+  border-bottom: 1px solid #f0eae0;
   padding: 0 48px;
 }
 
@@ -31,27 +31,27 @@
    INACTIVE (DEFAULT)
 ========================= */
 .prog-step.inactive {
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* =========================
    DONE
 ========================= */
 .prog-step.done {
-  color: #6B7E5A;
+  color: #6b7e5a;
   cursor: pointer;
 }
 
 .prog-step.done:hover {
-  color: #3C3529;
+  color: #3c3529;
 }
 
 /* =========================
    ACTIVE
 ========================= */
 .prog-step.active {
-  color: #1A1612;
-  border-bottom: 2px solid #1A1612;
+  color: #1a1612;
+  border-bottom: 2px solid #1a1612;
 }
 
 /* =========================
@@ -75,15 +75,15 @@
 ========================= */
 .prog-step.inactive .prog-circle {
   background: transparent;
-  border: 1px solid #B0A898;
-  color: #B0A898;
+  border: 1px solid #b0a898;
+  color: #b0a898;
 }
 
 /* =========================
    DONE CIRCLE
 ========================= */
 .prog-circle.done {
-  background: #6B7E5A;
+  background: #6b7e5a;
   border: none;
   color: #fff;
 }
@@ -99,9 +99,9 @@
    ACTIVE CIRCLE
 ========================= */
 .prog-circle.active {
-  background: #1A1612;
-  border: 1px solid #1A1612;
-  color: #E8D5B0;
+  background: #1a1612;
+  border: 1px solid #1a1612;
+  color: #e8d5b0;
 }
 
 /* =========================
@@ -110,11 +110,7 @@
 .prog-sep {
   width: 1px;
   height: 14px;
-  background: #E8E0D4;
+  background: #e8e0d4;
   align-self: center;
   margin: 0 12px;
 }
-
-
-
-

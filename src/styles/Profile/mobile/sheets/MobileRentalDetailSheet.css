@@ -34,7 +34,7 @@
 }
 
 .profile-mobile-sheet-product-img svg {
-  stroke: #1A1612;
+  stroke: #1a1612;
 }
 
 .profile-mobile-sheet-product-img rect {
@@ -54,9 +54,7 @@
 .profile-mobile-sheet-product-name {
   margin-bottom: 3px;
 
-  font-family:
-    "Cormorant Garamond",
-    serif;
+  font-family: "Cormorant Garamond", serif;
 
   font-size: 17px;
 
@@ -64,13 +62,11 @@
 
   line-height: 1.2;
 
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .profile-mobile-sheet-product-meta {
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 10px;
 
@@ -78,7 +74,7 @@
 
   line-height: 1.5;
 
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* ============================================
@@ -87,10 +83,7 @@
    ============================================ */
 
 .profile-mobile-sheet-detail-body {
-  padding:
-    14px
-    16px
-    24px;
+  padding: 14px 16px 24px;
 }
 
 /* ============================================
@@ -106,13 +99,11 @@
 
   padding: 10px 0;
 
-  border-top:
-    1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
 }
 
 .profile-mobile-drow:first-of-type {
-  border-top:
-    1px solid #E8E0D4;
+  border-top: 1px solid #e8e0d4;
 }
 
 /* ============================================
@@ -126,9 +117,7 @@
 
   padding-top: 1px;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 9px;
 
@@ -138,7 +127,7 @@
 
   text-transform: uppercase;
 
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* ============================================
@@ -150,15 +139,13 @@
 
   line-height: 1.5;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 12px;
 
   font-weight: 300;
 
-  color: #3C3529;
+  color: #3c3529;
 }
 
 /* ============================================
@@ -166,17 +153,17 @@
    ============================================ */
 
 .profile-mobile-dv-gold {
-  color: #A8844A;
+  color: #a8844a;
 
   font-weight: 500;
 }
 
 .profile-mobile-dv-sage {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 .profile-mobile-dv-cancelled {
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* ============================================
@@ -197,16 +184,13 @@
    ============================================ */
 
 .profile-mobile-note-default {
-  border-left-color:
-    rgba(107, 126, 90, 0.3);
+  border-left-color: rgba(107, 126, 90, 0.3);
 
-  background:
-    rgba(107, 126, 90, 0.05);
+  background: rgba(107, 126, 90, 0.05);
 }
 
-.profile-mobile-note-default
-.profile-mobile-note-title {
-  color: #6B7E5A;
+.profile-mobile-note-default .profile-mobile-note-title {
+  color: #6b7e5a;
 }
 
 /* ============================================
@@ -214,16 +198,13 @@
    ============================================ */
 
 .profile-mobile-note-gold {
-  border-left-color:
-    rgba(201, 169, 110, 0.35);
+  border-left-color: rgba(201, 169, 110, 0.35);
 
-  background:
-    rgba(201, 169, 110, 0.05);
+  background: rgba(201, 169, 110, 0.05);
 }
 
-.profile-mobile-note-gold
-.profile-mobile-note-title {
-  color: #A8844A;
+.profile-mobile-note-gold .profile-mobile-note-title {
+  color: #a8844a;
 }
 
 /* ============================================
@@ -231,16 +212,13 @@
    ============================================ */
 
 .profile-mobile-note-muted {
-  border-left-color:
-    rgba(138, 126, 114, 0.25);
+  border-left-color: rgba(138, 126, 114, 0.25);
 
-  background:
-    rgba(138, 126, 114, 0.05);
+  background: rgba(138, 126, 114, 0.05);
 }
 
-.profile-mobile-note-muted
-.profile-mobile-note-title {
-  color: #8A7E72;
+.profile-mobile-note-muted .profile-mobile-note-title {
+  color: #8a7e72;
 }
 
 /* ============================================
@@ -250,9 +228,7 @@
 .profile-mobile-note-title {
   margin-bottom: 4px;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 8.5px;
 
@@ -270,15 +246,13 @@
 .profile-mobile-note-text {
   line-height: 1.65;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 10.5px;
 
   font-weight: 300;
 
-  color: #3C3529;
+  color: #3c3529;
 }
 
 /* ============================================
@@ -299,13 +273,11 @@
 
   border: none;
 
-  background: #E8E0D4;
+  background: #e8e0d4;
 
-  color: #B0A898;
+  color: #b0a898;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 9.5px;
 
@@ -323,15 +295,15 @@
 }
 
 .profile-mobile-sbtn-p.active {
-  background: #1A1612;
+  background: #1a1612;
 
-  color: #E8D5B0;
+  color: #e8d5b0;
 
   cursor: pointer;
 }
 
 .profile-mobile-sbtn-p.active:active {
-  background: #2C2520;
+  background: #2c2520;
 }
 
 /* ============================================
@@ -345,14 +317,11 @@
 
   border: none;
 
-  border-top:
-    1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
 
   background: transparent;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 9.5px;
 
@@ -362,14 +331,13 @@
 
   text-transform: uppercase;
 
-  color: #8A7E72;
+  color: #8a7e72;
 
   cursor: pointer;
 
-  transition:
-    background-color 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .profile-mobile-sbtn-s:active {
-  background: #FAF7F2;
+  background: #faf7f2;
 }

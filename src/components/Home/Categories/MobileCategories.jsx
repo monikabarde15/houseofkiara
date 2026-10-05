@@ -7,7 +7,9 @@ import categoriesData from "../../../data/home/categoriesData";
 
 const MobileCategories = () => {
   const slides = useMemo(
-    () => [...categoriesData.rowOne, ...categoriesData.rowTwo],[] );
+    () => [...categoriesData.rowOne, ...categoriesData.rowTwo],
+    [],
+  );
   const navigate = useNavigate();
 
   const [activeSlide, setActiveSlide] = useState(0);
@@ -44,8 +46,7 @@ const MobileCategories = () => {
   const handleTouchEnd = (event) => {
     touchEndX.current = event.changedTouches[0].clientX;
 
-    const swipeDistance =
-      touchStartX.current - touchEndX.current;
+    const swipeDistance = touchStartX.current - touchEndX.current;
 
     if (Math.abs(swipeDistance) < 44) {
       return;
@@ -60,7 +61,7 @@ const MobileCategories = () => {
 
   const handleMobileCategoryClick = (slide) => {
     navigate(`/main-page?section=new&category=${slide.variant}`);
-  }
+  };
 
   return (
     <section
@@ -72,9 +73,7 @@ const MobileCategories = () => {
         <div
           key={slide.id}
           className={`mobile-category-slide ${
-            activeSlide === index
-              ? "mobile-category-slide-active"
-              : ""
+            activeSlide === index ? "mobile-category-slide-active" : ""
           }`}
         >
           <img
@@ -90,16 +89,13 @@ const MobileCategories = () => {
               {slide.mobile.eyebrow}
             </span>
 
-            <h2 className="mobile-category-title">
-              {slide.name}
-            </h2>
+            <h2 className="mobile-category-title">{slide.name}</h2>
 
-            <p className="mobile-category-count">
-              {slide.mobile.pieces}
-            </p>
+            <p className="mobile-category-count">{slide.mobile.pieces}</p>
 
-            <button className="mobile-category-cta"
-              onClick={()=>handleMobileCategoryClick(slide)}
+            <button
+              className="mobile-category-cta"
+              onClick={() => handleMobileCategoryClick(slide)}
             >
               <span>{slide.cta}</span>
               <ArrowRight size={12} />
@@ -113,9 +109,7 @@ const MobileCategories = () => {
           <button
             key={slide.id}
             className={`mobile-category-dot ${
-              activeSlide === index
-                ? "mobile-category-dot-active"
-                : ""
+              activeSlide === index ? "mobile-category-dot-active" : ""
             }`}
             onClick={() => goToSlide(index)}
           />
@@ -123,17 +117,11 @@ const MobileCategories = () => {
       </div>
 
       <div className="mobile-category-arrows">
-        <button
-          className="mobile-category-arrow"
-          onClick={prevSlide}
-        >
+        <button className="mobile-category-arrow" onClick={prevSlide}>
           <ChevronLeft size={11} />
         </button>
 
-        <button
-          className="mobile-category-arrow"
-          onClick={nextSlide}
-        >
+        <button className="mobile-category-arrow" onClick={nextSlide}>
           <ChevronRight size={11} />
         </button>
       </div>

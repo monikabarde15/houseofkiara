@@ -8,7 +8,7 @@ const DesktopDuality = () => {
   const sectionRef = useRef(null);
   const navigate = useNavigate();
 
-  // Reveal animation observer 
+  // Reveal animation observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -18,7 +18,7 @@ const DesktopDuality = () => {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
 
     const elements = sectionRef.current?.querySelectorAll(".reveal");
@@ -27,7 +27,7 @@ const DesktopDuality = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Handle tab switch 
+  // Handle tab switch
   const handleTabSwitch = (tab) => {
     if (tab === activeTab) return;
     setActiveTab(tab);
@@ -54,7 +54,6 @@ const DesktopDuality = () => {
 
   return (
     <section className="au-duality" ref={sectionRef}>
-      
       {/* Section Head */}
       <div className="au-duality__head reveal">
         <div className="au-duality__eyebrow">
@@ -70,12 +69,11 @@ const DesktopDuality = () => {
       {/* Toggle Control  */}
       <div className="au-duality__toggle-wrapper reveal">
         <div className="au-duality__toggle" role="tablist">
-          
           {/* Sliding Pill */}
-          <div 
+          <div
             className={`au-duality__slider ${activeTab === "lister" ? "right" : ""}`}
           ></div>
-          
+
           {/* Tab 1: Renter */}
           <button
             className={`au-duality__tab ${activeTab === "renter" ? "active" : ""}`}
@@ -85,7 +83,7 @@ const DesktopDuality = () => {
           >
             I'm celebrating
           </button>
-          
+
           {/* Tab 2: Lister */}
           <button
             className={`au-duality__tab ${activeTab === "lister" ? "active" : ""}`}
@@ -95,26 +93,28 @@ const DesktopDuality = () => {
           >
             I'm giving it new life
           </button>
-          
         </div>
       </div>
 
       {/* Panels  */}
       <div className="au-duality__panels reveal">
-        
         {/* Renter Panel */}
-        <div className={`au-duality__panel ${activeTab === "renter" ? "active" : ""}`} id="panel-renter">
+        <div
+          className={`au-duality__panel ${activeTab === "renter" ? "active" : ""}`}
+          id="panel-renter"
+        >
           <p className="au-duality__panel-label au-duality__panel-label--renter">
             For the bride, the groom, the guest of honour
           </p>
           <p className="au-duality__panel-body">
-            Maybe it's your wedding. Maybe it's your best friend's. Whatever the occasion, 
-            you deserve a piece worthy of it — without it living in your cupboard for the 
-            other 364 days of the year. Rent it, buy it preloved, or buy it new: House of 
-            Kaira holds every option to the same standard, exceptional design, honestly 
-            presented, beautifully delivered.
+            Maybe it's your wedding. Maybe it's your best friend's. Whatever the
+            occasion, you deserve a piece worthy of it — without it living in
+            your cupboard for the other 364 days of the year. Rent it, buy it
+            preloved, or buy it new: House of Kaira holds every option to the
+            same standard, exceptional design, honestly presented, beautifully
+            delivered.
           </p>
-          <button 
+          <button
             className="au-duality__cta au-duality__cta--renter"
             onClick={handleRenterCTA}
           >
@@ -126,17 +126,21 @@ const DesktopDuality = () => {
         </div>
 
         {/* Lister Panel */}
-        <div className={`au-duality__panel ${activeTab === "lister" ? "active" : ""}`} id="panel-lister">
+        <div
+          className={`au-duality__panel ${activeTab === "lister" ? "active" : ""}`}
+          id="panel-lister"
+        >
           <p className="au-duality__panel-label au-duality__panel-label--lister">
             For the keeper of something beautiful
           </p>
           <p className="au-duality__panel-body">
-            Somewhere in your wardrobe is a lehenga that gave you the best night of your 
-            life, and has done nothing since. List it with House of Kaira and let it earn 
-            its place again, or sell it on, with full transparency, careful handling, and 
-            a payout you can trust. Your only job is to say yes. We handle the rest.
+            Somewhere in your wardrobe is a lehenga that gave you the best night
+            of your life, and has done nothing since. List it with House of
+            Kaira and let it earn its place again, or sell it on, with full
+            transparency, careful handling, and a payout you can trust. Your
+            only job is to say yes. We handle the rest.
           </p>
-          <button 
+          <button
             className="au-duality__cta au-duality__cta--lister"
             onClick={handleListerCTA}
           >
@@ -146,9 +150,7 @@ const DesktopDuality = () => {
             </svg>
           </button>
         </div>
-
       </div>
-
     </section>
   );
 };

@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
-import '../../../styles/howitworks/mobile/mobile-shopping-journey.css';
+import React, { useRef, useState, useEffect } from "react";
+import "../../../styles/howitworks/mobile/mobile-shopping-journey.css";
 
 const MobileShoppingJourney = () => {
   const trackRef = useRef(null);
@@ -11,70 +11,70 @@ const MobileShoppingJourney = () => {
   const journeySteps = [
     {
       id: 1,
-      number: '01',
-      title: 'Browse and discover',
-      body: 'Explore our curated collection of designer pieces. Filter by occasion, designer, size, and category to find exactly what you\'re looking for.',
+      number: "01",
+      title: "Browse and discover",
+      body: "Explore our curated collection of designer pieces. Filter by occasion, designer, size, and category to find exactly what you're looking for.",
       details: [
-        'Filter by occasion, designer, size & category',
-        'Save favourites to your wishlist',
-        'Real-time availability for rentals'
-      ]
+        "Filter by occasion, designer, size & category",
+        "Save favourites to your wishlist",
+        "Real-time availability for rentals",
+      ],
     },
     {
       id: 2,
-      number: '02',
-      title: 'Choose your mode',
-      body: 'Decide whether you want to rent for a special occasion or buy preloved to keep forever. Every piece shows both options clearly.',
+      number: "02",
+      title: "Choose your mode",
+      body: "Decide whether you want to rent for a special occasion or buy preloved to keep forever. Every piece shows both options clearly.",
       details: [
-        'Rent for 4-8 days starting at 20% of retail',
-        'Buy preloved at 30-70% below retail',
-        'Clear pricing and deposit information'
-      ]
+        "Rent for 4-8 days starting at 20% of retail",
+        "Buy preloved at 30-70% below retail",
+        "Clear pricing and deposit information",
+      ],
     },
     {
       id: 3,
-      number: '03',
-      title: 'Checkout and confirm',
-      body: 'Review your order, select delivery dates, and complete payment. For rentals, the refundable deposit is held securely.',
+      number: "03",
+      title: "Checkout and confirm",
+      body: "Review your order, select delivery dates, and complete payment. For rentals, the refundable deposit is held securely.",
       details: [
-        'Secure payment via Razorpay',
-        'Rental deposit held, not charged',
-        'Instant order confirmation'
-      ]
+        "Secure payment via Razorpay",
+        "Rental deposit held, not charged",
+        "Instant order confirmation",
+      ],
     },
     {
       id: 4,
-      number: '04',
-      title: 'Delivered, <em>ready to wear</em>',
-      body: 'Your piece arrives at your doorstep, professionally dry-cleaned and pressed. Ready to wear straight out of the box.',
+      number: "04",
+      title: "Delivered, <em>ready to wear</em>",
+      body: "Your piece arrives at your doorstep, professionally dry-cleaned and pressed. Ready to wear straight out of the box.",
       details: [
-        'Doorstep delivery in sustainable packaging',
-        'Pre-paid return label included',
-        'HOK handles all cleaning'
-      ]
+        "Doorstep delivery in sustainable packaging",
+        "Pre-paid return label included",
+        "HOK handles all cleaning",
+      ],
     },
     {
       id: 5,
-      number: '05',
-      title: 'The Loop — <em>keep it going</em>',
-      body: 'After your event, return rental pieces easily. Or list your own pieces to earn and keep the circular fashion cycle moving.',
+      number: "05",
+      title: "The Loop — <em>keep it going</em>",
+      body: "After your event, return rental pieces easily. Or list your own pieces to earn and keep the circular fashion cycle moving.",
       details: [
-        'Easy returns with scheduled pickup',
-        'List your own pieces to earn',
-        'Every piece gets a second life'
-      ]
-    }
+        "Easy returns with scheduled pickup",
+        "List your own pieces to earn",
+        "Every piece gets a second life",
+      ],
+    },
   ];
 
   // Progress dots click handler
   const handleDotClick = (index) => {
     const track = trackRef.current;
     if (!track) return;
-    
-    const cards = track.querySelectorAll('.hok-hiw-mobile-jcard');
+
+    const cards = track.querySelectorAll(".hok-hiw-mobile-jcard");
     if (cards[index]) {
       const cardLeft = cards[index].offsetLeft;
-      track.scrollTo({ left: cardLeft - 16, behavior: 'smooth' });
+      track.scrollTo({ left: cardLeft - 16, behavior: "smooth" });
     }
   };
 
@@ -83,7 +83,7 @@ const MobileShoppingJourney = () => {
     const track = trackRef.current;
     if (!track) return;
 
-    const cards = track.querySelectorAll('.hok-hiw-mobile-jcard');
+    const cards = track.querySelectorAll(".hok-hiw-mobile-jcard");
     let minIndex = 0;
     let minDistance = Infinity;
 
@@ -91,7 +91,7 @@ const MobileShoppingJourney = () => {
       const rect = card.getBoundingClientRect();
       const trackRect = track.getBoundingClientRect();
       const distance = Math.abs(rect.left - trackRect.left);
-      
+
       if (distance < minDistance) {
         minDistance = distance;
         minIndex = index;
@@ -106,7 +106,7 @@ const MobileShoppingJourney = () => {
     setIsDragging(true);
     setStartX(e.pageX - trackRef.current.offsetLeft);
     setScrollLeft(trackRef.current.scrollLeft);
-    trackRef.current.style.cursor = 'grabbing';
+    trackRef.current.style.cursor = "grabbing";
   };
 
   const handleMouseMove = (e) => {
@@ -120,7 +120,7 @@ const MobileShoppingJourney = () => {
   const handleMouseUp = () => {
     setIsDragging(false);
     if (trackRef.current) {
-      trackRef.current.style.cursor = 'grab';
+      trackRef.current.style.cursor = "grab";
     }
   };
 
@@ -128,7 +128,7 @@ const MobileShoppingJourney = () => {
     if (isDragging) {
       setIsDragging(false);
       if (trackRef.current) {
-        trackRef.current.style.cursor = 'grab';
+        trackRef.current.style.cursor = "grab";
       }
     }
   };
@@ -139,27 +139,31 @@ const MobileShoppingJourney = () => {
       <div className="hok-hiw-mobile-shop-header">
         <div className="hok-hiw-mobile-shop-eyebrow">
           <span className="hok-hiw-mobile-shop-line"></span>
-          <span className="hok-hiw-mobile-shop-eyebrow-text">Shopping at HOK</span>
+          <span className="hok-hiw-mobile-shop-eyebrow-text">
+            Shopping at HOK
+          </span>
         </div>
-        
+
         <h2 className="hok-hiw-mobile-shop-title">
           From discovery to your <em>doorstep</em>
         </h2>
-        
+
         <p className="hok-hiw-mobile-shop-lead">
-          Four steps stand between you and wearing a Sabyasachi to that wedding 
+          Four steps stand between you and wearing a Sabyasachi to that wedding
           you've been circling on the calendar.
         </p>
-        
+
         <div className="hok-hiw-mobile-shop-scroll-hint">
           <span className="hok-hiw-mobile-shop-scroll-bar"></span>
           <span className="hok-hiw-mobile-shop-scroll-bar"></span>
-          <span className="hok-hiw-mobile-shop-scroll-text">Drag or scroll to explore each step</span>
+          <span className="hok-hiw-mobile-shop-scroll-text">
+            Drag or scroll to explore each step
+          </span>
         </div>
       </div>
 
       {/* Journey Track */}
-      <div 
+      <div
         ref={trackRef}
         className="hok-hiw-mobile-jtrack"
         onScroll={handleScroll}
@@ -169,25 +173,25 @@ const MobileShoppingJourney = () => {
         onMouseLeave={handleMouseLeave}
       >
         {journeySteps.map((step, index) => (
-          <div 
-            key={step.id} 
-            className={`hok-hiw-mobile-jcard ${index === 4 ? 'hok-hiw-mobile-jcard-dark' : ''}`}
+          <div
+            key={step.id}
+            className={`hok-hiw-mobile-jcard ${index === 4 ? "hok-hiw-mobile-jcard-dark" : ""}`}
           >
             {/* Ghost Number */}
             <span className="hok-hiw-mobile-jcard-ghost">{step.number}</span>
-            
+
             {/* Step Identifier */}
             <div className="hok-hiw-mobile-jstep-num">Step {step.number}</div>
-            
+
             {/* Step Title */}
-            <h3 
+            <h3
               className="hok-hiw-mobile-jstep-title"
               dangerouslySetInnerHTML={{ __html: step.title }}
             />
-            
+
             {/* Step Body */}
             <p className="hok-hiw-mobile-jstep-body">{step.body}</p>
-            
+
             {/* Details List */}
             <div className="hok-hiw-mobile-jstep-details">
               {step.details.map((detail, idx) => (
@@ -199,7 +203,7 @@ const MobileShoppingJourney = () => {
             </div>
           </div>
         ))}
-        
+
         {/* Spacer for full scroll */}
         <div className="hok-hiw-mobile-jcard-spacer"></div>
       </div>
@@ -209,7 +213,7 @@ const MobileShoppingJourney = () => {
         {journeySteps.map((_, index) => (
           <span
             key={index}
-            className={`hok-hiw-mobile-jdot ${activeIndex === index ? 'hok-hiw-mobile-on' : ''}`}
+            className={`hok-hiw-mobile-jdot ${activeIndex === index ? "hok-hiw-mobile-on" : ""}`}
             onClick={() => handleDotClick(index)}
           />
         ))}

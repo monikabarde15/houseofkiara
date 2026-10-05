@@ -7,14 +7,14 @@
   width: 100%;
   padding: 14px 16px;
   border: none;
-  border-bottom: 1px solid #F0EAE0;
-  background: #FFFEFB;
+  border-bottom: 1px solid #f0eae0;
+  background: #fffefb;
   text-align: left;
   cursor: pointer;
 }
 
 .profile-mobile-sub-item:active {
-  background: #FAF7F2;
+  background: #faf7f2;
 }
 
 /* ============================================
@@ -40,12 +40,9 @@
 
   border-radius: 999px;
 
-  background: #C9A96E;
+  background: #c9a96e;
 
-  animation:
-    profile-mobile-sub-pulse
-    2s
-    infinite;
+  animation: profile-mobile-sub-pulse 2s infinite;
 }
 
 @keyframes profile-mobile-sub-pulse {
@@ -64,12 +61,12 @@
    ============================================ */
 
 .profile-mobile-sub-badge {
-  font-family:"DM Sans",sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8px;
   font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #A8844A;
+  color: #a8844a;
 }
 
 /* ============================================
@@ -78,11 +75,11 @@
 
 .profile-mobile-sub-name {
   margin-bottom: 3px;
-  font-family:"Cormorant Garamond",serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.1;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* ============================================
@@ -91,11 +88,11 @@
 
 .profile-mobile-sub-meta {
   margin-bottom: 2px;
-  font-family:"DM Sans",sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 300;
   line-height: 1.6;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* ============================================
@@ -104,14 +101,12 @@
 
 .profile-mobile-sub-timeline {
   margin-bottom: 12px;
-  font-family:"DM Sans",sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 300;
   line-height: 1.6;
-  color: #B0A898;
+  color: #b0a898;
 }
-
-
 
 /* ============================================
    Detail Row
@@ -131,11 +126,11 @@
 
 .profile-mobile-sub-dl {
   flex-shrink: 0;
-  font-family:"DM Sans",sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8.5px;
   font-weight: 300;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* ============================================
@@ -146,11 +141,11 @@
   min-width: 0;
   overflow-wrap: break-word;
   text-align: right;
-  font-family:"DM Sans",sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 11.5px;
   font-weight: 300;
   line-height: 1.5;
-  color: #3C3529;
+  color: #3c3529;
 }
 
 /* ============================================
@@ -167,12 +162,12 @@
   padding: 0;
   appearance: none;
   cursor: pointer;
-  font-family:"DM Sans",sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 400;
-  letter-spacing: 0.10em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #A8844A;
+  color: #a8844a;
 }
 
 /* ============================================

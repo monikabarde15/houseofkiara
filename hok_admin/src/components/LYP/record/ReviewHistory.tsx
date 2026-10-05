@@ -1,9 +1,9 @@
 // src/components/LYP/record/ReviewHistory.tsx
 
-import React from 'react';
-import { HistoryEntry } from '../types/submission.types';
-import { formatDateTime } from '../utils/formatter';
-import './styles/ReviewHistory.css';
+import React from "react";
+import { HistoryEntry } from "../types/submission.types";
+import { formatDateTime } from "../utils/formatter";
+import "./styles/ReviewHistory.css";
 
 interface ReviewHistoryProps {
   history: HistoryEntry[];
@@ -28,12 +28,12 @@ export const ReviewHistory: React.FC<ReviewHistoryProps> = ({ history }) => {
 
   const getDotClass = (color: string) => {
     const mapping: Record<string, string> = {
-      'gold': 'tl-dot-gold',
-      'sage': 'tl-dot-sage',
-      'terra': 'tl-dot-terra',
-      'muted': 'tl-dot-muted',
+      gold: "tl-dot-gold",
+      sage: "tl-dot-sage",
+      terra: "tl-dot-terra",
+      muted: "tl-dot-muted",
     };
-    return mapping[color] || 'tl-dot-muted';
+    return mapping[color] || "tl-dot-muted";
   };
 
   return (

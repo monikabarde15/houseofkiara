@@ -7,7 +7,7 @@ import {
   SummaryCounts,
   URGENCY_ORDER,
   UrgencyMap,
-} from '../types/notification.types';
+} from "../types/notification.types";
 
 /**
  * Whether an alert is currently put down (§9.4, §17.7).
@@ -17,7 +17,7 @@ import {
 export function isPutDown(
   alert: Alert,
   putDown: PutDownState,
-  today: string = new Date().toISOString().slice(0, 10)
+  today: string = new Date().toISOString().slice(0, 10),
 ): boolean {
   const endDate = putDown[alert.key];
   if (!endDate) return false;
@@ -32,9 +32,9 @@ export function isPutDown(
 export function isAlertCounted(
   alert: Alert,
   putDown: PutDownState,
-  today?: string
+  today?: string,
 ): boolean {
-  if (alert.surface !== 'desk') return false;
+  if (alert.surface !== "desk") return false;
   if (alert.notCounted) return false;
   if (alert.blocked) return false;
   if (alert.canPutDown && isPutDown(alert, putDown, today)) return false;
@@ -54,7 +54,7 @@ export function isAlertCounted(
 export function buildUrgencyMap(
   alerts: Alert[],
   putDown: PutDownState,
-  today?: string
+  today?: string,
 ): UrgencyMap {
   const bandsReached: Record<string, Set<BandKey>> = {};
 
@@ -84,7 +84,7 @@ export function calcMoneyAtRisk(alerts: Alert[], urgency: UrgencyMap): number {
   let total = 0;
   for (const alert of alerts) {
     for (const record of alert.records) {
-      if (urgency[record.id] === 'today' && typeof record.money === 'number') {
+      if (urgency[record.id] === "today" && typeof record.money === "number") {
         total += record.money;
       }
     }
@@ -101,7 +101,7 @@ export function calcMoneyAtRisk(alerts: Alert[], urgency: UrgencyMap): number {
 export function buildSummaryCounts(
   alerts: Alert[],
   urgency: UrgencyMap,
-  assigned: AssignmentMap
+  assigned: AssignmentMap,
 ): SummaryCounts {
   const counts: SummaryCounts = {
     today: 0,
@@ -116,10 +116,10 @@ export function buildSummaryCounts(
   };
 
   for (const band of Object.values(urgency)) {
-    if (band === 'today') counts.today += 1;
-    else if (band === 'waiting') counts.waiting += 1;
-    else if (band === 'them') counts.them += 1;
-    else if (band === 'know') counts.know += 1;
+    if (band === "today") counts.today += 1;
+    else if (band === "waiting") counts.waiting += 1;
+    else if (band === "them") counts.them += 1;
+    else if (band === "know") counts.know += 1;
   }
   counts.open = counts.today + counts.waiting + counts.them + counts.know;
 
@@ -162,10 +162,10 @@ export function getFoldedAlerts(
   alerts: Alert[],
   band: BandKey,
   putDown: PutDownState,
-  today?: string
+  today?: string,
 ): FoldedAlert[] {
   return alerts
-    .filter((a) => a.band === band && a.surface === 'desk' && !a.blocked)
+    .filter((a) => a.band === band && a.surface === "desk" && !a.blocked)
     .filter((a) => {
       const down = a.canPutDown && isPutDown(a, putDown, today);
       return a.records.length === 0 || down;
@@ -182,16 +182,16 @@ export function getFoldedAlerts(
  * them. The row pill then shows the number SHOWN, not the alert's full count.
  */
 export function filterRecordsByOwner(
-  records: Alert['records'],
-  person: string | 'nobody',
-  assigned: AssignmentMap
-): Alert['records'] {
+  records: Alert["records"],
+  person: string | "nobody",
+  assigned: AssignmentMap,
+): Alert["records"] {
   return records.filter((r) => {
     const owner = assigned[r.id]?.by;
-    return person === 'nobody' ? !owner : owner === person;
+    return person === "nobody" ? !owner : owner === person;
   });
 }
-import { AlertDef } from '../types/notification.types';
+import { AlertDef } from "../types/notification.types";
 
 /**
  * Bridges raw Alert[] (from the API/mock) into the AlertDef[] shape
@@ -205,17 +205,27 @@ export function groupAlertsForRender(
   urgency: UrgencyMap,
   assigned: AssignmentMap,
   putDown: PutDownState,
-  today?: string
+  today?: string,
 ): Record<BandKey, AlertDef[]> {
   const result: Record<BandKey, AlertDef[]> = {
-    today: [], waiting: [], them: [], know: [], blocked: [],
+    today: [],
+    waiting: [],
+    them: [],
+    know: [],
+    blocked: [],
   };
 
   for (const alert of alerts) {
-    if (alert.surface !== 'desk') continue; // §17.2 — record-surface alerts never render here
+    if (alert.surface !== "desk") continue; // §17.2 — record-surface alerts never render here
 
     const records = alert.records
-      .filter((r) => alert.blocked || alert.records.length === 1 || urgency[r.id] === alert.band || alert.records.length === 0)
+      .filter(
+        (r) =>
+          alert.blocked ||
+          alert.records.length === 1 ||
+          urgency[r.id] === alert.band ||
+          alert.records.length === 0,
+      )
       .map((r) => ({ ...r, ownerId: assigned[r.id]?.by ?? null }));
 
     result[alert.band].push({

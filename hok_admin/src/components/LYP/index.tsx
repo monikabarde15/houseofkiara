@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
-import { LYPView } from './LYPView';
-import { LYPDetailView } from './LYPDetailView';
-import { useJourneyStack } from './hooks/useJourneyStack';
+import React, { useEffect } from "react";
+import { LYPView } from "./LYPView";
+import { LYPDetailView } from "./LYPDetailView";
+import { useJourneyStack } from "./hooks/useJourneyStack";
 
 interface LYPSubmissionsViewProps {
   onEditingChange?: (isEditing: boolean) => void;
 }
 
-export const LYPSubmissionsView: React.FC<LYPSubmissionsViewProps> = ({ onEditingChange }) => {
+export const LYPSubmissionsView: React.FC<LYPSubmissionsViewProps> = ({
+  onEditingChange,
+}) => {
   const { currentState, pushState } = useJourneyStack();
-  const isDetail = currentState?.type === 'detail';
+  const isDetail = currentState?.type === "detail";
 
   useEffect(() => {
     onEditingChange?.(isDetail);
@@ -17,7 +19,7 @@ export const LYPSubmissionsView: React.FC<LYPSubmissionsViewProps> = ({ onEditin
 
   useEffect(() => {
     if (!currentState) {
-      pushState({ type: 'section', id: 'lyp' });
+      pushState({ type: "section", id: "lyp" });
     }
   }, [currentState, pushState]);
 

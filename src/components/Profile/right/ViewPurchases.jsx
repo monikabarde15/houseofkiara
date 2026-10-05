@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft } from 'lucide-react';
-import PurchaseCard from '../cards/PurchaseCard';
-import PurchaseDetailPanel from '../panels/PurchaseDetailPanel';
-import useAuthStore from '../../../store/authStore';
+import React, { useState, useRef, useEffect } from "react";
+import { ChevronLeft } from "lucide-react";
+import PurchaseCard from "../cards/PurchaseCard";
+import PurchaseDetailPanel from "../panels/PurchaseDetailPanel";
+import useAuthStore from "../../../store/authStore";
 import "../../../styles/Profile/right/ViewPurchases.css";
 
 const ViewPurchases = ({ onBack }) => {
@@ -20,15 +20,17 @@ const ViewPurchases = ({ onBack }) => {
       try {
         const token = useAuthStore.getState().token;
         if (!token) return;
-        
+
         const res = await fetch(`/api/customer/auth/orders`, {
           headers: {
-            "Authorization": `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = await res.json();
         if (data.success) {
-          const purchases = data.data.filter(order => order.type !== "Rental" && order.typeDetail !== "Rental");
+          const purchases = data.data.filter(
+            (order) => order.type !== "Rental" && order.typeDetail !== "Rental",
+          );
           setPurchaseOrders(purchases);
         }
       } catch (err) {
@@ -51,7 +53,7 @@ const ViewPurchases = ({ onBack }) => {
 
   const handleDetailsClick = async (orderId) => {
     const isOpening = activeCardId !== orderId;
-    
+
     // Clear any pending scroll timeouts
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
@@ -61,34 +63,34 @@ const ViewPurchases = ({ onBack }) => {
       // Opening panel
       setActiveCardId(orderId);
       setActiveOrder(null); // Clear previous
-      
+
       // Fetch details
       try {
         const token = useAuthStore.getState().token;
         if (!token) return;
-        
+
         const res = await fetch(`/api/customer/auth/orders/${orderId}`, {
           headers: {
-            "Authorization": `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = await res.json();
         if (data.success) {
           // Format API response into what PurchaseDetailPanel expects
           const detailedOrder = data.data;
-          
+
           setActiveOrder(detailedOrder);
         }
       } catch (err) {
         console.error("Error fetching order detail:", err);
       }
-      
+
       // 40ms delay before scrolling to panel
       scrollTimeoutRef.current = setTimeout(() => {
         if (panelRef.current) {
-          panelRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'nearest' 
+          panelRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
           });
         }
         scrollTimeoutRef.current = null;
@@ -97,14 +99,14 @@ const ViewPurchases = ({ onBack }) => {
       // Closing panel - store current card ID before clearing state
       const currentCardId = activeCardId;
       setActiveCardId(null);
-      
+
       // 40ms delay before scrolling back to card
       scrollTimeoutRef.current = setTimeout(() => {
         const cardElement = cardRefs.current[currentCardId];
         if (cardElement) {
-          cardElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'nearest' 
+          cardElement.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
           });
         }
         scrollTimeoutRef.current = null;
@@ -120,14 +122,18 @@ const ViewPurchases = ({ onBack }) => {
           Back to overview
         </button>
         <div className="profile-fv-purchases-bar-title">My Purchases</div>
-        <div className="profile-fv-purchases-bar-count">{purchaseOrders.length} orders</div>
+        <div className="profile-fv-purchases-bar-count">
+          {purchaseOrders.length} orders
+        </div>
       </div>
 
       <div className="profile-fv-purchases-grid">
         {loading ? (
-          <div style={{ padding: '20px', color: '#666' }}>Loading orders...</div>
+          <div style={{ padding: "20px", color: "#666" }}>
+            Loading orders...
+          </div>
         ) : purchaseOrders.length === 0 ? (
-          <div style={{ padding: '20px', color: '#666' }}>No orders found.</div>
+          <div style={{ padding: "20px", color: "#666" }}>No orders found.</div>
         ) : (
           purchaseOrders.map((order) => (
             <div
@@ -148,7 +154,7 @@ const ViewPurchases = ({ onBack }) => {
 
       {/* Panel container with ref for scrolling */}
       <div ref={panelRef}>
-        <PurchaseDetailPanel 
+        <PurchaseDetailPanel
           order={activeOrder}
           isOpen={!!activeCardId}
           onClose={() => handleDetailsClick(activeCardId)}

@@ -16,8 +16,7 @@
 
   margin-bottom: 18px;
 
-  border-bottom:
-    1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 /* ============================================
@@ -40,7 +39,7 @@
 }
 
 .profile-mobile-attr-product-img svg {
-  stroke: #1A1612;
+  stroke: #1a1612;
 }
 
 .profile-mobile-attr-product-img rect {
@@ -58,9 +57,7 @@
 .profile-mobile-attr-product-name {
   margin-bottom: 3px;
 
-  font-family:
-    "Cormorant Garamond",
-    serif;
+  font-family: "Cormorant Garamond", serif;
 
   font-size: 17px;
 
@@ -68,19 +65,17 @@
 
   line-height: 1.2;
 
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .profile-mobile-attr-product-meta {
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 10px;
 
   font-weight: 300;
 
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* ============================================
@@ -98,9 +93,7 @@
 .profile-mobile-attr-label {
   margin-bottom: 10px;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 8px;
 
@@ -110,7 +103,7 @@
 
   text-transform: uppercase;
 
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* ============================================
@@ -128,20 +121,17 @@
 .profile-mobile-attr-pill {
   padding: 7px 13px;
 
-  border:
-    1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
 
   border-radius: 6px;
 
-  background: #FFFEFB;
+  background: #fffefb;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 12px;
 
-  color: #3C3529;
+  color: #3c3529;
 
   cursor: pointer;
 
@@ -152,11 +142,11 @@
 }
 
 .profile-mobile-attr-pill.selected {
-  background: #1A1612;
+  background: #1a1612;
 
-  color: #E8D5B0;
+  color: #e8d5b0;
 
-  border-color: #1A1612;
+  border-color: #1a1612;
 }
 
 /* ============================================
@@ -187,11 +177,11 @@
 }
 
 .profile-mobile-attr-swatch.selected {
-  border-color: #1A1612;
+  border-color: #1a1612;
 
   box-shadow:
-    0 0 0 1px #FFFEFB,
-    0 0 0 3px #1A1612;
+    0 0 0 1px #fffefb,
+    0 0 0 3px #1a1612;
 }
 
 /* ============================================
@@ -215,9 +205,7 @@
 
   margin-bottom: 5px;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 8px;
 
@@ -225,7 +213,7 @@
 
   text-transform: uppercase;
 
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .profile-mobile-attr-date-field input {
@@ -235,24 +223,21 @@
 
   border: none;
 
-  border-bottom:
-    1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
 
   background: transparent;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 13px;
 
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .profile-mobile-attr-date-field input:focus {
   outline: none;
 
-  border-bottom-color: #C9A96E;
+  border-bottom-color: #c9a96e;
 }
 
 /* ============================================
@@ -266,13 +251,11 @@
 
   text-align: center;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 9.5px;
 
-  color: #B85C38;
+  color: #b85c38;
 }
 
 /* ============================================
@@ -290,13 +273,11 @@
 
   border-radius: 8px;
 
-  background: #E8E0D4;
+  background: #e8e0d4;
 
-  color: #B0A898;
+  color: #b0a898;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 11px;
 
@@ -314,15 +295,15 @@
 }
 
 .profile-mobile-attr-add-btn.active {
-  background: #1A1612;
+  background: #1a1612;
 
-  color: #E8D5B0;
+  color: #e8d5b0;
 
   cursor: pointer;
 }
 
 .profile-mobile-attr-add-btn.active:active {
-  background: #2C2520;
+  background: #2c2520;
 }
 
 /* ============================================
@@ -338,9 +319,7 @@
 
   background: transparent;
 
-  font-family:
-    "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 9.5px;
 
@@ -350,14 +329,13 @@
 
   text-transform: uppercase;
 
-  color: #8A7E72;
+  color: #8a7e72;
 
   cursor: pointer;
 
-  transition:
-    background-color 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .profile-mobile-attr-view-btn:active {
-  background: #FAF7F2;
+  background: #faf7f2;
 }

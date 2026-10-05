@@ -19,34 +19,33 @@ const MobileAboutUs = () => {
     <div className="mob-about-us">
       {/* Scroll Progress Bar */}
       <ScrollProgressBar />
-      
+
       {/* Section 1: Hero - Coming Soon */}
       <MobileHero />
-      
+
       {/* Section 2: The Name (KAIRA Interactive) */}
       <MobileNameSection />
-      
+
       {/* Section 3: Manifesto */}
       <MobileManifesto />
-      
+
       {/* Section 4: Philosophy */}
       <MobilePhilosophy />
-      
+
       {/* Section 5: Duality */}
       <MobileDuality />
-      
+
       {/* Section 6: Founder */}
       <MobileFounder />
-      
+
       {/* Section 7: Why We Built It (Orbit) */}
       <MobileOrbit />
-      
+
       {/* Section 8: Three Ways */}
       <MobileThreeWays />
-      
+
       {/* Section 9: Closing CTA */}
       <MobileClosingCTA />
-      
 
       {/* Toast Notification */}
       <Toast />

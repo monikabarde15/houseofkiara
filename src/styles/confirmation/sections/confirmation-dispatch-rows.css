@@ -28,7 +28,7 @@
 .confirmation-dispatch-row-key {
   font-family: var(--sans);
   font-weight: 400;
-  font-size: 8.5px; 
+  font-size: 8.5px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   flex-shrink: 0;
@@ -68,10 +68,8 @@
 
 .confirmation-dispatch-deposit {
   font-weight: 400;
-  color: #8A6010;
+  color: #8a6010;
 }
-
-
 
 /* =========================================================
    MOBILE: Dispatch Rows

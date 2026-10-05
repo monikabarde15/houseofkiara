@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
-import SignOutModal from '../modals/SignOutModal';
-import Toast from '../ui/Toast';
-import useAuthStore from '../../../store/authStore';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
+import SignOutModal from "../modals/SignOutModal";
+import Toast from "../ui/Toast";
+import useAuthStore from "../../../store/authStore";
 import "../../../styles/Profile/left/SignOutButton.css";
 
 const SignOutButton = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
 
   const handleSignOut = () => {
@@ -19,7 +19,7 @@ const SignOutButton = () => {
   const handleConfirmSignOut = () => {
     setIsModalOpen(false);
     useAuthStore.getState().logout(true);
-    navigate('/auth');
+    navigate("/auth");
   };
 
   const handleCloseModal = () => {

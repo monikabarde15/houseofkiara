@@ -3,8 +3,8 @@
 
 /* ===== CARD CONTAINER - Spec 16.2 ===== */
 .mob-card {
-  background: #FFFEFB; 
-  border: 1px solid #F0EAE0; 
+  background: #fffefb;
+  border: 1px solid #f0eae0;
   border-radius: 1px;
   overflow: hidden;
   cursor: pointer;
@@ -23,7 +23,7 @@
   aspect-ratio: 3 / 4;
   overflow: hidden;
   position: relative;
-  background: #FAF7F2; 
+  background: #faf7f2;
 }
 
 /* ===== MODE BADGES - Spec 16.4 ===== */
@@ -48,18 +48,18 @@
 }
 
 .mob-card__badge--rent {
-  background: #1A1612; /* --charcoal */
-  color: #D4C5B0;
+  background: #1a1612; /* --charcoal */
+  color: #d4c5b0;
 }
 
 .mob-card__badge--preloved {
-  background: #B85C38; /* --terracotta */
-  color: #FFFFFF;
+  background: #b85c38; /* --terracotta */
+  color: #ffffff;
 }
 
 .mob-card__badge--new {
-  background: #6B7E5A; /* --sage */
-  color: #FFFFFF;
+  background: #6b7e5a; /* --sage */
+  color: #ffffff;
 }
 
 /* ===== WISHLIST BUTTON - Spec §16.5 ===== */
@@ -71,7 +71,7 @@
   height: 30px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #E8E0D4; /* --border */
+  border: 1px solid #e8e0d4; /* --border */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,7 +89,7 @@
 .mob-card__wishlist-icon {
   width: 13px;
   height: 13px;
-  stroke: #1A1612; 
+  stroke: #1a1612;
   fill: none;
   stroke-width: 1.5;
   stroke-linecap: round;
@@ -98,8 +98,8 @@
 
 /* Active/Saved State */
 .mob-card__wishlist-btn.active .mob-card__wishlist-icon {
-  fill: #B85C38; /* --terracotta */
-  stroke: #B85C38;
+  fill: #b85c38; /* --terracotta */
+  stroke: #b85c38;
 }
 
 /* ===== IMAGE INNER & PLACEHOLDER ===== */
@@ -130,28 +130,28 @@
 }
 
 .mob-card__placeholder.ci-a {
-  background: linear-gradient(160deg, #3C2410, #1C0E06);
+  background: linear-gradient(160deg, #3c2410, #1c0e06);
 }
 .mob-card__placeholder.ci-b {
-  background: linear-gradient(160deg, #28203C, #10101C);
+  background: linear-gradient(160deg, #28203c, #10101c);
 }
 .mob-card__placeholder.ci-c {
-  background: linear-gradient(160deg, #1A2C16, #0A1408);
+  background: linear-gradient(160deg, #1a2c16, #0a1408);
 }
 .mob-card__placeholder.ci-d {
-  background: linear-gradient(160deg, #2C1E28, #160C14);
+  background: linear-gradient(160deg, #2c1e28, #160c14);
 }
 .mob-card__placeholder.ci-e {
-  background: linear-gradient(160deg, #1E2C2A, #0A1412);
+  background: linear-gradient(160deg, #1e2c2a, #0a1412);
 }
 .mob-card__placeholder.ci-f {
-  background: linear-gradient(160deg, #2A1E14, #140E08);
+  background: linear-gradient(160deg, #2a1e14, #140e08);
 }
 
 .mob-card__placeholder-icon {
   width: 32px;
   height: 32px;
-  stroke: #C9A96E; 
+  stroke: #c9a96e;
   opacity: 0.15;
 }
 
@@ -166,7 +166,7 @@
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #C9A96E; /* --gold */
+  color: #c9a96e; /* --gold */
   margin-bottom: 6px;
 }
 
@@ -175,7 +175,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 14px;
   font-weight: 400;
-  color: #1A1612; /* --charcoal */
+  color: #1a1612; /* --charcoal */
   line-height: 1.4;
   margin-bottom: 8px;
 }
@@ -199,7 +199,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 15px;
   font-weight: 400;
-  color: #1A1612; /* --charcoal */
+  color: #1a1612; /* --charcoal */
 }
 
 /* Price Sub */
@@ -207,6 +207,6 @@
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 300;
-  color: #8A7E72; /* --muted */
+  color: #8a7e72; /* --muted */
   line-height: 1.4;
 }

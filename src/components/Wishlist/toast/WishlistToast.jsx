@@ -20,28 +20,28 @@ const WishlistToast = ({ message, onClose }) => {
   }, [onClose]);
 
   return (
-    <div className={`desk-wishlist-general-toast ${isDismissing ? 'desk-wishlist-general-toast-dismiss' : ''}`}>
-      <svg 
+    <div
+      className={`desk-wishlist-general-toast ${isDismissing ? "desk-wishlist-general-toast-dismiss" : ""}`}
+    >
+      <svg
         className="desk-wishlist-general-toast-icon"
-        width="13" 
-        height="13" 
-        viewBox="0 0 24 24" 
-        fill="none" 
+        width="13"
+        height="13"
+        viewBox="0 0 24 24"
+        fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <polyline 
-          points="20 6 9 17 4 12" 
-          stroke="currentColor" 
-          strokeWidth="1.8" 
+        <polyline
+          points="20 6 9 17 4 12"
+          stroke="currentColor"
+          strokeWidth="1.8"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       </svg>
-      
-      <span className="desk-wishlist-general-toast-message">
-        {message}
-      </span>
+
+      <span className="desk-wishlist-general-toast-message">{message}</span>
     </div>
   );
 };

@@ -1,8 +1,8 @@
 // src/components/products/tabs/SEOTab.tsx
 
-import React, { useRef } from 'react';
-import { Image as ImageIcon } from 'lucide-react';
-import { Product } from '../../types/product';
+import React, { useRef } from "react";
+import { Image as ImageIcon } from "lucide-react";
+import { Product } from "../../types/product";
 
 interface SEOTabProps {
   formData: Partial<Product>;
@@ -20,34 +20,47 @@ export function SEOTab({
   onFieldChange,
   onNavigateToRelatedProducts,
   onSave,
-  siteDomain = 'houseofkaira.com',
+  siteDomain = "houseofkaira.com",
 }: SEOTabProps) {
   const ogImageInputRef = useRef<HTMLInputElement>(null);
 
-  const seoTitle = formData.seoTitle || '';
-  const seoDescription = formData.seoDescription || '';
-  const urlSlug = formData.urlSlug || '';
+  const seoTitle = formData.seoTitle || "";
+  const seoDescription = formData.seoDescription || "";
+  const urlSlug = formData.urlSlug || "";
   const ogImage = (formData as any).ogImage as string | undefined;
 
-  const previewTitle = seoTitle || `${formData.name || 'Product'} — Rent · House of Kaira`;
+  const previewTitle =
+    seoTitle || `${formData.name || "Product"} — Rent · House of Kaira`;
   const previewDescription =
     seoDescription ||
-    `Rent the ${formData.name || 'product'} from House of Kaira.`;
-  const previewPath = urlSlug || 'your-product-name';
+    `Rent the ${formData.name || "product"} from House of Kaira.`;
+  const previewPath = urlSlug || "your-product-name";
 
   const handleOgImagePick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
-    onFieldChange('ogImage' as keyof Product, url as any);
+    onFieldChange("ogImage" as keyof Product, url as any);
   };
-  const liveProductImage = formData.images?.find(img => img && typeof img === 'string' && !img.startsWith('blob:')) || formData.images?.[0] || '';
+  const liveProductImage =
+    formData.images?.find(
+      (img) => img && typeof img === "string" && !img.startsWith("blob:"),
+    ) ||
+    formData.images?.[0] ||
+    "";
   const rawOgImage = (formData as any).ogImage as string | undefined;
-  const displayOgImage = (rawOgImage && typeof rawOgImage === 'string' && !rawOgImage.startsWith('blob:')) ? rawOgImage : liveProductImage;
+  const displayOgImage =
+    rawOgImage &&
+    typeof rawOgImage === "string" &&
+    !rawOgImage.startsWith("blob:")
+      ? rawOgImage
+      : liveProductImage;
 
   return (
     <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-5">
-      <h3 className="font-serif font-bold text-stone-900 text-sm">SEO &amp; URL Slugs</h3>
+      <h3 className="font-serif font-bold text-stone-900 text-sm">
+        SEO &amp; URL Slugs
+      </h3>
 
       <div className="grid grid-cols-1 gap-5">
         {/* Meta title */}
@@ -58,7 +71,9 @@ export function SEOTab({
           <input
             type="text"
             value={seoTitle}
-            onChange={(e) => onFieldChange('seoTitle', e.target.value.slice(0, TITLE_MAX))}
+            onChange={(e) =>
+              onFieldChange("seoTitle", e.target.value.slice(0, TITLE_MAX))
+            }
             maxLength={TITLE_MAX}
             className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-300"
             placeholder="Title for search engines"
@@ -75,7 +90,12 @@ export function SEOTab({
           </label>
           <textarea
             value={seoDescription}
-            onChange={(e) => onFieldChange('seoDescription', e.target.value.slice(0, DESCRIPTION_MAX))}
+            onChange={(e) =>
+              onFieldChange(
+                "seoDescription",
+                e.target.value.slice(0, DESCRIPTION_MAX),
+              )
+            }
             maxLength={DESCRIPTION_MAX}
             rows={3}
             className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-300"
@@ -94,7 +114,7 @@ export function SEOTab({
           <input
             type="text"
             value={urlSlug}
-            onChange={(e) => onFieldChange('urlSlug', e.target.value)}
+            onChange={(e) => onFieldChange("urlSlug", e.target.value)}
             className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-300"
             placeholder="your-product-name"
           />
@@ -128,7 +148,10 @@ export function SEOTab({
                 alt="Social share preview"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  if (liveProductImage && e.currentTarget.src !== liveProductImage) {
+                  if (
+                    liveProductImage &&
+                    e.currentTarget.src !== liveProductImage
+                  ) {
                     e.currentTarget.src = liveProductImage;
                   }
                 }}
@@ -136,8 +159,12 @@ export function SEOTab({
             ) : (
               <>
                 <ImageIcon className="w-4 h-4 text-stone-400 mb-1" />
-                <p className="text-xs font-semibold text-stone-700">Social share preview image</p>
-                <p className="text-[10px] text-stone-400">Shown when this PDP URL is shared</p>
+                <p className="text-xs font-semibold text-stone-700">
+                  Social share preview image
+                </p>
+                <p className="text-[10px] text-stone-400">
+                  Shown when this PDP URL is shared
+                </p>
               </>
             )}
           </button>
@@ -163,11 +190,10 @@ export function SEOTab({
         {/* Search preview */}
         <div className="rounded-md border border-stone-200 p-4 space-y-1">
           <p className="text-xs text-green-700">
-            {siteDomain} <span className="text-stone-400">›</span> rent <span className="text-stone-400">›</span> {previewPath}
+            {siteDomain} <span className="text-stone-400">›</span> rent{" "}
+            <span className="text-stone-400">›</span> {previewPath}
           </p>
-          <p className="text-lg text-blue-700 leading-snug">
-            {previewTitle}
-          </p>
+          <p className="text-lg text-blue-700 leading-snug">{previewTitle}</p>
           <p className="text-xs text-stone-600 leading-relaxed">
             {previewDescription}
           </p>

@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft } from 'lucide-react';
-import RentalCard from '../cards/RentalCard';
-import RentalDetailPanel from '../panels/RentalDetailPanel';
+import React, { useState, useRef, useEffect } from "react";
+import { ChevronLeft } from "lucide-react";
+import RentalCard from "../cards/RentalCard";
+import RentalDetailPanel from "../panels/RentalDetailPanel";
 import "../../../styles/Profile/right/ViewRentals.css";
 
 const ViewRentals = ({ onBack }) => {
@@ -16,18 +16,22 @@ const ViewRentals = ({ onBack }) => {
 
   const fetchRentals = async () => {
     try {
-      const authStore = await import('../../../store/authStore').then(m => m.default.getState());
+      const authStore = await import("../../../store/authStore").then((m) =>
+        m.default.getState(),
+      );
       const token = authStore.token;
       if (!token) return;
-      
+
       const res = await fetch(`/api/customer/auth/orders`, {
         headers: {
-          "Authorization": `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       const data = await res.json();
       if (data.success) {
-        const rentals = data.data.filter(order => order.type === "Rental" || order.typeDetail === "Rental");
+        const rentals = data.data.filter(
+          (order) => order.type === "Rental" || order.typeDetail === "Rental",
+        );
         setRentalOrders(rentals);
       }
     } catch (err) {
@@ -52,7 +56,7 @@ const ViewRentals = ({ onBack }) => {
 
   const handleDetailsClick = async (bookingId) => {
     const isOpening = activeCardId !== bookingId;
-    
+
     // Clear any pending scroll timeouts
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
@@ -64,11 +68,13 @@ const ViewRentals = ({ onBack }) => {
       setActiveOrder(null);
 
       try {
-        const authStore = await import('../../../store/authStore').then(m => m.default.getState());
+        const authStore = await import("../../../store/authStore").then((m) =>
+          m.default.getState(),
+        );
         const token = authStore.token;
         if (token) {
           const res = await fetch(`/api/customer/auth/orders/${bookingId}`, {
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
           const data = await res.json();
           if (data.success) {
@@ -78,13 +84,13 @@ const ViewRentals = ({ onBack }) => {
       } catch (err) {
         console.error("Error fetching rental detail:", err);
       }
-      
+
       // 40ms delay before scrolling to panel
       scrollTimeoutRef.current = setTimeout(() => {
         if (panelRef.current) {
-          panelRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'nearest' 
+          panelRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
           });
         }
         scrollTimeoutRef.current = null;
@@ -93,14 +99,14 @@ const ViewRentals = ({ onBack }) => {
       // Closing panel - store current card ID before clearing state
       const currentCardId = activeCardId;
       setActiveCardId(null);
-      
+
       // 40ms delay before scrolling back to card
       scrollTimeoutRef.current = setTimeout(() => {
         const cardElement = cardRefs.current[currentCardId];
         if (cardElement) {
-          cardElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'nearest' 
+          cardElement.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
           });
         }
         scrollTimeoutRef.current = null;
@@ -116,26 +122,34 @@ const ViewRentals = ({ onBack }) => {
           Back to overview
         </button>
         <div className="profile-fv-bar-title">My Rentals</div>
-        <div className="profile-fv-bar-count">{rentalOrders.length} bookings</div>
+        <div className="profile-fv-bar-count">
+          {rentalOrders.length} bookings
+        </div>
       </div>
 
       <div className="profile-view-rentals-grid">
         {loading ? (
-          <div style={{ padding: '20px', color: '#666' }}>Loading rentals...</div>
+          <div style={{ padding: "20px", color: "#666" }}>
+            Loading rentals...
+          </div>
         ) : rentalOrders.length === 0 ? (
-          <div style={{ padding: '20px', color: '#666' }}>No rental bookings found.</div>
+          <div style={{ padding: "20px", color: "#666" }}>
+            No rental bookings found.
+          </div>
         ) : (
           rentalOrders.map((booking) => (
-            <div 
+            <div
               key={booking.id || booking.orderId}
               ref={(el) => {
                 if (el) cardRefs.current[booking.id || booking.orderId] = el;
               }}
             >
-              <RentalCard 
-                booking={booking} 
+              <RentalCard
+                booking={booking}
                 isActive={activeCardId === (booking.id || booking.orderId)}
-                onDetailsClick={() => handleDetailsClick(booking.id || booking.orderId)}
+                onDetailsClick={() =>
+                  handleDetailsClick(booking.id || booking.orderId)
+                }
               />
             </div>
           ))
@@ -144,9 +158,9 @@ const ViewRentals = ({ onBack }) => {
 
       {/* Detail Panel */}
       <div ref={panelRef}>
-        <RentalDetailPanel 
-          booking={activeOrder} 
-          isOpen={!!activeCardId} 
+        <RentalDetailPanel
+          booking={activeOrder}
+          isOpen={!!activeCardId}
           onClose={() => handleDetailsClick(activeCardId)}
           onRefresh={() => {
             fetchRentals();

@@ -8,27 +8,19 @@ const SummaryRow = ({
   subtitle,
   value,
   type = "normal",
-  layout = "column"   // 👈 NEW
+  layout = "column", // 👈 NEW
 }) => {
   return (
     <div className={`summary-row ${type}`}>
-
       <div className={`summary-left ${layout}`}>
-
         <div className="summary-title">{title}</div>
 
-        {subtitle && (
-          <div className="summary-sub">{subtitle}</div>
-        )}
-
+        {subtitle && <div className="summary-sub">{subtitle}</div>}
       </div>
 
       <div className="summary-value">
-        {typeof value === "number"
-          ? `₹${value.toLocaleString()}`
-          : value}
+        {typeof value === "number" ? `₹${value.toLocaleString()}` : value}
       </div>
-
     </div>
   );
 };

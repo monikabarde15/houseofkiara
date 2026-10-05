@@ -3,33 +3,33 @@
    ========================= */
 
 :root {
-  --warm-white: #FFFEFB;
-  --cream: #FAF7F2;
+  --warm-white: #fffefb;
+  --cream: #faf7f2;
 
-  --ink: #18140F;
-  --ink-2: #3C3529;
-  --ink-3: #8A7E72;
-  --ink-4: #B0A898;
+  --ink: #18140f;
+  --ink-2: #3c3529;
+  --ink-3: #8a7e72;
+  --ink-4: #b0a898;
 
-  --border: #E8E0D4;
-  --border-light: #F0EAE0;
+  --border: #e8e0d4;
+  --border-light: #f0eae0;
 
-  --gold: #C9A96E;
-  --gold-light: #E8D5B0;
+  --gold: #c9a96e;
+  --gold-light: #e8d5b0;
 
-  --terracotta: #B85C38;
+  --terracotta: #b85c38;
 
-  --sage: #6B7E5A;
-  --sage-bg: #EFF4EC;
+  --sage: #6b7e5a;
+  --sage-bg: #eff4ec;
 
   --mulberry: #893860;
-  --mulberry-bg: #F5EEF2;
+  --mulberry-bg: #f5eef2;
 
-  --navy: #2A4466;
-  --navy-bg: #EEF1F7;
+  --navy: #2a4466;
+  --navy-bg: #eef1f7;
 
-  --amber: #C2A040;
-  --amber-bg: #FDF8EE;
+  --amber: #c2a040;
+  --amber-bg: #fdf8ee;
 }
 
 /* =========================

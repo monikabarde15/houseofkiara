@@ -33,7 +33,10 @@ function wordMatches(word, targetText) {
 
   for (const v of variations) {
     const escaped = v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regex = new RegExp(`(^|\\s|[^a-zA-Z0-9₹])${escaped}($|\\s|[^a-zA-Z0-9₹])`, "i");
+    const regex = new RegExp(
+      `(^|\\s|[^a-zA-Z0-9₹])${escaped}($|\\s|[^a-zA-Z0-9₹])`,
+      "i",
+    );
     if (regex.test(targetText)) {
       return true;
     }
@@ -67,7 +70,12 @@ export function searchQuestions(rawQuery) {
   const validWords = rawWords.filter((w) => w.length >= 2);
 
   if (validWords.length === 0) {
-    return { results: [], hasQuery: true, validWords: [], allQueryWords: rawWords };
+    return {
+      results: [],
+      hasQuery: true,
+      validWords: [],
+      allQueryWords: rawWords,
+    };
   }
 
   const isPhrase = validWords.length > 1;
@@ -184,9 +192,7 @@ export function highlightText(text, terms = []) {
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index));
     }
-    parts.push(
-      React.createElement("mark", { key: match.index }, match[0])
-    );
+    parts.push(React.createElement("mark", { key: match.index }, match[0]));
     lastIndex = regex.lastIndex;
   }
 

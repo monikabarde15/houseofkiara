@@ -1,10 +1,10 @@
 // src/components/LYP/utils/derived.ts
 
-import { Submission, SubmissionStats, Intent } from '../types/submission.types';
-import { SUB_SLA_HOURS } from './constants';
-import { formatDays, formatHours } from './formatter';
+import { Submission, SubmissionStats, Intent } from "../types/submission.types";
+import { SUB_SLA_HOURS } from "./constants";
+import { formatDays, formatHours } from "./formatter";
 
-const OPS_TODAY = new Date('2026-03-23T12:00:00');
+const OPS_TODAY = new Date("2026-03-23T12:00:00");
 
 export const parseSubmissionDate = (dateStr: string): Date | null => {
   if (!dateStr) return null;
@@ -31,31 +31,33 @@ export const getAwaitingDays = (submission: Submission): number => {
   return Math.max(0, Math.round(diff / 86400000));
 };
 
-export const getAgeChip = (submission: Submission): { text: string; class: string } => {
+export const getAgeChip = (
+  submission: Submission,
+): { text: string; class: string } => {
   const isDecided = !!submission.decision;
-  if (isDecided) return { text: '', class: '' };
+  if (isDecided) return { text: "", class: "" };
 
   const hasOpenAsk = !!submission.moreInfo;
   if (hasOpenAsk) {
     const days = getAwaitingDays(submission);
     return {
       text: `Reply - ${formatDays(days)}`,
-      class: 'agec-due'
+      class: "agec-due",
     };
   }
 
   const hours = getLiveClockHours(submission);
   const isReplied = !!submission.replyAt;
-  const prefix = isReplied ? 'Replied - ' : '';
+  const prefix = isReplied ? "Replied - " : "";
 
   if (hours <= 35) {
-    return { text: `${prefix}${formatHours(hours)}`, class: 'agec-ok' };
+    return { text: `${prefix}${formatHours(hours)}`, class: "agec-ok" };
   }
   if (hours <= 48) {
-    return { text: `${prefix}Due - ${formatHours(hours)}`, class: 'agec-due' };
+    return { text: `${prefix}Due - ${formatHours(hours)}`, class: "agec-due" };
   }
   const over = hours - SUB_SLA_HOURS;
-  return { text: `${prefix}Overdue +${formatHours(over)}`, class: 'agec-over' };
+  return { text: `${prefix}Overdue +${formatHours(over)}`, class: "agec-over" };
 };
 
 export const getSubmissionStatus = (submission: Submission): string => {
@@ -63,39 +65,41 @@ export const getSubmissionStatus = (submission: Submission): string => {
     return submission.decision.what;
   }
   if (submission.moreInfo) {
-    return 'Awaiting Reply';
+    return "Awaiting Reply";
   }
   if (submission.replyAt) {
-    return 'In Review';
+    return "In Review";
   }
-  return 'New';
+  return "New";
 };
 
 export const getStatusClass = (status: string): string => {
   const mapping: Record<string, string> = {
-    'New': 's-pend',
-    'In Review': 's-pend',
-    'Awaiting Reply': 's-pend',
-    'Approved': 's-live',
-    'Rejected': 's-sold',
-    'Withdrawn': 's-draft',
-    'Expired': 's-draft'
+    New: "s-pend",
+    "In Review": "s-pend",
+    "Awaiting Reply": "s-pend",
+    Approved: "s-live",
+    Rejected: "s-sold",
+    Withdrawn: "s-draft",
+    Expired: "s-draft",
   };
-  return mapping[status] || 's-pend';
+  return mapping[status] || "s-pend";
 };
 
-export const getFirstResponseHours = (submission: Submission): number | null => {
+export const getFirstResponseHours = (
+  submission: Submission,
+): number | null => {
   if (!submission.history || submission.history.length === 0) return null;
-  
-  const receiptIndex = submission.history.findIndex(h => 
-    h.e.toLowerCase().includes('received')
+
+  const receiptIndex = submission.history.findIndex((h) =>
+    h.e.toLowerCase().includes("received"),
   );
   if (receiptIndex === -1) return null;
-  
+
   // Find first non-receipt action after receipt
   const receiptDate = parseSubmissionDate(submission.history[receiptIndex].t);
   if (!receiptDate) return null;
-  
+
   for (let i = submission.history.length - 1; i >= 0; i--) {
     if (i === receiptIndex) continue;
     const actionDate = parseSubmissionDate(submission.history[i].t);
@@ -103,7 +107,7 @@ export const getFirstResponseHours = (submission: Submission): number | null => 
     const diff = actionDate.getTime() - receiptDate.getTime();
     return Math.max(0, Math.round(diff / 3600000));
   }
-  
+
   return null;
 };
 
@@ -118,39 +122,40 @@ export const calculateMedian = (numbers: number[]): number | null => {
 };
 
 export const calculateStats = (submissions: Submission[]): SubmissionStats => {
-  const undecided = submissions.filter(s => !s.decision);
-  
+  const undecided = submissions.filter((s) => !s.decision);
+
   // Awaiting Review: undecided, no open ask
-  const awaitingReview = undecided.filter(s => !s.moreInfo);
-  
+  const awaitingReview = undecided.filter((s) => !s.moreInfo);
+
   // Awaiting Reply: undecided with open ask
-  const awaitingReply = undecided.filter(s => s.moreInfo);
-  
+  const awaitingReply = undecided.filter((s) => s.moreInfo);
+
   // Approved This Month: approved in current month
   const now = new Date(OPS_TODAY);
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
-  const approvedThisMonth = submissions.filter(s => 
-    s.decision?.what === 'Approved' && 
-    s.decision.on && 
-    new Date(s.decision.on).getMonth() === currentMonth &&
-    new Date(s.decision.on).getFullYear() === currentYear
+  const approvedThisMonth = submissions.filter(
+    (s) =>
+      s.decision?.what === "Approved" &&
+      s.decision.on &&
+      new Date(s.decision.on).getMonth() === currentMonth &&
+      new Date(s.decision.on).getFullYear() === currentYear,
   );
-  
+
   // Oldest hours (max live clock)
   let oldestHours = 0;
   for (const s of awaitingReview) {
     const hours = getLiveClockHours(s);
     if (hours > oldestHours) oldestHours = hours;
   }
-  
+
   // Longest wait days
   let longestWaitDays = 0;
   for (const s of awaitingReply) {
     const days = getAwaitingDays(s);
     if (days > longestWaitDays) longestWaitDays = days;
   }
-  
+
   // Median first response
   const responseHours: number[] = [];
   for (const s of submissions) {
@@ -158,32 +163,32 @@ export const calculateStats = (submissions: Submission[]): SubmissionStats => {
     if (hours !== null) responseHours.push(hours);
   }
   const medianFirstResponse = calculateMedian(responseHours);
-  
+
   return {
     awaitingReview: awaitingReview.length,
     awaitingReply: awaitingReply.length,
     approvedThisMonth: approvedThisMonth.length,
     medianFirstResponse,
     oldestHours,
-    longestWaitDays
+    longestWaitDays,
   };
 };
 
 export const getIntentClass = (intent: Intent): string => {
   const mapping: Record<Intent, string> = {
-    'Rent it': 't-r',
-    'Sell it': 't-p',
-    'Open to both': 't-n'
+    "Rent it": "t-r",
+    "Sell it": "t-p",
+    "Open to both": "t-n",
   };
-  return mapping[intent] || 't-n';
+  return mapping[intent] || "t-n";
 };
 
 export const getChannelClass = (channel: string): string => {
   const mapping: Record<string, string> = {
-    'WhatsApp': 't-r',
-    'Instagram': 't-p',
-    'Website': 't-n',
-    'In Person': 't-n'
+    WhatsApp: "t-r",
+    Instagram: "t-p",
+    Website: "t-n",
+    "In Person": "t-n",
   };
-  return mapping[channel] || 't-n';
+  return mapping[channel] || "t-n";
 };

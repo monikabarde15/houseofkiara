@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ExternalLink } from 'lucide-react';
-import { useSubmissionDetail } from './hooks/useSubmissionDetail';
-import { useJourneyStack } from './hooks/useJourneyStack';
-import { SubmissionRecord } from './record/SubmissionRecord';
-import { submissionService } from './services/submissionService';
-import toast from 'react-hot-toast';
-import './LYPDetailView.css';
+import React, { useState, useEffect } from "react";
+import { ChevronLeft, ExternalLink } from "lucide-react";
+import { useSubmissionDetail } from "./hooks/useSubmissionDetail";
+import { useJourneyStack } from "./hooks/useJourneyStack";
+import { SubmissionRecord } from "./record/SubmissionRecord";
+import { submissionService } from "./services/submissionService";
+import toast from "react-hot-toast";
+import "./LYPDetailView.css";
 
 interface LYPDetailViewProps {
   submissionId: string;
 }
 
-export const LYPDetailView: React.FC<LYPDetailViewProps> = ({ submissionId }) => {
+export const LYPDetailView: React.FC<LYPDetailViewProps> = ({
+  submissionId,
+}) => {
   const [currentId, setCurrentId] = useState(submissionId);
-  
+
   const {
     submission,
     loading,
@@ -37,37 +39,33 @@ export const LYPDetailView: React.FC<LYPDetailViewProps> = ({ submissionId }) =>
 
   const handleNavigate = (id: string) => {
     setCurrentId(id);
-    pushState({ type: 'detail', id });
+    pushState({ type: "detail", id });
   };
 
   const handleSave = async () => {
     if (!submission) return;
     try {
       await submissionService.updateSubmission(submission.subid, submission);
-      toast.success(`Worksheet changes for ${submission.subid} saved to Database!`);
+      toast.success(
+        `Worksheet changes for ${submission.subid} saved to Database!`,
+      );
       refreshSubmission();
     } catch (err: any) {
-      toast.error(err.message || 'Failed to save changes');
+      toast.error(err.message || "Failed to save changes");
     }
   };
 
   const handleViewLive = () => {
-    window.open('/', '_blank');
+    window.open("/", "_blank");
   };
 
   if (loading) {
-    return (
-      <div className="lyp-detail-loading">
-        Loading submission...
-      </div>
-    );
+    return <div className="lyp-detail-loading">Loading submission...</div>;
   }
 
   if (error || !submission) {
     return (
-      <div className="lyp-detail-error">
-        {error || 'Submission not found'}
-      </div>
+      <div className="lyp-detail-error">{error || "Submission not found"}</div>
     );
   }
 
@@ -87,7 +85,9 @@ export const LYPDetailView: React.FC<LYPDetailViewProps> = ({ submissionId }) =>
           <div className="flex items-center gap-1.5 text-[13px] font-sans">
             <span className="text-[#9C9287]">List Your Piece</span>
             <span className="text-[#C3BAAF]">›</span>
-            <span className="font-semibold text-[#2C2926]">{submission.subid}</span>
+            <span className="font-semibold text-[#2C2926]">
+              {submission.subid}
+            </span>
           </div>
         </div>
 

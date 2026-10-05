@@ -8,13 +8,7 @@ import ConfirmationDispatchRow from "./ConfirmationDispatchRow";
 
 import "../../../styles/confirmation/sections/confirmation-piece-card.css";
 
-
-const ConfirmationPieceCard = ({
-  item,
-  isLast = false,
-}) => {
-
-
+const ConfirmationPieceCard = ({ item, isLast = false }) => {
   // viewport
   const [isMobile, setIsMobile] = useState(false);
 
@@ -32,43 +26,28 @@ const ConfirmationPieceCard = ({
   };
 
   const getRentalDays = (booking) => {
-
-    if (
-      !booking?.deliveryDate ||
-      !booking?.returnDate
-    ) {
+    if (!booking?.deliveryDate || !booking?.returnDate) {
       return 0;
     }
 
-    const start = new Date(
-      booking.deliveryDate
-    );
+    const start = new Date(booking.deliveryDate);
 
-    const end = new Date(
-      booking.returnDate
-    );
+    const end = new Date(booking.returnDate);
 
     const diff = end - start;
 
-    return Math.ceil(
-      diff / (1000 * 60 * 60 * 24)
-    );
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
   };
 
-  const condition =
-    item.product?.condition?.grade;
+  const condition = item.product?.condition?.grade;
 
   return (
     <div
       className={`
         confirmation-piece-card
-        ${isLast
-          ? "confirmation-piece-card-last"
-          : ""
-        }
+        ${isLast ? "confirmation-piece-card-last" : ""}
       `}
     >
-
       {/* THUMB */}
       <div
         className={`
@@ -76,11 +55,7 @@ const ConfirmationPieceCard = ({
           confirmation-piece-card-thumb-${item.type}
         `}
       >
-
-        <img
-          src={item.product?.images?.[0]}
-          alt={item.product?.title}
-        />
+        <img src={item.product?.images?.[0]} alt={item.product?.title} />
 
         <div
           className={`
@@ -98,38 +73,30 @@ const ConfirmationPieceCard = ({
         <div
           className={`
     confirmation-piece-card-status
-    ${item.type === "rental"
-              ? "confirmation-piece-card-status-pending"
-              : "confirmation-piece-card-status-confirmed"
-            }
+    ${
+      item.type === "rental"
+        ? "confirmation-piece-card-status-pending"
+        : "confirmation-piece-card-status-confirmed"
+    }
   `}
         >
-          {item.type === "rental"
-            ? getRentalStatusText()
-            : "Confirmed"}
+          {item.type === "rental" ? getRentalStatusText() : "Confirmed"}
         </div>
-
       </div>
 
       {/* BODY */}
       <div className="confirmation-piece-card-body">
-
         <div className="confirmation-piece-card-brand">
           {item.product?.designer}
         </div>
 
-        <h3 className="confirmation-piece-card-name">
-          {item.product?.title}
-        </h3>
+        <h3 className="confirmation-piece-card-name">{item.product?.title}</h3>
 
         <div className="confirmation-piece-card-description">
-
           {[
             item.product?.description,
 
-            item.booking?.size
-              ? `Size ${item.booking.size}`
-              : null,
+            item.booking?.size ? `Size ${item.booking.size}` : null,
 
             condition
               ? condition === "pristine"
@@ -137,47 +104,34 @@ const ConfirmationPieceCard = ({
                 : condition === "excellent"
                   ? "Excellent condition"
                   : `${condition} condition`
-              : null
-
+              : null,
           ]
             .filter(Boolean)
             .join(" · ")}
-
         </div>
 
         <div className="confirmation-piece-card-price-row">
-
           {item.type === "rental" && (
             <ConfirmationRentalPriceBlock
               product={item.product}
               booking={{
                 ...item.booking,
-                rentalWindowDays:
-                  getRentalDays(item.booking),
+                rentalWindowDays: getRentalDays(item.booking),
               }}
             />
           )}
 
           {item.type === "preloved" && (
-            <ConfirmationPrelovedPriceBlock
-              product={item.product}
-            />
+            <ConfirmationPrelovedPriceBlock product={item.product} />
           )}
 
           {item.type === "new" && (
-            <ConfirmationNewPriceBlock
-              product={item.product}
-            />
+            <ConfirmationNewPriceBlock product={item.product} />
           )}
-
         </div>
 
         <ConfirmationDispatchRow item={item} />
-
-
-
       </div>
-
     </div>
   );
 };

@@ -1,11 +1,11 @@
-export type DesignerType = 
-  | 'Couture House' 
-  | 'Contemporary Label' 
-  | 'Heritage Weave' 
-  | 'Indie Designer' 
-  | 'Unclassified';
+export type DesignerType =
+  | "Couture House"
+  | "Contemporary Label"
+  | "Heritage Weave"
+  | "Indie Designer"
+  | "Unclassified";
 
-export type CounterfeitRiskTier = 'High' | 'Medium' | 'Low';
+export type CounterfeitRiskTier = "High" | "Medium" | "Low";
 
 export interface UnmappedLabel {
   id: string;
@@ -36,16 +36,16 @@ export interface Designer {
   featured: boolean;
   featuredRank?: number; // e.g. 1, 2, 3...
   sortOrder: number;
-  status: 'Active' | 'Suspended';
+  status: "Active" | "Suspended";
   activeListingsCount: number;
   totalPiecesCount: number;
-  
+
   // Auth & Risk
   counterfeitRiskTier: CounterfeitRiskTier;
   authenticationChecklist: string;
   websiteUrl: string;
   instagramHandle: string;
-  
+
   // Commercial
   commercialTerms: CommercialTerms;
 }
@@ -64,8 +64,8 @@ export interface DesignerPiece {
   name: string;
   listerName: string;
   images: string[];
-  listingModes: ('Rental' | 'Preloved' | 'Buy')[];
-  status: 'Live' | 'Review' | 'Off-live';
+  listingModes: ("Rental" | "Preloved" | "Buy")[];
+  status: "Live" | "Review" | "Off-live";
   rentalPriceText: string;
   rentalCountText: string;
   sellingPriceText?: string;
@@ -75,15 +75,15 @@ export interface DesignerPerformance {
   livePieces: number;
   lifetimeRentals: number;
   rentalRevenueBooked: string; // e.g. "₹71,000"
-  prelovedGmvBooked: string;   // e.g. "₹95,000"
+  prelovedGmvBooked: string; // e.g. "₹95,000"
   supplyNetwork: ListerSupplyRecord[];
   supplyConcentrationNote: string;
-  pricingBand: string;          // e.g. "₹6,400 - ₹9,900"
-  averageRental: string;        // e.g. "₹8,267"
+  pricingBand: string; // e.g. "₹6,400 - ₹9,900"
+  averageRental: string; // e.g. "₹8,267"
   averageRentalSubtext: string; // e.g. "6x rented"
-  depositsBand: string;         // e.g. "₹20,000 - ₹25,000"
-  velocity: string;             // e.g. "~1.8 / piece / mo"
-  ratingText: string;           // e.g. "4.8 ★ 53 reviews"
+  depositsBand: string; // e.g. "₹20,000 - ₹25,000"
+  velocity: string; // e.g. "~1.8 / piece / mo"
+  ratingText: string; // e.g. "4.8 ★ 53 reviews"
   returnsAssessed: number;
   returnsWithIssues: number;
   returnsNote: string;
@@ -91,7 +91,7 @@ export interface DesignerPerformance {
   repeatCustomers: number;
   topCustomerName: string;
   topCustomerOrders: string;
-  offersEnquiriesText: string;  // e.g. "6 • 4 open"
+  offersEnquiriesText: string; // e.g. "6 • 4 open"
   pieces: DesignerPiece[];
 }
 

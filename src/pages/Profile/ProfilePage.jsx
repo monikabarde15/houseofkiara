@@ -18,14 +18,14 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 430px)");
-    
+
     const handleChange = (e) => {
       setIsMobile(e.matches);
     };
-    
+
     setIsMobile(mediaQuery.matches);
     mediaQuery.addEventListener("change", handleChange);
-    
+
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 

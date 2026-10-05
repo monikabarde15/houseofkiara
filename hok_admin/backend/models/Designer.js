@@ -9,9 +9,9 @@ const commercialTermsSchema = new mongoose.Schema(
     accountManagerName: { type: String, default: "" },
     contactEmail: { type: String, default: "" },
     contactPhone: { type: String, default: "" },
-    internalNotes: { type: String, default: "" }
+    internalNotes: { type: String, default: "" },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const designerSchema = new mongoose.Schema(
@@ -23,15 +23,24 @@ const designerSchema = new mongoose.Schema(
     shortBio: { type: String, default: "" },
     type: {
       type: String,
-      enum: ["Couture House", "Contemporary Label", "Heritage Weave", "Indie Designer", "Unclassified"],
-      default: "Indie Designer"
+      enum: [
+        "Couture House",
+        "Contemporary Label",
+        "Heritage Weave",
+        "Indie Designer",
+        "Unclassified",
+      ],
+      default: "Indie Designer",
     },
     status: {
       type: String,
       enum: ["Active", "Inactive", "Suspended"],
-      default: "Active"
+      default: "Active",
     },
-    joinedAt: { type: String, default: () => new Date().toISOString().split("T")[0] },
+    joinedAt: {
+      type: String,
+      default: () => new Date().toISOString().split("T")[0],
+    },
     isNewToHOK: { type: Boolean, default: false },
     isFeatured: { type: Boolean, default: false },
     featuredOrder: { type: Number, default: null },
@@ -41,14 +50,14 @@ const designerSchema = new mongoose.Schema(
     counterfeitRiskTier: {
       type: String,
       enum: ["High", "Medium", "Low"],
-      default: "Low"
+      default: "Low",
     },
     authenticationChecklist: { type: String, default: "" },
     websiteUrl: { type: String, default: "" },
     instagramHandle: { type: String, default: "" },
-    commercialTerms: { type: commercialTermsSchema, default: () => ({}) }
+    commercialTerms: { type: commercialTermsSchema, default: () => ({}) },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Designer", designerSchema);

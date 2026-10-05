@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState } from "react";
 import "./FeaturedPieces.css";
 
@@ -109,9 +108,7 @@ const FeaturedPieces: React.FC = () => {
 
   const [catalogueOpen, setCatalogueOpen] = useState(true);
 
-  const selectedPiece = pieces.find(
-    (piece) => piece.sku === selectedSku
-  );
+  const selectedPiece = pieces.find((piece) => piece.sku === selectedSku);
 
   const livePieces = useMemo(() => {
     return pieces.filter((piece) => piece.status === "Live");
@@ -128,11 +125,9 @@ const FeaturedPieces: React.FC = () => {
         piece.sku.toLowerCase().includes(query);
 
       const matchesDesigner =
-        designer === "All designers" ||
-        piece.designer === designer;
+        designer === "All designers" || piece.designer === designer;
 
-      const matchesMode =
-        mode === "All modes" || piece.mode === mode;
+      const matchesMode = mode === "All modes" || piece.mode === mode;
 
       return (
         matchesSearch &&
@@ -148,11 +143,7 @@ const FeaturedPieces: React.FC = () => {
 
     return parts.map((part, index) => {
       if (part.startsWith("*") && part.endsWith("*")) {
-        return (
-          <em key={index}>
-            {part.slice(1, -1)}
-          </em>
-        );
+        return <em key={index}>{part.slice(1, -1)}</em>;
       }
 
       return <React.Fragment key={index}>{part}</React.Fragment>;
@@ -165,18 +156,13 @@ const FeaturedPieces: React.FC = () => {
     if (nextIndex < 0 || nextIndex >= pieces.length) return;
 
     const updated = [...pieces];
-    [updated[index], updated[nextIndex]] = [
-      updated[nextIndex],
-      updated[index],
-    ];
+    [updated[index], updated[nextIndex]] = [updated[nextIndex], updated[index]];
 
     setPieces(updated);
   };
 
   const removePiece = (sku: string) => {
-    setPieces((current) =>
-      current.filter((piece) => piece.sku !== sku)
-    );
+    setPieces((current) => current.filter((piece) => piece.sku !== sku));
 
     if (selectedSku === sku) {
       const nextPiece = pieces.find((piece) => piece.sku !== sku);
@@ -198,21 +184,18 @@ const FeaturedPieces: React.FC = () => {
 
   return (
     <div className="featured-editor">
-
       {/* EDITOR HEADER */}
       <div className="featured-editor-header">
         <div>
           <h2>Featured Pieces</h2>
           <p>
-            Hand-picked pieces from the catalogue. Each slot holds a
-            real SKU and reads its status back, so a sold piece cannot
-            sit here unnoticed.
+            Hand-picked pieces from the catalogue. Each slot holds a real SKU
+            and reads its status back, so a sold piece cannot sit here
+            unnoticed.
           </p>
         </div>
 
-        <span className="featured-band-counter">
-          Band 3 of 9
-        </span>
+        <span className="featured-band-counter">Band 3 of 9</span>
       </div>
 
       {/* VISIBILITY */}
@@ -250,9 +233,8 @@ const FeaturedPieces: React.FC = () => {
 
       {pieces.length < 4 && (
         <div className="featured-alert featured-alert-warning">
-          {pieces.length} shoppable pieces against a row of 4 —
-          the last row lands short. Either fill the row or let it
-          top up automatically.
+          {pieces.length} shoppable pieces against a row of 4 — the last row
+          lands short. Either fill the row or let it top up automatically.
         </div>
       )}
 
@@ -263,7 +245,6 @@ const FeaturedPieces: React.FC = () => {
         </div>
 
         <div className="featured-form-body">
-
           <label className="featured-field">
             <span>EYEBROW</span>
             <input
@@ -282,9 +263,8 @@ const FeaturedPieces: React.FC = () => {
           </label>
 
           <p className="featured-help">
-            A line break starts a new line. Wrap one word in
-            *asterisks* to set it in the italic gold serif, the way
-            the storefront does.
+            A line break starts a new line. Wrap one word in *asterisks* to set
+            it in the italic gold serif, the way the storefront does.
           </p>
 
           <div className="featured-reads-as">
@@ -299,9 +279,7 @@ const FeaturedPieces: React.FC = () => {
               <span>VIEW-ALL LABEL</span>
               <input
                 value={viewAllLabel}
-                onChange={(event) =>
-                  setViewAllLabel(event.target.value)
-                }
+                onChange={(event) => setViewAllLabel(event.target.value)}
               />
             </label>
 
@@ -309,13 +287,10 @@ const FeaturedPieces: React.FC = () => {
               <span>VIEW-ALL LINK</span>
               <input
                 value={viewAllLink}
-                onChange={(event) =>
-                  setViewAllLink(event.target.value)
-                }
+                onChange={(event) => setViewAllLink(event.target.value)}
               />
             </label>
           </div>
-
         </div>
       </section>
 
@@ -324,8 +299,8 @@ const FeaturedPieces: React.FC = () => {
         <div className="featured-panel-heading">
           <h3>The pieces</h3>
           <p>
-            Each slot holds a real SKU. The picture, designer, size,
-            prices and status shown here are read from the piece record.
+            Each slot holds a real SKU. The picture, designer, size, prices and
+            status shown here are read from the piece record.
           </p>
         </div>
 
@@ -335,16 +310,12 @@ const FeaturedPieces: React.FC = () => {
               key={piece.sku}
               className={[
                 "featured-piece-card",
-                selectedSku === piece.sku
-                  ? "featured-piece-selected"
-                  : "",
+                selectedSku === piece.sku ? "featured-piece-selected" : "",
               ].join(" ")}
               onClick={() => setSelectedSku(piece.sku)}
             >
               <div className={`featured-piece-image ${piece.image}`}>
-                <span className="featured-position-badge">
-                  {index + 1}
-                </span>
+                <span className="featured-position-badge">{index + 1}</span>
 
                 <span
                   className={[
@@ -374,9 +345,7 @@ const FeaturedPieces: React.FC = () => {
                     <>Buy {formatPrice(piece.buy)}</>
                   )}
 
-                  {piece.retail && (
-                    <del>{formatPrice(piece.retail)}</del>
-                  )}
+                  {piece.retail && <del>{formatPrice(piece.retail)}</del>}
                 </div>
 
                 <div className="featured-piece-actions">
@@ -435,8 +404,8 @@ const FeaturedPieces: React.FC = () => {
         <div className="featured-section-footer">
           <span>{pieces.length} of 8 slots used</span>
           <span>
-            The deck above matches the customer row — 4 across on
-            desktop, 2 in the app.
+            The deck above matches the customer row — 4 across on desktop, 2 in
+            the app.
           </span>
         </div>
       </section>
@@ -450,10 +419,7 @@ const FeaturedPieces: React.FC = () => {
               <span>{pieces.length} of 8 slots used</span>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setCatalogueOpen(false)}
-            >
+            <button type="button" onClick={() => setCatalogueOpen(false)}>
               Done
             </button>
           </div>
@@ -488,9 +454,7 @@ const FeaturedPieces: React.FC = () => {
 
           <div className="featured-catalogue-grid">
             {availablePieces.map((piece) => {
-              const isAdded = pieces.some(
-                (item) => item.sku === piece.sku
-              );
+              const isAdded = pieces.some((item) => item.sku === piece.sku);
 
               return (
                 <button
@@ -502,13 +466,9 @@ const FeaturedPieces: React.FC = () => {
                   ].join(" ")}
                   onClick={() => addPiece(piece)}
                 >
-                  <div
-                    className={`featured-catalogue-image ${piece.image}`}
-                  />
+                  <div className={`featured-catalogue-image ${piece.image}`} />
 
-                  {isAdded && (
-                    <span>✓ ON THE HOMEPAGE</span>
-                  )}
+                  {isAdded && <span>✓ ON THE HOMEPAGE</span>}
 
                   <strong>{piece.name}</strong>
                   <small>{piece.designer}</small>
@@ -518,8 +478,8 @@ const FeaturedPieces: React.FC = () => {
           </div>
 
           <p className="featured-help">
-            Only Live pieces appear here — a draft, paused or sold
-            piece cannot be put on the homepage.
+            Only Live pieces appear here — a draft, paused or sold piece cannot
+            be put on the homepage.
           </p>
         </section>
       )}
@@ -541,10 +501,9 @@ const FeaturedPieces: React.FC = () => {
               <h3>Which photograph fronts this tile</h3>
 
               <p>
-                Taken from the piece’s own gallery. The product page
-                leads with its primary photograph, which is often a
-                full front view — a detail or an on-model shot can
-                read better in a row.
+                Taken from the piece’s own gallery. The product page leads with
+                its primary photograph, which is often a full front view — a
+                detail or an on-model shot can read better in a row.
               </p>
 
               <div className="featured-photo-options">
@@ -555,8 +514,8 @@ const FeaturedPieces: React.FC = () => {
               </div>
 
               <p className="featured-help">
-                Showing On model. Clicking the one already chosen
-                returns the tile to the primary photograph.
+                Showing On model. Clicking the one already chosen returns the
+                tile to the primary photograph.
               </p>
 
               <dl className="featured-inspector-details">
@@ -592,8 +551,8 @@ const FeaturedPieces: React.FC = () => {
           </div>
 
           <p className="featured-help">
-            {pieces.length} of 8 slots used. The deck above matches
-            the customer row — 4 across on desktop, 2 in the app.
+            {pieces.length} of 8 slots used. The deck above matches the customer
+            row — 4 across on desktop, 2 in the app.
           </p>
         </section>
       )}
@@ -603,8 +562,8 @@ const FeaturedPieces: React.FC = () => {
         <div className="featured-panel-heading">
           <h3>When a piece sells</h3>
           <p>
-            A hand-picked grid empties itself over time. This decides
-            what happens when it does.
+            A hand-picked grid empties itself over time. This decides what
+            happens when it does.
           </p>
         </div>
 
@@ -659,9 +618,7 @@ const FeaturedPieces: React.FC = () => {
                 min={1}
                 max={2}
                 value={mobileCards}
-                onChange={(event) =>
-                  setMobileCards(Number(event.target.value))
-                }
+                onChange={(event) => setMobileCards(Number(event.target.value))}
               />
             </label>
           </div>
@@ -673,8 +630,8 @@ const FeaturedPieces: React.FC = () => {
         <div className="featured-panel-heading">
           <h3>What the customer tile carries</h3>
           <p>
-            Besides the photograph. All four are read from the piece
-            record — these decide only whether they are drawn.
+            Besides the photograph. All four are read from the piece record —
+            these decide only whether they are drawn.
           </p>
         </div>
 
@@ -689,9 +646,8 @@ const FeaturedPieces: React.FC = () => {
             <div>
               <strong>Mode badge over the picture</strong>
               <p>
-                RENT, PRELOVED or NEW, taken from the piece’s mode.
-                Rent renders on charcoal, Preloved on terracotta,
-                New on sage.
+                RENT, PRELOVED or NEW, taken from the piece’s mode. Rent renders
+                on charcoal, Preloved on terracotta, New on sage.
               </p>
             </div>
           </label>
@@ -706,8 +662,8 @@ const FeaturedPieces: React.FC = () => {
             <div>
               <strong>Wishlist heart</strong>
               <p>
-                Top right of the picture. Adds the piece to a shopper’s
-                wishlist without opening it.
+                Top right of the picture. Adds the piece to a shopper’s wishlist
+                without opening it.
               </p>
             </div>
           </label>
@@ -722,8 +678,8 @@ const FeaturedPieces: React.FC = () => {
             <div>
               <strong>Struck-through retail price</strong>
               <p>
-                The piece’s retail price beside what HOK charges,
-                struck through. It comes from the record.
+                The piece’s retail price beside what HOK charges, struck
+                through. It comes from the record.
               </p>
             </div>
           </label>
@@ -738,14 +694,13 @@ const FeaturedPieces: React.FC = () => {
             <div>
               <strong>Rental duration beside the price</strong>
               <p>
-                Reads as “₹12,000 / 4 days”. Drawn only on a piece
-                that can be rented.
+                Reads as “₹12,000 / 4 days”. Drawn only on a piece that can be
+                rented.
               </p>
             </div>
           </label>
         </div>
       </section>
-
     </div>
   );
 };

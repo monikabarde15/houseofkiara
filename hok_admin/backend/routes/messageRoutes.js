@@ -11,16 +11,16 @@ router.get("/messages", async (req, res) => {
     let filter = {};
 
     if (search) {
-      filter.name = { $regex: search, $options: 'i' };
+      filter.name = { $regex: search, $options: "i" };
     }
-    if (audience && audience !== 'Everyone') {
+    if (audience && audience !== "Everyone") {
       filter.audience = audience;
     }
-    if (type && type !== 'Required and optional') {
-      if (type === 'Required') filter.class = 'Required';
-      if (type === 'Marketing') filter.class = 'Marketing';
+    if (type && type !== "Required and optional") {
+      if (type === "Required") filter.class = "Required";
+      if (type === "Marketing") filter.class = "Marketing";
     }
-    if (status && status !== 'Any status') {
+    if (status && status !== "Any status") {
       filter.status = status;
     }
 
@@ -36,9 +36,13 @@ router.get("/messages", async (req, res) => {
 router.get("/messages/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    let message = await Message.findOne({ $or: [{ messageId: id }, { _id: id }] });
+    let message = await Message.findOne({
+      $or: [{ messageId: id }, { _id: id }],
+    });
     if (!message) {
-      return res.status(404).json({ success: false, message: "Message not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Message not found" });
     }
     res.json({ success: true, data: message });
   } catch (error) {
@@ -62,7 +66,11 @@ router.post("/messages", async (req, res) => {
       class: data.class || "Required",
       channels: data.channels || ["email"],
       status: "Not written",
-      lastEdited: new Date().toLocaleDateString("en-GB", { day: '2-digit', month: 'short', year: 'numeric' }),
+      lastEdited: new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
       editor: "You",
       wordings: data.wordings || [
         {
@@ -72,8 +80,8 @@ router.post("/messages", async (req, res) => {
           previewLine: "",
           email: "",
           whatsapp: "",
-        }
-      ]
+        },
+      ],
     });
     await newMsg.save();
     res.status(201).json({ success: true, data: newMsg });
@@ -91,16 +99,22 @@ router.put("/messages/:id", async (req, res) => {
     if (updates.wordings) {
       updates.wordingCount = updates.wordings.length;
     }
-    updates.lastEdited = new Date().toLocaleDateString("en-GB", { day: '2-digit', month: 'short', year: 'numeric' });
+    updates.lastEdited = new Date().toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
 
     let message = await Message.findOneAndUpdate(
       { $or: [{ messageId: id }, { _id: id }] },
       { $set: updates },
-      { new: true }
+      { new: true },
     );
 
     if (!message) {
-      return res.status(404).json({ success: false, message: "Message not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Message not found" });
     }
 
     res.json({ success: true, data: message });
@@ -123,8 +137,18 @@ router.delete("/messages/:id", async (req, res) => {
 // POST send message delivery mock
 router.post("/messages/send", (req, res) => {
   const { channel = "whatsapp", to, body } = req.body || {};
-  if (!to || !body) return res.status(422).json({ success: false, message: "Recipient and message are required" });
-  const delivery = { id: `MOCK-${Date.now()}`, channel, to, body, status: "mock-delivered", createdAt: new Date().toISOString() };
+  if (!to || !body)
+    return res
+      .status(422)
+      .json({ success: false, message: "Recipient and message are required" });
+  const delivery = {
+    id: `MOCK-${Date.now()}`,
+    channel,
+    to,
+    body,
+    status: "mock-delivered",
+    createdAt: new Date().toISOString(),
+  };
   deliveries.unshift(delivery);
   res.status(201).json({ success: true, data: delivery, provider: "mock" });
 });

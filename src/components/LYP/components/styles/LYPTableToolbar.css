@@ -83,7 +83,7 @@
   border: 1px solid rgba(201, 169, 110, 0.5);
   border-radius: var(--r);
   font-size: 10.5px;
-  color: #6B5730;
+  color: #6b5730;
   cursor: pointer;
   white-space: nowrap;
 }

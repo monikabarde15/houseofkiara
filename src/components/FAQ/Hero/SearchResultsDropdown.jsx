@@ -18,7 +18,7 @@ export default function SearchResultsDropdown({
   useEffect(() => {
     if (isOpen && listRef.current && selectedIndex >= 0) {
       const selectedItem = listRef.current.querySelector(
-        `[data-index="${selectedIndex}"]`
+        `[data-index="${selectedIndex}"]`,
       );
       if (selectedItem) {
         selectedItem.scrollIntoView({ block: "nearest" });
@@ -39,7 +39,8 @@ export default function SearchResultsDropdown({
       {results.length > 0 ? (
         <>
           <div className="ch-drop-hd" aria-live="polite">
-            {results.length} {results.length === 1 ? "answer" : "answers"}, best match first
+            {results.length} {results.length === 1 ? "answer" : "answers"}, best
+            match first
           </div>
           {results.map((q, idx) => {
             const isSelected = idx === selectedIndex;

@@ -4,13 +4,13 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.9
    ======================================== */
 
-import React, { useState } from 'react';
-import './styles/PromotionsTable.css';
-import { PromoCode, DerivedPromoState } from '../types/promotions.types';
-import { PromotionsTableRow } from './PromotionsTableRow';
-import { PromotionsTableToolbar } from './PromotionsTableToolbar';
-import { PromotionsTableFooter } from './PromotionsTableFooter';
-import { getAttentionFlags } from '../utils/derived';
+import React, { useState } from "react";
+import "./styles/PromotionsTable.css";
+import { PromoCode, DerivedPromoState } from "../types/promotions.types";
+import { PromotionsTableRow } from "./PromotionsTableRow";
+import { PromotionsTableToolbar } from "./PromotionsTableToolbar";
+import { PromotionsTableFooter } from "./PromotionsTableFooter";
+import { getAttentionFlags } from "../utils/derived";
 
 interface PromotionsTableProps {
   codes: PromoCode[];
@@ -47,7 +47,7 @@ export const PromotionsTable: React.FC<PromotionsTableProps> = ({
   const handleSelectAll = (checked: boolean) => {
     setSelectAll(checked);
     if (checked) {
-      setSelectedCodes(new Set(codes.map(c => c.code)));
+      setSelectedCodes(new Set(codes.map((c) => c.code)));
     } else {
       setSelectedCodes(new Set());
     }
@@ -66,12 +66,12 @@ export const PromotionsTable: React.FC<PromotionsTableProps> = ({
 
   const handleBulkPause = () => {
     // Bulk pause logic
-    console.log('Pausing:', Array.from(selectedCodes));
+    console.log("Pausing:", Array.from(selectedCodes));
   };
 
   const handleBulkResume = () => {
     // Bulk resume logic
-    console.log('Resuming:', Array.from(selectedCodes));
+    console.log("Resuming:", Array.from(selectedCodes));
   };
 
   const handleBulkClear = () => {
@@ -90,13 +90,31 @@ export const PromotionsTable: React.FC<PromotionsTableProps> = ({
     return (
       <div className="table-empty">
         {search ? (
-          <>No code matches "{search}". <button className="table-empty__link" onClick={() => onSearchChange('')}>Clear the search →</button></>
-        ) : statusFilter !== 'All Statuses' ? (
+          <>
+            No code matches "{search}".{" "}
+            <button
+              className="table-empty__link"
+              onClick={() => onSearchChange("")}
+            >
+              Clear the search →
+            </button>
+          </>
+        ) : statusFilter !== "All Statuses" ? (
           <>No promo codes match this filter.</>
         ) : snapshotFilter ? (
-          <>No codes have been redeemed yet. <button className="table-empty__link" onClick={onSnapshotClear}>Show all →</button></>
+          <>
+            No codes have been redeemed yet.{" "}
+            <button className="table-empty__link" onClick={onSnapshotClear}>
+              Show all →
+            </button>
+          </>
         ) : (
-          <>No promo codes yet. <button className="table-empty__link">Create the first one →</button></>
+          <>
+            No promo codes yet.{" "}
+            <button className="table-empty__link">
+              Create the first one →
+            </button>
+          </>
         )}
       </div>
     );
@@ -120,9 +138,13 @@ export const PromotionsTable: React.FC<PromotionsTableProps> = ({
       {snapshotFilter && (
         <div className="table-snapshot-summary">
           <span className="table-snapshot-summary__text">
-            <strong>Showing codes that have been redeemed</strong> — most-used first — {codes.length} of {codes.length} codes
+            <strong>Showing codes that have been redeemed</strong> — most-used
+            first — {codes.length} of {codes.length} codes
           </span>
-          <button className="table-snapshot-summary__clear" onClick={onSnapshotClear}>
+          <button
+            className="table-snapshot-summary__clear"
+            onClick={onSnapshotClear}
+          >
             Show all ×
           </button>
         </div>
@@ -149,11 +171,16 @@ export const PromotionsTable: React.FC<PromotionsTableProps> = ({
             </tr>
           </thead>
           <tbody className="table__body">
-            {codes.map(code => {
+            {codes.map((code) => {
               const redemptions = getRedemptions(code);
               const state = getDerivedState(code);
-              const flags = getAttentionFlags(code, redemptions, 100, code.createdOn);
-              
+              const flags = getAttentionFlags(
+                code,
+                redemptions,
+                100,
+                code.createdOn,
+              );
+
               return (
                 <PromotionsTableRow
                   key={code.code}
@@ -173,7 +200,7 @@ export const PromotionsTable: React.FC<PromotionsTableProps> = ({
 
       <PromotionsTableFooter
         count={codes.length}
-        filterText={statusFilter !== 'All Statuses' ? ` - ${statusFilter}` : ''}
+        filterText={statusFilter !== "All Statuses" ? ` - ${statusFilter}` : ""}
       />
     </div>
   );

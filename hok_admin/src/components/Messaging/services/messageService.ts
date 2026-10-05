@@ -1,11 +1,11 @@
 // services/messageService.ts
-import { Message, Wording } from '../types/messaging.types';
+import { Message, Wording } from "../types/messaging.types";
 
 export interface MessageDetail extends Message {
   wordings: Wording[];
 }
 
-const API_BASE = '/api/messages';
+const API_BASE = "/api/messages";
 
 export const messageService = {
   // Get all messages with optional filters
@@ -16,16 +16,16 @@ export const messageService = {
     status?: string;
   }): Promise<Message[]> => {
     const queryParams = new URLSearchParams();
-    if (params?.search) queryParams.append('search', params.search);
-    if (params?.audience) queryParams.append('audience', params.audience);
-    if (params?.type) queryParams.append('type', params.type);
-    if (params?.status) queryParams.append('status', params.status);
+    if (params?.search) queryParams.append("search", params.search);
+    if (params?.audience) queryParams.append("audience", params.audience);
+    if (params?.type) queryParams.append("type", params.type);
+    if (params?.status) queryParams.append("status", params.status);
 
-    const url = `${API_BASE}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const url = `${API_BASE}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
     const res = await fetch(url);
     const json = await res.json();
     if (!res.ok || !json.success) {
-      throw new Error(json.message || 'Failed to fetch messages');
+      throw new Error(json.message || "Failed to fetch messages");
     }
     return json.data;
   },
@@ -35,7 +35,7 @@ export const messageService = {
     const res = await fetch(`${API_BASE}/${id}`);
     const json = await res.json();
     if (!res.ok || !json.success) {
-      throw new Error(json.message || 'Failed to fetch message details');
+      throw new Error(json.message || "Failed to fetch message details");
     }
     return json.data;
   },
@@ -43,13 +43,13 @@ export const messageService = {
   // Create a new message
   createMessage: async (data?: Partial<Message>): Promise<Message> => {
     const res = await fetch(API_BASE, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data || {}),
     });
     const json = await res.json();
     if (!res.ok || !json.success) {
-      throw new Error(json.message || 'Failed to create message');
+      throw new Error(json.message || "Failed to create message");
     }
     return json.data;
   },
@@ -69,15 +69,18 @@ export const messageService = {
   },
 
   // Update a message
-  updateMessage: async (id: string, data: Partial<MessageDetail>): Promise<Message> => {
+  updateMessage: async (
+    id: string,
+    data: Partial<MessageDetail>,
+  ): Promise<Message> => {
     const res = await fetch(`${API_BASE}/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     const json = await res.json();
     if (!res.ok || !json.success) {
-      throw new Error(json.message || 'Failed to update message');
+      throw new Error(json.message || "Failed to update message");
     }
     return json.data;
   },
@@ -85,11 +88,11 @@ export const messageService = {
   // Delete a message
   deleteMessage: async (id: string): Promise<void> => {
     const res = await fetch(`${API_BASE}/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
     const json = await res.json();
     if (!res.ok || !json.success) {
-      throw new Error(json.message || 'Failed to delete message');
+      throw new Error(json.message || "Failed to delete message");
     }
   },
 };

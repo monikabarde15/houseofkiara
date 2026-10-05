@@ -1,12 +1,12 @@
 // components/Table.tsx
-import React from 'react';
-import './styles/Table.css';
+import React from "react";
+import "./styles/Table.css";
 
 export interface Column {
   key: string;
   header: string;
   width?: string | number;
-  align?: 'left' | 'center' | 'right';
+  align?: "left" | "center" | "right";
 }
 
 interface TableProps {
@@ -20,8 +20,8 @@ interface TableProps {
 export const Table: React.FC<TableProps> = ({
   columns,
   children,
-  className = '',
-  emptyMessage = 'No data to display.',
+  className = "",
+  emptyMessage = "No data to display.",
   isEmpty = false,
 }) => {
   return (
@@ -34,7 +34,7 @@ export const Table: React.FC<TableProps> = ({
                 key={col.key}
                 style={{
                   width: col.width,
-                  textAlign: col.align || 'left',
+                  textAlign: col.align || "left",
                 }}
               >
                 {col.header}
@@ -69,13 +69,13 @@ export const TableRow: React.FC<TableRowProps> = ({
   children,
   onClick,
   clickable = false,
-  className = '',
+  className = "",
 }) => {
   return (
     <tr
-      className={`${clickable ? 'msg-table-row-clickable' : ''} ${className}`}
+      className={`${clickable ? "msg-table-row-clickable" : ""} ${className}`}
       onClick={onClick}
-      role={clickable ? 'button' : undefined}
+      role={clickable ? "button" : undefined}
     >
       {children}
     </tr>
@@ -92,7 +92,7 @@ interface TableCellProps {
 
 export const TableCell: React.FC<TableCellProps> = ({
   children,
-  className = '',
+  className = "",
   colSpan,
   primary = false,
   secondary = false,
@@ -100,8 +100,8 @@ export const TableCell: React.FC<TableCellProps> = ({
   return (
     <td
       className={`
-        ${primary ? 'msg-table-cell-primary' : ''}
-        ${secondary ? 'msg-table-cell-secondary' : ''}
+        ${primary ? "msg-table-cell-primary" : ""}
+        ${secondary ? "msg-table-cell-secondary" : ""}
         ${className}
       `}
       colSpan={colSpan}

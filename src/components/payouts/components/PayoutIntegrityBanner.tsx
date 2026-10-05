@@ -32,7 +32,8 @@ export default function PayoutIntegrityBanner() {
         <div className="flex items-start gap-2">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#B45309]" />
           <h3 className="text-xs font-bold uppercase tracking-wide text-[#92400E]">
-            Payout Integrity — 3 Completed Orders with No Payout on Record (₹57,000 of Transaction Value Untracked)
+            Payout Integrity — 3 Completed Orders with No Payout on Record
+            (₹57,000 of Transaction Value Untracked)
           </h3>
         </div>
 
@@ -45,7 +46,9 @@ export default function PayoutIntegrityBanner() {
             >
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                 <span className="font-medium text-[#B45309]">{order.id}</span>
-                <span className="font-semibold text-[#1E1412]">{order.lister}</span>
+                <span className="font-semibold text-[#1E1412]">
+                  {order.lister}
+                </span>
                 <span className="text-[#1E1412]">{order.product}</span>
                 <span className="text-stone-500">for {order.customer}</span>
               </div>

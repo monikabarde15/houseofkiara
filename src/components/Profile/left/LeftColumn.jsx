@@ -1,9 +1,9 @@
 // src\components\Profile\left\LeftColumn.jsx
-import React from 'react';
+import React from "react";
 import "../../../styles/Profile/left/LeftColumn.css";
-import IdentityCard from './IdentityCard';
-import LeftNav from './LeftNav';
-import SignOutButton from './SignOutButton';
+import IdentityCard from "./IdentityCard";
+import LeftNav from "./LeftNav";
+import SignOutButton from "./SignOutButton";
 
 const LeftColumn = () => {
   return (
@@ -14,7 +14,7 @@ const LeftColumn = () => {
         {/* Left Navigation*/}
         <LeftNav />
         {/* Sign Out Button */}
-        <SignOutButton/>
+        <SignOutButton />
       </div>
     </div>
   );

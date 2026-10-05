@@ -1,7 +1,7 @@
 // src/components/LYP/modals/ConfirmModal.tsx
 
-import React, { useEffect } from 'react';
-import './styles/ConfirmModal.css';
+import React, { useEffect } from "react";
+import "./styles/ConfirmModal.css";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -17,10 +17,10 @@ interface ConfirmModalProps {
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isOpen,
-  title = 'Please Confirm',
+  title = "Please Confirm",
   message,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
   onConfirm,
   onCancel,
   isDanger = false,
@@ -28,12 +28,12 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 }) => {
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -46,41 +46,43 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   };
 
   const handleEscape = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       onCancel();
     }
   };
 
   return (
-    <div 
-      className="modal-backdrop" 
+    <div
+      className="modal-backdrop"
       onClick={handleBackdropClick}
       onKeyDown={handleEscape}
     >
       <div className="modal-box">
         <div className="modal-header">
           <span className="modal-title">{title}</span>
-          <button className="modal-close" onClick={onCancel}>×</button>
+          <button className="modal-close" onClick={onCancel}>
+            ×
+          </button>
         </div>
 
         <div className="modal-body">
-          {typeof message === 'string' ? <p>{message}</p> : message}
+          {typeof message === "string" ? <p>{message}</p> : message}
         </div>
 
         <div className="modal-footer">
-          <button 
-            className="btn btn-sec" 
+          <button
+            className="btn btn-sec"
             onClick={onCancel}
             disabled={isLoading}
           >
             {cancelLabel}
           </button>
-          <button 
-            className={`btn ${isDanger ? 'btn-danger' : 'btn-confirm'}`}
+          <button
+            className={`btn ${isDanger ? "btn-danger" : "btn-confirm"}`}
             onClick={onConfirm}
             disabled={isLoading}
           >
-            {isLoading ? 'Processing...' : confirmLabel}
+            {isLoading ? "Processing..." : confirmLabel}
           </button>
         </div>
       </div>

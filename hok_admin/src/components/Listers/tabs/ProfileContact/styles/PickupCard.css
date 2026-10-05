@@ -3,11 +3,11 @@
    ========================================================================== */
 
 .pickup-card {
-    margin: 0;
-    background: #fff;
-    border: 1px solid #e7e0d8;
-    border-radius: 4px;
-    overflow: hidden;
+  margin: 0;
+  background: #fff;
+  border: 1px solid #e7e0d8;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 /* ==========================================================================
@@ -15,19 +15,19 @@
    ========================================================================== */
 
 .pickup-card .card-hd {
-    height: 46px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 18px;
-    border-bottom: 1px solid #e7e2db;
-    background: #fff;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  border-bottom: 1px solid #e7e2db;
+  background: #fff;
 }
 
 .pickup-card .card-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #2e2a27;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2e2a27;
 }
 
 /* ==========================================================================
@@ -35,26 +35,26 @@
    ========================================================================== */
 
 .pickup-card .card-bd {
-    padding: 18px;
+  padding: 18px;
 }
 
 .fld {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .fld:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .g2 {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .fld-group {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ==========================================================================
@@ -62,27 +62,27 @@
    ========================================================================== */
 
 .pickup-copy {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 12px;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
 }
 
 .qlnk {
-    background: transparent;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 
-    color: #c39b55;
-    font-size: 13px;
-    font-weight: 600;
+  color: #c39b55;
+  font-size: 13px;
+  font-weight: 600;
 
-    transition: .18s;
+  transition: 0.18s;
 }
 
 .qlnk:hover {
-    color: #a98345;
-    text-decoration: underline;
+  color: #a98345;
+  text-decoration: underline;
 }
 
 /* ==========================================================================
@@ -90,23 +90,23 @@
    ========================================================================== */
 
 .fld-label {
-    display: block;
-    margin-bottom: 6px;
+  display: block;
+  margin-bottom: 6px;
 
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .08em;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 
-    color: #85796d;
+  color: #85796d;
 }
 
 .fld-label-optional {
-    font-size: 10px;
-    font-weight: 400;
-    color: #9b9084;
-    text-transform: none;
-    letter-spacing: 0;
+  font-size: 10px;
+  font-weight: 400;
+  color: #9b9084;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* ==========================================================================
@@ -114,45 +114,42 @@
    ========================================================================== */
 
 .fld-input {
-    width: 100%;
-    height: 38px;
+  width: 100%;
+  height: 38px;
 
-    padding: 0 12px;
+  padding: 0 12px;
 
-    border: 1px solid #d9d2ca;
-    border-radius: 4px;
+  border: 1px solid #d9d2ca;
+  border-radius: 4px;
 
-    background: #fff;
+  background: #fff;
 
-    font-size: 14px;
-    color: #2d2a27;
+  font-size: 14px;
+  color: #2d2a27;
 
-    box-sizing: border-box;
+  box-sizing: border-box;
 
-    transition:
-        border-color .18s,
-        box-shadow .18s;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
 }
 
 .fld-input::placeholder {
-    color: #aba094;
+  color: #aba094;
 }
 
 .fld-input:hover {
-    border-color: #c8b699;
+  border-color: #c8b699;
 }
 
 .fld-input:focus {
-    outline: none;
-    border-color: #b8955f;
-    box-shadow: 0 0 0 3px rgba(184,149,95,.14);
+  outline: none;
+  border-color: #b8955f;
+  box-shadow: 0 0 0 3px rgba(184, 149, 95, 0.14);
 }
 
 .fld-monospace {
-    font-family:
-        SFMono-Regular,
-        Consolas,
-        monospace;
+  font-family: SFMono-Regular, Consolas, monospace;
 }
 
 /* ==========================================================================
@@ -160,28 +157,28 @@
    ========================================================================== */
 
 .fld-hint {
-    margin-top: 5px;
+  margin-top: 5px;
 
-    font-size: 11px;
-    line-height: 1.45;
+  font-size: 11px;
+  line-height: 1.45;
 
-    color: #8d8378;
+  color: #8d8378;
 }
 
 .fld-error {
-    border-color: #bb6548 !important;
+  border-color: #bb6548 !important;
 }
 
 .fld-error:focus {
-    border-color: #bb6548;
-    box-shadow: 0 0 0 3px rgba(187,101,72,.14);
+  border-color: #bb6548;
+  box-shadow: 0 0 0 3px rgba(187, 101, 72, 0.14);
 }
 
 .fld-error-text {
-    margin-top: 5px;
+  margin-top: 5px;
 
-    font-size: 11px;
-    color: #bb6548;
+  font-size: 11px;
+  color: #bb6548;
 }
 
 /* ==========================================================================
@@ -189,17 +186,17 @@
    ========================================================================== */
 
 .pickup-card .card-ft {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 
-    height: 50px;
+  height: 50px;
 
-    padding: 0 18px;
+  padding: 0 18px;
 
-    background: #fbf9f7;
+  background: #fbf9f7;
 
-    border-top: 1px solid #e7e2db;
+  border-top: 1px solid #e7e2db;
 }
 
 /* ==========================================================================
@@ -207,32 +204,32 @@
    ========================================================================== */
 
 .pickup-card .btn {
-    height: 30px;
-    min-width: 48px;
+  height: 30px;
+  min-width: 48px;
 
-    padding: 0 16px;
+  padding: 0 16px;
 
-    border: 1px solid #bc9755;
-    border-radius: 4px;
+  border: 1px solid #bc9755;
+  border-radius: 4px;
 
-    background: #bc9755;
-    color: #fff;
+  background: #bc9755;
+  color: #fff;
 
-    font-size: 12px;
-    font-weight: 600;
+  font-size: 12px;
+  font-weight: 600;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    transition: .18s;
+  transition: 0.18s;
 }
 
 .pickup-card .btn:hover {
-    background: #ab8648;
-    border-color: #ab8648;
+  background: #ab8648;
+  border-color: #ab8648;
 }
 
 .pickup-card .btn:active {
-    transform: translateY(1px);
+  transform: translateY(1px);
 }
 
 /* ==========================================================================
@@ -240,18 +237,16 @@
    ========================================================================== */
 
 @media (max-width: 768px) {
+  .pickup-card .card-bd {
+    padding: 16px;
+  }
 
-    .pickup-card .card-bd {
-        padding: 16px;
-    }
+  .g2 {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 
-    .g2 {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-
-    .pickup-copy {
-        justify-content: flex-start;
-    }
-
+  .pickup-copy {
+    justify-content: flex-start;
+  }
 }

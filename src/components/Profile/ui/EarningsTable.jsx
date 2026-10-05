@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import "../../../styles/Profile/ui/EarningsTable.css";
 
 const EarningsTable = ({ bookings, totalEarned, pendingAmount }) => {
@@ -40,7 +40,10 @@ const EarningsTable = ({ bookings, totalEarned, pendingAmount }) => {
               <td>
                 ₹{totalPaid.toLocaleString()}
                 {pendingAmount > 0 && (
-                  <span className="profile-earnings-pending"> + ₹{pendingAmount.toLocaleString()} pending</span>
+                  <span className="profile-earnings-pending">
+                    {" "}
+                    + ₹{pendingAmount.toLocaleString()} pending
+                  </span>
                 )}
               </td>
             </tr>

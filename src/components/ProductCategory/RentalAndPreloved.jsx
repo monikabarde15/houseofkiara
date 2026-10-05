@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { useParams , useNavigate} from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Heart, Star, TrendingUp, Gift, User, Calendar, CreditCard, MessageCircleCheck, Shield, CircleAlert, ArrowRight, ShoppingBag, X, Plus, Truck } from "lucide-react";
 import GalleryColumn from "../GalleryColumn";
 import '../../styles/productcategory/rental-and-preloved.css'
 import RentalCalendar from "../RentalCalendar";
 import RelatedProduct from "../RelatedProduct";
-
+import useCartStore from "../../store/cartStore";
+import useWishlistStore from "../../store/wishlistStore";
 const tempSizes = [
     { label: "XS", available: true },
     { label: "S", available: true },
@@ -48,7 +49,9 @@ const gradeConfig = {
 export default function RentalAndPreloved() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
 
+    const addToCart = useCartStore((state) => state.addToCart);
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -81,7 +84,10 @@ export default function RentalAndPreloved() {
             });
     }, [id]);
 
-    const [wish, setWish] = useState(false);
+    const wishlistItems = useWishlistStore((state) => state.items);
+    const toggleWishlistFn = useWishlistStore((state) => state.toggleWishlist);
+    const productId = product?._id || product?.id || id;    
+    const wish = productId ? wishlistItems.includes(productId) : false;
     const [selectedWindow, setSelectedWindow] = useState("standard");
     const [selectedStart, setSelectedStart] = useState(null);
     const [selectedEnd, setSelectedEnd] = useState(null);
@@ -169,80 +175,26 @@ export default function RentalAndPreloved() {
         const eventDate = new Date(selectedStart);
         eventDate.setDate(eventDate.getDate() + 2);
 
-        const newItem = {
-            id: Date.now(),
+        const details = {
             type: "rental",
-
-            product,
-
-            booking: {
-                size: selectedSize || "M",
-
-                deliveryDate: formatDate(selectedStart),
-
-                eventDate: formatDate(eventDate),
-
-                returnDate: formatDate(selectedEnd),
-
-                rentalWindowDays:
-                    Math.ceil(
-                        (selectedEnd - selectedStart) /
-                        (1000 * 60 * 60 * 24)
-                    ) + 1
-            }
+            source: "rentandpreloved",
+            size: selectedSize || "M",
+            color: product?.colors?.[0]?.code || "",
+            measurements: null,
+            rentalDates: {
+                start: formatDate(selectedStart),
+                end: formatDate(selectedEnd),
+            },
+            price: selectedWindowData?.price || 0,
         };
 
-        navigate("/cart", {
-            state: {
-                newItem
-            }
-        });
+        addToCart(product, details);
+        navigate("/cart");
     };
 
     // Wishlist Handler
     const handleAddToWishlist = () => {
-        const wishlistItem = {
-            id: product.id,
-            title: product.title,
-            designer: product.designer,
-            image: product.images?.[0],
-            type: mode === "rent" ? "rental" : "preloved",
-
-            ...(mode === "rent"
-                ? {
-                    rentalPrice: selectedWindowData?.price,
-                    rentalDays: selectedWindowData?.days,
-                    size: selectedSize,
-                }
-                : {
-                    price,
-                    size: product.prelovedSize,
-                    condition: product.condition?.grade,
-                }),
-        };
-
-        const existingWishlist = JSON.parse(
-            localStorage.getItem("wishlist") || "[]"
-        );
-
-        const alreadyExists = existingWishlist.some(
-            (item) => item.id === wishlistItem.id
-        );
-
-        if (!alreadyExists) {
-            existingWishlist.push(wishlistItem);
-
-            localStorage.setItem(
-                "wishlist",
-                JSON.stringify(existingWishlist)
-            );
-        }
-
-        setWish(true);
-
-        setTimeout(() => {
-            navigate("/wishlist");
-        }, 300);
+      toggleWishlistFn(productId);
     };
 
     // WhatsApp Handler
@@ -285,38 +237,17 @@ Product ID: ${product.id}
 
     // Preloved Buy Now Handler
     const handleBuyNow = () => {
-        const cartItem = {
-            id: product.id,
-            title: product.title,
-            price: price,
-            size: product.prelovedSize,
-            image: product.images?.[0],
-            designer: product.designer,
+        const details = {
             type: "preloved",
-            condition: product.condition?.grade,
-            quantity: 1
+            source: "rentandpreloved",
+            size: sizes?.[0]?.label || product.prelovedSize || "Standard",
+            color: product?.colors?.[0]?.code || "",
+            measurements: null,
+            price: price,
         };
 
-        const existingCart = JSON.parse(
-            localStorage.getItem("cart") || "[]"
-        );
-
-        const existingIndex = existingCart.findIndex(
-            (item) => item.id === cartItem.id
-        );
-
-        if (existingIndex > -1) {
-            existingCart[existingIndex].quantity += 1;
-        } else {
-            existingCart.push(cartItem);
-        }
-
-        localStorage.setItem(
-            "cart",
-            JSON.stringify(existingCart)
-        );
-
-        navigate("/checkout");
+        addToCart(product, details);
+        navigate("/cart");
     };
 
 
@@ -349,8 +280,7 @@ Product ID: ${product.id}
                             images={product.images}
                             video={product.video}
                             variant={mode === "rent" ? "rent" : "preloved"}
-                            wish={wish}
-                            setWish={setWish}
+                            productId={productId}
                         />
 
                     </Col>
@@ -371,7 +301,7 @@ Product ID: ${product.id}
                                     </button>
                                 )}
 
-                                {product.modes?.buy?.enabled && (
+                                {product.modes?.preloved?.enabled && (
                                     <button
                                         className={`rap-toggle-btn ${mode === "buy" ? "active" : ""}`}
                                         onClick={() => setMode("buy")}
@@ -500,19 +430,21 @@ Product ID: ${product.id}
 
                                         {/* SIZE PILLS */}
                                         <div className="rap-rental-size-options">
-                                            {tempSizes.map((size, i) => (
+                                            {sizes.map((size, i) => {
+                                                const isAvail = size.available !== false;
+                                                return (
                                                 <button
                                                     key={i}
-                                                    disabled={!size.available}
-                                                    onClick={() => size.available && setSelectedSize(size.label)}
+                                                    disabled={!isAvail}
+                                                    onClick={() => isAvail && setSelectedSize(size.label)}
                                                     className={`rap-rental-size-pill
-        ${!size.available ? "unavailable" : ""}
+        ${!isAvail ? "unavailable" : ""}
         ${selectedSize === size.label ? "active" : ""}
       `}
                                                 >
                                                     {size.label}
                                                 </button>
-                                            ))}
+                                            )})}
                                         </div>
 
                                     </div>
@@ -787,9 +719,7 @@ Product ID: ${product.id}
 
                                         <div className="rap-preloved-size-pills">
                                             <span className="rap-preloved-size-pill active">
-                                                <span className="rap-preloved-size-pill active">
-                                                    {product.prelovedSize}
-                                                </span>
+                                                {sizes?.[0]?.label || product.prelovedSize || "Standard"}
                                             </span>
                                         </div>
 

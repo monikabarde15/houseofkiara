@@ -6,8 +6,8 @@
   align-items: flex-start;
   gap: 14px;
   padding: 15px 17px;
-  background: #FFFFFF;
-  border: 1px solid #EDE6DC;
+  background: #ffffff;
+  border: 1px solid #ede6dc;
   border-radius: 4px;
   margin-bottom: 15px;
 }
@@ -21,24 +21,29 @@
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  background: #F7F4EF;
-  color: #8A7E72;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  background: #f7f4ef;
+  color: #8a7e72;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 21px;
 }
-.ntf-lead-n--hot { background: #FDF1EE; color: #7A2E1D; }
+.ntf-lead-n--hot {
+  background: #fdf1ee;
+  color: #7a2e1d;
+}
 
 /* §5.3 — middle column */
-.ntf-lead-mid { flex: 1; }
+.ntf-lead-mid {
+  flex: 1;
+}
 
 .ntf-lead-t {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 17px;
-  color: #1A1612;
+  color: #1a1612;
 }
 .ntf-lead-s {
   font-size: 11.5px;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.6;
   margin-top: 3px;
 }
@@ -48,9 +53,9 @@
   margin-top: 6px;
   font-size: 11px;
   font-weight: 600;
-  color: #7A2E1D;
-  background: #FDF1EE;
-  border: 1px solid rgba(184, 92, 56, .3);
+  color: #7a2e1d;
+  background: #fdf1ee;
+  border: 1px solid rgba(184, 92, 56, 0.3);
   border-radius: 4px;
   padding: 5px 9px;
   display: inline-block;
@@ -65,11 +70,11 @@
 .ntf-new-n {
   font-size: 12.5px;
   font-weight: 700;
-  color: #B85C38;
+  color: #b85c38;
 }
 .ntf-seen {
   font-size: 10.5px;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.5;
 }
 .ntf-lead-r > button {

@@ -14,7 +14,7 @@
 .summary-line {
   flex: 1;
   height: 1px;
-  background: #F0EAE0;
+  background: #f0eae0;
   margin-left: 8px;
 }
 
@@ -30,12 +30,12 @@
   letter-spacing: 0.24em;
   text-transform: uppercase;
   font-weight: 400;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* Mode Colors */
 .summary-section-head.rental .summary-dot {
-  background: #6B7E5A;
+  background: #6b7e5a;
 }
 
 .summary-section-head.preloved .summary-dot {
@@ -43,7 +43,7 @@
 }
 
 .summary-section-head.new .summary-dot {
-  background: #2A4466;
+  background: #2a4466;
 }
 
 /* =========================================================
@@ -66,13 +66,13 @@
   .summary-label {
     font-size: 7.5px;
     letter-spacing: 0.22em;
-    color: #B0A898;
+    color: #b0a898;
   }
 
   .summary-line {
     flex: 1;
     height: 1px;
-    background: #F0EAE0;
+    background: #f0eae0;
     margin-left: 8px;
   }
 }

@@ -1,11 +1,11 @@
 /* Section 6.1 - Form Eyebrow */
 .hok-auth-form-eyebrow {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 400;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color:  #C9A96E;
+  color: #c9a96e;
   margin-bottom: 10px;
 }
 

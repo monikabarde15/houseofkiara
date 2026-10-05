@@ -2,8 +2,8 @@
 
 .profile-left-nav {
   margin: 0 20px 12px;
-  background: #FFFFFB;
-  border: 1px solid #E8E0D4;
+  background: #fffffb;
+  border: 1px solid #e8e0d4;
   border-radius: 11px;
   overflow: hidden;
 }
@@ -74,7 +74,7 @@
   width: 14px;
   height: 14px;
 
-  stroke: #8A7E72;
+  stroke: #8a7e72;
   fill: none;
 
   stroke-width: 1.5;
@@ -97,7 +97,7 @@
   font-size: 12.5px;
   font-weight: 400;
   line-height: 1.2;
-  color: #3C3529;
+  color: #3c3529;
 }
 
 .profile-left-nav-sub-label {
@@ -107,7 +107,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 9.5px;
   font-weight: 300;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* Right Side */
@@ -150,7 +150,7 @@
   font-size: 8px;
   font-weight: 500;
 
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .profile-left-badge.lb-red {
@@ -165,12 +165,12 @@
 
 .profile-left-badge.lb-red {
   background: var(--terracotta);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .profile-left-badge.lb-gold {
   background: var(--gold-deep);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .profile-left-badge.lb-submission {
@@ -184,7 +184,7 @@
   width: 11px;
   height: 11px;
 
-  stroke: #E8E0D4;
+  stroke: #e8e0d4;
   fill: none;
   stroke-width: 1.5;
 }

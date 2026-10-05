@@ -1,7 +1,7 @@
 // modals/ConfirmModal.tsx
-import React from 'react';
-import { Button } from '../components/Button';
-import './styles/ConfirmModal.css';
+import React from "react";
+import { Button } from "../components/Button";
+import "./styles/ConfirmModal.css";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -18,8 +18,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isOpen,
   title,
   message,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
   onConfirm,
   onCancel,
   isDestructive = false,
@@ -41,8 +41,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <Button variant="secondary" onClick={onCancel}>
             {cancelLabel}
           </Button>
-          <Button 
-            variant={isDestructive ? 'primary' : 'primary'} 
+          <Button
+            variant={isDestructive ? "primary" : "primary"}
             onClick={onConfirm}
           >
             {confirmLabel}

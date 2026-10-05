@@ -4,7 +4,7 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 6
    ======================================== */
 
-@import './styles/variables.css';
+@import "./styles/variables.css";
 
 .promotions-detail-view {
   padding: var(--promo-content-padding);

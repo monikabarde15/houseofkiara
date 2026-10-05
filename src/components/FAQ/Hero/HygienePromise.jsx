@@ -23,14 +23,11 @@ export default function HygienePromise({ onSelectQuestion }) {
           <em>before it reaches you, and again after every rental.</em>
         </p>
         <p className="promise-s">
-          Hygiene is something we take most seriously. Each piece is also inspected and pressed by our team before it is packed for you.
+          Hygiene is something we take most seriously. Each piece is also
+          inspected and pressed by our team before it is packed for you.
         </p>
       </div>
-      <button
-        type="button"
-        className="promise-go"
-        onClick={handleClick}
-      >
+      <button type="button" className="promise-go" onClick={handleClick}>
         How we keep pieces fresh
       </button>
     </div>

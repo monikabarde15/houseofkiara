@@ -6,12 +6,16 @@
   background: var(--warm-white);
   border-top: 2px solid var(--charcoal);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 20px 60px rgba(26,22,18,0.09), 0 4px 16px rgba(26,22,18,0.05);
+  box-shadow:
+    0 20px 60px rgba(26, 22, 18, 0.09),
+    0 4px 16px rgba(26, 22, 18, 0.05);
   z-index: 1000;
   opacity: 0;
   pointer-events: none;
   transform: translateY(-8px);
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
 .dropdown.open {
@@ -113,7 +117,6 @@
 
   margin: 12px 0;
 }
-
 
 .dd-link.bold {
   font-weight: 500;
@@ -249,53 +252,28 @@
 }
 
 .ci-a {
-  background: linear-gradient(
-    160deg,
-    #3c2410,
-    #1c0e06
-  );
+  background: linear-gradient(160deg, #3c2410, #1c0e06);
 }
 
 .ci-b {
-  background: linear-gradient(
-    160deg,
-    #28203c,
-    #10101c
-  );
+  background: linear-gradient(160deg, #28203c, #10101c);
 }
 
 .ci-c {
-  background: linear-gradient(
-    160deg,
-    #1a2c16,
-    #0a1408
-  );
+  background: linear-gradient(160deg, #1a2c16, #0a1408);
 }
 
 .ci-d {
-  background: linear-gradient(
-    160deg,
-    #2c1e28,
-    #160c14
-  );
+  background: linear-gradient(160deg, #2c1e28, #160c14);
 }
 
 .ci-e {
-  background: linear-gradient(
-    160deg,
-    #1e2c2a,
-    #0a1412
-  );
+  background: linear-gradient(160deg, #1e2c2a, #0a1412);
 }
 
 .ci-f {
-  background: linear-gradient(
-    160deg,
-    #2a1e14,
-    #140e08
-  );
+  background: linear-gradient(160deg, #2a1e14, #140e08);
 }
-
 
 /* ==========================================
    SECTION 8.2 — TABLET DROPDOWN

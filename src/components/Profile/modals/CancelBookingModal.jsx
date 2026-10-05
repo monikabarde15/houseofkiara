@@ -1,5 +1,5 @@
-import React from 'react';
-import { XCircle } from 'lucide-react';
+import React from "react";
+import { XCircle } from "lucide-react";
 import "../../../styles/Profile/modals/CancelBookingModal.css";
 
 const CancelBookingModal = ({ isOpen, onClose, onConfirm, bookingDetails }) => {
@@ -14,8 +14,9 @@ const CancelBookingModal = ({ isOpen, onClose, onConfirm, bookingDetails }) => {
         </div>
         <div className="profile-cancel-title">Cancel Booking?</div>
         <div className="profile-cancel-body">
-          Cancelling this booking will release the dates. 
-          {bookingDetails?.fee && ` Refund of ₹${bookingDetails.fee.toLocaleString()} will be processed as per cancellation policy.`}
+          Cancelling this booking will release the dates.
+          {bookingDetails?.fee &&
+            ` Refund of ₹${bookingDetails.fee.toLocaleString()} will be processed as per cancellation policy.`}
         </div>
         <div className="profile-cancel-buttons">
           <button className="profile-cancel-btn-cancel" onClick={onClose}>

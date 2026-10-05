@@ -8,7 +8,7 @@ const initialCategories = [
   "Sherwani",
   "Saree",
   "Gown",
-  "Kurta Set"
+  "Kurta Set",
 ];
 
 const ensureSeedData = async () => {
@@ -19,7 +19,7 @@ const ensureSeedData = async () => {
       const docs = initialCategories.map((name, i) => ({
         categoryId: `CAT-${Date.now() + i}`,
         name,
-        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
       }));
       await Category.insertMany(docs);
     }
@@ -36,13 +36,13 @@ export const getCategories = async (req, res) => {
     const docs = await Category.find({}).sort({ name: 1 });
     return res.json({
       success: true,
-      data: docs.map(doc => ({
+      data: docs.map((doc) => ({
         id: doc.categoryId || doc._id.toString(),
         name: doc.name,
         slug: doc.slug,
         image: doc.image || "",
-        description: doc.description || ""
-      }))
+        description: doc.description || "",
+      })),
     });
   } catch (err) {
     console.error("🔥 Error in getCategories:", err);
@@ -54,12 +54,15 @@ export const getCategories = async (req, res) => {
 export const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
-    if (!name) return res.status(400).json({ success: false, message: "Category name is required" });
-    
+    if (!name)
+      return res
+        .status(400)
+        .json({ success: false, message: "Category name is required" });
+
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    
+
     const existing = await Category.findOne({
-      $or: [{ name: { $regex: new RegExp(`^${name}$`, "i") } }, { slug }]
+      $or: [{ name: { $regex: new RegExp(`^${name}$`, "i") } }, { slug }],
     });
 
     if (existing) {
@@ -70,15 +73,15 @@ export const createCategory = async (req, res) => {
           name: existing.name,
           slug: existing.slug,
           image: existing.image || "",
-          description: existing.description || ""
-        }
+          description: existing.description || "",
+        },
       });
     }
 
     const doc = await Category.create({
       categoryId: `CAT-${Date.now()}`,
       name: name.trim(),
-      slug
+      slug,
     });
 
     return res.status(201).json({
@@ -88,8 +91,8 @@ export const createCategory = async (req, res) => {
         name: doc.name,
         slug: doc.slug,
         image: doc.image || "",
-        description: doc.description || ""
-      }
+        description: doc.description || "",
+      },
     });
   } catch (err) {
     console.error("🔥 Error in createCategory:", err);
@@ -103,8 +106,13 @@ export const updateCategory = async (req, res) => {
     const { id } = req.params;
     const { name, image, description } = req.body;
 
-    const doc = await Category.findOne({ $or: [{ categoryId: id }, { _id: id.length === 24 ? id : null }] });
-    if (!doc) return res.status(404).json({ success: false, message: "Category not found" });
+    const doc = await Category.findOne({
+      $or: [{ categoryId: id }, { _id: id.length === 24 ? id : null }],
+    });
+    if (!doc)
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
 
     if (name) {
       doc.name = name.trim();
@@ -122,8 +130,8 @@ export const updateCategory = async (req, res) => {
         name: doc.name,
         slug: doc.slug,
         image: doc.image || "",
-        description: doc.description || ""
-      }
+        description: doc.description || "",
+      },
     });
   } catch (err) {
     console.error("🔥 Error in updateCategory:", err);
@@ -135,8 +143,13 @@ export const updateCategory = async (req, res) => {
 export const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await Category.findOneAndDelete({ $or: [{ categoryId: id }, { _id: id.length === 24 ? id : null }] });
-    if (!deleted) return res.status(404).json({ success: false, message: "Category not found" });
+    const deleted = await Category.findOneAndDelete({
+      $or: [{ categoryId: id }, { _id: id.length === 24 ? id : null }],
+    });
+    if (!deleted)
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
 
     return res.json({ success: true, message: "Category deleted" });
   } catch (err) {

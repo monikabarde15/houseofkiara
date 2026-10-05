@@ -8,7 +8,7 @@
   margin-bottom: 20px;
   padding-bottom: 12px;
 
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 /* Left */
@@ -19,13 +19,13 @@
   font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .profile-section-label-count {
   font-weight: 300;
   letter-spacing: 0;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* Right Link */
@@ -38,7 +38,7 @@
 
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
-  color: #A8844A;
+  color: #a8844a;
 
   text-decoration: none;
   cursor: pointer;
@@ -47,7 +47,7 @@
 }
 
 .profile-section-label-link:hover {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .profile-section-label-link svg {
@@ -59,4 +59,3 @@
 
   stroke-width: 1.5;
 }
-

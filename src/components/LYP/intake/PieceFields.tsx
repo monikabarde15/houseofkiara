@@ -1,17 +1,17 @@
 // src/components/LYP/intake/PieceFields.tsx
 
-import React from 'react';
-import { Channel, Intent } from '../types/submission.types';
-import { 
-  CHANNELS, 
-  INTENTS, 
-  CATEGORIES, 
-  COLOURS, 
-  SIZES, 
-  TIMES_WORN, 
-  SELF_GRADE_OPTIONS 
-} from '../utils/constants';
-import './styles/PieceFields.css';
+import React from "react";
+import { Channel, Intent } from "../types/submission.types";
+import {
+  CHANNELS,
+  INTENTS,
+  CATEGORIES,
+  COLOURS,
+  SIZES,
+  TIMES_WORN,
+  SELF_GRADE_OPTIONS,
+} from "../utils/constants";
+import "./styles/PieceFields.css";
 
 interface PieceFieldsProps {
   channel: Channel;
@@ -88,13 +88,15 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
           <label className="fld-label">Piece *</label>
           <input
             type="text"
-            className={`fld-input ${errors.piece ? 'fld-error' : ''}`}
+            className={`fld-input ${errors.piece ? "fld-error" : ""}`}
             value={piece}
             onChange={(e) => onPieceChange(e.target.value)}
             placeholder="e.g. Emerald Silk Anarkali"
           />
           {errors.piece && <div className="fld-error-text">{errors.piece}</div>}
-          <div className="fhint">Working name for the desk — the storefront title is set at approval.</div>
+          <div className="fhint">
+            Working name for the desk — the storefront title is set at approval.
+          </div>
         </div>
 
         {/* Piece Type */}
@@ -106,11 +108,15 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
             onChange={(e) => onCategoryChange(e.target.value)}
           >
             <option value="">Select type</option>
-            {CATEGORIES.map(c => (
-              <option key={c} value={c}>{c}</option>
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
-          <div className="fhint">Same list as the website form — one vocabulary everywhere.</div>
+          <div className="fhint">
+            Same list as the website form — one vocabulary everywhere.
+          </div>
         </div>
 
         {/* Designer / Brand */}
@@ -131,7 +137,8 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
               </span>
             ) : (
               <span className="designer-status tchip warn">
-                New label — recorded as told; files under Unmapped Labels until promoted from Designers
+                New label — recorded as told; files under Unmapped Labels until
+                promoted from Designers
               </span>
             )}
           </div>
@@ -146,8 +153,10 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
             onChange={(e) => onColourChange(e.target.value)}
           >
             <option value="">Select colour</option>
-            {COLOURS.map(c => (
-              <option key={c} value={c}>{c}</option>
+            {COLOURS.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
         </div>
@@ -161,8 +170,10 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
             onChange={(e) => onSizeChange(e.target.value)}
           >
             <option value="">Select size</option>
-            {SIZES.map(s => (
-              <option key={s} value={s}>{s}</option>
+            {SIZES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
         </div>
@@ -176,15 +187,19 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
             onChange={(e) => onTimesWornChange(e.target.value)}
           >
             <option value="">Select</option>
-            {TIMES_WORN.map(t => (
-              <option key={t} value={t}>{t}</option>
+            {TIMES_WORN.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </select>
         </div>
 
         {/* Original Purchase Price */}
         <div className="fld">
-          <label className="fld-label">Original Purchase Price — as claimed</label>
+          <label className="fld-label">
+            Original Purchase Price — as claimed
+          </label>
           <input
             type="text"
             className="fld-input"
@@ -215,8 +230,10 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
             value={intent}
             onChange={(e) => onIntentChange(e.target.value as Intent)}
           >
-            {INTENTS.map(i => (
-              <option key={i} value={i}>{i}</option>
+            {INTENTS.map((i) => (
+              <option key={i} value={i}>
+                {i}
+              </option>
             ))}
           </select>
         </div>
@@ -235,7 +252,9 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
 
         {/* Expectation — Outright */}
         <div className="fld">
-          <label className="fld-label">Expectation — outright (if shared)</label>
+          <label className="fld-label">
+            Expectation — outright (if shared)
+          </label>
           <input
             type="text"
             className="fld-input"
@@ -254,26 +273,30 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
             onChange={(e) => onSelfGradeChange(e.target.value)}
           >
             <option value="">— not asked / not shared</option>
-            {SELF_GRADE_OPTIONS.map(g => (
-              <option key={g} value={g}>{g}</option>
+            {SELF_GRADE_OPTIONS.map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
             ))}
           </select>
-          <div className="fhint">The form's own options — one vocabulary, both directions.</div>
+          <div className="fhint">
+            The form's own options — one vocabulary, both directions.
+          </div>
         </div>
 
         {/* Our first read — grade */}
         <div className="fld">
           <label className="fld-label">Our first read — grade</label>
-          <select
-            className="fld-input"
-            value="Good"
-            onChange={() => {}}
-          >
-            {SELF_GRADE_OPTIONS.map(g => (
-              <option key={g} value={g}>{g}</option>
+          <select className="fld-input" value="Good" onChange={() => {}}>
+            {SELF_GRADE_OPTIONS.map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
             ))}
           </select>
-          <div className="fhint">Fair → rental-only. The formal grade lands at authentication.</div>
+          <div className="fhint">
+            Fair → rental-only. The formal grade lands at authentication.
+          </div>
         </div>
 
         {/* Channel */}
@@ -284,8 +307,10 @@ export const PieceFields: React.FC<PieceFieldsProps> = ({
             value={channel}
             onChange={(e) => onChannelChange(e.target.value as Channel)}
           >
-            {CHANNELS.filter(c => c !== 'Website').map(c => (
-              <option key={c} value={c}>{c}</option>
+            {CHANNELS.filter((c) => c !== "Website").map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
         </div>

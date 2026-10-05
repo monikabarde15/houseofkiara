@@ -1,9 +1,7 @@
 import RecommendationCard from "../cards/RecommendationCard";
 import "../../../styles/wishlist/sections/wishlist-recommendations.css";
 
-const WishlistRecommendations = ({
-  onShowToast,
-}) => {
+const WishlistRecommendations = ({ onShowToast }) => {
   const recommendations = [
     {
       id: 1,
@@ -53,9 +51,7 @@ const WishlistRecommendations = ({
 
           <h2 className="desk-wishlist-rec-title">
             You may also{" "}
-            <span className="desk-wishlist-rec-title-italic">
-              love
-            </span>
+            <span className="desk-wishlist-rec-title-italic">love</span>
           </h2>
         </div>
 
@@ -73,9 +69,7 @@ const WishlistRecommendations = ({
             key={product.id}
             product={product}
             type={product.type}
-            onSaveToWishlist={
-              handleSaveToWishlist
-            }
+            onSaveToWishlist={handleSaveToWishlist}
             onShowToast={onShowToast}
           />
         ))}

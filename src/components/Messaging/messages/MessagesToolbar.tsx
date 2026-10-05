@@ -1,8 +1,8 @@
 // messages/MessagesToolbar.tsx
-import React from 'react';
-import { Toolbar, SearchField, FilterSelect } from '../components/Toolbar';
-import { Button } from '../components/Button';
-import './styles/MessagesToolbar.css';
+import React from "react";
+import { Toolbar, SearchField, FilterSelect } from "../components/Toolbar";
+import { Button } from "../components/Button";
+import "./styles/MessagesToolbar.css";
 
 interface MessagesToolbarProps {
   search: string;
@@ -18,9 +18,9 @@ interface MessagesToolbarProps {
   loading?: boolean;
 }
 
-const AUDIENCE_OPTIONS = ['Everyone', 'Customer', 'Lister', 'You'];
-const TYPE_OPTIONS = ['Required and optional', 'Required', 'Marketing'];
-const STATUS_OPTIONS = ['Any status', 'Live', 'Paused', 'Not written'];
+const AUDIENCE_OPTIONS = ["Everyone", "Customer", "Lister", "You"];
+const TYPE_OPTIONS = ["Required and optional", "Required", "Marketing"];
+const STATUS_OPTIONS = ["Any status", "Live", "Paused", "Not written"];
 
 export const MessagesToolbar: React.FC<MessagesToolbarProps> = ({
   search,

@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 const useCheckoutStore = create((set) => ({
   contact: {
@@ -13,8 +13,10 @@ const useCheckoutStore = create((set) => ({
     state: "Madhya Pradesh",
     pin: "",
   },
+  paymentMethod: "upi",
   setContact: (data) => set({ contact: data }),
   setAddress: (data) => set({ address: data }),
+  setPaymentMethod: (method) => set({ paymentMethod: method }),
 }));
 
 export default useCheckoutStore;

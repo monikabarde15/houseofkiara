@@ -1,16 +1,21 @@
-import React, { useEffect } from 'react';
-import { XCircle } from 'lucide-react';
+import React, { useEffect } from "react";
+import { XCircle } from "lucide-react";
 import "../../../../styles/Profile/mobile/modals/MobileCancelBookingModal.css";
 
-const MobileCancelBookingModal = ({ isOpen, onClose, onConfirm, bookingDetails }) => {
+const MobileCancelBookingModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  bookingDetails,
+}) => {
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -25,13 +30,17 @@ const MobileCancelBookingModal = ({ isOpen, onClose, onConfirm, bookingDetails }
         </div>
         <div className="profile-mobile-cancel-title">Cancel Booking?</div>
         <div className="profile-mobile-cancel-body">
-          Cancellation policy applies. Refund eligibility depends on how far in advance you cancel.
+          Cancellation policy applies. Refund eligibility depends on how far in
+          advance you cancel.
         </div>
         <div className="profile-mobile-cancel-buttons">
           <button className="profile-mobile-cancel-btn-keep" onClick={onClose}>
             Keep Booking
           </button>
-          <button className="profile-mobile-cancel-btn-confirm" onClick={onConfirm}>
+          <button
+            className="profile-mobile-cancel-btn-confirm"
+            onClick={onConfirm}
+          >
             Yes, Cancel Booking
           </button>
         </div>

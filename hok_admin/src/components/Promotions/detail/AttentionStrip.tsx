@@ -4,9 +4,9 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.2
    ======================================== */
 
-import React from 'react';
-import './styles/AttentionStrip.css';
-import { AttentionFlag } from '../utils/derived';
+import React from "react";
+import "./styles/AttentionStrip.css";
+import { AttentionFlag } from "../utils/derived";
 
 interface AttentionStripProps {
   flags: AttentionFlag[];
@@ -31,11 +31,15 @@ export const AttentionStrip: React.FC<AttentionStripProps> = ({
   return (
     <div className="attention-strip">
       <span className="attention-strip__label">
-        {hasFlags ? 'Needs attention' : 'Snoozed'}
+        {hasFlags ? "Needs attention" : "Snoozed"}
       </span>
 
-      {flags.map(flag => (
-        <span key={flag.key} className="attention-strip__flag" title={flag.trigger}>
+      {flags.map((flag) => (
+        <span
+          key={flag.key}
+          className="attention-strip__flag"
+          title={flag.trigger}
+        >
           {flag.fullSentence}
           <span className="attention-strip__flag-arrow"> →</span>
           <button
@@ -51,7 +55,10 @@ export const AttentionStrip: React.FC<AttentionStripProps> = ({
       {hasSnoozed && (
         <span className="attention-strip__snoozed">
           {snoozedCount} snoozed
-          <button className="attention-strip__snoozed-restore" onClick={onRestore}>
+          <button
+            className="attention-strip__snoozed-restore"
+            onClick={onRestore}
+          >
             restore
           </button>
         </span>

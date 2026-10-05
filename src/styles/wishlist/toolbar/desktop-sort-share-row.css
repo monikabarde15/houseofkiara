@@ -22,7 +22,7 @@
   font-size: 9px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .desktop-sort-share-row__select-wrapper {
@@ -35,10 +35,10 @@
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.01em;
-  color: #1A1612;
-  background: #FFFEFB;
+  color: #1a1612;
+  background: #fffefb;
   border: none;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
   padding: 3px 22px 3px 0;
   appearance: none;
   cursor: pointer;
@@ -46,7 +46,7 @@
 }
 
 .desktop-sort-share-row__select:hover {
-  border-bottom: 1px solid #C9A96E;
+  border-bottom: 1px solid #c9a96e;
 }
 
 .desktop-sort-share-row__chevron {
@@ -65,16 +65,16 @@
 /* Options styling */
 .desktop-sort-share-row__select option {
   padding: 12px 24px;
-  background: #FAF7F2;
+  background: #faf7f2;
   font-family: Georgia, serif;
   font-size: 15px;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .desktop-sort-share-row__select option:checked {
-  background: #F5EDD8 !important;
-  background: linear-gradient(#F5EDD8, #F5EDD8) !important;
-  color: #1A1612;
+  background: #f5edd8 !important;
+  background: linear-gradient(#f5edd8, #f5edd8) !important;
+  color: #1a1612;
 }
 
 /* Section 5.5: Share Button */
@@ -91,12 +91,12 @@
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   transition: color 0.2s;
 }
 
 .desktop-sort-share-row__share:hover {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .desktop-sort-share-row__share svg {

@@ -1,50 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import FormEyebrow from '../ui/FormEyebrow';
-import FormHeading from '../ui/FormHeading';
-import FormSubText from '../ui/FormSubText';
-import PasswordInput from '../ui/PasswordInput';
-import PasswordStrengthMeter from '../ui/PasswordStrengthMeter';
-import PrimaryButton from '../ui/PrimaryButton';
-import FormAlert from '../ui/FormAlert';
-import '../../../styles/Auth/screens/ResetPasswordScreen.css';
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import FormEyebrow from "../ui/FormEyebrow";
+import FormHeading from "../ui/FormHeading";
+import FormSubText from "../ui/FormSubText";
+import PasswordInput from "../ui/PasswordInput";
+import PasswordStrengthMeter from "../ui/PasswordStrengthMeter";
+import PrimaryButton from "../ui/PrimaryButton";
+import FormAlert from "../ui/FormAlert";
+import "../../../styles/Auth/screens/ResetPasswordScreen.css";
 
 const ResetPasswordScreen = ({ switchScreen, userData = {} }) => {
   const [searchParams] = useSearchParams();
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [newPasswordError, setNewPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
-  const [generalError, setGeneralError] = useState('');
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [newPasswordError, setNewPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const resetToken =
     userData?.token ||
     userData?.resetToken ||
-    searchParams.get('token') ||
-    searchParams.get('resetToken') ||
-    '';
+    searchParams.get("token") ||
+    searchParams.get("resetToken") ||
+    "";
 
   useEffect(() => {
     if (!resetToken) {
       setGeneralError(
-        'Password reset link is invalid or missing. Please request a new link from the forgot password page.'
+        "Password reset link is invalid or missing. Please request a new link from the forgot password page.",
       );
     } else {
-      setGeneralError('');
+      setGeneralError("");
     }
   }, [resetToken]);
 
   // Validate new password (≥ 8 characters)
   const validateNewPassword = () => {
     if (!newPassword) {
-      setNewPasswordError('Password must be at least 8 characters.');
+      setNewPasswordError("Password must be at least 8 characters.");
       return false;
     } else if (newPassword.length < 8) {
-      setNewPasswordError('Password must be at least 8 characters.');
+      setNewPasswordError("Password must be at least 8 characters.");
       return false;
     } else {
-      setNewPasswordError('');
+      setNewPasswordError("");
       return true;
     }
   };
@@ -52,13 +52,13 @@ const ResetPasswordScreen = ({ switchScreen, userData = {} }) => {
   // Validate confirm password (must match new password)
   const validateConfirmPassword = () => {
     if (!confirmPassword) {
-      setConfirmPasswordError('Passwords do not match.');
+      setConfirmPasswordError("Passwords do not match.");
       return false;
     } else if (confirmPassword !== newPassword) {
-      setConfirmPasswordError('Passwords do not match.');
+      setConfirmPasswordError("Passwords do not match.");
       return false;
     } else {
-      setConfirmPasswordError('');
+      setConfirmPasswordError("");
       return true;
     }
   };
@@ -67,19 +67,19 @@ const ResetPasswordScreen = ({ switchScreen, userData = {} }) => {
   const handleNewPasswordChange = (value) => {
     setNewPassword(value);
     if (newPasswordError) {
-      setNewPasswordError('');
-      setGeneralError('');
+      setNewPasswordError("");
+      setGeneralError("");
     }
     if (confirmPasswordError && confirmPassword === value) {
-      setConfirmPasswordError('');
+      setConfirmPasswordError("");
     }
   };
 
   const handleConfirmPasswordChange = (value) => {
     setConfirmPassword(value);
     if (confirmPasswordError) {
-      setConfirmPasswordError('');
-      setGeneralError('');
+      setConfirmPasswordError("");
+      setGeneralError("");
     }
   };
 
@@ -92,25 +92,27 @@ const ResetPasswordScreen = ({ switchScreen, userData = {} }) => {
 
   // Handle form submission
   const handleSetNewPassword = async () => {
-    setGeneralError('');
+    setGeneralError("");
     const isValid = validateAllFields();
-    
+
     if (!isValid) {
       return;
     }
 
     if (!resetToken) {
-      setGeneralError('Password reset link is invalid or missing. Please request a new link.');
+      setGeneralError(
+        "Password reset link is invalid or missing. Please request a new link.",
+      );
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/customer/auth/reset-password', {
-        method: 'POST',
+      const response = await fetch("/api/customer/auth/reset-password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           token: resetToken,
@@ -122,19 +124,24 @@ const ResetPasswordScreen = ({ switchScreen, userData = {} }) => {
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.success) {
-        setNewPassword('');
-        setConfirmPassword('');
+        setNewPassword("");
+        setConfirmPassword("");
         // Navigate to Success Screen
-        switchScreen('success', {
+        switchScreen("success", {
           userData: {
-            flow: 'reset',
+            flow: "reset",
           },
         });
       } else {
-        setGeneralError(result.message || 'Password reset token is invalid or has expired. Please request a new one.');
+        setGeneralError(
+          result.message ||
+            "Password reset token is invalid or has expired. Please request a new one.",
+        );
       }
     } catch (err) {
-      setGeneralError('Network error. Please check your internet connection and try again.');
+      setGeneralError(
+        "Network error. Please check your internet connection and try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -143,7 +150,7 @@ const ResetPasswordScreen = ({ switchScreen, userData = {} }) => {
   return (
     <div className="hok-auth-reset-screen">
       {/* Section 11 - No back link (accessed via email link) */}
-      
+
       <FormEyebrow text="NEW PASSWORD" />
       <FormHeading text="Create new " italicText="password" />
       <FormSubText>

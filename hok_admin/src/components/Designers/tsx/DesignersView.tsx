@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import Designers from './Designers';
-import DesignerEdit from './DesignerEdit';
-import { Designer } from '../types/designer.types';
-import * as designerApi from '../../../services/designerApi';
+import React, { useState, useEffect } from "react";
+import Designers from "./Designers";
+import DesignerEdit from "./DesignerEdit";
+import { Designer } from "../types/designer.types";
+import * as designerApi from "../../../services/designerApi";
 
 const emptyDesigner: Designer = {
-  id: '',
-  name: '',
-  bio: '',
-  slug: '',
-  type: 'Indie Designer',
-  joinedAt: new Date().toISOString().split('T')[0],
+  id: "",
+  name: "",
+  bio: "",
+  slug: "",
+  type: "Indie Designer",
+  joinedAt: new Date().toISOString().split("T")[0],
   isNewToHOK: true,
   isFeatured: false,
   featuredOrder: null,
   livePieces: 0,
   totalPieces: 0,
-  status: 'Active',
+  status: "Active",
 };
 
 interface DesignersViewProps {
@@ -35,13 +35,15 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
       const data = await designerApi.getDesigners();
       if (Array.isArray(data)) {
         // Filter out blank/corrupted designers that have no name
-        const validDesigners = data.filter(d => d && d.name && d.name.trim() !== '' && d.name !== 'undefined');
+        const validDesigners = data.filter(
+          (d) => d && d.name && d.name.trim() !== "" && d.name !== "undefined",
+        );
         setDesigners(validDesigners);
       } else {
         setDesigners([]);
       }
     } catch (err) {
-      console.warn('Backend designer API offline or empty:', err);
+      console.warn("Backend designer API offline or empty:", err);
       setDesigners([]);
     } finally {
       setLoading(false);
@@ -59,7 +61,8 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
     setIsCreating(false);
   };
 
-  const designerToEdit = selectedDesigner ?? (isCreating ? emptyDesigner : null);
+  const designerToEdit =
+    selectedDesigner ?? (isCreating ? emptyDesigner : null);
   const isEditing = !!designerToEdit;
 
   useEffect(() => {
@@ -70,16 +73,21 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
     try {
       if (isCreating || !updated.id) {
         const saved = await designerApi.createDesigner(updated);
-        setDesigners((prev) => [saved, ...prev.filter((d) => d.id !== saved.id)]);
+        setDesigners((prev) => [
+          saved,
+          ...prev.filter((d) => d.id !== saved.id),
+        ]);
         setSelectedId(saved.id);
         setIsCreating(false);
       } else {
         const saved = await designerApi.updateDesigner(updated.id, updated);
-        setDesigners((prev) => prev.map((d) => (d.id === saved.id ? saved : d)));
+        setDesigners((prev) =>
+          prev.map((d) => (d.id === saved.id ? saved : d)),
+        );
         setSelectedId(saved.id);
       }
     } catch (err) {
-      console.error('Failed to save designer via API:', err);
+      console.error("Failed to save designer via API:", err);
       const fallbackId = updated.id || `DES-${Date.now()}`;
       const withId: Designer = { ...updated, id: fallbackId };
       if (isCreating) {
@@ -87,7 +95,9 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
         setSelectedId(fallbackId);
         setIsCreating(false);
       } else {
-        setDesigners((prev) => prev.map((d) => (d.id === updated.id ? withId : d)));
+        setDesigners((prev) =>
+          prev.map((d) => (d.id === updated.id ? withId : d)),
+        );
       }
     }
   };
@@ -97,7 +107,7 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
     try {
       await designerApi.deleteDesigner(designerToEdit.id);
     } catch (err) {
-      console.error('Failed to delete merged designer via API:', err);
+      console.error("Failed to delete merged designer via API:", err);
     }
     setDesigners((prev) => prev.filter((d) => d.id !== designerToEdit.id));
     handleBack();
@@ -108,26 +118,28 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
     try {
       await designerApi.deleteDesigner(designerToEdit.id);
     } catch (err) {
-      console.error('Failed to delete designer via API:', err);
+      console.error("Failed to delete designer via API:", err);
     }
     setDesigners((prev) => prev.filter((d) => d.id !== designerToEdit.id));
     handleBack();
   };
 
   const handleToggleFeatured = async (id: string, isFeatured: boolean) => {
-    const designer = designers.find(d => d.id === id);
+    const designer = designers.find((d) => d.id === id);
     if (!designer) return;
-    const updated = { 
-      ...designer, 
-      isFeatured, 
-      featuredOrder: isFeatured ? (designers.filter(d=>d.isFeatured).length + 1) : null 
+    const updated = {
+      ...designer,
+      isFeatured,
+      featuredOrder: isFeatured
+        ? designers.filter((d) => d.isFeatured).length + 1
+        : null,
     };
     try {
       await designerApi.updateDesigner(id, updated);
-      setDesigners(prev => prev.map(d => d.id === id ? updated : d));
+      setDesigners((prev) => prev.map((d) => (d.id === id ? updated : d)));
     } catch (err) {
       console.error(err);
-      setDesigners(prev => prev.map(d => d.id === id ? updated : d));
+      setDesigners((prev) => prev.map((d) => (d.id === id ? updated : d)));
     }
   };
 

@@ -28,6 +28,6 @@
 
 .reason-notes__created-by {
   font-size: 11px;
-  color: var(--promo-muted, #6F675D);
+  color: var(--promo-muted, #6f675d);
   font-family: var(--promo-sans);
 }

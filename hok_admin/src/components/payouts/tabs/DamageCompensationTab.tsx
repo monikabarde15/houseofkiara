@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { Payout, AdminUser } from "../../../services/payoutApi";
 import * as payoutApi from "../../../services/payoutApi";
 
@@ -18,58 +18,87 @@ interface DamageCompensationTabProps {
   setPaid?: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function DamageCompensationTab({ payouts = [], setPayouts, setPending, setPaid }: DamageCompensationTabProps) {
-  const damagePayouts = payouts.filter(p => p.mode === 'Damage Comp.' || p.mode === 'Damage Compensation');
+export default function DamageCompensationTab({
+  payouts = [],
+  setPayouts,
+  setPending,
+  setPaid,
+}: DamageCompensationTabProps) {
+  const damagePayouts = payouts.filter(
+    (p) => p.mode === "Damage Comp." || p.mode === "Damage Compensation",
+  );
   const [assignees, setAssignees] = useState<string[]>([]);
 
   useEffect(() => {
-    payoutApi.getAdmins().then(admins => {
-      // Deduplicate admin names for a clean UI
-      const uniqueNames = Array.from(new Set(admins.map(a => a.name).filter(Boolean)));
-      if (uniqueNames.length === 0) uniqueNames.push('Master Admin');
-      setAssignees(uniqueNames);
-    }).catch(() => {});
+    payoutApi
+      .getAdmins()
+      .then((admins) => {
+        // Deduplicate admin names for a clean UI
+        const uniqueNames = Array.from(
+          new Set(admins.map((a) => a.name).filter(Boolean)),
+        );
+        if (uniqueNames.length === 0) uniqueNames.push("Master Admin");
+        setAssignees(uniqueNames);
+      })
+      .catch(() => {});
   }, []);
 
   const handleApprove = async (record: Payout, approvedBy: string) => {
     if (!setPayouts || !setPending || !setPaid) return;
     try {
-      const updated = await payoutApi.markPaid(record.id, { paidBy: approvedBy });
-      setPayouts(prev => prev.map(p => p.id === record.id ? updated : p));
-      setPending(value => Math.max(0, value - updated.listerShare));
-      setPaid(value => value + updated.listerShare);
+      const updated = await payoutApi.markPaid(record.id, {
+        paidBy: approvedBy,
+      });
+      setPayouts((prev) => prev.map((p) => (p.id === record.id ? updated : p)));
+      setPending((value) => Math.max(0, value - updated.listerShare));
+      setPaid((value) => value + updated.listerShare);
       toast.success("Payout saved successfully.");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to approve compensation payout');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Unable to approve compensation payout",
+      );
     }
   };
 
-  const handleSaveDraft = async (record: Payout, amtStr: string, pctStr: string, approvedBy: string) => {
+  const handleSaveDraft = async (
+    record: Payout,
+    amtStr: string,
+    pctStr: string,
+    approvedBy: string,
+  ) => {
     if (!setPayouts) return;
     try {
-      const parsedAmt = Number(amtStr.replace(/,/g, ''));
+      const parsedAmt = Number(amtStr.replace(/,/g, ""));
       const parsedPct = Number(pctStr);
       const transactionAmount = record.transactionAmount || 0;
-      
+
       const payload: Partial<Payout> = {
         listerShare: parsedAmt,
         payoutPercentage: parsedPct,
         submissionAssignedTo: approvedBy,
         hokCommission: Math.max(0, transactionAmount - parsedAmt),
       };
-      
+
       const updated = await payoutApi.updatePayout(record.id, payload);
-      setPayouts(prev => prev.map(p => p.id === record.id ? updated : p));
+      setPayouts((prev) => prev.map((p) => (p.id === record.id ? updated : p)));
       toast.success("Draft saved successfully.");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to save draft');
+      toast.error(
+        error instanceof Error ? error.message : "Unable to save draft",
+      );
     }
   };
 
   return (
     <div className="space-y-4 text-xs font-sans">
       <div className="rounded-md border border-[#EFE0B8] bg-[#FDF6E3] px-5 py-3.5 text-[13px] leading-relaxed text-[#6b5a2e]">
-        Damage compensation records are created automatically when a partial or full deposit deduction is processed on a returned rental. The lister is owed compensation because their piece was damaged during a customer's rental — HOK passes a portion of the deducted deposit to the lister, absorbing the rest.
+        Damage compensation records are created automatically when a partial or
+        full deposit deduction is processed on a returned rental. The lister is
+        owed compensation because their piece was damaged during a customer's
+        rental — HOK passes a portion of the deducted deposit to the lister,
+        absorbing the rest.
       </div>
 
       {damagePayouts.length === 0 && (
@@ -78,26 +107,52 @@ export default function DamageCompensationTab({ payouts = [], setPayouts, setPen
         </div>
       )}
 
-      {damagePayouts.map(r => (
-        <DamageCompCard key={r.id} record={r} assignees={assignees} onApprove={handleApprove} onSaveDraft={handleSaveDraft} />
+      {damagePayouts.map((r) => (
+        <DamageCompCard
+          key={r.id}
+          record={r}
+          assignees={assignees}
+          onApprove={handleApprove}
+          onSaveDraft={handleSaveDraft}
+        />
       ))}
     </div>
   );
 }
 
-function DamageCompCard({ record, assignees, onApprove, onSaveDraft }: { record: Payout; assignees: string[]; onApprove: (record: Payout, approvedBy: string) => void; onSaveDraft: (record: Payout, amtStr: string, pctStr: string, approvedBy: string) => void }) {
+function DamageCompCard({
+  record,
+  assignees,
+  onApprove,
+  onSaveDraft,
+}: {
+  record: Payout;
+  assignees: string[];
+  onApprove: (record: Payout, approvedBy: string) => void;
+  onSaveDraft: (
+    record: Payout,
+    amtStr: string,
+    pctStr: string,
+    approvedBy: string,
+  ) => void;
+}) {
   const [compPct, setCompPct] = useState("60");
   const [compAmt, setCompAmt] = useState((record.listerShare ?? 0).toString());
   const [approvedBy, setApprovedBy] = useState(
-    record.submissionAssignedTo || (assignees.length > 0 ? assignees[0] : "Unassigned")
+    record.submissionAssignedTo ||
+      (assignees.length > 0 ? assignees[0] : "Unassigned"),
   );
-  const [reason, setReason] = useState("Damage compensation generated automatically.");
+  const [reason, setReason] = useState(
+    "Damage compensation generated automatically.",
+  );
 
   const handleHold = () => {
-    toast("Payout placed on hold for review.", { icon: '⏸️' });
+    toast("Payout placed on hold for review.", { icon: "⏸️" });
   };
 
-  const transactionVal = record.transactionAmount || ((record.listerShare ?? 0) + (record.hokCommission ?? 0));
+  const transactionVal =
+    record.transactionAmount ||
+    (record.listerShare ?? 0) + (record.hokCommission ?? 0);
 
   return (
     <div className="overflow-hidden rounded-md border border-[#E7CBC0] bg-white shadow-sm">
@@ -106,13 +161,18 @@ function DamageCompCard({ record, assignees, onApprove, onSaveDraft }: { record:
         <WhatsAppIcon />
         <span className="text-[#D4A574]">·</span>
         <span className="font-medium text-[#B45309]">{record.productName}</span>
-        <span className="rounded bg-[#FEF3C7] px-2 py-0.5 text-xs font-semibold text-[#B45309]">Damage Comp.</span>
-        <span className="ml-auto text-sm text-[#9A3412]">due {new Date(record.dueDate).toLocaleDateString()}</span>
+        <span className="rounded bg-[#FEF3C7] px-2 py-0.5 text-xs font-semibold text-[#B45309]">
+          Damage Comp.
+        </span>
+        <span className="ml-auto text-sm text-[#9A3412]">
+          due {new Date(record.dueDate).toLocaleDateString()}
+        </span>
       </div>
 
       <div className="p-6">
         <div className="mb-4 rounded-md border border-[#EFE8D8] bg-[#FAF5EB] p-3.5 text-xs leading-relaxed text-[#524B45]">
-          Customer deposit deduction was applied for damage. Review the compensation split.
+          Customer deposit deduction was applied for damage. Review the
+          compensation split.
         </div>
         <p className="mb-1 text-xs font-semibold text-[#B88E36] hover:underline cursor-pointer">
           Related order: {record.orderId} →
@@ -122,44 +182,75 @@ function DamageCompCard({ record, assignees, onApprove, onSaveDraft }: { record:
           {/* Left Column */}
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">TRANSACTION VALUE</label>
-              <div className="text-2xl font-bold text-[#1E1412]">₹{transactionVal.toLocaleString('en-IN')}</div>
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
+                TRANSACTION VALUE
+              </label>
+              <div className="text-2xl font-bold text-[#1E1412]">
+                ₹{transactionVal.toLocaleString("en-IN")}
+              </div>
             </div>
 
             <div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">COMPENSATION %</label>
-                  <input type="text" value={compPct} onChange={(e) => setCompPct(e.target.value)} className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none" />
+                  <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
+                    COMPENSATION %
+                  </label>
+                  <input
+                    type="text"
+                    value={compPct}
+                    onChange={(e) => setCompPct(e.target.value)}
+                    className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
+                  />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">APPROVED BY</label>
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
+                APPROVED BY
+              </label>
               <select
                 value={approvedBy}
                 onChange={(e) => setApprovedBy(e.target.value)}
                 className="w-full rounded-md border border-[#FBD38D] bg-[#FFFDF5] px-3 py-2 text-sm font-medium text-[#742A2A] focus:border-[#DD6B20] focus:outline-none"
               >
-                {assignees.map(a => <option key={a} value={a}>{a}</option>)}
+                {assignees.map((a) => (
+                  <option key={a} value={a}>
+                    {a}
+                  </option>
+                ))}
               </select>
             </div>
-            
+
             <div>
-              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">REASON FOR THIS SPLIT</label>
-              <textarea rows={2} value={reason} onChange={(e) => setReason(e.target.value)} className="w-full rounded-md border border-[#FBD38D] bg-[#FFFDF5] p-3 text-sm text-[#742A2A] focus:border-[#DD6B20] focus:outline-none" />
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
+                REASON FOR THIS SPLIT
+              </label>
+              <textarea
+                rows={2}
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                className="w-full rounded-md border border-[#FBD38D] bg-[#FFFDF5] p-3 text-sm text-[#742A2A] focus:border-[#DD6B20] focus:outline-none"
+              />
             </div>
           </div>
 
           {/* Right Column */}
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#DD6B20]">COMP. AMOUNT (₹)</label>
-              <input type="text" value={compAmt} onChange={(e) => setCompAmt(e.target.value)} className="w-full rounded-md border border-transparent bg-[#FFFDF5] px-3 py-2 text-2xl font-bold text-[#DD6B20] focus:outline-none shadow-[0_0_0_1px_#DD6B20_inset]" />
+              <label className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-[#DD6B20]">
+                COMP. AMOUNT (₹)
+              </label>
+              <input
+                type="text"
+                value={compAmt}
+                onChange={(e) => setCompAmt(e.target.value)}
+                className="w-full rounded-md border border-transparent bg-[#FFFDF5] px-3 py-2 text-2xl font-bold text-[#DD6B20] focus:outline-none shadow-[0_0_0_1px_#DD6B20_inset]"
+              />
             </div>
 
-            {record.status === 'Paid' ? (
+            {record.status === "Paid" ? (
               <div className="flex flex-col gap-2 mt-auto">
                 <div className="flex-1 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-bold text-green-700">
                   APPROVED & PAID
@@ -167,8 +258,20 @@ function DamageCompCard({ record, assignees, onApprove, onSaveDraft }: { record:
               </div>
             ) : (
               <div className="flex gap-2 pt-2 mt-auto">
-                <button onClick={() => onSaveDraft(record, compAmt, compPct, approvedBy)} className="flex-1 rounded-md border border-[#FBD38D] bg-white px-4 py-3 text-sm font-medium text-[#DD6B20] transition hover:bg-[#FFFDF5]">Save Draft</button>
-                <button onClick={() => onApprove(record, approvedBy)} className="flex-1 rounded-md border border-transparent bg-[#9C4221] px-4 py-3 text-sm font-bold tracking-wide text-white shadow-md transition hover:bg-[#742A2A]">APPROVE COMP. ₹{Number(compAmt).toLocaleString('en-IN')}</button>
+                <button
+                  onClick={() =>
+                    onSaveDraft(record, compAmt, compPct, approvedBy)
+                  }
+                  className="flex-1 rounded-md border border-[#FBD38D] bg-white px-4 py-3 text-sm font-medium text-[#DD6B20] transition hover:bg-[#FFFDF5]"
+                >
+                  Save Draft
+                </button>
+                <button
+                  onClick={() => onApprove(record, approvedBy)}
+                  className="flex-1 rounded-md border border-transparent bg-[#9C4221] px-4 py-3 text-sm font-bold tracking-wide text-white shadow-md transition hover:bg-[#742A2A]"
+                >
+                  APPROVE COMP. ₹{Number(compAmt).toLocaleString("en-IN")}
+                </button>
               </div>
             )}
           </div>

@@ -3,12 +3,19 @@
 const promoCodeSchema = new mongoose.Schema(
   {
     code: { type: String, required: true, unique: true, trim: true },
-    type: { type: String, enum: ["percent", "flat", "freedel"], required: true },
+    type: {
+      type: String,
+      enum: ["percent", "flat", "freedel"],
+      required: true,
+    },
     value: { type: Number, required: true },
     maxDiscount: { type: Number, default: null },
     minOrder: { type: Number, default: null },
     modes: { type: Array, default: [] },
-    scope: { type: Object, default: { categories: [], designerIds: [], skus: [] } },
+    scope: {
+      type: Object,
+      default: { categories: [], designerIds: [], skus: [] },
+    },
     stacksWith: { type: Array, default: [] },
     audience: { type: String, enum: ["public", "private"], default: "public" },
     customerIds: { type: Array, default: [] },
@@ -29,7 +36,7 @@ const promoCodeSchema = new mongoose.Schema(
     supersedes: { type: String, default: null },
     supersededBy: { type: String, default: null },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("PromoCode", promoCodeSchema);

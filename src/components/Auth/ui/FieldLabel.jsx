@@ -1,5 +1,5 @@
-import React from 'react';
-import '../../../styles/Auth/ui/FieldLabel.css';
+import React from "react";
+import "../../../styles/Auth/ui/FieldLabel.css";
 
 const FieldLabel = ({ htmlFor, text, required = false }) => {
   return (

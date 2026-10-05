@@ -1,6 +1,6 @@
 // editor/AttachmentStrip.tsx
-import React, { useState } from 'react';
-import './styles/AttachmentStrip.css';
+import React, { useState } from "react";
+import "./styles/AttachmentStrip.css";
 
 interface AttachmentStripProps {
   documents: string[];
@@ -36,15 +36,25 @@ export const AttachmentStrip: React.FC<AttachmentStripProps> = ({
 
   return (
     <div className="msg-attachment-strip">
-      <svg className="msg-attachment-strip-icon" viewBox="0 0 12 12" fill="none" stroke="#8B6A1E" strokeWidth="2">
-        <path d="M1 6.5L5 10.5L11 2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <svg
+        className="msg-attachment-strip-icon"
+        viewBox="0 0 12 12"
+        fill="none"
+        stroke="#8B6A1E"
+        strokeWidth="2"
+      >
+        <path
+          d="M1 6.5L5 10.5L11 2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
       {documents.map((doc) => {
         const isCrossed = crossedOff.has(doc);
         return (
           <div
             key={doc}
-            className={`msg-attachment-doc ${isCrossed ? 'msg-attachment-doc--crossed' : ''}`}
+            className={`msg-attachment-doc ${isCrossed ? "msg-attachment-doc--crossed" : ""}`}
             onClick={() => onDocumentClick?.(doc)}
             title={doc}
           >
@@ -56,9 +66,9 @@ export const AttachmentStrip: React.FC<AttachmentStripProps> = ({
                   e.stopPropagation();
                   handleToggle(doc);
                 }}
-                title={isCrossed ? 'Put it back' : 'Do not send this one'}
+                title={isCrossed ? "Put it back" : "Do not send this one"}
               >
-                {isCrossed ? '○' : '×'}
+                {isCrossed ? "○" : "×"}
               </button>
             )}
           </div>

@@ -4,8 +4,8 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 4
    ======================================== */
 
-import React, { ReactNode } from 'react';
-import './styles/UI.css';
+import React, { ReactNode } from "react";
+import "./styles/UI.css";
 
 // --- Card (Section 4.1) ---
 interface CardProps {
@@ -15,7 +15,12 @@ interface CardProps {
   className?: string;
 }
 
-export const Card: React.FC<CardProps> = ({ header, footer, children, className = '' }) => (
+export const Card: React.FC<CardProps> = ({
+  header,
+  footer,
+  children,
+  className = "",
+}) => (
   <div className={`card ${className}`}>
     {header && <div className="card__header">{header}</div>}
     {children && <div className="card__body">{children}</div>}
@@ -25,15 +30,15 @@ export const Card: React.FC<CardProps> = ({ header, footer, children, className 
 
 // --- Button (Section 4.3) ---
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary';
-  size?: 'default' | 'small';
+  variant?: "primary" | "secondary";
+  size?: "default" | "small";
   children: ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = 'secondary',
-  size = 'default',
-  className = '',
+  variant = "secondary",
+  size = "default",
+  className = "",
   children,
   ...props
 }) => (
@@ -51,9 +56,9 @@ interface StatusBadgeProps {
 }
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
-  const isLive = status === 'Active';
+  const isLive = status === "Active";
   return (
-    <span className={`status-badge ${isLive ? 'live' : 'neutral'}`}>
+    <span className={`status-badge ${isLive ? "live" : "neutral"}`}>
       {status}
     </span>
   );
@@ -61,20 +66,16 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
 
 // --- Chip (Section 4.6) ---
 interface ChipProps {
-  variant?: 'default' | 'positive' | 'warning';
+  variant?: "default" | "positive" | "warning";
   children: ReactNode;
   className?: string;
 }
 
 export const Chip: React.FC<ChipProps> = ({
-  variant = 'default',
+  variant = "default",
   children,
-  className = '',
-}) => (
-  <span className={`chip chip--${variant} ${className}`}>
-    {children}
-  </span>
-);
+  className = "",
+}) => <span className={`chip chip--${variant} ${className}`}>{children}</span>;
 
 // --- Attention Pill (Section 4.6) ---
 interface AttentionPillProps {
@@ -87,7 +88,7 @@ interface AttentionPillProps {
 export const AttentionPill: React.FC<AttentionPillProps> = ({
   children,
   onClick,
-  className = '',
+  className = "",
   title,
 }) => (
   <span
@@ -120,11 +121,11 @@ export const Switch: React.FC<SwitchProps> = ({
   const displayLabel = label || (checked ? labelOn : labelOff);
 
   const renderLabel = (text: string) => {
-    if (text && text.includes(' — ')) {
-      const [boldPart, ...rest] = text.split(' — ');
+    if (text && text.includes(" — ")) {
+      const [boldPart, ...rest] = text.split(" — ");
       return (
         <>
-          <strong>{boldPart}</strong> — {rest.join(' — ')}
+          <strong>{boldPart}</strong> — {rest.join(" — ")}
         </>
       );
     }
@@ -135,7 +136,7 @@ export const Switch: React.FC<SwitchProps> = ({
     <div className="switch">
       <button
         type="button"
-        className={`switch__toggle ${checked ? 'on' : 'off'}`}
+        className={`switch__toggle ${checked ? "on" : "off"}`}
         onClick={() => onChange(!checked)}
         disabled={disabled}
       >
@@ -143,7 +144,9 @@ export const Switch: React.FC<SwitchProps> = ({
           <span className="switch__thumb" />
         </span>
       </button>
-      {displayLabel && <span className="switch__label">{renderLabel(displayLabel)}</span>}
+      {displayLabel && (
+        <span className="switch__label">{renderLabel(displayLabel)}</span>
+      )}
     </div>
   );
 };
@@ -160,7 +163,7 @@ export const Link: React.FC<LinkProps> = ({
   onClick,
   href,
   children,
-  className = '',
+  className = "",
 }) => {
   if (href) {
     return (
@@ -190,7 +193,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   hint,
   error,
   children,
-  className = '',
+  className = "",
 }) => (
   <div className={`form-field ${className}`}>
     <label className="form-field__label">{label}</label>
@@ -210,7 +213,7 @@ interface DefinitionRowProps {
 export const DefinitionRow: React.FC<DefinitionRowProps> = ({
   label,
   value,
-  className = '',
+  className = "",
 }) => (
   <div className={`definition-row ${className}`}>
     <span className="definition-row__label">{label}</span>
@@ -234,15 +237,17 @@ export const StatCard: React.FC<StatCardProps> = ({
   tooltip,
   active = false,
   onClick,
-  valueColor = '--charcoal',
+  valueColor = "--charcoal",
 }) => (
   <div
-    className={`stat-card ${active ? 'active' : ''}`}
+    className={`stat-card ${active ? "active" : ""}`}
     onClick={onClick}
     title={tooltip}
   >
     <div className="stat-card__label">{label}</div>
-    <div className={`stat-card__value stat-card__value--${valueColor.replace('#', '')}`}>
+    <div
+      className={`stat-card__value stat-card__value--${valueColor.replace("#", "")}`}
+    >
       {value}
     </div>
   </div>

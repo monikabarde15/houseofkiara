@@ -1,5 +1,5 @@
-import React from 'react';
-import '../../../styles/Auth/ui/FormHeading.css';
+import React from "react";
+import "../../../styles/Auth/ui/FormHeading.css";
 
 const FormHeading = ({ text, italicText }) => {
   return (

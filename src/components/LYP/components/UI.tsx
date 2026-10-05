@@ -1,28 +1,30 @@
 // src/components/LYP/components/UI.tsx
 
-import React from 'react';
-import './styles/UI.css';
+import React from "react";
+import "./styles/UI.css";
 
 // Button Component
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'gold' | 'sec' | 'danger' | 'wa';
-  size?: 'sm' | 'xs';
+  variant?: "gold" | "sec" | "danger" | "wa";
+  size?: "sm" | "xs";
   children: React.ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = 'sec',
+  variant = "sec",
   size,
   children,
-  className = '',
+  className = "",
   ...props
 }) => {
   const classes = [
-    'btn',
+    "btn",
     variant && `btn-${variant}`,
     size && `btn-${size}`,
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <button className={classes} {...props}>
@@ -34,7 +36,7 @@ export const Button: React.FC<ButtonProps> = ({
 // Status Chip Component
 interface StatusChipProps {
   status: string;
-  variant?: 's-live' | 's-pend' | 's-paused' | 's-draft' | 's-sold';
+  variant?: "s-live" | "s-pend" | "s-paused" | "s-draft" | "s-sold";
 }
 
 export const StatusChip: React.FC<StatusChipProps> = ({ status, variant }) => {
@@ -45,15 +47,15 @@ export const StatusChip: React.FC<StatusChipProps> = ({ status, variant }) => {
 // Helper for status class
 const getStatusClass = (status: string): string => {
   const mapping: Record<string, string> = {
-    'New': 's-pend',
-    'In Review': 's-pend',
-    'Awaiting Reply': 's-pend',
-    'Approved': 's-live',
-    'Rejected': 's-sold',
-    'Withdrawn': 's-draft',
-    'Expired': 's-draft'
+    New: "s-pend",
+    "In Review": "s-pend",
+    "Awaiting Reply": "s-pend",
+    Approved: "s-live",
+    Rejected: "s-sold",
+    Withdrawn: "s-draft",
+    Expired: "s-draft",
   };
-  return mapping[status] || 's-pend';
+  return mapping[status] || "s-pend";
 };
 
 // Channel Tag Component
@@ -63,12 +65,12 @@ interface ChannelTagProps {
 
 export const ChannelTag: React.FC<ChannelTagProps> = ({ channel }) => {
   const classMap: Record<string, string> = {
-    'WhatsApp': 't-r',
-    'Instagram': 't-p',
-    'Website': 't-n',
-    'In Person': 't-n'
+    WhatsApp: "t-r",
+    Instagram: "t-p",
+    Website: "t-n",
+    "In Person": "t-n",
   };
-  return <span className={`tag ${classMap[channel] || 't-n'}`}>{channel}</span>;
+  return <span className={`tag ${classMap[channel] || "t-n"}`}>{channel}</span>;
 };
 
 // SUB-ID Component
@@ -78,7 +80,11 @@ interface SubIdProps {
   className?: string;
 }
 
-export const SubId: React.FC<SubIdProps> = ({ subid, onClick, className = '' }) => {
+export const SubId: React.FC<SubIdProps> = ({
+  subid,
+  onClick,
+  className = "",
+}) => {
   return (
     <span className={`subid ${className}`} onClick={onClick}>
       {subid}
@@ -92,7 +98,7 @@ interface CardProps {
   className?: string;
 }
 
-export const Card: React.FC<CardProps> = ({ children, className = '' }) => {
+export const Card: React.FC<CardProps> = ({ children, className = "" }) => {
   return <div className={`card ${className}`}>{children}</div>;
 };
 
@@ -103,7 +109,11 @@ interface CardHeaderProps {
   right?: React.ReactNode;
 }
 
-export const CardHeader: React.FC<CardHeaderProps> = ({ title, subtitle, right }) => {
+export const CardHeader: React.FC<CardHeaderProps> = ({
+  title,
+  subtitle,
+  right,
+}) => {
   return (
     <div className="card-hd">
       <div>
@@ -121,7 +131,10 @@ interface CardBodyProps {
   className?: string;
 }
 
-export const CardBody: React.FC<CardBodyProps> = ({ children, className = '' }) => {
+export const CardBody: React.FC<CardBodyProps> = ({
+  children,
+  className = "",
+}) => {
   return <div className={`card-bd ${className}`}>{children}</div>;
 };
 
@@ -140,35 +153,31 @@ interface AgeChipProps {
   className?: string;
 }
 
-export const AgeChip: React.FC<AgeChipProps> = ({ text, className = '' }) => {
+export const AgeChip: React.FC<AgeChipProps> = ({ text, className = "" }) => {
   return <span className={`agec ${className}`}>{text}</span>;
 };
 
 // Tooltip Chip
 interface TChipProps {
   children: React.ReactNode;
-  variant?: 'ok' | 'warn' | 'bad';
+  variant?: "ok" | "warn" | "bad";
   onClick?: () => void;
   title?: string;
 }
 
-export const TChip: React.FC<TChipProps> = ({ 
-  children, 
-  variant = 'ok', 
-  onClick, 
-  title 
+export const TChip: React.FC<TChipProps> = ({
+  children,
+  variant = "ok",
+  onClick,
+  title,
 }) => {
   const classMap: Record<string, string> = {
-    'ok': 'tchip ok',
-    'warn': 'tchip warn',
-    'bad': 'tchip bad'
+    ok: "tchip ok",
+    warn: "tchip warn",
+    bad: "tchip bad",
   };
   return (
-    <span 
-      className={classMap[variant]} 
-      onClick={onClick}
-      title={title}
-    >
+    <span className={classMap[variant]} onClick={onClick} title={title}>
       {children}
     </span>
   );

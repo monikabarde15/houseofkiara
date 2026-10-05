@@ -10,20 +10,15 @@ const MobileHowItWorks = () => {
   const navigate = useNavigate();
 
   const steps =
-    activeTab === "shop"
-      ? howItWorksData.shopSteps
-      : howItWorksData.sellSteps;
+    activeTab === "shop" ? howItWorksData.shopSteps : howItWorksData.sellSteps;
 
-  
   const handleListYourPiece = () => {
-    navigate("/list-your-piece")
-  }
+    navigate("/list-your-piece");
+  };
 
   return (
     <section className="mobile-hiw">
-      <SectionEyebrow
-        text={howItWorksData.eyebrow}
-      />
+      <SectionEyebrow text={howItWorksData.eyebrow} />
 
       <SectionTitle>
         How House of Kaira <em>works</em>
@@ -32,9 +27,7 @@ const MobileHowItWorks = () => {
       <div className="mobile-hiw-toggle">
         <button
           className={`mobile-hiw-toggle-btn ${
-            activeTab === "shop"
-              ? "mobile-hiw-toggle-btn-active"
-              : ""
+            activeTab === "shop" ? "mobile-hiw-toggle-btn-active" : ""
           }`}
           onClick={() => setActiveTab("shop")}
         >
@@ -43,9 +36,7 @@ const MobileHowItWorks = () => {
 
         <button
           className={`mobile-hiw-toggle-btn ${
-            activeTab === "sell"
-              ? "mobile-hiw-toggle-btn-active"
-              : ""
+            activeTab === "sell" ? "mobile-hiw-toggle-btn-active" : ""
           }`}
           onClick={() => setActiveTab("sell")}
         >
@@ -58,22 +49,15 @@ const MobileHowItWorks = () => {
           const Icon = step.icon;
 
           return (
-            <article
-              key={step.number}
-              className="mobile-hiw-step"
-            >
-              <div className="mobile-hiw-step-number">
-                {step.number}
-              </div>
+            <article key={step.number} className="mobile-hiw-step">
+              <div className="mobile-hiw-step-number">{step.number}</div>
 
               <div className="mobile-hiw-step-body">
                 <div className="mobile-hiw-step-icon-circle">
                   <Icon className="mobile-hiw-step-icon" />
                 </div>
 
-                <h3 className="mobile-hiw-step-title">
-                  {step.title}
-                </h3>
+                <h3 className="mobile-hiw-step-title">{step.title}</h3>
 
                 <p className="mobile-hiw-step-description">
                   {step.description}
@@ -87,25 +71,20 @@ const MobileHowItWorks = () => {
       {activeTab === "sell" && (
         <article className="mobile-hiw-sell-cta">
           <h3 className="mobile-hiw-sell-title">
-            The hours of <em>craftsmanship</em> on that
-            piece deserve more than a dark wardrobe
-            shelf.
+            The hours of <em>craftsmanship</em> on that piece deserve more than
+            a dark wardrobe shelf.
           </h3>
 
           <p className="mobile-hiw-sell-body">
-            Give your occasion wear another life. Let
-            someone else fall in love with it — and earn
-            while you do.
+            Give your occasion wear another life. Let someone else fall in love
+            with it — and earn while you do.
           </p>
 
           <p className="mobile-hiw-sell-quote">
-            "Every piece has a story. Don't let it end
-            with you."
+            "Every piece has a story. Don't let it end with you."
           </p>
 
-          <button className="mobile-hiw-sell-btn"
-          onClick={handleListYourPiece}
-          >
+          <button className="mobile-hiw-sell-btn" onClick={handleListYourPiece}>
             List Your Piece →
           </button>
         </article>

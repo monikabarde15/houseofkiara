@@ -5,14 +5,14 @@
   padding: var(--msg-spacing-11) var(--msg-spacing-13);
   border-radius: var(--msg-radius);
   margin-bottom: var(--msg-spacing-13);
-  background: #FDF9F0;
-  border: 1px solid #F0E4C4;
+  background: #fdf9f0;
+  border: 1px solid #f0e4c4;
 }
 
 .msg-note-bar--problem {
   background: var(--msg-status-terracotta-bg);
   border-color: rgba(184, 92, 56, 0.28);
-  color: #7A2E1D;
+  color: #7a2e1d;
 }
 
 .msg-note-bar-icon {
@@ -30,20 +30,20 @@
 .msg-note-bar-heading {
   font-size: 11.5px;
   font-weight: 600;
-  color: #8B6A1E;
+  color: #8b6a1e;
   margin-bottom: var(--msg-spacing-2);
 }
 
 .msg-note-bar-body {
   font-size: 11px;
-  color: #9A8060;
+  color: #9a8060;
   line-height: 1.5;
 }
 
 .msg-note-bar--problem .msg-note-bar-heading {
-  color: #7A2E1D;
+  color: #7a2e1d;
 }
 
 .msg-note-bar--problem .msg-note-bar-body {
-  color: #7A2E1D;
+  color: #7a2e1d;
 }

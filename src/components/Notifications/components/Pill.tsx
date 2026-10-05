@@ -1,45 +1,50 @@
 // src/components/Notifications/components/Pill.tsx
-import React from 'react';
-import './styles/Pill.css';
+import React from "react";
+import "./styles/Pill.css";
 
-export type BandTone = 'hot' | 'warm' | 'them' | 'know';
+export type BandTone = "hot" | "warm" | "them" | "know";
 
 interface CountPillProps {
-  kind: 'count';
+  kind: "count";
   /** band tone, or 'ok' for a clear-row zero (§9.3), or 'dim' for the blocked em dash (§9.5) */
-  tone: BandTone | 'ok' | 'dim';
+  tone: BandTone | "ok" | "dim";
   children: React.ReactNode;
 }
 
 interface TagPillProps {
-  kind: 'tag';
+  kind: "tag";
   /** 'new' (§8.7 new tag) or 'picked' (§8.7 picked-up tag) */
-  variant: 'new' | 'picked';
+  variant: "new" | "picked";
   children: React.ReactNode;
 }
 
 interface BadgePillProps {
-  kind: 'badge';
+  kind: "badge";
   /** the sidebar count badge (§1.3) or the top-bar bell badge (§1.4) */
   children: React.ReactNode;
   hidden?: boolean;
 }
 
 interface LabelPillProps {
-  kind: 'label';
+  kind: "label";
   /** "worked in {place}" or "not counted" (§8.4) */
   children: React.ReactNode;
 }
 
 interface StripPillProps {
-  kind: 'strip';
+  kind: "strip";
   tone: BandTone;
   clickable?: boolean;
   onClick?: () => void;
   children: React.ReactNode;
 }
 
-type PillProps = CountPillProps | TagPillProps | BadgePillProps | LabelPillProps | StripPillProps;
+type PillProps =
+  | CountPillProps
+  | TagPillProps
+  | BadgePillProps
+  | LabelPillProps
+  | StripPillProps;
 
 /**
  * The shared small-pill shape used across the whole module. Deliberately one
@@ -49,27 +54,34 @@ type PillProps = CountPillProps | TagPillProps | BadgePillProps | LabelPillProps
  */
 export function Pill(props: PillProps) {
   switch (props.kind) {
-    case 'count':
-      return <span className={`ntf-n ntf-n--${props.tone}`}>{props.children}</span>;
-
-    case 'tag':
+    case "count":
       return (
-        <span className={props.variant === 'new' ? 'ntf-newtag' : 'ntf-pickedtag'}>
+        <span className={`ntf-n ntf-n--${props.tone}`}>{props.children}</span>
+      );
+
+    case "tag":
+      return (
+        <span
+          className={props.variant === "new" ? "ntf-newtag" : "ntf-pickedtag"}
+        >
           {props.children}
         </span>
       );
 
-    case 'badge':
+    case "badge":
       return (
-        <span className="ntf-badge" style={props.hidden ? { display: 'none' } : undefined}>
+        <span
+          className="ntf-badge"
+          style={props.hidden ? { display: "none" } : undefined}
+        >
           {props.children}
         </span>
       );
 
-    case 'label':
+    case "label":
       return <span className="ntf-el">{props.children}</span>;
 
-    case 'strip': {
+    case "strip": {
       if (props.clickable) {
         return (
           <button
@@ -81,7 +93,11 @@ export function Pill(props: PillProps) {
           </button>
         );
       }
-      return <span className={`ntf-strip-pill ntf-strip-pill--${props.tone}`}>{props.children}</span>;
+      return (
+        <span className={`ntf-strip-pill ntf-strip-pill--${props.tone}`}>
+          {props.children}
+        </span>
+      );
     }
   }
 }

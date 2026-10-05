@@ -4,10 +4,10 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.2
    ======================================== */
 
-import React from 'react';
-import './styles/SnapshotCards.css';
-import { StatCard } from './UI';
-import { SNAPSHOT_CARDS } from '../utils/constants';
+import React from "react";
+import "./styles/SnapshotCards.css";
+import { StatCard } from "./UI";
+import { SNAPSHOT_CARDS } from "../utils/constants";
 
 interface SnapshotCardsProps {
   liveCodes: number;
@@ -30,26 +30,26 @@ export const SnapshotCards: React.FC<SnapshotCardsProps> = ({
     {
       ...SNAPSHOT_CARDS[0],
       value: liveCodes,
-      color: '#1A1612',
-      filter: 'live',
+      color: "#1A1612",
+      filter: "live",
     },
     {
       ...SNAPSHOT_CARDS[1],
       value: redemptions,
-      color: '#6B7E5A',
-      filter: 'redemptions',
+      color: "#6B7E5A",
+      filter: "redemptions",
     },
     {
       ...SNAPSHOT_CARDS[2],
-      value: `₹${orderValue.toLocaleString('en-IN')}`,
-      color: '#1A1612',
-      filter: 'orderValue',
+      value: `₹${orderValue.toLocaleString("en-IN")}`,
+      color: "#1A1612",
+      filter: "orderValue",
     },
     {
       ...SNAPSHOT_CARDS[3],
-      value: `₹${discountFunded.toLocaleString('en-IN')}`,
-      color: '#B85C38',
-      filter: 'discountFunded',
+      value: `₹${discountFunded.toLocaleString("en-IN")}`,
+      color: "#B85C38",
+      filter: "discountFunded",
     },
   ];
 
@@ -59,7 +59,7 @@ export const SnapshotCards: React.FC<SnapshotCardsProps> = ({
 
   return (
     <div className="snapshot-cards">
-      {cards.map(card => (
+      {cards.map((card) => (
         <StatCard
           key={card.id}
           label={card.label}

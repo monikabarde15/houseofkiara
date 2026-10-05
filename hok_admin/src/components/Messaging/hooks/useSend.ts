@@ -1,5 +1,5 @@
 // hooks/useSend.ts
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 export interface Person {
   id: string;
@@ -14,16 +14,16 @@ export interface SendState {
   messageId: string;
   promotionId: string | null;
   wordingId: string | null;
-  channel: 'whatsapp' | 'email';
+  channel: "whatsapp" | "email";
   selectedPeople: string[];
 }
 
 export const useSend = () => {
   const [state, setState] = useState<SendState>({
-    messageId: '',
+    messageId: "",
     promotionId: null,
     wordingId: null,
-    channel: 'whatsapp',
+    channel: "whatsapp",
     selectedPeople: [],
   });
 
@@ -42,7 +42,7 @@ export const useSend = () => {
     setState((prev) => ({ ...prev, wordingId }));
   }, []);
 
-  const selectChannel = useCallback((channel: 'whatsapp' | 'email') => {
+  const selectChannel = useCallback((channel: "whatsapp" | "email") => {
     setState((prev) => ({ ...prev, channel }));
   }, []);
 
@@ -65,9 +65,28 @@ export const useSend = () => {
       // Mock API call
       await new Promise((resolve) => setTimeout(resolve, 500));
       const mockPeople: Person[] = [
-        { id: '1', name: 'Priya Sharma', contact: 'priya@email.com', summary: 'Customer since 2024', available: true },
-        { id: '2', name: 'Amit Patel', contact: '+91 98765 43210', summary: 'Customer since 2025', available: true },
-        { id: '3', name: 'Neha Kulkarni', contact: 'neha@email.com', summary: 'Customer since 2023', available: false, unavailableReason: 'Has not agreed to hear from us' },
+        {
+          id: "1",
+          name: "Priya Sharma",
+          contact: "priya@email.com",
+          summary: "Customer since 2024",
+          available: true,
+        },
+        {
+          id: "2",
+          name: "Amit Patel",
+          contact: "+91 98765 43210",
+          summary: "Customer since 2025",
+          available: true,
+        },
+        {
+          id: "3",
+          name: "Neha Kulkarni",
+          contact: "neha@email.com",
+          summary: "Customer since 2023",
+          available: false,
+          unavailableReason: "Has not agreed to hear from us",
+        },
       ];
       setPeople(mockPeople);
     } finally {
@@ -77,7 +96,7 @@ export const useSend = () => {
 
   const send = useCallback(async () => {
     if (state.selectedPeople.length === 0) {
-      throw new Error('Choose who it is going to first.');
+      throw new Error("Choose who it is going to first.");
     }
     // Mock send
     await new Promise((resolve) => setTimeout(resolve, 1000));

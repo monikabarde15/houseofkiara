@@ -20,7 +20,10 @@ const GridModeStrip = ({ type, product }) => {
 
   return (
     <div className={`desk-wishlist-mode-strip ${getModeStripClass()}`}>
-      <span className="desk-wishlist-mode-strip-text" style={{ color: getModeStripTextColor() }}>
+      <span
+        className="desk-wishlist-mode-strip-text"
+        style={{ color: getModeStripTextColor() }}
+      >
         {getModeStripText()}
         {product.stripTag && <> · {product.stripTag}</>}
       </span>

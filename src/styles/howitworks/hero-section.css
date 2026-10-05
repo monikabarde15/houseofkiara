@@ -1,6 +1,6 @@
 /* Hero Section - B5 */
 .hok-hiw-hero {
-  background: #1A1612;
+  background: #1a1612;
   min-height: 88vh;
   position: relative;
   overflow: hidden;
@@ -10,7 +10,7 @@
 
 /* HOK Watermark */
 .hok-hiw-watermark {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: clamp(180px, 24vw, 340px);
   font-weight: 600;
   color: rgba(201, 169, 110, 0.035);
@@ -58,7 +58,7 @@
 }
 
 .hok-hiw-hero-eyebrow-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.32em;
@@ -67,22 +67,22 @@
 }
 
 .hok-hiw-hero-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: clamp(52px, 5.5vw, 80px);
   font-weight: 300;
   line-height: 1.03;
   letter-spacing: -0.025em;
-  color: #FAF7F2;
+  color: #faf7f2;
   margin-bottom: 28px;
 }
 
 .hok-hiw-hero-title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .hok-hiw-hero-body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 15px;
   font-weight: 300;
   color: rgba(250, 247, 242, 0.72);
@@ -100,11 +100,11 @@
 
 /* Primary Button */
 .hok-hiw-hero-btn-primary {
-  background: #C9A96E;
-  color: #1A1612;
-  border: 1px solid #C9A96E;
+  background: #c9a96e;
+  color: #1a1612;
+  border: 1px solid #c9a96e;
   padding: 14px 28px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -124,7 +124,7 @@
 }
 
 .hok-hiw-hero-btn-primary:hover {
-  background: #E8D5B0;
+  background: #e8d5b0;
 }
 
 .hok-hiw-hero-btn-primary:hover svg {
@@ -137,7 +137,7 @@
   color: rgba(250, 247, 242, 0.68);
   border: 1px solid rgba(201, 169, 110, 0.2);
   padding: 14px 28px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -157,7 +157,7 @@
 }
 
 .hok-hiw-hero-btn-secondary:hover {
-  border-color: #C9A96E;
+  border-color: #c9a96e;
   color: rgba(250, 247, 242, 0.85);
 }
 
@@ -176,7 +176,7 @@
 }
 
 .hok-hiw-hero-right-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.3em;
@@ -198,7 +198,7 @@
 }
 
 .hok-hiw-hero-col-mode {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 0.26em;
@@ -218,15 +218,15 @@
 }
 
 .hok-hiw-hero-col-dot-shopping {
-  background: #C9A96E;
+  background: #c9a96e;
 }
 
 .hok-hiw-hero-col-dot-listing {
-  background: #B85C38;
+  background: #b85c38;
 }
 
 .hok-hiw-hero-col-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 20px;
   font-weight: 300;
   line-height: 1.25;
@@ -258,7 +258,7 @@
 }
 
 .hok-hiw-hero-step-num {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 11px;
   color: rgba(201, 169, 110, 0.65);
   width: 14px;
@@ -266,7 +266,7 @@
 }
 
 .hok-hiw-hero-step-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 300;
   line-height: 1.4;
@@ -293,7 +293,7 @@
 }
 
 .hok-hiw-hero-scroll-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.2em;

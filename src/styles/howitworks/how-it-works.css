@@ -1,14 +1,14 @@
 /* How It Works - Main Styles */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500&display=swap");
 
 * {
   box-sizing: border-box;
 }
 
 .hok-hiw-page {
-  background: #FFFEFB;
-  color: #1A1612;
-  font-family: 'DM Sans', sans-serif;
+  background: #fffefb;
+  color: #1a1612;
+  font-family: "DM Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   /* overflow-x: hidden; */
 }
@@ -21,7 +21,9 @@ html {
 .hok-hiw-r {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
 }
 
 .hok-hiw-r.hok-hiw-v {
@@ -29,10 +31,18 @@ html {
   transform: translateY(0);
 }
 
-.hok-hiw-r.hok-hiw-d1 { transition-delay: 0.07s; }
-.hok-hiw-r.hok-hiw-d2 { transition-delay: 0.14s; }
-.hok-hiw-r.hok-hiw-d3 { transition-delay: 0.21s; }
-.hok-hiw-r.hok-hiw-d4 { transition-delay: 0.28s; }
+.hok-hiw-r.hok-hiw-d1 {
+  transition-delay: 0.07s;
+}
+.hok-hiw-r.hok-hiw-d2 {
+  transition-delay: 0.14s;
+}
+.hok-hiw-r.hok-hiw-d3 {
+  transition-delay: 0.21s;
+}
+.hok-hiw-r.hok-hiw-d4 {
+  transition-delay: 0.28s;
+}
 
 /* Section base classes */
 .hok-hiw-sec {
@@ -40,19 +50,27 @@ html {
 }
 
 .hok-hiw-sec-alt {
-  background: #FAF7F2;
+  background: #faf7f2;
 }
 
 /* Mobile overrides */
 @media (max-width: 679px) {
   .hok-hiw-r {
     transform: translateY(20px);
-    transition: opacity 0.55s ease, transform 0.55s ease;
+    transition:
+      opacity 0.55s ease,
+      transform 0.55s ease;
   }
-  .hok-hiw-r.hok-hiw-d1 { transition-delay: 0.06s; }
-  .hok-hiw-r.hok-hiw-d2 { transition-delay: 0.12s; }
-  .hok-hiw-r.hok-hiw-d3 { transition-delay: 0.18s; }
-  
+  .hok-hiw-r.hok-hiw-d1 {
+    transition-delay: 0.06s;
+  }
+  .hok-hiw-r.hok-hiw-d2 {
+    transition-delay: 0.12s;
+  }
+  .hok-hiw-r.hok-hiw-d3 {
+    transition-delay: 0.18s;
+  }
+
   .hok-hiw-sec {
     padding: 48px 16px;
   }

@@ -1,6 +1,5 @@
 /* Section 5.1: Tabs */
 
-
 .desktop-tab-strip {
   display: flex;
   flex-direction: row;
@@ -19,7 +18,9 @@
   align-items: center;
   gap: 8px;
   border-bottom: 1.5px solid transparent;
-  transition: color 0.22s, border-color 0.22s;
+  transition:
+    color 0.22s,
+    border-color 0.22s;
 }
 
 .desktop-tab-strip__button:first-child {
@@ -32,21 +33,21 @@
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 0.02em;
-  color: #B0A498;
+  color: #b0a498;
   transition: color 0.22s;
 }
 
 .desktop-tab-strip__button:hover .desktop-tab-strip__label {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* Active tab: gold underline, active colour */
 .desktop-tab-strip__button--active {
-  border-bottom: 1.5px solid #C9A96E;
+  border-bottom: 1.5px solid #c9a96e;
 }
 
 .desktop-tab-strip__button--active .desktop-tab-strip__label {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* Section 5.2: Tab Count Badges */
@@ -56,15 +57,15 @@
   font-weight: 400;
   letter-spacing: 0.06em;
   background: transparent;
-  color: #8A7E72;
-  border: 1px solid #E8E0D4;
+  color: #8a7e72;
+  border: 1px solid #e8e0d4;
   border-radius: 20px;
   padding: 2px 7px;
   transition: all 0.22s;
 }
 
 .desktop-tab-strip__badge--active {
-  background: #F5EDD8;
-  color: #A8844A;
+  background: #f5edd8;
+  color: #a8844a;
   border: 1px solid rgba(201, 169, 110, 0.35);
 }

@@ -17,7 +17,7 @@
   transform: translate(-50%, -50%);
   max-width: 380px;
   width: calc(100% - 48px);
-  background: #FFFFFB;
+  background: #fffffb;
   border-radius: 14px;
   padding: 24px;
   text-align: center;
@@ -37,20 +37,20 @@
 }
 
 .profile-deladdr-icon svg {
-  stroke: #B85C38;
+  stroke: #b85c38;
 }
 
 .profile-deladdr-title {
   font-family: "Cormorant Garamond", serif;
   font-size: 20px;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 7px;
 }
 
 .profile-deladdr-body {
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.7;
   font-weight: 300;
   margin-bottom: 18px;
@@ -65,27 +65,27 @@
 .profile-deladdr-btn-cancel {
   padding: 9px 17px;
   border-radius: 6px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   background: none;
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .profile-deladdr-btn-cancel:hover {
-  background: #FAF7F2;
-  color: #3C3529;
+  background: #faf7f2;
+  color: #3c3529;
 }
 
 .profile-deladdr-btn-delete {
   padding: 9px 22px;
   border-radius: 6px;
   border: none;
-  background: #B85C38;
+  background: #b85c38;
   color: #fff;
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
@@ -96,5 +96,5 @@
 }
 
 .profile-deladdr-btn-delete:hover {
-  background: #9E4D2F;
+  background: #9e4d2f;
 }

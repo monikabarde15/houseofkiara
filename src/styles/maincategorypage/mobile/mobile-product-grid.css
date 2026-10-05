@@ -17,7 +17,7 @@
   text-align: center;
   font-family: "DM Sans", sans-serif;
   font-size: 14px;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* ===== PRODUCT CARD OVERRIDES FOR MOBILE ===== */
@@ -38,8 +38,8 @@
 .mob-product-grid .product-image {
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  background: #FAF7F2;
-  border: 1px solid #F0EAE0;
+  background: #faf7f2;
+  border: 1px solid #f0eae0;
   margin-bottom: 12px;
   position: relative;
 }
@@ -65,18 +65,18 @@
 }
 
 .mob-product-grid .badge.rent {
-  background: #1A1612;
-  color: #D4C5B0;
+  background: #1a1612;
+  color: #d4c5b0;
 }
 
 .mob-product-grid .badge.preloved {
-  background: #B85C38;
-  color: #FFFFFF;
+  background: #b85c38;
+  color: #ffffff;
 }
 
 .mob-product-grid .badge.new {
-  background: #6B7E5A;
-  color: #FFFFFF;
+  background: #6b7e5a;
+  color: #ffffff;
 }
 
 /* ===== WISHLIST BUTTON - Spec §16.5 ===== */
@@ -88,7 +88,7 @@
   height: 30px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,7 +100,7 @@
 .mob-product-grid .wishlist-icon {
   width: 13px;
   height: 13px;
-  stroke: #1A1612;
+  stroke: #1a1612;
   fill: none;
   stroke-width: 1.5;
   stroke-linecap: round;
@@ -109,8 +109,8 @@
 
 /* Wishlist saved state (to be toggled) */
 .mob-product-grid .wishlist-btn.active .wishlist-icon {
-  fill: #B85C38;
-  stroke: #B85C38;
+  fill: #b85c38;
+  stroke: #b85c38;
 }
 
 /* ===== PRODUCT INFO ZONE - Spec §16.6 ===== */
@@ -123,7 +123,7 @@
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
   margin-bottom: 6px;
 }
 
@@ -131,7 +131,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 14px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.4;
   margin-bottom: 8px;
 }
@@ -154,35 +154,35 @@
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .mob-product-grid .price-main {
   font-family: "Cormorant Garamond", serif;
   font-size: 15px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .mob-product-grid .price-sub {
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.4;
 }
 
 .mob-product-grid .price-orignal {
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
-  color: #8A7E72;
+  color: #8a7e72;
   text-decoration: line-through;
 }
 
 .mob-product-grid .price-save {
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
-  color: #6B7E5A;
+  color: #6b7e5a;
   margin-top: 2px;
 }
 

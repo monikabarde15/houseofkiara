@@ -14,7 +14,11 @@
   --hok-warning-bg: #fdf9ee;
   --hok-warning-border: #e9d9a8;
 
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   color: var(--hok-text);
   background: var(--hok-cream);
   /* padding: 28px 40px 60px; */
@@ -76,7 +80,7 @@
 }
 
 .designers-heading {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 30px;
   font-weight: 400;
   margin-bottom: 10px;

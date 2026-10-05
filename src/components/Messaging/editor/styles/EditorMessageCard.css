@@ -40,7 +40,8 @@
 }
 
 /* Travels section styling */
-.msg-travels-section, .msg-word-groups-section {
+.msg-travels-section,
+.msg-word-groups-section {
   margin-top: var(--msg-spacing-14);
 }
 
@@ -56,22 +57,22 @@
 
 .msg-travels-dashed-box {
   padding: var(--msg-spacing-10) var(--msg-spacing-13);
-  border: 1px dashed var(--msg-input-border, #DDD5C8);
+  border: 1px dashed var(--msg-input-border, #ddd5c8);
   border-radius: var(--msg-radius, 4px);
-  background-color: var(--msg-input-bg, #FFFFFB);
+  background-color: var(--msg-input-bg, #fffffb);
   font-size: 12px;
-  color: var(--msg-muted, #8A7E72);
+  color: var(--msg-muted, #8a7e72);
 }
 
 .msg-field-help {
   font-size: 10px;
-  color: var(--msg-muted, #8A7E72);
+  color: var(--msg-muted, #8a7e72);
   margin-top: var(--msg-spacing-3);
   line-height: 1.4;
 }
 
 .msg-help-link {
-  color: #B59453; /* warm gold / dark orange-brown link text */
+  color: #b59453; /* warm gold / dark orange-brown link text */
   text-decoration: underline;
   cursor: pointer;
 }
@@ -93,9 +94,9 @@
   flex-wrap: wrap;
   gap: var(--msg-spacing-4);
   padding: var(--msg-spacing-10);
-  border: 1px solid var(--msg-card-border, #EDE6DC);
+  border: 1px solid var(--msg-card-border, #ede6dc);
   border-radius: var(--msg-radius, 4px);
-  background-color: var(--msg-input-bg, #FFFFFB);
+  background-color: var(--msg-input-bg, #fffffb);
 }
 
 .msg-word-group-checkbox {
@@ -103,26 +104,26 @@
   align-items: center;
   gap: var(--msg-spacing-3);
   padding: 3px 8px;
-  border: 1px solid #DDD5C8;
+  border: 1px solid #ddd5c8;
   border-radius: 2px;
-  background-color: #FFFFFB;
+  background-color: #fffffb;
   font-size: 10.5px;
   font-weight: 600;
-  color: #6B5730;
+  color: #6b5730;
   cursor: pointer;
   user-select: none;
   transition: all 0.1s ease;
 }
 
 .msg-word-group-checkbox:hover {
-  border-color: #C9A96E;
-  background-color: #FAF7F2;
+  border-color: #c9a96e;
+  background-color: #faf7f2;
 }
 
 .msg-word-group-checkbox.is-checked {
-  background-color: #FDF9F2;
-  border-color: #C9A96E;
-  color: #6B5730;
+  background-color: #fdf9f2;
+  border-color: #c9a96e;
+  color: #6b5730;
 }
 
 .msg-checkbox-box {
@@ -131,17 +132,17 @@
   justify-content: center;
   width: 12px;
   height: 12px;
-  border: 1px solid #DDD5C8;
+  border: 1px solid #ddd5c8;
   border-radius: 2px;
   font-size: 9px;
   font-weight: bold;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 .msg-word-group-checkbox.is-checked .msg-checkbox-box {
-  background-color: #C9A96E;
-  border-color: #C9A96E;
-  color: #FFFFFF;
+  background-color: #c9a96e;
+  border-color: #c9a96e;
+  color: #ffffff;
 }
 
 .msg-checkbox-label {

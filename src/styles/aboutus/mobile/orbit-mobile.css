@@ -1,7 +1,7 @@
 /* ===== ORBIT - MOBILE ===== */
 
 .mob-orbit {
-  background: #FFFEFB;
+  background: #fffefb;
   padding: 72px 24px;
   position: relative;
   overflow: hidden;
@@ -34,35 +34,35 @@
 /* Outer Ring */
 .mob-orbit__outer-ring {
   fill: none;
-  stroke: #F0EAE0;
+  stroke: #f0eae0;
   stroke-width: 1;
 }
 
 /* Orbit Path (Dashed) */
 .mob-orbit__path {
   fill: none;
-  stroke: #EAE1D2;
+  stroke: #eae1d2;
   stroke-width: 1;
   stroke-dasharray: 2 7;
 }
 
 /* Centre Hub - Outer */
 .mob-orbit__hub-outer {
-  fill: #FFFEFB;
-  stroke: #C9A96E;
+  fill: #fffefb;
+  stroke: #c9a96e;
   stroke-width: 1;
 }
 
 /* Centre Hub - Inner */
 .mob-orbit__hub-inner {
   fill: none;
-  stroke: #E8D5B0;
+  stroke: #e8d5b0;
   stroke-width: 1;
 }
 
 /* Centre Dot */
 .mob-orbit__hub-dot {
-  fill: #C9A96E;
+  fill: #c9a96e;
 }
 
 /* Centre Text */
@@ -70,12 +70,12 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 20px;
   font-style: italic;
-  fill: #1A1612;
+  fill: #1a1612;
   dominant-baseline: central;
 }
 
 .mob-orbit__hub-text--gold {
-  fill: #C9A96E;
+  fill: #c9a96e;
 }
 
 /* ===== NODES ===== */
@@ -94,35 +94,43 @@
 }
 
 @keyframes mobOrbitSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes mobOrbitCounter {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
 }
 
 /* Node Circle */
 .mob-orbit__node-circle {
-  fill: #FFFFFB;
+  fill: #fffffb;
   stroke-width: 1.4;
   transition: stroke-width 0.25s ease;
 }
 
 /* Rent Node */
 .mob-orbit__node-circle--rent {
-  stroke: #B85C38;
+  stroke: #b85c38;
 }
 
 /* Preloved Node */
 .mob-orbit__node-circle--preloved {
-  stroke: #C9A96E;
+  stroke: #c9a96e;
 }
 
 /* List & Sell Node */
 .mob-orbit__node-circle--list {
-  stroke: #6B7E5A;
+  stroke: #6b7e5a;
 }
 
 /* Node Text */
@@ -131,27 +139,27 @@
   font-size: 10.5px;
   letter-spacing: 0.5em;
   text-transform: uppercase;
-  fill: #1A1612;
+  fill: #1a1612;
   dominant-baseline: central;
 }
 
 /* Rent Text */
 .mob-orbit__node-text--rent {
-  fill: #B85C38;
+  fill: #b85c38;
 }
 
 /* Preloved Text - smaller for two lines */
 .mob-orbit__node-text--preloved {
   font-size: 9.5px;
   letter-spacing: 0.3em;
-  fill: #A6843E;
+  fill: #a6843e;
 }
 
 /* List & Sell Text - smaller for two lines */
 .mob-orbit__node-text--list {
   font-size: 9.5px;
   letter-spacing: 0.3em;
-  fill: #6B7E5A;
+  fill: #6b7e5a;
 }
 
 /* ===== MOBILE INTERACTIONS ===== */
@@ -171,7 +179,7 @@
 
 /* Focus visible for keyboard */
 .mob-orbit__node:focus-visible {
-  outline: 2px solid #C9A96E;
+  outline: 2px solid #c9a96e;
   outline-offset: 8px;
   animation-play-state: paused;
 }
@@ -199,7 +207,7 @@
 .mob-orbit__eyebrow-line {
   width: 20px;
   height: 1px;
-  background: #C9A96E;
+  background: #c9a96e;
 }
 
 .mob-orbit__eyebrow span {
@@ -207,7 +215,7 @@
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* H2 */
@@ -216,14 +224,14 @@
   font-size: clamp(26px, 6.5vw, 36px);
   font-weight: 400;
   line-height: 1.22;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0 0 20px 0;
   text-align: center;
 }
 
 .mob-orbit__title em {
   font-style: italic;
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 /* Body Paragraphs -*/
@@ -232,7 +240,7 @@
   font-size: 15px;
   font-weight: 300;
   line-height: 1.85;
-  color: #6B5E50;
+  color: #6b5e50;
   margin: 0 0 16px 0;
   text-align: left;
 }
@@ -245,7 +253,9 @@
 .mob-orbit .reveal {
   opacity: 0;
   transform: translateY(28px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
 }
 
 .mob-orbit .reveal.in-view {

@@ -1,10 +1,10 @@
 // src/components/LYP/intake/ListerPicker.tsx
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Lister } from '../types/submission.types';
-import { useListers } from '../../Listers/hooks/useListers';
-import { getPhoneDigits } from '../utils/validators';
-import './styles/ListerPicker.css';
+import React, { useState, useEffect, useRef } from "react";
+import { Lister } from "../types/submission.types";
+import { useListers } from "../../Listers/hooks/useListers";
+import { getPhoneDigits } from "../utils/validators";
+import "./styles/ListerPicker.css";
 
 interface ListerPickerProps {
   onSelect: (listerId: string) => void;
@@ -19,7 +19,7 @@ export const ListerPicker: React.FC<ListerPickerProps> = ({
   selectedId,
   error,
 }) => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [showResults, setShowResults] = useState(false);
   const [selectedLister, setSelectedLister] = useState<Lister | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -28,17 +28,20 @@ export const ListerPicker: React.FC<ListerPickerProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
         setShowResults(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
     if (selectedId && listers.length > 0) {
-      const found = listers.find(l => l.id === selectedId);
+      const found = listers.find((l) => l.id === selectedId);
       if (found) {
         setSelectedLister(found);
         setSearch(found.name);
@@ -51,7 +54,7 @@ export const ListerPicker: React.FC<ListerPickerProps> = ({
     setShowResults(true);
     if (!value) {
       setSelectedLister(null);
-      onSelect('');
+      onSelect("");
     }
   };
 
@@ -63,23 +66,27 @@ export const ListerPicker: React.FC<ListerPickerProps> = ({
   };
 
   const handleClear = () => {
-    setSearch('');
+    setSearch("");
     setSelectedLister(null);
     setShowResults(false);
-    onSelect('');
+    onSelect("");
   };
 
   const isPhoneMatch = (phone: string, searchTerm: string) => {
     const phoneDigits = getPhoneDigits(phone);
     const searchDigits = getPhoneDigits(searchTerm);
-    return phoneDigits.includes(searchDigits) || searchDigits.includes(phoneDigits);
+    return (
+      phoneDigits.includes(searchDigits) || searchDigits.includes(phoneDigits)
+    );
   };
 
-  const filteredListers = listers.filter(l => {
+  const filteredListers = listers.filter((l) => {
     const searchLower = search.toLowerCase();
-    return l.name.toLowerCase().includes(searchLower) ||
-           (l.email && l.email.toLowerCase().includes(searchLower)) ||
-           isPhoneMatch(l.phone, search);
+    return (
+      l.name.toLowerCase().includes(searchLower) ||
+      (l.email && l.email.toLowerCase().includes(searchLower)) ||
+      isPhoneMatch(l.phone, search)
+    );
   });
 
   const displayListers = filteredListers.slice(0, 6);
@@ -90,14 +97,18 @@ export const ListerPicker: React.FC<ListerPickerProps> = ({
       <div className="lister-picker-input">
         <input
           type="text"
-          className={`fld-input ${error ? 'fld-error' : ''}`}
+          className={`fld-input ${error ? "fld-error" : ""}`}
           value={search}
           onChange={(e) => handleSearchChange(e.target.value)}
           onFocus={() => setShowResults(true)}
           placeholder="Start typing... a matching phone surfaces the existing record"
         />
         {search && (
-          <button className="lister-picker-clear" onClick={handleClear} title="Clear search">
+          <button
+            className="lister-picker-clear"
+            onClick={handleClear}
+            title="Clear search"
+          >
             ×
           </button>
         )}
@@ -111,8 +122,8 @@ export const ListerPicker: React.FC<ListerPickerProps> = ({
           ) : displayListers.length > 0 ? (
             <>
               {displayListers.map((lister) => (
-                <div 
-                  key={lister.id} 
+                <div
+                  key={lister.id}
                   className="lister-picker-result"
                   onClick={() => handleSelect(lister)}
                 >
@@ -135,10 +146,7 @@ export const ListerPicker: React.FC<ListerPickerProps> = ({
               No matching lister found.
             </div>
           )}
-          <div 
-            className="lister-picker-new" 
-            onClick={onNewLister}
-          >
+          <div className="lister-picker-new" onClick={onNewLister}>
             + New lister — record them right here →
           </div>
         </div>
@@ -148,10 +156,14 @@ export const ListerPicker: React.FC<ListerPickerProps> = ({
         <div className="lister-picker-selected">
           <span className="tchip ok">
             Lister {selectedLister.name} — {selectedLister.phone}
-            <span className="lister-picker-remove" onClick={handleClear}>×</span>
+            <span className="lister-picker-remove" onClick={handleClear}>
+              ×
+            </span>
           </span>
           <div className="lister-picker-terms">
-            <span className="tchip ok">Terms LST-2026-01 — accepted {new Date().toLocaleDateString()}</span>
+            <span className="tchip ok">
+              Terms LST-2026-01 — accepted {new Date().toLocaleDateString()}
+            </span>
           </div>
         </div>
       )}

@@ -6,13 +6,11 @@ import "../../../styles/cart/summary/final-payment-info.css";
 const FinalPaymentInfo = () => {
   return (
     <div className="final-payment">
-
       {/* DIVIDER */}
       <div className="final-divider" />
 
       {/* TRUST LIST */}
       <div className="final-trust-list">
-
         <div className="final-trust-item">
           <ShieldCheck className="final-icon" />
           <span>Every piece quality-verified before dispatch</span>
@@ -27,7 +25,6 @@ const FinalPaymentInfo = () => {
           <Truck className="final-icon" />
           <span>Pan-India shipping · Rentals arrive 2 days before event</span>
         </div>
-
       </div>
 
       {/* PAYMENT METHODS */}
@@ -38,7 +35,6 @@ const FinalPaymentInfo = () => {
         <span>NET BANKING</span>
         <span>EMI</span>
       </div>
-
     </div>
   );
 };

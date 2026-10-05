@@ -1,8 +1,14 @@
-import React from 'react';
-import { SquarePen, Trash2, Home, Building2 } from 'lucide-react';
+import React from "react";
+import { SquarePen, Trash2, Home, Building2 } from "lucide-react";
 import "../../../styles/Profile/cards/AddressCard.css";
 
-const AddressCard = ({ address, isDefault, onEdit, onDelete, onSetDefault }) => {
+const AddressCard = ({
+  address,
+  isDefault,
+  onEdit,
+  onDelete,
+  onSetDefault,
+}) => {
   const getAddressIcon = () => {
     if (address.label === "Home") {
       return <Home size={13} strokeWidth={1.5} />;
@@ -16,17 +22,23 @@ const AddressCard = ({ address, isDefault, onEdit, onDelete, onSetDefault }) => 
   const pinText = address.pin ? ` – ${address.pin}` : "";
 
   return (
-    <div className={`profile-ac ${isDefault ? 'profile-ac-def' : ''}`}>
+    <div className={`profile-ac ${isDefault ? "profile-ac-def" : ""}`}>
       {/* Top Row */}
       <div className="profile-ac-top">
-        <div className="profile-ac-icon">
-          {getAddressIcon()}
-        </div>
+        <div className="profile-ac-icon">{getAddressIcon()}</div>
         <div className="profile-ac-acts">
-          <button className="profile-acbtn" onClick={() => onEdit(address)} aria-label="Edit address">
+          <button
+            className="profile-acbtn"
+            onClick={() => onEdit(address)}
+            aria-label="Edit address"
+          >
             <SquarePen size={10} strokeWidth={1.5} />
           </button>
-          <button className="profile-acbtn" onClick={() => onDelete(address)} aria-label="Delete address">
+          <button
+            className="profile-acbtn"
+            onClick={() => onDelete(address)}
+            aria-label="Delete address"
+          >
             <Trash2 size={10} strokeWidth={1.5} />
           </button>
         </div>
@@ -39,7 +51,14 @@ const AddressCard = ({ address, isDefault, onEdit, onDelete, onSetDefault }) => 
       </div>
 
       {recipient && (
-        <div style={{ fontWeight: 600, color: "var(--charcoal, #1A1612)", marginBottom: "4px", fontSize: "12px" }}>
+        <div
+          style={{
+            fontWeight: 600,
+            color: "var(--charcoal, #1A1612)",
+            marginBottom: "4px",
+            fontSize: "12px",
+          }}
+        >
           {recipient}
         </div>
       )}
@@ -47,9 +66,17 @@ const AddressCard = ({ address, isDefault, onEdit, onDelete, onSetDefault }) => 
       <div className="profile-ac-text">
         {address.line1 ? (
           <>
-            {address.line1}<br />
-            {address.line2 && <>{address.line2}<br /></>}
-            {locationLine}{pinText}<br />
+            {address.line1}
+            <br />
+            {address.line2 && (
+              <>
+                {address.line2}
+                <br />
+              </>
+            )}
+            {locationLine}
+            {pinText}
+            <br />
             {phone}
           </>
         ) : (
@@ -59,7 +86,10 @@ const AddressCard = ({ address, isDefault, onEdit, onDelete, onSetDefault }) => 
 
       {/* Set as Default Link */}
       {!isDefault && (
-        <button className="profile-ac-setdef" onClick={() => onSetDefault(address)}>
+        <button
+          className="profile-ac-setdef"
+          onClick={() => onSetDefault(address)}
+        >
           Set as default
         </button>
       )}

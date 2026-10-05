@@ -14,8 +14,8 @@ const MobileProductGrid = ({ products, onWishlistToggle }) => {
   return (
     <div className="mob-product-grid">
       {products.map((product) => (
-        <MobileProductCard 
-          key={product.id} 
+        <MobileProductCard
+          key={product.id}
           item={product}
           onWishlistToggle={onWishlistToggle}
         />

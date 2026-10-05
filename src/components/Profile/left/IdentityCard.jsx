@@ -63,7 +63,7 @@ const IdentityCard = () => {
         city
     };
 
-    const rentalsCount = user?.ordersCount || 0;
+    const rentalsCount = user?.rentalsCount || 0;
     const purchasesCount = user?.purchasesCount || 0;
     const savedCount = user?.wishlist?.length || user?.wishlistCount || 0;
 

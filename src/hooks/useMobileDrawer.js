@@ -1,5 +1,5 @@
 // src/hooks/useMobileDrawer.js
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const useMobileDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,13 +12,13 @@ const useMobileDrawer = () => {
   // 12.1 openDrawer()
   const openDrawer = useCallback(() => {
     setIsOpen(true);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   }, []);
 
   // 12.2 closeDrawer()
   const closeDrawer = useCallback(() => {
     setIsOpen(false);
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
     // Also close any open sub-panel
     if (activeSubPanelRef.current) {
       activeSubPanelRef.current = null;
@@ -47,37 +47,41 @@ const useMobileDrawer = () => {
     touchCurrentY.current = e.touches[0].clientY;
   }, []);
 
-  const handleTouchEnd = useCallback((onSubPanelClose, onDrawerClose) => {
-    if (touchStartX.current === null || touchCurrentX.current === null) return;
+  const handleTouchEnd = useCallback(
+    (onSubPanelClose, onDrawerClose) => {
+      if (touchStartX.current === null || touchCurrentX.current === null)
+        return;
 
-    const dx = touchCurrentX.current - touchStartX.current;
-    const dy = Math.abs(touchCurrentY.current - touchStartY.current);
-    const isHorizontalSwipe = dy < 40;
+      const dx = touchCurrentX.current - touchStartX.current;
+      const dy = Math.abs(touchCurrentY.current - touchStartY.current);
+      const isHorizontalSwipe = dy < 40;
 
-    if (!isHorizontalSwipe) {
+      if (!isHorizontalSwipe) {
+        touchStartX.current = null;
+        touchCurrentX.current = null;
+        return;
+      }
+
+      // Case 1: Sub-panel open - swipe right (dx > 60px) = go back
+      if (activeSubPanelRef.current && dx > 60) {
+        if (onSubPanelClose) onSubPanelClose();
+        clearActiveSubPanel();
+      }
+      // Case 2: No sub-panel - swipe left (dx < -60px) = close drawer
+      else if (!activeSubPanelRef.current && dx < -60) {
+        if (onDrawerClose) onDrawerClose();
+      }
+
       touchStartX.current = null;
       touchCurrentX.current = null;
-      return;
-    }
-
-    // Case 1: Sub-panel open - swipe right (dx > 60px) = go back
-    if (activeSubPanelRef.current && dx > 60) {
-      if (onSubPanelClose) onSubPanelClose();
-      clearActiveSubPanel();
-    }
-    // Case 2: No sub-panel - swipe left (dx < -60px) = close drawer
-    else if (!activeSubPanelRef.current && dx < -60) {
-      if (onDrawerClose) onDrawerClose();
-    }
-
-    touchStartX.current = null;
-    touchCurrentX.current = null;
-  }, [clearActiveSubPanel]);
+    },
+    [clearActiveSubPanel],
+  );
 
   // Clean up on unmount
   useEffect(() => {
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, []);
 

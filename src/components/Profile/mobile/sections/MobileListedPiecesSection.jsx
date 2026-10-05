@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import MobileSectionLabel from '../ui/MobileSectionLabel';
-import MobileListedRow from '../rows/MobileListedRow';
-import MobileListedDetailSheet from '../sheets/MobileListedDetailSheet';
+import React, { useState } from "react";
+import MobileSectionLabel from "../ui/MobileSectionLabel";
+import MobileListedRow from "../rows/MobileListedRow";
+import MobileListedDetailSheet from "../sheets/MobileListedDetailSheet";
 import "../../../../styles/Profile/mobile/sections/MobileListedPiecesSection.css";
 
 const MobileListedPiecesSection = () => {
@@ -21,7 +21,7 @@ const MobileListedPiecesSection = () => {
       totalEarned: 15200,
       timesRented: 4,
       nextPayout: 3800,
-      imageGradient: "linear-gradient(160deg, #2C2018, #1A1210)"
+      imageGradient: "linear-gradient(160deg, #2C2018, #1A1210)",
     },
     {
       id: "LST-002-2025",
@@ -35,7 +35,7 @@ const MobileListedPiecesSection = () => {
       totalEarned: 0,
       timesRented: null,
       nextPayout: null,
-      imageGradient: "linear-gradient(160deg, #1E2530, #131820)"
+      imageGradient: "linear-gradient(160deg, #1E2530, #131820)",
     },
     {
       id: "LST-003-2025",
@@ -50,12 +50,12 @@ const MobileListedPiecesSection = () => {
       totalEarned: 2200,
       timesRented: 1,
       nextPayout: 2200,
-      imageGradient: "linear-gradient(160deg, #2A3828, #1A2418)"
-    }
+      imageGradient: "linear-gradient(160deg, #2A3828, #1A2418)",
+    },
   ];
 
   const handleRowClick = (id) => {
-    const piece = listedPieces.find(p => p.id === id);
+    const piece = listedPieces.find((p) => p.id === id);
     setSelectedPiece(piece);
     setIsSheetOpen(true);
   };
@@ -64,22 +64,30 @@ const MobileListedPiecesSection = () => {
     <>
       <div className="profile-mobile-listed-section">
         <div className="profile-mobile-section-container">
-          <MobileSectionLabel 
+          <MobileSectionLabel
             title="MY LISTED PIECES"
             count={3}
             linkText="+ List another piece"
             onLinkClick={() => console.log("List another piece")}
           />
-          
+
           {/* Earn Note Banner */}
           <div className="profile-mobile-earn-note">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <circle cx="12" cy="12" r="10" />
               <line x1="12" y1="8" x2="12" y2="12" />
               <circle cx="12" cy="16" r="0.5" fill="currentColor" />
             </svg>
             <div className="profile-mobile-earn-note-text">
-              Earnings attributed per completed booking. Payouts processed manually by the HOK team.
+              Earnings attributed per completed booking. Payouts processed
+              manually by the HOK team.
             </div>
           </div>
 

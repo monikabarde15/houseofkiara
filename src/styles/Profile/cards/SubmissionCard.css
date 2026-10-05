@@ -5,22 +5,24 @@
 .profile-sub-card {
   display: flex;
   gap: 14px;
-  background: #FFFFFB;
-  border: 1px solid #E8E0D4;
+  background: #fffffb;
+  border: 1px solid #e8e0d4;
   border-radius: 11px;
   padding: 14px 16px;
   cursor: pointer;
-  transition: border-color 0.2s, transform 0.15s;
+  transition:
+    border-color 0.2s,
+    transform 0.15s;
   margin-bottom: 0;
 }
 
 .profile-sub-card:hover {
-  border-color: #E8D5B0;
+  border-color: #e8d5b0;
   transform: translateY(-1px);
 }
 
 .profile-sub-card-active {
-  border-color: #A8844A;
+  border-color: #a8844a;
 }
 
 /* Thumbnail */
@@ -32,12 +34,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #F0E8D8, #E0CDA8);
+  background: linear-gradient(160deg, #f0e8d8, #e0cda8);
 }
 
 .profile-sub-thumb svg {
   opacity: 0.28;
-  stroke: #C9A96E;
+  stroke: #c9a96e;
 }
 
 /* Info Area */
@@ -67,22 +69,22 @@
 
 .profile-sb-rev {
   background: rgba(201, 169, 110, 0.15);
-  color: #A8844A;
+  color: #a8844a;
 }
 
 .profile-sb-app {
   background: rgba(107, 126, 90, 0.12);
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 .profile-sb-lst {
   background: rgba(26, 22, 18, 0.06);
-  color: #3C3529;
+  color: #3c3529;
 }
 
 .profile-sb-rej {
   background: rgba(184, 92, 56, 0.1);
-  color: #B85C38;
+  color: #b85c38;
 }
 
 /* Arrow */
@@ -93,7 +95,7 @@
 }
 
 .profile-sub-arr svg {
-  stroke: #B0A898;
+  stroke: #b0a898;
   fill: none;
   stroke-width: 1.5;
 }
@@ -103,7 +105,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 15px;
   font-weight: 500;
-  color: #1A1612;
+  color: #1a1612;
   margin-bottom: 3px;
 }
 
@@ -112,6 +114,6 @@
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
   font-weight: 300;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.55;
 }

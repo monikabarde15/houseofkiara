@@ -1,5 +1,5 @@
-import React from 'react';
-import '../../../styles/Auth/layout/AuthFooter.css';
+import React from "react";
+import "../../../styles/Auth/layout/AuthFooter.css";
 
 const AuthFooter = () => {
   const handlePolicyClick = (policy) => {
@@ -12,27 +12,27 @@ const AuthFooter = () => {
       <div className="hok-auth-footer-content">
         {/* Left side - Policy Links */}
         <div className="hok-auth-footer-links">
-          <button 
+          <button
             className="hok-auth-footer-link"
-            onClick={() => handlePolicyClick('TERMS & CONDITIONS')}
+            onClick={() => handlePolicyClick("TERMS & CONDITIONS")}
           >
             TERMS & CONDITIONS
           </button>
-          <button 
+          <button
             className="hok-auth-footer-link"
-            onClick={() => handlePolicyClick('PRIVACY POLICY')}
+            onClick={() => handlePolicyClick("PRIVACY POLICY")}
           >
             PRIVACY POLICY
           </button>
-          <button 
+          <button
             className="hok-auth-footer-link"
-            onClick={() => handlePolicyClick('REFUND & CANCELLATION')}
+            onClick={() => handlePolicyClick("REFUND & CANCELLATION")}
           >
             REFUND & CANCELLATION
           </button>
-          <button 
+          <button
             className="hok-auth-footer-link"
-            onClick={() => handlePolicyClick('COOKIE POLICY')}
+            onClick={() => handlePolicyClick("COOKIE POLICY")}
           >
             COOKIE POLICY
           </button>

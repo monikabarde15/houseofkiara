@@ -23,20 +23,9 @@ const timezones = [
   "America/New_York (EST)",
 ];
 
-const currencies = [
-  "INR ₹",
-  "USD $",
-  "GBP £",
-  "EUR €",
-  "AED د.إ",
-];
+const currencies = ["INR ₹", "USD $", "GBP £", "EUR €", "AED د.إ"];
 
-const dateFormats = [
-  "DD MMM YYYY",
-  "DD/MM/YYYY",
-  "MM/DD/YYYY",
-  "YYYY-MM-DD",
-];
+const dateFormats = ["DD MMM YYYY", "DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"];
 
 const numberFormats = [
   "Indian — lakh and crore",
@@ -48,7 +37,7 @@ export default function RegionalTab() {
 
   const updateField = <K extends keyof RegionalForm>(
     field: K,
-    value: RegionalForm[K]
+    value: RegionalForm[K],
   ) => {
     setForm((prev) => ({
       ...prev,
@@ -66,15 +55,13 @@ export default function RegionalTab() {
         <div className="regional-title-row">
           <h2>Regional</h2>
 
-          <span className="regional-meta">
-            Priya (Ops) · 2 days ago
-          </span>
+          <span className="regional-meta">Priya (Ops) · 2 days ago</span>
         </div>
 
         <p>
           Timezone, currency and the way dates and figures are written.
-          Environment settings, set once at launch — the same class of thing
-          as the site&apos;s address, not a commercial rule like a payout split.
+          Environment settings, set once at launch — the same class of thing as
+          the site&apos;s address, not a commercial rule like a payout split.
         </p>
       </div>
 
@@ -100,18 +87,14 @@ export default function RegionalTab() {
               label="TIMEZONE"
               value={form.timezone}
               options={timezones}
-              onChange={(value) =>
-                updateField("timezone", value)
-              }
+              onChange={(value) => updateField("timezone", value)}
             />
 
             <RegionalSelect
               label="CURRENCY"
               value={form.currency}
               options={currencies}
-              onChange={(value) =>
-                updateField("currency", value)
-              }
+              onChange={(value) => updateField("currency", value)}
             />
           </div>
 
@@ -121,14 +104,10 @@ export default function RegionalTab() {
                 label="DATE FORMAT"
                 value={form.dateFormat}
                 options={dateFormats}
-                onChange={(value) =>
-                  updateField("dateFormat", value)
-                }
+                onChange={(value) => updateField("dateFormat", value)}
               />
 
-              <span className="regional-example">
-                Prints: 23 Mar 2026
-              </span>
+              <span className="regional-example">Prints: 23 Mar 2026</span>
 
               <span className="regional-help">
                 How dates read in the panel and on order confirmations.
@@ -140,9 +119,7 @@ export default function RegionalTab() {
                 label="NUMBER FORMAT"
                 value={form.numberFormat}
                 options={numberFormats}
-                onChange={(value) =>
-                  updateField("numberFormat", value)
-                }
+                onChange={(value) => updateField("numberFormat", value)}
               />
 
               <span className="regional-example">
@@ -158,9 +135,9 @@ export default function RegionalTab() {
           {/* EXPLANATION */}
 
           <div className="regional-note">
-            These are read by Orders, the rental calendar, Dispatch, Payouts
-            and every invoice, but they are configuration rather than a
-            commercial rule — which is why they sit here and not in{" "}
+            These are read by Orders, the rental calendar, Dispatch, Payouts and
+            every invoice, but they are configuration rather than a commercial
+            rule — which is why they sit here and not in{" "}
             <strong>Master Data</strong>.
           </div>
         </div>
@@ -204,8 +181,8 @@ function RegionalSelect({
 
       {label === "TIMEZONE" && (
         <span className="regional-help">
-          Every timestamp in Orders, the rental calendar, Dispatch and the
-          08:00 notification digests.
+          Every timestamp in Orders, the rental calendar, Dispatch and the 08:00
+          notification digests.
         </span>
       )}
 

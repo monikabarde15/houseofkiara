@@ -19,7 +19,7 @@
    ============================================ */
 
 .profile-account-dz {
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   border-radius: 11px;
   overflow: hidden;
   margin-top: 13px;
@@ -27,13 +27,13 @@
 
 .profile-account-dz-head {
   padding: 11px 16px;
-  background: #FAF7F2;
-  border-bottom: 1px solid #E8E0D4;
+  background: #faf7f2;
+  border-bottom: 1px solid #e8e0d4;
   font-family: "DM Sans", sans-serif;
   font-size: 8.5px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   font-weight: 400;
 }
 
@@ -43,10 +43,10 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
   cursor: pointer;
   transition: background 0.15s;
-  background: #FFFFFB;
+  background: #fffffb;
   width: 100%;
   text-align: left;
 }
@@ -56,7 +56,7 @@
 }
 
 .profile-account-di:hover {
-  background: #FAF7F2;
+  background: #faf7f2;
 }
 
 /* Icon Container */
@@ -87,17 +87,17 @@
   font-family: "DM Sans", sans-serif;
   font-size: 12.5px;
   font-weight: 400;
-  color: #3C3529;
+  color: #3c3529;
 }
 
 .profile-account-di-l-red {
-  color: #B85C38;
+  color: #b85c38;
 }
 
 .profile-account-di-s {
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
-  color: #8A7E72;
+  color: #8a7e72;
   font-weight: 300;
   margin-top: 1px;
 }
@@ -105,10 +105,10 @@
 /* Arrow */
 
 .profile-account-di-arr svg {
-    height: 12px;
-    width: 12px;
-    stroke: #E8E0D4;
-    stroke-width: 1.5;
-    fill: none;
-    margin-left: auto;
+  height: 12px;
+  width: 12px;
+  stroke: #e8e0d4;
+  stroke-width: 1.5;
+  fill: none;
+  margin-left: auto;
 }

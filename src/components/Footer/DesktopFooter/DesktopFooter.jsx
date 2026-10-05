@@ -3,7 +3,6 @@ import { footerColumns, policyLinks } from "../footerData";
 import "../../../styles/Footer/desktop-footer.css";
 import { showToast } from "../../AboutUs/shared/Toast";
 
-
 const InstagramIcon = () => (
   <svg viewBox="0 0 24 24" fill="none">
     <rect x="2" y="2" width="20" height="20" rx="5" />
@@ -28,15 +27,13 @@ const LinkedinIcon = () => (
 
 const DesktopFooter = () => {
   return (
-    
     <section className="hok-desktop-footer">
       <div className="hok-footer-top">
         <div className="hok-footer-brand">
           <h3>House of Kaira</h3>
           <span>Circular Luxury Fashion</span>
           <p>
-            Every outfit has a story.
-            We make sure it's never the last chapter.
+            Every outfit has a story. We make sure it's never the last chapter.
           </p>
           <div className="hok-footer-socials">
             <button
@@ -46,7 +43,7 @@ const DesktopFooter = () => {
                 window.open(
                   "https://instagram.com/house_of_kaira",
                   "_blank",
-                  "noopener,noreferrer"
+                  "noopener,noreferrer",
                 );
               }}
             >

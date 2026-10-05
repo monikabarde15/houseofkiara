@@ -9,7 +9,7 @@ const wordingSchema = new mongoose.Schema(
     email: String,
     whatsapp: String,
   },
-  { _id: false }
+  { _id: false },
 );
 
 const messageSchema = new mongoose.Schema(
@@ -44,7 +44,7 @@ const messageSchema = new mongoose.Schema(
     sentCount: { type: Number, default: 0 },
     wordings: [wordingSchema],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 messageSchema.set("toJSON", {

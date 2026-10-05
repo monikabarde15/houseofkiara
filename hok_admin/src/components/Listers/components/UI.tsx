@@ -1,28 +1,30 @@
 // src/components/Listers/components/UI.tsx
 
-import React from 'react';
-import './styles/UI.css';
+import React from "react";
+import "./styles/UI.css";
 
 // Button Component
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'gold' | 'sec' | 'danger' | 'wa';
-  size?: 'sm' | 'xs';
+  variant?: "gold" | "sec" | "danger" | "wa";
+  size?: "sm" | "xs";
   children: React.ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = 'sec',
+  variant = "sec",
   size,
   children,
-  className = '',
+  className = "",
   ...props
 }) => {
   const classes = [
-    'btn',
+    "btn",
     variant && `btn-${variant}`,
     size && `btn-${size}`,
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <button className={classes} {...props}>
@@ -34,21 +36,24 @@ export const Button: React.FC<ButtonProps> = ({
 // Status Chip Component
 interface StatusChipProps {
   status: string;
-  variant?: 's-live' | 's-pend' | 's-paused' | 's-draft' | 's-sold';
+  variant?: "s-live" | "s-pend" | "s-paused" | "s-draft" | "s-sold";
 }
 
 export const StatusChip: React.FC<StatusChipProps> = ({ status, variant }) => {
-  const chipClass = variant || 's-draft';
+  const chipClass = variant || "s-draft";
   return <span className={`s-chip ${chipClass}`}>{status}</span>;
 };
 
 // Channel Tag Component
 interface ChannelTagProps {
   channel: string;
-  type?: 'r' | 'p' | 'n';
+  type?: "r" | "p" | "n";
 }
 
-export const ChannelTag: React.FC<ChannelTagProps> = ({ channel, type = 'n' }) => {
+export const ChannelTag: React.FC<ChannelTagProps> = ({
+  channel,
+  type = "n",
+}) => {
   return <span className={`tag t-${type}`}>{channel}</span>;
 };
 
@@ -72,7 +77,7 @@ interface CardProps {
   className?: string;
 }
 
-export const Card: React.FC<CardProps> = ({ children, className = '' }) => {
+export const Card: React.FC<CardProps> = ({ children, className = "" }) => {
   return <div className={`card ${className}`}>{children}</div>;
 };
 
@@ -83,7 +88,11 @@ interface CardHeaderProps {
   right?: React.ReactNode;
 }
 
-export const CardHeader: React.FC<CardHeaderProps> = ({ title, subtitle, right }) => {
+export const CardHeader: React.FC<CardHeaderProps> = ({
+  title,
+  subtitle,
+  right,
+}) => {
   return (
     <div className="card-hd">
       <div>
@@ -97,11 +106,14 @@ export const CardHeader: React.FC<CardHeaderProps> = ({ title, subtitle, right }
 
 // Empty State Component
 interface EmptyStateProps {
-  type?: 'inline' | 'boxed';
+  type?: "inline" | "boxed";
   children: React.ReactNode;
 }
 
-export const EmptyState: React.FC<EmptyStateProps> = ({ type = 'inline', children }) => {
-  const classes = type === 'boxed' ? 'empty-state-boxed' : 'empty-state-inline';
+export const EmptyState: React.FC<EmptyStateProps> = ({
+  type = "inline",
+  children,
+}) => {
+  const classes = type === "boxed" ? "empty-state-boxed" : "empty-state-inline";
   return <div className={classes}>{children}</div>;
 };

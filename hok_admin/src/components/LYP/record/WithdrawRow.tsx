@@ -1,8 +1,8 @@
 // src/components/LYP/record/WithdrawRow.tsx
 
-import React, { useState } from 'react';
-import { Submission } from '../types/submission.types';
-import './styles/WithdrawRow.css';
+import React, { useState } from "react";
+import { Submission } from "../types/submission.types";
+import "./styles/WithdrawRow.css";
 
 interface WithdrawRowProps {
   submission: Submission;
@@ -15,21 +15,24 @@ export const WithdrawRow: React.FC<WithdrawRowProps> = ({
   onSuccess,
   onCancel,
 }) => {
-  const [reason, setReason] = useState('');
+  const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleConfirm = async () => {
     if (!reason.trim()) return;
     setLoading(true);
-    
+
     try {
-      const { submissionService } = await import('../services/submissionService');
-      const { toast } = await import('react-hot-toast');
+      const { submissionService } =
+        await import("../services/submissionService");
+      const { toast } = await import("react-hot-toast");
       await submissionService.withdrawSubmission(submission.subid, reason);
-      toast.success('Submission withdrawn');
+      toast.success("Submission withdrawn");
       onSuccess();
     } catch (err: any) {
-      import('react-hot-toast').then(({ toast }) => toast.error(err.message || 'Failed to withdraw'));
+      import("react-hot-toast").then(({ toast }) =>
+        toast.error(err.message || "Failed to withdraw"),
+      );
     } finally {
       setLoading(false);
     }
@@ -44,15 +47,15 @@ export const WithdrawRow: React.FC<WithdrawRowProps> = ({
         onChange={(e) => setReason(e.target.value)}
         placeholder="Why is it coming off the table? Goes on the record."
       />
-      <button 
-        className="btn btn-sec btn-sm" 
+      <button
+        className="btn btn-sec btn-sm"
         onClick={handleConfirm}
         disabled={!reason.trim() || loading}
       >
-        {loading ? 'Processing...' : 'Confirm Withdrawn'}
+        {loading ? "Processing..." : "Confirm Withdrawn"}
       </button>
-      <button 
-        className="btn btn-sec btn-sm" 
+      <button
+        className="btn btn-sec btn-sm"
         onClick={onCancel}
         disabled={loading}
       >

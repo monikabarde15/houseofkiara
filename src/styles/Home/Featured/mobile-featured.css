@@ -1,6 +1,6 @@
 .mobile-featured {
   padding: 76px 20px 48px;
-  background: #FFFEFB;
+  background: #fffefb;
 }
 
 .mobile-featured-header {
@@ -28,7 +28,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
 
-  color: #1A1612;
+  color: #1a1612;
 
   cursor: pointer;
 }
@@ -43,7 +43,7 @@
 
   margin-top: 4px;
 
-  background: #1A1612;
+  background: #1a1612;
 }
 
 .mobile-featured-grid {
@@ -65,7 +65,7 @@
 
   overflow: hidden;
 
-  background: #FAF7F2;
+  background: #faf7f2;
 
   margin-bottom: 10px;
 }
@@ -100,8 +100,8 @@
 
   border-radius: 1px;
 
-  background: #1A1612;
-  color: #D4C5B0;
+  background: #1a1612;
+  color: #d4c5b0;
 }
 
 .mobile-featured-wishlist {
@@ -125,7 +125,7 @@
 }
 
 .mobile-featured-wishlist svg {
-  stroke: #1A1612;
+  stroke: #1a1612;
   stroke-width: 1.5;
 }
 
@@ -139,7 +139,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
 
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .mobile-featured-name {
@@ -150,7 +150,7 @@
   font-weight: 400;
   line-height: 1.25;
 
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .mobile-featured-price-block {
@@ -171,14 +171,14 @@
   font-size: 12px;
   font-weight: 500;
 
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .mobile-featured-price-suffix {
   font-family: "DM Sans";
   font-size: 10px;
 
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .mobile-featured-retail {
@@ -187,5 +187,5 @@
 
   text-decoration: line-through;
 
-  color: #8A7E72;
+  color: #8a7e72;
 }

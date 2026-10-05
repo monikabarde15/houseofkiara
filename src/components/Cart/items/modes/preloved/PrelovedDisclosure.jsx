@@ -13,9 +13,7 @@ const PrelovedDisclosure = ({ product }) => {
         <span className="preloved-disclosure__label">
           Condition disclosure:
         </span>{" "}
-        <span className="preloved-disclosure__body">
-          {disclosure}
-        </span>
+        <span className="preloved-disclosure__body">{disclosure}</span>
       </p>
     </div>
   );

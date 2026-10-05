@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Check } from 'lucide-react';
-import useAuthStore from '../../../store/authStore';
+import React, { useState, useEffect, useRef } from "react";
+import { Check } from "lucide-react";
+import useAuthStore from "../../../store/authStore";
 import "../../../styles/Profile/forms/AddAddressForm.css";
 
 const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
@@ -14,7 +14,7 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
     state: initialData?.state || "",
     pin: initialData?.pin || "",
     mobile: initialData?.mobile || user?.phone || user?.mobile || "",
-    setAsDefault: false
+    setAsDefault: false,
   });
 
   const [errors, setErrors] = useState({});
@@ -22,31 +22,39 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
 
   const validateField = (name, value) => {
     switch (name) {
-      case 'recipientName':
-        return !value.trim() ? 'Recipient name is required' : '';
-      case 'line1':
-        return !value.trim() ? 'Address line 1 is required' : '';
-      case 'city':
-        return !value.trim() ? 'City is required' : '';
-      case 'state':
-        return !value.trim() ? 'State is required' : '';
-      case 'pin':
-        if (!value) return 'PIN code is required';
-        if (!/^\d{6}$/.test(value)) return 'PIN code must be 6 digits';
-        return '';
-      case 'mobile':
-        if (!value) return 'Mobile number is required';
-        if (!/^[+\d][\d\s-]{7,}$/.test(value)) return 'Enter a valid mobile number';
-        return '';
+      case "recipientName":
+        return !value.trim() ? "Recipient name is required" : "";
+      case "line1":
+        return !value.trim() ? "Address line 1 is required" : "";
+      case "city":
+        return !value.trim() ? "City is required" : "";
+      case "state":
+        return !value.trim() ? "State is required" : "";
+      case "pin":
+        if (!value) return "PIN code is required";
+        if (!/^\d{6}$/.test(value)) return "PIN code must be 6 digits";
+        return "";
+      case "mobile":
+        if (!value) return "Mobile number is required";
+        if (!/^[+\d][\d\s-]{7,}$/.test(value))
+          return "Enter a valid mobile number";
+        return "";
       default:
-        return '';
+        return "";
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    const fieldsToValidate = ['recipientName', 'line1', 'city', 'state', 'pin', 'mobile'];
-    fieldsToValidate.forEach(field => {
+    const fieldsToValidate = [
+      "recipientName",
+      "line1",
+      "city",
+      "state",
+      "pin",
+      "mobile",
+    ];
+    fieldsToValidate.forEach((field) => {
       const error = validateField(field, formData[field]);
       if (error) newErrors[field] = error;
     });
@@ -56,10 +64,10 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const newValue = type === 'checkbox' ? checked : value;
-    setFormData(prev => ({ ...prev, [name]: newValue }));
+    const newValue = type === "checkbox" ? checked : value;
+    setFormData((prev) => ({ ...prev, [name]: newValue }));
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -68,10 +76,13 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
     if (validateForm()) {
       onSave(formData);
     } else {
-      const firstErrorField = document.querySelector('.profile-af-has-error');
+      const firstErrorField = document.querySelector(".profile-af-has-error");
       if (firstErrorField) {
         setTimeout(() => {
-          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          firstErrorField.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
         }, 40);
       }
     }
@@ -79,14 +90,14 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
 
   useEffect(() => {
     if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }, []);
 
   return (
     <div className="profile-addr-form" ref={formRef}>
       <div className="profile-af-title">New Address</div>
-      
+
       <form onSubmit={handleSubmit}>
         {/* Row 1: Label + Recipient Name */}
         <div className="profile-af-row">
@@ -104,7 +115,9 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
               <option value="Other">Other</option>
             </select>
           </div>
-          <div className={`profile-af-field ${errors.recipientName ? 'profile-af-has-error' : ''}`}>
+          <div
+            className={`profile-af-field ${errors.recipientName ? "profile-af-has-error" : ""}`}
+          >
             <label className="profile-af-label">
               Recipient Name <span className="profile-af-required">*</span>
             </label>
@@ -115,12 +128,16 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
               onChange={handleChange}
               className="profile-af-input"
             />
-            {errors.recipientName && <span className="profile-af-error">{errors.recipientName}</span>}
+            {errors.recipientName && (
+              <span className="profile-af-error">{errors.recipientName}</span>
+            )}
           </div>
         </div>
 
         {/* Row 2: Address Line 1 (full width) */}
-        <div className={`profile-af-field-full ${errors.line1 ? 'profile-af-has-error' : ''}`}>
+        <div
+          className={`profile-af-field-full ${errors.line1 ? "profile-af-has-error" : ""}`}
+        >
           <label className="profile-af-label">
             Address Line 1 <span className="profile-af-required">*</span>
           </label>
@@ -132,7 +149,9 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
             placeholder="House / Flat / Building no."
             className="profile-af-input"
           />
-          {errors.line1 && <span className="profile-af-error">{errors.line1}</span>}
+          {errors.line1 && (
+            <span className="profile-af-error">{errors.line1}</span>
+          )}
         </div>
 
         {/* Row 3: Address Line 2 (full width) - optional */}
@@ -150,7 +169,9 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
 
         {/* Row 4: City + State */}
         <div className="profile-af-row">
-          <div className={`profile-af-field ${errors.city ? 'profile-af-has-error' : ''}`}>
+          <div
+            className={`profile-af-field ${errors.city ? "profile-af-has-error" : ""}`}
+          >
             <label className="profile-af-label">
               City <span className="profile-af-required">*</span>
             </label>
@@ -161,9 +182,13 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
               onChange={handleChange}
               className="profile-af-input"
             />
-            {errors.city && <span className="profile-af-error">{errors.city}</span>}
+            {errors.city && (
+              <span className="profile-af-error">{errors.city}</span>
+            )}
           </div>
-          <div className={`profile-af-field ${errors.state ? 'profile-af-has-error' : ''}`}>
+          <div
+            className={`profile-af-field ${errors.state ? "profile-af-has-error" : ""}`}
+          >
             <label className="profile-af-label">
               State <span className="profile-af-required">*</span>
             </label>
@@ -174,13 +199,17 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
               onChange={handleChange}
               className="profile-af-input"
             />
-            {errors.state && <span className="profile-af-error">{errors.state}</span>}
+            {errors.state && (
+              <span className="profile-af-error">{errors.state}</span>
+            )}
           </div>
         </div>
 
         {/* Row 5: PIN Code + Mobile */}
         <div className="profile-af-row">
-          <div className={`profile-af-field ${errors.pin ? 'profile-af-has-error' : ''}`}>
+          <div
+            className={`profile-af-field ${errors.pin ? "profile-af-has-error" : ""}`}
+          >
             <label className="profile-af-label">
               PIN Code <span className="profile-af-required">*</span>
             </label>
@@ -192,9 +221,13 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
               maxLength="6"
               className="profile-af-input"
             />
-            {errors.pin && <span className="profile-af-error">{errors.pin}</span>}
+            {errors.pin && (
+              <span className="profile-af-error">{errors.pin}</span>
+            )}
           </div>
-          <div className={`profile-af-field ${errors.mobile ? 'profile-af-has-error' : ''}`}>
+          <div
+            className={`profile-af-field ${errors.mobile ? "profile-af-has-error" : ""}`}
+          >
             <label className="profile-af-label">
               Mobile <span className="profile-af-required">*</span>
             </label>
@@ -205,7 +238,9 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
               onChange={handleChange}
               className="profile-af-input"
             />
-            {errors.mobile && <span className="profile-af-error">{errors.mobile}</span>}
+            {errors.mobile && (
+              <span className="profile-af-error">{errors.mobile}</span>
+            )}
           </div>
         </div>
 
@@ -230,7 +265,11 @@ const AddAddressForm = ({ onClose, onSave, initialData = null }) => {
             <Check size={12} strokeWidth={2} />
             Save Address
           </button>
-          <button type="button" className="profile-af-btn-cancel" onClick={onClose}>
+          <button
+            type="button"
+            className="profile-af-btn-cancel"
+            onClick={onClose}
+          >
             Cancel
           </button>
         </div>

@@ -3,7 +3,7 @@
    ============================================ */
 
 .profile-earn-banner {
-  background: linear-gradient(135deg, #1A1612 0%, #2C2520 100%);
+  background: linear-gradient(135deg, #1a1612 0%, #2c2520 100%);
   border-radius: 14px;
   overflow: hidden;
   position: relative;
@@ -45,7 +45,7 @@
   font-size: 8.5px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
   font-weight: 400;
   margin-bottom: 8px;
 }
@@ -55,7 +55,7 @@
   font-size: 26px;
   font-weight: 300;
   font-style: italic;
-  color: #FFFFFB;
+  color: #fffffb;
   line-height: 1.25;
   margin-bottom: 8px;
 }
@@ -81,8 +81,8 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: #C9A96E;
-  color: #1A1612;
+  background: #c9a96e;
+  color: #1a1612;
   padding: 11px 18px;
   border-radius: 5px;
   border: none;
@@ -92,11 +92,10 @@
   text-transform: uppercase;
   font-weight: 500;
   white-space: nowrap;
-  
 }
 
 .profile-earn-primary:hover {
-  background: #E8D5B0;
+  background: #e8d5b0;
 }
 
 .profile-earn-primary svg {
@@ -116,5 +115,5 @@
 }
 
 .profile-earn-secondary:hover {
-  color: #E8D5B0;
+  color: #e8d5b0;
 }

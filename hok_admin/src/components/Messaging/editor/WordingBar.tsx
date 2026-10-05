@@ -1,7 +1,7 @@
 // editor/WordingBar.tsx
-import React, { useState, useRef, useEffect } from 'react';
-import toast from 'react-hot-toast';
-import './styles/WordingBar.css';
+import React, { useState, useRef, useEffect } from "react";
+import toast from "react-hot-toast";
+import "./styles/WordingBar.css";
 
 interface Wording {
   id: string;
@@ -24,7 +24,7 @@ export const WordingBar: React.FC<WordingBarProps> = ({
   onCopy,
 }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState('');
+  const [editValue, setEditValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleDoubleClick = (id: string, name: string) => {
@@ -33,11 +33,15 @@ export const WordingBar: React.FC<WordingBarProps> = ({
   };
 
   const handleSave = (id: string) => {
-    if (editValue.trim() && editValue.trim() !== '') {
+    if (editValue.trim() && editValue.trim() !== "") {
       // Check for duplicates
-      const exists = wordings.some(w => w.name === editValue.trim() && w.id !== id);
+      const exists = wordings.some(
+        (w) => w.name === editValue.trim() && w.id !== id,
+      );
       if (exists) {
-        toast.success(`There is already a wording called "${editValue.trim()}". Give this one a different name.`);
+        toast.success(
+          `There is already a wording called "${editValue.trim()}". Give this one a different name.`,
+        );
         return;
       }
       onRename(id, editValue.trim());
@@ -46,9 +50,9 @@ export const WordingBar: React.FC<WordingBarProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, id: string) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSave(id);
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       setEditingId(null);
     }
   };
@@ -66,7 +70,7 @@ export const WordingBar: React.FC<WordingBarProps> = ({
         {wordings.map((wording) => (
           <div
             key={wording.id}
-            className={`msg-wording-tab ${activeId === wording.id ? 'msg-wording-tab--active' : ''}`}
+            className={`msg-wording-tab ${activeId === wording.id ? "msg-wording-tab--active" : ""}`}
             onClick={() => onSelect(wording.id)}
             onDoubleClick={() => handleDoubleClick(wording.id, wording.name)}
             title="Double-click to rename"
@@ -85,10 +89,7 @@ export const WordingBar: React.FC<WordingBarProps> = ({
             )}
           </div>
         ))}
-        <div
-          className="msg-wording-tab msg-wording-tab--copy"
-          onClick={onCopy}
-        >
+        <div className="msg-wording-tab msg-wording-tab--copy" onClick={onCopy}>
           + Copy this wording
         </div>
       </div>

@@ -3,8 +3,8 @@
    ============================================ */
 
 .profile-mobile-addaddr-form {
-  background: #FFFEFB;
-  border-top: 1px solid #F0EAE0;
+  background: #fffefb;
+  border-top: 1px solid #f0eae0;
 }
 
 .profile-mobile-addaddr-trigger {
@@ -14,7 +14,7 @@
   gap: 12px;
   padding: 14px 16px;
   border: none;
-  background: #FFFEFB;
+  background: #fffefb;
   text-align: left;
   cursor: pointer;
 }
@@ -23,15 +23,15 @@
   width: 28px;
   height: 28px;
   flex-shrink: 0;
-  border: 1px solid #E8E0D4;
-  background: #F0EAE0;
+  border: 1px solid #e8e0d4;
+  background: #f0eae0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .profile-mobile-addaddr-icon svg {
-  stroke: #1A1612;
+  stroke: #1a1612;
 }
 
 .profile-mobile-addaddr-copy {
@@ -43,7 +43,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #3C3529;
+  color: #3c3529;
 }
 
 .profile-mobile-addaddr-trigger-subtitle {
@@ -51,12 +51,12 @@
   font-size: 10px;
   font-weight: 300;
   line-height: 1.4;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .profile-mobile-addaddr-body {
   padding: 18px 20px 28px;
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
   animation: profile-mobile-addaddr-rise 0.28s ease;
 }
 
@@ -77,7 +77,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 18px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .profile-mobile-addaddr-row {
@@ -99,12 +99,12 @@
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .profile-mobile-addaddr-required {
   margin-left: 2px;
-  color: #B85C38;
+  color: #b85c38;
 }
 
 .profile-mobile-addaddr-input {
@@ -112,22 +112,22 @@
   height: 44px;
   padding: 0;
   border: none;
-  border-bottom: 1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
   background: transparent;
   outline: none;
   font-family: "DM Sans", sans-serif;
   font-size: 13px;
-  color: #1A1612;
+  color: #1a1612;
   transition: border-color 0.2s ease;
 }
 
 .profile-mobile-addaddr-input::placeholder {
-  color: #8A7E72;
+  color: #8a7e72;
   font-weight: 300;
 }
 
 .profile-mobile-addaddr-input:focus {
-  border-bottom-color: #C9A96E;
+  border-bottom-color: #c9a96e;
 }
 
 .profile-mobile-addaddr-select-wrap {
@@ -139,7 +139,7 @@
   height: 44px;
   padding: 0 22px 0 0;
   border: none;
-  border-bottom: 1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
   background: transparent;
   outline: none;
   appearance: none;
@@ -147,13 +147,13 @@
   -moz-appearance: none;
   font-family: "DM Sans", sans-serif;
   font-size: 13px;
-  color: #1A1612;
+  color: #1a1612;
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
 .profile-mobile-addaddr-select:focus {
-  border-bottom-color: #C9A96E;
+  border-bottom-color: #c9a96e;
 }
 
 .profile-mobile-addaddr-chevron {
@@ -161,17 +161,17 @@
   right: 4px;
   top: 50%;
   transform: translateY(-50%);
-  stroke: #B0A898;
+  stroke: #b0a898;
   pointer-events: none;
 }
 
 .profile-mobile-addaddr-fi.has-error .profile-mobile-addaddr-label {
-  color: #B85C38;
+  color: #b85c38;
 }
 
 .profile-mobile-addaddr-fi.has-error .profile-mobile-addaddr-input,
 .profile-mobile-addaddr-fi.has-error .profile-mobile-addaddr-select {
-  border-bottom-color: #B85C38;
+  border-bottom-color: #b85c38;
 }
 
 .profile-mobile-addaddr-error {
@@ -179,7 +179,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
   line-height: 1.4;
-  color: #B85C38;
+  color: #b85c38;
 }
 
 .profile-mobile-addaddr-checkbox {
@@ -193,14 +193,14 @@
   width: 16px;
   height: 16px;
   margin: 0;
-  accent-color: #1A1612;
+  accent-color: #1a1612;
 }
 
 .profile-mobile-addaddr-checkbox-label {
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: #3C3529;
+  color: #3c3529;
 }
 
 .profile-mobile-addaddr-buttons {
@@ -211,8 +211,8 @@
   width: 100%;
   height: 54px;
   border: none;
-  background: #1A1612;
-  color: #E8D5B0;
+  background: #1a1612;
+  color: #e8d5b0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -227,7 +227,7 @@
 }
 
 .profile-mobile-addaddr-btn-save:active {
-  background: #2C2520;
+  background: #2c2520;
 }
 
 .profile-mobile-addaddr-btn-cancel {
@@ -242,5 +242,5 @@
   font-weight: 400;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
 }

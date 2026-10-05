@@ -9,7 +9,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 10px 0;
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
 }
 
 .summary-left {
@@ -28,7 +28,7 @@
 .summary-title {
   font-size: 12px;
   line-height: 1.5;
-  color: #3C3529;
+  color: #3c3529;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -37,36 +37,36 @@
 .summary-sub {
   font-size: 10px;
   line-height: 1.4;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .summary-value {
   font-family: "Cormorant Garamond", serif;
   font-size: 15px;
   font-weight: 400;
-  color: #18140F;
+  color: #18140f;
   text-align: right;
 }
 
 /* Row Variants */
 .summary-row.discount .summary-title,
 .summary-row.discount .summary-value {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 .summary-row.deposit .summary-value {
-  color: #9A7010;
+  color: #9a7010;
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
 }
 
 .summary-row.deposit .summary-title {
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .summary-row.dim .summary-title,
 .summary-row.dim .summary-value {
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .summary-row.dim .summary-value {

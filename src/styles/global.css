@@ -3,49 +3,49 @@
 /* RESET */
 :root {
   /* COLORS */
-  --charcoal: #1A1612;
-  --deep: #0E0C0A;
+  --charcoal: #1a1612;
+  --deep: #0e0c0a;
 
-  --warm-white: #FFFEFB;
-  --cream: #FAF7F2;
+  --warm-white: #fffefb;
+  --cream: #faf7f2;
 
-  --gold: #C9A96E;
-  --gold-light: #E8D5B0;
-  --gold-pale: #F5EDD8;
-  --gold-deep: #A8844A;
-  --terracotta: #B85C38;
+  --gold: #c9a96e;
+  --gold-light: #e8d5b0;
+  --gold-pale: #f5edd8;
+  --gold-deep: #a8844a;
+  --terracotta: #b85c38;
 
-  --sage: #6B7E5A;
-  --sage-light: #EEF2EA;
+  --sage: #6b7e5a;
+  --sage-light: #eef2ea;
 
-  --muted: #8A7E72;
+  --muted: #8a7e72;
 
-  --border: #E8E0D4;
-  --border-light: #F0EAE0;
-  --ink: #18140F;
-  --ink-2: #3C3529;
-  --ink-4: #B0A898;
+  --border: #e8e0d4;
+  --border-light: #f0eae0;
+  --ink: #18140f;
+  --ink-2: #3c3529;
+  --ink-4: #b0a898;
 
   /* Mode Colors */
   --mulberry: #893860;
-  --mulberry-bg: #F5EEF2;
+  --mulberry-bg: #f5eef2;
 
-  --navy: #2A4466;
-  --navy-bg: #EEF1F7;
+  --navy: #2a4466;
+  --navy-bg: #eef1f7;
 
   /* Sage background variant */
-  --sage-bg: #EFF4EC;
+  --sage-bg: #eff4ec;
 
   /* Special (Deposit / Notices) */
-  --amber: #C2A040;
-  --amber-bg: #FDF8EE;
+  --amber: #c2a040;
+  --amber-bg: #fdf8ee;
 
   /* Status Colors */
-  --error: #C0392B;
-  --error-bg: #FDF3F2;
+  --error: #c0392b;
+  --error-bg: #fdf3f2;
 
-  --success: #2E7D52;
-  --success-bg: #F0F7F3;
+  --success: #2e7d52;
+  --success-bg: #f0f7f3;
 
   /* Aliases (Design system mapping) */
   --ink-3: var(--muted);
@@ -65,7 +65,6 @@
   /* TYPOGRAPHY */
   --serif: "Cormorant Garamond", Georgia, serif;
   --sans: "DM Sans", sans-serif;
-
 
   /* SPACING SCALE */
   --s1: 8px;
@@ -97,6 +96,3 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
-
-
-

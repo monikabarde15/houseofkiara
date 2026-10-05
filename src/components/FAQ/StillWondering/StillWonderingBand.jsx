@@ -15,7 +15,7 @@ export default function StillWonderingBand({ onShowToast }) {
 
   const handleEmail = () => {
     window.location.href = `mailto:${ADMIN_FIGURES.support_email}?subject=${encodeURIComponent(
-      "A question for House of Kaira"
+      "A question for House of Kaira",
     )}`;
   };
 
@@ -34,27 +34,23 @@ export default function StillWonderingBand({ onShowToast }) {
           </h2>
 
           <p className="still-p">
-            Ask us anything, however small. A measurement you want double checked, a date that feels tight, a shade that looks different on your screen. Our team knows every piece in the house, and we would genuinely love to help you get this right.
+            Ask us anything, however small. A measurement you want double
+            checked, a date that feels tight, a shade that looks different on
+            your screen. Our team knows every piece in the house, and we would
+            genuinely love to help you get this right.
           </p>
 
-          <p className="still-sign">
-            With love, the House of Kaira team
-          </p>
+          <p className="still-sign">With love, the House of Kaira team</p>
 
           <div className="still-btns">
-            <button
-              type="button"
-              className="btn-wa"
-              onClick={handleWhatsApp}
-            >
-              <WhatsAppGlyphIcon fill="#FFFFFF" style={{ width: 16, height: 16 }} />
+            <button type="button" className="btn-wa" onClick={handleWhatsApp}>
+              <WhatsAppGlyphIcon
+                fill="#FFFFFF"
+                style={{ width: 16, height: 16 }}
+              />
               <span>Message us on WhatsApp</span>
             </button>
-            <button
-              type="button"
-              className="btn-line"
-              onClick={handleEmail}
-            >
+            <button type="button" className="btn-line" onClick={handleEmail}>
               <EmailIcon style={{ width: 15, height: 15 }} />
               <span>Write to us</span>
             </button>

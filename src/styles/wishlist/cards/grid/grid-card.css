@@ -24,14 +24,19 @@
 .desk-wishlist-card-removing {
   opacity: 0;
   transform: scale(0.97);
-  transition: opacity 0.28s ease, transform 0.28s ease;
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
 }
 
 .desk-wishlist-card-collapsing {
   overflow: hidden;
-  transition: max-height 0.35s ease, padding-top 0.35s ease, 
-              padding-bottom 0.35s ease, margin-top 0.35s ease, 
-              margin-bottom 0.35s ease;
+  transition:
+    max-height 0.35s ease,
+    padding-top 0.35s ease,
+    padding-bottom 0.35s ease,
+    margin-top 0.35s ease,
+    margin-bottom 0.35s ease;
 }
 
 /* Restored card fade-in animation */

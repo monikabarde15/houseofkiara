@@ -2,12 +2,11 @@
 
 export const ALERTS = {
   // Removing a message that has been sent
-  REMOVE_SENT_MESSAGE: (count: number) => 
+  REMOVE_SENT_MESSAGE: (count: number) =>
     `This message has been sent ${count} times, so it stays. Switch its channels off instead and it will stop going out while the record of what was already sent survives.`,
 
   // Removing a built-in message
-  REMOVE_BUILTIN_MESSAGE: 
-    `This is one of the messages the platform sends on its own, so it cannot be removed. Switch its channels off if you do not want it going out.`,
+  REMOVE_BUILTIN_MESSAGE: `This is one of the messages the platform sends on its own, so it cannot be removed. Switch its channels off if you do not want it going out.`,
 
   // Crossing off a tax document
   CROSS_TAX_DOCUMENT: (document: string) =>
@@ -22,12 +21,10 @@ export const ALERTS = {
     `${document} is a tax document. Whether it travels is decided by the rule for it under Setup → Documents, not attached by hand.`,
 
   // Switching off a Required channel
-  SWITCH_OFF_REQUIRED: 
-    `This one is marked Required, so email stays on. It carries money, a deposit, a security fact or something the law asks for. If it really should be optional, change that in the editor first, on the message itself.`,
+  SWITCH_OFF_REQUIRED: `This one is marked Required, so email stays on. It carries money, a deposit, a security fact or something the law asks for. If it really should be optional, change that in the editor first, on the message itself.`,
 
   // Removing the last wording
-  REMOVE_LAST_WORDING: 
-    `A message needs at least one wording.`,
+  REMOVE_LAST_WORDING: `A message needs at least one wording.`,
 
   // Duplicate wording name
   DUPLICATE_WORDING_NAME: (name: string) =>
@@ -42,20 +39,16 @@ export const ALERTS = {
     `The wording still uses {{${word}}} from this group. Take those out first, then untick it.`,
 
   // Email on with nothing written
-  EMAIL_ON_NOTHING_WRITTEN: 
-    `Email is switched on but nothing is written. Write it, or switch email off first.`,
+  EMAIL_ON_NOTHING_WRITTEN: `Email is switched on but nothing is written. Write it, or switch email off first.`,
 
   // Message with no name
-  MESSAGE_NO_NAME: 
-    `Give the message a name so the team can find it.`,
+  MESSAGE_NO_NAME: `Give the message a name so the team can find it.`,
 
   // Sending a promotion message with no code
-  PROMOTION_NO_CODE: 
-    `This message quotes a promotion, so pick one above. Otherwise the code would come out blank.`,
+  PROMOTION_NO_CODE: `This message quotes a promotion, so pick one above. Otherwise the code would come out blank.`,
 
   // Sending with nobody chosen
-  SEND_NOBODY_CHOSEN: 
-    `Choose who it is going to first.`,
+  SEND_NOBODY_CHOSEN: `Choose who it is going to first.`,
 
   // Sending a message with nothing written
   SEND_NOTHING_WRITTEN: (name: string) =>
@@ -90,22 +83,19 @@ export const ALERTS = {
     `There is already a document called "${name}".`,
 
   // Document with no name
-  DOCUMENT_NO_NAME: 
-    `Give the document a name.`,
+  DOCUMENT_NO_NAME: `Give the document a name.`,
 
   // Document added to master
   DOCUMENT_ADDED: (name: string) =>
     `${name} is now in the master. Add a rule below to decide which message carries it, or pick it under Also attach on a message.`,
 
   // NEW ALERTS (from addendum 2.5)
-  WORD_NO_NAME:
-    'The format wanted is plain words without braces.',
+  WORD_NO_NAME: "The format wanted is plain words without braces.",
 
   WORD_ALREADY_EXISTS: (word: string, group: string) =>
     `${word} is already in ${group}, and it can be used now.`,
 
-  WORD_ALREADY_ASKED: (word: string) =>
-    `${word} is already on the list.`,
+  WORD_ALREADY_ASKED: (word: string) => `${word} is already on the list.`,
 
   WORD_NO_DESCRIPTION: (word: string) =>
     `The build team could not know which field is meant.`,
@@ -115,5 +105,4 @@ export const ALERTS = {
 
   WORD_REQUEST_RECORDED: (word: string) =>
     `${word} cannot be used until the field exists on the record.`,
-
 };

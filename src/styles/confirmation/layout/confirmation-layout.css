@@ -1,7 +1,6 @@
 /* src\styles\confirmation\layout\confirmation-layout.css */
 .confirmation-layout {
   min-height: 100vh;
-  
 }
 
 .confirmation-layout-container {
@@ -15,5 +14,5 @@
 .confirmation-piece-group {
   padding-bottom: 32px;
   margin-bottom: 48px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }

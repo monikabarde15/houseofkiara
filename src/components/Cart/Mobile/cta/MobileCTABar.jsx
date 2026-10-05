@@ -24,7 +24,7 @@ const MobileCTABar = ({ grandTotal, onCheckout, isCartEmpty = false }) => {
           document.body.classList.remove("cart-mobile-cta-docked");
         }
       },
-      { threshold: 0.01 }
+      { threshold: 0.01 },
     );
 
     observer.observe(footer);
@@ -34,16 +34,15 @@ const MobileCTABar = ({ grandTotal, onCheckout, isCartEmpty = false }) => {
     };
   }, []);
 
-
   return (
     <div id="cart-mobile-cta-bar" className="cart-mobile-cta-bar" ref={ctaRef}>
       <div className="cart-mobile-cta-inner">
-
         {/* Summary Line - Spec 9.3 */}
         <div className="cart-mobile-cta-summary-line">
           <span className="cart-mobile-cta-label">Total at checkout</span>
           <span className="cart-mobile-cta-amount">
-            <sup>₹</sup>{grandTotal.toLocaleString("en-IN")}
+            <sup>₹</sup>
+            {grandTotal.toLocaleString("en-IN")}
           </span>
         </div>
 
@@ -62,7 +61,6 @@ const MobileCTABar = ({ grandTotal, onCheckout, isCartEmpty = false }) => {
           <Lock size={10} strokeWidth={1.5} />
           <span>SSL encrypted · Secured by Razorpay</span>
         </div>
-
       </div>
     </div>
   );

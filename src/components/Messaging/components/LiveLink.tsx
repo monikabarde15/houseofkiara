@@ -1,6 +1,6 @@
 // components/LiveLink.tsx
-import React from 'react';
-import './styles/LiveLink.css';
+import React from "react";
+import "./styles/LiveLink.css";
 
 interface LiveLinkProps {
   to: string;
@@ -15,12 +15,12 @@ export const LiveLink: React.FC<LiveLinkProps> = ({
   section,
   tab,
   children,
-  className = '',
+  className = "",
 }) => {
   const handleClick = () => {
     // Adds current place to back journey
     // Navigates to section, opens tab
-    console.log(`Navigate to: ${section} → ${tab || 'default'} → ${to}`);
+    console.log(`Navigate to: ${section} → ${tab || "default"} → ${to}`);
   };
 
   return (

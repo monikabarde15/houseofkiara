@@ -2,7 +2,7 @@
 /* Mobile Spec §00 - Global Styles */
 
 .mob-about-us {
-  background: #FFFFFB;
+  background: #fffffb;
   min-height: 100vh;
   width: 100%;
   max-width: 100%;
@@ -29,7 +29,7 @@
   content: "";
   width: 20px;
   height: 1px;
-  background: #C9A96E;
+  background: #c9a96e;
 }
 
 .mob-about-us .section-eyebrow span {
@@ -37,14 +37,16 @@
   font-size: 9px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* ===== REVEAL ANIMATION - Mobile Spec §02.3 ===== */
 .mob-about-us .reveal {
   opacity: 0;
   transform: translateY(28px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
 }
 
 .mob-about-us .reveal.in-view {
@@ -56,7 +58,9 @@
 .mob-about-us .reveal-stagger {
   opacity: 0;
   transform: translateY(22px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
 }
 
 .mob-about-us .reveal-stagger.in-view {
@@ -99,7 +103,6 @@
 /* Pages 18-19 */
 
 @media (min-width: 768px) {
-  
   /* Global padding increases from 24px → 48px - Spec Master Table */
   .mob-about-us section {
     padding: 72px 48px;
@@ -116,7 +119,6 @@
 /* Required accessibility - Page 3 */
 
 @media (prefers-reduced-motion: reduce) {
-  
   /* Scroll behaviour override */
   html {
     scroll-behavior: auto !important;

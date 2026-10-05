@@ -1,23 +1,25 @@
 /* Section 6.8 - Phone Number Field */
 .hok-auth-phone-wrapper {
   display: flex;
-  border: 1px solid var(--border, #E8E0D4);
+  border: 1px solid var(--border, #e8e0d4);
   border-radius: 1px;
-  background: var(--cream, #FAF7F2);
+  background: var(--cream, #faf7f2);
   overflow: hidden;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 /* Focus state on wrapper (when input is focused) */
 .hok-auth-phone-wrapper:focus-within {
-  border-color: var(--gold, #C9A96E);
-  background: var(--warm-white, #FFFEFB);
+  border-color: var(--gold, #c9a96e);
+  background: var(--warm-white, #fffefb);
 }
 
 /* Error state */
 .hok-auth-phone-wrapper.hok-auth-phone-error {
-  border-color: var(--error, #C0392B);
-  background: var(--error-bg, #FDF3F2);
+  border-color: var(--error, #c0392b);
+  background: var(--error-bg, #fdf3f2);
 }
 
 /* Success state */
@@ -29,7 +31,7 @@
 .hok-auth-phone-prefix {
   background: rgba(201, 169, 110, 0.06);
   padding: 0 12px;
-  border-right: 1px solid var(--border, #E8E0D4);
+  border-right: 1px solid var(--border, #e8e0d4);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -37,10 +39,10 @@
 }
 
 .hok-auth-phone-country-code {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: var(--charcoal, #1A1612);
+  color: var(--charcoal, #1a1612);
 }
 
 .hok-auth-phone-input {
@@ -49,15 +51,15 @@
   padding: 0 14px;
   background: transparent;
   border: none;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
-  color: var(--charcoal, #1A1612);
+  color: var(--charcoal, #1a1612);
   outline: none;
 }
 
 .hok-auth-phone-input::placeholder {
-  color: #C4B9B0;
-  font-family: 'DM Sans', sans-serif;
+  color: #c4b9b0;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
 }
 
@@ -65,7 +67,7 @@
   .hok-auth-phone-country-code {
     font-size: 16px;
   }
-  
+
   .hok-auth-phone-input {
     height: 50px;
     font-size: 16px;

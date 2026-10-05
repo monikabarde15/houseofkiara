@@ -213,9 +213,7 @@ export const getOfferById = async (req, res) => {
       message: "Offer fetched successfully.",
       data: offer,
     });
-
   } catch (err) {
-
     console.error("Get Offer Error :", err);
 
     return res.status(500).json({
@@ -223,7 +221,6 @@ export const getOfferById = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 
@@ -279,26 +276,19 @@ export const updateOffer = async (req, res) => {
 
     offer.quantity = req.body.quantity ?? offer.quantity;
 
-    offer.originalAmount =
-      req.body.originalAmount ?? offer.originalAmount;
+    offer.originalAmount = req.body.originalAmount ?? offer.originalAmount;
 
-    offer.offeredAmount =
-      req.body.offeredAmount ?? offer.offeredAmount;
+    offer.offeredAmount = req.body.offeredAmount ?? offer.offeredAmount;
 
-    offer.discount =
-      req.body.discount ?? offer.discount;
+    offer.discount = req.body.discount ?? offer.discount;
 
-    offer.finalAmount =
-      req.body.finalAmount ?? offer.finalAmount;
+    offer.finalAmount = req.body.finalAmount ?? offer.finalAmount;
 
-    offer.currency =
-      req.body.currency ?? offer.currency;
+    offer.currency = req.body.currency ?? offer.currency;
 
-    offer.assignedTo =
-      req.body.assignedTo ?? offer.assignedTo;
+    offer.assignedTo = req.body.assignedTo ?? offer.assignedTo;
 
-    offer.expiresAt =
-      req.body.expiresAt ?? offer.expiresAt;
+    offer.expiresAt = req.body.expiresAt ?? offer.expiresAt;
 
     offer.updatedAt = new Date();
 
@@ -317,9 +307,7 @@ export const updateOffer = async (req, res) => {
       message: "Offer updated successfully.",
       data: offer,
     });
-
   } catch (err) {
-
     console.error("Update Offer Error:", err);
 
     return res.status(500).json({
@@ -327,7 +315,6 @@ export const updateOffer = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 // =======================================
@@ -382,9 +369,7 @@ export const deleteOffer = async (req, res) => {
       success: true,
       message: "Offer deleted successfully.",
     });
-
   } catch (err) {
-
     console.error("Delete Offer Error:", err);
 
     return res.status(500).json({
@@ -392,7 +377,6 @@ export const deleteOffer = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 
@@ -428,7 +412,6 @@ export const permanentDeleteOffer = async (req, res) => {
       success: true,
       message: "Offer permanently deleted successfully.",
     });
-
   } catch (err) {
     console.error("Permanent Delete Offer Error:", err);
 
@@ -499,9 +482,7 @@ export const updateOfferStatus = async (req, res) => {
     // Timeline Entry
     offer.timeline.push({
       action: "Status Updated",
-      remarks:
-        remarks ||
-        `Offer status changed from ${oldStatus} to ${status}`,
+      remarks: remarks || `Offer status changed from ${oldStatus} to ${status}`,
       user: updatedBy || "Admin",
       createdAt: new Date(),
     });
@@ -533,13 +514,7 @@ export const sendCounterOffer = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const {
-      amount,
-      discount,
-      remarks,
-      expiryDate,
-      sentBy,
-    } = req.body;
+    const { amount, discount, remarks, expiryDate, sentBy } = req.body;
 
     if (!id) {
       return res.status(400).json({
@@ -588,9 +563,7 @@ export const sendCounterOffer = async (req, res) => {
     // Timeline
     offer.timeline.push({
       action: "Counter Offer Sent",
-      remarks:
-        remarks ||
-        `Counter Offer ₹${amount} has been sent.`,
+      remarks: remarks || `Counter Offer ₹${amount} has been sent.`,
       user: sentBy || "Admin",
       createdAt: new Date(),
     });
@@ -604,9 +577,7 @@ export const sendCounterOffer = async (req, res) => {
       message: "Counter offer sent successfully.",
       data: offer,
     });
-
   } catch (err) {
-
     console.error("Counter Offer Error :", err);
 
     return res.status(500).json({
@@ -614,7 +585,6 @@ export const sendCounterOffer = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 
@@ -627,11 +597,7 @@ export const assignOffer = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const {
-      assignedTo,
-      assignedBy,
-      remarks,
-    } = req.body;
+    const { assignedTo, assignedBy, remarks } = req.body;
 
     if (!id) {
       return res.status(400).json({
@@ -677,9 +643,7 @@ export const assignOffer = async (req, res) => {
     // Timeline
     offer.timeline.push({
       action: "Offer Assigned",
-      remarks:
-        remarks ||
-        `Offer assigned to ${assignedTo}`,
+      remarks: remarks || `Offer assigned to ${assignedTo}`,
       user: assignedBy || "Admin",
       createdAt: new Date(),
     });
@@ -693,9 +657,7 @@ export const assignOffer = async (req, res) => {
       message: "Offer assigned successfully.",
       data: offer,
     });
-
   } catch (err) {
-
     console.error("Assign Offer Error :", err);
 
     return res.status(500).json({
@@ -703,7 +665,6 @@ export const assignOffer = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 
@@ -764,9 +725,7 @@ export const addOfferNote = async (req, res) => {
       message: "Note added successfully.",
       data: note,
     });
-
   } catch (err) {
-
     console.error("Add Note Error:", err);
 
     return res.status(500).json({
@@ -774,7 +733,6 @@ export const addOfferNote = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 
@@ -794,9 +752,7 @@ export const getOfferNotes = async (req, res) => {
       });
     }
 
-    const offer = await Offer.findById(id).select(
-      "offerId customerName notes"
-    );
+    const offer = await Offer.findById(id).select("offerId customerName notes");
 
     if (!offer) {
       return res.status(404).json({
@@ -810,12 +766,10 @@ export const getOfferNotes = async (req, res) => {
       message: "Offer notes fetched successfully.",
       totalNotes: offer.notes.length,
       data: offer.notes.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
       ),
     });
-
   } catch (err) {
-
     console.error("Get Offer Notes Error:", err);
 
     return res.status(500).json({
@@ -823,7 +777,6 @@ export const getOfferNotes = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 // =======================================
@@ -844,7 +797,7 @@ export const getOfferTimeline = async (req, res) => {
     }
 
     const offer = await Offer.findById(id).select(
-      "offerId customerName timeline"
+      "offerId customerName timeline",
     );
 
     if (!offer) {
@@ -855,7 +808,7 @@ export const getOfferTimeline = async (req, res) => {
     }
 
     const timeline = offer.timeline.sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
     );
 
     return res.status(200).json({
@@ -864,9 +817,7 @@ export const getOfferTimeline = async (req, res) => {
       totalActivities: timeline.length,
       data: timeline,
     });
-
   } catch (err) {
-
     console.error("Get Timeline Error :", err);
 
     return res.status(500).json({
@@ -874,7 +825,6 @@ export const getOfferTimeline = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 // =======================================
@@ -894,7 +844,7 @@ export const getAssignmentHistory = async (req, res) => {
     }
 
     const offer = await Offer.findById(id).select(
-      "offerId customerName assignmentHistory"
+      "offerId customerName assignmentHistory",
     );
 
     if (!offer) {
@@ -905,7 +855,7 @@ export const getAssignmentHistory = async (req, res) => {
     }
 
     const history = offer.assignmentHistory.sort(
-      (a, b) => new Date(b.assignedAt) - new Date(a.assignedAt)
+      (a, b) => new Date(b.assignedAt) - new Date(a.assignedAt),
     );
 
     return res.status(200).json({
@@ -914,9 +864,7 @@ export const getAssignmentHistory = async (req, res) => {
       totalAssignments: history.length,
       data: history,
     });
-
   } catch (err) {
-
     console.error("Assignment History Error :", err);
 
     return res.status(500).json({
@@ -924,7 +872,6 @@ export const getAssignmentHistory = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 // =======================================
@@ -945,7 +892,7 @@ export const getCounterOfferHistory = async (req, res) => {
     }
 
     const offer = await Offer.findById(id).select(
-      "offerId customerName productName counterOffers"
+      "offerId customerName productName counterOffers",
     );
 
     if (!offer) {
@@ -956,7 +903,7 @@ export const getCounterOfferHistory = async (req, res) => {
     }
 
     const history = [...offer.counterOffers].sort(
-      (a, b) => new Date(b.sentAt) - new Date(a.sentAt)
+      (a, b) => new Date(b.sentAt) - new Date(a.sentAt),
     );
 
     return res.status(200).json({
@@ -965,9 +912,7 @@ export const getCounterOfferHistory = async (req, res) => {
       totalCounterOffers: history.length,
       data: history,
     });
-
   } catch (err) {
-
     console.error("Counter Offer History Error :", err);
 
     return res.status(500).json({
@@ -975,7 +920,6 @@ export const getCounterOfferHistory = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 // =======================================
@@ -1029,9 +973,7 @@ export const restoreOffer = async (req, res) => {
       message: "Offer restored successfully.",
       data: offer,
     });
-
   } catch (err) {
-
     console.error("Restore Offer Error :", err);
 
     return res.status(500).json({
@@ -1039,7 +981,6 @@ export const restoreOffer = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 // =======================================
@@ -1119,9 +1060,7 @@ export const getDeletedOffers = async (req, res) => {
 
       data: offers,
     });
-
   } catch (err) {
-
     console.error("Trash API Error :", err);
 
     return res.status(500).json({
@@ -1129,7 +1068,6 @@ export const getDeletedOffers = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 // =======================================
@@ -1167,7 +1105,7 @@ export const bulkDeleteOffers = async (req, res) => {
           deletedAt: new Date(),
           updatedAt: new Date(),
         },
-      }
+      },
     );
 
     // Add Timeline Entry
@@ -1191,9 +1129,7 @@ export const bulkDeleteOffers = async (req, res) => {
       message: `${result.modifiedCount} offers deleted successfully.`,
       modifiedCount: result.modifiedCount,
     });
-
   } catch (err) {
-
     console.error("Bulk Delete Error :", err);
 
     return res.status(500).json({
@@ -1201,7 +1137,6 @@ export const bulkDeleteOffers = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 // =======================================
@@ -1211,7 +1146,6 @@ export const bulkDeleteOffers = async (req, res) => {
 
 export const getOfferDashboard = async (req, res) => {
   try {
-
     const [
       totalOffers,
       pendingOffers,
@@ -1222,57 +1156,55 @@ export const getOfferDashboard = async (req, res) => {
       completedOffers,
       expiredOffers,
       deletedOffers,
-      activeOffers
+      activeOffers,
     ] = await Promise.all([
-
       Offer.countDocuments({
-        isDeleted: false
+        isDeleted: false,
       }),
 
       Offer.countDocuments({
         status: "Pending",
-        isDeleted: false
+        isDeleted: false,
       }),
 
       Offer.countDocuments({
         status: "Accepted",
-        isDeleted: false
+        isDeleted: false,
       }),
 
       Offer.countDocuments({
         status: "Rejected",
-        isDeleted: false
+        isDeleted: false,
       }),
 
       Offer.countDocuments({
         status: "Counter Offered",
-        isDeleted: false
+        isDeleted: false,
       }),
 
       Offer.countDocuments({
         status: "Assigned",
-        isDeleted: false
+        isDeleted: false,
       }),
 
       Offer.countDocuments({
         status: "Completed",
-        isDeleted: false
+        isDeleted: false,
       }),
 
       Offer.countDocuments({
         status: "Expired",
-        isDeleted: false
+        isDeleted: false,
       }),
 
       Offer.countDocuments({
-        isDeleted: true
+        isDeleted: true,
       }),
 
       Offer.countDocuments({
         isActive: true,
-        isDeleted: false
-      })
-
+        isDeleted: false,
+      }),
     ]);
 
     return res.status(200).json({
@@ -1280,7 +1212,6 @@ export const getOfferDashboard = async (req, res) => {
       message: "Dashboard summary fetched successfully.",
 
       data: {
-
         totalOffers,
 
         activeOffers,
@@ -1299,22 +1230,17 @@ export const getOfferDashboard = async (req, res) => {
 
         expiredOffers,
 
-        deletedOffers
-
-      }
-
+        deletedOffers,
+      },
     });
-
   } catch (err) {
-
     console.error("Dashboard Error :", err);
 
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: err.message
+      error: err.message,
     });
-
   }
 };
 // =======================================
@@ -1330,7 +1256,7 @@ export const getRecentOffers = async (req, res) => {
       isDeleted: false,
     })
       .select(
-        "offerId customerName customerEmail customerPhone productName offeredAmount status assignedTo createdAt"
+        "offerId customerName customerEmail customerPhone productName offeredAmount status assignedTo createdAt",
       )
       .sort({ createdAt: -1 })
       .limit(Number(limit));
@@ -1341,9 +1267,7 @@ export const getRecentOffers = async (req, res) => {
       total: offers.length,
       data: offers,
     });
-
   } catch (err) {
-
     console.error("Recent Offers Error:", err);
 
     return res.status(500).json({
@@ -1351,7 +1275,6 @@ export const getRecentOffers = async (req, res) => {
       message: "Internal Server Error",
       error: err.message,
     });
-
   }
 };
 // =======================================
@@ -1361,57 +1284,56 @@ export const getRecentOffers = async (req, res) => {
 
 export const getOfferStatistics = async (req, res) => {
   try {
-
     // Monthly Statistics
     const monthlyStatistics = await Offer.aggregate([
       {
         $match: {
-          isDeleted: false
-        }
+          isDeleted: false,
+        },
       },
       {
         $group: {
           _id: {
             year: {
-              $year: "$createdAt"
+              $year: "$createdAt",
             },
             month: {
-              $month: "$createdAt"
-            }
+              $month: "$createdAt",
+            },
           },
 
           totalOffers: {
-            $sum: 1
+            $sum: 1,
           },
 
           totalRevenue: {
-            $sum: "$finalAmount"
-          }
-        }
+            $sum: "$finalAmount",
+          },
+        },
       },
       {
         $sort: {
           "_id.year": 1,
-          "_id.month": 1
-        }
-      }
+          "_id.month": 1,
+        },
+      },
     ]);
 
     // Status Statistics
     const statusStatistics = await Offer.aggregate([
       {
         $match: {
-          isDeleted: false
-        }
+          isDeleted: false,
+        },
       },
       {
         $group: {
           _id: "$status",
           total: {
-            $sum: 1
-          }
-        }
-      }
+            $sum: 1,
+          },
+        },
+      },
     ]);
 
     // Overall Revenue
@@ -1419,17 +1341,17 @@ export const getOfferStatistics = async (req, res) => {
       {
         $match: {
           isDeleted: false,
-          status: "Accepted"
-        }
+          status: "Accepted",
+        },
       },
       {
         $group: {
           _id: null,
           revenue: {
-            $sum: "$finalAmount"
-          }
-        }
-      }
+            $sum: "$finalAmount",
+          },
+        },
+      },
     ]);
 
     return res.status(200).json({
@@ -1439,23 +1361,17 @@ export const getOfferStatistics = async (req, res) => {
       data: {
         monthlyStatistics,
         statusStatistics,
-        totalRevenue: revenue.length
-          ? revenue[0].revenue
-          : 0
-      }
-
+        totalRevenue: revenue.length ? revenue[0].revenue : 0,
+      },
     });
-
   } catch (err) {
-
     console.error("Statistics Error :", err);
 
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: err.message
+      error: err.message,
     });
-
   }
 };
 // =======================================
@@ -1465,13 +1381,12 @@ export const getOfferStatistics = async (req, res) => {
 
 export const duplicateOffer = async (req, res) => {
   try {
-
     const { id } = req.params;
 
     if (!id) {
       return res.status(400).json({
         success: false,
-        message: "Invalid Offer ID."
+        message: "Invalid Offer ID.",
       });
     }
 
@@ -1480,7 +1395,7 @@ export const duplicateOffer = async (req, res) => {
     if (!existingOffer) {
       return res.status(404).json({
         success: false,
-        message: "Offer not found."
+        message: "Offer not found.",
       });
     }
 
@@ -1505,8 +1420,8 @@ export const duplicateOffer = async (req, res) => {
         action: "Offer Duplicated",
         remarks: `Copied from ${existingOffer.offerId}`,
         user: "Admin",
-        createdAt: new Date()
-      }
+        createdAt: new Date(),
+      },
     ];
 
     newOffer.createdAt = new Date();
@@ -1524,19 +1439,16 @@ export const duplicateOffer = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Offer duplicated successfully.",
-      data: duplicatedOffer
+      data: duplicatedOffer,
     });
-
   } catch (err) {
-
     console.error(err);
 
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: err.message
+      error: err.message,
     });
-
   }
 };
 // =======================================
@@ -1551,43 +1463,42 @@ export const bulkRestoreOffers = async (req, res) => {
     if (!offerIds || !Array.isArray(offerIds)) {
       return res.status(400).json({
         success: false,
-        message: "offerIds array is required."
+        message: "offerIds array is required.",
       });
     }
 
     if (offerIds.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "Please select at least one offer."
+        message: "Please select at least one offer.",
       });
     }
 
     const result = await Offer.updateMany(
       {
         _id: { $in: offerIds },
-        isDeleted: true
+        isDeleted: true,
       },
       {
         $set: {
           isDeleted: false,
           deletedAt: null,
           deletedBy: null,
-          updatedAt: new Date()
-        }
-      }
+          updatedAt: new Date(),
+        },
+      },
     );
 
     const offers = await Offer.find({
-      _id: { $in: offerIds }
+      _id: { $in: offerIds },
     });
 
     for (const offer of offers) {
-
       offer.timeline.push({
         action: "Bulk Restore",
         remarks: "Offer restored using bulk action.",
         user: restoredBy || "Admin",
-        createdAt: new Date()
+        createdAt: new Date(),
       });
 
       await offer.save();
@@ -1596,19 +1507,16 @@ export const bulkRestoreOffers = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: `${result.modifiedCount} offers restored successfully.`,
-      modifiedCount: result.modifiedCount
+      modifiedCount: result.modifiedCount,
     });
-
   } catch (err) {
-
     console.error("Bulk Restore Error :", err);
 
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: err.message
+      error: err.message,
     });
-
   }
 };
 // =======================================
@@ -1618,45 +1526,41 @@ export const bulkRestoreOffers = async (req, res) => {
 
 export const bulkPermanentDeleteOffers = async (req, res) => {
   try {
-
     const { offerIds } = req.body;
 
     if (!offerIds || !Array.isArray(offerIds)) {
       return res.status(400).json({
         success: false,
-        message: "offerIds array is required."
+        message: "offerIds array is required.",
       });
     }
 
     if (offerIds.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "Please select at least one offer."
+        message: "Please select at least one offer.",
       });
     }
 
     const result = await Offer.deleteMany({
       _id: {
-        $in: offerIds
-      }
+        $in: offerIds,
+      },
     });
 
     return res.status(200).json({
       success: true,
       message: `${result.deletedCount} offers permanently deleted.`,
-      deletedCount: result.deletedCount
+      deletedCount: result.deletedCount,
     });
-
   } catch (err) {
-
     console.error("Bulk Permanent Delete Error :", err);
 
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: err.message
+      error: err.message,
     });
-
   }
 };
 
@@ -1667,15 +1571,14 @@ export const bulkPermanentDeleteOffers = async (req, res) => {
 
 export const exportOffersCSV = async (req, res) => {
   try {
-
     const offers = await Offer.find({
-      isDeleted: false
+      isDeleted: false,
     }).lean();
 
     if (!offers.length) {
       return res.status(404).json({
         success: false,
-        message: "No offers found."
+        message: "No offers found.",
       });
     }
 
@@ -1692,7 +1595,7 @@ export const exportOffersCSV = async (req, res) => {
       "discount",
       "status",
       "assignedTo",
-      "createdAt"
+      "createdAt",
     ];
 
     const parser = new Parser({ fields });
@@ -1704,15 +1607,12 @@ export const exportOffersCSV = async (req, res) => {
     res.attachment("offers.csv");
 
     return res.send(csv);
-
   } catch (err) {
-
     console.error(err);
 
     return res.status(500).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
-
   }
 };

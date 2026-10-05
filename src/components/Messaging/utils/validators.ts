@@ -10,7 +10,7 @@ export const validators = {
   // Validate phone number (Indian)
   isPhone: (phone: string): boolean => {
     const regex = /^[6-9]\d{9}$/;
-    return regex.test(phone.replace(/[^0-9]/g, ''));
+    return regex.test(phone.replace(/[^0-9]/g, ""));
   },
 
   // Validate PIN code (Indian)
@@ -34,7 +34,7 @@ export const validators = {
   // Validate required field
   isRequired: (value: any): boolean => {
     if (value === undefined || value === null) return false;
-    if (typeof value === 'string') return value.trim().length > 0;
+    if (typeof value === "string") return value.trim().length > 0;
     if (Array.isArray(value)) return value.length > 0;
     return true;
   },

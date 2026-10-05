@@ -5,10 +5,14 @@
 .mobile-bar-tab {
   width: 100%;
   color: #332f2b;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
     sans-serif;
 }
-
 
 /* =========================================
    CARD
@@ -26,7 +30,6 @@
 
   overflow: hidden;
 }
-
 
 /* =========================================
    CARD HEADER
@@ -58,7 +61,6 @@
   line-height: 1.45;
 }
 
-
 /* =========================================
    BOTTOM BAR CONTENT
    ========================================= */
@@ -66,7 +68,6 @@
 .mobile-bar-columns {
   padding: 14px 18px 17px;
 }
-
 
 /* =========================================
    COLUMN HEADERS
@@ -107,7 +108,6 @@
   text-align: left;
 }
 
-
 /* =========================================
    TAB LIST
    ========================================= */
@@ -115,7 +115,6 @@
 .mobile-tab-list {
   width: 100%;
 }
-
 
 /* =========================================
    TAB ROW
@@ -145,7 +144,6 @@
 .mobile-tab-row:hover {
   background: #faf7f2;
 }
-
 
 /* =========================================
    CHECKBOX
@@ -178,7 +176,6 @@
   border-color: #c9a85f;
   background: #c9a85f;
 }
-
 
 /* =========================================
    REORDER BUTTONS
@@ -223,7 +220,6 @@
   cursor: default;
 }
 
-
 /* =========================================
    QUIET FIELDS
    ========================================= */
@@ -265,7 +261,6 @@
   background: #ffffff;
 }
 
-
 /* =========================================
    LINK FIELD
    ========================================= */
@@ -276,7 +271,6 @@
   font-family: "SFMono-Regular", Consolas, monospace;
   font-size: 9px;
 }
-
 
 /* =========================================
    LINKED BAG LABEL
@@ -295,7 +289,6 @@
 
   font-size: 8px;
 }
-
 
 /* =========================================
    DELETE BUTTON
@@ -348,7 +341,6 @@
   display: none;
 }
 
-
 /* =========================================
    HIDDEN TAB
    ========================================= */
@@ -360,7 +352,6 @@
 .mobile-tab-hidden .mobile-quiet-field {
   color: #aaa197;
 }
-
 
 /* =========================================
    ADD TAB
@@ -390,7 +381,6 @@
   background: #fcf7ed;
 }
 
-
 /* =========================================
    HAMBURGER DRAWER
    ========================================= */
@@ -398,7 +388,6 @@
 .hamburger-drawer-card {
   margin-top: 16px;
 }
-
 
 /* =========================================
    DRAWER SETTINGS
@@ -426,7 +415,6 @@
 .drawer-toggle-row + .drawer-toggle-row {
   margin-top: 10px;
 }
-
 
 /* =========================================
    TOGGLE
@@ -480,7 +468,6 @@
   transform: translateX(16px);
 }
 
-
 /* =========================================
    DRAWER HINT
    ========================================= */
@@ -497,7 +484,6 @@
 .drawer-toggle-row + .drawer-hint {
   margin-bottom: 10px;
 }
-
 
 /* =========================================
    DRAWER ITEMS
@@ -525,7 +511,6 @@
 .drawer-item:hover {
   background: #faf7f2;
 }
-
 
 /* =========================================
    DRAWER CHECKBOX
@@ -557,7 +542,6 @@
   background: #c9a85f;
 }
 
-
 /* =========================================
    DRAWER LABEL
    ========================================= */
@@ -585,7 +569,6 @@
   color: #aaa197;
 }
 
-
 /* =========================================
    DRAWER NOTE
    ========================================= */
@@ -607,7 +590,6 @@
 .drawer-item-off .drawer-item-note {
   color: #b0a79d;
 }
-
 
 /* =========================================
    RESPONSIVE
@@ -631,7 +613,6 @@
       minmax(150px, 1fr);
   }
 }
-
 
 @media (max-width: 650px) {
   .mobile-bar-columns {

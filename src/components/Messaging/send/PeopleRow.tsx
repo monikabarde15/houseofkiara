@@ -1,7 +1,7 @@
 // send/PeopleRow.tsx
-import React from 'react';
-import { Pill } from '../components/Pill';
-import './styles/PeopleRow.css';
+import React from "react";
+import { Pill } from "../components/Pill";
+import "./styles/PeopleRow.css";
 
 interface Person {
   id: string;
@@ -27,7 +27,7 @@ export const PeopleRow: React.FC<PeopleRowProps> = ({
 
   return (
     <div
-      className={`msg-people-row ${selected ? 'msg-people-row--selected' : ''} ${isUnavailable ? 'msg-people-row--unavailable' : ''}`}
+      className={`msg-people-row ${selected ? "msg-people-row--selected" : ""} ${isUnavailable ? "msg-people-row--unavailable" : ""}`}
       onClick={isUnavailable ? undefined : onToggle}
     >
       <input

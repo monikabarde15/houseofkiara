@@ -1,6 +1,6 @@
 // components/FormField.tsx
-import React from 'react';
-import './styles/FormField.css';
+import React from "react";
+import "./styles/FormField.css";
 
 interface FormFieldProps {
   label: string;
@@ -13,7 +13,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   label,
   children,
   hint,
-  className = '',
+  className = "",
 }) => {
   return (
     <div className={`msg-field ${className}`}>
@@ -28,10 +28,14 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   readOnly?: boolean;
 }
 
-export const Input: React.FC<InputProps> = ({ readOnly = false, className = '', ...props }) => {
+export const Input: React.FC<InputProps> = ({
+  readOnly = false,
+  className = "",
+  ...props
+}) => {
   return (
     <input
-      className={`msg-input ${readOnly ? 'msg-input--readonly' : ''} ${className}`}
+      className={`msg-input ${readOnly ? "msg-input--readonly" : ""} ${className}`}
       readOnly={readOnly}
       {...props}
     />
@@ -46,12 +50,12 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 export const Textarea: React.FC<TextareaProps> = ({
   readOnly = false,
   minHeight = 80,
-  className = '',
+  className = "",
   ...props
 }) => {
   return (
     <textarea
-      className={`msg-textarea ${readOnly ? 'msg-textarea--readonly' : ''} ${className}`}
+      className={`msg-textarea ${readOnly ? "msg-textarea--readonly" : ""} ${className}`}
       style={{ minHeight }}
       readOnly={readOnly}
       {...props}

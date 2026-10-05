@@ -1,4 +1,4 @@
-import { apiRequest } from './apiClient';
+import { apiRequest } from "./apiClient";
 
 export interface Payout {
   id: string;
@@ -14,13 +14,13 @@ export interface Payout {
   hokCommission: number;
   taxDeduction?: number;
   netPayout?: number;
-  status: 'Paid' | 'Pending' | 'Failed' | 'Reversed' | 'Pending Approval';
+  status: "Paid" | "Pending" | "Failed" | "Reversed" | "Pending Approval";
   dueDate: string;
   notes?: string;
   submissionAssignedTo?: string;
 }
 
-import { API_BASE_URL } from './apiClient';
+import { API_BASE_URL } from "./apiClient";
 const BASE = API_BASE_URL;
 
 export interface PayoutSummary {
@@ -37,22 +37,38 @@ export interface PayoutsResponse {
 }
 
 export const getPayouts = async (): Promise<PayoutsResponse> => {
-  const result = await apiRequest('/payouts');
+  const result = await apiRequest("/payouts");
   return result as PayoutsResponse;
 };
 
 export const markPaid = async (
   id: string,
-  payload: { paidBy: string; paymentReference?: string; taxDeduction?: number }
-) => (await apiRequest(`/payouts/${encodeURIComponent(id)}/paid`, { method: 'PATCH', body: JSON.stringify(payload) })).data as Payout;
+  payload: { paidBy: string; paymentReference?: string; taxDeduction?: number },
+) =>
+  (
+    await apiRequest(`/payouts/${encodeURIComponent(id)}/paid`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    })
+  ).data as Payout;
 
-export const updatePayout = async (
+export const updatePayout = async (id: string, payload: Partial<Payout>) =>
+  (
+    await apiRequest(`/payouts/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    })
+  ).data as Payout;
+
+export const updateStatus = (
   id: string,
-  payload: Partial<Payout>
-) => (await apiRequest(`/payouts/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify(payload) })).data as Payout;
-
-export const updateStatus = (id: string, status: 'Pending' | 'Failed' | 'Reversed', notes?: string) =>
-  apiRequest(`/payouts/${encodeURIComponent(id)}/status`, { method: 'PATCH', body: JSON.stringify({ status, notes }) });
+  status: "Pending" | "Failed" | "Reversed",
+  notes?: string,
+) =>
+  apiRequest(`/payouts/${encodeURIComponent(id)}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ status, notes }),
+  });
 
 export const exportPayoutsUrl = `${BASE}/payouts/export/csv`;
 
@@ -63,16 +79,16 @@ export interface AdminUser {
 }
 
 export const getAdmins = async (): Promise<AdminUser[]> => {
-  const result = await apiRequest('/auth/admins');
+  const result = await apiRequest("/auth/admins");
   return (result.data || []) as AdminUser[];
 };
 
 export const getSubmissionAssignees = async (): Promise<string[]> => {
-  const result = await apiRequest('/submissions/assignees');
+  const result = await apiRequest("/submissions/assignees");
   return (result.data || []) as string[];
 };
 
 export const getSubmissions = async (): Promise<any[]> => {
-  const result = await apiRequest('/submissions');
+  const result = await apiRequest("/submissions");
   return (result.data || []) as any[];
 };

@@ -21,6 +21,7 @@ import promotionRouter from "./promotionRoutes.js";
 import notificationRouter from "./notificationRoutes.js";
 import siteSettingsRouter from "./siteSettingsRoutes.js";
 import categoryRouter from "./categoryRoutes.js";
+import webProductRouter from "./webProductRoutes.js";
 
 const router = express.Router();
 
@@ -53,6 +54,7 @@ router.use("/categories", categoryRouter);
 
 // Root /api endpoints (Products, Orders, Offers, Payouts, Admin Auth, Messages, Customers, Upload)
 router.use(productRouter);
+router.use("/web-products", webProductRouter);
 router.use(offerRouter);
 router.use(authRouter);
 router.use(payoutRouter);

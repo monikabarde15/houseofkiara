@@ -5,8 +5,15 @@ export const safeQuery = async (sql, params = []) => {
   try {
     return await pool.query(sql, params);
   } catch (err) {
-    if (err.code === 'ENOTFOUND' || err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT' || err.message?.includes('ENOTFOUND')) {
-      console.warn(`[Non-blocking DB connection note] Cloud DB host unreachable (${err.hostname || 'Supabase'}). Returning fallback data.`);
+    if (
+      err.code === "ENOTFOUND" ||
+      err.code === "ECONNREFUSED" ||
+      err.code === "ETIMEDOUT" ||
+      err.message?.includes("ENOTFOUND")
+    ) {
+      console.warn(
+        `[Non-blocking DB connection note] Cloud DB host unreachable (${err.hostname || "Supabase"}). Returning fallback data.`,
+      );
       return { rows: [] };
     }
     throw err;
@@ -136,7 +143,7 @@ const TABLE_CONFIGS = {
       designer: "designer",
       category: "category",
       status: "status",
-    }
+    },
   },
   Task: {
     tableName: "tasks",
@@ -149,7 +156,7 @@ const TABLE_CONFIGS = {
       status: "status",
       assignee: "assignee",
       orderId: "order_id",
-      description: "description"
+      description: "description",
     },
   },
   PromoCode: {
@@ -208,7 +215,7 @@ const TABLE_CONFIGS = {
       name: "name",
       slug: "slug",
       image: "image",
-      description: "description"
+      description: "description",
     },
   },
 };
@@ -281,12 +288,19 @@ export const deepClone = (obj) => {
 // Helper: Deep Equality Check
 export const deepEquals = (a, b) => {
   if (a === b) return true;
-  if (a === null || b === null || a === undefined || b === undefined) return a === b;
-  if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
-  if (a instanceof ObjectId || b instanceof ObjectId) return String(a) === String(b);
-  if (a instanceof RegExp && b instanceof RegExp) return a.toString() === b.toString();
+  if (a === null || b === null || a === undefined || b === undefined)
+    return a === b;
+  if (a instanceof Date && b instanceof Date)
+    return a.getTime() === b.getTime();
+  if (a instanceof ObjectId || b instanceof ObjectId)
+    return String(a) === String(b);
+  if (a instanceof RegExp && b instanceof RegExp)
+    return a.toString() === b.toString();
   if (typeof a !== typeof b) {
-    if ((typeof a === "number" && typeof b === "string") || (typeof a === "string" && typeof b === "number")) {
+    if (
+      (typeof a === "number" && typeof b === "string") ||
+      (typeof a === "string" && typeof b === "number")
+    ) {
       return String(a) === String(b);
     }
     return false;
@@ -431,21 +445,27 @@ export const matchesFilter = (doc, filter) => {
   for (const [key, condition] of Object.entries(filter)) {
     if (key === "$or") {
       if (!Array.isArray(condition) || condition.length === 0) return false;
-      const matched = condition.some((subFilter) => matchesFilter(doc, subFilter));
+      const matched = condition.some((subFilter) =>
+        matchesFilter(doc, subFilter),
+      );
       if (!matched) return false;
       continue;
     }
 
     if (key === "$and") {
       if (!Array.isArray(condition)) return false;
-      const matched = condition.every((subFilter) => matchesFilter(doc, subFilter));
+      const matched = condition.every((subFilter) =>
+        matchesFilter(doc, subFilter),
+      );
       if (!matched) return false;
       continue;
     }
 
     if (key === "$nor") {
       if (!Array.isArray(condition)) return false;
-      const matched = condition.some((subFilter) => matchesFilter(doc, subFilter));
+      const matched = condition.some((subFilter) =>
+        matchesFilter(doc, subFilter),
+      );
       if (matched) return false;
       continue;
     }
@@ -459,7 +479,13 @@ export const matchesFilter = (doc, filter) => {
     const val = key === "_id" ? doc._id : getNestedValue(doc, key);
 
     // Operator object check
-    if (condition !== null && typeof condition === "object" && !(condition instanceof Date) && !(condition instanceof RegExp) && !(condition instanceof ObjectId)) {
+    if (
+      condition !== null &&
+      typeof condition === "object" &&
+      !(condition instanceof Date) &&
+      !(condition instanceof RegExp) &&
+      !(condition instanceof ObjectId)
+    ) {
       const keys = Object.keys(condition);
       const isOperatorObj = keys.some((k) => k.startsWith("$"));
 
@@ -473,7 +499,9 @@ export const matchesFilter = (doc, filter) => {
             if (!Array.isArray(opVal)) return false;
             const inList = opVal.some((target) => {
               if (Array.isArray(val)) {
-                return val.includes(target) || val.some((v) => deepEquals(v, target));
+                return (
+                  val.includes(target) || val.some((v) => deepEquals(v, target))
+                );
               }
               return deepEquals(val, target);
             });
@@ -482,7 +510,9 @@ export const matchesFilter = (doc, filter) => {
             if (!Array.isArray(opVal)) return true;
             const inList = opVal.some((target) => {
               if (Array.isArray(val)) {
-                return val.includes(target) || val.some((v) => deepEquals(v, target));
+                return (
+                  val.includes(target) || val.some((v) => deepEquals(v, target))
+                );
               }
               return deepEquals(val, target);
             });
@@ -513,7 +543,8 @@ export const matchesFilter = (doc, filter) => {
             } else if (!(val <= opVal)) return false;
           } else if (op === "$regex") {
             const flags = condition.$options || "";
-            const re = typeof opVal === "string" ? new RegExp(opVal, flags) : opVal;
+            const re =
+              typeof opVal === "string" ? new RegExp(opVal, flags) : opVal;
             if (!re.test(String(val || ""))) return false;
           } else if (op === "$elemMatch") {
             if (!Array.isArray(val)) return false;
@@ -544,11 +575,19 @@ export const matchesFilter = (doc, filter) => {
 
     // Direct equality / Array equality
     if (Array.isArray(val) && !Array.isArray(condition)) {
-      if (!val.includes(condition) && !val.some((v) => deepEquals(v, condition))) {
+      if (
+        !val.includes(condition) &&
+        !val.some((v) => deepEquals(v, condition))
+      ) {
         return false;
       }
     } else if (val !== condition) {
-      if (val === null || condition === null || val === undefined || condition === undefined) {
+      if (
+        val === null ||
+        condition === null ||
+        val === undefined ||
+        condition === undefined
+      ) {
         if (val !== condition) return false;
       } else if (typeof val === "object" && typeof condition === "object") {
         if (!deepEquals(val, condition)) return false;
@@ -626,7 +665,12 @@ export const applyUpdate = (doc, update) => {
           doc[path] = arr;
         }
       }
-      if (pushVal && typeof pushVal === "object" && pushVal.$each && Array.isArray(pushVal.$each)) {
+      if (
+        pushVal &&
+        typeof pushVal === "object" &&
+        pushVal.$each &&
+        Array.isArray(pushVal.$each)
+      ) {
         arr.push(...pushVal.$each);
       } else {
         arr.push(pushVal);
@@ -666,7 +710,13 @@ export const applyUpdate = (doc, update) => {
           doc[path] = arr;
         }
       }
-      const valuesToAdd = addVal && typeof addVal === "object" && addVal.$each && Array.isArray(addVal.$each) ? addVal.$each : [addVal];
+      const valuesToAdd =
+        addVal &&
+        typeof addVal === "object" &&
+        addVal.$each &&
+        Array.isArray(addVal.$each)
+          ? addVal.$each
+          : [addVal];
       for (const val of valuesToAdd) {
         const exists = arr.some((item) => deepEquals(item, val));
         if (!exists) {
@@ -722,10 +772,26 @@ export const buildWhereClause = (filter, tableName, params = []) => {
 
       // Column vs JSONB key path
       const isPk = key === "_id";
-      const isColumn = ["customer_id", "designer_id", "slug", "lister_id", "offer_id", "order_id", "payout_id", "product_id", "email", "status", "due_date", "is_deleted"].includes(key);
+      const isColumn = [
+        "customer_id",
+        "designer_id",
+        "slug",
+        "lister_id",
+        "offer_id",
+        "order_id",
+        "payout_id",
+        "product_id",
+        "email",
+        "status",
+        "due_date",
+        "is_deleted",
+      ].includes(key);
 
       const jsonAccessor = key.includes(".")
-        ? `data#>>'{${key.split(".").map((p) => sanitizeIdentifier(p, "nested field")).join(",")}}'`
+        ? `data#>>'{${key
+            .split(".")
+            .map((p) => sanitizeIdentifier(p, "nested field"))
+            .join(",")}}'`
         : `data->>'${key}'`;
 
       // Value handling
@@ -745,7 +811,10 @@ export const buildWhereClause = (filter, tableName, params = []) => {
         continue;
       }
 
-      if (value instanceof ObjectId || (typeof value === "object" && value && value._id)) {
+      if (
+        value instanceof ObjectId ||
+        (typeof value === "object" && value && value._id)
+      ) {
         const strVal = value.toString();
         const p = addParam(strVal);
         if (isPk) {
@@ -757,21 +826,35 @@ export const buildWhereClause = (filter, tableName, params = []) => {
       }
 
       // Operators object
-      if (typeof value === "object" && !Array.isArray(value) && !(value instanceof Date)) {
+      if (
+        typeof value === "object" &&
+        !Array.isArray(value) &&
+        !(value instanceof Date)
+      ) {
         const ops = Object.keys(value);
         const hasOps = ops.some((k) => k.startsWith("$"));
 
         if (hasOps) {
           for (const [op, opVal] of Object.entries(value)) {
             if (op === "$eq") {
-              const p = addParam(opVal instanceof ObjectId ? opVal.toString() : opVal);
+              const p = addParam(
+                opVal instanceof ObjectId ? opVal.toString() : opVal,
+              );
               subClauses.push(isPk ? `_id = ${p}` : `(${jsonAccessor} = ${p})`);
             } else if (op === "$ne") {
-              const p = addParam(opVal instanceof ObjectId ? opVal.toString() : opVal);
-              subClauses.push(isPk ? `_id != ${p}` : `(${jsonAccessor} IS NULL OR ${jsonAccessor} != ${p})`);
+              const p = addParam(
+                opVal instanceof ObjectId ? opVal.toString() : opVal,
+              );
+              subClauses.push(
+                isPk
+                  ? `_id != ${p}`
+                  : `(${jsonAccessor} IS NULL OR ${jsonAccessor} != ${p})`,
+              );
             } else if (op === "$in") {
               if (Array.isArray(opVal)) {
-                const strArr = opVal.map((v) => (v instanceof ObjectId ? v.toString() : String(v)));
+                const strArr = opVal.map((v) =>
+                  v instanceof ObjectId ? v.toString() : String(v),
+                );
                 const p = addParam(strArr);
                 if (isPk) {
                   subClauses.push(`_id = ANY(${p}::text[])`);
@@ -781,15 +864,34 @@ export const buildWhereClause = (filter, tableName, params = []) => {
               }
             } else if (op === "$nin") {
               if (Array.isArray(opVal)) {
-                const strArr = opVal.map((v) => (v instanceof ObjectId ? v.toString() : String(v)));
+                const strArr = opVal.map((v) =>
+                  v instanceof ObjectId ? v.toString() : String(v),
+                );
                 const p = addParam(strArr);
                 subClauses.push(`NOT (${jsonAccessor} = ANY(${p}::text[]))`);
               }
-            } else if (op === "$gt" || op === "$gte" || op === "$lt" || op === "$lte") {
-              const sqlOp = op === "$gt" ? ">" : op === "$gte" ? ">=" : op === "$lt" ? "<" : "<=";
-              if (opVal instanceof Date || (typeof opVal === "string" && !isNaN(Date.parse(opVal)))) {
+            } else if (
+              op === "$gt" ||
+              op === "$gte" ||
+              op === "$lt" ||
+              op === "$lte"
+            ) {
+              const sqlOp =
+                op === "$gt"
+                  ? ">"
+                  : op === "$gte"
+                    ? ">="
+                    : op === "$lt"
+                      ? "<"
+                      : "<=";
+              if (
+                opVal instanceof Date ||
+                (typeof opVal === "string" && !isNaN(Date.parse(opVal)))
+              ) {
                 const p = addParam(new Date(opVal).toISOString());
-                subClauses.push(`((${jsonAccessor})::timestamptz ${sqlOp} ${p}::timestamptz)`);
+                subClauses.push(
+                  `((${jsonAccessor})::timestamptz ${sqlOp} ${p}::timestamptz)`,
+                );
               } else if (typeof opVal === "number") {
                 const p = addParam(opVal);
                 subClauses.push(`((${jsonAccessor})::numeric ${sqlOp} ${p})`);
@@ -846,7 +948,12 @@ export const wrapDocumentData = (data, modelInstance) => {
 
   const wrapObject = (target) => {
     if (target === null || typeof target !== "object") return target;
-    if (target instanceof Date || target instanceof RegExp || target instanceof ObjectId) return target;
+    if (
+      target instanceof Date ||
+      target instanceof RegExp ||
+      target instanceof ObjectId
+    )
+      return target;
 
     if (Array.isArray(target)) {
       const arr = target.map(wrapObject);
@@ -903,12 +1010,20 @@ export class PostgresDocument {
     // Proxy for direct property access and mutation
     return new Proxy(this, {
       get(target, prop, receiver) {
-        if (prop in target || typeof prop === "symbol" || prop.startsWith?.("_")) {
+        if (
+          prop in target ||
+          typeof prop === "symbol" ||
+          prop.startsWith?.("_")
+        ) {
           return Reflect.get(target, prop, receiver);
         }
         if (prop === "id") {
           const config = TABLE_CONFIGS[target._model?.modelName];
-          if (config && config.entityIdField && target._data[config.entityIdField]) {
+          if (
+            config &&
+            config.entityIdField &&
+            target._data[config.entityIdField]
+          ) {
             return target._data[config.entityIdField];
           }
           return target._id;
@@ -981,17 +1096,36 @@ export class PostgresDocument {
     this._data.updatedAt = new Date().toISOString();
     this._data._id = this._id;
 
-    if (this._model?.modelName === 'Customer') {
-      if (!this._data.customerId || /^CUST-\d{10,}$/.test(this._data.customerId)) {
-        const { generateNextCustomerId } = await import("../utils/idGenerator.js");
+    if (this._model?.modelName === "Customer") {
+      if (
+        !this._data.customerId ||
+        /^CUST-\d{10,}$/.test(this._data.customerId)
+      ) {
+        const { generateNextCustomerId } =
+          await import("../utils/idGenerator.js");
         this._data.customerId = await generateNextCustomerId();
       }
 
       // Auto-sync location from default address if available
-      if (Array.isArray(this._data.addresses) && this._data.addresses.length > 0) {
-        const defaultAddr = this._data.addresses.find((a) => a.isDefault) || this._data.addresses[0];
+      if (
+        Array.isArray(this._data.addresses) &&
+        this._data.addresses.length > 0
+      ) {
+        const defaultAddr =
+          this._data.addresses.find((a) => a.isDefault) ||
+          this._data.addresses[0];
         if (defaultAddr) {
-          const fullAddr = defaultAddr.address || [defaultAddr.line1, defaultAddr.line2, defaultAddr.city, defaultAddr.state, defaultAddr.pin].filter(Boolean).join(", ");
+          const fullAddr =
+            defaultAddr.address ||
+            [
+              defaultAddr.line1,
+              defaultAddr.line2,
+              defaultAddr.city,
+              defaultAddr.state,
+              defaultAddr.pin,
+            ]
+              .filter(Boolean)
+              .join(", ");
           if (fullAddr) {
             this._data.location = fullAddr;
           }
@@ -1012,11 +1146,17 @@ export class PostgresDocument {
     let paramIdx = 4;
     for (const [modelProp, colName] of Object.entries(config.columnMap || {})) {
       let val = this._data[modelProp];
-      if (modelProp === 'listerId' && (!val || val === 'null')) {
-        val = this._data.listerID || this._data.lister_id || 'LST-GENERAL';
+      if (modelProp === "listerId" && (!val || val === "null")) {
+        val = this._data.listerID || this._data.lister_id || "LST-GENERAL";
       }
       columns.push(colName);
-      values.push((val !== undefined && val !== null) ? val : (colName === 'lister_id' ? 'LST-GENERAL' : null));
+      values.push(
+        val !== undefined && val !== null
+          ? val
+          : colName === "lister_id"
+            ? "LST-GENERAL"
+            : null,
+      );
       updates.push(`${colName} = $${paramIdx}`);
       paramIdx++;
     }
@@ -1101,7 +1241,10 @@ export class PostgresQuery {
       tableName: this.model.modelName.toLowerCase() + "s",
     };
 
-    const { whereSql, params } = buildWhereClause(this.filter, config.tableName);
+    const { whereSql, params } = buildWhereClause(
+      this.filter,
+      config.tableName,
+    );
 
     let sql = `SELECT * FROM ${config.tableName} WHERE ${whereSql}`;
 
@@ -1119,8 +1262,12 @@ export class PostgresQuery {
           } else if (field === "dueDate" || field === "due_date") {
             orderClauses.push(`due_date ${desc ? "DESC" : "ASC"}`);
           } else if (field.includes(".")) {
-            const subparts = field.split(".").map((p) => sanitizeIdentifier(p, "nested sort field"));
-            orderClauses.push(`(data#>>'{${subparts.join(",")}}') ${desc ? "DESC" : "ASC"}`);
+            const subparts = field
+              .split(".")
+              .map((p) => sanitizeIdentifier(p, "nested sort field"));
+            orderClauses.push(
+              `(data#>>'{${subparts.join(",")}}') ${desc ? "DESC" : "ASC"}`,
+            );
           } else {
             orderClauses.push(`(data->>'${field}') ${desc ? "DESC" : "ASC"}`);
           }
@@ -1134,8 +1281,12 @@ export class PostgresQuery {
           } else if (field === "dueDate" || field === "due_date") {
             orderClauses.push(`due_date ${isDesc ? "DESC" : "ASC"}`);
           } else if (field.includes(".")) {
-            const subparts = field.split(".").map((p) => sanitizeIdentifier(p, "nested sort field"));
-            orderClauses.push(`(data#>>'{${subparts.join(",")}}') ${isDesc ? "DESC" : "ASC"}`);
+            const subparts = field
+              .split(".")
+              .map((p) => sanitizeIdentifier(p, "nested sort field"));
+            orderClauses.push(
+              `(data#>>'{${subparts.join(",")}}') ${isDesc ? "DESC" : "ASC"}`,
+            );
           } else {
             orderClauses.push(`(data->>'${field}') ${isDesc ? "DESC" : "ASC"}`);
           }
@@ -1149,10 +1300,20 @@ export class PostgresQuery {
     }
 
     // Limit & Skip (if no complex in-memory verification needed)
-    if (!this.single && this._limit && this._limit > 0 && !this._hasComplexFilter()) {
+    if (
+      !this.single &&
+      this._limit &&
+      this._limit > 0 &&
+      !this._hasComplexFilter()
+    ) {
       sql += ` LIMIT ${this._limit}`;
     }
-    if (!this.single && this._skip && this._skip > 0 && !this._hasComplexFilter()) {
+    if (
+      !this.single &&
+      this._skip &&
+      this._skip > 0 &&
+      !this._hasComplexFilter()
+    ) {
       sql += ` OFFSET ${this._skip}`;
     }
     if (this.single && !this._hasComplexFilter()) {
@@ -1206,7 +1367,8 @@ export class PostgresQuery {
 
   _applySelect(doc, select) {
     if (!select) return doc;
-    const fields = typeof select === "string" ? select.split(" ").filter(Boolean) : select;
+    const fields =
+      typeof select === "string" ? select.split(" ").filter(Boolean) : select;
     const isExclusion = fields.some((f) => f.startsWith("-"));
 
     if (isExclusion) {
@@ -1304,17 +1466,25 @@ export class PostgresModel {
     try {
       const config = this._config;
       const { whereSql, params } = buildWhereClause(filter, config.tableName);
-      if (!filter || (!JSON.stringify(filter).includes("$elemMatch") && !JSON.stringify(filter).includes("$not"))) {
+      if (
+        !filter ||
+        (!JSON.stringify(filter).includes("$elemMatch") &&
+          !JSON.stringify(filter).includes("$not"))
+      ) {
         const sql = `SELECT COUNT(*)::int as count FROM ${config.tableName} WHERE ${whereSql}`;
         const res = await safeQuery(sql, params);
         return res.rows[0]?.count || 0;
       }
       const sql = `SELECT * FROM ${config.tableName} WHERE ${whereSql}`;
       const res = await safeQuery(sql, params);
-      const filtered = res.rows.filter((r) => matchesFilter(r.data || {}, filter));
+      const filtered = res.rows.filter((r) =>
+        matchesFilter(r.data || {}, filter),
+      );
       return filtered.length;
     } catch (err) {
-      console.warn(`[Non-blocking DB note] countDocuments fallback: ${err.message}`);
+      console.warn(
+        `[Non-blocking DB note] countDocuments fallback: ${err.message}`,
+      );
       return 0;
     }
   }
@@ -1390,7 +1560,9 @@ export class PostgresModel {
       const updateParams = [matchingRow._id, JSON.stringify(updatedData)];
 
       let pIdx = 3;
-      for (const [modelProp, colName] of Object.entries(config.columnMap || {})) {
+      for (const [modelProp, colName] of Object.entries(
+        config.columnMap || {},
+      )) {
         const val = updatedData[modelProp];
         updates.push(`${colName} = $${pIdx}`);
         updateParams.push(val !== undefined ? val : null);
@@ -1442,7 +1614,9 @@ export class PostgresModel {
         return null;
       }
 
-      await client.query(`DELETE FROM ${config.tableName} WHERE _id = $1`, [matchingRow._id]);
+      await client.query(`DELETE FROM ${config.tableName} WHERE _id = $1`, [
+        matchingRow._id,
+      ]);
       await client.query("COMMIT");
 
       const data = matchingRow.data || {};
@@ -1463,7 +1637,10 @@ export class PostgresModel {
   }
 
   async updateOne(filter, update, options = {}) {
-    const res = await this.findOneAndUpdate(filter, update, { ...options, new: true });
+    const res = await this.findOneAndUpdate(filter, update, {
+      ...options,
+      new: true,
+    });
     return {
       acknowledged: true,
       matchedCount: res ? 1 : 0,
@@ -1497,7 +1674,9 @@ export class PostgresModel {
         const updateParams = [row._id, JSON.stringify(updatedData)];
 
         let pIdx = 3;
-        for (const [modelProp, colName] of Object.entries(config.columnMap || {})) {
+        for (const [modelProp, colName] of Object.entries(
+          config.columnMap || {},
+        )) {
           const val = updatedData[modelProp];
           updates.push(`${colName} = $${pIdx}`);
           updateParams.push(val !== undefined ? val : null);
@@ -1547,7 +1726,7 @@ export class PostgresModel {
       if (matchingIds.length > 0) {
         await client.query(
           `DELETE FROM ${config.tableName} WHERE _id = ANY($1::text[])`,
-          [matchingIds]
+          [matchingIds],
         );
       }
 
@@ -1590,7 +1769,10 @@ export class PostgresModel {
           let groupKey;
           if (groupKeyDef === null) {
             groupKey = "__null__";
-          } else if (typeof groupKeyDef === "string" && groupKeyDef.startsWith("$")) {
+          } else if (
+            typeof groupKeyDef === "string" &&
+            groupKeyDef.startsWith("$")
+          ) {
             const rawField = groupKeyDef.substring(1);
             const field = sanitizeIdentifier(rawField, "group field");
             groupKey = String(doc[field]);
@@ -1600,13 +1782,23 @@ export class PostgresModel {
               const sanitizedK = sanitizeIdentifier(k, "group key");
               if (typeof v === "object" && v !== null) {
                 if (v.$year) {
-                  const f = sanitizeIdentifier(v.$year.substring(1), "group year field");
+                  const f = sanitizeIdentifier(
+                    v.$year.substring(1),
+                    "group year field",
+                  );
                   const d = new Date(doc[f] || doc.createdAt);
-                  computedKey[sanitizedK] = isNaN(d.getTime()) ? null : d.getFullYear();
+                  computedKey[sanitizedK] = isNaN(d.getTime())
+                    ? null
+                    : d.getFullYear();
                 } else if (v.$month) {
-                  const f = sanitizeIdentifier(v.$month.substring(1), "group month field");
+                  const f = sanitizeIdentifier(
+                    v.$month.substring(1),
+                    "group month field",
+                  );
                   const d = new Date(doc[f] || doc.createdAt);
-                  computedKey[sanitizedK] = isNaN(d.getTime()) ? null : d.getMonth() + 1;
+                  computedKey[sanitizedK] = isNaN(d.getTime())
+                    ? null
+                    : d.getMonth() + 1;
                 }
               }
             }
@@ -1632,8 +1824,14 @@ export class PostgresModel {
           // Set _id
           if (gVal._keyDef === null) {
             result._id = null;
-          } else if (typeof gVal._keyDef === "string" && gVal._keyDef.startsWith("$")) {
-            const field = sanitizeIdentifier(gVal._keyDef.substring(1), "group id field");
+          } else if (
+            typeof gVal._keyDef === "string" &&
+            gVal._keyDef.startsWith("$")
+          ) {
+            const field = sanitizeIdentifier(
+              gVal._keyDef.substring(1),
+              "group id field",
+            );
             result._id = gVal.docs[0][field];
           } else if (typeof gVal._keyDef === "object") {
             result._id = JSON.parse(gKey);
@@ -1643,23 +1841,49 @@ export class PostgresModel {
 
           // Compute accumulators
           for (const [rawAccField, accExpr] of Object.entries(accumulators)) {
-            const accField = sanitizeIdentifier(rawAccField, "accumulator field");
+            const accField = sanitizeIdentifier(
+              rawAccField,
+              "accumulator field",
+            );
             if (accExpr && typeof accExpr === "object") {
               if (accExpr.$sum !== undefined) {
                 if (accExpr.$sum === 1) {
                   result[accField] = gVal.docs.length;
-                } else if (typeof accExpr.$sum === "string" && accExpr.$sum.startsWith("$")) {
-                  const f = sanitizeIdentifier(accExpr.$sum.substring(1), "sum field");
-                  result[accField] = gVal.docs.reduce((sum, d) => sum + (Number(d[f]) || 0), 0);
+                } else if (
+                  typeof accExpr.$sum === "string" &&
+                  accExpr.$sum.startsWith("$")
+                ) {
+                  const f = sanitizeIdentifier(
+                    accExpr.$sum.substring(1),
+                    "sum field",
+                  );
+                  result[accField] = gVal.docs.reduce(
+                    (sum, d) => sum + (Number(d[f]) || 0),
+                    0,
+                  );
                 } else if (typeof accExpr.$sum === "number") {
                   result[accField] = gVal.docs.length * accExpr.$sum;
                 }
               } else if (accExpr.$avg && typeof accExpr.$avg === "string") {
-                const f = sanitizeIdentifier(accExpr.$avg.substring(1), "avg field");
-                const total = gVal.docs.reduce((sum, d) => sum + (Number(d[f]) || 0), 0);
-                result[accField] = gVal.docs.length > 0 ? total / gVal.docs.length : 0;
+                const f = sanitizeIdentifier(
+                  accExpr.$avg.substring(1),
+                  "avg field",
+                );
+                const total = gVal.docs.reduce(
+                  (sum, d) => sum + (Number(d[f]) || 0),
+                  0,
+                );
+                result[accField] =
+                  gVal.docs.length > 0 ? total / gVal.docs.length : 0;
               } else if (accExpr.$push) {
-                const f = typeof accExpr.$push === "string" && accExpr.$push.startsWith("$") ? sanitizeIdentifier(accExpr.$push.substring(1), "push field") : null;
+                const f =
+                  typeof accExpr.$push === "string" &&
+                  accExpr.$push.startsWith("$")
+                    ? sanitizeIdentifier(
+                        accExpr.$push.substring(1),
+                        "push field",
+                      )
+                    : null;
                 result[accField] = f ? gVal.docs.map((d) => d[f]) : gVal.docs;
               }
             }

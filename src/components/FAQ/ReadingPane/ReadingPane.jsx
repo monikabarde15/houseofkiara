@@ -35,18 +35,17 @@ export default function ReadingPane({
       if (paneRef.current) {
         const rect = paneRef.current.getBoundingClientRect();
         if (rect.top < 138) {
-          paneRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+          paneRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         }
       }
     }
   };
 
   return (
-    <aside
-      className="pane"
-      aria-label="Answer reading pane"
-      ref={paneRef}
-    >
+    <aside className="pane" aria-label="Answer reading pane" ref={paneRef}>
       <div key={question.id} className="fade">
         {/* Kicker row with gold rule (D3) */}
         <div className="pane-k">
@@ -79,10 +78,7 @@ export default function ReadingPane({
         )}
 
         {/* Feedback row (D6) */}
-        <FeedbackRow
-          question={question}
-          onShowToast={onShowToast}
-        />
+        <FeedbackRow question={question} onShowToast={onShowToast} />
 
         {/* Optional Review Mode Decision Note (D7) */}
         {isReviewMode && question.decisionNote && (

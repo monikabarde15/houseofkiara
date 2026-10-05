@@ -4,11 +4,11 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 6.6
    ======================================== */
 
-import React from 'react';
-import './styles/OrdersLedger.css';
-import { Card, Link } from '../../components/UI';
-import { PromoCode } from '../../types/promotions.types';
-import { formatDate, formatMoney } from '../../utils/formatter';
+import React from "react";
+import "./styles/OrdersLedger.css";
+import { Card, Link } from "../../components/UI";
+import { PromoCode } from "../../types/promotions.types";
+import { formatDate, formatMoney } from "../../utils/formatter";
 
 interface Order {
   id: string;
@@ -34,7 +34,9 @@ export const OrdersLedger: React.FC<OrdersLedgerProps> = ({ orders, code }) => {
       header={
         <>
           <span className="card__title">Orders That Used This Code</span>
-          <span className="status-badge neutral">{hasOrders ? `${orders.length} orders` : '0 orders'}</span>
+          <span className="status-badge neutral">
+            {hasOrders ? `${orders.length} orders` : "0 orders"}
+          </span>
         </>
       }
     >
@@ -55,11 +57,12 @@ export const OrdersLedger: React.FC<OrdersLedgerProps> = ({ orders, code }) => {
           {!hasOrders ? (
             <tr>
               <td colSpan={8} className="orders-ledger__empty-cell">
-                No orders yet — the moment an order carries this code, it appears here.
+                No orders yet — the moment an order carries this code, it
+                appears here.
               </td>
             </tr>
           ) : (
-            orders.map(order => (
+            orders.map((order) => (
               <tr key={order.id}>
                 <td className="orders-ledger__td">
                   <Link>{order.id}</Link>
@@ -68,10 +71,16 @@ export const OrdersLedger: React.FC<OrdersLedgerProps> = ({ orders, code }) => {
                   <Link>{order.customer}</Link>
                 </td>
                 <td className="orders-ledger__td">{order.mode}</td>
-                <td className="orders-ledger__td">{formatDate(order.placed)}</td>
+                <td className="orders-ledger__td">
+                  {formatDate(order.placed)}
+                </td>
                 <td className="orders-ledger__td">{formatMoney(order.base)}</td>
-                <td className="orders-ledger__td discount">-{formatMoney(order.discount)}</td>
-                <td className="orders-ledger__td">{formatMoney(order.customerPaid)}</td>
+                <td className="orders-ledger__td discount">
+                  -{formatMoney(order.discount)}
+                </td>
+                <td className="orders-ledger__td">
+                  {formatMoney(order.customerPaid)}
+                </td>
                 <td className="orders-ledger__td">
                   <span className="status-badge neutral">{order.status}</span>
                 </td>
@@ -81,7 +90,9 @@ export const OrdersLedger: React.FC<OrdersLedgerProps> = ({ orders, code }) => {
         </tbody>
       </table>
       <div className="orders-ledger__footer">
-        Customer Paid = discounted base + GST, excluding the security deposit. The order book is the redemption ledger — nothing here is stored separately, so this table and the orders module can never disagree.
+        Customer Paid = discounted base + GST, excluding the security deposit.
+        The order book is the redemption ledger — nothing here is stored
+        separately, so this table and the orders module can never disagree.
       </div>
     </Card>
   );

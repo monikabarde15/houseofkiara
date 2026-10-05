@@ -11,11 +11,7 @@ export default function MomentCards({ selectedMomentId, onSelectMoment }) {
   return (
     <div className="ch-cards-section">
       <p className="ch-lede enter e4">Or choose where you are</p>
-      <div
-        className="ch-cards enter"
-        role="region"
-        aria-label="Where you are"
-      >
+      <div className="ch-cards enter" role="region" aria-label="Where you are">
         {visibleMoments.map((moment, index) => (
           <MomentCard
             key={moment.id}

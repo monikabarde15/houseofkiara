@@ -7,8 +7,8 @@
   bottom: 28px;
   left: 50%;
   transform: translateX(-50%);
-  background: #1A1612;
-  color: #FFFFFB;
+  background: #1a1612;
+  color: #fffffb;
   padding: 10px 20px;
   border-radius: 26px;
   font-family: "DM Sans", sans-serif;
@@ -35,7 +35,7 @@
 }
 
 .profile-toast svg {
-  stroke: #6B7E5A;
+  stroke: #6b7e5a;
   stroke-width: 2;
   flex-shrink: 0;
 }

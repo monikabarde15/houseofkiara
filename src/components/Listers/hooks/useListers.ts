@@ -1,8 +1,8 @@
 // src/components/Listers/hooks/useListers.ts
 
-import { useState, useEffect, useCallback } from 'react';
-import { Lister, ListerFilters } from '../types/lister.types';
-import { listerService } from '../services/listerService';
+import { useState, useEffect, useCallback } from "react";
+import { Lister, ListerFilters } from "../types/lister.types";
+import { listerService } from "../services/listerService";
 
 export const useListers = (filters?: ListerFilters) => {
   const [listers, setListers] = useState<Lister[]>([]);
@@ -19,11 +19,16 @@ export const useListers = (filters?: ListerFilters) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await listerService.getListers({ search, status, sortBy, sortOrder });
+      const result = await listerService.getListers({
+        search,
+        status,
+        sortBy,
+        sortOrder,
+      });
       setListers(result.data);
       setTotalCount(result.total);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch listers');
+      setError(err instanceof Error ? err.message : "Failed to fetch listers");
     } finally {
       setLoading(false);
     }
@@ -37,16 +42,22 @@ export const useListers = (filters?: ListerFilters) => {
     fetchListers();
   }, [fetchListers]);
 
-  const deleteLister = useCallback(async (id: string) => {
-    await listerService.deleteLister(id);
-    await fetchListers();
-  }, [fetchListers]);
+  const deleteLister = useCallback(
+    async (id: string) => {
+      await listerService.deleteLister(id);
+      await fetchListers();
+    },
+    [fetchListers],
+  );
 
-  const createLister = useCallback(async (data: Partial<Lister>) => {
-    const created = await listerService.createLister(data);
-    await fetchListers();
-    return created;
-  }, [fetchListers]);
+  const createLister = useCallback(
+    async (data: Partial<Lister>) => {
+      const created = await listerService.createLister(data);
+      await fetchListers();
+      return created;
+    },
+    [fetchListers],
+  );
 
   return {
     listers,

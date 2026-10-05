@@ -43,7 +43,7 @@ const MobileSummaryDrawer = ({
   if (itemsGrouped.rental.length > 0) {
     const rentalItem = itemsGrouped.rental[0];
     deliveryMessages.push(
-      `${rentalItem.productName} arrives by ${formatShortDate(rentalItem.startDate)}`
+      `${rentalItem.productName} arrives by ${formatShortDate(rentalItem.startDate)}`,
     );
   }
 
@@ -52,7 +52,7 @@ const MobileSummaryDrawer = ({
     deliveryMessages.push(
       `${prelovedItem.productName} ships within ${
         deliveryType === "express" ? "1 day" : "2 days"
-      } of confirmation`
+      } of confirmation`,
     );
   }
 
@@ -61,7 +61,7 @@ const MobileSummaryDrawer = ({
     deliveryMessages.push(
       `${newItem.productName} ships within ${
         deliveryType === "express" ? "1–2 days" : "3–5 days"
-      }`
+      }`,
     );
   }
 
@@ -119,7 +119,11 @@ const MobileSummaryDrawer = ({
                   ? "Express delivery · 1–2 business days"
                   : "Standard · 3–5 business days"
               }
-              value={deliveryCharge > 0 ? `₹${deliveryCharge.toLocaleString()}` : "Free"}
+              value={
+                deliveryCharge > 0
+                  ? `₹${deliveryCharge.toLocaleString()}`
+                  : "Free"
+              }
               type="dim"
             />
 
@@ -135,26 +139,29 @@ const MobileSummaryDrawer = ({
           {/* DIVIDER */}
           <div className="mobile-drawer-divider" />
 
-                  {/* TOTAL DUE */}
-                  <div className="mobile-drawer-total">
-                      <div className="mobile-drawer-total-row">
-                          <span className="mobile-drawer-total-label">Total due today</span>
-                          <span className="mobile-drawer-total-amount">₹{grandTotal.toLocaleString()}</span>
-                      </div>
-                      <div className="mobile-drawer-total-sub">
-                          {deliveryType === "express"
-                              ? "Incl. express delivery · Excl. ₹15,000 deposit"
-                              : "Incl. free delivery · Excl. ₹15,000 deposit"}
-                      </div>
-                  </div>
+          {/* TOTAL DUE */}
+          <div className="mobile-drawer-total">
+            <div className="mobile-drawer-total-row">
+              <span className="mobile-drawer-total-label">Total due today</span>
+              <span className="mobile-drawer-total-amount">
+                ₹{grandTotal.toLocaleString()}
+              </span>
+            </div>
+            <div className="mobile-drawer-total-sub">
+              {deliveryType === "express"
+                ? "Incl. express delivery · Excl. ₹15,000 deposit"
+                : "Incl. free delivery · Excl. ₹15,000 deposit"}
+            </div>
+          </div>
 
           {/* DEPOSIT NOTE */}
           {hasRental && (
             <div className="mobile-drawer-deposit-note">
               <p>
-                <strong>* Security deposit (₹15,000)</strong> not due today — our ops team will
-                contact you on WhatsApp before dispatch to arrange this separately. Fully refunded
-                within 3–5 business days of return inspection.
+                <strong>* Security deposit (₹15,000)</strong> not due today —
+                our ops team will contact you on WhatsApp before dispatch to
+                arrange this separately. Fully refunded within 3–5 business days
+                of return inspection.
               </p>
             </div>
           )}
@@ -163,8 +170,12 @@ const MobileSummaryDrawer = ({
           <div className="mobile-drawer-delivery">
             <Truck size={14} strokeWidth={1.75} />
             <div className="mobile-drawer-delivery-content">
-              <span className="mobile-drawer-delivery-label">Estimated delivery</span>
-              <p className="mobile-drawer-delivery-text">{estimatedDeliveryText}</p>
+              <span className="mobile-drawer-delivery-label">
+                Estimated delivery
+              </span>
+              <p className="mobile-drawer-delivery-text">
+                {estimatedDeliveryText}
+              </p>
             </div>
           </div>
 

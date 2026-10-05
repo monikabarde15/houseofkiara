@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import FieldLabel from './FieldLabel';
-import '../../../styles/Auth/ui/TextInput.css';
+import React, { useState, useEffect } from "react";
+import FieldLabel from "./FieldLabel";
+import "../../../styles/Auth/ui/TextInput.css";
 
 const TextInput = ({
   id,
   name,
-  type = 'text',
+  type = "text",
   label,
   required = false,
   placeholder,
   value,
   onChange,
   onBlur,
-  error = '',
+  error = "",
   success = false,
-  autoComplete = 'off',
-  className = ''
+  autoComplete = "off",
+  className = "",
 }) => {
   const [hasError, setHasError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Update error state when prop changes
   useEffect(() => {
@@ -30,7 +30,7 @@ const TextInput = ({
   const handleInput = (e) => {
     if (hasError) {
       setHasError(false);
-      setErrorMessage('');
+      setErrorMessage("");
     }
     if (onChange) {
       onChange(e);
@@ -39,9 +39,7 @@ const TextInput = ({
 
   return (
     <div className={`hok-auth-field-container ${className}`}>
-      {label && (
-        <FieldLabel htmlFor={id} text={label} required={required} />
-      )}
+      {label && <FieldLabel htmlFor={id} text={label} required={required} />}
       <input
         id={id}
         name={name}
@@ -53,14 +51,12 @@ const TextInput = ({
         autoComplete={autoComplete}
         className={`
           hok-auth-text-input
-          ${hasError ? 'hok-auth-error' : ''}
-          ${success ? 'hok-auth-success' : ''}
+          ${hasError ? "hok-auth-error" : ""}
+          ${success ? "hok-auth-success" : ""}
         `}
       />
       {hasError && errorMessage && (
-        <div className="hok-auth-field-error-message">
-          {errorMessage}
-        </div>
+        <div className="hok-auth-field-error-message">{errorMessage}</div>
       )}
     </div>
   );

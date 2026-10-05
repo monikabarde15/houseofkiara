@@ -1,9 +1,10 @@
 import "../../../../styles/wishlist/cards/list/list-card-actions.css";
 
-const ListCardActions = ({ product, type, onOpenModal }) => {  // Add 'type' to props
+const ListCardActions = ({ product, type, onOpenModal }) => {
+  // Add 'type' to props
   const handleAddToBagClick = (e) => {
     e.stopPropagation();
-    if (onOpenModal) onOpenModal(product, type);  // Now 'type' is defined
+    if (onOpenModal) onOpenModal(product, type); // Now 'type' is defined
   };
 
   const isUnavailable = product.unavailable;

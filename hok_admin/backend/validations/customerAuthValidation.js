@@ -21,7 +21,8 @@ const validatePhoneString = (rawPhone, helpers, isRequired = false) => {
   }
   if (!/^[6-9]\d{9}$/.test(normalized)) {
     return helpers.error("any.custom", {
-      message: "Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9",
+      message:
+        "Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9",
     });
   }
   return true;
@@ -32,23 +33,16 @@ export const validateCustomerRegister = (data) => {
     name: Joi.string().trim().max(255).allow("", null),
     firstName: Joi.string().trim().max(100).allow("", null),
     lastName: Joi.string().trim().max(100).allow("", null),
-    email: Joi.string()
-      .trim()
-      .pattern(emailRegex)
-      .required()
-      .messages({
-        "string.empty": "Email is required",
-        "string.pattern.base": "Please enter a valid email address",
-        "any.required": "Email is required",
-      }),
-    password: Joi.string()
-      .min(8)
-      .required()
-      .messages({
-        "string.empty": "Password is required",
-        "string.min": "Password must be at least 8 characters",
-        "any.required": "Password is required",
-      }),
+    email: Joi.string().trim().pattern(emailRegex).required().messages({
+      "string.empty": "Email is required",
+      "string.pattern.base": "Please enter a valid email address",
+      "any.required": "Email is required",
+    }),
+    password: Joi.string().min(8).required().messages({
+      "string.empty": "Password is required",
+      "string.min": "Password must be at least 8 characters",
+      "any.required": "Password is required",
+    }),
     phone: Joi.string().trim().allow("", null),
     mobile: Joi.string().trim().allow("", null),
     verificationToken: Joi.string().trim().allow("", null),
@@ -61,7 +55,7 @@ export const validateCustomerRegister = (data) => {
       const hasFullName = Boolean(value.name && value.name.trim());
       const hasFirstOrLast = Boolean(
         (value.firstName && value.firstName.trim()) ||
-        (value.lastName && value.lastName.trim())
+        (value.lastName && value.lastName.trim()),
       );
       if (!hasFullName && !hasFirstOrLast) {
         return helpers.error("any.custom", {
@@ -82,21 +76,15 @@ export const validateCustomerRegister = (data) => {
 
 export const validateCustomerLogin = (data) => {
   const schema = Joi.object({
-    email: Joi.string()
-      .trim()
-      .pattern(emailRegex)
-      .required()
-      .messages({
-        "string.empty": "Please enter your email address",
-        "string.pattern.base": "Please enter a valid email address",
-        "any.required": "Email is required",
-      }),
-    password: Joi.string()
-      .required()
-      .messages({
-        "string.empty": "Password is required",
-        "any.required": "Password is required",
-      }),
+    email: Joi.string().trim().pattern(emailRegex).required().messages({
+      "string.empty": "Please enter your email address",
+      "string.pattern.base": "Please enter a valid email address",
+      "any.required": "Email is required",
+    }),
+    password: Joi.string().required().messages({
+      "string.empty": "Password is required",
+      "any.required": "Password is required",
+    }),
   });
 
   return schema.validate(data, { abortEarly: false, stripUnknown: true });
@@ -109,7 +97,9 @@ export const validateSendOtp = (data) => {
   })
     .custom((value, helpers) => {
       const rawPhone = value.phone || value.mobile;
-      return validatePhoneString(rawPhone, helpers, true) === true ? value : validatePhoneString(rawPhone, helpers, true);
+      return validatePhoneString(rawPhone, helpers, true) === true
+        ? value
+        : validatePhoneString(rawPhone, helpers, true);
     })
     .messages({ "any.custom": "{{#message}}" });
 
@@ -120,19 +110,17 @@ export const validateVerifyOtp = (data) => {
   const schema = Joi.object({
     phone: Joi.string().trim().allow("", null),
     mobile: Joi.string().trim().allow("", null),
-    otp: Joi.string()
-      .trim()
-      .pattern(otpRegex)
-      .required()
-      .messages({
-        "string.empty": "OTP is required",
-        "string.pattern.base": "OTP must be a 6-digit code",
-        "any.required": "OTP is required",
-      }),
+    otp: Joi.string().trim().pattern(otpRegex).required().messages({
+      "string.empty": "OTP is required",
+      "string.pattern.base": "OTP must be a 6-digit code",
+      "any.required": "OTP is required",
+    }),
   })
     .custom((value, helpers) => {
       const rawPhone = value.phone || value.mobile;
-      return validatePhoneString(rawPhone, helpers, true) === true ? value : validatePhoneString(rawPhone, helpers, true);
+      return validatePhoneString(rawPhone, helpers, true) === true
+        ? value
+        : validatePhoneString(rawPhone, helpers, true);
     })
     .messages({ "any.custom": "{{#message}}" });
 
@@ -141,15 +129,11 @@ export const validateVerifyOtp = (data) => {
 
 export const validateForgotPassword = (data) => {
   const schema = Joi.object({
-    email: Joi.string()
-      .trim()
-      .pattern(emailRegex)
-      .required()
-      .messages({
-        "string.empty": "Email is required",
-        "string.pattern.base": "Please enter a valid email address",
-        "any.required": "Email is required",
-      }),
+    email: Joi.string().trim().pattern(emailRegex).required().messages({
+      "string.empty": "Email is required",
+      "string.pattern.base": "Please enter a valid email address",
+      "any.required": "Email is required",
+    }),
   });
 
   return schema.validate(data, { abortEarly: false, stripUnknown: true });
@@ -176,7 +160,10 @@ export const validateResetPassword = (data) => {
           message: "Password must be at least 8 characters",
         });
       }
-      if (value.confirmPassword && value.confirmPassword !== effectivePassword) {
+      if (
+        value.confirmPassword &&
+        value.confirmPassword !== effectivePassword
+      ) {
         return helpers.error("any.custom", {
           message: "Passwords do not match",
         });

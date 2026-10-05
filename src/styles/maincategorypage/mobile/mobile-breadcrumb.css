@@ -2,9 +2,9 @@
 /* Pages 7-8: Horizontally scrollable path strip */
 
 .mob-breadcrumb {
-    padding: 12px 16px;
-    border-bottom: 1px solid #F0EAE0; /* --border-light */
-    background: #FFFEFB; /* --warm-white */
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0eae0; /* --border-light */
+  background: #fffefb; /* --warm-white */
   display: flex;
   align-items: center;
   gap: 6px;
@@ -24,7 +24,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 400;
-  color: #8A7E72; /* --muted */
+  color: #8a7e72; /* --muted */
   letter-spacing: 0.06em;
   cursor: pointer;
   transition: color 0.15s ease;
@@ -32,14 +32,14 @@
 }
 
 .mob-breadcrumb__link:active {
-  color: #1A1612; /* --charcoal */
+  color: #1a1612; /* --charcoal */
 }
 
 /* Separator - 3.3 */
 .mob-breadcrumb__separator {
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
-  color: #E8E0D4; /* --border */
+  color: #e8e0d4; /* --border */
   white-space: nowrap;
 }
 
@@ -48,7 +48,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #1A1612; /* --charcoal */
+  color: #1a1612; /* --charcoal */
   letter-spacing: 0.06em;
   white-space: nowrap;
 }

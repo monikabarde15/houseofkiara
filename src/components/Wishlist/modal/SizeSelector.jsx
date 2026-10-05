@@ -4,7 +4,7 @@
 import "../../../styles/wishlist/modal/size-selector.css";
 
 const SizeSelector = ({ sizes, selectedSize, onSizeChange }) => {
-  const defaultSizes = ['XS', 'S', 'M', 'L', 'XL'];
+  const defaultSizes = ["XS", "S", "M", "L", "XL"];
   const sizeList = sizes && sizes.length > 0 ? sizes : defaultSizes;
 
   return (
@@ -15,7 +15,7 @@ const SizeSelector = ({ sizes, selectedSize, onSizeChange }) => {
           <button
             key={size}
             type="button"
-            className={`desk-wishlist-size-pill ${selectedSize === size ? 'desk-wishlist-size-selected' : ''}`}
+            className={`desk-wishlist-size-pill ${selectedSize === size ? "desk-wishlist-size-selected" : ""}`}
             onClick={() => onSizeChange(size)}
           >
             {size}

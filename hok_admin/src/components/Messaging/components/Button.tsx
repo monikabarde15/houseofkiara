@@ -1,22 +1,22 @@
 // components/Button.tsx
-import React from 'react';
-import './styles/Button.css';
+import React from "react";
+import "./styles/Button.css";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary';
-  size?: 'default' | 'small';
+  variant?: "primary" | "secondary";
+  size?: "default" | "small";
   children: React.ReactNode;
   icon?: React.ReactNode;
   saved?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = 'secondary',
-  size = 'default',
+  variant = "secondary",
+  size = "default",
   children,
   icon,
   saved = false,
-  className = '',
+  className = "",
   ...props
 }) => {
   return (

@@ -60,7 +60,9 @@
   background: var(--ibg);
   outline: none;
   width: 100%;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .fld-input:focus {

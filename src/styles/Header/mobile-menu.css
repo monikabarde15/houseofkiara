@@ -70,8 +70,7 @@
 .hok-mobile-menu-title {
   margin: 0;
 
-  font-family: "Cormorant Garamond",
-    serif;
+  font-family: "Cormorant Garamond", serif;
 
   font-size: 18px;
   font-weight: 500;
@@ -102,17 +101,14 @@
   padding: 24px 20px;
 }
 
-.hok-mobile-menu-section:not(
-    :last-child
-  ) {
+.hok-mobile-menu-section:not(:last-child) {
   border-bottom: 1px solid #e8e0d4;
 }
 
 .hok-mobile-menu-heading {
   margin-bottom: 16px;
 
-  font-family: "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 10px;
   font-weight: 500;
@@ -147,8 +143,7 @@
 
   text-align: left;
 
-  font-family: "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 14px;
   font-weight: 300;
@@ -184,8 +179,7 @@
 .hok-mobile-submenu a {
   text-decoration: none;
 
-  font-family: "DM Sans",
-    sans-serif;
+  font-family: "DM Sans", sans-serif;
 
   font-size: 13px;
   font-weight: 300;

@@ -28,14 +28,14 @@
   border-radius: var(--msg-radius-tight);
   font-size: 10.5px;
   font-weight: 600;
-  color: #6B5730;
+  color: #6b5730;
   cursor: pointer;
   transition: all 0.12s ease;
 }
 
 .msg-attachment-doc:hover {
   background: var(--msg-gold);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .msg-attachment-doc--crossed {
@@ -53,7 +53,7 @@
   border: 1px solid var(--msg-gold);
   border-radius: var(--msg-radius-tight);
   background: var(--msg-card);
-  color: #8B6A1E;
+  color: #8b6a1e;
   font-size: 11px;
   line-height: 1;
   cursor: pointer;
@@ -66,11 +66,11 @@
 .msg-attachment-cross:hover {
   background: var(--msg-terracotta);
   border-color: var(--msg-terracotta);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .msg-attachment-strip-tag {
   font-size: 9.5px;
   font-style: italic;
-  color: #8B6A1E;
+  color: #8b6a1e;
 }

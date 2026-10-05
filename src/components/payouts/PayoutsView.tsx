@@ -19,8 +19,7 @@ export type PayoutTab =
   | "damage-compensation";
 
 export default function PayoutsView() {
-  const [activeTab, setActiveTab] =
-    useState<PayoutTab>("payment-queue");
+  const [activeTab, setActiveTab] = useState<PayoutTab>("payment-queue");
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -46,10 +45,9 @@ export default function PayoutsView() {
 
   return (
     <div className="min-h-screen bg-[#F8F5F1]">
-    {/* <PayoutPageHeader /> */}
+      {/* <PayoutPageHeader /> */}
 
-    <div className="mx-auto max-w-[1600px] px-0 py-0">
-
+      <div className="mx-auto max-w-[1600px] px-0 py-0">
         {/* Header */}
         <div className="pt-0">
           <PayoutHeader />
@@ -67,19 +65,12 @@ export default function PayoutsView() {
 
         {/* Tabs */}
         <div className="mt-7">
-          <PayoutTabs
-            activeTab={activeTab}
-            onChange={setActiveTab}
-          />
+          <PayoutTabs activeTab={activeTab} onChange={setActiveTab} />
         </div>
 
         {/* Active Tab */}
-        <div className="mt-6">
-          {renderActiveTab()}
-        </div>
-
+        <div className="mt-6">{renderActiveTab()}</div>
       </div>
-
     </div>
   );
 }

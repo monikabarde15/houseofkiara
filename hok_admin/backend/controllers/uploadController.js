@@ -3,32 +3,52 @@ import { Readable } from "stream";
 
 const uploadBuffer = (buffer, options) =>
   new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(options, (error, result) =>
-      error ? reject(error) : resolve(result)
+    const stream = cloudinary.uploader.upload_stream(
+      options,
+      (error, result) => (error ? reject(error) : resolve(result)),
     );
     Readable.from(buffer).pipe(stream);
   });
 
 export const uploadFile = async (req, res) => {
   try {
-    if (!process.env.CLOUD_NAME || !process.env.CLOUD_API_KEY || !process.env.CLOUD_API_SECRET) {
-      return res.status(503).json({ success: false, message: "Cloudinary is not configured" });
+    if (
+      !process.env.CLOUD_NAME ||
+      !process.env.CLOUD_API_KEY ||
+      !process.env.CLOUD_API_SECRET
+    ) {
+      return res
+        .status(503)
+        .json({ success: false, message: "Cloudinary is not configured" });
     }
     if (!req.file) {
-      return res.status(422).json({ success: false, message: "file is required" });
+      return res
+        .status(422)
+        .json({ success: false, message: "file is required" });
     }
 
-    const baseSection = String(req.body.folder || "products").replace(/\s+/g, '-').replace(/[^a-zA-Z0-9/_-]/g, "").trim();
+    const baseSection = String(req.body.folder || "products")
+      .replace(/\s+/g, "-")
+      .replace(/[^a-zA-Z0-9/_-]/g, "")
+      .trim();
     const mediaType = req.file.mimetype.startsWith("video/")
       ? "video"
-      : req.file.mimetype === "application/pdf" || req.file.mimetype.includes("word")
-      ? "documents"
-      : "image";
+      : req.file.mimetype === "application/pdf" ||
+          req.file.mimetype.includes("word")
+        ? "documents"
+        : "image";
 
     // Build structured folder: e.g. "product/instagram/video", "product/image", "order/issue/image", "submissions/image"
-    const folderPath = `${baseSection}/${mediaType}`.toLowerCase().slice(0, 100);
+    const folderPath = `${baseSection}/${mediaType}`
+      .toLowerCase()
+      .slice(0, 100);
 
-    const resourceType = mediaType === "video" ? "video" : mediaType === "documents" ? "raw" : "image";
+    const resourceType =
+      mediaType === "video"
+        ? "video"
+        : mediaType === "documents"
+          ? "raw"
+          : "image";
 
     const result = await uploadBuffer(req.file.buffer, {
       folder: folderPath,

@@ -1,6 +1,6 @@
 // src/components/Notifications/components/Table.tsx
-import React from 'react';
-import './styles/Table.css';
+import React from "react";
+import "./styles/Table.css";
 
 interface TableProps {
   /** column widths, left to right, e.g. ['1fr', '68px', '68px', '78px', '78px'] (§26.3) */
@@ -16,17 +16,23 @@ interface TableProps {
  * hand-rolling display:grid again.
  */
 export function Table({ columns, headers, children }: TableProps) {
-  const gridTemplateColumns = columns.join(' ');
+  const gridTemplateColumns = columns.join(" ");
   return (
     <div className="ntf-table">
       <div className="ntf-table-hd" style={{ gridTemplateColumns }}>
         {headers.map((h, i) => (
-          <div key={h} className={i > 0 ? 'ntf-table-hd-cell--right' : undefined}>
+          <div
+            key={h}
+            className={i > 0 ? "ntf-table-hd-cell--right" : undefined}
+          >
             {h}
           </div>
         ))}
       </div>
-      <div className="ntf-table-body" style={{ ['--ntf-table-cols' as string]: gridTemplateColumns }}>
+      <div
+        className="ntf-table-body"
+        style={{ ["--ntf-table-cols" as string]: gridTemplateColumns }}
+      >
         {children}
       </div>
     </div>
@@ -39,7 +45,7 @@ interface TableRowProps {
 }
 
 export function TableRow({ columns, children }: TableRowProps) {
-  const gridTemplateColumns = columns.join(' ');
+  const gridTemplateColumns = columns.join(" ");
   return (
     <div className="ntf-table-row" style={{ gridTemplateColumns }}>
       {children}

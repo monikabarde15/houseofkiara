@@ -4,30 +4,35 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 6
    ======================================== */
 
-import React, { useState, useEffect } from 'react';
-import './PromotionsDetailView.css';
-import './styles/variables.css';
-import { DetailHeader } from './detail/DetailHeader';
-import { AttentionStrip } from './detail/AttentionStrip';
-import { Tabs } from './detail/Tabs';
-import { RedemptionEconomics } from './detail/PerformanceTab/RedemptionEconomics';
-import { RefusedAttempts } from './detail/PerformanceTab/RefusedAttempts';
-import { OrdersLedger } from './detail/PerformanceTab/OrdersLedger';
-import { DiscountRulesCard } from './detail/RulesTab/DiscountRulesCard';
-import { AudienceCard } from './detail/RulesTab/AudienceCard';
-import { CheckoutValidationCard } from './detail/RulesTab/CheckoutValidationCard';
-import { ReasonNotesCard } from './detail/RulesTab/ReasonNotesCard';
-import { RepromoteCard } from './detail/RulesTab/RepromoteCard';
-import { LifecycleCard } from './detail/RulesTab/LifecycleCard';
-import { TryItAgainstBag } from './detail/RulesTab/TryItAgainstBag';
-import { CartDrawerPreview } from './detail/RulesTab/CartDrawerPreview';
-import { ChangeHistory } from './detail/RulesTab/ChangeHistory';
-import { WhenMoneyComesBack } from './detail/RulesTab/WhenMoneyComesBack';
-import { usePromotionDetail } from './hooks/usePromotionDetail';
-import { usePromotionActions } from './hooks/usePromotionActions';
-import { useTestBag } from './hooks/useTestBag';
-import { useRefusedAttempts } from './hooks/useRefusedAttempts';
-import { AttentionFlag, getAttentionFlags, getVisibleFlags, getSnoozedFlagsCount } from './utils/derived';
+import React, { useState, useEffect } from "react";
+import "./PromotionsDetailView.css";
+import "./styles/variables.css";
+import { DetailHeader } from "./detail/DetailHeader";
+import { AttentionStrip } from "./detail/AttentionStrip";
+import { Tabs } from "./detail/Tabs";
+import { RedemptionEconomics } from "./detail/PerformanceTab/RedemptionEconomics";
+import { RefusedAttempts } from "./detail/PerformanceTab/RefusedAttempts";
+import { OrdersLedger } from "./detail/PerformanceTab/OrdersLedger";
+import { DiscountRulesCard } from "./detail/RulesTab/DiscountRulesCard";
+import { AudienceCard } from "./detail/RulesTab/AudienceCard";
+import { CheckoutValidationCard } from "./detail/RulesTab/CheckoutValidationCard";
+import { ReasonNotesCard } from "./detail/RulesTab/ReasonNotesCard";
+import { RepromoteCard } from "./detail/RulesTab/RepromoteCard";
+import { LifecycleCard } from "./detail/RulesTab/LifecycleCard";
+import { TryItAgainstBag } from "./detail/RulesTab/TryItAgainstBag";
+import { CartDrawerPreview } from "./detail/RulesTab/CartDrawerPreview";
+import { ChangeHistory } from "./detail/RulesTab/ChangeHistory";
+import { WhenMoneyComesBack } from "./detail/RulesTab/WhenMoneyComesBack";
+import { usePromotionDetail } from "./hooks/usePromotionDetail";
+import { usePromotionActions } from "./hooks/usePromotionActions";
+import { useTestBag } from "./hooks/useTestBag";
+import { useRefusedAttempts } from "./hooks/useRefusedAttempts";
+import {
+  AttentionFlag,
+  getAttentionFlags,
+  getVisibleFlags,
+  getSnoozedFlagsCount,
+} from "./utils/derived";
 
 interface PromotionsDetailViewProps {
   codeId?: string;
@@ -38,25 +43,56 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
   codeId: propCodeId,
   onBack,
 }) => {
-  const codeId = propCodeId || '';
-  const [activeTab, setActiveTab] = useState<'performance' | 'rules'>('performance');
-  
-  const { code, loading, error, derivedState, redemptions, promotionOrders, refresh } = usePromotionDetail(codeId);
-  const { pauseCode, resumeCode, deleteCode, copyCode, updateCode } = usePromotionActions();
+  const codeId = propCodeId || "";
+  const [activeTab, setActiveTab] = useState<"performance" | "rules">(
+    "performance",
+  );
+
+  const {
+    code,
+    loading,
+    error,
+    derivedState,
+    redemptions,
+    promotionOrders,
+    refresh,
+  } = usePromotionDetail(codeId);
+  const { pauseCode, resumeCode, deleteCode, copyCode, updateCode } =
+    usePromotionActions();
   const { getAttemptsForCode } = useRefusedAttempts();
-  const { items, archetype, result, addItem, removeItem, clearBag, setArchetype, evaluate } = useTestBag();
+  const {
+    items,
+    archetype,
+    result,
+    addItem,
+    removeItem,
+    clearBag,
+    setArchetype,
+    evaluate,
+  } = useTestBag();
 
   const [flags, setFlags] = useState<AttentionFlag[]>([]);
   const [snoozedFlags, setSnoozedFlags] = useState<string[]>([]);
 
   useEffect(() => {
     if (code) {
-      const allFlags = getAttentionFlags(code, redemptions, 100, code.createdOn);
+      const allFlags = getAttentionFlags(
+        code,
+        redemptions,
+        100,
+        code.createdOn,
+      );
       const visible = getVisibleFlags(allFlags, code);
       setFlags(visible);
-      setSnoozedFlags(allFlags.filter(f => 
-        code.attnSnooze?.[f.key] && new Date(code.attnSnooze[f.key]) > new Date()
-      ).map(f => f.key));
+      setSnoozedFlags(
+        allFlags
+          .filter(
+            (f) =>
+              code.attnSnooze?.[f.key] &&
+              new Date(code.attnSnooze[f.key]) > new Date(),
+          )
+          .map((f) => f.key),
+      );
     }
   }, [code, redemptions]);
 
@@ -79,7 +115,12 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
   };
 
   const handleDelete = async () => {
-    if (code && window.confirm(`Delete ${code.code}?\n\nNo order has ever used it, so nothing else references it. This cannot be undone.`)) {
+    if (
+      code &&
+      window.confirm(
+        `Delete ${code.code}?\n\nNo order has ever used it, so nothing else references it. This cannot be undone.`,
+      )
+    ) {
       const result = await deleteCode(code.code);
       if (result) handleBack();
     }
@@ -96,12 +137,12 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
 
   const handleSnooze = (flagKey: string) => {
     // In production: update code with snooze
-    console.log('Snoozed:', flagKey);
+    console.log("Snoozed:", flagKey);
   };
 
   const handleRestoreSnoozed = () => {
     // In production: clear all snoozes
-    console.log('Restored all snoozed');
+    console.log("Restored all snoozed");
   };
 
   if (loading) {
@@ -116,8 +157,11 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
     return (
       <div className="promotions-detail-view">
         <div className="promotions-detail-view__error">
-          {error || 'Code not found'}
-          <button onClick={handleBack} className="promotions-detail-view__back-btn">
+          {error || "Code not found"}
+          <button
+            onClick={handleBack}
+            className="promotions-detail-view__back-btn"
+          >
             ← Back to Promotions
           </button>
         </div>
@@ -127,22 +171,40 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
 
   const refusedAttempts = getAttemptsForCode(code.code);
   const ledgerOrders = promotionOrders.map((order: any) => {
-    const base = Number(order.priceBeforePromo ?? order.orderValue ?? order.amount ?? 0);
-    const discount = Math.max(0, Number(order.promoDiscount ?? order.discount ?? 0));
+    const base = Number(
+      order.priceBeforePromo ?? order.orderValue ?? order.amount ?? 0,
+    );
+    const discount = Math.max(
+      0,
+      Number(order.promoDiscount ?? order.discount ?? 0),
+    );
     return {
       id: order.orderId || order.id || order._id,
-      customer: order.customerName || order.customerId || 'Customer',
-      mode: order.mode || 'Rental',
-      placed: order.createdAt || order.orderDate || order.rentalStartDate || new Date().toISOString(),
+      customer: order.customerName || order.customerId || "Customer",
+      mode: order.mode || "Rental",
+      placed:
+        order.createdAt ||
+        order.orderDate ||
+        order.rentalStartDate ||
+        new Date().toISOString(),
       base,
       discount,
       customerPaid: Math.max(0, base - discount),
-      status: order.status || 'Confirmed',
+      status: order.status || "Confirmed",
     };
   });
-  const orderValueThroughCode = ledgerOrders.reduce((sum, order) => sum + order.base, 0);
-  const discountFunded = ledgerOrders.reduce((sum, order) => sum + order.discount, 0);
-  const discountRate = orderValueThroughCode > 0 ? Math.round((discountFunded / orderValueThroughCode) * 100) : 0;
+  const orderValueThroughCode = ledgerOrders.reduce(
+    (sum, order) => sum + order.base,
+    0,
+  );
+  const discountFunded = ledgerOrders.reduce(
+    (sum, order) => sum + order.discount,
+    0,
+  );
+  const discountRate =
+    orderValueThroughCode > 0
+      ? Math.round((discountFunded / orderValueThroughCode) * 100)
+      : 0;
 
   return (
     <div className="promotions-detail-view">
@@ -153,8 +215,8 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
         onBack={handleBack}
         onPause={handlePause}
         onResume={handleResume}
-        onShare={() => console.log('Share on WhatsApp')}
-        onCopy={() => console.log('Copy code')}
+        onShare={() => console.log("Share on WhatsApp")}
+        onCopy={() => console.log("Copy code")}
       />
 
       <AttentionStrip
@@ -164,12 +226,9 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
         onRestore={handleRestoreSnoozed}
       />
 
-      <Tabs
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
+      <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {activeTab === 'performance' ? (
+      {activeTab === "performance" ? (
         <>
           <RedemptionEconomics
             code={code}
@@ -188,10 +247,7 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
             redemptions={redemptions}
           />
 
-          <OrdersLedger
-            orders={ledgerOrders}
-            code={code}
-          />
+          <OrdersLedger orders={ledgerOrders} code={code} />
         </>
       ) : (
         <>

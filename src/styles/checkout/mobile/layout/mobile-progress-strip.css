@@ -8,8 +8,8 @@
    STRIP CONTAINER
 ========================= */
 .mobile-progress-strip {
-  background: #FFFFFB;
-  border-bottom: 1px solid #F0EAE0;
+  background: #fffffb;
+  border-bottom: 1px solid #f0eae0;
   padding: 0 16px;
 }
 
@@ -82,17 +82,17 @@
    DONE STEP (Step 1 - Cart)
 ========================= */
 .mobile-prog-step.done {
-  color: #6B7E5A;
+  color: #6b7e5a;
   cursor: pointer;
 }
 
 .mobile-prog-step.done .mobile-prog-circle {
-  background: #6B7E5A;
-  border: 1px solid #6B7E5A;
+  background: #6b7e5a;
+  border: 1px solid #6b7e5a;
 }
 
 .mobile-prog-step.done .mobile-prog-circle svg {
-  stroke: #FFFFFF;
+  stroke: #ffffff;
   stroke-width: 1.8;
 }
 
@@ -100,21 +100,21 @@
    ACTIVE STEP (Step 2 - Checkout)
 ========================= */
 .mobile-prog-step.active {
-  color: #1A1612;
-  border-bottom: 2px solid #1A1612;
+  color: #1a1612;
+  border-bottom: 2px solid #1a1612;
 }
 
 .mobile-prog-step.active .mobile-prog-circle {
-  background: #1A1612;
-  border: 1px solid #1A1612;
-  color: #E8D5B0;
+  background: #1a1612;
+  border: 1px solid #1a1612;
+  color: #e8d5b0;
 }
 
 /* =========================
    INACTIVE STEP (Step 3 - Confirmation)
 ========================= */
 .mobile-prog-step {
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .mobile-prog-step .mobile-prog-circle {
@@ -129,6 +129,6 @@
 .mobile-prog-sep {
   width: 1px;
   height: 14px;
-  background: #E8E0D4;
+  background: #e8e0d4;
   flex-shrink: 0;
 }

@@ -1,6 +1,6 @@
-import React from 'react';
-import { ArrowUp, ArrowDown, HelpCircle } from 'lucide-react';
-import { AnnouncementMessage } from '../../../types';
+import React from "react";
+import { ArrowUp, ArrowDown, HelpCircle } from "lucide-react";
+import { AnnouncementMessage } from "../../../types";
 
 interface AnnouncementTabProps {
   showAcrossSite: boolean;
@@ -54,11 +54,10 @@ export default function AnnouncementTab({
   separator,
   setSeparator,
 }: AnnouncementTabProps) {
-
   const handleMessageChange = (
     index: number,
     field: keyof AnnouncementMessage,
-    value: any
+    value: any,
   ) => {
     setMessages((prev) => {
       const copy = [...prev];
@@ -73,14 +72,14 @@ export default function AnnouncementTab({
   const handleAddMessage = () => {
     const newMsg: AnnouncementMessage = {
       id: `${Date.now()}`,
-      status: 'Live',
-      scope: 'ALL PAGES',
-      text: 'New announcement phrase',
+      status: "Live",
+      scope: "ALL PAGES",
+      text: "New announcement phrase",
       printItalicSerif: true,
-      showsOn: 'All pages',
-      link: '/rent',
-      goLiveDate: '',
-      expiresDate: '',
+      showsOn: "All pages",
+      link: "/rent",
+      goLiveDate: "",
+      expiresDate: "",
     };
 
     setMessages((prev) => [...prev, newMsg]);
@@ -88,7 +87,6 @@ export default function AnnouncementTab({
 
   return (
     <div className="space-y-6">
-
       {/* HEADER */}
       <div className="flex items-start justify-between border-b border-[#E8E1D9] pb-3">
         <div>
@@ -129,7 +127,6 @@ export default function AnnouncementTab({
 
       {/* SETTINGS */}
       <div className="bg-white border border-[#E0D5C7] rounded p-5 space-y-5 shadow-2xs">
-
         {/* SHOW ACROSS SITE */}
         <div className="flex items-center gap-3">
           <label className="relative inline-flex items-center cursor-pointer select-none">
@@ -150,7 +147,6 @@ export default function AnnouncementTab({
 
         {/* MOVEMENT */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-1">
-
           <div className="space-y-1">
             <label className="text-[10px] font-bold uppercase tracking-wider text-[#8C847A]">
               HOW IT MOVES
@@ -215,35 +211,29 @@ export default function AnnouncementTab({
 
       {/* MESSAGES */}
       <div className="space-y-4 pt-2">
-
         <div>
           <h3 className="font-serif text-lg font-bold text-[#1E1915]">
             Messages
           </h3>
 
           <p className="text-[11.5px] text-[#6F665B]">
-            Point at{' '}
+            Point at{" "}
             <code className="bg-[#FAF7F2] px-1 py-0.5 border border-[#E0D5C7] rounded text-[10.5px]">
-              {'{{free_delivery_min}}'}
-            </code>{' '}
+              {"{{free_delivery_min}}"}
+            </code>{" "}
             rather than typing the figure.
           </p>
         </div>
 
         <div className="space-y-4">
-
           {messages.map((msg, index) => (
-
             <div
               key={msg.id || index}
               className="bg-white border border-[#E0D5C7] rounded p-5 space-y-4 shadow-2xs"
             >
-
               {/* MESSAGE HEADER */}
               <div className="flex items-center justify-between border-b border-[#F4EFEA] pb-3">
-
                 <div className="flex items-center gap-2">
-
                   <span className="font-bold text-xs text-[#8C847A]">
                     {index + 1}
                   </span>
@@ -255,20 +245,14 @@ export default function AnnouncementTab({
                   <span className="px-2 py-0.5 rounded text-[9.5px] font-bold uppercase bg-[#F5F1EA] text-[#6F665B]">
                     {msg.scope}
                   </span>
-
                 </div>
 
                 <div className="flex items-center gap-2">
-
-                  <button
-                    className="p-1 border rounded text-[#8C847A] hover:bg-[#FAF7F2]"
-                  >
+                  <button className="p-1 border rounded text-[#8C847A] hover:bg-[#FAF7F2]">
                     <ArrowUp className="h-3 w-3" />
                   </button>
 
-                  <button
-                    className="p-1 border rounded text-[#8C847A] hover:bg-[#FAF7F2]"
-                  >
+                  <button className="p-1 border rounded text-[#8C847A] hover:bg-[#FAF7F2]">
                     <ArrowDown className="h-3 w-3" />
                   </button>
 
@@ -280,13 +264,11 @@ export default function AnnouncementTab({
                   >
                     Remove
                   </button>
-
                 </div>
               </div>
 
               {/* TEXT */}
               <div className="space-y-1">
-
                 <label className="text-[10px] font-bold uppercase tracking-wider text-[#8C847A]">
                   TEXT
                 </label>
@@ -295,45 +277,38 @@ export default function AnnouncementTab({
                   type="text"
                   value={msg.text}
                   onChange={(e) =>
-                    handleMessageChange(index, 'text', e.target.value)
+                    handleMessageChange(index, "text", e.target.value)
                   }
                   className="w-full bg-[#FAF7F2] border border-[#E0D5C7] rounded p-2 text-xs text-[#332F2B] outline-none font-sans"
                 />
 
                 <div className="text-[10px] text-[#8C847A]">
-                  Prints: {msg.text}{' '}
+                  Prints: {msg.text}{" "}
                   <HelpCircle className="inline h-3 w-3 text-[#A89F91]" />
                 </div>
-
               </div>
 
               {/* ITALIC */}
               <label className="flex items-center gap-2 cursor-pointer select-none text-xs text-[#38332D]">
-
                 <input
                   type="checkbox"
                   checked={msg.printItalicSerif}
                   onChange={(e) =>
                     handleMessageChange(
                       index,
-                      'printItalicSerif',
-                      e.target.checked
+                      "printItalicSerif",
+                      e.target.checked,
                     )
                   }
                   className="h-4 w-4 rounded border-[#D8D0C5] text-[#C7A55C]"
                 />
 
-                <span>
-                  Set in the italic serif, like the opening line
-                </span>
-
+                <span>Set in the italic serif, like the opening line</span>
               </label>
 
               {/* SHOWS ON + LINK */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
                 <div className="space-y-1">
-
                   <label className="text-[10px] font-bold uppercase tracking-wider text-[#8C847A]">
                     SHOWS ON
                   </label>
@@ -342,15 +317,13 @@ export default function AnnouncementTab({
                     type="text"
                     value={msg.showsOn}
                     onChange={(e) =>
-                      handleMessageChange(index, 'showsOn', e.target.value)
+                      handleMessageChange(index, "showsOn", e.target.value)
                     }
                     className="w-full bg-[#FAF7F2] border border-[#E0D5C7] rounded p-2 text-xs text-[#332F2B] outline-none"
                   />
-
                 </div>
 
                 <div className="space-y-1">
-
                   <label className="text-[10px] font-bold uppercase tracking-wider text-[#8C847A]">
                     LINK
                   </label>
@@ -359,20 +332,16 @@ export default function AnnouncementTab({
                     type="text"
                     value={msg.link}
                     onChange={(e) =>
-                      handleMessageChange(index, 'link', e.target.value)
+                      handleMessageChange(index, "link", e.target.value)
                     }
                     className="w-full bg-[#FAF7F2] border border-[#E0D5C7] rounded p-2 text-xs text-[#332F2B] outline-none"
                   />
-
                 </div>
-
               </div>
 
               {/* DATES */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
                 <div className="space-y-1">
-
                   <label className="text-[10px] font-bold uppercase tracking-wider text-[#8C847A]">
                     GO-LIVE
                   </label>
@@ -382,7 +351,7 @@ export default function AnnouncementTab({
                     placeholder="dd/mm/yyyy"
                     value={msg.goLiveDate}
                     onChange={(e) =>
-                      handleMessageChange(index, 'goLiveDate', e.target.value)
+                      handleMessageChange(index, "goLiveDate", e.target.value)
                     }
                     className="w-full bg-[#FAF7F2] border border-[#E0D5C7] rounded p-2 text-xs text-[#332F2B] outline-none"
                   />
@@ -390,11 +359,9 @@ export default function AnnouncementTab({
                   <p className="text-[9.5px] text-[#A89F91]">
                     Blank means live now.
                   </p>
-
                 </div>
 
                 <div className="space-y-1">
-
                   <label className="text-[10px] font-bold uppercase tracking-wider text-[#8C847A]">
                     EXPIRES
                   </label>
@@ -404,7 +371,7 @@ export default function AnnouncementTab({
                     placeholder="dd/mm/yyyy"
                     value={msg.expiresDate}
                     onChange={(e) =>
-                      handleMessageChange(index, 'expiresDate', e.target.value)
+                      handleMessageChange(index, "expiresDate", e.target.value)
                     }
                     className="w-full bg-[#FAF7F2] border border-[#E0D5C7] rounded p-2 text-xs text-[#332F2B] outline-none"
                   />
@@ -412,15 +379,10 @@ export default function AnnouncementTab({
                   <p className="text-[9.5px] text-[#A89F91]">
                     Blank means until switched off.
                   </p>
-
                 </div>
-
               </div>
-
             </div>
-
           ))}
-
         </div>
 
         <button
@@ -429,38 +391,32 @@ export default function AnnouncementTab({
         >
           <span>+ Add message</span>
         </button>
-
       </div>
 
       {/* APPEARANCE */}
       <div className="bg-white border border-[#E0D5C7] rounded p-5 space-y-4 shadow-2xs">
-
         <div className="border-b border-[#F4EFEA] pb-3">
-
           <h3 className="font-serif text-lg font-bold text-[#1E1915]">
             Appearance
           </h3>
 
           <p className="text-[11.5px] text-[#6F665B] mt-0.5">
-            The opening line is set in a different colour and face from the rest.
+            The opening line is set in a different colour and face from the
+            rest.
           </p>
-
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-
           {/* BACKGROUND */}
           <div className="space-y-1.5">
-
             <label className="text-[10px] font-bold uppercase tracking-wider text-[#8C847A]">
               BACKGROUND
             </label>
 
             <div className="relative flex items-center bg-[#FAF7F2] border border-[#E0D5C7] rounded p-2.5">
-
               <div
                 className="h-1.5 w-full rounded-full"
-                style={{ backgroundColor: bgColor || '#1c1412' }}
+                style={{ backgroundColor: bgColor || "#1c1412" }}
               />
 
               <input
@@ -469,23 +425,19 @@ export default function AnnouncementTab({
                 onChange={(e) => setBgColor(e.target.value)}
                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
               />
-
             </div>
-
           </div>
 
           {/* TEXT COLOUR */}
           <div className="space-y-1.5">
-
             <label className="text-[10px] font-bold uppercase tracking-wider text-[#8C847A]">
               TEXT COLOUR
             </label>
 
             <div className="relative flex items-center bg-[#FAF7F2] border border-[#E0D5C7] rounded p-2.5">
-
               <div
                 className="h-1.5 w-full rounded-full"
-                style={{ backgroundColor: textColor || '#fcf9f5' }}
+                style={{ backgroundColor: textColor || "#fcf9f5" }}
               />
 
               <input
@@ -494,23 +446,19 @@ export default function AnnouncementTab({
                 onChange={(e) => setTextColor(e.target.value)}
                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
               />
-
             </div>
-
           </div>
 
           {/* ITALIC LINE */}
           <div className="space-y-1.5">
-
             <label className="text-[10px] font-bold uppercase tracking-wider text-[#8C847A]">
               ITALIC LINE COLOUR
             </label>
 
             <div className="relative flex items-center bg-[#FAF7F2] border border-[#E0D5C7] rounded p-2.5">
-
               <div
                 className="h-1.5 w-full rounded-full"
-                style={{ backgroundColor: italicColor || '#786e65' }}
+                style={{ backgroundColor: italicColor || "#786e65" }}
               />
 
               <input
@@ -519,22 +467,17 @@ export default function AnnouncementTab({
                 onChange={(e) => setItalicColor(e.target.value)}
                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
               />
-
             </div>
-
           </div>
-
         </div>
 
         {/* SEPARATOR */}
         <div className="space-y-1.5 pt-2">
-
           <label className="text-[10px] font-bold uppercase tracking-wider text-[#8C847A]">
             SEPARATOR
           </label>
 
           <div className="relative">
-
             <select
               value={separator}
               onChange={(e) => setSeparator(e.target.value)}
@@ -548,13 +491,9 @@ export default function AnnouncementTab({
             <span className="absolute right-3 top-2.5 text-[#8C847A] pointer-events-none text-xs">
               ▾
             </span>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

@@ -1,15 +1,15 @@
 // tabs/EditorTab.tsx (UPDATED)
-import React, { useState } from 'react';
-import { Button } from '../components/Button';
-import { EditorHeader } from '../editor/EditorHeader';
-import { EditorMessageCard } from '../editor/EditorMessageCard';
-import { EditorWordingCard } from '../editor/EditorWordingCard';
-import { useMessageActions } from '../hooks/useMessageActions';
-import { ConfirmModal } from '../modals/ConfirmModal';
-import { ProblemBanner } from '../messages/ProblemBanner';
-import { ALERTS } from '../utils/alerts';
-import { Message } from '../types/messaging.types';
-import './styles/EditorTab.css';
+import React, { useState } from "react";
+import { Button } from "../components/Button";
+import { EditorHeader } from "../editor/EditorHeader";
+import { EditorMessageCard } from "../editor/EditorMessageCard";
+import { EditorWordingCard } from "../editor/EditorWordingCard";
+import { useMessageActions } from "../hooks/useMessageActions";
+import { ConfirmModal } from "../modals/ConfirmModal";
+import { ProblemBanner } from "../messages/ProblemBanner";
+import { ALERTS } from "../utils/alerts";
+import { Message } from "../types/messaging.types";
+import "./styles/EditorTab.css";
 
 interface EditorTabProps {
   message: Message | null;
@@ -18,20 +18,20 @@ interface EditorTabProps {
   onNewMessageCreated?: (newMsg: Message) => void;
 }
 
-export const EditorTab: React.FC<EditorTabProps> = ({ 
-  message, 
-  onBack, 
-  onSelectMessage, 
-  onNewMessageCreated 
+export const EditorTab: React.FC<EditorTabProps> = ({
+  message,
+  onBack,
+  onSelectMessage,
+  onNewMessageCreated,
 }) => {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [showTestConfirm, setShowTestConfirm] = useState(false);
   const [showSendConfirm, setShowSendConfirm] = useState(false);
-  const [wordingContent, setWordingContent] = useState('');
+  const [wordingContent, setWordingContent] = useState("");
 
   const { loading, sendTest, createMessage } = useMessageActions({
     onSuccess: () => {
-      setAlertMessage('Test sent successfully!');
+      setAlertMessage("Test sent successfully!");
       setTimeout(() => setAlertMessage(null), 3000);
     },
     onError: (error) => {
@@ -53,19 +53,21 @@ export const EditorTab: React.FC<EditorTabProps> = ({
 
   // K9 - Sending a test
   const handleSendTest = () => {
-    const variables = ['customer_name', 'order_id', 'item_name'];
-    const hasUnfilled = variables.some(v => !wordingContent.includes(`{{${v}}}`));
-    
+    const variables = ["customer_name", "order_id", "item_name"];
+    const hasUnfilled = variables.some(
+      (v) => !wordingContent.includes(`{{${v}}}`),
+    );
+
     if (hasUnfilled) {
-      setAlertMessage(ALERTS.TEST_CANNOT_FILL('customer_name'));
+      setAlertMessage(ALERTS.TEST_CANNOT_FILL("customer_name"));
       return;
     }
-    
+
     setShowTestConfirm(true);
   };
 
   const handleConfirmTest = async () => {
-    const variables = ['customer_name', 'order_id', 'item_name'];
+    const variables = ["customer_name", "order_id", "item_name"];
     await sendTest(wordingContent, variables);
     setShowTestConfirm(false);
   };
@@ -74,7 +76,7 @@ export const EditorTab: React.FC<EditorTabProps> = ({
   const handleSendToSomeone = () => {
     // Navigate to Send tab with this message pre-selected
     // This would be handled by the parent component
-    setAlertMessage('Opening Send tab...');
+    setAlertMessage("Opening Send tab...");
     setTimeout(() => setAlertMessage(null), 2000);
   };
 
@@ -88,7 +90,12 @@ export const EditorTab: React.FC<EditorTabProps> = ({
           <Button variant="secondary" size="small" onClick={onBack}>
             See all messages
           </Button>
-          <Button variant="primary" size="small" onClick={handleNewMessage} disabled={loading}>
+          <Button
+            variant="primary"
+            size="small"
+            onClick={handleNewMessage}
+            disabled={loading}
+          >
             + New Message
           </Button>
         </div>
@@ -100,9 +107,11 @@ export const EditorTab: React.FC<EditorTabProps> = ({
     <div className="msg-editor-tab">
       {alertMessage && (
         <ProblemBanner>
-          <strong>{alertMessage.includes('Test sent') ? 'Success' : 'Alert'}</strong>
+          <strong>
+            {alertMessage.includes("Test sent") ? "Success" : "Alert"}
+          </strong>
           <div>{alertMessage}</div>
-          <button 
+          <button
             className="msg-alert-dismiss"
             onClick={() => setAlertMessage(null)}
           >
@@ -112,7 +121,7 @@ export const EditorTab: React.FC<EditorTabProps> = ({
       )}
 
       <EditorMessageCard message={message} />
-      <EditorWordingCard 
+      <EditorWordingCard
         messageRequired={true}
         onSendTest={handleSendTest}
         onSendToSomeone={handleSendToSomeone}
@@ -135,7 +144,7 @@ export const EditorTab: React.FC<EditorTabProps> = ({
         cancelLabel="Cancel"
         onConfirm={() => {
           setShowSendConfirm(false);
-          setAlertMessage('Message sent successfully!');
+          setAlertMessage("Message sent successfully!");
           setTimeout(() => setAlertMessage(null), 3000);
         }}
         onCancel={() => setShowSendConfirm(false)}

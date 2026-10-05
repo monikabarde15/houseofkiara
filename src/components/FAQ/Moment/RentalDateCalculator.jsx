@@ -27,7 +27,11 @@ export default function RentalDateCalculator() {
   }, [eventDate, windowDays]);
 
   return (
-    <div className="plan" role="region" aria-label="Your rental date by date planner">
+    <div
+      className="plan"
+      role="region"
+      aria-label="Your rental date by date planner"
+    >
       <div className="plan-top">
         <h3 className="plan-ttl">
           Your rental, <em>date by date</em>
@@ -45,7 +49,11 @@ export default function RentalDateCalculator() {
             onChange={(e) => setEventDate(e.target.value)}
           />
 
-          <div className="plan-win" role="radiogroup" aria-label="Rental window duration">
+          <div
+            className="plan-win"
+            role="radiogroup"
+            aria-label="Rental window duration"
+          >
             <button
               type="button"
               role="radio"
@@ -78,7 +86,10 @@ export default function RentalDateCalculator() {
 
       {/* Footnote (C6) */}
       <p className="plan-foot">
-        Your piece reaches you 2 days before your event and your window starts that day. We collect it within 24 hours of your window ending, inspect it within 24 hours, and refund your deposit within 3 to 5 business days. Exact dates are confirmed at checkout.
+        Your piece reaches you 2 days before your event and your window starts
+        that day. We collect it within 24 hours of your window ending, inspect
+        it within 24 hours, and refund your deposit within 3 to 5 business days.
+        Exact dates are confirmed at checkout.
       </p>
     </div>
   );

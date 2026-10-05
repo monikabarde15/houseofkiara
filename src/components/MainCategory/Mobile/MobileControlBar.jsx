@@ -4,13 +4,9 @@ import "../../../styles/maincategorypage/mobile/mobile-control-bar.css";
 const MobileControlBar = ({ onFilterClick, sortBy, onSortChange }) => {
   return (
     <div className="mob-control-bar">
-      
       {/* Filter Button - Left */}
-      <button 
-        className="mob-control-bar__filter-btn"
-        onClick={onFilterClick}
-      >
-        <svg 
+      <button className="mob-control-bar__filter-btn" onClick={onFilterClick}>
+        <svg
           className="mob-control-bar__filter-icon"
           viewBox="0 0 24 24"
           fill="none"
@@ -27,7 +23,7 @@ const MobileControlBar = ({ onFilterClick, sortBy, onSortChange }) => {
 
       {/* Sort Dropdown - Right */}
       <div className="mob-control-bar__sort-wrapper">
-        <select 
+        <select
           className="mob-control-bar__sort-select"
           value={sortBy}
           onChange={(e) => onSortChange(e.target.value)}
@@ -38,7 +34,6 @@ const MobileControlBar = ({ onFilterClick, sortBy, onSortChange }) => {
           <option value="newest">Newest First</option>
         </select>
       </div>
-
     </div>
   );
 };

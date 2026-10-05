@@ -4,12 +4,7 @@ import { X, ChevronDown } from "lucide-react";
 
 import "../../../../styles/Profile/mobile/modals/MobileEditAddressModal.css";
 
-const LABEL_OPTIONS = [
-  "Home",
-  "Office",
-  "Parents' Home",
-  "Other"
-];
+const LABEL_OPTIONS = ["Home", "Office", "Parents' Home", "Other"];
 
 const INITIAL_FORM = {
   label: "Home",
@@ -19,24 +14,17 @@ const INITIAL_FORM = {
   city: "",
   state: "",
   pin: "",
-  mobile: ""
+  mobile: "",
 };
 
-const MobileEditAddressModal = ({
-  isOpen,
-  onClose,
-  onSave,
-  address
-}) => {
+const MobileEditAddressModal = ({ isOpen, onClose, onSave, address }) => {
   /* =========================================
      Form State
      ========================================= */
 
-  const [formData, setFormData] =
-    useState(INITIAL_FORM);
+  const [formData, setFormData] = useState(INITIAL_FORM);
 
-  const [errors, setErrors] =
-    useState({});
+  const [errors, setErrors] = useState({});
 
   /* =========================================
      Populate Existing Address
@@ -48,29 +36,21 @@ const MobileEditAddressModal = ({
     }
 
     setFormData({
-      label:
-        address?.label || "Home",
+      label: address?.label || "Home",
 
-      recipientName:
-        address?.recipientName || "",
+      recipientName: address?.recipientName || "",
 
-      line1:
-        address?.line1 || "",
+      line1: address?.line1 || "",
 
-      line2:
-        address?.line2 || "",
+      line2: address?.line2 || "",
 
-      city:
-        address?.city || "",
+      city: address?.city || "",
 
-      state:
-        address?.state || "",
+      state: address?.state || "",
 
-      pin:
-        address?.pin || "",
+      pin: address?.pin || "",
 
-      mobile:
-        address?.mobile || ""
+      mobile: address?.mobile || "",
     });
 
     setErrors({});
@@ -82,18 +62,15 @@ const MobileEditAddressModal = ({
 
   useEffect(() => {
     if (!isOpen) {
-      document.body.style.overflow =
-        "";
+      document.body.style.overflow = "";
 
       return;
     }
 
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow =
-        "";
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -101,30 +78,19 @@ const MobileEditAddressModal = ({
      Validation
      ========================================= */
 
-  const validateField = (
-    name,
-    value
-  ) => {
+  const validateField = (name, value) => {
     switch (name) {
       case "recipientName":
-        return !value.trim()
-          ? "Recipient name is required"
-          : "";
+        return !value.trim() ? "Recipient name is required" : "";
 
       case "line1":
-        return !value.trim()
-          ? "Address line 1 is required"
-          : "";
+        return !value.trim() ? "Address line 1 is required" : "";
 
       case "city":
-        return !value.trim()
-          ? "City is required"
-          : "";
+        return !value.trim() ? "City is required" : "";
 
       case "state":
-        return !value.trim()
-          ? "State is required"
-          : "";
+        return !value.trim() ? "State is required" : "";
 
       case "pin":
         if (!value) {
@@ -142,11 +108,7 @@ const MobileEditAddressModal = ({
           return "Mobile number is required";
         }
 
-        if (
-          !/^[+\d][\d\s-]{7,}$/.test(
-            value
-          )
-        ) {
+        if (!/^[+\d][\d\s-]{7,}$/.test(value)) {
           return "Enter a valid mobile number";
         }
 
@@ -164,30 +126,19 @@ const MobileEditAddressModal = ({
   const validateForm = () => {
     const newErrors = {};
 
-    [
-      "recipientName",
-      "line1",
-      "city",
-      "state",
-      "pin",
-      "mobile"
-    ].forEach((field) => {
-      const error = validateField(
-        field,
-        formData[field]
-      );
+    ["recipientName", "line1", "city", "state", "pin", "mobile"].forEach(
+      (field) => {
+        const error = validateField(field, formData[field]);
 
-      if (error) {
-        newErrors[field] = error;
-      }
-    });
+        if (error) {
+          newErrors[field] = error;
+        }
+      },
+    );
 
     setErrors(newErrors);
 
-    return (
-      Object.keys(newErrors).length ===
-      0
-    );
+    return Object.keys(newErrors).length === 0;
   };
 
   /* =========================================
@@ -195,18 +146,17 @@ const MobileEditAddressModal = ({
      ========================================= */
 
   const handleChange = (e) => {
-    const { name, value } =
-      e.target;
+    const { name, value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
-        [name]: ""
+        [name]: "",
       }));
     }
   };
@@ -218,20 +168,18 @@ const MobileEditAddressModal = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const isValid =
-      validateForm();
+    const isValid = validateForm();
 
     if (!isValid) {
       requestAnimationFrame(() => {
-        const firstError =
-          document.querySelector(
-            ".profile-mobile-editaddr-field.has-error"
-          );
+        const firstError = document.querySelector(
+          ".profile-mobile-editaddr-field.has-error",
+        );
 
         if (firstError) {
           firstError.scrollIntoView({
             behavior: "smooth",
-            block: "nearest"
+            block: "nearest",
           });
         }
       });
@@ -258,10 +206,7 @@ const MobileEditAddressModal = ({
           Backdrop
          ===================================== */}
 
-      <div
-        className="profile-mobile-editaddr-backdrop"
-        onClick={onClose}
-      />
+      <div className="profile-mobile-editaddr-backdrop" onClick={onClose} />
 
       {/* =====================================
           Modal
@@ -274,9 +219,7 @@ const MobileEditAddressModal = ({
 
         <div className="profile-mobile-editaddr-header">
           <div className="profile-mobile-editaddr-title">
-            Edit Address —{" "}
-            {address?.label ||
-              "Home"}
+            Edit Address — {address?.label || "Home"}
           </div>
 
           <button
@@ -285,10 +228,7 @@ const MobileEditAddressModal = ({
             onClick={onClose}
             aria-label="Close modal"
           >
-            <X
-              size={14}
-              strokeWidth={1.7}
-            />
+            <X size={14} strokeWidth={1.7} />
           </button>
         </div>
 
@@ -296,10 +236,7 @@ const MobileEditAddressModal = ({
             Form
            ================================= */}
 
-        <form
-          className="profile-mobile-editaddr-form"
-          onSubmit={handleSubmit}
-        >
+        <form className="profile-mobile-editaddr-form" onSubmit={handleSubmit}>
           {/* =============================
               Label + Recipient
              ============================= */}
@@ -308,31 +245,20 @@ const MobileEditAddressModal = ({
             {/* Label */}
 
             <div className="profile-mobile-editaddr-field">
-              <label className="profile-mobile-editaddr-label">
-                Label
-              </label>
+              <label className="profile-mobile-editaddr-label">Label</label>
 
               <div className="profile-mobile-editaddr-select-wrap">
                 <select
                   name="label"
-                  value={
-                    formData.label
-                  }
-                  onChange={
-                    handleChange
-                  }
+                  value={formData.label}
+                  onChange={handleChange}
                   className="profile-mobile-editaddr-select"
                 >
-                  {LABEL_OPTIONS.map(
-                    (option) => (
-                      <option
-                        key={option}
-                        value={option}
-                      >
-                        {option}
-                      </option>
-                    )
-                  )}
+                  {LABEL_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
                 </select>
 
                 <ChevronDown
@@ -346,35 +272,25 @@ const MobileEditAddressModal = ({
 
             <div
               className={`profile-mobile-editaddr-field ${
-                errors.recipientName
-                  ? "has-error"
-                  : ""
+                errors.recipientName ? "has-error" : ""
               }`}
             >
               <label className="profile-mobile-editaddr-label">
                 Recipient Name
-                <span className="profile-mobile-editaddr-required">
-                  *
-                </span>
+                <span className="profile-mobile-editaddr-required">*</span>
               </label>
 
               <input
                 type="text"
                 name="recipientName"
-                value={
-                  formData.recipientName
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.recipientName}
+                onChange={handleChange}
                 className="profile-mobile-editaddr-input"
               />
 
               {errors.recipientName && (
                 <div className="profile-mobile-editaddr-error">
-                  {
-                    errors.recipientName
-                  }
+                  {errors.recipientName}
                 </div>
               )}
             </div>
@@ -386,27 +302,19 @@ const MobileEditAddressModal = ({
 
           <div
             className={`profile-mobile-editaddr-field ${
-              errors.line1
-                ? "has-error"
-                : ""
+              errors.line1 ? "has-error" : ""
             }`}
           >
             <label className="profile-mobile-editaddr-label">
               Address Line 1
-              <span className="profile-mobile-editaddr-required">
-                *
-              </span>
+              <span className="profile-mobile-editaddr-required">*</span>
             </label>
 
             <input
               type="text"
               name="line1"
-              value={
-                formData.line1
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.line1}
+              onChange={handleChange}
               placeholder="House / Flat / Building no."
               className="profile-mobile-editaddr-input"
             />
@@ -430,12 +338,8 @@ const MobileEditAddressModal = ({
             <input
               type="text"
               name="line2"
-              value={
-                formData.line2
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.line2}
+              onChange={handleChange}
               placeholder="Area, Locality, Street"
               className="profile-mobile-editaddr-input"
             />
@@ -448,27 +352,19 @@ const MobileEditAddressModal = ({
           <div className="profile-mobile-editaddr-row">
             <div
               className={`profile-mobile-editaddr-field ${
-                errors.city
-                  ? "has-error"
-                  : ""
+                errors.city ? "has-error" : ""
               }`}
             >
               <label className="profile-mobile-editaddr-label">
                 City
-                <span className="profile-mobile-editaddr-required">
-                  *
-                </span>
+                <span className="profile-mobile-editaddr-required">*</span>
               </label>
 
               <input
                 type="text"
                 name="city"
-                value={
-                  formData.city
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.city}
+                onChange={handleChange}
                 className="profile-mobile-editaddr-input"
               />
 
@@ -481,27 +377,19 @@ const MobileEditAddressModal = ({
 
             <div
               className={`profile-mobile-editaddr-field ${
-                errors.state
-                  ? "has-error"
-                  : ""
+                errors.state ? "has-error" : ""
               }`}
             >
               <label className="profile-mobile-editaddr-label">
                 State
-                <span className="profile-mobile-editaddr-required">
-                  *
-                </span>
+                <span className="profile-mobile-editaddr-required">*</span>
               </label>
 
               <input
                 type="text"
                 name="state"
-                value={
-                  formData.state
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.state}
+                onChange={handleChange}
                 className="profile-mobile-editaddr-input"
               />
 
@@ -520,16 +408,12 @@ const MobileEditAddressModal = ({
           <div className="profile-mobile-editaddr-row">
             <div
               className={`profile-mobile-editaddr-field ${
-                errors.pin
-                  ? "has-error"
-                  : ""
+                errors.pin ? "has-error" : ""
               }`}
             >
               <label className="profile-mobile-editaddr-label">
                 PIN Code
-                <span className="profile-mobile-editaddr-required">
-                  *
-                </span>
+                <span className="profile-mobile-editaddr-required">*</span>
               </label>
 
               <input
@@ -537,12 +421,8 @@ const MobileEditAddressModal = ({
                 inputMode="numeric"
                 maxLength={6}
                 name="pin"
-                value={
-                  formData.pin
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.pin}
+                onChange={handleChange}
                 className="profile-mobile-editaddr-input"
               />
 
@@ -555,35 +435,25 @@ const MobileEditAddressModal = ({
 
             <div
               className={`profile-mobile-editaddr-field ${
-                errors.mobile
-                  ? "has-error"
-                  : ""
+                errors.mobile ? "has-error" : ""
               }`}
             >
               <label className="profile-mobile-editaddr-label">
                 Mobile
-                <span className="profile-mobile-editaddr-required">
-                  *
-                </span>
+                <span className="profile-mobile-editaddr-required">*</span>
               </label>
 
               <input
                 type="tel"
                 name="mobile"
-                value={
-                  formData.mobile
-                }
-                onChange={
-                  handleChange
-                }
+                value={formData.mobile}
+                onChange={handleChange}
                 className="profile-mobile-editaddr-input"
               />
 
               {errors.mobile && (
                 <div className="profile-mobile-editaddr-error">
-                  {
-                    errors.mobile
-                  }
+                  {errors.mobile}
                 </div>
               )}
             </div>
@@ -594,14 +464,8 @@ const MobileEditAddressModal = ({
              ============================= */}
 
           <div className="profile-mobile-editaddr-actions">
-            <button
-              type="submit"
-              className="profile-mobile-editaddr-btn-save"
-            >
-              <span className="profile-mobile-editaddr-check">
-                ✓
-              </span>
-
+            <button type="submit" className="profile-mobile-editaddr-btn-save">
+              <span className="profile-mobile-editaddr-check">✓</span>
               Save Changes
             </button>
 

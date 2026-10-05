@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import useAuthStore from './authStore';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import useAuthStore from "./authStore";
 
 const useWishlistStore = create(
   persist(
@@ -18,17 +18,17 @@ const useWishlistStore = create(
 
         set({ loading: true });
         try {
-          const response = await fetch('/api/customer/auth/wishlist', {
+          const response = await fetch("/api/customer/auth/wishlist", {
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           });
           const data = await response.json();
           if (data.success) {
             set({ items: Array.from(new Set(data.data)) });
           }
         } catch (error) {
-          console.error('Error fetching wishlist:', error);
+          console.error("Error fetching wishlist:", error);
         } finally {
           set({ loading: false });
         }
@@ -36,8 +36,11 @@ const useWishlistStore = create(
 
       cleanUpOldIds: () => {
         const currentItems = get().items;
-        // Keep only valid MongoDB ObjectIds (24-char hex strings) to remove old timestamp bugs
-        const cleanedItems = currentItems.filter(id => typeof id === 'string' && id.length === 24);
+        // Only filter out old timestamp bugs (e.g. purely numeric strings of length 13+)
+        const cleanedItems = currentItems.filter((id) => {
+          if (typeof id === "string" && /^\d{13,}$/.test(id)) return false;
+          return true;
+        });
         set({ items: Array.from(new Set(cleanedItems)) });
       },
 
@@ -47,14 +50,21 @@ const useWishlistStore = create(
 
         // Optimistic local update works for BOTH logged-in and guest users
         let currentItems = get().items;
-        const isWishlisted = currentItems.includes(productId);
+        const stringId = String(productId);
+        const isWishlisted = currentItems.some(id => String(id) === stringId);
         let currentUnseen = get().unseenCount || 0;
-        
-        set({ 
-          items: Array.from(new Set(isWishlisted 
-            ? currentItems.filter(id => id !== productId)
-            : [...currentItems, productId])),
-          unseenCount: isWishlisted ? Math.max(0, currentUnseen - 1) : currentUnseen + 1
+
+        set({
+          items: Array.from(
+            new Set(
+              isWishlisted
+                ? currentItems.filter((id) => String(id) !== stringId)
+                : [...currentItems, productId],
+            ),
+          ),
+          unseenCount: isWishlisted
+            ? Math.max(0, currentUnseen - 1)
+            : currentUnseen + 1,
         });
 
         // If not authenticated, we just keep the local state (it will be persisted)
@@ -64,34 +74,37 @@ const useWishlistStore = create(
 
         // If authenticated, also sync with backend
         try {
-          const response = await fetch(`/api/customer/auth/wishlist/${productId}`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+          const response = await fetch(
+            `/api/customer/auth/wishlist/${productId}`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
           const data = await response.json();
-          
+
           if (!data.success) {
             // Revert optimistic update on failure by refetching
             get().fetchWishlist();
           }
         } catch (error) {
-          console.error('Error toggling wishlist:', error);
+          console.error("Error toggling wishlist:", error);
           // Fallback: refetch from backend if there was a sync issue
           get().fetchWishlist();
         }
-      }
+      },
     }),
     {
-      name: 'hok-wishlist',
+      name: "hok-wishlist",
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.cleanUpOldIds();
         }
-      }
-    }
-  )
+      },
+    },
+  ),
 );
 
 export default useWishlistStore;

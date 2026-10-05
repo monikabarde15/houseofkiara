@@ -6,12 +6,12 @@
 }
 
 .wishlist-mobile-rental-date-selector__label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8.5px;
   font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 10px;
 }
 
@@ -31,25 +31,25 @@
 
 /* Field label */
 .wishlist-mobile-rental-date-selector__field-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 8.5px;
   font-weight: 400;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* Field input*/
 
 .wishlist-mobile-rental-date-selector__input {
   height: 44px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   padding: 0 12px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: #1A1612;
-  background: #FFFFFB;
+  color: #1a1612;
+  background: #fffffb;
   width: 100%;
   box-sizing: border-box;
 }
@@ -57,12 +57,12 @@
 /* Focus state*/
 .wishlist-mobile-rental-date-selector__input:focus {
   outline: none;
-  border-color: #C9A96E;
+  border-color: #c9a96e;
 }
 
 /* Disabled input styling */
 .wishlist-mobile-rental-date-selector__input:disabled {
-  background: #FAF7F2;
-  color: #8A7E72;
+  background: #faf7f2;
+  color: #8a7e72;
   cursor: not-allowed;
 }

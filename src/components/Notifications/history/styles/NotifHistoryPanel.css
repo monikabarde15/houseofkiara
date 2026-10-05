@@ -4,9 +4,9 @@
    ============================================================ */
 
 .ntf-history {
-  border: 1px solid #EDE6DC;
+  border: 1px solid #ede6dc;
   border-radius: 4px;
-  background: #FFFFFF;
+  background: #ffffff;
   overflow: hidden;
   margin-bottom: 15px;
 }
@@ -14,25 +14,25 @@
 .ntf-history-hd {
   padding: 8px 14px;
 
-  background: #F7F4EF;
-  border-bottom: 1px solid #EDE6DC;
+  background: #f7f4ef;
+  border-bottom: 1px solid #ede6dc;
 
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: .11em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .ntf-history-intro {
   padding: 9px 14px 10px;
 
   font-size: 11px;
-  color: #8A7E72;
+  color: #8a7e72;
   line-height: 1.6;
 
-  border-bottom: 1px solid #EDE6DC;
+  border-bottom: 1px solid #ede6dc;
 }
 
 .ntf-history-grid {
@@ -62,14 +62,14 @@
 }
 
 .ntf-history-grid--head {
-  background: #F7F4EF;
+  background: #f7f4ef;
 
   font-size: 9px;
   font-weight: 700;
-  color: #8A7E72;
+  color: #8a7e72;
 
   text-transform: uppercase;
-  letter-spacing: .04em;
+  letter-spacing: 0.04em;
 }
 
 .ntf-history-grid--head > div {
@@ -78,18 +78,18 @@
 }
 
 .ntf-history-row {
-  border-top: 1px solid #EDE6DC;
+  border-top: 1px solid #ede6dc;
 
   font-size: 10.5px;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .ntf-history-row:hover {
-  background: #F7F4EF;
+  background: #f7f4ef;
 }
 
 .ntf-history-alert {
-  color: #1A1612;
+  color: #1a1612;
   font-size: 11px;
   font-weight: 500;
 
@@ -99,7 +99,7 @@
 }
 
 .ntf-history-still {
-  color: #B85C38;
+  color: #b85c38;
   font-weight: 700;
 }
 

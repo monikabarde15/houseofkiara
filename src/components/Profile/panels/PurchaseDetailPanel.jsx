@@ -1,14 +1,16 @@
-import React from 'react';
-import { X } from 'lucide-react';
+import React from "react";
+import { X } from "lucide-react";
 import "../../../styles/Profile/panels/PurchaseDetailPanel.css";
 
 const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
   if (!order) return null;
 
   return (
-    <div className={`profile-purch-dpane ${isOpen ? 'open' : ''}`}>
+    <div className={`profile-purch-dpane ${isOpen ? "open" : ""}`}>
       <div className="profile-purch-dpn">
-        <div className="profile-purch-dpn-title">{order.items?.[0]?.productName || order.piece || 'Order Details'}</div>
+        <div className="profile-purch-dpn-title">
+          {order.items?.[0]?.productName || order.piece || "Order Details"}
+        </div>
         <button className="profile-purch-dpn-close" onClick={onClose}>
           Close
           <X size={13} strokeWidth={1.5} />
@@ -17,11 +19,23 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
 
       <div className="profile-purch-dpb">
         <div className="profile-purch-dp-img-cell">
-          {(order.items?.[0]?.image || order.image) ? (
-            <img src={order.items?.[0]?.image || order.image} alt="Product" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+          {order.items?.[0]?.image || order.image ? (
+            <img
+              src={order.items?.[0]?.image || order.image}
+              alt="Product"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
           ) : (
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <rect x="4" y="4" width="28" height="28" stroke="currentColor" strokeWidth="1" opacity="0.18" />
+              <rect
+                x="4"
+                y="4"
+                width="28"
+                height="28"
+                stroke="currentColor"
+                strokeWidth="1"
+                opacity="0.18"
+              />
             </svg>
           )}
         </div>
@@ -29,7 +43,7 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
         <div className="profile-purch-dp-info">
           <div className="profile-purch-dp-badge-row">
             {/* Delivered Status Badge */}
-            {order.status === 'Delivered' && (
+            {order.status === "Delivered" && (
               <div className="profile-purch-badge profile-purch-b-del">
                 <span className="profile-purch-bdot"></span>
                 Delivered
@@ -37,15 +51,16 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
             )}
 
             {/* Processing Status Badge */}
-            {(order.status === 'Processing' || order.status === 'Confirmed') && (
+            {(order.status === "Processing" ||
+              order.status === "Confirmed") && (
               <div className="profile-purch-badge profile-purch-b-pro">
                 <span className="profile-purch-bdot"></span>
-                {order.status === 'Confirmed' ? 'Confirmed' : 'Processing'}
+                {order.status === "Confirmed" ? "Confirmed" : "Processing"}
               </div>
             )}
 
             {/* Cancelled Status Badge */}
-            {order.status === 'Cancelled' && (
+            {order.status === "Cancelled" && (
               <div className="profile-purch-badge profile-purch-b-can">
                 <span className="profile-purch-bdot"></span>
                 Cancelled
@@ -53,105 +68,185 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
             )}
           </div>
 
-          <div className="profile-purch-dp-name">{order.items?.[0]?.productName || order.piece}</div>
-          <div className="profile-purch-dp-des">{order.items?.[0]?.designer ? `${order.items[0].mode} - ${order.items[0].designer}` : (order.typeDetail || order.type)}</div>
+          <div className="profile-purch-dp-name">
+            {order.items?.[0]?.productName || order.piece}
+          </div>
+          <div className="profile-purch-dp-des">
+            {order.items?.[0]?.designer
+              ? `${order.items[0].mode} - ${order.items[0].designer}`
+              : order.typeDetail || order.type}
+          </div>
 
           {/* Delivered Status */}
-          {order.status === 'Delivered' && (
+          {order.status === "Delivered" && (
             <>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Order ID</div>
-                <div className="profile-purch-dp-rv">{order.orderId || order.id}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.orderId || order.id}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Order Type</div>
-                <div className="profile-purch-dp-rv">{order.items?.[0]?.mode || order.type}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.items?.[0]?.mode || order.type}
+                </div>
               </div>
-              {(order.items?.[0]?.mode === 'Preloved' || order.type === 'Preloved') && (
+              {(order.items?.[0]?.mode === "Preloved" ||
+                order.type === "Preloved") && (
                 <div className="profile-purch-dp-row">
                   <div className="profile-purch-dp-rl">Condition</div>
-                  <div className="profile-purch-dp-rv">{order.items?.[0]?.condition || "Excellent - worn once, no damage"}</div>
+                  <div className="profile-purch-dp-rv">
+                    {order.items?.[0]?.condition ||
+                      "Excellent - worn once, no damage"}
+                  </div>
                 </div>
               )}
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Size</div>
-                <div className="profile-purch-dp-rv">{order.items?.[0]?.size || "Standard"}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.items?.[0]?.size || "Standard"}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Amount Paid</div>
-                <div className="profile-purch-dp-rv">₹{(order.grandTotal || order.orderValue || order.amount || 0).toLocaleString()}</div>
+                <div className="profile-purch-dp-rv">
+                  ₹
+                  {(
+                    order.grandTotal ||
+                    order.orderValue ||
+                    order.amount ||
+                    0
+                  ).toLocaleString()}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Ordered On</div>
-                <div className="profile-purch-dp-rv">{order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : order.date}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.createdAt
+                    ? new Date(order.createdAt).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : order.date}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Delivered On</div>
-                <div className="profile-purch-dp-rv">{order.updatedAt ? new Date(order.updatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : order.date}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.updatedAt
+                    ? new Date(order.updatedAt).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : order.date}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Delivery Address</div>
-                <div className="profile-purch-dp-rv">{order.address || `${order.customerCity}, ${order.customerState}`}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.address ||
+                    `${order.customerCity}, ${order.customerState}`}
+                </div>
               </div>
 
               <div className="profile-purch-dp-btns">
-                <button className="profile-purch-btn-p">View Product Page</button>
+                <button className="profile-purch-btn-p">
+                  View Product Page
+                </button>
                 <button className="profile-purch-btn-s">Get Support</button>
               </div>
             </>
           )}
 
           {/* Processing / Confirmed Status */}
-          {(order.status === 'Processing' || order.status === 'Confirmed') && (
+          {(order.status === "Processing" || order.status === "Confirmed") && (
             <>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Order ID</div>
-                <div className="profile-purch-dp-rv">{order.orderId || order.id}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.orderId || order.id}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Order Type</div>
-                <div className="profile-purch-dp-rv">{order.items?.[0]?.mode || order.type}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.items?.[0]?.mode || order.type}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Size</div>
-                <div className="profile-purch-dp-rv">{order.items?.[0]?.size || "Standard"}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.items?.[0]?.size || "Standard"}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Amount Paid</div>
-                <div className="profile-purch-dp-rv">₹{(order.grandTotal || order.orderValue || order.amount || 0).toLocaleString()}</div>
+                <div className="profile-purch-dp-rv">
+                  ₹
+                  {(
+                    order.grandTotal ||
+                    order.orderValue ||
+                    order.amount ||
+                    0
+                  ).toLocaleString()}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Ordered On</div>
-                <div className="profile-purch-dp-rv">{order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : order.date}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.createdAt
+                    ? new Date(order.createdAt).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : order.date}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Status</div>
-                <div className="profile-purch-dp-rv profile-purch-dp-rv-processing">{order.status === 'Confirmed' ? 'Order Confirmed - Preparing for dispatch' : 'Processing - not yet dispatched'}</div>
+                <div className="profile-purch-dp-rv profile-purch-dp-rv-processing">
+                  {order.status === "Confirmed"
+                    ? "Order Confirmed - Preparing for dispatch"
+                    : "Processing - not yet dispatched"}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Expected Dispatch</div>
-                <div className="profile-purch-dp-rv">Within 3-5 business days</div>
+                <div className="profile-purch-dp-rv">
+                  Within 3-5 business days
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Delivery Address</div>
-                <div className="profile-purch-dp-rv">{order.address || `${order.customerCity}, ${order.customerState}`}</div>
+                <div className="profile-purch-dp-rv">
+                  {order.address ||
+                    `${order.customerCity}, ${order.customerState}`}
+                </div>
               </div>
 
               <div className="profile-purch-dp-note gold">
                 <div className="profile-purch-dp-note-h">Tracking Note</div>
                 <div className="profile-purch-dp-note-t">
-                  Tracking information will be available once your order is dispatched. You will receive a WhatsApp notification with courier details.
+                  Tracking information will be available once your order is
+                  dispatched. You will receive a WhatsApp notification with
+                  courier details.
                 </div>
               </div>
 
               <div className="profile-purch-dp-btns">
-                <button className="profile-purch-btn-s">WhatsApp for Updates</button>
+                <button className="profile-purch-btn-s">
+                  WhatsApp for Updates
+                </button>
               </div>
             </>
           )}
 
           {/* Cancelled Status */}
-          {order.status === 'Cancelled' && (
+          {order.status === "Cancelled" && (
             <>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Order ID</div>
@@ -163,7 +258,9 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Order Value</div>
-                <div className="profile-purch-dp-rv profile-purch-dp-rv-cancelled">₹{order.amount.toLocaleString()}</div>
+                <div className="profile-purch-dp-rv profile-purch-dp-rv-cancelled">
+                  ₹{order.amount.toLocaleString()}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Cancellation Date</div>
@@ -179,13 +276,16 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Refund Status</div>
-                <div className="profile-purch-dp-rv profile-purch-dp-rv-refunded">Full refund — processed 12 Nov 2024</div>
+                <div className="profile-purch-dp-rv profile-purch-dp-rv-refunded">
+                  Full refund — processed 12 Nov 2024
+                </div>
               </div>
 
               <div className="profile-purch-dp-note">
                 <div className="profile-purch-dp-note-h">Cancellation Note</div>
                 <div className="profile-purch-dp-note-t">
-                  Full refund has been processed. Amount will reflect in your original payment method within 5-7 business days.
+                  Full refund has been processed. Amount will reflect in your
+                  original payment method within 5-7 business days.
                 </div>
               </div>
 

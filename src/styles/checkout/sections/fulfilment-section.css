@@ -10,9 +10,8 @@
   font-weight: 300;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
 }
-
 
 /* =========================
    GROUP WRAPPER
@@ -27,7 +26,6 @@
   margin-top: 64px;
 }
 
-
 /* =========================
    GROUP LABEL
 ========================= */
@@ -40,7 +38,7 @@
   margin-bottom: 24px;
   padding-bottom: 16px;
 
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 /* dot */
@@ -48,7 +46,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #5A7549; 
+  background: #5a7549;
 }
 
 /* text */
@@ -57,11 +55,11 @@
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .checkout-mode-separator--rental .checkout-mode-dot {
-  background: #5A7549;
+  background: #5a7549;
 }
 
 .checkout-mode-separator--preloved .checkout-mode-dot {
@@ -69,9 +67,8 @@
 }
 
 .checkout-mode-separator--new .checkout-mode-dot {
-  background: #2E3A59;
+  background: #2e3a59;
 }
-
 
 /* =========================
    ORDER PIECE
@@ -80,13 +77,12 @@
 .checkout-piece {
   padding-bottom: 64px;
   margin-bottom: 48px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 .checkout-piece:last-child {
   border-bottom: none;
 }
-
 
 /* =========================
    TOP ROW GRID
@@ -97,7 +93,6 @@
   grid-template-columns: 140px 1fr;
   gap: 32px;
 }
-
 
 /* =========================
    THUMB
@@ -116,7 +111,6 @@
   height: 100%;
   object-fit: cover;
 }
-
 
 /* =========================
    MODE TAG (STRICT)
@@ -143,7 +137,7 @@
 /* Mode Colors */
 
 .checkout-piece-tag--rental {
-  background: #5A7549;
+  background: #5a7549;
 }
 
 .checkout-piece-tag--preloved {
@@ -151,9 +145,8 @@
 }
 
 .checkout-piece-tag--new {
-  background: #2E3A59;
+  background: #2e3a59;
 }
-
 
 /* =========================
    CONTENT COLUMN
@@ -165,7 +158,6 @@
   min-width: 0;
 }
 
-
 /* =========================
    DESIGNER
 ========================= */
@@ -176,11 +168,10 @@
   font-weight: 400;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #C9A96E;
+  color: #c9a96e;
 
   margin-bottom: 6px;
 }
-
 
 /* =========================
    TITLE
@@ -191,11 +182,10 @@
   font-size: 22px;
   font-weight: 400;
   line-height: 1.2;
-  color: #18140F;
+  color: #18140f;
 
   margin-bottom: 6px;
 }
-
 
 /* =========================
    DESCRIPTION
@@ -206,7 +196,7 @@
   font-size: 11px;
   font-weight: 300;
   line-height: 1.7;
-  color: #B0A898;
+  color: #b0a898;
 
   /* margin-bottom: 28px; */
 
@@ -219,7 +209,7 @@
 
 /* rental needs more breathing room */
 
-.checkout-piece-price--rental{
+.checkout-piece-price--rental {
   margin-top: 32px;
 }
 
@@ -228,7 +218,6 @@
 .checkout-piece-price--new {
   margin-top: 0px;
 }
-
 
 /* =========================
    COMMON PRICE LABEL
@@ -239,11 +228,10 @@
   font-size: 9px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
 
   margin-bottom: 6px;
 }
-
 
 /* =========================
    MAIN PRICE
@@ -254,11 +242,10 @@
   font-size: 38px;
   font-weight: 400;
   line-height: 1.1;
-  color: #18140F;
+  color: #18140f;
 
   margin-bottom: 6px;
 }
-
 
 /* =========================
    STRIKE PRICE (PRELOVED)
@@ -267,10 +254,9 @@
 .checkout-price-strike {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
-  color: #B0A898;
+  color: #b0a898;
   text-decoration: line-through;
 }
-
 
 /* =========================
    EXTRA PRICE INFO (PRELOVED)
@@ -283,21 +269,20 @@
 .checkout-price-save {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
-  color: #5A7549;
+  color: #5a7549;
 }
 
 .checkout-price-discount {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
-  color: #5A7549;
+  color: #5a7549;
 }
 
 .checkout-price-gst {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
-  color: #B0A898;
+  color: #b0a898;
 }
-
 
 /* -------------------------------- */
 /* RENTAL DIVIDER */
@@ -306,9 +291,8 @@
 .checkout-piece-divider {
   margin-top: 64px;
   margin-bottom: 48px;
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
 }
-
 
 /* -------------------------------- */
 /* TIMELINE WRAPPER */
@@ -318,14 +302,12 @@
   width: 100%;
 }
 
-
 /* STRICT checkout alignment */
 .checkout-piece-timeline .rental-timeline {
   max-width: 760px;
   margin-left: auto;
   margin-right: auto;
 }
-
 
 /* -------------------------------- */
 /* NOTICE */
@@ -334,9 +316,6 @@
 .checkout-piece-notices {
   margin-top: 48px;
 }
-
-
-
 
 /* =========================================================
    MOBILE OVERRIDES (max-width: 430px)
@@ -347,65 +326,65 @@
   /* =========================
      8.8.1 MODE SEPARATOR
   ========================= */
-  
+
   .order-fulfilment-section .checkout-mode-separator {
     gap: 12px;
     padding-bottom: 16px;
     margin-bottom: 20px;
   }
-  
+
   /* Between pieces margin-top */
   .order-fulfilment-section .checkout-mode-separator--preloved,
   .order-fulfilment-section .checkout-mode-separator--new {
     margin-top: 28px;
   }
-  
+
   .order-fulfilment-section .checkout-mode-dot {
     width: 6px;
     height: 6px;
   }
-  
+
   .order-fulfilment-section .checkout-mode-text {
     font-family: "DM Sans", sans-serif;
     font-weight: 400;
     font-size: 8px;
     letter-spacing: 0.26em;
     text-transform: uppercase;
-    color: #B0A898;
+    color: #b0a898;
   }
-  
+
   /* =========================
      8.8.2 ORDER PIECE CARD
   ========================= */
-  
+
   .order-fulfilment-section .checkout-piece {
     padding-bottom: 24px;
     margin-bottom: 20px;
   }
-  
+
   /* Change from grid to flex for mobile */
   .order-fulfilment-section .checkout-piece-top {
     display: flex;
     gap: 14px;
   }
-  
+
   /* Thumbnail - 90px as per spec */
   .order-fulfilment-section .checkout-piece-thumb {
     width: 90px;
     min-width: 90px;
   }
-  
+
   /* Mode tag strip - mobile padding */
   .order-fulfilment-section .checkout-piece-tag {
     padding: 5px 0;
     font-size: 6px;
     letter-spacing: 0.18em;
   }
-  
+
   /* =========================
      8.8.3 PIECE CONTENT
   ========================= */
-  
+
   /* Brand */
   .order-fulfilment-section .checkout-piece-designer {
     font-family: "DM Sans", sans-serif;
@@ -413,66 +392,66 @@
     font-size: 8px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #C9A96E;
+    color: #c9a96e;
     margin-bottom: 4px;
   }
-  
+
   /* Name */
   .order-fulfilment-section .checkout-piece-title {
     font-family: "Cormorant Garamond", serif;
     font-weight: 400;
     font-size: 17px;
     line-height: 1.2;
-    color: #1A1612;
+    color: #1a1612;
     margin-bottom: 3px;
   }
-  
+
   /* Description */
   .order-fulfilment-section .checkout-piece-desc {
     font-family: "DM Sans", sans-serif;
     font-weight: 300;
     font-size: 10px;
     line-height: 1.5;
-    color: #B0A898;
+    color: #b0a898;
     margin-bottom: 14px;
     max-width: 100%;
   }
-  
+
   /* =========================
      PRICE BLOCK (Rental, Preloved, New)
   ========================= */
-  
+
   .order-fulfilment-section .checkout-piece-price {
     margin-top: 0;
   }
-  
+
   .order-fulfilment-section .checkout-price-label {
     font-size: 7.5px;
     letter-spacing: 0.2em;
     margin-bottom: 4px;
   }
-  
+
   .order-fulfilment-section .checkout-price-main {
     font-size: 28px;
     line-height: 1;
   }
-  
+
   .order-fulfilment-section .checkout-price-gst {
     font-size: 9.5px;
   }
-  
+
   .order-fulfilment-section .checkout-price-save {
     font-size: 9.5px;
   }
-  
+
   /* =========================
      8.8.4 RENTAL DATE TIMELINE
   ========================= */
-  
+
   .order-fulfilment-section .checkout-piece-timeline {
     margin-top: 16px;
   }
-  
+
   /* Timeline circle size */
   .order-fulfilment-section .rental-timeline .timeline-circle {
     width: 9px;
@@ -480,7 +459,7 @@
     min-width: 9px;
     border-width: 1.5px;
   }
-  
+
   /* Date value */
   .order-fulfilment-section .rental-timeline .timeline-date {
     font-family: "Cormorant Garamond", serif;
@@ -488,7 +467,7 @@
     font-size: 14px;
     line-height: 1.2;
   }
-  
+
   /* Day sub */
   .order-fulfilment-section .rental-timeline .timeline-day {
     font-family: "DM Sans", sans-serif;
@@ -496,7 +475,7 @@
     font-size: 9px;
     margin-top: 3px;
   }
-  
+
   /* Window label */
   .order-fulfilment-section .rental-timeline .timeline-window-label {
     font-family: "DM Sans", sans-serif;
@@ -505,25 +484,25 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     padding: 0 4px;
-    background: #FFFEFB;
+    background: #fffefb;
     margin-bottom: 7px;
   }
-  
+
   /* Connecting line */
   .order-fulfilment-section .rental-timeline::before {
     top: 52px;
     left: 14px;
     right: 14px;
   }
-  
+
   /* =========================
      8.8.5 NOTICES
   ========================= */
-  
+
   .order-fulfilment-section .checkout-piece-notices {
     margin-top: 16px;
   }
-  
+
   .order-fulfilment-section .notice {
     margin-top: 10px;
     padding: 12px 0 12px 14px;
@@ -531,46 +510,46 @@
     font-weight: 300;
     font-size: 10.5px;
     line-height: 1.75;
-    color: #8A7E72;
+    color: #8a7e72;
   }
-  
+
   /* Notice variants */
   .order-fulfilment-section .notice.amber {
-    border-left: 2px solid #C2A040;
+    border-left: 2px solid #c2a040;
   }
-  
+
   .order-fulfilment-section .notice.amber strong {
-    color: #8A6010;
+    color: #8a6010;
   }
-  
+
   .order-fulfilment-section .notice.rose {
     border-left: 2px solid #893860;
   }
-  
+
   .order-fulfilment-section .notice.rose strong {
     color: #893860;
   }
-  
+
   .order-fulfilment-section .notice.slate {
-    border-left: 2px solid #B0A898;
+    border-left: 2px solid #b0a898;
   }
-  
+
   .order-fulfilment-section .notice.slate strong {
-    color: #3C3529;
+    color: #3c3529;
   }
-  
+
   .order-fulfilment-section .notice.navy {
-    border-left: 2px solid #2A4466;
+    border-left: 2px solid #2a4466;
   }
-  
+
   .order-fulfilment-section .notice.navy strong {
-    color: #2A4466;
+    color: #2a4466;
   }
-  
+
   /* =========================
      DIVIDER
   ========================= */
-  
+
   .order-fulfilment-section .checkout-piece-divider {
     margin-top: 20px;
     margin-bottom: 20px;

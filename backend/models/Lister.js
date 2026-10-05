@@ -33,7 +33,7 @@ const listerSchema = new mongoose.Schema(
     notes: String,
     internalNotes: String,
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 export default mongoose.model("Lister", listerSchema);

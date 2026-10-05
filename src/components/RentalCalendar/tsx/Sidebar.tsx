@@ -1,6 +1,6 @@
-import React from 'react';
-import { DispatchCard } from '../types';
-import '../css/Sidebar.css';
+import React from "react";
+import { DispatchCard } from "../types";
+import "../css/Sidebar.css";
 
 interface SidebarProps {
   monthLabel: string;
@@ -8,13 +8,13 @@ interface SidebarProps {
   onSelectDispatch?: (dispatch: DispatchCard) => void;
 }
 
-const DispatchListItem: React.FC<{ dispatch: DispatchCard; onClick?: () => void }> = ({
-  dispatch,
-  onClick,
-}) => (
+const DispatchListItem: React.FC<{
+  dispatch: DispatchCard;
+  onClick?: () => void;
+}> = ({ dispatch, onClick }) => (
   <button
     type="button"
-    className={`dispatch-card${dispatch.isToday ? ' dispatch-card--today' : ''}`}
+    className={`dispatch-card${dispatch.isToday ? " dispatch-card--today" : ""}`}
     onClick={onClick}
   >
     <div className="dispatch-card__date">
@@ -27,7 +27,11 @@ const DispatchListItem: React.FC<{ dispatch: DispatchCard; onClick?: () => void 
   </button>
 );
 
-const Sidebar: React.FC<SidebarProps> = ({ monthLabel, dispatches, onSelectDispatch }) => (
+const Sidebar: React.FC<SidebarProps> = ({
+  monthLabel,
+  dispatches,
+  onSelectDispatch,
+}) => (
   <aside className="rental-sidebar">
     <div className="rental-sidebar__month">{monthLabel}</div>
     <div className="rental-sidebar__section-title">DISPATCHES</div>

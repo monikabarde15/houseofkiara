@@ -1,6 +1,5 @@
 /* Section 9.1: Backdrop */
 
-
 .wishlist-mobile-bottom-sheet__backdrop {
   position: fixed;
   top: 0;
@@ -17,11 +16,10 @@
 
 /* Section 9.2: Sheet Container */
 
-
 .wishlist-mobile-bottom-sheet {
-    background: #FFFEFB;
-    border-top: 1px solid #E8E0D4;
-    border-radius: 14px 14px 0 0;
+  background: #fffefb;
+  border-top: 1px solid #e8e0d4;
+  border-radius: 14px 14px 0 0;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -48,11 +46,10 @@
 
 /* Section 9.3: Drag Handle */
 
-
 .wishlist-mobile-bottom-sheet__drag-handle {
   width: 36px;
   height: 4px;
-  background: #E8E0D4;
+  background: #e8e0d4;
   border-radius: 2px;
   margin: 12px auto 0;
 }
@@ -60,8 +57,8 @@
 /* Section 9.4: Sheet Header */
 
 .wishlist-mobile-bottom-sheet__header {
-    padding: 16px 20px 14px;
-    border-bottom: 1px solid #F0EAE0;
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid #f0eae0;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -70,11 +67,11 @@
 
 /* Title:  */
 .wishlist-mobile-bottom-sheet__title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 18px;
   font-weight: 400;
   letter-spacing: 0.01em;
-  color: #1A1612;
+  color: #1a1612;
   margin: 0;
 }
 
@@ -83,8 +80,8 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #FAF7F2;
-  border: 1px solid #E8E0D4;
+  background: #faf7f2;
+  border: 1px solid #e8e0d4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,7 +90,7 @@
 }
 
 .wishlist-mobile-bottom-sheet__close:hover {
-  border: 1px solid #1A1612;
+  border: 1px solid #1a1612;
 }
 
 /* Section 9.5: Sheet Body */

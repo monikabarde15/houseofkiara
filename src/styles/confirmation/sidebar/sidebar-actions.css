@@ -33,9 +33,9 @@
 
   border: none;
 
-  background: #1A1612;
+  background: #1a1612;
 
-  color: #E8D5B0;
+  color: #e8d5b0;
 
   font-family: var(--sans);
   font-size: 10px;
@@ -54,13 +54,12 @@
   position: absolute;
   inset: 0;
 
-  background:
-    linear-gradient(
-      120deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.08) 50%,
-      transparent 100%
-    );
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
 
   transform: translateX(-100%);
 
@@ -79,11 +78,11 @@
 .confirmation-sidebar-action-button-whatsapp {
   padding: 14px 24px;
 
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
 
   background: transparent;
 
-  color: #3C3529;
+  color: #3c3529;
 
   font-family: var(--sans);
   font-size: 10px;
@@ -95,11 +94,11 @@
 }
 
 .confirmation-sidebar-action-button-secondary:hover {
-  border-color: #3C3529;
+  border-color: #3c3529;
 
-  background: #FAF7F2;
+  background: #faf7f2;
 
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .confirmation-sidebar-action-button-whatsapp {
@@ -107,7 +106,7 @@
 }
 
 .confirmation-sidebar-action-button-whatsapp:hover {
-  border-color: #25D366;
+  border-color: #25d366;
 
   color: #1a7d40;
 }
@@ -120,9 +119,8 @@
 
   border-radius: 50%;
 
-  background: #25D366;
+  background: #25d366;
 }
-
 
 /* =========================================================
    MOBILE: Action Strip 
@@ -133,7 +131,7 @@
   .confirmation-sidebar-actions {
     padding: 20px 0;
     margin-top: 24px;
-    border-top: 2px solid #1A1612;
+    border-top: 2px solid #1a1612;
   }
 
   .confirmation-sidebar-action-button-primary {

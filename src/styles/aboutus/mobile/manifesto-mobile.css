@@ -1,7 +1,7 @@
 /* ===== MANIFESTO - MOBILE ===== */
 
 .mob-manifesto {
-  background: #FAF7F2; 
+  background: #faf7f2;
   padding: 72px 24px;
   text-align: center;
   position: relative;
@@ -13,7 +13,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 72px;
   line-height: 1;
-  color: #E8D5B0; 
+  color: #e8d5b0;
   margin-bottom: 4px;
   user-select: none;
 }
@@ -25,7 +25,7 @@
   font-weight: 400;
   font-size: clamp(22px, 6vw, 32px);
   line-height: 1.4;
-  color: #1A1612; 
+  color: #1a1612;
   max-width: 100%;
   margin: 0 auto;
   padding: 0;
@@ -34,7 +34,7 @@
 
 .mob-manifesto__blockquote em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 /* ===== SUPPORTING PARAGRAPH ===== */
@@ -43,7 +43,7 @@
   font-size: 15px;
   font-weight: 300;
   line-height: 1.85;
-  color: #6B5E50;
+  color: #6b5e50;
   max-width: 100%;
   margin: 24px auto 0;
   padding: 0 8px;
@@ -53,7 +53,9 @@
 .mob-manifesto.reveal {
   opacity: 0;
   transform: translateY(28px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
 }
 
 .mob-manifesto.reveal.in-view {

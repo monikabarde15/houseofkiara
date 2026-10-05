@@ -1,7 +1,5 @@
 // src\components\Confirmation\sidebar\ConfirmationPaymentConfirmed.jsx
-import {
-  Check,
-} from "lucide-react";
+import { Check } from "lucide-react";
 
 import "../../../styles/confirmation/sidebar/confirmation-payment-confirmed.css";
 
@@ -12,34 +10,21 @@ const ConfirmationPaymentConfirmed = ({
 }) => {
   return (
     <div className="paid-confirm-block" data-rise="1">
-
       <div className="pcb-check">
-        <Check
-          size={14}
-          strokeWidth={1.8}
-        />
+        <Check size={14} strokeWidth={1.8} />
       </div>
 
       <div className="pcb-content">
-
-        <div className="pcb-label">
-          Payment confirmed
-        </div>
+        <div className="pcb-label">Payment confirmed</div>
 
         <div className="pcb-amount-row">
-
-          <span className="pcb-amount">
-            {amount}
-          </span>
+          <span className="pcb-amount">{amount}</span>
 
           <span className="pcb-amount-suffix">
             charged · {paymentMethod} · {paymentDate}
           </span>
-
         </div>
-
       </div>
-
     </div>
   );
 };

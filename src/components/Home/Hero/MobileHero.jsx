@@ -4,10 +4,9 @@ import { useNavigate } from "react-router-dom";
 import heroData from "../../../data/home/heroData";
 
 const MobileHero = () => {
-
   const navigate = useNavigate();
   const handleExploreCollection = () => {
-    navigate("/main-page")
+    navigate("/main-page");
 
     setTimeout(() => {
       window.scrollTo({
@@ -15,10 +14,10 @@ const MobileHero = () => {
         behavior: "smooth",
       });
     }, 0);
-  }
+  };
 
   const handleHowItWorks = () => {
-    navigate("/how-it-works")
+    navigate("/how-it-works");
 
     setTimeout(() => {
       window.scrollTo({
@@ -26,8 +25,7 @@ const MobileHero = () => {
         behavior: "smooth",
       });
     }, 0);
-  }
-
+  };
 
   return (
     <section className="mobile-hero">
@@ -43,9 +41,7 @@ const MobileHero = () => {
         <div className="mobile-hero-eyebrow">
           <span className="mobile-hero-eyebrow-line" />
 
-          <span className="mobile-hero-eyebrow-text">
-            {heroData.eyebrow}
-          </span>
+          <span className="mobile-hero-eyebrow-text">{heroData.eyebrow}</span>
         </div>
 
         <h1 className="mobile-hero-title">
@@ -60,18 +56,18 @@ const MobileHero = () => {
           {heroData.mobileTitle.line3}
         </h1>
 
-        <p className="mobile-hero-description">
-          {heroData.description}
-        </p>
+        <p className="mobile-hero-description">{heroData.description}</p>
 
         <div className="mobile-hero-actions">
-          <button className="mobile-hero-primary-btn"
+          <button
+            className="mobile-hero-primary-btn"
             onClick={handleExploreCollection}
           >
             {heroData.primaryButton}
           </button>
 
-          <button className="mobile-hero-secondary-btn"
+          <button
+            className="mobile-hero-secondary-btn"
             onClick={handleHowItWorks}
           >
             {heroData.secondaryButton}

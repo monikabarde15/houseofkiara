@@ -1,5 +1,5 @@
-import DepositWarning from './DepositWarning';
-import './../css/DispatchItemCard.css';
+import DepositWarning from "./DepositWarning";
+import "./../css/DispatchItemCard.css";
 
 // ============================================================
 // WHATSAPP ICON
@@ -27,20 +27,26 @@ export default function DispatchItemCard({ order }) {
         <div className="dispatch-card-info">
           <h3>
             {order.itemName} — {order.designer}
-            {order.pieces && <span className="pieces-badge">{order.pieces} PIECES</span>}
+            {order.pieces && (
+              <span className="pieces-badge">{order.pieces} PIECES</span>
+            )}
           </h3>
           <p>
-            {order.orderId} · {order.customer} · {order.city} · {order.rentalDates} · Size: {order.size} · Dep: ₹{Number(order.deposit).toLocaleString('en-IN')}
+            {order.orderId} · {order.customer} · {order.city} ·{" "}
+            {order.rentalDates} · Size: {order.size} · Dep: ₹
+            {Number(order.deposit).toLocaleString("en-IN")}
           </p>
 
           {order.warnings && order.warnings.length > 0 ? (
             order.warnings.map((w, i) => (
-              <p key={i} className="dispatch-inline-warning">⚠ {w}</p>
+              <p key={i} className="dispatch-inline-warning">
+                ⚠ {w}
+              </p>
             ))
           ) : (
             <p>
-              Courier: {order.courier} · Tracking:{' '}
-              {order.trackingId === 'awaiting AWB' ? (
+              Courier: {order.courier} · Tracking:{" "}
+              {order.trackingId === "awaiting AWB" ? (
                 <span className="tracking-pending">awaiting AWB</span>
               ) : (
                 order.trackingId
@@ -55,7 +61,7 @@ export default function DispatchItemCard({ order }) {
 
         <div className="dispatch-card-actions">
           <button className="btn-whatsapp">
-            <WhatsAppIcon /> WhatsApp {order.customer.split(' ')[0]}
+            <WhatsAppIcon /> WhatsApp {order.customer.split(" ")[0]}
           </button>
           <button className="btn-outline">View Order →</button>
           <button className="btn-outline">Print Label</button>

@@ -7,8 +7,7 @@ const RecommendationCard = ({
   onSaveToWishlist,
   onShowToast,
 }) => {
-  const [isSaved, setIsSaved] =
-    useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const handleSaveClick = (e) => {
     e.stopPropagation();
@@ -19,9 +18,7 @@ const RecommendationCard = ({
 
     onSaveToWishlist?.(product);
 
-    onShowToast?.(
-      `"${product.name}" added to your wishlist`
-    );
+    onShowToast?.(`"${product.name}" added to your wishlist`);
   };
 
   const handleCardClick = () => {
@@ -29,10 +26,7 @@ const RecommendationCard = ({
   };
 
   return (
-    <article
-      className="desk-wishlist-rec-card"
-      onClick={handleCardClick}
-    >
+    <article className="desk-wishlist-rec-card" onClick={handleCardClick}>
       <div className="desk-wishlist-rec-image-wrapper">
         <div className="desk-wishlist-rec-image">
           <div className="desk-wishlist-rec-image-inner">
@@ -53,49 +47,34 @@ const RecommendationCard = ({
 
         <button
           className={`desk-wishlist-rec-save-btn ${
-            isSaved
-              ? "desk-wishlist-rec-save-btn-saved"
-              : ""
+            isSaved ? "desk-wishlist-rec-save-btn-saved" : ""
           }`}
           onClick={handleSaveClick}
           aria-label="Save to wishlist"
         >
-          <svg
-            width="11"
-            height="11"
-            viewBox="0 0 14 14"
-          >
+          <svg width="11" height="11" viewBox="0 0 14 14">
             <path d="M12 4.5C12 2.5 10.5 1 8.5 1C7.3 1 6.2 1.6 5.5 2.5C4.8 1.6 3.7 1 2.5 1C0.5 1 -1 2.5 -1 4.5C-1 7 5.5 13 5.5 13C5.5 13 12 7 12 4.5Z" />
           </svg>
         </button>
       </div>
 
       <div className="desk-wishlist-rec-content">
-        <div className="desk-wishlist-rec-mode-label">
-          {type.toUpperCase()}
-        </div>
+        <div className="desk-wishlist-rec-mode-label">{type.toUpperCase()}</div>
 
         <div className="desk-wishlist-rec-designer-label">
           {product.designer}
         </div>
 
-        <h3 className="desk-wishlist-rec-product-name">
-          {product.name}
-        </h3>
+        <h3 className="desk-wishlist-rec-product-name">{product.name}</h3>
 
         <span className="desk-wishlist-rec-price-label">
-          {type === "rent"
-            ? "From"
-            : "Buy"}
+          {type === "rent" ? "From" : "Buy"}
         </span>
 
         <div className="desk-wishlist-rec-price">
           ₹{product.price}
-
           {type === "rent" && (
-            <span className="desk-wishlist-rec-price-suffix">
-              / 4 days
-            </span>
+            <span className="desk-wishlist-rec-price-suffix">/ 4 days</span>
           )}
         </div>
       </div>

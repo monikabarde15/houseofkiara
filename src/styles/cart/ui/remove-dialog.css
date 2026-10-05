@@ -19,15 +19,15 @@
 /* DIALOG PANEL */
 
 .remove-dialog {
-  background: #FFFEFB;
+  background: #fffefb;
 
   width: 100%;
   max-width: 400px;
 
   padding: 40px 36px 32px;
 
-  border-top: 2px solid #18140F;
-  position: relative; 
+  border-top: 2px solid #18140f;
+  position: relative;
 
   transform: translateY(12px) scale(0.98);
   animation: dialogIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -48,10 +48,10 @@
   justify-content: center;
 
   border-radius: 50%;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
 
-  background: #FFFEFB;
-  color: #B0A898; /* icon color */
+  background: #fffefb;
+  color: #b0a898; /* icon color */
 
   cursor: pointer;
 
@@ -59,8 +59,8 @@
 }
 
 .remove-close:hover {
-  border-color: #18140F;
-  color: #18140F;
+  border-color: #18140f;
+  color: #18140f;
 }
 
 /* PREVIEW STRIP  */
@@ -70,7 +70,7 @@
   gap: 14px;
 
   padding-bottom: 24px;
-  border-bottom: 1px solid #F0EAE0;
+  border-bottom: 1px solid #f0eae0;
 }
 
 /* Thumbnail */
@@ -93,17 +93,16 @@
   font-size: 8.5px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-   color: #C9A96E;
+  color: #c9a96e;
   margin-bottom: 3px;
 }
 
 .remove-name {
   font-family: "Cormorant Garamond", serif;
   font-size: 16px;
-  color: #18140F;
+  color: #18140f;
   line-height: 1.25;
 }
-
 
 /* TITLE TEXT */
 
@@ -111,12 +110,11 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 22px;
   margin-top: 24px;
-
 }
 
 .remove-desc {
   font-size: 11.5px;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 28px;
 }
 
@@ -125,8 +123,8 @@
 .dialog-btn-primary {
   width: 100%;
   padding: 14px 20px;
-  background: #18140F;
-  color: #E8D5B0;
+  background: #18140f;
+  color: #e8d5b0;
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -141,18 +139,18 @@
   margin-bottom: 10px;
 }
 
-.dialog-btn-primary:hover{
-background: #3a312c; /* screenshot wala dark brown */
-    color: #E8D5B0;
-    border-color: #3a312c;
+.dialog-btn-primary:hover {
+  background: #3a312c; /* screenshot wala dark brown */
+  color: #e8d5b0;
+  border-color: #3a312c;
 }
 
 /* ICON */
 
-.remove-dialog-icon-wishlist{
+.remove-dialog-icon-wishlist {
   height: 13px;
   width: 13px;
-  color: #E8D5B0;
+  color: #e8d5b0;
   stroke-width: 1.5;
 }
 
@@ -165,7 +163,7 @@ background: #3a312c; /* screenshot wala dark brown */
   background: transparent;
   color: var(--muted);
 
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
 
   font-size: 10px;
   letter-spacing: 0.18em;
@@ -174,7 +172,7 @@ background: #3a312c; /* screenshot wala dark brown */
 }
 
 .dialog-btn-secondary:hover {
-  border-color:var(--terracotta);
+  border-color: var(--terracotta);
   color: var(--terracotta);
 }
 
@@ -192,22 +190,19 @@ background: #3a312c; /* screenshot wala dark brown */
   }
 }
 
-
-
 /* ============================= */
 /* MOBILE — REMOVE DIALOG */
 /* ============================= */
 
 @media (max-width: 430px) {
-
   /* PANEL */
   .remove-dialog {
     max-width: none;
     width: 100%;
 
-    margin: 0 16px;              
+    margin: 0 16px;
 
-    padding: 24px 20px 20px;     
+    padding: 24px 20px 20px;
   }
 
   /* CLOSE BUTTON */

@@ -24,7 +24,7 @@ const MobileCartLayout = () => {
   const incomingItem = location.state?.newItem;
 
   const { items: storeItems, removeFromCart } = useCartStore();
-  
+
   const [cartItemsState, setCartItemsState] = useState(storeItems);
   const [activePromo, setActivePromo] = useState(null);
   const [removeTarget, setRemoveTarget] = useState(null);
@@ -33,10 +33,10 @@ const MobileCartLayout = () => {
     setCartItemsState(storeItems);
   }, [storeItems]);
 
-  const activeItems = cartItemsState.filter(item => item.active !== false);
+  const activeItems = cartItemsState.filter((item) => item.active !== false);
   const totals = calculateTotals(activeItems, activePromo);
-  const hasRentalItem = activeItems.some(item => item.type === "rental");
-  const visibleItems = cartItemsState.filter(item => item.active !== false);
+  const hasRentalItem = activeItems.some((item) => item.type === "rental");
+  const visibleItems = cartItemsState.filter((item) => item.active !== false);
   const { grandTotal = 0 } = totals || {};
   const handleOpenRemove = (item) => {
     setRemoveTarget(item);
@@ -48,33 +48,38 @@ const MobileCartLayout = () => {
 
   const handleConfirmRemove = () => {
     if (!removeTarget) return;
-    
-    setCartItemsState(prev =>
-      prev.map(item =>
-        item.id === removeTarget.id ? { ...item, removing: true } : item
-      )
+
+    setCartItemsState((prev) =>
+      prev.map((item) =>
+        item.id === removeTarget.id ? { ...item, removing: true } : item,
+      ),
     );
-    
+
     setTimeout(() => {
       removeFromCart(removeTarget.id);
     }, 300);
-    
+
     setRemoveTarget(null);
   };
 
   const handleWishlist = () => {
     if (!removeTarget) return;
-    const { toggleWishlist } = import('../../../../store/wishlistStore').then(m => m.default.getState().toggleWishlist(removeTarget.id));
+    const { toggleWishlist } = import("../../../../store/wishlistStore").then(
+      (m) => m.default.getState().toggleWishlist(removeTarget.id),
+    );
     handleConfirmRemove();
   };
 
   const handleCheckout = () => {
-    localStorage.setItem("checkoutData", JSON.stringify({ items: activeItems, activePromo }));
-    
-    const storeState = import('../../../../store/authStore').then(m => {
+    localStorage.setItem(
+      "checkoutData",
+      JSON.stringify({ items: activeItems, activePromo }),
+    );
+
+    const storeState = import("../../../../store/authStore").then((m) => {
       const { isAuthenticated } = m.default.getState();
       if (!isAuthenticated) {
-        import('react-hot-toast').then(toast => {
+        import("react-hot-toast").then((toast) => {
           toast.default("Please login to proceed to checkout", { icon: "🔒" });
         });
         navigate("/auth");
@@ -86,26 +91,27 @@ const MobileCartLayout = () => {
 
   return (
     <div className="mobile-cart-layout">
-      
       <div className="mobile-cart-content">
-      <CartHeader cartItems={cartItemsState} />
-        
+        <CartHeader cartItems={cartItemsState} />
+
         {/* Cart Items - Section 5 */}
         <div className="mobile-cart-items">
           {["rental", "preloved", "new"].flatMap((type, i) => {
-            const items = visibleItems.filter(item => item.type === type);
+            const items = visibleItems.filter((item) => item.type === type);
             if (!items.length) return [];
             return [
-              <ModeSeparator key={`sep-${type}`} type={type} dataRise={i + 2} />,
-              ...items.map(item => (
+              <ModeSeparator
+                key={`sep-${type}`}
+                type={type}
+                dataRise={i + 2}
+              />,
+              ...items.map((item) => (
                 <MobileCartItem
-                  key={item.id} 
-                  item={item} 
-                  onRemove={handleOpenRemove} 
+                  key={item.id}
+                  item={item}
+                  onRemove={handleOpenRemove}
                 />
-              ))
-
-              
+              )),
             ];
           })}
         </div>
@@ -113,7 +119,13 @@ const MobileCartLayout = () => {
         {/* Promo Code - Section 6 */}
         {activeItems.length > 0 ? (
           <>
-            {activeItems.some(item => item.product?.promoCode || item.product?.promo_code || item.product?.coupon || item.product?.hasPromo) && (
+            {activeItems.some(
+              (item) =>
+                item.product?.promoCode ||
+                item.product?.promo_code ||
+                item.product?.coupon ||
+                item.product?.hasPromo,
+            ) && (
               <div data-rise="5">
                 <PromoCode onApply={setActivePromo} />
               </div>
@@ -126,9 +138,29 @@ const MobileCartLayout = () => {
             />
           </>
         ) : (
-          <div className="empty-cart-message" style={{ padding: "40px 20px", textAlign: "center", color: "var(--text-light)" }}>
+          <div
+            className="empty-cart-message"
+            style={{
+              padding: "40px 20px",
+              textAlign: "center",
+              color: "var(--text-light)",
+            }}
+          >
             <p>Your cart is empty.</p>
-            <button onClick={() => navigate("/products")} style={{ marginTop: "16px", padding: "12px 24px", background: "var(--primary-dark)", color: "#fff", border: "none", cursor: "pointer", letterSpacing: "1px", textTransform: "uppercase", fontSize: "12px" }}>
+            <button
+              onClick={() => navigate("/products")}
+              style={{
+                marginTop: "16px",
+                padding: "12px 24px",
+                background: "var(--primary-dark)",
+                color: "#fff",
+                border: "none",
+                cursor: "pointer",
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+                fontSize: "12px",
+              }}
+            >
               Continue Shopping
             </button>
           </div>
@@ -141,7 +173,7 @@ const MobileCartLayout = () => {
           </div>
         )}
 
-         {/* Remove Dialog - Section 11 */}
+        {/* Remove Dialog - Section 11 */}
         <RemoveDialog
           open={!!removeTarget}
           item={removeTarget}
@@ -150,13 +182,11 @@ const MobileCartLayout = () => {
           onWishlist={handleWishlist}
         />
 
-  
         <MobileCTABar
           grandTotal={grandTotal}
           onCheckout={handleCheckout}
           isCartEmpty={activeItems.length === 0}
         />
-
       </div>
     </div>
   );

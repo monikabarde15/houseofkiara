@@ -1,8 +1,8 @@
 // editor/AttachmentPicker.tsx (UPDATED)
-import React, { useState } from 'react';
-import { Button } from '../components/Button';
-import { LiveLink } from '../components/LiveLink';
-import './styles/AttachmentPicker.css';
+import React, { useState } from "react";
+import { Button } from "../components/Button";
+import { LiveLink } from "../components/LiveLink";
+import "./styles/AttachmentPicker.css";
 
 interface DocumentOption {
   id: string;
@@ -23,27 +23,27 @@ export const AttachmentPicker: React.FC<AttachmentPickerProps> = ({
   disabledIds = [],
   hint,
 }) => {
-  const [selectedId, setSelectedId] = useState('');
+  const [selectedId, setSelectedId] = useState("");
 
   const handleAdd = () => {
     if (selectedId) {
       onAdd(selectedId);
-      setSelectedId('');
+      setSelectedId("");
     }
   };
 
   const filteredOptions = availableDocuments.filter(
-    (doc) => !disabledIds.includes(doc.id)
+    (doc) => !disabledIds.includes(doc.id),
   );
 
   // UPDATED: Default hint references Setup → Documents
   const defaultHint = (
     <>
-      Chosen from the master, never typed, so the system knows what to attach. 
-      A document that does not exist yet is created in{' '}
+      Chosen from the master, never typed, so the system knows what to attach. A
+      document that does not exist yet is created in{" "}
       <LiveLink to="Setup → Documents" section="Setup">
         Setup → Documents
-      </LiveLink>{' '}
+      </LiveLink>{" "}
       first.
     </>
   );
@@ -72,9 +72,7 @@ export const AttachmentPicker: React.FC<AttachmentPickerProps> = ({
           Add
         </Button>
       </div>
-      <div className="msg-attachment-picker-hint">
-        {hint || defaultHint}
-      </div>
+      <div className="msg-attachment-picker-hint">{hint || defaultHint}</div>
     </div>
   );
 };

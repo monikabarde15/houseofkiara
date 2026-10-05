@@ -11,10 +11,8 @@ const DummyGowns = () => {
 
   return (
     <>
-
       <h2>Dummy Gown (Test Page)</h2>
       <div style={{ padding: "40px", display: "flex" }}>
-
         <div
           style={{
             border: "1px solid #eee",
@@ -93,8 +91,7 @@ const DummyGowns = () => {
               gap: "10px",
               marginTop: "15px",
             }}
-          >
-          </div>
+          ></div>
         </div>
         {/* -------------------- */}
         <div
@@ -147,7 +144,6 @@ const DummyGowns = () => {
             >
               CART
             </button> */}
-
           </div>
         </div>
       </div>

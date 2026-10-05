@@ -9,7 +9,7 @@ const ReturnReminder = () => {
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 430px)");
     setIsMobile(mediaQuery.matches);
-    
+
     const handleChange = (e) => setIsMobile(e.matches);
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
@@ -28,8 +28,8 @@ const ReturnReminder = () => {
           Return deadline: 18 Nov (Tuesday)
         </div>
         <p className="confirmation-return-reminder-text">
-          Prepaid Blue Dart label in packaging.
-          Deposit refunded within 3–5 days of inspection.
+          Prepaid Blue Dart label in packaging. Deposit refunded within 3–5 days
+          of inspection.
         </p>
       </div>
     </div>

@@ -32,7 +32,7 @@
 .msg-records-modal-word {
   font-family: var(--msg-font-monospace);
   font-size: 16px;
-  color: #6B5730;
+  color: #6b5730;
   background: var(--msg-gold-pale);
   display: inline-block;
   padding: 2px var(--msg-spacing-8);
@@ -90,10 +90,10 @@
 
 .msg-records-modal-caution {
   padding: var(--msg-spacing-10) var(--msg-spacing-13);
-  background: #FDF9F0;
-  border: 1px solid #F0E4C4;
+  background: #fdf9f0;
+  border: 1px solid #f0e4c4;
   border-radius: var(--msg-radius);
-  color: #8B6A1E;
+  color: #8b6a1e;
   margin-bottom: var(--msg-spacing-13);
   font-size: 11px;
   line-height: 1.5;

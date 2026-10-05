@@ -8,7 +8,7 @@
 
 .psc {
   background: white;
-  border: 1px solid #EDE6DC;
+  border: 1px solid #ede6dc;
   border-radius: 4px;
   padding: 11px 14px;
 }
@@ -18,30 +18,30 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 .psc-value {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 18px;
   margin-top: 2px;
   line-height: 1.2;
 }
 
 .psc-sage .psc-value {
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 .psc-gold .psc-value {
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .psc-charcoal .psc-value {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .psc-terra .psc-value {
-  color: #B85C38;
+  color: #b85c38;
 }
 
 @media (max-width: 768px) {

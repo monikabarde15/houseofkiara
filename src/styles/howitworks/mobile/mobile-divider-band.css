@@ -1,6 +1,6 @@
 /* Divider Band (Mobile) - C10 */
 .hok-hiw-mobile-divider {
-  background: #F5EDD8;
+  background: #f5edd8;
   padding: 36px 16px;
   position: relative;
   overflow: hidden;
@@ -8,7 +8,7 @@
 
 /* Decorative Watermark */
 .hok-hiw-mobile-divider-watermark {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 160px;
   font-weight: 100;
   color: rgba(201, 169, 110, 0.1);
@@ -43,24 +43,24 @@
 .hok-hiw-mobile-divider-line {
   width: 16px;
   height: 1px;
-  background: #C9A96E;
+  background: #c9a96e;
 }
 
 .hok-hiw-mobile-divider-eyebrow-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.26em;
-  color: #C9A96E;
+  color: #c9a96e;
   font-weight: 400;
 }
 
 .hok-hiw-mobile-divider-quote-text {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 18px;
   font-weight: 400;
   font-style: italic;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1.35;
   margin: 0;
   padding: 0;
@@ -74,8 +74,8 @@
 }
 
 .hok-hiw-mobile-db-stat {
-  background: #FFFFFB;
-  border: 1px solid #E8E0D4;
+  background: #fffffb;
+  border: 1px solid #e8e0d4;
   border-radius: 1px;
   padding: 12px 16px;
   display: flex;
@@ -85,23 +85,23 @@
 }
 
 .hok-hiw-mobile-db-stat-number {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: 20px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   line-height: 1;
 }
 
 .hok-hiw-mobile-db-stat-number em {
   font-style: normal;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .hok-hiw-mobile-db-stat-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #8A7E72;
+  color: #8a7e72;
   font-weight: 400;
 }

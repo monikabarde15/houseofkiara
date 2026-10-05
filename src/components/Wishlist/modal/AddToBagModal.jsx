@@ -6,7 +6,14 @@ import ColorSelector from "./ColorSelector";
 import RentalDateSelector from "./RentalDateSelector";
 import "../../../styles/wishlist/modal/add-to-bag-modal.css";
 
-const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast }) => {
+const AddToBagModal = ({
+  isOpen,
+  onClose,
+  product,
+  type,
+  onAddToBag,
+  onShowToast,
+}) => {
   // Early return if no product or modal not open
   if (!isOpen || !product) return null;
 
@@ -15,7 +22,9 @@ const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast
   const [selectedColor, setSelectedColor] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [validationMessage, setValidationMessage] = useState("Please select all required options to continue");
+  const [validationMessage, setValidationMessage] = useState(
+    "Please select all required options to continue",
+  );
 
   // Determine if color is required (product has multiple color options)
   const requiresColor = product?.colors && product.colors.length > 1;
@@ -35,10 +44,16 @@ const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast
     // For rental pieces: size + dates both required
     if (type === "rent") {
       if (!startDate || !endDate) {
-        return { isValid: false, message: "Please select your rental dates to continue" };
+        return {
+          isValid: false,
+          message: "Please select your rental dates to continue",
+        };
       }
       if (new Date(endDate) <= new Date(startDate)) {
-        return { isValid: false, message: "Return date must be after the start date" };
+        return {
+          isValid: false,
+          message: "Return date must be after the start date",
+        };
       }
     }
 
@@ -128,9 +143,19 @@ const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast
         {/* Section 11.3: Modal Header */}
         <div className="desk-wishlist-modal-header">
           <h2 className="desk-wishlist-modal-title">Add to Bag</h2>
-          <button type="button" className="desk-wishlist-modal-close-btn" onClick={onClose} aria-label="Close Modal">
+          <button
+            type="button"
+            className="desk-wishlist-modal-close-btn"
+            onClick={onClose}
+            aria-label="Close Modal"
+          >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path
+                d="M1 1L9 9M9 1L1 9"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
         </div>
@@ -139,23 +164,33 @@ const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast
         <div className="desk-wishlist-modal-body">
           {/* Product Summary Row */}
           <div className="desk-wishlist-modal-summary-row">
-            <div className={`desk-wishlist-modal-thumbnail desk-wishlist-modal-thumbnail-${type}`}>
+            <div
+              className={`desk-wishlist-modal-thumbnail desk-wishlist-modal-thumbnail-${type}`}
+            >
               {product?.image?.[0] || product?.images?.[0] ? (
-                <img 
-                  src={product?.image?.[0] || product?.images?.[0]} 
+                <img
+                  src={product?.image?.[0] || product?.images?.[0]}
                   alt={product.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M8 5L10 3H14L16 5L18 7V21H6V7L8 5Z" stroke="currentColor" strokeWidth="1.2" />
+                  <path
+                    d="M8 5L10 3H14L16 5L18 7V21H6V7L8 5Z"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
                 </svg>
               )}
             </div>
             <div className="desk-wishlist-modal-summary-content">
-              <h3 className="desk-wishlist-modal-product-name">{product.name}</h3>
+              <h3 className="desk-wishlist-modal-product-name">
+                {product.name}
+              </h3>
               <div className="desk-wishlist-modal-meta-line">
-                {type === "rent" ? `Rental · ₹${product.price} ${product.duration ? `/ ${product.duration}` : ''}` : null}
+                {type === "rent"
+                  ? `Rental · ₹${product.price} ${product.duration ? `/ ${product.duration}` : ""}`
+                  : null}
                 {type === "preloved" ? `Preloved · ₹${product.price}` : null}
                 {type === "new" ? `Buy New · ₹${product.price}` : null}
               </div>
@@ -163,11 +198,19 @@ const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast
           </div>
 
           {/* Size Selector */}
-          <SizeSelector sizes={product.sizes} selectedSize={selectedSize} onSizeChange={setSelectedSize} />
+          <SizeSelector
+            sizes={product.sizes}
+            selectedSize={selectedSize}
+            onSizeChange={setSelectedSize}
+          />
 
           {/* Color Selector - only if product has colors */}
           {product.colors && product.colors.length > 0 ? (
-            <ColorSelector colors={product.colors} selectedColor={selectedColor} onColorChange={setSelectedColor} />
+            <ColorSelector
+              colors={product.colors}
+              selectedColor={selectedColor}
+              onColorChange={setSelectedColor}
+            />
           ) : null}
 
           {/* Rental Date Selector - only for rental items */}

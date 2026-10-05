@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
-import { Mail, Edit, Save, Plus, FileText, Check } from 'lucide-react';
-import { EmailTemplate } from '../types';
+import React, { useState } from "react";
+import { Mail, Edit, Save, Plus, FileText, Check } from "lucide-react";
+import { EmailTemplate } from "../types";
 
 interface EmailsViewProps {
   emailTemplates: EmailTemplate[];
   onUpdateTemplate: (updatedTemplate: EmailTemplate) => void;
 }
 
-export default function EmailsView({ emailTemplates, onUpdateTemplate }: EmailsViewProps) {
+export default function EmailsView({
+  emailTemplates,
+  onUpdateTemplate,
+}: EmailsViewProps) {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("1");
-  const currentTemplate = emailTemplates.find(t => t.id === selectedTemplateId) || emailTemplates[0];
+  const currentTemplate =
+    emailTemplates.find((t) => t.id === selectedTemplateId) ||
+    emailTemplates[0];
 
-  const [editSubject, setEditSubject] = useState(currentTemplate?.subject || '');
-  const [editBody, setEditBody] = useState(currentTemplate?.body || '');
+  const [editSubject, setEditSubject] = useState(
+    currentTemplate?.subject || "",
+  );
+  const [editBody, setEditBody] = useState(currentTemplate?.body || "");
 
   // Sync state if template selection changed
   React.useEffect(() => {
@@ -27,38 +34,43 @@ export default function EmailsView({ emailTemplates, onUpdateTemplate }: EmailsV
     const updated: EmailTemplate = {
       ...currentTemplate,
       subject: editSubject,
-      body: editBody
+      body: editBody,
     };
     onUpdateTemplate(updated);
     alert(`Email template "${currentTemplate.name}" updated successfully!`);
   };
 
   const insertVariable = (variable: string) => {
-    setEditBody(prev => prev + ` {${variable}}`);
+    setEditBody((prev) => prev + ` {${variable}}`);
   };
 
   return (
     <div className="space-y-6 text-xs font-sans">
       <div>
-        <h2 className="text-2xl font-serif text-stone-900 font-medium">Email Templates & Alerts</h2>
+        <h2 className="text-2xl font-serif text-stone-900 font-medium">
+          Email Templates & Alerts
+        </h2>
         <p className="text-xs text-stone-500 mt-1">
-          Customise automatic system notification emails dispatched to renters during transit milestones and deposit releases.
+          Customise automatic system notification emails dispatched to renters
+          during transit milestones and deposit releases.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left List of templates */}
         <div className="bg-white p-4 rounded-lg border border-stone-200/80 shadow-sm space-y-2 h-fit">
-          <h3 className="font-serif font-bold text-stone-900 text-xs border-b border-stone-100 pb-2">System Events</h3>
+          <h3 className="font-serif font-bold text-stone-900 text-xs border-b border-stone-100 pb-2">
+            System Events
+          </h3>
           <div className="space-y-1">
-            {emailTemplates.map(t => (
+            {emailTemplates.map((t) => (
               <button
                 key={t.id}
                 onClick={() => setSelectedTemplateId(t.id)}
                 className={`w-full p-2.5 rounded text-left font-semibold transition cursor-pointer flex items-center justify-between ${
                   selectedTemplateId === t.id
-                    ? 'bg-[#fcf9f5] text-[#c5a880] border-l-2 border-[#c5a880]'
-                    : 'text-stone-600 hover:bg-stone-50'
+                    ? "bg-[#fcf9f5] text-[#c5a880] border-l-2 border-[#c5a880]"
+                    : "text-stone-600 hover:bg-stone-50"
                 }`}
               >
                 <span>{t.name}</span>
@@ -72,8 +84,12 @@ export default function EmailsView({ emailTemplates, onUpdateTemplate }: EmailsV
         <div className="lg:col-span-2 bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
           <div className="flex justify-between items-center border-b border-stone-100 pb-3">
             <div>
-              <h3 className="font-serif font-bold text-stone-950 text-sm">Editing Template: {currentTemplate?.name}</h3>
-              <p className="text-[10px] text-stone-400 mt-0.5">Triggers automatically on event milestone.</p>
+              <h3 className="font-serif font-bold text-stone-950 text-sm">
+                Editing Template: {currentTemplate?.name}
+              </h3>
+              <p className="text-[10px] text-stone-400 mt-0.5">
+                Triggers automatically on event milestone.
+              </p>
             </div>
             <button
               onClick={handleSave}
@@ -86,7 +102,9 @@ export default function EmailsView({ emailTemplates, onUpdateTemplate }: EmailsV
 
           <div className="space-y-3 font-sans">
             <div className="space-y-1">
-              <label className="text-stone-500 font-medium">Email Subject Line</label>
+              <label className="text-stone-500 font-medium">
+                Email Subject Line
+              </label>
               <input
                 type="text"
                 value={editSubject}
@@ -97,13 +115,17 @@ export default function EmailsView({ emailTemplates, onUpdateTemplate }: EmailsV
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <label className="text-stone-500 font-medium">Email Content Body</label>
-                <span className="text-[10px] text-stone-400 font-bold">Dynamic Variable Placeholders:</span>
+                <label className="text-stone-500 font-medium">
+                  Email Content Body
+                </label>
+                <span className="text-[10px] text-stone-400 font-bold">
+                  Dynamic Variable Placeholders:
+                </span>
               </div>
-              
+
               {/* Clickable Variable Helpers */}
               <div className="flex flex-wrap gap-1 mb-2">
-                {currentTemplate?.variables?.map(v => (
+                {currentTemplate?.variables?.map((v) => (
                   <button
                     key={v}
                     onClick={() => insertVariable(v)}

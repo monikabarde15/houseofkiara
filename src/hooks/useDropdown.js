@@ -33,10 +33,7 @@ export const useDropdown = () => {
     clearCloseTimer();
 
     closeTimer.current = setTimeout(() => {
-      if (
-        !inHeader.current &&
-        !inDropdown.current
-      ) {
+      if (!inHeader.current && !inDropdown.current) {
         setActiveDropdown(null);
       }
     }, CLOSE_DELAY);
@@ -49,27 +46,21 @@ export const useDropdown = () => {
       }
     };
 
-    window.addEventListener(
-      "keydown",
-      escHandler
-    );
+    window.addEventListener("keydown", escHandler);
 
     return () => {
-      window.removeEventListener(
-        "keydown",
-        escHandler
-      );
+      window.removeEventListener("keydown", escHandler);
     };
   }, [closeDropdown]);
 
   useEffect(() => {
-  setActiveDropdown(null);
+    setActiveDropdown(null);
 
-  inHeader.current = false;
-  inDropdown.current = false;
+    inHeader.current = false;
+    inDropdown.current = false;
 
-  clearCloseTimer();
-}, [location.pathname, location.search]);
+    clearCloseTimer();
+  }, [location.pathname, location.search]);
 
   return {
     activeDropdown,

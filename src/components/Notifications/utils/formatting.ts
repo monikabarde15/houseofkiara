@@ -5,9 +5,9 @@
  * ₹1,93,000 — not ₹140,000, not ₹140000.00.
  */
 export function formatINR(amount: number): string {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
     maximumFractionDigits: 0,
   }).format(amount);
 }
@@ -18,10 +18,10 @@ export function formatINR(amount: number): string {
  */
 export function formatDisplayDate(iso: string): string {
   const d = new Date(iso);
-  return new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   }).format(d);
 }
 
@@ -38,8 +38,12 @@ export function formatIsoDate(date: Date): string {
  * gives an explicit singular exception: "1 thing to do today", "1 new item",
  * "1 more check is clear or put down".
  */
-export function pluralize(n: number, singular: string, plural?: string): string {
-  const word = n === 1 ? singular : plural ?? `${singular}s`;
+export function pluralize(
+  n: number,
+  singular: string,
+  plural?: string,
+): string {
+  const word = n === 1 ? singular : (plural ?? `${singular}s`);
   return `${n} ${word}`;
 }
 
@@ -47,14 +51,14 @@ export function pluralize(n: number, singular: string, plural?: string): string 
  * §5.3 — the summary card headline, exact two forms.
  */
 export function formatThingsHeadline(n: number): string {
-  if (n === 0) return 'Nothing needs doing today';
-  return `${pluralize(n, 'thing', 'things')} to do today`;
+  if (n === 0) return "Nothing needs doing today";
+  return `${pluralize(n, "thing", "things")} to do today`;
 }
 
 /**
  * §1.4 — the bell's native tooltip, exact two forms.
  */
 export function formatBellTooltip(n: number): string {
-  if (n === 0) return 'Nothing needs doing today';
-  return `${pluralize(n, 'thing', 'things')} to do today`;
+  if (n === 0) return "Nothing needs doing today";
+  return `${pluralize(n, "thing", "things")} to do today`;
 }

@@ -1,24 +1,24 @@
 // src/components/LYP/record/SubmissionRecord.tsx
 
-import React, { useState } from 'react';
-import { Submission } from '../types/submission.types';
-import { RecordHeader } from './RecordHeader';
-import { RecordChips } from './RecordChips';
-import { ApplicantBanner } from './ApplicantBanner';
-import { FactsLeft } from './FactsLeft';
-import { FactsRight } from './FactsRight';
-import { WorksheetCard } from './WorksheetCard';
-import { AwaitingBanner } from './AwaitingBanner';
-import { ActionsRow } from './ActionsRow';
-import { VerdictBlock } from './VerdictBlock';
-import { ReviewHistory } from './ReviewHistory';
-import { SKUReservationLine } from './SKUReservationLine';
-import { MoreInfoComposer } from './MoreInfoComposer';
-import { RejectPanel } from './RejectPanel';
-import { WithdrawRow } from './WithdrawRow';
-import { ExpireConfirmModal } from './ExpireConfirmModal';
-import { getSubmissionStatus } from '../utils/derived';
-import './styles/SubmissionRecord.css';
+import React, { useState } from "react";
+import { Submission } from "../types/submission.types";
+import { RecordHeader } from "./RecordHeader";
+import { RecordChips } from "./RecordChips";
+import { ApplicantBanner } from "./ApplicantBanner";
+import { FactsLeft } from "./FactsLeft";
+import { FactsRight } from "./FactsRight";
+import { WorksheetCard } from "./WorksheetCard";
+import { AwaitingBanner } from "./AwaitingBanner";
+import { ActionsRow } from "./ActionsRow";
+import { VerdictBlock } from "./VerdictBlock";
+import { ReviewHistory } from "./ReviewHistory";
+import { SKUReservationLine } from "./SKUReservationLine";
+import { MoreInfoComposer } from "./MoreInfoComposer";
+import { RejectPanel } from "./RejectPanel";
+import { WithdrawRow } from "./WithdrawRow";
+import { ExpireConfirmModal } from "./ExpireConfirmModal";
+import { getSubmissionStatus } from "../utils/derived";
+import "./styles/SubmissionRecord.css";
 
 interface SubmissionRecordProps {
   submission: Submission;
@@ -51,7 +51,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
   const status = getSubmissionStatus(submission);
   const isDecided = !!submission.decision;
   const isUndecided = !isDecided;
-  const isAwaitingReply = status === 'Awaiting Reply';
+  const isAwaitingReply = status === "Awaiting Reply";
   const isPendingReview = false; // Would check lister status
 
   const handleActionSuccess = () => {
@@ -69,7 +69,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
 
   return (
     <div className="submission-record">
-      <RecordHeader 
+      <RecordHeader
         submission={submission}
         onNavigate={onNavigate}
         hasPrev={hasPrev}
@@ -88,26 +88,26 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
             <ApplicantBanner submission={submission} />
           )}
 
-                  <div className="submission-record-facts g2">
-                      <FactsLeft submission={submission} onUpdate={handleActionSuccess} />
-                      <FactsRight submission={submission} onUpdate={handleActionSuccess} />
-                  </div>
+          <div className="submission-record-facts g2">
+            <FactsLeft submission={submission} onUpdate={handleActionSuccess} />
+            <FactsRight
+              submission={submission}
+              onUpdate={handleActionSuccess}
+            />
+          </div>
 
           {isUndecided && (
             <>
-              <WorksheetCard 
-                submission={submission} 
-                onUpdate={onUpdate}
-              />
+              <WorksheetCard submission={submission} onUpdate={onUpdate} />
 
               {isAwaitingReply && (
-                <AwaitingBanner 
+                <AwaitingBanner
                   submission={submission}
                   onUpdate={handleActionSuccess}
                 />
               )}
 
-              <ActionsRow 
+              <ActionsRow
                 submission={submission}
                 onApprove={handleActionSuccess}
                 onMoreInfo={() => setShowMoreInfo(!showMoreInfo)}
@@ -126,7 +126,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
               )}
 
               {showMoreInfo && (
-                <MoreInfoComposer 
+                <MoreInfoComposer
                   submission={submission}
                   onSuccess={handleActionSuccess}
                   onCancel={() => setShowMoreInfo(false)}
@@ -134,7 +134,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
               )}
 
               {showReject && (
-                <RejectPanel 
+                <RejectPanel
                   submission={submission}
                   onSuccess={handleActionSuccess}
                   onCancel={() => setShowReject(false)}
@@ -142,7 +142,7 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
               )}
 
               {showWithdraw && (
-                <WithdrawRow 
+                <WithdrawRow
                   submission={submission}
                   onSuccess={handleActionSuccess}
                   onCancel={() => setShowWithdraw(false)}

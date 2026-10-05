@@ -7,18 +7,17 @@ import SectionTitle from "../../shared/SectionTitle";
 import ViewAllLink from "../../shared/ViewAllLink";
 
 const CategoryTile = ({ category, isLarge = false }) => {
-
   const navigate = useNavigate();
 
   const handleCategoryClick = () => {
     navigate(`/main-page?section=new&category=${category.variant}`);
 
-    setTimeout(()=>{
+    setTimeout(() => {
       window.scrollTo({
-        top:0,
-        behavior:"smooth",
+        top: 0,
+        behavior: "smooth",
       });
-    },0);
+    }, 0);
   };
 
   return (
@@ -28,8 +27,8 @@ const CategoryTile = ({ category, isLarge = false }) => {
     >
       {/* Image Wrapper - handles the scale on hover */}
       <div className="desk-category-image-wrapper">
-        <img 
-          src={category.desktopImage} 
+        <img
+          src={category.desktopImage}
           alt={category.name}
           loading="lazy"
           style={{
@@ -39,26 +38,22 @@ const CategoryTile = ({ category, isLarge = false }) => {
             objectPosition: "center top",
             position: "absolute",
             inset: 0,
-            zIndex: 0
+            zIndex: 0,
           }}
         />
         {/* Overlay for gradient (if needed) */}
         <div className="desk-category-overlay" />
       </div>
-      
+
       <div className="desk-category-content">
         <h3
           className={
-            isLarge
-              ? "desk-category-title-large"
-              : "desk-category-title-small"
+            isLarge ? "desk-category-title-large" : "desk-category-title-small"
           }
         >
           {category.name}
         </h3>
-        <span className="desk-category-cta">
-          {category.cta}
-        </span>
+        <span className="desk-category-cta">{category.cta}</span>
       </div>
     </article>
   );
@@ -74,29 +69,19 @@ const DesktopCategories = () => {
             Shop by <em>Category</em>
           </SectionTitle>
         </div>
-        <ViewAllLink 
-        text="View All →"
-        href="/main-page?section=new&category"
-        />
+        <ViewAllLink text="View All →" href="/main-page?section=new&category" />
       </div>
 
       <div className="desk-categories-grid">
         <div className="desk-categories-row-one">
           {categoriesData.rowOne.map((category) => (
-            <CategoryTile
-              key={category.id}
-              category={category}
-              isLarge
-            />
+            <CategoryTile key={category.id} category={category} isLarge />
           ))}
         </div>
 
         <div className="desk-categories-row-two">
           {categoriesData.rowTwo.map((category) => (
-            <CategoryTile
-              key={category.id}
-              category={category}
-            />
+            <CategoryTile key={category.id} category={category} />
           ))}
         </div>
       </div>

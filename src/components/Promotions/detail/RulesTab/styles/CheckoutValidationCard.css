@@ -31,7 +31,7 @@
 }
 
 .checkout-validation__item::before {
-  content: attr(data-index) '.';
+  content: attr(data-index) ".";
   position: absolute;
   left: 0;
   color: var(--promo-muted);

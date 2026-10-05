@@ -4,8 +4,8 @@
 
 /* Card Container */
 .profile-purch-pc {
-  background: #FFFFFB;
-  border: 1px solid #E8E0D4;
+  background: #fffffb;
+  border: 1px solid #e8e0d4;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
@@ -18,11 +18,11 @@
 .profile-purch-pc:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 28px rgba(26, 22, 18, 0.08);
-  border-color: #E8D5B0;
+  border-color: #e8d5b0;
 }
 
 .profile-purch-pc.profile-purch-active-card {
-  border-color: #A8844A;
+  border-color: #a8844a;
   box-shadow: 0 8px 28px rgba(26, 22, 18, 0.1);
 }
 
@@ -35,14 +35,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #F0EAE0, #E8E0D4);
+  background: linear-gradient(135deg, #f0eae0, #e8e0d4);
 }
 
 .profile-purch-pc-placeholder {
   width: 32px;
   height: 32px;
   opacity: 0.2;
-  stroke: #1A1612;
+  stroke: #1a1612;
 }
 
 /* Card Body */
@@ -76,19 +76,19 @@
 /* Delivered */
 .profile-purch-b-del {
   background: rgba(107, 126, 90, 0.12);
-  color: #6B7E5A;
+  color: #6b7e5a;
 }
 
 /* Processing */
 .profile-purch-b-pro {
   background: rgba(184, 92, 56, 0.1);
-  color: #B85C38;
+  color: #b85c38;
 }
 
 /* Cancelled */
 .profile-purch-b-can {
   background: rgba(138, 126, 114, 0.12);
-  color: #8A7E72;
+  color: #8a7e72;
 }
 
 /* Card Name */
@@ -98,7 +98,7 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 1.3;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 /* Type (with designer/condition) */
@@ -107,7 +107,7 @@
   font-size: 10px;
   font-weight: 300;
   line-height: 1.55;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 2px;
 }
 
@@ -117,7 +117,7 @@
   font-size: 10px;
   font-weight: 300;
   line-height: 1.55;
-  color: #8A7E72;
+  color: #8a7e72;
   margin-bottom: 8px;
 }
 
@@ -128,7 +128,7 @@
   justify-content: space-between;
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid #F0EAE0;
+  border-top: 1px solid #f0eae0;
 }
 
 /* Price */
@@ -136,7 +136,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 12.5px;
   font-weight: 500;
-  color: #3C3529;
+  color: #3c3529;
 }
 
 /* Details Button */
@@ -151,13 +151,13 @@
   font-weight: 400;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: #A8844A;
+  color: #a8844a;
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .profile-purch-pc-details:hover {
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .profile-purch-pc-details svg {

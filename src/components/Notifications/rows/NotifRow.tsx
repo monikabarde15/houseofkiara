@@ -1,8 +1,8 @@
 // src/components/Notifications/rows/NotifRow.tsx
-import React from 'react';
-import { AlertDef, AlertRecord, BandKey } from '../types/notification.types';
-import { Button } from '../../Messaging/components/Button';
-import './styles/NotifRow.css';
+import React from "react";
+import { AlertDef, AlertRecord, BandKey } from "../types/notification.types";
+import { Button } from "../../Messaging/components/Button";
+import "./styles/NotifRow.css";
 
 interface NotifRowProps {
   alert: AlertDef;
@@ -38,7 +38,7 @@ export function NotifRow({
   canEdit,
   personFilter,
 }: NotifRowProps) {
-  const isBlocked = bandKey === 'blocked';
+  const isBlocked = bandKey === "blocked";
   const isClear = !isBlocked && alert.records.length === 0;
   const isRouted = !!alert.elsewhere;
   const isOpenable = !isBlocked && !isClear;
@@ -47,48 +47,56 @@ export function NotifRow({
   // records SHOWN (that person's), not the alert's full record count.
   const visibleRecords = personFilter
     ? alert.records.filter((r) =>
-        personFilter === 'nobody' ? r.ownerId === null : r.ownerId === personFilter
+        personFilter === "nobody"
+          ? r.ownerId === null
+          : r.ownerId === personFilter,
       )
     : alert.records;
 
-  const pillValue = isBlocked ? '—' : isClear ? '0' : String(visibleRecords.length);
-  const pillClass = isBlocked
-    ? 'ntf-n ntf-n--dim'
+  const pillValue = isBlocked
+    ? "—"
     : isClear
-      ? 'ntf-n ntf-n--ok'
-      : 'ntf-n';
+      ? "0"
+      : String(visibleRecords.length);
+  const pillClass = isBlocked
+    ? "ntf-n ntf-n--dim"
+    : isClear
+      ? "ntf-n ntf-n--ok"
+      : "ntf-n";
 
   const newCount = alert.records.filter((r) => r.isNew).length;
   const pickedCount = alert.records.filter((r) => r.ownerId !== null).length;
 
   const rowClasses = [
-    'ntf-row',
-    isRouted ? 'ntf-row--route' : '',
-    isClear ? 'ntf-row--clear' : '',
-    isBlocked ? 'ntf-row--blocked' : '',
-    isOpen && isOpenable ? 'ntf-row--open' : '',
+    "ntf-row",
+    isRouted ? "ntf-row--route" : "",
+    isClear ? "ntf-row--clear" : "",
+    isBlocked ? "ntf-row--blocked" : "",
+    isOpen && isOpenable ? "ntf-row--open" : "",
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   return (
     <div className={rowClasses}>
       <div
         className="ntf-row-hd"
         onClick={isOpenable ? onToggle : undefined}
-        style={{ cursor: isOpenable ? 'pointer' : 'default' }}
+        style={{ cursor: isOpenable ? "pointer" : "default" }}
       >
         <div className={pillClass}>{pillValue}</div>
 
         <div className="ntf-row-body">
           <div className="ntf-t">
             {alert.title}
-            {isRouted && <span className="ntf-el">worked in {alert.elsewhere}</span>}
+            {isRouted && (
+              <span className="ntf-el">worked in {alert.elsewhere}</span>
+            )}
             {alert.notCounted && <span className="ntf-el">not counted</span>}
           </div>
 
           <div className="ntf-w">
-            {isClear && 'Nothing here. '}
+            {isClear && "Nothing here. "}
             {alert.what}
           </div>
 
@@ -162,7 +170,7 @@ function Chevron({ open }: { open: boolean }) {
   return (
     <svg
       className="ntf-chev"
-      style={{ transform: open ? 'rotate(90deg)' : undefined }}
+      style={{ transform: open ? "rotate(90deg)" : undefined }}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -195,7 +203,7 @@ function MessageJoinLine({
         }}
       >
         also reaches you as &ldquo;{messageName}&rdquo;
-        {hasChannels ? ` on ${joinWithAnd(channels!)}` : ', nowhere yet'}
+        {hasChannels ? ` on ${joinWithAnd(channels!)}` : ", nowhere yet"}
       </span>
     </div>
   );
@@ -203,7 +211,7 @@ function MessageJoinLine({
 
 function joinWithAnd(items: string[]): string {
   if (items.length === 1) return items[0];
-  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }
 
 /**
@@ -226,7 +234,7 @@ function RecordRow({
   const picked = record.ownerId !== null;
 
   return (
-    <div className={`ntf-rec${picked ? ' ntf-rec--picked' : ''}`}>
+    <div className={`ntf-rec${picked ? " ntf-rec--picked" : ""}`}>
       <div
         className="ntf-rec-main"
         onClick={() => {
@@ -239,7 +247,9 @@ function RecordRow({
         </div>
         <div className="ntf-rec-s">
           {record.sub}
-          {record.blocks && <span className="ntf-blocks">→ {record.blocks}</span>}
+          {record.blocks && (
+            <span className="ntf-blocks">→ {record.blocks}</span>
+          )}
         </div>
         <svg
           className="ntf-rec-go"
@@ -253,8 +263,8 @@ function RecordRow({
       </div>
 
       <select
-        className={`ntf-pick${picked ? ' ntf-pick--on' : ''}`}
-        value={record.ownerId ?? ''}
+        className={`ntf-pick${picked ? " ntf-pick--on" : ""}`}
+        value={record.ownerId ?? ""}
         disabled={!canEdit}
         onClick={(e) => e.stopPropagation()}
         onChange={(e) => {
@@ -289,12 +299,18 @@ function ActionBar({
   bandKey: BandKey;
   onPutDown: () => void;
 }) {
-  const showPutDown = canEdit && bandKey === 'know' && alert.canPutDown;
+  const showPutDown = canEdit && bandKey === "know" && alert.canPutDown;
 
   return (
     <div className="ntf-act">
       {alert.act && (
-        <Button variant="secondary" size="small" onClick={() => {/* navigate via alert.actTarget */}}>
+        <Button
+          variant="secondary"
+          size="small"
+          onClick={() => {
+            /* navigate via alert.actTarget */
+          }}
+        >
           {alert.act}
         </Button>
       )}
@@ -305,7 +321,7 @@ function ActionBar({
       )}
       <div className="fhint">
         {canEdit
-          ? 'Each line opens the record it is about. Picking someone is logged to that record.'
+          ? "Each line opens the record it is about. Picking someone is logged to that record."
           : `Read only. Every line still opens the record it is about.`}
       </div>
     </div>

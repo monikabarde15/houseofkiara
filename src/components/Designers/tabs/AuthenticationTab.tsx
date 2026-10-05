@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import './tabs.css';
-import { Designer } from '../types/designer.types';
+import React, { useState } from "react";
+import "./tabs.css";
+import { Designer } from "../types/designer.types";
 
-export type CounterfeitRiskTier = 'Low' | 'Medium' | 'High';
+export type CounterfeitRiskTier = "Low" | "Medium" | "High";
 
 export interface AuthenticationData {
   riskTier: CounterfeitRiskTier;
@@ -19,19 +19,21 @@ interface AuthenticationTabProps {
 }
 
 const DEFAULT_AUTHENTICATION: AuthenticationData = {
-  riskTier: 'Low',
-  checklist: '',
-  brandWebsite: '',
-  brandInstagram: '',
+  riskTier: "Low",
+  checklist: "",
+  brandWebsite: "",
+  brandInstagram: "",
 };
 
 const RISK_TIER_HINTS: Record<CounterfeitRiskTier, React.ReactNode> = {
-  Low: 'Low = standard single-check approval flow.',
-  Medium: 'Medium = second check recommended for high-value pieces before approval.',
+  Low: "Low = standard single-check approval flow.",
+  Medium:
+    "Medium = second check recommended for high-value pieces before approval.",
   High: (
     <>
-      High = mandatory second check by a different team member + purchase-proof request (via the More Info
-      WhatsApp flow) before any piece under this label is approved.
+      High = mandatory second check by a different team member + purchase-proof
+      request (via the More Info WhatsApp flow) before any piece under this
+      label is approved.
     </>
   ),
 };
@@ -43,16 +45,20 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
   onChange,
 }) => {
   const initialAuth = authentication || {
-    riskTier: (designer as any)?.counterfeitRiskTier || 'Low',
-    checklist: (designer as any)?.authenticationChecklist || '',
-    brandWebsite: (designer as any)?.websiteUrl || '',
-    brandInstagram: (designer as any)?.instagramHandle || '',
+    riskTier: (designer as any)?.counterfeitRiskTier || "Low",
+    checklist: (designer as any)?.authenticationChecklist || "",
+    brandWebsite: (designer as any)?.websiteUrl || "",
+    brandInstagram: (designer as any)?.instagramHandle || "",
   };
 
-  const [riskTier, setRiskTier] = useState<CounterfeitRiskTier>(initialAuth.riskTier);
+  const [riskTier, setRiskTier] = useState<CounterfeitRiskTier>(
+    initialAuth.riskTier,
+  );
   const [checklist, setChecklist] = useState(initialAuth.checklist);
   const [brandWebsite, setBrandWebsite] = useState(initialAuth.brandWebsite);
-  const [brandInstagram, setBrandInstagram] = useState(initialAuth.brandInstagram);
+  const [brandInstagram, setBrandInstagram] = useState(
+    initialAuth.brandInstagram,
+  );
 
   const notifyChange = (fieldUpdates: any) => {
     onChange?.({
@@ -60,7 +66,7 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
       authenticationChecklist: checklist,
       websiteUrl: brandWebsite,
       instagramHandle: brandInstagram,
-      ...fieldUpdates
+      ...fieldUpdates,
     });
   };
 
@@ -91,7 +97,9 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
       </div>
 
       <div className="form-field">
-        <label className="form-label">AUTHENTICATION CHECKLIST (BRAND-SPECIFIC VERIFICATION POINTS)</label>
+        <label className="form-label">
+          AUTHENTICATION CHECKLIST (BRAND-SPECIFIC VERIFICATION POINTS)
+        </label>
         <textarea
           className="form-textarea"
           value={checklist}
@@ -102,15 +110,18 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
           rows={4}
         />
         <p className="form-hint">
-          Surfaces automatically inside LYP Submissions review and product approval for every piece mapped to this
-          designer — this is the working checklist behind the "hand-verified" promise on the storefront.
+          Surfaces automatically inside LYP Submissions review and product
+          approval for every piece mapped to this designer — this is the working
+          checklist behind the "hand-verified" promise on the storefront.
         </p>
       </div>
 
       <hr className="authentication-divider" />
 
       <div className="form-field">
-        <label className="form-label">OFFICIAL BRAND REFERENCES (VERIFICATION SOURCES)</label>
+        <label className="form-label">
+          OFFICIAL BRAND REFERENCES (VERIFICATION SOURCES)
+        </label>
       </div>
 
       <div className="tab-form-grid">
@@ -124,7 +135,10 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               notifyChange({ websiteUrl: e.target.value });
             }}
           />
-          <p className="form-hint">Cross-check collections, price points and product codes when verifying pieces</p>
+          <p className="form-hint">
+            Cross-check collections, price points and product codes when
+            verifying pieces
+          </p>
         </div>
 
         <div className="form-field">
@@ -137,12 +151,17 @@ const AuthenticationTab: React.FC<AuthenticationTabProps> = ({
               notifyChange({ instagramHandle: e.target.value });
             }}
           />
-          <p className="form-hint">Official posts are the fastest visual reference for embroidery and label details</p>
+          <p className="form-hint">
+            Official posts are the fastest visual reference for embroidery and
+            label details
+          </p>
         </div>
       </div>
 
       <div className="tab-form-footer">
-        <button className="btn btn-primary-small" onClick={handleSave}>Save Authentication</button>
+        <button className="btn btn-primary-small" onClick={handleSave}>
+          Save Authentication
+        </button>
       </div>
     </div>
   );

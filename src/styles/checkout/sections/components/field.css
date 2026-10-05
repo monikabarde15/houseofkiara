@@ -36,20 +36,20 @@
   font-size: 8.5px;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 /* REQUIRED */
 .checkout-field label.req::after {
   content: " *";
-  color: #B85C38;
+  color: #b85c38;
   font-size: 9px;
 }
 
 /* OPTIONAL */
 .checkout-label-optional {
   font-size: 8px;
-  color: #B0A898;
+  color: #b0a898;
   letter-spacing: normal;
   text-transform: none;
   margin-left: 6px;
@@ -60,13 +60,13 @@
 .checkout-field textarea,
 .checkout-field select {
   border: none;
-  border-bottom: 1px solid #E8E0D4;
+  border-bottom: 1px solid #e8e0d4;
   background: transparent;
 
   font-family: "DM Sans", sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: #1A1612;
+  color: #1a1612;
 
   padding: 10px 0 6px;
   outline: none;
@@ -95,13 +95,13 @@
 .checkout-field input:focus,
 .checkout-field textarea:focus,
 .checkout-field select:focus {
-  border-bottom-color: #C9A96E;
+  border-bottom-color: #c9a96e;
 }
 
 /* HINT */
 .checkout-fhint {
   font-size: 10px;
-  color: #B0A898;
+  color: #b0a898;
   margin-top: -4px;
 }
 
@@ -109,13 +109,13 @@
 .checkout-checkbox-box {
   width: 15px;
   height: 15px;
-  border: 1px solid #E8E0D4;
+  border: 1px solid #e8e0d4;
   position: relative;
 }
 
 .checkout-checkbox-box.on {
-  background: #1A1612;
-  border-color: #1A1612;
+  background: #1a1612;
+  border-color: #1a1612;
 }
 
 .checkout-checkbox-box.on::after {
@@ -131,7 +131,6 @@
   left: 4px;
 }
 
-
 /* ========================================
    REQUIRED ASTERISK
 ======================================== */
@@ -139,7 +138,7 @@
 .req {
   margin-left: 3px;
 
-  color: #B85C38;
+  color: #b85c38;
 
   font-size: 9px;
   font-weight: 400;
@@ -151,7 +150,6 @@
   top: -1px;
 }
 
-
 /* ========================================
    OPTIONAL LABEL
 ======================================== */
@@ -162,9 +160,8 @@
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
   font-weight: 300;
-  color: #B0A898;
+  color: #b0a898;
 }
-
 
 /* ========================================
    FIELD ERROR
@@ -177,9 +174,8 @@
   font-size: 10px;
   line-height: 1.5;
 
-  color: #B85C38;
+  color: #b85c38;
 }
-
 
 /* ========================================
    ERROR STATE
@@ -188,7 +184,7 @@
 .checkout-field.has-error input,
 .checkout-field.has-error textarea,
 .checkout-field.has-error select {
-  border-color: #B85C38;
+  border-color: #b85c38;
 }
 
 /* ========================================
@@ -205,12 +201,10 @@
   font-family: "DM Sans", sans-serif;
   font-size: 8px;
   font-weight: 400;
-  color: #B85C38;
+  color: #b85c38;
   letter-spacing: normal;
   text-transform: none;
 }
-
-
 
 /* =========================================================
    MOBILE OVERRIDES (max-width: 430px)
@@ -227,7 +221,7 @@
   /* 2 COLUMN GRID - KEEP SIDE BY SIDE (for name fields) */
   .checkout-fg--c2 {
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;  /* Smaller gap on mobile */
+    gap: 16px; /* Smaller gap on mobile */
   }
 
   /* 3 COLUMN GRID - becomes single column on mobile */

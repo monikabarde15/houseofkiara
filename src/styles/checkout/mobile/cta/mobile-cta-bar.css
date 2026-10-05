@@ -14,8 +14,8 @@
   max-width: 430px;
   margin: 0 auto;
   z-index: 200;
-  background: #FFFFFB;
-  border-top: 1px solid #E8E0D4;
+  background: #fffffb;
+  border-top: 1px solid #e8e0d4;
   padding: 10px 16px 20px;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.3s ease;
@@ -28,7 +28,7 @@
 
 .mobile-cta-bar.docked {
   position: static;
-  border-top: 2px solid #1A1612;
+  border-top: 2px solid #1a1612;
   max-width: 100%;
   margin: 0;
   padding: 20px 16px 24px;
@@ -60,7 +60,7 @@
   font-size: 8px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   margin-bottom: 2px;
 }
 
@@ -69,7 +69,7 @@
   font-weight: 300;
   font-size: 22px;
   line-height: 1;
-  color: #1A1612;
+  color: #1a1612;
 }
 
 .mobile-cta-currency {
@@ -89,11 +89,11 @@
   font-size: 8.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
 }
 
 .mobile-cta-summary-right svg {
-  stroke: #B0A898;
+  stroke: #b0a898;
 }
 
 /* =========================
@@ -106,7 +106,7 @@
   display: block;
   width: 100%;
   padding: 15px 20px;
-  background: #1A1612;
+  background: #1a1612;
   border: none;
   cursor: pointer;
   font-family: "DM Sans", sans-serif;
@@ -114,7 +114,7 @@
   font-size: 10px;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: #E8D5B0;
+  color: #e8d5b0;
   transition: opacity 0.2s;
 }
 
@@ -172,11 +172,11 @@
   font-weight: 300;
   font-size: 8.5px;
   letter-spacing: 0.04em;
-  color: #E8E0D4;
+  color: #e8e0d4;
 }
 
 .mobile-cta-secure-note svg {
-  stroke: #E8E0D4;
+  stroke: #e8e0d4;
 }
 
 /* =========================
@@ -194,7 +194,7 @@
   font-size: 8.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #B0A898;
+  color: #b0a898;
   text-decoration: none;
 }
 

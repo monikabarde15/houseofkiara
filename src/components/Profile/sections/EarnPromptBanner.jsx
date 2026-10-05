@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
-import Toast from '../ui/Toast';
+import React, { useState } from "react";
+import { ArrowRight } from "lucide-react";
+import Toast from "../ui/Toast";
 import "../../../styles/Profile/sections/EarnPromptBanner.css";
 import { useNavigate } from "react-router-dom";
 
 const EarnPromptBanner = () => {
   const navigate = useNavigate();
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
 
   const showToastMessage = (message) => {
@@ -36,8 +36,9 @@ const EarnPromptBanner = () => {
               Your lehenga deserves <br /> another standing ovation.
             </div>
             <div className="profile-earn-body">
-              List your occasion wear on House of Kaira and earn every time it goes to a new celebration — 
-              we handle pickups, photography, quality checks, delivery, and returns.
+              List your occasion wear on House of Kaira and earn every time it
+              goes to a new celebration — we handle pickups, photography,
+              quality checks, delivery, and returns.
             </div>
           </div>
           <div className="profile-earn-ctas">
@@ -45,7 +46,10 @@ const EarnPromptBanner = () => {
               List a Piece
               <ArrowRight size={12} strokeWidth={1.5} />
             </button>
-            <button className="profile-earn-secondary" onClick={handleLearnMore}>
+            <button
+              className="profile-earn-secondary"
+              onClick={handleLearnMore}
+            >
               Learn how it works
             </button>
           </div>

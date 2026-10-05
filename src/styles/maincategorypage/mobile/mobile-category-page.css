@@ -2,7 +2,7 @@
 /* Spec §20: Safe Area, Viewport & Responsive Behaviour */
 
 .mob-category-page {
-  background: #FFFFFB;
+  background: #fffffb;
   min-height: 100vh;
   width: 100%;
   max-width: 430px;
@@ -53,7 +53,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 28px;
   font-weight: 400;
-  color: #1A1612;
+  color: #1a1612;
   letter-spacing: -0.01em;
   line-height: 1.15;
   margin: 0;
@@ -61,14 +61,14 @@
 
 .mob-heading-zone__title em {
   font-style: italic;
-  color: #C9A96E;
+  color: #c9a96e;
 }
 
 .mob-heading-zone__count {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 400;
-  color: #8A7E72;
+  color: #8a7e72;
   letter-spacing: 0.04em;
   margin: 4px 0 0 0;
 }

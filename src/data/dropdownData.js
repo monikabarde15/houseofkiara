@@ -78,11 +78,7 @@ export const dropdownData = {
       "Sherwanis",
     ],
 
-    secondaryLinks: [
-      "Like New",
-      "Gently Worn",
-      "Loved & Cherished",
-    ],
+    secondaryLinks: ["Like New", "Gently Worn", "Loved & Cherished"],
 
     middleLabel: "Shop by Designer",
 
@@ -246,11 +242,7 @@ export const dropdownData = {
 
     modeLabel: "Shop by Mode",
 
-    modes: [
-      "Rent",
-      "Buy Preloved",
-      "Buy New",
-    ],
+    modes: ["Rent", "Buy Preloved", "Buy New"],
 
     cardsTitle: "Featured Womenswear",
 
@@ -305,19 +297,11 @@ export const dropdownData = {
 
     middleLabel: "Shop by Occasion",
 
-    occasions: [
-      "Groom",
-      "Wedding Guest",
-      "Festive",
-    ],
+    occasions: ["Groom", "Wedding Guest", "Festive"],
 
     modeLabel: "Shop by Mode",
 
-    modes: [
-      "Rent",
-      "Buy Preloved",
-      "Buy New",
-    ],
+    modes: ["Rent", "Buy Preloved", "Buy New"],
 
     cardsTitle: "Featured Menswear",
 
@@ -372,11 +356,7 @@ export const dropdownData = {
 
     middleLabel: "Shop by Mode",
 
-    modes: [
-      "Rent for the Occasion",
-      "Buy Preloved",
-      "Buy New",
-    ],
+    modes: ["Rent for the Occasion", "Buy Preloved", "Buy New"],
 
     quickFilterLabel: "Quick Filters",
 
@@ -450,11 +430,7 @@ export const dropdownData = {
 
     newToHokLabel: "New to HOK",
 
-    newToHok: [
-      "Papa Don't Preach",
-      "Ekaya",
-      "Rahul Mishra",
-    ],
+    newToHok: ["Papa Don't Preach", "Ekaya", "Rahul Mishra"],
 
     middleFooter: "Partner with HOK →",
 
