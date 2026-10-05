@@ -11,13 +11,17 @@ async function request(url, options = {}) {
   const { method = "GET", body, headers = {} } = options;
   const fetchOptions = {
     method,
-    headers: {
-      "Content-Type": "application/json",
-      ...headers,
-    },
+    headers: { ...headers },
   };
+
   if (body) {
-    fetchOptions.body = JSON.stringify(body);
+    if (body instanceof FormData) {
+      fetchOptions.body = body;
+      // Note: We don't set Content-Type here; browser handles multipart/form-data with boundary
+    } else {
+      fetchOptions.headers["Content-Type"] = "application/json";
+      fetchOptions.body = JSON.stringify(body);
+    }
   }
   const response = await fetch(url, fetchOptions);
   const data = await response.json().catch(() => ({}));
