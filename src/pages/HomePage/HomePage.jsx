@@ -1,4 +1,5 @@
 import Categories from "../../components/Home/Categories/Categories";
+import Occasions from "../../components/Home/Occasions/Occasions";
 import Commitment from "../../components/Home/Commitment/Commitment";
 import FeaturedDesigners from "../../components/Home/Designers/FeaturedDesigners";
 import Featured from "../../components/Home/Featured/Featured";
@@ -14,6 +15,7 @@ const HomePage = () => {
       <HowItWorks />
       <Featured />
       <Categories />
+      <Occasions />
       <Commitment />
       <FeaturedDesigners />
       <Testimonials />

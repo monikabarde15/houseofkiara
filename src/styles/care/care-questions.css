@@ -1,0 +1,304 @@
+/**
+ * House of Kaira - Care Policy Question Accordion & Answer Styles (Component C9)
+ * Sections 5.9, 6.1, 6.7, 6.8, 7.10 of Build Specification 2.0
+ */
+
+@import './care-variables.css';
+
+/* List top charcoal rule */
+.sec-list {
+  border-top: 1px solid var(--care-charcoal);
+  width: 100%;
+}
+
+/* Accordion Row */
+.cq {
+  border-bottom: 1px solid var(--care-border);
+  scroll-margin-top: calc(114px + 12px);
+  position: relative;
+  width: 100%;
+}
+
+/* Question Header Button */
+.cq-b {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 14px;
+  gap: 16px;
+  align-items: center;
+  padding: 19px 16px 19px 18px;
+  position: relative;
+  transition: background-color var(--care-transition-fast);
+}
+
+.cq-b::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background-color: transparent;
+  transition: background-color var(--care-transition-fast);
+}
+
+.cq-t {
+  font-family: var(--care-font-serif);
+  font-size: 20px;
+  line-height: 1.35;
+  color: var(--care-ink);
+  transition: color var(--care-transition-fast);
+  margin: 0;
+}
+
+.cq-b > svg {
+  width: 12px;
+  height: 12px;
+  stroke: #A79B8D;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--care-transition-smooth), stroke var(--care-transition-fast);
+}
+
+/* Hover State */
+.cq-b:hover {
+  background-color: rgba(250, 247, 242, 0.7);
+}
+
+.cq-b:hover .cq-t {
+  color: var(--care-charcoal);
+}
+
+/* Open State (.cq.on) */
+.cq.on .cq-b {
+  background-color: var(--care-cream);
+}
+
+.cq.on .cq-b::before {
+  background-color: var(--care-gold);
+}
+
+.cq.on .cq-t {
+  color: var(--care-charcoal);
+}
+
+.cq.on .cq-b > svg {
+  transform: rotate(90deg);
+  stroke: var(--care-gold);
+}
+
+/* Smooth Accordion Height Animation via Grid Template Rows */
+.cq-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: var(--care-cream);
+}
+
+.cq.on .cq-body {
+  grid-template-rows: 1fr;
+}
+
+.cq-in {
+  overflow: hidden;
+}
+
+.cq-pad {
+  padding: 2px 64px 26px 18px;
+}
+
+/* Verdict Tags */
+.vd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--care-font-sans);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.vd::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  flex-shrink: 0;
+}
+
+.v-yes {
+  color: var(--care-sage);
+}
+
+.v-mid {
+  color: var(--care-gold-deep);
+}
+
+.v-no {
+  color: var(--care-terracotta);
+}
+
+/* Answer Content */
+.ans {
+  font-family: var(--care-font-sans);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--care-ink-2);
+  max-width: 660px;
+}
+
+.ans p {
+  margin: 0;
+}
+
+.ans p + p,
+.ans p + ul,
+.ans ul + p,
+.ans .note,
+.ans ul + .note {
+  margin-top: 12px;
+}
+
+.ans strong {
+  font-weight: 500;
+  color: var(--care-charcoal);
+}
+
+.ans ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ans li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  padding: 3px 0;
+}
+
+.ans li::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--care-gold);
+  margin-top: 12px;
+}
+
+.lnk {
+  color: var(--care-charcoal);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--care-gold-light);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 400;
+  padding: 0;
+  text-align: left;
+  transition: color var(--care-transition-fast), border-color var(--care-transition-fast);
+}
+
+.lnk:hover {
+  color: var(--care-gold-deep);
+  border-color: var(--care-gold);
+}
+
+.note {
+  padding-left: 16px;
+  border-left: 1px solid var(--care-gold);
+  font-family: var(--care-font-serif);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--care-ink-3);
+}
+
+/* Question Footer */
+.cq-foot {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--care-border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  font-family: var(--care-font-sans);
+  font-size: 12px;
+  color: var(--care-muted);
+}
+
+.cq-foot button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--care-font-sans);
+  font-size: 12px;
+  color: var(--care-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0;
+  transition: color var(--care-transition-fast);
+}
+
+.cq-foot button:hover {
+  color: var(--care-charcoal);
+}
+
+.cq-foot svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cq-foot svg.fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Inside Our Care (C12): Open answers sit on warm white */
+.oc .sec-list .cq-b:hover {
+  background-color: rgba(255, 254, 251, 0.6);
+}
+
+.oc .cq.on .cq-b,
+.oc .cq-body {
+  background-color: var(--care-warm-white);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 760px) {
+  .cq-b {
+    grid-template-columns: minmax(0, 1fr) 12px;
+    gap: 6px 12px;
+    padding: 16px 6px 16px 12px;
+  }
+  .cq-b .vd {
+    grid-row: 2;
+    grid-column: 1;
+  }
+  .cq-b > svg {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+  }
+  .cq-t {
+    font-size: 18px;
+  }
+  .cq-pad {
+    padding: 2px 12px 22px;
+  }
+}

@@ -135,7 +135,14 @@
 
 .hok-hp-band-row-card.is-selected {
   border-color: var(--gold);
-  box-shadow: 0 0 0 2px var(--gold-pale);
+  box-shadow: inset 0 0 0 2px var(--gold);
+}
+
+/* Mobile Constraint: 214px frame (Spec 9.1) */
+.hok-hp-nav-container.is-mobile .hok-hp-chrome-strip,
+.hok-hp-nav-container.is-mobile .hok-hp-bands-list {
+  width: 214px;
+  margin: 0 auto;
 }
 
 .hok-hp-band-card-top {
@@ -174,10 +181,10 @@
   text-decoration: line-through;
 }
 
-/* Issue Dots */
+/* Issue Dots (Spec 6.2: 5px dot) */
 .hok-hp-issue-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;
@@ -195,13 +202,18 @@
   background-color: var(--muted-l);
 }
 
-/* Reorder Arrows on Band Card */
+/* Reorder Arrows on Band Card (Spec 6.2: Stacked ▲▼, 14 × 10px, opacity 0 until hover or selection) */
 .hok-hp-reorder-group {
-  display: flex;
+  display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 2px;
+  justify-content: center;
+  width: 14px;
+  height: 10px;
   opacity: 0;
   transition: opacity var(--transition-fast);
+  line-height: 0;
+  margin-right: 2px;
 }
 
 .hok-hp-band-row-card:hover .hok-hp-reorder-group,
@@ -212,11 +224,17 @@
 .hok-hp-band-arrow-btn {
   background: transparent;
   border: none;
-  font-size: 8px;
+  font-size: 6px;
+  line-height: 5px;
+  height: 5px;
+  width: 14px;
   color: var(--muted);
   cursor: pointer;
-  padding: 1px 3px;
-  line-height: 1;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hok-hp-band-arrow-btn:hover:not(:disabled) {
@@ -258,6 +276,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.hok-hp-sketch-kicker {
+  font-size: 7px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 1px;
 }
 
 .hok-hp-sketch-headline {
@@ -325,7 +353,7 @@
 .hok-hp-spine-btn {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--r);
   background-color: var(--card);
   border: 1px solid var(--border);
   display: flex;
@@ -337,6 +365,10 @@
   cursor: pointer;
   position: relative;
   transition: all var(--transition-fast);
+}
+
+.hok-hp-spine-btn.is-hidden {
+  opacity: 0.5;
 }
 
 .hok-hp-spine-btn:hover {

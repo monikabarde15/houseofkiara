@@ -33,6 +33,8 @@ import RefundsPage from "./pages/Refunds/RefundsPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import CookiePage from "./pages/CookiePage";
+import DepositPage from "./pages/DepositPage";
+import CarePolicyPage from "./pages/CarePolicyPage";
 
 export default function App() {
   useEffect(() => {
@@ -96,6 +98,12 @@ export default function App() {
         <Route path="/cookies" element={<CookiePage />} />
         <Route path="/cookie" element={<Navigate to="/cookies" replace />} />
         <Route path="/cookie-policy" element={<Navigate to="/cookies" replace />} />
+        <Route path="/deposit" element={<DepositPage />} />
+        <Route path="/deposit-policy" element={<Navigate to="/deposit" replace />} />
+        <Route path="/care-policy" element={<CarePolicyPage />} />
+        <Route path="/care" element={<Navigate to="/care-policy" replace />} />
+        <Route path="/care-cleaning-damage" element={<Navigate to="/care-policy" replace />} />
+        <Route path="/care-damage" element={<Navigate to="/care-policy" replace />} />
 
       </Routes>
 

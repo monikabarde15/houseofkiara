@@ -28,11 +28,13 @@ export const detectHomepageDiffs = (
 ): ChangedBandInfo[] => {
   const changes: ChangedBandInfo[] = [];
 
-  // 1. Check each band's content
+  // 1. Check each band's content and visibility
   (Object.keys(BAND_DISPLAY_NAMES) as BandId[]).forEach((bandId) => {
     const currStr = JSON.stringify(current[bandId]);
     const baseStr = JSON.stringify(baseline[bandId]);
-    if (currStr !== baseStr) {
+    const currVis = current.vis?.[bandId];
+    const baseVis = baseline.vis?.[bandId];
+    if (currStr !== baseStr || currVis !== baseVis) {
       changes.push({
         bandId,
         bandName: BAND_DISPLAY_NAMES[bandId]
@@ -48,18 +50,6 @@ export const detectHomepageDiffs = (
       changes.push({
         bandId: 'order',
         bandName: 'Band Order'
-      });
-    }
-  }
-
-  // 3. Check Visibility
-  const currentVis = JSON.stringify(current.vis);
-  const baselineVis = JSON.stringify(baseline.vis);
-  if (currentVis !== baselineVis) {
-    if (!changes.some((c) => c.bandId === 'vis')) {
-      changes.push({
-        bandId: 'vis',
-        bandName: 'Band Visibility'
       });
     }
   }

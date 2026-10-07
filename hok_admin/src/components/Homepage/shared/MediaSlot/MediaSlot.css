@@ -46,6 +46,14 @@
   gap: 14px;
 }
 
+.hok-media-preview-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .hok-media-preview-box {
   border-radius: var(--r);
   display: flex;

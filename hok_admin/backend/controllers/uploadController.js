@@ -1,5 +1,11 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import cloudinary from "../config/cloudinary.js";
 import { Readable } from "stream";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const uploadBuffer = (buffer, options) =>
   new Promise((resolve, reject) => {
@@ -12,19 +18,40 @@ const uploadBuffer = (buffer, options) =>
 
 export const uploadFile = async (req, res) => {
   try {
+    if (!req.file) {
+      return res
+        .status(422)
+        .json({ success: false, message: "file is required" });
+    }
+
     if (
       !process.env.CLOUD_NAME ||
       !process.env.CLOUD_API_KEY ||
       !process.env.CLOUD_API_SECRET
     ) {
-      return res
-        .status(503)
-        .json({ success: false, message: "Cloudinary is not configured" });
-    }
-    if (!req.file) {
-      return res
-        .status(422)
-        .json({ success: false, message: "file is required" });
+      // Local disk fallback storage
+      const rootUploadsDir = path.resolve(__dirname, "../../../public/uploads");
+      const adminUploadsDir = path.resolve(__dirname, "../../public/uploads");
+      if (!fs.existsSync(rootUploadsDir)) fs.mkdirSync(rootUploadsDir, { recursive: true });
+      if (!fs.existsSync(adminUploadsDir)) fs.mkdirSync(adminUploadsDir, { recursive: true });
+
+      const ext = path.extname(req.file.originalname) || ".jpg";
+      const filename = `hero_${Date.now()}_${Math.random().toString(36).substring(2, 8)}${ext}`;
+
+      await fs.promises.writeFile(path.join(rootUploadsDir, filename), req.file.buffer);
+      try {
+        await fs.promises.writeFile(path.join(adminUploadsDir, filename), req.file.buffer);
+      } catch (_) {}
+
+      return res.status(201).json({
+        success: true,
+        data: {
+          url: `/uploads/${filename}`,
+          publicId: filename,
+          resourceType: "image",
+          bytes: req.file.size,
+        },
+      });
     }
 
     const baseSection = String(req.body.folder || "products")

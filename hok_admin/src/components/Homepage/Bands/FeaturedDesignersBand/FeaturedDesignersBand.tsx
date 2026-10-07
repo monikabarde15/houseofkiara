@@ -1,28 +1,20 @@
 /* =========================================================
    HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · FEATURED DESIGNERS (Spec 8.7)
+   Spec Section 8.7 (v213)
 ========================================================= */
 
 import React, { useState } from 'react';
 import './FeaturedDesignersBand.css';
-import {
-  DesignersSettings,
-  DesignerTileConfig,
-  HealthIssue
-} from '../../types/homepage.types';
+import { DesignersSettings, HealthIssue } from '../../types/homepage.types';
 import { Card } from '../../shared/Card/Card';
 import { Field } from '../../shared/Field/Field';
 import { ReadsAsMirror } from '../../shared/ReadsAsMirror/ReadsAsMirror';
 import { PillToggle } from '../../shared/PillToggle/PillToggle';
 import { IssueStrip } from '../../shared/IssueStrip/IssueStrip';
-import { MediaSlot } from '../../shared/MediaSlot/MediaSlot';
 import { Deck } from '../../shared/Deck/Deck';
 import { DeckTileItem } from '../../shared/Deck/DeckTile';
 import { Inspector } from '../../shared/Deck/Inspector';
-import {
-  DoorArrowIcon,
-  PlusIcon,
-  SearchMagnifierIcon
-} from '../../shared/icons/HomepageIcons';
+import { DoorArrowIcon } from '../../shared/icons/HomepageIcons';
 
 interface FeaturedDesignersBandProps {
   settings: DesignersSettings;
@@ -33,18 +25,19 @@ interface FeaturedDesignersBandProps {
   onNavigateToModule?: (mod: string) => void;
 }
 
-// Master Designers data registry (derived values owned by Master Data)
-const MASTER_DESIGNERS = [
-  { id: 'sabyasachi', name: 'Sabyasachi', type: 'Couture House', city: 'Kolkata', livePieces: 14, initials: 'SB', slug: '/designers/sabyasachi' },
-  { id: 'manish-malhotra', name: 'Manish Malhotra', type: 'Couture House', city: 'Mumbai', livePieces: 9, initials: 'MM', slug: '/designers/manish-malhotra' },
-  { id: 'tarun-tahiliani', name: 'Tarun Tahiliani', type: 'Couture House', city: 'New Delhi', livePieces: 7, initials: 'TT', slug: '/designers/tarun-tahiliani' },
-  { id: 'anita-dongre', name: 'Anita Dongre', type: 'Couture House', city: 'Mumbai', livePieces: 8, initials: 'AD', slug: '/designers/anita-dongre' },
-  { id: 'rahul-mishra', name: 'Rahul Mishra', type: 'Couture House', city: 'New Delhi', livePieces: 6, initials: 'RM', slug: '/designers/rahul-mishra' },
-  { id: 'ridhi-mehra', name: 'Ridhi Mehra', type: 'Contemporary Label', city: 'New Delhi', livePieces: 5, initials: 'RM', slug: '/designers/ridhi-mehra' },
-  { id: 'seema-gujral', name: 'Seema Gujral', type: 'Couture House', city: 'Noida', livePieces: 4, initials: 'SG', slug: '/designers/seema-gujral' },
-  { id: 'amit-aggarwal', name: 'Amit Aggarwal', type: 'Contemporary Label', city: 'New Delhi', livePieces: 3, initials: 'AA', slug: '/designers/amit-aggarwal' },
-  { id: 'raw-mango', name: 'Raw Mango', type: 'Heritage Label', city: 'New Delhi', livePieces: 4, initials: 'RM', slug: '/designers/raw-mango' },
-  { id: 'torani', name: 'Torani', type: 'Heritage Wear', city: 'New Delhi', livePieces: 3, initials: 'TR', slug: '/designers/torani' }
+// Master Designers data registry (derived from Designers module)
+const ALL_MASTER_DESIGNERS = [
+  { id: 'sabyasachi', name: 'Sabyasachi', type: 'Couture House', city: 'Kolkata, India', livePieces: 3, initials: 'SB', img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=400&q=80' },
+  { id: 'manish-malhotra', name: 'Manish Malhotra', type: 'Couture House', city: 'Mumbai, India', livePieces: 0, initials: 'MM', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80' },
+  { id: 'tarun-tahiliani', name: 'Tarun Tahiliani', type: 'Couture House', city: 'New Delhi, India', livePieces: 1, initials: 'TT', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80' },
+  { id: 'anita-dongre', name: 'Anita Dongre', type: 'Couture House', city: 'Mumbai, India', livePieces: 1, initials: 'AD', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80' },
+  { id: 'raw-mango', name: 'Raw Mango', type: 'Contemporary Label', city: 'New Delhi, India', livePieces: 0, initials: 'RM', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80' },
+  { id: 'abu-jani-sandeep', name: 'Abu Jani Sandeep', type: 'Couture House', city: 'Mumbai, India', livePieces: 0, initials: 'AJ', img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80' },
+  { id: 'torani', name: 'Torani', type: 'Contemporary Label', city: 'New Delhi, India', livePieces: 0, initials: 'TR', img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80' },
+  { id: 'ekaya', name: 'Ekaya', type: 'Heritage Weave', city: 'New Delhi, India', livePieces: 0, initials: 'EK', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80' },
+  { id: 'papa-dont-preach', name: "Papa Don't Preach", type: 'Contemporary Label', city: 'Mumbai, India', livePieces: 0, initials: 'PD', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=400&q=80' },
+  { id: 'rahul-mishra', name: 'Rahul Mishra', type: 'Couture House', city: 'New Delhi, India', livePieces: 0, initials: 'RM', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80' },
+  { id: 'rimzim-dadu', name: 'Rimzim Dadu', type: 'Contemporary Label', city: 'New Delhi, India', livePieces: 0, initials: 'RD', img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=400&q=80' }
 ];
 
 const DEFAULT_SLOTS = [
@@ -52,8 +45,9 @@ const DEFAULT_SLOTS = [
   'manish-malhotra',
   'tarun-tahiliani',
   'anita-dongre',
-  'rahul-mishra',
-  'ridhi-mehra'
+  'raw-mango',
+  'abu-jani-sandeep',
+  'torani'
 ];
 
 export const FeaturedDesignersBand: React.FC<FeaturedDesignersBandProps> = ({
@@ -65,29 +59,35 @@ export const FeaturedDesignersBand: React.FC<FeaturedDesignersBandProps> = ({
   onNavigateToModule
 }) => {
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
-  const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [pickerSearch, setPickerSearch] = useState('');
+  const [showAddPanel, setShowAddPanel] = useState<boolean>(false);
 
   const slots = settings.slots && settings.slots.length > 0 ? settings.slots : DEFAULT_SLOTS;
-  const tilesConfig = settings.tiles || {};
+  const cap = settings.cap || 6;
+  const unfeaturedDesigners = ALL_MASTER_DESIGNERS.filter((d) => !slots.includes(d.id));
 
-  // Deck items representation
+  // Deck items
   const deckItems: DeckTileItem[] = slots.map((designerId, idx) => {
-    const master = MASTER_DESIGNERS.find((m) => m.id === designerId);
-    const tileConf = tilesConfig[designerId] || {};
-    const displayName = tileConf.lbl || master?.name || designerId;
+    const master = ALL_MASTER_DESIGNERS.find((m) => m.id === designerId);
+    const displayName = master?.name || designerId;
     const pieces = master?.livePieces ?? 0;
+    const isPastCut = idx >= cap;
+
+    let flag: { type: 'need' | 'off'; label: string } | undefined;
+    if (isPastCut) {
+      flag = { type: 'off', label: 'PAST THE CUT' };
+    } else if (pieces === 0) {
+      flag = { type: 'need', label: 'NOTHING LIVE' };
+    }
 
     return {
       id: `designer-slot-${designerId}-${idx}`,
       position: idx + 1,
       title: displayName,
-      sub: `${master?.type || 'Designer'} · ${master?.city || 'India'}`,
-      badge: settings.showCount ? `${pieces} PIECES` : undefined,
-      imageUrl: tileConf.img,
-      noPicture: !tileConf.img,
-      initials: master?.initials || displayName.slice(0, 2).toUpperCase(),
-      pictureHeight: 110
+      sub: `${pieces} live pieces`,
+      pictureUrl: master?.img,
+      pictureHeight: 108,
+      cornerFlag: flag,
+      dimmed: isPastCut || pieces === 0
     };
   });
 
@@ -97,36 +97,11 @@ export const FeaturedDesignersBand: React.FC<FeaturedDesignersBandProps> = ({
       : null;
 
   const selectedMaster = selectedDesignerId
-    ? MASTER_DESIGNERS.find((m) => m.id === selectedDesignerId)
+    ? ALL_MASTER_DESIGNERS.find((m) => m.id === selectedDesignerId)
     : null;
 
-  const selectedTileConfig = selectedDesignerId
-    ? tilesConfig[selectedDesignerId] || { alt: '', img: '', lbl: '' }
-    : null;
-
-  // Handlers
-  const handleUpdateTileConfig = (designerId: string, patch: Partial<DesignerTileConfig>) => {
-    const current = tilesConfig[designerId] || { alt: '', img: '', lbl: '' };
-    onChange({
-      ...settings,
-      tiles: {
-        ...tilesConfig,
-        [designerId]: {
-          ...current,
-          ...patch
-        }
-      }
-    });
-  };
-
-  const handleSwapSlot = (index: number, newDesignerId: string) => {
-    const updated = [...slots];
-    updated[index] = newDesignerId;
-    onChange({ ...settings, slots: updated });
-  };
-
-  const handleMoveSlot = (index: number, direction: 'earlier' | 'later') => {
-    const target = direction === 'earlier' ? index - 1 : index + 1;
+  const handleMoveSlot = (index: number, direction: 'up' | 'down') => {
+    const target = direction === 'up' ? index - 1 : index + 1;
     if (target < 0 || target >= slots.length) return;
     const updated = [...slots];
     const temp = updated[index];
@@ -139,496 +114,421 @@ export const FeaturedDesignersBand: React.FC<FeaturedDesignersBandProps> = ({
   const handleRemoveSlot = (index: number) => {
     const updated = slots.filter((_, i) => i !== index);
     onChange({ ...settings, slots: updated });
-    setSelectedSlotIndex(null);
+    if (selectedSlotIndex === index) {
+      setSelectedSlotIndex(null);
+    } else if (selectedSlotIndex !== null && selectedSlotIndex > index) {
+      setSelectedSlotIndex(selectedSlotIndex - 1);
+    }
   };
 
-  const handleAddSlot = (designerId: string) => {
-    if (slots.length >= (settings.cap || 6)) return;
-    if (slots.includes(designerId)) return;
-    onChange({ ...settings, slots: [...slots, designerId] });
-    setIsPickerOpen(false);
+  const handleAddDesigner = (designerId: string) => {
+    if (slots.length >= 8) return;
+    const updated = [...slots, designerId];
+    onChange({ ...settings, slots: updated });
+    setSelectedSlotIndex(updated.length - 1);
   };
-
-  const filteredPickerDesigners = MASTER_DESIGNERS.filter((d) => {
-    if (slots.includes(d.id)) return false;
-    if (!pickerSearch) return true;
-    const q = pickerSearch.toLowerCase();
-    return (
-      d.name.toLowerCase().includes(q) ||
-      d.type.toLowerCase().includes(q) ||
-      d.city.toLowerCase().includes(q)
-    );
-  });
 
   return (
-    <div className="hok-band-editor hok-featured-designers-band">
-      {/* Band Header Card */}
-      <Card
-        variant="elevated"
-        header={{
-          eyebrow: 'BAND 7 · FEATURED DESIGNERS',
-          title: 'Featured Designers',
-          meta: isShown ? 'VISIBLE ON STOREFRONT' : 'HIDDEN',
-          status: isShown ? 'live' : 'draft',
-          actions: (
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={isShown}
-              onChange={onToggleShown}
-            />
-          )
-        }}
-      >
-        <p className="hok-band-intro">
-          Six featured luxury Indian couture houses and contemporary designer labels. Live piece counts are read directly from active catalogue inventory.
-        </p>
+    <div className="hok-designers-band">
+      {/* 7. Editor Shell Top */}
+      <div className="hok-hp-editor-heading-row">
+        <h2 className="hok-hp-editor-band-title">Featured Designers</h2>
+        <span className="hok-hp-editor-band-counter">Band 7 of 9</span>
+      </div>
 
-        {issues.length > 0 && (
-          <div className="hok-band-issues">
-            {issues.map((iss, i) => (
-              <IssueStrip
-                key={i}
-                severity={iss.severity}
-                message={iss.message}
-                actionLabel={iss.actionLabel}
-              />
-            ))}
-          </div>
-        )}
-      </Card>
+      <p className="hok-hp-editor-band-desc">
+        Who appears is decided on the designer’s own profile. The band around them — heading, layout, button wording — is decided here.
+      </p>
 
-      {/* Card 1: Headings & Navigation */}
-      <Card
-        header={{
-          eyebrow: 'BAND HEADINGS & DESTINATION',
-          title: 'Heading, "View all" Link and Header Controls',
-          meta: 'Top text and CTA options'
-        }}
-      >
-        <div className="hok-des-words-grid">
-          <Field
-            label="Eyebrow"
-            hint="Small caps kicker text"
-          >
-            <input
-              id="designers-eyebrow"
-              type="text"
-              className="hok-input"
-              value={settings.eyebrow}
-              onChange={(e) => onChange({ ...settings, eyebrow: e.target.value })}
-              placeholder="Trusted Creators"
-            />
-          </Field>
-
-          <Field
-            label="Main Heading"
-            hint="Wrap *words in asterisks* for gold italic serif font"
-          >
-            <input
-              id="designers-heading"
-              type="text"
-              className="hok-input"
-              value={settings.heading}
-              onChange={(e) => onChange({ ...settings, heading: e.target.value })}
-              placeholder="Featured *Designers*"
-            />
-          </Field>
-        </div>
-
-        <div className="hok-des-mirror-box">
-          <span className="hok-des-mirror-label">Live Storefront Heading Preview</span>
-          <ReadsAsMirror
-            eyebrow={settings.eyebrow}
-            heading={settings.heading}
-            className="hok-des-reads-as"
+      {/* 7.1 Visibility Row */}
+      <div className="hok-hp-visibility-row" id="designers-visibility">
+        <div className="hok-hp-visibility-left">
+          <PillToggle
+            checked={isShown}
+            onChange={onToggleShown}
+            label="Show this band on the homepage"
           />
         </div>
+        <span className="hok-hp-visibility-consequence">
+          {isShown
+            ? 'Showing on the live homepage, in position 7.'
+            : 'Hidden. The settings below are kept, so it can come back exactly as it was.'}
+        </span>
+      </div>
 
-        <div className="hok-divider" />
+      {/* Issues Strip */}
+      {issues.map((iss) => (
+        <IssueStrip
+          key={iss.id}
+          severity={iss.sev}
+          message={iss.msg}
+          doorLabel={iss.doorLabel}
+          onDoorClick={() => iss.door && onNavigateToModule && onNavigateToModule(iss.door)}
+        />
+      ))}
 
-        <div id="designers-kick" className="hok-des-links-grid">
-          <Field
-            label='"View all" Link Text'
-            hint="Top right link label"
-          >
-            <input
-              type="text"
-              className="hok-input"
-              value={settings.viewAll.lbl}
-              onChange={(e) =>
-                onChange({
-                  ...settings,
-                  viewAll: { ...settings.viewAll, lbl: e.target.value }
-                })
-              }
-              placeholder="All Designers →"
-            />
-          </Field>
-
-          <Field
-            label="Destination URL"
-            hint="Target path for the link"
-          >
-            <input
-              type="text"
-              className="hok-input"
-              value={settings.viewAll.url}
-              onChange={(e) =>
-                onChange({
-                  ...settings,
-                  viewAll: { ...settings.viewAll, url: e.target.value }
-                })
-              }
-              placeholder="/designers"
-            />
-          </Field>
-
-          <Field
-            label="Tile Hover CTA"
-            hint="Button label shown on designer cards"
-          >
-            <input
-              type="text"
-              className="hok-input"
-              value={settings.ctaLbl}
-              onChange={(e) => onChange({ ...settings, ctaLbl: e.target.value })}
-              placeholder="Shop the Collection"
-            />
-          </Field>
-        </div>
-
-        <div className="hok-divider" />
-
-        <div className="hok-des-header-toggles-grid">
-          <div className="hok-des-header-toggle-item">
-            <div className="hok-des-toggle-text">
-              <span className="hok-des-toggle-title">Show header on Desktop</span>
-              <span className="hok-des-toggle-desc">Renders eyebrow, heading, and "View all" link on desktop</span>
-            </div>
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={settings.header}
-              onChange={(val) => onChange({ ...settings, header: Boolean(val) })}
-            />
+      {/* Card 1 — The words (Spec 8.7.1) */}
+      <Card
+        id="designers-words-card"
+        title="The words"
+      >
+        <div className="hok-des-field-stack">
+          <div id="designers-eyebrow">
+            <Field label="Eyebrow">
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.eyebrow}
+                onChange={(e) => onChange({ ...settings, eyebrow: e.target.value })}
+                placeholder="Trusted Creators"
+              />
+            </Field>
           </div>
 
-          <div className="hok-des-header-toggle-item">
-            <div className="hok-des-toggle-text">
-              <span className="hok-des-toggle-title">Show header on Mobile</span>
-              <span className="hok-des-toggle-desc">Renders section heading above carousel on mobile</span>
-            </div>
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={settings.headerMob}
-              onChange={(val) => onChange({ ...settings, headerMob: Boolean(val) })}
-            />
+          <div id="designers-heading">
+            <Field
+              label="Heading"
+              hint="A line break starts a new line. Wrap one word in *asterisks* to set it in the italic gold serif, the way the storefront does."
+            >
+              <textarea
+                className="hok-field-textarea"
+                rows={2}
+                value={settings.heading}
+                onChange={(e) => onChange({ ...settings, heading: e.target.value })}
+                placeholder="Featured *Designers*"
+              />
+            </Field>
+            <ReadsAsMirror text={settings.heading} />
+          </div>
+
+          <div className="hok-des-grid-2col">
+            <Field label="View-all label">
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.viewAll.lbl}
+                onChange={(e) =>
+                  onChange({
+                    ...settings,
+                    viewAll: { ...settings.viewAll, lbl: e.target.value }
+                  })
+                }
+                placeholder="All Designers →"
+              />
+            </Field>
+
+            <Field label="View-all link">
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.viewAll.url}
+                onChange={(e) =>
+                  onChange({
+                    ...settings,
+                    viewAll: { ...settings.viewAll, url: e.target.value }
+                  })
+                }
+                placeholder="/designers"
+              />
+            </Field>
           </div>
         </div>
       </Card>
 
-      {/* Card 2: 6 Designers Deck & Inspector */}
+      {/* Card 2 — The designers (Spec 8.7.2) */}
       <Card
-        header={{
-          eyebrow: 'DESIGNER SLOTS',
-          title: '6 Featured Designer Slots',
-          meta: `${slots.length} of ${settings.cap || 6} slots filled · 6-across deck`,
-          actions:
-            slots.length < (settings.cap || 6) ? (
-              <button
-                type="button"
-                className="hok-des-add-slot-btn"
-                onClick={() => setIsPickerOpen(true)}
-              >
-                <PlusIcon size={11} /> Add Designer
-              </button>
-            ) : undefined
-        }}
+        title="The designers"
+        sub="Six across, the grid the homepage draws. Portraits are read from each designer’s record."
+        doorLabel="Open Designers"
+        onDoorClick={() => onNavigateToModule && onNavigateToModule('Designers')}
       >
-        <p className="hok-field-hint" style={{ marginBottom: 14 }}>
-          Click any designer tile below to configure portrait imagery, custom display label, or swap with another designer.
-        </p>
-
         <div className="hok-des-deck-wrapper">
           <Deck
             arrangement="d6"
             items={deckItems}
             selectedIndex={selectedSlotIndex}
-            onSelectIndex={(idx) => setSelectedSlotIndex(idx)}
-            onMoveEarlier={(idx) => handleMoveSlot(idx, 'earlier')}
-            onMoveLater={(idx) => handleMoveSlot(idx, 'later')}
+            onSelectIndex={setSelectedSlotIndex}
+            onMoveEarlier={(idx) => handleMoveSlot(idx, 'up')}
+            onMoveLater={(idx) => handleMoveSlot(idx, 'down')}
+            onRemove={handleRemoveSlot}
+            removeLabel="Take off"
+            onAddTile={() => setShowAddPanel(!showAddPanel)}
+            addLabel="Add a designer"
+            addCountText={`${unfeaturedDesigners.length} not on the homepage`}
+            maxReached={slots.length >= 8}
           />
 
-          {selectedDesignerId && selectedMaster && selectedSlotIndex !== null && (
-            <Inspector
-              title={`Edit Designer Slot ${selectedSlotIndex + 1}: ${selectedMaster.name}`}
-              position={selectedSlotIndex + 1}
-              totalItems={slots.length}
-              onClose={() => setSelectedSlotIndex(null)}
-              onMoveUp={selectedSlotIndex > 0 ? () => handleMoveSlot(selectedSlotIndex, 'earlier') : undefined}
-              onMoveDown={
-                selectedSlotIndex < slots.length - 1
-                  ? () => handleMoveSlot(selectedSlotIndex, 'later')
-                  : undefined
-              }
-            >
-              <div className="hok-des-inspector-content">
-                {/* Designer Master Data Door */}
-                <div className="hok-des-master-door">
-                  <div className="hok-des-door-left">
-                    <span className="hok-des-door-tag">MASTER DATA RECORD</span>
-                    <span className="hok-des-door-name">{selectedMaster.name}</span>
-                    <span className="hok-des-door-meta">
-                      {selectedMaster.type} · {selectedMaster.city} · {selectedMaster.livePieces} active pieces
-                    </span>
-                  </div>
-                  {onNavigateToModule && (
-                    <button
-                      type="button"
-                      className="hok-des-door-btn"
-                      onClick={() => onNavigateToModule('Designers')}
-                    >
-                      Open in Designers <DoorArrowIcon size={10} />
-                    </button>
-                  )}
-                </div>
-
-                <Field
-                  label="Switch Designer"
-                  hint="Select a different designer for this slot"
-                >
-                  <select
-                    className="hok-select"
-                    value={selectedDesignerId}
-                    onChange={(e) => handleSwapSlot(selectedSlotIndex, e.target.value)}
-                  >
-                    {MASTER_DESIGNERS.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.name} ({m.livePieces} live pieces)
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-
-                <Field
-                  label="Custom Display Name"
-                  hint="What appears on the tile (falls back to designer name)"
-                >
-                  <input
-                    type="text"
-                    className="hok-input"
-                    value={selectedTileConfig?.lbl || ''}
-                    onChange={(e) =>
-                      handleUpdateTileConfig(selectedDesignerId, { lbl: e.target.value })
-                    }
-                    placeholder={selectedMaster.name}
-                  />
-                </Field>
-
-                <Field
-                  label="Portrait Image"
-                  hint="Image Spec: 220 × 280 px (portrait portrait card)"
-                >
-                  <MediaSlot
-                    imageUrl={selectedTileConfig?.img}
-                    specDims="220 × 280 px"
-                    label={`Portrait for ${selectedMaster.name}`}
-                    onUpload={(url) => handleUpdateTileConfig(selectedDesignerId, { img: url })}
-                    onRemove={() => handleUpdateTileConfig(selectedDesignerId, { img: '' })}
-                  />
-                </Field>
-
-                <Field
-                  label="Image Alt Text"
-                  hint="Accessibility description"
-                >
-                  <input
-                    type="text"
-                    className="hok-input"
-                    value={selectedTileConfig?.alt || ''}
-                    onChange={(e) =>
-                      handleUpdateTileConfig(selectedDesignerId, { alt: e.target.value })
-                    }
-                    placeholder={`e.g. ${selectedMaster.name} couture runway on House of Kaira`}
-                  />
-                </Field>
-
-                <div className="hok-des-inspector-actions">
+          {/* Screen 13: Designers not on the homepage panel */}
+          {showAddPanel && (
+            <div className="hok-des-not-homepage-panel">
+              <div className="hok-des-panel-header">
+                <span className="hok-des-panel-title">Designers not on the homepage</span>
+                <div className="hok-des-panel-actions">
+                  <span className="hok-des-available-count">{unfeaturedDesigners.length} available</span>
                   <button
                     type="button"
-                    className="hok-des-remove-slot-btn"
-                    onClick={() => handleRemoveSlot(selectedSlotIndex)}
+                    className="hok-des-done-btn"
+                    onClick={() => setShowAddPanel(false)}
                   >
-                    Remove from Featured
+                    Done
                   </button>
                 </div>
               </div>
-            </Inspector>
+
+              <div className="hok-des-available-grid">
+                {unfeaturedDesigners.map((designer) => (
+                  <div key={designer.id} className="hok-des-available-card">
+                    <div
+                      className="hok-des-available-portrait"
+                      style={{
+                        backgroundImage: designer.img ? `url(${designer.img})` : undefined
+                      }}
+                    >
+                      {!designer.img && <span>{designer.initials}</span>}
+                    </div>
+                    <div className="hok-des-available-info">
+                      <h4 className="hok-des-available-name">{designer.name}</h4>
+                      <p className="hok-des-available-sub">
+                        {designer.livePieces} live · {designer.type}
+                      </p>
+                      <button
+                        type="button"
+                        className="hok-des-add-btn"
+                        onClick={() => handleAddDesigner(designer.id)}
+                      >
+                        Add to homepage
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="hok-des-panel-footer-note">
+                Adding one here sets the Featured switch on that designer’s own record — one switch, two doors. Only active designers appear.
+              </div>
+            </div>
           )}
+
+          {/* Inspector */}
+          <Inspector
+            kicker={`POSITION ${selectedSlotIndex !== null ? selectedSlotIndex + 1 : 1}`}
+            itemName={selectedMaster?.name || selectedDesignerId || undefined}
+            isOpen={selectedSlotIndex !== null && !!selectedMaster}
+            emptyText="Pick a designer above to see their profile details and inventory count."
+          >
+            {selectedMaster && (
+              <div className="hok-des-inspector-content">
+                <div className="hok-des-inspector-main">
+                  {/* Left: 2:3 Portrait */}
+                  <div
+                    className="hok-des-inspector-portrait"
+                    style={{
+                      backgroundImage: selectedMaster.img ? `url(${selectedMaster.img})` : undefined
+                    }}
+                  >
+                    {!selectedMaster.img && <span>{selectedMaster.initials}</span>}
+                  </div>
+
+                  {/* Right Details */}
+                  <div className="hok-des-inspector-details">
+                    <h4 className="hok-des-portrait-heading">Portrait</h4>
+                    <p className="hok-des-portrait-sub">
+                      Portrait, 2:3. The name, the piece count and the button sit over the bottom of it on the customer card, so keep that area quiet.
+                    </p>
+                    <p className="hok-des-alt-text">
+                      Alt text on the record reads “{selectedMaster.name} — Designer Indian bridal and occasion wear on House of Kaira”.
+                    </p>
+
+                    <div className="hok-des-props-table">
+                      <div className="hok-des-prop-row">
+                        <span className="hok-des-prop-label">Type</span>
+                        <span className="hok-des-prop-val">{selectedMaster.type}</span>
+                      </div>
+                      <div className="hok-des-prop-row">
+                        <span className="hok-des-prop-label">City</span>
+                        <span className="hok-des-prop-val">{selectedMaster.city}</span>
+                      </div>
+                      <div className="hok-des-prop-row">
+                        <span className="hok-des-prop-label">Live pieces</span>
+                        <span className="hok-des-prop-val">{selectedMaster.livePieces}</span>
+                      </div>
+                      <div className="hok-des-prop-row">
+                        <span className="hok-des-prop-label">Card reads</span>
+                        <span className="hok-des-prop-val">
+                          {selectedMaster.name} · {selectedMaster.livePieces} PIECES
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="hok-des-inspector-doors">
+                      {onNavigateToModule && (
+                        <>
+                          <button
+                            type="button"
+                            className="hok-des-door-btn"
+                            onClick={() => onNavigateToModule('Designers')}
+                          >
+                            Open designer <DoorArrowIcon size={9} />
+                          </button>
+                          <button
+                            type="button"
+                            className="hok-des-door-btn"
+                            onClick={() => onNavigateToModule('Products')}
+                          >
+                            See their pieces <DoorArrowIcon size={9} />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="hok-des-meta-note">
+                  The portrait, the bio and the name belong to the designer record. Whether they appear here, and in what order, is the Featured switch on that same record — the buttons on the tile above write to it.
+                </div>
+              </div>
+            )}
+          </Inspector>
         </div>
       </Card>
 
-      {/* Card 3: Layout & Derived Piece Counts */}
-      <Card
-        header={{
-          eyebrow: 'LAYOUT & LIVE INVENTORY COUNTS',
-          title: 'Layout & Count Formatting',
-          meta: 'Grid presentation and piece count badges'
-        }}
-      >
-        <div className="hok-des-layout-grid">
-          <Field
-            label="Desktop Layout"
-            hint="Display style on desktop viewports"
-          >
-            <PillToggle
-              options={[
-                { label: 'Grid (6 Across)', value: 'Grid' },
-                { label: 'Carousel (Slide)', value: 'Carousel' }
-              ]}
-              value={settings.layout}
-              onChange={(val) => onChange({ ...settings, layout: val as 'Grid' | 'Carousel' })}
-            />
-          </Field>
+      {/* Card 3 — Layout (Spec 8.7.3) */}
+      <Card title="Layout">
+        <div className="hok-des-field-stack">
+          {/* Row 1: Desktop & App selects */}
+          <div className="hok-des-grid-2col">
+            <Field
+              label="Desktop"
+              hint="Six across today."
+            >
+              <select
+                className="hok-field-select"
+                value={settings.layout}
+                onChange={(e) =>
+                  onChange({
+                    ...settings,
+                    layout: e.target.value as 'Grid' | 'Carousel'
+                  })
+                }
+              >
+                <option value="Grid">Grid</option>
+                <option value="Carousel">Carousel</option>
+              </select>
+            </Field>
 
-          <Field
-            label="Mobile Layout"
-            hint="Display style on mobile viewports"
-          >
-            <PillToggle
-              options={[
-                { label: 'Carousel (Swipe)', value: 'Carousel' },
-                { label: 'Grid (2 Columns)', value: 'Grid' }
-              ]}
-              value={settings.layoutMob}
-              onChange={(val) => onChange({ ...settings, layoutMob: val as 'Carousel' | 'Grid' })}
-            />
-          </Field>
-
-          <Field
-            label="Slide Kicker"
-            hint="Tagline shown in mobile carousel view"
-          >
-            <input
-              type="text"
-              className="hok-input"
-              value={settings.slideKick}
-              onChange={(e) => onChange({ ...settings, slideKick: e.target.value })}
-              placeholder="Featured Designer"
-            />
-          </Field>
-        </div>
-
-        <div className="hok-divider" />
-
-        <div className="hok-des-counts-grid">
-          <div className="hok-des-count-toggle-item">
-            <div className="hok-des-toggle-text">
-              <span className="hok-des-toggle-title">Show live piece counts on tiles</span>
-              <span className="hok-des-toggle-desc">Displays derived piece count badge (e.g. "14 PIECES")</span>
-            </div>
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={settings.showCount}
-              onChange={(val) => onChange({ ...settings, showCount: Boolean(val) })}
-            />
+            <Field
+              label="App"
+              hint="Full-height slides with dots, as the app ships."
+            >
+              <select
+                className="hok-field-select"
+                value={settings.layoutMob}
+                onChange={(e) =>
+                  onChange({
+                    ...settings,
+                    layoutMob: e.target.value as 'Carousel' | 'Grid'
+                  })
+                }
+              >
+                <option value="Carousel">Carousel</option>
+                <option value="Grid">Grid</option>
+              </select>
+            </Field>
           </div>
 
-          <Field
-            label="Desktop Count Format"
-            hint="Use {n} for number placeholder (e.g. '{n} PIECES')"
-          >
-            <input
-              type="text"
-              className="hok-input"
-              value={settings.countLbl}
-              onChange={(e) => onChange({ ...settings, countLbl: e.target.value })}
-              placeholder="{n} PIECES"
-            />
-          </Field>
+          {/* Row 2: How many to show & Button wording */}
+          <div className="hok-des-grid-2col">
+            <Field
+              label="How many to show"
+              hint={`${slots.length} are featured — the last ${Math.max(0, slots.length - cap)} will not appear.`}
+            >
+              <input
+                type="number"
+                className="hok-field-input"
+                value={settings.cap || 6}
+                onChange={(e) =>
+                  onChange({ ...settings, cap: Number(e.target.value) || 6 })
+                }
+              />
+            </Field>
 
-          <Field
-            label="Mobile Count Format"
-            hint="Use {n} for number placeholder (e.g. '{n} pieces available')"
-          >
-            <input
-              type="text"
-              className="hok-input"
-              value={settings.countLblMob}
-              onChange={(e) => onChange({ ...settings, countLblMob: e.target.value })}
-              placeholder="{n} pieces available"
-            />
-          </Field>
-        </div>
-      </Card>
-
-      {/* Add Designer Modal */}
-      {isPickerOpen && (
-        <div className="hok-modal-overlay" onClick={() => setIsPickerOpen(false)}>
-          <div className="hok-des-picker-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="hok-des-modal-header">
-              <div>
-                <h3 className="hok-des-modal-title">Add Designer to Featured</h3>
-                <p className="hok-des-modal-sub">Select an active designer from the master catalogue</p>
-              </div>
-              <button
-                type="button"
-                className="hok-des-modal-close-btn"
-                onClick={() => setIsPickerOpen(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="hok-des-modal-search">
-              <SearchMagnifierIcon size={14} className="hok-des-modal-search-icon" />
+            <Field label="Button wording">
               <input
                 type="text"
-                className="hok-input hok-des-modal-search-input"
-                placeholder="Search by designer name, type, or city..."
-                value={pickerSearch}
-                onChange={(e) => setPickerSearch(e.target.value)}
-                autoFocus
+                className="hok-field-input"
+                value={settings.ctaLbl}
+                onChange={(e) => onChange({ ...settings, ctaLbl: e.target.value })}
+                placeholder="Shop the Collection"
               />
-            </div>
-
-            <div className="hok-des-modal-list">
-              {filteredPickerDesigners.length === 0 ? (
-                <div className="hok-des-modal-empty">All eligible designers are already added or no results match.</div>
-              ) : (
-                filteredPickerDesigners.map((d) => (
-                  <div key={d.id} className="hok-des-modal-item">
-                    <div className="hok-des-modal-item-info">
-                      <span className="hok-des-modal-item-name">{d.name}</span>
-                      <span className="hok-des-modal-item-sub">
-                        {d.type} · {d.city} · {d.livePieces} pieces live
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      className="hok-des-modal-select-btn"
-                      onClick={() => handleAddSlot(d.id)}
-                    >
-                      Add Slot
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
+            </Field>
           </div>
+
+          {/* Row 3: Count wording — desktop & Count wording — app */}
+          <div className="hok-des-grid-2col">
+            <Field
+              label="Count wording — desktop"
+              hint="{n} is replaced by the live count."
+            >
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.countLbl || '{n} PIECES'}
+                onChange={(e) => onChange({ ...settings, countLbl: e.target.value })}
+                placeholder="{n} PIECES"
+              />
+            </Field>
+
+            <Field label="Count wording — app">
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.countLblMob || '{n} pieces available'}
+                onChange={(e) => onChange({ ...settings, countLblMob: e.target.value })}
+                placeholder="{n} pieces available"
+              />
+            </Field>
+          </div>
+
+          {/* Row 4: Carousel kicker */}
+          <div id="designers-kick">
+            <Field
+              label="Carousel kicker — app only"
+              hint="The small line above the name on each app slide. The desktop grid carries none."
+            >
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.slideKick || 'Featured Designer'}
+                onChange={(e) => onChange({ ...settings, slideKick: e.target.value })}
+                placeholder="Featured Designer"
+              />
+            </Field>
+          </div>
+
+          {/* Row 5: Heading toggles */}
+          <div className="hok-des-toggles-grid">
+            <PillToggle
+              checked={settings.header}
+              onChange={(checked) => onChange({ ...settings, header: checked })}
+              label="Show the band heading on desktop"
+            />
+
+            <PillToggle
+              checked={settings.headerMob}
+              onChange={(checked) => onChange({ ...settings, headerMob: checked })}
+              label="Show the band heading in the app"
+            />
+          </div>
+
+          {/* Row 6: Live piece count toggle */}
+          <PillToggle
+            checked={settings.showCount}
+            onChange={(checked) => onChange({ ...settings, showCount: checked })}
+            label="Show each designer’s live piece count"
+            hint="Counted from the catalogue. The storefront currently carries written-in figures such as “214 pieces”, which the catalogue cannot support — turning this on replaces them with the real count."
+          />
         </div>
-      )}
+      </Card>
     </div>
   );
 };

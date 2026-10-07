@@ -1,0 +1,239 @@
+/**
+ * House of Kaira - Deposit Policy Clean Print & PDF Stylesheet
+ * Section 6.10 & P01 of Build Specification v2.0 (hok_deposit_policy_v2)
+ */
+
+@media screen {
+  .dp-print-doc {
+    display: none !important;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+
+  /* Hide screen chrome & interactive elements */
+  .site-header,
+  .hok-desktop-header,
+  .hok-mobile-header,
+  .header,
+  .dp-breadcrumb,
+  .dp-hero,
+  .dp-tracker-card,
+  .secbar,
+  .dp-body,
+  .pol,
+  .still,
+  .hok-desktop-footer,
+  .hok-mobile-footer,
+  .floating-whatsapp-container,
+  [role="status"] {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #1A1612 !important;
+    font-family: var(--dp-font-sans, "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
+    font-size: 11pt !important;
+    line-height: 1.6 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .dp-print-doc {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    color: #1A1612 !important;
+    background: #ffffff !important;
+  }
+
+  .dp-print-header {
+    border-bottom: 2pt solid #1A1612;
+    padding-bottom: 12pt;
+    margin-bottom: 18pt;
+  }
+
+  .dp-print-title {
+    font-family: var(--dp-font-serif, "Cormorant Garamond", Georgia, serif) !important;
+    font-size: 28pt !important;
+    font-weight: 500 !important;
+    line-height: 1.1 !important;
+    color: #1A1612 !important;
+    margin: 0 0 6pt 0 !important;
+  }
+
+  .dp-print-meta {
+    font-size: 9pt !important;
+    color: #666666 !important;
+    margin: 0 0 10pt 0 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+  }
+
+  .dp-print-intro {
+    font-size: 10.5pt !important;
+    line-height: 1.7 !important;
+    color: #333333 !important;
+    margin: 0 !important;
+  }
+
+  /* Worked Examples Print Grid */
+  .dp-print-examples-heading {
+    font-family: var(--dp-font-serif, "Cormorant Garamond", Georgia, serif) !important;
+    font-size: 18pt !important;
+    font-weight: 500 !important;
+    margin: 22pt 0 10pt 0 !important;
+    border-bottom: 1pt solid #E8E0D4;
+    padding-bottom: 4pt;
+  }
+
+  .dp-print-examples-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14pt !important;
+    margin-bottom: 24pt !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .dp-print-example-card {
+    border: 1pt solid #D9D2C7;
+    padding: 10pt 12pt;
+    background: #FAFAFA;
+    border-radius: 2pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .dp-print-example-title {
+    font-family: var(--dp-font-serif, "Cormorant Garamond", Georgia, serif) !important;
+    font-size: 13pt !important;
+    font-weight: 600 !important;
+    margin: 0 0 8pt 0 !important;
+    color: #1A1612 !important;
+  }
+
+  .dp-print-example-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 8pt;
+  }
+
+  .dp-print-example-table td {
+    padding: 3pt 0;
+  }
+
+  .dp-print-example-table tr.total-row td {
+    border-top: 1.5pt solid #1A1612;
+    font-weight: 600;
+    padding-top: 5pt;
+  }
+
+  .dp-print-example-notes {
+    font-size: 8pt;
+    color: #666666;
+    line-height: 1.4;
+    margin-top: 6pt;
+    border-top: 0.5pt solid #E0E0E0;
+    padding-top: 4pt;
+  }
+
+  /* Policy Sections */
+  .dp-print-section {
+    margin-top: 24pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .dp-print-section-hd {
+    border-top: 1.5pt solid #1A1612;
+    padding-top: 8pt;
+    margin-bottom: 12pt;
+  }
+
+  .dp-print-sec-n {
+    font-size: 11pt;
+    color: #9C7C45;
+    font-weight: 600;
+    margin-right: 6pt;
+  }
+
+  .dp-print-sec-title {
+    font-family: var(--dp-font-serif, "Cormorant Garamond", Georgia, serif) !important;
+    font-size: 18pt !important;
+    font-weight: 500 !important;
+    display: inline;
+    margin: 0;
+  }
+
+  .dp-print-sec-desc {
+    font-size: 9.5pt;
+    color: #666666;
+    margin: 4pt 0 0 0;
+  }
+
+  .dp-print-q-block {
+    margin-bottom: 14pt;
+    padding-bottom: 10pt;
+    border-bottom: 0.5pt solid #EAEAEA;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .dp-print-q-title {
+    font-family: var(--dp-font-serif, "Cormorant Garamond", Georgia, serif) !important;
+    font-size: 13pt !important;
+    font-weight: 600 !important;
+    margin: 0 0 4pt 0 !important;
+    color: #1A1612 !important;
+  }
+
+  .dp-print-q-tag {
+    display: inline-block;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 1pt 5pt;
+    border: 0.5pt solid #CCCCCC;
+    margin-left: 6pt;
+    font-weight: 500;
+    border-radius: 2pt;
+  }
+
+  .dp-print-ans {
+    font-size: 9.5pt;
+    line-height: 1.6;
+    color: #2E2E2E;
+  }
+
+  .dp-print-ans p {
+    margin: 0 0 5pt 0;
+  }
+
+  .dp-print-ans ul {
+    margin: 4pt 0;
+    padding-left: 14pt;
+    list-style: disc;
+  }
+
+  .dp-print-ans li {
+    margin-bottom: 2pt;
+  }
+
+  .dp-print-ans .note {
+    border-left: 1.5pt solid #9C7C45;
+    padding-left: 8pt;
+    font-style: italic;
+    color: #555555;
+    margin-top: 6pt;
+  }
+}

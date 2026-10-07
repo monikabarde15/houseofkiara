@@ -5,11 +5,13 @@ import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 import categoriesData from "../../../data/home/categoriesData";
 
-const MobileCategories = () => {
-  const slides = useMemo(
-    () => [...categoriesData.rowOne, ...categoriesData.rowTwo],
-    [],
-  );
+const MobileCategories = ({ data }) => {
+  const slides = useMemo(() => {
+    if (data && Array.isArray(data.slides) && data.slides.length > 0) {
+      return data.slides;
+    }
+    return [...categoriesData.rowOne, ...categoriesData.rowTwo];
+  }, [data]);
   const navigate = useNavigate();
 
   const [activeSlide, setActiveSlide] = useState(0);

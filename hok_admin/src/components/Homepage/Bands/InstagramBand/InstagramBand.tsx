@@ -1,14 +1,11 @@
 /* =========================================================
-   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · INSTAGRAM BAND (Spec 8.9)
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · INSTAGRAM (Spec 8.9)
+   Spec Section 8.9 & 12.6 (v213)
 ========================================================= */
 
 import React, { useState } from 'react';
 import './InstagramBand.css';
-import {
-  InstagramSettings,
-  InstagramTile,
-  HealthIssue
-} from '../../types/homepage.types';
+import { InstagramSettings, HealthIssue } from '../../types/homepage.types';
 import { Card } from '../../shared/Card/Card';
 import { Field } from '../../shared/Field/Field';
 import { ReadsAsMirror } from '../../shared/ReadsAsMirror/ReadsAsMirror';
@@ -18,7 +15,6 @@ import { MediaSlot } from '../../shared/MediaSlot/MediaSlot';
 import { Deck } from '../../shared/Deck/Deck';
 import { DeckTileItem } from '../../shared/Deck/DeckTile';
 import { Inspector } from '../../shared/Deck/Inspector';
-import { DoorArrowIcon } from '../../shared/icons/HomepageIcons';
 
 interface InstagramBandProps {
   settings: InstagramSettings;
@@ -26,10 +22,11 @@ interface InstagramBandProps {
   onToggleShown: (shown: boolean) => void;
   onChange: (updated: InstagramSettings) => void;
   issues: HealthIssue[];
+  onNavigateToModule?: (mod: string) => void;
   onNavigateSiteSettings?: () => void;
 }
 
-const INSTAGRAM_HANDLE = '@houseofkiara';
+const INSTAGRAM_HANDLE = '@house_of_kaira';
 
 export const InstagramBand: React.FC<InstagramBandProps> = ({
   settings,
@@ -37,37 +34,38 @@ export const InstagramBand: React.FC<InstagramBandProps> = ({
   onToggleShown,
   onChange,
   issues,
+  onNavigateToModule,
   onNavigateSiteSettings
 }) => {
   const [selectedTileIndex, setSelectedTileIndex] = useState<number | null>(null);
 
-  // Deck items representation
-  const deckItems: DeckTileItem[] = settings.tiles.map((t, idx) => ({
-    id: t.id || `insta-tile-${idx + 1}`,
+  const tiles = settings.tiles || [];
+
+  const deckItems: DeckTileItem[] = tiles.map((t, idx) => ({
+    id: `insta-tile-${idx + 1}`,
     position: idx + 1,
-    title: t.alt || `Tile ${idx + 1}`,
-    sub: t.url ? (t.url.length > 28 ? t.url.slice(0, 28) + '…' : t.url) : 'No link set',
-    imageUrl: t.img,
-    noPicture: !t.img,
-    pictureHeight: 110
+    title: `Tile ${idx + 1}`,
+    sub: t.url ? 'links to post' : 'links to the profile',
+    pictureUrl: t.img || undefined,
+    pictureHeight: 84,
+    cornerFlag: !t.img ? { type: 'need', label: 'NEEDS A PICTURE' } : undefined
   }));
 
   const selectedTile =
-    selectedTileIndex !== null && selectedTileIndex < settings.tiles.length
-      ? settings.tiles[selectedTileIndex]
+    selectedTileIndex !== null && selectedTileIndex < tiles.length
+      ? tiles[selectedTileIndex]
       : null;
 
-  // Handlers
-  const handleUpdateTile = (index: number, patch: Partial<InstagramTile>) => {
-    const updated = [...settings.tiles];
+  const handleUpdateTile = (index: number, patch: Partial<{ img: string; alt: string; url: string }>) => {
+    const updated = [...tiles];
     updated[index] = { ...updated[index], ...patch };
     onChange({ ...settings, tiles: updated });
   };
 
-  const handleMoveTile = (index: number, direction: 'earlier' | 'later') => {
-    const target = direction === 'earlier' ? index - 1 : index + 1;
-    if (target < 0 || target >= settings.tiles.length) return;
-    const updated = [...settings.tiles];
+  const handleMoveTile = (index: number, direction: 'up' | 'down') => {
+    const target = direction === 'up' ? index - 1 : index + 1;
+    if (target < 0 || target >= tiles.length) return;
+    const updated = [...tiles];
     const temp = updated[index];
     updated[index] = updated[target];
     updated[target] = temp;
@@ -75,96 +73,162 @@ export const InstagramBand: React.FC<InstagramBandProps> = ({
     setSelectedTileIndex(target);
   };
 
+  const handleRemoveTile = (index: number) => {
+    const updated = tiles.filter((_, idx) => idx !== index);
+    onChange({ ...settings, tiles: updated });
+    if (selectedTileIndex === index) {
+      setSelectedTileIndex(null);
+    } else if (selectedTileIndex !== null && selectedTileIndex > index) {
+      setSelectedTileIndex(selectedTileIndex - 1);
+    }
+  };
+
+  const handleAddTile = () => {
+    if (tiles.length >= 6) return;
+    const newTile = { img: '', alt: '', url: '' };
+    const updated = [...tiles, newTile];
+    onChange({ ...settings, tiles: updated });
+    setSelectedTileIndex(updated.length - 1);
+  };
+
   return (
-    <div className="hok-band-editor hok-instagram-band">
-      {/* Band Header Card */}
-      <Card
-        variant="elevated"
-        header={{
-          eyebrow: 'BAND 9 · INSTAGRAM',
-          title: 'Instagram & Social Feed',
-          meta: isShown ? 'VISIBLE ON STOREFRONT' : 'HIDDEN',
-          status: isShown ? 'live' : 'draft',
-          actions: (
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={isShown}
-              onChange={onToggleShown}
-            />
-          )
-        }}
-      >
-        <p className="hok-band-intro">
-          Six curated Instagram square posts or live feed tiles with account follow CTA strip. Instagram handle is owned exclusively by Site Settings.
-        </p>
+    <div className="hok-instagram-band">
+      {/* 7. Editor Shell Top */}
+      <div className="hok-hp-editor-heading-row">
+        <h2 className="hok-hp-editor-band-title">Instagram</h2>
+        <span className="hok-hp-editor-band-counter">Band 9 of 9</span>
+      </div>
 
-        {issues.length > 0 && (
-          <div className="hok-band-issues">
-            {issues.map((iss, i) => (
-              <IssueStrip
-                key={i}
-                severity={iss.severity}
-                message={iss.message}
-                actionLabel={iss.actionLabel}
-              />
-            ))}
-          </div>
-        )}
-      </Card>
+      <p className="hok-hp-editor-band-desc">
+        Six tiles and the follow line. The handle itself belongs to Site Settings — this band reads it.
+      </p>
 
-      {/* Card 1: Handle & Site Settings Door (Spec 8.9.1) */}
-      <Card
-        header={{
-          eyebrow: 'ACCOUNT HANDLE (ONE TRUTH)',
-          title: 'Instagram Handle & Follow Link',
-          meta: 'Owned by Site Settings — never retyped here'
-        }}
-      >
-        <div id="insta-handle" className="hok-insta-handle-door-box">
-          <div className="hok-insta-handle-left">
-            <span className="hok-insta-door-tag">CONNECTED INSTAGRAM ACCOUNT</span>
-            <span className="hok-insta-door-handle">{INSTAGRAM_HANDLE}</span>
-            <span className="hok-insta-door-sub">
-              Changes to this handle apply globally across the header, footer, and emails.
-            </span>
-          </div>
-          {onNavigateSiteSettings && (
-            <button
-              type="button"
-              className="hok-insta-door-btn"
-              onClick={onNavigateSiteSettings}
-            >
-              Open Socials in Site Settings <DoorArrowIcon size={10} />
-            </button>
-          )}
+      {/* 7.1 Visibility Row */}
+      <div className="hok-hp-visibility-row" id="insta-visibility">
+        <div className="hok-hp-visibility-left">
+          <PillToggle
+            checked={isShown}
+            onChange={onToggleShown}
+            label="Show this band on the homepage"
+          />
         </div>
+        <span className="hok-hp-visibility-consequence">
+          {isShown
+            ? 'Showing on the live homepage, in position 9.'
+            : 'Hidden. The settings below are kept, so it can come back exactly as it was.'}
+        </span>
+      </div>
 
-        <div className="hok-divider" />
+      {/* Issues Strip */}
+      {issues.map((iss) => (
+        <IssueStrip
+          key={iss.id}
+          severity={iss.sev}
+          message={iss.msg}
+          doorLabel={iss.doorLabel}
+          onDoorClick={() => iss.door && onNavigateToModule && onNavigateToModule(iss.door)}
+        />
+      ))}
 
-        <div id="insta-follow" className="hok-insta-strip-grid">
+      {/* Card 1 — The words (Spec 8.9.1) */}
+      <Card
+        id="insta-words-card"
+        title="The words"
+      >
+        <div className="hok-insta-field-stack">
+          <div id="insta-eyebrow">
+            <Field label="Eyebrow">
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.eyebrow}
+                onChange={(e) => onChange({ ...settings, eyebrow: e.target.value })}
+                placeholder="Our Community"
+              />
+            </Field>
+          </div>
+
+          <div id="insta-heading">
+            <Field
+              label="Heading"
+              hint="A line break starts a new line. Wrap one word in *asterisks* to set it in the italic gold serif, the way the storefront does."
+            >
+              <textarea
+                className="hok-field-textarea"
+                rows={2}
+                value={settings.heading}
+                onChange={(e) => onChange({ ...settings, heading: e.target.value })}
+                placeholder="As seen on *Instagram*"
+              />
+            </Field>
+            <ReadsAsMirror text={settings.heading} />
+          </div>
+
+          <div className="hok-insta-grid-2col">
+            <Field label="Follow link label">
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.viewAll?.lbl || ''}
+                onChange={(e) =>
+                  onChange({
+                    ...settings,
+                    viewAll: { ...(settings.viewAll || { url: '' }), lbl: e.target.value }
+                  })
+                }
+              />
+            </Field>
+
+            <Field label="Follow link link">
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.viewAll?.url || ''}
+                onChange={(e) =>
+                  onChange({
+                    ...settings,
+                    viewAll: { ...(settings.viewAll || { lbl: '' }), url: e.target.value }
+                  })
+                }
+                placeholder="/rent"
+              />
+            </Field>
+          </div>
+
           <Field
-            label="Desktop Follow Strip Prefix"
-            hint="Text before the handle on desktop"
+            label="Follow label in the app"
+            hint="The app shortens it. Blank uses the desktop label."
           >
             <input
               type="text"
-              className="hok-input"
-              value={settings.strip}
-              onChange={(e) => onChange({ ...settings, strip: e.target.value })}
-              placeholder="Follow our story at"
+              className="hok-field-input"
+              value={settings.viewAllMob || ''}
+              onChange={(e) => onChange({ ...settings, viewAllMob: e.target.value })}
             />
           </Field>
 
+          <div id="insta-follow">
+            <Field
+              label="Line under the tiles"
+              hint={`The handle is added after this automatically — it reads “${settings.strip || 'Follow our story at'} ${INSTAGRAM_HANDLE}”.`}
+            >
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.strip}
+                onChange={(e) => onChange({ ...settings, strip: e.target.value })}
+                placeholder="Follow our story at"
+              />
+            </Field>
+          </div>
+
           <Field
-            label="Mobile Follow Strip Prefix"
-            hint="Text before the handle on compact mobile screens"
+            label="Line under the tiles — app"
+            hint="The app shortens it. Blank uses the desktop line."
           >
             <input
               type="text"
-              className="hok-input"
+              className="hok-field-input"
               value={settings.stripMob}
               onChange={(e) => onChange({ ...settings, stripMob: e.target.value })}
               placeholder="Follow us at"
@@ -173,168 +237,113 @@ export const InstagramBand: React.FC<InstagramBandProps> = ({
         </div>
       </Card>
 
-      {/* Card 2: Source & Headings */}
+      {/* Card 2 — The handle (Spec 8.9.2) */}
+      <div id="insta-handle">
+        <Card
+          title="The handle"
+          sub="Owned by Site Settings, because order confirmations and the footer print it too."
+          doorLabel="Open Site Settings →"
+          onDoorClick={() => onNavigateSiteSettings && onNavigateSiteSettings()}
+        >
+          <div className="hok-insta-handle-content">
+            <div className="hok-insta-handle-row">
+              <span className="hok-insta-handle-tag">{INSTAGRAM_HANDLE}</span>
+              <span className="hok-insta-handle-src">Site Settings · Contact & social</span>
+            </div>
+            <p className="hok-insta-handle-note">
+              Change it once there and it changes in the footer, on this band, and in every message that carries it. There is no second copy to keep in step.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      {/* Card 3 — Where the tiles come from (Spec 8.9.3 & 12.6) */}
       <Card
-        header={{
-          eyebrow: 'BAND HEADINGS & FEED SOURCE',
-          title: 'Headings and Content Source',
-          meta: `${settings.source} active`
-        }}
+        title="Where the tiles come from"
       >
-        <div className="hok-insta-words-grid">
+        <div className="hok-insta-field-stack">
           <Field
-            label="Eyebrow"
-            hint="Small caps kicker text"
+            label="Source"
+            hint={
+              settings.source === 'Live Instagram feed'
+                ? 'Needs a Meta connection the platform does not have yet.'
+                : 'Six pictures chosen by hand. They stay put until somebody changes them.'
+            }
           >
-            <input
-              id="insta-eyebrow"
-              type="text"
-              className="hok-input"
-              value={settings.eyebrow}
-              onChange={(e) => onChange({ ...settings, eyebrow: e.target.value })}
-              placeholder="Our Community"
-            />
-          </Field>
-
-          <Field
-            label="Main Heading"
-            hint="Wrap *words in asterisks* for gold italic serif font"
-          >
-            <input
-              id="insta-heading"
-              type="text"
-              className="hok-input"
-              value={settings.heading}
-              onChange={(e) => onChange({ ...settings, heading: e.target.value })}
-              placeholder="As seen on *Instagram*"
-            />
-          </Field>
-        </div>
-
-        <div className="hok-insta-mirror-box">
-          <span className="hok-insta-mirror-label">Live Storefront Heading Preview</span>
-          <ReadsAsMirror
-            eyebrow={settings.eyebrow}
-            heading={settings.heading}
-            className="hok-insta-reads-as"
-          />
-        </div>
-
-        <div className="hok-divider" />
-
-        <div className="hok-insta-source-row">
-          <Field
-            label="Feed Source"
-            hint="Choose whether tiles are manually curated or fetched via Instagram Graph API"
-          >
-            <PillToggle
-              options={[
-                { label: 'Manual tiles (Recommended)', value: 'Manual tiles' },
-                { label: 'Live Instagram feed', value: 'Live Instagram feed' }
-              ]}
+            <select
+              className="hok-field-select"
               value={settings.source}
-              onChange={(val) =>
+              onChange={(e) =>
                 onChange({
                   ...settings,
-                  source: val as 'Manual tiles' | 'Live Instagram feed'
+                  source: e.target.value as 'Manual tiles' | 'Live Instagram feed'
                 })
               }
-            />
-          </Field>
-        </div>
-
-        {settings.source === 'Live Instagram feed' && (
-          <div className="hok-insta-feed-warning">
-            <IssueStrip
-              severity="info"
-              message="Live API Feed requires a valid Meta Long-Lived User Access Token in Site Settings > Integrations. With Manual tiles, images are hosted in your media library and will never break if an access token expires."
-              actionLabel="Configure API Token"
-              onAction={onNavigateSiteSettings}
-            />
-          </div>
-        )}
-      </Card>
-
-      {/* Card 3: 6 Instagram Tiles Deck & Inspector */}
-      <Card
-        header={{
-          eyebrow: 'TILES GRID',
-          title: '6 Instagram Grid Tiles',
-          meta: `${settings.tiles.length} tiles · 6-across deck`
-        }}
-      >
-        <p className="hok-field-hint" style={{ marginBottom: 14 }}>
-          Click any tile below to upload photos, set alt text for accessibility, or link directly to the Instagram post.
-        </p>
-
-        <div className="hok-insta-deck-wrapper">
-          <Deck
-            arrangement="d6"
-            items={deckItems}
-            selectedIndex={selectedTileIndex}
-            onSelectIndex={(idx) => setSelectedTileIndex(idx)}
-            onMoveEarlier={(idx) => handleMoveTile(idx, 'earlier')}
-            onMoveLater={(idx) => handleMoveTile(idx, 'later')}
-          />
-
-          {selectedTile && selectedTileIndex !== null && (
-            <Inspector
-              title={`Edit Instagram Tile ${selectedTileIndex + 1}`}
-              position={selectedTileIndex + 1}
-              totalItems={settings.tiles.length}
-              onClose={() => setSelectedTileIndex(null)}
-              onMoveUp={selectedTileIndex > 0 ? () => handleMoveTile(selectedTileIndex, 'earlier') : undefined}
-              onMoveDown={
-                selectedTileIndex < settings.tiles.length - 1
-                  ? () => handleMoveTile(selectedTileIndex, 'later')
-                  : undefined
-              }
             >
-              <div className="hok-insta-inspector-content">
-                <Field
-                  label="Instagram Photo"
-                  hint="Image Spec: 300 × 300 px (1:1 square crop)"
-                >
-                  <MediaSlot
-                    imageUrl={selectedTile.img}
-                    specDims="300 × 300 px (1:1)"
-                    label={`Instagram post photo ${selectedTileIndex + 1}`}
-                    onUpload={(url) => handleUpdateTile(selectedTileIndex, { img: url })}
-                    onRemove={() => handleUpdateTile(selectedTileIndex, { img: '' })}
-                  />
-                </Field>
+              <option value="Manual tiles">Manual tiles</option>
+              <option value="Live Instagram feed">Live Instagram feed</option>
+            </select>
+          </Field>
 
-                <Field
-                  label="Image Alt Text"
-                  hint="Accessibility description of the outfit / post"
-                >
-                  <input
-                    type="text"
-                    className="hok-input"
-                    value={selectedTile.alt}
-                    onChange={(e) =>
-                      handleUpdateTile(selectedTileIndex, { alt: e.target.value })
-                    }
-                    placeholder="e.g. Sabyasachi bridal lehenga on House of Kaira"
-                  />
-                </Field>
+          {settings.source === 'Live Instagram feed' ? (
+            <div className="hok-insta-live-feed-note">
+              Once a live feed is connected, the six most recent posts render here and these fields go away.
+            </div>
+          ) : (
+            <div className="hok-insta-deck-wrapper">
+              <Deck
+                arrangement="d6"
+                items={deckItems}
+                selectedIndex={selectedTileIndex}
+                onSelectIndex={setSelectedTileIndex}
+                onMoveEarlier={(idx) => handleMoveTile(idx, 'up')}
+                onMoveLater={(idx) => handleMoveTile(idx, 'down')}
+                onRemove={handleRemoveTile}
+                removeLabel="Remove"
+                onAddTile={handleAddTile}
+                addLabel="Add a tile"
+              />
 
-                <Field
-                  label="Post Permalink / Destination URL"
-                  hint="Clicking this tile opens the post or catalog page"
-                >
-                  <input
-                    type="text"
-                    className="hok-input"
-                    value={selectedTile.url}
-                    onChange={(e) =>
-                      handleUpdateTile(selectedTileIndex, { url: e.target.value })
-                    }
-                    placeholder="https://instagram.com/p/Cxyz123 or /rent"
-                  />
-                </Field>
-              </div>
-            </Inspector>
+              {/* Inspector */}
+              <Inspector
+                kicker={`EDITING TILE ${selectedTileIndex !== null ? selectedTileIndex + 1 : 1}`}
+                itemName={`Tile ${selectedTileIndex !== null ? selectedTileIndex + 1 : 1}`}
+                isOpen={selectedTileIndex !== null && !!selectedTile}
+                emptyText="Pick a tile above to set its picture and link destination."
+              >
+                {selectedTile && selectedTileIndex !== null && (
+                  <div className="hok-insta-inspector-fields">
+                    <MediaSlot
+                      title="Tile picture"
+                      specText="Square, 1080×1080. Crop it the way it appears on the feed."
+                      imageUrl={selectedTile.img}
+                      altText={selectedTile.alt}
+                      altHint="What a screen reader announces, and what shows if the picture fails to load."
+                      onUpload={(url) => handleUpdateTile(selectedTileIndex, { img: url })}
+                      onRemove={() => handleUpdateTile(selectedTileIndex, { img: '' })}
+                      onChangeAlt={(alt) => handleUpdateTile(selectedTileIndex, { alt })}
+                      previewWidth={120}
+                      previewHeight={120}
+                    />
+
+                    <Field
+                      label="Opens"
+                      hint="The post this tile links to. Blank sends the tap to the profile instead."
+                    >
+                      <input
+                        type="text"
+                        className="hok-field-input"
+                        value={selectedTile.url}
+                        onChange={(e) =>
+                          handleUpdateTile(selectedTileIndex, { url: e.target.value })
+                        }
+                        placeholder="https://instagram.com/p/…"
+                      />
+                    </Field>
+                  </div>
+                )}
+              </Inspector>
+            </div>
           )}
         </div>
       </Card>

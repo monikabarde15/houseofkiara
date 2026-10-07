@@ -1,0 +1,84 @@
+/**
+ * House of Kaira - Deposit Policy Related Policies & Last Reviewed (D12)
+ * Section 5 (D12) & Section 7.8 of Build Specification v2.0 (hok_deposit_policy_v2)
+ */
+
+.pol {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 40px 40px 88px;
+  box-sizing: border-box;
+}
+
+.pol-in {
+  border-top: 1px solid var(--dp-border, #E8E0D4);
+  padding-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 22px;
+  font-family: var(--dp-font-sans, "DM Sans", sans-serif);
+  font-size: 12px;
+  color: var(--dp-muted, #8A7E72);
+}
+
+.pol-in b {
+  font-family: var(--dp-font-serif, "Cormorant Garamond", Georgia, serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--dp-charcoal, #1A1612);
+  margin-right: 6px;
+}
+
+.pol-in a,
+.pol-in button {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--dp-border, #E8E0D4);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--dp-charcoal, #1A1612);
+  padding: 0 0 2px;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.pol-in a:hover,
+.pol-in button:hover {
+  border-color: var(--dp-gold, #C9A96E);
+  color: var(--dp-gold-deep, #9C7C45);
+}
+
+.pol p {
+  margin-top: 14px;
+  font-family: var(--dp-font-sans, "DM Sans", sans-serif);
+  font-size: 11px;
+  color: #A79B8D;
+  line-height: 1.7;
+}
+
+.pol p button {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--dp-border, #E8E0D4);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--dp-muted, #8A7E72);
+  padding: 0;
+  margin-left: 4px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.pol p button:hover {
+  color: var(--dp-charcoal, #1A1612);
+  border-color: var(--dp-gold, #C9A96E);
+}
+
+@media (max-width: 760px) {
+  .pol {
+    padding: 32px 18px 56px;
+  }
+}

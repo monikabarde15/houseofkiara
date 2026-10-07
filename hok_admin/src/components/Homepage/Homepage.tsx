@@ -50,6 +50,42 @@ export const Homepage: React.FC<HomepageProps> = ({
   const [activeBand, setActiveBand] = useState<BandId>('hero');
   const [isNavigatorCollapsed, setIsNavigatorCollapsed] = useState(false);
   const [deviceMode, setDeviceMode] = useState<'Desktop' | 'Mobile'>('Desktop');
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  // Load published homepage state from backend on mount
+  React.useEffect(() => {
+    let isMounted = true;
+    import('../../services/homepageApi').then((api) => {
+      api.getHomepageData().then((resp) => {
+        if (!isMounted || !resp) return;
+        setRegistry((prev) => {
+          const updatedHero = resp.hero ? { ...prev.hero, ...resp.hero } : prev.hero;
+          const updatedHiw = resp.hiw ? { ...prev.hiw, ...resp.hiw } : prev.hiw;
+          const updatedFeatured = resp.featured ? { ...prev.featured, ...resp.featured } : prev.featured;
+          const updatedCategory = resp.category ? { ...prev.category, ...resp.category } : prev.category;
+          const updatedOccasions = resp.occasions ? { ...prev.occasions, ...resp.occasions } : prev.occasions;
+          const updatedVis = {
+            ...prev.vis,
+            ...(resp.vis || {}),
+          };
+          const nextState: HomepageRegistry = {
+            ...prev,
+            hero: updatedHero,
+            hiw: updatedHiw,
+            featured: updatedFeatured,
+            category: updatedCategory,
+            occasions: updatedOccasions,
+            vis: updatedVis,
+          };
+          setBaseline(JSON.parse(JSON.stringify(nextState)));
+          return nextState;
+        });
+      }).catch((err) => {
+        console.warn('Could not load homepage data from API:', err);
+      });
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
@@ -67,9 +103,12 @@ export const Homepage: React.FC<HomepageProps> = ({
     }
   }, []);
 
+  const [searchTargetFieldId, setSearchTargetFieldId] = useState<string | null>(null);
+
   // Search hit landing with 2.2s gold pulse (Spec 13)
   const handleSelectSearchResult = (item: HomepageSearchItem) => {
     setActiveBand(item.band);
+    setSearchTargetFieldId(item.targetFieldId);
 
     setTimeout(() => {
       const targetElem = document.getElementById(item.targetFieldId);
@@ -88,12 +127,22 @@ export const Homepage: React.FC<HomepageProps> = ({
   };
 
   // Publish action (Spec 14.2)
-  const handlePublish = () => {
-    setBaseline(JSON.parse(JSON.stringify(registry)));
-    if (onUpdateHomepage) {
-      onUpdateHomepage(registry);
+  const handlePublish = async () => {
+    setIsPublishing(true);
+    try {
+      const api = await import('../../services/homepageApi');
+      await api.publishHomepage(registry);
+      setBaseline(JSON.parse(JSON.stringify(registry)));
+      if (onUpdateHomepage) {
+        onUpdateHomepage(registry);
+      }
+      toast.success('Homepage published to the live site');
+    } catch (err: any) {
+      console.error('Failed to publish homepage:', err);
+      toast.error(err.message || 'Failed to publish homepage');
+    } finally {
+      setIsPublishing(false);
     }
-    toast.success('Homepage published to the live site');
   };
 
   // Discard action (Spec 14.2)
@@ -120,6 +169,7 @@ export const Homepage: React.FC<HomepageProps> = ({
           unsavedChanges={unsavedChanges}
           onPublish={handlePublish}
           onDiscard={handleDiscard}
+          isPublishing={isPublishing}
         />
 
         {/* 2.1 Workspace Grid */}
@@ -163,21 +213,27 @@ export const Homepage: React.FC<HomepageProps> = ({
                   setRegistry((prev) => ({ ...prev, hero: updatedHero }))
                 }
                 issues={issuesByBand.hero}
-                onNavigateToModule={(mod) => toast(`Navigating to ${mod}`)}
+                onNavigateToModule={(mod) =>
+                  onNavigateToModule ? onNavigateToModule(mod) : toast(`Navigating to ${mod}`)
+                }
               />
             )}
 
-            {activeBand === 'how' && (
+            {activeBand === 'hiw' && (
               <HowItWorksBand
-                settings={registry.how}
-                isShown={registry.vis.how}
+                settings={registry.hiw}
+                isShown={registry.vis.hiw}
                 onToggleShown={(shown) =>
-                  setRegistry((prev) => ({ ...prev, vis: { ...prev.vis, how: shown } }))
+                  setRegistry((prev) => ({ ...prev, vis: { ...prev.vis, hiw: shown } }))
                 }
-                onChange={(updatedHow) =>
-                  setRegistry((prev) => ({ ...prev, how: updatedHow }))
+                onChange={(updatedHiw) =>
+                  setRegistry((prev) => ({ ...prev, hiw: updatedHiw }))
                 }
-                issues={issuesByBand.how}
+                issues={issuesByBand.hiw}
+                targetFieldId={searchTargetFieldId}
+                onNavigateToModule={(mod) =>
+                  onNavigateToModule ? onNavigateToModule(mod) : toast(`Navigating to ${mod}`)
+                }
               />
             )}
 

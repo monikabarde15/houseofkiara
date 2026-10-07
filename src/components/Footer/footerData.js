@@ -24,7 +24,7 @@ export const desktopFooterColumns = [
     title: "SUPPORT",
     links: [
       { label: "FAQs", path: "/faqs" },
-      { label: "Care, Cleaning & Damage", path: "/care-cleaning-damage" },
+      { label: "Care, Cleaning & Damage", path: "/care-policy" },
       { label: "Deposit Policy", path: "/deposit-policy" },
       { label: "Refunds & Cancellations", path: "/refunds" },
       { label: "Contact Us", path: "/contact-us" },
@@ -66,7 +66,7 @@ export const mobileFooterColumns = [
     title: "Support",
     links: [
       { label: "FAQs", path: "/faqs" },
-      { label: "Care & Damage", path: "/care-cleaning-damage" },
+      { label: "Care & Damage", path: "/care-policy" },
       { label: "Deposit Policy", path: "/deposit-policy" },
       { label: "Refunds", path: "/refunds" },
       { label: "Contact Us", path: "/contact-us" },
@@ -88,7 +88,7 @@ export const desktopPolicyLinks = [
   { label: "Privacy Policy", path: "/privacy" },
   { label: "Refund & Cancellation Policy", path: "/refunds" },
   { label: "Deposit Policy", path: "/deposit" },
-  { label: "Care, Cleaning & Damage Policy", path: "/care-damage" },
+  { label: "Care, Cleaning & Damage Policy", path: "/care-policy" },
   { label: "Cookie Policy", path: "/cookies" },
   { label: "Cookie settings", isButton: true, action: "open-cookie-settings" },
 ];
@@ -98,7 +98,7 @@ export const mobilePolicyLinks = [
   { label: "Privacy Policy", path: "/privacy" },
   { label: "Refund Policy", path: "/refunds" },
   { label: "Deposit Policy", path: "/deposit" },
-  { label: "Care & Damage Policy", path: "/care-damage" },
+  { label: "Care & Damage Policy", path: "/care-policy" },
   { label: "Cookie Policy", path: "/cookies" },
   { label: "Cookie settings", isButton: true, action: "open-cookie-settings" },
 ];

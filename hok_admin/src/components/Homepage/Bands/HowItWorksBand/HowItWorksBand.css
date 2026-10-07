@@ -1,266 +1,171 @@
 /* =========================================================
    HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · HOW IT WORKS BAND CSS
-   Spec Section 8.2 (v213)
+   Spec Section 8.2 & 12.1 (v213)
 ========================================================= */
 
-.hok-how-it-works-band {
+.hok-hiw-band {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
 }
 
-/* Words Grid */
-.hok-hiw-words-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 14px;
-}
-
-@media (max-width: 768px) {
-  .hok-hiw-words-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.hok-hiw-mirror-box {
-  background: var(--cb);
-  border: 1px dashed var(--ibg);
-  border-radius: var(--r);
-  padding: 16px 20px;
-  margin-bottom: 16px;
-}
-
-.hok-hiw-mirror-label {
-  display: block;
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-.hok-hiw-reads-as {
-  margin: 0;
-}
-
-.hok-hiw-tabs-config {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 16px;
-  align-items: flex-end;
-  margin-top: 14px;
-}
-
-@media (max-width: 768px) {
-  .hok-hiw-tabs-config {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Step Tile inside Deck */
-.hok-hiw-step-tile {
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  height: 100%;
-  min-height: 120px;
-}
-
-.hok-hiw-tile-icon-box {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--r);
-  background: var(--cb);
-  border: 1px solid var(--ibg);
+/* 8.2 Pane Switcher Bar */
+.hok-hiw-pane-switcher-bar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 12px;
+  background-color: var(--ibg);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 2px;
+}
+
+.hok-hiw-switcher-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hok-hiw-editing-label {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.855px;
+  text-transform: uppercase;
   color: var(--gold);
 }
 
-.hok-hiw-tile-step-num {
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--muted);
+.hok-hiw-segmented-tabs {
+  display: inline-flex;
+  background-color: var(--canvas);
+  padding: 2px;
+  border-radius: var(--r);
+  border: 1px solid var(--ib);
+  gap: 2px;
 }
 
-.hok-hiw-tile-step-title {
+.hok-hiw-tab-btn {
   font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-hiw-tab-btn:hover {
   color: var(--charcoal);
-  line-height: 1.3;
+  background-color: rgba(26, 22, 18, 0.04);
 }
 
-.hok-hiw-tile-step-desc {
+.hok-hiw-tab-btn.active {
+  background-color: var(--charcoal);
+  color: var(--cream);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.hok-hiw-switcher-right {
   font-family: var(--sans);
-  font-size: 11px;
-  line-height: 1.45;
+  font-size: 10.5px;
   color: var(--muted);
-  margin: 0;
+  font-style: italic;
+  text-align: right;
 }
 
-.hok-hiw-deck-wrapper {
-  margin-top: 12px;
-}
-
-/* Inspector Icon Selector Grid */
-.hok-hiw-inspector-content {
+/* Card Field Stack */
+.hok-hiw-field-stack {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.hok-hiw-icon-selector {
+.hok-hiw-grid-2col {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 6px;
-  background: var(--cb);
-  padding: 8px;
-  border-radius: var(--r);
-  border: 1px solid var(--ibg);
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
 
-@media (max-width: 600px) {
-  .hok-hiw-icon-selector {
-    grid-template-columns: repeat(4, 1fr);
-  }
+/* Deck Limit & Capacity Note */
+.hok-hiw-limit-note {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+/* Bottom Note with Inline Switch */
+.hok-hiw-bottom-note {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: var(--muted);
+  font-style: italic;
+  padding: 4px 2px;
+}
+
+.hok-hiw-switch-inline-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--gold);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.hok-hiw-switch-inline-link:hover {
+  color: var(--charcoal);
+}
+
+/* Inspector Form Fields */
+.hok-hiw-inspector-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* 16 Icon Picker Grid (Spec 4.13) */
+.hok-hiw-icon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 100%;
 }
 
 .hok-hiw-icon-btn {
-  display: flex;
-  flex-direction: column;
+  width: 29px;
+  height: 29px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 6px 2px;
-  background: var(--card);
-  border: 1px solid var(--ibg);
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  background-color: var(--card);
   color: var(--charcoal);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
 }
 
 .hok-hiw-icon-btn:hover {
   border-color: var(--gold);
-  background: var(--gold-pale);
-  color: var(--gold);
+  background-color: var(--gold-pale);
+  color: var(--charcoal);
 }
 
-.hok-hiw-icon-btn.active {
+.hok-hiw-icon-btn.is-selected {
   border-color: var(--gold);
-  background: var(--gold-pale);
+  background-color: var(--gold-pale);
   color: var(--gold);
   box-shadow: 0 0 0 1px var(--gold);
-}
-
-.hok-hiw-icon-name {
-  font-family: var(--sans);
-  font-size: 9px;
-  letter-spacing: 0.02em;
-  color: var(--muted);
-}
-
-.hok-hiw-icon-btn.active .hok-hiw-icon-name {
-  color: var(--gold);
-  font-weight: 600;
-}
-
-/* Sell Card Editor */
-.hok-hiw-sellcard-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-@media (max-width: 800px) {
-  .hok-hiw-sellcard-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.hok-hiw-sellcard-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.hok-hiw-cta-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.hok-hiw-sellcard-preview-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.hok-hiw-preview-tag {
-  font-family: var(--sans);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-}
-
-.hok-hiw-sellcard-preview {
-  background: linear-gradient(135deg, var(--charcoal) 0%, #222222 100%);
-  color: #fff;
-  border-radius: var(--r);
-  padding: 22px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  border: 1px solid var(--gold-l);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-}
-
-.hok-hiw-sellcard-preview-head {
-  font-family: var(--serif);
-  font-size: 17px;
-  color: var(--gold-l);
-  letter-spacing: 0.02em;
-  font-weight: 600;
-}
-
-.hok-hiw-sellcard-preview-body {
-  font-family: var(--sans);
-  font-size: 12px;
-  line-height: 1.5;
-  color: #d8d8d8;
-}
-
-.hok-hiw-sellcard-preview-quote {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 12.5px;
-  line-height: 1.4;
-  color: var(--cream);
-  padding-left: 10px;
-  border-left: 2px solid var(--gold);
-}
-
-.hok-hiw-sellcard-preview-btn {
-  align-self: flex-start;
-  margin-top: 4px;
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: var(--gold);
-  color: #fff;
-  padding: 8px 14px;
-  border-radius: 3px;
-  box-shadow: 0 2px 6px rgba(184, 134, 11, 0.25);
 }

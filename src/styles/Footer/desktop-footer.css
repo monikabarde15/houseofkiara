@@ -143,23 +143,57 @@
 }
 
 .hok-footer-policy-link {
-  padding-right: 16px;
-  margin-right: 16px;
+  padding: 0 16px 0 0;
+  margin: 0 16px 0 0;
+  border: none;
   border-right: 1px solid #E8E0D4;
+  background: transparent;
   text-decoration: none;
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 300;
   letter-spacing: 0.03em;
+  line-height: inherit;
   color: #8A7E72;
   transition: color 0.15s ease;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline;
+  vertical-align: baseline;
 }
 
-.hok-footer-policy-link:hover {
+button.hok-footer-policy-link {
+  background: transparent;
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  line-height: inherit;
+  color: #8A7E72;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline;
+  vertical-align: baseline;
+}
+
+.hok-footer-policy-link:hover,
+button.hok-footer-policy-link:hover {
   color: #1A1612;
 }
 
-.hok-footer-policy-link.last {
+.hok-footer-policy-link.last,
+button.hok-footer-policy-link.last {
   border-right: none;
   margin-right: 0;
   padding-right: 0;
@@ -200,4 +234,14 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #8A7E72;
+}
+
+/* D14: Current Page Marking */
+.hok-footer-link.here,
+.hok-footer-policy-link.here {
+  color: #1A1612 !important;
+  font-weight: 500 !important;
+  cursor: default !important;
+  pointer-events: none;
+  text-decoration: none;
 }

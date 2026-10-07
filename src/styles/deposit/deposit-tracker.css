@@ -1,0 +1,244 @@
+/**
+ * House of Kaira - Deposit Tracker Card Styles (D4)
+ * Section 5 (D4) & 7.2 of Build Specification v2.0 (hok_deposit_policy_v2)
+ */
+
+/* ==========================================================================
+   D4 TRACKER CARD CONTAINER
+   ========================================================================== */
+
+.jr {
+  max-width: 1040px;
+  margin: -92px auto 0;
+  position: relative;
+  z-index: 10;
+  background: var(--dp-warm-white);
+  border: 1px solid var(--dp-border);
+  box-shadow: var(--dp-shadow-tracker);
+  padding: 26px 32px 22px;
+}
+
+/* Card Header Row */
+.jr-hd {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--dp-border-light);
+}
+
+.jr-hd h2 {
+  font-family: var(--dp-font-serif);
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 1.2;
+  color: var(--dp-charcoal);
+  margin: 0;
+}
+
+.jr-hd p {
+  font-family: var(--dp-font-sans);
+  font-size: 12px;
+  color: var(--dp-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.jr-hd .jr-hd-lnk {
+  font-size: 12px;
+  color: var(--dp-charcoal);
+  text-decoration: none;
+  border-bottom: 1px solid var(--dp-gold-light);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.jr-hd .jr-hd-lnk:hover {
+  color: var(--dp-gold-deep);
+  border-color: var(--dp-gold);
+}
+
+/* ==========================================================================
+   5 STEPS ROW & CONNECTING LINE
+   ========================================================================== */
+
+.jr-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  position: relative;
+}
+
+/* Horizontal connecting line between 1st and 5th circle centres */
+.jr-steps::before {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 21px;
+  height: 1px;
+  background: var(--dp-gold-light);
+  z-index: 0;
+}
+
+/* Individual step item */
+.jr-step-item {
+  position: relative;
+  z-index: 1;
+}
+
+.jr-step {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px 6px;
+  text-align: center;
+  transition: opacity 0.2s ease;
+}
+
+/* Number circle */
+.jr-n {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--dp-gold-light);
+  background: var(--dp-warm-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--dp-font-serif);
+  font-size: 19px;
+  line-height: 1;
+  color: var(--dp-gold-deep);
+  position: relative;
+  z-index: 1;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* 5th Circle Destination: filled gold pale with gold border */
+.jr-steps li:last-child .jr-n {
+  background: var(--dp-gold-pale);
+  border-color: var(--dp-gold);
+}
+
+/* Step text block */
+.jr-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+}
+
+.jr-k {
+  font-family: var(--dp-font-serif);
+  font-size: 19px;
+  line-height: 1.2;
+  color: var(--dp-charcoal);
+  transition: color 0.2s ease;
+}
+
+.jr-d {
+  font-family: var(--dp-font-sans);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--dp-muted);
+  max-width: 168px;
+}
+
+/* Hover effects */
+.jr-step:hover .jr-n {
+  background: var(--dp-charcoal);
+  border-color: var(--dp-charcoal);
+  color: var(--dp-gold-light);
+}
+
+.jr-step:hover .jr-k {
+  color: var(--dp-gold-deep);
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS (960px, 760px, <=700px)
+   ========================================================================== */
+
+/* 960px and below */
+@media (max-width: 960px) {
+  .jr {
+    margin: -84px 24px 0;
+    padding: 24px 20px 20px;
+  }
+
+  .jr-step {
+    padding: 0 4px 4px;
+    gap: 10px;
+  }
+
+  .jr-k {
+    font-size: 17px;
+  }
+
+  .jr-d {
+    font-size: 11px;
+    max-width: 132px;
+  }
+}
+
+/* 760px and below */
+@media (max-width: 760px) {
+  .jr {
+    margin: -64px 14px 0;
+    padding: 20px 18px 6px;
+  }
+
+  .jr-hd h2 {
+    font-size: 22px;
+  }
+}
+
+/* 700px and below: VERTICAL LIST */
+@media (max-width: 700px) {
+  .jr-steps {
+    grid-template-columns: 1fr;
+  }
+
+  /* Vertical connecting line */
+  .jr-steps::before {
+    left: 21px;
+    right: auto;
+    top: 22px;
+    bottom: 34px;
+    width: 1px;
+    height: auto;
+  }
+
+  .jr-step {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 16px;
+    padding: 0 0 16px;
+  }
+
+  .jr-txt {
+    align-items: flex-start;
+    padding-top: 4px;
+  }
+
+  .jr-k {
+    font-size: 19px;
+  }
+
+  .jr-d {
+    font-size: 11.5px;
+    max-width: none;
+  }
+}

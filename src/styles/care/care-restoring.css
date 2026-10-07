@@ -1,0 +1,151 @@
+/**
+ * House of Kaira - Care Policy "Our care, and If a piece needs restoring" Styles (Component C12)
+ * Sections 5.12, 7.8, 7.10 of Build Specification 2.0
+ */
+
+@import './care-variables.css';
+
+/* Full-width cream band */
+.oc {
+  background-color: var(--care-cream);
+  border-top: 1px solid var(--care-border);
+  border-bottom: 1px solid var(--care-border);
+  margin-top: 112px;
+  padding: 92px 40px 96px;
+  scroll-margin-top: calc(114px + 8px);
+  position: relative;
+  width: 100%;
+}
+
+.oc-grid {
+  max-width: var(--care-max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 72px;
+}
+
+.oc-col {
+  scroll-margin-top: calc(114px + 8px);
+}
+
+.oc h2 {
+  font-family: var(--care-font-serif);
+  font-weight: 300;
+  font-size: clamp(34px, 4vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--care-charcoal);
+  margin: 0;
+}
+
+.oc h2 em {
+  font-style: italic;
+  color: var(--care-gold);
+}
+
+.oc .notes,
+.oc .notes li {
+  border-color: var(--care-border);
+}
+
+.oc .q-lbl {
+  margin-top: 44px;
+}
+
+/* 4 Vertical Numbered Steps */
+.rs-steps {
+  list-style: none;
+  margin-top: 24px;
+  padding: 0;
+}
+
+.rs-steps li {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 4px 18px;
+  padding-bottom: 20px;
+  position: relative;
+}
+
+.rs-steps li:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 17px;
+  top: 36px;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--care-gold-light);
+  z-index: 0;
+}
+
+.rs-n {
+  grid-row: 1 / span 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--care-gold-light);
+  background-color: var(--care-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--care-font-serif);
+  font-size: 17px;
+  color: var(--care-gold-deep);
+  position: relative;
+  z-index: 1;
+}
+
+.rs-k {
+  font-family: var(--care-font-serif);
+  font-size: 20px;
+  line-height: 1.25;
+  color: var(--care-charcoal);
+  padding-top: 6px;
+  margin: 0;
+}
+
+.rs-d {
+  font-family: var(--care-font-sans);
+  font-size: 13.5px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--care-ink-3);
+  margin: 0;
+}
+
+/* Closing Note with Gold Left Border */
+.rs-foot {
+  margin-top: 6px;
+  padding-left: 16px;
+  border-left: 1px solid var(--care-gold);
+  font-family: var(--care-font-sans);
+  font-size: 13.5px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--care-ink-3);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 960px) {
+  .oc {
+    padding: 80px 40px 84px;
+  }
+  .oc-grid {
+    gap: 48px;
+  }
+}
+
+@media (max-width: 860px) {
+  .oc-grid {
+    grid-template-columns: 1fr;
+    gap: 72px;
+  }
+}
+
+@media (max-width: 760px) {
+  .oc {
+    margin-top: 88px;
+    padding: 72px 18px 76px;
+  }
+}

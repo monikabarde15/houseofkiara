@@ -1,14 +1,11 @@
 /* =========================================================
    HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · TESTIMONIALS (Spec 8.8)
+   Spec Section 8.8 & 12.7 (v213)
 ========================================================= */
 
 import React, { useState } from 'react';
 import './TestimonialsBand.css';
-import {
-  TestimonialsSettings,
-  TestimonialCard,
-  HealthIssue
-} from '../../types/homepage.types';
+import { TestimonialsSettings, TestimonialCard, HealthIssue } from '../../types/homepage.types';
 import { Card } from '../../shared/Card/Card';
 import { Field } from '../../shared/Field/Field';
 import { ReadsAsMirror } from '../../shared/ReadsAsMirror/ReadsAsMirror';
@@ -17,10 +14,6 @@ import { IssueStrip } from '../../shared/IssueStrip/IssueStrip';
 import { Deck } from '../../shared/Deck/Deck';
 import { DeckTileItem } from '../../shared/Deck/DeckTile';
 import { Inspector } from '../../shared/Deck/Inspector';
-import {
-  DoorArrowIcon,
-  PlusIcon
-} from '../../shared/icons/HomepageIcons';
 
 interface TestimonialsBandProps {
   settings: TestimonialsSettings;
@@ -31,19 +24,10 @@ interface TestimonialsBandProps {
   onNavigateToModule?: (mod: string) => void;
 }
 
-// Known orders in the store registry (for live validation)
-const VERIFIED_ORDERS: { [orderId: string]: { customer: string; piece: string; date: string } } = {
-  'HOK-ORD-001': { customer: 'Priya Rathore', piece: 'Sabyasachi Gulabi Silk Lehenga', date: '12 Sep 2026' },
-  'HOK-ORD-002': { customer: 'Aishwarya Sharma', piece: 'Manish Malhotra Sherwani', date: '18 Aug 2026' },
-  'HOK-ORD-003': { customer: 'Neha Kulkarni', piece: 'Tarun Tahiliani Crepe Saree', date: '24 Jul 2026' },
-  'HOK-ORD-004': { customer: 'Ananya Mehta', piece: 'Anita Dongre Rose Anarkali', date: '05 Aug 2026' },
-  'HOK-ORD-108': { customer: 'Tanvi Shah', piece: 'Rahul Mishra Cape Set', date: '02 Jun 2026' }
-};
-
-const getInitials = (name: string): string => {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+const SAMPLE_ORDERS: { [orderId: string]: string } = {
+  'HOK-ORD-001': 'Matches Priya Rathore · Crimson Zardozi Bridal Lehenga · Rental.',
+  'HOK-ORD-002': 'Matches Aishwarya Sharma · Ivory Embroidered Sherwani · Rental.',
+  'HOK-ORD-003': 'Matches Neha Kulkarni · Midnight Blue Crepe Saree · Rental.'
 };
 
 export const TestimonialsBand: React.FC<TestimonialsBandProps> = ({
@@ -56,14 +40,23 @@ export const TestimonialsBand: React.FC<TestimonialsBandProps> = ({
 }) => {
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null);
 
-  // Deck items representation
+  const getInitials = (name: string, custom?: string) => {
+    if (custom?.trim()) return custom.trim();
+    if (!name?.trim()) return 'PR';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
+
   const deckItems: DeckTileItem[] = settings.cards.map((c, idx) => ({
-    id: c.id || `testi-card-${idx + 1}`,
+    id: `testi-card-${c.id || idx + 1}`,
     position: idx + 1,
     title: c.name || `Quote ${idx + 1}`,
-    sub: `${c.city ? c.city + ' · ' : ''}${c.ctx || 'Customer review'}`,
-    badge: c.src === 'Verified order' ? '✓ Verified' : c.src,
-    initials: c.ini || getInitials(c.name || 'HOK')
+    sub: `${c.city ? c.city + ' · ' : ''}${c.ctx}`,
+    initials: getInitials(c.name, c.ini),
+    pictureHeight: 108,
+    cornerFlag: !c.on ? { type: 'off', label: 'OFF' } : undefined,
+    dimmed: !c.on
   }));
 
   const selectedCard =
@@ -71,23 +64,14 @@ export const TestimonialsBand: React.FC<TestimonialsBandProps> = ({
       ? settings.cards[selectedCardIndex]
       : null;
 
-  // Handlers
   const handleUpdateCard = (index: number, patch: Partial<TestimonialCard>) => {
     const updated = [...settings.cards];
-    const current = updated[index];
-    const next = { ...current, ...patch };
-
-    // Auto-update initials if name changed and initials were default
-    if (patch.name && (!current.ini || current.ini === getInitials(current.name))) {
-      next.ini = getInitials(patch.name);
-    }
-
-    updated[index] = next;
+    updated[index] = { ...updated[index], ...patch };
     onChange({ ...settings, cards: updated });
   };
 
-  const handleMoveCard = (index: number, direction: 'earlier' | 'later') => {
-    const target = direction === 'earlier' ? index - 1 : index + 1;
+  const handleMoveCard = (index: number, direction: 'up' | 'down') => {
+    const target = direction === 'up' ? index - 1 : index + 1;
     if (target < 0 || target >= settings.cards.length) return;
     const updated = [...settings.cards];
     const temp = updated[index];
@@ -97,415 +81,320 @@ export const TestimonialsBand: React.FC<TestimonialsBandProps> = ({
     setSelectedCardIndex(target);
   };
 
+  const handleRemoveCard = (index: number) => {
+    const updated = settings.cards.filter((_, idx) => idx !== index);
+    onChange({ ...settings, cards: updated });
+    if (selectedCardIndex === index) {
+      setSelectedCardIndex(null);
+    } else if (selectedCardIndex !== null && selectedCardIndex > index) {
+      setSelectedCardIndex(selectedCardIndex - 1);
+    }
+  };
+
   const handleAddCard = () => {
+    if (settings.cards.length >= 6) return;
     const newCard: TestimonialCard = {
       id: `t-${Date.now()}`,
       on: true,
-      name: 'New Customer',
-      ini: 'NC',
+      name: 'Priya Rathore',
+      ini: 'PR',
       city: 'Mumbai',
-      ctx: 'Rented for Wedding',
+      ctx: 'Rented for a Wedding',
       stars: 5,
       src: 'Verified order',
-      ref: 'HOK-ORD-004',
-      q: 'The experience was seamless from fitting to return. Highly recommended!'
+      ref: 'HOK-ORD-001',
+      q: 'The packaging and the designer fit made the celebration completely memorable.'
     };
-    onChange({ ...settings, cards: [...settings.cards, newCard] });
-    setSelectedCardIndex(settings.cards.length);
-  };
-
-  const handleRemoveCard = (index: number) => {
-    const updated = settings.cards.filter((_, i) => i !== index);
+    const updated = [...settings.cards, newCard];
     onChange({ ...settings, cards: updated });
-    setSelectedCardIndex(null);
+    setSelectedCardIndex(updated.length - 1);
   };
 
-  // Order validation info
-  const verifiedOrderInfo =
-    selectedCard && selectedCard.src === 'Verified order' && selectedCard.ref
-      ? VERIFIED_ORDERS[selectedCard.ref] || null
-      : null;
+  const orderMatchInfo = selectedCard?.ref ? SAMPLE_ORDERS[selectedCard.ref] : null;
 
   return (
-    <div className="hok-band-editor hok-testimonials-band">
-      {/* Band Header Card */}
-      <Card
-        variant="elevated"
-        header={{
-          eyebrow: 'BAND 8 · TESTIMONIALS',
-          title: 'Customer Testimonials',
-          meta: isShown ? 'VISIBLE ON STOREFRONT' : 'HIDDEN',
-          status: isShown ? 'live' : 'draft',
-          actions: (
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={isShown}
-              onChange={onToggleShown}
-            />
-          )
-        }}
-      >
-        <p className="hok-band-intro">
-          Customer social proof quotes, star ratings, occasion contexts, and verified order authentication badges.
-        </p>
+    <div className="hok-testimonials-band">
+      {/* 7. Editor Shell Top */}
+      <div className="hok-hp-editor-heading-row">
+        <h2 className="hok-hp-editor-band-title">Testimonials</h2>
+        <span className="hok-hp-editor-band-counter">Band 8 of 9</span>
+      </div>
 
-        {issues.length > 0 && (
-          <div className="hok-band-issues">
-            {issues.map((iss, i) => (
-              <IssueStrip
-                key={i}
-                severity={iss.severity}
-                message={iss.message}
-                actionLabel={iss.actionLabel}
+      <p className="hok-hp-editor-band-desc">
+        Customer quotes. Each one records where it came from, so a claim on the homepage can always be traced back to a real order.
+      </p>
+
+      {/* 7.1 Visibility Row */}
+      <div className="hok-hp-visibility-row" id="testi-visibility">
+        <div className="hok-hp-visibility-left">
+          <PillToggle
+            checked={isShown}
+            onChange={onToggleShown}
+            label="Show this band on the homepage"
+          />
+        </div>
+        <span className="hok-hp-visibility-consequence">
+          {isShown
+            ? 'Showing on the live homepage, in position 8.'
+            : 'Hidden. The settings below are kept, so it can come back exactly as it was.'}
+        </span>
+      </div>
+
+      {/* Issues Strip */}
+      {issues.map((iss) => (
+        <IssueStrip
+          key={iss.id}
+          severity={iss.sev}
+          message={iss.msg}
+          doorLabel={iss.doorLabel}
+          onDoorClick={() => iss.door && onNavigateToModule && onNavigateToModule(iss.door)}
+        />
+      ))}
+
+      {/* Card 1 — The words (Spec 8.8.1) */}
+      <Card
+        id="testi-words-card"
+        title="The words"
+      >
+        <div className="hok-testi-field-stack">
+          <div id="testi-eyebrow">
+            <Field
+              label="Eyebrow"
+              hint="Centred, with a rule on both sides."
+            >
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.eyebrow}
+                onChange={(e) => onChange({ ...settings, eyebrow: e.target.value })}
+                placeholder="Worn, Loved & Shared Across India"
               />
-            ))}
+            </Field>
           </div>
-        )}
-      </Card>
 
-      {/* Card 1: Headings & Layout */}
-      <Card
-        header={{
-          eyebrow: 'BAND HEADINGS & LAYOUT',
-          title: 'Heading, Eyebrow & Grid Arrangement',
-          meta: 'Top text and column presentation'
-        }}
-      >
-        <div className="hok-testi-words-grid">
-          <Field
-            label="Eyebrow"
-            hint="Small caps kicker text"
-          >
-            <input
-              id="testi-eyebrow"
-              type="text"
-              className="hok-input"
-              value={settings.eyebrow}
-              onChange={(e) => onChange({ ...settings, eyebrow: e.target.value })}
-              placeholder="Worn, Loved & Shared Across India"
-            />
-          </Field>
+          <div id="testi-heading">
+            <Field
+              label="Heading"
+              hint="A line break starts a new line. Wrap one word in *asterisks* to set it in the italic gold serif, the way the storefront does."
+            >
+              <textarea
+                className="hok-field-textarea"
+                rows={2}
+                value={settings.heading}
+                onChange={(e) => onChange({ ...settings, heading: e.target.value })}
+                placeholder="What our customers *say*"
+              />
+            </Field>
+            <ReadsAsMirror text={settings.heading} />
+          </div>
 
-          <Field
-            label="Main Heading"
-            hint="Wrap *words in asterisks* for gold italic serif font"
-          >
-            <input
-              id="testi-heading"
-              type="text"
-              className="hok-input"
-              value={settings.heading}
-              onChange={(e) => onChange({ ...settings, heading: e.target.value })}
-              placeholder="What our customers *say*"
-            />
-          </Field>
-        </div>
+          <div className="hok-testi-grid-2col">
+            <Field label="Desktop">
+              <select
+                className="hok-field-select"
+                value={settings.layout}
+                onChange={(e) =>
+                  onChange({ ...settings, layout: e.target.value as 'Three across' | 'Two across' })
+                }
+              >
+                <option value="Three across">Three across</option>
+                <option value="Two across">Two across</option>
+              </select>
+            </Field>
 
-        <div className="hok-testi-mirror-box">
-          <span className="hok-testi-mirror-label">Live Storefront Heading Preview</span>
-          <ReadsAsMirror
-            eyebrow={settings.eyebrow}
-            heading={settings.heading}
-            className="hok-testi-reads-as"
-          />
-        </div>
-
-        <div className="hok-divider" />
-
-        <div className="hok-testi-layout-grid">
-          <Field
-            label="Desktop Layout"
-            hint="Arrangement on desktop screens"
-          >
-            <PillToggle
-              options={[
-                { label: 'Three across', value: 'Three across' },
-                { label: 'Two across', value: 'Two across' }
-              ]}
-              value={settings.layout}
-              onChange={(val) =>
-                onChange({ ...settings, layout: val as 'Three across' | 'Two across' })
-              }
-            />
-          </Field>
-
-          <Field
-            label="Mobile Layout"
-            hint="Arrangement on compact viewports"
-          >
-            <PillToggle
-              options={[
-                { label: 'Swipe (Carousel)', value: 'Swipe' },
-                { label: 'Stacked (Vertical)', value: 'Stacked' }
-              ]}
-              value={settings.layoutMob}
-              onChange={(val) =>
-                onChange({ ...settings, layoutMob: val as 'Swipe' | 'Stacked' })
-              }
-            />
-          </Field>
+            <Field label="Mobile">
+              <select
+                className="hok-field-select"
+                value={settings.layoutMob}
+                onChange={(e) =>
+                  onChange({ ...settings, layoutMob: e.target.value as 'Swipe' | 'Stacked' })
+                }
+              >
+                <option value="Swipe">Swipe</option>
+                <option value="Stacked">Stacked</option>
+              </select>
+            </Field>
+          </div>
         </div>
       </Card>
 
-      {/* Card 2: 3-Quote Cards Deck & Inspector */}
+      {/* Card 2 — The quotes (Spec 8.8.2) */}
       <div id="testi-quotes">
-      <Card
-        header={{
-          eyebrow: 'TESTIMONIAL CARDS',
-          title: 'Customer Review Quotes',
-          meta: `${settings.cards.length} quotes configured · ${settings.layout} deck`,
-          actions: (
-            <button
-              type="button"
-              className="hok-testi-add-btn"
-              onClick={handleAddCard}
-            >
-              <PlusIcon size={11} /> Add Testimonial
-            </button>
-          )
-        }}
-      >
-        <p className="hok-field-hint" style={{ marginBottom: 14 }}>
-          Click any testimonial card below to edit customer details, star rating, verified order links, and quote wording.
-        </p>
+        <Card
+          title="The quotes"
+          sub="Each one records where it came from. A claim on the homepage that cannot be traced back to a real order is a claim worth not making."
+        >
+          <div className="hok-testi-deck-wrapper">
+            <Deck
+              arrangement="d3"
+              items={deckItems}
+              selectedIndex={selectedCardIndex}
+              onSelectIndex={setSelectedCardIndex}
+              onMoveEarlier={(idx) => handleMoveCard(idx, 'up')}
+              onMoveLater={(idx) => handleMoveCard(idx, 'down')}
+              onRemove={handleRemoveCard}
+              removeLabel="Remove"
+              onAddTile={handleAddCard}
+              addLabel="Add a quote"
+              maxReached={settings.cards.length >= 6}
+            />
 
-        <div className="hok-testi-deck-wrapper">
-          <Deck
-            arrangement="d3"
-            items={deckItems}
-            selectedIndex={selectedCardIndex}
-            onSelect={(idx) => setSelectedCardIndex(idx)}
-            renderCustomContent={(item, idx) => {
-              const card = settings.cards[idx];
-              return (
-                <div className="hok-testi-tile">
-                  <div className="hok-testi-tile-top">
-                    <div className="hok-testi-avatar">{card.ini || getInitials(card.name)}</div>
-                    <div className="hok-testi-author">
-                      <div className="hok-testi-name">{card.name || 'Anonymous'}</div>
-                      <div className="hok-testi-ctx">{card.city ? `${card.city} · ` : ''}{card.ctx}</div>
-                    </div>
-                  </div>
-
-                  <div className="hok-testi-stars">
-                    {'★'.repeat(card.stars || 5)}
-                    {'☆'.repeat(5 - (card.stars || 5))}
-                  </div>
-
-                  <p className="hok-testi-quote">&ldquo;{card.q}&rdquo;</p>
-
-                  <div className="hok-testi-tile-foot">
-                    <span className={`hok-testi-src-pill is-${card.src.toLowerCase().replace(/\s+/g, '-')}`}>
-                      {card.src === 'Verified order' ? '✓ Verified Order' : card.src}
-                    </span>
-                    {!card.on && <span className="hok-testi-hidden-tag">Hidden</span>}
-                  </div>
-                </div>
-              );
-            }}
-          />
-
-          {selectedCard && selectedCardIndex !== null && (
+            {/* Inspector */}
             <Inspector
-              title={`Edit Testimonial ${selectedCardIndex + 1}: ${selectedCard.name}`}
-              position={selectedCardIndex + 1}
-              totalItems={settings.cards.length}
-              onClose={() => setSelectedCardIndex(null)}
-              onMoveUp={selectedCardIndex > 0 ? () => handleMoveCard(selectedCardIndex, 'earlier') : undefined}
-              onMoveDown={
-                selectedCardIndex < settings.cards.length - 1
-                  ? () => handleMoveCard(selectedCardIndex, 'later')
-                  : undefined
-              }
+              kicker={`EDITING QUOTE ${selectedCardIndex !== null ? selectedCardIndex + 1 : 1}`}
+              itemName={selectedCard ? selectedCard.name : undefined}
+              isOpen={selectedCardIndex !== null && !!selectedCard}
+              emptyText="Pick a quote above to edit the customer words, star rating and verified order connection."
             >
-              <div className="hok-testi-inspector-content">
-                <Field
-                  label="Card Visibility"
-                  hint="Show or hide this specific quote from the live storefront"
-                >
+              {selectedCard && selectedCardIndex !== null && (
+                <div className="hok-testi-inspector-fields">
                   <PillToggle
-                    options={[
-                      { label: 'Show', value: true },
-                      { label: 'Hide', value: false }
-                    ]}
-                    value={selectedCard.on}
-                    onChange={(val) => handleUpdateCard(selectedCardIndex, { on: Boolean(val) })}
+                    checked={selectedCard.on}
+                    onChange={(checked) =>
+                      handleUpdateCard(selectedCardIndex, { on: checked })
+                    }
+                    label="Show this quote on the homepage"
                   />
-                </Field>
 
-                <div className="hok-testi-name-grid">
-                  <Field
-                    label="Customer Full Name"
-                    hint="e.g. Priya Rathore"
-                  >
-                    <input
-                      type="text"
-                      className="hok-input"
-                      value={selectedCard.name}
-                      onChange={(e) => handleUpdateCard(selectedCardIndex, { name: e.target.value })}
-                      placeholder="Priya Rathore"
-                    />
-                  </Field>
-
-                  <Field
-                    label="Initials"
-                    hint="Avatar initials (e.g. 'PR')"
-                  >
-                    <input
-                      type="text"
-                      className="hok-input"
-                      value={selectedCard.ini}
+                  <Field label="Quote">
+                    <textarea
+                      className="hok-field-textarea"
+                      rows={3}
+                      value={selectedCard.q}
                       onChange={(e) =>
-                        handleUpdateCard(selectedCardIndex, { ini: e.target.value.toUpperCase() })
+                        handleUpdateCard(selectedCardIndex, { q: e.target.value })
                       }
-                      maxLength={3}
-                      placeholder="PR"
-                    />
-                  </Field>
-                </div>
-
-                <div className="hok-testi-location-grid">
-                  <Field
-                    label="City / Location"
-                    hint="e.g. Mumbai, Delhi, London"
-                  >
-                    <input
-                      type="text"
-                      className="hok-input"
-                      value={selectedCard.city}
-                      onChange={(e) => handleUpdateCard(selectedCardIndex, { city: e.target.value })}
-                      placeholder="Mumbai"
+                      placeholder="I wore a Sabyasachi lehenga to my sister's wedding for a fraction of the retail price..."
                     />
                   </Field>
 
-                  <Field
-                    label="Occasion / Context"
-                    hint="e.g. Rented for a Wedding"
-                  >
-                    <input
-                      type="text"
-                      className="hok-input"
-                      value={selectedCard.ctx}
-                      onChange={(e) => handleUpdateCard(selectedCardIndex, { ctx: e.target.value })}
-                      placeholder="Rented for a Wedding"
-                    />
-                  </Field>
-                </div>
+                  <div className="hok-testi-grid-2col">
+                    <Field label="Name">
+                      <input
+                        type="text"
+                        className="hok-field-input"
+                        value={selectedCard.name}
+                        onChange={(e) =>
+                          handleUpdateCard(selectedCardIndex, { name: e.target.value })
+                        }
+                        placeholder="Priya Rathore"
+                      />
+                    </Field>
 
-                <div className="hok-testi-stars-source-grid">
-                  <Field
-                    label="Star Rating"
-                    hint="Rating out of 5 stars"
-                  >
-                    <select
-                      className="hok-select"
-                      value={selectedCard.stars || 5}
-                      onChange={(e) =>
-                        handleUpdateCard(selectedCardIndex, { stars: Number(e.target.value) })
-                      }
-                    >
-                      <option value={5}>★★★★★ (5 Stars)</option>
-                      <option value={4}>★★★★☆ (4 Stars)</option>
-                      <option value={3}>★★★☆☆ (3 Stars)</option>
-                      <option value={2}>★★☆☆☆ (2 Stars)</option>
-                      <option value={1}>★☆☆☆☆ (1 Star)</option>
-                    </select>
-                  </Field>
-
-                  <Field
-                    label="Verification Source"
-                    hint="Trust badge attached to the quote"
-                  >
-                    <select
-                      className="hok-select"
-                      value={selectedCard.src}
-                      onChange={(e) =>
-                        handleUpdateCard(selectedCardIndex, {
-                          src: e.target.value as 'Verified order' | 'Instagram' | 'Collected directly'
-                        })
-                      }
-                    >
-                      <option value="Verified order">Verified order</option>
-                      <option value="Instagram">Instagram</option>
-                      <option value="Collected directly">Collected directly</option>
-                    </select>
-                  </Field>
-                </div>
-
-                {selectedCard.src === 'Verified order' && (
-                  <div className="hok-testi-order-auth-box">
                     <Field
-                      label="Verified Order Number"
-                      hint="Order reference in the HOK system"
+                      label="Initials on the avatar"
+                      hint={`Blank takes the first letters of the name — currently ${getInitials(
+                        selectedCard.name
+                      )}.`}
                     >
                       <input
                         type="text"
-                        className="hok-input hok-testi-order-input"
-                        value={selectedCard.ref}
+                        className="hok-field-input"
+                        value={selectedCard.ini || ''}
                         onChange={(e) =>
-                          handleUpdateCard(selectedCardIndex, { ref: e.target.value.toUpperCase() })
+                          handleUpdateCard(selectedCardIndex, { ini: e.target.value })
+                        }
+                        placeholder={getInitials(selectedCard.name)}
+                      />
+                    </Field>
+                  </div>
+
+                  <div className="hok-testi-grid-2col">
+                    <Field label="City">
+                      <input
+                        type="text"
+                        className="hok-field-input"
+                        value={selectedCard.city || ''}
+                        onChange={(e) =>
+                          handleUpdateCard(selectedCardIndex, { city: e.target.value })
+                        }
+                        placeholder="Mumbai"
+                      />
+                    </Field>
+
+                    <Field
+                      label="What they did"
+                      hint={`Reads as “${selectedCard.city ? selectedCard.city + ' · ' : ''}${
+                        selectedCard.ctx || 'Rented for a Wedding'
+                      }”.`}
+                    >
+                      <input
+                        type="text"
+                        className="hok-field-input"
+                        value={selectedCard.ctx}
+                        onChange={(e) =>
+                          handleUpdateCard(selectedCardIndex, { ctx: e.target.value })
+                        }
+                        placeholder="Rented for a Wedding"
+                      />
+                    </Field>
+                  </div>
+
+                  <div className="hok-testi-grid-2col">
+                    <Field label="Stars">
+                      <select
+                        className="hok-field-select"
+                        value={selectedCard.stars || 5}
+                        onChange={(e) =>
+                          handleUpdateCard(selectedCardIndex, {
+                            stars: Number(e.target.value)
+                          })
+                        }
+                      >
+                        <option value={5}>5</option>
+                        <option value={4}>4</option>
+                        <option value={3}>3</option>
+                        <option value={2}>2</option>
+                        <option value={1}>1</option>
+                      </select>
+                    </Field>
+
+                    <Field
+                      label="Where it came from"
+                      hint="Traceable to an order in the panel."
+                    >
+                      <select
+                        className="hok-field-select"
+                        value={selectedCard.src}
+                        onChange={(e) =>
+                          handleUpdateCard(selectedCardIndex, {
+                            src: e.target.value as 'Verified order' | 'Instagram' | 'Collected directly'
+                          })
+                        }
+                      >
+                        <option value="Verified order">Verified order</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="Collected directly">Collected directly</option>
+                      </select>
+                    </Field>
+                  </div>
+
+                  {selectedCard.src === 'Verified order' && (
+                    <Field
+                      label="Order number"
+                      hint={
+                        orderMatchInfo ||
+                        (selectedCard.ref
+                          ? 'No order with that number.'
+                          : 'No order recorded, so this quote cannot be traced.')
+                      }
+                    >
+                      <input
+                        type="text"
+                        className="hok-field-input"
+                        value={selectedCard.ref || ''}
+                        onChange={(e) =>
+                          handleUpdateCard(selectedCardIndex, { ref: e.target.value })
                         }
                         placeholder="HOK-ORD-001"
                       />
                     </Field>
-
-                    {verifiedOrderInfo ? (
-                      <div className="hok-testi-order-status is-verified">
-                        <span className="hok-testi-status-icon">✓</span>
-                        <div className="hok-testi-status-text">
-                          <strong>Verified Order:</strong> {verifiedOrderInfo.customer} · {verifiedOrderInfo.piece} ({verifiedOrderInfo.date})
-                        </div>
-                        {onNavigateToModule && (
-                          <button
-                            type="button"
-                            className="hok-testi-order-door-btn"
-                            onClick={() => onNavigateToModule('Orders')}
-                          >
-                            Open Order <DoorArrowIcon size={10} />
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="hok-testi-order-status is-unverified">
-                        <span className="hok-testi-status-icon">⚠</span>
-                        <div className="hok-testi-status-text">
-                          Order ID not found in the orders registry. Please verify the order number.
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <Field
-                  label="Customer Quote"
-                  hint="The actual words spoken or written by the customer"
-                >
-                  <textarea
-                    className="hok-textarea"
-                    rows={4}
-                    value={selectedCard.q}
-                    onChange={(e) => handleUpdateCard(selectedCardIndex, { q: e.target.value })}
-                    placeholder="I wore a Sabyasachi lehenga to my sister's wedding for a fraction of the retail price..."
-                  />
-                </Field>
-
-                <div className="hok-testi-inspector-actions">
-                  <button
-                    type="button"
-                    className="hok-testi-remove-btn"
-                    onClick={() => handleRemoveCard(selectedCardIndex)}
-                  >
-                    Remove Testimonial
-                  </button>
+                  )}
                 </div>
-              </div>
+              )}
             </Inspector>
-          )}
-        </div>
-      </Card>
+          </div>
+        </Card>
       </div>
     </div>
   );

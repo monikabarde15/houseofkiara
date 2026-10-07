@@ -1,0 +1,173 @@
+/**
+ * House of Kaira - Deposit Policy Body, Intro, Glance & Verdict Tag Styles (D6, D7, D8)
+ * Section 5 (D6, D7, D8) & 7.3-7.4 of Build Specification v2.0 (hok_deposit_policy_v2)
+ */
+
+/* ==========================================================================
+   D6 BODY COLUMN
+   ========================================================================== */
+
+.dp-body {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 56px 40px 40px;
+}
+
+.dp-intro {
+  font-family: var(--dp-font-serif);
+  font-size: 22px;
+  line-height: 1.6;
+  color: var(--dp-ink-2);
+  font-weight: 400;
+  margin: 0;
+}
+
+.dp-intro strong {
+  font-weight: 500;
+  font-style: italic;
+  color: var(--dp-charcoal);
+}
+
+/* ==========================================================================
+   D7 YOUR DEPOSIT AT A GLANCE
+   ========================================================================== */
+
+.glance {
+  margin: 44px 0 0;
+}
+
+.glance .ey {
+  font-family: var(--dp-font-sans);
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--dp-gold-deep);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.glance-list {
+  margin-top: 16px;
+  border-top: 1px solid var(--dp-charcoal);
+  list-style: none;
+  padding: 0;
+}
+
+.g-row {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--dp-border);
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 14px;
+  gap: 20px;
+  align-items: center;
+  padding: 17px 4px;
+  transition: background 0.2s ease, padding 0.2s ease;
+  font-family: inherit;
+}
+
+.g-row:hover {
+  background: var(--dp-cream);
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.g-sit {
+  font-family: var(--dp-font-serif);
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--dp-charcoal);
+}
+
+.g-row > svg {
+  width: 12px;
+  height: 12px;
+  stroke: var(--dp-slash-chevron);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.2s ease, transform 0.2s ease;
+  justify-self: end;
+}
+
+.g-row:hover > svg {
+  stroke: var(--dp-gold);
+  transform: translateX(2px);
+}
+
+/* ==========================================================================
+   D8 VERDICT TAG (SHARED)
+   ========================================================================== */
+
+.vd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--dp-font-sans);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.vd::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.vd.v-yes {
+  color: var(--dp-sage);
+}
+
+.vd.v-mid {
+  color: var(--dp-gold-deep);
+}
+
+.vd.v-no {
+  color: var(--dp-terracotta);
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS (<=760px)
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .dp-body {
+    padding: 36px 18px 24px;
+  }
+
+  .dp-intro {
+    font-size: 19px;
+  }
+
+  .g-row {
+    grid-template-columns: minmax(0, 1fr) 12px;
+    gap: 6px 12px;
+    padding: 15px 2px;
+  }
+
+  .g-sit {
+    font-size: 18px;
+  }
+
+  .g-row > svg {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    align-self: center;
+  }
+
+  .g-row .vd {
+    grid-row: 2;
+    grid-column: 1;
+  }
+}

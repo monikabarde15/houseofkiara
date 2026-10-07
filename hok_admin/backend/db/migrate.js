@@ -454,10 +454,30 @@ export const migrationQueries = [
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_category_id ON categories(category_id);`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);`,
   `CREATE INDEX IF NOT EXISTS idx_categories_data_gin ON categories USING GIN (data);`,
+
+  // 16. Homepage Sections Table
+  `CREATE TABLE IF NOT EXISTS homepage_sections (
+    _id VARCHAR(64) PRIMARY KEY,
+    section_id VARCHAR(64) UNIQUE NOT NULL,
+    is_visible BOOLEAN DEFAULT TRUE,
+    order_index INT DEFAULT 1,
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE homepage_sections ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE homepage_sections ADD COLUMN IF NOT EXISTS section_id VARCHAR(64);`,
+  `ALTER TABLE homepage_sections ADD COLUMN IF NOT EXISTS is_visible BOOLEAN DEFAULT TRUE;`,
+  `ALTER TABLE homepage_sections ADD COLUMN IF NOT EXISTS order_index INT DEFAULT 1;`,
+  `ALTER TABLE homepage_sections ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `ALTER TABLE homepage_sections ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `ALTER TABLE homepage_sections ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_homepage_sections_section_id ON homepage_sections(section_id);`,
+  `CREATE INDEX IF NOT EXISTS idx_homepage_sections_data_gin ON homepage_sections USING GIN (data);`,
 ];
 
 export const runMigrations = async () => {
-  console.log("Starting PostgreSQL schema migration for 15 tables...");
+  console.log("Starting PostgreSQL schema migration for 16 tables...");
   const client = await pool.connect();
   try {
     await client.query("BEGIN;");
@@ -466,7 +486,7 @@ export const runMigrations = async () => {
     }
     await client.query("COMMIT;");
     console.log(
-      "PostgreSQL schema migration completed successfully for all 15 tables.",
+      "PostgreSQL schema migration completed successfully for all 16 tables.",
     );
   } catch (error) {
     await client.query("ROLLBACK;");

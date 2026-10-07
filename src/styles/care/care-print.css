@@ -1,0 +1,88 @@
+/**
+ * House of Kaira - Care Policy Clean Print Stylesheet
+ * Section 6.10 of Build Specification 2.0
+ */
+
+#printAll {
+  display: none;
+}
+
+@media print {
+  body > *:not(main),
+  main > *:not(#printAll) {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #1A1612 !important;
+  }
+
+  #printAll {
+    display: block !important;
+    max-width: 760px;
+    margin: 0 auto;
+    color: #1A1612;
+    padding: 20px;
+  }
+
+  #printAll h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 400;
+    font-size: 34px;
+    margin-bottom: 4px;
+  }
+
+  #printAll .pr-meta {
+    font-size: 11px;
+    color: #6b6259;
+    margin-bottom: 20px;
+  }
+
+  #printAll h2 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 400;
+    font-size: 24px;
+    margin: 26px 0 6px;
+    break-after: avoid;
+  }
+
+  #printAll .pr-q {
+    break-inside: avoid;
+    padding: 10px 0;
+    border-bottom: 1px solid #E8E0D4;
+  }
+
+  #printAll h3 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 500;
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+
+  #printAll .ans {
+    font-size: 12px;
+    line-height: 1.65;
+    max-width: none;
+  }
+
+  #printAll ul.pr-list,
+  #printAll ol.pr-list {
+    margin: 4px 0 8px 18px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  #printAll .pr-lead {
+    font-size: 12px;
+    line-height: 1.65;
+    margin: 4px 0;
+  }
+
+  #printAll h4 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 500;
+    font-size: 15px;
+    margin: 10px 0 2px;
+  }
+}

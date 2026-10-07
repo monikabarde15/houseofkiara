@@ -1,398 +1,331 @@
 /* =========================================================
-   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · FEATURED PIECES BAND CSS
-   Spec Section 8.3 (v213)
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · FEATURED PIECES CSS
+   Spec Section 8.3 & 12.4, 12.5 (v213)
 ========================================================= */
 
-.hok-featured-pieces-band {
+.hok-featured-band {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
 }
 
-/* Words Grid */
-.hok-feat-words-grid {
+.hok-feat-field-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hok-feat-grid-2col {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 14px;
+  gap: 14px;
 }
 
-@media (max-width: 768px) {
-  .hok-feat-words-grid {
-    grid-template-columns: 1fr;
-  }
+.hok-feat-deck-wrapper {
+  margin-top: 4px;
 }
 
-.hok-feat-mirror-box {
-  background: var(--cb);
-  border: 1px dashed var(--ibg);
-  border-radius: var(--r);
-  padding: 16px 20px;
-  margin-bottom: 16px;
+.hok-feat-deck-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 6px;
 }
 
-.hok-feat-mirror-label {
-  display: block;
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-.hok-feat-reads-as {
-  margin: 0;
-}
-
-.hok-feat-viewall-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 14px;
-}
-
-@media (max-width: 768px) {
-  .hok-feat-viewall-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Add Slot Header Action */
-.hok-feat-add-slot-btn {
+.hok-feat-open-picker-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: var(--canvas);
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
   font-family: var(--sans);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  background: var(--card);
+  font-weight: 500;
   color: var(--charcoal);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.hok-feat-add-slot-btn:hover {
+.hok-feat-open-picker-btn:hover {
+  background-color: var(--gold-pale);
   border-color: var(--gold);
-  color: var(--gold);
-  background: var(--gold-pale);
 }
 
-/* Slot Tile in Deck */
-.hok-feat-deck-wrapper {
-  margin-top: 12px;
-}
-
-.hok-feat-slot-tile {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-  height: 100%;
-}
-
-.hok-feat-slot-num {
-  font-family: var(--sans);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-}
-
-.hok-feat-slot-shot-tag {
+.hok-feat-live-count-note {
   font-family: var(--sans);
   font-size: 10.5px;
   color: var(--muted);
-  margin-top: auto;
-  padding-top: 6px;
-  border-top: 1px dashed var(--ibg);
+  font-style: italic;
 }
 
-.hok-feat-slot-shot-tag strong {
-  color: var(--charcoal);
+/* Catalogue Picker Box */
+.hok-feat-catalogue-picker-box {
+  background-color: var(--ibg);
+  border: 1px solid var(--gold);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hok-feat-picker-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.hok-feat-picker-title {
+  font-family: var(--sans);
+  font-size: 12px;
   font-weight: 600;
+  color: var(--charcoal);
 }
 
-/* Inspector */
+.hok-feat-picker-sub {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.hok-feat-picker-filter-bar {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 10px;
+}
+
+.hok-feat-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hok-feat-search-wrap svg {
+  position: absolute;
+  left: 9px;
+  color: var(--muted);
+}
+
+.hok-feat-picker-search {
+  width: 100%;
+  padding: 7px 10px 7px 28px;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  background-color: var(--card);
+}
+
+.hok-feat-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.hok-feat-picker-tile {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.hok-feat-picker-tile:hover {
+  border-color: var(--gold);
+}
+
+.hok-feat-picker-tile.is-selected {
+  border-color: var(--sage);
+  background-color: #F4F7F1;
+}
+
+.hok-feat-picker-img {
+  height: 90px;
+  background-color: var(--canvas);
+  background-size: cover;
+  background-position: center;
+  border-radius: 2px;
+}
+
+.hok-feat-picker-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.hok-feat-picker-name {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--charcoal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hok-feat-picker-designer {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  color: var(--muted);
+}
+
+.hok-feat-picker-price {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #4A423C;
+  margin-top: 2px;
+}
+
+.hok-feat-picker-tag {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background-color: var(--sage);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.hok-feat-picker-foot {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.hok-feat-picker-empty {
+  grid-column: 1 / -1;
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 11px;
+}
+
+/* Inspector styles */
 .hok-feat-inspector-content {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.hok-feat-sku-input-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.hok-feat-sku-input {
-  flex: 1;
-  font-family: monospace;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-
-.hok-feat-browse-cat-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 600;
-  background: var(--gold);
-  color: #fff;
-  border: none;
-  border-radius: var(--r);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s ease;
-}
-
-.hok-feat-browse-cat-btn:hover {
-  background: var(--gold-l);
-}
-
-.hok-feat-live-preview-box {
-  background: var(--cb);
-  border: 1px solid var(--ibg);
-  border-radius: var(--r);
-  padding: 12px;
+.hok-feat-shot-selector {
   display: flex;
   flex-direction: column;
+}
+
+.hok-feat-shot-swatches {
+  display: flex;
   gap: 8px;
 }
 
-.hok-feat-preview-label {
-  font-family: var(--sans);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-}
-
-.hok-feat-inspector-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 6px;
-  padding-top: 10px;
-  border-top: 1px solid var(--ibg);
-}
-
-.hok-feat-remove-btn {
-  background: none;
-  border: 1px solid var(--terra);
-  color: var(--terra);
-  border-radius: var(--r);
-  padding: 6px 14px;
-  font-family: var(--sans);
-  font-size: 11.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.hok-feat-remove-btn:hover {
-  background: #fdf2f2;
-}
-
-/* Rules Grid */
-.hok-feat-rules-grid {
-  display: grid;
-  grid-template-columns: 140px 1fr 1fr;
-  gap: 16px;
-  align-items: flex-end;
-  margin-bottom: 14px;
-}
-
-@media (max-width: 768px) {
-  .hok-feat-rules-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.hok-feat-topup-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  align-items: flex-end;
-  margin-top: 14px;
-}
-
-@media (max-width: 768px) {
-  .hok-feat-topup-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Toggles Grid */
-.hok-feat-toggles-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-@media (max-width: 768px) {
-  .hok-feat-toggles-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.hok-feat-toggle-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  background: var(--cb);
-  border: 1px solid var(--ibg);
-  border-radius: var(--r);
-  gap: 14px;
-}
-
-.hok-feat-toggle-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.hok-feat-toggle-title {
-  font-family: var(--sans);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--charcoal);
-}
-
-.hok-feat-toggle-sub {
+.hok-feat-shot-btn {
+  padding: 6px 12px;
   font-family: var(--sans);
   font-size: 11px;
-  color: var(--muted);
-}
-
-/* Catalogue Picker Modal */
-.hok-feat-picker-modal {
-  background: var(--card);
-  border-radius: 6px;
-  width: 90%;
-  max-width: 640px;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   border: 1px solid var(--border);
-  overflow: hidden;
-}
-
-.hok-feat-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--border);
-  background: var(--cb);
-}
-
-.hok-feat-modal-title {
-  font-family: var(--serif);
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--charcoal);
-  margin: 0 0 3px 0;
-}
-
-.hok-feat-modal-sub {
-  font-family: var(--sans);
-  font-size: 11.5px;
-  color: var(--muted);
-  margin: 0;
-}
-
-.hok-feat-modal-close-btn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  color: var(--muted);
-  padding: 4px;
-}
-
-.hok-feat-modal-close-btn:hover {
-  color: var(--charcoal);
-}
-
-.hok-feat-modal-search {
-  position: relative;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--ibg);
-  background: var(--card);
-}
-
-.hok-feat-modal-search-icon {
-  position: absolute;
-  left: 32px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--muted);
-  pointer-events: none;
-}
-
-.hok-feat-modal-search-input {
-  padding-left: 34px;
-  width: 100%;
-}
-
-.hok-feat-modal-list {
-  padding: 12px 20px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.hok-feat-modal-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border: 1px solid var(--ibg);
+  background-color: var(--card);
   border-radius: var(--r);
-  background: var(--card);
   cursor: pointer;
+  color: var(--charcoal);
   transition: all 0.15s ease;
 }
 
-.hok-feat-modal-item:hover {
+.hok-feat-shot-btn:hover {
+  border-color: var(--gold-l);
+}
+
+.hok-feat-shot-btn.is-chosen {
   border-color: var(--gold);
-  background: var(--gold-pale);
-}
-
-.hok-feat-modal-item.is-selected {
-  border-color: var(--gold);
-  background: var(--gold-pale);
-}
-
-.hok-feat-modal-item-left {
-  flex: 1;
-}
-
-.hok-feat-modal-select-btn {
-  padding: 6px 14px;
-  font-family: var(--sans);
-  font-size: 11.5px;
+  background-color: var(--gold-pale);
+  color: var(--charcoal);
   font-weight: 600;
-  background: var(--charcoal);
-  color: #fff;
-  border: none;
-  border-radius: var(--r);
-  cursor: pointer;
-  transition: background 0.15s ease;
+  box-shadow: 0 0 0 2px var(--gold-pale);
 }
 
-.hok-feat-modal-select-btn:hover {
-  background: var(--gold);
+.hok-feat-piece-readback {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 14px;
+}
+
+.hok-feat-rb-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--sans);
+  font-size: 11px;
+}
+
+.hok-feat-rb-lbl {
+  color: var(--muted);
+}
+
+.hok-feat-rb-val {
+  color: var(--charcoal);
+  font-weight: 500;
+}
+
+.hok-feat-rb-pill {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.hok-feat-rb-pill.is-live {
+  background-color: #EDF1E9;
+  color: #4E6543;
+}
+
+.hok-feat-rb-pill.is-sold {
+  background-color: #E9ECF0;
+  color: #4B5A6B;
+}
+
+.hok-feat-open-piece-btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.hok-feat-open-piece-btn:hover {
+  color: var(--charcoal);
+}
+
+.hok-feat-toggles-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }

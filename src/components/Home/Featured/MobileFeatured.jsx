@@ -1,40 +1,52 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import featuredProductsData from "../../../data/home/featuredProductsData";
-
 import SectionEyebrow from "../../shared/SectionEyebrow";
 import SectionTitle from "../../shared/SectionTitle";
-
 import { Heart } from "lucide-react";
+import { renderHeadline } from "../../../utils/headlineParser";
+import { resolveProductsFromSlots } from "../../../services/featuredApi";
 
-const MobileFeatured = () => {
+const MobileFeatured = ({ data }) => {
   const navigate = useNavigate();
 
+  const eyebrow = data?.eyebrow || featuredProductsData.eyebrow;
+  const heading =
+    data?.heading || featuredProductsData.title || "Featured *Pieces*";
+  const viewAllText =
+    data?.viewAll?.lbl || data?.viewAll?.text || "View All →";
+  const viewAllHref =
+    data?.viewAll?.url ||
+    data?.viewAll?.link ||
+    "/main-page?section=designers";
+
+  const slots = data?.slots || data?.settings?.slots;
+  const products = resolveProductsFromSlots(slots);
+
   const handleFeaturedViewAll = () => {
-    navigate("/main-page?section=designers");
+    navigate(viewAllHref);
   };
+
   return (
     <section className="mobile-featured">
       <div className="mobile-featured-header">
         <div>
-          <SectionEyebrow text={featuredProductsData.eyebrow} />
+          <SectionEyebrow text={eyebrow} />
 
-          <SectionTitle>
-            Featured <em>Pieces</em>
-          </SectionTitle>
+          <SectionTitle>{renderHeadline(heading, "em")}</SectionTitle>
         </div>
 
         <button
           className="mobile-featured-view-all"
           onClick={handleFeaturedViewAll}
         >
-          View All →
+          {viewAllText}
         </button>
       </div>
 
       <div className="mobile-featured-grid">
-        {featuredProductsData.products.map((product) => (
-          <article key={product.id} className="mobile-featured-card">
+        {products.map((product) => (
+          <article key={product.id || product.sku} className="mobile-featured-card">
             <div className="mobile-featured-image-wrapper">
               <img
                 src={product.image}

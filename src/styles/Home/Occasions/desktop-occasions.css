@@ -1,0 +1,157 @@
+/* ==========================================
+   SHOP BY OCCASION - DESKTOP
+   HOUSE OF KAIRA
+========================================== */
+
+.desk-occasions {
+  background: #fdfbf7;
+  padding: 80px;
+}
+
+.desk-occasions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.desk-occasions-header-left .hok-section-eyebrow {
+  margin-bottom: 12px;
+}
+
+.desk-occasions-grid {
+  margin-top: 40px;
+}
+
+/* Even grid layout: 3 across in 2 rows */
+.desk-occasions-grid.even-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Mosaic layout */
+.desk-occasions-grid.mosaic-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 16px;
+}
+
+.desk-occasion-tile {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  height: 420px;
+  background-color: #1a1816;
+  border-radius: 2px;
+}
+
+.desk-occasions-grid.mosaic-grid .desk-occasion-tile:first-child {
+  height: 440px;
+}
+
+.desk-occasion-image-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+}
+
+.desk-occasion-tile:hover .desk-occasion-image-wrapper {
+  transform: scale(1.06);
+}
+
+.desk-occasion-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(14, 12, 10, 0.88) 0%,
+    rgba(14, 12, 10, 0.35) 45%,
+    rgba(14, 12, 10, 0.05) 100%
+  );
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+.desk-occasion-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32px 28px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.desk-occasion-eyebrow {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c9a96e;
+  margin-bottom: 6px;
+}
+
+.desk-occasion-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
+}
+
+.desk-occasion-count {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 16px;
+}
+
+.desk-occasion-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  border-radius: 2px;
+  opacity: 0.9;
+  transform: translateY(4px);
+  transition: all 0.3s ease;
+}
+
+.desk-occasion-tile:hover .desk-occasion-cta {
+  opacity: 1;
+  background: #ffffff;
+  color: #1a1816;
+  border-color: #ffffff;
+  transform: translateY(0);
+}
+
+@media (max-width: 1024px) {
+  .desk-occasions {
+    padding: 40px 24px;
+  }
+  .desk-occasions-grid.even-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

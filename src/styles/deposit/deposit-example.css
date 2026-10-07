@@ -1,0 +1,262 @@
+/**
+ * House of Kaira - Deposit Worked Example Styles (D9)
+ * Section 5 (D9), 6.4 & 7.5 of Build Specification v2.0 (hok_deposit_policy_v2)
+ */
+
+/* ==========================================================================
+   D9 WORKED EXAMPLE CONTAINER
+   ========================================================================== */
+
+.ex {
+  margin-top: 64px;
+  scroll-margin-top: calc(70px + 50px + 8px); /* Measured dynamically in JS */
+}
+
+.ex-hd h2 {
+  font-family: var(--dp-font-serif);
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--dp-charcoal);
+  margin: 0;
+}
+
+.ex-hd h2 em {
+  font-style: italic;
+  color: var(--dp-gold);
+}
+
+.ex-hd p {
+  margin-top: 8px;
+  font-family: var(--dp-font-sans);
+  font-size: 13px;
+  color: var(--dp-muted);
+  font-weight: 300;
+  line-height: 1.7;
+  max-width: 640px;
+}
+
+/* ==========================================================================
+   TABS STRIP
+   ========================================================================== */
+
+.ex-tabs {
+  display: flex;
+  margin-top: 22px;
+  border: 1px solid var(--dp-border);
+  background: var(--dp-warm-white);
+  padding: 0;
+  list-style: none;
+}
+
+.ex-tab {
+  flex: 1;
+  padding: 15px 14px;
+  background: var(--dp-warm-white);
+  border: none;
+  cursor: pointer;
+  font-family: var(--dp-font-sans);
+  font-size: 12.5px;
+  color: var(--dp-muted);
+  transition: background 0.2s ease, color 0.2s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.ex-tab + .ex-tab {
+  border-left: 1px solid var(--dp-border);
+}
+
+.ex-tab:hover {
+  background: var(--dp-cream);
+  color: var(--dp-charcoal);
+}
+
+.ex-tab[aria-selected="true"] {
+  background: var(--dp-charcoal);
+  color: var(--dp-cream);
+  font-weight: 400;
+}
+
+/* ==========================================================================
+   STATEMENT CARD & ROWS
+   ========================================================================== */
+
+.ex-card {
+  border: 1px solid var(--dp-border);
+  border-top: none;
+  background: var(--dp-warm-white);
+  padding: 30px 36px 30px;
+  position: relative;
+  transition: min-height 0.2s ease;
+}
+
+.ex-content-swap {
+  animation: dp-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ex-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--dp-charcoal);
+}
+
+.ex-meta b {
+  font-family: var(--dp-font-serif);
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--dp-charcoal);
+}
+
+.ex-meta span {
+  font-family: var(--dp-font-sans);
+  font-size: 12px;
+  color: var(--dp-muted);
+}
+
+/* Statement Line Rows */
+.ex-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--dp-border-light);
+}
+
+.ex-row span {
+  font-family: var(--dp-font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--dp-ink-2);
+}
+
+.ex-row b {
+  font-family: var(--dp-font-serif);
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--dp-charcoal);
+  font-variant-numeric: lining-nums tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ex-row b.neg {
+  color: var(--dp-terracotta);
+}
+
+.ex-row b.nil {
+  font-family: var(--dp-font-sans);
+  font-size: 13px;
+  color: var(--dp-muted);
+  font-weight: 400;
+}
+
+/* Total Statement Row */
+.ex-total {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: baseline;
+  padding: 20px 0 2px;
+}
+
+.ex-total span {
+  font-family: var(--dp-font-sans);
+  font-size: 15px;
+  color: var(--dp-charcoal);
+  font-weight: 500;
+}
+
+.ex-total b {
+  font-family: var(--dp-font-serif);
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1;
+  color: var(--dp-sage);
+  font-variant-numeric: lining-nums tabular-nums;
+  padding-bottom: 6px;
+  border-bottom: 3px double var(--dp-gold);
+  white-space: nowrap;
+}
+
+.ex-total.owe b {
+  color: var(--dp-terracotta);
+}
+
+/* Statement Notes */
+.ex-notes {
+  margin-top: 22px;
+  display: grid;
+  gap: 10px;
+}
+
+.ex-notes p {
+  font-family: var(--dp-font-sans);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--dp-ink-3);
+  padding-left: 16px;
+  border-left: 1px solid var(--dp-gold);
+  margin: 0;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS (<=760px)
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .ex {
+    margin-top: 52px;
+  }
+
+  .ex-hd h2 {
+    font-size: 28px;
+  }
+
+  .ex-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--dp-border);
+  }
+
+  .ex-tab {
+    padding: 14px 10px;
+  }
+
+  .ex-tab + .ex-tab {
+    border-left: none;
+  }
+
+  .ex-card {
+    padding: 22px 18px 24px;
+  }
+
+  .ex-meta b {
+    font-size: 20px;
+  }
+
+  .ex-row {
+    gap: 14px;
+  }
+
+  .ex-row span {
+    font-size: 13.5px;
+  }
+
+  .ex-row b {
+    font-size: 18px;
+  }
+
+  .ex-total b {
+    font-size: 30px;
+  }
+}

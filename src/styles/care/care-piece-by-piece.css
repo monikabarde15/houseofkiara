@@ -1,0 +1,93 @@
+/**
+ * House of Kaira - Care Policy "Care, piece by piece" Styles (Component C11)
+ * Sections 5.11, 6.3, 7.7 of Build Specification 2.0
+ */
+
+@import './care-variables.css';
+
+/* Piece Chips Row */
+.pc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: var(--care-narrow-width);
+  margin: 0 auto;
+}
+
+.pc-chip {
+  background-color: var(--care-warm-white);
+  border: 1px solid var(--care-border);
+  border-radius: 1px;
+  padding: 12px 18px;
+  font-family: var(--care-font-sans);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--care-ink-3);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--care-transition-fast), border-color var(--care-transition-fast), color var(--care-transition-fast);
+}
+
+.pc-chip:hover {
+  border-color: var(--care-gold);
+  color: var(--care-charcoal);
+}
+
+.pc-chip[aria-selected="true"] {
+  background-color: var(--care-charcoal);
+  border-color: var(--care-charcoal);
+  color: var(--care-cream);
+}
+
+/* Piece Panel */
+.pc-panel {
+  max-width: var(--care-narrow-width);
+  margin: 30px auto 0;
+  border-top: 1px solid var(--care-charcoal);
+  padding-top: 28px;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+.pc-panel.swap {
+  animation: fade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pc-panel h3 {
+  font-family: var(--care-font-serif);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.12;
+  color: var(--care-charcoal);
+  margin: 0;
+}
+
+.pc-panel h3 em {
+  font-style: italic;
+  color: var(--care-gold);
+}
+
+/* Mobile Responsive */
+@media (max-width: 860px) {
+  .pc-panel {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  .pc-chips {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 -18px;
+    padding: 0 18px 2px;
+  }
+  .pc-chips::-webkit-scrollbar {
+    display: none;
+  }
+}

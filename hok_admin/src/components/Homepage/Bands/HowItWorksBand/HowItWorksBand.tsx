@@ -1,5 +1,6 @@
 /* =========================================================
-   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · HOW IT WORKS BAND (Spec 8.2)
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · HOW IT WORKS BAND
+   Spec Section 8.2 & 12.1 (v213)
 ========================================================= */
 
 import React, { useState } from 'react';
@@ -13,7 +14,8 @@ import { IssueStrip } from '../../shared/IssueStrip/IssueStrip';
 import { Deck } from '../../shared/Deck/Deck';
 import { DeckTileItem } from '../../shared/Deck/DeckTile';
 import { Inspector } from '../../shared/Deck/Inspector';
-import { HomepageLineIcon, ICON_NAMES, HomepageIconName } from '../../shared/icons/HomepageIcons';
+import { HomepageLineIcon, ICON_NAMES } from '../../shared/icons/HomepageIcons';
+import { resolveHomepageTokens } from '../../shared/TokenPicker/TokenPicker';
 
 interface HowItWorksBandProps {
   settings: HowItWorksSettings;
@@ -21,6 +23,8 @@ interface HowItWorksBandProps {
   onToggleShown: (shown: boolean) => void;
   onChange: (updated: HowItWorksSettings) => void;
   issues: HealthIssue[];
+  targetFieldId?: string | null;
+  onNavigateToModule?: (mod: string) => void;
 }
 
 export const HowItWorksBand: React.FC<HowItWorksBandProps> = ({
@@ -28,31 +32,53 @@ export const HowItWorksBand: React.FC<HowItWorksBandProps> = ({
   isShown,
   onToggleShown,
   onChange,
-  issues
+  issues,
+  targetFieldId,
+  onNavigateToModule
 }) => {
+  // Active editing pane: Shop or Sell (Spec 12.1)
+  const [activePane, setActivePane] = useState<'Shop' | 'Sell'>(settings.open || 'Shop');
   const [selectedShopIndex, setSelectedShopIndex] = useState<number | null>(null);
   const [selectedSellIndex, setSelectedSellIndex] = useState<number | null>(null);
 
-  // Shop Deck Items
+  // Auto-switch pane when search target is inside that pane
+  React.useEffect(() => {
+    if (targetFieldId === 'hiw-sell-steps' || targetFieldId === 'hiw-sell-card') {
+      setActivePane('Sell');
+    } else if (targetFieldId === 'hiw-shop-steps') {
+      setActivePane('Shop');
+    }
+  }, [targetFieldId]);
+
+  // Shop Deck items (Spec 4.10, 8.2.2)
   const shopDeckItems: DeckTileItem[] = settings.shop.map((st, idx) => ({
-    id: st.id || `shop-${idx + 1}`,
+    id: `shop-step-${idx + 1}`,
     position: idx + 1,
     title: st.t || `Step ${idx + 1}`,
-    sub: st.d ? (st.d.length > 40 ? st.d.slice(0, 40) + '…' : st.d) : 'Empty description',
-    badge: `ico: ${st.ico || 'none'}`
+    sub: st.d || '',
+    iconName: st.ico || 'search',
+    pictureHeight: 52
   }));
 
-  // Sell Deck Items
+  // Sell Deck items (Spec 4.10, 8.2.2)
   const sellDeckItems: DeckTileItem[] = settings.sell.map((st, idx) => ({
-    id: st.id || `sell-${idx + 1}`,
+    id: `sell-step-${idx + 1}`,
     position: idx + 1,
     title: st.t || `Step ${idx + 1}`,
-    sub: st.d ? (st.d.length > 40 ? st.d.slice(0, 40) + '…' : st.d) : 'Empty description',
-    badge: `ico: ${st.ico || 'none'}`
+    sub: st.d || '',
+    iconName: st.ico || 'box',
+    pictureHeight: 52
   }));
 
-  const selectedShopStep = selectedShopIndex !== null ? settings.shop[selectedShopIndex] : null;
-  const selectedSellStep = selectedSellIndex !== null ? settings.sell[selectedSellIndex] : null;
+  const selectedShopStep =
+    selectedShopIndex !== null && selectedShopIndex < settings.shop.length
+      ? settings.shop[selectedShopIndex]
+      : null;
+
+  const selectedSellStep =
+    selectedSellIndex !== null && selectedSellIndex < settings.sell.length
+      ? settings.sell[selectedSellIndex]
+      : null;
 
   // Handlers for Shop Steps
   const updateShopStep = (index: number, patch: Partial<HowItWorksStep>) => {
@@ -70,6 +96,29 @@ export const HowItWorksBand: React.FC<HowItWorksBandProps> = ({
     updated[target] = temp;
     onChange({ ...settings, shop: updated });
     setSelectedShopIndex(target);
+  };
+
+  const handleRemoveShopStep = (index: number) => {
+    const updated = settings.shop.filter((_, idx) => idx !== index);
+    onChange({ ...settings, shop: updated });
+    if (selectedShopIndex === index) {
+      setSelectedShopIndex(null);
+    } else if (selectedShopIndex !== null && selectedShopIndex > index) {
+      setSelectedShopIndex(selectedShopIndex - 1);
+    }
+  };
+
+  const handleAddShopStep = () => {
+    if (settings.shop.length >= 4) return;
+    const newStep: HowItWorksStep = {
+      id: `step-${Date.now()}`,
+      ico: 'search',
+      t: 'New Step',
+      d: 'Describe this step for shoppers.'
+    };
+    const updated = [...settings.shop, newStep];
+    onChange({ ...settings, shop: updated });
+    setSelectedShopIndex(updated.length - 1);
   };
 
   // Handlers for Sell Steps
@@ -90,64 +139,108 @@ export const HowItWorksBand: React.FC<HowItWorksBandProps> = ({
     setSelectedSellIndex(target);
   };
 
+  const handleRemoveSellStep = (index: number) => {
+    const updated = settings.sell.filter((_, idx) => idx !== index);
+    onChange({ ...settings, sell: updated });
+    if (selectedSellIndex === index) {
+      setSelectedSellIndex(null);
+    } else if (selectedSellIndex !== null && selectedSellIndex > index) {
+      setSelectedSellIndex(selectedSellIndex - 1);
+    }
+  };
+
+  const handleAddSellStep = () => {
+    if (settings.sell.length >= 3) return;
+    const newStep: HowItWorksStep = {
+      id: `sell-${Date.now()}`,
+      ico: 'box',
+      t: 'New Step',
+      d: 'Describe this step for listers.'
+    };
+    const updated = [...settings.sell, newStep];
+    onChange({ ...settings, sell: updated });
+    setSelectedSellIndex(updated.length - 1);
+  };
+
   return (
-    <div className="hok-band-editor hok-how-it-works-band">
-      {/* Band Header Card */}
-      <Card
-        variant="elevated"
-        header={{
-          eyebrow: 'BAND 2 · HOW IT WORKS',
-          title: 'How House of Kaira Works',
-          meta: isShown ? 'VISIBLE ON STOREFRONT' : 'HIDDEN',
-          status: isShown ? 'live' : 'draft',
-          actions: (
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={isShown}
-              onChange={onToggleShown}
-            />
-          )
-        }}
-      >
-        <p className="hok-band-intro">
-          Dual-tab explainer with 4 shopping steps and 3 selling steps, plus the closing consignment teaser card.
-          Asterisk wrapping like <code>*works*</code> renders in the live gold italic serif.
-        </p>
+    <div className="hok-hiw-band">
+      {/* 7. Editor Shell Top */}
+      <div className="hok-hp-editor-heading-row">
+        <h2 className="hok-hp-editor-band-title">How It Works</h2>
+        <span className="hok-hp-editor-band-counter">Band 2 of 9</span>
+      </div>
 
-        {issues.length > 0 && (
-          <div className="hok-band-issues">
-            {issues.map((iss, i) => (
-              <IssueStrip
-                key={i}
-                severity={iss.severity}
-                message={iss.message}
-                actionLabel={iss.actionLabel}
-              />
-            ))}
-          </div>
-        )}
-      </Card>
+      <p className="hok-hp-editor-band-desc">
+        Two panes behind one toggle — one for somebody buying, one for somebody listing. The sell pane ends on a card, not a step.
+      </p>
 
-      {/* Card 1: The words above both panes */}
-      <Card
-        header={{
-          eyebrow: 'BAND HEADINGS & TABS',
-          title: 'The words above both panes',
-          meta: 'Shared by both Shop and Sell panes'
-        }}
-      >
-        <div className="hok-hiw-words-grid">
-          <div id="hiw-eyebrow">
-            <Field
-              label="Eyebrow"
-              hint="Small caps label above the main heading"
+      {/* 7.1 Visibility Row */}
+      <div className="hok-hp-visibility-row" id="hiw-visibility">
+        <div className="hok-hp-visibility-left">
+          <PillToggle
+            checked={isShown}
+            onChange={onToggleShown}
+            label="Show this band on the homepage"
+          />
+        </div>
+        <span className="hok-hp-visibility-consequence">
+          {isShown
+            ? 'Showing on the live homepage, in position 2.'
+            : 'Hidden. The settings below are kept, so it can come back exactly as it was.'}
+        </span>
+      </div>
+
+      {/* Issues Strip */}
+      {issues.map((iss) => (
+        <IssueStrip
+          key={iss.id}
+          severity={iss.sev}
+          message={iss.msg}
+          doorLabel={iss.doorLabel}
+          onDoorClick={() => iss.door && onNavigateToModule && onNavigateToModule(iss.door)}
+        />
+      ))}
+
+      {/* Top Segmented Pane Switcher (Spec 8.2, 12.1) */}
+      <div className="hok-hiw-pane-switcher-bar">
+        <div className="hok-hiw-switcher-left">
+          <span className="hok-hiw-editing-label">EDITING</span>
+          <div className="hok-hiw-segmented-tabs">
+            <button
+              type="button"
+              className={`hok-hiw-tab-btn ${activePane === 'Shop' ? 'active' : ''}`}
+              onClick={() => setActivePane('Shop')}
             >
+              {settings.tabA || 'I want to shop'}
+            </button>
+            <button
+              type="button"
+              className={`hok-hiw-tab-btn ${activePane === 'Sell' ? 'active' : ''}`}
+              onClick={() => setActivePane('Sell')}
+            >
+              {settings.tabB || 'I want to sell'}
+            </button>
+          </div>
+        </div>
+        <div className="hok-hiw-switcher-right">
+          {activePane === 'Shop'
+            ? 'What somebody buying sees. 4 steps.'
+            : 'What somebody listing sees. 3 steps, then the card below — not a fourth step.'}
+        </div>
+      </div>
+
+      {/* Card 1 — The words above both panes (Spec 8.2.1) */}
+      <Card
+        id="hiw-words-card"
+        title="The words above both panes"
+        sub="Shared by both. The tab labels are what the customer clicks between."
+      >
+        <div className="hok-hiw-field-stack">
+          <div id="hiw-eyebrow">
+            <Field label="Eyebrow">
               <input
                 type="text"
-                className="hok-input"
+                className="hok-field-input"
                 value={settings.eyebrow}
                 onChange={(e) => onChange({ ...settings, eyebrow: e.target.value })}
                 placeholder="Simple by Design"
@@ -157,430 +250,382 @@ export const HowItWorksBand: React.FC<HowItWorksBandProps> = ({
 
           <div id="hiw-heading">
             <Field
-              label="Main Heading"
-              hint="Wrap *words in asterisks* for gold italic serif font"
+              label="Heading"
+              hint="A line break starts a new line. Wrap one word in *asterisks* to set it in the italic gold serif, the way the storefront does."
             >
-              <input
-                type="text"
-                className="hok-input"
+              <textarea
+                className="hok-field-textarea"
+                rows={2}
                 value={settings.heading}
                 onChange={(e) => onChange({ ...settings, heading: e.target.value })}
                 placeholder="How House of Kaira *works*"
               />
             </Field>
-          </div>
-        </div>
-
-        <div className="hok-hiw-mirror-box">
-          <span className="hok-hiw-mirror-label">Live Storefront Heading Preview</span>
-          <ReadsAsMirror
-            eyebrow={settings.eyebrow}
-            heading={settings.heading}
-            className="hok-hiw-reads-as"
-          />
-        </div>
-
-        <div className="hok-divider" />
-
-        <div className="hok-hiw-tabs-config">
-          <div id="hiw-tab-a">
-            <Field
-              label="Tab 1 Label (Shopping)"
-              hint="Customer facing label for the first tab"
-            >
-              <input
-                type="text"
-                className="hok-input"
-                value={settings.tabA}
-                onChange={(e) => onChange({ ...settings, tabA: e.target.value })}
-                placeholder="I want to shop"
-              />
-            </Field>
+            <ReadsAsMirror text={settings.heading} />
           </div>
 
-          <div id="hiw-tab-b">
-            <Field
-              label="Tab 2 Label (Selling)"
-              hint="Customer facing label for the second tab"
-            >
-              <input
-                type="text"
-                className="hok-input"
-                value={settings.tabB}
-                onChange={(e) => onChange({ ...settings, tabB: e.target.value })}
-                placeholder="I want to sell"
-              />
-            </Field>
+          <div className="hok-hiw-grid-2col">
+            <div id="hiw-tab-a">
+              <Field label="Left tab">
+                <input
+                  type="text"
+                  className="hok-field-input"
+                  value={settings.tabA}
+                  onChange={(e) => onChange({ ...settings, tabA: e.target.value })}
+                  placeholder="I want to shop"
+                />
+              </Field>
+            </div>
+
+            <div id="hiw-tab-b">
+              <Field label="Right tab">
+                <input
+                  type="text"
+                  className="hok-field-input"
+                  value={settings.tabB}
+                  onChange={(e) => onChange({ ...settings, tabB: e.target.value })}
+                  placeholder="I want to sell"
+                />
+              </Field>
+            </div>
           </div>
 
           <Field
-            label="Default Open Pane"
-            hint="Which tab is active on initial page load"
+            label="Which pane opens first"
+            hint={`Whichever is open on load is the story most visitors read. Currently ${
+              settings.open === 'Sell' ? settings.tabB || 'I want to sell' : settings.tabA || 'I want to shop'
+            }.`}
           >
-            <PillToggle
-              options={[
-                { label: settings.tabA || 'Shop', value: 'Shop' },
-                { label: settings.tabB || 'Sell', value: 'Sell' }
-              ]}
+            <select
+              className="hok-field-select"
               value={settings.open}
-              onChange={(v) => onChange({ ...settings, open: v as 'Shop' | 'Sell' })}
-            />
+              onChange={(e) => onChange({ ...settings, open: e.target.value as 'Shop' | 'Sell' })}
+            >
+              <option value="Shop">Shop</option>
+              <option value="Sell">Sell</option>
+            </select>
           </Field>
         </div>
       </Card>
 
-      {/* Card 2: "I want to shop" pane */}
-      <Card
-        header={{
-          eyebrow: 'TAB 1 · SHOPPING FLOW',
-          title: `"${settings.tabA || 'I want to shop'}" Steps`,
-          meta: `${settings.shop.length} steps configured · 4-across deck`
-        }}
-      >
-        <p className="hok-field-hint" style={{ marginBottom: 12 }}>
-          Click any step tile below to edit its icon, title, description, and order.
-        </p>
+      {/* Card 2 — Steps Deck & Inspector for active pane (Spec 8.2.2 & 12.1) */}
+      {activePane === 'Shop' ? (
+        <>
+          <Card
+            id="hiw-shop-steps"
+            title="“I want to shop” — the steps"
+            sub="Four steps across on desktop, stacked in the app."
+          >
+            <Deck
+              arrangement="d4"
+              items={shopDeckItems}
+              selectedIndex={selectedShopIndex}
+              onSelectIndex={setSelectedShopIndex}
+              onMoveEarlier={(idx) => moveShopStep(idx, 'up')}
+              onMoveLater={(idx) => moveShopStep(idx, 'down')}
+              onRemove={handleRemoveShopStep}
+              removeLabel="Remove"
+              onAddTile={handleAddShopStep}
+              addLabel="Add a step"
+              maxReached={settings.shop.length >= 4}
+            />
 
-        <div id="hiw-shop-steps" className="hok-hiw-deck-wrapper">
-          <Deck
-            arrangement="d4"
-            items={shopDeckItems}
-            selectedIndex={selectedShopIndex}
-            onSelect={(idx) => setSelectedShopIndex(idx)}
-            renderCustomContent={(item, idx) => {
-              const step = settings.shop[idx];
-              return (
-                <div className="hok-hiw-step-tile">
-                  <div className="hok-hiw-tile-icon-box">
-                    <HomepageLineIcon name={step.ico} size={20} />
-                  </div>
-                  <div className="hok-hiw-tile-step-num">STEP {idx + 1}</div>
-                  <div className="hok-hiw-tile-step-title">{step.t || 'Untitled'}</div>
-                  <p className="hok-hiw-tile-step-desc">{step.d}</p>
-                </div>
-              );
-            }}
-          />
+            {settings.shop.length >= 4 && (
+              <p className="hok-hiw-limit-note">
+                4 steps is the most this row fits on the storefront. Remove one to add another.
+              </p>
+            )}
 
-          {selectedShopStep && selectedShopIndex !== null && (
             <Inspector
-              title={`Edit Step ${selectedShopIndex + 1}: ${selectedShopStep.t || 'Untitled'}`}
-              position={selectedShopIndex + 1}
-              totalItems={settings.shop.length}
-              onClose={() => setSelectedShopIndex(null)}
-              onMoveUp={selectedShopIndex > 0 ? () => moveShopStep(selectedShopIndex, 'up') : undefined}
-              onMoveDown={
-                selectedShopIndex < settings.shop.length - 1
-                  ? () => moveShopStep(selectedShopIndex, 'down')
-                  : undefined
-              }
+              kicker={`EDITING STEP ${selectedShopIndex !== null ? selectedShopIndex + 1 : 1}`}
+              itemName={selectedShopStep ? selectedShopStep.t : undefined}
+              isOpen={selectedShopIndex !== null && !!selectedShopStep}
+              emptyText="Pick a step above to set its icon, title and description."
             >
-              <div className="hok-hiw-inspector-content">
-                <Field
-                  label="Step Icon"
-                  hint="Pick 1 of 16 stroked line icons"
-                >
-                  <div className="hok-hiw-icon-selector">
-                    {ICON_NAMES.map((ico) => {
-                      const isSelected = selectedShopStep.ico === ico;
-                      return (
-                        <button
-                          key={ico}
-                          type="button"
-                          className={`hok-hiw-icon-btn ${isSelected ? 'active' : ''}`}
-                          onClick={() => updateShopStep(selectedShopIndex, { ico })}
-                          title={ico}
-                        >
-                          <HomepageLineIcon name={ico} size={16} />
-                          <span className="hok-hiw-icon-name">{ico}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </Field>
+              {selectedShopStep && selectedShopIndex !== null && (
+                <div className="hok-hiw-inspector-fields">
+                  <Field label="Title">
+                    <input
+                      type="text"
+                      className="hok-field-input"
+                      value={selectedShopStep.t}
+                      onChange={(e) => updateShopStep(selectedShopIndex, { t: e.target.value })}
+                      placeholder="Browse & Discover"
+                    />
+                  </Field>
 
-                <Field
-                  label="Step Title"
-                  hint="Action title (e.g. 'Explore & select')"
-                >
-                  <input
-                    type="text"
-                    className="hok-input"
-                    value={selectedShopStep.t}
-                    onChange={(e) => updateShopStep(selectedShopIndex, { t: e.target.value })}
-                    placeholder="Explore & select"
-                  />
-                </Field>
-
-                <Field
-                  label="Step Description"
-                  hint="Brief guidance explaining this step (1–2 sentences)"
-                >
-                  <textarea
-                    className="hok-textarea"
-                    rows={3}
+                  <Field
+                    label="Description"
+                    tokenCapable
                     value={selectedShopStep.d}
-                    onChange={(e) => updateShopStep(selectedShopIndex, { d: e.target.value })}
-                    placeholder="Browse our curated collection of designer wear for any occasion."
+                    onTokenInsert={(tok) =>
+                      updateShopStep(selectedShopIndex, {
+                        d: selectedShopStep.d ? `${selectedShopStep.d} ${tok}` : tok
+                      })
+                    }
+                  >
+                    <textarea
+                      className="hok-field-textarea"
+                      rows={3}
+                      value={selectedShopStep.d}
+                      onChange={(e) => updateShopStep(selectedShopIndex, { d: e.target.value })}
+                      placeholder="Explore thousands of designer pieces across rent, preloved, and new categories — filtered by occasion, budget, and aesthetic."
+                    />
+                  </Field>
+
+                  <Field
+                    label="Icon"
+                    hint="The storefront draws stroked line icons. There is no emoji anywhere on the page."
+                  >
+                    <div className="hok-hiw-icon-grid">
+                      {ICON_NAMES.map((ico) => {
+                        const isSelected = selectedShopStep.ico === ico;
+                        return (
+                          <button
+                            key={ico}
+                            type="button"
+                            className={`hok-hiw-icon-btn ${isSelected ? 'is-selected' : ''}`}
+                            onClick={() => updateShopStep(selectedShopIndex, { ico })}
+                            title={ico}
+                          >
+                            <HomepageLineIcon name={ico} size={14} />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </Field>
+                </div>
+              )}
+            </Inspector>
+          </Card>
+
+          <div className="hok-hiw-bottom-note">
+            The selling pane carries a card at the end instead of a fourth step. Switch to{' '}
+            <button
+              type="button"
+              className="hok-hiw-switch-inline-link"
+              onClick={() => setActivePane('Sell')}
+            >
+              "{settings.tabB || 'I want to sell'}"
+            </button>{' '}
+            above to edit it.
+          </div>
+        </>
+      ) : (
+        <>
+          <Card
+            id="hiw-sell-steps"
+            title="“I want to sell” — the steps"
+            sub="Three steps across, then the card below fills the fourth column."
+          >
+            <Deck
+              arrangement="d4"
+              items={sellDeckItems}
+              selectedIndex={selectedSellIndex}
+              onSelectIndex={setSelectedSellIndex}
+              onMoveEarlier={(idx) => moveSellStep(idx, 'up')}
+              onMoveLater={(idx) => moveSellStep(idx, 'down')}
+              onRemove={handleRemoveSellStep}
+              removeLabel="Remove"
+              onAddTile={handleAddSellStep}
+              addLabel="Add a step"
+              maxReached={settings.sell.length >= 3}
+            />
+
+            {settings.sell.length >= 3 && (
+              <p className="hok-hiw-limit-note">
+                3 steps is the most this row fits on the storefront. Remove one to add another.
+              </p>
+            )}
+
+            <Inspector
+              kicker={`EDITING STEP ${selectedSellIndex !== null ? selectedSellIndex + 1 : 1}`}
+              itemName={selectedSellStep ? selectedSellStep.t : undefined}
+              isOpen={selectedSellIndex !== null && !!selectedSellStep}
+              emptyText="Pick a step above to set its icon, title and description."
+            >
+              {selectedSellStep && selectedSellIndex !== null && (
+                <div className="hok-hiw-inspector-fields">
+                  <Field label="Title">
+                    <input
+                      type="text"
+                      className="hok-field-input"
+                      value={selectedSellStep.t}
+                      onChange={(e) => updateSellStep(selectedSellIndex, { t: e.target.value })}
+                      placeholder="Photograph & List"
+                    />
+                  </Field>
+
+                  <Field
+                    label="Description"
+                    tokenCapable
+                    value={selectedSellStep.d}
+                    onTokenInsert={(tok) =>
+                      updateSellStep(selectedSellIndex, {
+                        d: selectedSellStep.d ? `${selectedSellStep.d} ${tok}` : tok
+                      })
+                    }
+                  >
+                    <textarea
+                      className="hok-field-textarea"
+                      rows={3}
+                      value={selectedSellStep.d}
+                      onChange={(e) => updateSellStep(selectedSellIndex, { d: e.target.value })}
+                      placeholder="Upload a few photos of your piece, set your price, and go live in under 10 minutes."
+                    />
+                  </Field>
+
+                  <Field
+                    label="Icon"
+                    hint="The storefront draws stroked line icons. There is no emoji anywhere on the page."
+                  >
+                    <div className="hok-hiw-icon-grid">
+                      {ICON_NAMES.map((ico) => {
+                        const isSelected = selectedSellStep.ico === ico;
+                        return (
+                          <button
+                            key={ico}
+                            type="button"
+                            className={`hok-hiw-icon-btn ${isSelected ? 'is-selected' : ''}`}
+                            onClick={() => updateSellStep(selectedSellIndex, { ico })}
+                            title={ico}
+                          >
+                            <HomepageLineIcon name={ico} size={14} />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </Field>
+                </div>
+              )}
+            </Inspector>
+          </Card>
+
+          {/* Card 3: The card at the end of this pane (Spec 8.2 & 12.1) */}
+          <div id="hiw-sell-card">
+            <Card
+              title="The card at the end of this pane"
+              sub="Not a step — the argument for listing, and the button that acts on it."
+            >
+              <div className="hok-hiw-field-stack">
+                <PillToggle
+                  checked={settings.sellCard.on}
+                  onChange={(checked) =>
+                    onChange({
+                      ...settings,
+                      sellCard: { ...settings.sellCard, on: checked }
+                    })
+                  }
+                  label="Show the card"
+                />
+
+                <Field
+                  label="Headline"
+                  hint="A line break starts a new line. Wrap one word in *asterisks* to set it in the italic gold serif, the way the storefront does."
+                >
+                  <textarea
+                    className="hok-field-textarea"
+                    rows={2}
+                    value={settings.sellCard.head}
+                    onChange={(e) =>
+                      onChange({
+                        ...settings,
+                        sellCard: { ...settings.sellCard, head: e.target.value }
+                      })
+                    }
+                    placeholder="The hours of *craftsmanship* on that piece deserve more than a dark wardrobe shelf."
                   />
                 </Field>
-              </div>
-            </Inspector>
-          )}
-        </div>
-      </Card>
+                <ReadsAsMirror text={settings.sellCard.head} />
 
-      {/* Card 3: "I want to sell" pane */}
-      <Card
-        header={{
-          eyebrow: 'TAB 2 · SELLING FLOW',
-          title: `"${settings.tabB || 'I want to sell'}" Steps`,
-          meta: `${settings.sell.length} steps configured · 3-across deck`
-        }}
-      >
-        <p className="hok-field-hint" style={{ marginBottom: 12 }}>
-          Click any step tile below to edit its icon, title, description, and order.
-        </p>
-
-        <div id="hiw-sell-steps" className="hok-hiw-deck-wrapper">
-          <Deck
-            arrangement="d3"
-            items={sellDeckItems}
-            selectedIndex={selectedSellIndex}
-            onSelect={(idx) => setSelectedSellIndex(idx)}
-            renderCustomContent={(item, idx) => {
-              const step = settings.sell[idx];
-              return (
-                <div className="hok-hiw-step-tile">
-                  <div className="hok-hiw-tile-icon-box">
-                    <HomepageLineIcon name={step.ico} size={20} />
-                  </div>
-                  <div className="hok-hiw-tile-step-num">STEP {idx + 1}</div>
-                  <div className="hok-hiw-tile-step-title">{step.t || 'Untitled'}</div>
-                  <p className="hok-hiw-tile-step-desc">{step.d}</p>
-                </div>
-              );
-            }}
-          />
-
-          {selectedSellStep && selectedSellIndex !== null && (
-            <Inspector
-              title={`Edit Step ${selectedSellIndex + 1}: ${selectedSellStep.t || 'Untitled'}`}
-              position={selectedSellIndex + 1}
-              totalItems={settings.sell.length}
-              onClose={() => setSelectedSellIndex(null)}
-              onMoveUp={selectedSellIndex > 0 ? () => moveSellStep(selectedSellIndex, 'up') : undefined}
-              onMoveDown={
-                selectedSellIndex < settings.sell.length - 1
-                  ? () => moveSellStep(selectedSellIndex, 'down')
-                  : undefined
-              }
-            >
-              <div className="hok-hiw-inspector-content">
                 <Field
-                  label="Step Icon"
-                  hint="Pick 1 of 16 stroked line icons"
+                  label="Body"
+                  tokenCapable
+                  value={settings.sellCard.body}
+                  onTokenInsert={(tok) =>
+                    onChange({
+                      ...settings,
+                      sellCard: {
+                        ...settings.sellCard,
+                        body: settings.sellCard.body ? `${settings.sellCard.body} ${tok}` : tok
+                      }
+                    })
+                  }
                 >
-                  <div className="hok-hiw-icon-selector">
-                    {ICON_NAMES.map((ico) => {
-                      const isSelected = selectedSellStep.ico === ico;
-                      return (
-                        <button
-                          key={ico}
-                          type="button"
-                          className={`hok-hiw-icon-btn ${isSelected ? 'active' : ''}`}
-                          onClick={() => updateSellStep(selectedSellIndex, { ico })}
-                          title={ico}
-                        >
-                          <HomepageLineIcon name={ico} size={16} />
-                          <span className="hok-hiw-icon-name">{ico}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <textarea
+                    className="hok-field-textarea"
+                    rows={2}
+                    value={settings.sellCard.body}
+                    onChange={(e) =>
+                      onChange({
+                        ...settings,
+                        sellCard: { ...settings.sellCard, body: e.target.value }
+                      })
+                    }
+                    placeholder="Give your occasion wear another life. Let someone else fall in love with it — and earn while you do."
+                  />
                 </Field>
 
                 <Field
-                  label="Step Title"
-                  hint="Action title (e.g. 'Submit your pieces')"
+                  label="Pull quote"
+                  hint="Set in italics under the body, in gold."
                 >
                   <input
                     type="text"
-                    className="hok-input"
-                    value={selectedSellStep.t}
-                    onChange={(e) => updateSellStep(selectedSellIndex, { t: e.target.value })}
-                    placeholder="Submit your pieces"
+                    className="hok-field-input"
+                    value={settings.sellCard.quote}
+                    onChange={(e) =>
+                      onChange({
+                        ...settings,
+                        sellCard: { ...settings.sellCard, quote: e.target.value }
+                      })
+                    }
+                    placeholder="“Every piece has a story. Don't let it end with you.”"
                   />
                 </Field>
 
-                <Field
-                  label="Step Description"
-                  hint="Brief guidance explaining this step (1–2 sentences)"
-                >
-                  <textarea
-                    className="hok-textarea"
-                    rows={3}
-                    value={selectedSellStep.d}
-                    onChange={(e) => updateSellStep(selectedSellIndex, { d: e.target.value })}
-                    placeholder="Share photos and details of your authentic luxury Indian designer outfits."
-                  />
-                </Field>
+                <div className="hok-hiw-grid-2col">
+                  <Field label="Button label">
+                    <input
+                      type="text"
+                      className="hok-field-input"
+                      value={settings.sellCard.cta.lbl}
+                      onChange={(e) =>
+                        onChange({
+                          ...settings,
+                          sellCard: {
+                            ...settings.sellCard,
+                            cta: { ...settings.sellCard.cta, lbl: e.target.value }
+                          }
+                        })
+                      }
+                      placeholder="List Your Piece →"
+                    />
+                  </Field>
+
+                  <Field label="Button link">
+                    <input
+                      type="text"
+                      className="hok-field-input"
+                      value={settings.sellCard.cta.url}
+                      onChange={(e) =>
+                        onChange({
+                          ...settings,
+                          sellCard: {
+                            ...settings.sellCard,
+                            cta: { ...settings.sellCard.cta, url: e.target.value }
+                          }
+                        })
+                      }
+                      placeholder="/list-your-piece"
+                    />
+                  </Field>
+                </div>
               </div>
-            </Inspector>
-          )}
-        </div>
-      </Card>
-
-      {/* Card 4: The card at the end of the selling pane */}
-      <div id="hiw-sell-card">
-        <Card
-          header={{
-            eyebrow: 'SELLING CALL TO ACTION',
-            title: 'The card at the end of this pane',
-            meta: settings.sellCard.on ? 'SHOWING' : 'HIDDEN',
-            actions: (
-              <PillToggle
-                options={[
-                  { label: 'Show', value: true },
-                  { label: 'Hide', value: false }
-                ]}
-                value={settings.sellCard.on}
-                onChange={(v) =>
-                  onChange({
-                    ...settings,
-                    sellCard: { ...settings.sellCard, on: Boolean(v) }
-                  })
-                }
-              />
-            )
-          }}
-        >
-        <p className="hok-field-hint" style={{ marginBottom: 14 }}>
-          Closing teaser card rendered alongside or at the end of the selling steps encouraging consignors to apply.
-        </p>
-
-        <div className="hok-hiw-sellcard-grid">
-          <div className="hok-hiw-sellcard-inputs">
-            <Field
-              label="Card Heading"
-              hint="Main statement or prompt"
-            >
-              <input
-                type="text"
-                className="hok-input"
-                value={settings.sellCard.head}
-                onChange={(e) =>
-                  onChange({
-                    ...settings,
-                    sellCard: { ...settings.sellCard, head: e.target.value }
-                  })
-                }
-                placeholder="Why consign with us?"
-              />
-            </Field>
-
-            <Field
-              label="Card Body"
-              hint="Supporting sentence explaining the consignment benefit"
-            >
-              <textarea
-                className="hok-textarea"
-                rows={2}
-                value={settings.sellCard.body}
-                onChange={(e) =>
-                  onChange({
-                    ...settings,
-                    sellCard: { ...settings.sellCard, body: e.target.value }
-                  })
-                }
-                placeholder="Join hundreds of owners earning passive income from their wardrobes."
-              />
-            </Field>
-
-            <Field
-              label="Consignor Quote / Testimonial"
-              hint="Social proof snippet shown in italic"
-            >
-              <textarea
-                className="hok-textarea"
-                rows={2}
-                value={settings.sellCard.quote}
-                onChange={(e) =>
-                  onChange({
-                    ...settings,
-                    sellCard: { ...settings.sellCard, quote: e.target.value }
-                  })
-                }
-                placeholder="House of Kaira made renting my bridal lehenga effortless."
-              />
-            </Field>
-
-            <div className="hok-hiw-cta-row">
-              <Field
-                label="Button Label"
-                hint="CTA text"
-              >
-                <input
-                  type="text"
-                  className="hok-input"
-                  value={settings.sellCard.cta.lbl}
-                  onChange={(e) =>
-                    onChange({
-                      ...settings,
-                      sellCard: {
-                        ...settings.sellCard,
-                        cta: { ...settings.sellCard.cta, lbl: e.target.value }
-                      }
-                    })
-                  }
-                  placeholder="Apply to Consign"
-                />
-              </Field>
-
-              <Field
-                label="Destination URL"
-                hint="Relative link or modal trigger"
-              >
-                <input
-                  type="text"
-                  className="hok-input"
-                  value={settings.sellCard.cta.url}
-                  onChange={(e) =>
-                    onChange({
-                      ...settings,
-                      sellCard: {
-                        ...settings.sellCard,
-                        cta: { ...settings.sellCard.cta, url: e.target.value }
-                      }
-                    })
-                  }
-                  placeholder="/sell"
-                />
-              </Field>
-            </div>
+            </Card>
           </div>
-
-          {/* Live Preview of Sell Card */}
-          <div className="hok-hiw-sellcard-preview-wrap">
-            <span className="hok-hiw-preview-tag">STOREFRONT CARD PREVIEW</span>
-            <div className="hok-hiw-sellcard-preview">
-              <div className="hok-hiw-sellcard-preview-head">{settings.sellCard.head || 'Why consign?'}</div>
-              <div className="hok-hiw-sellcard-preview-body">{settings.sellCard.body}</div>
-              {settings.sellCard.quote && (
-                <div className="hok-hiw-sellcard-preview-quote">
-                  &ldquo;{settings.sellCard.quote.replace(/^["“”]|["“”]$/g, '')}&rdquo;
-                </div>
-              )}
-              {settings.sellCard.cta.lbl && (
-                <div className="hok-hiw-sellcard-preview-btn">
-                  {settings.sellCard.cta.lbl} →
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </Card>
-      </div>
+        </>
+      )}
     </div>
   );
 };

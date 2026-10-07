@@ -1,0 +1,350 @@
+/**
+ * House of Kaira - Deposit Policy Sections, Question Accordion & Answer Styles (D10, D11)
+ * Section 5 (D10, D11), 6.3, 6.7 & 6.8 of Build Specification v2.0 (hok_deposit_policy_v2)
+ */
+
+/* ==========================================================================
+   D10 POLICY SECTIONS
+   ========================================================================== */
+
+.sec {
+  padding-top: 64px;
+  scroll-margin-top: calc(70px + 50px + 8px);
+}
+
+.sec-hd {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 0 8px;
+  align-items: baseline;
+  margin-bottom: 20px;
+}
+
+.sec-n {
+  font-family: var(--dp-font-serif);
+  font-size: 18px;
+  color: var(--dp-gold);
+}
+
+.sec-hd h2 {
+  font-family: var(--dp-font-serif);
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--dp-charcoal);
+  margin: 0;
+}
+
+.sec-hd h2 em {
+  font-style: italic;
+  color: var(--dp-gold);
+}
+
+.sec-hd p {
+  grid-column: 2;
+  margin-top: 8px;
+  font-family: var(--dp-font-sans);
+  font-size: 13px;
+  color: var(--dp-muted);
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.sec-list {
+  border-top: 1px solid var(--dp-charcoal);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ==========================================================================
+   QUESTION ROW ACCORDION
+   ========================================================================== */
+
+.cq {
+  border-bottom: 1px solid var(--dp-border);
+  scroll-margin-top: calc(70px + 50px + 12px);
+  position: relative;
+}
+
+.cq-b {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 14px;
+  gap: 16px;
+  align-items: center;
+  padding: 19px 16px 19px 18px;
+  position: relative;
+  transition: background 0.2s ease;
+  font-family: inherit;
+}
+
+/* Left accent bar (appears when open) */
+.cq-b::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.cq-t {
+  font-family: var(--dp-font-serif);
+  font-size: 20px;
+  line-height: 1.35;
+  color: var(--dp-ink);
+  transition: color 0.2s ease;
+}
+
+.cq-b > svg {
+  width: 12px;
+  height: 12px;
+  stroke: var(--dp-chevron-placeholder);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.3s ease, stroke 0.2s ease;
+  justify-self: end;
+}
+
+.cq-b:hover {
+  background: rgba(250, 247, 242, 0.7);
+}
+
+.cq-b:hover .cq-t {
+  color: var(--dp-charcoal);
+}
+
+/* Open State */
+.cq.on .cq-b {
+  background: var(--dp-cream);
+}
+
+.cq.on .cq-b::before {
+  background: var(--dp-gold);
+}
+
+.cq.on .cq-t {
+  color: var(--dp-charcoal);
+}
+
+.cq.on .cq-b > svg {
+  transform: rotate(90deg);
+  stroke: var(--dp-gold);
+}
+
+/* Jump highlight animation (Section 6.3: 2.4s gold pale fading to cream) */
+.cq.flash .cq-b {
+  animation: dp-flash 2.4s ease;
+}
+
+/* ==========================================================================
+   D11 ANSWER CONTENT PANEL
+   ========================================================================== */
+
+.cq-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--dp-cream);
+}
+
+.cq.on .cq-body {
+  grid-template-rows: 1fr;
+}
+
+.cq-in {
+  overflow: hidden;
+}
+
+.cq-pad {
+  padding: 2px 64px 26px 18px;
+}
+
+.ans {
+  font-family: var(--dp-font-sans);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--dp-ink-2);
+  max-width: 660px;
+}
+
+.ans p {
+  margin: 0;
+}
+
+.ans p + p {
+  margin-top: 12px;
+}
+
+.ans strong {
+  font-weight: 500;
+  color: var(--dp-charcoal);
+}
+
+/* Bulleted list */
+.ans ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.ans li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  padding: 3px 0;
+  align-items: baseline;
+}
+
+.ans li::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--dp-gold);
+  margin-top: 10px;
+}
+
+/* In-text link */
+.ans .lnk {
+  color: var(--dp-charcoal);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--dp-gold-light);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 400;
+  padding: 0;
+  text-align: left;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.ans .lnk:hover {
+  color: var(--dp-gold-deep);
+  border-color: var(--dp-gold);
+}
+
+/* Note block */
+.ans .note {
+  padding-left: 16px;
+  border-left: 1px solid var(--dp-gold);
+  font-family: var(--dp-font-serif);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--dp-ink-3);
+  margin: 14px 0 0;
+}
+
+/* ==========================================================================
+   ANSWER FOOTER ACTIONS
+   ========================================================================== */
+
+.cq-foot {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--dp-border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  font-family: var(--dp-font-sans);
+  font-size: 12px;
+  color: var(--dp-muted);
+}
+
+.cq-foot button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--dp-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.cq-foot button:hover {
+  color: var(--dp-charcoal);
+}
+
+.cq-foot svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cq-foot svg.fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS (<=760px)
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .sec {
+    padding-top: 48px;
+  }
+
+  .sec-hd {
+    grid-template-columns: 1fr;
+  }
+
+  .sec-n {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .sec-hd h2 {
+    font-size: 28px;
+  }
+
+  .sec-hd p {
+    grid-column: 1;
+  }
+
+  .cq-b {
+    grid-template-columns: minmax(0, 1fr) 12px;
+    gap: 6px 12px;
+    padding: 16px 6px 16px 12px;
+  }
+
+  .cq-t {
+    font-size: 18px;
+  }
+
+  .cq-b > svg {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    align-self: center;
+  }
+
+  .cq-b .vd {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .cq-pad {
+    padding: 2px 12px 22px;
+  }
+}

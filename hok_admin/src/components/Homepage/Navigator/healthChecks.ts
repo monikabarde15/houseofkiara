@@ -192,7 +192,8 @@ export const evaluateHomepageHealthChecks = (registry: HomepageRegistry): {
     }
     const emptyPills = commit.pills.filter((p) => p.on && !p.u.trim());
     if (emptyPills.length > 0) {
-      addIssue('commit', 'soon', 'An enabled pill has no destination.');
+      const names = emptyPills.map((p) => `"${p.l || 'Untitled'}"`).join(', ');
+      addIssue('commit', 'soon', `An enabled pill (${names}) has no destination.`);
     }
     const mobileCards = commit.cards.filter((c) => c.mob);
     if (mobileCards.length === 0) {
@@ -205,10 +206,21 @@ export const evaluateHomepageHealthChecks = (registry: HomepageRegistry): {
     if (!designers.heading.trim()) {
       addIssue('designers', 'warn', 'Featured Designers is switched on with an empty heading.');
     }
-    if (FEATURED_DESIGNERS_LIST.length > designers.cap) {
-      addIssue('designers', 'soon', `${FEATURED_DESIGNERS_LIST.length} designers are featured but the band shows ${designers.cap}. The last ${FEATURED_DESIGNERS_LIST.length - designers.cap} will not appear.`, 'Designers', 'Open Designers', '/designers');
+    const currentFeatured = designers.slots && designers.slots.length > 0
+      ? designers.slots.map((id) => {
+          const match = FEATURED_DESIGNERS_LIST.find(
+            (n) => n.toLowerCase().replace(/[^a-z0-9]/g, '-') === id || n.toLowerCase() === id.toLowerCase()
+          );
+          return match || id;
+        })
+      : FEATURED_DESIGNERS_LIST;
+
+    if (currentFeatured.length === 0) {
+      addIssue('designers', 'warn', 'No designer is featured.', 'Designers', 'Open Designers', '/designers');
+    } else if (currentFeatured.length > designers.cap) {
+      addIssue('designers', 'soon', `${currentFeatured.length} designers are featured but the band shows ${designers.cap}. The last ${currentFeatured.length - designers.cap} will not appear.`, 'Designers', 'Open Designers', '/designers');
     }
-    const zeroLive = FEATURED_DESIGNERS_LIST.slice(0, designers.cap).filter((d) => DESIGNER_LIVE_COUNTS[d] === 0);
+    const zeroLive = currentFeatured.slice(0, designers.cap).filter((d) => DESIGNER_LIVE_COUNTS[d] === 0);
     if (zeroLive.length > 0) {
       addIssue('designers', 'warn', `${zeroLive.length} featured designers are on the homepage with nothing live behind the tap.`, 'Designers', 'Open Designers', '/designers');
     }
@@ -223,6 +235,11 @@ export const evaluateHomepageHealthChecks = (registry: HomepageRegistry): {
     const enabledQuotes = testi.cards.filter((c) => c.on);
     if (enabledQuotes.length === 0) {
       addIssue('testi', 'warn', 'Every quote is switched off.');
+    } else {
+      const rowSize = testi.layout === 'Two across' ? 2 : 3;
+      if (enabledQuotes.length % rowSize !== 0) {
+        addIssue('testi', 'info', 'Enabled quote count does not fill the chosen desktop row evenly.');
+      }
     }
     const verifiedNoOrder = enabledQuotes.filter((c) => c.src === 'Verified order' && !c.ref.trim());
     if (verifiedNoOrder.length > 0) {
@@ -234,6 +251,10 @@ export const evaluateHomepageHealthChecks = (registry: HomepageRegistry): {
   if (vis.insta) {
     if (!insta.heading.trim()) {
       addIssue('insta', 'warn', 'Instagram is switched on with an empty heading.');
+    }
+    const instaHandle = '@house_of_kaira';
+    if (!instaHandle.trim()) {
+      addIssue('insta', 'warn', 'No Instagram handle is set in Site Settings.', 'Site Settings', 'Open Site Settings', '/site-settings');
     }
     if (insta.source === 'Live Instagram feed') {
       addIssue('insta', 'warn', 'Source is set to the live feed, which has no Meta connection.');

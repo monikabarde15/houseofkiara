@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { mobileFooterColumns, mobilePolicyLinks } from "../footerData";
 import "../../../styles/Footer/mobile-footer.css";
 import { showToast } from "../../AboutUs/shared/Toast";
@@ -25,6 +26,33 @@ const LinkedinIcon = () => (
 );
 
 const MobileFooter = () => {
+  const location = useLocation();
+
+  const isCurrentPage = (link) => {
+    if (!location) return false;
+    const currentPath = location.pathname;
+    if (link.path === currentPath) return true;
+    if (
+      link.label === "Deposit Policy" &&
+      (currentPath === "/deposit" || currentPath === "/deposit-policy")
+    ) {
+      return true;
+    }
+    if (
+      (link.label === "Care, Cleaning & Damage" ||
+        link.label === "Care, Cleaning & Damage Policy" ||
+        link.label === "Care & Damage" ||
+        link.label === "Care & Damage Policy") &&
+      (currentPath === "/care-policy" ||
+        currentPath === "/care" ||
+        currentPath === "/care-cleaning-damage" ||
+        currentPath === "/care-damage")
+    ) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <footer className="hok-mobile-footer" data-theme-trigger="light">
       {/* Brand Block */}
@@ -72,11 +100,25 @@ const MobileFooter = () => {
           <div key={column.title} className="hok-mobile-footer-column">
             <h4 className="hok-mobile-footer-column-heading">{column.title}</h4>
             <div className="hok-mobile-footer-column-links">
-              {column.links.map((link) => (
-                <a href={link.path} key={link.label} className="hok-mobile-footer-link">
-                  {link.label}
-                </a>
-              ))}
+              {column.links.map((link) => {
+                const isCurrent = isCurrentPage(link);
+                if (isCurrent) {
+                  return (
+                    <span
+                      key={link.label}
+                      className="hok-mobile-footer-link here"
+                      aria-current="page"
+                    >
+                      {link.label}
+                    </span>
+                  );
+                }
+                return (
+                  <a href={link.path} key={link.label} className="hok-mobile-footer-link">
+                    {link.label}
+                  </a>
+                );
+              })}
             </div>
           </div>
         ))}
@@ -86,13 +128,14 @@ const MobileFooter = () => {
       <div className="hok-mobile-footer-policy">
         {mobilePolicyLinks.map((link, index) => {
           const isLast = index === mobilePolicyLinks.length - 1;
+          const isCurrent = isCurrentPage(link);
+
           if (link.isButton) {
             return (
               <button
                 type="button"
                 key={link.label}
                 className={`hok-mobile-footer-policy-link ${isLast ? "last" : ""}`}
-                style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer' }}
                 onClick={() => {
                   if (typeof window !== 'undefined' && window.HOK_CONSENT) {
                     window.HOK_CONSENT.open();
@@ -101,6 +144,18 @@ const MobileFooter = () => {
               >
                 {link.label}
               </button>
+            );
+          }
+
+          if (isCurrent) {
+            return (
+              <span
+                key={link.label}
+                className={`hok-mobile-footer-policy-link here ${isLast ? "last" : ""}`}
+                aria-current="page"
+              >
+                {link.label}
+              </span>
             );
           }
 

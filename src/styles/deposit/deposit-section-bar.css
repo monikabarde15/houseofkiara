@@ -1,0 +1,134 @@
+/**
+ * House of Kaira - Deposit Policy Sticky Section Bar Styles (D5)
+ * Section 5 (D5) & 6.5 of Build Specification v2.0 (hok_deposit_policy_v2)
+ */
+
+/* ==========================================================================
+   D5 STICKY SECTION BAR
+   ========================================================================== */
+
+.secbar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 112px;
+  top: var(--dp-header-height, 112px);
+  z-index: 60;
+  background: var(--dp-warm-white, #FFFEFB);
+  border-bottom: 1px solid var(--dp-border, #E8E0D4);
+  margin-top: 0;
+  width: 100%;
+  transition: box-shadow 0.2s ease;
+}
+
+.secbar.stuck {
+  box-shadow: 0 4px 12px rgba(26, 22, 18, 0.05);
+}
+
+.secbar-in {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.secbar-in::-webkit-scrollbar {
+  display: none;
+}
+
+/* Centering links when they fit */
+.secbar-in > :first-child {
+  margin-left: auto;
+}
+
+.secbar-in > :last-child {
+  margin-right: auto;
+}
+
+/* Soft 44px edge mask gradients on overflow */
+.secbar.fade-r .secbar-in {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 44px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 44px), transparent);
+}
+
+.secbar.fade-l .secbar-in {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 44px);
+  mask-image: linear-gradient(to right, transparent, #000 44px);
+}
+
+.secbar.fade-l.fade-r .secbar-in {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 44px, #000 calc(100% - 44px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 44px, #000 calc(100% - 44px), transparent);
+}
+
+/* Section link button */
+.sb-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 17px 0 16px;
+  font-family: var(--dp-font-sans);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--dp-muted);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Underline */
+.sb-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.sb-link:hover {
+  color: var(--dp-charcoal);
+}
+
+/* Active link state */
+.sb-link.on {
+  color: var(--dp-charcoal);
+  font-weight: 500;
+}
+
+.sb-link.on::after {
+  background: var(--dp-gold);
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS (<=760px)
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .secbar {
+    top: 58px;
+    top: var(--dp-header-height, 58px);
+  }
+
+  .secbar-in {
+    padding: 0 18px;
+    gap: 20px;
+  }
+
+  .secbar-in > :first-child {
+    margin-left: 0;
+  }
+
+  .secbar-in > :last-child {
+    margin-right: 0;
+  }
+}

@@ -67,9 +67,9 @@ export const Field: React.FC<FieldProps> = ({
 
       {hint && <div className="hok-field-hint">{hint}</div>}
 
-      {tokenCapable && hasTokens && (
+      {tokenCapable && (
         <div className="hok-field-prints-row">
-          Prints: {resolvedPrints}
+          Prints: {resolveHomepageTokens(value || '')}
         </div>
       )}
     </div>

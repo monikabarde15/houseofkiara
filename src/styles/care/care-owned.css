@@ -1,0 +1,71 @@
+/**
+ * House of Kaira - Care Policy "A piece that is yours to keep" Styles (Component C13)
+ * Sections 5.13, 7.9, 7.10 of Build Specification 2.0
+ */
+
+@import './care-variables.css';
+
+.ow {
+  max-width: var(--care-max-width);
+  margin: 0 auto;
+  padding: 104px 40px 0;
+  scroll-margin-top: calc(114px + 8px);
+}
+
+.ow-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 56px;
+  align-items: start;
+  max-width: var(--care-card-width);
+  margin: 0 auto;
+  padding: 12px 0;
+  transition: background-color var(--care-transition-fast);
+}
+
+.ow h2 {
+  font-family: var(--care-font-serif);
+  font-weight: 300;
+  font-size: clamp(34px, 4vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--care-charcoal);
+  margin: 0;
+}
+
+.ow h2 em {
+  font-style: italic;
+  color: var(--care-gold);
+}
+
+.ow-lead {
+  margin-top: 16px;
+  font-family: var(--care-font-sans);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--care-ink-3);
+}
+
+.ow-lead strong {
+  font-weight: 500;
+  color: var(--care-charcoal);
+}
+
+.ow .notes {
+  margin-top: 6px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 860px) {
+  .ow-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 760px) {
+  .ow {
+    padding: 80px 18px 0;
+  }
+}

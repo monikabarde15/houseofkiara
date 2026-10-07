@@ -1,0 +1,130 @@
+/* ==========================================
+   SHOP BY OCCASION - MOBILE
+   HOUSE OF KAIRA
+========================================== */
+
+.mobile-occasions {
+  position: relative;
+  height: 90dvh;
+  min-height: 560px;
+  overflow: hidden;
+  background: #0e0c0a;
+}
+
+.mobile-occasion-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+
+.mobile-occasion-slide-active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.mobile-occasion-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.mobile-occasion-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 8, 5, 0.96) 0%,
+    rgba(10, 8, 5, 0.45) 52%,
+    transparent 100%
+  );
+}
+
+.mobile-occasion-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 0 24px 44px;
+}
+
+.mobile-occasion-eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: #c9a96e;
+}
+
+.mobile-occasion-title {
+  margin: 0 0 6px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 44px;
+  font-weight: 400;
+  line-height: 1.05;
+  color: #ffffff;
+}
+
+.mobile-occasion-count {
+  margin: 0 0 22px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.mobile-occasion-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.mobile-occasions-nav {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-occasions-counter {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.1em;
+  margin-right: 4px;
+}
+
+.mobile-occasions-arrow {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

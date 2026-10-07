@@ -1,0 +1,87 @@
+/**
+ * House of Kaira - Care Policy Related Policies Styles (Component C14)
+ * Sections 5.14, 7.11 of Build Specification 2.0
+ */
+
+@import './care-variables.css';
+
+.pol {
+  max-width: var(--care-narrow-width);
+  margin: 0 auto;
+  padding: 40px 40px 88px;
+  position: relative;
+  width: 100%;
+}
+
+.pol-in {
+  border-top: 1px solid var(--care-border);
+  padding-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 22px;
+  font-family: var(--care-font-sans);
+  font-size: 12px;
+  color: var(--care-muted);
+}
+
+.pol-in b {
+  font-family: var(--care-font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--care-charcoal);
+  margin-right: 6px;
+}
+
+.pol-in a,
+.pol-in button {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--care-border);
+  cursor: pointer;
+  font-family: var(--care-font-sans);
+  font-size: 12px;
+  color: var(--care-charcoal);
+  padding: 0 0 2px;
+  text-decoration: none;
+  transition: color var(--care-transition-fast), border-color var(--care-transition-fast);
+}
+
+.pol-in a:hover,
+.pol-in button:hover {
+  border-color: var(--care-gold);
+  color: var(--care-gold-deep);
+}
+
+.pol p {
+  margin-top: 14px;
+  font-family: var(--care-font-sans);
+  font-size: 11px;
+  color: #A79B8D;
+  line-height: 1.7;
+}
+
+.pol p button {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--care-border);
+  cursor: pointer;
+  font-family: var(--care-font-sans);
+  font-size: 11px;
+  color: var(--care-muted);
+  padding: 0;
+  margin-left: 4px;
+  transition: color var(--care-transition-fast), border-color var(--care-transition-fast);
+}
+
+.pol p button:hover {
+  color: var(--care-charcoal);
+  border-color: var(--care-gold);
+}
+
+@media (max-width: 760px) {
+  .pol {
+    padding: 32px 18px 56px;
+  }
+}

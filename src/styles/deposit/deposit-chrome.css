@@ -1,0 +1,79 @@
+/**
+ * House of Kaira - Deposit Policy Page Layout & Chrome (D1 Breadcrumb)
+ * Section 5 (D1) of Build Specification v2.0 (hok_deposit_policy_v2)
+ */
+
+.deposit-page {
+  background-color: var(--dp-warm-white);
+  color: var(--dp-charcoal);
+  font-family: var(--dp-font-sans);
+  min-height: 100vh;
+  position: relative;
+}
+
+.deposit-policy-container {
+  position: relative;
+  width: 100%;
+  margin-top: 44px;
+}
+
+@media (max-width: 760px) {
+  .deposit-policy-container {
+    margin-top: 32px;
+  }
+}
+
+/* ==========================================================================
+   D1 BREADCRUMB
+   ========================================================================== */
+
+.crumbs {
+  background: var(--dp-cream);
+  padding: 18px 48px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--dp-font-sans);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--dp-muted);
+}
+
+.crumbs a,
+.crumbs button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--dp-muted);
+  padding: 0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.crumbs a:hover,
+.crumbs button:hover {
+  color: var(--dp-charcoal);
+}
+
+.crumbs i {
+  font-style: normal;
+  color: var(--dp-slash-chevron);
+  user-select: none;
+}
+
+.crumbs span {
+  color: var(--dp-charcoal);
+  font-weight: 400;
+}
+
+/* Responsive adjustments (Section 5, D1) */
+@media (max-width: 760px) {
+  .crumbs {
+    padding: 14px 18px 0;
+  }
+}

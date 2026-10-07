@@ -218,6 +218,15 @@ const TABLE_CONFIGS = {
       description: "description",
     },
   },
+  HomepageSection: {
+    tableName: "homepage_sections",
+    entityIdField: "sectionId",
+    columnMap: {
+      sectionId: "section_id",
+      isVisible: "is_visible",
+      orderIndex: "order_index",
+    },
+  },
 };
 
 // Generate 24-character hexadecimal ObjectId

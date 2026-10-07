@@ -1,0 +1,323 @@
+/**
+ * House of Kaira - Deposit Policy Hero & Page Search Styles (D2 & D3)
+ * Section 5 (D2 & D3) of Build Specification v2.0 (hok_deposit_policy_v2)
+ */
+
+/* ==========================================================================
+   D2 HERO BAND
+   ========================================================================== */
+
+.dp-hero {
+  background: var(--dp-cream);
+  padding: 40px 40px 132px;
+  text-align: center;
+  position: relative;
+}
+
+.fq-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.fq-eyebrow i {
+  width: 32px;
+  height: 1px;
+  background: var(--dp-gold);
+}
+
+.fq-eyebrow span {
+  font-family: var(--dp-font-sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--dp-gold);
+}
+
+.dp-h1 {
+  font-family: var(--dp-font-serif);
+  font-weight: 300;
+  font-size: clamp(42px, 5.6vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+  color: var(--dp-charcoal);
+  margin: 0;
+}
+
+.dp-h1 em {
+  font-style: italic;
+  color: var(--dp-gold);
+}
+
+.dp-sub {
+  font-family: var(--dp-font-sans);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--dp-ink-3);
+  max-width: 560px;
+  margin: 18px auto 0;
+}
+
+/* ==========================================================================
+   D3 PAGE SEARCH
+   ========================================================================== */
+
+.ch-find {
+  position: relative;
+  max-width: 560px;
+  margin: 30px auto 0;
+  text-align: left;
+  z-index: 20;
+}
+
+.ch-search {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--dp-charcoal);
+  padding: 12px 2px;
+  background: transparent;
+  transition: border-color 0.2s ease;
+}
+
+.ch-search svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--dp-charcoal);
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  flex-shrink: 0;
+}
+
+.ch-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: var(--dp-font-sans);
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--dp-charcoal);
+  line-height: 1.4;
+}
+
+.ch-search input::placeholder {
+  color: var(--dp-chevron-placeholder);
+}
+
+.ch-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.ch-x {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--dp-font-sans);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dp-muted);
+  padding: 4px 0;
+  transition: color 0.15s ease;
+}
+
+.ch-x:hover {
+  color: var(--dp-charcoal);
+}
+
+.ch-find.has-q .ch-x {
+  display: block;
+}
+
+/* ==========================================================================
+   D3 SEARCH RESULTS PANEL (OVERLAY)
+   ========================================================================== */
+
+.ch-drop {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  background: var(--dp-warm-white);
+  border: 1px solid var(--dp-border);
+  box-shadow: var(--dp-shadow-search);
+  max-height: 420px;
+  overflow-y: auto;
+  z-index: 25;
+}
+
+.ch-find.open .ch-drop {
+  display: block;
+}
+
+.ch-drop-hd {
+  padding: 12px 20px;
+  font-family: var(--dp-font-sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dp-muted);
+  border-bottom: 1px solid var(--dp-border-light);
+  background: var(--dp-warm-white);
+}
+
+.ch-hit {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--dp-border-light);
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.ch-hit:last-child {
+  border-bottom: none;
+}
+
+.ch-hit b {
+  display: block;
+  font-family: var(--dp-font-serif);
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.3;
+  color: var(--dp-charcoal);
+  transition: color 0.15s ease;
+}
+
+.ch-hit small {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--dp-font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--dp-muted);
+}
+
+.ch-hit:hover,
+.ch-hit[aria-selected="true"] {
+  background: var(--dp-cream);
+}
+
+.ch-hit[aria-selected="true"] b,
+.ch-hit:hover b {
+  color: var(--dp-gold-deep);
+}
+
+/* No results state */
+.ch-none {
+  padding: 22px 20px;
+  font-family: var(--dp-font-sans);
+  font-size: 13px;
+  color: var(--dp-ink-3);
+  line-height: 1.7;
+}
+
+.ch-none b {
+  font-family: var(--dp-font-serif);
+  font-weight: 400;
+  font-size: 20px;
+  display: block;
+  color: var(--dp-charcoal);
+  margin-bottom: 4px;
+}
+
+.ch-none .btn-wa {
+  margin-top: 14px;
+  padding: 11px 18px;
+  font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--dp-charcoal);
+  color: var(--dp-cream);
+  border: 1px solid var(--dp-charcoal);
+  border-radius: var(--dp-radius-button);
+  font-family: var(--dp-font-sans);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.ch-none .btn-wa:hover {
+  background: #2C251F;
+}
+
+.ch-none .btn-wa svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* ==========================================================================
+   D3 POPULAR SEARCHES ROW
+   ========================================================================== */
+
+.ch-pop {
+  margin-top: 18px;
+  font-family: var(--dp-font-sans);
+  font-size: 12px;
+  color: var(--dp-muted);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+
+.ch-pop-label {
+  color: var(--dp-muted);
+  font-weight: 400;
+}
+
+.ch-pop button {
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--dp-border);
+  padding: 0 0 1px;
+  font-family: var(--dp-font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--dp-ink-3);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.ch-pop button:hover {
+  color: var(--dp-charcoal);
+  border-color: var(--dp-gold);
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS (D2 & D3)
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .dp-hero {
+    padding: 26px 18px 104px;
+  }
+
+  .dp-sub {
+    font-size: 14px;
+  }
+
+  .ch-pop {
+    justify-content: flex-start;
+  }
+}

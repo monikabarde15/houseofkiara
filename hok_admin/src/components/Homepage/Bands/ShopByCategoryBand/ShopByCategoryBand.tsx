@@ -1,10 +1,15 @@
 /* =========================================================
-   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · SHOP BY CATEGORY (Spec 8.4)
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · SHOP BY CATEGORY BAND
+   Spec Section 8.4 (v213)
 ========================================================= */
 
 import React, { useState } from 'react';
 import './ShopByCategoryBand.css';
-import { CategorySettings, CategoryTileConfig, HealthIssue } from '../../types/homepage.types';
+import {
+  CategorySettings,
+  CategoryTileConfig,
+  HealthIssue
+} from '../../types/homepage.types';
 import { Card } from '../../shared/Card/Card';
 import { Field } from '../../shared/Field/Field';
 import { ReadsAsMirror } from '../../shared/ReadsAsMirror/ReadsAsMirror';
@@ -14,7 +19,6 @@ import { MediaSlot } from '../../shared/MediaSlot/MediaSlot';
 import { Deck, DeckArrangement } from '../../shared/Deck/Deck';
 import { DeckTileItem } from '../../shared/Deck/DeckTile';
 import { Inspector } from '../../shared/Deck/Inspector';
-import { DoorArrowIcon } from '../../shared/icons/HomepageIcons';
 
 interface ShopByCategoryBandProps {
   settings: CategorySettings;
@@ -25,16 +29,13 @@ interface ShopByCategoryBandProps {
   onNavigateToModule?: (mod: string) => void;
 }
 
-// Master Data category definitions (derived values, owned by Master Data)
+// Master Category definitions (derived from Master Data)
 const MASTER_CATEGORIES = [
   { id: 'bridal-lehenga', name: 'Bridal Lehenga', defaultLabel: 'Bridal Lehengas', slug: '/rent/bridal-lehenga', liveCount: 3 },
-  { id: 'sherwani', name: 'Sherwani', defaultLabel: 'Sherwanis', slug: '/rent/sherwani', liveCount: 2 },
-  { id: 'saree', name: 'Saree', defaultLabel: 'Sarees', slug: '/rent/saree', liveCount: 4 },
-  { id: 'anarkali', name: 'Anarkali', defaultLabel: 'Anarkalis', slug: '/rent/anarkali', liveCount: 3 },
-  { id: 'indo-western', name: 'Indo-Western', defaultLabel: 'Indo-Western', slug: '/rent/indo-western', liveCount: 1 },
-  { id: 'lehenga', name: 'Lehenga', defaultLabel: 'Lehengas', slug: '/rent/lehenga', liveCount: 5 },
-  { id: 'sharara', name: 'Sharara', defaultLabel: 'Shararas', slug: '/rent/sharara', liveCount: 2 },
-  { id: 'kurta-set', name: 'Kurta Set', defaultLabel: 'Kurta Sets', slug: '/rent/kurta-set', liveCount: 3 }
+  { id: 'sherwani', name: 'Sherwani', defaultLabel: 'Sherwanis', slug: '/rent/sherwani', liveCount: 0 },
+  { id: 'saree', name: 'Saree', defaultLabel: 'Sarees', slug: '/rent/saree', liveCount: 1 },
+  { id: 'anarkali', name: 'Anarkali', defaultLabel: 'Anarkalis', slug: '/rent/anarkali', liveCount: 1 },
+  { id: 'indo-western', name: 'Indo-Western', defaultLabel: 'Indo-Western', slug: '/rent/indo-western', liveCount: 0 }
 ];
 
 export const ShopByCategoryBand: React.FC<ShopByCategoryBandProps> = ({
@@ -47,25 +48,24 @@ export const ShopByCategoryBand: React.FC<ShopByCategoryBandProps> = ({
 }) => {
   const [selectedTileIndex, setSelectedTileIndex] = useState<number | null>(null);
 
-  const categoryKeys = Object.keys(settings.tiles);
+  const categoryKeys = Object.keys(settings.tiles || {});
 
-  // Deck items representation
+  // Build deck items
   const deckItems: DeckTileItem[] = categoryKeys.map((catKey, idx) => {
-    const tileConfig = settings.tiles[catKey] || { alt: '', lbl: '', kickMob: '', img: '' };
+    const tileConfig = settings.tiles[catKey] || { alt: '', lbl: '', img: '' };
     const master = MASTER_CATEGORIES.find((m) => m.id === catKey);
     const displayName = tileConfig.lbl || master?.defaultLabel || catKey;
     const count = master?.liveCount ?? 0;
-    const isLead = idx === 0;
+    const slug = master?.slug || `/rent/${catKey}`;
 
     return {
-      id: `category-tile-${catKey}`,
+      id: `cat-tile-${catKey}`,
       position: idx + 1,
       title: displayName,
-      sub: `${master?.name || catKey} · ${count} live`,
-      badge: isLead ? 'LEAD TILE' : undefined,
-      imageUrl: tileConfig.img,
-      noPicture: !tileConfig.img,
-      pictureHeight: isLead ? 130 : 90
+      sub: `${count} live · ${slug}`,
+      pictureUrl: tileConfig.img || undefined,
+      pictureHeight: idx === 0 && settings.layout === 'Mosaic' ? 132 : 96,
+      cornerFlag: !tileConfig.img ? { type: 'need', label: 'NEEDS A PICTURE' } : undefined
     };
   });
 
@@ -74,43 +74,29 @@ export const ShopByCategoryBand: React.FC<ShopByCategoryBandProps> = ({
       ? categoryKeys[selectedTileIndex]
       : null;
 
-  const selectedTileConfig = selectedCatKey ? settings.tiles[selectedCatKey] : null;
-  const selectedMaster = selectedCatKey ? MASTER_CATEGORIES.find((m) => m.id === selectedCatKey) : null;
+  const selectedMaster = selectedCatKey
+    ? MASTER_CATEGORIES.find((m) => m.id === selectedCatKey)
+    : null;
 
-  // Handlers
-  const handleUpdateTileConfig = (catKey: string, patch: Partial<CategoryTileConfig>) => {
+  const selectedTileConfig = selectedCatKey
+    ? settings.tiles[selectedCatKey] || { alt: '', img: '', lbl: '', kickMob: '' }
+    : null;
+
+  const handleUpdateTile = (catKey: string, patch: Partial<CategoryTileConfig>) => {
     onChange({
       ...settings,
       tiles: {
         ...settings.tiles,
         [catKey]: {
-          ...settings.tiles[catKey],
+          ...(settings.tiles[catKey] || { alt: '', img: '', lbl: '', kickMob: '' }),
           ...patch
         }
       }
     });
   };
 
-  const handleSwapCategory = (oldKey: string, newKey: string) => {
-    const newTiles: { [k: string]: CategoryTileConfig } = {};
-    categoryKeys.forEach((k) => {
-      if (k === oldKey) {
-        const master = MASTER_CATEGORIES.find((m) => m.id === newKey);
-        newTiles[newKey] = {
-          alt: `${master?.name || newKey} on House of Kaira`,
-          lbl: master?.defaultLabel || newKey,
-          kickMob: settings.tiles[oldKey]?.kickMob || 'Curated for every occasion',
-          img: ''
-        };
-      } else {
-        newTiles[k] = settings.tiles[k];
-      }
-    });
-    onChange({ ...settings, tiles: newTiles });
-  };
-
-  const handleMoveTile = (index: number, direction: 'earlier' | 'later') => {
-    const target = direction === 'earlier' ? index - 1 : index + 1;
+  const handleMoveTile = (index: number, direction: 'up' | 'down') => {
+    const target = direction === 'up' ? index - 1 : index + 1;
     if (target < 0 || target >= categoryKeys.length) return;
     const entries = Object.entries(settings.tiles);
     const temp = entries[index];
@@ -125,65 +111,66 @@ export const ShopByCategoryBand: React.FC<ShopByCategoryBandProps> = ({
     setSelectedTileIndex(target);
   };
 
+  const handleRemoveTile = (index: number) => {
+    const keyToRemove = categoryKeys[index];
+    const newTiles = { ...settings.tiles };
+    delete newTiles[keyToRemove];
+    onChange({ ...settings, tiles: newTiles });
+    setSelectedTileIndex(null);
+  };
+
   const arrangement: DeckArrangement = settings.layout === 'Mosaic' ? 'mosaic' : 'd4';
 
   return (
-    <div className="hok-band-editor hok-shop-by-category-band">
-      {/* Band Header Card */}
-      <Card
-        variant="elevated"
-        header={{
-          eyebrow: 'BAND 4 · SHOP BY CATEGORY',
-          title: 'Shop by Category',
-          meta: isShown ? 'VISIBLE ON STOREFRONT' : 'HIDDEN',
-          status: isShown ? 'live' : 'draft',
-          actions: (
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={isShown}
-              onChange={onToggleShown}
-            />
-          )
-        }}
-      >
-        <p className="hok-band-intro">
-          Five categories in an asymmetrical mosaic or even grid layout. Live piece counts are read directly from the catalogue — never stored on the homepage record.
-        </p>
+    <div className="hok-category-band">
+      {/* 7. Editor Shell Top */}
+      <div className="hok-hp-editor-heading-row">
+        <h2 className="hok-hp-editor-band-title">Shop by Category</h2>
+        <span className="hok-hp-editor-band-counter">Band 4 of 9</span>
+      </div>
 
-        {issues.length > 0 && (
-          <div className="hok-band-issues">
-            {issues.map((iss, i) => (
-              <IssueStrip
-                key={i}
-                severity={iss.severity}
-                message={iss.message}
-                actionLabel={iss.actionLabel}
-              />
-            ))}
-          </div>
-        )}
-      </Card>
+      <p className="hok-hp-editor-band-desc">
+        Which categories appear is decided in Master Data. How the tile reads — its picture, its label, its button — is decided here.
+      </p>
 
-      {/* Card 1: Words, Link & Header Toggles */}
+      {/* 7.1 Visibility Row */}
+      <div className="hok-hp-visibility-row" id="category-visibility">
+        <div className="hok-hp-visibility-left">
+          <PillToggle
+            checked={isShown}
+            onChange={onToggleShown}
+            label="Show this band on the homepage"
+          />
+        </div>
+        <span className="hok-hp-visibility-consequence">
+          {isShown
+            ? 'Showing on the live homepage, in position 4.'
+            : 'Hidden. The settings below are kept, so it can come back exactly as it was.'}
+        </span>
+      </div>
+
+      {/* Issues Strip */}
+      {issues.map((iss) => (
+        <IssueStrip
+          key={iss.id}
+          severity={iss.sev}
+          message={iss.msg}
+          doorLabel={iss.doorLabel}
+          onDoorClick={() => iss.door && onNavigateToModule && onNavigateToModule(iss.door)}
+        />
+      ))}
+
+      {/* Card 1 — The words (Spec 8.4.1) */}
       <Card
-        header={{
-          eyebrow: 'BAND HEADINGS & DESTINATION',
-          title: 'Heading, CTA and Header Visibility',
-          meta: 'Top text and section header controls'
-        }}
+        id="category-words-card"
+        title="The words"
       >
-        <div className="hok-sbc-words-grid">
+        <div className="hok-cat-field-stack">
           <div id="category-eyebrow">
-            <Field
-              label="Eyebrow"
-              hint="Small caps kicker above main heading"
-            >
+            <Field label="Eyebrow">
               <input
                 type="text"
-                className="hok-input"
+                className="hok-field-input"
                 value={settings.eyebrow}
                 onChange={(e) => onChange({ ...settings, eyebrow: e.target.value })}
                 placeholder="Curated for Every Occasion"
@@ -193,342 +180,225 @@ export const ShopByCategoryBand: React.FC<ShopByCategoryBandProps> = ({
 
           <div id="category-heading">
             <Field
-              label="Main Heading"
-              hint="Wrap *words in asterisks* for gold italic serif font"
+              label="Heading"
+              hint="A line break starts a new line. Wrap one word in *asterisks* to set it in the italic gold serif, the way the storefront does."
             >
-              <input
-                type="text"
-                className="hok-input"
+              <textarea
+                className="hok-field-textarea"
+                rows={2}
                 value={settings.heading}
                 onChange={(e) => onChange({ ...settings, heading: e.target.value })}
                 placeholder="Shop by *Category*"
               />
             </Field>
+            <ReadsAsMirror text={settings.heading} />
           </div>
-        </div>
 
-        <div className="hok-sbc-mirror-box">
-          <span className="hok-sbc-mirror-label">Live Storefront Heading Preview</span>
-          <ReadsAsMirror
-            eyebrow={settings.eyebrow}
-            heading={settings.heading}
-            className="hok-sbc-reads-as"
-          />
-        </div>
-
-        <div className="hok-divider" />
-
-        <div className="hok-sbc-links-grid">
-          <Field
-            label='"View all" Link Text'
-            hint="Top right link label"
-          >
-            <input
-              type="text"
-              className="hok-input"
-              value={settings.viewAll.lbl}
-              onChange={(e) =>
-                onChange({
-                  ...settings,
-                  viewAll: { ...settings.viewAll, lbl: e.target.value }
-                })
-              }
-              placeholder="View All →"
-            />
-          </Field>
-
-          <Field
-            label="Destination URL"
-            hint="Target path for the link"
-          >
-            <input
-              type="text"
-              className="hok-input"
-              value={settings.viewAll.url}
-              onChange={(e) =>
-                onChange({
-                  ...settings,
-                  viewAll: { ...settings.viewAll, url: e.target.value }
-                })
-              }
-              placeholder="/categories"
-            />
-          </Field>
-
-          <div id="category-cta">
-            <Field
-              label="Tile CTA Label"
-              hint="Hover button label on individual category cards"
-            >
+          <div className="hok-cat-grid-2col">
+            <Field label="View-all label">
               <input
                 type="text"
-                className="hok-input"
-                value={settings.ctaLbl}
-                onChange={(e) => onChange({ ...settings, ctaLbl: e.target.value })}
-                placeholder="Shop Now"
+                className="hok-field-input"
+                value={settings.viewAll.lbl}
+                onChange={(e) =>
+                  onChange({
+                    ...settings,
+                    viewAll: { ...settings.viewAll, lbl: e.target.value }
+                  })
+                }
+                placeholder="View All →"
+              />
+            </Field>
+
+            <Field label="View-all link">
+              <input
+                type="text"
+                className="hok-field-input"
+                value={settings.viewAll.url}
+                onChange={(e) =>
+                  onChange({
+                    ...settings,
+                    viewAll: { ...settings.viewAll, url: e.target.value }
+                  })
+                }
+                placeholder="/categories"
               />
             </Field>
           </div>
         </div>
-
-        <div className="hok-divider" />
-
-        <div className="hok-sbc-header-toggles-grid">
-          <div className="hok-sbc-header-toggle-item">
-            <div className="hok-sbc-toggle-text">
-              <span className="hok-sbc-toggle-title">Show header on Desktop</span>
-              <span className="hok-sbc-toggle-desc">Renders eyebrow, heading, and "View all" link on desktop</span>
-            </div>
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={settings.header}
-              onChange={(val) => onChange({ ...settings, header: Boolean(val) })}
-            />
-          </div>
-
-          <div className="hok-sbc-header-toggle-item">
-            <div className="hok-sbc-toggle-text">
-              <span className="hok-sbc-toggle-title">Show header on Mobile</span>
-              <span className="hok-sbc-toggle-desc">Renders heading section above carousel/stack on mobile</span>
-            </div>
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={settings.headerMob}
-              onChange={(val) => onChange({ ...settings, headerMob: Boolean(val) })}
-            />
-          </div>
-        </div>
       </Card>
 
-      {/* Card 2: 5 Mosaic Tiles Deck & Inspector */}
+      {/* Card 2 — The tiles (Spec 8.4.2) */}
       <Card
-        header={{
-          eyebrow: '5 CATEGORY TILES',
-          title: 'Mosaic Tiles & Picture Setup',
-          meta: `${categoryKeys.length} categories slotted · ${settings.layout} arrangement`
-        }}
+        title="The tiles"
+        sub="Laid out the way the homepage lays them out. Click a tile to set its picture and wording."
+        doorLabel="Open Master Data"
+        onDoorClick={() => onNavigateToModule && onNavigateToModule('Master Data')}
       >
-        <p className="hok-field-hint" style={{ marginBottom: 14 }}>
-          Tile 1 is the large featured lead card on the left; Tiles 2–5 form the 2×2 grid on the right. Click any tile to configure imagery, custom labels, and kicker copy.
-        </p>
-
-        <div className="hok-sbc-deck-wrapper">
+        <div className="hok-cat-deck-wrapper">
           <Deck
             arrangement={arrangement}
             items={deckItems}
             selectedIndex={selectedTileIndex}
-            onSelectIndex={(idx) => setSelectedTileIndex(idx)}
-            onMoveEarlier={(idx) => handleMoveTile(idx, 'earlier')}
-            onMoveLater={(idx) => handleMoveTile(idx, 'later')}
+            onSelectIndex={setSelectedTileIndex}
+            onMoveEarlier={(idx) => handleMoveTile(idx, 'up')}
+            onMoveLater={(idx) => handleMoveTile(idx, 'down')}
+            onRemove={handleRemoveTile}
+            removeLabel="Take off"
+            onAddTile={() => onNavigateToModule && onNavigateToModule('Categories')}
+            addLabel="Add a category"
+            addCountText="2 not on the homepage"
+            maxReached={categoryKeys.length >= 6}
           />
 
-          {selectedCatKey && selectedTileConfig && selectedTileIndex !== null && (
-            <Inspector
-              title={`Edit Category Tile ${selectedTileIndex + 1}: ${selectedTileConfig.lbl || selectedCatKey}`}
-              position={selectedTileIndex + 1}
-              totalItems={categoryKeys.length}
-              onClose={() => setSelectedTileIndex(null)}
-              onMoveUp={selectedTileIndex > 0 ? () => handleMoveTile(selectedTileIndex, 'earlier') : undefined}
-              onMoveDown={
-                selectedTileIndex < categoryKeys.length - 1
-                  ? () => handleMoveTile(selectedTileIndex, 'later')
-                  : undefined
-              }
-            >
-              <div className="hok-sbc-inspector-content">
-                {/* Category Master Data Reference Door */}
-                <div className="hok-sbc-master-door">
-                  <div className="hok-sbc-door-left">
-                    <span className="hok-sbc-door-tag">MASTER DATA CATEGORY</span>
-                    <span className="hok-sbc-door-name">{selectedMaster?.name || selectedCatKey}</span>
-                    <span className="hok-sbc-door-slug">Slug: {selectedMaster?.slug || `/rent/${selectedCatKey}`} · {selectedMaster?.liveCount ?? 0} pieces live</span>
-                  </div>
-                  {onNavigateToModule && (
-                    <button
-                      type="button"
-                      className="hok-sbc-door-btn"
-                      onClick={() => onNavigateToModule('Categories')}
-                    >
-                      Open in Categories <DoorArrowIcon size={10} />
-                    </button>
-                  )}
-                </div>
+          {/* Inspector */}
+          <Inspector
+            kicker={`EDITING TILE ${selectedTileIndex !== null ? selectedTileIndex + 1 : 1}`}
+            itemName={selectedTileConfig?.lbl || selectedMaster?.name || selectedCatKey || undefined}
+            isOpen={selectedTileIndex !== null && !!selectedCatKey}
+            emptyText="Pick a tile above to set its picture, its label and its app kicker."
+          >
+            {selectedCatKey && selectedTileConfig && (
+              <div className="hok-cat-inspector-fields">
+                <MediaSlot
+                  title="Tile picture"
+                  specText="Portrait, 700×1000 or larger. The name and the button sit over the bottom of the picture, so keep that area quiet."
+                  imageUrl={selectedTileConfig.img}
+                  altText={selectedTileConfig.alt}
+                  onUpload={(url) => handleUpdateTile(selectedCatKey, { img: url })}
+                  onRemove={() => handleUpdateTile(selectedCatKey, { img: '' })}
+                  onChangeAlt={(alt) => handleUpdateTile(selectedCatKey, { alt })}
+                  previewWidth={120}
+                  previewHeight={160}
+                  required
+                />
 
                 <Field
-                  label="Category Selection"
-                  hint="Switch which category occupies this slot"
-                >
-                  <select
-                    className="hok-select"
-                    value={selectedCatKey}
-                    onChange={(e) => handleSwapCategory(selectedCatKey, e.target.value)}
-                  >
-                    {MASTER_CATEGORIES.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.name} ({m.liveCount} live pieces)
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-
-                <Field
-                  label="Custom Display Label"
-                  hint="What appears on the tile (falls back to category name if blank)"
+                  label="Label on the tile"
+                  hint={`Blank uses the registry name, ${selectedMaster?.name || selectedCatKey}. The storefront sets these in the plural.`}
                 >
                   <input
                     type="text"
-                    className="hok-input"
+                    className="hok-field-input"
                     value={selectedTileConfig.lbl}
-                    onChange={(e) => handleUpdateTileConfig(selectedCatKey, { lbl: e.target.value })}
-                    placeholder={selectedMaster?.defaultLabel || 'e.g. Bridal Lehengas'}
+                    onChange={(e) => handleUpdateTile(selectedCatKey, { lbl: e.target.value })}
+                    placeholder={selectedMaster?.defaultLabel || selectedCatKey}
                   />
                 </Field>
 
                 <Field
-                  label="Mobile Kicker / Tagline"
-                  hint="Sub-line shown under title on mobile view"
+                  label="Kicker — app only"
+                  hint="The small line above the name on the app carousel. Desktop tiles carry none."
                 >
                   <input
                     type="text"
-                    className="hok-input"
-                    value={selectedTileConfig.kickMob}
+                    className="hok-field-input"
+                    value={selectedTileConfig.kickMob || ''}
                     onChange={(e) =>
-                      handleUpdateTileConfig(selectedCatKey, { kickMob: e.target.value })
+                      handleUpdateTile(selectedCatKey, { kickMob: e.target.value })
                     }
                     placeholder="Curated for every occasion"
                   />
                 </Field>
 
-                <Field
-                  label="Category Picture"
-                  hint={
-                    selectedTileIndex === 0
-                      ? 'Lead Tile Spec: 520 × 640 px (portrait banner)'
-                      : 'Standard Tile Spec: 250 × 310 px (portrait card)'
+                <div className="hok-cat-meta-footer">
+                  <span>The category itself — its name, slug and whether it is active — belongs to Master Data. The picture, the label and the kicker have no home but this one.</span>
+                </div>
+              </div>
+            )}
+          </Inspector>
+        </div>
+      </Card>
+
+      {/* Card 3 — Layout (Spec 8.4.3) */}
+      <div id="category-layout">
+        <Card title="Layout">
+          <div className="hok-cat-field-stack">
+            <div className="hok-cat-grid-2col">
+              <Field
+                label="Desktop"
+                hint={
+                  settings.layout === 'Mosaic'
+                    ? 'One wide tile and one tall, then three across. Needs exactly five tiles — there are 5.'
+                    : 'Equal tiles across in a grid.'
+                }
+              >
+                <select
+                  className="hok-field-select"
+                  value={settings.layout}
+                  onChange={(e) =>
+                    onChange({
+                      ...settings,
+                      layout: e.target.value as 'Mosaic' | 'Even grid'
+                    })
                   }
                 >
-                  <MediaSlot
-                    imageUrl={selectedTileConfig.img}
-                    specDims={selectedTileIndex === 0 ? '520 × 640 px' : '250 × 310 px'}
-                    label={`Picture for ${selectedTileConfig.lbl || selectedCatKey}`}
-                    onUpload={(url) => handleUpdateTileConfig(selectedCatKey, { img: url })}
-                    onRemove={() => handleUpdateTileConfig(selectedCatKey, { img: '' })}
-                  />
-                </Field>
+                  <option value="Mosaic">Mosaic</option>
+                  <option value="Even grid">Even grid</option>
+                </select>
+              </Field>
 
-                <Field
-                  label="Image Alt Text"
-                  hint="Required accessibility text describing the image"
+              <Field
+                label="App"
+                hint="Full-height slides with dots, as the app ships today."
+              >
+                <select
+                  className="hok-field-select"
+                  value={settings.layoutMob}
+                  onChange={(e) =>
+                    onChange({
+                      ...settings,
+                      layoutMob: e.target.value as 'Carousel' | 'Stacked'
+                    })
+                  }
                 >
-                  <input
-                    type="text"
-                    className="hok-input"
-                    value={selectedTileConfig.alt}
-                    onChange={(e) => handleUpdateTileConfig(selectedCatKey, { alt: e.target.value })}
-                    placeholder={`e.g. ${selectedMaster?.name || 'Bridal outfit'} on House of Kaira`}
-                  />
-                </Field>
-              </div>
-            </Inspector>
-          )}
-        </div>
-      </Card>
-
-      {/* Card 3: Layout & Piece Count Rules */}
-      <Card
-        header={{
-          eyebrow: 'LAYOUT & DERIVED PIECE COUNTS',
-          title: 'Arrangement & Live Inventory Indicators',
-          meta: 'Grid structure and customer piece counts'
-        }}
-      >
-        <div id="category-layout" className="hok-sbc-layout-grid">
-          <Field
-            label="Desktop Layout"
-            hint="Visual distribution on large screens"
-          >
-            <PillToggle
-              options={[
-                { label: 'Mosaic (1 Large + 4 Small)', value: 'Mosaic' },
-                { label: 'Even grid (5 Columns)', value: 'Even grid' }
-              ]}
-              value={settings.layout}
-              onChange={(val) => onChange({ ...settings, layout: val as 'Mosaic' | 'Even grid' })}
-            />
-          </Field>
-
-          <Field
-            label="Mobile Layout"
-            hint="Visual distribution on mobile devices"
-          >
-            <PillToggle
-              options={[
-                { label: 'Carousel (Swipe)', value: 'Carousel' },
-                { label: 'Stacked (Vertical)', value: 'Stacked' }
-              ]}
-              value={settings.layoutMob}
-              onChange={(val) => onChange({ ...settings, layoutMob: val as 'Carousel' | 'Stacked' })}
-            />
-          </Field>
-        </div>
-
-        <div className="hok-divider" />
-
-        <div className="hok-sbc-counts-grid">
-          <div className="hok-sbc-count-toggle-item">
-            <div className="hok-sbc-toggle-text">
-              <span className="hok-sbc-toggle-title">Show piece count on Desktop</span>
-              <span className="hok-sbc-toggle-desc">e.g. "3 live pieces" badge on category card</span>
+                  <option value="Carousel">Carousel</option>
+                  <option value="Stacked">Stacked</option>
+                </select>
+              </Field>
             </div>
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={settings.showCount}
-              onChange={(val) => onChange({ ...settings, showCount: Boolean(val) })}
-            />
-          </div>
 
-          <div className="hok-sbc-count-toggle-item">
-            <div className="hok-sbc-toggle-text">
-              <span className="hok-sbc-toggle-title">Show piece count on Mobile</span>
-              <span className="hok-sbc-toggle-desc">Displays mobile count label below category name</span>
+            <div id="category-cta">
+              <Field label="Button wording">
+                <input
+                  type="text"
+                  className="hok-field-input"
+                  value={settings.ctaLbl}
+                  onChange={(e) => onChange({ ...settings, ctaLbl: e.target.value })}
+                  placeholder="Shop Now"
+                />
+              </Field>
             </div>
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={settings.showCountMob}
-              onChange={(val) => onChange({ ...settings, showCountMob: Boolean(val) })}
-            />
-          </div>
-        </div>
 
-        {settings.showCountMob && (
-          <div className="hok-sbc-template-row">
-            <Field
-              label="Mobile Count Label Template"
-              hint="Use {n} as placeholder for live count (e.g. '{n} pieces available')"
-            >
-              <input
-                type="text"
-                className="hok-input"
-                value={settings.countLblMob}
-                onChange={(e) => onChange({ ...settings, countLblMob: e.target.value })}
-                placeholder="{n} pieces available"
+            <div className="hok-cat-toggles-grid">
+              <PillToggle
+                checked={settings.header}
+                onChange={(checked) => onChange({ ...settings, header: checked })}
+                label="Show the band heading on desktop"
               />
-            </Field>
+
+              <PillToggle
+                checked={settings.headerMob}
+                onChange={(checked) => onChange({ ...settings, headerMob: checked })}
+                label="Show the band heading in the app"
+                hint="The app sets this in a full-bleed carousel with no heading above it, which is how it ships."
+              />
+
+              <PillToggle
+                checked={settings.showCount}
+                onChange={(checked) => onChange({ ...settings, showCount: checked })}
+                label="Show the live piece count on desktop tiles"
+              />
+
+              <PillToggle
+                checked={settings.showCountMob}
+                onChange={(checked) => onChange({ ...settings, showCountMob: checked })}
+                label="Show the live piece count in the app"
+              />
+            </div>
           </div>
-        )}
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 };

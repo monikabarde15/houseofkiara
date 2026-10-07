@@ -5,6 +5,7 @@ import categoriesData from "../../../data/home/categoriesData";
 import SectionEyebrow from "../../shared/SectionEyebrow";
 import SectionTitle from "../../shared/SectionTitle";
 import ViewAllLink from "../../shared/ViewAllLink";
+import { renderHeadline } from "../../../utils/headlineParser";
 
 const CategoryTile = ({ category, isLarge = false }) => {
   const navigate = useNavigate();
@@ -59,28 +60,36 @@ const CategoryTile = ({ category, isLarge = false }) => {
   );
 };
 
-const DesktopCategories = () => {
+const DesktopCategories = ({ data }) => {
+  const categories = data || categoriesData;
+  const eyebrow = categories.eyebrow || categoriesData.eyebrow;
+  const heading = categories.heading || categoriesData.title || "Shop by *Category*";
+  const viewAllText = categories.viewAll?.text || categories.viewAll?.lbl || "View All →";
+  const viewAllHref = categories.viewAll?.link || categories.viewAll?.url || "/main-page?section=new&category";
+  const rowOne = categories.rowOne && categories.rowOne.length > 0 ? categories.rowOne : categoriesData.rowOne;
+  const rowTwo = categories.rowTwo && categories.rowTwo.length > 0 ? categories.rowTwo : categoriesData.rowTwo;
+
   return (
     <section className="desk-categories">
       <div className="desk-categories-header">
         <div className="desk-categories-header-left">
-          <SectionEyebrow text={categoriesData.eyebrow} />
+          <SectionEyebrow text={eyebrow} />
           <SectionTitle>
-            Shop by <em>Category</em>
+            {renderHeadline(heading, "em")}
           </SectionTitle>
         </div>
-        <ViewAllLink text="View All →" href="/main-page?section=new&category" />
+        <ViewAllLink text={viewAllText} href={viewAllHref} />
       </div>
 
       <div className="desk-categories-grid">
         <div className="desk-categories-row-one">
-          {categoriesData.rowOne.map((category) => (
+          {rowOne.map((category) => (
             <CategoryTile key={category.id} category={category} isLarge />
           ))}
         </div>
 
         <div className="desk-categories-row-two">
-          {categoriesData.rowTwo.map((category) => (
+          {rowTwo.map((category) => (
             <CategoryTile key={category.id} category={category} />
           ))}
         </div>

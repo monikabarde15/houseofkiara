@@ -15,6 +15,7 @@ import { Deck } from '../../shared/Deck/Deck';
 import { DeckTileItem } from '../../shared/Deck/DeckTile';
 import { Inspector } from '../../shared/Deck/Inspector';
 import { PieceCard } from '../../shared/PieceCard/PieceCard';
+import { SAMPLE_CATALOGUE_PIECES } from '../../data/cataloguePieces';
 
 interface HeroBandProps {
   settings: HeroSettings;
@@ -24,52 +25,6 @@ interface HeroBandProps {
   issues: HealthIssue[];
   onNavigateToModule?: (mod: string) => void;
 }
-
-const SAMPLE_PIECES = [
-  {
-    sku: 'HOK-SAB-002',
-    name: 'Gulabi Silk Bridal Lehenga',
-    designer: 'Sabyasachi',
-    category: 'Bridal Lehenga',
-    size: 'M',
-    status: 'Live' as const,
-    priceStd: 6400,
-    minDays: 3,
-    resalePrice: 110000,
-    mode: 'Rental/Preloved'
-  },
-  {
-    sku: 'HOK-MM-001',
-    name: 'Ivory Embroidered Sherwani',
-    designer: 'Manish Malhotra',
-    category: 'Sherwani',
-    size: '40',
-    status: 'Sold' as const,
-    resalePrice: 38000,
-    mode: 'Preloved'
-  },
-  {
-    sku: 'HOK-TT-001',
-    name: 'Midnight Blue Crepe Saree',
-    designer: 'Tarun Tahiliani',
-    category: 'Saree',
-    size: 'Free',
-    status: 'Live' as const,
-    resalePrice: 24500,
-    mode: 'Preloved'
-  },
-  {
-    sku: 'HOK-AD-001',
-    name: 'Rose Georgette Anarkali',
-    designer: 'Anita Dongre',
-    category: 'Anarkali',
-    size: 'S',
-    status: 'Live' as const,
-    priceStd: 4500,
-    minDays: 3,
-    mode: 'Rental'
-  }
-];
 
 export const HeroBand: React.FC<HeroBandProps> = ({
   settings,
@@ -94,7 +49,7 @@ export const HeroBand: React.FC<HeroBandProps> = ({
 
   // Selected Piece for Badge
   const badgePiece = settings.badge.sku
-    ? SAMPLE_PIECES.find((p) => p.sku === settings.badge.sku) || null
+    ? SAMPLE_CATALOGUE_PIECES.find((p) => p.sku === settings.badge.sku) || null
     : null;
 
   return (
@@ -301,7 +256,7 @@ export const HeroBand: React.FC<HeroBandProps> = ({
         />
 
         {settings.statsOn && (
-          <div style={{ marginTop: 14 }}>
+          <div style={{ marginTop: 14 }} id="hero-stats">
             <Deck
               items={statDeckItems}
               selectedIndex={selectedStatIndex}
@@ -644,7 +599,7 @@ export const HeroBand: React.FC<HeroBandProps> = ({
                     }
                   >
                     <option value="">— pick a piece —</option>
-                    {SAMPLE_PIECES.map((p) => (
+                    {SAMPLE_CATALOGUE_PIECES.map((p) => (
                       <option key={p.sku} value={p.sku}>
                         {p.name} · {p.designer} {p.status !== 'Live' ? `(${p.status})` : ''}
                       </option>
@@ -652,7 +607,7 @@ export const HeroBand: React.FC<HeroBandProps> = ({
                   </select>
                 </Field>
 
-                {badgePiece && (
+                {badgePiece ? (
                   <div className="hok-hero-badge-readback">
                     <PieceCard
                       piece={badgePiece}
@@ -660,9 +615,19 @@ export const HeroBand: React.FC<HeroBandProps> = ({
                       onOpenPiece={() => onNavigateToModule && onNavigateToModule('Products')}
                     />
                     <div className="hok-hero-badge-renders-as">
-                      The badge renders as <span className="hok-hero-badge-renders-bold">{badgePiece.name} · {badgePiece.designer} · Rent ₹6,400 / 3 days · Buy ₹1,10,000</span>. Both lines are read from the piece, so the badge cannot quote a price the catalogue disagrees with.
+                      The badge renders as <span className="hok-hero-badge-renders-bold">
+                        {badgePiece.name} · {badgePiece.designer}
+                        {badgePiece.priceStd ? ` · Rent ₹${badgePiece.priceStd.toLocaleString('en-IN')} / ${badgePiece.minDays || 3} days` : ''}
+                        {badgePiece.resalePrice ? ` · Buy ₹${badgePiece.resalePrice.toLocaleString('en-IN')}` : ''}
+                      </span>. Both lines are read from the piece, so the badge cannot quote a price the catalogue disagrees with.
                     </div>
                   </div>
+                ) : (
+                  settings.badge.sku ? (
+                    <div className="hok-hero-badge-renders-as" style={{ color: 'var(--terra)', fontStyle: 'italic', marginTop: 6 }}>
+                      No piece with that SKU.
+                    </div>
+                  ) : null
                 )}
               </div>
             ) : (

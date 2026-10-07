@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { desktopFooterColumns, desktopPolicyLinks } from "../footerData";
 import "../../../styles/Footer/desktop-footer.css";
 import { showToast } from "../../AboutUs/shared/Toast";
@@ -25,6 +26,32 @@ const LinkedinIcon = () => (
 );
 
 const DesktopFooter = () => {
+  const location = useLocation();
+
+  const isCurrentPage = (link) => {
+    if (!location) return false;
+    const currentPath = location.pathname;
+    if (link.path === currentPath) return true;
+    if (
+      link.label === "Deposit Policy" &&
+      (currentPath === "/deposit" || currentPath === "/deposit-policy")
+    ) {
+      return true;
+    }
+    if (
+      (link.label === "Care, Cleaning & Damage" ||
+        link.label === "Care, Cleaning & Damage Policy" ||
+        link.label === "Care & Damage" ||
+        link.label === "Care & Damage Policy") &&
+      (currentPath === "/care-policy" ||
+        currentPath === "/care" ||
+        currentPath === "/care-cleaning-damage" ||
+        currentPath === "/care-damage")
+    ) {
+      return true;
+    }
+    return false;
+  };
   return (
     <footer className="hok-desktop-footer">
       <div className="hok-footer-top">
@@ -74,11 +101,25 @@ const DesktopFooter = () => {
           <div key={column.title} className="hok-footer-column">
             <h4 className="hok-footer-column-heading">{column.title}</h4>
             <div className="hok-footer-column-links">
-              {column.links.map((link) => (
-                <a href={link.path} key={link.label} className="hok-footer-link">
-                  {link.label}
-                </a>
-              ))}
+              {column.links.map((link) => {
+                const isCurrent = isCurrentPage(link);
+                if (isCurrent) {
+                  return (
+                    <span
+                      key={link.label}
+                      className="hok-footer-link here"
+                      aria-current="page"
+                    >
+                      {link.label}
+                    </span>
+                  );
+                }
+                return (
+                  <a href={link.path} key={link.label} className="hok-footer-link">
+                    {link.label}
+                  </a>
+                );
+              })}
             </div>
           </div>
         ))}
@@ -88,13 +129,14 @@ const DesktopFooter = () => {
       <div className="hok-footer-policy-row">
         {desktopPolicyLinks.map((link, index) => {
           const isLast = index === desktopPolicyLinks.length - 1;
+          const isCurrent = isCurrentPage(link);
+
           if (link.isButton) {
             return (
               <button
                 type="button"
                 key={link.label}
                 className={`hok-footer-policy-link ${isLast ? "last" : ""}`}
-                style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer' }}
                 onClick={() => {
                   if (typeof window !== 'undefined' && window.HOK_CONSENT) {
                     window.HOK_CONSENT.open();
@@ -103,6 +145,18 @@ const DesktopFooter = () => {
               >
                 {link.label}
               </button>
+            );
+          }
+
+          if (isCurrent) {
+            return (
+              <span
+                key={link.label}
+                className={`hok-footer-policy-link here ${isLast ? "last" : ""}`}
+                aria-current="page"
+              >
+                {link.label}
+              </span>
             );
           }
 

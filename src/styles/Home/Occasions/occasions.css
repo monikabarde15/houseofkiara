@@ -1,0 +1,21 @@
+.hok-occasions {
+  width: 100%;
+}
+
+.hok-occasions-desktop {
+  display: block;
+}
+
+.hok-occasions-mobile {
+  display: none;
+}
+
+@media (max-width: 430px) {
+  .hok-occasions-desktop {
+    display: none;
+  }
+
+  .hok-occasions-mobile {
+    display: block;
+  }
+}

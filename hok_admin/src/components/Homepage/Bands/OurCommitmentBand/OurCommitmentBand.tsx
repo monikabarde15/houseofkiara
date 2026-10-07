@@ -1,15 +1,11 @@
 /* =========================================================
-   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · OUR COMMITMENT BAND (Spec 8.6)
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · OUR COMMITMENT (Spec 8.6)
+   Spec Section 8.6 (v213)
 ========================================================= */
 
 import React, { useState } from 'react';
 import './OurCommitmentBand.css';
-import {
-  CommitmentSettings,
-  CommitmentPill,
-  CommitmentCard,
-  HealthIssue
-} from '../../types/homepage.types';
+import { CommitmentSettings, CommitmentCard, HealthIssue } from '../../types/homepage.types';
 import { Card } from '../../shared/Card/Card';
 import { Field } from '../../shared/Field/Field';
 import { ReadsAsMirror } from '../../shared/ReadsAsMirror/ReadsAsMirror';
@@ -18,11 +14,8 @@ import { IssueStrip } from '../../shared/IssueStrip/IssueStrip';
 import { Deck } from '../../shared/Deck/Deck';
 import { DeckTileItem } from '../../shared/Deck/DeckTile';
 import { Inspector } from '../../shared/Deck/Inspector';
-import {
-  HomepageLineIcon,
-  ICON_NAMES,
-  PlusIcon
-} from '../../shared/icons/HomepageIcons';
+import { HomepageLineIcon, ICON_NAMES } from '../../shared/icons/HomepageIcons';
+import { resolveHomepageTokens } from '../../shared/TokenPicker/TokenPicker';
 
 interface OurCommitmentBandProps {
   settings: CommitmentSettings;
@@ -30,6 +23,7 @@ interface OurCommitmentBandProps {
   onToggleShown: (shown: boolean) => void;
   onChange: (updated: CommitmentSettings) => void;
   issues: HealthIssue[];
+  onNavigateToModule?: (mod: string) => void;
 }
 
 export const OurCommitmentBand: React.FC<OurCommitmentBandProps> = ({
@@ -37,17 +31,19 @@ export const OurCommitmentBand: React.FC<OurCommitmentBandProps> = ({
   isShown,
   onToggleShown,
   onChange,
-  issues
+  issues,
+  onNavigateToModule
 }) => {
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null);
 
-  // Deck items representation for the 4 argument cards
   const deckItems: DeckTileItem[] = settings.cards.map((c, idx) => ({
-    id: c.id || `commit-card-${idx + 1}`,
+    id: `commit-card-${idx + 1}`,
     position: idx + 1,
-    title: c.h || `Card ${idx + 1}`,
-    sub: c.d ? (c.d.length > 50 ? c.d.slice(0, 50) + '…' : c.d) : 'Empty text',
-    badge: c.mob ? undefined : 'DESKTOP ONLY'
+    title: c.h,
+    sub: `${c.ico} · ${c.mob ? 'desktop and app' : 'desktop only'}`,
+    iconName: c.ico,
+    pictureHeight: 62,
+    cornerFlag: !c.mob ? { type: 'off', label: 'DESKTOP ONLY' } : undefined
   }));
 
   const selectedCard =
@@ -55,39 +51,6 @@ export const OurCommitmentBand: React.FC<OurCommitmentBandProps> = ({
       ? settings.cards[selectedCardIndex]
       : null;
 
-  // Handlers for Pills
-  const handleUpdatePill = (index: number, patch: Partial<CommitmentPill>) => {
-    const updated = [...settings.pills];
-    updated[index] = { ...updated[index], ...patch };
-    onChange({ ...settings, pills: updated });
-  };
-
-  const handleMovePill = (index: number, direction: 'up' | 'down') => {
-    const target = direction === 'up' ? index - 1 : index + 1;
-    if (target < 0 || target >= settings.pills.length) return;
-    const updated = [...settings.pills];
-    const temp = updated[index];
-    updated[index] = updated[target];
-    updated[target] = temp;
-    onChange({ ...settings, pills: updated });
-  };
-
-  const handleAddPill = () => {
-    const newPill: CommitmentPill = {
-      id: `pill-${Date.now()}`,
-      l: 'New Pill',
-      u: '/rent',
-      on: true
-    };
-    onChange({ ...settings, pills: [...settings.pills, newPill] });
-  };
-
-  const handleRemovePill = (index: number) => {
-    const updated = settings.pills.filter((_, i) => i !== index);
-    onChange({ ...settings, pills: updated });
-  };
-
-  // Handlers for Cards
   const handleUpdateCard = (index: number, patch: Partial<CommitmentCard>) => {
     const updated = [...settings.cards];
     updated[index] = { ...updated[index], ...patch };
@@ -105,63 +68,96 @@ export const OurCommitmentBand: React.FC<OurCommitmentBandProps> = ({
     setSelectedCardIndex(target);
   };
 
+  const handleRemoveCard = (index: number) => {
+    const updated = settings.cards.filter((_, idx) => idx !== index);
+    onChange({ ...settings, cards: updated });
+    if (selectedCardIndex === index) {
+      setSelectedCardIndex(null);
+    } else if (selectedCardIndex !== null && selectedCardIndex > index) {
+      setSelectedCardIndex(selectedCardIndex - 1);
+    }
+  };
+
+  const handleAddCard = () => {
+    if (settings.cards.length >= 6) return;
+    const newCard: CommitmentCard = {
+      id: `c-${Date.now()}`,
+      ico: 'shield',
+      mob: true,
+      h: 'Circular Fashion Integrity',
+      d: 'Each rental preserves resources and supports authentic Indian craftsmanship.'
+    };
+    const updated = [...settings.cards, newCard];
+    onChange({ ...settings, cards: updated });
+    setSelectedCardIndex(updated.length - 1);
+  };
+
+  const handleUpdatePill = (index: number, patch: { l?: string; u?: string; on?: boolean }) => {
+    const updated = [...settings.pills];
+    updated[index] = { ...updated[index], ...patch };
+    onChange({ ...settings, pills: updated });
+  };
+
+  const handleAddPill = () => {
+    const updated = [...settings.pills, { id: `pill-${Date.now()}`, l: 'New Mode', u: '/mode', on: true }];
+    onChange({ ...settings, pills: updated });
+  };
+
+  const handleRemovePill = (index: number) => {
+    const updated = settings.pills.filter((_, idx) => idx !== index);
+    onChange({ ...settings, pills: updated });
+  };
+
   return (
-    <div className="hok-band-editor hok-our-commitment-band">
-      {/* Band Header Card */}
-      <Card
-        variant="elevated"
-        header={{
-          eyebrow: 'BAND 6 · OUR COMMITMENT',
-          title: 'Our Commitment',
-          meta: isShown ? 'VISIBLE ON STOREFRONT' : 'HIDDEN',
-          status: isShown ? 'live' : 'draft',
-          actions: (
-            <PillToggle
-              options={[
-                { label: 'Show', value: true },
-                { label: 'Hide', value: false }
-              ]}
-              value={isShown}
-              onChange={onToggleShown}
-            />
-          )
-        }}
-      >
-        <p className="hok-band-intro">
-          The sustainability mission statement, circular mode pills, and 4 core value proposition argument cards.
-        </p>
+    <div className="hok-commitment-band">
+      {/* 7. Editor Shell Top */}
+      <div className="hok-hp-editor-heading-row">
+        <h2 className="hok-hp-editor-band-title">Our Commitment</h2>
+        <span className="hok-hp-editor-band-counter">Band 6 of 9</span>
+      </div>
 
-        {issues.length > 0 && (
-          <div className="hok-band-issues">
-            {issues.map((iss, i) => (
-              <IssueStrip
-                key={i}
-                severity={iss.severity}
-                message={iss.message}
-                actionLabel={iss.actionLabel}
-              />
-            ))}
-          </div>
-        )}
-      </Card>
+      <p className="hok-hp-editor-band-desc">
+        The four modes as pills, and the cards that carry the argument. Desktop shows four cards, the app shows three.
+      </p>
 
-      {/* Card 1: Headings & Mission Narrative */}
+      {/* 7.1 Visibility Row */}
+      <div className="hok-hp-visibility-row" id="commit-visibility">
+        <div className="hok-hp-visibility-left">
+          <PillToggle
+            checked={isShown}
+            onChange={onToggleShown}
+            label="Show this band on the homepage"
+          />
+        </div>
+        <span className="hok-hp-visibility-consequence">
+          {isShown
+            ? 'Showing on the live homepage, in position 6.'
+            : 'Hidden. The settings below are kept, so it can come back exactly as it was.'}
+        </span>
+      </div>
+
+      {/* Issues Strip */}
+      {issues.map((iss) => (
+        <IssueStrip
+          key={iss.id}
+          severity={iss.sev}
+          message={iss.msg}
+          doorLabel={iss.doorLabel}
+          onDoorClick={() => iss.door && onNavigateToModule && onNavigateToModule(iss.door)}
+        />
+      ))}
+
+      {/* Card 1 — The words (Spec 8.6.1) */}
       <Card
-        header={{
-          eyebrow: 'BAND HEADINGS & NARRATIVE',
-          title: 'Mission Statement & Paragraph Copy',
-          meta: 'Top text and supporting philosophy'
-        }}
+        id="commit-words-card"
+        title="The words"
       >
-        <div className="hok-commit-words-grid">
+        <div className="hok-com-field-stack">
           <div id="commit-eyebrow">
-            <Field
-              label="Eyebrow"
-              hint="Small caps kicker text"
-            >
+            <Field label="Eyebrow">
               <input
                 type="text"
-                className="hok-input"
+                className="hok-field-input"
                 value={settings.eyebrow}
                 onChange={(e) => onChange({ ...settings, eyebrow: e.target.value })}
                 placeholder="Our Commitment"
@@ -171,278 +167,230 @@ export const OurCommitmentBand: React.FC<OurCommitmentBandProps> = ({
 
           <div id="commit-heading">
             <Field
-              label="Main Heading"
-              hint="Wrap *words in asterisks* for gold italic serif font"
+              label="Heading"
+              hint="A line break starts a new line. Wrap one word in *asterisks* to set it in the italic gold serif, the way the storefront does."
             >
-              <input
-                type="text"
-                className="hok-input"
+              <textarea
+                className="hok-field-textarea"
+                rows={2}
                 value={settings.heading}
                 onChange={(e) => onChange({ ...settings, heading: e.target.value })}
                 placeholder="Fashion that gives *back*"
               />
             </Field>
+            <ReadsAsMirror text={settings.heading} />
           </div>
-        </div>
 
-        <div className="hok-commit-mirror-box">
-          <span className="hok-commit-mirror-label">Live Storefront Heading Preview</span>
-          <ReadsAsMirror
-            eyebrow={settings.eyebrow}
-            heading={settings.heading}
-            className="hok-commit-reads-as"
-          />
-        </div>
-
-        <div className="hok-divider" />
-
-        <div id="commit-body" className="hok-commit-body-grid">
-          <Field
-            label="Desktop Narrative Copy"
-            hint="Full circular fashion manifesto rendered on desktop view"
-          >
-            <textarea
-              className="hok-textarea"
-              rows={3}
+          <div id="commit-body">
+            <Field
+              label="Body"
+              tokenCapable
               value={settings.body}
-              onChange={(e) => onChange({ ...settings, body: e.target.value })}
-              placeholder="Every outfit rented or resold keeps textile waste out of landfill. House of Kaira is building India's most loved circular fashion economy — one outfit at a time."
-            />
-          </Field>
-
-          <Field
-            label="Mobile Condensed Copy"
-            hint="Streamlined paragraph rendered on compact mobile viewports"
-          >
-            <textarea
-              className="hok-textarea"
-              rows={3}
-              value={settings.bodyMob}
-              onChange={(e) => onChange({ ...settings, bodyMob: e.target.value })}
-              placeholder="Every outfit rented or resold keeps textile waste out of landfill. Building India's most loved circular fashion economy — one outfit at a time."
-            />
-          </Field>
-        </div>
-      </Card>
-
-      {/* Card 2: Mode / Impact Pills Row */}
-      <Card
-        header={{
-          eyebrow: 'MODE PILLS ROW',
-          title: 'Mode & Action Pills',
-          meta: `${settings.pills.length} pills configured`,
-          actions: (
-            <button
-              type="button"
-              className="hok-commit-add-pill-btn"
-              onClick={handleAddPill}
-            >
-              <PlusIcon size={11} /> Add Pill
-            </button>
-          )
-        }}
-      >
-        <p className="hok-field-hint" style={{ marginBottom: 14 }}>
-          Horizontal pill bar rendered below the mission narrative to direct customers into primary platform modes.
-        </p>
-
-        <div id="commit-pills" className="hok-commit-pills-table">
-          <div className="hok-commit-pills-header">
-            <span className="hok-commit-col-idx">#</span>
-            <span className="hok-commit-col-lbl">Pill Label</span>
-            <span className="hok-commit-col-url">Target URL</span>
-            <span className="hok-commit-col-vis">Storefront</span>
-            <span className="hok-commit-col-actions">Order</span>
-          </div>
-
-          {settings.pills.map((pill, idx) => (
-            <div key={pill.id} className="hok-commit-pill-row">
-              <span className="hok-commit-col-idx">{idx + 1}</span>
-
-              <div className="hok-commit-col-lbl">
-                <input
-                  type="text"
-                  className="hok-input"
-                  value={pill.l}
-                  onChange={(e) => handleUpdatePill(idx, { l: e.target.value })}
-                  placeholder="e.g. Rent"
-                />
-              </div>
-
-              <div className="hok-commit-col-url">
-                <input
-                  type="text"
-                  className="hok-input"
-                  value={pill.u}
-                  onChange={(e) => handleUpdatePill(idx, { u: e.target.value })}
-                  placeholder="e.g. /rent"
-                />
-              </div>
-
-              <div className="hok-commit-col-vis">
-                <PillToggle
-                  options={[
-                    { label: 'Show', value: true },
-                    { label: 'Hide', value: false }
-                  ]}
-                  value={pill.on}
-                  onChange={(val) => handleUpdatePill(idx, { on: Boolean(val) })}
-                />
-              </div>
-
-              <div className="hok-commit-col-actions">
-                <button
-                  type="button"
-                  className="hok-commit-order-btn"
-                  disabled={idx === 0}
-                  onClick={() => handleMovePill(idx, 'up')}
-                  title="Move Earlier"
-                >
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  className="hok-commit-order-btn"
-                  disabled={idx === settings.pills.length - 1}
-                  onClick={() => handleMovePill(idx, 'down')}
-                  title="Move Later"
-                >
-                  ↓
-                </button>
-                {settings.pills.length > 1 && (
-                  <button
-                    type="button"
-                    className="hok-commit-del-pill-btn"
-                    onClick={() => handleRemovePill(idx)}
-                    title="Remove Pill"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      {/* Card 3: 4 Argument Cards Deck & Inspector */}
-      <Card
-        header={{
-          eyebrow: 'VALUE PROPOSITION',
-          title: '4 Argument Cards',
-          meta: `${settings.cards.length} cards · 4-across deck`
-        }}
-      >
-        <p className="hok-field-hint" style={{ marginBottom: 14 }}>
-          Click any card below to edit its icon, heading statement, description, and mobile visibility.
-        </p>
-
-        <div id="commit-cards" className="hok-commit-deck-wrapper">
-          <Deck
-            arrangement="d4"
-            items={deckItems}
-            selectedIndex={selectedCardIndex}
-            onSelect={(idx) => setSelectedCardIndex(idx)}
-            renderCustomContent={(item, idx) => {
-              const card = settings.cards[idx];
-              return (
-                <div className="hok-commit-tile">
-                  <div className="hok-commit-tile-top">
-                    <div className="hok-commit-tile-icon-box">
-                      <HomepageLineIcon name={card.ico} size={20} />
-                    </div>
-                    {!card.mob && (
-                      <span className="hok-commit-tile-desktop-only">Desktop only</span>
-                    )}
-                  </div>
-                  <div className="hok-commit-tile-head">{card.h || 'Untitled'}</div>
-                  <p className="hok-commit-tile-desc">{card.d}</p>
-                </div>
-              );
-            }}
-          />
-
-          {selectedCard && selectedCardIndex !== null && (
-            <Inspector
-              title={`Edit Card ${selectedCardIndex + 1}: ${selectedCard.h || 'Untitled'}`}
-              position={selectedCardIndex + 1}
-              totalItems={settings.cards.length}
-              onClose={() => setSelectedCardIndex(null)}
-              onMoveUp={selectedCardIndex > 0 ? () => handleMoveCard(selectedCardIndex, 'up') : undefined}
-              onMoveDown={
-                selectedCardIndex < settings.cards.length - 1
-                  ? () => handleMoveCard(selectedCardIndex, 'down')
-                  : undefined
+              onTokenInsert={(tok) =>
+                onChange({
+                  ...settings,
+                  body: settings.body ? `${settings.body} ${tok}` : tok
+                })
               }
             >
-              <div className="hok-commit-inspector-content">
-                <Field
-                  label="Card Icon"
-                  hint="Pick 1 of 16 stroked line icons"
-                >
-                  <div className="hok-commit-icon-selector">
-                    {ICON_NAMES.map((ico) => {
-                      const isSelected = selectedCard.ico === ico;
-                      return (
-                        <button
-                          key={ico}
-                          type="button"
-                          className={`hok-commit-icon-btn ${isSelected ? 'active' : ''}`}
-                          onClick={() => handleUpdateCard(selectedCardIndex, { ico })}
-                          title={ico}
-                        >
-                          <HomepageLineIcon name={ico} size={16} />
-                          <span className="hok-commit-icon-name">{ico}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </Field>
+              <textarea
+                className="hok-field-textarea"
+                rows={3}
+                value={settings.body}
+                onChange={(e) => onChange({ ...settings, body: e.target.value })}
+                placeholder="Every outfit rented or resold keeps textile waste out of landfill..."
+              />
+            </Field>
+          </div>
 
-                <Field
-                  label="Card Heading"
-                  hint="Bold value statement (1–2 sentences)"
-                >
-                  <textarea
-                    className="hok-textarea"
-                    rows={2}
-                    value={selectedCard.h}
-                    onChange={(e) => handleUpdateCard(selectedCardIndex, { h: e.target.value })}
-                    placeholder="Every piece rented is one less outfit the world needed to make."
-                  />
-                </Field>
-
-                <Field
-                  label="Card Description"
-                  hint="Supporting explanation"
-                >
-                  <textarea
-                    className="hok-textarea"
-                    rows={3}
-                    value={selectedCard.d}
-                    onChange={(e) => handleUpdateCard(selectedCardIndex, { d: e.target.value })}
-                    placeholder="At HOK, choosing to rent isn't a compromise — it's a quiet act of intention."
-                  />
-                </Field>
-
-                <Field
-                  label="Mobile Storefront Visibility"
-                  hint="Include this card on compact mobile screens"
-                >
-                  <PillToggle
-                    options={[
-                      { label: 'Show on mobile', value: true },
-                      { label: 'Desktop only', value: false }
-                    ]}
-                    value={selectedCard.mob}
-                    onChange={(val) => handleUpdateCard(selectedCardIndex, { mob: Boolean(val) })}
-                  />
-                </Field>
-              </div>
-            </Inspector>
-          )}
+          <Field
+            label="Body on mobile"
+            tokenCapable
+            value={settings.bodyMob || settings.body}
+            onTokenInsert={(tok) =>
+              onChange({
+                ...settings,
+                bodyMob: settings.bodyMob ? `${settings.bodyMob} ${tok}` : tok
+              })
+            }
+            hint="Blank uses the desktop line."
+          >
+            <textarea
+              className="hok-field-textarea"
+              rows={2}
+              value={settings.bodyMob}
+              onChange={(e) => onChange({ ...settings, bodyMob: e.target.value })}
+              placeholder="Blank uses the desktop line."
+            />
+          </Field>
         </div>
       </Card>
+
+      {/* Card 2 — The mode pills (Spec 8.6.2) */}
+      <div id="commit-pills">
+        <Card
+          title="The mode pills"
+          sub="The row of dots under the body. Each one should go somewhere — a pill that reads like a link and does nothing is worse than no pill."
+        >
+          <div className="hok-com-pills-table">
+            <div className="hok-com-pills-header">
+              <span style={{ width: 60 }}>Shows</span>
+              <span style={{ flex: 1 }}>Label</span>
+              <span style={{ flex: 1.5 }}>Destination</span>
+              <span style={{ width: 70 }}></span>
+            </div>
+
+            {settings.pills.map((pill, idx) => {
+              const hasMissingDest = pill.on && !pill.u.trim();
+              return (
+                <div key={idx} className="hok-com-pill-row">
+                  <div style={{ width: 60 }}>
+                    <PillToggle
+                      checked={pill.on}
+                      onChange={(checked) => handleUpdatePill(idx, { on: checked })}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <input
+                      type="text"
+                      className="hok-field-input"
+                      value={pill.l}
+                      onChange={(e) => handleUpdatePill(idx, { l: e.target.value })}
+                      placeholder="Label"
+                    />
+                  </div>
+                  <div style={{ flex: 1.5 }}>
+                    <input
+                      type="text"
+                      className={`hok-field-input ${hasMissingDest ? 'has-warning' : ''}`}
+                      value={pill.u}
+                      onChange={(e) => handleUpdatePill(idx, { u: e.target.value })}
+                      placeholder="/destination"
+                    />
+                  </div>
+                  <div style={{ width: 70, textAlign: 'right' }}>
+                    <button
+                      type="button"
+                      className="hok-com-pill-remove-btn"
+                      onClick={() => handleRemovePill(idx)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+
+            <button
+              type="button"
+              className="hok-com-add-pill-btn"
+              onClick={handleAddPill}
+            >
+              + Add a pill
+            </button>
+          </div>
+        </Card>
+      </div>
+
+      {/* Card 3 — The cards (Spec 8.6.3) */}
+      <div id="commit-cards">
+        <Card
+          title="The cards"
+          sub="4 on desktop, 3 in the app. The app switch on each card is what decides which ones travel."
+        >
+          <div className="hok-com-deck-wrapper">
+            <Deck
+              arrangement="d4"
+              items={deckItems}
+              selectedIndex={selectedCardIndex}
+              onSelectIndex={setSelectedCardIndex}
+              onMoveEarlier={(idx) => handleMoveCard(idx, 'up')}
+              onMoveLater={(idx) => handleMoveCard(idx, 'down')}
+              onRemove={handleRemoveCard}
+              removeLabel="Remove"
+              onAddTile={handleAddCard}
+              addLabel="Add a card"
+              maxReached={settings.cards.length >= 6}
+            />
+
+            {/* Inspector */}
+            <Inspector
+              kicker={`EDITING CARD ${selectedCardIndex !== null ? selectedCardIndex + 1 : 1}`}
+              itemName={selectedCard ? selectedCard.h : undefined}
+              isOpen={selectedCardIndex !== null && !!selectedCard}
+              emptyText="Pick a card above to edit its headline, body, icon and mobile visibility."
+            >
+              {selectedCard && selectedCardIndex !== null && (
+                <div className="hok-com-inspector-fields">
+                  <Field label="Headline">
+                    <textarea
+                      className="hok-field-textarea"
+                      rows={2}
+                      value={selectedCard.h}
+                      onChange={(e) =>
+                        handleUpdateCard(selectedCardIndex, { h: e.target.value })
+                      }
+                      placeholder="Every piece rented is one less outfit the world needed to make."
+                    />
+                  </Field>
+
+                  <Field
+                    label="Body"
+                    tokenCapable
+                    value={selectedCard.d}
+                    onTokenInsert={(tok) =>
+                      handleUpdateCard(selectedCardIndex, {
+                        d: selectedCard.d ? `${selectedCard.d} ${tok}` : tok
+                      })
+                    }
+                  >
+                    <textarea
+                      className="hok-field-textarea"
+                      rows={3}
+                      value={selectedCard.d}
+                      onChange={(e) =>
+                        handleUpdateCard(selectedCardIndex, { d: e.target.value })
+                      }
+                      placeholder="At HOK, choosing to rent isn't a compromise — it's a quiet act of intention."
+                    />
+                  </Field>
+
+                  <Field
+                    label="Icon"
+                    hint="The storefront draws stroked line icons. There is no emoji anywhere on the page."
+                  >
+                    <div className="hok-com-icon-grid">
+                      {ICON_NAMES.map((ico) => {
+                        const isSelected = selectedCard.ico === ico;
+                        return (
+                          <button
+                            key={ico}
+                            type="button"
+                            className={`hok-com-icon-btn ${isSelected ? 'is-selected' : ''}`}
+                            onClick={() => handleUpdateCard(selectedCardIndex, { ico })}
+                            title={ico}
+                          >
+                            <HomepageLineIcon name={ico} size={14} />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </Field>
+
+                  <PillToggle
+                    checked={selectedCard.mob}
+                    onChange={(checked) =>
+                      handleUpdateCard(selectedCardIndex, { mob: checked })
+                    }
+                    label="Show this card in the app as well as on desktop"
+                    hint="Desktop shows every card. The app has room for fewer, so each card decides for itself."
+                  />
+                </div>
+              )}
+            </Inspector>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };

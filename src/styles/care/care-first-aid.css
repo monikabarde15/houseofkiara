@@ -1,0 +1,231 @@
+/**
+ * House of Kaira - Care Policy "If something happens" Card (Component C4)
+ * Section 5.4, 7.2 of Build Specification 2.0
+ */
+
+@import './care-variables.css';
+
+.rest {
+  max-width: var(--care-card-width);
+  margin: -92px auto 0;
+  position: relative;
+  z-index: 10;
+  background-color: var(--care-warm-white);
+  border: 1px solid var(--care-border);
+  box-shadow: var(--care-shadow-card);
+  padding: 28px 34px 30px;
+  scroll-margin-top: calc(114px + 8px);
+  border-radius: 1px;
+}
+
+.fa-hd {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  padding-bottom: 20px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid var(--care-border-light);
+}
+
+.fa-hd-text {
+  flex: 1 1 380px;
+  min-width: 0;
+}
+
+.fa-hd h2 {
+  font-family: var(--care-font-serif);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--care-charcoal);
+  margin: 0;
+}
+
+.fa-hd h2 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--care-gold);
+}
+
+.fa-hd p {
+  margin: 6px 0 0;
+  font-family: var(--care-font-sans);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--care-ink-3);
+  max-width: 560px;
+}
+
+.btn-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 20px;
+  font-family: var(--care-font-sans);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 1px;
+  text-decoration: none;
+  background-color: var(--care-charcoal);
+  color: var(--care-cream);
+  border: 1px solid var(--care-charcoal);
+  transition: background-color var(--care-transition-fast), border-color var(--care-transition-fast), color var(--care-transition-fast);
+  flex-shrink: 0;
+}
+
+.btn-wa:hover {
+  background-color: #2C251F;
+}
+
+.btn-wa svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+
+/* Steps list */
+.fa-steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.fa-steps::before {
+  content: '';
+  position: absolute;
+  left: 21px;
+  right: calc(33.333% - 21px);
+  top: 21px;
+  height: 1px;
+  background-color: var(--care-gold-light);
+  z-index: 0;
+}
+
+.fa-step {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  padding: 0 30px 0 0;
+  position: relative;
+}
+
+.fa-step:last-child {
+  padding-right: 0;
+}
+
+.fa-n {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--care-gold-light);
+  background-color: var(--care-warm-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--care-font-serif);
+  font-size: 19px;
+  line-height: 1;
+  color: var(--care-gold-deep);
+  position: relative;
+  z-index: 1;
+  transition: background-color var(--care-transition-fast), border-color var(--care-transition-fast), color var(--care-transition-fast);
+}
+
+.fa-k {
+  font-family: var(--care-font-serif);
+  font-size: 21px;
+  line-height: 1.2;
+  color: var(--care-charcoal);
+  margin: 0;
+  transition: color var(--care-transition-fast);
+}
+
+.fa-d {
+  font-family: var(--care-font-sans);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--care-ink-3);
+  margin: 0;
+}
+
+/* Hover effects (Section 5.4) */
+.fa-step:hover .fa-n {
+  background-color: var(--care-charcoal);
+  border-color: var(--care-charcoal);
+  color: var(--care-gold-light);
+}
+
+.fa-step:hover .fa-k {
+  color: var(--care-gold-deep);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 960px) {
+  .rest {
+    margin: -84px 24px 0;
+    padding: 24px 22px 24px;
+  }
+  .fa-step {
+    padding: 0 18px 0 0;
+  }
+  .fa-k {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 760px) {
+  .rest {
+    margin: -64px 14px 0;
+    padding: 22px 18px 22px;
+  }
+  .fa-hd {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .fa-hd h2 {
+    font-size: 25px;
+  }
+  .fa-hd .btn-wa {
+    width: 100%;
+  }
+  .fa-steps {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .fa-steps::before {
+    left: 21px;
+    right: auto;
+    top: 22px;
+    bottom: 44px;
+    width: 1px;
+    height: auto;
+  }
+  .fa-step {
+    grid-template-columns: 42px minmax(0, 1fr);
+    column-gap: 16px;
+    row-gap: 4px;
+    padding: 0 0 18px;
+  }
+  .fa-n {
+    grid-row: 1 / span 2;
+  }
+  .fa-k {
+    padding-top: 9px;
+  }
+}

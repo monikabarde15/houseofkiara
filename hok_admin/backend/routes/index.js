@@ -23,6 +23,7 @@ import siteSettingsRouter from "./siteSettingsRoutes.js";
 import categoryRouter from "./categoryRoutes.js";
 import webProductRouter from "./webProductRoutes.js";
 import consentRouter from "./consentRoutes.js";
+import homepageRouter from "./homepageRoutes.js";
 
 const router = express.Router();
 
@@ -44,6 +45,7 @@ router.use("/customer", customerProfileRouter);
  * =======================================================
  */
 // Scoped Administrative Endpoints
+router.use("/homepage", homepageRouter);
 router.use("/site-settings", siteSettingsRouter);
 router.use("/listers", listerRouter);
 router.use("/designers", designerRouter);

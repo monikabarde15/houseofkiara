@@ -167,7 +167,11 @@
   }
 }
 
-.hok-field-target-highlight {
+.hok-field-target-highlight,
+.hok-field-target-highlight input,
+.hok-field-target-highlight select,
+.hok-field-target-highlight textarea,
+.hok-field-target-highlight .hok-field-input-box {
   animation: hok-gold-pulse 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   border-radius: var(--r);
 }

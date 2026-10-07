@@ -1,0 +1,162 @@
+/**
+ * House of Kaira - Care Policy Intro Line & Sticky Section Bar Styles
+ * Sections 5.5, 5.6, 6.6, 7.3, 7.4 of Build Specification 2.0
+ */
+
+@import './care-variables.css';
+
+/* ==========================================================================
+   C5 Intro Line
+   ========================================================================== */
+.care-intro {
+  max-width: var(--care-intro-width);
+  margin: 72px auto 0;
+  padding: 0 40px;
+  text-align: center;
+  font-family: var(--care-font-serif);
+  font-size: 23px;
+  line-height: 1.6;
+  color: var(--care-ink-2);
+}
+
+.care-intro strong {
+  font-weight: 500;
+  font-style: italic;
+  color: var(--care-charcoal);
+}
+
+@media (max-width: 760px) {
+  .care-intro {
+    margin-top: 52px;
+    padding: 0 18px;
+    font-size: 20px;
+  }
+}
+
+/* ==========================================================================
+   C6 Section Bar
+   ========================================================================== */
+.care-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.secbar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: var(--care-header-height, 114px);
+  z-index: 60;
+  background-color: var(--care-warm-white);
+  border-bottom: 1px solid var(--care-border);
+  transition: box-shadow var(--care-transition-fast), background-color var(--care-transition-fast);
+}
+
+.secbar.stuck {
+  box-shadow: 0 4px 16px rgba(26, 22, 18, 0.05);
+}
+
+.care-wrap .secbar {
+  margin-top: 48px;
+}
+
+.secbar-in {
+  max-width: var(--care-max-width);
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: relative;
+}
+
+.secbar-in::-webkit-scrollbar {
+  display: none;
+}
+
+.secbar-in > :first-child {
+  margin-left: auto;
+}
+
+.secbar-in > :last-child {
+  margin-right: auto;
+}
+
+/* 44px Edge Fades (Section 5.6 & 6.6) */
+.secbar.fade-r .secbar-in {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 44px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 44px), transparent);
+}
+
+.secbar.fade-l .secbar-in {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 44px);
+  mask-image: linear-gradient(to right, transparent, #000 44px);
+}
+
+.secbar.fade-l.fade-r .secbar-in {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 44px, #000 calc(100% - 44px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 44px, #000 calc(100% - 44px), transparent);
+}
+
+/* Section Bar Links */
+.sb-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 17px 0 16px;
+  font-family: var(--care-font-sans);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--care-muted);
+  white-space: nowrap;
+  transition: color var(--care-transition-fast);
+  flex-shrink: 0;
+}
+
+.sb-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background-color: transparent;
+  transition: background-color var(--care-transition-fast);
+}
+
+.sb-link:hover,
+.sb-link.on {
+  color: var(--care-charcoal);
+}
+
+.sb-link.on::after {
+  background-color: var(--care-gold);
+}
+
+/* Padding to first section following secbar */
+.care-wrap .secbar + .mod {
+  padding-top: 80px;
+}
+
+/* Mobile responsive */
+@media (max-width: 760px) {
+  .secbar {
+    top: 58px;
+    margin-top: 32px;
+  }
+  .care-wrap .secbar {
+    margin-top: 36px;
+  }
+  .care-wrap .secbar + .mod {
+    padding-top: 60px;
+  }
+  .secbar-in {
+    padding: 0 18px;
+    gap: 20px;
+  }
+  .secbar-in > :first-child {
+    margin-left: 0;
+  }
+}

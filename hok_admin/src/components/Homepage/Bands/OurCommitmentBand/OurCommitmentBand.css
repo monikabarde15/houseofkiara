@@ -3,302 +3,122 @@
    Spec Section 8.6 (v213)
 ========================================================= */
 
-.hok-our-commitment-band {
+.hok-commitment-band {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
 }
 
-/* Words Grid */
-.hok-commit-words-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 14px;
-}
-
-@media (max-width: 768px) {
-  .hok-commit-words-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.hok-commit-mirror-box {
-  background: var(--cb);
-  border: 1px dashed var(--ibg);
-  border-radius: var(--r);
-  padding: 16px 20px;
-  margin-bottom: 16px;
-}
-
-.hok-commit-mirror-label {
-  display: block;
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-.hok-commit-reads-as {
-  margin: 0;
-}
-
-/* Body Copy Grid */
-.hok-commit-body-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 14px;
-}
-
-@media (max-width: 768px) {
-  .hok-commit-body-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Add Pill Header Action */
-.hok-commit-add-pill-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  background: var(--card);
-  color: var(--charcoal);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.hok-commit-add-pill-btn:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: var(--gold-pale);
-}
-
-/* Pills Table */
-.hok-commit-pills-table {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--ibg);
-  border-radius: var(--r);
-  overflow: hidden;
-  background: var(--card);
-}
-
-.hok-commit-pills-header {
-  display: grid;
-  grid-template-columns: 40px 1.4fr 1.6fr 130px 80px;
-  padding: 10px 14px;
-  background: var(--cb);
-  border-bottom: 1px solid var(--ibg);
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  .hok-commit-pills-header {
-    display: none;
-  }
-}
-
-.hok-commit-pill-row {
-  display: grid;
-  grid-template-columns: 40px 1.4fr 1.6fr 130px 80px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--ibg);
-  align-items: center;
-  gap: 10px;
-}
-
-.hok-commit-pill-row:last-child {
-  border-bottom: none;
-}
-
-@media (max-width: 768px) {
-  .hok-commit-pill-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-}
-
-.hok-commit-col-idx {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-}
-
-.hok-commit-col-actions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.hok-commit-order-btn {
-  background: var(--cb);
-  border: 1px solid var(--ibg);
-  border-radius: 3px;
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  cursor: pointer;
-  color: var(--charcoal);
-  transition: all 0.12s ease;
-}
-
-.hok-commit-order-btn:hover:not(:disabled) {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: var(--gold-pale);
-}
-
-.hok-commit-order-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.hok-commit-del-pill-btn {
-  background: none;
-  border: none;
-  color: var(--terra);
-  font-size: 12px;
-  cursor: pointer;
-  padding: 3px 6px;
-}
-
-/* Argument Cards Deck */
-.hok-commit-deck-wrapper {
-  margin-top: 12px;
-}
-
-.hok-commit-tile {
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  height: 100%;
-}
-
-.hok-commit-tile-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.hok-commit-tile-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--r);
-  background: var(--cb);
-  border: 1px solid var(--ibg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--gold);
-}
-
-.hok-commit-tile-desktop-only {
-  font-family: var(--sans);
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--muted);
-  background: var(--cb);
-  padding: 2px 6px;
-  border-radius: 3px;
-}
-
-.hok-commit-tile-head {
-  font-family: var(--serif);
-  font-size: 13.5px;
-  font-weight: 600;
-  line-height: 1.35;
-  color: var(--charcoal);
-}
-
-.hok-commit-tile-desc {
-  font-family: var(--sans);
-  font-size: 11px;
-  line-height: 1.45;
-  color: var(--muted);
-  margin: 0;
-}
-
-/* Inspector Icon Selector */
-.hok-commit-inspector-content {
+.hok-com-field-stack {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.hok-commit-icon-selector {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 6px;
-  background: var(--cb);
-  padding: 8px;
-  border-radius: var(--r);
-  border: 1px solid var(--ibg);
-}
-
-@media (max-width: 600px) {
-  .hok-commit-icon-selector {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.hok-commit-icon-btn {
+.hok-com-pills-table {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+}
+
+.hok-com-pills-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.855px;
+  color: var(--muted);
+  padding: 0 4px 4px 4px;
+}
+
+.hok-com-pill-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hok-field-input.has-warning {
+  border-color: #F0C9BC !important;
+  background-color: #FDF6F4 !important;
+}
+
+.hok-com-pill-remove-btn {
+  background: none;
+  border: none;
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--terra);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.hok-com-pill-remove-btn:hover {
+  text-decoration: underline;
+}
+
+.hok-com-add-pill-btn {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 5px 10px;
+  background-color: var(--canvas);
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--charcoal);
+  cursor: pointer;
+}
+
+.hok-com-add-pill-btn:hover {
+  background-color: var(--gold-pale);
+  border-color: var(--gold);
+}
+
+.hok-com-deck-wrapper {
+  margin-top: 4px;
+}
+
+.hok-com-inspector-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hok-com-icon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 100%;
+}
+
+.hok-com-icon-btn {
+  width: 29px;
+  height: 29px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 6px 2px;
-  background: var(--card);
-  border: 1px solid var(--ibg);
-  border-radius: 3px;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  background-color: var(--card);
+  color: var(--charcoal);
   cursor: pointer;
+  padding: 0;
   transition: all 0.15s ease;
+}
+
+.hok-com-icon-btn:hover {
+  border-color: var(--gold);
+  background-color: var(--gold-pale);
   color: var(--charcoal);
 }
 
-.hok-commit-icon-btn:hover {
+.hok-com-icon-btn.is-selected {
   border-color: var(--gold);
-  background: var(--gold-pale);
-  color: var(--gold);
-}
-
-.hok-commit-icon-btn.active {
-  border-color: var(--gold);
-  background: var(--gold-pale);
+  background-color: var(--gold-pale);
   color: var(--gold);
   box-shadow: 0 0 0 1px var(--gold);
-}
-
-.hok-commit-icon-name {
-  font-family: var(--sans);
-  font-size: 9px;
-  color: var(--muted);
-}
-
-.hok-commit-icon-btn.active .hok-commit-icon-name {
-  color: var(--gold);
-  font-weight: 600;
 }

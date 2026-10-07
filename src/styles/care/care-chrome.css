@@ -1,0 +1,78 @@
+/**
+ * House of Kaira - Care Policy Page Shell & Global Animation Styles
+ * Sections 3, 5, 9 of Build Specification 2.0
+ */
+
+@import './care-variables.css';
+
+/* Page container: NO overflow-x: hidden to prevent breaking position: sticky */
+.care-page {
+  background-color: var(--care-warm-white);
+  color: var(--care-charcoal);
+  font-family: var(--care-font-sans);
+  min-height: 100vh;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Accessible Keyboard Focus Outline (Section 3 & Section 9) */
+.care-page button:focus-visible,
+.care-page a:focus-visible,
+.care-page input:focus-visible {
+  outline: 2px solid var(--care-gold);
+  outline-offset: 2px;
+}
+
+/* Page Entrance Animations (Section 5 C2) */
+.care-page .enter {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: careEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.care-page .e2 { animation-delay: 0.08s; }
+.care-page .e3 { animation-delay: 0.16s; }
+.care-page .e4 { animation-delay: 0.26s; }
+.care-page .e5 { animation-delay: 0.34s; }
+
+@keyframes careEnter {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Jump Flash Keyframe for Accordion Rows and Panels (Section 3 & 6.5) */
+@keyframes flash {
+  0%, 30% { background-color: var(--care-gold-pale); }
+  100% { background-color: var(--care-cream); }
+}
+
+@keyframes flashbg {
+  0%, 30% { background-color: var(--care-gold-pale); }
+  100% { background-color: transparent; }
+}
+
+.cq.flash .cq-b {
+  animation: flash 2.4s ease;
+}
+
+.ow-grid.flash {
+  animation: flashbg 2.4s ease;
+}
+
+/* Reduced Motion Override (Section 3 & Section 9) */
+@media (prefers-reduced-motion: reduce) {
+  .care-page .enter {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .cq.flash .cq-b,
+  .ow-grid.flash {
+    animation: none !important;
+  }
+}

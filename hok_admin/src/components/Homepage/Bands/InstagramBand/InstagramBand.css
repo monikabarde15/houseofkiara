@@ -1,5 +1,5 @@
 /* =========================================================
-   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · INSTAGRAM BAND CSS
+   HOUSE OF KAIRA · ADMIN PANEL — HOMEPAGE · INSTAGRAM CSS
    Spec Section 8.9 (v213)
 ========================================================= */
 
@@ -7,144 +7,72 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
 }
 
-/* Handle Door Box (One Truth pattern) */
-.hok-insta-handle-door-box {
+.hok-insta-field-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hok-insta-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.hok-insta-handle-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hok-insta-handle-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 18px;
-  background: var(--cb);
-  border: 1px solid var(--ibg);
+  gap: 12px;
+  background-color: var(--canvas);
+  border: 1px solid var(--border);
   border-radius: var(--r);
-  gap: 16px;
+  padding: 8px 12px;
 }
 
-@media (max-width: 768px) {
-  .hok-insta-handle-door-box {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-.hok-insta-handle-left {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.hok-insta-door-tag {
-  font-family: var(--sans);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-}
-
-.hok-insta-door-handle {
-  font-family: var(--sans);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--charcoal);
-  letter-spacing: -0.01em;
-}
-
-.hok-insta-door-sub {
-  font-family: var(--sans);
-  font-size: 11.5px;
-  color: var(--muted);
-}
-
-.hok-insta-door-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.hok-insta-handle-tag {
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 600;
-  color: var(--gold);
-  background: var(--card);
-  border: 1px solid var(--gold-pale);
-  padding: 8px 14px;
-  border-radius: var(--r);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.15s ease;
+  color: var(--charcoal);
 }
 
-.hok-insta-door-btn:hover {
-  background: var(--gold-pale);
-  border-color: var(--gold);
-}
-
-/* Strip Grid */
-.hok-insta-strip-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 14px;
-}
-
-@media (max-width: 768px) {
-  .hok-insta-strip-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Words Grid */
-.hok-insta-words-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 14px;
-}
-
-@media (max-width: 768px) {
-  .hok-insta-words-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.hok-insta-mirror-box {
-  background: var(--cb);
-  border: 1px dashed var(--ibg);
-  border-radius: var(--r);
-  padding: 16px 20px;
-  margin-bottom: 16px;
-}
-
-.hok-insta-mirror-label {
-  display: block;
+.hok-insta-handle-src {
   font-family: var(--sans);
   font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
   color: var(--muted);
-  margin-bottom: 8px;
 }
 
-.hok-insta-reads-as {
+.hok-insta-handle-note {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: var(--muted);
+  font-style: italic;
   margin: 0;
 }
 
-/* Source Selection */
-.hok-insta-source-row {
-  margin-top: 14px;
+.hok-insta-live-feed-note {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 4px 0 0 0;
 }
 
-.hok-insta-feed-warning {
-  margin-top: 12px;
-}
-
-/* Deck */
 .hok-insta-deck-wrapper {
-  margin-top: 12px;
+  margin-top: 4px;
 }
 
-/* Inspector */
-.hok-insta-inspector-content {
+.hok-insta-inspector-fields {
   display: flex;
   flex-direction: column;
   gap: 14px;
