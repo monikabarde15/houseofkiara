@@ -1,0 +1,167 @@
+/**
+ * House of Kaira - Seller Guidelines Closing Band Styles
+ * Section 5.11 & Appendix A of Build Specification 1.0
+ */
+
+.sg-close {
+  background: var(--charcoal);
+  color: #E6DCCD;
+}
+
+.sg-close-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 80px var(--gut);
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 80px;
+  align-items: start;
+}
+
+.sg-close h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.12;
+  color: var(--cream);
+  max-width: 15em;
+}
+
+.sg-close-lead {
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: #D4C5B0;
+  margin-top: 16px;
+  max-width: 34em;
+  font-weight: 300;
+}
+
+.sg-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 22px;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--charcoal);
+  border: 1px solid var(--gold);
+  font-weight: 500;
+}
+
+.btn-gold:hover {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+}
+
+.btn-line {
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid rgba(250, 247, 242, 0.38);
+}
+
+.btn-line:hover {
+  border-color: var(--cream);
+}
+
+/* Agreement Panel */
+.sg-agree {
+  border: 1px solid rgba(212, 197, 176, 0.22);
+  padding: 28px 28px 24px;
+  border-radius: 1px;
+}
+
+.sg-agree h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--cream);
+  line-height: 1.25;
+}
+
+.sg-agree p {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #CDBFAA;
+  margin-top: 10px;
+}
+
+.sg-agree ul {
+  list-style: none;
+  margin-top: 16px;
+  border-top: 1px solid rgba(212, 197, 176, 0.16);
+  padding: 0;
+}
+
+.sg-agree li {
+  border-bottom: 1px solid rgba(212, 197, 176, 0.16);
+}
+
+.sg-agree li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  font-size: 13.5px;
+  color: #E6DCCD;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.sg-agree li a:hover {
+  color: var(--gold-light);
+}
+
+.sg-agree li a svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--gold);
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* Responsive overrides */
+@media (max-width: 900px) {
+  .sg-close-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 44px;
+    padding: 64px var(--gut);
+  }
+}
+
+@media (max-width: 760px) {
+  .sg-close h2 {
+    font-size: 32px;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

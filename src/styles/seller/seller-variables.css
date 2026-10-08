@@ -1,0 +1,42 @@
+/**
+ * House of Kaira - Seller Guidelines Design Variables
+ * Section 3 & Appendix A of Build Specification 1.0
+ */
+
+:root {
+  --hdr-h: 114px;          /* desktop header height */
+  --bar-h: 52px;           /* section bar height */
+  --max: 1180px;
+  --gut: 48px;
+  
+  /* Typography */
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  
+  /* Color Palette */
+  --ink: #4A423A;          /* body copy */
+  --ink-soft: #5A4F46;
+  --muted-ink: #6E6359;    /* small text that must still be readable */
+  --subtle-ink: #8A7F73;   /* hints, meta, secondary */
+  --charcoal: #1A1612;     /* headings, dark backgrounds */
+  --warm-white: #FDFBF7;   /* page background */
+  --cream: #FAF7F2;        /* card backgrounds, tint chapters */
+  --border: #E8E2D8;       /* key structural lines */
+  --border-light: #F0EBE1; /* subtle inner dividers */
+  --gold: #9C7C38;         /* warm antique gold */
+  --gold-deep: #7D632B;
+  --gold-light: #E0C988;   /* secondary gold */
+  --gold-pale: #F4EEDF;    /* highlight wash, search match */
+  --sage: #5F6B58;         /* muted sage green */
+  --sage-deep: #2F392B;    /* deep pine for high contrast on pale */
+  --sage-pale: #E4ECE0;    /* sage wash */
+  --sage-mist: #F4F6F2;
+  --terra-pale: #FCECE8;   /* soft terracotta wash */
+  --terracotta: #A85A44;
+}
+
+@media (max-width: 1199px) {
+  :root {
+    --hdr-h: 61px;         /* phone-style header height */
+  }
+}

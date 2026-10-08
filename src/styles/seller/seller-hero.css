@@ -1,0 +1,248 @@
+/**
+ * House of Kaira - Seller Guidelines Hero & Protection Card Styles
+ * Section 5.1, 5.2, 5.4 & Appendix A of Build Specification 1.0
+ */
+
+/* ---------- breadcrumb ---------- */
+.crumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-ink);
+}
+
+.crumb a {
+  color: var(--muted-ink);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.crumb a:hover {
+  color: var(--charcoal);
+}
+
+.crumb-sep {
+  color: var(--border);
+  user-select: none;
+}
+
+.crumb-current {
+  color: var(--charcoal);
+  font-weight: 500;
+}
+
+/* ---------- hero ---------- */
+.sg-hero {
+  background: var(--cream);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sg-hero .crumb {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 22px var(--gut) 0;
+  background: transparent;
+}
+
+.sg-hero-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 44px var(--gut) 72px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+  gap: 80px;
+  align-items: start;
+}
+
+.sg-hero-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.sg-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--sage);
+  font-weight: 500;
+}
+
+.sg-eyebrow::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--sage);
+  flex-shrink: 0;
+}
+
+.sg-h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 62px;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  color: var(--charcoal);
+  margin: 22px 0 22px;
+}
+
+.sg-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--ink);
+  max-width: 34em;
+  font-weight: 300;
+}
+
+.sg-meta {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 13px;
+  color: var(--muted-ink);
+}
+
+.sg-meta-sep {
+  color: var(--border);
+  user-select: none;
+}
+
+.sg-meta a {
+  color: var(--charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.sg-meta a:hover {
+  text-decoration-color: var(--charcoal);
+}
+
+/* ---------- protection card ---------- */
+.sg-shield {
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--gold);
+  padding: 34px 34px 30px;
+  margin-top: 46px;
+  border-radius: 1px;
+  box-shadow: 0 4px 20px rgba(26, 22, 18, 0.03);
+}
+
+.sg-shield h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.15;
+  color: var(--charcoal);
+}
+
+.sg-shield .sub {
+  font-size: 13.5px;
+  color: var(--muted-ink);
+  margin: 8px 0 16px;
+  line-height: 1.6;
+}
+
+.sg-shield ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sg-shield li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-light);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.sg-shield li svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--sage);
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  margin-top: 4px;
+}
+
+.sg-shield .more {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--sans);
+  text-align: left;
+}
+
+.sg-shield .more:hover {
+  color: var(--gold-deep);
+}
+
+/* ---------- responsive overrides ---------- */
+@media (max-width: 1199px) {
+  .sg-h1 {
+    font-size: 52px;
+  }
+  .sg-hero-inner {
+    gap: 48px;
+  }
+}
+
+@media (max-width: 900px) {
+  .sg-hero-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding-bottom: 56px;
+  }
+  .sg-shield {
+    margin-top: 40px;
+  }
+  .sg-h1 {
+    font-size: 46px;
+  }
+}
+
+@media (max-width: 760px) {
+  .sg-hero .crumb {
+    padding-top: 16px;
+  }
+  .sg-hero-inner {
+    padding-top: 30px;
+  }
+  .sg-h1 {
+    font-size: 40px;
+    margin: 18px 0 16px;
+  }
+  .sg-lead {
+    font-size: 15.5px;
+  }
+  .sg-shield {
+    padding: 26px 20px 22px;
+  }
+  .sg-shield h2 {
+    font-size: 26px;
+  }
+}

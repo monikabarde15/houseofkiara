@@ -1,0 +1,101 @@
+/**
+ * House of Kaira - Seller Guidelines Chapters Layout Styles
+ * Section 4.2 & Appendix A of Build Specification 1.0
+ */
+
+.ch {
+  border-bottom: 1px solid var(--border-light);
+  background: var(--warm-white);
+}
+
+.ch.tint {
+  background: var(--cream);
+}
+
+.ch-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 84px var(--gut);
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 72px;
+}
+
+.ch-head {
+  position: sticky;
+  top: calc(var(--hdr-h) + var(--bar-h) + 36px);
+  align-self: start;
+}
+
+.ch-head h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.1;
+  color: var(--charcoal);
+}
+
+.ch-intro {
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  margin-top: 16px;
+}
+
+.ch-intro a {
+  color: var(--charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+}
+
+.ch-body {
+  min-width: 0;
+}
+
+.ch-feature {
+  margin-bottom: 44px;
+}
+
+/* Responsive chapter layout overrides matching Appendix A */
+@media (max-width: 1199px) {
+  .ch-inner {
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 48px;
+    padding: 72px var(--gut);
+  }
+
+  .ch-head h2 {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 900px) {
+  .ch-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding: 60px var(--gut);
+  }
+
+  .ch-head {
+    position: static;
+  }
+
+  .ch-intro {
+    max-width: 36em;
+  }
+}
+
+@media (max-width: 760px) {
+  .ch-inner {
+    padding: 52px var(--gut);
+  }
+
+  .ch-head h2 {
+    font-size: 31px;
+  }
+
+  .ch-feature {
+    margin-bottom: 34px;
+  }
+}

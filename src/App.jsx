@@ -35,6 +35,7 @@ import PrivacyPage from "./pages/PrivacyPage";
 import CookiePage from "./pages/CookiePage";
 import DepositPage from "./pages/DepositPage";
 import CarePolicyPage from "./pages/CarePolicyPage";
+import SellerGuidelinesPage from "./pages/SellerGuidelinesPage";
 
 export default function App() {
   useEffect(() => {
@@ -104,6 +105,9 @@ export default function App() {
         <Route path="/care" element={<Navigate to="/care-policy" replace />} />
         <Route path="/care-cleaning-damage" element={<Navigate to="/care-policy" replace />} />
         <Route path="/care-damage" element={<Navigate to="/care-policy" replace />} />
+        <Route path="/seller-guidelines" element={<SellerGuidelinesPage />} />
+        <Route path="/seller" element={<Navigate to="/seller-guidelines" replace />} />
+        <Route path="/seller-faq" element={<Navigate to="/seller-guidelines" replace />} />
 
       </Routes>
 

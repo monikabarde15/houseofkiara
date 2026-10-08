@@ -1,0 +1,250 @@
+/**
+ * House of Kaira - Seller Guidelines Visual Features Styles
+ * Sections 5.7, 5.8, 5.9 & Appendix A of Build Specification 1.0
+ */
+
+/* ==========================================================================
+   Feature 1: Two ways to list (Chapter 1)
+   ========================================================================== */
+.ways {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--border);
+  border-radius: 1px;
+}
+
+.way {
+  padding: 32px 34px 26px;
+}
+
+.way.keep {
+  background: var(--sage-mist);
+}
+
+.way.send {
+  background: var(--cream);
+  border-left: 1px solid var(--border);
+}
+
+.way-icon {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.3;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.way.keep .way-icon {
+  stroke: var(--sage);
+}
+
+.way.send .way-icon {
+  stroke: var(--gold-deep);
+}
+
+.way h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.15;
+  color: var(--charcoal);
+  margin: 14px 0 8px;
+}
+
+.way-sum {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.way dl {
+  margin-top: 20px;
+  padding: 0;
+}
+
+.way-row {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  padding: 13px 0;
+  border-top: 1px solid rgba(26, 22, 18, 0.08);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.way-row dt {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+
+.way-row dd {
+  color: var(--ink);
+  margin: 0;
+}
+
+.ways-or {
+  position: absolute;
+  left: 50%;
+  top: 34px;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--muted-ink);
+  z-index: 2;
+  user-select: none;
+}
+
+/* ==========================================================================
+   Feature 2: Five steps (Chapter 2)
+   ========================================================================== */
+.steps {
+  list-style: none;
+  border-left: 1px solid var(--gold-light);
+  margin-left: 15px;
+  padding: 0;
+}
+
+.step {
+  position: relative;
+  padding: 0 0 26px 34px;
+}
+
+.step:last-child {
+  padding-bottom: 0;
+}
+
+.step-n {
+  position: absolute;
+  left: -16px;
+  top: -3px;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  background: var(--warm-white);
+  border: 1px solid var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 17px;
+  color: var(--gold-deep);
+}
+
+.step h3 {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--charcoal);
+  margin: 0;
+}
+
+.step p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin-top: 3px;
+  max-width: 560px;
+}
+
+.step p a {
+  color: var(--charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+}
+
+/* ==========================================================================
+   Feature 3: Care trio (Chapter 4)
+   ========================================================================== */
+.trio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--border);
+  background: var(--warm-white);
+  border-radius: 1px;
+}
+
+.trio > div {
+  padding: 26px 24px 24px;
+}
+
+.trio > div + div {
+  border-left: 1px solid var(--border);
+}
+
+.trio h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--charcoal);
+  margin-bottom: 8px;
+}
+
+.trio p {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+/* ==========================================================================
+   Responsive Overrides for Features
+   ========================================================================== */
+@media (max-width: 1199px) {
+  .way {
+    padding: 28px 26px 22px;
+  }
+}
+
+@media (max-width: 900px) {
+  .trio {
+    grid-template-columns: 1fr;
+  }
+
+  .trio > div + div {
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+}
+
+@media (max-width: 760px) {
+  .ways {
+    grid-template-columns: 1fr;
+  }
+
+  .way.send {
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .ways-or {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin: -17px auto;
+  }
+
+  .way {
+    padding: 26px 20px 20px;
+  }
+
+  .way-row {
+    grid-template-columns: 78px 1fr;
+  }
+}

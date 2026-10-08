@@ -1,28 +1,44 @@
 import React from "react";
 import { FaInstagram } from "react-icons/fa";
 
-import instagramData from "../../../data/home/instagramData";
+import defaultInstagramData from "../../../data/home/instagramData";
 
 import SectionEyebrow from "../../shared/SectionEyebrow";
 import SectionTitle from "../../shared/SectionTitle";
+import { renderHeadline } from "../../../utils/headlineParser";
 
-const MobileInstagram = () => {
+const MobileInstagram = ({ data }) => {
+  const eyebrow = data?.eyebrow || defaultInstagramData.eyebrow;
+  const heading = data?.heading || "As seen on *Instagram*";
+  const posts = data?.posts || defaultInstagramData.posts;
+  const stripMob = data?.stripMob || "Follow us at";
+  const followBtnText = data?.viewAllMob || data?.viewAll?.lbl || "Follow →";
+  const followUrl = data?.viewAll?.url || "https://instagram.com/houseofkaira";
+
   return (
     <section className="mobile-instagram">
       <div className="mobile-instagram-header">
         <div>
-          <SectionEyebrow text={instagramData.eyebrow} />
+          <SectionEyebrow text={eyebrow} />
 
           <SectionTitle>
-            As seen on <em>Instagram</em>
+            {renderHeadline(heading, "em")}
           </SectionTitle>
         </div>
 
-        <button className="mobile-instagram-follow-btn">Follow →</button>
+        <a
+          href={followUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="mobile-instagram-follow-btn"
+          style={{ textDecoration: "none" }}
+        >
+          {followBtnText}
+        </a>
       </div>
 
       <div className="mobile-instagram-grid">
-        {instagramData.posts.map((post) => (
+        {posts.map((post) => (
           <a
             key={post.id}
             href={post.link}
@@ -32,7 +48,7 @@ const MobileInstagram = () => {
           >
             <img
               src={post.image}
-              alt={`Instagram Post ${post.id}`}
+              alt={post.alt || `Instagram Post ${post.id}`}
               className="mobile-instagram-image"
             />
 
@@ -47,9 +63,9 @@ const MobileInstagram = () => {
         <span className="mobile-instagram-line" />
 
         <p className="mobile-instagram-handle">
-          Follow us at{" "}
+          {stripMob}{" "}
           <a
-            href="https://instagram.com/houseofkaira"
+            href={followUrl}
             target="_blank"
             rel="noreferrer"
           >

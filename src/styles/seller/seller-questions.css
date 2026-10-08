@@ -1,0 +1,232 @@
+/**
+ * House of Kaira - Seller Guidelines Questions Styles
+ * Section 5.10 & Appendix A of Build Specification 1.0
+ */
+
+.qs {
+  border-bottom: 1px solid var(--border);
+}
+
+.q {
+  border-top: 1px solid var(--border);
+  transition: background-color 0.2s ease;
+}
+
+.q-btn {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 21px 0;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--sans);
+  color: var(--charcoal);
+}
+
+.q-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  transition: color 0.15s ease;
+}
+
+.q-btn:hover .q-text {
+  color: #000000;
+}
+
+.q-tag {
+  flex-shrink: 0;
+  font-size: 11.5px;
+  line-height: 1.3;
+  padding: 4px 9px;
+  border-radius: 1px;
+  white-space: nowrap;
+  margin-top: 1px;
+}
+
+.q-tag.yes {
+  background: var(--sage-pale);
+  color: var(--sage-deep);
+}
+
+.q-tag.no {
+  background: var(--terra-pale);
+  color: #9A4A2C;
+}
+
+.q-tag.mid {
+  background: var(--gold-pale);
+  color: #6E5428;
+}
+
+.q-ico {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.q-ico::before,
+.q-ico::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7.5px;
+  width: 16px;
+  height: 1px;
+  background: var(--charcoal);
+  transition: transform 0.25s ease;
+}
+
+.q-ico::after {
+  transform: rotate(90deg);
+}
+
+.q.open .q-ico::after {
+  transform: rotate(0deg);
+}
+
+.q-ans {
+  display: none;
+  padding: 0 34px 28px 0;
+}
+
+.q.open .q-ans {
+  display: block;
+}
+
+.q-ans p,
+.q-ans li {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ink);
+}
+
+.q-ans p {
+  max-width: 640px;
+  margin-bottom: 12px;
+}
+
+.q-ans ul {
+  list-style: none;
+  max-width: 640px;
+  margin: 2px 0 14px;
+  padding: 0;
+}
+
+.q-ans li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 6px;
+}
+
+.q-ans li::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 11px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.q-ans strong {
+  font-weight: 500;
+  color: var(--charcoal);
+}
+
+.q-ans a,
+.ch-intro a {
+  color: var(--charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+  transition: text-decoration-thickness 0.15s ease;
+}
+
+.q-ans a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.q-foot {
+  margin-top: 6px;
+}
+
+.q-copy {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--muted-ink);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.q-copy:hover {
+  color: var(--charcoal);
+  text-decoration-color: var(--gold);
+}
+
+/* Toast component style */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 16px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 998;
+  background: var(--charcoal);
+  color: var(--cream);
+  font-size: 13px;
+  padding: 12px 18px;
+  border-radius: 1px;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 760px) {
+  .q-btn {
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    padding: 19px 0;
+  }
+
+  .q-text {
+    flex-basis: calc(100% - 34px);
+    font-size: 15.5px;
+  }
+
+  .q-ico {
+    order: 2;
+  }
+
+  .q-tag {
+    order: 3;
+    margin-top: 0;
+  }
+
+  .q-ans {
+    padding-right: 0;
+  }
+
+  .q-ans p,
+  .q-ans li {
+    font-size: 14.5px;
+  }
+}

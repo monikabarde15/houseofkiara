@@ -39,6 +39,12 @@ const DesktopFooter = () => {
       return true;
     }
     if (
+      link.label === "Seller Guidelines" &&
+      (currentPath === "/seller-guidelines" || currentPath === "/seller" || currentPath === "/seller-faq")
+    ) {
+      return true;
+    }
+    if (
       (link.label === "Care, Cleaning & Damage" ||
         link.label === "Care, Cleaning & Damage Policy" ||
         link.label === "Care & Damage" ||

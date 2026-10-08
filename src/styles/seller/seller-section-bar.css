@@ -1,0 +1,68 @@
+/**
+ * House of Kaira - Seller Guidelines Section Bar Styles
+ * Section 5.5 & Appendix A of Build Specification 1.0
+ */
+
+.sg-bar {
+  position: sticky;
+  top: var(--hdr-h);
+  z-index: 50;
+  background: rgba(255, 254, 251, 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  transition: top 0.2s ease;
+}
+
+.sg-bar-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gut);
+  display: flex;
+  gap: 30px;
+  height: 52px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sg-bar-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.sg-bar a,
+.sg-bar button.sg-bar-tab {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--muted-ink);
+  text-decoration: none;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.sg-bar a:hover,
+.sg-bar button.sg-bar-tab:hover {
+  color: var(--charcoal);
+}
+
+.sg-bar a.on,
+.sg-bar button.sg-bar-tab.on {
+  color: var(--charcoal);
+  border-bottom-color: var(--gold);
+  font-weight: 500;
+}
+
+@media (max-width: 760px) {
+  .sg-bar-inner {
+    gap: 24px;
+  }
+}

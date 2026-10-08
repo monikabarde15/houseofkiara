@@ -303,6 +303,250 @@ export const getOccasionsSectionFromDb = async () => {
   return inMemoryOccasions;
 };
 
+export const DEFAULT_COMMITMENT_SETTINGS = {
+  eyebrow: "Our Commitment",
+  heading: "Fashion that gives *back*",
+  body: "Every outfit rented or resold keeps textile waste out of landfill. House of Kaira is building India's most loved circular fashion economy — one outfit at a time.",
+  bodyMob: "Every outfit rented or resold keeps textile waste out of landfill. Building India's most loved circular fashion economy — one outfit at a time.",
+  pills: [
+    { id: "pill-1", l: "Rent", u: "/main-page?section=rent", on: true },
+    { id: "pill-2", l: "Buy Preloved", u: "/main-page?section=preloved", on: true },
+    { id: "pill-3", l: "Buy New", u: "/main-page?section=new", on: true },
+    { id: "pill-4", l: "List & Sell", u: "/list-your-piece", on: true },
+  ],
+  cards: [
+    {
+      id: "c-1",
+      ico: "recycle",
+      mob: true,
+      h: "Every piece rented is one less outfit the world needed to make.",
+      d: "At HOK, choosing to rent isn't a compromise — it's a quiet act of intention. Wear beautifully, tread lightly.",
+    },
+    {
+      id: "c-2",
+      ico: "gem",
+      mob: true,
+      h: "Designer craftsmanship should be experienced, not just owned.",
+      d: "A Sabyasachi lehenga worn once and loved deeply is worth more than one that sits untouched in a box.",
+    },
+    {
+      id: "c-3",
+      ico: "wallet",
+      mob: false,
+      h: "Your wardrobe is an asset. It's time it started acting like one.",
+      d: "The pieces you wore once still carry value. Sell or rent them out — and let that value come back to you.",
+    },
+    {
+      id: "c-4",
+      ico: "infinity",
+      mob: true,
+      h: "Occasion wear that outlives the occasion.",
+      d: "Every outfit on HOK has a story before you, and a story after. We believe that's not a compromise — that's the point.",
+    },
+  ],
+};
+
+let inMemoryCommitment = {
+  sectionId: "commit",
+  isVisible: true,
+  orderIndex: 6,
+  data: { ...DEFAULT_COMMITMENT_SETTINGS },
+};
+
+export const getCommitmentSectionFromDb = async () => {
+  try {
+    const res = await pool.query(
+      `SELECT section_id, is_visible, order_index, data, updated_at FROM homepage_sections WHERE section_id = 'commit' LIMIT 1`
+    );
+    if (res && res.rows && res.rows.length > 0) {
+      const row = res.rows[0];
+      const data = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+      return {
+        sectionId: row.section_id,
+        isVisible: row.is_visible !== false,
+        orderIndex: row.order_index || 6,
+        data: { ...DEFAULT_COMMITMENT_SETTINGS, ...data },
+      };
+    }
+  } catch (err) {
+    console.warn("DB query note for commitment section, using fallback:", err.message);
+  }
+  return inMemoryCommitment;
+};
+
+export const DEFAULT_DESIGNERS_SETTINGS = {
+  eyebrow: "Trusted Creators",
+  heading: "Featured *Designers*",
+  viewAll: { lbl: "All Designers →", url: "/main-page?section=designers" },
+  layout: "Grid",
+  layoutMob: "Carousel",
+  header: true,
+  headerMob: false,
+  slideKick: "Featured Designer",
+  ctaLbl: "Shop the Collection",
+  showCount: true,
+  countLbl: "{n} PIECES",
+  countLblMob: "{n} pieces available",
+  cap: 6,
+  slots: [
+    "sabyasachi",
+    "manish-malhotra",
+    "tarun-tahiliani",
+    "anita-dongre",
+    "raw-mango",
+    "abu-jani-sandeep",
+    "torani",
+  ],
+};
+
+let inMemoryDesigners = {
+  sectionId: "designers",
+  isVisible: true,
+  orderIndex: 7,
+  data: { ...DEFAULT_DESIGNERS_SETTINGS },
+};
+
+export const getDesignersSectionFromDb = async () => {
+  try {
+    const res = await pool.query(
+      `SELECT section_id, is_visible, order_index, data, updated_at FROM homepage_sections WHERE section_id = 'designers' LIMIT 1`
+    );
+    if (res && res.rows && res.rows.length > 0) {
+      const row = res.rows[0];
+      const data = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+      return {
+        sectionId: row.section_id,
+        isVisible: row.is_visible !== false,
+        orderIndex: row.order_index || 7,
+        data: { ...DEFAULT_DESIGNERS_SETTINGS, ...data },
+      };
+    }
+  } catch (err) {
+    console.warn("DB query note for designers section, using fallback:", err.message);
+  }
+  return inMemoryDesigners;
+};
+
+export const DEFAULT_TESTIMONIALS_SETTINGS = {
+  eyebrow: "Worn, Loved & Shared Across India",
+  heading: "What our customers *say*",
+  layout: "Three across",
+  layoutMob: "Swipe",
+  cards: [
+    {
+      id: "t-1",
+      on: true,
+      name: "Priya Rathore",
+      ini: "PR",
+      city: "Mumbai",
+      ctx: "Rented for a Wedding",
+      stars: 5,
+      src: "Verified order",
+      ref: "HOK-ORD-001",
+      q: "I wore a Sabyasachi lehenga to my sister's wedding for a fraction of the retail price. The quality, the packaging — everything felt completely premium.",
+    },
+    {
+      id: "t-2",
+      on: true,
+      name: "Aishwarya Sharma",
+      ini: "AS",
+      city: "Delhi",
+      ctx: "Sold her Bridal Lehenga",
+      stars: 5,
+      src: "Verified order",
+      ref: "HOK-ORD-002",
+      q: "Listed my wedding lehenga and sold it in 3 days. The process was so smooth and I got a great price.",
+    },
+    {
+      id: "t-3",
+      on: true,
+      name: "Neha Kulkarni",
+      ini: "NK",
+      city: "Pune",
+      ctx: "Regular Renter",
+      stars: 5,
+      src: "Verified order",
+      ref: "HOK-ORD-003",
+      q: "As someone who attends 6–8 weddings a year, HOK is a revelation. The curation is impeccable and delivery is always on time.",
+    },
+  ],
+};
+
+let inMemoryTestimonials = {
+  sectionId: "testi",
+  isVisible: true,
+  orderIndex: 8,
+  data: { ...DEFAULT_TESTIMONIALS_SETTINGS },
+};
+
+export const getTestimonialsSectionFromDb = async () => {
+  try {
+    const res = await pool.query(
+      `SELECT section_id, is_visible, order_index, data, updated_at FROM homepage_sections WHERE section_id = 'testi' LIMIT 1`
+    );
+    if (res && res.rows && res.rows.length > 0) {
+      const row = res.rows[0];
+      const data = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+      return {
+        sectionId: row.section_id,
+        isVisible: row.is_visible !== false,
+        orderIndex: row.order_index || 8,
+        data: { ...DEFAULT_TESTIMONIALS_SETTINGS, ...data },
+      };
+    }
+  } catch (err) {
+    console.warn("DB query note for testimonials section, using fallback:", err.message);
+  }
+  return inMemoryTestimonials;
+};
+
+export const DEFAULT_INSTAGRAM_SETTINGS = {
+  eyebrow: "Our Community",
+  heading: "As seen on *Instagram*",
+  viewAll: { lbl: "Follow on Instagram →", url: "https://instagram.com/house_of_kaira" },
+  viewAllMob: "Follow →",
+  source: "Manual tiles",
+  strip: "Follow our story at",
+  stripMob: "Follow us at",
+  handle: "@house_of_kaira",
+  tiles: [
+    { id: "in-1", alt: "Instagram post 1", url: "https://instagram.com/house_of_kaira", img: "" },
+    { id: "in-2", alt: "Instagram post 2", url: "https://instagram.com/house_of_kaira", img: "" },
+    { id: "in-3", alt: "Instagram post 3", url: "https://instagram.com/house_of_kaira", img: "" },
+    { id: "in-4", alt: "Instagram post 4", url: "https://instagram.com/house_of_kaira", img: "" },
+    { id: "in-5", alt: "Instagram post 5", url: "https://instagram.com/house_of_kaira", img: "" },
+    { id: "in-6", alt: "Instagram post 6", url: "https://instagram.com/house_of_kaira", img: "" },
+  ],
+};
+
+let inMemoryInstagram = {
+  sectionId: "insta",
+  isVisible: true,
+  orderIndex: 9,
+  data: { ...DEFAULT_INSTAGRAM_SETTINGS },
+};
+
+export const getInstagramSectionFromDb = async () => {
+  try {
+    const res = await pool.query(
+      `SELECT section_id, is_visible, order_index, data, updated_at FROM homepage_sections WHERE section_id = 'insta' LIMIT 1`
+    );
+    if (res && res.rows && res.rows.length > 0) {
+      const row = res.rows[0];
+      const data = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+      return {
+        sectionId: row.section_id,
+        isVisible: row.is_visible !== false,
+        orderIndex: row.order_index || 9,
+        data: { ...DEFAULT_INSTAGRAM_SETTINGS, ...data },
+      };
+    }
+  } catch (err) {
+    console.warn("DB query note for instagram section, using fallback:", err.message);
+  }
+  return inMemoryInstagram;
+};
+
 // GET /api/homepage/hero - Public storefront endpoint
 export const getHeroSection = async (req, res) => {
   try {
@@ -492,15 +736,153 @@ export const getOccasionsSection = async (req, res) => {
   }
 };
 
+// GET /api/homepage/commitment - Public storefront endpoint
+export const getCommitmentSection = async (req, res) => {
+  try {
+    const commitmentRecord = await getCommitmentSectionFromDb();
+    const data = commitmentRecord.data || DEFAULT_COMMITMENT_SETTINGS;
+
+    res.json({
+      success: true,
+      data: {
+        sectionId: "commit",
+        isVisible: commitmentRecord.isVisible,
+        order: commitmentRecord.orderIndex,
+        eyebrow: data.eyebrow || DEFAULT_COMMITMENT_SETTINGS.eyebrow,
+        heading: data.heading || DEFAULT_COMMITMENT_SETTINGS.heading,
+        body: data.body || DEFAULT_COMMITMENT_SETTINGS.body,
+        bodyMob: data.bodyMob || data.body || DEFAULT_COMMITMENT_SETTINGS.bodyMob,
+        pills: data.pills || DEFAULT_COMMITMENT_SETTINGS.pills,
+        cards: data.cards || DEFAULT_COMMITMENT_SETTINGS.cards,
+        settings: data, // Raw CommitmentSettings for CMS synchronization
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching commitment section:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// GET /api/homepage/designers - Public storefront endpoint
+export const getDesignersSection = async (req, res) => {
+  try {
+    const designersRecord = await getDesignersSectionFromDb();
+    const data = designersRecord.data || DEFAULT_DESIGNERS_SETTINGS;
+
+    res.json({
+      success: true,
+      data: {
+        sectionId: "designers",
+        isVisible: designersRecord.isVisible,
+        order: designersRecord.orderIndex,
+        eyebrow: data.eyebrow || DEFAULT_DESIGNERS_SETTINGS.eyebrow,
+        heading: data.heading || DEFAULT_DESIGNERS_SETTINGS.heading,
+        viewAll: {
+          lbl: data.viewAll?.lbl || DEFAULT_DESIGNERS_SETTINGS.viewAll.lbl,
+          url: data.viewAll?.url || DEFAULT_DESIGNERS_SETTINGS.viewAll.url,
+        },
+        layout: data.layout || DEFAULT_DESIGNERS_SETTINGS.layout,
+        layoutMob: data.layoutMob || DEFAULT_DESIGNERS_SETTINGS.layoutMob,
+        header: data.header !== false,
+        headerMob: data.headerMob === true,
+        slideKick: data.slideKick || DEFAULT_DESIGNERS_SETTINGS.slideKick,
+        ctaLbl: data.ctaLbl || DEFAULT_DESIGNERS_SETTINGS.ctaLbl,
+        showCount: data.showCount !== false,
+        countLbl: data.countLbl || DEFAULT_DESIGNERS_SETTINGS.countLbl,
+        countLblMob: data.countLblMob || DEFAULT_DESIGNERS_SETTINGS.countLblMob,
+        cap: typeof data.cap === "number" ? data.cap : DEFAULT_DESIGNERS_SETTINGS.cap,
+        slots: Array.isArray(data.slots) ? data.slots : DEFAULT_DESIGNERS_SETTINGS.slots,
+        settings: data, // Raw DesignersSettings for CMS synchronization
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching designers section:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// GET /api/homepage/testimonials - Public storefront endpoint
+export const getTestimonialsSection = async (req, res) => {
+  try {
+    const testiRecord = await getTestimonialsSectionFromDb();
+    const data = testiRecord.data || DEFAULT_TESTIMONIALS_SETTINGS;
+
+    res.json({
+      success: true,
+      data: {
+        sectionId: "testi",
+        isVisible: testiRecord.isVisible,
+        order: testiRecord.orderIndex,
+        eyebrow: data.eyebrow || DEFAULT_TESTIMONIALS_SETTINGS.eyebrow,
+        heading: data.heading || DEFAULT_TESTIMONIALS_SETTINGS.heading,
+        layout: data.layout || DEFAULT_TESTIMONIALS_SETTINGS.layout,
+        layoutMob: data.layoutMob || DEFAULT_TESTIMONIALS_SETTINGS.layoutMob,
+        cards: Array.isArray(data.cards) ? data.cards : DEFAULT_TESTIMONIALS_SETTINGS.cards,
+        settings: data, // Raw TestimonialsSettings for CMS synchronization
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching testimonials section:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// GET /api/homepage/instagram - Public storefront endpoint
+export const getInstagramSection = async (req, res) => {
+  try {
+    const instaRecord = await getInstagramSectionFromDb();
+    const data = instaRecord.data || DEFAULT_INSTAGRAM_SETTINGS;
+
+    res.json({
+      success: true,
+      data: {
+        sectionId: "insta",
+        isVisible: instaRecord.isVisible,
+        order: instaRecord.orderIndex,
+        eyebrow: data.eyebrow || DEFAULT_INSTAGRAM_SETTINGS.eyebrow,
+        heading: data.heading || DEFAULT_INSTAGRAM_SETTINGS.heading,
+        viewAll: {
+          lbl: data.viewAll?.lbl ?? DEFAULT_INSTAGRAM_SETTINGS.viewAll.lbl,
+          url: data.viewAll?.url || DEFAULT_INSTAGRAM_SETTINGS.viewAll.url,
+        },
+        viewAllMob: data.viewAllMob || DEFAULT_INSTAGRAM_SETTINGS.viewAllMob,
+        source: data.source || DEFAULT_INSTAGRAM_SETTINGS.source,
+        strip: data.strip || DEFAULT_INSTAGRAM_SETTINGS.strip,
+        stripMob: data.stripMob || DEFAULT_INSTAGRAM_SETTINGS.stripMob,
+        handle: data.handle || DEFAULT_INSTAGRAM_SETTINGS.handle,
+        tiles: Array.isArray(data.tiles) ? data.tiles : DEFAULT_INSTAGRAM_SETTINGS.tiles,
+        settings: data, // Raw InstagramSettings for CMS synchronization
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching instagram section:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // GET /api/homepage - Admin endpoint to retrieve all homepage data
 export const getHomepageData = async (req, res) => {
   try {
-    const [heroRecord, hiwRecord, featuredRecord, categoryRecord, occasionsRecord] = await Promise.all([
+    const [
+      heroRecord,
+      hiwRecord,
+      featuredRecord,
+      categoryRecord,
+      occasionsRecord,
+      commitmentRecord,
+      designersRecord,
+      testiRecord,
+      instaRecord,
+    ] = await Promise.all([
       getHeroSectionFromDb(),
       getHiwSectionFromDb(),
       getFeaturedSectionFromDb(),
       getCategorySectionFromDb(),
       getOccasionsSectionFromDb(),
+      getCommitmentSectionFromDb(),
+      getDesignersSectionFromDb(),
+      getTestimonialsSectionFromDb(),
+      getInstagramSectionFromDb(),
     ]);
     res.json({
       success: true,
@@ -510,18 +892,30 @@ export const getHomepageData = async (req, res) => {
         featured: featuredRecord.data,
         category: categoryRecord.data,
         occasions: occasionsRecord.data,
+        commit: commitmentRecord.data,
+        designers: designersRecord.data,
+        testi: testiRecord.data,
+        insta: instaRecord.data,
         vis: {
           hero: heroRecord.isVisible,
           hiw: hiwRecord.isVisible,
           featured: featuredRecord.isVisible,
           category: categoryRecord.isVisible,
           occasions: occasionsRecord.isVisible,
+          commit: commitmentRecord.isVisible,
+          designers: designersRecord.isVisible,
+          testi: testiRecord.isVisible,
+          insta: instaRecord.isVisible,
         },
         heroOrder: heroRecord.orderIndex,
         hiwOrder: hiwRecord.orderIndex,
         featuredOrder: featuredRecord.orderIndex,
         categoryOrder: categoryRecord.orderIndex,
         occasionsOrder: occasionsRecord.orderIndex,
+        commitOrder: commitmentRecord.orderIndex,
+        designersOrder: designersRecord.orderIndex,
+        testiOrder: testiRecord.orderIndex,
+        instaOrder: instaRecord.orderIndex,
       },
     });
   } catch (error) {
@@ -784,6 +1178,247 @@ export const updateOccasionsSection = async (req, res) => {
   }
 };
 
+// PUT /api/homepage/commitment - Protected Admin endpoint to update Commitment section
+export const updateCommitmentSection = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const commitmentSettings = body.commit || body.commitment || (body.heading || body.eyebrow || body.cards ? body : body.settings) || {};
+    const isVisible = typeof body.isVisible === "boolean" ? body.isVisible : typeof body.isShown === "boolean" ? body.isShown : inMemoryCommitment.isVisible;
+    const orderIndex = typeof body.order === "number" ? body.order : typeof body.orderIndex === "number" ? body.orderIndex : inMemoryCommitment.orderIndex;
+
+    const currentRecord = await getCommitmentSectionFromDb();
+    const updatedData = {
+      ...currentRecord.data,
+      ...commitmentSettings,
+    };
+
+    inMemoryCommitment = {
+      sectionId: "commit",
+      isVisible,
+      orderIndex,
+      data: updatedData,
+    };
+
+    try {
+      const id = generateObjectId();
+      await pool.query(
+        `INSERT INTO homepage_sections (_id, section_id, is_visible, order_index, data, updated_at)
+         VALUES ($1, 'commit', $2, $3, $4, NOW())
+         ON CONFLICT (section_id)
+         DO UPDATE SET is_visible = $2, order_index = $3, data = $4, updated_at = NOW()`,
+        [id, isVisible, orderIndex, JSON.stringify(updatedData)]
+      );
+    } catch (dbErr) {
+      console.warn("DB save note for commitment section, saved to memory:", dbErr.message);
+    }
+
+    res.json({
+      success: true,
+      message: "Our Commitment section updated successfully",
+      data: {
+        sectionId: "commit",
+        isVisible,
+        order: orderIndex,
+        settings: updatedData,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating commitment section:", error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// PUT /api/homepage/designers - Protected Admin endpoint to update Designers section
+export const updateDesignersSection = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const designersSettings =
+      body.designers ||
+      (body.heading || body.eyebrow || body.slots ? body : body.settings) ||
+      {};
+    const isVisible =
+      typeof body.isVisible === "boolean"
+        ? body.isVisible
+        : typeof body.isShown === "boolean"
+        ? body.isShown
+        : inMemoryDesigners.isVisible;
+    const orderIndex =
+      typeof body.order === "number"
+        ? body.order
+        : typeof body.orderIndex === "number"
+        ? body.orderIndex
+        : inMemoryDesigners.orderIndex;
+
+    const currentRecord = await getDesignersSectionFromDb();
+    const updatedData = {
+      ...currentRecord.data,
+      ...designersSettings,
+    };
+
+    inMemoryDesigners = {
+      sectionId: "designers",
+      isVisible,
+      orderIndex,
+      data: updatedData,
+    };
+
+    try {
+      const id = generateObjectId();
+      await pool.query(
+        `INSERT INTO homepage_sections (_id, section_id, is_visible, order_index, data, updated_at)
+         VALUES ($1, 'designers', $2, $3, $4, NOW())
+         ON CONFLICT (section_id)
+         DO UPDATE SET is_visible = $2, order_index = $3, data = $4, updated_at = NOW()`,
+        [id, isVisible, orderIndex, JSON.stringify(updatedData)]
+      );
+    } catch (dbErr) {
+      console.warn("DB save note for designers section, saved to memory:", dbErr.message);
+    }
+
+    res.json({
+      success: true,
+      message: "Featured Designers section updated successfully",
+      data: {
+        sectionId: "designers",
+        isVisible,
+        order: orderIndex,
+        settings: updatedData,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating designers section:", error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// PUT /api/homepage/testimonials - Protected Admin endpoint to update Testimonials section
+export const updateTestimonialsSection = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const testimonialsSettings =
+      body.testi ||
+      body.testimonials ||
+      (body.heading || body.eyebrow || body.cards ? body : body.settings) ||
+      {};
+    const isVisible =
+      typeof body.isVisible === "boolean"
+        ? body.isVisible
+        : typeof body.isShown === "boolean"
+        ? body.isShown
+        : inMemoryTestimonials.isVisible;
+    const orderIndex =
+      typeof body.order === "number"
+        ? body.order
+        : typeof body.orderIndex === "number"
+        ? body.orderIndex
+        : inMemoryTestimonials.orderIndex;
+
+    const currentRecord = await getTestimonialsSectionFromDb();
+    const updatedData = {
+      ...currentRecord.data,
+      ...testimonialsSettings,
+    };
+
+    inMemoryTestimonials = {
+      sectionId: "testi",
+      isVisible,
+      orderIndex,
+      data: updatedData,
+    };
+
+    try {
+      const id = generateObjectId();
+      await pool.query(
+        `INSERT INTO homepage_sections (_id, section_id, is_visible, order_index, data, updated_at)
+         VALUES ($1, 'testi', $2, $3, $4, NOW())
+         ON CONFLICT (section_id)
+         DO UPDATE SET is_visible = $2, order_index = $3, data = $4, updated_at = NOW()`,
+        [id, isVisible, orderIndex, JSON.stringify(updatedData)]
+      );
+    } catch (dbErr) {
+      console.warn("DB save note for testimonials section, saved to memory:", dbErr.message);
+    }
+
+    res.json({
+      success: true,
+      message: "Testimonials section updated successfully",
+      data: {
+        sectionId: "testi",
+        isVisible,
+        order: orderIndex,
+        settings: updatedData,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating testimonials section:", error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// PUT /api/homepage/instagram - Protected Admin endpoint to update Instagram section
+export const updateInstagramSection = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const instagramSettings =
+      body.insta ||
+      body.instagram ||
+      (body.heading || body.eyebrow || body.tiles ? body : body.settings) ||
+      {};
+    const isVisible =
+      typeof body.isVisible === "boolean"
+        ? body.isVisible
+        : typeof body.isShown === "boolean"
+        ? body.isShown
+        : inMemoryInstagram.isVisible;
+    const orderIndex =
+      typeof body.order === "number"
+        ? body.order
+        : typeof body.orderIndex === "number"
+        ? body.orderIndex
+        : inMemoryInstagram.orderIndex;
+
+    const currentRecord = await getInstagramSectionFromDb();
+    const updatedData = {
+      ...currentRecord.data,
+      ...instagramSettings,
+    };
+
+    inMemoryInstagram = {
+      sectionId: "insta",
+      isVisible,
+      orderIndex,
+      data: updatedData,
+    };
+
+    try {
+      const id = generateObjectId();
+      await pool.query(
+        `INSERT INTO homepage_sections (_id, section_id, is_visible, order_index, data, updated_at)
+         VALUES ($1, 'insta', $2, $3, $4, NOW())
+         ON CONFLICT (section_id)
+         DO UPDATE SET is_visible = $2, order_index = $3, data = $4, updated_at = NOW()`,
+        [id, isVisible, orderIndex, JSON.stringify(updatedData)]
+      );
+    } catch (dbErr) {
+      console.warn("DB save note for instagram section, saved to memory:", dbErr.message);
+    }
+
+    res.json({
+      success: true,
+      message: "Instagram section updated successfully",
+      data: {
+        sectionId: "insta",
+        isVisible,
+        order: orderIndex,
+        settings: updatedData,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating instagram section:", error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 // PUT /api/homepage - Admin endpoint to publish entire homepage / registry
 export const updateHomepage = async (req, res) => {
   try {
@@ -972,6 +1607,154 @@ export const updateHomepage = async (req, res) => {
       }
     }
 
+    // 6. Process Commitment Band
+    if (registry.commit) {
+      const commitmentSettings = registry.commit;
+      const isCommitVisible = registry.vis?.commit !== false;
+      let commitOrderIndex = 6;
+      if (Array.isArray(registry.bands)) {
+        const idx = registry.bands.findIndex((b) => b.id === "commit");
+        if (idx !== -1) commitOrderIndex = idx + 1;
+      }
+
+      const currentCommitRecord = await getCommitmentSectionFromDb();
+      const updatedCommitData = {
+        ...currentCommitRecord.data,
+        ...commitmentSettings,
+      };
+
+      inMemoryCommitment = {
+        sectionId: "commit",
+        isVisible: isCommitVisible,
+        orderIndex: commitOrderIndex,
+        data: updatedCommitData,
+      };
+
+      try {
+        const id = generateObjectId();
+        await pool.query(
+          `INSERT INTO homepage_sections (_id, section_id, is_visible, order_index, data, updated_at)
+           VALUES ($1, 'commit', $2, $3, $4, NOW())
+           ON CONFLICT (section_id)
+           DO UPDATE SET is_visible = $2, order_index = $3, data = $4, updated_at = NOW()`,
+          [id, isCommitVisible, commitOrderIndex, JSON.stringify(updatedCommitData)]
+        );
+      } catch (dbErr) {
+        console.warn("DB save note for commitment homepage publish, saved to memory:", dbErr.message);
+      }
+    }
+
+    // 7. Process Featured Designers Band
+    if (registry.designers) {
+      const designersSettings = registry.designers;
+      const isDesignersVisible = registry.vis?.designers !== false;
+      let designersOrderIndex = 7;
+      if (Array.isArray(registry.bands)) {
+        const idx = registry.bands.findIndex((b) => b.id === "designers");
+        if (idx !== -1) designersOrderIndex = idx + 1;
+      }
+
+      const currentDesignersRecord = await getDesignersSectionFromDb();
+      const updatedDesignersData = {
+        ...currentDesignersRecord.data,
+        ...designersSettings,
+      };
+
+      inMemoryDesigners = {
+        sectionId: "designers",
+        isVisible: isDesignersVisible,
+        orderIndex: designersOrderIndex,
+        data: updatedDesignersData,
+      };
+
+      try {
+        const id = generateObjectId();
+        await pool.query(
+          `INSERT INTO homepage_sections (_id, section_id, is_visible, order_index, data, updated_at)
+           VALUES ($1, 'designers', $2, $3, $4, NOW())
+           ON CONFLICT (section_id)
+           DO UPDATE SET is_visible = $2, order_index = $3, data = $4, updated_at = NOW()`,
+          [id, isDesignersVisible, designersOrderIndex, JSON.stringify(updatedDesignersData)]
+        );
+      } catch (dbErr) {
+        console.warn("DB save note for designers homepage publish, saved to memory:", dbErr.message);
+      }
+    }
+
+    // 8. Process Testimonials Band
+    if (registry.testi) {
+      const testimonialsSettings = registry.testi;
+      const isTestiVisible = registry.vis?.testi !== false;
+      let testiOrderIndex = 8;
+      if (Array.isArray(registry.bands)) {
+        const idx = registry.bands.findIndex((b) => b.id === "testi");
+        if (idx !== -1) testiOrderIndex = idx + 1;
+      }
+
+      const currentTestiRecord = await getTestimonialsSectionFromDb();
+      const updatedTestiData = {
+        ...currentTestiRecord.data,
+        ...testimonialsSettings,
+      };
+
+      inMemoryTestimonials = {
+        sectionId: "testi",
+        isVisible: isTestiVisible,
+        orderIndex: testiOrderIndex,
+        data: updatedTestiData,
+      };
+
+      try {
+        const id = generateObjectId();
+        await pool.query(
+          `INSERT INTO homepage_sections (_id, section_id, is_visible, order_index, data, updated_at)
+           VALUES ($1, 'testi', $2, $3, $4, NOW())
+           ON CONFLICT (section_id)
+           DO UPDATE SET is_visible = $2, order_index = $3, data = $4, updated_at = NOW()`,
+          [id, isTestiVisible, testiOrderIndex, JSON.stringify(updatedTestiData)]
+        );
+      } catch (dbErr) {
+        console.warn("DB save note for testimonials homepage publish, saved to memory:", dbErr.message);
+      }
+    }
+
+    // 9. Process Instagram Band
+    if (registry.insta) {
+      const instagramSettings = registry.insta;
+      const isInstaVisible = registry.vis?.insta !== false;
+      let instaOrderIndex = 9;
+      if (Array.isArray(registry.bands)) {
+        const idx = registry.bands.findIndex((b) => b.id === "insta");
+        if (idx !== -1) instaOrderIndex = idx + 1;
+      }
+
+      const currentInstaRecord = await getInstagramSectionFromDb();
+      const updatedInstaData = {
+        ...currentInstaRecord.data,
+        ...instagramSettings,
+      };
+
+      inMemoryInstagram = {
+        sectionId: "insta",
+        isVisible: isInstaVisible,
+        orderIndex: instaOrderIndex,
+        data: updatedInstaData,
+      };
+
+      try {
+        const id = generateObjectId();
+        await pool.query(
+          `INSERT INTO homepage_sections (_id, section_id, is_visible, order_index, data, updated_at)
+           VALUES ($1, 'insta', $2, $3, $4, NOW())
+           ON CONFLICT (section_id)
+           DO UPDATE SET is_visible = $2, order_index = $3, data = $4, updated_at = NOW()`,
+          [id, isInstaVisible, instaOrderIndex, JSON.stringify(updatedInstaData)]
+        );
+      } catch (dbErr) {
+        console.warn("DB save note for instagram homepage publish, saved to memory:", dbErr.message);
+      }
+    }
+
     res.json({
       success: true,
       message: "Homepage published successfully",
@@ -981,12 +1764,20 @@ export const updateHomepage = async (req, res) => {
         featured: inMemoryFeatured.data,
         category: inMemoryCategory.data,
         occasions: inMemoryOccasions.data,
+        commit: inMemoryCommitment.data,
+        designers: inMemoryDesigners.data,
+        testi: inMemoryTestimonials.data,
+        insta: inMemoryInstagram.data,
         vis: {
           hero: inMemoryHero.isVisible,
           hiw: inMemoryHiw.isVisible,
           featured: inMemoryFeatured.isVisible,
           category: inMemoryCategory.isVisible,
           occasions: inMemoryOccasions.isVisible,
+          commit: inMemoryCommitment.isVisible,
+          designers: inMemoryDesigners.isVisible,
+          testi: inMemoryTestimonials.isVisible,
+          insta: inMemoryInstagram.isVisible,
         },
       },
     });

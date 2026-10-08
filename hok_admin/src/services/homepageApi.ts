@@ -6,6 +6,10 @@ import {
   FeaturedPiecesSettings,
   CategorySettings,
   OccasionsSettings,
+  CommitmentSettings,
+  DesignersSettings,
+  TestimonialsSettings,
+  InstagramSettings,
 } from "../components/Homepage/types/homepage.types";
 
 export interface HomepageApiResponse {
@@ -14,12 +18,20 @@ export interface HomepageApiResponse {
   featured?: FeaturedPiecesSettings;
   category?: CategorySettings;
   occasions?: OccasionsSettings;
+  commit?: CommitmentSettings;
+  designers?: DesignersSettings;
+  testi?: TestimonialsSettings;
+  insta?: InstagramSettings;
   vis: {
     hero: boolean;
     hiw?: boolean;
     featured?: boolean;
     category?: boolean;
     occasions?: boolean;
+    commit?: boolean;
+    designers?: boolean;
+    testi?: boolean;
+    insta?: boolean;
     [key: string]: boolean;
   };
   heroOrder?: number;
@@ -27,6 +39,10 @@ export interface HomepageApiResponse {
   featuredOrder?: number;
   categoryOrder?: number;
   occasionsOrder?: number;
+  commitOrder?: number;
+  designersOrder?: number;
+  testiOrder?: number;
+  instaOrder?: number;
 }
 
 export const getHomepageData = async (): Promise<HomepageApiResponse> => {
@@ -115,6 +131,74 @@ export const updateOccasionsSection = async (
   const res = await apiRequest("/homepage/occasions", {
     method: "PUT",
     body: JSON.stringify({ occasions, isVisible, order }),
+  });
+  return res.data;
+};
+
+export const getCommitmentSection = async () => {
+  const res = await apiRequest("/homepage/commitment");
+  return res.data;
+};
+
+export const updateCommitmentSection = async (
+  commit: Partial<CommitmentSettings>,
+  isVisible?: boolean,
+  order?: number
+) => {
+  const res = await apiRequest("/homepage/commitment", {
+    method: "PUT",
+    body: JSON.stringify({ commit, isVisible, order }),
+  });
+  return res.data;
+};
+
+export const getDesignersSection = async () => {
+  const res = await apiRequest("/homepage/designers");
+  return res.data;
+};
+
+export const updateDesignersSection = async (
+  designers: Partial<DesignersSettings>,
+  isVisible?: boolean,
+  order?: number
+) => {
+  const res = await apiRequest("/homepage/designers", {
+    method: "PUT",
+    body: JSON.stringify({ designers, isVisible, order }),
+  });
+  return res.data;
+};
+
+export const getTestimonialsSection = async () => {
+  const res = await apiRequest("/homepage/testimonials");
+  return res.data;
+};
+
+export const updateTestimonialsSection = async (
+  testi: Partial<TestimonialsSettings>,
+  isVisible?: boolean,
+  order?: number
+) => {
+  const res = await apiRequest("/homepage/testimonials", {
+    method: "PUT",
+    body: JSON.stringify({ testi, isVisible, order }),
+  });
+  return res.data;
+};
+
+export const getInstagramSection = async () => {
+  const res = await apiRequest("/homepage/instagram");
+  return res.data;
+};
+
+export const updateInstagramSection = async (
+  insta: Partial<InstagramSettings>,
+  isVisible?: boolean,
+  order?: number
+) => {
+  const res = await apiRequest("/homepage/instagram", {
+    method: "PUT",
+    body: JSON.stringify({ insta, isVisible, order }),
   });
   return res.data;
 };

@@ -5,12 +5,20 @@ import {
   getFeaturedSection,
   getCategorySection,
   getOccasionsSection,
+  getCommitmentSection,
+  getDesignersSection,
+  getTestimonialsSection,
+  getInstagramSection,
   getHomepageData,
   updateHeroSection,
   updateHiwSection,
   updateFeaturedSection,
   updateCategorySection,
   updateOccasionsSection,
+  updateCommitmentSection,
+  updateDesignersSection,
+  updateTestimonialsSection,
+  updateInstagramSection,
   updateHomepage,
 } from "../controllers/homepageController.js";
 import { requireAdminAuth } from "../middleware/authMiddleware.js";
@@ -41,6 +49,15 @@ router.get("/category", getCategorySection);
 router.get("/shop-by-category", getCategorySection);
 router.get("/occasions", getOccasionsSection);
 router.get("/shop-by-occasion", getOccasionsSection);
+router.get("/commitment", getCommitmentSection);
+router.get("/our-commitment", getCommitmentSection);
+router.get("/commit", getCommitmentSection);
+router.get("/designers", getDesignersSection);
+router.get("/featured-designers", getDesignersSection);
+router.get("/testimonials", getTestimonialsSection);
+router.get("/testi", getTestimonialsSection);
+router.get("/instagram", getInstagramSection);
+router.get("/insta", getInstagramSection);
 router.get("/", getHomepageData);
 
 // Protected admin endpoints
@@ -53,6 +70,15 @@ router.put("/category", protectAdmin, updateCategorySection);
 router.put("/shop-by-category", protectAdmin, updateCategorySection);
 router.put("/occasions", protectAdmin, updateOccasionsSection);
 router.put("/shop-by-occasion", protectAdmin, updateOccasionsSection);
+router.put("/commitment", protectAdmin, updateCommitmentSection);
+router.put("/our-commitment", protectAdmin, updateCommitmentSection);
+router.put("/commit", protectAdmin, updateCommitmentSection);
+router.put("/designers", protectAdmin, updateDesignersSection);
+router.put("/featured-designers", protectAdmin, updateDesignersSection);
+router.put("/testimonials", protectAdmin, updateTestimonialsSection);
+router.put("/testi", protectAdmin, updateTestimonialsSection);
+router.put("/instagram", protectAdmin, updateInstagramSection);
+router.put("/insta", protectAdmin, updateInstagramSection);
 router.put("/", protectAdmin, updateHomepage);
 
 export default router;

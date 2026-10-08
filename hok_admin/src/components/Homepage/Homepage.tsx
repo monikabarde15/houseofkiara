@@ -64,6 +64,10 @@ export const Homepage: React.FC<HomepageProps> = ({
           const updatedFeatured = resp.featured ? { ...prev.featured, ...resp.featured } : prev.featured;
           const updatedCategory = resp.category ? { ...prev.category, ...resp.category } : prev.category;
           const updatedOccasions = resp.occasions ? { ...prev.occasions, ...resp.occasions } : prev.occasions;
+          const updatedCommit = resp.commit ? { ...prev.commit, ...resp.commit } : prev.commit;
+          const updatedDesigners = resp.designers ? { ...prev.designers, ...resp.designers } : prev.designers;
+          const updatedTesti = resp.testi ? { ...prev.testi, ...resp.testi } : prev.testi;
+          const updatedInsta = resp.insta ? { ...prev.insta, ...resp.insta } : prev.insta;
           const updatedVis = {
             ...prev.vis,
             ...(resp.vis || {}),
@@ -75,6 +79,10 @@ export const Homepage: React.FC<HomepageProps> = ({
             featured: updatedFeatured,
             category: updatedCategory,
             occasions: updatedOccasions,
+            commit: updatedCommit,
+            designers: updatedDesigners,
+            testi: updatedTesti,
+            insta: updatedInsta,
             vis: updatedVis,
           };
           setBaseline(JSON.parse(JSON.stringify(nextState)));

@@ -6,8 +6,14 @@ import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 import featuredDesignersData from "../../../data/home/featuredDesignersData";
 
-const MobileDesigners = () => {
-  const designers = useMemo(() => featuredDesignersData.designers, []);
+const MobileDesigners = ({ data }) => {
+  const designers = useMemo(
+    () => data?.designers || featuredDesignersData.designers,
+    [data?.designers]
+  );
+  const eyebrow = data?.slideKick || data?.eyebrow || featuredDesignersData.eyebrow;
+  const ctaLbl = data?.ctaLbl || "Explore Designer";
+
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -29,7 +35,7 @@ const MobileDesigners = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [totalSlides]);
 
   const handleTouchStart = (event) => {
     touchStartX.current = event.changedTouches[0].clientX;
@@ -85,18 +91,22 @@ const MobileDesigners = () => {
 
           <div className="mobile-designer-content">
             <span className="mobile-designer-eyebrow">
-              {featuredDesignersData.eyebrow}
+              {eyebrow}
             </span>
 
             <h2 className="mobile-designer-title">{designer.name}</h2>
 
-            <p className="mobile-designer-count">{designer.pieces}</p>
+            {(designer.piecesMobile || designer.pieces) && (
+              <p className="mobile-designer-count">
+                {designer.piecesMobile || designer.pieces}
+              </p>
+            )}
 
             <button
               className="mobile-designer-cta"
               onClick={() => handleHomeDesignersClick(designer)}
             >
-              <span>Explore Designer</span>
+              <span>{designer.cta || ctaLbl}</span>
 
               <ArrowRight size={13} />
             </button>
