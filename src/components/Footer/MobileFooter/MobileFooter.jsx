@@ -45,6 +45,12 @@ const MobileFooter = () => {
       return true;
     }
     if (
+      link.label === "Contact Us" &&
+      (currentPath === "/contact-us" || currentPath === "/contact" || currentPath === "/contactus")
+    ) {
+      return true;
+    }
+    if (
       (link.label === "Care, Cleaning & Damage" ||
         link.label === "Care, Cleaning & Damage Policy" ||
         link.label === "Care & Damage" ||

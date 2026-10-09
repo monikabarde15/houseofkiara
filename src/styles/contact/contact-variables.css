@@ -1,0 +1,53 @@
+/**
+ * House of Kaira: Contact Us Design Tokens & Variables
+ * Section 03 & Appendix A of Build Specification v2
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap");
+
+:root {
+  --hdr-h: 118px;          /* desktop header height */
+  --max: 1180px;           /* maximum content width */
+  --gut: 48px;             /* desktop side gutters */
+
+  /* Typography */
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Plus Jakarta Sans", "DM Sans", system-ui, -apple-system, sans-serif;
+
+  /* Color Palette (Section 3.1) */
+  --charcoal: #1A1612;     /* Hero band, Visit card, dark buttons, headings and values on light bands */
+  --cream: #FAF7F2;        /* Answers and concern bands, writing paper; page title, headings on dark */
+  --warm-white: #FFFEFB;   /* Write band, Ways to reach us card, arrival note, Sending something box */
+  --gold: #C9A96E;         /* Eyebrow and rule, Book a visit button, closed status dot, focus ring */
+  --gold-deep: #8C6D3A;    /* Card title, channel icons, index arrows, index name on hover */
+  --terracotta: #B85C38;   /* Required mark, arrival clock icon, rule under a field needing fix */
+  --terra-deep: #9A4A2C;   /* Field error text, the check line beside Send your note */
+  --terra-pale: #F8ECE5;   /* Send failed box background */
+  --sage: #6B7E5A;         /* Copied state border, thank you check mark border */
+  --sage-deep: #4F6142;    /* Copied state text, thank you check mark */
+  --sage-pale: #EEF1E8;    /* Thank you check mark background */
+  --ink: #4A423A;          /* Introductions and descriptions on light bands */
+  --muted-ink: #6E6359;    /* Channel notes, field hints, Optional tag, detail labels, small print */
+  --border: #E8E0D4;       /* Card and box borders, index rules, detail rules, Copy button border */
+  --border-light: #F0EAE0; /* Rules between channel rows, band bottom rules */
+  --keyline: rgba(201, 169, 110, 0.42); /* Inset frame inside Ways to reach us card */
+}
+
+@media (max-width: 1199px) {
+  :root {
+    --gut: 32px;
+    --hdr-h: 61px;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --gut: 28px;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --gut: 18px;
+  }
+}

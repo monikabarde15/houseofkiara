@@ -36,6 +36,7 @@ import CookiePage from "./pages/CookiePage";
 import DepositPage from "./pages/DepositPage";
 import CarePolicyPage from "./pages/CarePolicyPage";
 import SellerGuidelinesPage from "./pages/SellerGuidelinesPage";
+import ContactUsPage from "./pages/ContactUsPage";
 
 export default function App() {
   useEffect(() => {
@@ -88,6 +89,8 @@ export default function App() {
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/about-us" element={<AboutUsPage />} />
         <Route path="/faqs" element={<FAQPage />} />
+        <Route path="/shipping" element={<Navigate to="/faqs" replace />} />
+        <Route path="/shipping-policy" element={<Navigate to="/faqs" replace />} />
         <Route path="/refunds" element={<RefundsPage />} />
         <Route path="/refunds-cancellations" element={<Navigate to="/refunds" replace />} />
         <Route path="/refund" element={<Navigate to="/refunds" replace />} />
@@ -108,7 +111,9 @@ export default function App() {
         <Route path="/seller-guidelines" element={<SellerGuidelinesPage />} />
         <Route path="/seller" element={<Navigate to="/seller-guidelines" replace />} />
         <Route path="/seller-faq" element={<Navigate to="/seller-guidelines" replace />} />
-
+        <Route path="/contact-us" element={<ContactUsPage />} />
+        <Route path="/contact" element={<Navigate to="/contact-us" replace />} />
+        <Route path="/contactus" element={<Navigate to="/contact-us" replace />} />
       </Routes>
 
       <Footer />

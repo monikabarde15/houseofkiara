@@ -1,0 +1,151 @@
+/**
+ * House of Kaira: Contact Us Band 2 Answers Policy Index Styles
+ * Section 06 & Appendix A of Build Specification v2
+ */
+
+.answers {
+  background: var(--cream);
+  padding: 80px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.answers-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: end;
+}
+
+.answers-head h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.1;
+  color: var(--charcoal);
+  margin: 0;
+}
+
+.answers-head p {
+  max-width: 30em;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  font-weight: 300;
+  margin: 0;
+}
+
+.index {
+  list-style: none;
+  margin: 36px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(var(--rows, 3), auto);
+  grid-auto-flow: column;
+  column-gap: 64px;
+}
+
+.index li {
+  border-top: 1px solid var(--border);
+}
+
+.index li.col-end {
+  border-bottom: 1px solid var(--border);
+}
+
+.index a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 16px;
+  gap: 4px 16px;
+  padding: 18px 0;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.index a:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+.ix-name {
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--charcoal);
+  transition: color 0.2s ease;
+}
+
+.ix-desc {
+  grid-column: 1;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink);
+  font-weight: 300;
+}
+
+.index svg.arr {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: 16px;
+  height: 16px;
+  stroke: var(--gold-deep);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.index a:hover .ix-name {
+  color: var(--gold-deep);
+}
+
+.index a:hover svg.arr {
+  transform: translateX(3px);
+}
+
+/* Responsive overrides (Section 12 & Appendix A) */
+@media (max-width: 1199px) {
+  .index {
+    column-gap: 48px;
+  }
+}
+
+@media (max-width: 900px) {
+  .answers-head {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 760px) {
+  .answers {
+    padding: 52px 0;
+  }
+
+  .answers-head h2 {
+    font-size: 31px;
+  }
+
+  .index {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-auto-flow: row;
+    margin-top: 26px;
+    column-gap: 0;
+  }
+
+  .index li.col-end:not(:last-child) {
+    border-bottom: none;
+  }
+
+  .index li:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ix-name {
+    font-size: 21px;
+  }
+}

@@ -1,0 +1,334 @@
+=== PAGE 42 ===
+H OU SE OF  KAIR A  ·  C ont ac t  U s  Spec if ic at ion  Confidential 
+Contact Us Specification  ·  v2  ·  Indore, India Page 42 of 49 
+S E C T I O N  A  
+Appendix A: Complete page styles 
+Every style rule of the page content exactly as written, grouped by screen size: each group adds to, and where it 
+repeats a property overrides, the groups above it. Rules that only style the shared header, menu and footer, and 
+the prototype’s review mode, are left out. var(--name) refers to the colour tokens in Section 03; the site’s own 
+variables (--serif, --sans, --muted and so on) are unchanged. 
+All screen sizes 
+Selector Declarations 
+:root --hdr-h: 118px; --max: 1180px; --gut: 48px; --ink: #4A423A; --muted-ink: #6E6359; --gold-deep: 
+#8C6D3A; --terra-pale: #F8ECE5; --terra-deep: #9A4A2C; --sage-deep: #4F6142; --keyline: 
+rgba(201, 169, 110, 0.42) 
+html scroll-padding-top: calc(var(--hdr-h) + 16px) 
+a color: inherit 
+:focus-visible outline: 2px solid var(--gold); outline-offset: 2px 
+.skip position: absolute; left: 16px; top: -64px; z-index: 1000; background: var(--charcoal); color: var(--
+cream); padding: 10px 14px; font-size: 13px; text-decoration: none 
+.skip:focus top: 12px 
+.wrap max-width: var(--max); margin: 0 auto; padding-left: var(--gut); padding-right: var(--gut) 
+.crumb.inline max-width: var(--max); margin: 0 auto; padding: 22px var(--gut) 0; background: transparent; 
+border-top: none 
+.tl color: var(--charcoal); text-decoration: underline; text-decoration-color: var(--gold); text-decoration-
+thickness: 1px; text-underline-offset: 3px; transition: color .2s 
+.tl:hover color: var(--gold-deep) 
+.tok white-space: nowrap 
+h1, h2, h3 text-wrap: balance 
+p, li text-wrap: pretty 
+.btn display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; 
+border: 1px solid var(--charcoal); border-radius: 1px; font-family: var(--sans); font-size: 11.5px; font-
+weight: 400; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: 
+pointer; transition: background .2s, color .2s, border-color .2s, transform .15s 
+.btn-dark background: var(--charcoal); color: #fff 
+.btn-dark:hover background: #2E2520; transform: translateY(-1px) 
+.btn-line background: transparent; color: var(--charcoal) 
+.btn-line:hover background: var(--charcoal); color: #fff 
+.btn-gold background: var(--gold); border-color: var(--gold); color: var(--charcoal); font-weight: 500 
+.btn-gold:hover background: #D7BB85; border-color: #D7BB85; transform: translateY(-1px) 
+.btn svg.wa width: 15px; height: 15px; fill: currentColor; flex: none 
+.btn[disabled] cursor: progress; opacity: .8; transform: none 
+.btn .spin width: 13px; height: 13px; border: 1.5px solid rgba(255,255,255,.35); border -top-color: #fff; border-
+radius: 50%; animation: cu-spin .8s linear infinite 
+@keyframes cu-spin to { transform: rotate(360deg); } 
+svg.arr width: 16px; height: 16px; stroke: var(--gold-deep); fill: none; stroke-width: 1.5; stroke-linecap: 
+round; stroke-linejoin: round; flex: none; transition: transform .2s 
+.ch-copy flex: none; padding: 7px 12px; background: transparent; border: 1px solid var( --border); border-
+radius: 1px; font-family: var(--sans); font-size: 10.5px; letter-spacing: 0.16em; text-transform: 
+uppercase; color: var(--charcoal); cursor: pointer; transition: border-color .2s, color .2s 
+=== PAGE 43 ===
+H OU SE OF  KAIR A  ·  C ont ac t  U s  Spec if ic at ion  Confidential 
+Contact Us Specification  ·  v2  ·  Indore, India Page 43 of 49 
+Selector Declarations 
+.ch-copy:hover border-color: var(--gold) 
+.ch-copy.done border-color: var(--sage); color: var(--sage-deep) 
+.st-dot display: inline-block; flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--
+sage); box-shadow: 0 0 0 5px rgba(107,126,90,.16); transition: background .3s, box -shadow .3s 
+.is-closed .st-dot background: var(--gold); box-shadow: 0 0 0 5px rgba(201,169,110,.22) 
+.st-sub .tok white-space: normal 
+.field-grid display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 
+.field display: flex; flex-direction: column; min-width: 0 
+.field.full grid-column: 1 / -1 
+.field-label display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; font-size: 10px; 
+letter-spacing: 0.18em; text-transform: uppercase; color: var(--charcoal); font-weight: 500 
+.field-label .req color: var(--terracotta); font-size: 12px; letter-spacing: 0 
+.field-label .opt font-family: var(--serif); font-style: italic; font-size: 12px; font-weight: 400; letter-spacing: 0.02em; 
+text-transform: none; color: var(--muted-ink) 
+.field input, .field select, .field textarea width: 100%; padding: 12px 14px; background: var(--cream); border: 1px solid var(--border); 
+border-radius: 1px; font-family: var(--sans); font-size: 14px; color: var(--charcoal); outline: none; 
+transition: border-color .2s, background .2s 
+.field input:focus, .field select:focus, .field 
+textarea:focus 
+border-color: var(--sage); background: var(--warm-white) 
+.field textarea min-height: 150px; line-height: 1.7; resize: vertical 
+.field select appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer; background-
+image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' 
+width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A7E72' stroke -width='2' stroke-
+linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 
+9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center 
+.field select.empty color: #8C8073 
+.field-hint margin-top: 7px; font-family: var(--serif); font-style: italic; font-size: 14px; line-height: 1.5; color: 
+var(--muted-ink) 
+.field-err display: none; margin-top: 7px; font-size: 12.5px; line-height: 1.5; color: var(--terra-deep) 
+.field.invalid .field-err display: block 
+.field.invalid input, .field.invalid select, 
+.field.invalid textarea 
+border-color: var(--terracotta); background: #FFFCFA 
+.hp position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 
+0 0); clip-path: inset(50%); white-space: nowrap; border: 0 
+[data-form] position: relative 
+.form-notice margin-top: 22px; font-size: 13px; line-height: 1.6; color: var(--muted-ink) 
+.form-fail display: none; margin-top: 18px; padding: 13px 16px; background: var( --terra-pale); border: 1px 
+solid #E7C3B4; font-size: 13.5px; line-height: 1.6; color: #7A3E26 
+.form-fail.show display: block 
+.form-foot margin-top: 24px; display: flex; align-items: center; flex-wrap: wrap; gap: 14px 20px 
+.form-check display: none; font-size: 13px; color: var(--terra-deep) 
+.form-check.show display: block 
+.form-done display: none; padding: 8px 0 4px; outline: none 
+[data-form].sent form display: none 
+[data-form].sent .form-done display: block 
+.done-mark display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid 
+var(--sage); border-radius: 50%; background: var(--sage-pale) 
+=== PAGE 44 ===
+H OU SE OF  KAIR A  ·  C ont ac t  U s  Spec if ic at ion  Confidential 
+Contact Us Specification  ·  v2  ·  Indore, India Page 44 of 49 
+Selector Declarations 
+.done-mark svg width: 20px; height: 20px; stroke: var(--sage-deep); fill: none; stroke-width: 1.6; stroke-linecap: 
+round; stroke-linejoin: round 
+.form-done h3 margin: 20px 0 10px; font-family: var(--serif); font-weight: 400; font-size: 29px; line-height: 1.2; 
+color: var(--charcoal) 
+.form-done p font-size: 15px; line-height: 1.7; color: var(--ink); font-weight: 300; max-width: 34em 
+.form-done p strong font-weight: 500; color: var(--charcoal); overflow-wrap: anywhere 
+.form-done .done-sooner margin-top: 8px; font-size: 14px 
+.form-done .btn margin-top: 26px 
+.legal display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 80px 
+.legal h2 font-family: var(--serif); font-weight: 400; font-size: 32px; line-height: 1.15; color: var(--charcoal) 
+.legal .intro margin-top: 12px; font-size: 14.5px; line-height: 1.7; color: var(--ink); font-weight: 300 
+.dl margin-top: 22px; border-top: 1px solid var(--border) 
+.dl-row display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 20px; padding: 13px 0; border-
+bottom: 1px solid var(--border) 
+.dl-k font-size: 13px; line-height: 1.6; color: var(--muted-ink) 
+.dl-v font-size: 14.5px; line-height: 1.6; color: var(--charcoal); overflow-wrap: anywhere 
+.dl-v .tok white-space: normal 
+.legal .small margin-top: 14px; font-size: 13.5px; line-height: 1.75; color: var(--muted-ink) 
+.legal .small .tok white-space: normal 
+.post-note margin-top: 24px; padding: 18px 20px; background: var(--warm-white); border: 1px solid var(--
+border) 
+.post-note h3 font-family: var(--serif); font-weight: 500; font-size: 19px; line-height: 1.3; color: var(--charcoal) 
+.post-note p margin-top: 6px; font-size: 13.5px; line-height: 1.65; color: var(--ink); font-weight: 300 
+.toast position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 16px); opacity: 0; pointer-events: 
+none; z-index: 998; background: var(--charcoal); color: var(--cream); font-size: 13px; padding: 12px 
+18px; border: 1px solid rgba(201, 169, 110, 0.38); border-radius: 1px; box-shadow: 0 12px 32px 
+rgba(0, 0, 0, 0.18); transition: opacity .25s, transform .25s; max -width: calc(100vw - 32px); text-
+align: center 
+.toast.show opacity: 1; transform: translate(-50%, 0) 
+.hero background: var(--charcoal); color: var(--cream) 
+.hero .crumb a color: #A89C8E 
+.hero .crumb a:hover color: var(--cream) 
+.hero .crumb span.sep color: rgba(212, 197, 176, 0.3) 
+.hero .crumb span.current color: #E6DCCD 
+.hero-in display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: 80px; padding -top: 
+44px; padding-bottom: 84px; align-items: start 
+.eyebrow display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.26em; text-transform: 
+uppercase; color: var(--gold) 
+.eyebrow::before content: ''; width: 32px; height: 1px; background: var(--gold) 
+.h1 max-width: 9.6em; margin: 22px 0 24px; font-family: var(--serif); font-weight: 300; font-size: 72px; 
+line-height: 1.02; letter-spacing: -0.015em; color: var(--cream) 
+.lead max-width: 30em; font-size: 16.5px; line-height: 1.75; color: #D4C5B0; font-weight: 300 
+.status margin-top: 40px; padding-top: 28px; border-top: 1px solid rgba(212, 197, 176, 0.18); display: flex; 
+gap: 16px; align-items: flex-start; max-width: 30em 
+.status .st-dot margin: 11px 0 0 5px; background: #9DB08A; box-shadow: 0 0 0 5px rgba(157, 176, 138, 0.18) 
+.status.is-closed .st-dot background: var(--gold); box-shadow: 0 0 0 5px rgba(201, 169, 110, 0.2) 
+=== PAGE 45 ===
+H OU SE OF  KAIR A  ·  C ont ac t  U s  Spec if ic at ion  Confidential 
+Contact Us Specification  ·  v2  ·  Indore, India Page 45 of 49 
+Selector Declarations 
+.status .st-title font-family: var(--serif); font-size: 26px; line-height: 1.2; color: var(--cream) 
+.status .st-sub margin-top: 6px; font-size: 14px; line-height: 1.7; color: #BFB2A2; font-weight: 300 
+.reach position: relative; padding: 36px 38px 30px; background: var( --warm-white); border: 1px solid var(--
+border); color: var(--charcoal) 
+.reach::before content: ''; position: absolute; inset: 8px; border: 1px solid var( --keyline); pointer-events: none 
+.reach-title font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 19px; line-height: 1.3; color: 
+var(--gold-deep) 
+#channels margin-top: 16px 
+.ch padding: 22px 0; border-top: 1px solid var(--border-light) 
+.ch:last-child padding-bottom: 4px 
+.ch-top display: flex; align-items: center; gap: 12px 
+.ch-ic display: flex; flex: none; width: 20px; height: 20px 
+.ch-ic svg width: 20px; height: 20px 
+.ch-ic svg.wa fill: var(--gold-deep) 
+.ch-ic svg.line fill: none; stroke: var(--gold-deep); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round 
+.ch-name font-family: var(--serif); font-weight: 400; font-size: 25px; line-height: 1.15; color: var(--charcoal) 
+.ch-line margin-top: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; 
+gap: 8px 12px 
+.ch-v font-size: 15.5px; letter-spacing: 0.01em; color: var(--charcoal); text-decoration: none; border-
+bottom: 1px solid transparent; overflow-wrap: anywhere; transition: border-color .2s 
+.ch-v:hover border-bottom-color: var(--gold) 
+.ch-n margin-top: 6px; font-size: 13.5px; line-height: 1.65; color: var(--muted-ink) 
+.ch-n .tok white-space: normal 
+.ch .btn width: 100%; margin-top: 18px 
+.answers background: var(--cream); padding: 80px 0; border-bottom: 1px solid var(--border-light) 
+.answers-head display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: end 
+.answers-head h2, .write-main h2 font-family: var(--serif); font-weight: 400; font-size: 40px; line-height: 1.1; color: var(--charcoal) 
+.answers-head p max-width: 30em; font-size: 15px; line-height: 1.7; color: var(--ink); font-weight: 300 
+.index list-style: none; margin-top: 36px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); 
+grid-template-rows: repeat(var(--rows, 3), auto); grid-auto-flow: column; column-gap: 64px 
+.index li border-top: 1px solid var(--border) 
+.index li.col-end border-bottom: 1px solid var(--border) 
+.index a display: grid; grid-template-columns: minmax(0, 1fr) 16px; gap: 4px 16px; padding: 18px 0; text -
+decoration: none 
+.ix-name font-family: var(--serif); font-size: 22px; line-height: 1.25; color: var(--charcoal); transition: color .2s 
+.ix-desc grid-column: 1; font-size: 13.5px; line-height: 1.55; color: var(--ink); font-weight: 300 
+.index svg.arr grid-column: 2; grid-row: 1 / span 2; align-self: center 
+.index a:hover .ix-name color: var(--gold-deep) 
+.index a:hover svg.arr transform: translateX(3px) 
+.write background: var(--warm-white); padding: 88px 0; border-bottom: 1px solid var(--border-light) 
+.pair display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: 56px; align -items: 
+start 
+.write-sub margin-top: 12px; max-width: 34em; font-size: 15px; line-height: 1.7; color: var(--ink); font-weight: 
+300 
+=== PAGE 46 ===
+H OU SE OF  KAIR A  ·  C ont ac t  U s  Spec if ic at ion  Confidential 
+Contact Us Specification  ·  v2  ·  Indore, India Page 46 of 49 
+Selector Declarations 
+.write-sub .tok white-space: normal 
+.paper margin-top: 28px; padding: 44px 48px 40px; background: var( --cream); border: 1px solid var(--
+border) 
+.paper .field input, .paper .field select, .paper 
+.field textarea 
+padding: 10px 2px 9px; background: transparent; border: none; border -bottom: 1px solid 
+#CDBFAE; border-radius: 0; font-size: 16px 
+.paper .field input:focus, .paper .field select:focus background: transparent; border-bottom-color: var(--charcoal); box-shadow: 0 1px 0 0 var(--
+charcoal) 
+.paper .field select padding-right: 26px; background-position: right 2px center 
+.paper .field textarea min-height: 192px; padding: 0 2px; border-bottom: none; line-height: 32px; background-image: 
+repeating-linear-gradient(to bottom, transparent 0, transparent 31px, #D9CDBD 31px, #D9CDBD 
+32px); background-attachment: local 
+.paper .field textarea:focus background-color: transparent; outline: 1px solid var(--charcoal); outline-offset: 6px 
+.paper .field.invalid input, .paper .field.invalid 
+select 
+background: transparent; border-bottom-color: var(--terracotta); box-shadow: 0 1px 0 0 var(--
+terracotta) 
+.paper .field.invalid textarea background-color: transparent; outline: 1px solid var(--terracotta); outline-offset: 6px 
+.paper .field-hint .tl font-style: italic 
+.paper .field textarea + .field-hint margin-top: 12px 
+.side display: grid; gap: 16px 
+.visit position: relative; padding: 34px 32px 32px; background: var( --charcoal); color: var(--cream) 
+.visit::before content: ''; position: absolute; inset: 6px; border: 1px solid rgba(201, 169, 110, 0.38); pointer -
+events: none 
+.visit h2 font-family: var(--serif); font-weight: 400; font-size: 29px; line-height: 1.15; color: var(--cream) 
+.visit .vi margin-top: 10px; font-size: 14px; line-height: 1.7; color: #CDBFAE; font-weight: 300 
+.visit .where margin-top: 18px; font-family: var(--serif); font-size: 22px; line-height: 1.3; color: var(--cream) 
+.visit .where .tok white-space: normal 
+.visit .when margin-top: 2px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold) 
+.visit .btn position: relative; width: 100%; margin-top: 22px 
+.note padding: 24px 24px 22px; background: var(--warm-white); border: 1px solid var(--border) 
+.note h3 display: flex; gap: 10px; align-items: flex-start; font-family: var(--serif); font-weight: 500; font-size: 
+19px; line-height: 1.3; color: var(--charcoal) 
+.note h3 svg flex: none; width: 18px; height: 18px; margin-top: 3px; stroke: var(--terracotta); fill: none; stroke-
+width: 1.5; stroke-linecap: round; stroke-linejoin: round 
+.note p margin-top: 8px; font-size: 13.5px; line-height: 1.65; color: var(--ink); font-weight: 300 
+.note p .tok white-space: normal 
+.note .more margin-top: 10px; font-weight: 400 
+.legal-band background: var(--cream); padding: 80px 0 
+ 
+1199px and below 
+Selector Declarations 
+:root --gut: 32px 
+.legal gap: 56px 
+.dl-row grid-template-columns: 140px minmax(0, 1fr) 
+.hero-in gap: 56px 
+.h1 font-size: 60px 
+=== PAGE 47 ===
+H OU SE OF  KAIR A  ·  C ont ac t  U s  Spec if ic at ion  Confidential 
+Contact Us Specification  ·  v2  ·  Indore, India Page 47 of 49 
+Selector Declarations 
+.reach padding: 32px 30px 26px 
+.pair grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 40px 
+.paper padding: 38px 36px 34px 
+.index column-gap: 48px 
+ 
+900px and below 
+Selector Declarations 
+:root --gut: 28px 
+.legal grid-template-columns: 1fr; gap: 56px 
+.hero-in grid-template-columns: 1fr; gap: 44px; padding-bottom: 64px 
+.h1 max-width: none 
+.answers-head grid-template-columns: 1fr; gap: 12px 
+.pair grid-template-columns: 1fr; gap: 48px 
+.side grid-template-columns: 1fr 1fr 
+ 
+760px and below 
+Selector Declarations 
+:root --gut: 18px 
+.crumb.inline padding-top: 16px 
+.field-grid grid-template-columns: 1fr; gap: 18px 
+.field input, .field select, .field textarea font-size: 16px 
+.dl-row grid-template-columns: 1fr; gap: 2px; padding: 12px 0 
+.legal h2 font-size: 28px 
+.btn width: 100%; padding: 15px 18px 
+.hero-in padding-top: 28px; padding-bottom: 48px; gap: 36px 
+.h1 font-size: 44px; margin: 16px 0 18px 
+.lead font-size: 15.5px 
+.status margin-top: 30px; padding-top: 22px 
+.status .st-title font-size: 23px 
+.reach max-width: none; padding: 28px 22px 22px 
+.reach::before inset: 6px 
+.ch padding: 20px 0 
+.ch-name font-size: 24px 
+.answers, .legal-band padding: 52px 0 
+.write padding: 56px 0 
+.answers-head h2, .write-main h2 font-size: 31px 
+.index grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; margin-top: 26px 
+.index li.col-end border-bottom: none 
+.index li:last-child border-bottom: 1px solid var(--border) 
+=== PAGE 48 ===
+H OU SE OF  KAIR A  ·  C ont ac t  U s  Spec if ic at ion  Confidential 
+Contact Us Specification  ·  v2  ·  Indore, India Page 48 of 49 
+Selector Declarations 
+.ix-name font-size: 21px 
+.paper margin-top: 22px; padding: 28px 18px 24px 
+.side grid-template-columns: 1fr 
+.visit padding: 30px 22px 26px 
+ 
+380px and below 
+Selector Declarations 
+.btn letter-spacing: 0.14em 
+.h1 font-size: 40px 
+ 
+Reduced motion 
+Selector Declarations 
+html scroll-behavior: auto 
+*, *::before, *::after transition: none !important; animation: none !important 
+ 
+Print 
+Selector Declarations 
+.announce-bar, header, .nav-drawer, .drawer-
+overlay, .skip, footer, .toast, .write-main, .ch-
+copy, .btn, svg.arr, .st-dot, .reach::before, 
+.visit::before 
+display: none !important 
+body background: #fff 
+.hero, .answers, .write, .legal-band, .visit, .reach background: #fff; color: var(--charcoal) 
+.hero *, .visit * color: var(--charcoal) !important 
+.hero-in, .pair display: block 
+.answers, .write, .legal-band padding: 28px 0 
+.hero-in padding-bottom: 32px 
+.reach, .side margin-top: 24px 
+.answers break-before: page 
+.index a padding: 12px 0 
+.side grid-template-columns: 1fr 1fr; align-items: start 
+.legal gap: 36px 
+.index li, .ch, .visit, .note, .post-note break-inside: avoid 
+ 

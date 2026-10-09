@@ -1,0 +1,531 @@
+/**
+ * House of Kaira: Contact Us Band 3 Write Us a Note Styles
+ * Section 07 & Appendix A of Build Specification v2
+ */
+
+.write {
+  background: var(--warm-white);
+  padding: 88px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: 56px;
+  align-items: start;
+}
+
+.write-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.write-main h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.1;
+  color: var(--charcoal);
+  margin: 0;
+}
+
+.write-sub {
+  margin-top: 12px;
+  max-width: 34em;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  font-weight: 300;
+}
+
+.paper {
+  margin-top: 28px;
+  padding: 44px 48px 40px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
+/* Honeypot spam trap (Section 7.7 & Appendix A) */
+.hp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+[data-form] {
+  position: relative;
+}
+
+.field-grid,
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+.field-label,
+.field label {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  font-weight: 500;
+}
+
+.field-label .req,
+.field label .req {
+  color: var(--terracotta);
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.field-label .opt,
+.field label .opt {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted-ink);
+}
+
+.paper .field input,
+.paper .field select,
+.paper .field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 2px 9px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #CDBFAE;
+  border-radius: 0;
+  font-size: 16px;
+  font-family: var(--sans);
+  color: var(--charcoal);
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.paper .field input:focus,
+.paper .field select:focus {
+  background: transparent;
+  border-bottom-color: var(--charcoal);
+  box-shadow: 0 1px 0 0 var(--charcoal);
+}
+
+.paper .field select {
+  padding-right: 26px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A7E72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 2px center;
+  color: var(--charcoal);
+  cursor: pointer;
+}
+
+.paper .field select.empty,
+.paper .field select.unselected {
+  color: #8C8073;
+}
+
+.paper .field textarea {
+  min-height: 192px;
+  padding: 0 2px;
+  border: none;
+  border-bottom: none;
+  line-height: 32px;
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, #D9CDBD 31px, #D9CDBD 32px);
+  background-attachment: local;
+  resize: vertical;
+}
+
+.paper .field textarea:focus {
+  background-color: transparent;
+  outline: 1px solid var(--charcoal);
+  outline-offset: 6px;
+}
+
+.paper .field.invalid input,
+.paper .field.invalid select {
+  background: transparent;
+  border-bottom-color: var(--terracotta) !important;
+  box-shadow: 0 1px 0 0 var(--terracotta) !important;
+}
+
+.paper .field.invalid textarea {
+  background-color: transparent;
+  outline: 1px solid var(--terracotta) !important;
+  outline-offset: 6px !important;
+}
+
+.paper .field-hint .tl {
+  font-style: italic;
+}
+
+.field-hint {
+  margin-top: 7px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted-ink);
+}
+
+.field textarea + .field-hint,
+.paper .field textarea + .field-hint {
+  margin-top: 12px;
+}
+
+.field-err {
+  margin-top: 7px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--terra-deep);
+}
+
+.form-notice,
+.privacy-note {
+  margin-top: 22px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted-ink);
+}
+
+.form-fail,
+.send-failed {
+  display: none;
+  margin-top: 18px;
+  padding: 13px 16px;
+  background: var(--terra-pale);
+  border: 1px solid #E7C3B4;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #7A3E26;
+}
+
+.form-fail.show,
+.send-failed {
+  display: block;
+}
+
+.form-foot,
+.btn-row {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+}
+
+.cu-page .form-check,
+.paper .form-check,
+.form-check,
+.send-check {
+  display: none !important;
+  min-height: 0 !important;
+  padding-left: 0 !important;
+  margin-bottom: 0 !important;
+  font-size: 13px !important;
+  color: var(--terra-deep) !important;
+  font-weight: 400 !important;
+}
+
+.cu-page .form-check.show,
+.paper .form-check.show,
+.form-check.show {
+  display: inline-block !important;
+}
+
+/* Sent state inside writing paper (Section 7.6) */
+.form-done {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.done-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--sage);
+  background: var(--sage-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.done-mark svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--sage-deep);
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.form-done h3 {
+  margin: 20px 0 10px;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 29px;
+  line-height: 1.2;
+  color: var(--charcoal);
+}
+
+.form-done p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  font-weight: 300;
+  max-width: 34em;
+  margin: 0 0 8px;
+}
+
+.form-done p strong {
+  font-weight: 500;
+  color: var(--charcoal);
+  overflow-wrap: anywhere;
+}
+
+.form-done .done-sooner {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.form-done .btn {
+  margin-top: 26px;
+}
+
+/* Side column container (Section 08) */
+.side {
+  display: grid;
+  gap: 16px;
+}
+
+/* Visit us in Indore card (Section 8.1) */
+.visit {
+  position: relative;
+  padding: 34px 32px 32px;
+  background: var(--charcoal);
+  color: var(--cream);
+  border-radius: 1px;
+  box-sizing: border-box;
+}
+
+.visit::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(201, 169, 110, 0.38);
+  pointer-events: none;
+}
+
+.visit h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 29px;
+  line-height: 1.15;
+  color: var(--cream);
+  margin: 0;
+}
+
+.visit .vi {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #CDBFAE;
+  font-weight: 300;
+}
+
+.visit .where {
+  margin-top: 18px;
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1.3;
+  color: var(--cream);
+}
+
+.visit .when {
+  margin-top: 2px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.visit .btn {
+  position: relative;
+  width: 100% !important;
+  margin-top: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  background: var(--gold) !important;
+  border-color: var(--gold) !important;
+  color: var(--charcoal) !important;
+  font-weight: 500 !important;
+  border-radius: 1px !important;
+  text-decoration: none !important;
+  letter-spacing: 0.2em !important;
+  font-size: 11.5px !important;
+  text-transform: uppercase !important;
+  padding: 15px 30px !important;
+  min-height: 48px !important;
+  box-sizing: border-box !important;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease !important;
+}
+
+.visit .btn:hover {
+  background: #D7BB85 !important;
+  border-color: #D7BB85 !important;
+  transform: translateY(-1px) !important;
+}
+
+.visit .btn svg {
+  width: 15px !important;
+  height: 15px !important;
+  fill: currentColor !important;
+  flex: none !important;
+  margin: 0 10px 0 0 !important;
+  display: inline-block !important;
+}
+
+/* Arrival note card (Section 8.2) */
+.note {
+  padding: 24px 24px 22px;
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: 1px;
+  box-sizing: border-box;
+}
+
+.note h3 {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.3;
+  color: var(--charcoal);
+  margin: 0;
+}
+
+.note h3 svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  stroke: var(--terracotta);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.note p {
+  margin-top: 8px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink);
+  font-weight: 300;
+}
+
+.note .more {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--charcoal);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.note .more:hover {
+  color: var(--gold-deep);
+}
+
+/* Responsive Overrides (Section 12 & Appendix A) */
+@media (max-width: 1199px) {
+  .pair {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 40px;
+  }
+
+  .paper {
+    padding: 38px 36px 34px;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 900px) {
+  .side {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .pair {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+
+@media (max-width: 760px) {
+  .write {
+    padding: 56px 0;
+  }
+
+  .paper {
+    margin-top: 22px;
+    padding: 28px 18px 24px;
+  }
+
+  .fields {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .side {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-row .btn {
+    width: 100%;
+    padding: 15px 18px;
+  }
+
+  .form-done .btn {
+    width: 100%;
+    padding: 15px 18px;
+  }
+}
