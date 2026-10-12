@@ -62,6 +62,15 @@ const MobileFooter = () => {
     ) {
       return true;
     }
+    if (
+      (link.label === "Shipping & Delivery" ||
+        link.label === "Shipping & Delivery Policy") &&
+      (currentPath === "/shipping-policy" ||
+        currentPath === "/shipping" ||
+        currentPath === "/shipping-and-delivery")
+    ) {
+      return true;
+    }
     return false;
   };
 

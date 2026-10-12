@@ -37,6 +37,7 @@ import DepositPage from "./pages/DepositPage";
 import CarePolicyPage from "./pages/CarePolicyPage";
 import SellerGuidelinesPage from "./pages/SellerGuidelinesPage";
 import ContactUsPage from "./pages/ContactUsPage";
+import ShippingPolicyPage from "./pages/ShippingPolicyPage";
 
 export default function App() {
   useEffect(() => {
@@ -89,8 +90,9 @@ export default function App() {
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/about-us" element={<AboutUsPage />} />
         <Route path="/faqs" element={<FAQPage />} />
-        <Route path="/shipping" element={<Navigate to="/faqs" replace />} />
-        <Route path="/shipping-policy" element={<Navigate to="/faqs" replace />} />
+        <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
+        <Route path="/shipping" element={<Navigate to="/shipping-policy" replace />} />
+        <Route path="/shipping-and-delivery" element={<Navigate to="/shipping-policy" replace />} />
         <Route path="/refunds" element={<RefundsPage />} />
         <Route path="/refunds-cancellations" element={<Navigate to="/refunds" replace />} />
         <Route path="/refund" element={<Navigate to="/refunds" replace />} />

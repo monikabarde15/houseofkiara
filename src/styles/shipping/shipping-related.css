@@ -1,0 +1,88 @@
+/**
+ * House of Kaira: Shipping Related Policies Styles (D12)
+ * Section 4.12 & Page 23 of Build Specification v2 (hok_shipping_policy_v3)
+ */
+
+/* Related Policies Block */
+.pol {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 40px 40px 88px;
+}
+
+/* Links row */
+.pol-in {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 22px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Label */
+.pol-in b {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--charcoal);
+  margin-right: 6px;
+}
+
+/* Policy Link */
+.pol-in a,
+.pol-in button {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--charcoal);
+  padding: 0 0 2px;
+  text-decoration: none;
+  font-family: inherit;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.pol-in a:hover,
+.pol-in button:hover {
+  border-color: var(--gold);
+  color: var(--gold-deep);
+}
+
+/* Fine print */
+.pol p {
+  margin-top: 14px;
+  font-size: 11px;
+  color: #A79B8D;
+  line-height: 1.7;
+}
+
+/* Print action link */
+.pol p button {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 0;
+  margin-left: 4px;
+  font-family: inherit;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.pol p button:hover {
+  color: var(--charcoal);
+  border-color: var(--gold);
+}
+
+/* Responsive: 760px and narrower */
+@media (max-width: 760px) {
+  .pol {
+    padding: 32px 18px 56px;
+  }
+}
