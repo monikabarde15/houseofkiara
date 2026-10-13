@@ -1,0 +1,98 @@
+/**
+ * House of Kaira: Shipping Policy Print Styles (D15)
+ * Section 4.15 & Page 26 of Build Specification v2 (hok_shipping_policy_v3)
+ */
+
+@media print {
+  body > *:not(main),
+  main > *:not(#printAll) {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  #printAll {
+    display: block !important;
+    max-width: 760px;
+    margin: 0 auto;
+    color: #1A1612;
+  }
+
+  #printAll h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 34px;
+    margin-bottom: 4px;
+  }
+
+  #printAll .pr-meta {
+    font-size: 11px;
+    color: #6b6259;
+    margin-bottom: 20px;
+  }
+
+  #printAll h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 24px;
+    margin: 26px 0 6px;
+    break-after: avoid;
+  }
+
+  #printAll .pr-q {
+    break-inside: avoid;
+    padding: 10px 0;
+    border-bottom: 1px solid #E8E0D4;
+  }
+
+  #printAll h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+
+  #printAll .ans {
+    font-size: 12px;
+    line-height: 1.65;
+    max-width: none;
+  }
+
+  #printAll table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 6px 0 4px;
+    break-inside: avoid;
+  }
+
+  #printAll th,
+  #printAll td {
+    text-align: left;
+    vertical-align: top;
+    padding: 6px 8px 6px 0;
+    border-bottom: 1px solid #E8E0D4;
+  }
+
+  #printAll th {
+    font-weight: 600;
+  }
+
+  #printAll .pr-steps {
+    margin: 4px 0 10px 18px;
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  #printAll .rv-note {
+    display: none !important;
+  }
+}
+
+@media screen {
+  #printAll {
+    display: none !important;
+  }
+}

@@ -1,0 +1,245 @@
+/**
+ * House of Kaira: Ways We Deliver Styles (D8)
+ * Section 4.8, 5.10 & Page 18, 19, 22 of Build Specification v2 (hok_shipping_policy_v3)
+ */
+
+/* Ways We Deliver Band */
+.opt {
+  margin-top: 60px;
+  scroll-margin-top: calc(var(--hdr) + var(--bar) + 8px);
+}
+
+/* Heading */
+.ex-hd h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--charcoal);
+  margin: 0;
+}
+
+.ex-hd h2 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.ex-hd p {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 300;
+  line-height: 1.7;
+  max-width: 640px;
+  margin-bottom: 0;
+}
+
+/* Delivery Options Grid */
+.opt-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--charcoal);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Column Button */
+.opt-c {
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 22px 18px 20px;
+  transition: background 0.2s;
+  min-width: 0;
+  font-family: inherit;
+  color: inherit;
+  width: 100%;
+}
+
+.opt-c + .opt-c {
+  border-left: 1px solid var(--border);
+}
+
+.opt-c:hover {
+  background: var(--cream);
+}
+
+/* Place label */
+.opt-where {
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  font-weight: 500;
+}
+
+/* Option name */
+.opt-k {
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1.1;
+  color: var(--charcoal);
+  font-weight: 400;
+}
+
+/* Time */
+.opt-t {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.3;
+  color: var(--ink-2);
+  font-variant-numeric: lining-nums;
+  font-weight: 400;
+}
+
+/* Maintain two lines of height on wide screens so tags align */
+@media (min-width: 961px) {
+  .opt-t {
+    min-height: 2.6em;
+  }
+}
+
+/* Verdict Tags */
+.vd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.vd::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.v-yes {
+  color: var(--sage);
+}
+
+.v-mid {
+  color: var(--gold-deep);
+}
+
+.v-no {
+  color: var(--terracotta);
+}
+
+/* Note text */
+.opt-n {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+  font-weight: 300;
+  flex: 1;
+  margin: 0;
+}
+
+/* Details link */
+.opt-go {
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  font-weight: 500;
+  border-bottom: 1px solid var(--charcoal);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.opt-go svg {
+  width: 10px;
+  height: 10px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.opt-c:hover .opt-go {
+  color: var(--gold-deep);
+  border-color: var(--gold);
+}
+
+/* Note under the grid */
+.note {
+  padding-left: 16px;
+  border-left: 1px solid var(--gold);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-3);
+  margin: 0;
+}
+
+.opt .note {
+  margin-top: 20px;
+}
+
+/* Responsive: 960px and narrower */
+@media (max-width: 960px) {
+  .opt-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .opt-c + .opt-c {
+    border-left: none;
+  }
+
+  .opt-c:nth-child(even) {
+    border-left: 1px solid var(--border);
+  }
+
+  .opt-c:nth-child(n + 3) {
+    border-top: 1px solid var(--border);
+  }
+}
+
+/* Responsive: 760px and narrower */
+@media (max-width: 760px) {
+  .opt {
+    margin-top: 48px;
+  }
+
+  .ex-hd h2 {
+    font-size: 28px;
+  }
+}
+
+/* Responsive: 620px and narrower */
+@media (max-width: 620px) {
+  .opt-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .opt-c {
+    padding: 20px 4px 18px;
+  }
+
+  .opt-c + .opt-c {
+    border-top: 1px solid var(--border);
+  }
+
+  .opt-c:nth-child(even) {
+    border-left: none;
+  }
+}

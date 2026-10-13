@@ -24,6 +24,7 @@ export const desktopFooterColumns = [
     title: "SUPPORT",
     links: [
       { label: "FAQs", path: "/faqs" },
+      { label: "Shipping & Delivery", path: "/shipping-policy" },
       { label: "Care, Cleaning & Damage", path: "/care-policy" },
       { label: "Deposit Policy", path: "/deposit-policy" },
       { label: "Refunds & Cancellations", path: "/refunds" },
@@ -66,6 +67,7 @@ export const mobileFooterColumns = [
     title: "Support",
     links: [
       { label: "FAQs", path: "/faqs" },
+      { label: "Shipping & Delivery", path: "/shipping-policy" },
       { label: "Care & Damage", path: "/care-policy" },
       { label: "Deposit Policy", path: "/deposit-policy" },
       { label: "Refunds", path: "/refunds" },
@@ -86,6 +88,7 @@ export const mobileFooterColumns = [
 export const desktopPolicyLinks = [
   { label: "Terms & Conditions", path: "/terms" },
   { label: "Privacy Policy", path: "/privacy" },
+  { label: "Shipping & Delivery Policy", path: "/shipping-policy" },
   { label: "Refund & Cancellation Policy", path: "/refunds" },
   { label: "Deposit Policy", path: "/deposit" },
   { label: "Care, Cleaning & Damage Policy", path: "/care-policy" },
@@ -96,6 +99,7 @@ export const desktopPolicyLinks = [
 export const mobilePolicyLinks = [
   { label: "Terms & Conditions", path: "/terms" },
   { label: "Privacy Policy", path: "/privacy" },
+  { label: "Shipping & Delivery Policy", path: "/shipping-policy" },
   { label: "Refund Policy", path: "/refunds" },
   { label: "Deposit Policy", path: "/deposit" },
   { label: "Care & Damage Policy", path: "/care-policy" },

@@ -1,0 +1,132 @@
+/**
+ * House of Kaira: Shipping Section Bar Styles (D6)
+ * Section 4.6 & Page 14, 15 of Build Specification v2 (hok_shipping_policy_v3)
+ */
+
+/* Wrapper for bar and policy body to control sticky lifetime */
+.sh-wrap {
+  margin-top: 44px;
+  position: relative;
+  width: 100%;
+}
+
+/* Sticky Section Bar */
+.secbar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: var(--hdr, 114px);
+  z-index: 60;
+  background: var(--warm-white);
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+  transition: box-shadow 0.2s ease;
+}
+
+.secbar.stuck {
+  box-shadow: 0 4px 12px rgba(26, 22, 18, 0.05);
+}
+
+/* Edge Fades */
+.secbar::before,
+.secbar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 1px;
+  width: 48px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 2;
+}
+
+.secbar::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--warm-white) 30%, rgba(255, 254, 251, 0));
+}
+
+.secbar::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--warm-white) 30%, rgba(255, 254, 251, 0));
+}
+
+.secbar.fade-l::before,
+.secbar.fade-r::after {
+  opacity: 1;
+}
+
+/* Links Row */
+.secbar-in {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.secbar-in::-webkit-scrollbar {
+  display: none;
+}
+
+.secbar-in > :first-child {
+  margin-left: auto;
+}
+
+.secbar-in > :last-child {
+  margin-right: auto;
+}
+
+/* Section Link */
+.sb-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 17px 0 16px;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.sb-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.sb-link:hover,
+.sb-link.on {
+  color: var(--charcoal);
+}
+
+.sb-link.on::after {
+  background: var(--gold);
+}
+
+/* Responsive adjustments */
+@media (max-width: 760px) {
+  .sh-wrap {
+    margin-top: 32px;
+  }
+
+  .secbar-in {
+    padding: 0 18px;
+    gap: 20px;
+  }
+
+  .secbar-in > :first-child {
+    margin-left: 0;
+  }
+}
