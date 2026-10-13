@@ -1,0 +1,90 @@
+/* src/styles/pricing/pricing-chrome.css */
+/* Base shell layout and utilities matching Page 5 & Page 32 of hok_pricing_fees_v4 */
+
+.pf-page {
+  /* Page background is warm white (Page 5 & Page 32) */
+  background-color: var(--warm-white, #FFFEFB);
+  color: var(--charcoal, #1A1612);
+  font-family: var(--sans, "DM Sans", sans-serif);
+  min-height: 100vh;
+  position: relative;
+  width: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.pf-container {
+  width: 100%;
+  max-width: var(--pf-max-w, 1200px);
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Accessibility: Screen-reader-only utility classes (Page 32) */
+.pf-visually-hidden,
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Keyboard focus (Page 32) */
+.pf-page :focus-visible {
+  outline: 2px solid var(--gold, #C9A96E);
+  outline-offset: 2px;
+}
+
+/* 2.4s Gold Jump Flash Animation (Page 5 & Page 25: gold pale fading to transparent over 2.4s) */
+@keyframes pfFlashAnimation {
+  0% {
+    background-color: var(--gold-pale, #F5EDD8);
+    box-shadow: 0 0 0 2px var(--gold, #C9A96E);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+.pf-flash-target {
+  animation: pfFlashAnimation 2.4s ease-out forwards;
+}
+
+/* Toast container for link copied notifications */
+.pf-toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background-color: var(--charcoal, #1A1612);
+  color: var(--cream, #FAF7F2);
+  border: 1px solid var(--gold, #C9A96E);
+  padding: 12px 20px;
+  border-radius: 1px;
+  font-size: 13px;
+  font-family: var(--sans, "DM Sans", sans-serif);
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(26, 22, 18, 0.25);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: pfToastFadeIn 0.22s ease-out;
+}
+
+@keyframes pfToastFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

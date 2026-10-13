@@ -71,6 +71,16 @@ const DesktopFooter = () => {
     ) {
       return true;
     }
+    if (
+      (link.label === "Pricing & Fees" ||
+        link.label === "Pricing & Fees Policy" ||
+        link.label === "Pricing and Fees") &&
+      (currentPath === "/pricing-fees" ||
+        currentPath === "/pricing" ||
+        currentPath === "/pricing-policy")
+    ) {
+      return true;
+    }
     return false;
   };
   return (

@@ -1,0 +1,336 @@
+/* src/styles/pricing/pricing-sections.css */
+/* Styles for Policy Sections (D9), Question Rows (D10) & Answer Content (D11) */
+/* Exactly matching Pages 24-27 of hok_pricing_fees_v4 */
+
+.sec {
+  padding-top: 64px;
+  scroll-margin-top: calc(var(--hdr) + var(--bar) + 12px);
+}
+
+/* Section Header (Page 25) */
+.sec-hd {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 0 8px;
+  align-items: baseline;
+  margin-bottom: 20px;
+}
+
+.sec-n {
+  font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+  font-size: 18px;
+  color: var(--gold, #C9A96E);
+}
+
+.sec-hd h2 {
+  font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--charcoal, #1A1612);
+  margin: 0;
+}
+
+.sec-hd h2 em {
+  font-style: italic;
+  color: var(--gold, #C9A96E);
+}
+
+.sec-hd p {
+  grid-column: 2;
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-size: 13px;
+  color: var(--muted, #8A7E72);
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+/* Rows List */
+.sec-list {
+  border-top: 1px solid var(--charcoal, #1A1612);
+}
+
+/* Question Row (Page 26) */
+.cq {
+  border-bottom: 1px solid var(--border, #E8E0D4);
+  scroll-margin-top: calc(var(--hdr) + var(--bar) + 12px);
+}
+
+.cq-b {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 14px;
+  gap: 16px;
+  align-items: center;
+  padding: 19px 16px 19px 18px;
+  position: relative;
+  transition: background 0.2s ease;
+  font-family: inherit;
+}
+
+.cq-b::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.cq-t {
+  font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+  font-size: 20px;
+  line-height: 1.35;
+  color: var(--ink, #3E362F);
+  transition: color 0.2s ease;
+}
+
+.cq-b > svg {
+  width: 12px;
+  height: 12px;
+  stroke: var(--pf-chev, #A79B8D);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.3s cubic-bezier(.16, 1, .3, 1), stroke 0.2s ease;
+}
+
+.cq-b:hover {
+  background: rgba(250, 247, 242, 0.7);
+}
+
+.cq-b:hover .cq-t {
+  color: var(--charcoal, #1A1612);
+}
+
+.cq.on .cq-b {
+  background: var(--cream, #FAF7F2);
+}
+
+.cq.on .cq-b::before {
+  background: var(--gold, #C9A96E);
+}
+
+.cq.on .cq-t {
+  color: var(--charcoal, #1A1612);
+}
+
+.cq.on .cq-b > svg {
+  transform: rotate(90deg);
+  stroke: var(--gold, #C9A96E);
+}
+
+/* Accordion Drawer */
+.cq-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(.16, 1, .3, 1);
+  background: var(--cream, #FAF7F2);
+}
+
+.cq.on .cq-body {
+  grid-template-rows: 1fr;
+}
+
+.cq-in {
+  overflow: hidden;
+}
+
+.cq-pad {
+  padding: 2px 64px 26px 18px;
+}
+
+/* Tag Pill */
+.vd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans, "DM Sans", sans-serif);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.vd::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.v-yes {
+  color: var(--sage, #6B7E5A);
+}
+
+.v-mid {
+  color: var(--gold-deep, #9C7C45);
+}
+
+.v-no {
+  color: var(--terracotta, #B85C38);
+}
+
+/* Answer Content (Page 27) */
+.ans {
+  font-family: var(--sans, "DM Sans", sans-serif);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--ink-2, #4F463E);
+  max-width: 660px;
+}
+
+.ans p {
+  margin: 0;
+}
+
+.ans p + p,
+.ans p + ul,
+.ans ul + p,
+.ans .note,
+.ans ul + .note {
+  margin-top: 12px;
+}
+
+.ans strong {
+  font-weight: 500;
+  color: var(--charcoal, #1A1612);
+}
+
+.ans ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+
+.ans li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  padding: 3px 0;
+}
+
+.ans li::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold, #C9A96E);
+  margin-top: 12px;
+}
+
+.ans .note {
+  padding-left: 16px;
+  border-left: 1px solid var(--gold, #C9A96E);
+  font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-3, #5A4F46);
+}
+
+/* Answer Footer (Page 27) */
+.cq-foot {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border, #E8E0D4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  font-size: 12px;
+  color: var(--muted, #8A7E72);
+}
+
+.cq-foot button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--sans, "DM Sans", sans-serif);
+  color: var(--muted, #8A7E72);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.cq-foot button:hover {
+  color: var(--charcoal, #1A1612);
+}
+
+.cq-foot svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cq-foot svg.fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Responsive Overrides (Page 25-26) */
+@media (max-width: 760px) {
+  .sec {
+    padding-top: 48px;
+  }
+
+  .sec-hd {
+    grid-template-columns: 1fr;
+  }
+
+  .sec-n {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .sec-hd h2 {
+    font-size: 28px;
+  }
+
+  .sec-hd p {
+    grid-column: 1;
+  }
+
+  .cq-b {
+    grid-template-columns: minmax(0, 1fr) 12px;
+    gap: 6px 12px;
+    padding: 16px 6px 16px 12px;
+  }
+
+  .cq-t {
+    font-size: 18px;
+  }
+
+  .cq-b > svg {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+  }
+
+  .cq-pad {
+    padding: 2px 12px 22px;
+  }
+
+  .cq-b .vd {
+    grid-row: 2;
+    grid-column: 1;
+  }
+}

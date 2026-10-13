@@ -38,6 +38,7 @@ import CarePolicyPage from "./pages/CarePolicyPage";
 import SellerGuidelinesPage from "./pages/SellerGuidelinesPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import ShippingPolicyPage from "./pages/ShippingPolicyPage";
+import PricingPolicyPage from "./pages/PricingPolicyPage";
 
 export default function App() {
   useEffect(() => {
@@ -113,6 +114,8 @@ export default function App() {
         <Route path="/seller-guidelines" element={<SellerGuidelinesPage />} />
         <Route path="/seller" element={<Navigate to="/seller-guidelines" replace />} />
         <Route path="/seller-faq" element={<Navigate to="/seller-guidelines" replace />} />
+        <Route path="/pricing-fees" element={<PricingPolicyPage />} />
+        <Route path="/pricing" element={<Navigate to="/pricing-fees" replace />} />
         <Route path="/contact-us" element={<ContactUsPage />} />
         <Route path="/contact" element={<Navigate to="/contact-us" replace />} />
         <Route path="/contactus" element={<Navigate to="/contact-us" replace />} />

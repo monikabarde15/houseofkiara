@@ -1,0 +1,181 @@
+/* src/styles/pricing/pricing-section-bar.css */
+/* Styles for Sticky Section Bar with Side Switch (D6) matching Pages 18-19 of hok_pricing_fees_v4 */
+
+.sh-wrap {
+  margin-top: 44px;
+  position: relative;
+}
+
+.secbar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: var(--hdr, 114px);
+  z-index: 60;
+  background: var(--warm-white, #FFFEFB);
+  border-bottom: 1px solid var(--border, #E8E0D4);
+  width: 100%;
+}
+
+/* Edge Fades */
+.secbar::before,
+.secbar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 1px;
+  width: 48px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+}
+
+.secbar::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--warm-white, #FFFEFB) 30%, rgba(255, 254, 251, 0));
+}
+
+.secbar::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--warm-white, #FFFEFB) 30%, rgba(255, 254, 251, 0));
+}
+
+.secbar.fade-l::before,
+.secbar.fade-r::after {
+  opacity: 1;
+}
+
+/* Section Bar Inner Row */
+.secbar-in {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  box-sizing: border-box;
+}
+
+.secbar-in::-webkit-scrollbar {
+  display: none;
+}
+
+.secbar-in > :first-child {
+  margin-left: auto;
+}
+
+.secbar-in > :last-child {
+  margin-right: auto;
+}
+
+/* Pinned Side Switch */
+.sb-side {
+  display: inline-flex;
+  flex-shrink: 0;
+  border: 1px solid var(--border, #E8E0D4);
+  margin-right: 4px;
+}
+
+.sb-sw {
+  background: var(--warm-white, #FFFEFB);
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  font-family: var(--sans, "DM Sans", sans-serif);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--muted, #8A7E72);
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sb-sw + .sb-sw {
+  border-left: 1px solid var(--border, #E8E0D4);
+}
+
+.sb-sw:hover {
+  color: var(--charcoal, #1A1612);
+  background: var(--cream, #FAF7F2);
+}
+
+.sb-sw[aria-pressed="true"] {
+  background: var(--charcoal, #1A1612);
+  color: #FAF7F2;
+}
+
+/* Section Links */
+.sb-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 17px 0 16px;
+  font-family: var(--sans, "DM Sans", sans-serif);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--muted, #8A7E72);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sb-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.sb-link:hover,
+.sb-link.on {
+  color: var(--charcoal, #1A1612);
+}
+
+.sb-link.on::after {
+  background: var(--gold, #C9A96E);
+}
+
+/* 1199px and narrower (Page 19) */
+@media (max-width: 1199px) {
+  .sb-side {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    background: var(--warm-white, #FFFEFB);
+  }
+
+  .secbar.fade-l .sb-side {
+    box-shadow: -40px 0 0 var(--warm-white, #FFFEFB), 14px 0 12px -10px rgba(26, 22, 18, 0.18);
+  }
+
+  .secbar.fade-l::before {
+    opacity: 0;
+  }
+}
+
+/* 760px and narrower (Page 19) */
+@media (max-width: 760px) {
+  .sh-wrap {
+    margin-top: 32px;
+  }
+
+  .secbar-in {
+    padding: 0 18px;
+    gap: 20px;
+  }
+
+  .secbar-in > :first-child {
+    margin-left: 0;
+  }
+
+  .secbar.fade-l .sb-side {
+    box-shadow: -18px 0 0 var(--warm-white, #FFFEFB), 14px 0 12px -10px rgba(26, 22, 18, 0.18);
+  }
+}

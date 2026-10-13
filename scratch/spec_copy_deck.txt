@@ -1,0 +1,608 @@
+--- PAGE 43 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 43 
+What you pay: the ledger. Each cell is its figure, then its line, then the answer it opens. 
+Row Renting Buying preloved 
+The piece One price for 3 days [window_standard] 
+Your standard rental window: it arrives the day 
+before your celebration and goes back the day 
+after. 
+opens r-price 
+The price shown 
+Or the offer we accept from you. 
+opens p-price 
+Extra days The daily rate, per day 
+Shown on every piece. Add days when you 
+book, or keep it longer if it is free. 
+opens r-extra 
+Not applicable  (not applicable) 
+GST 18% [gst_rental] on the rental fee 
+Added at checkout, and shown before you pay. 
+opens r-gst 
+5% [gst_preloved] on the price 
+Added at checkout, and shown before you pay. 
+opens p-price 
+Deposit Refundable, set for each piece 
+Shown before you book and paid separately. It 
+carries no GST. 
+opens d-what 
+None  (not applicable) 
+Delivery in India Free from ₹5,000 [free_delivery_min] 
+Covering both journeys. On smaller orders, 
+quoted at checkout. 
+opens c-free 
+Free from ₹5,000 [free_delivery_min] 
+On smaller orders, quoted at checkout. 
+opens c-free 
+Faster delivery Quoted before you pay 
+Express, or the same day within Indore. 
+opens c-express 
+Quoted before you pay 
+Express, the same day within Indore, or 
+anywhere in the world. 
+opens c-intl 
+Cleaning and care Always included 
+Professional cleaning before and after every 
+rental. 
+opens r-included 
+Always included 
+Checked and pressed, and professionally 
+cleaned if it has been worn. 
+opens p-included 
+Changing your mind Free until 7 days [rental_cancel_full] before it 
+starts 
+With everything refunded. Closer to your dates, 
+see what applies. 
+opens k-rent-early 
+Free until it is dispatched 
+Then a final sale, unless it is not as described. 
+opens k-pre 
+Foot line: 
+No convenience fee, no platform fee, and nothing extra for paying by card or UPI. Every way to pay [opens answer 
+y-ways] 
+--- PAGE 44 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 44 
+What you earn: the ledger. 
+Row Cell 
+Your share Set for each piece 
+By its value and the work it takes to rent or sell it, so that you recover a meaningful part 
+of what you invested. 
+opens e-how 
+Never part of it GST, deposits and delivery 
+And our promo codes never reduce your share. 
+opens e-on 
+Listing your piece Free 
+Collection, photography, cleaning and every delivery to renters and buyers are on us. 
+opens e-free 
+When you are paid Within 3 working days [payout_cycle] 
+Once a rental is back with us and inspected, or once a buyer has received the piece. 
+opens e-when 
+Where it goes Your own account 
+A bank account or UPI ID in your name, with a statement for every payout. 
+opens e-where 
+Costs that can be yours Only four, each agreed first 
+A repair to make it ready, an early return, a missed collection, or delivery when you 
+borrow it back. 
+opens e-costs 
+Foot line: 
+Your share and your prices are confirmed in your piece's Listing Terms before it goes live, as our Seller Guidelines 
+[opens page seller-guidelines] explain. 
+9.3 Intros 
+What you pay: 
+Every rental is priced for its window, and every preloved piece at the price agreed with its owner. GST is added at 
+checkout, standard delivery is free on every order of ₹5,000 [free_delivery_min] or more, and a deposit is simply 
+held in safekeeping until your piece is home with us. 
+What you earn: 
+When your piece is rented or sold, you receive a share of what it earns, agreed with you for that piece before it 
+goes live, so that you recover a meaningful part of what you invested in it. Listing is free, and your earnings reach 
+your own account within 3 working days [payout_cycle]. 
+--- PAGE 45 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 45 
+9.4 In numbers (What you pay) 
+What you pay. Heading: Your order, in numbers (italic: numbers). Subline: One rental and one preloved piece, 
+added up line by line. Every piece shows its own prices before you book or buy. Tabs: A rental, A preloved piece. 
+Example Copy 
+A rental 
+(id rental) 
+Lead: A bridal lehenga priced at ₹18,000 [example window] for its standard window of 3 days 
+[window_standard], with a daily rate of ₹3,500 [example daily] and a deposit of ₹20,000 [example 
+deposit]. 
+Choice label: Days of celebrations 
+Chips: One day, Two days, Three days (Two days shown first) 
+Note: If it comes back after its Return Date, each late day costs ₹3,500 [example daily] plus 
+GST, exactly like an extra day. 
+A preloved piece 
+(id preloved) 
+Lead: A designer saree listed at ₹60,000 [example price], on which an offer of ₹54,000 [example 
+offer] has been accepted. 
+Choice label: Bought at 
+Chips: The listed price, The accepted offer (The listed price shown first) 
+Note: No deposit, and nothing more to pay once it is yours. 
+Receipt words, shared by every example. {daily} and {n} are filled from the example (5.3). 
+Key Copy 
+window Standard rental window, 3 days [window_standard] 
+extra1 1 extra day at {daily} 
+extraN {n} extra days at {daily} each 
+fee Rental fee 
+gst_rent GST at 18% [gst_rental] 
+del_rent Delivery, both journeys 
+price The listed price 
+offer Your accepted offer 
+gst_pre GST at 5% [gst_preloved] 
+del_pre Delivery within India 
+free Free 
+quoted Quoted at checkout 
+total Paid at checkout 
+deposit Deposit, held separately 
+dep_note Returned within 3 to 5 business days [deposit_refund_window] of inspection, to the account it 
+came from. 
+late_note If it comes back after its Return Date, each late day costs {daily} plus GST, exactly like an extra 
+day. 
+buy_note No deposit, and nothing more to pay once it is yours. 
+--- PAGE 46 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 46 
+Every receipt, exactly as the page shows it with today's settings: 
+Example and choice Lines Total and extras 
+A rental: One day Standard rental window, 3 days   ₹18,000 
+Rental fee   ₹18,000 
+GST at 18%   ₹3,240 
+Delivery, both journeys   Free 
+Paid at checkout ₹21,240 
+Deposit, held separately ₹20,000 
+Returned within 3 to 5 business 
+days of inspection, to the account 
+it came from. 
+A rental: Two days Standard rental window, 3 days   ₹18,000 
+1 extra day at ₹3,500   ₹3,500 
+Rental fee   ₹21,500 
+GST at 18%   ₹3,870 
+Delivery, both journeys   Free 
+Paid at checkout ₹25,370 
+Deposit, held separately ₹20,000 
+Returned within 3 to 5 business 
+days of inspection, to the account 
+it came from. 
+A rental: Three days Standard rental window, 3 days   ₹18,000 
+2 extra days at ₹3,500 each   ₹7,000 
+Rental fee   ₹25,000 
+GST at 18%   ₹4,500 
+Delivery, both journeys   Free 
+Paid at checkout ₹29,500 
+Deposit, held separately ₹20,000 
+Returned within 3 to 5 business 
+days of inspection, to the account 
+it came from. 
+A preloved piece: The listed 
+price 
+The listed price   ₹60,000 
+GST at 5%   ₹3,000 
+Delivery within India   Free 
+Paid at checkout ₹63,000 
+A preloved piece: The 
+accepted offer 
+Your accepted offer   ₹54,000 
+GST at 5%   ₹2,700 
+Delivery within India   Free 
+Paid at checkout ₹56,700 
+9.5 Sections, questions and answers 
+W H A T  Y O U  P A Y  
+01  Renting a piece   italic: piece  ·  bar label: Renting  ·  id: s-renting 
+How a rental is priced, and everything its price includes. 
+r-price   How is a rental priced? 
+Tag: One price for 3 days [window_standard]  (neutral, gold deep) 
+Every rental piece has one price for its standard rental window of 3 days [window_standard]: it arrives the day 
+before your celebration, is yours for the day itself, and goes back the day after. Here is how the window works 
+[opens page shipping-policy]. 
+Each piece also has a daily rate for every additional day, shown on its page. Both are set for each piece, by its 
+designer, its value and its condition, and your booking summary adds everything up before you pay. 
+Search keywords: price rental cost how much window daily rate days per day charge fee priced 
+r-extra   How do extra days work? 
+Tag: Daily rate per day  (neutral, gold deep) 
+Simply add one extra day for each additional day of celebrations, at the piece's daily rate. With a haldi and sangeet 
+on one day and the wedding the next, you would book your standard 3 days [window_standard] plus 1 extra day. 
+See it in numbers [scrolls to In numbers]. 
+Once your piece is with you, you can still ask to keep it longer [opens answer x-extend]. If no one has booked it 
+straight after you, each extra day costs the same daily rate. 
+Search keywords: extra days longer extend extension more days wedding functions haldi sangeet mehendi multiple add week 
+--- PAGE 47 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 47 
+r-included   What is included in the rental price? 
+Tag: Always included  (good news, sage) 
+Everything that keeps the piece at its best, and everything you need to enjoy it: 
+• professional cleaning before your rental, and again after it 
+• pressing, careful checks and any small touch-ups 
+• its garment bag and box, wrapped in tissue 
+• a prepaid return label, so sending it back costs nothing more 
+You never pay for cleaning, and please never clean the piece yourself. Our Care, Cleaning & Damage Policy 
+[opens page care-policy] explains why. 
+Search keywords: included cleaning dry clean pressing packaging garment bag box return label what is included free 
+r-gst   Is GST included in the rental price? 
+Tag: 18% [gst_rental] at checkout  (neutral, gold deep) 
+Rental prices are shown before GST. GST at 18% [gst_rental] is added to your rental fee at checkout, and you 
+see the exact amount before you pay. 
+Your deposit carries no GST, because it is held for you rather than paid to us. 
+Search keywords: gst tax included exclusive inclusive 18 percent rental price 
+r-several   I am renting several pieces for the same celebration 
+Tag: One delivery  (good news, sage) 
+Each piece has its own price for the window you share, and every piece booked for the same dates travels 
+together: one delivery and one pickup, counted as one order towards free delivery [opens answer c-free]. Each 
+piece also has its own deposit. 
+Search keywords: several pieces multiple outfits family same celebration together delivery each order 
+02  Buying preloved   italic: preloved  ·  bar label: Preloved  ·  id: s-preloved 
+The price of a preloved piece, offers, and buying from outside India. 
+p-price   How is a preloved piece priced? 
+Tag: 5% [gst_preloved] at checkout  (neutral, gold deep) 
+Every preloved piece has one price, agreed with its owner and shown on its page. It reflects the piece's designer 
+and its condition, and every detail of that condition is disclosed alongside it. 
+GST at 5% [gst_preloved] is added at checkout, and you see the exact amount before you pay. 
+Search keywords: preloved price how priced cost value resale second hand gst tax 5 percent 
+p-offer   Can I make an offer? 
+Tag: Preloved only  (neutral, gold deep) 
+Yes, on any preloved piece. Offers are never taken on rentals. 
+Name your price on the piece's page, and our team replies within 24 hours [offer_reply]. If we accept your offer, 
+it becomes your price, and GST and delivery are added at checkout in the usual way. 
+An offer does not reserve the piece, so it stays available to others until a purchase is complete. 
+Search keywords: offer make an offer negotiate bargain lower price quote counter name your price 
+p-included   Is cleaning included when I buy a preloved piece? 
+Tag: Always included  (good news, sage) 
+Yes. Every preloved piece is professionally cleaned before it leaves us, and arrives checked and pressed. A piece 
+that has never been worn is checked and pressed instead of cleaned, so it stays exactly as new. 
+Search keywords: preloved cleaned cleaning pressed checked packed included condition unworn 
+--- PAGE 48 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 48 
+p-abroad   I am buying from outside India 
+Tag: Prices in rupees  (neutral, gold deep) 
+Every price on House of Kaira is in Indian rupees. If you pay with a card issued outside India, your bank converts 
+the amount and may add a charge of its own. 
+International delivery is quoted for your country at checkout, and customs duties and import taxes are paid by you 
+when your piece arrives. Before any piece travels abroad, we show it to you properly first, as our Shipping & 
+Delivery Policy [opens page shipping-policy] explains. 
+Search keywords: international abroad outside india overseas currency dollars pounds customs duty import tax foreign card 
+03  Your deposit   italic: deposit  ·  bar label: Deposit  ·  id: s-deposit 
+Held in safekeeping while a rental is in your care, and returned once it is home with us. 
+d-what   How much is the deposit? 
+Tag: Set for each piece  (neutral, gold deep) 
+Each rental piece has its own deposit, set to protect it and shown on its page before you book. It is held in 
+safekeeping while the piece is in your care, and returned once it is home with us. 
+It is never a charge: it carries no GST, and it is never put towards your rental fee. 
+Search keywords: deposit security how much amount refundable gst 
+d-pay   When and how do I pay the deposit? 
+Tag: Paid separately  (neutral, gold deep) 
+Separately from your order, never at checkout. Our team arranges it with you on WhatsApp, and you pay it by UPI 
+or bank transfer, 10 days [deposit_due_before] before your piece is dispatched. For a booking made closer to the 
+date, it is due within 48 hours [deposit_late_booking] of our request, and always before dispatch. 
+Cash is welcome only for bookings made in person with us in Indore. We confirm receipt in writing within 48 hours 
+[deposit_receipt_within]. 
+Search keywords: deposit pay when how upi bank transfer cash whatsapp due before dispatch checkout 
+d-back   When is my deposit returned? 
+Tag: Within 3 to 5 business days [deposit_refund_window]  (good news, sage) 
+Within 3 to 5 business days [deposit_refund_window] of your piece being inspected on its return, and always to the 
+account it came from. If all is well, it comes back in full. 
+Search keywords: deposit back refund return when how long account 
+d-deduct   Can anything be taken from my deposit? 
+Tag: Only beyond normal wear  (neutral, gold deep) 
+Only what a rental genuinely leaves behind: late days [opens answer x-late] at the daily rate, or the cost of 
+restoring damage beyond normal wear [opens answer l-damage], decided on evidence. We tell you within 2 days 
+[deduction_notice_within] of the piece reaching us, with photographs, and give you 2 days [deduction_reply_within] 
+to reply before anything is settled. 
+Normal wear, and our cleaning after every rental, are never taken from it. Our Deposit Policy [opens page deposit-
+policy] explains every step. 
+Search keywords: deposit deduction deduct taken kept withheld damage late charges 
+04  Delivery charges   italic: charges  ·  bar label: Delivery  ·  id: s-delivery 
+When delivery is on us, and what faster delivery costs. 
+c-free   When is delivery free? 
+Tag: Free from ₹5,000 [free_delivery_min]  (good news, sage) 
+Standard delivery within India is free on every order of ₹5,000 [free_delivery_min] or more, measured on the price 
+of your pieces before GST. For a rental, that covers both journeys: to you, and back to us. 
+Your deposit is not counted towards it, as it is held separately from your order. 
+Search keywords: free delivery shipping threshold minimum order both ways 
+--- PAGE 49 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 49 
+c-below   What does delivery cost on smaller orders? 
+It is worked out for your delivery address and shown at checkout, before you pay. For a rental, it already covers 
+the journey back to us, so there is nothing more to pay when your piece comes home. 
+Search keywords: delivery cost charge small order below threshold how much shipping fee 
+c-express   What do express and same day delivery cost? 
+Tag: Quoted before you pay  (neutral, gold deep) 
+They depend on where your piece is travelling, so we never quote a flat fee. Whenever they are available for your 
+order, you see the exact charge at checkout, before you pay. 
+Both are faster services on top of standard delivery, so they are charged even when standard delivery is free. 
+Same day delivery is offered within Indore. 
+Search keywords: express faster quick same day indore urgent delivery cost price 
+c-intl   What does international delivery cost? 
+Tag: Quoted for your country  (neutral, gold deep) 
+It depends on the country and the weight of your piece, so it is quoted for your address at checkout, before you 
+pay. International delivery is for preloved pieces, and it is never part of free delivery. 
+Faster international delivery is available at an extra charge, also quoted before you pay. Customs duties and 
+import taxes are charged by your country, and paid when your piece arrives. 
+Search keywords: international delivery cost abroad worldwide shipping price country customs 
+05  Extra days and late returns   italic: late returns  ·  bar label: Extra days  ·  id: s-extras 
+Keeping a piece longer, returning it late, and missed deliveries or pickups. 
+x-extend   I would like to keep my piece a little longer 
+Tag: Daily rate plus GST  (neutral, gold deep) 
+Message us before your Return Date. If no one has booked the piece straight after you, we extend your rental at 
+its daily rate, plus 18% [gst_rental] GST, for each extra day. 
+Search keywords: keep longer extend extension extra day after delivery more time 
+x-late   What does a late return cost? 
+Tag: Daily rate plus GST  (caution, terracotta) 
+Each extra day is charged at the piece's daily rate plus 18% [gst_rental] GST, exactly like an extra day of rental, 
+because someone else may be waiting for it. There is no separate late fee. 
+You are never charged when a delay is ours or our delivery partner's. If a piece has not been handed back 5 days 
+[not_returned_after] after its Return Date, it is treated as not returned [opens answer l-loss]. 
+Search keywords: late return fee charge penalty overdue delay extra day after return date 
+x-missed   I missed a delivery or a pickup 
+Simply message us and we will arrange another. If the first was missed because no one was available, the second 
+carries a charge: our delivery partner's charge to us, plus GST, shown to you before it is booked. 
+For a pickup, you are also welcome to drop the piece at our delivery partner's nearest office instead, at no cost. A 
+missed pickup is a delivery charge, never a late return. 
+Search keywords: missed delivery not home redelivery second delivery pickup missed re pickup charge 
+x-change   Can I change my dates? 
+Tag: Usually possible  (good news, sage) 
+Usually, yes, as long as your piece has not been dispatched. Message us with your new dates. If the piece is free, 
+we move your booking and settle any difference in price, with no charge for the change itself. 
+If your celebration has moved rather than been called off, changing your dates is almost always better than 
+cancelling. 
+Search keywords: change dates move booking postpone reschedule different date swap piece 
+--- PAGE 50 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 50 
+06  Cancellations and refunds   italic: refunds  ·  bar label: Cancellations  ·  id: s-cancel 
+What comes back to you if your plans change, and how quickly. 
+k-rent-early   I cancel a rental more than 7 days [rental_cancel_full] before it starts 
+Tag: Full refund  (good news, sage) 
+You receive a full refund: your rental fee, the GST on it, and any delivery charge you paid. If your deposit has 
+already been paid, it comes back in full too. 
+Your rental starts on the day your piece arrives, the day before your celebration. 
+Search keywords: cancel rental early more than week full refund 
+k-rent-late   I cancel a rental within 7 days [rental_cancel_full] of its start, before it is dispatched 
+Tag: 70% [rental_cancel_late_refund] refunded  (neutral, gold deep) 
+By then, your piece has been turned away from everyone else and is being prepared for you. You receive 70% 
+[rental_cancel_late_refund] of your rental fee back, with the GST paid on it, and any delivery charge and deposit 
+in full. 
+If your celebration has simply moved, change your dates [opens answer x-change] instead: there is no charge, and 
+nothing is lost. 
+Search keywords: cancel rental late within week last minute partial refund percent 
+k-rent-sent   I cancel a rental after it has been dispatched 
+Tag: No refund  (caution, terracotta) 
+Once a rental is on its way, it can no longer be cancelled or refunded, as the next celebration is planned around its 
+return. Your deposit comes back as usual, once the piece is home with us. 
+If something is wrong when it arrives, message us within 24 hours [issue_window] of delivery, and we will put it 
+right. 
+Search keywords: cancel after dispatch shipped on the way rental 
+k-pre   I cancel a preloved order 
+Tag: Free until dispatch  (neutral, gold deep) 
+Until your piece is dispatched, you can cancel for a full refund, including GST and delivery. 
+Once it is on its way, a preloved purchase is final, as every piece is one of a kind. If it is not as described, 
+message us within 24 hours [issue_window] of delivery, or within 30 days [latent_window] for a flaw that could not 
+have been seen on arrival, and our Refund & Cancellation Policy [opens page refund-policy] applies. 
+Search keywords: cancel preloved order refund final sale return change of mind 
+k-we   What if House of Kaira has to cancel? 
+Tag: Full refund  (good news, sage) 
+You receive everything you paid, automatically. And if we cancel at a time when cancelling yourself would have 
+cost you something, we pay you that same amount on top, as our Terms & Conditions [opens page terms] promise. 
+Search keywords: house of kaira cancels you cancel unavailable compensation matching 
+k-time   How long does a refund take? 
+Tag: Within 7 to 14 days [refund_timeline]  (neutral, gold deep) 
+We start your refund the moment a cancellation is confirmed. It reaches the payment method you used at 
+checkout within 7 to 14 days [refund_timeline], depending on your bank. A deposit always goes back to the 
+account it came from. 
+Search keywords: refund how long time days bank original payment method 
+--- PAGE 51 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 51 
+07  If something happens   italic: happens  ·  bar label: Damage and loss  ·  id: s-damage 
+Normal wear is never charged. Here is what applies beyond it. 
+l-wear   Will I be charged for normal wear? 
+Tag: Never charged  (good news, sage) 
+Never. If our regular cleaning and small touch-ups after every rental put it right, it is normal wear, and it is 
+never charged. Natural perspiration is never charged either. 
+If it needs specialist stain treatment, a karigar's repair or new materials, or cannot be put right at all, it is damage, 
+and here is what applies [opens answer l-damage]. 
+Search keywords: normal wear stain perspiration sweat makeup charged loose thread crease what counts 
+l-damage   What if my piece is damaged? 
+Tag: Restoration only  (neutral, gold deep) 
+Tell us straight away, and please do not try to fix it yourself. The cost of restoring it is taken from your deposit, 
+decided against the photographs and video we take before dispatch, and shared with you first. It carries no GST, 
+because it restores the piece rather than paying for anything. 
+If the cost is more than your deposit, the balance is settled within 7 days [balance_due] of our written statement, 
+once we have talked it through with you. Our Care, Cleaning & Damage Policy [opens page care-policy] explains 
+more. 
+Search keywords: damage tear stain repair cost charge karigar restoration deposit burn 
+l-loss   What if a piece is lost or not returned? 
+Tag: Replacement Value  (caution, terracotta) 
+Every rental piece has a Replacement Value, shown in your booking summary before you pay. If a piece is lost, 
+stolen, not returned or damaged beyond repair, its Replacement Value is owed, less your deposit, with no GST 
+and no late days on top. 
+We always talk it through with you first. Our Deposit Policy [opens page deposit-policy] explains every step. 
+Search keywords: lost stolen not returned replacement value missing theft beyond repair 
+08  How you pay   italic: pay  ·  bar label: Paying  ·  id: s-paying 
+Ways to pay, promo codes and your GST invoice. 
+y-ways   How can I pay? 
+Securely through Razorpay, by UPI, debit or credit card, or net banking. 
+Your card and UPI details are never stored by us. Your deposit is the one amount paid separately, as arranged 
+with you [opens answer d-pay]. 
+Search keywords: pay payment methods upi card credit debit net banking emi razorpay secure 
+y-fees   Are there any other fees? 
+Tag: None  (good news, sage) 
+No. There is no convenience fee, no platform fee and nothing extra for paying by card or UPI. Every charge that 
+can ever apply is on this page, and everything for your order is shown before you pay. 
+Search keywords: convenience fee platform fee hidden charges extra fees service charge card fee surcharge 
+y-promo   How do promo codes work? 
+Enter your code at checkout, and you see the saving before you pay. A promo code applies to the price of your 
+pieces, never to a deposit. 
+Search keywords: promo code discount coupon offer code voucher 
+y-invoice   Will I receive a GST invoice? 
+Yes, for every order, with the GST on each charge set out clearly. If you are buying for a business, add your 
+GSTIN at checkout and it appears on your invoice. 
+Search keywords: gst invoice bill receipt gstin business company tax invoice 
+--- PAGE 52 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 52 
+W H A T  Y O U  E A R N 
+01  Your share   italic: share  ·  bar label: Your share  ·  id: s-share 
+How your share is set, and what it is calculated on. 
+e-how   How is my share decided? 
+Your share is set for each piece and discussed openly with you before it goes live. It reflects your piece's value 
+and condition, and the effort it takes from our team to rent or sell it: collecting and cleaning it, photographing it 
+beautifully, and marketing it to the right people. 
+Whatever the piece, our aim stays the same: that you recover a meaningful part of what you invested in it, 
+and that we keep only what truly reflects our work for it. Your share is then confirmed in its Listing Terms. 
+Search keywords: share how decided set percentage commission per piece value condition effort marketing listing terms 
+e-fixed   Is there a fixed share for every piece? 
+Tag: Agreed piece by piece  (neutral, gold deep) 
+No, and that is deliberate. Every piece is different: some find their first renter almost at once, while others need 
+more of our time, care and marketing to reach the right person. 
+So rather than one figure for everyone, we agree a share for your piece with you before it goes live, and every 
+payout statement shows exactly how it was worked out. Here is how your share is decided [opens answer e-how]. 
+Search keywords: fixed typical standard same every piece share percentage rate how much keep earn commission cut 
+e-on   What is my share calculated on? 
+On the rental fee of each booking, and on the final price of a sale, including an offer we have accepted. 
+GST, deposits and delivery charges are never part of it: GST goes to the government, a deposit is the renter's own 
+money held in safekeeping, and delivery pays for the journey. 
+Search keywords: calculated on paid on gst deposit delivery base what counts rental fee final price 
+e-promo   Do promo codes reduce my share? 
+Tag: Never  (good news, sage) 
+Never. When we run a promo code, we fund it ourselves, so your share is worked out on the price before the code. 
+Search keywords: promo code discount reduce share sale marketing 
+02  What listing costs   italic: costs  ·  bar label: Costs  ·  id: s-costs 
+Listing is free. These are the only costs that can ever be yours. 
+e-free   Does it cost anything to list a piece? 
+Tag: Nothing upfront  (good news, sage) 
+Nothing upfront. Listing is free, and collection, photography, cleaning and every delivery to renters and buyers are 
+on us. 
+Search keywords: cost to list listing fee free upfront charge photography collection 
+e-costs   Which costs can ever be mine? 
+Only these, and you always know them in advance: 
+• a repair your piece needs to be ready to rent or sell, agreed with you first and taken from its payout 
+• the return delivery, if you take your piece back within 90 days [free_return_after] of it going live 
+• a second collection, if the first is missed because no one was available 
+• the delivery both ways when you borrow your piece back to wear 
+A renter's damage is never taken from your payout. 
+Search keywords: costs mine pay repair return delivery collection borrow which costs charged 
+--- PAGE 53 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 53 
+e-clean   Who pays for cleaning? 
+Tag: Always on us  (good news, sage) 
+We do, always: after every rental, when a preloved piece first comes to us, and when you borrow your piece back 
+to wear, both before it goes to you and when it returns. 
+Search keywords: cleaning cost dry clean who pays borrow back intake 
+e-repair   Who pays if my piece needs a repair? 
+Work needed to bring your piece up to our standard is yours. We agree it with you first, carry it out once someone 
+is interested in your piece, and take it from that piece's payout, so nothing is charged upfront. 
+Damage that happens during a rental is ours to deal with, from the renter's deposit. Our Seller Guidelines [opens 
+page seller-guidelines] explain how your piece is looked after. 
+Search keywords: repair damage who pays karigar fix restore standard 
+03  Your payouts   italic: payouts  ·  bar label: Payouts  ·  id: s-payouts 
+When you are paid, where, and with what record. 
+e-when   When will I be paid? 
+Tag: Within 3 working days [payout_cycle]  (neutral, gold deep) 
+Within 3 working days [payout_cycle]. For a rental, that is once it has ended and your piece is back with us and 
+inspected. For a sale, it is once the buyer has received the piece. 
+Search keywords: when paid payout payment timeline days rental sale 
+e-where   Where is my payout sent? 
+Tag: Your own account  (good news, sage) 
+Into a bank account or UPI ID in your own name. To keep your earnings safe, we cannot pay into anyone else's 
+account. 
+Search keywords: where bank account upi name own transfer 
+e-statement   Will I see how my payout is worked out? 
+Yes. Every payout comes with a statement showing the price, your share and anything deducted from it. 
+Search keywords: statement record breakdown payout history how worked out 
+e-deduct   Can anything be deducted from my payout? 
+Only what you have agreed to, or what the law requires: one of the costs that can be yours [opens answer e-costs], 
+tax the law requires us to deduct, or an amount you owe under our Lister Terms [opens page lister-terms], such as 
+for a sale reversed because something was not disclosed. 
+Search keywords: deduct deduction taken from payout less reduce owe 
+04  Tax and your PAN   italic: your PAN  ·  bar label: Tax  ·  id: s-tax 
+GST, tax deducted from payouts, and the tax on your own earnings. 
+e-gst   Is GST taken from my share? 
+Tag: Never from your share  (good news, sage) 
+No. GST is paid by the renter or buyer on top of the price, and we pay it to the government. Your share is worked 
+out on the price before GST. 
+Search keywords: gst my share tax renter buyer pays government 
+e-pan   Why do you ask for my PAN? 
+We ask for your PAN before your piece goes live, together with your payout details, because the law can require 
+us to deduct tax from some payouts. When it does, we deduct it and send you the certificate, so you can claim it in 
+your income tax return. 
+We never ask for your full Aadhaar number. 
+Search keywords: pan tds tax deducted source certificate aadhaar income tax 
+--- PAGE 54 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 54 
+e-owntax   Do I pay tax on my earnings? 
+You are responsible for any tax on your earnings, and your payout statements give you a clear record for your 
+return. If you are unsure how your earnings are treated, a tax adviser can guide you. 
+Search keywords: tax my earnings income tax responsible return adviser 
+05  Prices and offers   italic: offers  ·  bar label: Prices and offers  ·  id: s-prices 
+How the price of your piece is set, and how offers work. 
+e-price   Who sets the price of my piece? 
+Tag: Agreed with you  (good news, sage) 
+We agree it with you. We suggest a rental price, a daily rate and a sale price from your piece's designer, condition 
+and demand, and nothing goes live until you are happy with them. 
+We never lower a price on our own, and there is no fixed listing period and no automatic markdown. A price 
+changes only when you agree. 
+Search keywords: price set who decides my piece value rental price daily rate sale price markdown 
+e-offers   How do offers on my piece work? 
+Tag: Preloved only  (neutral, gold deep) 
+Offers are taken only on pieces for sale, never on rentals. We agree with you the lowest offer we can accept, and 
+only ever accept offers at or above it. Your share is then calculated on the price the buyer pays. 
+Search keywords: offer offers negotiate lowest minimum accept make an offer 
+e-partner   I am a designer or a boutique 
+We would love to hear from you. Designers and boutiques listing a collection work with us as Designer Partners, 
+and our Designer Partners [opens page designer-partners] page explains how. 
+Search keywords: designer boutique brand label collection partner multiple pieces 
+9.6 The way across 
+Element End of What you pay End of What you earn 
+Line Listing a piece of your own? Renting or buying with us? 
+Link See what you earn (opens What you earn) See what you pay (opens What you pay) 
+9.7 Related policies and fine print 
+Element Copy 
+Label Related policies 
+Link (refund-policy) Refund & Cancellation Policy 
+Link (deposit-policy) Deposit Policy 
+Link (shipping-policy) Shipping & Delivery Policy 
+Link (care-policy) Care, Cleaning & Damage Policy 
+Link (seller-guidelines) Seller Guidelines 
+Link (terms) Terms & Conditions 
+Link (faq) Help & FAQs 
+Fine print This page explains our prices, charges and shares in plain words. Where it ever differs 
+from our Terms & Conditions, the Terms apply. Last reviewed 11 October 2026. 
+Print link Print or save as PDF 
+--- PAGE 55 ---
+House of Kaira  ·  Pricing & Fees  ·  Front end spec v2  ·  Page 55 
+9.8 A question about a price? 
+Element Copy 
+Eyebrow We are here for you 
+Title A question about a price? (italic: price?) 
+Paragraph Every piece has its own story, and its own prices. If you would like the exact figures for 
+a piece, help planning a rental around your celebrations, or a word about listing with us, 
+message us. We would much rather help you directly, and nothing is too small to ask. 
+Sign off With love, the House of Kaira team 
+Buttons Message us on WhatsApp 
+Write to us 
+Channel: WhatsApp The fastest way to reach us. Seven days a week, 10 AM to 8 PM IST, with replies 
+usually within 2 hours. 
+Action: Start a chat 
+Channel: Email hello@houseofkaira.com. Best for anything you would like in writing, such as an invoice 
+or a payout statement. 
+Action: Send an email 
+Channel: Every order and payout, in 
+one place 
+Your bookings, receipts, deposits and payouts, in My Account. 
+Action: Go to my account 
+9.9 Messages 
+When Copy 
+Result count "<n> answers" or "1 answer", then ", showing the closest <k>" when more than 8 match 
+Result line under each question <side> · <section title>, for example "What you pay · Extra days and late returns" 
+No results We could not find that one 
+Ask us directly and we will answer it personally. 
+Button: Ask on WhatsApp 
+Answer footer Still unsure? Ask us about this 
+Copy link 
+After Copy link (toast) Link copied. Paste it anywhere to share this answer. 
+WhatsApp message, from an 
+answer or no results 
+Hello House of Kaira, I have a question about pricing: <question or search> 
+WhatsApp message, elsewhere Hello House of Kaira, I have a question about pricing. 
+Email subject A question about pricing 
+Ledger cell, accessible name <column>. <row>: <figure>. <line> Opens the full answer. (the column only on What 
+you pay) 
+Browser title Pricing & Fees · House of Kaira (the prototype adds its version, "Pricing & Fees · v4 · 
+House of Kaira") 
+Page description (meta) Every price, charge and share at House of Kaira: how rentals and preloved pieces are 
+priced, GST, deposits, delivery, extra days, cancellations, and how listers' shares are 
+agreed and when they are paid. 
