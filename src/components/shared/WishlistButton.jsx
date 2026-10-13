@@ -1,10 +1,15 @@
 import React from "react";
 import { Heart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import useWishlistStore from "../../store/wishlistStore";
+import useAuthStore from "../../store/authStore";
 import "../../styles/shared/WishlistButton.css";
 
 const WishlistButton = ({ productId }) => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
   const wishlistItems = useWishlistStore((state) => state.items);
   const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
   const isWishlisted = productId 
@@ -19,6 +24,11 @@ const WishlistButton = ({ productId }) => {
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!isAuthenticated) {
+          toast.error("Please login to use your wishlist");
+          navigate("/auth");
+          return;
+        }
         if (productId) {
           toggleWishlist(productId);
         }

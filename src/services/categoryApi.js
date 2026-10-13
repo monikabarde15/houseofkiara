@@ -85,15 +85,18 @@ export function resolveCategoriesFromCms(cmsData) {
     };
   }
 
-  const entries = Object.entries(cmsData.tiles);
+  const entries = Object.entries(cmsData.tiles).slice(0, 5); // Limit to 5 categories matching homepage Mosaic layout
   const resolvedTiles = entries.map(([key, tileConfig], index) => {
     const master = MASTER_CATEGORY_MAP[key] || {};
     const name = tileConfig.lbl?.trim() || master.name || key;
     const cta = cmsData.ctaLbl || master.cta || "Shop Now";
-    const desktopImage = tileConfig.img || master.desktopImage || "";
+    const desktopImage =
+      tileConfig.img ||
+      master.desktopImage ||
+      `https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875385/houseofkaira/products/sbc-${index + 1}.jpg`;
     const mobileImage = tileConfig.img || master.mobile?.image || desktopImage;
     const mobileEyebrow = tileConfig.kickMob || master.mobile?.eyebrow || cmsData.eyebrow || "Curated for every occasion";
-    const mobilePieces = master.mobile?.pieces || "Available";
+    const piecesCount = typeof tileConfig.liveCount === "number" ? `${tileConfig.liveCount} pieces available` : (master.mobile?.pieces || "Available");
     const variant = master.variant || encodeURIComponent(name);
 
     return {
@@ -104,7 +107,7 @@ export function resolveCategoriesFromCms(cmsData) {
       desktopImage,
       mobile: {
         eyebrow: mobileEyebrow,
-        pieces: mobilePieces,
+        pieces: piecesCount,
         image: mobileImage,
       },
     };

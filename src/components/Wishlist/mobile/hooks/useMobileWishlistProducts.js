@@ -25,7 +25,12 @@ export const useMobileWishlistProducts = () => {
 
   useEffect(() => {
     const wishedProducts = allWebProducts.filter((p) =>
-      wishlistIds.includes(p._id || p.id),
+      wishlistIds.some(
+        (id) =>
+          String(id) === String(p._id) ||
+          String(id) === String(p.id) ||
+          String(id) === String(p.productId)
+      )
     );
 
     const formatted = wishedProducts.map((item) => {
@@ -102,22 +107,55 @@ export const useMobileWishlistProducts = () => {
 
   const getProductsByMode = useCallback(
     (mode) => {
+      if (!mode || mode === "all") return allProducts;
       if (mode === "rent")
-        return allProducts.filter((p) => p.originalData?.rent);
+        return allProducts.filter(
+          (p) =>
+            p.type === "rent" ||
+            Boolean(p.originalData?.rent) ||
+            p.condition === "Rental" ||
+            (!p.originalData?.preloved && !p.originalData?.isNew && p.type !== "preloved" && p.type !== "new")
+        );
       if (mode === "preloved")
-        return allProducts.filter((p) => p.originalData?.preloved);
+        return allProducts.filter(
+          (p) =>
+            p.type === "preloved" ||
+            Boolean(p.originalData?.preloved) ||
+            p.condition === "Preloved"
+        );
       if (mode === "new")
-        return allProducts.filter((p) => p.originalData?.isNew);
+        return allProducts.filter(
+          (p) =>
+            p.type === "new" ||
+            Boolean(p.originalData?.isNew) ||
+            p.condition === "New"
+        );
       return allProducts;
     },
     [allProducts],
   );
 
   const getCounts = useCallback(() => {
-    const rent = allProducts.filter((p) => p.originalData?.rent).length;
-    const preloved = allProducts.filter((p) => p.originalData?.preloved).length;
-    const newCount = allProducts.filter((p) => p.originalData?.isNew).length;
-    const total = allProducts.length; // Actually total unique pieces
+    const rent = allProducts.filter(
+      (p) =>
+        p.type === "rent" ||
+        Boolean(p.originalData?.rent) ||
+        p.condition === "Rental" ||
+        (!p.originalData?.preloved && !p.originalData?.isNew && p.type !== "preloved" && p.type !== "new")
+    ).length;
+    const preloved = allProducts.filter(
+      (p) =>
+        p.type === "preloved" ||
+        Boolean(p.originalData?.preloved) ||
+        p.condition === "Preloved"
+    ).length;
+    const newCount = allProducts.filter(
+      (p) =>
+        p.type === "new" ||
+        Boolean(p.originalData?.isNew) ||
+        p.condition === "New"
+    ).length;
+    const total = allProducts.length;
     const uniqueDesigners = new Set(allProducts.map((p) => p.designer)).size;
 
     return {

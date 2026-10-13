@@ -49,18 +49,41 @@ export default function App() {
     <>
       <Toaster 
         position="top-right"
+        containerStyle={{
+          top: 55,
+          right: 28,
+          zIndex: 99999,
+        }}
         toastOptions={{
+          duration: 3000,
           style: {
             background: '#1e1412',
             color: '#fcf9f5',
             border: '1px solid #c5a880',
-            fontSize: '13px',
-            fontFamily: 'sans-serif',
-            zIndex: 9999,
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(197, 168, 128, 0.25)',
+            borderRadius: '8px',
+            padding: '12px 20px',
+            fontSize: '13.5px',
+            fontWeight: 500,
+            fontFamily: "'DM Sans', sans-serif",
+            letterSpacing: '0.02em',
+            whiteSpace: 'nowrap',
+            maxWidth: '400px',
           },
           success: {
             iconTheme: {
               primary: '#c5a880',
+              secondary: '#1e1412',
+            },
+          },
+          error: {
+            style: {
+              background: '#1e1412',
+              color: '#fcf9f5',
+              border: '1px solid #e06c75',
+            },
+            iconTheme: {
+              primary: '#e06c75',
               secondary: '#1e1412',
             },
           },

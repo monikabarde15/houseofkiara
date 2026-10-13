@@ -396,6 +396,7 @@ export default function App() {
       return (
         <DashboardView 
           orders={orders}
+          customers={customers}
           listerSubmissions={submissions}
           activeListingsCount={products.filter(p => p.status !== 'Archived').length || products.length || 1}
           setView={setView}
@@ -410,6 +411,7 @@ export default function App() {
       return (
         <OrdersView 
           orders={orders}
+          customers={customers}
           setView={setView}
           setSelectedOrderId={setSelectedOrderId}
         />

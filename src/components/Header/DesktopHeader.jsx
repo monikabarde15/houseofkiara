@@ -1,5 +1,6 @@
 // src\components\Header\DesktopHeader.jsx
 import { useLocation, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import logo from "../../assets/logo/logo.png";
 import "../../styles/Header/desktop-header.css";
 import useAuthStore from "../../store/authStore";
@@ -26,6 +27,11 @@ const DesktopHeader = ({ onSearchOpen }) => {
     navigate("/cart");
   };
   const handleWishlistClick = () => {
+    if (!isAuthenticated) {
+      toast.error("Please login to view your wishlist");
+      navigate("/auth");
+      return;
+    }
     navigate("/wishlist");
   };
   const handleLogoClick = () => {

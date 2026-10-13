@@ -1,45 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import { Heart } from "lucide-react";
 import "../../../styles/Profile/cards/WishlistCard.css";
 
 const WishlistCard = ({ piece, onAddToBag, onViewProduct, onRemove }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   const handleRemove = (e) => {
     e.stopPropagation();
-    onRemove(piece.id);
+    if (onRemove) onRemove(piece.id);
   };
 
   const handleAddToBag = (e) => {
     e.stopPropagation();
-
-    // Check if modal is needed or direct add
-    const needsSize =
-      piece.sizes && Array.isArray(piece.sizes) && piece.sizes.length > 1;
-    const needsColor = piece.colors && piece.colors.length > 1;
-    const isRental = piece.condition === "Rental";
-
-    const needsModal = needsSize || needsColor || isRental;
-
-    if (needsModal) {
-      onAddToBag(piece);
-    } else {
-      // Direct add - only one size, no colors, not rental
-      showToastMessage(`${piece.name} added to your bag`);
-      // Show toast notification
-    }
+    if (onAddToBag) onAddToBag(piece);
   };
 
   const handleViewProduct = (e) => {
     e.stopPropagation();
-    onViewProduct(piece.id);
+    if (onViewProduct) onViewProduct(piece.id, piece);
+  };
+
+  const handleCardClick = () => {
+    if (onViewProduct) onViewProduct(piece.id, piece);
   };
 
   return (
     <div
       className="profile-wc"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleCardClick}
     >
       <div className="profile-wc-thumb">
         {piece.image ? (
@@ -68,25 +54,36 @@ const WishlistCard = ({ piece, onAddToBag, onViewProduct, onRemove }) => {
           </svg>
         )}
 
-        <button className="profile-wc-heart" onClick={handleRemove}>
+        <button
+          className="profile-wc-heart"
+          onClick={handleRemove}
+          title="Remove from saved"
+          type="button"
+        >
           <Heart size={12} fill="#B85C38" stroke="#B85C38" strokeWidth={1.5} />
         </button>
 
-        {isHovered && (
-          <div className="profile-wc-cta-overlay">
-            <button className="profile-wc-cta-add" onClick={handleAddToBag}>
-              Add to Bag
-            </button>
-            <button className="profile-wc-cta-view" onClick={handleViewProduct}>
-              View Product
-            </button>
-          </div>
-        )}
+        <div className="profile-wc-cta-overlay">
+          <button
+            className="profile-wc-cta-add"
+            onClick={handleAddToBag}
+            type="button"
+          >
+            Add to Bag
+          </button>
+          <button
+            className="profile-wc-cta-view"
+            onClick={handleViewProduct}
+            type="button"
+          >
+            View Product
+          </button>
+        </div>
       </div>
 
       <div className="profile-wc-body">
         <div className="profile-wc-name">{piece.name}</div>
-        <div className="profile-wc-mode">{piece.condition}</div>
+        <div className="profile-wc-mode">{piece.condition || piece.mode}</div>
         <div className="profile-wc-price">
           ₹
           {piece.price

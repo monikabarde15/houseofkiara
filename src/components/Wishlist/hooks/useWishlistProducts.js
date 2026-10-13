@@ -27,7 +27,12 @@ export const useWishlistProducts = () => {
   // Update displayed products when wishlistIds or allWebProducts changes
   useEffect(() => {
     const wishedProducts = allWebProducts.filter((p) =>
-      wishlistIds.some(id => String(id) === String(p._id || p.id))
+      wishlistIds.some(
+        (id) =>
+          String(id) === String(p._id) ||
+          String(id) === String(p.id) ||
+          String(id) === String(p.productId)
+      )
     );
 
     const formatted = wishedProducts.map((item) => {
@@ -105,11 +110,32 @@ export const useWishlistProducts = () => {
 
   const getProductsByType = useCallback(
     (type) => {
-      if (!type) return products;
-      if (type === "rent") return products.filter((p) => p.originalData?.rent);
-      if (type === "preloved")
-        return products.filter((p) => p.originalData?.preloved);
-      if (type === "new") return products.filter((p) => p.originalData?.isNew);
+      if (!type || type === "all") return products;
+      if (type === "rent") {
+        return products.filter(
+          (p) =>
+            p.type === "rent" ||
+            Boolean(p.originalData?.rent) ||
+            p.condition === "Rental" ||
+            (!p.originalData?.preloved && !p.originalData?.isNew && p.type !== "preloved" && p.type !== "new"),
+        );
+      }
+      if (type === "preloved") {
+        return products.filter(
+          (p) =>
+            p.type === "preloved" ||
+            Boolean(p.originalData?.preloved) ||
+            p.condition === "Preloved",
+        );
+      }
+      if (type === "new") {
+        return products.filter(
+          (p) =>
+            p.type === "new" ||
+            Boolean(p.originalData?.isNew) ||
+            p.condition === "New",
+        );
+      }
       return products;
     },
     [products],

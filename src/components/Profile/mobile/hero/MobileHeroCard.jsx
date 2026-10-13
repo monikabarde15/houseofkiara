@@ -3,6 +3,7 @@ import { SquarePen } from "lucide-react";
 import MobileEditProfileModal from "../modals/MobileEditProfileModal";
 import Toast from "../../ui/Toast";
 import useAuthStore from "../../../../store/authStore";
+import useWishlistStore from "../../../../store/wishlistStore";
 import "../../../../styles/Profile/mobile/hero/MobileHeroCard.css";
 
 const MobileHeroCard = () => {
@@ -62,9 +63,10 @@ const MobileHeroCard = () => {
       (firstName?.[0] || "") + (lastName?.[0] || firstName?.[1] || "")
     ).toUpperCase() || "HK";
 
+  const wishlistItems = useWishlistStore((state) => state.items);
   const rentalsCount = user?.ordersCount || 0;
   const purchasesCount = user?.purchasesCount || 0;
-  const savedCount = user?.wishlist?.length || user?.wishlistCount || 0;
+  const savedCount = wishlistItems ? wishlistItems.length : (user?.wishlist?.length || user?.wishlistCount || 0);
 
   return (
     <>

@@ -12,6 +12,8 @@ import SearchOverlay from "./Search/SearchOverlay";
 import MobileAnnouncementBar from "./mobile/MobileAnnouncementBar";
 import MobileHeader from "./mobile/MobileHeader";
 import MobileDrawer from "./mobile/MobileDrawer";
+import toast from "react-hot-toast";
+import useAuthStore from "../../store/authStore";
 import "../../styles/Header/header.css";
 
 const Header = () => {
@@ -23,21 +25,20 @@ const Header = () => {
   // const [isScrolled, setIsScrolled] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Handle scroll
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     setIsScrolled(window.scrollY > 0);
-  //   };
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
-
   // Drawer handlers
   const handleDrawerOpen = () => setIsDrawerOpen(true);
   const handleDrawerClose = () => setIsDrawerOpen(false);
 
   // Icon handlers
-  const handleWishlistClick = () => navigate("/wishlist");
+  const handleWishlistClick = () => {
+    const { isAuthenticated } = useAuthStore.getState();
+    if (!isAuthenticated) {
+      toast.error("Please login to view your wishlist");
+      navigate("/auth");
+      return;
+    }
+    navigate("/wishlist");
+  };
   const handleBagClick = () => navigate("/cart");
 
   return (

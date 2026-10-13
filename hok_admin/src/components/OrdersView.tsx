@@ -6,17 +6,50 @@ import {
   Eye,
   Plus,
 } from "lucide-react";
-import { Order } from "../types";
+import { Order, Customer } from "../types";
 
 interface OrdersViewProps {
   orders: Order[];
+  customers?: Customer[];
   setView: (view: string) => void;
   setSelectedOrderId: (id: string) => void;
   onCreateMockOrder?: () => void;
 }
 
+const parseOrderAmount = (val: any) => {
+  if (typeof val === "number") return isNaN(val) ? 0 : val;
+  if (!val) return 0;
+  const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+  return isNaN(num) ? 0 : num;
+};
+
+const resolveOrderAmount = (o: any) => {
+  if (!o) return 0;
+  return (
+    parseOrderAmount(o.amount) ||
+    parseOrderAmount(o.grandTotal) ||
+    parseOrderAmount(o.orderValue) ||
+    parseOrderAmount(o.totalAmount) ||
+    (Array.isArray(o.items) && o.items.length > 0
+      ? o.items.reduce((s: number, it: any) => s + parseOrderAmount(it?.amount), 0)
+      : 0)
+  );
+};
+
+const resolveProductName = (o: any) => {
+  if (!o) return "—";
+  if (o.productName && o.productName.trim()) return o.productName;
+  if (Array.isArray(o.items) && o.items.length > 0) {
+    const first = o.items[0]?.productName;
+    if (o.items.length > 1) return `${first || "Product"} (+${o.items.length - 1} more)`;
+    return first || "—";
+  }
+  return "—";
+};
+
 export default function OrdersView({
   orders,
+  customers = [],
   setView,
   setSelectedOrderId,
   onCreateMockOrder,
@@ -27,9 +60,42 @@ export default function OrdersView({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  const resolveCustomerName = (o: Order) => {
+    if (customers && customers.length > 0 && o.customerId) {
+      const match = customers.find(
+        (c) =>
+          c.customerId === o.customerId ||
+          c.id === o.customerId ||
+          (c as any)._id === o.customerId,
+      );
+      if (match && match.name && match.name !== "User") return match.name;
+    }
+    return o.customerName || "—";
+  };
+
+  const resolveCustomerEmail = (o: Order) => {
+    if (customers && customers.length > 0 && o.customerId) {
+      const match = customers.find(
+        (c) =>
+          c.customerId === o.customerId ||
+          c.id === o.customerId ||
+          (c as any)._id === o.customerId,
+      );
+      if (
+        match &&
+        match.email &&
+        !match.email.includes("temp.com") &&
+        !match.email.includes("hok.local")
+      ) {
+        return match.email;
+      }
+    }
+    return o.customerEmail || "—";
+  };
+
   // Filter out blank/invalid orders first
   const validOrders = orders.filter(
-    (o) => o.id && o.customerName && o.customerName.trim() !== "",
+    (o) => o.id && (o.customerName || o.customerId),
   );
 
   // Calculate order metrics
@@ -48,21 +114,29 @@ export default function OrdersView({
     )
     .reduce((sum, o) => sum + (Number(o.deposit) || 0), 0);
   const mtdRevenue = validOrders.reduce(
-    (sum, o) => sum + (Number(o.amount) || 0),
+    (sum, o) => sum + resolveOrderAmount(o),
     0,
   );
 
   // Filter logic
   const filteredOrders = orders.filter((o) => {
-    // Sirf valid data wale orders hi show honge
-    if (!o.id || !o.customerName || o.customerName.trim() === "") {
+    if (!o.id) {
       return false;
     }
 
+    const cName = resolveCustomerName(o).toLowerCase();
+    const cEmail = resolveCustomerEmail(o).toLowerCase();
+    const sTerm = searchTerm.toLowerCase().trim();
+
     const matchesSearch =
-      (o.id || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (o.customerName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (o.productName || "").toLowerCase().includes(searchTerm.toLowerCase());
+      !sTerm ||
+      (o.id || "").toLowerCase().includes(sTerm) ||
+      (o.customerId || "").toLowerCase().includes(sTerm) ||
+      (o.customerName || "").toLowerCase().includes(sTerm) ||
+      cName.includes(sTerm) ||
+      cEmail.includes(sTerm) ||
+      (o.customerPhone || "").toLowerCase().includes(sTerm) ||
+      (o.productName || "").toLowerCase().includes(sTerm);
 
     const matchesStatus =
       selectedStatus === "All Statuses" || o.status === selectedStatus;
@@ -265,22 +339,22 @@ export default function OrdersView({
                     <td className="px-5 py-3.5">
                       <div>
                         <span className="font-semibold text-stone-800">
-                          {order.customerName}
+                          {resolveCustomerName(order)}
                         </span>
                         <p className="text-[10px] text-stone-400 mt-0.5">
-                          {order.customerEmail}
+                          {resolveCustomerEmail(order)}
                         </p>
                       </div>
                     </td>
                     <td className="px-5 py-3.5 max-w-[150px] truncate">
                       <span className="font-semibold text-stone-800">
-                        {order.productName ||
-                          (order.items?.[0] as any)?.productName ||
-                          "test"}
+                        {resolveProductName(order)}
                       </span>
-                      <p className="text-[10px] text-[#c5a880] font-sans mt-0.5">
-                        {order.designer || "reeta"}
-                      </p>
+                      {order.designer || (order.items?.[0] as any)?.designer ? (
+                        <p className="text-[10px] text-[#c5a880] font-sans mt-0.5">
+                          {order.designer || (order.items?.[0] as any)?.designer}
+                        </p>
+                      ) : null}
                     </td>
                     <td className="px-5 py-3.5">
                       <span
@@ -292,19 +366,13 @@ export default function OrdersView({
                               : "bg-teal-50 text-teal-700 border border-teal-100"
                         }`}
                       >
-                        {order.mode || "Rental"}
+                        {order.mode || (order.items?.[0] as any)?.mode || "Rental"}
                       </span>
                     </td>
                     <td className="px-5 py-3.5">
                       <div>
                         <span className="font-semibold text-stone-900">
-                          ₹
-                          {Number(
-                            order.amount ||
-                              (order as any).totalAmount ||
-                              (order as any).orderValue ||
-                              8500,
-                          ).toLocaleString("en-IN")}
+                          ₹{resolveOrderAmount(order).toLocaleString("en-IN")}
                         </span>
                         {(order.deposit || 0) > 0 && (
                           <p className="text-[9px] text-stone-400 mt-0.5">

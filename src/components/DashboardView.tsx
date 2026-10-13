@@ -24,6 +24,37 @@ interface DashboardViewProps {
   onRejectSubmission: (id: string) => void;
 }
 
+const parseAmount = (val: any) => {
+  if (typeof val === "number") return isNaN(val) ? 0 : val;
+  if (!val) return 0;
+  const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+  return isNaN(num) ? 0 : num;
+};
+
+const resolveOrderAmount = (o: any) => {
+  if (!o) return 0;
+  return (
+    parseAmount(o.amount) ||
+    parseAmount(o.grandTotal) ||
+    parseAmount(o.orderValue) ||
+    parseAmount(o.totalAmount) ||
+    (Array.isArray(o.items) && o.items.length > 0
+      ? o.items.reduce((s: number, it: any) => s + parseAmount(it?.amount), 0)
+      : 0)
+  );
+};
+
+const resolveProductName = (o: any) => {
+  if (!o) return "—";
+  if (o.productName && o.productName.trim()) return o.productName;
+  if (Array.isArray(o.items) && o.items.length > 0) {
+    const first = o.items[0]?.productName;
+    if (o.items.length > 1) return `${first || "Product"} (+${o.items.length - 1} more)`;
+    return first || "—";
+  }
+  return "—";
+};
+
 export default function DashboardView({
   orders,
   listerSubmissions,
@@ -35,7 +66,7 @@ export default function DashboardView({
 }: DashboardViewProps) {
   // Calculate stats
   const mtdOrdersCount = orders.length;
-  const mtdRevenue = orders.reduce((sum, o) => sum + o.amount, 0);
+  const mtdRevenue = orders.reduce((sum, o) => sum + resolveOrderAmount(o), 0);
   const pendingApprovalsCount = listerSubmissions.filter(
     (s) => s.status === "Pending",
   ).length;
@@ -197,10 +228,10 @@ export default function DashboardView({
                         {order.customerName}
                       </td>
                       <td className="px-5 py-3.5 max-w-[180px] truncate">
-                        {order.productName}
+                        {order.productName || resolveProductName(order)}
                       </td>
                       <td className="px-5 py-3.5 font-semibold text-stone-800">
-                        ₹{Number(order.amount || 0).toLocaleString("en-IN")}
+                        ₹{resolveOrderAmount(order).toLocaleString("en-IN")}
                       </td>
                       <td className="px-5 py-3.5">
                         <span

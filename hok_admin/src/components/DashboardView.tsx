@@ -13,11 +13,12 @@ import {
   Check,
   X,
 } from "lucide-react";
-import { Order, ListerSubmission } from "../types";
+import { Order, ListerSubmission, Customer } from "../types";
 import { apiRequest } from "../services/apiClient";
 
 interface DashboardViewProps {
   orders: Order[];
+  customers?: Customer[];
   listerSubmissions: ListerSubmission[];
   activeListingsCount: number;
   setView: (view: string) => void;
@@ -26,8 +27,40 @@ interface DashboardViewProps {
   onRejectSubmission: (id: string) => void;
 }
 
+const parseAmount = (val: any) => {
+  if (typeof val === "number") return isNaN(val) ? 0 : val;
+  if (!val) return 0;
+  const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+  return isNaN(num) ? 0 : num;
+};
+
+const resolveOrderAmount = (o: any) => {
+  if (!o) return 0;
+  return (
+    parseAmount(o.amount) ||
+    parseAmount(o.grandTotal) ||
+    parseAmount(o.orderValue) ||
+    parseAmount(o.totalAmount) ||
+    (Array.isArray(o.items) && o.items.length > 0
+      ? o.items.reduce((s: number, it: any) => s + parseAmount(it?.amount), 0)
+      : 0)
+  );
+};
+
+const resolveProductName = (o: any) => {
+  if (!o) return "—";
+  if (o.productName && o.productName.trim()) return o.productName;
+  if (Array.isArray(o.items) && o.items.length > 0) {
+    const first = o.items[0]?.productName;
+    if (o.items.length > 1) return `${first || "Product"} (+${o.items.length - 1} more)`;
+    return first || "—";
+  }
+  return "—";
+};
+
 export default function DashboardView({
   orders,
+  customers = [],
   listerSubmissions,
   activeListingsCount,
   setView,
@@ -38,6 +71,19 @@ export default function DashboardView({
   const [dbOrders, setDbOrders] = useState<any[]>([]);
   const [dbSubmissions, setDbSubmissions] = useState<any[]>([]);
   const [dbProductCount, setDbProductCount] = useState<number>(0);
+
+  const resolveCustomerName = (o: any) => {
+    if (customers && customers.length > 0 && o.customerId) {
+      const match = customers.find(
+        (c) =>
+          c.customerId === o.customerId ||
+          c.id === o.customerId ||
+          (c as any)._id === o.customerId,
+      );
+      if (match && match.name && match.name !== "User") return match.name;
+    }
+    return o.customerName || "—";
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -80,7 +126,8 @@ export default function DashboardView({
       return {
         ...o,
         id: formattedId,
-        amount: Number(o.amount || o.totalAmount || o.orderValue || 0),
+        productName: resolveProductName(o),
+        amount: resolveOrderAmount(o),
         status: o.status || "Confirmed",
       };
     });
@@ -88,8 +135,7 @@ export default function DashboardView({
   // Calculate stats
   const mtdOrdersCount = validOrders.length;
   const mtdRevenue = validOrders.reduce(
-    (sum: number, o: any) =>
-      sum + (Number(o.amount || o.totalAmount || o.orderValue) || 0),
+    (sum: number, o: any) => sum + (Number(o.amount) || 0),
     0,
   );
   const pendingSubmissions = displaySubmissions.filter(
@@ -247,13 +293,13 @@ export default function DashboardView({
                         {order.id}
                       </td>
                       <td className="px-5 py-3.5 font-medium text-stone-800">
-                        {order.customerName}
+                        {resolveCustomerName(order)}
                       </td>
                       <td className="px-5 py-3.5 max-w-[180px] truncate">
-                        {order.productName}
+                        {order.productName || resolveProductName(order)}
                       </td>
                       <td className="px-5 py-3.5 font-semibold text-stone-800">
-                        ₹{Number(order.amount || 0).toLocaleString("en-IN")}
+                        ₹{resolveOrderAmount(order).toLocaleString("en-IN")}
                       </td>
                       <td className="px-5 py-3.5">
                         <span

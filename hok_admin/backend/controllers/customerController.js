@@ -17,15 +17,21 @@ const orderStartDate = (order) =>
   order.items?.[0]?.rentalStartDate ||
   order.items?.[0]?.startDate ||
   "";
+const parseAmount = (val) => {
+  if (typeof val === "number") return isNaN(val) ? 0 : val;
+  if (!val) return 0;
+  const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+  return isNaN(num) ? 0 : num;
+};
+
 const orderValue = (order) =>
-  Number(
-    order.orderValue ??
-      order.amount ??
-      order.totalAmount ??
-      order.grandTotal ??
-      order.items?.reduce((sum, item) => sum + Number(item.amount || 0), 0) ??
-      0,
-  );
+  parseAmount(order.orderValue) ||
+  parseAmount(order.amount) ||
+  parseAmount(order.grandTotal) ||
+  parseAmount(order.totalAmount) ||
+  (Array.isArray(order.items)
+    ? order.items.reduce((sum, item) => sum + parseAmount(item.amount), 0)
+    : 0);
 
 // A customer ledger is keyed only by its immutable customerId. Names, phones
 // and emails can be edited or duplicated and must never assign an order twice.
@@ -303,6 +309,26 @@ export const updateCustomer = async (req, res) => {
 
     if (!updatedCustomer) {
       return createCustomer(req, res);
+    }
+
+    // Cascade name/email/phone changes to existing orders
+    try {
+      const Order = (await import("../models/Order.js")).default;
+      const custIdentifier = updatedCustomer.customerId || updatedCustomer._id;
+      if (custIdentifier) {
+        await Order.updateMany(
+          { customerId: custIdentifier },
+          {
+            $set: {
+              customerName: updatedCustomer.name,
+              customerEmail: updatedCustomer.email,
+              customerPhone: updatedCustomer.phone,
+            },
+          },
+        );
+      }
+    } catch (err) {
+      console.warn("Could not cascade customer update to orders:", err.message);
     }
 
     res.json({

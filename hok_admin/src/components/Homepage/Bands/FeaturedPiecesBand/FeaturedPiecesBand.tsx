@@ -3,7 +3,7 @@
    Spec Section 8.3 & 12.4, 12.5 (v213)
 ========================================================= */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FeaturedPiecesBand.css';
 import { FeaturedPiecesSettings, HealthIssue } from '../../types/homepage.types';
 import { Card } from '../../shared/Card/Card';
@@ -15,6 +15,7 @@ import { Deck } from '../../shared/Deck/Deck';
 import { DeckTileItem } from '../../shared/Deck/DeckTile';
 import { Inspector } from '../../shared/Deck/Inspector';
 import { SAMPLE_CATALOGUE_PIECES } from '../../data/cataloguePieces';
+import { PieceCardData } from '../../shared/PieceCard/PieceCard';
 import { DoorArrowIcon, SearchMagnifierIcon, PlusIcon } from '../../shared/icons/HomepageIcons';
 
 interface FeaturedPiecesBandProps {
@@ -46,25 +47,58 @@ export const FeaturedPiecesBand: React.FC<FeaturedPiecesBandProps> = ({
   const [pickerSearch, setPickerSearch] = useState('');
   const [pickerDesigner, setPickerDesigner] = useState('All');
   const [pickerMode, setPickerMode] = useState('All');
+  const [catalogue, setCatalogue] = useState<PieceCardData[]>(SAMPLE_CATALOGUE_PIECES);
+  const [apiLiveCount, setApiLiveCount] = useState<number | null>(null);
 
   const slots = settings.slots || [];
-  const maxSlots = settings.cap || 8;
+  const maxSlots = 4;
 
-  // Find piece in catalogue
+  // Fetch real catalogue from database via backend API
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/homepage/featured-pieces')
+      .then((res) => res.json())
+      .then((resp) => {
+        if (!isMounted || !resp?.success || !resp?.data) return;
+        if (Array.isArray(resp.data.catalogue) && resp.data.catalogue.length > 0) {
+          setCatalogue(resp.data.catalogue);
+        }
+        if (typeof resp.data.liveCount === 'number') {
+          setApiLiveCount(resp.data.liveCount);
+        }
+      })
+      .catch((err) => {
+        console.warn('Could not load live catalogue from API, using fallback:', err);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Find piece in live catalogue (with fallback to sample catalogue)
   const getPieceBySku = (sku: string) => {
-    return SAMPLE_CATALOGUE_PIECES.find((p) => p.sku === sku) || null;
+    return (
+      catalogue.find((p) => p.sku === sku || (p as any).productId === sku) ||
+      SAMPLE_CATALOGUE_PIECES.find((p) => p.sku === sku) ||
+      null
+    );
   };
 
   // Build deck items for Deck component
   const deckItems: DeckTileItem[] = slots.map((sku, idx) => {
     const piece = getPieceBySku(sku);
-    const shot = settings.shots[sku] || 'On model';
+    const currentShotForSku = settings.shots[sku] || 'On model';
+    const tilePictureUrl =
+      (piece?.shots && piece.shots[currentShotForSku]) ||
+      piece?.imageUrl ||
+      undefined;
+
     return {
       id: `feat-slot-${sku}-${idx}`,
       position: idx + 1,
       title: piece ? piece.name : sku,
       sub: piece ? piece.designer : 'Not in catalogue',
-      pictureUrl: piece?.imageUrl || undefined,
+      pictureUrl: tilePictureUrl,
       pictureHeight: 150,
       cornerFlag: piece
         ? {
@@ -128,7 +162,7 @@ export const FeaturedPiecesBand: React.FC<FeaturedPiecesBandProps> = ({
   };
 
   // Filter catalogue pieces for picker
-  const filteredCatalogue = SAMPLE_CATALOGUE_PIECES.filter((p) => {
+  const filteredCatalogue = catalogue.filter((p) => {
     if (pickerDesigner !== 'All' && p.designer !== pickerDesigner) return false;
     const pMode = p.mode || '';
     if (pickerMode !== 'All' && !pMode.toLowerCase().includes(pickerMode.toLowerCase())) return false;
@@ -144,7 +178,11 @@ export const FeaturedPiecesBand: React.FC<FeaturedPiecesBandProps> = ({
     return true;
   });
 
-  const uniqueDesigners = Array.from(new Set(SAMPLE_CATALOGUE_PIECES.map((p) => p.designer)));
+  const uniqueDesigners = Array.from(new Set(catalogue.map((p) => p.designer).filter(Boolean)));
+  const liveCount =
+    apiLiveCount !== null
+      ? apiLiveCount
+      : catalogue.filter((p) => p.status === 'Live').length;
 
   return (
     <div className="hok-featured-band">
@@ -285,7 +323,7 @@ export const FeaturedPiecesBand: React.FC<FeaturedPiecesBandProps> = ({
                 <PlusIcon size={12} /> Choose pieces from the catalogue
               </button>
               <span className="hok-feat-live-count-note">
-                5 pieces are Live and can go on the homepage today.
+                {liveCount} pieces are Live and can go on the homepage today.
               </span>
             </div>
 
@@ -381,7 +419,7 @@ export const FeaturedPiecesBand: React.FC<FeaturedPiecesBandProps> = ({
                 <div className="hok-feat-picker-foot">
                   <span>
                     {slots.length >= maxSlots
-                      ? 'All 8 slots are in use. Remove a piece from the deck to add another.'
+                      ? 'All 4 slots are in use. Remove a piece from the deck to add another.'
                       : 'Only Live pieces appear here — a draft, paused or sold piece cannot go on the homepage.'}
                   </span>
                 </div>
@@ -467,7 +505,7 @@ export const FeaturedPiecesBand: React.FC<FeaturedPiecesBandProps> = ({
                               defaultValue=""
                             >
                               <option value="">— choose replacement piece —</option>
-                              {SAMPLE_CATALOGUE_PIECES.filter((p) => p.status === 'Live').map((p) => (
+                              {catalogue.filter((p) => p.status === 'Live').map((p) => (
                                 <option key={p.sku} value={p.sku}>
                                   {p.name} · {p.designer}
                                 </option>

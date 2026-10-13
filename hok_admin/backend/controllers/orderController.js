@@ -4,7 +4,54 @@ import Customer from "../models/Customer.js";
 import { calculateProductLine } from "../services/pricingService.js";
 import { syncCustomerOrderStats } from "./customerController.js";
 
-const view = (order) => ({ ...order.toObject(), id: order.orderId });
+export const parseAmount = (val) => {
+  if (typeof val === "number") return isNaN(val) ? 0 : val;
+  if (!val) return 0;
+  const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+  return isNaN(num) ? 0 : num;
+};
+
+const view = (order) => {
+  const obj = order.toObject ? order.toObject() : { ...order };
+  const items = Array.isArray(obj.items) ? obj.items : [];
+  const firstItem = items[0] || {};
+
+  const itemsSum = items.reduce((sum, it) => sum + parseAmount(it.amount), 0);
+
+  const rawAmount =
+    parseAmount(obj.grandTotal) ||
+    parseAmount(obj.amount) ||
+    parseAmount(obj.orderValue) ||
+    parseAmount(obj.totalAmount) ||
+    itemsSum ||
+    0;
+
+  const resolvedOrderValue = parseAmount(obj.orderValue) || itemsSum || rawAmount;
+  const resolvedGrandTotal = parseAmount(obj.grandTotal) || rawAmount;
+
+  const productName =
+    obj.productName ||
+    (items.length === 1
+      ? firstItem.productName || ""
+      : items.length > 1
+      ? `${firstItem.productName || "Product"} (+${items.length - 1} more)`
+      : "");
+
+  const designer = obj.designer || firstItem.designer || "";
+  const mode = obj.mode || firstItem.mode || "Rental";
+
+  return {
+    ...obj,
+    id: obj.orderId || obj.id || obj._id,
+    amount: rawAmount,
+    orderValue: resolvedOrderValue,
+    grandTotal: resolvedGrandTotal,
+    totalAmount: rawAmount,
+    productName,
+    designer,
+    mode,
+  };
+};
 const byId = (id) => ({ $or: [{ orderId: id }, { _id: id }] });
 
 const customerById = async (customerId) => {
@@ -46,31 +93,32 @@ const calculateItems = async (items) => {
 
 const totalsFor = (items, discount = 0) => {
   const orderValue = items.reduce(
-    (sum, item) => sum + Number(item.amount || 0),
+    (sum, item) => sum + parseAmount(item.amount),
     0,
   );
-  const gst = items.reduce((sum, item) => sum + Number(item.gst || 0), 0);
+  const gst = items.reduce((sum, item) => sum + parseAmount(item.gst), 0);
   const depositHeld = items.reduce(
-    (sum, item) => sum + Number(item.deposit || 0),
+    (sum, item) => sum + parseAmount(item.deposit),
     0,
   );
   const cleaningFee = items.reduce(
-    (sum, item) => sum + Number(item.cleaningFee || 0),
+    (sum, item) => sum + parseAmount(item.cleaningFee),
     0,
   );
+  const calculatedGrand = Math.round(
+    (orderValue +
+      gst +
+      depositHeld +
+      cleaningFee -
+      Math.max(0, parseAmount(discount))) *
+      100,
+  ) / 100;
   return {
     orderValue,
     gst,
     depositHeld,
-    grandTotal:
-      Math.round(
-        (orderValue +
-          gst +
-          depositHeld +
-          cleaningFee -
-          Math.max(0, Number(discount || 0))) *
-          100,
-      ) / 100,
+    amount: calculatedGrand || orderValue,
+    grandTotal: calculatedGrand,
   };
 };
 
@@ -81,7 +129,36 @@ export const getOrders = async (req, res) => {
     if (req.query.mode) query.mode = req.query.mode;
     if (req.query.customerId) query.customerId = req.query.customerId;
     const orders = await Order.find(query).sort({ createdAt: -1 });
-    res.json({ success: true, data: orders.map(view) });
+
+    const custMap = new Map();
+    try {
+      const customers = await Customer.find({});
+      customers.forEach((c) => {
+        if (c.customerId) custMap.set(c.customerId, c);
+        if (c._id) custMap.set(String(c._id), c);
+      });
+    } catch (e) {
+      // non-blocking
+    }
+
+    const data = orders.map((o) => {
+      const v = view(o);
+      const cust = custMap.get(v.customerId);
+      if (cust) {
+        if (cust.name && cust.name !== "User") v.customerName = cust.name;
+        if (
+          cust.email &&
+          !cust.email.includes("temp.com") &&
+          !cust.email.includes("hok.local")
+        ) {
+          v.customerEmail = cust.email;
+        }
+        if (cust.phone) v.customerPhone = cust.phone;
+      }
+      return v;
+    });
+
+    res.json({ success: true, data });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -94,7 +171,24 @@ export const getOrder = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Order not found" });
-    res.json({ success: true, data: view(order) });
+    const v = view(order);
+    if (v.customerId) {
+      try {
+        const cust = await customerById(v.customerId);
+        if (cust) {
+          if (cust.name && cust.name !== "User") v.customerName = cust.name;
+          if (
+            cust.email &&
+            !cust.email.includes("temp.com") &&
+            !cust.email.includes("hok.local")
+          ) {
+            v.customerEmail = cust.email;
+          }
+          if (cust.phone) v.customerPhone = cust.phone;
+        }
+      } catch (e) {}
+    }
+    res.json({ success: true, data: v });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }

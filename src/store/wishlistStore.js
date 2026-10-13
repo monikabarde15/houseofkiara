@@ -36,11 +36,7 @@ const useWishlistStore = create(
 
       cleanUpOldIds: () => {
         const currentItems = get().items;
-        // Only filter out old timestamp bugs (e.g. purely numeric strings of length 13+)
-        const cleanedItems = currentItems.filter((id) => {
-          if (typeof id === "string" && /^\d{13,}$/.test(id)) return false;
-          return true;
-        });
+        const cleanedItems = currentItems.filter((id) => id !== null && id !== undefined && id !== "");
         set({ items: Array.from(new Set(cleanedItems)) });
       },
 

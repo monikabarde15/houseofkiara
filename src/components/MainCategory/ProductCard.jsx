@@ -47,6 +47,11 @@ const ProductCard = ({ item }) => {
 
   const handleWishlistClick = (e) => {
     e.stopPropagation();
+    if (!isAuthenticated) {
+      toast.error("Please login to use your wishlist");
+      navigate("/auth");
+      return;
+    }
     toggleWishlist(productId);
     if (isWishlisted) {
       toast.success("Removed from wishlist");

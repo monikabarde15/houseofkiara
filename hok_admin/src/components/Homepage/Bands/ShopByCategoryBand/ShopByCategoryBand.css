@@ -46,3 +46,287 @@
   gap: 14px;
   margin-top: 6px;
 }
+
+/* Category Picker and Action bar */
+.hok-cat-deck-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.hok-cat-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hok-cat-open-picker-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--charcoal);
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-cat-open-picker-btn:hover {
+  background-color: var(--gold-pale);
+  border-color: var(--gold);
+}
+
+.hok-cat-restore-btn {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px dashed var(--border);
+  padding: 5px 10px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-cat-restore-btn:hover {
+  color: var(--charcoal);
+  border-color: var(--charcoal);
+  background-color: var(--card);
+}
+
+.hok-cat-live-count-note {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Category Picker Dropdown Box */
+.hok-cat-picker-box {
+  background-color: var(--ibg);
+  border: 1px solid var(--gold);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  margin-top: 8px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hok-cat-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hok-cat-picker-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.hok-cat-picker-title {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.hok-cat-picker-sub {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.hok-cat-picker-slots-badge {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--gold-d);
+  background-color: var(--gold-pale);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.hok-cat-picker-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hok-cat-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.hok-cat-search-wrap svg {
+  position: absolute;
+  left: 9px;
+  color: var(--muted);
+}
+
+.hok-cat-picker-search {
+  width: 100%;
+  padding: 7px 10px 7px 28px;
+  border: 1px solid var(--ib);
+  border-radius: var(--r);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  background-color: var(--card);
+}
+
+.hok-cat-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.hok-cat-picker-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.hok-cat-picker-card:hover {
+  border-color: var(--gold);
+}
+
+.hok-cat-picker-card.is-added {
+  border-color: var(--sage);
+  background-color: #f7faf5;
+}
+
+.hok-cat-picker-card-top {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.hok-cat-picker-thumb {
+  width: 44px;
+  height: 58px;
+  border-radius: 3px;
+  background-color: var(--canvas);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+
+.hok-cat-picker-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.hok-cat-picker-name {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hok-cat-picker-slug {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hok-cat-picker-count {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gold-d);
+}
+
+.hok-cat-card-action {
+  margin-top: auto;
+}
+
+.hok-cat-picker-add-btn {
+  width: 100%;
+  padding: 5px 8px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--charcoal);
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hok-cat-picker-add-btn:hover:not(:disabled) {
+  border-color: var(--gold);
+  background-color: var(--gold-pale);
+}
+
+.hok-cat-picker-add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hok-cat-picker-added-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+
+.hok-cat-picker-added-pill {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--sage);
+  background-color: #edf2ea;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.hok-cat-picker-takeoff-btn {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: #a8423f;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.hok-cat-picker-takeoff-btn:hover {
+  color: #791e1c;
+}
+

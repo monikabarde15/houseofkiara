@@ -35,14 +35,8 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const allCustomers = await Customer.find({}, "customerId").exec();
-    const existingNums = allCustomers
-      .map((c) => c.customerId)
-      .filter((id) => id && id.startsWith("CUST-"))
-      .map((id) => parseInt(id.replace("CUST-", ""), 10))
-      .filter((n) => !isNaN(n));
-    const maxNum = existingNums.length > 0 ? Math.max(...existingNums) : 0;
-    const newCustId = `CUST-${String(maxNum + 1).padStart(5, "0")}`;
+    const count = await Customer.countDocuments().catch(() => 0);
+    const newCustId = `CUST-${String(count + 1).padStart(5, "0")}`;
 
     const customer = new Customer({
       customerId: newCustId,
@@ -311,14 +305,8 @@ export const googleLogin = async (req, res) => {
 
       let customer = await Customer.findOne({ email });
       if (!customer) {
-        const allCustomers = await Customer.find({}, "customerId").exec();
-        const existingNums = allCustomers
-          .map((c) => c.customerId)
-          .filter((id) => id && id.startsWith("CUST-"))
-          .map((id) => parseInt(id.replace("CUST-", ""), 10))
-          .filter((n) => !isNaN(n));
-        const maxNum = existingNums.length > 0 ? Math.max(...existingNums) : 0;
-        const newCustId = `CUST-${String(maxNum + 1).padStart(5, "0")}`;
+        const count = await Customer.countDocuments().catch(() => 0);
+        const newCustId = `CUST-${String(count + 1).padStart(5, "0")}`;
 
         customer = new Customer({
           customerId: newCustId,
@@ -430,45 +418,39 @@ export const syncCart = async (req, res) => {
 export const getMyOrders = async (req, res) => {
   try {
     const customerId = req.user.customerId;
-    const orders = await Order.find({ customerId }).sort({ createdAt: -1 });
+    const customerEmail = req.user.email;
+    const filter = [];
+    if (customerId) filter.push({ customerId });
+    if (customerEmail) filter.push({ customerEmail });
+    const query = filter.length > 0 ? { $or: filter } : { customerId };
 
-    // Populate product images for the first item of each order
-    const formattedOrders = await Promise.all(
-      orders.map(async (order) => {
-        let image = "";
-        let piece = "Unknown Item";
-        let type = "Unknown Type";
+    const orders = await Order.find(query).sort({ createdAt: -1 });
 
-        if (order.items && order.items.length > 0) {
-          const firstItem = order.items[0];
-          piece = firstItem.productName;
-          type = firstItem.mode;
+    // Format orders fast without redundant cloud DB roundtrips
+    const formattedOrders = orders.map((order) => {
+      let image = "";
+      let piece = order.productName || "Product";
+      let type = order.mode || "Rental";
 
-          if (firstItem.productId) {
-            const product =
-              (await Product.findOne({ id: firstItem.productId })) ||
-              (await Product.findById(firstItem.productId).catch(() => null));
-            if (product && product.images && product.images.length > 0) {
-              image = product.images[0];
-            } else if (product && product.image && product.image.length > 0) {
-              image = product.image[0];
-            }
-          }
-        }
+      if (order.items && order.items.length > 0) {
+        const firstItem = order.items[0];
+        piece = firstItem.productName || piece;
+        type = firstItem.mode || type;
+        image = firstItem.image || "";
+      }
 
-        return {
-          id: order.orderId,
-          piece,
-          type,
-          typeDetail: type, // simplified for now
-          status: order.status,
-          amount: order.grandTotal || order.orderValue || 0,
-          date: `Ordered ${new Date(order.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`,
-          image,
-          dbId: order._id,
-        };
-      }),
-    );
+      return {
+        id: order.orderId,
+        piece,
+        type,
+        typeDetail: type,
+        status: order.status || "Confirmed",
+        amount: order.grandTotal || order.orderValue || order.amount || 0,
+        date: `Ordered ${new Date(order.createdAt || Date.now()).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`,
+        image,
+        dbId: order._id,
+      };
+    });
 
     res.json({ success: true, data: formattedOrders });
   } catch (err) {
@@ -534,8 +516,17 @@ export const getMyOrderById = async (req, res) => {
 
 export const placeOrder = async (req, res) => {
   try {
-    const { items, totals, address, paymentMethod, activePromo } = req.body;
-    const customer = req.user; // populated by requireCustomerAuth
+    let customer = req.user; // populated by requireCustomerAuth
+    try {
+      const fresh = await Customer.findOne({
+        $or: [
+          { _id: customer._id || customer.id },
+          { customerId: customer.customerId },
+          { phone: customer.phone },
+        ],
+      });
+      if (fresh) customer = fresh;
+    } catch (e) {}
 
     // Generate unique order ID
     const orderId = `HOK-ORD-${Date.now()}`;
@@ -586,8 +577,11 @@ export const placeOrder = async (req, res) => {
       items: orderItems,
       mode: orderItems.length === 1 ? orderItems[0].mode : "Multi-item",
       status: "Confirmed",
-      grandTotal: totals.finalTotal || totals.grandTotal || 0,
-      orderValue: totals.itemTotal || 0,
+      amount: totals.finalTotal || totals.grandTotal || totals.itemTotal || 0,
+      grandTotal: totals.finalTotal || totals.grandTotal || totals.itemTotal || 0,
+      orderValue: totals.itemTotal || totals.finalTotal || totals.grandTotal || 0,
+      productName: orderItems[0]?.productName || "",
+      designer: orderItems[0]?.designer || "",
       depositHeld: totals.depositTotal || 0,
       discount: totals.discount || 0,
       gst: totals.gst || 0,

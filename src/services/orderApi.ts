@@ -1,5 +1,5 @@
 import { Order } from "../types";
-const BASE = "http://localhost:5000/api";
+const BASE = "/api";
 const request = async (path: string, options?: RequestInit) => {
   const r = await fetch(`${BASE}${path}`, {
     headers: {

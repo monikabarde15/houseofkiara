@@ -1,5 +1,6 @@
 import { pool } from "../config/db.js";
 import { generateObjectId } from "../db/postgresAdapter.js";
+import Product from "../models/Product.js";
 
 export const DEFAULT_HERO_SETTINGS = {
   eyebrow: "India's Premier Circular Fashion Platform",
@@ -128,7 +129,7 @@ export const DEFAULT_FEATURED_SETTINGS = {
   viewAll: { lbl: "View All →", url: "/rent/all" },
   slots: ["HOK-SAB-002", "HOK-MM-001", "HOK-TT-001", "HOK-AD-001"],
   shots: { "HOK-SAB-002": "On model" },
-  cap: 8,
+  cap: 4,
   perRow: 4,
   perRowMob: 2,
   topUp: "Off",
@@ -159,11 +160,11 @@ export const DEFAULT_CATEGORY_SETTINGS = {
   showCountMob: true,
   countLblMob: "{n} pieces available",
   tiles: {
-    "bridal-lehenga": { alt: "Bridal lehengas", lbl: "Bridal Lehengas", kickMob: "Curated for every occasion", img: "" },
-    "sherwani": { alt: "Sherwanis", lbl: "Sherwanis", kickMob: "For the groom", img: "" },
-    "saree": { alt: "Sarees", lbl: "Sarees", kickMob: "Timeless drapes", img: "" },
-    "anarkali": { alt: "Anarkalis", lbl: "Anarkalis", kickMob: "Ethereal silhouettes", img: "" },
-    "indo-western": { alt: "Indo-Western", lbl: "Indo-Western", kickMob: "Modern fusion", img: "" }
+    "saree": { alt: "Sarees", lbl: "Sarees", kickMob: "Timeless drapes", img: "/uploads/sbc-3.jpg" },
+    "anarkali": { alt: "Anarkalis", lbl: "Anarkalis", kickMob: "Ethereal silhouettes", img: "/uploads/sbc-4.jpg" },
+    "sherwani": { alt: "Sherwanis", lbl: "Sherwanis", kickMob: "For the groom", img: "/uploads/sbc-2.jpg" },
+    "indo-western": { alt: "Indo-Western", lbl: "Indo-Western", kickMob: "Modern fusion", img: "/uploads/sbc-5.jpg" },
+    "bridal-lehenga": { alt: "Bridal lehengas", lbl: "Bridal Lehengas", kickMob: "Curated for every occasion", img: "/uploads/sbc-1.jpg" }
   }
 };
 
@@ -228,7 +229,7 @@ export const getFeaturedSectionFromDb = async () => {
         sectionId: row.section_id,
         isVisible: row.is_visible !== false,
         orderIndex: row.order_index || 3,
-        data: { ...DEFAULT_FEATURED_SETTINGS, ...data },
+        data: { ...DEFAULT_FEATURED_SETTINGS, ...data, cap: 4 },
       };
     }
   } catch (err) {
@@ -245,11 +246,26 @@ export const getCategorySectionFromDb = async () => {
     if (res && res.rows && res.rows.length > 0) {
       const row = res.rows[0];
       const data = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+      const mergedData = { ...DEFAULT_CATEGORY_SETTINGS, ...data };
+      const defaultImages = {
+        saree: "/uploads/sbc-3.jpg",
+        anarkali: "/uploads/sbc-4.jpg",
+        sherwani: "/uploads/sbc-2.jpg",
+        "indo-western": "/uploads/sbc-5.jpg",
+        "bridal-lehenga": "/uploads/sbc-1.jpg",
+      };
+      if (mergedData.tiles) {
+        for (const [k, t] of Object.entries(mergedData.tiles)) {
+          if (!t.img && defaultImages[k]) {
+            t.img = defaultImages[k];
+          }
+        }
+      }
       return {
         sectionId: row.section_id,
         isVisible: row.is_visible !== false,
         orderIndex: row.order_index || 4,
-        data: { ...DEFAULT_CATEGORY_SETTINGS, ...data },
+        data: mergedData,
       };
     }
   } catch (err) {
@@ -625,11 +641,97 @@ export const getHiwSection = async (req, res) => {
   }
 };
 
-// GET /api/homepage/featured-pieces - Public storefront endpoint
+// Helper: Map DB Product to PieceCardData format
+export const mapProductToPiece = (p, chosenShot = "On model") => {
+  if (!p) return null;
+  const sku = p.sku || p.productId || "";
+  let modeStr = "Rental";
+  if (Array.isArray(p.listingModes)) {
+    if (p.listingModes.some((m) => String(m).toUpperCase().includes("RENT") && p.listingModes.some((m) => String(m).toUpperCase().includes("PRE")))) {
+      modeStr = "Rental/Preloved";
+    } else if (p.listingModes.some((m) => String(m).toUpperCase().includes("PRE"))) {
+      modeStr = "Preloved";
+    } else if (p.listingModes.some((m) => String(m).toUpperCase().includes("NEW") || String(m).toUpperCase().includes("BUY"))) {
+      modeStr = "Buy New";
+    } else {
+      modeStr = "Rental";
+    }
+  }
+
+  const shotsMap = p.shots || {};
+  const primaryImage =
+    shotsMap[chosenShot] ||
+    shotsMap["On model"] ||
+    (Array.isArray(p.images) && p.images[0]) ||
+    "/uploads/grid-1.jpg";
+
+  return {
+    sku,
+    name: p.name || "",
+    designer: p.designer || "",
+    category: p.category || "",
+    size: Array.isArray(p.sizes) && p.sizes.length > 0 ? p.sizes[0] : (p.size || "M"),
+    status: p.status || "Live",
+    imageUrl: primaryImage,
+    priceStd: Number(p.rentalPrice || 0),
+    minDays: Number(p.minimumDurationDays || 3),
+    resalePrice: Number(p.listingPrice || 0),
+    mrp: Number(p.originalRetailPrice || 0),
+    retailPrice: Number(p.originalRetailPrice || 0),
+    mode: modeStr,
+    shots: {
+      "On model": shotsMap["On model"] || (Array.isArray(p.images) && p.images[0]) || primaryImage,
+      "Flat lay": shotsMap["Flat lay"] || (Array.isArray(p.images) && (p.images[1] || p.images[0])) || primaryImage,
+      "Ghost mannequin": shotsMap["Ghost mannequin"] || (Array.isArray(p.images) && (p.images[2] || p.images[0])) || primaryImage,
+      "Detail shot": shotsMap["Detail shot"] || (Array.isArray(p.images) && (p.images[3] || p.images[0])) || primaryImage,
+    },
+  };
+};
+
+// GET /api/homepage/featured-pieces/catalogue - Fetch full catalogue for picker & slots
+export const getFeaturedPiecesCatalogue = async (req, res) => {
+  try {
+    const products = await Product.find({});
+    const catalogue = products.map((p) => mapProductToPiece(p, "On model")).filter(Boolean);
+    res.json({
+      success: true,
+      data: catalogue,
+      count: catalogue.length,
+      liveCount: catalogue.filter((c) => c.status === "Live").length,
+    });
+  } catch (error) {
+    console.error("Error fetching featured pieces catalogue:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// GET /api/homepage/featured-pieces - Public storefront & admin endpoint
 export const getFeaturedSection = async (req, res) => {
   try {
     const featuredRecord = await getFeaturedSectionFromDb();
     const data = featuredRecord.data || DEFAULT_FEATURED_SETTINGS;
+
+    // Fetch real products from DB
+    const allProducts = await Product.find({});
+    const catalogue = allProducts.map((p) => mapProductToPiece(p, "On model")).filter(Boolean);
+
+    // Create lookup map by sku and productId
+    const productLookup = new Map();
+    for (const p of allProducts) {
+      if (p.sku) productLookup.set(p.sku.toLowerCase(), p);
+      if (p.productId) productLookup.set(p.productId.toLowerCase(), p);
+    }
+
+    const slots = data.slots || DEFAULT_FEATURED_SETTINGS.slots;
+    const shotsConfig = data.shots || DEFAULT_FEATURED_SETTINGS.shots;
+
+    // Resolve active slots to real product pieces
+    const pieces = slots.map((sku) => {
+      const prod = productLookup.get((sku || "").toLowerCase());
+      if (!prod) return null;
+      const chosenShot = shotsConfig[sku] || "On model";
+      return mapProductToPiece(prod, chosenShot);
+    }).filter(Boolean);
 
     res.json({
       success: true,
@@ -645,9 +747,9 @@ export const getFeaturedSection = async (req, res) => {
           lbl: data.viewAll?.lbl || DEFAULT_FEATURED_SETTINGS.viewAll.lbl,
           url: data.viewAll?.url || DEFAULT_FEATURED_SETTINGS.viewAll.url,
         },
-        slots: data.slots || DEFAULT_FEATURED_SETTINGS.slots,
-        shots: data.shots || DEFAULT_FEATURED_SETTINGS.shots,
-        cap: data.cap || DEFAULT_FEATURED_SETTINGS.cap,
+        slots,
+        shots: shotsConfig,
+        cap: 4,
         perRow: data.perRow || DEFAULT_FEATURED_SETTINGS.perRow,
         perRowMob: data.perRowMob || DEFAULT_FEATURED_SETTINGS.perRowMob,
         topUp: data.topUp || DEFAULT_FEATURED_SETTINGS.topUp,
@@ -656,6 +758,9 @@ export const getFeaturedSection = async (req, res) => {
         showWishlist: data.showWishlist !== false,
         showWasPrice: data.showWasPrice !== false,
         showDuration: data.showDuration !== false,
+        pieces, // Resolved real DB products with chosen shot & pricing
+        catalogue, // Complete real catalogue for picker & admin
+        liveCount: catalogue.filter((c) => c.status === "Live").length,
         settings: data, // Raw FeaturedPiecesSettings for CMS synchronization
       },
     });
@@ -670,6 +775,58 @@ export const getCategorySection = async (req, res) => {
   try {
     const categoryRecord = await getCategorySectionFromDb();
     const data = categoryRecord.data || DEFAULT_CATEGORY_SETTINGS;
+
+    // Fetch DB products to compute live counts and images per category
+    const allProducts = await Product.find({});
+
+    // Compute live product counts and sample images per category keyword
+    const categoryStats = {};
+    for (const p of allProducts) {
+      const c = (p.category || "").toLowerCase().trim();
+      if (!c) continue;
+      if (!categoryStats[c]) {
+        categoryStats[c] = { total: 0, live: 0, image: p.images?.[0] };
+      }
+      categoryStats[c].total++;
+      if (p.status === "Live") {
+        categoryStats[c].live++;
+      }
+    }
+
+    const defaultImages = {
+      saree: "/uploads/sbc-3.jpg",
+      anarkali: "/uploads/sbc-4.jpg",
+      sherwani: "/uploads/sbc-2.jpg",
+      "indo-western": "/uploads/sbc-5.jpg",
+      "bridal-lehenga": "/uploads/sbc-1.jpg",
+    };
+
+    const rawTiles = data.tiles || DEFAULT_CATEGORY_SETTINGS.tiles;
+    const resolvedTiles = {};
+
+    for (const [catKey, tileConfig] of Object.entries(rawTiles)) {
+      const keyNorm = catKey.toLowerCase().replace(/-/g, " ").trim();
+      // Match key with categoryStats
+      let liveCount = 0;
+      let dbSampleImage = "";
+
+      for (const [statKey, statVal] of Object.entries(categoryStats)) {
+        if (statKey.includes(keyNorm) || keyNorm.includes(statKey) || statKey.replace(/\s+/g, "-") === catKey) {
+          liveCount += statVal.live;
+          if (!dbSampleImage && statVal.image) {
+            dbSampleImage = statVal.image;
+          }
+        }
+      }
+
+      const img = tileConfig.img || defaultImages[catKey] || dbSampleImage || "";
+
+      resolvedTiles[catKey] = {
+        ...tileConfig,
+        img,
+        liveCount,
+      };
+    }
 
     res.json({
       success: true,
@@ -693,8 +850,9 @@ export const getCategorySection = async (req, res) => {
         showCount: data.showCount === true,
         showCountMob: data.showCountMob !== false,
         countLblMob: data.countLblMob || DEFAULT_CATEGORY_SETTINGS.countLblMob,
-        tiles: data.tiles || DEFAULT_CATEGORY_SETTINGS.tiles,
-        settings: data, // Raw CategorySettings for CMS synchronization
+        tiles: resolvedTiles,
+        maxTiles: 5,
+        settings: { ...data, tiles: resolvedTiles }, // Raw CategorySettings for CMS synchronization
       },
     });
   } catch (error) {
@@ -1091,6 +1249,18 @@ export const updateCategorySection = async (req, res) => {
       ...currentRecord.data,
       ...categorySettings,
     };
+
+    // Enforce 5 tiles limit matching homepage layout
+    if (updatedData.tiles) {
+      const entries = Object.entries(updatedData.tiles);
+      if (entries.length > 5) {
+        const cappedTiles = {};
+        entries.slice(0, 5).forEach(([k, v]) => {
+          cappedTiles[k] = v;
+        });
+        updatedData.tiles = cappedTiles;
+      }
+    }
 
     inMemoryCategory = {
       sectionId: "category",
@@ -1548,6 +1718,18 @@ export const updateHomepage = async (req, res) => {
         ...currentCategoryRecord.data,
         ...categorySettings,
       };
+
+      // Enforce 5 tiles limit matching homepage layout
+      if (updatedCategoryData.tiles) {
+        const entries = Object.entries(updatedCategoryData.tiles);
+        if (entries.length > 5) {
+          const cappedTiles = {};
+          entries.slice(0, 5).forEach(([k, v]) => {
+            cappedTiles[k] = v;
+          });
+          updatedCategoryData.tiles = cappedTiles;
+        }
+      }
 
       inMemoryCategory = {
         sectionId: "category",

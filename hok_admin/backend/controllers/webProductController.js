@@ -63,15 +63,38 @@ export const getWebProducts = async (req, res) => {
       if (maxPrice) query.listingPrice.$lte = Number(maxPrice);
     }
 
+    // In-memory cache for default web products queries to make storefront load instantly
+    const isDefaultQuery = !section && !mode && !category && !designer && !occasion && !minPrice && !maxPrice;
+    if (isDefaultQuery && global.__webProductsCache && (Date.now() - global.__webProductsCacheTime < 30000)) {
+      return res.status(200).json({
+        success: true,
+        data: global.__webProductsCache,
+      });
+    }
+
     // Fetch only officially valid products for the frontend
     const findQuery = Product.find(query).sort({ createdAt: -1 });
     const products = await findQuery;
 
     const formattedProducts = products.map((product) => {
-      const modes = product.listingModes || [];
-      const rent = modes.includes("RENTAL");
-      const preloved = modes.includes("PRELOVED") || modes.includes("RE-SELL");
-      const isNew = modes.includes("BUY NEW");
+      const rawModes = Array.isArray(product.listingModes)
+        ? product.listingModes
+        : typeof product.listingModes === "string"
+          ? [product.listingModes]
+          : [];
+      const modesUpper = rawModes.map((m) => String(m).toUpperCase().trim());
+
+      const preloved = modesUpper.some(
+        (m) => m.includes("PRELOVED") || m.includes("RE-SELL")
+      );
+      const isNew = modesUpper.some(
+        (m) => m.includes("BUY") || m.includes("NEW")
+      );
+      // If it has rental price or rent mode or is not exclusively preloved/buy, enable rent
+      const rent =
+        modesUpper.some((m) => m.includes("RENT")) ||
+        Boolean(product.rentalPrice) ||
+        (!preloved && !isNew);
 
       const type = preloved
         ? "preloved"
@@ -79,7 +102,7 @@ export const getWebProducts = async (req, res) => {
           ? "rent"
           : isNew
             ? "new"
-            : "new";
+            : "rent";
 
       const formatPrice = (price) => {
         if (!price || Number(price) === 0) return null;
@@ -91,15 +114,28 @@ export const getWebProducts = async (req, res) => {
           ? "Men"
           : "Women";
 
+      const primaryId = product.productId || product._id.toString();
+
+      const normalizeImages = (imgs) => {
+        if (!imgs || !Array.isArray(imgs) || imgs.length === 0) {
+          return ["https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875344/houseofkaira/products/grid-1.jpg"];
+        }
+        return imgs.map((img) => {
+          if (typeof img === "string" && img.startsWith("/uploads/")) {
+            const filename = img.replace("/uploads/", "");
+            return `https://res.cloudinary.com/dv7jcu8ss/image/upload/houseofkaira/products/${filename}`;
+          }
+          return img;
+        });
+      };
+
       return {
-        id: new Date(product.createdAt || Date.now()).getTime(), // Use timestamp for correct newest sorting
-        _id: product._id.toString(), // Keep original id just in case
+        id: primaryId,
+        productId: primaryId,
+        _id: product._id.toString(),
         name: product.name || "Untitled Product",
         designer: product.designer || "Unknown Designer",
-        image:
-          product.images && product.images.length > 0
-            ? product.images
-            : ["https://placehold.co/600x800?text=No+Image"],
+        image: normalizeImages(product.images),
         rent: rent,
         preloved: preloved,
         isNew: isNew,
@@ -120,8 +156,14 @@ export const getWebProducts = async (req, res) => {
         video: product.video || null,
         type: type,
         popularity: product.timesRented || 0,
+        createdAtTimestamp: new Date(product.createdAt || Date.now()).getTime(),
       };
     });
+
+    if (isDefaultQuery) {
+      global.__webProductsCache = formattedProducts;
+      global.__webProductsCacheTime = Date.now();
+    }
 
     res.status(200).json({
       success: true,
@@ -274,7 +316,11 @@ export const getWebProductById = async (req, res) => {
           ? product.condition.toLowerCase()
           : "excellent",
       },
-      images: product.images || [],
+      images: (product.images || []).map((img) =>
+        typeof img === "string" && img.startsWith("/uploads/")
+          ? `https://res.cloudinary.com/dv7jcu8ss/image/upload/houseofkaira/products/${img.replace("/uploads/", "")}`
+          : img
+      ),
       video: product.video || null,
       colors: colors,
       sizeTable: sizes,
