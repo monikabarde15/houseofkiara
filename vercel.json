@@ -11,7 +11,7 @@
   "rewrites": [
     {
       "source": "/api/:match*",
-      "destination": "https://api.houseofkaira.com/api/:match*"
+      "destination": "https://houseofkiara.onrender.com/api/:match*"
     },
     {
       "source": "/(.*)",
