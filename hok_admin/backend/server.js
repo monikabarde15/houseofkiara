@@ -40,7 +40,7 @@ app.use((err, req, res, next) => {
 
 // Development services use fixed ports. Port 3000 is reserved for the
 // browser-facing reverse proxy, so the API must never bind to it.
-const PORT = Number(process.env.API_PORT || 5003);
+const PORT = Number(process.env.PORT || process.env.API_PORT || 5003);
 
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
