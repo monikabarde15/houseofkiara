@@ -11,6 +11,10 @@ const target = path.join(root, "dist", "hok_admin");
 
 const run = (cmd, cwd) => execSync(cmd, { cwd, stdio: "inherit" });
 
+if (process.env.VERCEL) {
+  fs.rmSync(path.join(adminDir, "package-lock.json"), { force: true });
+}
+
 run("npm install --no-audit --no-fund", adminDir);
 run("npm run build", adminDir);
 
