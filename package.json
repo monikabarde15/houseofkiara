@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"vite --port=3000 --host=0.0.0.0\" \"npm run dev --prefix hok_admin\" \"npm run server\"",
-    "build": "vite build",
+    "build": "vite build && node scripts/build-admin.mjs",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
