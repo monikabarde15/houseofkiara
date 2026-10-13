@@ -28,6 +28,26 @@ interface OrderDetailViewProps {
   onUpdateOrder: (updatedOrder: Order) => void;
 }
 
+const parseOrderAmount = (val: any) => {
+  if (typeof val === "number") return isNaN(val) ? 0 : val;
+  if (!val) return 0;
+  const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+  return isNaN(num) ? 0 : num;
+};
+
+const resolveOrderAmount = (o: any) => {
+  if (!o) return 0;
+  return (
+    parseOrderAmount(o.amount) ||
+    parseOrderAmount(o.grandTotal) ||
+    parseOrderAmount(o.orderValue) ||
+    parseOrderAmount(o.totalAmount) ||
+    (Array.isArray(o.items) && o.items.length > 0
+      ? o.items.reduce((s: number, it: any) => s + parseOrderAmount(it?.amount), 0)
+      : 0)
+  );
+};
+
 export default function OrderDetailView({
   orderId,
   order: initialOrder,
@@ -459,10 +479,7 @@ export default function OrderDetailView({
               Value
             </span>
             <p className="text-sm font-serif font-bold text-stone-900 mt-0.5">
-              ₹
-              {Number(
-                order.amount || (order as any).totalAmount || 8000,
-              ).toLocaleString("en-IN")}
+              ₹{resolveOrderAmount(order).toLocaleString("en-IN")}
             </p>
           </div>
           <div className="px-4 py-2 bg-stone-50 border border-stone-100 rounded">
@@ -489,13 +506,7 @@ export default function OrderDetailView({
               Grand Total
             </span>
             <p className="text-sm font-serif font-bold text-stone-900 mt-0.5">
-              ₹
-              {Number(
-                order.grandTotal ||
-                  order.amount ||
-                  (order as any).totalAmount ||
-                  8000,
-              ).toLocaleString("en-IN")}
+              ₹{Number(order.grandTotal || resolveOrderAmount(order)).toLocaleString("en-IN")}
             </p>
           </div>
         </div>
@@ -687,7 +698,7 @@ export default function OrderDetailView({
                 <div className="flex justify-between py-1 border-b border-stone-50 text-stone-600">
                   <span>Rental fee / Retail price</span>
                   <span className="font-semibold">
-                    ₹{Number(order.amount || 0).toLocaleString("en-IN")}
+                    ₹{resolveOrderAmount(order).toLocaleString("en-IN")}
                   </span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-stone-50 text-stone-600">
@@ -695,7 +706,7 @@ export default function OrderDetailView({
                   <span>
                     ₹
                     {Math.round(
-                      Number(order.amount || 0) * 0.12,
+                      resolveOrderAmount(order) * 0.12,
                     ).toLocaleString("en-IN")}{" "}
                     (12%)
                   </span>
@@ -715,7 +726,7 @@ export default function OrderDetailView({
                 <div className="flex justify-between py-2 border-t border-stone-200 text-sm font-bold text-stone-900">
                   <span>Grand Total Paid</span>
                   <span>
-                    ₹{Number(order.grandTotal || 0).toLocaleString("en-IN")}
+                    ₹{Number(order.grandTotal || resolveOrderAmount(order)).toLocaleString("en-IN")}
                   </span>
                 </div>
               </div>

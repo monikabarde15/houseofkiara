@@ -25,6 +25,42 @@ import {
 } from "../types";
 import * as customerApi from "../services/customerApi";
 
+const parseOrderAmount = (val: any) => {
+  if (typeof val === "number") return isNaN(val) ? 0 : val;
+  if (!val) return 0;
+  const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+  return isNaN(num) ? 0 : num;
+};
+
+const resolveOrderAmount = (o: any) => {
+  if (!o) return 0;
+  return (
+    parseOrderAmount(o.amount) ||
+    parseOrderAmount(o.grandTotal) ||
+    parseOrderAmount(o.orderValue) ||
+    parseOrderAmount(o.totalAmount) ||
+    (Array.isArray(o.items) && o.items.length > 0
+      ? o.items.reduce((s: number, it: any) => s + parseOrderAmount(it?.amount), 0)
+      : 0)
+  );
+};
+
+const resolveProductName = (o: any) => {
+  if (!o) return "—";
+  if (o.productName && o.productName.trim()) return o.productName;
+  if (Array.isArray(o.items) && o.items.length > 0) {
+    const first = o.items[0]?.productName;
+    if (o.items.length > 1) return `${first || "Product"} (+${o.items.length - 1} more)`;
+    return first || "—";
+  }
+  return "—";
+};
+
+const resolveDesigner = (o: any) => {
+  if (!o) return "";
+  return o.designer || o.items?.[0]?.designer || "";
+};
+
 interface CustomersViewProps {
   customers: Customer[];
   orders: Order[];
@@ -50,6 +86,12 @@ export default function CustomersView({
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [isAddingCustomer, setIsAddingCustomer] = useState(false);
+  const [orderHistoryPage, setOrderHistoryPage] = useState(1);
+  const [orderHistoryPageSize, setOrderHistoryPageSize] = useState(5);
+
+  React.useEffect(() => {
+    setOrderHistoryPage(1);
+  }, [editingCustomer?.id, editingCustomer?._id, activeTab]);
 
   // Delete confirmation modal state
   const [deleteTarget, setDeleteTarget] = useState<Customer | null>(null);
@@ -1131,96 +1173,186 @@ export default function CustomersView({
           {/* We'll replace each block in turn: Order History next.)        */}
           {/* ============================================================ */}
 
-          {activeTab === "Order History" && (
-            <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
-              <h3 className="font-serif font-bold text-stone-900 text-sm">
-                Rented & Purchased Orders
-              </h3>
-              {custOrders.length === 0 ? (
-                <p className="text-stone-400">
-                  No orders logged under this client.
-                </p>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr className="bg-stone-50 text-stone-400 uppercase text-[10px] tracking-wider border-b border-stone-200">
-                        <th className="px-4 py-3">Order ID</th>
-                        <th className="px-4 py-3">Product</th>
-                        <th className="px-4 py-3">Mode</th>
-                        <th className="px-4 py-3">Amount</th>
-                        <th className="px-4 py-3">Dates</th>
-                        <th className="px-4 py-3">Status</th>
-                        <th className="px-4 py-3 text-right">View</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-stone-100 text-stone-600">
-                      {custOrders.map((o) => (
-                        <tr
-                          key={o.id}
-                          className="hover:bg-[#fcf9f5] transition-colors"
-                        >
-                          <td className="px-4 py-4 font-mono text-[11px] text-stone-500">
-                            {o.id}
-                          </td>
-                          <td className="px-4 py-4">
-                            <div className="font-semibold text-stone-900">
-                              {o.productName}
-                            </div>
-                            {/* Shows a designer/brand line only if that field exists on Order */}
-                            {(o as any).designer && (
-                              <div className="text-[11px] text-stone-400">
-                                {(o as any).designer}
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-4 py-4">
-                            <span
-                              className={`px-2 py-1 rounded text-[10px] ${
-                                o.mode === "Rental"
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-orange-100 text-orange-700"
-                              }`}
-                            >
-                              {o.mode}
-                            </span>
-                          </td>
-                          <td className="px-4 py-4 font-semibold text-stone-900">
-                            ₹{o.amount.toLocaleString("en-IN")}
-                          </td>
-                          <td className="px-4 py-4 text-stone-500">
-                            {(o as any).date || "—"}
-                          </td>
-                          <td className="px-4 py-4">
-                            <span
-                              className={`px-2 py-1 rounded text-[10px] ${
-                                o.status === "Delivered"
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-amber-100 text-amber-700"
-                              }`}
-                            >
-                              {o.status}
-                            </span>
-                          </td>
-                          <td className="px-4 py-4 text-right">
-                            <button
-                              onClick={() => {
-                                setSelectedOrderId(o.id);
-                                setView(`order_detail:${o.id}`);
-                              }}
-                              className="border border-stone-300 rounded-md px-3 py-1.5 text-xs hover:bg-stone-50"
-                            >
-                              View →
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+          {activeTab === "Order History" && (() => {
+            const totalOrders = custOrders.length;
+            const totalOrderPages = Math.ceil(totalOrders / orderHistoryPageSize) || 1;
+            const paginatedOrders = custOrders.slice(
+              (orderHistoryPage - 1) * orderHistoryPageSize,
+              orderHistoryPage * orderHistoryPageSize,
+            );
+
+            return (
+              <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h3 className="font-serif font-bold text-stone-900 text-sm">
+                    Rented & Purchased Orders ({totalOrders})
+                  </h3>
+                  {totalOrders > 0 && (
+                    <div className="flex items-center gap-2 text-xs text-stone-500">
+                      <span>Rows per page:</span>
+                      <select
+                        value={orderHistoryPageSize}
+                        onChange={(e) => {
+                          setOrderHistoryPageSize(Number(e.target.value));
+                          setOrderHistoryPage(1);
+                        }}
+                        className="bg-white border border-stone-200 rounded px-2 py-1 text-xs text-stone-700 outline-none focus:border-[#C7A55C] cursor-pointer"
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                      </select>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          )}
+
+                {totalOrders === 0 ? (
+                  <p className="text-stone-400">
+                    No orders logged under this client.
+                  </p>
+                ) : (
+                  <>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-stone-50 text-stone-400 uppercase text-[10px] tracking-wider border-b border-stone-200">
+                            <th className="px-4 py-3">Order ID</th>
+                            <th className="px-4 py-3">Product</th>
+                            <th className="px-4 py-3">Mode</th>
+                            <th className="px-4 py-3">Amount</th>
+                            <th className="px-4 py-3">Dates</th>
+                            <th className="px-4 py-3">Status</th>
+                            <th className="px-4 py-3 text-right">View</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-stone-100 text-stone-600">
+                          {paginatedOrders.map((o) => (
+                            <tr
+                              key={o.id}
+                              className="hover:bg-[#fcf9f5] transition-colors"
+                            >
+                              <td className="px-4 py-4 font-mono text-[11px] text-stone-500">
+                                {o.id}
+                              </td>
+                              <td className="px-4 py-4">
+                                <div className="font-semibold text-stone-900">
+                                  {resolveProductName(o)}
+                                </div>
+                                {resolveDesigner(o) ? (
+                                  <div className="text-[11px] text-stone-400">
+                                    {resolveDesigner(o)}
+                                  </div>
+                                ) : null}
+                              </td>
+                              <td className="px-4 py-4">
+                                <span
+                                  className={`px-2 py-1 rounded text-[10px] ${
+                                    (o.mode || (o.items?.[0] as any)?.mode) === "Rental"
+                                      ? "bg-green-100 text-green-700"
+                                      : "bg-orange-100 text-orange-700"
+                                  }`}
+                                >
+                                  {o.mode || (o.items?.[0] as any)?.mode || "Order"}
+                                </span>
+                              </td>
+                              <td className="px-4 py-4 font-semibold text-stone-900">
+                                ₹{resolveOrderAmount(o).toLocaleString("en-IN")}
+                              </td>
+                              <td className="px-4 py-4 text-stone-500">
+                                {(o as any).date || "—"}
+                              </td>
+                              <td className="px-4 py-4">
+                                <span
+                                  className={`px-2 py-1 rounded text-[10px] ${
+                                    o.status === "Delivered"
+                                      ? "bg-green-100 text-green-700"
+                                      : "bg-amber-100 text-amber-700"
+                                  }`}
+                                >
+                                  {o.status}
+                                </span>
+                              </td>
+                              <td className="px-4 py-4 text-right">
+                                <button
+                                  onClick={() => {
+                                    setSelectedOrderId(o.id);
+                                    setView(`order_detail:${o.id}`);
+                                  }}
+                                  className="border border-stone-300 rounded-md px-3 py-1.5 text-xs hover:bg-stone-50 transition cursor-pointer"
+                                >
+                                  View →
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination Bar */}
+                    {totalOrders > 0 && (
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-stone-100">
+                        <p className="text-xs text-stone-500 font-sans">
+                          Showing{" "}
+                          <span className="font-semibold text-stone-800">
+                            {(orderHistoryPage - 1) * orderHistoryPageSize + 1}
+                          </span>{" "}
+                          to{" "}
+                          <span className="font-semibold text-stone-800">
+                            {Math.min(
+                              orderHistoryPage * orderHistoryPageSize,
+                              totalOrders,
+                            )}
+                          </span>{" "}
+                          of{" "}
+                          <span className="font-semibold text-stone-800">
+                            {totalOrders}
+                          </span>{" "}
+                          orders
+                        </p>
+
+                        <nav
+                          className="inline-flex rounded-md gap-2"
+                          aria-label="Order History Pagination"
+                        >
+                          <button
+                            onClick={() =>
+                              setOrderHistoryPage(Math.max(1, orderHistoryPage - 1))
+                            }
+                            disabled={orderHistoryPage === 1}
+                            className="relative inline-flex items-center rounded px-3 py-1.5 text-[#c5a880] border border-stone-200 bg-white hover:bg-[#fcf9f5] hover:border-[#c5a880] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition shadow-2xs text-xs font-semibold"
+                          >
+                            <ChevronLeft className="h-4 w-4 mr-0.5" aria-hidden="true" />
+                            Prev
+                          </button>
+
+                          <div className="relative inline-flex items-center px-4 py-1.5 text-xs font-bold text-[#3d2d14] bg-[#fcf9f5] border border-stone-200 rounded shadow-inner">
+                            Page {orderHistoryPage} of {totalOrderPages}
+                          </div>
+
+                          <button
+                            onClick={() =>
+                              setOrderHistoryPage(
+                                Math.min(totalOrderPages, orderHistoryPage + 1),
+                              )
+                            }
+                            disabled={orderHistoryPage >= totalOrderPages}
+                            className="relative inline-flex items-center rounded px-3 py-1.5 text-[#c5a880] border border-stone-200 bg-white hover:bg-[#fcf9f5] hover:border-[#c5a880] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition shadow-2xs text-xs font-semibold"
+                          >
+                            Next
+                            <ChevronLeft
+                              className="h-4 w-4 ml-0.5 rotate-180"
+                              aria-hidden="true"
+                            />
+                          </button>
+                        </nav>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            );
+          })()}
 
           {/* ============================================================ */}
           {/* PART 2/9 — WISHLIST TAB                                       */}

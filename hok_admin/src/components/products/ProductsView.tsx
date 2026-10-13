@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { Product, Lister } from "../types/product";
 import * as productApi from "../../services/productApi";
 import { getDesigners } from "../../services/designerApi";
@@ -71,10 +71,17 @@ export default function ProductsView({
   const [selectedMode, setSelectedMode] = useState("All Modes");
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
   const [sortOption, setSortOption] = useState("Sort: Recent");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const [dbDesigners, setDbDesigners] = useState<any[]>([]);
   const [dbCategories, setDbCategories] = useState<string[]>([
     "All Categories",
   ]);
+
+  // Reset to page 1 whenever filters or search change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory, selectedMode, selectedStatus, sortOption]);
 
   useEffect(() => {
     const fetchDesigners = async () => {
@@ -215,6 +222,14 @@ export default function ProductsView({
       }
       return 0; // Default: Recent
     });
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+  const validCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+  const startIndex = (validCurrentPage - 1) * pageSize;
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + pageSize,
+  );
 
   const handleEditWithTab = (product: Product, initialTab?: ProductTab) => {
     startEditing(product);
@@ -1076,10 +1091,77 @@ export default function ProductsView({
 
           <div className="bg-white rounded-lg border border-[#EBE5DF] shadow-sm overflow-hidden">
             <ProductTable
-              products={filteredProducts}
+              products={paginatedProducts}
               loading={loading}
               onEdit={handleEditWithTab}
             />
+
+            {/* Pagination Controls (10 items per page) */}
+            {filteredProducts.length > 0 && (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-3.5 bg-[#FAF8F5] border-t border-[#EBE5DF] text-xs">
+                <div className="text-[#8C847A] font-sans">
+                  Showing{" "}
+                  <span className="font-semibold text-[#2B2520]">
+                    {startIndex + 1}
+                  </span>{" "}
+                  to{" "}
+                  <span className="font-semibold text-[#2B2520]">
+                    {Math.min(startIndex + pageSize, filteredProducts.length)}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-semibold text-[#2B2520]">
+                    {filteredProducts.length}
+                  </span>{" "}
+                  pieces
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={validCurrentPage <= 1}
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-[#E2DAD1] bg-white text-[#524B43] hover:bg-[#FAF8F5] hover:border-[#C7A55C] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-[#E2DAD1] text-[11px] font-medium transition cursor-pointer shadow-2xs"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <span>Previous</span>
+                  </button>
+
+                  <div className="flex items-center gap-1 px-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (pageNum) => {
+                        const isActive = pageNum === validCurrentPage;
+                        return (
+                          <button
+                            key={pageNum}
+                            type="button"
+                            onClick={() => setCurrentPage(pageNum)}
+                            className={`min-w-[28px] h-7 px-2 rounded-md text-[11px] font-medium transition cursor-pointer ${
+                              isActive
+                                ? "bg-[#2B2520] text-white shadow-2xs"
+                                : "bg-white border border-[#E2DAD1] text-[#524B43] hover:bg-[#FAF8F5] hover:border-[#C7A55C]"
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      },
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(totalPages, p + 1))
+                    }
+                    disabled={validCurrentPage >= totalPages}
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-[#E2DAD1] bg-white text-[#524B43] hover:bg-[#FAF8F5] hover:border-[#C7A55C] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-[#E2DAD1] text-[11px] font-medium transition cursor-pointer shadow-2xs"
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

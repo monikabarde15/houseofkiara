@@ -1,7 +1,7 @@
 // src\components\Profile\right\RightColumn.jsx
 import React from "react";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Search,
   MapPin,
@@ -89,9 +89,11 @@ const RightColumn = ({
     setActiveView("wishlist");
   };
 
+  const navigate = useNavigate();
+
   // For listing another piece
   const handleListAnotherPiece = () => {
-    console.log("Redirecting to List Your Piece form...");
+    navigate("/list-your-piece/");
   };
 
   const handleBackToOverview = () => {

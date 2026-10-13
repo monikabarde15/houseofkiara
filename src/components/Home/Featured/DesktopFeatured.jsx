@@ -20,7 +20,9 @@ const DesktopFeatured = ({ data }) => {
     "/main-page?section=designers";
 
   const slots = data?.slots || data?.settings?.slots;
-  const products = resolveProductsFromSlots(slots);
+  const products = (Array.isArray(data?.products) && data.products.length > 0)
+    ? data.products
+    : resolveProductsFromSlots(slots);
 
   return (
     <section className="desk-featured">

@@ -20,6 +20,7 @@ export interface PieceCardData {
   mrp?: number;
   retailPrice?: number;
   mode?: string; // 'Rental', 'Preloved', 'Buy New'
+  shots?: { [shotKey: string]: string };
 }
 
 // 5 fixed deterministic swatches for category fallback (Spec 4.12.2)

@@ -140,7 +140,7 @@ export const initialHomepageRegistry: HomepageRegistry = {
     viewAll: { lbl: 'View All →', url: '/rent/all' },
     slots: ['HOK-SAB-002', 'HOK-MM-001', 'HOK-TT-001', 'HOK-AD-001'],
     shots: { 'HOK-SAB-002': 'On model' },
-    cap: 8,
+    cap: 4,
     perRow: 4,
     perRowMob: 2,
     topUp: 'Off',
@@ -165,11 +165,11 @@ export const initialHomepageRegistry: HomepageRegistry = {
     showCountMob: true,
     countLblMob: '{n} pieces available',
     tiles: {
-      'bridal-lehenga': { alt: 'Bridal lehengas', lbl: 'Bridal Lehengas', kickMob: 'Curated for every occasion' },
-      'sherwani': { alt: 'Sherwanis', lbl: 'Sherwanis', kickMob: 'Curated for every occasion' },
-      'saree': { alt: 'Sarees', lbl: 'Sarees', kickMob: 'Curated for every occasion' },
-      'anarkali': { alt: 'Anarkalis', lbl: 'Anarkalis', kickMob: 'Curated for every occasion' },
-      'indo-western': { alt: 'Indo-Western', lbl: 'Indo-Western', kickMob: 'Curated for every occasion' }
+      'saree': { alt: 'Sarees', lbl: 'Sarees', kickMob: 'Timeless drapes', img: '/uploads/sbc-3.jpg' },
+      'anarkali': { alt: 'Anarkalis', lbl: 'Anarkalis', kickMob: 'Ethereal silhouettes', img: '/uploads/sbc-4.jpg' },
+      'sherwani': { alt: 'Sherwanis', lbl: 'Sherwanis', kickMob: 'For the groom', img: '/uploads/sbc-2.jpg' },
+      'indo-western': { alt: 'Indo-Western', lbl: 'Indo-Western', kickMob: 'Modern fusion', img: '/uploads/sbc-5.jpg' },
+      'bridal-lehenga': { alt: 'Bridal lehengas', lbl: 'Bridal Lehengas', kickMob: 'Curated for every occasion', img: '/uploads/sbc-1.jpg' }
     }
   },
 

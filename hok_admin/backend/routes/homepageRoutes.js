@@ -3,6 +3,7 @@ import {
   getHeroSection,
   getHiwSection,
   getFeaturedSection,
+  getFeaturedPiecesCatalogue,
   getCategorySection,
   getOccasionsSection,
   getCommitmentSection,
@@ -44,6 +45,7 @@ router.get("/hero", getHeroSection);
 router.get("/how-it-works", getHiwSection);
 router.get("/hiw", getHiwSection);
 router.get("/featured-pieces", getFeaturedSection);
+router.get("/featured-pieces/catalogue", getFeaturedPiecesCatalogue);
 router.get("/featured", getFeaturedSection);
 router.get("/category", getCategorySection);
 router.get("/shop-by-category", getCategorySection);

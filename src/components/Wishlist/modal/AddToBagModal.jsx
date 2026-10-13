@@ -131,6 +131,24 @@ const AddToBagModal = ({
     }
   };
 
+  const getProductImage = () => {
+    if (!product) return "";
+    if (typeof product.image === "string" && product.image.trim()) return product.image;
+    if (Array.isArray(product.image) && product.image.length > 0) return product.image[0];
+    if (typeof product.images === "string" && product.images.trim()) return product.images;
+    if (Array.isArray(product.images) && product.images.length > 0) return product.images[0];
+    if (product.originalData) {
+      const orig = product.originalData;
+      if (typeof orig.image === "string" && orig.image.trim()) return orig.image;
+      if (Array.isArray(orig.image) && orig.image.length > 0) return orig.image[0];
+      if (typeof orig.images === "string" && orig.images.trim()) return orig.images;
+      if (Array.isArray(orig.images) && orig.images.length > 0) return orig.images[0];
+    }
+    return "";
+  };
+
+  const thumbnailSrc = getProductImage();
+
   return (
     <div
       className={`desk-wishlist-modal-backdrop ${isOpen ? "desk-wishlist-modal-backdrop-open" : ""}`}
@@ -167,9 +185,9 @@ const AddToBagModal = ({
             <div
               className={`desk-wishlist-modal-thumbnail desk-wishlist-modal-thumbnail-${type}`}
             >
-              {product?.image?.[0] || product?.images?.[0] ? (
+              {thumbnailSrc ? (
                 <img
-                  src={product?.image?.[0] || product?.images?.[0]}
+                  src={thumbnailSrc}
                   alt={product.name}
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />

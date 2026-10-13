@@ -12,7 +12,7 @@ const CATALOGUE_MAP = {
     designer: "Sabyasachi",
     name: "Crimson Zardozi Bridal Lehenga",
     badge: "Rent",
-    image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=400&q=80",
+    image: "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875344/houseofkaira/products/grid-1.jpg",
     price: "₹8,500",
     priceSuffix: "/ 3 days",
     retailPrice: "₹4,50,000",
@@ -23,7 +23,7 @@ const CATALOGUE_MAP = {
     designer: "Sabyasachi",
     name: "Rajputana Silk Bridal Lehenga",
     badge: "Rent",
-    image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=400&q=80",
+    image: "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875344/houseofkaira/products/grid-1.jpg",
     price: "₹9,200",
     priceSuffix: "/ 3 days",
     retailPrice: "₹5,20,000",
@@ -34,7 +34,7 @@ const CATALOGUE_MAP = {
     designer: "Anita Dongre",
     name: "Blush Organza Gown",
     badge: "Rent",
-    image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=400&q=80",
+    image: "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875350/houseofkaira/products/grid-4.jpg",
     price: "₹5,000",
     priceSuffix: "/ 3 days",
     retailPrice: "₹1,15,000",
@@ -45,7 +45,7 @@ const CATALOGUE_MAP = {
     designer: "Ritu Kumar",
     name: "Champagne Tissue Sharara",
     badge: "Rent",
-    image: "https://images.unsplash.com/photo-1518049362265-d5b2a6467637?auto=format&fit=crop&w=400&q=80",
+    image: "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875349/houseofkaira/products/grid-3.jpg",
     price: "₹3,800",
     priceSuffix: "/ 3 days",
     retailPrice: "₹82,000",
@@ -56,7 +56,7 @@ const CATALOGUE_MAP = {
     designer: "Manish Malhotra",
     name: "Charcoal Silk Bandhgala",
     badge: "Preloved",
-    image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=400&q=80",
+    image: "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875348/houseofkaira/products/grid-2.jpg",
     price: "₹42,000",
     retailPrice: "₹1,30,000",
   },
@@ -129,7 +129,29 @@ export async function fetchFeaturedData() {
     if (!res.ok) return null;
     const json = await res.json();
     if (json.success && json.data) {
-      return json.data;
+      const data = json.data;
+      if (Array.isArray(data.pieces) && data.pieces.length > 0) {
+        data.products = data.pieces.map((p) => {
+          let badgeText = "Rent";
+          if (p.mode) {
+            if (p.mode.toLowerCase().includes("rent")) badgeText = "Rent";
+            else if (p.mode.toLowerCase().includes("pre")) badgeText = "Preloved";
+            else if (p.mode.toLowerCase().includes("new")) badgeText = "New";
+          }
+          return {
+            id: p.sku,
+            sku: p.sku,
+            designer: p.designer,
+            name: p.name,
+            badge: badgeText,
+            image: p.imageUrl,
+            price: p.priceStd ? `₹${p.priceStd.toLocaleString("en-IN")}` : `₹${(p.resalePrice || 0).toLocaleString("en-IN")}`,
+            priceSuffix: p.priceStd ? `/ ${p.minDays || 3} days` : "",
+            retailPrice: p.retailPrice || p.mrp ? `₹${(p.retailPrice || p.mrp).toLocaleString("en-IN")}` : undefined,
+          };
+        });
+      }
+      return data;
     }
   } catch (err) {
     console.warn("Could not load Featured Pieces data from API, using fallback:", err);

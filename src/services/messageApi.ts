@@ -1,4 +1,4 @@
-const BASE = "http://localhost:5000/api";
+const BASE = "/api";
 export const sendMockMessage = async (payload: {
   channel: "whatsapp" | "sms";
   to: string;

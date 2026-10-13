@@ -208,7 +208,7 @@ export const HomepageNavigator: React.FC<HomepageNavigatorProps> = ({
               })}
             </div>
             <span style={{ fontSize: '7px', color: 'var(--muted)', display: 'block', marginTop: 2 }}>
-              {slotsCount} of 8 slots used
+              {slotsCount} of {featured.cap || 4} slots used
             </span>
           </div>
         );

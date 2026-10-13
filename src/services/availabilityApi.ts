@@ -5,7 +5,7 @@ export interface AvailabilityResult {
   durationDays: number;
   cleaningBufferDays: number;
 }
-const BASE = "http://localhost:5000/api";
+const BASE = "/api";
 export const checkAvailability = async (
   productId: string,
   startDate: string,

@@ -14,7 +14,7 @@ export interface ProductQuote {
   subtotal: number;
   grandTotal: number;
 }
-const BASE = "http://localhost:5000/api";
+const BASE = "/api";
 export const getProductQuote = async (
   productId: string,
   params: {

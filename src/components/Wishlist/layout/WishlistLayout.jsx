@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 import WishlistHeader from "./WishlistHeader";
 import WishlistToolbar from "./WishlistToolbar";
 import RentWishlistSection from "../sections/RentWishlistSection";
@@ -58,6 +59,7 @@ const WishlistLayout = () => {
   };
 
   const showGeneralToastMessage = (message, withUndo = false) => {
+    toast.success(message);
     if (toastTimeoutRef.current) {
       clearTimeout(toastTimeoutRef.current);
     }
@@ -149,18 +151,19 @@ const WishlistLayout = () => {
           showGeneralToastMessage={showGeneralToastMessage}
         />
 
-        {showRentSection && (
+        {/* Sections rendered cleanly without hiding any wishlist pieces */}
+        {showRentSection && (rentCount > 0 || activeTab === "rent" || (totalPieces > 0 && prelovedCount === 0 && newCount === 0)) && (
           <RentWishlistSection
             viewMode={viewMode}
             showGeneralToastMessage={showGeneralToastMessage}
             onRemoveCard={handleRemoveCard}
             onOpenModal={handleOpenModal}
-            pieceCount={rentCount}
-            products={rentProducts}
+            pieceCount={rentCount || totalPieces}
+            products={rentCount > 0 ? rentProducts : allProducts}
           />
         )}
 
-        {showPrelovedSection && (
+        {showPrelovedSection && (prelovedCount > 0 || activeTab === "preloved") && (
           <PrelovedWishlistSection
             viewMode={viewMode}
             onRemoveCard={handleRemoveCard}
@@ -170,13 +173,24 @@ const WishlistLayout = () => {
           />
         )}
 
-        {showNewSection && (
+        {showNewSection && (newCount > 0 || activeTab === "new") && (
           <NewWishlistSection
             viewMode={viewMode}
             onRemoveCard={handleRemoveCard}
             onOpenModal={handleOpenModal}
             pieceCount={newCount}
             products={newProducts}
+          />
+        )}
+
+        {totalPieces === 0 && (
+          <RentWishlistSection
+            viewMode={viewMode}
+            showGeneralToastMessage={showGeneralToastMessage}
+            onRemoveCard={handleRemoveCard}
+            onOpenModal={handleOpenModal}
+            pieceCount={0}
+            products={[]}
           />
         )}
       </div>
