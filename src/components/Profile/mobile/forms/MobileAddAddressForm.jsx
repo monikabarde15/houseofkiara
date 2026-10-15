@@ -4,9 +4,19 @@ import useAuthStore from "../../../../store/authStore";
 
 import "../../../../styles/Profile/mobile/forms/MobileAddAddressForm.css";
 
-const LABEL_OPTIONS = ["Home", "Office", "Parents' Home", "Other"];
+const LABEL_OPTIONS = [
+  "Home",
+  "Office",
+  "Parents' Home",
+  "Other"
+];
 
-const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
+const MobileAddAddressForm = ({
+  isOpen,
+  onClose,
+  onSave,
+  onTriggerClick
+}) => {
   const { user } = useAuthStore();
   const [formData, setFormData] = useState({
     label: "Home",
@@ -17,7 +27,7 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
     state: "",
     pin: "",
     mobile: user?.phone || user?.mobile || "",
-    setAsDefault: false,
+    setAsDefault: false
   });
   const [errors, setErrors] = useState({});
   const formRef = useRef(null);
@@ -34,14 +44,14 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
       state: "",
       pin: "",
       mobile: user?.phone || user?.mobile || "",
-      setAsDefault: false,
+      setAsDefault: false
     });
     setErrors({});
 
     requestAnimationFrame(() => {
       formRef.current?.scrollIntoView({
         behavior: "smooth",
-        block: "nearest",
+        block: "nearest"
       });
     });
   }, [isOpen, user]);
@@ -62,8 +72,7 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
         return "";
       case "mobile":
         if (!value) return "Mobile number is required";
-        if (!/^[+\d][\d\s-]{7,}$/.test(value))
-          return "Enter a valid mobile number";
+        if (!/^[+\d][\d\s-]{7,}$/.test(value)) return "Enter a valid mobile number";
         return "";
       default:
         return "";
@@ -72,12 +81,10 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    ["recipientName", "line1", "city", "state", "pin", "mobile"].forEach(
-      (field) => {
-        const error = validateField(field, formData[field]);
-        if (error) newErrors[field] = error;
-      },
-    );
+    ["recipientName", "line1", "city", "state", "pin", "mobile"].forEach((field) => {
+      const error = validateField(field, formData[field]);
+      if (error) newErrors[field] = error;
+    });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -86,7 +93,7 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : value
     }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -98,9 +105,7 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
     const isValid = validateForm();
     if (!isValid) {
       requestAnimationFrame(() => {
-        const firstError = document.querySelector(
-          ".profile-mobile-addaddr-fi.has-error",
-        );
+        const firstError = document.querySelector(".profile-mobile-addaddr-fi.has-error");
         firstError?.scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
       return;
@@ -132,11 +137,7 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
 
       {/* Inline Form - ONLY visible when isOpen is true */}
       {isOpen && (
-        <form
-          className="profile-mobile-addaddr-body"
-          onSubmit={handleSubmit}
-          ref={formRef}
-        >
+        <form className="profile-mobile-addaddr-body" onSubmit={handleSubmit} ref={formRef}>
           <div className="profile-mobile-addaddr-heading">New Address</div>
 
           {/* Label + Recipient */}
@@ -156,19 +157,13 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
                     </option>
                   ))}
                 </select>
-                <ChevronDown
-                  size={10}
-                  className="profile-mobile-addaddr-chevron"
-                />
+                <ChevronDown size={10} className="profile-mobile-addaddr-chevron" />
               </div>
             </div>
 
-            <div
-              className={`profile-mobile-addaddr-fi ${errors.recipientName ? "has-error" : ""}`}
-            >
+            <div className={`profile-mobile-addaddr-fi ${errors.recipientName ? "has-error" : ""}`}>
               <label className="profile-mobile-addaddr-label">
-                Recipient Name{" "}
-                <span className="profile-mobile-addaddr-required">*</span>
+                Recipient Name <span className="profile-mobile-addaddr-required">*</span>
               </label>
               <input
                 type="text"
@@ -179,20 +174,15 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
                 className="profile-mobile-addaddr-input"
               />
               {errors.recipientName && (
-                <div className="profile-mobile-addaddr-error">
-                  {errors.recipientName}
-                </div>
+                <div className="profile-mobile-addaddr-error">{errors.recipientName}</div>
               )}
             </div>
           </div>
 
           {/* Address Line 1 */}
-          <div
-            className={`profile-mobile-addaddr-fi ${errors.line1 ? "has-error" : ""}`}
-          >
+          <div className={`profile-mobile-addaddr-fi ${errors.line1 ? "has-error" : ""}`}>
             <label className="profile-mobile-addaddr-label">
-              Address Line 1{" "}
-              <span className="profile-mobile-addaddr-required">*</span>
+              Address Line 1 <span className="profile-mobile-addaddr-required">*</span>
             </label>
             <input
               type="text"
@@ -202,16 +192,12 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
               placeholder="House / Flat / Building no."
               className="profile-mobile-addaddr-input"
             />
-            {errors.line1 && (
-              <div className="profile-mobile-addaddr-error">{errors.line1}</div>
-            )}
+            {errors.line1 && <div className="profile-mobile-addaddr-error">{errors.line1}</div>}
           </div>
 
           {/* Address Line 2 */}
           <div className="profile-mobile-addaddr-fi">
-            <label className="profile-mobile-addaddr-label">
-              Address Line 2
-            </label>
+            <label className="profile-mobile-addaddr-label">Address Line 2</label>
             <input
               type="text"
               name="line2"
@@ -224,9 +210,7 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
 
           {/* City + State */}
           <div className="profile-mobile-addaddr-row">
-            <div
-              className={`profile-mobile-addaddr-fi ${errors.city ? "has-error" : ""}`}
-            >
+            <div className={`profile-mobile-addaddr-fi ${errors.city ? "has-error" : ""}`}>
               <label className="profile-mobile-addaddr-label">
                 City <span className="profile-mobile-addaddr-required">*</span>
               </label>
@@ -238,15 +222,9 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
                 placeholder="City"
                 className="profile-mobile-addaddr-input"
               />
-              {errors.city && (
-                <div className="profile-mobile-addaddr-error">
-                  {errors.city}
-                </div>
-              )}
+              {errors.city && <div className="profile-mobile-addaddr-error">{errors.city}</div>}
             </div>
-            <div
-              className={`profile-mobile-addaddr-fi ${errors.state ? "has-error" : ""}`}
-            >
+            <div className={`profile-mobile-addaddr-fi ${errors.state ? "has-error" : ""}`}>
               <label className="profile-mobile-addaddr-label">
                 State <span className="profile-mobile-addaddr-required">*</span>
               </label>
@@ -258,22 +236,15 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
                 placeholder="State"
                 className="profile-mobile-addaddr-input"
               />
-              {errors.state && (
-                <div className="profile-mobile-addaddr-error">
-                  {errors.state}
-                </div>
-              )}
+              {errors.state && <div className="profile-mobile-addaddr-error">{errors.state}</div>}
             </div>
           </div>
 
           {/* PIN + Mobile */}
           <div className="profile-mobile-addaddr-row">
-            <div
-              className={`profile-mobile-addaddr-fi ${errors.pin ? "has-error" : ""}`}
-            >
+            <div className={`profile-mobile-addaddr-fi ${errors.pin ? "has-error" : ""}`}>
               <label className="profile-mobile-addaddr-label">
-                PIN Code{" "}
-                <span className="profile-mobile-addaddr-required">*</span>
+                PIN Code <span className="profile-mobile-addaddr-required">*</span>
               </label>
               <input
                 type="text"
@@ -285,16 +256,11 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
                 placeholder="6-digit PIN"
                 className="profile-mobile-addaddr-input"
               />
-              {errors.pin && (
-                <div className="profile-mobile-addaddr-error">{errors.pin}</div>
-              )}
+              {errors.pin && <div className="profile-mobile-addaddr-error">{errors.pin}</div>}
             </div>
-            <div
-              className={`profile-mobile-addaddr-fi ${errors.mobile ? "has-error" : ""}`}
-            >
+            <div className={`profile-mobile-addaddr-fi ${errors.mobile ? "has-error" : ""}`}>
               <label className="profile-mobile-addaddr-label">
-                Mobile{" "}
-                <span className="profile-mobile-addaddr-required">*</span>
+                Mobile <span className="profile-mobile-addaddr-required">*</span>
               </label>
               <input
                 type="tel"
@@ -304,11 +270,7 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
                 placeholder="+91 XXXXX XXXXX"
                 className="profile-mobile-addaddr-input"
               />
-              {errors.mobile && (
-                <div className="profile-mobile-addaddr-error">
-                  {errors.mobile}
-                </div>
-              )}
+              {errors.mobile && <div className="profile-mobile-addaddr-error">{errors.mobile}</div>}
             </div>
           </div>
 
@@ -336,11 +298,7 @@ const MobileAddAddressForm = ({ isOpen, onClose, onSave, onTriggerClick }) => {
               <span>✓</span>
               Save Address
             </button>
-            <button
-              type="button"
-              className="profile-mobile-addaddr-btn-cancel"
-              onClick={onClose}
-            >
+            <button type="button" className="profile-mobile-addaddr-btn-cancel" onClick={onClose}>
               Cancel
             </button>
           </div>

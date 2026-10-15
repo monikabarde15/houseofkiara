@@ -17,9 +17,15 @@ const view = (x) => {
 };
 
 const buildIdQuery = (id) => {
-  const conditions = [{ listerId: id }, { id: id }];
-  if (mongoose.Types.ObjectId.isValid(id)) {
-    conditions.push({ _id: id });
+  const decoded = decodeURIComponent(id || "").trim();
+  const conditions = [
+    { listerId: decoded },
+    { id: decoded },
+    { listerId: decoded.toLowerCase().replace(/\s+/g, "-") },
+    { name: new RegExp(`^${decoded.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+  ];
+  if (mongoose.Types.ObjectId.isValid(decoded)) {
+    conditions.push({ _id: decoded });
   }
   return { $or: conditions };
 };
@@ -185,11 +191,20 @@ const getListerRecord = (id) => Lister.findOne(buildIdQuery(id));
 export const getListerListings = async (req, res) => {
   try {
     const lister = await getListerRecord(req.params.id);
-    const ids = [req.params.id];
-    if (lister && lister.listerId) ids.push(lister.listerId);
-    if (lister && lister._id) ids.push(lister._id.toString());
+    const ids = [req.params.id, decodeURIComponent(req.params.id || "")];
+    if (lister) {
+      if (lister.listerId) ids.push(lister.listerId);
+      if (lister._id) ids.push(lister._id.toString());
+      if (lister.id) ids.push(lister.id);
+      if (lister.name) ids.push(lister.name);
+    }
 
-    const rows = await Product.find({ listerId: { $in: ids } }).sort({
+    const rows = await Product.find({
+      $or: [
+        { listerId: { $in: ids } },
+        { listerName: lister?.name || req.params.id },
+      ],
+    }).sort({
       createdAt: -1,
     });
     res.json({ success: true, data: rows });
@@ -201,11 +216,20 @@ export const getListerListings = async (req, res) => {
 export const getListerPayouts = async (req, res) => {
   try {
     const lister = await getListerRecord(req.params.id);
-    const ids = [req.params.id];
-    if (lister && lister.listerId) ids.push(lister.listerId);
-    if (lister && lister._id) ids.push(lister._id.toString());
+    const ids = [req.params.id, decodeURIComponent(req.params.id || "")];
+    if (lister) {
+      if (lister.listerId) ids.push(lister.listerId);
+      if (lister._id) ids.push(lister._id.toString());
+      if (lister.id) ids.push(lister.id);
+      if (lister.name) ids.push(lister.name);
+    }
 
-    const rows = await Payout.find({ listerId: { $in: ids } }).sort({
+    const rows = await Payout.find({
+      $or: [
+        { listerId: { $in: ids } },
+        { listerName: lister?.name || req.params.id },
+      ],
+    }).sort({
       createdAt: -1,
     });
     const data = rows.map((p) => ({

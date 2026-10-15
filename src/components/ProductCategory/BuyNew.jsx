@@ -5,71 +5,24 @@ import { useLocation,useParams,useNavigate } from "react-router-dom";
 import "../../styles/productcategory/buy-new.css";
 import RelatedProduct from "../RelatedProduct";
 import GalleryColumn from "../GalleryColumn";
-import { makeProductDetail } from "../ProductList";
-import useCartStore from "../../store/cartStore";
-import useWishlistStore from "../../store/wishlistStore";
 import products from "../../data/mainCategoryPageData"; 
+import useCartStore from "../../store/cartStore";
+import useWishlistStore from "../../store/wishlistStore"; 
 
 export default function BuyNew() {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
-  const addToCart = useCartStore((state) => state.addToCart);
 
-  const [product, setProduct] = useState(() => {
-    if (location.state?.product) {
-      return makeProductDetail(location.state.product);
-    }
-    const localFound = products.find(
-      (p) => String(p.id) === String(id) || String(p._id) === String(id)
-    );
-    return localFound ? makeProductDetail(localFound) : null;
-  });
+  // Try from state first
+  let product = location.state?.product;
 
-  const [loading, setLoading] = useState(!product);
-  const [error, setError] = useState(null);
+  // Fallback: find from data
+  if (!product) {
+    product = products.find(p => p.id === Number(id));
+}
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchProduct = async () => {
-      try {
-        if (!location.state?.product) setLoading(true);
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-        const res = await fetch(`${backendUrl}/api/web-products/${id}`);
-        const data = await res.json();
-
-        if (isMounted) {
-          if (data.success && data.data) {
-            setProduct(makeProductDetail(data.data));
-          } else {
-            const localFound = products.find(
-              (p) => String(p.id) === String(id) || String(p._id) === String(id)
-            );
-            if (localFound) setProduct(makeProductDetail(localFound));
-            else setError("Failed to load product");
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching product:", err);
-        if (isMounted) {
-          const localFound = products.find(
-            (p) => String(p.id) === String(id) || String(p._id) === String(id)
-          );
-          if (localFound) setProduct(makeProductDetail(localFound));
-          else setError("Failed to load product");
-        }
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    fetchProduct();
-    return () => {
-      isMounted = false;
-    };
-  }, [id, location.state]);
-
+  const [wish, setWish] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [rating, setRating] = useState(4);
@@ -77,24 +30,10 @@ export default function BuyNew() {
   const [tab, setTab] = useState("highlights");
   const [openSections, setOpenSections] = useState(["details"]);
 
-  const wishlistItems = useWishlistStore((state) => state.items);
-  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
-  const productId = product?._id || product?.id || id;
-  const wish = productId ? wishlistItems.includes(productId) : false;
-
-  const displayPrice = product?.buy?.pricing?.price || product?.price || 0;
-  const [price, setPrice] = useState(displayPrice);
+  const [price, setPrice] = useState(product?.price);
   const [activeImage, setActiveImage] = useState(product?.images?.[0]);
 
-  useEffect(() => {
-    if (product) {
-       setPrice(product.buy?.pricing?.price || product.price || 0);
-       setActiveImage(product.images?.[0]);
-    }
-  }, [product]);
-
-  if (loading) return <h2 style={{ padding: 40 }}>Loading...</h2>;
-  if (error || !product) return <h2 style={{ padding: 40 }}>{error || "Product not found"}</h2>;
+  if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
 
   const toggle = (key) => {
     setOpenSections((prev) => {
@@ -117,19 +56,30 @@ export default function BuyNew() {
 
   const handleSize = (size) => {
     setSelectedSize(size);
-    // You can add size-based price adjustments here if backend supports it
-    setPrice(displayPrice);
+    let base = Number(product.price.replace(/[^0-9]/g, ""));
+    if (size === "M") base += 2000;
+    if (size === "L") base += 5000;
+    setPrice(`₹${base.toLocaleString()}`);
   };
 
+  // Function to add item in cart 
   const handleAddToCart = () => {
-    const details = {
-      type: "new",
-      size: selectedSize || product.sizes?.[0] || "M",
-      color: selectedColor || product?.colors?.[0]?.code || "Standard",
-      price: price,
-    };
+    const numericPrice =
+      typeof price === "number"
+        ? price
+        : Number(String(price).replace(/[^\d]/g, "")) ||
+          product.listingPrice ||
+          product.price ||
+          0;
 
-    addToCart(product, details);
+    useCartStore.getState().addToCart(product, {
+      type: "new",
+      size: selectedSize || "Free Size",
+      color: selectedColor || "",
+      price: numericPrice,
+      quantity: 1,
+    });
+
     setAdded(true);
 
     // Navigate to cart page
@@ -139,9 +89,15 @@ export default function BuyNew() {
   };
 
   // Add Wishlist Function
-
   const handleAddToWishlist = () => {
-    toggleWishlist(productId);
+    const pid = product._id || product.productId || product.id;
+    if (pid) {
+      useWishlistStore.getState().toggleWishlist(pid);
+    }
+    setWish(true);
+    setTimeout(() => {
+      navigate("/wishlist");
+    }, 300);
   };
 
   // Add WhatsApp Function
@@ -199,7 +155,6 @@ Product ID: ${product.id}
               images={product.images}
               video={product.video}
               variant="buy"
-              productId={productId}
             />
           </Col>
 
@@ -328,16 +283,16 @@ Product ID: ${product.id}
                   <span className="buynew-size-guide">Size Guide & Measurements</span>
                 </div>
                 <div className="buynew-sizes">
-                  {product.sizeTable?.map((s, i) => (
+                  {product.sizes?.map((s, i) => (
                     <span
                       key={i}
-                      className={`${selectedSize === s.label ? "active" : ""} ${!s.available ? "disabled" : ""}`}
+                      className={`${selectedSize === s ? "active" : ""} ${!product.availableSizes?.includes(s) ? "disabled" : ""}`}
                       onClick={() => {
-                        if (!s.available) return;
-                        handleSize(s.label);
+                        if (!product.availableSizes?.includes(s)) return;
+                        handleSize(s);
                       }}
                     >
-                      {s.label}
+                      {s}
                     </span>
                   ))}
                 </div>
@@ -577,11 +532,7 @@ Product ID: ${product.id}
       </Container>
 
       {/* ================= RELATED PRODUCT SECTION ================= */}
-      <RelatedProduct 
-         product={product} 
-         currentProductId={id} 
-         category={product.subTitle || product.category} 
-      />
+      <RelatedProduct/>
 
       
       

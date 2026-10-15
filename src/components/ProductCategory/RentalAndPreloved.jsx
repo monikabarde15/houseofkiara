@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams , useNavigate, useLocation } from "react-router-dom";
 import { Heart, Star, TrendingUp, Gift, User, Calendar, CreditCard, MessageCircleCheck, Shield, CircleAlert, ArrowRight, ShoppingBag, X, Plus, Truck } from "lucide-react";
+import { products, makeProductDetail } from "../ProductList";
 import GalleryColumn from "../GalleryColumn";
 import '../../styles/productcategory/rental-and-preloved.css'
 import RentalCalendar from "../RentalCalendar";
 import RelatedProduct from "../RelatedProduct";
 import useCartStore from "../../store/cartStore";
 import useWishlistStore from "../../store/wishlistStore";
+
 const tempSizes = [
     { label: "XS", available: true },
     { label: "S", available: true },
@@ -46,77 +48,33 @@ const gradeConfig = {
     }
 };
 
+
 export default function RentalAndPreloved() {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
+    const found = products.find((p) => p.id === Number(id));
+    const product = location.state?.product || (found ? makeProductDetail(found) : null);
 
-    const addToCart = useCartStore((state) => state.addToCart);
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-    const [mode, setMode] = useState("rent");
+    const [mode, setMode] = useState(
+        product?.modes?.rent?.enabled ? "rent" : "buy"
+    );
 
-    useEffect(() => {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-        fetch(`${backendUrl}/api/web-products/${id}`)
-            .then(res => {
-                if(!res.ok) throw new Error("Not found");
-                return res.json();
-            })
-            .then(data => {
-                if (data && data.success && data.data) {
-                    setProduct(data.data);
-                    if (data.data.modes?.rent?.enabled) {
-                        setMode("rent");
-                    } else if (data.data.modes?.preloved?.enabled || data.data.modes?.buy?.enabled) {
-                        setMode("buy");
-                    }
-                    setLoading(false);
-                } else {
-                    throw new Error("No data returned");
-                }
-            })
-            .catch(err => {
-                console.error("API error:", err);
-                setError(true);
-                setLoading(false);
-            });
-    }, [id]);
-
-    const wishlistItems = useWishlistStore((state) => state.items);
-    const toggleWishlistFn = useWishlistStore((state) => state.toggleWishlist);
-    const productId = product?._id || product?.id || id;    
-    const wish = productId ? wishlistItems.includes(productId) : false;
+    const [wish, setWish] = useState(false);
     const [selectedWindow, setSelectedWindow] = useState("standard");
     const [selectedStart, setSelectedStart] = useState(null);
     const [selectedEnd, setSelectedEnd] = useState(null);
     const [selectedSize, setSelectedSize] = useState(null);
     const [openSections, setOpenSections] = useState(["details"]);
+
     const [isOfferOpen, setIsOfferOpen] = useState(false);
-    const [offer, setOffer] = useState(0);
-    const [inputValue, setInputValue] = useState(0);
-    const [note, setNote] = useState("");
-    const [name, setName] = useState("");
-    const [phone, setPhone] = useState("");
-    const [isSubmitted, setIsSubmitted] = useState(false);
 
-    useEffect(() => {
-        if (product) {
-            const initialPrice = product.modes?.preloved?.pricing?.price || product.modes?.buy?.pricing?.price || 185000;
-            const minOffr = Math.round(initialPrice * 0.54 / 5000) * 5000;
-            setOffer(minOffr);
-            setInputValue(minOffr);
-        }
-    }, [product]);
-
-    if (loading) return <h2 style={{ padding: 40 }}>Loading product...</h2>;
-    if (error || !product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
+    if (!product) return <h2>Product not found</h2>;
 
     // ===== DATA =====
     const rentData = product.modes?.rent || null;
-    const buyData = product.modes?.buy || product.modes?.preloved || null;
-    const sizes = product.modes?.rent?.sizes || product.sizeTable || [];
+    const buyData = product.modes?.buy || null;
+    const sizes = product?.modes?.rent?.sizes || [];
 
     const isOpen = (key) => openSections.includes(key);
 
@@ -131,28 +89,30 @@ export default function RentalAndPreloved() {
     };
 
     // ===== SELECTED WINDOW =====
-    const displayWindows = rentData?.pricing?.windows?.length > 0 
-        ? rentData.pricing.windows 
-        : [
-            { id: "standard", label: "Standard", days: rentData?.pricing?.minDays || 4, price: (rentData?.pricing?.minDays || 4) * (rentData?.pricing?.pricePerDay || 0), tag: "most popular" },
-            { id: "extended", label: "Extended", days: (rentData?.pricing?.minDays || 4) + 2, price: ((rentData?.pricing?.minDays || 4) + 2) * (rentData?.pricing?.pricePerDay || 0), tag: "destination weddings" }
-        ];
+    const selectedWindowData =
+        rentData?.pricing?.windows?.find((w) => w.id === selectedWindow) ||
+        rentData?.pricing?.windows?.[0];
 
-    const selectedWindowData = displayWindows.find((w) => w.id === selectedWindow) || displayWindows[0];
 
     // for dot color
     const grade = product.condition?.grade || "pristine";
 
+
     // ===============PRELOVED======================//
 
     // FOR DISCOUNT - 
-    const price = product.modes?.preloved?.pricing?.price || product.modes?.buy?.pricing?.price || 185000;
-    const retail = product.modes?.preloved?.pricing?.originalPrice || 420000;
+    const price = product.preloved?.pricing?.price || 185000;
+    const retail = 420000;
     const discount = Math.round(((retail - price) / retail) * 100);
 
     // MINIMUM AND MAXIMUM OFFER PRICE
+
     const minOffer = Math.round(price * 0.54 / 5000) * 5000;
     const maxOffer = price;
+
+    const [offer, setOffer] = useState(minOffer);      // number (slider)
+    const [inputValue, setInputValue] = useState(minOffer); // (typing)
+
 
     // CALCULATION ON TOP
     const savings = maxOffer - offer;
@@ -160,6 +120,14 @@ export default function RentalAndPreloved() {
 
     // Golden Progress Bar
     const progress = ((offer - minOffer) / (maxOffer - minOffer)) * 100;
+
+    // FOR INPUT AND NOTES
+    const [note, setNote] = useState("");
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+
+    // Offer submitted 
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const formatDate = (date) => {
         const y = date.getFullYear();
@@ -175,26 +143,35 @@ export default function RentalAndPreloved() {
         const eventDate = new Date(selectedStart);
         eventDate.setDate(eventDate.getDate() + 2);
 
-        const details = {
-            type: "rental",
-            source: "rentandpreloved",
-            size: selectedSize || "M",
-            color: product?.colors?.[0]?.code || "",
-            measurements: null,
-            rentalDates: {
-                start: formatDate(selectedStart),
-                end: formatDate(selectedEnd),
-            },
-            price: selectedWindowData?.price || 0,
-        };
+        const rentalWindowDays =
+            Math.ceil(
+                (selectedEnd - selectedStart) /
+                (1000 * 60 * 60 * 24)
+            ) + 1;
 
-        addToCart(product, details);
+        useCartStore.getState().addToCart(product, {
+            type: "rental",
+            size: selectedSize || "M",
+            deliveryDate: formatDate(selectedStart),
+            eventDate: formatDate(eventDate),
+            returnDate: formatDate(selectedEnd),
+            rentalWindowDays,
+            price: selectedWindowData?.price || product.rentalPrice || 0,
+        });
+
         navigate("/cart");
     };
 
     // Wishlist Handler
     const handleAddToWishlist = () => {
-      toggleWishlistFn(productId);
+        const pid = product._id || product.productId || product.id;
+        if (pid) {
+            useWishlistStore.getState().toggleWishlist(pid);
+        }
+        setWish(true);
+        setTimeout(() => {
+            navigate("/wishlist");
+        }, 300);
     };
 
     // WhatsApp Handler
@@ -237,16 +214,21 @@ Product ID: ${product.id}
 
     // Preloved Buy Now Handler
     const handleBuyNow = () => {
-        const details = {
-            type: "preloved",
-            source: "rentandpreloved",
-            size: sizes?.[0]?.label || product.prelovedSize || "Standard",
-            color: product?.colors?.[0]?.code || "",
-            measurements: null,
-            price: price,
-        };
+        const numericPrice =
+            typeof price === "number"
+                ? price
+                : Number(String(price).replace(/[^\d]/g, "")) ||
+                  product.listingPrice ||
+                  product.price ||
+                  0;
 
-        addToCart(product, details);
+        useCartStore.getState().addToCart(product, {
+            type: "preloved",
+            size: product.prelovedSize || product.size || "Free Size",
+            price: numericPrice,
+            quantity: 1,
+        });
+
         navigate("/cart");
     };
 
@@ -280,7 +262,8 @@ Product ID: ${product.id}
                             images={product.images}
                             video={product.video}
                             variant={mode === "rent" ? "rent" : "preloved"}
-                            productId={productId}
+                            wish={wish}
+                            setWish={setWish}
                         />
 
                     </Col>
@@ -301,7 +284,7 @@ Product ID: ${product.id}
                                     </button>
                                 )}
 
-                                {product.modes?.preloved?.enabled && (
+                                {product.modes?.buy?.enabled && (
                                     <button
                                         className={`rap-toggle-btn ${mode === "buy" ? "active" : ""}`}
                                         onClick={() => setMode("buy")}
@@ -383,7 +366,7 @@ Product ID: ${product.id}
                                         {/* 2. RENTAL WINDOWS */}
                                         {/* WINDOWS */}
                                         <div className="rap-rental-rental-window">
-                                            {displayWindows.map((w) => (
+                                            {rentData.pricing.windows.map((w) => (
                                                 <div
                                                     key={w.id}
                                                     className={`rap-rental-rental-block ${selectedWindow === w.id ? "selected" : ""
@@ -430,21 +413,19 @@ Product ID: ${product.id}
 
                                         {/* SIZE PILLS */}
                                         <div className="rap-rental-size-options">
-                                            {sizes.map((size, i) => {
-                                                const isAvail = size.available !== false;
-                                                return (
+                                            {tempSizes.map((size, i) => (
                                                 <button
                                                     key={i}
-                                                    disabled={!isAvail}
-                                                    onClick={() => isAvail && setSelectedSize(size.label)}
+                                                    disabled={!size.available}
+                                                    onClick={() => size.available && setSelectedSize(size.label)}
                                                     className={`rap-rental-size-pill
-        ${!isAvail ? "unavailable" : ""}
+        ${!size.available ? "unavailable" : ""}
         ${selectedSize === size.label ? "active" : ""}
       `}
                                                 >
                                                     {size.label}
                                                 </button>
-                                            )})}
+                                            ))}
                                         </div>
 
                                     </div>
@@ -719,7 +700,9 @@ Product ID: ${product.id}
 
                                         <div className="rap-preloved-size-pills">
                                             <span className="rap-preloved-size-pill active">
-                                                {sizes?.[0]?.label || product.prelovedSize || "Standard"}
+                                                <span className="rap-preloved-size-pill active">
+                                                    {product.prelovedSize}
+                                                </span>
                                             </span>
                                         </div>
 
@@ -1315,7 +1298,7 @@ Product ID: ${product.id}
 
                 </Row>
             </Container>
-            <RelatedProduct product={product} currentProductId={id} category={product?.category} />
+            <RelatedProduct />
         </section>
     );
 }

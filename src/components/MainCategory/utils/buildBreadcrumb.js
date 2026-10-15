@@ -1,5 +1,11 @@
 // src\components\MainCategory\utils\buildBreadcrumb.js
-export const buildBreadcrumb = ({ section, category, designer, occasion }) => {
+export const buildBreadcrumb = ({
+  section,
+  category,
+  designer,
+  occasion,
+}) => {
+
   const breadcrumb = {
     parent: "Rent",
     current: "All Rental Pieces",
@@ -8,6 +14,7 @@ export const buildBreadcrumb = ({ section, category, designer, occasion }) => {
   // RENT
 
   if (section === "rent") {
+
     breadcrumb.parent = "Rent";
 
     if (designer) {
@@ -20,7 +27,9 @@ export const buildBreadcrumb = ({ section, category, designer, occasion }) => {
   }
 
   // PRELOVED
+
   else if (section === "preloved") {
+
     breadcrumb.parent = "Buy Preloved";
 
     if (designer) {
@@ -33,7 +42,9 @@ export const buildBreadcrumb = ({ section, category, designer, occasion }) => {
   }
 
   // BUY NEW
+
   else if (section === "new") {
+
     breadcrumb.parent = "Buy New";
 
     if (designer) {
@@ -46,7 +57,9 @@ export const buildBreadcrumb = ({ section, category, designer, occasion }) => {
   }
 
   // WOMEN
+
   else if (section === "women") {
+
     breadcrumb.parent = "Women";
 
     if (occasion) {
@@ -59,7 +72,9 @@ export const buildBreadcrumb = ({ section, category, designer, occasion }) => {
   }
 
   // MEN
+
   else if (section === "men") {
+
     breadcrumb.parent = "Men";
 
     if (occasion) {
@@ -72,7 +87,9 @@ export const buildBreadcrumb = ({ section, category, designer, occasion }) => {
   }
 
   // OCCASIONS
+
   else if (section === "occasions") {
+
     breadcrumb.parent = "Occasions";
 
     if (occasion) {
@@ -83,7 +100,9 @@ export const buildBreadcrumb = ({ section, category, designer, occasion }) => {
   }
 
   // DESIGNERS
+
   else if (section === "designers") {
+
     breadcrumb.parent = "Designers";
 
     if (designer) {

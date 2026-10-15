@@ -18,6 +18,9 @@ interface DetailHeaderProps {
   code: PromoCode;
   derivedState: DerivedPromoState;
   redemptions: number;
+  orderValue?: number;
+  discountFunded?: number;
+  firstOrders?: number;
   onBack: () => void;
   onPause: () => void;
   onResume: () => void;
@@ -29,6 +32,9 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
   code,
   derivedState,
   redemptions,
+  orderValue = 0,
+  discountFunded = 0,
+  firstOrders = 0,
   onBack,
   onPause,
   onResume,
@@ -47,11 +53,6 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
   } else {
     avatarText = `₹${code.value}`;
   }
-
-  // Mock stats (in production, these come from orders)
-  const orderValue = redemptions * 5000;
-  const discountFunded = redemptions * 500;
-  const firstOrders = Math.floor(redemptions * 0.4);
 
   return (
     <>

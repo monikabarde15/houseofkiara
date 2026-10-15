@@ -20,10 +20,18 @@ const emptyDesigner: Designer = {
 };
 
 interface DesignersViewProps {
+  products?: any[];
+  orders?: any[];
   onEditingChange?: (isEditing: boolean) => void;
+  setView?: (view: string) => void;
 }
 
-const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
+const DesignersView: React.FC<DesignersViewProps> = ({
+  products = [],
+  orders = [],
+  onEditingChange,
+  setView,
+}) => {
   const [designers, setDesigners] = useState<Designer[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -152,6 +160,10 @@ const DesignersView: React.FC<DesignersViewProps> = ({ onEditingChange }) => {
         onSaveProfile={handleSaveProfile}
         onMergeProfile={handleMergeProfile}
         onDeleteProfile={handleDeleteProfile}
+        products={products}
+        orders={orders}
+        onOpenLister={(lId) => setView?.(`lister_detail:${lId}`)}
+        onOpenCustomer={() => setView?.("customers")}
       />
     );
   }

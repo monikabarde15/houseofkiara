@@ -10,55 +10,49 @@ const PromoCode = ({ onApply }) => {
   const [celebrate, setCelebrate] = useState(false);
   const feedbackRef = useRef(null); // Add ref for anchor element
 
-  const [loading, setLoading] = useState(false);
-
   const handleApply = async () => {
     if (!code) return;
-    setLoading(true);
+    try {
+      const res = await fetch(`/api/promotions/${encodeURIComponent(code)}`);
+      const data = await res.json().catch(() => ({}));
+      if (data.success && data.data && data.data.status === "Active") {
+        const promo = data.data;
+        const appliedData = {
+          code: promo.code,
+          type: promo.type,
+          value: promo.value,
+          maxDiscount: promo.maxDiscount,
+          minOrder: promo.minOrder,
+          label: promo.publicDesc || promo.reason,
+        };
+        setApplied(appliedData);
+        onApply(appliedData);
+        setError("");
+        setTimeout(() => {
+          setCelebrate(true);
+          setTimeout(() => setCelebrate(false), 2000);
+        }, 50);
+        return;
+      }
+    } catch (e) {}
+
+    const promo = PROMO_CODES[code];
+    if (!promo) {
+      setError("This code is not valid. Try KAIRA10 or KAIRA500.");
+      setApplied(null);
+      return;
+    }
+
+    const appliedData = { code, ...promo };
+    setApplied(appliedData);
+    onApply(appliedData);
     setError("");
 
-    try {
-      const backendUrl =
-        import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-      const res = await fetch(`${backendUrl}/api/promotions/${code}`);
-      const data = await res.json();
-
-      if (!data.success || !data.data) {
-        setError("This code is not valid or has expired.");
-        setApplied(null);
-        return;
-      }
-
-      // Check if it's inactive (admin might have toggled it off)
-      if (data.data.status === "Inactive") {
-        setError("This code is currently inactive.");
-        setApplied(null);
-        return;
-      }
-
-      const promo = data.data;
-      const appliedData = {
-        code: promo.code,
-        type: promo.type,
-        value: promo.value,
-        label: promo.reason,
-      };
-
-      setApplied(appliedData);
-      onApply(appliedData);
-      setError("");
-
-      // Delay animation to ensure feedback element is rendered
-      setTimeout(() => {
-        setCelebrate(true);
-        setTimeout(() => setCelebrate(false), 2000);
-      }, 50);
-    } catch (err) {
-      setError("Error validating promo code. Please try again.");
-      setApplied(null);
-    } finally {
-      setLoading(false);
-    }
+    // Delay animation to ensure feedback element is rendered
+    setTimeout(() => {
+      setCelebrate(true);
+      setTimeout(() => setCelebrate(false), 2000);
+    }, 50);
   };
 
   const handleRemove = () => {
@@ -71,7 +65,9 @@ const PromoCode = ({ onApply }) => {
     <div className="promo-wrapper">
       <div className="promo-zone">
         {/* Label */}
-        <div className="promo-label">Promo code</div>
+        <div className="promo-label">
+          Promo code
+        </div>
 
         {/* Input */}
         <input
@@ -97,9 +93,8 @@ const PromoCode = ({ onApply }) => {
           className="promo-btn apply-btn"
           onClick={handleApply}
           style={{ display: applied ? "none" : "block" }}
-          disabled={loading}
         >
-          {loading ? "..." : "APPLY"}
+          APPLY
         </button>
 
         <button
@@ -119,7 +114,9 @@ const PromoCode = ({ onApply }) => {
   ${applied ? "success show" : ""} 
   ${error ? "error show" : ""}`}
         >
-          {applied ? `${applied.code} applied — ${applied.label}` : error}
+          {applied
+            ? `${applied.code} applied — ${applied.label}`
+            : error}
         </div>
       )}
 

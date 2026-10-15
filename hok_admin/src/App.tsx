@@ -583,15 +583,31 @@ export default function App() {
     }
 
     if (currentView === 'designers') {
-      return <DesignersView onEditingChange={setIsSectionEditing} />;
+      return (
+        <DesignersView
+          products={products}
+          orders={orders}
+          onEditingChange={setIsSectionEditing}
+          setView={setView}
+        />
+      );
     }
 
     if (currentView === 'categories') {
       return <CategoriesView onEditingChange={setIsSectionEditing} />;
     }
 
-    if (currentView === 'listers') {
-      return <ListersView onEditingChange={setIsSectionEditing} setView={setView} />;
+    if (currentView === 'listers' || currentView.startsWith('lister_detail:')) {
+      const initialListerId = currentView.startsWith('lister_detail:')
+        ? currentView.slice('lister_detail:'.length)
+        : undefined;
+      return (
+        <ListersView
+          initialListerId={initialListerId}
+          onEditingChange={setIsSectionEditing}
+          setView={setView}
+        />
+      );
     }
 
     // if (currentView === 'occasions') {
@@ -747,7 +763,7 @@ export default function App() {
         </header>
 
         {/* Desktop Sticky Header */}
-      {!isSectionEditing && currentView !== 'settings' && currentView !== 'homepage' && (
+      {!isSectionEditing && currentView !== 'settings' && currentView !== 'homepage' && !currentView.startsWith('lister_detail:') && (
           <header className="sticky top-0 z-40 hidden h-[52px] shrink-0 items-center justify-between border-b border-[#E8E0D6] bg-white px-6 lg:flex">
             <div className="flex items-center gap-3">
               {currentView === 'messaging' && messagingActiveTab === 'editor' && (

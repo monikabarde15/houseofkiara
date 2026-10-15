@@ -2,7 +2,7 @@
   position: relative;
   height: 100dvh;
   overflow: hidden;
-  background: #0e0c0a;
+  background: #0E0C0A;
 }
 
 .mobile-category-slide {
@@ -63,7 +63,7 @@
   text-transform: uppercase;
   letter-spacing: 0.28em;
 
-  color: #c9a96e;
+  color: #C9A96E;
 }
 
 .mobile-category-title {
@@ -74,7 +74,7 @@
   font-weight: 400;
   line-height: 1;
 
-  color: #ffffff;
+  color: #FFFFFF;
 }
 
 .mobile-category-count {
@@ -109,13 +109,13 @@
   text-transform: uppercase;
   letter-spacing: 0.18em;
 
-  color: #ffffff;
+  color: #FFFFFF;
 
   cursor: pointer;
 }
 
 .mobile-category-cta svg {
-  stroke: #ffffff;
+  stroke: #FFFFFF;
   stroke-width: 1.5;
 }
 
@@ -153,7 +153,7 @@
 
   border-radius: 2px;
 
-  background: #c9a96e;
+  background: #C9A96E;
 }
 
 .mobile-category-arrows {

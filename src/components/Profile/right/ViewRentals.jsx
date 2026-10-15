@@ -1,49 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
-import { ChevronLeft } from "lucide-react";
-import RentalCard from "../cards/RentalCard";
-import RentalDetailPanel from "../panels/RentalDetailPanel";
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronLeft } from 'lucide-react';
+import RentalCard from '../cards/RentalCard';
+import RentalDetailPanel from '../panels/RentalDetailPanel';
 import "../../../styles/Profile/right/ViewRentals.css";
 
-const ViewRentals = ({ onBack }) => {
+const ViewRentals = ({ rentals, onBack }) => {
   const [activeCardId, setActiveCardId] = useState(null);
   const panelRef = useRef(null);
   const cardRefs = useRef({});
   const scrollTimeoutRef = useRef(null);
 
-  const [rentalOrders, setRentalOrders] = useState([]);
-  const [activeOrder, setActiveOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const fetchRentals = async () => {
-    try {
-      const authStore = await import("../../../store/authStore").then((m) =>
-        m.default.getState(),
-      );
-      const token = authStore.token;
-      if (!token) return;
-
-      const res = await fetch(`/api/customer/auth/orders`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await res.json();
-      if (data.success) {
-        const rentals = data.data.filter(
-          (order) => order.type === "Rental" || order.typeDetail === "Rental",
-        );
-        setRentalOrders(rentals);
-      }
-    } catch (err) {
-      console.error("Error fetching rentals:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRentals();
-  }, []);
+  const rentalBookings = Array.isArray(rentals) ? rentals : [];
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -54,9 +21,9 @@ const ViewRentals = ({ onBack }) => {
     };
   }, []);
 
-  const handleDetailsClick = async (bookingId) => {
+  const handleDetailsClick = (bookingId) => {
     const isOpening = activeCardId !== bookingId;
-
+    
     // Clear any pending scroll timeouts
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
@@ -65,32 +32,13 @@ const ViewRentals = ({ onBack }) => {
     if (isOpening) {
       // Opening panel
       setActiveCardId(bookingId);
-      setActiveOrder(null);
-
-      try {
-        const authStore = await import("../../../store/authStore").then((m) =>
-          m.default.getState(),
-        );
-        const token = authStore.token;
-        if (token) {
-          const res = await fetch(`/api/customer/auth/orders/${bookingId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await res.json();
-          if (data.success) {
-            setActiveOrder(data.data);
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching rental detail:", err);
-      }
-
+      
       // 40ms delay before scrolling to panel
       scrollTimeoutRef.current = setTimeout(() => {
         if (panelRef.current) {
-          panelRef.current.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
+          panelRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'nearest' 
           });
         }
         scrollTimeoutRef.current = null;
@@ -99,20 +47,22 @@ const ViewRentals = ({ onBack }) => {
       // Closing panel - store current card ID before clearing state
       const currentCardId = activeCardId;
       setActiveCardId(null);
-
+      
       // 40ms delay before scrolling back to card
       scrollTimeoutRef.current = setTimeout(() => {
         const cardElement = cardRefs.current[currentCardId];
         if (cardElement) {
-          cardElement.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
+          cardElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'nearest' 
           });
         }
         scrollTimeoutRef.current = null;
       }, 40);
     }
   };
+
+  const activeBooking = rentalBookings.find(b => b.id === activeCardId);
 
   return (
     <div className="profile-fv-rentals">
@@ -123,49 +73,42 @@ const ViewRentals = ({ onBack }) => {
         </button>
         <div className="profile-fv-bar-title">My Rentals</div>
         <div className="profile-fv-bar-count">
-          {rentalOrders.length} bookings
+          {rentalBookings.length} booking{rentalBookings.length === 1 ? '' : 's'}
         </div>
       </div>
 
-      <div className="profile-view-rentals-grid">
-        {loading ? (
-          <div style={{ padding: "20px", color: "#666" }}>
-            Loading rentals...
+      {rentalBookings.length === 0 ? (
+        <div className="profile-sub-empty" style={{ margin: "24px" }}>
+          <div className="profile-se-h">No rental bookings yet</div>
+          <div className="profile-se-s">
+            Explore luxury designer outfits for your upcoming occasions and celebrate in style.
           </div>
-        ) : rentalOrders.length === 0 ? (
-          <div style={{ padding: "20px", color: "#666" }}>
-            No rental bookings found.
-          </div>
-        ) : (
-          rentalOrders.map((booking) => (
+        </div>
+      ) : (
+        <div className="profile-fv-rental-grid">
+          {rentalBookings.map((booking) => (
             <div
-              key={booking.id || booking.orderId}
+              key={booking.id}
               ref={(el) => {
-                if (el) cardRefs.current[booking.id || booking.orderId] = el;
+                if (el) cardRefs.current[booking.id] = el;
               }}
             >
               <RentalCard
                 booking={booking}
-                isActive={activeCardId === (booking.id || booking.orderId)}
-                onDetailsClick={() =>
-                  handleDetailsClick(booking.id || booking.orderId)
-                }
+                isActive={activeCardId === booking.id}
+                onDetailsClick={handleDetailsClick}
               />
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {/* Detail Panel */}
+      {/* Panel container with ref for scrolling */}
       <div ref={panelRef}>
-        <RentalDetailPanel
-          booking={activeOrder}
+        <RentalDetailPanel 
+          booking={activeBooking}
           isOpen={!!activeCardId}
           onClose={() => handleDetailsClick(activeCardId)}
-          onRefresh={() => {
-            fetchRentals();
-            handleDetailsClick(activeCardId); // Close details after cancel
-          }}
         />
       </div>
     </div>

@@ -1,95 +1,48 @@
 // src\components\Profile\right\RightColumn.jsx
-import React from "react";
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Search,
-  MapPin,
-  Plus,
-  Heart,
-  User,
-  Clock,
-  Package,
-} from "lucide-react";
-import useAuthStore from "../../../store/authStore";
-import useWishlistStore from "../../../store/wishlistStore";
+import React from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "../../../styles/Profile/right/RightColumn.css";
-import ActiveRentalAlert from "../sections/ActiveRentalAlert";
-import SectionLabel from "../ui/SectionLabel";
+import ActiveRentalAlert from '../sections/ActiveRentalAlert';
+import SectionLabel from '../ui/SectionLabel';
 
-import MyRentalsSection from "../sections/MyRentalsSection";
-import MyPurchasesSection from "../sections/MyPurchasesSection";
-import SavedPiecesSection from "../sections/SavedPiecesSection";
+import MyRentalsSection from '../sections/MyRentalsSection';
+import MyPurchasesSection from '../sections/MyPurchasesSection';
+import SavedPiecesSection from '../sections/SavedPiecesSection';
 
-import ViewRentals from "./ViewRentals";
-import ViewPurchases from "./ViewPurchases";
-import ViewWishlist from "./ViewWishlist";
-import MyListedPiecesSection from "../sections/MyListedPiecesSection";
-import SavedAddressesSection from "../sections/SavedAddressesSection";
-import MySubmissionsSection from "../sections/MySubmissionsSection";
-import EarnPromptBanner from "../sections/EarnPromptBanner";
-import AccountSettingsSection from "../sections/AccountSettingsSection";
-import HelpSupportSection from "../sections/HelpSupportSection";
+import ViewRentals from './ViewRentals';
+import ViewPurchases from './ViewPurchases';
+import ViewWishlist from './ViewWishlist';
+import MyListedPiecesSection from '../sections/MyListedPiecesSection';
+import SavedAddressesSection from '../sections/SavedAddressesSection';
+import MySubmissionsSection from '../sections/MySubmissionsSection';
+import EarnPromptBanner from '../sections/EarnPromptBanner';
+import AccountSettingsSection from '../sections/AccountSettingsSection';
+import HelpSupportSection from '../sections/HelpSupportSection';
 
-const RightColumn = ({
-  isScrolled,
-  onViewAllRentals,
-  onViewAllPurchases,
-  onViewAllWishlist,
-  onViewAllListings,
-  openRentalDetailId: propOpenRentalDetailId,
-  setOpenRentalDetailId: propSetOpenRentalDetailId,
-}) => {
-  const user = useAuthStore((state) => state.user);
-  const wishlistItems = useWishlistStore((state) => state.items);
+const RightColumn = ({ dashboard }) => {
+  const navigate = useNavigate();
+  const [activeView, setActiveView] = useState('overview');
+  const [openRentalDetailId, setOpenRentalDetailId] = useState(null);
 
-  const purchasesCount = user?.purchasesCount || 0;
-  const rentalsCount = user?.rentalsCount || 0;
-  const savedCount = wishlistItems?.length || 0;
-
-  const [activeView, setActiveView] = useState("overview");
-  const [internalRentalDetailId, setInternalRentalDetailId] = useState(null);
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.hash === "#purchases") {
-      setActiveView("purchases");
-    } else if (location.hash === "#rentals") {
-      setActiveView("rentals");
-    } else if (location.hash === "#wishlist") {
-      setActiveView("wishlist");
-    } else if (location.hash === "") {
-      setActiveView("overview");
-    }
-  }, [location.hash]);
-
-  const openRentalDetailId =
-    propOpenRentalDetailId !== undefined
-      ? propOpenRentalDetailId
-      : internalRentalDetailId;
-  const setOpenRentalDetailId =
-    propSetOpenRentalDetailId || setInternalRentalDetailId;
-
-  const handleAlertBarClick = () => {
-    setOpenRentalDetailId("HOK-240524-001");
+  const handleAlertBarClick = (id) => {
+    setOpenRentalDetailId(id || dashboard?.activeRentalAlert?.id || null);
   };
 
   // For viewing all the rental items
   const handleViewAllRentals = () => {
-    setActiveView("rentals");
+    setActiveView('rentals');
   };
 
   // For viewing all the Purchases items
   const handleViewAllPurchases = () => {
-    setActiveView("purchases");
+    setActiveView('purchases');
   };
 
   // For viewing all the Wishlist items
   const handleViewAllWishlist = () => {
-    setActiveView("wishlist");
+    setActiveView('wishlist');
   };
-
-  const navigate = useNavigate();
 
   // For listing another piece
   const handleListAnotherPiece = () => {
@@ -97,86 +50,90 @@ const RightColumn = ({
   };
 
   const handleBackToOverview = () => {
-    setActiveView("overview");
+    setActiveView('overview');
   };
+
+  const rentalsCount = dashboard?.counts?.rentals ?? 0;
+  const purchasesCount = dashboard?.counts?.purchases ?? 0;
+  const savedPiecesCount = dashboard?.counts?.savedPieces ?? 0;
+  const listedPiecesCount = dashboard?.counts?.listedPieces ?? 0;
+  const addressesCount = dashboard?.counts?.addresses ?? 0;
+  const submissionsCount = dashboard?.counts?.submissions ?? 0;
 
   return (
     <div className="profile-right-column" id="profile-right-column">
+
       {/* Width anchor - invisible div to prevent collapse when switching views */}
       <div className="profile-right-anchor"></div>
-
+      
       {/* View switching container - Section 4.2 View Switching */}
       <div className="profile-right-views">
+
         {/* Overview view - active by default */}
-        <div
-          id="profile-rc-right-overview"
-          className={`profile-right-view ${activeView === "overview" ? "profile-right-active" : ""}`}
-        >
+        <div id="profile-rc-right-overview" className={`profile-right-view ${activeView === 'overview' ? 'profile-right-active' : ''}`}>
+
           {/* Active Rental Alert */}
-          <ActiveRentalAlert onAlertClick={handleAlertBarClick} />
+          {dashboard?.activeRentalAlert && (
+            <ActiveRentalAlert alert={dashboard.activeRentalAlert} onAlertClick={handleAlertBarClick} />
+          )}
 
           {/* My Rentals Section */}
-          <SectionLabel
-            title="MY RENTALS"
-            count={rentalsCount}
+          <SectionLabel 
+            title="MY RENTALS" 
+            count={rentalsCount} 
             countLabel="BOOKINGS"
-            linkText="View all"
+            linkText={rentalsCount > 3 ? "View all" : ""} 
             onLinkClick={handleViewAllRentals}
           />
-          <MyRentalsSection
-            openDetailId={openRentalDetailId}
-            setOpenDetailId={setOpenRentalDetailId}
-          />
-          {/* <MyRentalsSection /> */}
+          <MyRentalsSection rentals={dashboard?.rentals} openDetailId={openRentalDetailId} setOpenDetailId={setOpenRentalDetailId} />
 
           {/* My Purchases Section */}
-          <SectionLabel
-            title="MY PURCHASES"
-            count={purchasesCount}
+          <SectionLabel 
+            title="MY PURCHASES" 
+            count={purchasesCount} 
             countLabel="ORDERS"
-            linkText="View all"
+            linkText={purchasesCount > 3 ? "View all" : ""} 
             onLinkClick={handleViewAllPurchases}
           />
-
-          <MyPurchasesSection />
+          <MyPurchasesSection purchases={dashboard?.purchases} />
 
           {/* WISHLIST SECTION */}
           <SectionLabel
             title="SAVED PIECES"
-            count={savedCount}
+            count={savedPiecesCount}
             countLabel="SAVED"
-            linkText="View all"
+            linkText={savedPiecesCount > 3 ? "View all" : ""}
             onLinkClick={handleViewAllWishlist}
           />
-          <SavedPiecesSection />
+          <SavedPiecesSection savedPieces={dashboard?.savedPieces} onUpdate={dashboard?.refetch} />
 
           {/* Listed Piece Section */}
           <SectionLabel
             title="MY LISTED PIECES"
-            count={0}
+            count={listedPiecesCount}
             countLabel="ACTIVE LISTINGS"
             linkText="+ List another piece"
             onLinkClick={handleListAnotherPiece}
           />
-          <MyListedPiecesSection />
+          <MyListedPiecesSection listedPieces={dashboard?.listedPieces} />
 
           {/* Saved Addresses Section */}
           <SectionLabel
             title="SAVED ADDRESSES"
-            count={0}
+            count={addressesCount}
             countLabel=""
             linkText=""
           />
-          <SavedAddressesSection />
+          <SavedAddressesSection onUpdate={dashboard?.refetch} />
 
           {/* My Submissions Section */}
           <SectionLabel
             title="MY SUBMISSIONS"
-            count={null}
+            count={submissionsCount}
             countLabel=""
             linkText=""
           />
-          <MySubmissionsSection />
+          <MySubmissionsSection submissions={dashboard?.submissions} />
 
           {/* Earn Prompt Banner */}
           <EarnPromptBanner />
@@ -201,31 +158,22 @@ const RightColumn = ({
 
           {/*Other sections will go here */}
         </div>
-
+        
         {/* Full view rentals */}
-        <div
-          id="profile-fv-right-rentals"
-          className={`profile-right-view ${activeView === "rentals" ? "profile-right-active" : ""}`}
-        >
-          {/* All rental bookings with detail panels */}
-          <ViewRentals onBack={handleBackToOverview} />
+        <div id="profile-fv-right-rentals" className={`profile-right-view ${activeView === 'rentals' ? 'profile-right-active' : ''}`}>
+          <ViewRentals rentals={dashboard?.rentals} onBack={handleBackToOverview} />
         </div>
-
+        
         {/* Full view purchases */}
-        <div
-          id="profile-fv-right-purchases"
-          className={`profile-right-view ${activeView === "purchases" ? "profile-right-active" : ""}`}
-        >
-          <ViewPurchases onBack={handleBackToOverview} />
+        <div id="profile-fv-right-purchases" className={`profile-right-view ${activeView === 'purchases' ? 'profile-right-active' : ''}`}>
+          <ViewPurchases purchases={dashboard?.purchases} onBack={handleBackToOverview} />
+        </div>
+        
+        {/* Full view wishlist */}
+        <div id="profile-fv-right-wishlist" className={`profile-right-view ${activeView === 'wishlist' ? 'profile-right-active' : ''}`}>
+          <ViewWishlist savedPieces={dashboard?.savedPieces} onBack={handleBackToOverview} onUpdate={dashboard?.refetch} />
         </div>
 
-        {/* Full view wishlist */}
-        <div
-          id="profile-fv-right-wishlist"
-          className={`profile-right-view ${activeView === "wishlist" ? "profile-right-active" : ""}`}
-        >
-          <ViewWishlist onBack={handleBackToOverview} />
-        </div>
       </div>
     </div>
   );

@@ -14,6 +14,7 @@
   align-self: start;
 }
 
+
 [data-rise] {
   opacity: 0;
   transform: translateY(20px);
@@ -43,8 +44,11 @@
   }
 }
 
+
 /* .items-end-sep {
   height: 1px;
   background: #F0EAE0;
   margin: 20px 0;
 } */
+
+

@@ -1,9 +1,16 @@
 // src\components\MainCategory\utils\buildHeading.js
 
-export const buildHeading = ({ section, category, designer, occasion }) => {
+export const buildHeading = ({
+  section,
+  category,
+  designer,
+  occasion,
+}) => {
+
   // RENT
 
   if (section === "rent") {
+
     if (designer) {
       return {
         title: designer,
@@ -27,6 +34,7 @@ export const buildHeading = ({ section, category, designer, occasion }) => {
   // PRELOVED
 
   if (section === "preloved") {
+
     if (designer) {
       return {
         title: designer,
@@ -50,6 +58,7 @@ export const buildHeading = ({ section, category, designer, occasion }) => {
   // BUY NEW
 
   if (section === "new") {
+
     if (designer) {
       return {
         title: designer,
@@ -73,6 +82,7 @@ export const buildHeading = ({ section, category, designer, occasion }) => {
   // WOMEN
 
   if (section === "women") {
+
     if (occasion) {
       return {
         title: occasion,
@@ -96,6 +106,7 @@ export const buildHeading = ({ section, category, designer, occasion }) => {
   // MEN
 
   if (section === "men") {
+
     if (occasion) {
       return {
         title: occasion,
@@ -119,6 +130,7 @@ export const buildHeading = ({ section, category, designer, occasion }) => {
   // OCCASIONS
 
   if (section === "occasions") {
+
     if (occasion) {
       return {
         title: occasion,
@@ -135,6 +147,7 @@ export const buildHeading = ({ section, category, designer, occasion }) => {
   // DESIGNERS
 
   if (section === "designers") {
+
     if (designer) {
       return {
         title: "",
@@ -148,29 +161,8 @@ export const buildHeading = ({ section, category, designer, occasion }) => {
     };
   }
 
-  if (category) {
-    return {
-      title: "",
-      highlight: category,
-    };
-  }
-
-  if (designer) {
-    return {
-      title: "",
-      highlight: designer,
-    };
-  }
-
-  if (occasion) {
-    return {
-      title: "",
-      highlight: occasion,
-    };
-  }
-
   return {
-    title: "All",
-    highlight: "Products",
+    title: "Bridal",
+    highlight: "Lehengas",
   };
 };

@@ -1,4 +1,4 @@
-﻿import express from "express";
+import express from "express";
 import {
   getAllPromoCodes,
   getPromoCode,
@@ -6,11 +6,15 @@ import {
   updatePromoCode,
   togglePromoCodeStatus,
   deletePromoCode,
+  logAttempt,
+  getRefusedAttempts,
 } from "../controllers/promotionController.js";
 
 const router = express.Router();
 
 router.get("/", getAllPromoCodes);
+router.get("/refused-attempts", getRefusedAttempts);
+router.post("/log-attempt", logAttempt);
 router.get("/:code", getPromoCode);
 router.post("/", createPromoCode);
 router.put("/:code", updatePromoCode);

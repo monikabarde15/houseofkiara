@@ -1,0 +1,160 @@
+/**
+ * House of Kaira: Pricing Policy Print Styles (D16)
+ * Section 4.16 & Page 31 of Build Specification v2
+ */
+
+@media print {
+  /* Hide all non-print elements in the React application */
+  header,
+  footer,
+  nav,
+  .hok-header,
+  .footer-desktop-wrapper,
+  .footer-mobile-wrapper,
+  .cookie-banner-container,
+  .whatsapp-float,
+  .pf-toast,
+  .pf-breadcrumb-wrap,
+  .dp-hero,
+  .pf-card,
+  .sh-wrap,
+  .pol,
+  .still,
+  .pf-page > *:not(main),
+  main > *:not(#printAll) {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #1A1612 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  #root,
+  .pf-page,
+  main,
+  #pf-main {
+    display: block !important;
+    background: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+
+  #printAll {
+    display: block !important;
+    visibility: visible !important;
+    max-width: 760px;
+    margin: 0 auto;
+    color: #1A1612;
+    background: #ffffff !important;
+    padding: 20px 0 !important;
+  }
+
+  #printAll h1 {
+    font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+    font-weight: 400;
+    font-size: 34px;
+    margin-bottom: 4px;
+    color: #1A1612;
+  }
+
+  #printAll .pr-meta {
+    font-size: 11px;
+    color: #6b6259;
+    margin-bottom: 20px;
+  }
+
+  #printAll h2 {
+    font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+    font-weight: 400;
+    font-size: 24px;
+    margin: 26px 0 6px;
+    break-after: avoid;
+    color: #1A1612;
+  }
+
+  #printAll .pr-q {
+    break-inside: avoid;
+    padding: 10px 0;
+    border-bottom: 1px solid #E8E0D4;
+  }
+
+  #printAll h3 {
+    font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+    font-weight: 500;
+    font-size: 17px;
+    margin-bottom: 4px;
+    color: #1A1612;
+  }
+
+  #printAll .ans {
+    font-size: 12px;
+    line-height: 1.65;
+    max-width: none;
+    color: #4F463E;
+  }
+
+  #printAll table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 6px 0 4px;
+    break-inside: avoid;
+  }
+
+  #printAll th,
+  #printAll td {
+    text-align: left;
+    vertical-align: top;
+    padding: 6px 8px 6px 0;
+    border-bottom: 1px solid #E8E0D4;
+  }
+
+  #printAll th {
+    font-weight: 600;
+    color: #1A1612;
+  }
+
+  #printAll .pr-side {
+    font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+    font-weight: 400;
+    font-size: 28px;
+    margin: 34px 0 4px;
+    padding-top: 14px;
+    border-top: 2px solid #1A1612;
+    break-after: avoid;
+    break-before: page;
+    color: #1A1612;
+  }
+
+  #printAll .pr-side:first-of-type {
+    margin-top: 18px;
+    break-before: auto;
+  }
+
+  #printAll .pr-small {
+    font-size: 11px;
+    color: #6b6259;
+    margin-top: 4px;
+  }
+
+  #printAll .rv-note {
+    display: none !important;
+  }
+}
+
+@media screen {
+  #printAll {
+    display: none !important;
+  }
+}

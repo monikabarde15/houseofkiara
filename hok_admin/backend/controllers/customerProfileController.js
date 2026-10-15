@@ -1,5 +1,8 @@
 import crypto from "crypto";
 import Customer from "../models/Customer.js";
+import Order from "../models/Order.js";
+import Product from "../models/Product.js";
+import Submission from "../models/Submission.js";
 import {
   validateProfileUpdate,
   validateAddressInput,
@@ -535,3 +538,351 @@ export const setDefaultAddress = async (req, res) => {
     });
   }
 };
+
+// GET /api/customer/profile/dashboard
+export const getProfileDashboard = async (req, res) => {
+  try {
+    const customerId = req.user?._id || req.customer?._id || req.user?.id;
+    if (!customerId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required.",
+      });
+    }
+
+    const customer = await Customer.findById(customerId);
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer profile not found.",
+      });
+    }
+
+    const cId = customer.customerId;
+    const cEmail = customer.email;
+    const cPhone = customer.phone;
+
+    // 1. Fetch Orders (Rentals & Purchases)
+    const orderQueries = [];
+    if (cId) orderQueries.push({ customerId: cId });
+    if (cEmail) orderQueries.push({ customerEmail: cEmail });
+    if (cPhone) orderQueries.push({ customerPhone: cPhone });
+
+    let orders = [];
+    if (orderQueries.length > 0) {
+      try {
+        orders = await Order.find({ $or: orderQueries }).sort({ createdAt: -1 });
+      } catch (err) {
+        console.error("Dashboard order query error:", err);
+      }
+    }
+
+    const rentals = [];
+    const purchases = [];
+
+    (orders || []).forEach((order) => {
+      const items = Array.isArray(order.items) && order.items.length > 0 ? order.items : [];
+      const hasRentalItem = items.some(
+        (item) => String(item.mode || "").toLowerCase() === "rental"
+      );
+      const isRentalOrder =
+        String(order.mode || "").toLowerCase() === "rental" || hasRentalItem;
+
+      if (isRentalOrder) {
+        const item =
+          items.find((i) => String(i.mode || "").toLowerCase() === "rental") ||
+          items[0] ||
+          {};
+        const startDate = item.rentalStartDate || "";
+        const endDate = item.rentalEndDate || "";
+        const dates =
+          startDate && endDate
+            ? `${startDate}–${endDate}`
+            : order.createdAt
+            ? new Date(order.createdAt).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })
+            : "Upcoming";
+
+        let depositStatus = null;
+        if (
+          order.depositStatus === "Released" ||
+          order.depositStatus === "Partially Released"
+        ) {
+          depositStatus = "refunded";
+        } else if (order.depositHeld > 0 || order.depositStatus === "Pending") {
+          depositStatus = "pending";
+        }
+
+        rentals.push({
+          id: order.orderId || String(order._id),
+          piece: item.productName || order.productName || "Designer Piece",
+          designer: item.designer || "House of Kaira",
+          status: order.status || item.status || "Confirmed",
+          dates,
+          fee: Number(order.grandTotal || order.orderValue || item.amount || 0),
+          depositStatus,
+          depositAmount: order.depositHeld || item.deposit || 0,
+          image: item.image || (item.photos && item.photos[0]) || "",
+          address: order.address || "",
+          createdAt: order.createdAt,
+        });
+      } else {
+        const item = items[0] || {};
+        const type = item.mode || order.mode || "Buy New";
+        const designer = item.designer || "House of Kaira";
+        const typeDetail = `${type} - ${designer}`;
+        const dateStr =
+          order.status === "Delivered"
+            ? `Delivered ${new Date(
+                order.updatedAt || order.createdAt
+              ).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}`
+            : `Ordered ${new Date(
+                order.createdAt || Date.now()
+              ).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}`;
+
+        purchases.push({
+          id: order.orderId || String(order._id),
+          piece: item.productName || order.productName || "Designer Piece",
+          type,
+          typeDetail,
+          status: order.status || "Confirmed",
+          amount: Number(order.grandTotal || order.orderValue || item.amount || 0),
+          date: dateStr,
+          image: item.image || (item.photos && item.photos[0]) || "",
+          address: order.address || "",
+          createdAt: order.createdAt,
+        });
+      }
+    });
+
+    // 2. Fetch Wishlist Products
+    const wishlistIds = Array.isArray(customer.wishlist)
+      ? customer.wishlist.filter(Boolean)
+      : [];
+    let savedPieces = [];
+    if (wishlistIds.length > 0) {
+      try {
+        const products = await Product.find({
+          $or: [
+            { _id: { $in: wishlistIds } },
+            { productId: { $in: wishlistIds } },
+          ],
+        });
+
+        savedPieces = (products || []).map((p) => {
+          const isRental =
+            p.listingModes && p.listingModes.includes("RENTAL");
+          const isPreloved =
+            p.listingModes && p.listingModes.includes("PRELOVED");
+          const mode = isRental ? "Rental" : isPreloved ? "Preloved" : "Buy New";
+          const price = Number(
+            p.rentalPrice || p.listingPrice || p.originalRetailPrice || 0
+          );
+
+          return {
+            id: String(p._id),
+            productId: p.productId,
+            name: p.name,
+            designer: p.designer || "",
+            mode,
+            price,
+            sizes:
+              Array.isArray(p.sizes) && p.sizes.length > 0
+                ? p.sizes
+                : ["Free Size"],
+            colors: p.color ? [p.color] : [],
+            image: (Array.isArray(p.images) && p.images[0]) || "",
+          };
+        });
+      } catch (err) {
+        console.error("Dashboard wishlist query error:", err);
+      }
+    }
+
+    // 3. Fetch Listed Pieces
+    const listerQueries = [];
+    if (cId) listerQueries.push({ listerId: cId });
+    if (cEmail) listerQueries.push({ listerId: cEmail });
+    if (cPhone) listerQueries.push({ listerId: cPhone });
+
+    let listedPieces = [];
+    if (listerQueries.length > 0) {
+      try {
+        const listedProducts = await Product.find({ $or: listerQueries }).sort({
+          createdAt: -1,
+        });
+        listedPieces = (listedProducts || []).map((p) => {
+          const isRental = p.listingModes?.includes("RENTAL");
+          const isResale =
+            p.listingModes?.includes("BUY") ||
+            p.listingModes?.includes("PRELOVED");
+          const mode =
+            isRental && isResale ? "Dual" : isResale ? "Resale" : "Rental";
+
+          const rentalPrice = Number(p.rentalPrice || 0);
+          const resalePrice = Number(
+            p.listingPrice || p.originalRetailPrice || 0
+          );
+          const price = mode === "Resale" ? resalePrice : rentalPrice;
+          const priceLabel = mode === "Resale" ? "Resale price" : "Rental price";
+          const priceSuffix = mode === "Resale" ? "" : " / booking";
+
+          return {
+            id: String(p._id),
+            productId: p.productId,
+            name: p.name,
+            designer: p.designer || "",
+            mode,
+            totalEarned: Number(p.totalEarned || 0),
+            timesRented: p.timesRented > 0 ? p.timesRented : null,
+            nextPayout: p.nextPayout || null,
+            imageGradient: "linear-gradient(160deg, #2C2018, #1A1210)",
+            status:
+              p.status === "Live" || p.status === "Active"
+                ? "active"
+                : p.status?.toLowerCase() || "draft",
+            listedSince: p.createdAt
+              ? new Date(p.createdAt).toLocaleDateString("en-GB", {
+                  month: "short",
+                  year: "numeric",
+                })
+              : "Recent",
+            size: (Array.isArray(p.sizes) && p.sizes[0]) || "Free Size",
+            priceLabel,
+            price,
+            priceSuffix,
+            rentalPrice,
+            rentalPriceSuffix: " / booking",
+            resalePrice,
+            resalePriceSuffix: "",
+            image: (Array.isArray(p.images) && p.images[0]) || "",
+          };
+        });
+      } catch (err) {
+        console.error("Dashboard listed query error:", err);
+      }
+    }
+
+    // 4. Fetch Submissions
+    const subQueries = [];
+    if (cId) subQueries.push({ listerId: cId });
+    if (cEmail) subQueries.push({ listerId: cEmail });
+    if (cPhone) subQueries.push({ listerId: cPhone });
+
+    let submissions = [];
+    if (subQueries.length > 0) {
+      try {
+        const subs = await Submission.find({ $or: subQueries }).sort({
+          createdAt: -1,
+        });
+        submissions = (subs || []).map((sub) => {
+          let status = "Under Review";
+          if (sub.decision && typeof sub.decision === "object") {
+            status = sub.decision.status || "Under Review";
+          } else if (sub.status) {
+            status = sub.status;
+          }
+
+          return {
+            id: sub.subid || String(sub._id),
+            name: sub.piece || "Submission",
+            designer: sub.designer || "",
+            status,
+            submittedDate:
+              sub.submitted ||
+              (sub.createdAt
+                ? new Date(sub.createdAt).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : "Recent"),
+            preferredOutcome: sub.intent || "Rent & Resale",
+            imageGradient: "linear-gradient(160deg, #F0E8D8, #E0CDA8)",
+            pieceType: sub.category || "Piece",
+            colourFamily: sub.colour || "",
+            size: sub.size || "",
+            condition: sub.conditionClaim || "",
+            timesWorn: sub.timesWorn || "",
+            originalPrice: sub.originalPrice || "",
+            photosSubmitted: sub.photos ? `${sub.photos} photos` : "Photos submitted",
+            pickupCity: sub.pickupCity || "",
+          };
+        });
+      } catch (err) {
+        console.error("Dashboard submission query error:", err);
+      }
+    }
+
+    // 5. Active Rental Alert
+    const activeRental = rentals.find((r) =>
+      ["Dispatched", "Confirmed", "Shipped", "Delivered", "Return Due"].includes(
+        r.status
+      )
+    );
+
+    const activeRentalCount = rentals.filter((r) =>
+      ["Dispatched", "Confirmed", "Shipped", "Delivered", "Return Due"].includes(
+        r.status
+      )
+    ).length;
+
+    const addresses = customer.addresses || [];
+
+    return res.json({
+      success: true,
+      data: {
+        customer: sanitizeCustomer(customer),
+        rentals,
+        purchases,
+        savedPieces,
+        listedPieces,
+        submissions,
+        addresses,
+        counts: {
+          rentals: rentals.length,
+          purchases: purchases.length,
+          savedPieces: savedPieces.length,
+          listedPieces: listedPieces.length,
+          submissions: submissions.length,
+          addresses: addresses.length,
+          activeRentals: activeRentalCount,
+        },
+        activeRentalAlert: activeRental
+          ? {
+              id: activeRental.id,
+              title: `Active Rental - ${activeRental.status}`,
+              subtitle: `${activeRental.piece} · ${activeRental.designer} · ${
+                activeRental.dates
+              }${
+                activeRental.depositAmount
+                  ? ` · Deposit ₹${activeRental.depositAmount.toLocaleString()} ${
+                      activeRental.depositStatus || "pending refund"
+                    }`
+                  : ""
+              }`,
+            }
+          : null,
+      },
+    });
+  } catch (error) {
+    console.error("GetProfileDashboard Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error fetching profile dashboard.",
+      error: error.message,
+    });
+  }
+};
+

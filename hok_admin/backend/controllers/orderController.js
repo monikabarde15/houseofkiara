@@ -17,6 +17,7 @@ const view = (order) => {
   const firstItem = items[0] || {};
 
   const itemsSum = items.reduce((sum, it) => sum + parseAmount(it.amount), 0);
+  const itemsDeposit = items.reduce((sum, it) => sum + parseAmount(it.deposit), 0);
 
   const rawAmount =
     parseAmount(obj.grandTotal) ||
@@ -28,6 +29,11 @@ const view = (order) => {
 
   const resolvedOrderValue = parseAmount(obj.orderValue) || itemsSum || rawAmount;
   const resolvedGrandTotal = parseAmount(obj.grandTotal) || rawAmount;
+  const deposit =
+    parseAmount(obj.deposit) ||
+    parseAmount(obj.depositHeld) ||
+    itemsDeposit ||
+    0;
 
   const productName =
     obj.productName ||
@@ -47,6 +53,9 @@ const view = (order) => {
     orderValue: resolvedOrderValue,
     grandTotal: resolvedGrandTotal,
     totalAmount: rawAmount,
+    deposit,
+    depositHeld: deposit,
+    depositStatus: obj.depositStatus || (deposit > 0 ? "Pending" : "None"),
     productName,
     designer,
     mode,
@@ -116,7 +125,9 @@ const totalsFor = (items, discount = 0) => {
   return {
     orderValue,
     gst,
+    deposit: depositHeld,
     depositHeld,
+    depositStatus: depositHeld > 0 ? "Pending" : "None",
     amount: calculatedGrand || orderValue,
     grandTotal: calculatedGrand,
   };
@@ -238,6 +249,20 @@ export const createOrder = async (req, res) => {
     }
 
     const items = await calculateItems(req.body.items);
+    const firstItem = items[0] || {};
+    let rentalStart = req.body.rentalStartDate || firstItem.rentalStartDate || firstItem.startDate || "";
+    let rentalEnd = req.body.rentalEndDate || firstItem.rentalEndDate || firstItem.endDate || "";
+    let dispatchDate = req.body.dispatchDate || firstItem.dispatchDate || "";
+    if (!dispatchDate && rentalStart) {
+      try {
+        const d = new Date(rentalStart);
+        d.setDate(d.getDate() - 2);
+        dispatchDate = d.toISOString().split("T")[0];
+      } catch (e) {}
+    } else if (!dispatchDate) {
+      dispatchDate = new Date().toISOString().split("T")[0];
+    }
+
     const order = await Order.create({
       ...req.body,
       orderId: req.body.orderId || `HOK-ORD-${Date.now()}`,
@@ -246,8 +271,17 @@ export const createOrder = async (req, res) => {
       customerEmail: customer?.email || req.body.customerEmail,
       customerPhone: customer?.phone || req.body.customerPhone,
       customerCity: customer?.location || req.body.customerCity,
+      productName: req.body.productName || firstItem.productName || "",
+      designer: req.body.designer || firstItem.designer || "",
+      mode: req.body.mode || firstItem.mode || "Rental",
+      listerId: req.body.listerId || firstItem.listerId || "",
+      listerName: req.body.listerName || firstItem.listerName || "",
+      rentalStartDate: rentalStart,
+      rentalEndDate: rentalEnd,
+      dispatchDate: dispatchDate,
       items,
       ...totalsFor(items, req.body.discount),
+      payoutStatus: req.body.payoutStatus || "Pending Approval",
       logs: [
         {
           message: "Order placed",
@@ -282,6 +316,11 @@ export const createOrder = async (req, res) => {
     }
 
     if (customer) await syncCustomerOrderStats([customer]);
+    try {
+      const { syncPayoutsFromOrders } = await import("./payoutController.js");
+      if (syncPayoutsFromOrders) await syncPayoutsFromOrders();
+    } catch (e) {}
+
     res
       .status(201)
       .json({

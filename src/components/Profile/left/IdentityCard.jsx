@@ -5,9 +5,8 @@ import "../../../styles/Profile/left/IdentityCard.css";
 import EditProfileModal from '../modals/EditProfileModal';
 import Toast from '../ui/Toast';
 import useAuthStore from '../../../store/authStore';
-import useWishlistStore from '../../../store/wishlistStore';
 
-const IdentityCard = () => {
+const IdentityCard = ({ counts }) => {
     const { user, updateProfile } = useAuthStore();
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
@@ -64,10 +63,9 @@ const IdentityCard = () => {
         city
     };
 
-    const wishlistItems = useWishlistStore((state) => state.items);
-    const rentalsCount = user?.rentalsCount || 0;
-    const purchasesCount = user?.purchasesCount || 0;
-    const savedCount = wishlistItems ? wishlistItems.length : (user?.wishlist?.length || user?.wishlistCount || 0);
+    const rentalsCount = counts?.rentals ?? (user?.rentalsCount || user?.ordersCount || 0);
+    const purchasesCount = counts?.purchases ?? (user?.purchasesCount || 0);
+    const savedCount = counts?.savedPieces ?? (user?.wishlist?.length || user?.wishlistCount || 0);
 
     return (
         <div className="profile-identity-card">

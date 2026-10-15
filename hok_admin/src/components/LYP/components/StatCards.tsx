@@ -81,7 +81,6 @@ export const StatCards: React.FC<StatCardsProps> = ({
           key={card.key}
           className={`sc ${isActive(card.view) ? "sc-on" : ""}`}
           onClick={() => onViewChange(card.view, card.label)}
-          title="See exactly these records below"
         >
           <div className="sc-lbl">{card.label}</div>
           <div className={`sc-val sc-val-${card.color}`}>{card.value}</div>

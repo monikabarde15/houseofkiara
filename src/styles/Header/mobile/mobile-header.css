@@ -10,7 +10,7 @@
   background: rgba(255, 254, 251, 0.97);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid #e8e0d4;
+  border-bottom: 1px solid #E8E0D4;
 }
 
 .hok-mobile-only {
@@ -31,28 +31,24 @@
 /* Light mode */
 .hok-mobile-header.light {
   background: rgba(255, 254, 251, 0.97);
-  border-bottom: 1px solid #e8e0d4;
+  border-bottom: 1px solid #E8E0D4;
 }
 
 .hok-mobile-header.light .burger-bar {
-  background: #1a1612;
+  background: #1A1612;
 }
 
 .hok-mobile-header.light .logo-wordmark {
-  color: #1a1612;
+  color: #1A1612;
 }
 
 .hok-mobile-header.light .hdr-btn svg {
-  stroke: #1a1612;
+  stroke: #1A1612;
 }
 
 /* Dark mode */
 .hok-mobile-header.dark {
-  background: linear-gradient(
-    to bottom,
-    rgba(26, 22, 18, 0.72) 0%,
-    rgba(26, 22, 18, 0) 100%
-  );
+  background: linear-gradient(to bottom, rgba(26, 22, 18, 0.72) 0%, rgba(26, 22, 18, 0) 100%);
   border-bottom: none;
 }
 
@@ -61,7 +57,7 @@
 }
 
 .hok-mobile-header.dark .logo-wordmark {
-  color: #ffffff;
+  color: #FFFFFF;
 }
 
 .hok-mobile-header.dark .hdr-btn svg {
@@ -89,15 +85,9 @@
   transition: all 0.3s ease;
 }
 
-.burger-bar:nth-child(1) {
-  width: 20px;
-}
-.burger-bar:nth-child(2) {
-  width: 16px;
-}
-.burger-bar:nth-child(3) {
-  width: 12px;
-}
+.burger-bar:nth-child(1) { width: 20px; }
+.burger-bar:nth-child(2) { width: 16px; }
+.burger-bar:nth-child(3) { width: 12px; }
 
 /* Open state - morph to X */
 .burger-btn.open .burger-bar:nth-child(1) {
@@ -133,7 +123,7 @@
 }
 
 .logo-wordmark {
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.26em;
@@ -184,20 +174,13 @@
 
 .cart-dot {
   position: absolute;
-  top: 4px;
-  right: -2px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: 8px;
-  background: #b85c38;
-  border: 1.5px solid #fffffb;
-  color: white;
-  font-size: 9px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 10px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #B85C38;
+  border: 1.5px solid #FFFFFB;
 }
 
 /* Hide on desktop */

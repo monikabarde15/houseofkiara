@@ -121,7 +121,12 @@ export default function Sidebar({
             {group.title && <p>{group.title}</p>}
             {group.items.map((item, index) => {
               const Icon = item.icon;
-              const active = currentView === item.id;
+              const active =
+                currentView === item.id ||
+                (item.id === "listers" &&
+                  currentView.startsWith("lister_detail:")) ||
+                (item.id === "orders" &&
+                  currentView.startsWith("order_detail:"));
               return (
                 <button
                   key={`${item.label}-${index}`}

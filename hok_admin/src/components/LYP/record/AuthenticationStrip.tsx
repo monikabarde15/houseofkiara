@@ -11,14 +11,30 @@ interface AuthenticationStripProps {
 export const AuthenticationStrip: React.FC<AuthenticationStripProps> = ({
   submission,
 }) => {
-  // In production, this would check if the designer is mapped and get risk level
-  const isMapped = false; // Would check designer profile
-  const riskLevel = "High" as "High" | "Medium" | "Low" | null;
   const designerName = submission.designer;
 
   if (!designerName) {
     return null;
   }
+
+  const knownMapped = [
+    "seema gujral",
+    "gaurav gupta",
+    "sabyasachi",
+    "manish malhotra",
+    "tarun tahiliani",
+    "amit aggarwal",
+    "ritukumar",
+    "anamika khanna",
+    "raw mango",
+    "anushree reddy",
+    "arpita mehta",
+  ];
+
+  const isMapped = knownMapped.some((d) =>
+    designerName.toLowerCase().includes(d),
+  );
+  const riskLevel = "Low" as "High" | "Medium" | "Low";
 
   if (!isMapped) {
     return (

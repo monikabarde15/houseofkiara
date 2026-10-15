@@ -5,54 +5,79 @@ const useCartStore = create(
   persist(
     (set, get) => ({
       items: [],
+      loading: false,
 
-      addToCart: (product, details) => {
+      fetchCart: async () => {
+        try {
+          const authModule = await import("./authStore");
+          const { token, isAuthenticated } = authModule.default.getState();
+          if (!isAuthenticated || !token) return;
+
+          set({ loading: true });
+          const res = await fetch("/api/customer/auth/cart", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (data.success && Array.isArray(data.data)) {
+            if (data.data.length > 0) {
+              set({ items: data.data });
+            } else if (get().items.length > 0) {
+              syncCartWithBackend(get().items);
+            }
+          }
+        } catch (err) {
+          console.error("fetchCart error:", err);
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      addToCart: (product, details = {}) => {
         let added = false;
         set((state) => {
-          const productId = product._id || product.id;
+          const productId = String(
+            product._id || product.productId || product.id || Date.now()
+          );
+          const type = details.type || "rental";
 
-          // Check if item already exists in cart with the same rental/buy type
+          // Check if item already exists in cart with the same type
           const existingItemIndex = state.items.findIndex(
-            (item) => item.id === productId && item.type === details.type,
+            (item) => String(item.id) === productId && item.type === type
           );
 
           if (existingItemIndex !== -1) {
             added = true;
             const updatedItems = [...state.items];
+            const existing = updatedItems[existingItemIndex];
             updatedItems[existingItemIndex] = {
-              ...updatedItems[existingItemIndex],
+              ...existing,
               booking: {
-                ...updatedItems[existingItemIndex].booking,
+                ...existing.booking,
                 size:
-                  details.size !== undefined && details.size !== null
+                  details.size !== undefined
                     ? details.size
-                    : updatedItems[existingItemIndex].booking.size,
+                    : existing.booking?.size,
                 color:
-                  details.color !== undefined && details.color !== null
+                  details.color !== undefined
                     ? details.color
-                    : updatedItems[existingItemIndex].booking.color,
-                measurements:
-                  details.measurements !== undefined && details.measurements !== null
-                    ? details.measurements
-                    : updatedItems[existingItemIndex].booking.measurements,
-                rentalDates:
-                  details.rentalDates !== undefined &&
-                  details.rentalDates !== null
-                    ? details.rentalDates
-                    : updatedItems[existingItemIndex].booking.rentalDates,
+                    : existing.booking?.color,
                 deliveryDate:
-                  details.rentalDates?.start !== undefined
-                    ? details.rentalDates.start
-                    : updatedItems[existingItemIndex].booking.deliveryDate,
+                  details.deliveryDate ||
+                  details.rentalDates?.start ||
+                  existing.booking?.deliveryDate,
+                eventDate:
+                  details.eventDate || existing.booking?.eventDate,
                 returnDate:
-                  details.rentalDates?.end !== undefined
-                    ? details.rentalDates.end
-                    : updatedItems[existingItemIndex].booking.returnDate,
+                  details.returnDate ||
+                  details.rentalDates?.end ||
+                  existing.booking?.returnDate,
+                rentalWindowDays:
+                  details.rentalWindowDays ||
+                  existing.booking?.rentalWindowDays,
               },
               price:
-                details.price !== undefined
-                  ? details.price
-                  : updatedItems[existingItemIndex].price,
+                details.price !== undefined ? details.price : existing.price,
+              quantity: (existing.quantity || 1) + (details.quantity || 1),
             };
             return { items: updatedItems };
           }
@@ -60,34 +85,46 @@ const useCartStore = create(
           added = true;
           const newItem = {
             id: productId,
-            type: details.type,
-            source: details.source,
+            type: type,
+            source: details.source || "web",
             product: product,
             booking: {
-              size: details.size,
-              color: details.color,
-              measurements: details.measurements,
-              rentalDates: details.rentalDates || null,
-              deliveryDate: details.rentalDates?.start || null,
-              returnDate: details.rentalDates?.end || null,
+              size: details.size || "M",
+              color: details.color || "",
+              deliveryDate:
+                details.deliveryDate || details.rentalDates?.start || null,
+              eventDate: details.eventDate || null,
+              returnDate:
+                details.returnDate || details.rentalDates?.end || null,
+              rentalWindowDays: details.rentalWindowDays || 4,
             },
-            quantity: 1,
-            price: details.price,
+            quantity: details.quantity || 1,
+            price:
+              details.price !== undefined
+                ? details.price
+                : product.rentalPrice ||
+                  product.listingPrice ||
+                  product.price ||
+                  0,
+            active: true,
           };
 
           return { items: [...state.items, newItem] };
         });
 
-        // After successfully adding to cart, check if it's in the wishlist and remove it
         if (added) {
+          // If in wishlist, remove it
           import("./wishlistStore").then((m) => {
             const wishlistStore = m.default.getState();
-            const productId = product._id || product.id;
-            if (wishlistStore.items.includes(productId)) {
-              wishlistStore.toggleWishlist(productId);
+            const pid = product._id || product.productId || product.id;
+            if (wishlistStore.items.some((id) => String(id) === String(pid))) {
+              wishlistStore.toggleWishlist(pid);
             }
           });
           syncCartWithBackend(get().items);
+          try {
+            localStorage.setItem("cart", JSON.stringify(get().items));
+          } catch (e) {}
         }
 
         return added;
@@ -95,20 +132,27 @@ const useCartStore = create(
 
       removeFromCart: (itemId) => {
         set((state) => ({
-          items: state.items.filter((item) => item.id !== itemId),
+          items: state.items.filter((item) => String(item.id) !== String(itemId)),
         }));
         syncCartWithBackend(get().items);
+        try {
+          localStorage.setItem("cart", JSON.stringify(get().items));
+        } catch (e) {}
       },
 
       clearCart: () => {
         set({ items: [] });
         syncCartWithBackend([]);
+        try {
+          localStorage.removeItem("cart");
+          localStorage.removeItem("checkoutData");
+        } catch (e) {}
       },
     }),
     {
       name: "hok-cart",
-    },
-  ),
+    }
+  )
 );
 
 const syncCartWithBackend = (items) => {

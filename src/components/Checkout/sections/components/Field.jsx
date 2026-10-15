@@ -11,6 +11,7 @@ const Field = ({
   children,
   className = "",
 }) => {
+
   return (
     <div
       className={`
@@ -19,33 +20,50 @@ const Field = ({
         ${className}
       `}
     >
+
       {/* LABEL */}
       <label className="checkout-field-label">
+
         {label}
 
         {required && (
-          <span className="req" aria-hidden="true">
+          <span
+            className="req"
+            aria-hidden="true"
+          >
             *
           </span>
         )}
 
         {optional && (
-          <span className="checkout-field-optional">(Optional)</span>
+          <span className="checkout-field-optional">
+            (Optional)
+          </span>
         )}
 
         {labelBadge && (
           <span className="checkout-field-label-badge">{labelBadge}</span>
         )}
+
       </label>
 
       {/* CONTROL */}
       {children}
 
       {/* HINT */}
-      {hint && !error && <div className="checkout-fhint">{hint}</div>}
+      {hint && !error && (
+        <div className="checkout-fhint">
+          {hint}
+        </div>
+      )}
 
       {/* ERROR */}
-      {error && <div className="checkout-ferror">{error}</div>}
+      {error && (
+        <div className="checkout-ferror">
+          {error}
+        </div>
+      )}
+
     </div>
   );
 };

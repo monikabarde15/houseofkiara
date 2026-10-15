@@ -44,7 +44,7 @@ const view = (p) => {
   };
 };
 
-const syncPayoutsFromOrders = async () => {
+export const syncPayoutsFromOrders = async () => {
   try {
     const orders = await Order.find({});
     for (const ord of orders) {

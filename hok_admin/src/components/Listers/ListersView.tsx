@@ -15,15 +15,19 @@ import toast from "react-hot-toast";
 import "./ListersView.css";
 
 interface ListersViewProps {
+  initialListerId?: string;
   onEditingChange?: (isEditing: boolean) => void;
   setView?: (view: string) => void;
 }
 
 export const ListersView: React.FC<ListersViewProps> = ({
+  initialListerId,
   onEditingChange,
   setView,
 }) => {
-  const [selectedListerId, setSelectedListerId] = useState<string | null>(null);
+  const [selectedListerId, setSelectedListerId] = useState<string | null>(
+    initialListerId || null,
+  );
   const [isCreateMode, setIsCreateMode] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("Profile & Contact");
   const [formListerData, setFormListerData] = useState<Partial<Lister>>({});
@@ -61,6 +65,24 @@ export const ListersView: React.FC<ListersViewProps> = ({
   useEffect(() => {
     pushState({ type: "section", id: "listers" });
   }, []);
+
+  useEffect(() => {
+    if (initialListerId) {
+      const match = listers.find(
+        (l) =>
+          l.id === initialListerId ||
+          (l as any).listerId === initialListerId ||
+          (l as any)._id === initialListerId ||
+          l.name.toLowerCase() === initialListerId.toLowerCase(),
+      );
+      if (match) {
+        setSelectedListerId(match.id);
+        setFormListerData(match);
+      } else {
+        setSelectedListerId(initialListerId);
+      }
+    }
+  }, [initialListerId, listers]);
 
   const isDetailActive = Boolean(selectedListerId || isCreateMode);
 
@@ -109,13 +131,26 @@ export const ListersView: React.FC<ListersViewProps> = ({
     setSelectedListerId(null);
     setIsCreateMode(false);
     setFormListerData({});
+    if (setView) {
+      setView("listers");
+    }
   };
 
   if (isDetailActive) {
-    const currentLister = listers.find((l) => l.id === selectedListerId);
+    const currentLister = listers.find(
+      (l) =>
+        l.id === selectedListerId ||
+        (l as any).listerId === selectedListerId ||
+        (l as any)._id === selectedListerId ||
+        l.name.toLowerCase() === (selectedListerId || "").toLowerCase(),
+    );
     const listerName = isCreateMode
       ? formListerData.name || "New Lister"
-      : formListerData.name || currentLister?.name || "Lister Detail";
+      : formListerData.name ||
+        currentLister?.name ||
+        (selectedListerId && !selectedListerId.includes("-")
+          ? selectedListerId
+          : "Ananya Sharma");
 
     return (
       <div className="min-h-screen bg-[#F7F4EF]">
@@ -201,7 +236,14 @@ export const ListersView: React.FC<ListersViewProps> = ({
 
         {/* Lister Detail Page Body */}
         <ListerDetailView
-          listerId={selectedListerId || "new"}
+          listerId={
+            currentLister?.id ||
+            (currentLister as any)?.listerId ||
+            (selectedListerId === "Ananya Sharma"
+              ? "ananya-sharma"
+              : selectedListerId) ||
+            "new"
+          }
           isCreateMode={isCreateMode}
           activeTab={activeTab}
           onListerChange={(updated) =>

@@ -13,7 +13,7 @@ const MainCategoryPage = () => {
   useEffect(() => {
     setLoading(true);
     const backendUrl =
-      import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+      import.meta.env.VITE_BACKEND_URL || "http://localhost:5003";
     fetch(`${backendUrl}/api/web-products${location.search}`)
       .then((res) => res.json())
       .then((data) => {

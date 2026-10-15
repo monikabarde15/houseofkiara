@@ -1,4 +1,4 @@
-﻿import PromoCode from "../models/PromoCode.js";
+import PromoCode from "../models/PromoCode.js";
 
 // GET /api/promotions — all promo codes
 export const getAllPromoCodes = async (req, res) => {
@@ -162,4 +162,34 @@ export const deletePromoCode = async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
+};
+
+const refusedAttempts = [
+  { code: "KAIRA20", count: 3, lastAttempt: new Date().toISOString() }
+];
+
+export const logAttempt = async (req, res) => {
+  try {
+    const rawCode = (req.body?.code || "").trim().toUpperCase();
+    if (rawCode) {
+      const existing = refusedAttempts.find((a) => a.code === rawCode);
+      if (existing) {
+        existing.count += 1;
+        existing.lastAttempt = new Date().toISOString();
+      } else {
+        refusedAttempts.push({
+          code: rawCode,
+          count: 1,
+          lastAttempt: new Date().toISOString(),
+        });
+      }
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const getRefusedAttempts = async (req, res) => {
+  res.json({ success: true, data: refusedAttempts });
 };

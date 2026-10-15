@@ -2,7 +2,7 @@
 /* - Why We Built It */
 
 .au-orbit {
-  background: #fffefb; /* --warm-white */
+  background: #FFFEFB; /* --warm-white */
   padding: 140px 80px;
   position: relative;
   overflow: hidden;
@@ -34,35 +34,35 @@
 /* Outer Ring */
 .au-orbit__outer-ring {
   fill: none;
-  stroke: #f0eae0;
+  stroke: #F0EAE0;
   stroke-width: 1;
 }
 
 /* Orbit Path (Dashed) */
 .au-orbit__path {
   fill: none;
-  stroke: #eae1d2;
+  stroke: #EAE1D2;
   stroke-width: 1;
   stroke-dasharray: 2 7;
 }
 
 /* Centre Hub */
 .au-orbit__hub-outer {
-  fill: #fffefb;
-  stroke: #c9a96e;
+  fill: #FFFEFB;
+  stroke: #C9A96E;
   stroke-width: 1;
 }
 
 /* Centre Hub - Inner */
 .au-orbit__hub-inner {
   fill: none;
-  stroke: #e8d5b0;
+  stroke: #E8D5B0;
   stroke-width: 1;
 }
 
 /* Centre Dot  */
 .au-orbit__hub-dot {
-  fill: #c9a96e;
+  fill: #C9A96E;
 }
 
 /* Centre Text -*/
@@ -70,12 +70,12 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 20px;
   font-style: italic;
-  fill: #1a1612;
+  fill: #1A1612;
   dominant-baseline: central;
 }
 
 .au-orbit__hub-text--gold {
-  fill: #c9a96e;
+  fill: #C9A96E;
 }
 
 /* ===== NODES ===== */
@@ -93,43 +93,35 @@
 }
 
 @keyframes orbitSpin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes orbitCounter {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(-360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
 }
 
 /* Node Circle */
 .au-orbit__node-circle {
-  fill: #fffefb;
+  fill: #FFFEFB;
   stroke-width: 1.4;
   transition: stroke-width 0.25s ease;
 }
 
 /* Rent Node - 12.2 */
 .au-orbit__node-circle--rent {
-  stroke: #b85c38;
+  stroke: #B85C38;
 }
 
 /* Preloved Node  */
 .au-orbit__node-circle--preloved {
-  stroke: #c9a96e;
+  stroke: #C9A96E; 
 }
 
 /* List & Sell Node */
 .au-orbit__node-circle--list {
-  stroke: #6b7e5a;
+  stroke: #6B7E5A; 
 }
 
 /* Node Text - Spec §12.2 */
@@ -138,27 +130,27 @@
   font-size: 10.5px;
   letter-spacing: 0.5em;
   text-transform: uppercase;
-  fill: #1a1612;
+  fill: #1A1612;
   dominant-baseline: central;
 }
 
 /* Rent Text */
 .au-orbit__node-text--rent {
-  fill: #b85c38;
+  fill: #B85C38;
 }
 
 /* Preloved Text - smaller for two lines */
 .au-orbit__node-text--preloved {
   font-size: 9.5px;
   letter-spacing: 0.3em;
-  fill: #a6843e;
+  fill: #A6843E;
 }
 
 /* List & Sell Text - smaller for two lines */
 .au-orbit__node-text--list {
   font-size: 9.5px;
   letter-spacing: 0.3em;
-  fill: #6b7e5a;
+  fill: #6B7E5A;
 }
 
 /* ===== NODE INTERACTIONS===== */
@@ -181,7 +173,7 @@
 
 /* Focus visible for keyboard */
 .au-orbit__node:focus-visible {
-  outline: 2px solid #c9a96e;
+  outline: 2px solid #C9A96E;
   outline-offset: 8px;
 }
 
@@ -198,7 +190,7 @@
 .au-orbit__eyebrow-line {
   width: 40px;
   height: 1px;
-  background: #c9a96e;
+  background: #C9A96E;
 }
 
 .au-orbit__eyebrow span {
@@ -206,7 +198,7 @@
   font-size: 11px;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: #c9a96e;
+  color: #C9A96E;
 }
 
 /* H2 */
@@ -215,13 +207,13 @@
   font-size: clamp(30px, 3.6vw, 46px);
   font-weight: 400;
   line-height: 1.22;
-  color: #1a1612;
+  color: #1A1612;
   margin: 0 0 28px 0;
 }
 
 .au-orbit__title em {
   font-style: italic;
-  color: #6b7e5a;
+  color: #6B7E5A; 
 }
 
 /* Body Paragraphs */
@@ -230,7 +222,7 @@
   font-size: 16px;
   font-weight: 300;
   line-height: 1.9;
-  color: #6b5e50;
+  color: #6B5E50;
   margin: 0 0 18px 0;
 }
 

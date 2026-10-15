@@ -98,6 +98,7 @@ export const createProduct = async (req, res) => {
     }
 
     const p = await Product.create(value);
+    global.__webProductsCache = null;
     res.status(201).json({ success: true, data: normalize(p) });
   } catch (e) {
     res.status(400).json({ success: false, message: e.message });
@@ -160,6 +161,7 @@ export const updateProduct = async (req, res) => {
       new: true,
       runValidators: true,
     });
+    global.__webProductsCache = null;
 
     res.json({ success: true, data: normalize(p) });
   } catch (e) {
@@ -174,6 +176,7 @@ export const deleteProduct = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Product not found" });
+    global.__webProductsCache = null;
     res.json({ success: true });
   } catch (e) {
     res.status(400).json({ success: false, message: e.message });
@@ -200,6 +203,7 @@ export const archiveProduct = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Product not found" });
+    global.__webProductsCache = null;
     res.json({ success: true, data: normalize(p) });
   } catch (e) {
     res.status(422).json({ success: false, message: e.message });

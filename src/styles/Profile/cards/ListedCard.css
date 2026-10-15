@@ -3,40 +3,38 @@
    ============================================ */
 
 .profile-lc {
-  background: #fffffb;
-  border: 1px solid #e8e0d4;
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s,
-    border-color 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .profile-lc:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 28px rgba(26, 22, 18, 0.08);
-  border-color: #e8d5b0;
+  border-color: #E8D5B0;
 }
 
 .profile-lc.profile-lc-active-card {
-  border-color: #a8844a;
+  border-color: #A8844A;
 }
 
 /* Card Image */
 .profile-lc-img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   position: relative;
 }
 
 .profile-lc-placeholder {
   opacity: 0.2;
+  
 }
 
 /* Earnings Ribbon */
@@ -45,11 +43,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(
-    0deg,
-    rgba(26, 22, 18, 0.82) 0%,
-    transparent 100%
-  );
+  background: linear-gradient(0deg, rgba(26, 22, 18, 0.82) 0%, transparent 100%);
   padding: 12px 11px 8px;
   display: flex;
   align-items: flex-end;
@@ -60,7 +54,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 16px;
   font-weight: 500;
-  color: #e8d5b0;
+  color: #E8D5B0;
   line-height: 1;
 }
 
@@ -82,7 +76,7 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 16px;
   font-weight: 500;
-  color: #fffffb;
+  color: #FFFFFB;
   line-height: 1;
 }
 
@@ -110,7 +104,7 @@
 }
 
 .profile-lc-badge {
-  font-family: "DM Sans", sans-serif;
+    font-family: "DM Sans", sans-serif;
   display: inline-block;
   font-size: 8px;
   letter-spacing: 0.09em;
@@ -123,17 +117,17 @@
 /* Badge variants */
 .profile-lc-badge-lst {
   background: rgba(201, 169, 110, 0.15);
-  color: #a8844a;
+  color: #A8844A;
 }
 
 .profile-lc-badge-ren {
   background: rgba(42, 68, 102, 0.1);
-  color: #2a4466;
+  color: #2A4466;
 }
 
 .profile-lc-badge-resale {
   background: rgba(107, 126, 90, 0.12);
-  color: #6b7e5a;
+  color: #6B7E5A;
 }
 
 /* Card Name */
@@ -141,17 +135,18 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 14px;
   font-weight: 500;
-  color: #1a1612;
+  color: #1A1612;
   line-height: 1.3;
   margin-bottom: 3px;
 }
+
 
 /* META */
 .profile-lc-listed-since {
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 300;
-  color: #8a7e72;
+  color: #8A7E72;
   line-height: 1.55;
   margin-bottom: 4px;
 }
@@ -160,10 +155,12 @@
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 300;
-  color: #8a7e72;
+  color: #8A7E72;
   line-height: 1.55;
   margin-bottom: 8px;
 }
+
+
 
 /* Card Footer */
 .profile-lc-foot {
@@ -172,24 +169,24 @@
   justify-content: space-between;
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid #f0eae0;
+  border-top: 1px solid #F0EAE0;
 }
 
 .profile-lc-payout {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 400;
-  color: #6b7e5a;
+  color: #6B7E5A;
 }
 
 .profile-lc-payout span {
-  color: #b0a898;
+  color: #B0A898;
   font-size: 9px;
   font-weight: 300;
 }
 
 .profile-lc-no-bookings {
-  color: #8a7e72;
+  color: #8A7E72;
 }
 
 /* Details Link */
@@ -200,7 +197,7 @@
   font-size: 8.5px;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: #a8844a;
+  color: #A8844A;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -209,7 +206,7 @@
 }
 
 .profile-lc-link:hover {
-  color: #1a1612;
+  color: #1A1612;
 }
 
 .profile-lc-link svg {

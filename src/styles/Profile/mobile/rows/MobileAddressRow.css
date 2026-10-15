@@ -3,9 +3,9 @@
    ============================================ */
 
 .profile-mobile-addr-item {
-  background: #fffefb;
+  background: #FFFEFB;
   padding: 14px 16px;
-  border-bottom: 1px solid #f0eae0;
+  border-bottom: 1px solid #F0EAE0;
 }
 
 /* Label / Type Row */
@@ -22,7 +22,7 @@
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #a8844a;
+  color: #A8844A;
 }
 
 .profile-mobile-addr-default-badge {
@@ -31,7 +31,7 @@
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #6b7e5a;
+  color: #6B7E5A;
   background: rgba(107, 126, 90, 0.08);
   padding: 2px 7px;
   border-radius: 9px;
@@ -42,7 +42,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #3c3529;
+  color: #3C3529;
   margin-bottom: 3px;
 }
 
@@ -51,7 +51,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 300;
-  color: #8a7e72;
+  color: #8A7E72;
   line-height: 1.65;
   overflow-wrap: break-word;
 }
@@ -62,7 +62,7 @@
   gap: 8px;
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid #f0eae0;
+  border-top: 1px solid #F0EAE0;
 }
 
 .profile-mobile-addr-btn {
@@ -73,23 +73,21 @@
   gap: 6px;
   padding: 8px 10px;
   background: none;
-  border: 1px solid #e8e0d4;
+  border: 1px solid #E8E0D4;
   /* border-radius: 6px; */
   font-family: "DM Sans", sans-serif;
   font-size: 8.5px;
   font-weight: 300;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #8a7e72;
+  color: #8A7E72;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .profile-mobile-addr-btn:active {
-  background: #faf7f2;
-  color: #3c3529;
+  background: #FAF7F2;
+  color: #3C3529;
 }
 
 .profile-mobile-addr-btn svg {
@@ -108,7 +106,7 @@
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 400;
-  color: #a8844a;
+  color: #A8844A;
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
@@ -116,5 +114,5 @@
 }
 
 .profile-mobile-addr-set-default:active {
-  color: #3c3529;
+  color: #3C3529;
 }

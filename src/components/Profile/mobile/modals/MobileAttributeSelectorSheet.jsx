@@ -8,29 +8,38 @@ const MobileAttributeSelectorSheet = ({
   isOpen,
   onClose,
   piece,
-  onConfirm,
+  onConfirm
 }) => {
   /* =========================================
      Local State
      ========================================= */
 
-  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedSize, setSelectedSize] =
+    useState("");
 
-  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedColor, setSelectedColor] =
+    useState("");
 
-  const [startDate, setStartDate] = useState("");
+  const [startDate, setStartDate] =
+    useState("");
 
-  const [endDate, setEndDate] = useState("");
+  const [endDate, setEndDate] =
+    useState("");
 
   /* =========================================
      Derived Flags
      ========================================= */
 
-  const needsSize = piece?.sizes && piece.sizes.length > 1;
+  const needsSize =
+    piece?.sizes &&
+    piece.sizes.length > 1;
 
-  const needsColor = piece?.colors && piece.colors.length > 1;
+  const needsColor =
+    piece?.colors &&
+    piece.colors.length > 1;
 
-  const isRental = piece?.mode === "Rental";
+  const isRental =
+    piece?.mode === "Rental";
 
   /* =========================================
      Reset State On Open
@@ -56,15 +65,24 @@ const MobileAttributeSelectorSheet = ({
       return "";
     }
 
-    if (needsSize && !selectedSize) {
+    if (
+      needsSize &&
+      !selectedSize
+    ) {
       return "Please select a size";
     }
 
-    if (needsColor && !selectedColor) {
+    if (
+      needsColor &&
+      !selectedColor
+    ) {
       return "Please select a colour";
     }
 
-    if (isRental && (!startDate || !endDate)) {
+    if (
+      isRental &&
+      (!startDate || !endDate)
+    ) {
       return "Please select rental dates";
     }
 
@@ -72,7 +90,8 @@ const MobileAttributeSelectorSheet = ({
       isRental &&
       startDate &&
       endDate &&
-      new Date(endDate) <= new Date(startDate)
+      new Date(endDate) <=
+        new Date(startDate)
     ) {
       return "Return date must be after the start date";
     }
@@ -86,14 +105,15 @@ const MobileAttributeSelectorSheet = ({
     selectedSize,
     selectedColor,
     startDate,
-    endDate,
+    endDate
   ]);
 
   /* =========================================
      Completion State
      ========================================= */
 
-  const isComplete = validationMessage === "";
+  const isComplete =
+    validationMessage === "";
 
   /* =========================================
      Confirm Action
@@ -108,7 +128,7 @@ const MobileAttributeSelectorSheet = ({
       size: selectedSize,
       color: selectedColor,
       startDate,
-      endDate,
+      endDate
     });
   };
 
@@ -116,7 +136,10 @@ const MobileAttributeSelectorSheet = ({
      Minimum Date
      ========================================= */
 
-  const today = new Date().toISOString().split("T")[0];
+  const today =
+    new Date()
+      .toISOString()
+      .split("T")[0];
 
   /* =========================================
      Guard
@@ -127,7 +150,11 @@ const MobileAttributeSelectorSheet = ({
   }
 
   return (
-    <MobileBottomSheet isOpen={isOpen} onClose={onClose} title="Select Options">
+    <MobileBottomSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Select Options"
+    >
       {/* =====================================
           Product Summary Row
          ===================================== */}
@@ -136,7 +163,8 @@ const MobileAttributeSelectorSheet = ({
         <div
           className="profile-mobile-attr-product-img"
           style={{
-            "--attr-bg": piece.imageGradient,
+            "--attr-bg":
+              piece.imageGradient
           }}
         >
           <svg
@@ -158,7 +186,9 @@ const MobileAttributeSelectorSheet = ({
         </div>
 
         <div className="profile-mobile-attr-product-info">
-          <div className="profile-mobile-attr-product-name">{piece.name}</div>
+          <div className="profile-mobile-attr-product-name">
+            {piece.name}
+          </div>
 
           <div className="profile-mobile-attr-product-meta">
             {piece.mode === "Rental"
@@ -174,7 +204,9 @@ const MobileAttributeSelectorSheet = ({
 
       {needsSize && (
         <section className="profile-mobile-attr-section">
-          <div className="profile-mobile-attr-label">Select Size</div>
+          <div className="profile-mobile-attr-label">
+            Select Size
+          </div>
 
           <div className="profile-mobile-attr-pills">
             {piece.sizes.map((size) => (
@@ -182,9 +214,13 @@ const MobileAttributeSelectorSheet = ({
                 key={size}
                 type="button"
                 className={`profile-mobile-attr-pill ${
-                  selectedSize === size ? "selected" : ""
+                  selectedSize === size
+                    ? "selected"
+                    : ""
                 }`}
-                onClick={() => setSelectedSize(size)}
+                onClick={() =>
+                  setSelectedSize(size)
+                }
               >
                 {size}
               </button>
@@ -199,7 +235,9 @@ const MobileAttributeSelectorSheet = ({
 
       {needsColor && (
         <section className="profile-mobile-attr-section">
-          <div className="profile-mobile-attr-label">Select Colour</div>
+          <div className="profile-mobile-attr-label">
+            Select Colour
+          </div>
 
           <div className="profile-mobile-attr-swatches">
             {piece.colors.map((color) => (
@@ -208,12 +246,17 @@ const MobileAttributeSelectorSheet = ({
                 type="button"
                 aria-label={color}
                 className={`profile-mobile-attr-swatch ${
-                  selectedColor === color ? "selected" : ""
+                  selectedColor === color
+                    ? "selected"
+                    : ""
                 }`}
                 style={{
-                  backgroundColor: color.toLowerCase(),
+                  backgroundColor:
+                    color.toLowerCase()
                 }}
-                onClick={() => setSelectedColor(color)}
+                onClick={() =>
+                  setSelectedColor(color)
+                }
               />
             ))}
           </div>
@@ -226,28 +269,44 @@ const MobileAttributeSelectorSheet = ({
 
       {isRental && (
         <section className="profile-mobile-attr-section">
-          <div className="profile-mobile-attr-label">Select Rental Dates</div>
+          <div className="profile-mobile-attr-label">
+            Select Rental Dates
+          </div>
 
           <div className="profile-mobile-attr-dates">
             <div className="profile-mobile-attr-date-field">
-              <label>From</label>
+              <label>
+                From
+              </label>
 
               <input
                 type="date"
                 value={startDate}
                 min={today}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(e) =>
+                  setStartDate(
+                    e.target.value
+                  )
+                }
               />
             </div>
 
             <div className="profile-mobile-attr-date-field">
-              <label>To</label>
+              <label>
+                To
+              </label>
 
               <input
                 type="date"
                 value={endDate}
-                min={startDate || today}
-                onChange={(e) => setEndDate(e.target.value)}
+                min={
+                  startDate || today
+                }
+                onChange={(e) =>
+                  setEndDate(
+                    e.target.value
+                  )
+                }
               />
             </div>
           </div>
@@ -258,7 +317,9 @@ const MobileAttributeSelectorSheet = ({
           Validation Message
          ===================================== */}
 
-      <div className="profile-mobile-attr-validation">{validationMessage}</div>
+      <div className="profile-mobile-attr-validation">
+        {validationMessage}
+      </div>
 
       {/* =====================================
           Primary CTA
@@ -267,7 +328,11 @@ const MobileAttributeSelectorSheet = ({
       <button
         type="button"
         disabled={!isComplete}
-        className={`profile-mobile-attr-add-btn ${isComplete ? "active" : ""}`}
+        className={`profile-mobile-attr-add-btn ${
+          isComplete
+            ? "active"
+            : ""
+        }`}
         onClick={handleConfirm}
       >
         Add to Bag

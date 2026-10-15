@@ -28,7 +28,12 @@ export default function ReturnsView({
 }: ReturnsViewProps) {
   // Stats
   const pendingReturns = orders.filter(
-    (o) => o.mode === "Rental" && o.status === "Shipped",
+    (o) =>
+      o.mode === "Rental" &&
+      (o.status === "Shipped" ||
+        o.status === "Delivered" ||
+        o.status === "Return Sent" ||
+        o.status === "Return Due"),
   ).length;
   const depositsHeld = orders
     .filter(
@@ -37,7 +42,9 @@ export default function ReturnsView({
         (o.status === "Confirmed" ||
           o.status === "Dispatched" ||
           o.status === "Shipped" ||
-          o.status === "Delivered"),
+          o.status === "Delivered" ||
+          o.status === "Return Sent" ||
+          o.status === "Return Due"),
     )
     .reduce((sum, o) => sum + (Number(o.deposit) || 0), 0);
   const releasedDeposits = orders
@@ -53,12 +60,15 @@ export default function ReturnsView({
       0,
     );
 
-  // Due returns (In transit / Shipped / Delivered rentals)
+  // Due returns (In transit / Shipped / Delivered / Return Sent / Return Due rentals)
   const dueReturns = orders.filter(
     (o) =>
       o.mode === "Rental" &&
       !!o.productName &&
-      (o.status === "Shipped" || o.status === "Delivered"),
+      (o.status === "Shipped" ||
+        o.status === "Delivered" ||
+        o.status === "Return Sent" ||
+        o.status === "Return Due"),
   );
 
   // Pending Assessments & Requests (Returned but deposit is Pending)

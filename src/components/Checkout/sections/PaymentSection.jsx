@@ -1,44 +1,56 @@
 import { useState } from "react";
-import useCheckoutStore from "../../../store/checkoutStore";
+
 
 import FormSection from "./components/FormSection";
 import "../../../styles/checkout/sections/payment-section.css";
 import "../../../styles/checkout/sections/components/field.css";
 import "../../../styles/checkout/sections/components/form-section.css";
 
+
 const PaymentSection = () => {
-  const selected = useCheckoutStore((state) => state.paymentMethod);
-  const setSelected = useCheckoutStore((state) => state.setPaymentMethod);
+
+  const [selected, setSelected] = useState("upi");
   const [cardNumber, setCardNumber] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("")
 
   const formatCardNumber = (value) => {
+
     /*
       remove non-digits
     */
-    const digits = value.replace(/\D/g, "");
+    const digits =
+      value.replace(/\D/g, "");
 
     /*
       limit to 16 digits
     */
-    const limited = digits.slice(0, 16);
+    const limited =
+      digits.slice(0, 16);
 
     /*
       add spaces every 4 digits
     */
-    return limited.replace(/(\d{4})(?=\d)/g, "$1 ");
+    return limited.replace(
+      /(\d{4})(?=\d)/g,
+      "$1 "
+    );
+
   };
 
+
   const formatExpiry = (value) => {
+
     /*
       remove non-digits
     */
-    const digits = value.replace(/\D/g, "");
+    const digits =
+      value.replace(/\D/g, "");
 
     /*
       limit MMYY
     */
-    const limited = digits.slice(0, 4);
+    const limited =
+      digits.slice(0, 4);
 
     /*
       add slash after month
@@ -47,12 +59,19 @@ const PaymentSection = () => {
       return limited;
     }
 
-    return limited.slice(0, 2) + " / " + limited.slice(2);
+    return (
+      limited.slice(0, 2)
+      + " / "
+      + limited.slice(2)
+    );
+
   };
 
   return (
     <FormSection>
+
       <div className="payment-section">
+
         {/* HEADER */}
         <div className="checkout-section-header">
           <div className="checkout-section-number">05</div>
@@ -64,12 +83,14 @@ const PaymentSection = () => {
 
         {/* PAYMENT OPTION GROUP */}
         <div className="checkout-payment-option-group">
+
           {/* UPI PAYMENT METHOD */}
           <div
             className={`checkout-payment-option-card ${selected === "upi" ? "selected" : ""}`}
             id="pay-upi"
             onClick={() => setSelected("upi")}
           >
+
             {/* LEFT */}
             <div className="checkout-payment-option-left">
               <div className="checkout-payment-opt-radio"></div>
@@ -86,6 +107,7 @@ const PaymentSection = () => {
             <div className="checkout-payment-tag checkout-payment-tag-instant">
               INSTANT
             </div>
+
           </div>
 
           {/* UPI PAYMENT METHOD PANEL - DEFAULT OPEN*/}
@@ -93,7 +115,9 @@ const PaymentSection = () => {
             className={`checkout-payment-option-panel ${selected === "upi" ? "open" : ""}`}
             id="panel-upi"
           >
+
             <div className="checkout-payment-field">
+
               <label className="checkout-payment-field-label">
                 YOUR UPI ID
               </label>
@@ -105,10 +129,12 @@ const PaymentSection = () => {
               />
 
               <div className="checkout-payment-field-hint">
-                You will receive a payment request on your UPI app after placing
-                the order. Confirm it there to complete the transaction.
+                You will receive a payment request on your UPI app after placing the order.
+                Confirm it there to complete the transaction.
               </div>
+
             </div>
+
           </div>
 
           {/* CREDIT CARD / DEBIT CARD */}
@@ -117,6 +143,7 @@ const PaymentSection = () => {
             id="pay-card"
             onClick={() => setSelected("card")}
           >
+
             {/* LEFT */}
             <div className="checkout-payment-option-left">
               <div className="checkout-payment-opt-radio"></div>
@@ -131,6 +158,7 @@ const PaymentSection = () => {
                 </div>
               </div>
             </div>
+
           </div>
 
           {/* CREDIT CARD / DEBIT CARD PANEL - OPEN  */}
@@ -139,6 +167,7 @@ const PaymentSection = () => {
             id="panel-card"
           >
             <div className="checkout-payment-panel-fields">
+
               {/* Card Number */}
               <div className="checkout-payment-field">
                 <label>Card number</label>
@@ -149,19 +178,28 @@ const PaymentSection = () => {
                   maxLength={19}
                   value={cardNumber}
                   onChange={(e) => {
-                    const formatted = formatCardNumber(e.target.value);
+
+                    const formatted =
+                      formatCardNumber(
+                        e.target.value
+                      );
 
                     setCardNumber(formatted);
+
                   }}
                 />
               </div>
 
               {/* Row of 3 */}
               <div className="checkout-payment-field-grid c3">
+
                 {/* Name */}
                 <div className="checkout-payment-field">
                   <label>Name on card</label>
-                  <input type="text" placeholder="As printed on card" />
+                  <input
+                    type="text"
+                    placeholder="As printed on card"
+                  />
                 </div>
 
                 {/* Expiry */}
@@ -174,9 +212,14 @@ const PaymentSection = () => {
                     maxLength={7}
                     value={cardExpiry}
                     onChange={(e) => {
-                      const formatted = formatExpiry(e.target.value);
+
+                      const formatted =
+                        formatExpiry(
+                          e.target.value
+                        );
 
                       setCardExpiry(formatted);
+
                     }}
                   />
                 </div>
@@ -184,12 +227,18 @@ const PaymentSection = () => {
                 {/* CVV */}
                 <div className="checkout-payment-field">
                   <label>CVV</label>
-                  <input type="password" placeholder="•••" maxLength={4} />
+                  <input
+                    type="password"
+                    placeholder="•••"
+                    maxLength={4}
+                  />
                   <span className="checkout-payment-field-hint">
                     3 or 4 digits, back of card
                   </span>
                 </div>
+
               </div>
+
             </div>
           </div>
 
@@ -199,19 +248,22 @@ const PaymentSection = () => {
             id="pay-nb"
             onClick={() => setSelected("nb")}
           >
+
             {/* LEFT */}
             <div className="checkout-payment-option-left">
               <div className="checkout-payment-opt-radio"></div>
 
               <div className="checkout-payment-option-text">
-                <div className="checkout-payment-option-title">Net banking</div>
+                <div className="checkout-payment-option-title">
+                  Net banking
+                </div>
 
                 <div className="checkout-payment-option-desc">
-                  All major Indian banks · Axis · HDFC · ICICI · SBI · Kotak &
-                  more
+                  All major Indian banks · Axis · HDFC · ICICI · SBI · Kotak & more
                 </div>
               </div>
             </div>
+
           </div>
 
           {/* NET BANKING METHOD PANEL- OPEN */}
@@ -221,6 +273,7 @@ const PaymentSection = () => {
             id="panel-nb"
           >
             <div className="checkout-payment-panel-fields">
+
               <div className="checkout-payment-field">
                 <label>Select your bank</label>
 
@@ -234,7 +287,9 @@ const PaymentSection = () => {
                   <option>State Bank of India</option>
                   <option>Yes Bank</option>
                 </select>
+
               </div>
+
             </div>
           </div>
 
@@ -245,16 +300,18 @@ const PaymentSection = () => {
             id="pay-emi"
             onClick={() => setSelected("emi")}
           >
+
             {/* LEFT */}
             <div className="checkout-payment-option-left">
               <div className="checkout-payment-opt-radio"></div>
 
               <div className="checkout-payment-option-text">
-                <div className="checkout-payment-option-title">No-cost EMI</div>
+                <div className="checkout-payment-option-title">
+                  No-cost EMI
+                </div>
 
                 <div className="checkout-payment-option-desc">
-                  3 · 6 · 9 · 12 month plans · Available on select cards · Zero
-                  interest, no processing fee
+                  3 · 6 · 9 · 12 month plans · Available on select cards · Zero interest, no processing fee
                 </div>
               </div>
             </div>
@@ -263,6 +320,7 @@ const PaymentSection = () => {
             <div className="checkout-payment-tag checkout-payment-tag-popular">
               FROM ₹4,305/MO
             </div>
+
           </div>
 
           {/* NO COST EMI PANEL - OPEN */}
@@ -271,8 +329,10 @@ const PaymentSection = () => {
             id="panel-emi"
           >
             <div className="checkout-payment-panel-fields">
+
               {/* pf.c3 → 3 column row */}
               <div className="checkout-payment-row pf-c3">
+
                 {/* Card Number */}
                 <div className="checkout-payment-field">
                   <label>Card number</label>
@@ -283,27 +343,22 @@ const PaymentSection = () => {
                   />
                 </div>
 
+
                 {/* Tenure */}
                 <div className="checkout-payment-field">
                   <label>Tenure</label>
-                  <select
-                    className="checkout-payment-select"
-                    defaultValue="12 months · ₹4,305/mo"
-                  >
+                  <select className="checkout-payment-select">
                     <option>3 months · ₹17,210/mo</option>
                     <option>6 months · ₹8,605/mo</option>
-                    <option>12 months · ₹4,305/mo</option>
+                    <option selected>12 months · ₹4,305/mo</option>
                   </select>
                 </div>
 
                 {/* Bank / Issuer */}
                 <div className="checkout-payment-field">
                   <label>Bank / Issuer</label>
-                  <select
-                    className="checkout-payment-select"
-                    defaultValue="HDFC Bank"
-                  >
-                    <option>HDFC Bank</option>
+                  <select className="checkout-payment-select">
+                    <option selected>HDFC Bank</option>
                     <option>ICICI Bank</option>
                     <option>Axis Bank</option>
                     <option>Kotak Bank</option>
@@ -312,9 +367,12 @@ const PaymentSection = () => {
 
                 {/* Empty spacer (matches spec layout balance) */}
                 <div></div>
+
               </div>
+
             </div>
           </div>
+
         </div>
 
         {/* PAYMENT NOTICE  */}
@@ -322,12 +380,13 @@ const PaymentSection = () => {
         <div className="checkout-payment-notice notice-slate">
           <p>
             All payments are processed via <b>Razorpay</b> (PCI-DSS compliant).
-            House of Kaira does not store card or UPI details. For net banking
-            and UPI, you will be redirected to your bank's secure portal to
-            complete authorisation.
+            House of Kaira does not store card or UPI details.
+            For net banking and UPI, you will be redirected to your bank's secure portal to complete authorisation.
           </p>
         </div>
+
       </div>
+
     </FormSection>
   );
 };

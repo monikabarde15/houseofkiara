@@ -1,21 +1,25 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 import "../../../../styles/Profile/mobile/common/MobileTabStrip.css";
 
 const MobileTabStrip = ({
   activeTab,
   onTabChange,
   onTabClick,
-  isFullViewOpen = false, // ← Add this prop
+  counts,
+  isFullViewOpen = false  // ← Add this prop
 }) => {
+  const savedCount = counts?.savedPieces ?? 0;
+  const listedCount = counts?.listedPieces ?? 0;
+
   const tabs = [
     { id: "rentals", label: "Rentals" },
     { id: "purchases", label: "Purchases" },
-    { id: "wishlist", label: "Saved", badge: "7", badgeClass: "red" },
-    { id: "listed", label: "Listed", badge: "3", badgeClass: "gold" },
+    { id: "wishlist", label: "Saved", badge: savedCount > 0 ? String(savedCount) : null, badgeClass: "red" },
+    { id: "listed", label: "Listed", badge: listedCount > 0 ? String(listedCount) : null, badgeClass: "gold" },
     { id: "addresses", label: "Addresses" },
     { id: "submissions", label: "Submissions" },
     { id: "settings", label: "Settings" },
-    { id: "support", label: "Help" },
+    { id: "support", label: "Help" }
   ];
 
   const activeTabRef = useRef(null);
@@ -34,22 +38,31 @@ const MobileTabStrip = ({
       ticking = true;
 
       requestAnimationFrame(() => {
-        const sections = tabs.map((tab) => document.getElementById(tab.id));
+        const sections = tabs.map((tab) =>
+          document.getElementById(tab.id)
+        );
 
         const scrollPosition = window.scrollY + 72;
 
         let currentSection = sections[0]?.id;
 
         for (let i = sections.length - 1; i >= 0; i--) {
+
           const section = sections[i];
 
-          if (section && section.offsetTop <= scrollPosition) {
+          if (
+            section &&
+            section.offsetTop <= scrollPosition
+          ) {
             currentSection = section.id;
             break;
           }
         }
 
-        if (currentSection && currentSection !== activeTab) {
+        if (
+          currentSection &&
+          currentSection !== activeTab
+        ) {
           onTabChange(currentSection);
         }
 
@@ -58,17 +71,23 @@ const MobileTabStrip = ({
     };
 
     window.addEventListener("scroll", handleScroll, {
-      passive: true,
+      passive: true
     });
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
     };
-  }, [activeTab, isFullViewOpen]); // ← Add isFullViewOpen to dependency array
+  }, [activeTab, isFullViewOpen]);  // ← Add isFullViewOpen to dependency array
 
   // Scroll active tab into view when it changes
   useEffect(() => {
-    if (!scrollContainerRef.current || !activeTabRef.current) {
+    if (
+      !scrollContainerRef.current ||
+      !activeTabRef.current
+    ) {
       return;
     }
 
@@ -78,11 +97,13 @@ const MobileTabStrip = ({
     const containerWidth = container.offsetWidth;
 
     const scrollLeft =
-      activeTabEl.offsetLeft - containerWidth / 2 + activeTabEl.offsetWidth / 2;
+      activeTabEl.offsetLeft -
+      containerWidth / 2 +
+      activeTabEl.offsetWidth / 2;
 
     container.scrollTo({
       left: scrollLeft,
-      behavior: "smooth",
+      behavior: "smooth"
     });
   }, [activeTab]);
 
@@ -92,7 +113,7 @@ const MobileTabStrip = ({
         <button
           key={tab.id}
           ref={activeTab === tab.id ? activeTabRef : null}
-          className={`profile-mobile-tab ${activeTab === tab.id ? "active" : ""}`}
+          className={`profile-mobile-tab ${activeTab === tab.id ? 'active' : ''}`}
           onClick={() => onTabClick(tab.id)}
         >
           <span>{tab.label}</span>

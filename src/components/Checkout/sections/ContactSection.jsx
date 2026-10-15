@@ -8,9 +8,11 @@ import { useState, useEffect } from "react";
 
 import useCheckoutStore from "../../../store/checkoutStore";
 
-const ContactSection = ({ submitCount, setFieldErrors }) => {
-  const { contact: formData, setContact: setFormDataStore } =
-    useCheckoutStore();
+const ContactSection = ({
+  submitCount,
+  setFieldErrors,
+}) => {
+  const { contact: formData, setContact: setFormDataStore } = useCheckoutStore();
 
   const [errors, setErrors] = useState({});
 
@@ -30,32 +32,49 @@ const ContactSection = ({ submitCount, setFieldErrors }) => {
   };
 
   const validateContactFields = () => {
+
     const nextErrors = {};
 
     /* first name */
     if (!formData.firstName.trim()) {
-      nextErrors.firstName = "First name is required";
+      nextErrors.firstName =
+        "First name is required";
     }
 
     /* last name */
     if (!formData.lastName.trim()) {
-      nextErrors.lastName = "Last name is required";
+      nextErrors.lastName =
+        "Last name is required";
     }
 
     /* email */
     if (!formData.email.trim()) {
-      nextErrors.email = "Email address is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      nextErrors.email = "Please enter a valid email address";
+
+      nextErrors.email =
+        "Email address is required";
+
+    } else if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+    ) {
+
+      nextErrors.email =
+        "Please enter a valid email address";
     }
 
     /* whatsapp */
-    const whatsappDigits = formData.whatsapp.replace(/\D/g, "");
+    const whatsappDigits =
+      formData.whatsapp.replace(/\D/g, "");
 
     if (!whatsappDigits) {
-      nextErrors.whatsapp = "WhatsApp number is required";
+
+      nextErrors.whatsapp =
+        "WhatsApp number is required";
+
     } else if (whatsappDigits.length < 10) {
-      nextErrors.whatsapp = "Please enter a valid WhatsApp number";
+
+      nextErrors.whatsapp =
+        "Please enter a valid WhatsApp number";
+
     }
 
     setErrors(nextErrors);
@@ -64,16 +83,21 @@ const ContactSection = ({ submitCount, setFieldErrors }) => {
   };
 
   useEffect(() => {
+
     const nextErrors = {};
 
     /* first name */
     if (!formData.firstName.trim()) {
-      nextErrors["First name (Contact & Account)"] = true;
+      nextErrors[
+        "First name (Contact & Account)"
+      ] = true;
     }
 
     /* last name */
     if (!formData.lastName.trim()) {
-      nextErrors["Last name (Contact & Account)"] = true;
+      nextErrors[
+        "Last name (Contact & Account)"
+      ] = true;
     }
 
     /* email */
@@ -81,21 +105,30 @@ const ContactSection = ({ submitCount, setFieldErrors }) => {
       !formData.email.trim() ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
     ) {
-      nextErrors["Email address (Contact & Account)"] = true;
+      nextErrors[
+        "Email address (Contact & Account)"
+      ] = true;
     }
 
     /* whatsapp */
-    const whatsappDigits = formData.whatsapp.replace(/\D/g, "");
+    const whatsappDigits =
+      formData.whatsapp.replace(/\D/g, "");
 
     if (whatsappDigits.length < 10) {
-      nextErrors["WhatsApp number (Contact & Account)"] = true;
+
+      nextErrors[
+        "WhatsApp number (Contact & Account)"
+      ] = true;
+
     }
 
     setFieldErrors((prev) => {
+
       const updated = { ...prev };
 
       /* clear old section errors */
       Object.keys(updated).forEach((key) => {
+
         if (key.includes("Contact & Account")) {
           delete updated[key];
         }
@@ -110,10 +143,13 @@ const ContactSection = ({ submitCount, setFieldErrors }) => {
     if (submitCount > 0) {
       validateContactFields();
     }
+
   }, [submitCount, formData]);
   return (
     <FormSection>
+
       <div className="contact-section">
+
         {/* HEADER */}
         <div className="checkout-section-header">
           <div className="checkout-section-number">01</div>
@@ -125,25 +161,40 @@ const ContactSection = ({ submitCount, setFieldErrors }) => {
 
         {/* ROW 1 — First + Last */}
         <div className="checkout-fg checkout-fg--c2">
-          <Field label="FIRST NAME" required error={errors.firstName}>
+
+          <Field
+            label="FIRST NAME"
+            required
+            error={errors.firstName}
+          >
             <input
               id="first-name"
               value={formData.firstName}
-              onChange={(e) => handleChange("firstName", e.target.value)}
+              onChange={(e) =>
+                handleChange("firstName", e.target.value)
+              }
             />
           </Field>
 
-          <Field label="LAST NAME" required error={errors.lastName}>
+          <Field
+            label="LAST NAME"
+            required
+            error={errors.lastName}
+          >
             <input
               id="last-name"
               value={formData.lastName}
-              onChange={(e) => handleChange("lastName", e.target.value)}
+              onChange={(e) =>
+                handleChange("lastName", e.target.value)
+              }
             />
           </Field>
+
         </div>
 
         {/* ROW 2 — Email */}
         <div className="checkout-fg">
+
           <Field
             label="EMAIL ADDRESS"
             required
@@ -154,14 +205,18 @@ const ContactSection = ({ submitCount, setFieldErrors }) => {
               id="email-address"
               type="email"
               value={formData.email}
-              onChange={(e) => handleChange("email", e.target.value)}
+              onChange={(e) =>
+                handleChange("email", e.target.value)
+              }
             />
           </Field>
+
         </div>
 
         {/* // ROW 3 — WhatsApp */}
 
         <div className="checkout-fg">
+
           <Field
             label="WHATSAPP NUMBER"
             required
@@ -169,6 +224,7 @@ const ContactSection = ({ submitCount, setFieldErrors }) => {
             error={errors.whatsapp}
             hint="Our ops team uses this number to coordinate rental dispatch, security deposit collection, and return logistics."
           >
+            
             <input
               id="whatsapp-number"
               value={formData.whatsapp}
@@ -178,8 +234,11 @@ const ContactSection = ({ submitCount, setFieldErrors }) => {
               }}
             />
           </Field>
+
         </div>
+
       </div>
+
     </FormSection>
   );
 };

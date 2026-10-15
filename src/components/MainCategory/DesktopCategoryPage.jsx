@@ -10,15 +10,15 @@ import Breadcrumbs from "../../components/MainCategory/Breadcrumbs";
 import ListingHeader from "../../components/MainCategory/ListingHeader";
 import ActiveFilters from "../../components/MainCategory/ActiveFilters";
 
-// Remove static import
-// import productsData from "../../data/mainCategoryPageData";
+import staticProducts from "../../data/mainCategoryPageData";
 
 // For dropdown nav
-import { buildHeading } from "../../components/MainCategory/utils/buildHeading";
+import { buildHeading } from "../../components/MainCategory/utils/buildHeading"
 import { buildBreadcrumb } from "../../components/MainCategory/utils/buildBreadcrumb";
 import { useSearchParams } from "react-router-dom";
 
 function DesktopCategoryPage({ productsData }) {
+  const products = (productsData && productsData.length > 0) ? productsData : staticProducts;
   const [filters, setFilters] = useState({
     rentType: [],
     gender: [],
@@ -34,12 +34,12 @@ function DesktopCategoryPage({ productsData }) {
     },
   });
 
+
+
   const [sortBy, setSortBy] = useState("recommended");
 
   const ITEMS_PER_PAGE = 9;
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Products are now passed down as a prop (productsData)
 
   // dropdown nav
   const [searchParams] = useSearchParams();
@@ -52,8 +52,6 @@ function DesktopCategoryPage({ productsData }) {
   const gender = searchParams.get("gender");
 
   const condition = searchParams.get("condition");
-  const size = searchParams.get("size");
-  const color = searchParams.get("color");
 
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
@@ -65,12 +63,13 @@ function DesktopCategoryPage({ productsData }) {
     occasion,
   });
 
-  const breadcrumb = buildBreadcrumb({
-    section,
-    category,
-    designer,
-    occasion,
-  });
+  const breadcrumb =
+    buildBreadcrumb({
+      section,
+      category,
+      designer,
+      occasion,
+    });
   useEffect(() => {
     const nextFilters = {
       rentType: [],
@@ -84,13 +83,19 @@ function DesktopCategoryPage({ productsData }) {
         min: 0,
         max: Infinity,
       },
+
+      
     };
 
     // if (mode) {
     //   nextFilters.rentType = [mode];
     // }
 
-    if (section === "rent" || section === "preloved" || section === "new") {
+    if (
+      section === "rent" ||
+      section === "preloved" ||
+      section === "new"
+    ) {
       nextFilters.rentType = [section];
     }
 
@@ -114,22 +119,17 @@ function DesktopCategoryPage({ productsData }) {
       nextFilters.condition = [condition];
     }
 
-    if (size) {
-      nextFilters.size = [size];
-    }
-
-    if (color) {
-      nextFilters.color = [color];
-    }
-
     if (minPrice || maxPrice) {
       nextFilters.budget = {
         min: Number(minPrice) || 0,
-        max: maxPrice ? Number(maxPrice) : Infinity,
+        max: maxPrice
+          ? Number(maxPrice)
+          : Infinity,
       };
     }
 
     setFilters(nextFilters);
+
   }, [
     section,
     gender,
@@ -137,10 +137,8 @@ function DesktopCategoryPage({ productsData }) {
     designer,
     occasion,
     condition,
-    size,
-    color,
     minPrice,
-    maxPrice,
+  maxPrice,
   ]);
 
   const mainDesigners = [
@@ -158,7 +156,9 @@ function DesktopCategoryPage({ productsData }) {
     if (typeof price === "number") return price;
 
     if (typeof price === "string") {
-      return parseInt(price.replace(/,/g, ""), 10) || 0;
+      return (
+        parseInt(price.replace(/,/g, ""), 10) || 0
+      );
     }
 
     return 0;
@@ -166,128 +166,173 @@ function DesktopCategoryPage({ productsData }) {
 
   // FILTERING
 
-  const filteredProducts = (productsData || []).filter((item) => {
-    // DESIGNER
+  const filteredProducts = products.filter(
+    (item) => {
+      // DESIGNER
 
-    if (filters.designer.length) {
-      const isOtherSelected = filters.designer.includes("Other Designers");
+      if (filters.designer.length) {
+        const normD = (s) => (s || "").toLowerCase().replace(/[^a-z]/g, "");
+        const isOtherSelected = filters.designer.includes("Other Designers");
+        const specificSelected = filters.designer.filter((d) => d !== "Other Designers");
+        const isExactMatch = specificSelected.some(
+          (d) =>
+            normD(d) === normD(item.designer) ||
+            (item.designer && normD(item.designer).includes(normD(d)))
+        );
+        const isOtherMatch =
+          isOtherSelected &&
+          !specificSelected.some((d) => normD(d) === normD(item.designer));
 
-      const isExactMatch = filters.designer.includes(item.designer);
-
-      const isOtherMatch =
-        isOtherSelected && !mainDesigners.includes(item.designer);
-
-      if (!isExactMatch && !isOtherMatch) {
-        return false;
+        if (!isExactMatch && !isOtherMatch) {
+          return false;
+        }
       }
-    }
 
-    // RENT TYPE
+      // RENT TYPE
 
-    if (filters.rentType.length) {
-      const match = filters.rentType.some((type) => {
-        if (type === "rent") return item.rent;
+      if (filters.rentType.length) {
+        const match =
+          filters.rentType.some(
+            (type) => {
+              if (type === "rent")
+                return item.rent;
 
-        if (type === "preloved") return item.preloved;
+              if (
+                type === "preloved"
+              )
+                return item.preloved;
 
-        if (type === "new") return item.isNew;
+              if (type === "new")
+                return item.isNew;
 
-        return false;
-      });
+              return false;
+            }
+          );
 
-      if (!match) return false;
-    }
-
-    // GENDER
-
-    if (filters.gender.length) {
-      const itemGender = item.gender ? item.gender.toLowerCase() : "";
-      const match = filters.gender.some((g) => g.toLowerCase() === itemGender);
-      if (!match) {
-        return false;
+        if (!match) return false;
       }
-    }
 
-    // CATEGORY
+      // GENDER
 
-    if (filters.category.length) {
-      if (!filters.category.includes(item.category)) {
-        return false;
+      if (filters.gender.length) {
+        const match = filters.gender.some(
+          (g) => item.gender && item.gender.toLowerCase() === g.toLowerCase()
+        );
+        if (!match) {
+          return false;
+        }
       }
-    }
 
-    // OCCASION
+      // CATEGORY
 
-    if (filters.occasion.length) {
-      if (!filters.occasion.includes(item.occasion)) {
-        return false;
+      if (filters.category.length) {
+        const normCat = (s) => (s || "").toLowerCase().replace(/s$/, "").trim();
+        const match = filters.category.some(
+          (c) =>
+            normCat(c) === normCat(item.category) ||
+            (item.category && normCat(item.category).includes(normCat(c)))
+        );
+        if (!match) {
+          return false;
+        }
       }
-    }
 
-    // CONDITION
+      // OCCASION
 
-    // if (filters.condition.length) {
-    //   if (
-    //     !filters.condition.includes(
-    //       item.condition
-    //     )
-    //   ) {
-    //     return false;
-    //   }
-    // }
+      if (filters.occasion.length) {
+        const match = filters.occasion.some(
+          (o) =>
+            item.occasion &&
+            item.occasion.toLowerCase().includes(o.toLowerCase())
+        );
+        if (!match) {
+          return false;
+        }
+      }
 
-    // BUDGET
+      // BUDGET
 
-    const price = getPrice(item.buyPrice);
-
-    if (price < filters.budget.min || price > filters.budget.max) {
-      return false;
-    }
-
-    // SIZE
-
-    if (filters.size.length) {
-      const itemSizes = item.size || [];
-      const match = filters.size.some((s) =>
-        itemSizes.some(
-          (is) =>
-            is &&
-            typeof is === "string" &&
-            is.trim().toLowerCase() === s.trim().toLowerCase(),
-        ),
+      const price = getPrice(
+        item.buyPrice
       );
 
-      if (!match) return false;
+      if (
+        price <
+        filters.budget.min ||
+        price >
+        filters.budget.max
+      ) {
+        return false;
+      }
+
+      // SIZE
+
+      if (filters.size.length) {
+        const itemSizes = Array.isArray(item.size)
+          ? item.size.map((s) => String(s).toUpperCase())
+          : [String(item.size || "").toUpperCase()];
+        const match = filters.size.some((s) =>
+          itemSizes.includes(String(s).toUpperCase())
+        );
+
+        if (!match) return false;
+      }
+
+      // COLOR
+
+      if (filters.color.length) {
+        const itemColors = Array.isArray(item.color)
+          ? item.color.map((c) => String(c).toLowerCase())
+          : [String(item.color || "").toLowerCase()];
+        const match = filters.color.some((c) =>
+          itemColors.some((ic) => ic.includes(c.toLowerCase()))
+        );
+
+        if (!match) return false;
+      }
+
+      return true;
     }
-
-    // COLOR
-
-    if (filters.color.length) {
-      const itemColors = item.color || [];
-      const match = filters.color.some((c) =>
-        itemColors.some((ic) => ic.toLowerCase() === c.toLowerCase()),
-      );
-
-      if (!match) return false;
-    }
-
-    return true;
-  });
+  );
 
   // SORTING
 
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    const priceA = getPrice(a.buyPrice);
+  const sortedProducts = [
+    ...filteredProducts,
+  ].sort((a, b) => {
+    const priceA = getPrice(
+      a.buyPrice
+    );
 
-    const priceB = getPrice(b.buyPrice);
+    const priceB = getPrice(
+      b.buyPrice
+    );
 
-    const originalA = getPrice(a.originalPrice || a.mrp || 0);
+    const originalA = getPrice(
+      a.originalPrice ||
+      a.mrp ||
+      0
+    );
 
-    const originalB = getPrice(b.originalPrice || b.mrp || 0);
+    const originalB = getPrice(
+      b.originalPrice ||
+      b.mrp ||
+      0
+    );
 
-    const discountA = originalA ? ((originalA - priceA) / originalA) * 100 : 0;
+    const discountA =
+      originalA
+        ? ((originalA - priceA) /
+          originalA) *
+        100
+        : 0;
 
-    const discountB = originalB ? ((originalB - priceB) / originalB) * 100 : 0;
+    const discountB =
+      originalB
+        ? ((originalB - priceB) /
+          originalB) *
+        100
+        : 0;
 
     switch (sortBy) {
       case "low":
@@ -300,16 +345,24 @@ function DesktopCategoryPage({ productsData }) {
         return b.id - a.id;
 
       case "popular":
-        return (b.popularity || 0) - (a.popularity || 0);
+        return (
+          (b.popularity || 0) -
+          (a.popularity || 0)
+        );
 
       case "discount":
-        return discountB - discountA;
+        return (
+          discountB - discountA
+        );
 
       case "recommended":
         return (
-          (b.popularity || 0) * 0.6 +
+          (b.popularity || 0) *
+          0.6 +
           (b.id || 0) * 0.4 -
-          ((a.popularity || 0) * 0.6 + (a.id || 0) * 0.4)
+          ((a.popularity || 0) *
+            0.6 +
+            (a.id || 0) * 0.4)
         );
 
       default:
@@ -319,14 +372,21 @@ function DesktopCategoryPage({ productsData }) {
 
   // PAGINATION
 
-  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
-
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  const currentProducts = sortedProducts.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE,
+  const totalPages = Math.ceil(
+    filteredProducts.length /
+    ITEMS_PER_PAGE
   );
+
+  const startIndex =
+    (currentPage - 1) *
+    ITEMS_PER_PAGE;
+
+  const currentProducts =
+    sortedProducts.slice(
+      startIndex,
+      startIndex +
+      ITEMS_PER_PAGE
+    );
 
   useEffect(() => {
     setCurrentPage(1);
@@ -334,16 +394,22 @@ function DesktopCategoryPage({ productsData }) {
 
   return (
     <div className="clp">
-      <Breadcrumbs parent={breadcrumb.parent} current={breadcrumb.current} />
+
+      <Breadcrumbs
+        parent={breadcrumb.parent}
+        current={breadcrumb.current}
+      />
 
       <div className="clp__container">
+
         <Filters
           filters={filters}
           setFilters={setFilters}
-          productsData={productsData}
+          products={products}
         />
 
         <div className="clp__main">
+
           <ListingHeader
             heading={heading}
             sortBy={sortBy}
@@ -351,43 +417,83 @@ function DesktopCategoryPage({ productsData }) {
             totalProducts={filteredProducts.length}
           />
 
-          <ActiveFilters filters={filters} setFilters={setFilters} />
+          <ActiveFilters
+            filters={filters}
+            setFilters={setFilters}
+          />
 
           <div className="clp__grid">
-            {currentProducts.map((item) => (
-              <ProductCard key={item.id} item={item} />
-            ))}
+            {currentProducts.map(
+              (item) => (
+                <ProductCard
+                  key={item.id}
+                  item={item}
+                />
+              )
+            )}
           </div>
 
           <div className="pagination">
+
             <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
+              disabled={
+                currentPage === 1
+              }
+              onClick={() =>
+                setCurrentPage(
+                  (prev) =>
+                    prev - 1
+                )
+              }
             >
               ‹
             </button>
 
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i}
-                className={currentPage === i + 1 ? "active" : ""}
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
+            {[...Array(totalPages)].map(
+              (_, i) => (
+                <button
+                  key={i}
+                  className={
+                    currentPage ===
+                      i + 1
+                      ? "active"
+                      : ""
+                  }
+                  onClick={() =>
+                    setCurrentPage(
+                      i + 1
+                    )
+                  }
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
 
             <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
+              disabled={
+                currentPage ===
+                totalPages
+              }
+              onClick={() =>
+                setCurrentPage(
+                  (prev) =>
+                    prev + 1
+                )
+              }
             >
               ›
             </button>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
   );
 }
 
 export default DesktopCategoryPage;
+

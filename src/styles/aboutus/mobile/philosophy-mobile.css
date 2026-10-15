@@ -1,9 +1,9 @@
 /* ===== PHILOSOPHY - MOBILE ===== */
 
 .mob-philosophy {
-  background: #1a1612;
+  background: #1A1612; 
   padding: 72px 24px;
-  color: #fffefb;
+  color: #FFFEFB;
   position: relative;
   overflow: hidden;
 }
@@ -26,7 +26,7 @@
 .mob-philosophy__eyebrow-line {
   width: 20px;
   height: 1px;
-  background: #c9a96e;
+  background: #C9A96E; 
 }
 
 .mob-philosophy__eyebrow span {
@@ -34,7 +34,7 @@
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #e8d5b0;
+  color: #E8D5B0; 
 }
 
 .mob-philosophy__title {
@@ -42,13 +42,13 @@
   font-size: clamp(26px, 6.5vw, 36px);
   font-weight: 400;
   line-height: 1.15;
-  color: #fffefb;
+  color: #FFFEFB;
   margin: 0;
 }
 
 .mob-philosophy__title em {
   font-style: italic;
-  color: #e8d5b0;
+  color: #E8D5B0; 
 }
 
 /* ===== CARD GRID ===== */
@@ -63,7 +63,7 @@
 
 /* ===== CARD ===== */
 .mob-philosophy__card {
-  background: #1a1612; /* --charcoal */
+  background: #1A1612; /* --charcoal */
   padding: 32px 24px;
   transition: background 0.3s ease;
 }
@@ -78,7 +78,7 @@
 .mob-philosophy__card-icon svg {
   width: 100%;
   height: 100%;
-  stroke: #c9a96e;
+  stroke: #C9A96E;
   fill: none;
   stroke-width: 1.2;
   stroke-linecap: round;
@@ -90,14 +90,14 @@
   font-family: "Cormorant Garamond", serif;
   font-size: 19px;
   font-weight: 400;
-  color: #fffefb;
+  color: #FFFEFB;
   line-height: 1.3;
   margin: 0 0 10px 0;
 }
 
 .mob-philosophy__card-heading em {
   font-style: italic;
-  color: #e8d5b0;
+  color: #E8D5B0; 
 }
 
 /* Card Description */
@@ -106,7 +106,7 @@
   font-size: 13px;
   font-weight: 300;
   line-height: 1.8;
-  color: #b8aa9a;
+  color: #B8AA9A;
   margin: 0;
 }
 
@@ -114,9 +114,7 @@
 .mob-philosophy__grid.reveal-stagger {
   opacity: 0;
   transform: translateY(22px);
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 .mob-philosophy__grid.reveal-stagger.in-view {
@@ -130,20 +128,16 @@
   animation: mobStaggerIn 0.6s ease forwards;
 }
 
-.mob-philosophy__grid.reveal-stagger.in-view
-  .mob-philosophy__card:nth-child(1) {
+.mob-philosophy__grid.reveal-stagger.in-view .mob-philosophy__card:nth-child(1) {
   animation-delay: 0s;
 }
-.mob-philosophy__grid.reveal-stagger.in-view
-  .mob-philosophy__card:nth-child(2) {
+.mob-philosophy__grid.reveal-stagger.in-view .mob-philosophy__card:nth-child(2) {
   animation-delay: 0.08s;
 }
-.mob-philosophy__grid.reveal-stagger.in-view
-  .mob-philosophy__card:nth-child(3) {
+.mob-philosophy__grid.reveal-stagger.in-view .mob-philosophy__card:nth-child(3) {
   animation-delay: 0.16s;
 }
-.mob-philosophy__grid.reveal-stagger.in-view
-  .mob-philosophy__card:nth-child(4) {
+.mob-philosophy__grid.reveal-stagger.in-view .mob-philosophy__card:nth-child(4) {
   animation-delay: 0.24s;
 }
 

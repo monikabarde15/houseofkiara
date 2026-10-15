@@ -1,4 +1,4 @@
-import "../../../../styles/wishlist/cards/list/list-mode-strip.css";
+import "../../../../styles/wishlist/cards/list/list-mode-strip.css"
 
 const ListModeStrip = ({ type, product }) => {
   const getModeStripClass = () => {
@@ -25,10 +25,7 @@ const ListModeStrip = ({ type, product }) => {
         {getModeStripText()}
       </span>
       {product.stripTag && (
-        <span
-          className="desk-wishlist-list-mode-strip-tag"
-          style={{ color: getModeStripTextColor() }}
-        >
+        <span className="desk-wishlist-list-mode-strip-tag" style={{ color: getModeStripTextColor() }}>
           {product.stripTag}
         </span>
       )}

@@ -1,5 +1,9 @@
 // src\components\MainCategory\Breadcrumbs.jsx
-function Breadcrumbs({ home = "Home", parent, current }) {
+function Breadcrumbs({
+  home = "Home",
+  parent,
+  current,
+}) {
   return (
     <div className="breadcrumb">
       <span className="link">{home}</span>
@@ -10,7 +14,9 @@ function Breadcrumbs({ home = "Home", parent, current }) {
 
       <span className="separator">›</span>
 
-      <span className="current">{current}</span>
+      <span className="current">
+        {current}
+      </span>
     </div>
   );
 }

@@ -1,31 +1,31 @@
 import { useState, useEffect, useRef } from "react";
-import toast from "react-hot-toast";
 import WishlistHeader from "./WishlistHeader";
 import WishlistToolbar from "./WishlistToolbar";
 import RentWishlistSection from "../sections/RentWishlistSection";
 import PrelovedWishlistSection from "../sections/PrelovedWishlistSection";
 import NewWishlistSection from "../sections/NewWishlistSection";
+import EmptyWishlistState from "../sections/EmptyWishlistState";
 import WishlistRecommendations from "../sections/WishlistRecommendations";
 import AddToBagModal from "../modal/AddToBagModal";
 import { useWishlistProducts } from "../hooks/useWishlistProducts";
+import useCartStore from "../../../store/cartStore";
 import "../../../styles/wishlist/layout/wishlist-layout.css";
 
 const WishlistLayout = () => {
-  const [activeTab, setActiveTab] = useState("all");
-  const [sortBy, setSortBy] = useState("newest");
-  const [viewMode, setViewMode] = useState("grid");
+  const [activeTab, setActiveTab] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
+  const [viewMode, setViewMode] = useState('grid');
   const [showGeneralToast, setShowGeneralToast] = useState(false);
   const [generalToastMessage, setGeneralToastMessage] = useState("");
   const [toastWithUndo, setToastWithUndo] = useState(false);
-
+  
   // Add to Bag Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedProductType, setSelectedProductType] = useState(null);
-
+  
   // Use the wishlist products hook
-  const { getProductsByType, removeProduct, undoRemove, pendingRemoval } =
-    useWishlistProducts();
+  const { getProductsByType, removeProduct, undoRemove, pendingRemoval } = useWishlistProducts();
 
   const toastTimeoutRef = useRef(null);
 
@@ -34,14 +34,14 @@ const WishlistLayout = () => {
   const rentProducts = getProductsByType("rent");
   const prelovedProducts = getProductsByType("preloved");
   const newProducts = getProductsByType("new");
-
+  
   const totalPieces = allProducts.length;
   const rentCount = rentProducts.length;
   const prelovedCount = prelovedProducts.length;
   const newCount = newProducts.length;
-
+  
   // Get unique designers count
-  const uniqueDesigners = new Set(allProducts.map((p) => p.designer)).size;
+  const uniqueDesigners = new Set(allProducts.map(p => p.designer)).size;
   const toRentCount = rentCount;
 
   // Open Add to Bag Modal
@@ -58,8 +58,19 @@ const WishlistLayout = () => {
     setSelectedProductType(null);
   };
 
+  const handleAddToBag = (bagData) => {
+    if (!bagData?.product) return;
+    const rawProd = bagData.product.rawProduct || bagData.product;
+    useCartStore.getState().addToCart(rawProd, {
+      type: selectedProductType || "rental",
+      size: bagData.size,
+      color: bagData.color,
+      deliveryDate: bagData.startDate,
+      returnDate: bagData.endDate,
+    });
+  };
+
   const showGeneralToastMessage = (message, withUndo = false) => {
-    toast.success(message);
     if (toastTimeoutRef.current) {
       clearTimeout(toastTimeoutRef.current);
     }
@@ -88,7 +99,7 @@ const WishlistLayout = () => {
     all: totalPieces,
     rent: rentCount,
     preloved: prelovedCount,
-    new: newCount,
+    new: newCount
   };
 
   const handleTabChange = (tabId) => {
@@ -103,98 +114,69 @@ const WishlistLayout = () => {
     setViewMode(mode);
   };
 
-  const showRentSection = activeTab === "all" || activeTab === "rent";
-  const showPrelovedSection = activeTab === "all" || activeTab === "preloved";
-  const showNewSection = activeTab === "all" || activeTab === "new";
-
-  const handleAddToBag = async (details) => {
-    const { useCartStore } = await import("../../../store/cartStore").then(
-      (m) => ({ useCartStore: m.default }),
-    );
-    const product = details.product.originalData || details.product;
-
-    // Normalize type string
-    const normalizedType =
-      details.product.type === "rent"
-        ? "rental"
-        : details.product.type || "rental";
-
-    useCartStore.getState().addToCart(product, {
-      type: normalizedType,
-      size: details.size,
-      rentalDates:
-        details.startDate && details.endDate
-          ? { start: details.startDate, end: details.endDate }
-          : null,
-      price: details.product.price,
-    });
-  };
+  const showRentSection = activeTab === 'all' || activeTab === 'rent';
+  const showPrelovedSection = activeTab === 'all' || activeTab === 'preloved';
+  const showNewSection = activeTab === 'all' || activeTab === 'new';
 
   return (
     <div className="desk-wishlist-layout">
       <div className="desk-wishlist-container">
-        <WishlistHeader
+        <WishlistHeader 
           piecesSaved={totalPieces}
           designers={uniqueDesigners}
           toRent={toRentCount}
         />
 
-        <WishlistToolbar
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          tabCounts={tabCounts}
-          sortBy={sortBy}
-          onSortChange={handleSortChange}
-          onShareClick={() => showGeneralToastMessage("Share wishlist")}
-          viewMode={viewMode}
-          onViewModeChange={handleViewModeChange}
-          showGeneralToastMessage={showGeneralToastMessage}
-        />
+        {totalPieces === 0 ? (
+          <EmptyWishlistState />
+        ) : (
+          <>
+            <WishlistToolbar
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              tabCounts={tabCounts}
+              sortBy={sortBy}
+              onSortChange={handleSortChange}
+              onShareClick={() => showGeneralToastMessage('Share wishlist')}
+              viewMode={viewMode}
+              onViewModeChange={handleViewModeChange}
+              showGeneralToastMessage={showGeneralToastMessage}
+            />
 
-        {/* Sections rendered cleanly without hiding any wishlist pieces */}
-        {showRentSection && (rentCount > 0 || activeTab === "rent" || (totalPieces > 0 && prelovedCount === 0 && newCount === 0)) && (
-          <RentWishlistSection
-            viewMode={viewMode}
-            showGeneralToastMessage={showGeneralToastMessage}
-            onRemoveCard={handleRemoveCard}
-            onOpenModal={handleOpenModal}
-            pieceCount={rentCount || totalPieces}
-            products={rentCount > 0 ? rentProducts : allProducts}
-          />
-        )}
+            {showRentSection && rentCount > 0 && (
+              <RentWishlistSection 
+                viewMode={viewMode} 
+                showGeneralToastMessage={showGeneralToastMessage}
+                onRemoveCard={handleRemoveCard}
+                onOpenModal={handleOpenModal}
+                pieceCount={rentCount}
+                products={rentProducts}
+              />
+            )}
 
-        {showPrelovedSection && (prelovedCount > 0 || activeTab === "preloved") && (
-          <PrelovedWishlistSection
-            viewMode={viewMode}
-            onRemoveCard={handleRemoveCard}
-            onOpenModal={handleOpenModal}
-            pieceCount={prelovedCount}
-            products={prelovedProducts}
-          />
-        )}
+            {showPrelovedSection && prelovedCount > 0 && (
+              <PrelovedWishlistSection 
+                viewMode={viewMode}
+                onRemoveCard={handleRemoveCard}
+                onOpenModal={handleOpenModal}
+                pieceCount={prelovedCount}
+                products={prelovedProducts}
+              />
+            )}
 
-        {showNewSection && (newCount > 0 || activeTab === "new") && (
-          <NewWishlistSection
-            viewMode={viewMode}
-            onRemoveCard={handleRemoveCard}
-            onOpenModal={handleOpenModal}
-            pieceCount={newCount}
-            products={newProducts}
-          />
-        )}
-
-        {totalPieces === 0 && (
-          <RentWishlistSection
-            viewMode={viewMode}
-            showGeneralToastMessage={showGeneralToastMessage}
-            onRemoveCard={handleRemoveCard}
-            onOpenModal={handleOpenModal}
-            pieceCount={0}
-            products={[]}
-          />
+            {showNewSection && newCount > 0 && (
+              <NewWishlistSection 
+                viewMode={viewMode}
+                onRemoveCard={handleRemoveCard}
+                onOpenModal={handleOpenModal}
+                pieceCount={newCount}
+                products={newProducts}
+              />
+            )}
+          </>
         )}
       </div>
-
+      
       <WishlistRecommendations onShowToast={showGeneralToastMessage} />
 
       <AddToBagModal
@@ -202,19 +184,15 @@ const WishlistLayout = () => {
         onClose={handleCloseModal}
         product={selectedProduct}
         type={selectedProductType}
-        onShowToast={showGeneralToastMessage}
         onAddToBag={handleAddToBag}
+        onShowToast={showGeneralToastMessage}
       />
 
       {showGeneralToast && (
-        <div
-          className={`desk-wishlist-toast ${toastWithUndo ? "with-undo" : ""}`}
-        >
+        <div className={`desk-wishlist-toast ${toastWithUndo ? 'with-undo' : ''}`}>
           <span>{generalToastMessage}</span>
           {toastWithUndo && (
-            <button className="desk-wishlist-toast-undo" onClick={handleUndo}>
-              UNDO
-            </button>
+            <button className="desk-wishlist-toast-undo" onClick={handleUndo}>UNDO</button>
           )}
         </div>
       )}

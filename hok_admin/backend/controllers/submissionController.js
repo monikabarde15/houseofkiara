@@ -42,34 +42,85 @@ const enrichSubmissionWithLister = async (subObj) => {
 // Get submissions (with full search, status, intent, channel filters)
 export const getSubmissions = async (req, res) => {
   try {
-    const { listerId, search, status, intent, channel, dateFrom, dateTo } =
+    const { listerId, search, status, intent, channel, view, dateFrom, dateTo } =
       req.query || {};
     const filter = {};
+
     if (listerId) {
       try {
+        const decoded = decodeURIComponent(listerId).trim();
         const lister = await Lister.findOne({
-          $or: [{ _id: listerId }, { listerId: listerId }, { id: listerId }],
+          $or: [
+            { _id: decoded },
+            { listerId: decoded },
+            { id: decoded },
+            { name: new RegExp(`^${decoded.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+          ],
         });
-        const ids = [listerId];
+        const ids = [decoded, listerId];
         if (lister && lister.listerId) ids.push(lister.listerId);
         if (lister && lister._id) ids.push(lister._id.toString());
-        filter.$or = [{ listerId: { $in: ids } }, { lister_id: { $in: ids } }];
+        if (lister && lister.id) ids.push(lister.id);
+        filter.$or = [
+          { listerId: { $in: ids } },
+          { lister_id: { $in: ids } },
+          { listerName: lister?.name || decoded },
+        ];
       } catch (e) {
         filter.$or = [{ listerId: listerId }, { lister_id: listerId }];
       }
     }
-    if (status && status !== "All Statuses" && status !== "All")
-      filter.status = status;
-    if (intent && intent !== "All Intent" && intent !== "All")
-      filter.intent = intent;
-    if (channel && channel !== "All Channels" && channel !== "All")
-      filter.channel = channel;
-    if (search) {
+
+    if (status && status !== "All Statuses" && status !== "All") {
+      if (status === "Approved") {
+        filter["decision.what"] = "Approved";
+      } else if (status === "Rejected") {
+        filter["decision.what"] = "Rejected";
+      } else if (status === "Withdrawn") {
+        filter["decision.what"] = "Withdrawn";
+      } else if (status === "Awaiting Reply") {
+        filter.moreInfo = { $ne: null };
+      } else if (status === "New" || status === "In Review" || status === "Awaiting Review") {
+        filter.decision = null;
+        filter.moreInfo = null;
+      } else {
+        filter.$or = [
+          { status: status },
+          { "decision.what": status }
+        ];
+      }
+    }
+
+    if (view) {
+      if (view === "review") {
+        filter.decision = null;
+        filter.moreInfo = null;
+      } else if (view === "reply") {
+        filter.moreInfo = { $ne: null };
+      } else if (view === "apprmonth") {
+        filter["decision.what"] = "Approved";
+      }
+    }
+
+    if (intent && intent !== "All Intent" && intent !== "All") {
+      filter.intent = { $regex: intent, $options: "i" };
+    }
+
+    if (channel && channel !== "All Channels" && channel !== "All") {
+      filter.channel = { $regex: channel, $options: "i" };
+    }
+
+    if (search && search.trim()) {
+      const s = search.trim();
       const searchOr = [
-        { subid: { $regex: search, $options: "i" } },
-        { piece: { $regex: search, $options: "i" } },
-        { listerName: { $regex: search, $options: "i" } },
-        { designer: { $regex: search, $options: "i" } },
+        { subid: { $regex: s, $options: "i" } },
+        { piece: { $regex: s, $options: "i" } },
+        { listerName: { $regex: s, $options: "i" } },
+        { designer: { $regex: s, $options: "i" } },
+        { channel: { $regex: s, $options: "i" } },
+        { category: { $regex: s, $options: "i" } },
+        { phone: { $regex: s, $options: "i" } },
+        { listerPhone: { $regex: s, $options: "i" } }
       ];
       if (filter.$or) {
         filter.$and = [{ $or: filter.$or }, { $or: searchOr }];
@@ -162,28 +213,76 @@ export const createSubmission = async (req, res) => {
     if (!submissionData.subid) {
       submissionData.subid = `SUB-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`;
     }
-    const listerId =
-      submissionData.listerId ||
-      submissionData.listerID ||
-      submissionData.lister_id ||
-      "LST-GENERAL";
-    submissionData.listerId = listerId;
-    submissionData.listerID = listerId;
-    submissionData.lister_id = listerId;
 
-    if (listerId) {
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      submissionData.photos = req.files.length;
+    }
+
+    if (submissionData.piece_type && !submissionData.category) {
+      submissionData.category = submissionData.piece_type;
+    }
+    if (submissionData.color && !submissionData.colour) {
+      submissionData.colour = submissionData.color;
+    }
+    if (submissionData.outcome && !submissionData.intent) {
+      submissionData.intent = submissionData.outcome === "rent" ? "Rent it" : submissionData.outcome === "sell" ? "Sell it" : "Open to both";
+    }
+    if (!submissionData.channel) {
+      submissionData.channel = "Website";
+    }
+    if (!submissionData.submitted) {
+      submissionData.submitted = new Date().toLocaleDateString("en-GB", { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    let listerObj = null;
+    const incomingListerId = submissionData.listerId || submissionData.listerID || submissionData.lister_id;
+    if (incomingListerId && incomingListerId !== "LST-GENERAL") {
       try {
-        const listerObj = await Lister.findOne({
-          $or: [{ _id: listerId }, { listerId: listerId }, { id: listerId }],
+        listerObj = await Lister.findOne({
+          $or: [{ _id: incomingListerId }, { listerId: incomingListerId }, { id: incomingListerId }],
         });
-        if (listerObj && listerObj.name) {
-          submissionData.listerName = listerObj.name;
-          submissionData.listerPhone = listerObj.phone;
-          if (!submissionData.city) submissionData.city = listerObj.city;
-        }
-      } catch (e) {
-        // ignore lookup error
-      }
+      } catch (e) {}
+    }
+
+    if (!listerObj && (submissionData.phone || submissionData.email || submissionData.listerName)) {
+      try {
+        listerObj = await Lister.findOne({
+          $or: [
+            ...(submissionData.phone ? [{ phone: submissionData.phone }] : []),
+            ...(submissionData.email ? [{ email: submissionData.email.toLowerCase() }] : []),
+            ...(submissionData.listerName ? [{ name: new RegExp(`^${submissionData.listerName}$`, 'i') }] : [])
+          ]
+        });
+      } catch (e) {}
+    }
+
+    if (!listerObj && submissionData.listerName) {
+      try {
+        const baseSlug = submissionData.listerName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+        const newListerId = baseSlug || `lister-${Date.now()}`;
+        listerObj = await Lister.create({
+          listerId: newListerId,
+          name: submissionData.listerName,
+          email: submissionData.email || null,
+          phone: submissionData.phone || null,
+          city: submissionData.city || "",
+          source: "Website (List Your Piece)",
+          joined: new Date().toISOString(),
+          status: "Verified",
+          verified: true,
+        });
+      } catch (e) {}
+    }
+
+    const finalListerId = listerObj ? listerObj.listerId : incomingListerId || "ananya-sharma";
+    submissionData.listerId = finalListerId;
+    submissionData.listerID = finalListerId;
+    submissionData.lister_id = finalListerId;
+    if (listerObj) {
+      submissionData.listerName = listerObj.name;
+      submissionData.listerPhone = listerObj.phone || submissionData.phone;
+      submissionData.listerEmail = listerObj.email || submissionData.email;
+      if (!submissionData.city) submissionData.city = listerObj.city;
     }
 
     // Check if product exists by name and designer

@@ -2,7 +2,7 @@
 /* Pages 13-15 - Two Sides, One Wardrobe */
 
 .au-duality {
-  background: #fffefb; /* --warm-white */
+  background: #FFFEFB; /* --warm-white */
   padding: 140px 80px;
   position: relative;
 }
@@ -25,7 +25,7 @@
 .au-duality__eyebrow-line {
   width: 40px;
   height: 1px;
-  background: #c9a96e;
+  background: #C9A96E; 
 }
 
 .au-duality__eyebrow span {
@@ -33,7 +33,7 @@
   font-size: 11px;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: #c9a96e;
+  color: #C9A96E;
 }
 
 .au-duality__title {
@@ -41,13 +41,13 @@
   font-size: clamp(32px, 4vw, 48px);
   font-weight: 400;
   line-height: 1.15;
-  color: #1a1612;
+  color: #1A1612; 
   margin: 0;
 }
 
 .au-duality__title em {
   font-style: italic;
-  color: #c9a96e;
+  color: #C9A96E;
 }
 
 /* ===== TOGGLE CONTROL  ===== */
@@ -61,8 +61,8 @@
   max-width: 500px;
   width: 100%;
   display: flex;
-  background: #faf7f2;
-  border: 1px solid #e8e0d4;
+  background: #FAF7F2; 
+  border: 1px solid #E8E0D4; 
   border-radius: 30px;
   padding: 5px;
   /* role: tablist; */
@@ -75,17 +75,16 @@
   left: 5px;
   width: calc(50% - 5px);
   height: calc(100% - 10px);
-  background: #1a1612;
+  background: #1A1612; 
   border-radius: 26px;
-  transition:
-    left 0.4s cubic-bezier(0.65, 0, 0.35, 1),
-    background 0.4s ease;
+  transition: left 0.4s cubic-bezier(0.65, 0, 0.35, 1), 
+              background 0.4s ease;
   z-index: 0;
 }
 
 .au-duality__slider.right {
   left: calc(50% + 0px);
-  background: #6b7e5a;
+  background: #6B7E5A; 
 }
 
 /* Tab Base  */
@@ -98,7 +97,7 @@
   font-size: 12.5px;
   letter-spacing: 0.04em;
   font-weight: 500;
-  color: #8a7e72;
+  color: #8A7E72;
   background: none;
   border: none;
   border-radius: 26px;
@@ -109,17 +108,17 @@
 
 /* Tab Active - sits visually inside the pill */
 .au-duality__tab.active {
-  color: #fffefb;
+  color: #FFFEFB; 
 }
 
 /* Tab Hover */
 .au-duality__tab:hover:not(.active) {
-  color: #1a1612;
+  color: #1A1612;
 }
 
 /* Tab Focus */
 .au-duality__tab:focus-visible {
-  outline: 2px solid #c9a96e;
+  outline: 2px solid #C9A96E;
   outline-offset: 2px;
 }
 
@@ -164,11 +163,11 @@
 }
 
 .au-duality__panel-label--renter {
-  color: #b85c38;
+  color: #B85C38;
 }
 
 .au-duality__panel-label--lister {
-  color: #6b7e5a;
+  color: #6B7E5A; 
 }
 
 /* Panel Body */
@@ -177,7 +176,7 @@
   font-size: 16px;
   font-weight: 300;
   line-height: 1.9;
-  color: #6b5e50;
+  color: #6B5E50;
   max-width: 640px;
   margin: 0 auto;
   text-align: center;
@@ -220,23 +219,23 @@
 
 /* Renter CTA */
 .au-duality__cta--renter {
-  background: #1a1612; /* --charcoal */
-  color: #fffefb;
+  background: #1A1612; /* --charcoal */
+  color: #FFFEFB;
 }
 
 .au-duality__cta--renter:hover {
-  background: #b85c38;
+  background: #B85C38; 
   transform: translateY(-2px);
 }
 
 /* Lister CTA  */
 .au-duality__cta--lister {
-  background: #6b7e5a;
-  color: #fffefb;
+  background: #6B7E5A;
+  color: #FFFEFB;
 }
 
 .au-duality__cta--lister:hover {
-  background: #5a6b4a;
+  background: #5A6B4A;
   transform: translateY(-2px);
 }
 

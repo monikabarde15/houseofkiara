@@ -1,98 +1,69 @@
-import React from "react";
-import { Heart } from "lucide-react";
+import React, { useState } from 'react';
+import { Heart } from 'lucide-react';
 import "../../../styles/Profile/cards/WishlistCard.css";
 
 const WishlistCard = ({ piece, onAddToBag, onViewProduct, onRemove }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   const handleRemove = (e) => {
     e.stopPropagation();
-    if (onRemove) onRemove(piece.id);
+    onRemove(piece.id);
   };
 
   const handleAddToBag = (e) => {
     e.stopPropagation();
-    if (onAddToBag) onAddToBag(piece);
+    
+    // Check if modal is needed or direct add
+    const needsSize = piece.sizes && piece.sizes.length > 1;
+    const needsColor = piece.colors && piece.colors.length > 1;
+    const isRental = piece.mode === 'Rental';
+    
+    const needsModal = needsSize || needsColor || isRental;
+    
+    if (needsModal) {
+      onAddToBag(piece);
+    } else {
+      // Direct add - only one size, no colors, not rental
+      showToastMessage(`${piece.name} added to your bag`);
+      // Show toast notification
+    }
   };
 
   const handleViewProduct = (e) => {
     e.stopPropagation();
-    if (onViewProduct) onViewProduct(piece.id, piece);
-  };
-
-  const handleCardClick = () => {
-    if (onViewProduct) onViewProduct(piece.id, piece);
+    onViewProduct(piece.id);
   };
 
   return (
-    <div
+    <div 
       className="profile-wc"
-      onClick={handleCardClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="profile-wc-thumb">
-        {piece.image ? (
-          <img
-            src={piece.image}
-            alt={piece.name}
-            className="profile-wc-image"
-          />
-        ) : (
-          <svg
-            className="profile-wc-placeholder"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <rect
-              x="4"
-              y="4"
-              width="16"
-              height="16"
-              stroke="currentColor"
-              strokeWidth="1"
-              opacity="0.22"
-            />
-          </svg>
-        )}
-
-        <button
-          className="profile-wc-heart"
-          onClick={handleRemove}
-          title="Remove from saved"
-          type="button"
-        >
+        <svg className="profile-wc-placeholder" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="4" y="4" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.22" />
+        </svg>
+        
+        <button className="profile-wc-heart" onClick={handleRemove}>
           <Heart size={12} fill="#B85C38" stroke="#B85C38" strokeWidth={1.5} />
         </button>
-
-        <div className="profile-wc-cta-overlay">
-          <button
-            className="profile-wc-cta-add"
-            onClick={handleAddToBag}
-            type="button"
-          >
-            Add to Bag
-          </button>
-          <button
-            className="profile-wc-cta-view"
-            onClick={handleViewProduct}
-            type="button"
-          >
-            View Product
-          </button>
-        </div>
+        
+        {isHovered && (
+          <div className="profile-wc-cta-overlay">
+            <button className="profile-wc-cta-add" onClick={handleAddToBag}>
+              Add to Bag
+            </button>
+            <button className="profile-wc-cta-view" onClick={handleViewProduct}>
+              View Product
+            </button>
+          </div>
+        )}
       </div>
-
-      <div className="profile-wc-body">
-        <div className="profile-wc-name">{piece.name}</div>
-        <div className="profile-wc-mode">{piece.condition || piece.mode}</div>
-        <div className="profile-wc-price">
-          ₹
-          {piece.price
-            ? Number(String(piece.price).replace(/,/g, "")).toLocaleString(
-                "en-IN",
-              )
-            : "—"}
-        </div>
-      </div>
+      
+      <div className="profile-wc-name">{piece.name}</div>
+      <div className="profile-wc-price">₹{Number(piece.price || 0).toLocaleString()}</div>
+      <div className="profile-wc-mode">{piece.mode}</div>
     </div>
   );
 };

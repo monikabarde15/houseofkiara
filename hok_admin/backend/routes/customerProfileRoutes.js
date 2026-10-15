@@ -8,12 +8,14 @@ import {
   updateAddress,
   deleteAddress,
   setDefaultAddress,
+  getProfileDashboard,
 } from "../controllers/customerProfileController.js";
 import { requireCustomerAuth } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // Customer Profile Endpoints (Self-service, requires authentication)
+router.get("/dashboard", requireCustomerAuth, getProfileDashboard);
 router.get("/", requireCustomerAuth, getProfile);
 router.get("/me", requireCustomerAuth, getProfile);
 router.put("/", requireCustomerAuth, updateProfile);

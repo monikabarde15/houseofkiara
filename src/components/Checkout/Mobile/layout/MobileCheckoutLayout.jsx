@@ -21,297 +21,289 @@ import OrderConfirmedOverlay from "../../overlay/OrderConfirmedOverlay";
 import { PolicyStrip } from "../../../Cart";
 
 const MobileCheckoutLayout = () => {
-  // ========================================
-  // SAME DATA LOGIC AS DESKTOP
-  // ========================================
-  const location = useLocation();
-  const pageRef = useRef(null);
-  const ctaBarRef = useRef(null);
-  const [isDocked, setIsDocked] = useState(false);
+    // ========================================
+    // SAME DATA LOGIC AS DESKTOP
+    // ========================================
+    const location = useLocation();
+    const pageRef = useRef(null);
+    const ctaBarRef = useRef(null);
+    const [isDocked, setIsDocked] = useState(false);
 
-  const [submitCount, setSubmitCount] = useState(0);
-  const [fieldErrors, setFieldErrors] = useState({});
-  const [isOrderConfirmed, setIsOrderConfirmed] = useState(false);
-  const [isProcessingOrder, setIsProcessingOrder] = useState(false);
-  const [deliveryType, setDeliveryType] = useState("standard");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [submitCount, setSubmitCount] = useState(0);
+    const [fieldErrors, setFieldErrors] = useState({});
+    const [isOrderConfirmed, setIsOrderConfirmed] = useState(false);
+    const [isProcessingOrder, setIsProcessingOrder] = useState(false);
+    const [deliveryType, setDeliveryType] = useState("standard");
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const checkoutData =
-    location.state || JSON.parse(localStorage.getItem("checkoutData")) || {};
+    const checkoutData =
+        location.state ||
+        JSON.parse(localStorage.getItem("checkoutData")) ||
+        {};
 
-  const checkoutItems = checkoutData.items || [];
-  const activePromo = checkoutData.activePromo || null;
+    const checkoutItems = checkoutData.items || [];
+    const activePromo = checkoutData.activePromo || null;
 
-  const totals = calculateTotals(checkoutItems, activePromo, deliveryType);
-  const hasRentalItem = checkoutItems.some((item) => item.type === "rental");
+    const totals = calculateTotals(checkoutItems, activePromo, deliveryType);
+    const hasRentalItem = checkoutItems.some(item => item.type === "rental");
 
-  const handlePlaceOrder = () => {
-    setSubmitCount((prev) => prev + 1);
+    const handlePlaceOrder = () => {
+        setSubmitCount(prev => prev + 1);
 
-    setTimeout(() => {
-      const hasFieldErrors = Object.values(fieldErrors).some(Boolean);
-      const consentErrors = document.querySelectorAll(
-        ".checkout-consent-row.has-error",
-      );
-      const hasConsentErrors = consentErrors.length > 0;
+        setTimeout(() => {
+            const hasFieldErrors = Object.values(fieldErrors).some(Boolean);
+            const consentErrors = document.querySelectorAll(".checkout-consent-row.has-error");
+            const hasConsentErrors = consentErrors.length > 0;
 
-      if (hasFieldErrors || hasConsentErrors) return;
+            if (hasFieldErrors || hasConsentErrors) return;
 
-      setIsProcessingOrder(true);
+            setIsProcessingOrder(true);
 
-      const storeState = import("../../../../store/checkoutStore").then((m) =>
-        m.default.getState(),
-      );
-      storeState.then(async (state) => {
-        const address = state.address;
-        const addressString = `${address.address1}, ${address.city}, ${address.state} - ${address.pin}`;
+            const storeState = import('../../../../store/checkoutStore').then(m => m.default.getState());
+            storeState.then(async (state) => {
+                const contact = state.contact;
+                const address = state.address;
+                const orderData = {
+                    orderId: `HOK-ORD-${Date.now()}`,
+                    customerName: `${contact.firstName} ${contact.lastName}`,
+                    customerEmail: contact.email,
+                    customerPhone: contact.whatsapp,
+                    customerCity: address.city,
+                    customerState: address.state,
+                    address: `${address.address1}, ${address.city}, ${address.state} - ${address.pin}`,
+                    mode: hasRentalItem ? 'Rental' : 'Buy',
+                    discount: activePromo ? (activePromo.discount || totals?.discount || 0) : 0,
+                    promoCode: activePromo ? activePromo.code : '',
+                    promoDiscount: activePromo ? (activePromo.discount || totals?.discount || 0) : 0,
+                    priceBeforePromo: totals?.subtotal || totals?.itemTotal || 0,
+                    items: checkoutItems.map(item => ({
+                        productId: item.id || item._id,
+                        productName: item.title || item.name,
+                        designer: item.designer,
+                        mode: item.type === 'rental' ? 'Rental' : 'Buy',
+                        size: item.size || 'M',
+                        quantity: item.quantity || 1,
+                        rentalStartDate: item.rentalDates?.start,
+                        rentalEndDate: item.rentalDates?.end,
+                        amount: item.price || item.modes?.rent?.pricing?.pricePerDay,
+                    }))
+                };
 
-        const authStore = await import("../../../../store/authStore").then(
-          (m) => m.default.getState(),
-        );
-        const token = authStore.token;
-
-        if (!token) {
-          console.error("No token available for checkout");
-          setIsProcessingOrder(false);
-          return;
-        }
-
-        try {
-          const backendUrl =
-            import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-          const res = await fetch("/api/customer/auth/orders/place", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              items: checkoutItems,
-              totals: totals,
-              address: addressString,
-            }),
-          });
-          const result = await res.json();
-          if (result.success) {
-            localStorage.removeItem("checkoutData");
-
-            // Clear cart
-            const cartStore = await import("../../../../store/cartStore").then(
-              (m) => m.default.getState(),
-            );
-            cartStore.clearCart();
-
-            // Remove ordered items from wishlist
-            const wishlistStore =
-              await import("../../../../store/wishlistStore").then((m) =>
-                m.default.getState(),
-              );
-            const wishlistItems = wishlistStore.items;
-
-            checkoutItems.forEach((item) => {
-              const id = item.id || item._id;
-              if (wishlistItems.includes(id)) {
-                wishlistStore.toggleWishlist(id);
-              }
+                try {
+                    const res = await fetch('/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderData)
+                    });
+                    const result = await res.json();
+                    if (result.success) {
+                        localStorage.removeItem('checkoutData');
+                        try {
+                            const cartStore = await import('../../../../store/cartStore').then(m => m.default.getState());
+                            cartStore.clearCart();
+                        } catch (e) {}
+                    } else {
+                        console.error("Order failed:", result.message);
+                    }
+                } catch (error) {
+                    console.error("Order network error:", error);
+                } finally {
+                    setIsProcessingOrder(false);
+                    setIsOrderConfirmed(true);
+                }
             });
+        }, 0);
+    };
 
-            setIsOrderConfirmed(true);
-          } else {
-            console.error("Order failed:", result.message);
-            alert("Failed to place order: " + result.message);
-          }
-        } catch (error) {
-          console.error("Order network error:", error);
-          alert("Network error while placing order.");
-        } finally {
-          setIsProcessingOrder(false);
-        }
-      });
-    }, 0);
-  };
+    const summaryErrors = Object.entries(fieldErrors)
+        .filter(([, value]) => value)
+        .map(([key]) => key);
 
-  const summaryErrors = Object.entries(fieldErrors)
-    .filter(([, value]) => value)
-    .map(([key]) => key);
+    const errorCount = summaryErrors.length;
 
-  const errorCount = summaryErrors.length;
+    useEffect(() => {
+        /* only after first submit */
+        if (submitCount === 0) return;
 
-  useEffect(() => {
-    /* only after first submit */
-    if (submitCount === 0) return;
-
-    /*
+        /*
           FIELD ERRORS
           take priority over consent errors
         */
-    if (summaryErrors.length > 0) {
-      const fieldMap = {
-        "First name (Contact & Account)": "first-name",
-        "Last name (Contact & Account)": "last-name",
-        "Email address (Contact & Account)": "email-address",
-        "WhatsApp number (Contact & Account)": "whatsapp-number",
-        "Address line 1 (Delivery Address)": "address-line-1",
-        "City (Delivery Address)": "city",
-        "State (Delivery Address)": "state",
-        "PIN code (Delivery Address)": "pin-code",
-      };
+        if (summaryErrors.length > 0) {
+            const fieldMap = {
+                "First name (Contact & Account)": "first-name",
+                "Last name (Contact & Account)": "last-name",
+                "Email address (Contact & Account)": "email-address",
+                "WhatsApp number (Contact & Account)": "whatsapp-number",
+                "Address line 1 (Delivery Address)": "address-line-1",
+                "City (Delivery Address)": "city",
+                "State (Delivery Address)": "state",
+                "PIN code (Delivery Address)": "pin-code",
+            };
 
-      const invalidTargets = summaryErrors
-        .map((errorKey) => document.getElementById(fieldMap[errorKey]))
-        .filter(Boolean);
+            const invalidTargets = summaryErrors
+                .map(errorKey => document.getElementById(fieldMap[errorKey]))
+                .filter(Boolean);
 
-      const firstInvalidField = invalidTargets.sort(
-        (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top,
-      )[0];
+            const firstInvalidField = invalidTargets.sort(
+                (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
+            )[0];
 
-      if (firstInvalidField) {
-        firstInvalidField.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
-      return;
-    }
+            if (firstInvalidField) {
+                firstInvalidField.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+            }
+            return;
+        }
 
-    /*
+        /*
           CONSENT ERRORS ONLY
         */
-    const consentGroup = document.getElementById("consent-group");
-    if (consentGroup) {
-      consentGroup.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, [submitCount]); // ← ONLY submitCount
+        const consentGroup = document.getElementById("consent-group");
+        if (consentGroup) {
+            consentGroup.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        }
+    }, [submitCount]);  // ← ONLY submitCount
 
-  // ========================================
-  // INTERSECTION OBSERVER FOR DOCKING
-  // ========================================
-  useEffect(() => {
-    const sentinel = document.getElementById("cta-sentinel");
-    const ctaBar = document.getElementById("mobile-cta-bar");
-    const page = document.getElementById("mobile-checkout-page");
 
-    if (!sentinel || !ctaBar || !page) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const sentinelRect = entry.boundingClientRect;
+    // ========================================
+    // INTERSECTION OBSERVER FOR DOCKING
+    // ========================================
+    useEffect(() => {
+        const sentinel = document.getElementById("cta-sentinel");
+        const ctaBar = document.getElementById("mobile-cta-bar");
+        const page = document.getElementById("mobile-checkout-page");
 
-          if (entry.isIntersecting) {
-            // Sentinel is visible → dock the CTA bar
-            if (!isDocked) {
-              setIsDocked(true);
-              ctaBar.classList.add("docked");
-              page.classList.add("cta-docked");
-            }
-          } else {
-            // Sentinel is not visible, check scroll direction
-            if (sentinelRect.top > 0) {
-              // Scrolled back up above consent section → undock
-              if (isDocked) {
-                setIsDocked(false);
-                ctaBar.classList.remove("docked");
-                page.classList.remove("cta-docked");
-              }
-            }
-            // If scrolled down past sentinel, keep docked (one-way)
-          }
-        });
-      },
-      { threshold: 0, rootMargin: "0px" },
-    );
+        if (!sentinel || !ctaBar || !page) return;
 
-    observer.observe(sentinel);
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    const sentinelRect = entry.boundingClientRect;
 
-    return () => {
-      observer.disconnect();
+                    if (entry.isIntersecting) {
+                        // Sentinel is visible → dock the CTA bar
+                        if (!isDocked) {
+                            setIsDocked(true);
+                            ctaBar.classList.add("docked");
+                            page.classList.add("cta-docked");
+                        }
+                    } else {
+                        // Sentinel is not visible, check scroll direction
+                        if (sentinelRect.top > 0) {
+                            // Scrolled back up above consent section → undock
+                            if (isDocked) {
+                                setIsDocked(false);
+                                ctaBar.classList.remove("docked");
+                                page.classList.remove("cta-docked");
+                            }
+                        }
+                        // If scrolled down past sentinel, keep docked (one-way)
+                    }
+                });
+            },
+            { threshold: 0, rootMargin: "0px" }
+        );
+
+        observer.observe(sentinel);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [isDocked]);
+
+    // handler for drawer 
+    const handleOpenDrawer = () => {
+        setIsDrawerOpen(true);
+        document.body.style.overflow = "hidden";
     };
-  }, [isDocked]);
 
-  // handler for drawer
-  const handleOpenDrawer = () => {
-    setIsDrawerOpen(true);
-    document.body.style.overflow = "hidden";
-  };
+    const handleCloseDrawer = () => {
+        setIsDrawerOpen(false);
+        document.body.style.overflow = "";
+    };
 
-  const handleCloseDrawer = () => {
-    setIsDrawerOpen(false);
-    document.body.style.overflow = "";
-  };
+    return (
+        <div className="mobile-checkout-layout" id="mobile-checkout-page">
+            <MobileProgressStrip />
+            <MobilePageTitle
+                cartItems={checkoutItems}
+                grandTotal={totals.grandTotal}
+            />
 
-  return (
-    <div className="mobile-checkout-layout" id="mobile-checkout-page">
-      <MobileProgressStrip />
-      <MobilePageTitle
-        cartItems={checkoutItems}
-        grandTotal={totals.grandTotal}
-      />
+            {/* Contact Section - Reused from desktop */}
+            <ContactSection
+                submitCount={submitCount}
+                setFieldErrors={setFieldErrors}
+            />
+            {/* Address Section - Reused from desktop */}
+            <AddressSection
+                submitCount={submitCount}
+                setFieldErrors={setFieldErrors}
+            />
+            {/* Delivery Section - Reused from desktop */}
+            <DeliverySection
+                deliveryType={deliveryType}
+                setDeliveryType={setDeliveryType}
+                checkoutItems={checkoutItems}
+            />
 
-      {/* Contact Section - Reused from desktop */}
-      <ContactSection
-        submitCount={submitCount}
-        setFieldErrors={setFieldErrors}
-      />
-      {/* Address Section - Reused from desktop */}
-      <AddressSection
-        submitCount={submitCount}
-        setFieldErrors={setFieldErrors}
-      />
-      {/* Delivery Section - Reused from desktop */}
-      <DeliverySection
-        deliveryType={deliveryType}
-        setDeliveryType={setDeliveryType}
-        checkoutItems={checkoutItems}
-      />
+            {/* Fullfilment Section - Reused from desktop */}
+            <FulfilmentSection />
 
-      {/* Fullfilment Section - Reused from desktop */}
-      <FulfilmentSection />
+            {/* Payment Section - Reused from desktop */}
+            <PaymentSection />
 
-      {/* Payment Section - Reused from desktop */}
-      <PaymentSection />
+            {/* Payment Section - Reused from desktop */}
+            <ReviewSection
+                checkoutItems={checkoutItems}
+                submitCount={submitCount}
+            />
 
-      {/* Payment Section - Reused from desktop */}
-      <ReviewSection checkoutItems={checkoutItems} submitCount={submitCount} />
+            {/* ERROR SUMMARY BANNER */}
+            <MobileErrorSummary errors={summaryErrors} />
 
-      {/* ERROR SUMMARY BANNER */}
-      <MobileErrorSummary errors={summaryErrors} />
+            {/* CTA Bar - New one for Mobile*/}
+            <MobileCtaBar
+                ref={ctaBarRef}
+                grandTotal={totals.grandTotal}
+                deliveryType={deliveryType}
+                onPlaceOrder={handlePlaceOrder}
+                isProcessingOrder={isProcessingOrder}
+                onOpenDrawer={handleOpenDrawer}
+            />
 
-      {/* CTA Bar - New one for Mobile*/}
-      <MobileCtaBar
-        ref={ctaBarRef}
-        grandTotal={totals.grandTotal}
-        deliveryType={deliveryType}
-        onPlaceOrder={handlePlaceOrder}
-        isProcessingOrder={isProcessingOrder}
-        onOpenDrawer={handleOpenDrawer}
-      />
+            {/* Order Summary Drawer */}
+            <MobileSummaryDrawer
+                isOpen={isDrawerOpen}
+                onClose={handleCloseDrawer}
+                cartItems={checkoutItems}
+                activePromo={activePromo}
+                deliveryType={deliveryType}
+                totals={totals}  
+            />
 
-      {/* Order Summary Drawer */}
-      <MobileSummaryDrawer
-        isOpen={isDrawerOpen}
-        onClose={handleCloseDrawer}
-        cartItems={checkoutItems}
-        activePromo={activePromo}
-        deliveryType={deliveryType}
-        totals={totals}
-      />
+            <OrderConfirmedOverlay
+                isOpen={isOrderConfirmed}
+                cartItems={checkoutItems}
+                activePromo={activePromo}
+                totals={totals}
+                onClose={() =>
+                    setIsOrderConfirmed(false)
+                }
+            />
 
-      <OrderConfirmedOverlay
-        isOpen={isOrderConfirmed}
-        cartItems={checkoutItems}
-        activePromo={activePromo}
-        totals={totals}
-        onClose={() => setIsOrderConfirmed(false)}
-      />
+            {/* Policy Strip - only show if rental exists */}
+            {hasRentalItem && <PolicyStrip />}
 
-      {/* Policy Strip - only show if rental exists */}
-      {hasRentalItem && <PolicyStrip />}
-    </div>
-  );
+        </div>
+    );
 };
 
 export default MobileCheckoutLayout;
