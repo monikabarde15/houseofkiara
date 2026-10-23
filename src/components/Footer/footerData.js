@@ -88,8 +88,8 @@ export const mobileFooterColumns = [
 export const desktopPolicyLinks = [
   { label: "Terms & Conditions", path: "/terms" },
   { label: "Privacy Policy", path: "/privacy" },
-  { label: "Shipping & Delivery Policy", path: "/shipping-policy" },
   { label: "Refund & Cancellation Policy", path: "/refunds" },
+  { label: "Shipping & Delivery Policy", path: "/shipping-policy" },
   { label: "Deposit Policy", path: "/deposit" },
   { label: "Care, Cleaning & Damage Policy", path: "/care-policy" },
   { label: "Cookie Policy", path: "/cookies" },
@@ -99,8 +99,8 @@ export const desktopPolicyLinks = [
 export const mobilePolicyLinks = [
   { label: "Terms & Conditions", path: "/terms" },
   { label: "Privacy Policy", path: "/privacy" },
-  { label: "Shipping & Delivery Policy", path: "/shipping-policy" },
   { label: "Refund Policy", path: "/refunds" },
+  { label: "Shipping & Delivery Policy", path: "/shipping-policy" },
   { label: "Deposit Policy", path: "/deposit" },
   { label: "Care & Damage Policy", path: "/care-policy" },
   { label: "Cookie Policy", path: "/cookies" },

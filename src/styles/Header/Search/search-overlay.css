@@ -466,56 +466,143 @@
 ===================================================== */
 
 .search-no-results {
-  padding: 60px 80px;
+  padding: 48px 80px 52px 80px;
 }
 
 .search-no-results-title {
-  margin: 0 0 12px;
-
-  font-family: "Cormorant Garamond", serif;
-  font-size: 40px;
-  font-weight: 400;
-
+  margin: 0 0 10px;
+  font-family: var(--sys-font-serif, "Cormorant Garamond", serif);
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
   color: #1a1612;
 }
 
-.search-no-results-title em {
-  color: #c9a96e;
+.search-no-results-title em,
+.search-no-results-title .panel-gold {
+  color: #9c7c45;
   font-style: italic;
+  font-weight: 300;
 }
 
 .search-no-results-subtitle {
-  margin-bottom: 32px;
+  margin: 0 0 22px 0;
+  font-family: var(--sys-font-sans, "DM Sans", sans-serif);
+  font-size: 13.5px;
+  font-weight: 300;
+  line-height: 1.80;
+  color: #6b5e50;
+  max-width: 520px;
+}
 
-  font-family: "DM Sans", sans-serif;
-  font-size: 14px;
+.search-panel-extra-line {
+  margin: -6px 0 22px 0;
+  font-family: var(--sys-font-sans, "DM Sans", sans-serif);
+  font-size: 13.5px;
+  font-weight: 400;
+  color: #6b5e50;
+}
 
-  color: #8a7e72;
+.search-panel-extra-line strong {
+  font-weight: 500;
+}
+
+.search-panel-query-link {
+  font-family: var(--sys-font-serif, "Cormorant Garamond", serif);
+  font-size: 18px;
+  font-style: italic;
+  color: #1a1612;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #c9a96e;
+  padding: 0 0 1px 0;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.search-panel-query-link:hover {
+  color: #9c7c45;
+  border-color: #9c7c45;
+}
+
+.search-panel-text-link {
+  font-family: var(--sys-font-sans, "DM Sans", sans-serif);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #1a1612;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #1a1612;
+  padding: 0 0 2px 0;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.search-panel-text-link:hover {
+  color: #9c7c45;
+  border-color: #9c7c45;
 }
 
 .search-rescue-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
 .search-rescue-pill {
-  padding: 10px 18px;
-
+  height: 39px;
+  padding: 9px 20px;
   border: 1px solid #e8e0d4;
+  border-radius: 1px;
   background: transparent;
-
   cursor: pointer;
-
-  font-family: "Cormorant Garamond", serif;
-  font-size: 16px;
-
-  color: #5a4f46;
+  font-family: var(--sys-font-serif, "Cormorant Garamond", serif);
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 400;
+  color: #6b5e50;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .search-rescue-pill:hover {
+  background-color: #f5edd8;
   border-color: #c9a96e;
   color: #1a1612;
+}
+
+.search-panel-whatsapp-wrap {
+  margin-top: 28px;
+}
+
+.search-panel-whatsapp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sys-font-sans, "DM Sans", sans-serif);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #1a1612;
+  text-decoration: none;
+  border-bottom: 1px solid #1a1612;
+  padding-bottom: 3px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.search-panel-whatsapp-link:hover {
+  color: #9c7c45;
+  border-color: #9c7c45;
+}
+
+.search-panel-whatsapp-icon {
+  width: 15px;
+  height: 15px;
+  color: #25d366;
 }
 
 /* =====================================================

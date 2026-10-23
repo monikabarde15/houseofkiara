@@ -1,0 +1,148 @@
+/* =========================================================
+   HOUSE OF KAIRA · ADMIN PANEL — THE PAGES SECTION
+   Design Tokens (Spec Section 2)
+   Admin panel v217 · 20 October 2026
+========================================================= */
+
+:root,
+.hok-pages-root {
+  /* 2.1 Colours */
+  --ink: #1a1612;               /* Words, the bar above the words, a chosen button */
+  --ground: #f7f2ea;            /* Behind level one */
+  --desk: #efe7db;              /* Behind the paper, in a page's workspace */
+  --paper: #fffefb;             /* The page, the workspace header and the panel */
+  --lines: #e6dccb;             /* Hairlines between parts and rows */
+  --lines-card: #efe7da;        /* Hairlines inside cards */
+  --field-border: #d9ccb6;      /* Inputs, drop-downs and quiet buttons */
+  --muted: #6e6358;             /* Labels, lines under headings, counts */
+  --muted-long: #5c5248;        /* For longer text */
+  --muted-light: #b4a99e;       /* Low importance, tertiary info */
+  --gold: #c9a96e;              /* Figures on the paper, tab active line, Review and publish */
+  --gold-ink: #8a6a36;          /* Links and small actions written as words */
+  --gold-wash: #f5edd8;         /* Fill of a figure on paper, focus rings, row in hand */
+  --terracotta: #a4512f;        /* Anything to fix: count of things to fix, Delete. Never decoration */
+
+  /* Importance dots */
+  --dot-high: #b85c38;          /* High importance check */
+  --dot-medium: #d19a3c;        /* Medium importance check */
+  --dot-low: #b4a99e;           /* Low importance check */
+  --dot-clean: #6b7e5a;         /* Nothing to look at */
+
+  /* Scheduled */
+  --scheduled: #3d6e8e;         /* Changes going live on a later date */
+
+  /* Figure states on the paper */
+  --fig-waiting-bg: #e3f0da;    /* Change waiting fill */
+  --fig-waiting-line: #6e8d58;  /* Change waiting line */
+  --fig-retired-bg: #f8e3da;    /* Retired figure fill */
+  --fig-retired-line: #b85c38;  /* Retired figure line */
+  --fig-never-bg: #eee9f5;      /* Never printed figure fill */
+  --fig-never-line: #5b4a7a;    /* Never printed figure line */
+
+  /* Corner Radii (Spec 2.3) */
+  --r-control: 6px;             /* 6px on controls, inputs and buttons */
+  --r-card: 8px;                /* 8px on cards */
+  --r-paper: 2px;               /* 2px on the paper */
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-mono: 'SF Mono', Consolas, Monaco, monospace;
+  --font-storefront: 'DM Sans', 'Inter', sans-serif;
+
+  /* Shadows */
+  --shadow-paper: 0 4px 20px rgba(26, 22, 18, 0.06), 0 1px 3px rgba(26, 22, 18, 0.04);
+  --shadow-popover: 0 8px 30px rgba(26, 22, 18, 0.12), 0 2px 6px rgba(26, 22, 18, 0.06);
+
+  /* Transitions */
+  --transition-fast: 0.12s ease;
+  --transition-normal: 0.2s ease;
+}
+
+/* Base reset for Pages module */
+.hok-pages-root {
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background-color: var(--ground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.hok-pages-root *,
+.hok-pages-root *::before,
+.hok-pages-root *::after {
+  box-sizing: border-box;
+}
+
+/* Typography utility classes (Spec §2.2) */
+.hok-section-title {
+  font-family: var(--font-serif);
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.hok-panel-title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.hok-figure-value {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.hok-label {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--muted);
+  text-transform: none; /* Spec 2.2: Labels are in sentence case and never in capitals or spaced out */
+  letter-spacing: normal;
+}
+
+.hok-mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* Figure states on paper utility classes (Spec §2.1 & §7.6) */
+.hok-fig-live {
+  background-color: var(--gold-wash);
+  border: 1px solid var(--gold);
+  color: var(--gold-ink);
+}
+
+.hok-fig-waiting {
+  background-color: var(--fig-waiting-bg);
+  border: 1px solid var(--fig-waiting-line);
+  color: #3b5e28;
+}
+
+.hok-fig-retired {
+  background-color: var(--fig-retired-bg);
+  border: 1px solid var(--fig-retired-line);
+  color: var(--terracotta);
+}
+
+.hok-fig-never {
+  background-color: var(--fig-never-bg);
+  border: 1px solid var(--fig-never-line);
+  color: #5b4a7a;
+}
+
+.hok-fig-decision {
+  background-color: var(--gold-wash);
+  border: 1px dashed var(--gold);
+  color: var(--gold-ink);
+}

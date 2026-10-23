@@ -1,6 +1,6 @@
 // src\App.jsx
 import React, { useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import useAuthStore from "./store/authStore";
 
@@ -38,8 +38,14 @@ import CarePolicyPage from "./pages/CarePolicyPage";
 import SellerGuidelinesPage from "./pages/SellerGuidelinesPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import ShippingPolicyPage from "./pages/ShippingPolicyPage";
+import NoSearchResultsPage from "./pages/NoSearchResultsPage";
+import PageNotFound from "./pages/PageNotFound";
+import MaintenancePage from "./pages/MaintenancePage";
 
 export default function App() {
+  const location = useLocation();
+  const isMaintenancePage = location.pathname === "/maintenance";
+
   useEffect(() => {
     useAuthStore.getState().checkAuth();
   }, []);
@@ -88,12 +94,13 @@ export default function App() {
           },
         }}
       />
-      <Header />
+      {!isMaintenancePage && <Header />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         {/* Products Page */}
         <Route path="/products" element={<ProductList />} />
         <Route path="/main-page" element={<MainCategoryPage/>} />
+        <Route path="/search" element={<NoSearchResultsPage />} />
 
         <Route path="/buynew/:id" element={<BuyNew />} />
         <Route path="/preloved/:id" element={<Preloved />} />
@@ -139,12 +146,15 @@ export default function App() {
         <Route path="/contact-us" element={<ContactUsPage />} />
         <Route path="/contact" element={<Navigate to="/contact-us" replace />} />
         <Route path="/contactus" element={<Navigate to="/contact-us" replace />} />
+        <Route path="/maintenance" element={<MaintenancePage />} />
+        {/* Wildcard 404 handler: preserves exact requested address */}
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
 
-      <Footer />
+      {!isMaintenancePage && <Footer />}
 
       {/* Global Cookie Banner & Consent Controller */}
-      <CookieBannerContainer />
+      {!isMaintenancePage && <CookieBannerContainer />}
     </>
   );
 }

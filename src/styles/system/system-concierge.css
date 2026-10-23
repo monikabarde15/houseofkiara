@@ -1,0 +1,172 @@
+/**
+ * House of Kaira: System Concierge Band (S6 / C8) Styles
+ * Section 4 C8 & Appendix B of System Pages Specification v1.0
+ */
+
+.sys-concierge-band {
+  background: radial-gradient(circle at 85% 15%, rgba(201, 169, 110, 0.13) 0%, transparent 65%), var(--sys-charcoal);
+  padding: 80px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.sys-concierge-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  align-items: center;
+  gap: 64px;
+}
+
+/* Left Column */
+.sys-concierge-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.sys-concierge-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sys-concierge-eyebrow-rule {
+  width: 24px;
+  height: 1px;
+  background-color: var(--sys-gold-light);
+}
+
+.sys-concierge-eyebrow-text {
+  font-family: var(--sys-font-sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sys-gold-light);
+}
+
+.sys-concierge-title {
+  font-family: var(--sys-font-serif);
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: var(--sys-warm-white);
+  margin: 0;
+}
+
+.sys-concierge-title em {
+  font-style: italic;
+  color: var(--sys-gold-light);
+}
+
+.sys-concierge-line {
+  font-family: var(--sys-font-sans);
+  font-size: 15.5px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--sys-on-dark-line);
+  max-width: 580px;
+  margin: 16px 0 0 0;
+}
+
+/* Right Column */
+.sys-concierge-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sys-concierge-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 34px;
+  background-color: var(--sys-gold);
+  color: var(--sys-charcoal);
+  border: 1px solid var(--sys-gold);
+  border-radius: 1px;
+  font-family: var(--sys-font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-sizing: border-box;
+}
+
+.sys-concierge-btn:hover {
+  background-color: #D4B07A;
+  transform: translateY(-1px);
+}
+
+.sys-concierge-btn:focus-visible {
+  outline: 2px solid var(--sys-gold);
+  outline-offset: 3px;
+}
+
+.sys-concierge-hours {
+  font-family: var(--sys-font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.60;
+  letter-spacing: 0.02em;
+  color: var(--sys-on-dark-small);
+  margin-top: 18px;
+}
+
+/* Breakpoint 1199px & iPad Landscape */
+@media (max-width: 1199px) {
+  .sys-concierge-band {
+    padding: 72px 40px;
+  }
+
+  .sys-concierge-inner {
+    gap: 48px;
+  }
+
+  .sys-concierge-title {
+    font-size: 36px;
+  }
+}
+
+/* Breakpoint 900px (iPad Portrait & Phones) */
+@media (max-width: 900px) {
+  .sys-concierge-inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .sys-concierge-right {
+    align-items: flex-start;
+  }
+}
+
+/* Phone <= 760px */
+@media (max-width: 760px) {
+  .sys-concierge-band {
+    padding: 56px 20px;
+  }
+
+  .sys-concierge-title {
+    font-size: 30px;
+  }
+
+  .sys-concierge-line {
+    font-size: 15px;
+  }
+
+  .sys-concierge-right {
+    width: 100%;
+  }
+
+  .sys-concierge-btn {
+    width: 100%;
+  }
+}

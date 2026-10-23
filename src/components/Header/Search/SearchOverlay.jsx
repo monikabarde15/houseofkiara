@@ -50,7 +50,12 @@ const SearchOverlay = ({
         )}
 
         {showResults && results?.length === 0 && (
-          <SearchNoResults query={query} setQuery={setQuery} />
+          <SearchNoResults
+            query={query}
+            setQuery={setQuery}
+            runSearch={runSearch}
+            closeSearch={closeSearch}
+          />
         )}
       </div>
     </div>

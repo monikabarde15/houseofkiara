@@ -24,7 +24,7 @@ const SearchResults = ({ query, results, viewFullCollection }) => {
           </div>
 
           <button className="search-view-all-btn" onClick={viewFullCollection}>
-            View full collection →
+            {results.length === 1 ? "View the piece →" : `View all ${results.length} pieces →`}
           </button>
         </div>
 
