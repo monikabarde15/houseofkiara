@@ -663,7 +663,7 @@ export default function App() {
     }
 
     if (currentView === 'pages') {
-      return <PagesView onBackToDashboard={() => setView('dashboard')} />;
+      return <PagesView />;
     }
 
     return (
@@ -747,7 +747,7 @@ export default function App() {
         </header>
 
         {/* Desktop Sticky Header */}
-      {!isSectionEditing && currentView !== 'settings' && currentView !== 'homepage' && currentView !== 'pages' && (
+      {!isSectionEditing && currentView !== 'settings' && currentView !== 'homepage' && (
           <header className="sticky top-0 z-40 hidden h-[52px] shrink-0 items-center justify-between border-b border-[#E8E0D6] bg-white px-6 lg:flex">
             <div className="flex items-center gap-3">
               {currentView === 'messaging' && messagingActiveTab === 'editor' && (
@@ -789,7 +789,6 @@ export default function App() {
       <div className={`w-full ${
   currentView === 'settings' ||
   currentView === 'homepage' ||
-  currentView === 'pages' ||
   isSectionEditing
     ? 'p-0'
     : 'p-6'
