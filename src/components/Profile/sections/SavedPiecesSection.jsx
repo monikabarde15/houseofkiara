@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { navigateToProductDetail } from '../../../utils/productNavigation';
 import WishlistCard from '../cards/WishlistCard';
 import AttributeSelectorModal from '../forms/AttributeSelectorModal';
 import Toast from '../ui/Toast';
 import useWishlistStore from '../../../store/wishlistStore';
+import useCartStore from '../../../store/cartStore';
 import "../../../styles/Profile/sections/SavedPiecesSection.css";
 
 const SavedPiecesSection = ({ savedPieces, onUpdate }) => {
@@ -25,7 +27,7 @@ const SavedPiecesSection = ({ savedPieces, onUpdate }) => {
   const handleAddToBag = (piece) => {
     const needsSize = piece.sizes && piece.sizes.length > 1;
     const needsColor = piece.colors && piece.colors.length > 1;
-    const isRental = piece.mode === 'Rental';
+    const isRental = String(piece.mode || '').toLowerCase() === 'rental';
     
     const needsModal = needsSize || needsColor || isRental;
     
@@ -33,6 +35,22 @@ const SavedPiecesSection = ({ savedPieces, onUpdate }) => {
       setSelectedPiece(piece);
       setIsModalOpen(true);
     } else {
+      const rawProd = piece.originalData || piece.rawProduct || piece;
+      const chosenSize = Array.isArray(piece.sizes) && piece.sizes.length > 0
+        ? (typeof piece.sizes[0] === 'object' ? piece.sizes[0].name || piece.sizes[0].size : piece.sizes[0])
+        : "Free Size";
+      const chosenColor = Array.isArray(piece.colors) && piece.colors.length > 0 ? piece.colors[0] : "";
+      const numPrice = Number(piece.price || 0);
+
+      useCartStore.getState().addToCart(rawProd, {
+        type: String(piece.mode || "buy").toLowerCase(),
+        size: chosenSize,
+        color: chosenColor,
+        price: numPrice,
+        quantity: 1,
+        image: piece.image || rawProd.image || (Array.isArray(rawProd.images) && rawProd.images[0]) || "",
+      });
+
       showToastMessage(`${piece.name} added to your bag`);
     }
   };
@@ -43,6 +61,22 @@ const SavedPiecesSection = ({ savedPieces, onUpdate }) => {
   };
 
   const handleConfirmAddToBag = (selections) => {
+    const rawProd = selectedPiece?.originalData || selectedPiece?.rawProduct || selectedPiece;
+    const numPrice = Number(selectedPiece?.price || 0);
+    const chosenSize = selections.size || (Array.isArray(selectedPiece?.sizes) && selectedPiece.sizes[0]) || "Free Size";
+    const chosenColor = selections.color || "";
+
+    useCartStore.getState().addToCart(rawProd, {
+      type: String(selectedPiece?.mode || "buy").toLowerCase(),
+      size: chosenSize,
+      color: chosenColor,
+      deliveryDate: selections.startDate || null,
+      returnDate: selections.endDate || null,
+      price: numPrice,
+      quantity: 1,
+      image: selectedPiece?.image || rawProd?.image || (Array.isArray(rawProd?.images) && rawProd.images[0]) || "",
+    });
+
     let message = selectedPiece?.name || 'Piece';
     if (selections.size) message += ` · Size ${selections.size}`;
     if (selections.color) message += ` · ${selections.color}`;
@@ -54,13 +88,14 @@ const SavedPiecesSection = ({ savedPieces, onUpdate }) => {
     setSelectedPiece(null);
   };
 
-  const handleViewProduct = (pieceId) => {
-    navigate(`/product/${pieceId}`);
+  const handleViewProduct = (pieceId, pieceObj) => {
+    const target = pieceObj || overviewPieces.find(p => (p.id === pieceId || p._id === pieceId || p.sku === pieceId)) || pieceId;
+    navigateToProductDetail(navigate, target);
   };
 
-  const handleRemove = async (pieceId) => {
+  const handleRemove = async (pieceId, pieceObj) => {
     try {
-      await useWishlistStore.getState().toggleWishlist(pieceId);
+      await useWishlistStore.getState().removeFromWishlist(pieceId, pieceObj);
       showToastMessage("Removed from saved pieces");
       if (onUpdate) onUpdate();
     } catch (err) {

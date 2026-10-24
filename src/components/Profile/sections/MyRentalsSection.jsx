@@ -5,7 +5,7 @@ import RentalCard from '../cards/RentalCard';
 import RentalDetailPanel from '../panels/RentalDetailPanel';
 import "../../../styles/Profile/sections/MyRentalsSection.css";
 
-const MyRentalsSection = ({ rentals, openDetailId, setOpenDetailId }) => {
+const MyRentalsSection = ({ rentals, openDetailId, setOpenDetailId, onUpdate }) => {
   const [activeCardId, setActiveCardId] = useState(null);
   const panelRef = useRef(null);
   const cardRefs = useRef({});
@@ -109,6 +109,7 @@ const MyRentalsSection = ({ rentals, openDetailId, setOpenDetailId }) => {
               booking={activeBooking}
               isOpen={!!activeCardId}
               onClose={() => handleDetailsClick(activeCardId)}
+              onUpdate={onUpdate}
             />
           </div>
         </>

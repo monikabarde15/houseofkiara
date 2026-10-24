@@ -1,10 +1,13 @@
 import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { navigateToProductDetail } from '../../../../utils/productNavigation';
 import MobileWishlistImageArea from './MobileWishlistImageArea';
 import MobileWishlistCardBody from './MobileWishlistCardBody';
 import '../../../../styles/wishlist/mobile/cards/mobile-wishlist-card.css';
 
 const MobileWishlistCard = ({ item, mode, index, showToast, onRemoveCard, onOpenAddToBagSheet }) => {
   const cardRef = useRef(null);
+  const navigate = useNavigate();
   
   // Section 6: Card entry animation with staggered delays
   const getAnimationDelay = () => {
@@ -18,7 +21,7 @@ const MobileWishlistCard = ({ item, mode, index, showToast, onRemoveCard, onOpen
   const handleCardTap = (e) => {
     // Don't navigate if the click target is a button or link
     if (e.target.closest('button')) return;
-    console.log('Navigate to product detail:', item.name);
+    navigateToProductDetail(navigate, item);
   };
 
   // Section 7.1: Handle remove from wishlist

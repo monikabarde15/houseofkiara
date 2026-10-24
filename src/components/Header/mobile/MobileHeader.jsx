@@ -1,7 +1,7 @@
-// src/components/Header/mobile/MobileHeader.jsx
 import React from 'react';
 import '../../../styles/Header/mobile/mobile-header.css';
 import logo from '../../../assets/logo/logo.png';
+import useWishlistStore from '../../../store/wishlistStore';
 
 const MobileHeader = ({ 
   theme = 'light',
@@ -13,6 +13,8 @@ const MobileHeader = ({
   onBagClick 
 }) => {
   const isDark = theme === 'dark';
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const wishlistCount = Array.isArray(wishlistItems) ? wishlistItems.length : 0;
 
   return (
     <header 
@@ -50,11 +52,16 @@ const MobileHeader = ({
           </button>
 
           {/* Wishlist */}
-          <button className="hdr-btn" onClick={onWishlistClick} aria-label="Wishlist">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
-          </button>
+          <div className="wishlist-wrap" style={{ position: "relative" }}>
+            <button className="hdr-btn" onClick={onWishlistClick} aria-label="Wishlist">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+            </button>
+            {wishlistCount > 0 && (
+              <span className="mobile-wishlist-badge">{wishlistCount}</span>
+            )}
+          </div>
 
           {/* Cart */}
           <div className="cart-wrap">

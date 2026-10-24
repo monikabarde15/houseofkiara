@@ -41,14 +41,32 @@ const ListAsideColumn = ({ product, type, onOpenModal }) => {
 
         {type === "preloved" && (
           <div className="desk-wishlist-list-price-note">
-            <span className="desk-wishlist-list-price-note-label">retail</span>
-            <span className="desk-wishlist-list-struck-price">₹{product.originalPrice}</span>
-            <span className="desk-wishlist-list-save-badge">Save {product.savePercentage}%</span>
+            {product.originalPrice && product.originalPrice !== "0" && product.savePercentage ? (
+              <>
+                <span className="desk-wishlist-list-price-note-label">retail</span>
+                <span className="desk-wishlist-list-struck-price">₹{product.originalPrice}</span>
+                <span className="desk-wishlist-list-save-badge">
+                  Save {String(product.savePercentage).endsWith('%') ? product.savePercentage : `${product.savePercentage}%`}
+                </span>
+              </>
+            ) : (
+              <span className="desk-wishlist-list-price-note-label">Preloved luxury</span>
+            )}
           </div>
         )}
 
         {type === "new" && (
-          <div className="desk-wishlist-list-new-note">New with tags</div>
+          product.originalPrice && product.originalPrice !== "0" && product.savePercentage ? (
+            <div className="desk-wishlist-list-price-note">
+              <span className="desk-wishlist-list-price-note-label">retail</span>
+              <span className="desk-wishlist-list-struck-price">₹{product.originalPrice}</span>
+              <span className="desk-wishlist-list-save-badge">
+                Save {String(product.savePercentage).endsWith('%') ? product.savePercentage : `${product.savePercentage}%`}
+              </span>
+            </div>
+          ) : (
+            <div className="desk-wishlist-list-new-note">New with tags</div>
+          )
         )}
       </div>
       <ListCardActions

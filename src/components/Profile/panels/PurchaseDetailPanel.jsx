@@ -16,10 +16,14 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
       </div>
 
       <div className="profile-purch-dpb">
-        <div className="profile-purch-dp-img-cell">
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-            <rect x="4" y="4" width="28" height="28" stroke="currentColor" strokeWidth="1" opacity="0.18" />
-          </svg>
+        <div className="profile-purch-dp-img-cell" style={{ overflow: "hidden", borderRadius: "2px" }}>
+          {order.image ? (
+            <img src={order.image} alt={order.piece || "Product"} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          ) : (
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <rect x="4" y="4" width="28" height="28" stroke="currentColor" strokeWidth="1" opacity="0.18" />
+            </svg>
+          )}
         </div>
 
         <div className="profile-purch-dp-info">
@@ -29,6 +33,14 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
               <div className="profile-purch-badge profile-purch-b-del">
                 <span className="profile-purch-bdot"></span>
                 Delivered
+              </div>
+            )}
+
+            {/* Confirmed Status Badge */}
+            {(order.status === 'Confirmed' || !order.status) && (
+              <div className="profile-purch-badge profile-purch-b-pro">
+                <span className="profile-purch-bdot"></span>
+                Confirmed
               </div>
             )}
 
@@ -97,8 +109,8 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
             </>
           )}
 
-          {/* Processing Status */}
-          {order.status === 'Processing' && (
+          {/* Confirmed / Processing Status */}
+          {(order.status === 'Processing' || order.status === 'Confirmed' || (!['Delivered', 'Cancelled'].includes(order.status))) && (
             <>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Order ID</div>
@@ -106,23 +118,25 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Order Type</div>
-                <div className="profile-purch-dp-rv">{order.type}</div>
+                <div className="profile-purch-dp-rv">{order.type || "Buy"}</div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Size</div>
-                <div className="profile-purch-dp-rv">M</div>
+                <div className="profile-purch-dp-rv">{order.size || "M"}</div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Amount Paid</div>
-                <div className="profile-purch-dp-rv">₹{order.amount.toLocaleString()}</div>
+                <div className="profile-purch-dp-rv">₹{Number(order.amount || order.total || 0).toLocaleString()}</div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Ordered On</div>
-                <div className="profile-purch-dp-rv">10 May 2025</div>
+                <div className="profile-purch-dp-rv">{order.orderedOn || (order.date ? order.date.replace("Ordered ", "") : "Recent")}</div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Status</div>
-                <div className="profile-purch-dp-rv profile-purch-dp-rv-processing">Processing - not yet dispatched</div>
+                <div className="profile-purch-dp-rv profile-purch-dp-rv-processing">
+                  {order.status === 'Confirmed' ? 'Confirmed — preparing dispatch' : 'Processing - not yet dispatched'}
+                </div>
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Expected Dispatch</div>
@@ -130,7 +144,7 @@ const PurchaseDetailPanel = ({ order, isOpen, onClose }) => {
               </div>
               <div className="profile-purch-dp-row">
                 <div className="profile-purch-dp-rl">Delivery Address</div>
-                <div className="profile-purch-dp-rv">204, Suncity Towers, Vijay Nagar, Indore MP 452001</div>
+                <div className="profile-purch-dp-rv">{order.address || "Address provided at checkout"}</div>
               </div>
 
               <div className="profile-purch-dp-note gold">

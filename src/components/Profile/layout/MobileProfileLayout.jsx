@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import MobileTabStrip from '../mobile/common/MobileTabStrip';
 import MobileNavDrawer from '../mobile/common/MobileNavDrawer';
 import MobileHeroCard from '../mobile/hero/MobileHeroCard';
@@ -19,10 +20,20 @@ import MobileHelpSupportSection from '../mobile/sections/MobileHelpSupportSectio
 import useProfileDashboard from '../hooks/useProfileDashboard';
 
 const MobileProfileLayout = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const dashboard = useProfileDashboard();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('rentals');
   const [activeView, setActiveView] = useState('overview'); // 'overview', 'rentals', 'purchases', 'wishlist'
+
+  useEffect(() => {
+    if (location.state?.tab) {
+      setTimeout(() => {
+        handleTabClick(location.state.tab);
+      }, 150);
+    }
+  }, [location.state]);
 
   const handleTabClick = (tabId) => {
     if (activeView !== 'overview') {
@@ -49,8 +60,7 @@ const MobileProfileLayout = () => {
   };
 
   const handleViewAllWishlist = () => {
-    setActiveView('wishlist');
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    navigate('/wishlist');
   };
 
   const handleBackToOverview = () => {
@@ -67,7 +77,7 @@ const MobileProfileLayout = () => {
     return (
       <>
         <MobileNavDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
-        <MobileRentalsFullView rentals={dashboard?.rentals} onBack={handleBackToOverview} />
+        <MobileRentalsFullView rentals={dashboard?.rentals} onBack={handleBackToOverview} onUpdate={dashboard?.refetch} />
       </>
     );
   }
@@ -111,7 +121,7 @@ const MobileProfileLayout = () => {
         )}
         
         <div id="rentals" className="profile-mobile-section">
-          <MobileRentalsSection rentals={dashboard?.rentals} onViewAll={handleViewAllRentals} />
+          <MobileRentalsSection rentals={dashboard?.rentals} onViewAll={handleViewAllRentals} onUpdate={dashboard?.refetch} />
         </div>
         
         <div id="purchases" className="profile-mobile-section">

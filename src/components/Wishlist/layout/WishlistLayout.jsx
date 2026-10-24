@@ -9,6 +9,7 @@ import WishlistRecommendations from "../sections/WishlistRecommendations";
 import AddToBagModal from "../modal/AddToBagModal";
 import { useWishlistProducts } from "../hooks/useWishlistProducts";
 import useCartStore from "../../../store/cartStore";
+import useWishlistStore from "../../../store/wishlistStore";
 import "../../../styles/wishlist/layout/wishlist-layout.css";
 
 const WishlistLayout = () => {
@@ -60,14 +61,59 @@ const WishlistLayout = () => {
 
   const handleAddToBag = (bagData) => {
     if (!bagData?.product) return;
-    const rawProd = bagData.product.rawProduct || bagData.product;
+    const prod = bagData.product;
+    const rawProd = prod.originalData || prod.rawProduct || prod;
+    const numPrice =
+      typeof prod.price === "number"
+        ? prod.price
+        : Number(String(prod.price || "").replace(/[^\d]/g, "")) || 0;
+
+    const chosenSize =
+      bagData.size ||
+      (Array.isArray(prod.sizes) && prod.sizes[0]) ||
+      "Free Size";
+
+    let rentalWindowDays = 4;
+    if (bagData.startDate && bagData.endDate) {
+      const start = new Date(bagData.startDate);
+      const end = new Date(bagData.endDate);
+      const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+      if (diff > 0) rentalWindowDays = diff;
+    }
+
+    const perDay =
+      rawProd.modes?.rent?.pricing?.pricePerDay ||
+      rawProd.rent?.pricing?.pricePerDay ||
+      prod.perDayRate ||
+      rawProd.perDayRate ||
+      (rawProd.rentalPrice ? Math.round(rawProd.rentalPrice / 4) : 0) ||
+      (numPrice ? Math.round(numPrice / 4) : 0);
+
+    const isRental =
+      selectedProductType === "rent" ||
+      selectedProductType === "rental" ||
+      prod.type === "rent" ||
+      prod.type === "rental";
+
+    const calculatedPrice = isRental && perDay > 0
+      ? rentalWindowDays * perDay
+      : (numPrice || rawProd.rentalPrice || rawProd.listingPrice || rawProd.price || 0);
+
     useCartStore.getState().addToCart(rawProd, {
-      type: selectedProductType || "rental",
-      size: bagData.size,
-      color: bagData.color,
-      deliveryDate: bagData.startDate,
-      returnDate: bagData.endDate,
+      type: isRental ? "rental" : (selectedProductType || prod.type || "new"),
+      size: chosenSize,
+      color: bagData.color || "",
+      deliveryDate: bagData.startDate || null,
+      returnDate: bagData.endDate || null,
+      rentalWindowDays,
+      price: calculatedPrice,
+      image: prod.image || rawProd.image || (Array.isArray(rawProd.images) && rawProd.images[0]) || "",
     });
+
+    // Remove from wishlist store & DB
+    useWishlistStore.getState().removeFromWishlist(prod.id, prod);
+    removeProduct(prod.id, prod);
+    showGeneralToastMessage(`${prod.name} added to your bag!`);
   };
 
   const showGeneralToastMessage = (message, withUndo = false) => {

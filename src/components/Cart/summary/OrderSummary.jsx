@@ -81,8 +81,8 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
         {/* DISCOUNT */}
         {discount > 0 && (
           <SummaryRow
-            title="Discount"
-            value={`- ${discount.toLocaleString()}`}
+            title={activePromo?.code ? `Discount (${activePromo.code})` : "Discount"}
+            value={`- ₹${Number(discount).toLocaleString("en-IN")}`}
             type="discount"
           />
         )}

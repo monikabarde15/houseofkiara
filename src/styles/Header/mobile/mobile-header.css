@@ -164,7 +164,37 @@
   transition: stroke 0.3s ease;
 }
 
-/* Cart Dot */
+/* Wishlist & Cart */
+.wishlist-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-wishlist-badge {
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 10px;
+  background: #B85C38;
+  color: #FFFFFB;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+  border: 1px solid #FFFFFB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 1px 3px rgba(184, 92, 56, 0.4);
+}
+
 .cart-wrap {
   position: relative;
   display: flex;

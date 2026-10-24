@@ -9,7 +9,9 @@ import NewPriceBlock from "../../items/modes/new/NewPriceBlock";
 import "../../../../styles/cart/mobile/items/mobile-cart-item.css";
 
 const MobileCartItem = ({ item, onRemove }) => {
-  const { product, booking, type } = item;
+  const { product, booking } = item;
+  const rawType = item.type;
+  const type = (rawType === "rent" || rawType === "rental") ? "rental" : rawType;
   const [saved, setSaved] = useState(false);
   const navigate = useNavigate();
 
@@ -117,7 +119,7 @@ const MobileCartItem = ({ item, onRemove }) => {
       {/* FOOTER: Price + Actions */}
       <div className="mobile-cart-item__footer">
         <div className="mobile-cart-item__price">
-          {type === "rental" && <RentalPriceBlock product={product} booking={booking} />}
+          {type === "rental" && <RentalPriceBlock product={product} booking={booking} itemPrice={item.price} />}
           {type === "preloved" && <PrelovedPriceBlock product={product} />}
           {type === "new" && <NewPriceBlock product={product} />}
         </div>

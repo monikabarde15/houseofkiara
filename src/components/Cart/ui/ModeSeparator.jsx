@@ -2,12 +2,14 @@ import React from "react";
 import "../../../styles/cart/ui/mode-separator.css"
 const LABEL_MAP = {
   rental: "Rental Booking",
+  rent: "Rental Booking",
   preloved: "Preloved • Buy to own",
   new: "Buy New",
 };
 
 const ModeSeparator = ({ type, dataRise }) => {
-  const label = LABEL_MAP[type];
+  const normalizedType = type === "rent" ? "rental" : type;
+  const label = LABEL_MAP[normalizedType];
   if (!label) return null;
 
   return (

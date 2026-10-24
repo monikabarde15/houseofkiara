@@ -7,13 +7,14 @@ const PurchaseCard = ({ order, isActive, onDetailsClick }) => {
     switch (status) {
       case 'Delivered': return 'profile-purch-b-del';
       case 'Processing': return 'profile-purch-b-pro';
+      case 'Confirmed': return 'profile-purch-b-pro';
       case 'Cancelled': return 'profile-purch-b-can';
-      default: return '';
+      default: return 'profile-purch-b-pro';
     }
   };
 
   const getButtonText = (status) => {
-    if (status === 'Processing') return 'TRACK';
+    if (status === 'Processing' || status === 'Confirmed') return 'DETAILS';
     return 'DETAILS';
   };
 
@@ -22,10 +23,18 @@ const PurchaseCard = ({ order, isActive, onDetailsClick }) => {
       className={`profile-purch-pc ${isActive ? 'profile-purch-active-card' : ''}`}
       onClick={() => onDetailsClick(order.id)}
     >
-      <div className="profile-purch-pc-image">
-        <svg className="profile-purch-pc-placeholder" width="32" height="32" viewBox="0 0 32 32" fill="none">
-          <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.2" />
-        </svg>
+      <div className="profile-purch-pc-image" style={{ overflow: "hidden" }}>
+        {order.image ? (
+          <img
+            src={order.image}
+            alt={order.piece || "Product"}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : (
+          <svg className="profile-purch-pc-placeholder" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.2" />
+          </svg>
+        )}
       </div>
 
       <div className="profile-purch-pc-body">

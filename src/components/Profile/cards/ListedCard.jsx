@@ -38,10 +38,18 @@ const ListedCard = ({ piece, isActive, onDetailsClick }) => {
             onClick={handleClick}
         >
             {/* Card Image with Ribbon */}
-            <div className="profile-lc-img" style={{ background: piece.imageGradient }}>
-                <svg className="profile-lc-placeholder" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.2" />
-                </svg>
+            <div className="profile-lc-img" style={{ background: piece.imageGradient, overflow: "hidden", position: "relative" }}>
+                {piece.image ? (
+                    <img
+                        src={piece.image}
+                        alt={piece.name || "Listed piece"}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    />
+                ) : (
+                    <svg className="profile-lc-placeholder" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.2" />
+                    </svg>
+                )}
 
                 {/* Earnings Ribbon */}
                 <div className="profile-lc-ribbon">

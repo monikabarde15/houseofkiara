@@ -12,8 +12,7 @@ const WishlistListCard = ({ product, type, onRemove, onOpenModal, isRestored }) 
   const handleRemove = () => {
     setIsRemoving(true);
 
-    setTimeout(() => {
-      if (!cardRef.current) return;
+    if (cardRef.current) {
       const height = cardRef.current.offsetHeight;
       cardRef.current.style.maxHeight = `${height}px`;
       cardRef.current.offsetHeight;
@@ -23,10 +22,10 @@ const WishlistListCard = ({ product, type, onRemove, onOpenModal, isRestored }) 
       cardRef.current.style.paddingBottom = "0";
       cardRef.current.style.marginTop = "0";
       cardRef.current.style.marginBottom = "0";
+    }
 
-      setTimeout(() => {
-        if (onRemove) onRemove(product.id, product);
-      }, 350);
+    setTimeout(() => {
+      if (onRemove) onRemove(product.id, product);
     }, 280);
   };
 

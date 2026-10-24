@@ -11,30 +11,30 @@ import Order from './models/Order.js';
         type: 'percent',
         value: 10,
         maxDiscount: 5000,
-        minOrder: 15000,
+        minOrder: null,
         reason: 'Welcome 10% discount on first designer rental',
         publicDesc: 'Get 10% off on designer pieces',
         status: 'Active',
         visibility: 'drawer',
         audience: 'public',
-        createdBy: 'Soumya',
+        createdBy: 'Admin',
         createdOn: today,
-        history: [{ e: 'Code created', t: `${today} - Soumya` }]
+        history: [{ e: 'Code created', t: `${today} - Admin` }]
       },
       {
         code: 'KAIRA500',
         type: 'flat',
         value: 500,
         maxDiscount: 500,
-        minOrder: 10000,
+        minOrder: null,
         reason: 'Flat ₹500 off on festive collection',
         publicDesc: 'Flat ₹500 discount at checkout',
         status: 'Active',
         visibility: 'share',
         audience: 'public',
-        createdBy: 'Soumya',
+        createdBy: 'Admin',
         createdOn: today,
-        history: [{ e: 'Code created', t: `${today} - Soumya` }]
+        history: [{ e: 'Code created', t: `${today} - Admin` }]
       },
       {
         code: 'FESTIVE20',

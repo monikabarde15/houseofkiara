@@ -34,17 +34,43 @@ const cleanNum = (val) => {
 
 // Transform database product to wishlist card format
 const transformProduct = (p) => {
-  const isRental = p.listingModes ? p.listingModes.includes("RENTAL") : p.type === "rent" || p.type === "rental";
-  const isPreloved = p.listingModes ? p.listingModes.includes("PRELOVED") : p.type === "preloved";
+  const rawModes = Array.isArray(p.listingModes)
+    ? p.listingModes
+    : typeof p.listingModes === "string"
+      ? [p.listingModes]
+      : [];
+  const modesUpper = rawModes.map((m) => String(m).toUpperCase().trim());
+
+  const isRental =
+    modesUpper.some((m) => m.includes("RENT")) ||
+    p.type === "rent" ||
+    p.type === "rental" ||
+    p.mode === "rent";
+
+  const isPreloved =
+    modesUpper.some((m) => m.includes("PRELOVED") || m.includes("RE-SELL")) ||
+    p.type === "preloved" ||
+    p.mode === "preloved";
+
   const type = isRental ? "rent" : isPreloved ? "preloved" : "new";
 
   const rentPrice = cleanNum(p.rentalPrice || (p.perDayRate ? p.perDayRate * 4 : 0) || p.price);
   const listingPrice = cleanNum(p.listingPrice || p.price || 0);
-  const originalPrice = cleanNum(p.originalRetailPrice || p.oldPrice || (type === "rent" ? rentPrice * 10 : listingPrice * 1.5));
   const currentPrice = type === "rent" ? rentPrice : listingPrice;
 
+  // Real retail price from database only (no fake multipliers)
+  const originalPrice = cleanNum(
+    p.originalRetailPrice ||
+    p.originalPrice ||
+    p.retailPrice ||
+    p.oldPrice ||
+    p.modes?.preloved?.pricing?.originalPrice ||
+    p.modes?.rent?.pricing?.originalRetailPrice ||
+    0
+  );
+
   const savePercentage =
-    originalPrice > currentPrice && originalPrice > 0
+    originalPrice > currentPrice && originalPrice > 0 && currentPrice > 0
       ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
       : null;
 
@@ -55,7 +81,10 @@ const transformProduct = (p) => {
     "";
 
   return {
-    id: String(p._id || p.productId || p.id),
+    id: String(p.sku || p.productId || p._id || p.id),
+    sku: String(p.sku || p.productId || ""),
+    productId: String(p.productId || p.sku || ""),
+    _id: String(p._id || ""),
     type,
     designer: (p.designer || "").toUpperCase(),
     name: p.name || p.title || "Designer Piece",
@@ -93,30 +122,54 @@ export const useWishlistProducts = () => {
       const auth = useAuthStore.getState();
 
       try {
+        let loaded = [];
+
         if (auth.isAuthenticated && auth.token) {
           // Fetch authenticated customer's populated wishlist products
           const res = await fetch("/api/customer/auth/wishlist/products", {
             headers: { Authorization: `Bearer ${auth.token}` },
           });
           const data = await res.json();
-          if (data.success && Array.isArray(data.data) && isMounted) {
-            setProducts(data.data.map(transformProduct));
-            setLoading(false);
-            return;
+          if (data.success && Array.isArray(data.data)) {
+            loaded = data.data.map(transformProduct);
           }
         }
 
-        // Fallback / guest mode: load catalogue products and filter by wishlistIds
-        const pRes = await fetch("/api/products");
-        const pData = await pRes.json();
-        if (pData.success && Array.isArray(pData.data) && isMounted) {
-          const matching = pData.data.filter((p) => {
-            const pid = String(p._id || p.productId || p.id);
-            return wishlistIds.some((wid) => String(wid) === pid);
-          });
-          setProducts(matching.map(transformProduct));
-        } else if (isMounted) {
-          setProducts([]);
+        // If guest or some wishlisted items were not in DB response, check catalog
+        const loadedIds = new Set(
+          loaded.flatMap((p) => {
+            const o = p.originalData || {};
+            return [p.id, p.sku, p._id, p.productId, o.sku, o.productId, o._id, o.id]
+              .filter(Boolean)
+              .map(String);
+          })
+        );
+        const missing = wishlistIds.filter((wid) => !loadedIds.has(String(wid)));
+
+        if (missing.length > 0 || !auth.isAuthenticated) {
+          const pRes = await fetch("/api/products").catch(() => null);
+          const pData = pRes ? await pRes.json().catch(() => null) : null;
+          if (pData?.success && Array.isArray(pData.data)) {
+            const extra = pData.data.filter((p) => {
+              const pid = String(p._id || p.productId || p.sku || p.id);
+              const psku = String(p.sku || "");
+              return wishlistIds.some((wid) => {
+                const swid = String(wid);
+                return swid === pid || (psku && swid === psku);
+              });
+            });
+            extra.forEach((p) => {
+              const transformed = transformProduct(p);
+              if (!loadedIds.has(String(transformed.id))) {
+                loadedIds.add(String(transformed.id));
+                loaded.push(transformed);
+              }
+            });
+          }
+        }
+
+        if (isMounted) {
+          setProducts(loaded);
         }
       } catch (err) {
         console.error("Error loading wishlist products:", err);
@@ -143,17 +196,60 @@ export const useWishlistProducts = () => {
     setPendingRemoval(productData);
     onShowToast?.("Removed from your wishlist", true);
 
-    // Call store toggle to sync with backend DB
-    toggleWishlist(productId);
+    const orig = productData?.originalData || productData || {};
+    const targetId =
+      productData?.sku ||
+      orig.sku ||
+      productData?.productId ||
+      orig.productId ||
+      productData?.id ||
+      orig.id ||
+      productId;
 
-    setTimeout(() => {
-      setProducts((prev) => prev.filter((p) => String(p.id) !== String(productId)));
-      timerRef.current = setTimeout(() => {
-        setPendingRemoval(null);
-        timerRef.current = null;
-      }, 5000);
-    }, 600);
-  }, [toggleWishlist]);
+    useWishlistStore.getState().removeFromWishlist(targetId, productData);
+
+    const aliases = new Set();
+    [
+      productId,
+      productData?.id,
+      productData?.sku,
+      productData?._id,
+      productData?.productId,
+      orig.sku,
+      orig.productId,
+      orig._id,
+      orig.id,
+    ]
+      .filter(Boolean)
+      .forEach((x) => {
+        aliases.add(String(x));
+      });
+
+    const aliasList = Array.from(aliases);
+    setProducts((prev) =>
+      prev.filter((p) => {
+        const pOrig = p.originalData || p;
+        const pAliases = [
+          p.id,
+          p.sku,
+          p._id,
+          p.productId,
+          pOrig.sku,
+          pOrig.productId,
+          pOrig._id,
+          pOrig.id,
+        ]
+          .filter(Boolean)
+          .map(String);
+        return !pAliases.some((a) => aliasList.includes(a));
+      })
+    );
+
+    timerRef.current = setTimeout(() => {
+      setPendingRemoval(null);
+      timerRef.current = null;
+    }, 5000);
+  }, []);
 
   const undoRemove = useCallback(() => {
     if (timerRef.current) {

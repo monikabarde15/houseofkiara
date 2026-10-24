@@ -66,7 +66,7 @@ const CartLayout = () => {
   const activeItems = (storeItems || []).filter(item => item.active !== false);
   const visibleItems = activeItems;
 
-  const hasRentalItem = activeItems.some(item => item.type === "rental");
+  const hasRentalItem = activeItems.some(item => item.type === "rental" || item.type === "rent");
   const totals = calculateTotals(activeItems, activePromo);
   const { grandTotal } = totals;
 
@@ -255,7 +255,7 @@ const CartLayout = () => {
             })}
 
             <div data-rise="5">
-              <PromoCode onApply={setActivePromo} />
+              <PromoCode onApply={setActivePromo} subtotal={totals.subtotal} />
             </div>
           </div>
 

@@ -1,23 +1,19 @@
 // src\components\OnlyRentalDetail.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { Heart, Star, TrendingUp, Calendar, MessageCircleCheck, Shield, ArrowRight, X, Plus, Truck } from "lucide-react";
 import { useLocation, useParams } from "react-router-dom";
 import "../../styles/productcategory/onlyrentaldetail.css";
-import { products, makeProductDetail } from "../ProductList";
+import { formatProductDetail, parsePrice } from "../../utils/productNavigation";
+import staticProducts from "../../data/mainCategoryPageData";
 import RentalCalendar from "../RentalCalendar";
 import RelatedProduct from "../RelatedProduct";
 import GalleryColumn from "../GalleryColumn";
 import useCartStore from "../../store/cartStore";
 import useWishlistStore from "../../store/wishlistStore";
-const tempSizes = [
-  { label: "XS", available: true },
-  { label: "S", available: true },
-  { label: "M", available: true },
-  { label: "L", available: false },
-  { label: "XL", available: false }
-];
+import useAuthStore from "../../store/authStore";
+import toast from "react-hot-toast";
 
 const gradeDotColor = {
   pristine: "#6B7E5A",
@@ -40,18 +36,74 @@ export default function RentalProductDetail() {
   const incomingBooking = location.state?.booking || null; // if coming from cart page
 
   // ===== PRODUCT FETCH =====
-  let product = location.state?.product;
+  const [product, setProduct] = useState(() => {
+    return location.state?.product ? formatProductDetail(location.state.product) : null;
+  });
+  const [loading, setLoading] = useState(!product);
 
-  if (!product) {
-    const found = products.find((p) => p.id === Number(id));
-    if (found) product = makeProductDetail(found);
-  }
+  useEffect(() => {
+    let isMounted = true;
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/products/${id}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data && isMounted) {
+            setProduct(formatProductDetail(json.data));
+            setLoading(false);
+            return;
+          }
+        }
+        const staticItem = staticProducts?.find(
+          (sp) => String(sp.id) === String(id) || String(sp.productId) === String(id)
+        );
+        if (staticItem && isMounted) {
+          setProduct(formatProductDetail(staticItem));
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.warn("Error fetching product by ID:", err);
+        const staticItem = staticProducts?.find(
+          (sp) => String(sp.id) === String(id) || String(sp.productId) === String(id)
+        );
+        if (staticItem && isMounted) {
+          setProduct(formatProductDetail(staticItem));
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
 
-  if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
+    fetchProduct();
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
   // ===== STATES =====
-  const [wish, setWish] = useState(false);
-  const [activeImage, setActiveImage] = useState(product.images?.[0]);
+  const { isAuthenticated } = useAuthStore();
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+
+  const targetId = String(product?.sku || product?.productId || product?._id || product?.id || id || "");
+  const prodSku = String(product?.sku || "");
+  const prodDbId = String(product?._id || "");
+  const prodPid = String(product?.productId || "");
+
+  const isWishlisted = targetId
+    ? wishlistItems.some((itemId) => {
+        const sid = String(itemId);
+        return (
+          sid === targetId ||
+          (prodSku && sid === prodSku) ||
+          (prodDbId && sid === prodDbId) ||
+          (prodPid && sid === prodPid)
+        );
+      })
+    : false;
+
+  const [activeImage, setActiveImage] = useState(product?.images?.[0]);
   const [selectedWindow, setSelectedWindow] = useState("standard");
 
   const parseLocalDate = (dateStr) => {
@@ -91,17 +143,67 @@ export default function RentalProductDetail() {
 
   const isCTAEnabled = selectedStart && selectedEnd;
   // ===== DATA =====
-  const rentData = product.modes?.rent || null;
-  const buyData = product.modes?.buy || null;
+  const rentPrice =
+    parsePrice(product?.rentalPrice) ||
+    parsePrice(product?.rentPrice) ||
+    parsePrice(product?.modes?.rent?.pricing?.windows?.[0]?.price) ||
+    parsePrice(product?.price) ||
+    parsePrice(product?.listingPrice) ||
+    0;
+
+  const retail =
+    parsePrice(product?.originalRetailPrice) ||
+    parsePrice(product?.retailPrice) ||
+    parsePrice(product?.originalPrice) ||
+    parsePrice(product?.modes?.preloved?.pricing?.originalPrice) ||
+    parsePrice(product?.modes?.rent?.pricing?.originalRetailPrice) ||
+    parsePrice(product?.modes?.rent?.pricing?.retailPrice) ||
+    0;
+
+  const perDay =
+    (rentPrice > 0 ? Math.round(rentPrice / 4) : 0) || parsePrice(product?.perDayRate) || 0;
+  const rentData = (product?.modes?.rent?.pricing?.windows?.[0]?.price)
+    ? product.modes.rent
+    : {
+      pricing: {
+        pricePerDay: perDay,
+        minDays: product?.minimumDurationDays || 3,
+        windows: [
+          { id: "standard", label: "Standard Window", price: rentPrice, days: 4, tag: "most popular" },
+          { id: "extended", label: "Extended Window", price: Math.round((rentPrice / 4) * 7), days: 7, tag: "destination weddings" }
+        ]
+      },
+      deposit: { amount: product?.securityDeposit || Math.round(rentPrice * 1.5) || 0, returnDays: 5 }
+    };
+  const buyData = product?.modes?.buy || null;
   const sizes = product?.modes?.rent?.sizes || [];
+
+  const availableSizes =
+    sizes.length > 0
+      ? sizes
+      : Array.isArray(product?.sizes) && product.sizes.length > 0
+        ? product.sizes.map((s) => ({
+            label: typeof s === "object" ? s.label || s.size || "None" : s,
+            available: true,
+          }))
+        : [];
 
   // ===== SELECTED WINDOW =====
   const selectedWindowData =
     rentData?.pricing?.windows?.find((w) => w.id === selectedWindow) ||
     rentData?.pricing?.windows?.[0];
 
+  const currentRentPrice = parsePrice(selectedWindowData?.price) || rentPrice;
+  const discount =
+    retail > currentRentPrice && retail > 0 && currentRentPrice > 0
+      ? Math.round(((retail - currentRentPrice) / retail) * 100)
+      : 0;
+
   // for Dot color
-  const grade = product.condition?.grade || "pristine";
+  const grade = product?.condition?.grade || "pristine";
+
+  if (loading) return <div style={{ padding: 60, textAlign: "center", fontFamily: "Cinzel, serif" }}>Loading rental details...</div>;
+  if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
 
   const formatDate = (date) => {
     const y = date.getFullYear();
@@ -121,6 +223,21 @@ export default function RentalProductDetail() {
     const rentalWindowDays =
       Math.ceil((selectedEnd - selectedStart) / (1000 * 60 * 60 * 24)) + 1;
 
+    const calculatedPerDay =
+      (rentPrice > 0 ? Math.round(rentPrice / 4) : 0) ||
+      rentData?.pricing?.pricePerDay ||
+      product?.perDayRate ||
+      0;
+
+    let price = selectedWindowData?.price || product?.rentalPrice || 0;
+    if (selectedWindow === "standard" || rentalWindowDays === 4) {
+      price = rentPrice || selectedWindowData?.price || 12000;
+    } else if (selectedWindow === "extended" && selectedWindowData?.price) {
+      price = selectedWindowData.price;
+    } else if (rentalWindowDays && calculatedPerDay > 0) {
+      price = rentalWindowDays * calculatedPerDay;
+    }
+
     useCartStore.getState().addToCart(product, {
       type: "rental",
       size: selectedSize || "M",
@@ -128,7 +245,7 @@ export default function RentalProductDetail() {
       eventDate: formatDate(eventDate),
       returnDate: formatDate(selectedEnd),
       rentalWindowDays,
-      price: selectedWindowData?.price || product.rentalPrice || 0,
+      price,
     });
 
     navigate("/cart");
@@ -136,15 +253,28 @@ export default function RentalProductDetail() {
 
 
   // Function to handle save to wishlist 
-  const handleAddToWishlist = () => {
-    const pid = product._id || product.productId || product.id;
-    if (pid) {
-      useWishlistStore.getState().toggleWishlist(pid);
+  const handleAddToWishlist = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+
+    if (!isAuthenticated) {
+      toast.error("Please login to use your wishlist");
+      navigate("/auth");
+      return;
     }
-    setWish(true);
-    setTimeout(() => {
-      navigate("/wishlist");
-    }, 300);
+
+    if (targetId) {
+      const willBeActive = !isWishlisted;
+      toggleWishlist(targetId, product);
+
+      if (willBeActive) {
+        toast.success("Added to your wishlist");
+      } else {
+        toast("Removed from your wishlist", {
+          icon: "✕",
+        });
+      }
+    }
   };
 
   // Function to connect to the whatsapp
@@ -194,8 +324,10 @@ Product ID: ${product.id}
               <span className="rental-sep">›</span>
               <span className="rental-crumb">Rent</span>
               <span className="rental-sep">›</span>
+              <span className="rental-crumb">{product.category || "None"}</span>
+              <span className="rental-sep">›</span>
               <span className="rental-crumb rental-current">
-                {product.title}
+                {product.title || product.name || "None"}
               </span>
             </div>
           </div>
@@ -209,6 +341,8 @@ Product ID: ${product.id}
                 images={product.images}
                 variant="rent"
                 video={product.video}
+                productId={product.id || product.productId || id}
+                product={product}
               />
 
             </Col>
@@ -222,13 +356,15 @@ Product ID: ${product.id}
                   <span className="rental-eyebrow-text">Rental Piece</span>
                 </div>
 
-                <p className="rental-designer-name">{product.designer}</p>
+                <p className="rental-designer-name">{product.designer || ""}</p>
 
                 <h1 className="rental-product-title">
-                  {product.title} <em>{product.subTitle}</em>
+                  {product.title || product.name || ""} <em>{product.subTitle || ""}</em>
                 </h1>
 
-                <p className="rental-product-desc">{product.description}</p>
+                {product.description && product.description !== "None" && (
+                  <p className="rental-product-desc">{product.description}</p>
+                )}
 
                 {/* RATING */}
                 <div className="rental-rating-row">
@@ -238,30 +374,30 @@ Product ID: ${product.id}
                       className="rental-star-icon"
                       key={s}
                       size={16}
-                      fill={product.rating >= s ? "#c5a46d" : "none"}
+                      fill={(product.rating || 0) >= s ? "#c5a46d" : "none"}
                       stroke="#c5a46d"
                     />
                   ))}
 
-                  <span className="rental-rating-text">{product.rating}.0</span>
+                  <span className="rental-rating-text">{(product.rating || 0)}.0</span>
 
                   <span className="rental-rating-separator" />
 
-                  <span className="rental-reviews">{product.reviews} reviews</span>
+                  <span className="rental-reviews">{product.reviews || product.reviewCount || 0} reviews</span>
 
                   <span className="rating-separator" />
 
                   <span
                     className="rental-never-worn-soft"
-                    style={{ "--dot-color": gradeDotColor[grade] }}
+                    style={{ "--dot-color": gradeDotColor[grade] || "#6B7E5A" }}
                   >
-                    {gradeLabel[grade]}
+                    {gradeLabel[grade] || "AUTHENTIC PIECE"}
                   </span>
 
                   <span className="rating-separator" />
 
                   <span className="rental-rent-count">
-                    Rented {product.rentInfo.rentedCount}×
+                    Rented {product.rentInfo?.rentedCount || product.timesRented || 0}×
                   </span>
 
                 </div>
@@ -271,17 +407,32 @@ Product ID: ${product.id}
 
                   <p className="rental-price-label">Rental Price</p>
 
-                  <h2 className="rental-main-price">
-                    ₹{selectedWindowData?.price}
-                    <span className="onlyduration">
-                      {" "}
-                      / {selectedWindowData?.days} days
-                    </span>
-                  </h2>
+                  <div className="rental-price-header-row">
+                    <h2 className="rental-main-price">
+                      ₹{Number(selectedWindowData?.price || rentPrice || 0).toLocaleString("en-IN")}
+                      <span className="onlyduration">
+                        {" "}
+                        / {selectedWindowData?.days || 4} days
+                      </span>
+                    </h2>
+
+                    {retail > 0 && (
+                      <div className="rental-savings-wrap">
+                        <span className="rental-retail-struck">
+                          retail ₹{Number(retail).toLocaleString("en-IN")}
+                        </span>
+                        {discount > 0 && (
+                          <span className="rental-save-badge">
+                            Save {discount}%
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
                   <p className="rental-price-subline">
-                    ₹{rentData.pricing.pricePerDay} per day • Minimum{" "}
-                    {rentData.pricing.minDays} days
+                    ₹{Number(rentData?.pricing?.pricePerDay || 0).toLocaleString("en-IN")} per day • Minimum{" "}
+                    {rentData?.pricing?.minDays || 3} days
                   </p>
 
                   {/* WINDOWS */}
@@ -329,19 +480,23 @@ Product ID: ${product.id}
 
                   {/* SIZE PILLS */}
                   <div className="rental-size-options">
-                    {tempSizes.map((size, i) => (
-                      <button
-                        key={i}
-                        disabled={!size.available}
-                        onClick={() => size.available && setSelectedSize(size.label)}
-                        className={`rental-size-pill
-        ${!size.available ? "unavailable" : ""}
-        ${selectedSize === size.label ? "active" : ""}
-      `}
-                      >
-                        {size.label}
-                      </button>
-                    ))}
+                    {availableSizes.length > 0 ? (
+                      availableSizes.map((size, i) => (
+                        <button
+                          key={i}
+                          disabled={!size.available}
+                          onClick={() => size.available && setSelectedSize(size.label)}
+                          className={`rental-size-pill
+          ${!size.available ? "unavailable" : ""}
+          ${selectedSize === size.label ? "active" : ""}
+        `}
+                        >
+                          {size.label}
+                        </button>
+                      ))
+                    ) : (
+                      <span className="rental-size-pill">None</span>
+                    )}
                   </div>
 
                 </div>
@@ -372,14 +527,21 @@ Product ID: ${product.id}
 
                   {/* WISHLIST */}
                   <button
-                    className="rental-cta-wishlist"
+                    className={`rental-cta-wishlist ${isWishlisted ? "active" : ""}`}
                     onClick={handleAddToWishlist}
                   >
                     <span className="rental-cta-icon">
-                      <Heart />
+                      <Heart
+                        style={{
+                          fill: isWishlisted ? "#B85C38" : "none",
+                          stroke: isWishlisted ? "#B85C38" : "currentColor",
+                          color: isWishlisted ? "#B85C38" : "currentColor",
+                          transition: "all 0.2s ease"
+                        }}
+                      />
                     </span>
 
-                    {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
+                    {isWishlisted ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                   </button>
 
                   {/* WHATSAPP */}
@@ -429,19 +591,19 @@ Product ID: ${product.id}
                         <div className="rental-pdp-grid">
 
                           <div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Designer</span><p>{product.designer}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Fabric</span><p>{product.details?.fabric}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Craft Technique</span><p>{product.details?.technique}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Includes</span><p>{product.details?.includes}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Delivery Time</span><p>{product.details?.delivery}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Designer</span><p>{product.designer || "None"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Fabric</span><p>{product.details?.fabric || product.material || "None"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Craft Technique</span><p>{product.details?.technique || product.technique || product.embellishments || "None"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Includes</span><p>{product.details?.includes || product.setIncludes || "None"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Delivery Time</span><p>{product.details?.delivery || product.delivery || "None"}</p></div>
                           </div>
 
                           <div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Category</span><p>{product.subTitle}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Colour</span><p>{product.details?.color}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Thread</span><p>{product.details?.thread}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Occasion</span><p>{product.details?.occasion}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Origin</span><p>{product.details?.origin}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Category</span><p>{product.category || product.subTitle || "None"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Colour</span><p>{product.details?.color || product.color || "None"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Thread</span><p>{product.details?.thread || product.threadWork || "None"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "None"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "None"}</p></div>
                           </div>
 
                         </div>
@@ -460,7 +622,7 @@ Product ID: ${product.id}
                     {isOpen("craft") && (
                       <div className="rental-pdp-content">
                         <p className="rental-craft-text">
-                          {product.craft}
+                          {product.craft || product.story || product.description || "None"}
                         </p>
                       </div>
                     )}
@@ -477,31 +639,58 @@ Product ID: ${product.id}
                     {isOpen("size") && (
                       <div className="rental-pdp-content">
 
-                        <p className="rental-size-intro">{product.sizeNote}</p>
+                        {product.sizeNote || product.sizeGuide ? (
+                          <p className="rental-size-intro">{product.sizeNote || product.sizeGuide}</p>
+                        ) : null}
 
-                        <table className="rental-size-table">
-                          <thead>
-                            <tr>
-                              <th>Size</th>
-                              <th>Bust</th>
-                              <th>Waist</th>
-                              <th>Hips</th>
-                              <th>Height</th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            {product.sizeTable?.map((row, i) => (
-                              <tr key={i} className={row.recommended ? "rental-active-row" : ""}>
-                                <td>{row.size}</td>
-                                <td>{row.bust}</td>
-                                <td>{row.waist}</td>
-                                <td>{row.hips}</td>
-                                <td>{row.height}</td>
+                        {product.sizeTable && product.sizeTable.length > 0 ? (
+                          <table className="rental-size-table">
+                            <thead>
+                              <tr>
+                                <th>Size</th>
+                                <th>Bust</th>
+                                <th>Waist</th>
+                                <th>Hips</th>
+                                <th>Height</th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                            </thead>
+
+                            <tbody>
+                              {product.sizeTable.map((row, i) => (
+                                <tr key={i} className={row.recommended ? "rental-active-row" : ""}>
+                                  <td>{row.size || "None"}</td>
+                                  <td>{row.bust || "None"}</td>
+                                  <td>{row.waist || "None"}</td>
+                                  <td>{row.hips || "None"}</td>
+                                  <td>{row.height || "None"}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        ) : (product.measurements && (product.measurements.bust || product.measurements.waist || product.measurements.hips || product.measurements.length)) ? (
+                          <table className="rental-size-table">
+                            <thead>
+                              <tr>
+                                <th>Size</th>
+                                <th>Bust</th>
+                                <th>Waist</th>
+                                <th>Hips</th>
+                                <th>Length</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr className="rental-active-row">
+                                <td>{product.sizes?.[0] || "Standard"}</td>
+                                <td>{product.measurements.bust || "-"}</td>
+                                <td>{product.measurements.waist || "-"}</td>
+                                <td>{product.measurements.hips || "-"}</td>
+                                <td>{product.measurements.length || "-"}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        ) : (!product.sizeNote && !product.sizeGuide) ? (
+                          <p className="rental-size-intro" style={{ margin: 0 }}>None</p>
+                        ) : null}
 
                       </div>
                     )}
@@ -518,12 +707,18 @@ Product ID: ${product.id}
                     {isOpen("care") && (
                       <div className="rental-pdp-content">
                         <ul className="rental-care-list">
-                          {product.care?.map((item, i) => (
-                            <li key={i}>
-                              <span className="rental-dash">—</span>
-                              <span>{item}</span>
+                          {Array.isArray(product.care) && product.care.length > 0 ? (
+                            product.care.map((item, i) => (
+                              <li key={i}>
+                                <span className="rental-dash">—</span>
+                                <span>{item}</span>
+                              </li>
+                            ))
+                          ) : (
+                            <li>
+                              <span>None</span>
                             </li>
-                          ))}
+                          )}
                         </ul>
                       </div>
                     )}
@@ -540,25 +735,29 @@ Product ID: ${product.id}
                     {isOpen("shipping") && (
                       <div className="rental-pdp-content">
 
-                        <table className="rental-shipping-table">
-                          <thead>
-                            <tr>
-                              <th>Method</th>
-                              <th>Estimated time</th>
-                              <th>Cost</th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            {product.shipping?.map((item, i) => (
-                              <tr key={i}>
-                                <td>{item.method}</td>
-                                <td>{item.time}</td>
-                                <td className="rental-cost">{item.cost}</td>
+                        {Array.isArray(product.shipping) && product.shipping.length > 0 ? (
+                          <table className="rental-shipping-table">
+                            <thead>
+                              <tr>
+                                <th>Method</th>
+                                <th>Estimated time</th>
+                                <th>Cost</th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                            </thead>
+
+                            <tbody>
+                              {product.shipping.map((item, i) => (
+                                <tr key={i}>
+                                  <td>{item.method || "Shipping"}</td>
+                                  <td>{item.time || "-"}</td>
+                                  <td className="rental-cost">{item.cost || "-"}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        ) : (
+                          <p className="rental-shipping-item">None</p>
+                        )}
 
                       </div>
                     )}

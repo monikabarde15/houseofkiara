@@ -24,10 +24,14 @@ const MobilePurchaseRow = ({ order, onClick }) => {
   return (
     <div className="profile-mobile-prow" onClick={() => onClick(order.id)}>
       {/* Thumbnail */}
-      <div className="profile-mobile-prow-img">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <rect x="2" y="2" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.18" />
-        </svg>
+      <div className="profile-mobile-prow-img" style={{ overflow: "hidden", borderRadius: "2px" }}>
+        {order.image ? (
+          <img src={order.image} alt={order.piece || "Product"} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        ) : (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="2" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.18" />
+          </svg>
+        )}
       </div>
 
       {/* Body */}
@@ -38,7 +42,7 @@ const MobilePurchaseRow = ({ order, onClick }) => {
         </div>
         <div className="profile-mobile-prow-name">{order.piece}</div>
         <div className="profile-mobile-prow-meta">{order.typeDetail}</div>
-        <div className="profile-mobile-prow-price">₹{order.total.toLocaleString()}</div>
+        <div className="profile-mobile-prow-price">₹{Number(order.total || order.amount || 0).toLocaleString()}</div>
       </div>
 
       {/* Arrow */}

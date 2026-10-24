@@ -55,13 +55,19 @@ const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast
   // Reset form when modal opens
   useEffect(() => {
     if (isOpen) {
-      setSelectedSize("");
-      setSelectedColor("");
+      const defaultSize =
+        Array.isArray(product?.sizes) && product.sizes.length > 0
+          ? product.sizes[0]
+          : "Free Size";
+      setSelectedSize(defaultSize);
+      setSelectedColor(product?.colors?.[0]?.value || "");
       setStartDate("");
       setEndDate("");
-      setValidationMessage("Please select all required options to continue");
+      setValidationMessage(
+        type === "rent" ? "Please select your rental dates to continue" : ""
+      );
     }
-  }, [isOpen]);
+  }, [isOpen, product, type]);
 
   // Close modal on Escape key
   useEffect(() => {
@@ -140,9 +146,29 @@ const AddToBagModal = ({ isOpen, onClose, product, type, onAddToBag, onShowToast
           {/* Product Summary Row */}
           <div className="desk-wishlist-modal-summary-row">
             <div className={`desk-wishlist-modal-thumbnail desk-wishlist-modal-thumbnail-${type}`}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M8 5L10 3H14L16 5L18 7V21H6V7L8 5Z" stroke="currentColor" strokeWidth="1.2" />
-              </svg>
+              {(() => {
+                const imgUrl =
+                  product?.image ||
+                  (Array.isArray(product?.images) && product.images[0]) ||
+                  (Array.isArray(product?.photos) && product.photos[0]) ||
+                  product?.originalData?.image ||
+                  (Array.isArray(product?.originalData?.images) && product.originalData.images[0]) ||
+                  "";
+                if (imgUrl) {
+                  return (
+                    <img
+                      src={imgUrl}
+                      alt={product.name || "Product"}
+                      className="desk-wishlist-modal-img"
+                    />
+                  );
+                }
+                return (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M8 5L10 3H14L16 5L18 7V21H6V7L8 5Z" stroke="currentColor" strokeWidth="1.2" />
+                  </svg>
+                );
+              })()}
             </div>
             <div className="desk-wishlist-modal-summary-content">
               <h3 className="desk-wishlist-modal-product-name">{product.name}</h3>

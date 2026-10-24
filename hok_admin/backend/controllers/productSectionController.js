@@ -727,6 +727,25 @@ export const addExternalBooking = async (req, res) => {
     p.bookingHistory.push(bookingEntry);
     p.timesRented = Number(p.timesRented || 0) + 1;
 
+    let resolvedListerId = p.listerId || p.lister_id || "";
+    let resolvedListerName = p.listerName || p.lister_name || "";
+    if (resolvedListerId && !resolvedListerName) {
+      try {
+        const lRec = await Lister.findOne({
+          $or: [{ listerId: resolvedListerId }, { _id: resolvedListerId }],
+        });
+        if (lRec) resolvedListerName = lRec.name;
+      } catch (e) {}
+    }
+    if (!resolvedListerId) {
+      resolvedListerId = "simran-chouhan";
+      resolvedListerName = "Simran Chouhan";
+    }
+    if (!resolvedListerName) {
+      resolvedListerName =
+        resolvedListerId === "ananya-sharma" ? "Ananya Sharma" : "Simran Chouhan";
+    }
+
     await Order.create({
       orderId,
       customerId,
@@ -738,11 +757,15 @@ export const addExternalBooking = async (req, res) => {
       productId: p.productId || p._id,
       productName: p.name,
       designer: p.designer || "House of Kaira",
+      listerId: resolvedListerId,
+      listerName: resolvedListerName,
       items: [
         {
           productId: p.productId || p._id,
           productName: p.name,
           designer: p.designer || "House of Kaira",
+          listerId: resolvedListerId,
+          listerName: resolvedListerName,
           mode: "Rental",
           size: p.sizes?.[0] || "S",
           rentalStartDate: startDate,
@@ -767,6 +790,7 @@ export const addExternalBooking = async (req, res) => {
       rentalStartDate: startDate,
       rentalEndDate: endDate,
       status: "Confirmed",
+      payoutStatus: "Pending Approval",
       address: city || cust?.location || "External Order",
     });
     // Ensure customer stats are up‑to‑date after creating the order
@@ -774,19 +798,28 @@ export const addExternalBooking = async (req, res) => {
       await syncCustomerOrderStats([cust]);
     }
 
+    const cleanOrdId = String(orderId).replace(/[^a-zA-Z0-9]/g, "");
     await Payout.create({
-      payoutId: `PXT-${Date.now()}`,
+      payoutId: `PAY-${cleanOrdId}`,
       orderId,
-      piece: p.name,
+      productId: p.productId || p._id,
       productName: p.name,
-      listerId: p.listerId || "LST-001",
-      listerName: p.listerName || "Rohit",
+      piece: p.name,
+      listerId: resolvedListerId,
+      listerName: resolvedListerName,
       customerName,
-      payoutAmount: listerShare,
+      mode: "Rental",
+      transactionAmount: rentalVal,
       transactionValue: rentalVal,
+      payoutPercentage: splitPct,
       payoutPercent: splitPct,
-      status: "Pending Approval",
-      dueDate: endDate,
+      listerShare,
+      payoutAmount: listerShare,
+      hokCommission: Math.max(0, rentalVal - listerShare),
+      taxDeduction: 0,
+      netPayout: listerShare,
+      status: "Pending",
+      dueDate: endDate ? new Date(endDate) : new Date(Date.now() + 7 * 86400000),
       splitPercent: splitPct,
     });
 

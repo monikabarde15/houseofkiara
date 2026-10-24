@@ -7,14 +7,30 @@ import Field from "./components/Field";
 import { useState, useEffect } from "react";
 
 import useCheckoutStore from "../../../store/checkoutStore";
+import useAuthStore from "../../../store/authStore";
 
 const ContactSection = ({
   submitCount,
   setFieldErrors,
 }) => {
   const { contact: formData, setContact: setFormDataStore } = useCheckoutStore();
+  const { user } = useAuthStore();
 
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (user) {
+      const parts = (user.name || "").trim().split(" ");
+      const fName = parts[0] || "";
+      const lName = parts.slice(1).join(" ") || "";
+      setFormDataStore({
+        firstName: formData.firstName || fName,
+        lastName: formData.lastName || lName,
+        email: formData.email || user.email || "",
+        whatsapp: formData.whatsapp || user.phone || "",
+      });
+    }
+  }, [user]);
 
   const handleChange = (field, value) => {
     setFormDataStore({

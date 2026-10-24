@@ -1,6 +1,10 @@
+import { useNavigate } from 'react-router-dom';
+import { navigateToProductDetail } from '../../../../utils/productNavigation';
 import '../../../../styles/wishlist/mobile/cards/mobile-wishlist-card-actions.css';
 
-const MobileWishlistCardActions = ({ item, mode, showToast,onOpenAddToBagSheet }) => {
+const MobileWishlistCardActions = ({ item, mode, showToast, onOpenAddToBagSheet }) => {
+  const navigate = useNavigate();
+
   const handleAddToBag = (e) => {
     e.stopPropagation(); // Prevents card navigation
     //  Open Add to Bag bottom sheet
@@ -9,7 +13,7 @@ const MobileWishlistCardActions = ({ item, mode, showToast,onOpenAddToBagSheet }
 
   const handleViewPiece = (e) => {
     e.stopPropagation(); // Prevents card navigation
-    console.log('Navigate to product detail:', item.name);
+    navigateToProductDetail(navigate, item);
   };
 
   const handleNotifyMe = (e) => {

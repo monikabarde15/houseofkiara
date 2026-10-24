@@ -363,16 +363,81 @@ export const toggleWishlist = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Customer not found" });
 
-    const productId = req.params.productId;
-    const index = customer.wishlist.findIndex(
-      (id) => id.toString() === productId,
+    const rawId = String(req.params.productId || "");
+    const aliases = new Set([rawId]);
+
+    let canonicalId = rawId;
+    try {
+      const prod = await Product.findOne({
+        $or: [
+          { _id: rawId },
+          { productId: rawId },
+          { sku: rawId },
+          { id: rawId },
+        ],
+      });
+      if (prod) {
+        if (prod._id) aliases.add(String(prod._id));
+        if (prod.productId) aliases.add(String(prod.productId));
+        if (prod.sku) aliases.add(String(prod.sku));
+        if (prod.id) aliases.add(String(prod.id));
+        canonicalId = prod.sku || prod.productId || String(prod._id || rawId);
+      }
+    } catch (e) {}
+
+    const aliasList = Array.from(aliases);
+    const existingIndex = (customer.wishlist || []).findIndex((id) =>
+      aliasList.includes(String(id))
     );
 
-    if (index === -1) {
-      customer.wishlist.push(productId);
+    if (existingIndex !== -1) {
+      customer.wishlist = customer.wishlist.filter(
+        (id) => !aliasList.includes(String(id))
+      );
     } else {
-      customer.wishlist.splice(index, 1);
+      customer.wishlist.push(canonicalId);
     }
+    customer.wishlistCount = customer.wishlist.length;
+
+    await customer.save();
+    res.json({ success: true, data: customer.wishlist });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const removeFromWishlist = async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.user._id);
+    if (!customer)
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found" });
+
+    const rawId = String(req.params.productId || "");
+    const aliases = new Set([rawId]);
+
+    try {
+      const prod = await Product.findOne({
+        $or: [
+          { _id: rawId },
+          { productId: rawId },
+          { sku: rawId },
+          { id: rawId },
+        ],
+      });
+      if (prod) {
+        if (prod._id) aliases.add(String(prod._id));
+        if (prod.productId) aliases.add(String(prod.productId));
+        if (prod.sku) aliases.add(String(prod.sku));
+        if (prod.id) aliases.add(String(prod.id));
+      }
+    } catch (e) {}
+
+    const aliasList = Array.from(aliases);
+    customer.wishlist = (customer.wishlist || []).filter(
+      (id) => !aliasList.includes(String(id))
+    );
     customer.wishlistCount = customer.wishlist.length;
 
     await customer.save();
@@ -405,7 +470,7 @@ export const getWishlistProducts = async (req, res) => {
         .json({ success: false, message: "Customer not found" });
 
     const wishlistIds = Array.isArray(customer.wishlist)
-      ? customer.wishlist.filter(Boolean)
+      ? customer.wishlist.filter(Boolean).map(String)
       : [];
 
     if (wishlistIds.length === 0) {
@@ -416,6 +481,8 @@ export const getWishlistProducts = async (req, res) => {
       $or: [
         { _id: { $in: wishlistIds } },
         { productId: { $in: wishlistIds } },
+        { sku: { $in: wishlistIds } },
+        { id: { $in: wishlistIds } },
       ],
     });
 
@@ -761,12 +828,44 @@ export const placeOrder = async (req, res) => {
 export const cancelOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
-    const customerId = req.user.customerId;
+    const customer = req.user;
+    const cId = customer?.customerId;
+    const cIdStr = customer?._id ? String(customer._id) : null;
+    const cEmail = customer?.email ? customer.email.toLowerCase().trim() : null;
 
-    const order = await Order.findOne({
-      $or: [{ orderId: orderId }, { _id: orderId }],
-      customerId,
+    const queries = [];
+    if (cId) queries.push({ customerId: cId });
+    if (cIdStr) {
+      queries.push({ customerId: cIdStr });
+      queries.push({ customerId: customer._id });
+    }
+    if (cEmail) {
+      queries.push({ customerEmail: { $regex: new RegExp(`^${cEmail}$`, "i") } });
+    }
+
+    let order = await Order.findOne({
+      $or: [{ orderId: orderId }, { _id: orderId }, { id: orderId }],
+      ...(queries.length > 0 ? { $or: queries } : {}),
     });
+
+    if (!order) {
+      order = await Order.findOne({
+        $or: [{ orderId: orderId }, { _id: orderId }, { id: orderId }],
+      });
+      if (order && customer) {
+        const orderEmail = order.customerEmail?.toLowerCase().trim();
+        const ordDigits = String(order.customerPhone || "").replace(/\D/g, "");
+        const custDigits = String(customer.phone || "").replace(/\D/g, "");
+        const emailMatch = cEmail && orderEmail && orderEmail === cEmail;
+        const phoneMatch = custDigits.length >= 10 && ordDigits.endsWith(custDigits.slice(-10));
+        const idMatch = cId && (order.customerId === cId || order.customerId === cIdStr);
+        if (!emailMatch && !phoneMatch && !idMatch) {
+          return res
+            .status(403)
+            .json({ success: false, message: "Unauthorized to cancel this order." });
+        }
+      }
+    }
 
     if (!order) {
       return res
@@ -800,10 +899,31 @@ export const cancelOrder = async (req, res) => {
     order.logs.push({
       message: "Order cancelled by customer",
       type: "Cancellation",
-      user: "Customer",
+      user: customer?.name || "Customer",
     });
 
     await order.save();
+
+    // Unblock rental dates on the product immediately
+    for (const item of order.items || []) {
+      if (!item.productId) continue;
+      try {
+        const product = await Product.findOne({
+          $or: [{ productId: item.productId }, { _id: item.productId }],
+        });
+        if (product && Array.isArray(product.blockedDates)) {
+          const orderTag = `Order ${order.orderId}`;
+          product.blockedDates = product.blockedDates.filter(
+            (bd) => !(bd.reason && bd.reason.includes(orderTag)),
+          );
+          await product.save();
+        }
+      } catch (e) {}
+    }
+
+    if (customer) {
+      syncCustomerOrderStats([customer]).catch(() => {});
+    }
 
     res.json({
       success: true,

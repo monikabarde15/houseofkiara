@@ -7,12 +7,29 @@ interface ByListerTabProps {
 
 export default function ByListerTab({ payouts = [] }: ByListerTabProps) {
   // Get unique listers
-  const listers = Array.from(new Set(payouts.map((p) => p.listerName))).sort();
+  const listers = Array.from(
+    new Set(payouts.map((p) => p.listerName).filter(Boolean)),
+  ).sort();
   const [selectedLister, setSelectedLister] = useState(
     listers[0] || "Select Lister",
   );
 
-  const listerPayouts = payouts.filter((p) => p.listerName === selectedLister);
+  React.useEffect(() => {
+    if (
+      (selectedLister === "Select Lister" || !listers.includes(selectedLister)) &&
+      listers.length > 0
+    ) {
+      setSelectedLister(listers[0]);
+    }
+  }, [listers, selectedLister]);
+
+  const listerPayouts = payouts.filter(
+    (p) =>
+      p.listerName === selectedLister ||
+      (p.listerName &&
+        selectedLister &&
+        p.listerName.toLowerCase() === selectedLister.toLowerCase()),
+  );
   const paidPayouts = listerPayouts.filter((p) => p.status === "Paid");
   const pendingPayouts = listerPayouts.filter((p) => p.status === "Pending");
 
@@ -22,17 +39,17 @@ export default function ByListerTab({ payouts = [] }: ByListerTabProps) {
     0,
   );
   const avgPayoutPct =
-    paidPayouts.length > 0
-      ? (paidPayouts.reduce(
+    listerPayouts.length > 0
+      ? (listerPayouts.reduce(
           (sum, p) =>
             sum +
             p.listerShare /
               (p.transactionAmount || p.listerShare + p.hokCommission || 1),
           0,
         ) /
-          paidPayouts.length) *
+          listerPayouts.length) *
         100
-      : 0;
+      : 80;
 
   const nextDueDate =
     pendingPayouts.length > 0

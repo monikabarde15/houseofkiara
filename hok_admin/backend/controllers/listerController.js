@@ -3,6 +3,7 @@ import Lister from "../models/Lister.js";
 import Product from "../models/Product.js";
 import Payout from "../models/Payout.js";
 import { validateListerInput } from "../validations/listerValidation.js";
+import { syncPayoutsFromOrders } from "./payoutController.js";
 
 const view = (x) => {
   if (!x) return null;
@@ -32,6 +33,9 @@ const buildIdQuery = (id) => {
 
 export const getListers = async (req, res) => {
   try {
+    try {
+      await syncPayoutsFromOrders();
+    } catch (e) {}
     const reqQ = req.query || {};
     const q = {};
     if (reqQ.status) q.status = reqQ.status;
@@ -215,6 +219,9 @@ export const getListerListings = async (req, res) => {
 
 export const getListerPayouts = async (req, res) => {
   try {
+    try {
+      await syncPayoutsFromOrders();
+    } catch (e) {}
     const lister = await getListerRecord(req.params.id);
     const ids = [req.params.id, decodeURIComponent(req.params.id || "")];
     if (lister) {
@@ -228,6 +235,12 @@ export const getListerPayouts = async (req, res) => {
       $or: [
         { listerId: { $in: ids } },
         { listerName: lister?.name || req.params.id },
+        {
+          listerName: new RegExp(
+            `^${(lister?.name || req.params.id).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`,
+            "i",
+          ),
+        },
       ],
     }).sort({
       createdAt: -1,

@@ -24,10 +24,18 @@ const RentalCard = ({ booking, isActive, onDetailsClick }) => {
             className={`profile-rental-pc ${isActive ? 'profile-rental-active-card' : ''}`}
             onClick={() => onDetailsClick(booking.id)}
         >
-            <div className="profile-rental-pc-image">
-                <svg className="profile-rental-pc-placeholder" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.2" />
-                </svg>
+            <div className="profile-rental-pc-image" style={{ overflow: "hidden" }}>
+                {booking.image ? (
+                    <img
+                        src={booking.image}
+                        alt={booking.piece || "Rental piece"}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    />
+                ) : (
+                    <svg className="profile-rental-pc-placeholder" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.2" />
+                    </svg>
+                )}
             </div>
 
             <div className="profile-rental-pc-body">

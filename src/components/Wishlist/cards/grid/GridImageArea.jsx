@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { navigateToProductDetail } from "../../../../utils/productNavigation";
 import GridModeStrip from "./GridModeStrip";
 import GridUnavailabilityVeil from "./GridUnavailabilityVeil";
 import "../../../../styles/wishlist/cards/grid/grid-image-area.css";
 
 const GridImageArea = ({ product, type, onRemove, onOpenModal }) => {  // Remove onShowToast from props
+  const navigate = useNavigate();
   const [isHeartAnimating, setIsHeartAnimating] = useState(false);
 
   const getImageClass = () => {
@@ -42,12 +45,20 @@ const GridImageArea = ({ product, type, onRemove, onOpenModal }) => {  // Remove
     if (onOpenModal) onOpenModal(product, type);
   };
 
+  const handleImageClick = () => {
+    navigateToProductDetail(navigate, product);
+  };
+
   const isUnavailable = product.unavailable;
 
   return (
     <div className="desk-wishlist-card-image-wrapper">
       <div className={`desk-wishlist-card-image ${getImageClass()}`}>
-        <div className="desk-wishlist-card-image-inner">
+        <div
+          className="desk-wishlist-card-image-inner"
+          onClick={handleImageClick}
+          style={{ cursor: "pointer" }}
+        >
           {product.image ? (
             <img
               src={product.image}

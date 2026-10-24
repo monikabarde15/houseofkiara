@@ -6,26 +6,48 @@ import Toast from '../../ui/Toast';
 const MobileRentalDetailSheet = ({
   isOpen,
   onClose,
-  booking
+  booking,
+  onUpdate
 }) => {
 
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
   const handleCancelBooking = () => {
     setIsCancelModalOpen(true);
   };
 
-  const handleConfirmCancel = () => {
+  const handleConfirmCancel = async () => {
     setIsCancelModalOpen(false);
-
-    onClose?.();
-
-    setToastMessage(
-      "Cancellation request submitted — our team will be in touch"
-    );
-
-    setShowToast(true);
+    setIsCancelling(true);
+    try {
+      const authState = (await import('../../../../store/authStore')).default.getState();
+      const token = authState.token || localStorage.getItem('token') || localStorage.getItem('customerToken');
+      const res = await fetch(`/api/customer/auth/orders/${booking.id}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        }
+      });
+      const result = await res.json();
+      if (result.success) {
+        setToastMessage("Booking cancelled successfully — dates have been released");
+        setShowToast(true);
+        booking.status = "Cancelled";
+        if (onUpdate) onUpdate();
+      } else {
+        setToastMessage(result.message || "Failed to cancel booking");
+        setShowToast(true);
+      }
+    } catch (err) {
+      console.error("Cancel booking error:", err);
+      setToastMessage("Error cancelling booking. Please try again.");
+      setShowToast(true);
+    } finally {
+      setIsCancelling(false);
+    }
   };
 
   useEffect(() => {
@@ -217,7 +239,7 @@ const MobileRentalDetailSheet = ({
       },
       {
         label: "Cancellation Date",
-        value: "28 Nov 2024"
+        value: booking.cancellationDate || new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
       },
       {
         label: "Cancelled By",
@@ -226,12 +248,12 @@ const MobileRentalDetailSheet = ({
       {
         label: "Reason",
         value:
-          "Event rescheduled"
+          "Cancelled by customer from profile"
       },
       {
         label: "Refund Status",
         value:
-          "Full refund — processed 2 Dec 2024",
+          "Full refund — within 5-7 business days",
         valueClass:
           "profile-mobile-dv-sage"
       }
@@ -304,13 +326,13 @@ const MobileRentalDetailSheet = ({
   };
 
   const currentRows =
-    detailRows[booking.status] || [];
+    detailRows[booking.status] || detailRows.Confirmed || detailRows.Dispatched || [];
 
   const currentNote =
-    notes[booking.status];
+    notes[booking.status] || notes.Confirmed;
 
   const currentActions =
-    actions[booking.status];
+    actions[booking.status] || actions.Confirmed;
 
   return (
     <>
@@ -328,27 +350,30 @@ const MobileRentalDetailSheet = ({
           <div
             className="profile-mobile-sheet-product-img"
             style={{
-              "--sheet-bg":
-                booking.imageGradient ||
-                "linear-gradient(160deg, #F0EAE0, #E8E0D4)"
+              overflow: "hidden",
+              borderRadius: "2px"
             }}
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <rect
-                x="4"
-                y="4"
-                width="16"
-                height="16"
-                stroke="currentColor"
-                strokeWidth="1"
-              />
-            </svg>
+            {booking.image ? (
+              <img src={booking.image} alt={booking.piece || "Rental piece"} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            ) : (
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <rect
+                  x="4"
+                  y="4"
+                  width="16"
+                  height="16"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                />
+              </svg>
+            )}
           </div>
 
           <div className="profile-mobile-sheet-product-info">

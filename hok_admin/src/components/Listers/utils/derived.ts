@@ -46,10 +46,12 @@ export const calculateLedger = (
       paid += txAmount;
       paidCount++;
 
-      const pct =
-        tx.isDamage || tx.mode === "Damage Comp." ? tx.stdPct || 0 : txPct;
+    const pct =
+      tx.isDamage || tx.mode === "Damage Comp." ? tx.stdPct || 0 : txPct;
+    if (pct > 0) {
       pctSum += pct;
       pctCount++;
+    }
     }
 
     if (

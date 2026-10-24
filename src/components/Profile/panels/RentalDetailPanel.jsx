@@ -6,21 +6,48 @@ import { useState } from 'react';
 import CancelBookingModal from '../modals/CancelBookingModal';
 import Toast from '../ui/Toast';
 
-const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
+const RentalDetailPanel = ({ booking, isOpen, onClose, onUpdate }) => {
     if (!booking) return null;
 
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [showToast, setShowToast] = useState(false);
+    const [isCancelling, setIsCancelling] = useState(false);
 
     const handleCancelBooking = () => {
         setIsCancelModalOpen(true);
     };
 
-    const handleConfirmCancel = () => {
+    const handleConfirmCancel = async () => {
         setIsCancelModalOpen(false);
-        setToastMessage("Cancellation request submitted — our team will be in touch");
-        setShowToast(true);
+        setIsCancelling(true);
+        try {
+            const authState = (await import('../../../store/authStore')).default.getState();
+            const token = authState.token || localStorage.getItem('token');
+            const res = await fetch(`/api/customer/auth/orders/${booking.id}/cancel`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {})
+                }
+            });
+            const result = await res.json();
+            if (result.success) {
+                setToastMessage("Booking cancelled successfully — dates have been released");
+                setShowToast(true);
+                booking.status = "Cancelled";
+                if (onUpdate) onUpdate();
+            } else {
+                setToastMessage(result.message || "Failed to cancel booking");
+                setShowToast(true);
+            }
+        } catch (err) {
+            console.error("Cancel booking error:", err);
+            setToastMessage("Error cancelling booking. Please try again.");
+            setShowToast(true);
+        } finally {
+            setIsCancelling(false);
+        }
     };
 
     return (
@@ -34,10 +61,18 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
             </div>
 
             <div className="profile-rental-dpb">
-                <div className="profile-rental-dp-img-cell">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.18" />
-                    </svg>
+                <div className="profile-rental-dp-img-cell" style={{ overflow: "hidden", borderRadius: "2px" }}>
+                    {booking.image ? (
+                        <img
+                            src={booking.image}
+                            alt={booking.piece || "Rental piece"}
+                            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        />
+                    ) : (
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect x="4" y="4" width="24" height="24" stroke="currentColor" strokeWidth="1" opacity="0.18" />
+                        </svg>
+                    )}
                 </div>
 
                 <div className="profile-rental-dp-info">
@@ -146,20 +181,28 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Size</div>
-                                <div className="profile-rental-dp-rv">M</div>
+                                <div className="profile-rental-dp-rv">{booking.size || "M"}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Rental Fee</div>
-                                <div className="profile-rental-dp-rv">₹{booking.fee.toLocaleString()}</div>
+                                <div className="profile-rental-dp-rv">₹{Number(booking.fee || 0).toLocaleString()}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Deposit Due</div>
-                                <div className="profile-rental-dp-rv profile-rental-dp-rv-pending">₹8,000 Due at pickup</div>
+                                <div className="profile-rental-dp-rv profile-rental-dp-rv-pending">
+                                    {booking.depositAmount ? `₹${Number(booking.depositAmount).toLocaleString()} Due at pickup` : '₹8,000 Due at pickup'}
+                                </div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Expected Dispatch</div>
                                 <div className="profile-rental-dp-rv">Within 3-5 business days</div>
                             </div>
+                            {booking.address && (
+                                <div className="profile-rental-dp-row">
+                                    <div className="profile-rental-dp-rl">Delivery Address</div>
+                                    <div className="profile-rental-dp-rv">{booking.address}</div>
+                                </div>
+                            )}
 
                             <div className="profile-rental-dp-note gold">
                                 <div className="profile-rental-dp-note-h">What Happens Next</div>
@@ -261,15 +304,15 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Size</div>
-                                <div className="profile-rental-dp-rv">M</div>
+                                <div className="profile-rental-dp-rv">{booking.size || "M"}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Rental Fee</div>
-                                <div className="profile-rental-dp-rv profile-rental-dp-rv-cancelled">₹{booking.fee.toLocaleString()}</div>
+                                <div className="profile-rental-dp-rv profile-rental-dp-rv-cancelled">₹{booking.fee?.toLocaleString()}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Cancellation Date</div>
-                                <div className="profile-rental-dp-rv">1 Dec 2024</div>
+                                <div className="profile-rental-dp-rv">{booking.cancellationDate || new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Cancelled By</div>
@@ -277,11 +320,11 @@ const RentalDetailPanel = ({ booking, isOpen, onClose }) => {
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Reason</div>
-                                <div className="profile-rental-dp-rv">Event rescheduled</div>
+                                <div className="profile-rental-dp-rv">Cancelled by customer from profile</div>
                             </div>
                             <div className="profile-rental-dp-row">
                                 <div className="profile-rental-dp-rl">Refund Status</div>
-                                <div className="profile-rental-dp-rv profile-rental-dp-rv-refunded">Full refund — processed 6 Dec 2024</div>
+                                <div className="profile-rental-dp-rv profile-rental-dp-rv-refunded">Full refund — within 5-7 business days</div>
                             </div>
 
                             <div className="profile-rental-dp-note">

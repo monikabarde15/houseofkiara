@@ -17,7 +17,9 @@ import { X } from "lucide-react";
 import Notice from "../../shared/Notice/Notice";
 
 const CartItemDesktop = ({ item, onRemove }) => {
-  const { product, booking, type } = item;
+  const { product, booking } = item;
+  const rawType = item.type;
+  const type = (rawType === "rent" || rawType === "rental") ? "rental" : rawType;
   const [saved, setSaved] = useState(false);
 
   const navigate = useNavigate();
@@ -198,7 +200,7 @@ const CartItemDesktop = ({ item, onRemove }) => {
           {/* PRICE */}
           <div className="cart-item__price">
             {type === "rental" && (
-              <RentalPriceBlock product={product} booking={booking} />
+              <RentalPriceBlock product={product} booking={booking} itemPrice={item.price} />
             )}
 
             {type === "preloved" && (

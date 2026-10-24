@@ -21,7 +21,8 @@ export const calculateTotals = (
   };
 
   cartItems.forEach((item) => {
-    let { product, booking, type } = item;
+    let { product, booking } = item;
+    let type = (item.type === "rent" || item.type === "rental") ? "rental" : item.type;
 
     let basePrice = 0;
     let days = 0;
@@ -41,7 +42,7 @@ export const calculateTotals = (
 
           // Add +1 to include both start and end dates in the count
           const totalDays = diff + 1;
-          return totalDays > 0 ? totalDays : 0;
+          return totalDays > 0 ? totalDays : 4;
         }
 
         return 4;
@@ -49,24 +50,45 @@ export const calculateTotals = (
 
       days = getRentalDays(booking);
 
+      const rentalPrice = cleanPrice(product?.rentalPrice) || (days === 4 ? cleanPrice(item.price) : 0);
       const perDay =
-        product?.rent?.pricing?.pricePerDay || cleanPrice(item.price) / 4 || 0;
+        (rentalPrice > 0 ? Math.round(rentalPrice / 4) : 0) ||
+        product?.rent?.pricing?.pricePerDay ||
+        product?.modes?.rent?.pricing?.pricePerDay ||
+        product?.perDayRate ||
+        (cleanPrice(item.price) && days ? Math.round(cleanPrice(item.price) / (booking?.rentalWindowDays || days || 4)) : 0) ||
+        0;
 
-      basePrice = days * perDay;
+      if ((days === 4 || booking?.rentalWindowDays === 4) && rentalPrice > 0) {
+        basePrice = rentalPrice;
+      } else if (days > 0 && perDay > 0) {
+        basePrice = days * perDay;
+      } else if (cleanPrice(item.price) > 0) {
+        basePrice = cleanPrice(item.price);
+      } else if (rentalPrice > 0) {
+        basePrice = rentalPrice;
+      }
     }
 
     // PRELOVED
     if (type === "preloved") {
-      // basePrice = cleanPrice(product?.price);
       basePrice =
-        cleanPrice(product?.preloved?.pricing?.price) ||
         cleanPrice(item.price) ||
+        cleanPrice(product?.prelovedPrice) ||
+        cleanPrice(product?.preloved?.pricing?.price) ||
+        cleanPrice(product?.modes?.preloved?.pricing?.price) ||
         0;
     }
 
     // NEW
     if (type === "new" || type === "buy-new") {
-      basePrice = cleanPrice(product?.price) || cleanPrice(item.price) || 0;
+      basePrice =
+        cleanPrice(item.price) ||
+        cleanPrice(product?.listingPrice) ||
+        cleanPrice(product?.buyPrice) ||
+        cleanPrice(product?.modes?.buyNew?.pricing?.price) ||
+        cleanPrice(product?.retailPrice) ||
+        0;
       type = "new"; // normalize for itemsGrouped
     }
 
@@ -94,21 +116,27 @@ export const calculateTotals = (
     ? Math.min(applyPromoDiscount(subtotal, activePromo), subtotal)
     : 0;
 
+  // Effective discount ratio so customer pays GST only on the net amount paid
+  const effectiveRatio = subtotal > 0 && discount > 0 ? (subtotal - discount) / subtotal : 1;
+
   // GST
   let rentalGST = 0;
   let prelovedGST = 0;
   let newGST = 0;
 
   itemsGrouped.rental.forEach((item) => {
-    rentalGST += calculateGST(item.basePrice, "rental");
+    const netAmount = Math.round(item.basePrice * effectiveRatio);
+    rentalGST += calculateGST(netAmount, "rental");
   });
 
   itemsGrouped.preloved.forEach((item) => {
-    prelovedGST += calculateGST(item.basePrice, "preloved");
+    const netAmount = Math.round(item.basePrice * effectiveRatio);
+    prelovedGST += calculateGST(netAmount, "preloved");
   });
 
   itemsGrouped.new.forEach((item) => {
-    newGST += calculateGST(item.basePrice, "new");
+    const netAmount = Math.round(item.basePrice * effectiveRatio);
+    newGST += calculateGST(netAmount, "new");
   });
 
   /* DELIVERY */

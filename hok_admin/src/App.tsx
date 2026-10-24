@@ -281,8 +281,28 @@ export default function App() {
   };
 
   const handleAddOffer = async (newOffer: Offer) => {
-    try { const created = await offerApi.createOffer(newOffer); setOffers(current => [created, ...current]); toast.success('Offer created successfully!'); }
-    catch (error) { console.error('Unable to create offer:', error); toast.error(error instanceof Error ? error.message : 'Failed to create offer'); }
+    try {
+      const created = await offerApi.createOffer(newOffer);
+      setOffers((current) => [created, ...current]);
+      if ((created as any).newCustomer) {
+        setCustomers((curr) => {
+          const exists = curr.some(
+            (c) =>
+              c.customerId === (created as any).newCustomer.customerId ||
+              c.id === (created as any).newCustomer.id,
+          );
+          return exists ? curr : [(created as any).newCustomer, ...curr];
+        });
+      }
+      toast.success(
+        created.promoCode
+          ? `Offer created! Web promo code: ${created.promoCode}`
+          : 'Offer created successfully!',
+      );
+    } catch (error) {
+      console.error('Unable to create offer:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to create offer');
+    }
   };
 
   const handleAddProduct = async (newProd: Product) => {
@@ -502,11 +522,15 @@ export default function App() {
         <OffersView 
           offers={offers}
           products={products}
+          customers={customers}
           listers={listers}
           currentAdminName={adminSession?.admin?.name || 'Soumya'}
           loading={offersLoading}
           onUpdateOffer={handleUpdateOffer}
           onAddOffer={handleAddOffer}
+          onCustomerCreated={(newCust) =>
+            setCustomers((curr) => [newCust, ...curr])
+          }
         />
       );
     }

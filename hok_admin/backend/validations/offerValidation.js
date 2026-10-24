@@ -12,11 +12,15 @@ export const validateOffer = (data) => {
 
     category: Joi.string().allow("", null),
 
+    customerId: Joi.string().allow("", null),
+
     customerName: Joi.string().required(),
 
     customerEmail: Joi.string().allow("", null).empty(""),
 
     customerPhone: Joi.string().allow("", null),
+
+    promoCode: Joi.string().allow("", null),
 
     customerCity: Joi.string().allow("", null),
 

@@ -4,7 +4,7 @@ import MobileRentalRow from '../rows/MobileRentalRow';
 import "../../../../styles/Profile/mobile/sections/MobileRentalsSection.css";
 import MobileRentalDetailSheet from '../sheets/MobileRentalDetailSheet';
 
-const MobileRentalsSection = ({ rentals, onViewAll }) => {
+const MobileRentalsSection = ({ rentals, onViewAll, onUpdate }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
 
@@ -52,6 +52,7 @@ const MobileRentalsSection = ({ rentals, onViewAll }) => {
         isOpen={isSheetOpen}
         onClose={() => setIsSheetOpen(false)}
         booking={selectedBooking}
+        onUpdate={onUpdate}
       />
     </>
   );

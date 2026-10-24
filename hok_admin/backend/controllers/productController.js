@@ -6,12 +6,10 @@ const normalize = (p) => ({ ...p.toObject(), id: p.productId });
 
 // ✅ FIXED: Sirf EK baar define kiya gaya hai
 const productFilter = (id) => {
-  // Agar valid MongoDB ObjectId hai, toh _id se dhoondho
   if (mongoose.Types.ObjectId.isValid(id)) {
     return { _id: id };
   }
-  // Warna productId se dhoondho
-  return { productId: id };
+  return { $or: [{ productId: id }, { sku: id }] };
 };
 
 export const getProducts = async (req, res) => {

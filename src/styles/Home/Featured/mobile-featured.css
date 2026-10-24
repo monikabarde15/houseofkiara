@@ -104,6 +104,13 @@
   color: #D4C5B0;
 }
 
+.mobile-featured-wishlist-wrapper {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  z-index: 2;
+}
+
 .mobile-featured-wishlist {
   position: absolute;
   top: 7px;

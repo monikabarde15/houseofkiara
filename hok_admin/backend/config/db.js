@@ -10,9 +10,9 @@ const configDir = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(configDir, "../.env") });
 
 const connectionString =
-  process.env.DATABASE_URL_POOLER ||
   process.env.DATABASE_URL ||
-  "postgresql://postgres.qfwrxdgjywseodbtadnx:DpUpEOIutDJo6l41@aws-0-ap-south-1.pooler.supabase.com:6543/postgres";
+  process.env.DATABASE_URL_POOLER ||
+  "postgresql://postgres:DpUpEOIutDJo6l41@db.qfwrxdgjywseodbtadnx.supabase.co:5432/postgres";
 
 export const pool = new pg.Pool({
   connectionString,
@@ -36,15 +36,17 @@ export const connectDB = async (retries = 3) => {
       const res = await pool.query("SELECT NOW()");
       console.log("Connected to PostgreSQL (Supabase) at:", res.rows[0].now);
 
-      // Auto-migrate tables on connection
-      const migrationModule = await import("../db/migrate.js");
-      const run =
-        migrationModule.migrate ||
-        migrationModule.runMigrations ||
-        migrationModule.default;
-      if (typeof run === "function") {
-        await run();
-      }
+      // Auto-migrate tables in the background so requests (e.g. login)
+      // are not blocked while the schema sync runs.
+      import("../db/migrate.js")
+        .then((migrationModule) => {
+          const run =
+            migrationModule.migrate ||
+            migrationModule.runMigrations ||
+            migrationModule.default;
+          if (typeof run === "function") return run();
+        })
+        .catch((err) => console.error("Migration error:", err.message));
       return;
     } catch (error) {
       console.error(

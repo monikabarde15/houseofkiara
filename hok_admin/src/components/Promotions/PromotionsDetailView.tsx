@@ -189,7 +189,7 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
         new Date().toISOString(),
       base,
       discount,
-      customerPaid: Math.max(0, base - discount),
+      customerPaid: Number(order.grandTotal || order.amount) || Math.max(0, base - discount),
       status: order.status || "Confirmed",
     };
   });

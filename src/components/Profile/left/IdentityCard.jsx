@@ -1,5 +1,6 @@
 // src/components/Profile/left/IdentityCard.jsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SquarePen } from 'lucide-react';
 import "../../../styles/Profile/left/IdentityCard.css";
 import EditProfileModal from '../modals/EditProfileModal';
@@ -7,6 +8,7 @@ import Toast from '../ui/Toast';
 import useAuthStore from '../../../store/authStore';
 
 const IdentityCard = ({ counts }) => {
+    const navigate = useNavigate();
     const { user, updateProfile } = useAuthStore();
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
@@ -104,7 +106,12 @@ const IdentityCard = ({ counts }) => {
                         <div className="profile-stat-label">PURCHASES</div>
                     </div>
                     <div className="profile-stat-divider"></div>
-                    <div className="profile-stat">
+                    <div
+                        className="profile-stat"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => navigate('/wishlist')}
+                        title="View Wishlist"
+                    >
                         <div className="profile-stat-number">{savedCount}</div>
                         <div className="profile-stat-label">SAVED</div>
                     </div>

@@ -7,43 +7,44 @@ const WishlistCard = ({ piece, onAddToBag, onViewProduct, onRemove }) => {
 
   const handleRemove = (e) => {
     e.stopPropagation();
-    onRemove(piece.id);
+    onRemove(piece.id, piece);
   };
 
   const handleAddToBag = (e) => {
     e.stopPropagation();
-    
-    // Check if modal is needed or direct add
-    const needsSize = piece.sizes && piece.sizes.length > 1;
-    const needsColor = piece.colors && piece.colors.length > 1;
-    const isRental = piece.mode === 'Rental';
-    
-    const needsModal = needsSize || needsColor || isRental;
-    
-    if (needsModal) {
-      onAddToBag(piece);
-    } else {
-      // Direct add - only one size, no colors, not rental
-      showToastMessage(`${piece.name} added to your bag`);
-      // Show toast notification
-    }
+    onAddToBag?.(piece);
   };
 
   const handleViewProduct = (e) => {
     e.stopPropagation();
-    onViewProduct(piece.id);
+    onViewProduct?.(piece.id, piece);
+  };
+
+  const handleCardClick = (e) => {
+    if (e.target.closest('button')) return;
+    onViewProduct?.(piece.id, piece);
   };
 
   return (
     <div 
       className="profile-wc"
+      onClick={handleCardClick}
+      style={{ cursor: 'pointer' }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="profile-wc-thumb">
-        <svg className="profile-wc-placeholder" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <rect x="4" y="4" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.22" />
-        </svg>
+        {piece.image ? (
+          <img
+            src={piece.image}
+            alt={piece.name}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          <svg className="profile-wc-placeholder" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="4" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.22" />
+          </svg>
+        )}
         
         <button className="profile-wc-heart" onClick={handleRemove}>
           <Heart size={12} fill="#B85C38" stroke="#B85C38" strokeWidth={1.5} />

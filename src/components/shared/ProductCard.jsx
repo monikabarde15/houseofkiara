@@ -1,13 +1,26 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
+import { navigateToProductDetail } from "../../utils/productNavigation";
 import ProductBadge from "./ProductBadge";
 import WishlistButton from "./WishlistButton";
-
 import "../../styles/shared/ProductCard.css";
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = (e) => {
+    if (e.target.closest(".hok-product-wishlist-wrapper") || e.target.closest("button")) {
+      return;
+    }
+    navigateToProductDetail(navigate, product);
+  };
+
   return (
-    <article className="hok-product-card">
+    <article
+      className="hok-product-card"
+      onClick={handleCardClick}
+      style={{ cursor: "pointer" }}
+    >
       <div className="hok-product-image-wrapper">
         <img
           src={product.image}
@@ -20,7 +33,10 @@ const ProductCard = ({ product }) => {
         </div>
 
         <div className="hok-product-wishlist-wrapper">
-          <WishlistButton productId={product.id || product._id} />
+          <WishlistButton
+            productId={product.sku || product.productId || product.id || product._id}
+            product={product}
+          />
         </div>
       </div>
 

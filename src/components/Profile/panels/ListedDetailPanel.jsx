@@ -80,11 +80,19 @@ const ListedDetailPanel = ({ piece, isOpen, onClose }) => {
                 {/* Image Cell */}
                 <div
                     className="profile-lc-dp-img-cell"
-                    style={{ background: piece.imageGradient }}
+                    style={{ background: piece.imageGradient, overflow: "hidden", borderRadius: "2px" }}
                 >
-                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                        <rect x="4" y="4" width="28" height="28" stroke="currentColor" strokeWidth="1" opacity="0.18" />
-                    </svg>
+                    {piece.image ? (
+                        <img
+                            src={piece.image}
+                            alt={piece.name || "Listed piece"}
+                            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        />
+                    ) : (
+                        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                            <rect x="4" y="4" width="28" height="28" stroke="currentColor" strokeWidth="1" opacity="0.18" />
+                        </svg>
+                    )}
                 </div>
 
                 {/* Info Area */}

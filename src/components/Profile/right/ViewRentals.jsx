@@ -4,7 +4,7 @@ import RentalCard from '../cards/RentalCard';
 import RentalDetailPanel from '../panels/RentalDetailPanel';
 import "../../../styles/Profile/right/ViewRentals.css";
 
-const ViewRentals = ({ rentals, onBack }) => {
+const ViewRentals = ({ rentals, onBack, onUpdate }) => {
   const [activeCardId, setActiveCardId] = useState(null);
   const panelRef = useRef(null);
   const cardRefs = useRef({});
@@ -109,6 +109,7 @@ const ViewRentals = ({ rentals, onBack }) => {
           booking={activeBooking}
           isOpen={!!activeCardId}
           onClose={() => handleDetailsClick(activeCardId)}
+          onUpdate={onUpdate}
         />
       </div>
     </div>

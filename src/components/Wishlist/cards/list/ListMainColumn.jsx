@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom";
+import { navigateToProductDetail } from "../../../../utils/productNavigation";
 import "../../../../styles/wishlist/cards/list/list-main-column.css"
 
 const ListMainColumn = ({ product, type, onRemove }) => {
+  const navigate = useNavigate();
+
   const getConditionClass = () => {
     if (product.condition === "Pristine condition") return "desk-wishlist-list-condition-pristine";
     if (product.condition === "Excellent condition") return "desk-wishlist-list-condition-excellent";
@@ -16,7 +20,13 @@ const ListMainColumn = ({ product, type, onRemove }) => {
     <div className="desk-wishlist-list-main-column">
       <div>
         <span className="desk-wishlist-list-designer-label">{product.designer}</span>
-        <h3 className="desk-wishlist-list-product-name">{product.name}</h3>
+        <h3
+          className="desk-wishlist-list-product-name"
+          onClick={() => navigateToProductDetail(navigate, product)}
+          style={{ cursor: "pointer" }}
+        >
+          {product.name}
+        </h3>
 
         {type === "preloved" && product.condition && (
           <div className={`desk-wishlist-list-condition-badge ${getConditionClass()}`}>

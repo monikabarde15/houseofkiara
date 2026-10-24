@@ -1,5 +1,7 @@
 import Payout from "../models/Payout.js";
 import Order from "../models/Order.js";
+import Product from "../models/Product.js";
+import Lister from "../models/Lister.js";
 import Submission from "../models/Submission.js";
 import { validatePayout } from "../validations/payoutValidation.js";
 import mongoose from "mongoose";
@@ -51,61 +53,139 @@ export const syncPayoutsFromOrders = async () => {
       const orderId = ord.orderId || ord.id;
       if (!orderId) continue;
 
-      const item = ord.items?.[0] || ord;
-      const transactionAmount = Number(
-        ord.orderValue || ord.grandTotal || item.amount || 10000,
-      );
-      const listerId = ord.listerId || item.listerId || "rohit";
-      const listerName = ord.listerName || item.listerName || "Rohit";
-      const productName = item.productName || ord.productName || "Garment";
+      const itemsArr =
+        Array.isArray(ord.items) && ord.items.length > 0 ? ord.items : [ord];
 
-      // Standard payout
-      const existing = await Payout.findOne({
-        orderId,
-        mode: { $ne: "Damage Comp." },
-      });
-      if (!existing) {
-        const payoutPercentage = 80;
+      for (let idx = 0; idx < itemsArr.length; idx++) {
+        const item = itemsArr[idx];
+        const prodId = item.productId || ord.productId || "";
+        const productName = item.productName || ord.productName || "Designer Piece";
+        const totalOrderGross =
+          itemsArr.reduce((s, it) => s + Number(it.amount || 0), 0) ||
+          Number(ord.orderValue || 1);
+        const totalDiscount = Number(ord.discount || ord.promoDiscount || 0);
+        const itemGross = Number(
+          item.amount ||
+            (itemsArr.length === 1 ? ord.orderValue || ord.grandTotal : 0) ||
+            10000,
+        );
+        const itemDiscount =
+          totalOrderGross > 0
+            ? Math.round((itemGross / totalOrderGross) * totalDiscount)
+            : 0;
+        const transactionAmount = Math.max(0, itemGross - itemDiscount);
+
+        let listerId = item.listerId || ord.listerId || "";
+        let listerName = item.listerName || ord.listerName || "";
+
+        let prod = null;
+        if (prodId) {
+          try {
+            prod = await Product.findOne({
+              $or: [{ productId: prodId }, { _id: prodId }, { sku: prodId }],
+            });
+            if (prod) {
+              if (!listerId) listerId = prod.listerId || prod.lister_id || "";
+              if (!listerName) listerName = prod.listerName || prod.lister_name || "";
+            }
+          } catch (e) {}
+        }
+
+        if (listerId) {
+          try {
+            const listerRec = await Lister.findOne({
+              $or: [
+                { listerId },
+                { id: listerId },
+                { listerId: listerId.toLowerCase().replace(/\s+/g, "-") },
+                {
+                  name: new RegExp(
+                    `^${listerId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`,
+                    "i",
+                  ),
+                },
+              ],
+            });
+            if (listerRec) {
+              listerName = listerRec.name;
+              listerId = listerRec.listerId || listerRec.id;
+            }
+          } catch (e) {}
+        }
+
+        if (!listerId) {
+          listerId = "simran-chouhan";
+          listerName = "Simran Chouhan";
+        }
+        if (!listerName) {
+          listerName =
+            listerId === "ananya-sharma" ? "Ananya Sharma" : "Simran Chouhan";
+        }
+
+        const payoutPercentage = prod?.payoutPercentage || 80;
         const listerShare = Math.round(
           transactionAmount * (payoutPercentage / 100),
         );
-        const hokCommission = Math.round(
-          transactionAmount * (1 - payoutPercentage / 100),
-        );
-        const isPaid = ord.payoutStatus === "Paid" || ord.status === "Complete";
+        const hokCommission = Math.max(0, transactionAmount - listerShare);
+        const isPaid =
+          ord.payoutStatus === "Paid" || ord.status === "Complete";
+        const cleanOrderId = String(orderId).replace(/[^a-zA-Z0-9]/g, "");
+        const payoutId =
+          itemsArr.length > 1
+            ? `PAY-${cleanOrderId}-${idx + 1}`
+            : `PAY-${cleanOrderId}`;
 
-        await Payout.create({
-          payoutId: `PAY-${String(orderId).replace(/[^a-zA-Z0-9]/g, "")}`,
+        // Standard payout lookup
+        const existing = await Payout.findOne({
           orderId,
-          productId: item.productId || ord.productId || "PRD-101",
-          customerId: ord.customerId || "",
-          offerId: ord.offerId || "",
-          promoCode: ord.promoCode || "",
-          listerId,
-          listerName,
-          productName,
-          mode: ord.mode || item.mode || "Rental",
-          transactionAmount,
-          payoutPercentage,
-          listerShare,
-          hokCommission,
-          taxDeduction: 0,
-          netPayout: listerShare,
-          dueDate: ord.rentalEndDate
-            ? new Date(ord.rentalEndDate)
-            : new Date(Date.now() + 7 * 86400000),
-          status: isPaid ? "Paid" : "Pending",
+          mode: { $ne: "Damage Comp." },
+          $or: [
+            { payoutId },
+            { productId: prodId || "PRD-101" },
+          ],
         });
+
+        if (!existing) {
+          await Payout.create({
+            payoutId,
+            orderId,
+            productId: prodId || "PRD-101",
+            customerId: ord.customerId || "",
+            offerId: ord.offerId || "",
+            promoCode: ord.promoCode || "",
+            listerId,
+            listerName,
+            productName,
+            mode: item.mode || ord.mode || "Rental",
+            transactionAmount,
+            payoutPercentage,
+            listerShare,
+            hokCommission,
+            taxDeduction: 0,
+            netPayout: listerShare,
+            dueDate:
+              item.rentalEndDate || ord.rentalEndDate
+                ? new Date(item.rentalEndDate || ord.rentalEndDate)
+                : new Date(Date.now() + 7 * 86400000),
+            status: isPaid ? "Paid" : "Pending",
+          });
+        } else {
+          existing.transactionAmount = transactionAmount;
+          existing.payoutPercentage = payoutPercentage;
+          existing.listerShare = listerShare;
+          existing.netPayout = listerShare;
+          existing.hokCommission = hokCommission;
+          if (listerId) existing.listerId = listerId;
+          if (listerName) existing.listerName = listerName;
+          await existing.save();
+        }
       }
 
       // Check if order has damage fine / deposit deduction
-      const itemsArr = ord.items && ord.items.length > 0 ? ord.items : [ord];
-      const itemFineAmt = itemsArr.reduce(
+      const fineAmt = itemsArr.reduce(
         (sum, i) => sum + Number(i.depositDecision?.deductedAmount || 0),
         0,
-      );
-      const orderFineAmt = Number(ord.depositDecision?.deductedAmount || 0);
-      const fineAmt = itemFineAmt > 0 ? itemFineAmt : orderFineAmt;
+      ) || Number(ord.depositDecision?.deductedAmount || 0);
 
       if (fineAmt > 0) {
         const existingDmg = await Payout.findOne({
@@ -115,14 +195,17 @@ export const syncPayoutsFromOrders = async () => {
         if (!existingDmg) {
           const listerComp = Math.round(fineAmt * 0.8);
           const hokComp = Math.round(fineAmt * 0.2);
+          const defaultListerId = ord.listerId || itemsArr[0]?.listerId || "simran-chouhan";
+          const defaultListerName = ord.listerName || itemsArr[0]?.listerName || "Simran Chouhan";
+
           await Payout.create({
             payoutId: `PAY-DMG-${String(orderId).replace(/[^a-zA-Z0-9]/g, "")}`,
             orderId,
-            productId: item.productId || ord.productId || "PRD-101",
+            productId: itemsArr[0]?.productId || ord.productId || "PRD-101",
             customerId: ord.customerId || "",
-            listerId,
-            listerName,
-            productName,
+            listerId: defaultListerId,
+            listerName: defaultListerName,
+            productName: itemsArr[0]?.productName || ord.productName || "Garment",
             mode: "Damage Comp.",
             transactionAmount: fineAmt,
             payoutPercentage: 80,
@@ -136,7 +219,7 @@ export const syncPayoutsFromOrders = async () => {
       }
     }
   } catch (e) {
-    // Ignore sync background error
+    console.error("syncPayoutsFromOrders error:", e);
   }
 };
 

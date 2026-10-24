@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { navigateToProductDetail } from "../../../utils/productNavigation";
 import featuredProductsData from "../../../data/home/featuredProductsData";
 import SectionEyebrow from "../../shared/SectionEyebrow";
 import SectionTitle from "../../shared/SectionTitle";
-import { Heart } from "lucide-react";
+import WishlistButton from "../../shared/WishlistButton";
 import { renderHeadline } from "../../../utils/headlineParser";
 import { resolveProductsFromSlots } from "../../../services/featuredApi";
 
@@ -29,6 +30,13 @@ const MobileFeatured = ({ data }) => {
     navigate(viewAllHref);
   };
 
+  const handleCardClick = (product, e) => {
+    if (e.target.closest(".mobile-featured-wishlist-wrapper") || e.target.closest("button")) {
+      return;
+    }
+    navigateToProductDetail(navigate, product);
+  };
+
   return (
     <section className="mobile-featured">
       <div className="mobile-featured-header">
@@ -47,21 +55,28 @@ const MobileFeatured = ({ data }) => {
       </div>
 
       <div className="mobile-featured-grid">
-        {products.map((product) => (
-          <article key={product.id || product.sku} className="mobile-featured-card">
-            <div className="mobile-featured-image-wrapper">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="mobile-featured-image"
-              />
+        {products.map((product) => {
+          const prodId = product.sku || product.productId || product.id || product._id;
+          return (
+            <article
+              key={prodId}
+              className="mobile-featured-card"
+              onClick={(e) => handleCardClick(product, e)}
+              style={{ cursor: "pointer" }}
+            >
+              <div className="mobile-featured-image-wrapper">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="mobile-featured-image"
+                />
 
-              <div className="mobile-featured-badge">{product.badge}</div>
+                <div className="mobile-featured-badge">{product.badge}</div>
 
-              <button className="mobile-featured-wishlist">
-                <Heart size={12} />
-              </button>
-            </div>
+                <div className="mobile-featured-wishlist-wrapper">
+                  <WishlistButton productId={prodId} product={product} />
+                </div>
+              </div>
 
             <div className="mobile-featured-content">
               <p className="mobile-featured-designer">{product.designer}</p>
@@ -87,7 +102,8 @@ const MobileFeatured = ({ data }) => {
               </div>
             </div>
           </article>
-        ))}
+        );
+      })}
       </div>
     </section>
   );

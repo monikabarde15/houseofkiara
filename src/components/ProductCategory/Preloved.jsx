@@ -1,14 +1,17 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { ShoppingBag, Heart, Star,Check, TrendingUp, Calendar, MessageCircleCheck, Shield, ArrowRight, X, Plus, Truck, Gift, ChevronRight, CircleAlert, User, CreditCard } from "lucide-react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { products, makeProductDetail } from "../ProductList";
+import { formatProductDetail, parsePrice } from "../../utils/productNavigation";
+import staticProducts from "../../data/mainCategoryPageData";
 import "../../styles/productcategory/preloved.css";
 import RelatedProduct from "../RelatedProduct";
 import GalleryColumn from "../GalleryColumn";
 import useCartStore from "../../store/cartStore";
 import useWishlistStore from "../../store/wishlistStore";
+import useAuthStore from "../../store/authStore";
+import toast from "react-hot-toast";
 const gradeDotColor = {
   pristine: "#6B7E5A",
   excellent: "#C9A96E",
@@ -46,17 +49,73 @@ export default function Preloved() {
   const navigate = useNavigate();
 
   // ===== PRODUCT FETCH =====
-  let product = location.state?.product;
+  const [product, setProduct] = useState(() => {
+    return location.state?.product ? formatProductDetail(location.state.product) : null;
+  });
+  const [loading, setLoading] = useState(!product);
 
-  if (!product) {
-    const found = products.find((p) => p.id === Number(id));
-    if (found) product = makeProductDetail(found);
-  }
+  useEffect(() => {
+    let isMounted = true;
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/products/${id}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data && isMounted) {
+            setProduct(formatProductDetail(json.data));
+            setLoading(false);
+            return;
+          }
+        }
+        const staticItem = staticProducts?.find(
+          (sp) => String(sp.id) === String(id) || String(sp.productId) === String(id)
+        );
+        if (staticItem && isMounted) {
+          setProduct(formatProductDetail(staticItem));
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.warn("Error fetching product by ID:", err);
+        const staticItem = staticProducts?.find(
+          (sp) => String(sp.id) === String(id) || String(sp.productId) === String(id)
+        );
+        if (staticItem && isMounted) {
+          setProduct(formatProductDetail(staticItem));
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
 
-  if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
+    fetchProduct();
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
   // ===== STATES =====
-  const [wish, setWish] = useState(false);
+  const { isAuthenticated } = useAuthStore();
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+
+  const targetId = String(product?.sku || product?.productId || product?._id || product?.id || id || "");
+  const prodSku = String(product?.sku || "");
+  const prodDbId = String(product?._id || "");
+  const prodPid = String(product?.productId || "");
+
+  const isWishlisted = targetId
+    ? wishlistItems.some((itemId) => {
+        const sid = String(itemId);
+        return (
+          sid === targetId ||
+          (prodSku && sid === prodSku) ||
+          (prodDbId && sid === prodDbId) ||
+          (prodPid && sid === prodPid)
+        );
+      })
+    : false;
+
   const [selectedWindow, setSelectedWindow] = useState("standard");
   const [openSections, setOpenSections] = useState(["details"]);
   const [isOfferOpen, setIsOfferOpen] = useState(false);
@@ -64,22 +123,40 @@ export default function Preloved() {
   const isOpen = (key) => openSections.includes(key);
 
   // for Dot color
-  const grade = product.condition?.grade || "pristine";
-
+  const grade = product?.condition?.grade || "pristine";
 
   // FOR DISCOUNT - 
-  const price = product.preloved?.pricing?.price || 185000;
-  const retail = 420000;
-  const discount = Math.round(((retail - price) / retail) * 100);
-
+  const price =
+    (typeof product?.preloved?.pricing?.price === "number" && product.preloved.pricing.price > 0
+      ? product.preloved.pricing.price
+      : parsePrice(product?.listingPrice) || parsePrice(product?.buyPrice) || parsePrice(product?.price)) || 0;
+  const retail =
+    parsePrice(product?.originalRetailPrice) ||
+    parsePrice(product?.originalPrice) ||
+    parsePrice(product?.retailPrice) ||
+    parsePrice(product?.preloved?.pricing?.originalPrice) ||
+    price;
+  const discount = (retail > price && retail > 0 && price > 0)
+    ? Math.round(((retail - price) / retail) * 100)
+    : 0;
 
   // MINIMUM AND MAXIMUM OFFER PRICE
-
-  const minOffer = Math.round(price * 0.54 / 5000) * 5000;
-  const maxOffer = price;
+  const minOffer = Math.round((price * 0.54) / 5000) * 5000 || 5000;
+  const maxOffer = price || 10000;
 
   const [offer, setOffer] = useState(minOffer);      // number (slider)
   const [inputValue, setInputValue] = useState(minOffer); // (typing)
+
+  useEffect(() => {
+    if (price) {
+      const min = Math.round((price * 0.54) / 5000) * 5000 || 5000;
+      setOffer(min);
+      setInputValue(min);
+    }
+  }, [price]);
+
+  if (loading) return <div style={{ padding: 60, textAlign: "center", fontFamily: "Cinzel, serif" }}>Loading piece details...</div>;
+  if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
 
 
   // CALCULATION ON TOP
@@ -126,16 +203,29 @@ export default function Preloved() {
     navigate("/cart");
   };
 
-  // function to add to the Wishlist and redirect
-  const handleAddToWishlist = () => {
-    const pid = product._id || product.productId || product.id;
-    if (pid) {
-      useWishlistStore.getState().toggleWishlist(pid);
+  // function to add to the Wishlist
+  const handleAddToWishlist = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+
+    if (!isAuthenticated) {
+      toast.error("Please login to use your wishlist");
+      navigate("/auth");
+      return;
     }
-    setWish(true);
-    setTimeout(() => {
-      navigate("/wishlist");
-    }, 300);
+
+    if (targetId) {
+      const willBeActive = !isWishlisted;
+      toggleWishlist(targetId, product);
+
+      if (willBeActive) {
+        toast.success("Added to your wishlist");
+      } else {
+        toast("Removed from your wishlist", {
+          icon: "✕",
+        });
+      }
+    }
   };
 
   // function to connect to the Whatsapp and redirect
@@ -175,11 +265,11 @@ Product ID: ${product.id}
             <span className="sep">›</span>
             <span className="crumb">Buy Preloved</span>
             <span className="sep">›</span>
-            <span className="crumb">Bridal Lehengas</span>
+            <span className="crumb">{product.category || "None"}</span>
             <span className="sep">›</span>
-            <span className="crumb current">Sabyasachi</span>
+            <span className="crumb current">{product.designer || "None"}</span>
             <span className="sep">›</span>
-            <span className="crumb current">{product.title}</span>
+            <span className="crumb current">{product.title || product.name || "None"}</span>
           </div>
         </div>
 
@@ -192,6 +282,8 @@ Product ID: ${product.id}
               images={product.images}
               video={product.video}
               variant="preloved"
+              productId={product.id || product.productId || id}
+              product={product}
             />
           </Col>
 
@@ -204,13 +296,13 @@ Product ID: ${product.id}
                 <span className="preloved-eyebrow-text">PRELOVED PIECE</span>
               </div>
 
-              <p className="preloved-designer-name">{product.designer}</p>
+              <p className="preloved-designer-name">{product.designer || "None"}</p>
 
               <h1 className="preloved-product-title">
-                {product.title} <em>{product.subTitle}</em>
+                {product.title || product.name || "None"} <em>{product.subTitle || ""}</em>
               </h1>
 
-              <p className="preloved-product-desc">{product.description}</p>
+              <p className="preloved-product-desc">{product.description || "None"}</p>
 
               {/* RATING */}
               <div className="preloved-rating-row">
@@ -219,24 +311,24 @@ Product ID: ${product.id}
                   <Star
                     key={s}
                     size={16}
-                    fill={product.rating >= s ? "#c5a46d" : "none"}
+                    fill={(product.rating || 0) >= s ? "#c5a46d" : "none"}
                     stroke="#c5a46d"
                   />
                 ))}
 
-                <span className="preloved-rating-text">{product.rating}.0</span>
+                <span className="preloved-rating-text">{(product.rating || 0)}.0</span>
 
                 <span className="preloved-rating-separator" />
 
-                <span className="preloved-reviews">{product.reviews} reviews</span>
+                <span className="preloved-reviews">{product.reviews || product.reviewCount || 0} reviews</span>
 
                 <span className="preloved-rating-separator" />
 
                 <span
                   className="preloved-never-worn-soft"
-                  style={{ "--dot-color": gradeDotColor[grade] }}
+                  style={{ "--dot-color": gradeDotColor[grade] || "#6B7E5A" }}
                 >
-                  {gradeLabel[grade]}
+                  {gradeLabel[grade] || "AUTHENTIC PIECE"}
                 </span>
 
               </div>
@@ -250,23 +342,27 @@ Product ID: ${product.id}
                 </p>
 
                 <h2 className="preloved-main-price">
-                  ₹{price.toLocaleString()}
+                  ₹{Number(price).toLocaleString()}
                 </h2>
 
                 <div className="preloved-price-row">
-                  <span className="preloved-retail-price">
-                    ₹{retail.toLocaleString()} retail
-                  </span>
+                  {retail > 0 && (
+                    <span className="preloved-retail-price">
+                      ₹{Number(retail).toLocaleString()} retail
+                    </span>
+                  )}
 
-                  <span className="preloved-discount-badge">
-                    {discount}% OFF RETAIL
-                  </span>
+                  {discount > 0 && (
+                    <span className="preloved-discount-badge">
+                      {discount}% OFF RETAIL
+                    </span>
+                  )}
                 </div>
 
               </div>
 
 
-              {/* HONEST DISCLOUSRE */}
+              {/* HONEST DISCLOSURE */}
               <div className="preloved-disclosure">
 
                 <p className="preloved-disclosure-label">
@@ -274,7 +370,7 @@ Product ID: ${product.id}
                 </p>
 
                 <p className="preloved-disclosure-text">
-                  {product.disclosure}
+                  {product.disclosure || product.honestDisclosure || "None"}
                 </p>
 
               </div>
@@ -289,11 +385,19 @@ Product ID: ${product.id}
                 </p>
 
                 <div className="preloved-size-pills">
-                  <span className="preloved-size-pill active">
+                  {product.sizes && product.sizes.length > 0 ? (
+                    product.sizes.map((s, idx) => (
+                      <span key={idx} className="preloved-size-pill active">
+                        {typeof s === "object" ? (s.label || s.size || "None") : s}
+                      </span>
+                    ))
+                  ) : product.prelovedSize ? (
                     <span className="preloved-size-pill active">
                       {product.prelovedSize}
                     </span>
-                  </span>
+                  ) : (
+                    <span className="preloved-size-pill">None</span>
+                  )}
                 </div>
 
               </div>
@@ -314,11 +418,20 @@ Product ID: ${product.id}
 
                 {/* WISHLIST */}
                 <button
-                  className="preloved-btn outline"
+                  className={`preloved-btn outline ${isWishlisted ? "active" : ""}`}
                   onClick={handleAddToWishlist}
                 >
-                  <span className="preloved-icon"><Heart /></span>
-                  {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
+                  <span className="preloved-icon">
+                    <Heart
+                      style={{
+                        fill: isWishlisted ? "#B85C38" : "none",
+                        stroke: isWishlisted ? "#B85C38" : "currentColor",
+                        color: isWishlisted ? "#B85C38" : "currentColor",
+                        transition: "all 0.2s ease"
+                      }}
+                    />
+                  </span>
+                  {isWishlisted ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                 </button>
 
               </div>
@@ -628,44 +741,44 @@ Product ID: ${product.id}
                         <div>
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Designer</span>
-                            <p>{product.designer}</p>
+                            <p>{product.designer || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Fabric</span>
-                            <p>{product.details?.fabric}</p>
+                            <p>{product.details?.fabric || product.material || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Embroidery</span>
-                            <p>{product.details?.technique}</p>
+                            <p>{product.details?.technique || product.technique || product.embellishments || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Includes</span>
-                            <p>{product.details?.includes}</p>
+                            <p>{product.details?.includes || product.setIncludes || "None"}</p>
                           </div>
                         </div>
 
                         <div>
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Category</span>
-                            <p>{product.subTitle}</p>
+                            <p>{product.category || product.subTitle || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Colour</span>
-                            <p>{product.details?.color}</p>
+                            <p>{product.details?.color || product.color || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Occasion</span>
-                            <p>{product.details?.occasion}</p>
+                            <p>{product.details?.occasion || product.occasion || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Origin</span>
-                            <p>{product.details?.origin}</p>
+                            <p>{product.details?.origin || product.origin || "None"}</p>
                           </div>
                         </div>
 
@@ -697,8 +810,7 @@ Product ID: ${product.id}
                   <div className="preloved-accordion-content">
 
                     <p className="preloved-story-text">
-                      {product.story ||
-                        "Worn once for a wedding celebration, this piece carries delicate handwork and timeless elegance. Carefully preserved and professionally cleaned, it remains in excellent condition with no visible damage."}
+                      {product.story || product.description || "None"}
                     </p>
 
                     {product.stylingNote && (
@@ -731,37 +843,64 @@ Product ID: ${product.id}
                   <div className="preloved-accordion-content">
 
                     {/* INTRO */}
-                    <p className="preloved-size-intro">
-                      {product.sizeNote || "Fits true to size. Blouse tailored for a 32\" bust with adjustable waist."}
-                    </p>
+                    {product.sizeNote || product.sizeGuide ? (
+                      <p className="preloved-size-intro">
+                        {product.sizeNote || product.sizeGuide}
+                      </p>
+                    ) : null}
 
                     {/* TABLE */}
-                    <table className="preloved-size-table">
-                      <thead>
-                        <tr>
-                          <th>Size</th>
-                          <th>Bust</th>
-                          <th>Waist</th>
-                          <th>Hips</th>
-                          <th>Height</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {product.sizeTable?.map((row, i) => (
-                          <tr
-                            key={i}
-                            className={row.recommended ? "active-row" : ""}
-                          >
-                            <td>{row.size}</td>
-                            <td>{row.bust}</td>
-                            <td>{row.waist}</td>
-                            <td>{row.hips}</td>
-                            <td>{row.height}</td>
+                    {product.sizeTable && product.sizeTable.length > 0 ? (
+                      <table className="preloved-size-table">
+                        <thead>
+                          <tr>
+                            <th>Size</th>
+                            <th>Bust</th>
+                            <th>Waist</th>
+                            <th>Hips</th>
+                            <th>Height</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+
+                        <tbody>
+                          {product.sizeTable.map((row, i) => (
+                            <tr
+                              key={i}
+                              className={row.recommended ? "active-row" : ""}
+                            >
+                              <td>{row.size || "None"}</td>
+                              <td>{row.bust || "None"}</td>
+                              <td>{row.waist || "None"}</td>
+                              <td>{row.hips || "None"}</td>
+                              <td>{row.height || "None"}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (product.measurements && (product.measurements.bust || product.measurements.waist || product.measurements.hips || product.measurements.length)) ? (
+                      <table className="preloved-size-table">
+                        <thead>
+                          <tr>
+                            <th>Size</th>
+                            <th>Bust</th>
+                            <th>Waist</th>
+                            <th>Hips</th>
+                            <th>Length</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="active-row">
+                            <td>{product.sizes?.[0] || product.prelovedSize || "Standard"}</td>
+                            <td>{product.measurements.bust || "-"}</td>
+                            <td>{product.measurements.waist || "-"}</td>
+                            <td>{product.measurements.hips || "-"}</td>
+                            <td>{product.measurements.length || "-"}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    ) : (!product.sizeNote && !product.sizeGuide) ? (
+                      <p className="preloved-size-intro" style={{ margin: 0 }}>None</p>
+                    ) : null}
 
                   </div>
                 )}
@@ -842,12 +981,16 @@ Product ID: ${product.id}
                 {isOpen("care") && (
                   <div className="preloved-accordion-content">
 
-                    {product.care?.map((item, i) => (
-                      <p key={i} className="preloved-care-item">
-                        <span className="preloved-care-dash">—</span>
-                        {item}
-                      </p>
-                    ))}
+                    {Array.isArray(product.care) && product.care.length > 0 ? (
+                      product.care.map((item, i) => (
+                        <p key={i} className="preloved-care-item">
+                          <span className="preloved-care-dash">—</span>
+                          {item}
+                        </p>
+                      ))
+                    ) : (
+                      <p className="preloved-care-item">None</p>
+                    )}
 
                   </div>
                 )}
@@ -873,19 +1016,25 @@ Product ID: ${product.id}
                   <div className="preloved-accordion-content">
 
                     {/* DELIVERY METHODS */}
-                    {product.shipping?.map((item, i) => (
-                      <p key={i} className="preloved-shipping-item">
-                        <span className="preloved-shipping-dash">—</span>
-                        {item.method}: {item.time}, {item.cost}
-                      </p>
-                    ))}
+                    {(Array.isArray(product.shipping) && product.shipping.length > 0) || (Array.isArray(product.packaging) && product.packaging.length > 0) ? (
+                      <>
+                        {Array.isArray(product.shipping) && product.shipping.map((item, i) => (
+                          <p key={i} className="preloved-shipping-item">
+                            <span className="preloved-shipping-dash">—</span>
+                            {typeof item === "string" ? item : `${item.method || "Shipping"}: ${item.time || ""}${item.cost ? `, ${item.cost}` : ""}`}
+                          </p>
+                        ))}
 
-                    {/* PACKAGING */}
-                    {product.packaging?.map((text, i) => (
-                      <p key={i} className="preloved-shipping-packaging">
-                        {text}
-                      </p>
-                    ))}
+                        {/* PACKAGING */}
+                        {Array.isArray(product.packaging) && product.packaging.map((text, i) => (
+                          <p key={i} className="preloved-shipping-packaging">
+                            {text}
+                          </p>
+                        ))}
+                      </>
+                    ) : (
+                      <p className="preloved-shipping-item">None</p>
+                    )}
 
                   </div>
                 )}

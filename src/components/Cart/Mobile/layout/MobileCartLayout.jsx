@@ -55,7 +55,7 @@ const MobileCartLayout = () => {
 
   const activeItems = (storeItems || []).filter(item => item.active !== false);
   const totals = calculateTotals(activeItems, activePromo);
-  const hasRentalItem = activeItems.some(item => item.type === "rental");
+  const hasRentalItem = activeItems.some(item => item.type === "rental" || item.type === "rent");
   const visibleItems = activeItems;
   const { grandTotal = 0 } = totals || {};
 
@@ -173,7 +173,10 @@ const MobileCartLayout = () => {
             {/* Cart Items - Section 5 */}
             <div className="mobile-cart-items">
               {["rental", "preloved", "new"].flatMap((type, i) => {
-                const items = visibleItems.filter(item => item.type === type);
+                const items = visibleItems.filter(item => {
+                  const itemType = (item.type === "rent" || item.type === "rental") ? "rental" : item.type;
+                  return itemType === type;
+                });
                 if (!items.length) return [];
                 return [
                   <ModeSeparator key={`sep-${type}`} type={type} dataRise={i + 2} />,
@@ -190,7 +193,7 @@ const MobileCartLayout = () => {
 
             {/* Promo Code - Section 6 */}
             <div data-rise="5">
-              <PromoCode onApply={setActivePromo} />
+              <PromoCode onApply={setActivePromo} subtotal={totals?.subtotal} />
             </div>
 
             <OrderSummary

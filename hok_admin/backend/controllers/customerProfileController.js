@@ -565,8 +565,21 @@ export const getProfileDashboard = async (req, res) => {
     // 1. Fetch Orders (Rentals & Purchases)
     const orderQueries = [];
     if (cId) orderQueries.push({ customerId: cId });
-    if (cEmail) orderQueries.push({ customerEmail: cEmail });
-    if (cPhone) orderQueries.push({ customerPhone: cPhone });
+    if (customer._id) {
+      orderQueries.push({ customerId: String(customer._id) });
+      orderQueries.push({ customerId: customer._id });
+    }
+    if (cEmail) {
+      orderQueries.push({ customerEmail: { $regex: new RegExp(`^${cEmail.trim()}$`, "i") } });
+    }
+    if (cPhone) {
+      const digits = String(cPhone).replace(/\D/g, "");
+      if (digits.length >= 10) {
+        orderQueries.push({ customerPhone: new RegExp(digits.slice(-10) + "$") });
+      } else {
+        orderQueries.push({ customerPhone: cPhone });
+      }
+    }
 
     let orders = [];
     if (orderQueries.length > 0) {
@@ -574,6 +587,35 @@ export const getProfileDashboard = async (req, res) => {
         orders = await Order.find({ $or: orderQueries }).sort({ createdAt: -1 });
       } catch (err) {
         console.error("Dashboard order query error:", err);
+      }
+    }
+
+    // Look up products to enrich missing titles/designers/images
+    const prodLookup = new Map();
+    const productIdsToFetch = new Set();
+    (orders || []).forEach((o) => {
+      (o.items || []).forEach((it) => {
+        if (it && it.productId) productIdsToFetch.add(String(it.productId));
+      });
+    });
+
+    if (productIdsToFetch.size > 0) {
+      try {
+        const idList = Array.from(productIdsToFetch);
+        const prods = await Product.find({
+          $or: [
+            { _id: { $in: idList } },
+            { productId: { $in: idList } },
+            { id: { $in: idList } },
+          ],
+        });
+        prods.forEach((p) => {
+          if (p._id) prodLookup.set(String(p._id), p);
+          if (p.productId) prodLookup.set(String(p.productId), p);
+          if (p.id) prodLookup.set(String(p.id), p);
+        });
+      } catch (e) {
+        console.error("Dashboard product lookup error:", e);
       }
     }
 
@@ -593,8 +635,23 @@ export const getProfileDashboard = async (req, res) => {
           items.find((i) => String(i.mode || "").toLowerCase() === "rental") ||
           items[0] ||
           {};
-        const startDate = item.rentalStartDate || "";
-        const endDate = item.rentalEndDate || "";
+        const matchedProd = item.productId ? prodLookup.get(String(item.productId)) : null;
+        const resolvedName = (item.productName && item.productName !== "Designer Piece")
+          ? item.productName
+          : (matchedProd?.title || matchedProd?.name || order.productName || "Designer Piece");
+        const resolvedDesigner = (item.designer && item.designer !== "House of Kaira")
+          ? item.designer
+          : (matchedProd?.designer || order.designer || "House of Kaira");
+        const resolvedImage =
+          item.image ||
+          (Array.isArray(item.photos) && item.photos[0]) ||
+          (Array.isArray(matchedProd?.images) && matchedProd.images[0]) ||
+          matchedProd?.image ||
+          order.image ||
+          "";
+
+        const startDate = item.rentalStartDate || order.rentalStartDate || "";
+        const endDate = item.rentalEndDate || order.rentalEndDate || "";
         const dates =
           startDate && endDate
             ? `${startDate}–${endDate}`
@@ -616,24 +673,47 @@ export const getProfileDashboard = async (req, res) => {
           depositStatus = "pending";
         }
 
+        const size = item.size || order.size || "M";
+        const fee = Number(order.grandTotal || order.orderValue || item.amount || 0);
+
         rentals.push({
           id: order.orderId || String(order._id),
-          piece: item.productName || order.productName || "Designer Piece",
-          designer: item.designer || "House of Kaira",
+          piece: resolvedName,
+          designer: resolvedDesigner,
           status: order.status || item.status || "Confirmed",
           dates,
-          fee: Number(order.grandTotal || order.orderValue || item.amount || 0),
+          size,
+          fee,
           depositStatus,
           depositAmount: order.depositHeld || item.deposit || 0,
-          image: item.image || (item.photos && item.photos[0]) || "",
+          image: resolvedImage,
           address: order.address || "",
           createdAt: order.createdAt,
         });
       } else {
         const item = items[0] || {};
-        const type = item.mode || order.mode || "Buy New";
-        const designer = item.designer || "House of Kaira";
-        const typeDetail = `${type} - ${designer}`;
+        const matchedProd = item.productId ? prodLookup.get(String(item.productId)) : null;
+        const resolvedName = (item.productName && item.productName !== "Designer Piece")
+          ? item.productName
+          : (matchedProd?.title || matchedProd?.name || order.productName || "Designer Piece");
+        const resolvedDesigner = (item.designer && item.designer !== "House of Kaira")
+          ? item.designer
+          : (matchedProd?.designer || order.designer || "House of Kaira");
+        const resolvedImage =
+          item.image ||
+          (Array.isArray(item.photos) && item.photos[0]) ||
+          (Array.isArray(matchedProd?.images) && matchedProd.images[0]) ||
+          matchedProd?.image ||
+          order.image ||
+          "";
+
+        const type = item.mode || order.mode || "Buy";
+        const typeDetail = `${type} - ${resolvedDesigner}`;
+        const orderedOn = new Date(order.createdAt || Date.now()).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
         const dateStr =
           order.status === "Delivered"
             ? `Delivered ${new Date(
@@ -643,23 +723,24 @@ export const getProfileDashboard = async (req, res) => {
                 month: "short",
                 year: "numeric",
               })}`
-            : `Ordered ${new Date(
-                order.createdAt || Date.now()
-              ).toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })}`;
+            : `Ordered ${orderedOn}`;
+
+        const amount = Number(order.grandTotal || order.orderValue || item.amount || 0);
+        const size = item.size || order.size || "M";
 
         purchases.push({
           id: order.orderId || String(order._id),
-          piece: item.productName || order.productName || "Designer Piece",
+          piece: resolvedName,
+          designer: resolvedDesigner,
           type,
           typeDetail,
           status: order.status || "Confirmed",
-          amount: Number(order.grandTotal || order.orderValue || item.amount || 0),
+          amount,
+          total: amount,
+          size,
+          orderedOn,
           date: dateStr,
-          image: item.image || (item.photos && item.photos[0]) || "",
+          image: resolvedImage,
           address: order.address || "",
           createdAt: order.createdAt,
         });
@@ -668,7 +749,7 @@ export const getProfileDashboard = async (req, res) => {
 
     // 2. Fetch Wishlist Products
     const wishlistIds = Array.isArray(customer.wishlist)
-      ? customer.wishlist.filter(Boolean)
+      ? customer.wishlist.filter(Boolean).map(String)
       : [];
     let savedPieces = [];
     if (wishlistIds.length > 0) {
@@ -677,22 +758,34 @@ export const getProfileDashboard = async (req, res) => {
           $or: [
             { _id: { $in: wishlistIds } },
             { productId: { $in: wishlistIds } },
+            { sku: { $in: wishlistIds } },
+            { id: { $in: wishlistIds } },
           ],
         });
 
         savedPieces = (products || []).map((p) => {
-          const isRental =
-            p.listingModes && p.listingModes.includes("RENTAL");
-          const isPreloved =
-            p.listingModes && p.listingModes.includes("PRELOVED");
+          const modesUpper = Array.isArray(p.listingModes)
+            ? p.listingModes.map((m) => String(m).toUpperCase())
+            : [];
+          const isRental = modesUpper.some((m) => m === "RENTAL" || m === "RENT");
+          const isPreloved = modesUpper.some((m) => m === "PRELOVED" || m === "PRE-LOVED");
           const mode = isRental ? "Rental" : isPreloved ? "Preloved" : "Buy New";
           const price = Number(
-            p.rentalPrice || p.listingPrice || p.originalRetailPrice || 0
+            p.rentalPrice || p.listingPrice || p.originalRetailPrice || p.price || 0
           );
 
+          const resolvedImage =
+            (Array.isArray(p.images) && p.images[0]) ||
+            (Array.isArray(p.image) && p.image[0]) ||
+            (typeof p.image === "string" && p.image) ||
+            "";
+
+          const pId = String(p._id);
           return {
-            id: String(p._id),
-            productId: p.productId,
+            _id: pId,
+            id: pId,
+            productId: p.productId || p.sku || pId,
+            sku: p.sku || p.productId,
             name: p.name,
             designer: p.designer || "",
             mode,
@@ -702,7 +795,13 @@ export const getProfileDashboard = async (req, res) => {
                 ? p.sizes
                 : ["Free Size"],
             colors: p.color ? [p.color] : [],
-            image: (Array.isArray(p.images) && p.images[0]) || "",
+            image: resolvedImage,
+            listingModes: p.listingModes || [mode.toUpperCase()],
+            rentalPrice: p.rentalPrice,
+            listingPrice: p.listingPrice,
+            originalRetailPrice: p.originalRetailPrice || p.retailPrice,
+            category: p.category || p.subTitle || "",
+            originalData: p,
           };
         });
       } catch (err) {

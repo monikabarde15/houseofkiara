@@ -1,11 +1,34 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import "../../../styles/maincategorypage/mobile/mobile-product-card.css";
-import { makeProductDetail } from "../../ProductList";
+import { navigateToProductDetail } from "../../../utils/productNavigation";
+import useWishlistStore from "../../../store/wishlistStore";
+import useAuthStore from "../../../store/authStore";
 
 const MobileProductCard = ({ item, onWishlistToggle }) => {
-  
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+
+  const targetId = String(item?.sku || item?.productId || item?._id || item?.id || "");
+  const prodSku = String(item?.sku || "");
+  const prodDbId = String(item?._id || "");
+  const prodPid = String(item?.productId || "");
+
+  const isWishlisted = targetId
+    ? wishlistItems.some((id) => {
+        const sid = String(id);
+        return (
+          sid === targetId ||
+          (prodSku && sid === prodSku) ||
+          (prodDbId && sid === prodDbId) ||
+          (prodPid && sid === prodPid)
+        );
+      })
+    : false;
+
   // Helper to format price
   const formatPrice = (price) => {
     if (!price) return "£0";
@@ -51,36 +74,36 @@ const MobileProductCard = ({ item, onWishlistToggle }) => {
   };
 
   const mode = getModeDetails();
-  const [isWishlisted, setIsWishlisted] = React.useState(false);
 
   const handleWishlistClick = (e) => {
+    e.preventDefault();
     e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
-    if (onWishlistToggle) {
-      onWishlistToggle(item.id, !isWishlisted);
+
+    if (!isAuthenticated) {
+      toast.error("Please login to use your wishlist");
+      navigate("/auth");
+      return;
+    }
+
+    if (targetId) {
+      const willBeActive = !isWishlisted;
+      toggleWishlist(targetId, item);
+      if (onWishlistToggle) {
+        onWishlistToggle(targetId, willBeActive);
+      }
+
+      if (willBeActive) {
+        toast.success("Added to your wishlist");
+      } else {
+        toast("Removed from your wishlist", {
+          icon: "✕",
+        });
+      }
     }
   };
 
   const handleCardClick = () => {
-    const { rent, preloved, isNew } = item;
-    const productData = makeProductDetail(item);
-    /*TEMP FIX STILL APPLIES FOR ID*/
-
-    if (rent && preloved) {
-      navigate(`/rentalandpreloved/1`, { state: { product: productData } });
-    }
-    else if (rent && isNew) {
-      navigate(`/rentalandbuy/1`, { state: { product: productData } });
-    }
-    else if (rent) {
-      navigate(`/onlyrental/1`, { state: { product: productData } });
-    }
-    else if (preloved) {
-      navigate(`/preloved/1`, { state: { product: productData } });
-    }
-    else {
-      navigate(`/buynew/1`, { state: { product: productData } });
-    }
+    navigateToProductDetail(navigate, item);
   };
 
   return (

@@ -32,6 +32,7 @@ const MobileCheckoutLayout = () => {
     const [submitCount, setSubmitCount] = useState(0);
     const [fieldErrors, setFieldErrors] = useState({});
     const [isOrderConfirmed, setIsOrderConfirmed] = useState(false);
+    const [placedOrderInfo, setPlacedOrderInfo] = useState(null);
     const [isProcessingOrder, setIsProcessingOrder] = useState(false);
     const [deliveryType, setDeliveryType] = useState("standard");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -45,7 +46,7 @@ const MobileCheckoutLayout = () => {
     const activePromo = checkoutData.activePromo || null;
 
     const totals = calculateTotals(checkoutItems, activePromo, deliveryType);
-    const hasRentalItem = checkoutItems.some(item => item.type === "rental");
+    const hasRentalItem = checkoutItems.some(item => item.type === "rental" || item.type === "rent");
 
     const handlePlaceOrder = () => {
         setSubmitCount(prev => prev + 1);
@@ -63,36 +64,83 @@ const MobileCheckoutLayout = () => {
             storeState.then(async (state) => {
                 const contact = state.contact;
                 const address = state.address;
+                const authState = (await import('../../../../store/authStore')).default.getState();
+                const authUser = authState.user;
+
+                const customerId = authUser?.customerId || authUser?._id || authUser?.id || undefined;
+                const customerEmail = contact.email || authUser?.email || "";
+                const customerPhone = contact.whatsapp || authUser?.phone || "";
+                const customerName = (contact.firstName || contact.lastName)
+                    ? `${contact.firstName} ${contact.lastName}`.trim()
+                    : (authUser?.name || "Customer");
+
+                const firstItem = checkoutItems[0] || {};
+                const firstProduct = firstItem.product || firstItem;
+                const rootRentalStart = firstItem.rentalDates?.start || firstItem.booking?.deliveryDate || "";
+                const rootRentalEnd = firstItem.rentalDates?.end || firstItem.booking?.returnDate || "";
+                const firstProductImage =
+                    (Array.isArray(firstProduct.images) && firstProduct.images[0]) ||
+                    firstProduct.image ||
+                    (Array.isArray(firstItem.images) && firstItem.images[0]) ||
+                    firstItem.image ||
+                    "";
+
                 const orderData = {
-                    orderId: `HOK-ORD-${Date.now()}`,
-                    customerName: `${contact.firstName} ${contact.lastName}`,
-                    customerEmail: contact.email,
-                    customerPhone: contact.whatsapp,
+                    orderId,
+                    customerId,
+                    customerName,
+                    customerEmail,
+                    customerPhone,
                     customerCity: address.city,
                     customerState: address.state,
                     address: `${address.address1}, ${address.city}, ${address.state} - ${address.pin}`,
                     mode: hasRentalItem ? 'Rental' : 'Buy',
+                    productName: firstProduct.title || firstProduct.name || firstItem.title || firstItem.name || "Designer Piece",
+                    designer: firstProduct.designer || firstItem.designer || "House of Kaira",
+                    image: firstProductImage,
+                    rentalStartDate: rootRentalStart,
+                    listerId: firstProduct.listerId || firstProduct.lister_id || firstItem.listerId || "",
+                    listerName: firstProduct.listerName || firstProduct.lister_name || firstItem.listerName || "",
                     discount: activePromo ? (activePromo.discount || totals?.discount || 0) : 0,
                     promoCode: activePromo ? activePromo.code : '',
                     promoDiscount: activePromo ? (activePromo.discount || totals?.discount || 0) : 0,
                     priceBeforePromo: totals?.subtotal || totals?.itemTotal || 0,
-                    items: checkoutItems.map(item => ({
-                        productId: item.id || item._id,
-                        productName: item.title || item.name,
-                        designer: item.designer,
-                        mode: item.type === 'rental' ? 'Rental' : 'Buy',
-                        size: item.size || 'M',
-                        quantity: item.quantity || 1,
-                        rentalStartDate: item.rentalDates?.start,
-                        rentalEndDate: item.rentalDates?.end,
-                        amount: item.price || item.modes?.rent?.pricing?.pricePerDay,
-                    }))
+                    grandTotal: totals?.grandTotal || 0,
+                    orderValue: totals?.grandTotal || 0,
+                    amount: totals?.grandTotal || 0,
+                    items: checkoutItems.map(item => {
+                        const p = item.product || item;
+                        const img =
+                            (Array.isArray(p.images) && p.images[0]) ||
+                            p.image ||
+                            (Array.isArray(item.images) && item.images[0]) ||
+                            item.image ||
+                            "";
+                        return {
+                            productId: p._id || p.productId || p.id || item.id || item._id,
+                            productName: p.title || p.name || item.title || item.name || "Designer Piece",
+                            designer: p.designer || item.designer || "House of Kaira",
+                            listerId: p.listerId || p.lister_id || item.listerId || "",
+                            listerName: p.listerName || p.lister_name || item.listerName || "",
+                            mode: (item.type === 'rental' || item.type === 'rent') ? 'Rental' : (item.type === 'preloved' ? 'Preloved' : 'Buy'),
+                            size: item.size || item.booking?.size || 'M',
+                            quantity: item.quantity || 1,
+                            rentalStartDate: item.rentalDates?.start || item.booking?.deliveryDate || "",
+                            rentalEndDate: item.rentalDates?.end || item.booking?.returnDate || "",
+                            amount: item.price || p.rentalPrice || p.price || 0,
+                            image: img,
+                        };
+                    })
                 };
 
                 try {
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (authState.token) {
+                        headers['Authorization'] = `Bearer ${authState.token}`;
+                    }
                     const res = await fetch('/api/orders', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers,
                         body: JSON.stringify(orderData)
                     });
                     const result = await res.json();
@@ -109,6 +157,12 @@ const MobileCheckoutLayout = () => {
                     console.error("Order network error:", error);
                 } finally {
                     setIsProcessingOrder(false);
+                    setPlacedOrderInfo({
+                        orderId,
+                        customerName,
+                        customerEmail,
+                        mode: hasRentalItem ? 'Rental' : 'Buy',
+                    });
                     setIsOrderConfirmed(true);
                 }
             });
@@ -294,6 +348,7 @@ const MobileCheckoutLayout = () => {
                 cartItems={checkoutItems}
                 activePromo={activePromo}
                 totals={totals}
+                orderInfo={placedOrderInfo}
                 onClose={() =>
                     setIsOrderConfirmed(false)
                 }

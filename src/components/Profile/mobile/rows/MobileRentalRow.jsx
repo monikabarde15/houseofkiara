@@ -28,10 +28,14 @@ const MobileRentalRow = ({ booking, onClick }) => {
   return (
     <div className="profile-mobile-prow" onClick={() => onClick(booking.id)}>
       {/* Thumbnail */}
-      <div className="profile-mobile-prow-img">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <rect x="2" y="2" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.18" />
-        </svg>
+      <div className="profile-mobile-prow-img" style={{ overflow: "hidden", borderRadius: "2px" }}>
+        {booking.image ? (
+          <img src={booking.image} alt={booking.piece || "Rental piece"} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        ) : (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="2" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.18" />
+          </svg>
+        )}
       </div>
 
       {/* Body */}

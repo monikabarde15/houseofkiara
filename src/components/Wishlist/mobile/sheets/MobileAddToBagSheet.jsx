@@ -3,6 +3,7 @@ import MobileProductSummary from './MobileProductSummary';
 import MobileSizeSelector from './MobileSizeSelector';
 import MobileRentalDateSelector from './MobileRentalDateSelector';
 import useCartStore from '../../../../store/cartStore';
+import useWishlistStore from '../../../../store/wishlistStore';
 import '../../../../styles/wishlist/mobile/sheets/mobile-add-to-bag-sheet.css';
 
 const MobileAddToBagSheet = ({ item, mode, showToast, onClose }) => {
@@ -97,13 +98,51 @@ const MobileAddToBagSheet = ({ item, mode, showToast, onClose }) => {
     }
     toastMsg += ' added to your bag';
     
-    const rawProd = item.rawProduct || item;
+    const rawProd = item.rawProduct || item.originalData || item;
+    const numPrice =
+      typeof item.price === "number"
+        ? item.price
+        : Number(String(item.price || "").replace(/[^\d]/g, "")) || 0;
+
+    let rentalWindowDays = 4;
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+      if (diff > 0) rentalWindowDays = diff;
+    }
+
+    const rentalBase = Number(rawProd.rentalPrice) || (rentalWindowDays === 4 ? numPrice : 0);
+    const perDay =
+      (rentalBase > 0 ? Math.round(rentalBase / 4) : 0) ||
+      rawProd.modes?.rent?.pricing?.pricePerDay ||
+      rawProd.rent?.pricing?.pricePerDay ||
+      item.perDayRate ||
+      rawProd.perDayRate ||
+      (numPrice ? Math.round(numPrice / 4) : 0);
+
+    const isRental = mode === "rent" || mode === "rental";
+    let calculatedPrice = numPrice || rawProd.rentalPrice || rawProd.listingPrice || rawProd.price || 0;
+    if (isRental) {
+      if (rentalWindowDays === 4 && rentalBase > 0) {
+        calculatedPrice = rentalBase;
+      } else if (perDay > 0) {
+        calculatedPrice = rentalWindowDays * perDay;
+      }
+    }
+
     useCartStore.getState().addToCart(rawProd, {
-      type: mode || "rental",
-      size: selectedSize,
-      deliveryDate: startDate,
-      returnDate: endDate,
+      type: isRental ? "rental" : (mode || "new"),
+      size: selectedSize || "Free Size",
+      deliveryDate: startDate || null,
+      returnDate: endDate || null,
+      rentalWindowDays,
+      price: calculatedPrice,
+      image: item.image || rawProd.image || (Array.isArray(rawProd.images) && rawProd.images[0]) || "",
     });
+
+    // Remove from wishlist store & server
+    useWishlistStore.getState().removeFromWishlist(item.id, item);
 
     showToast(toastMsg);
     onClose();

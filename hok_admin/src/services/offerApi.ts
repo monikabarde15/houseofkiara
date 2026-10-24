@@ -50,6 +50,8 @@ export const mapOffer = (item: any): Offer => ({
   counterPrice: item.counterOffers?.at(-1)?.amount,
   channel: item.channel || "Website",
   note: item.notes?.at(-1)?.message,
+  promoCode: item.promoCode || item.code || "",
+  assignedTo: item.assignedTo || "",
 });
 export const getOffers = async () => {
   const body = await request("/offers?limit=1000");
@@ -60,25 +62,30 @@ export const getOffers = async () => {
 };
 const routeId = (id: string, backendId?: string) =>
   encodeURIComponent(backendId || id);
-export const createOffer = async (offer: Partial<Offer>) =>
-  mapOffer(
-    (
-      await request("/offers", {
-        method: "POST",
-        body: JSON.stringify({
-          productName: offer.productName,
-          customerName: offer.customerName,
-          customerEmail: offer.customerEmail,
-          customerPhone: offer.phone,
-          originalAmount: offer.marketPrice,
-          offeredAmount: offer.offerPrice,
-          notes: offer.note,
-          assignedTo: offer.assignedTo,
-          channel: offer.channel,
-        }),
-      })
-    ).data,
-  );
+export const createOffer = async (offer: Partial<Offer>) => {
+  const res = await request("/offers", {
+    method: "POST",
+    body: JSON.stringify({
+      productId: offer.productId,
+      productName: offer.productName,
+      customerId: offer.customerId,
+      customerName: offer.customerName,
+      customerEmail: offer.customerEmail,
+      customerPhone: offer.phone,
+      originalAmount: offer.marketPrice,
+      offeredAmount: offer.offerPrice,
+      promoCode: offer.promoCode,
+      notes: offer.note,
+      assignedTo: offer.assignedTo,
+      channel: offer.channel,
+    }),
+  });
+  const mapped = mapOffer(res.data);
+  return {
+    ...mapped,
+    newCustomer: res.customer,
+  };
+};
 export const updateOfferStatus = async (
   id: string,
   status: Offer["status"],

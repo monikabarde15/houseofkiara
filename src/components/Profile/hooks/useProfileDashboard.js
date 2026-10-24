@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import useAuthStore from '../../../store/authStore';
+import useWishlistStore from '../../../store/wishlistStore';
 
 export const useProfileDashboard = () => {
   const { token, isAuthenticated } = useAuthStore();
+  const wishlistIds = useWishlistStore((state) => state.items);
   const [data, setData] = useState({
     rentals: [],
     purchases: [],
@@ -73,7 +75,7 @@ export const useProfileDashboard = () => {
 
   useEffect(() => {
     fetchDashboard();
-  }, [fetchDashboard]);
+  }, [fetchDashboard, wishlistIds]);
 
   return { ...data, refetch: fetchDashboard };
 };

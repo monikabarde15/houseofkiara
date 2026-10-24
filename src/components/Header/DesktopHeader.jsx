@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo/logo.png";
 import "../../styles/Header/desktop-header.css";
 import useAuthStore from "../../store/authStore";
+import useWishlistStore from "../../store/wishlistStore";
 
 const DesktopHeader = ({ onSearchOpen }) => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuthStore();
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const wishlistCount = Array.isArray(wishlistItems) ? wishlistItems.length : 0;
 
   const handleProfileClick = () => {
     navigate("/auth")
@@ -76,15 +79,20 @@ const DesktopHeader = ({ onSearchOpen }) => {
         <div className="hok-desktop-header-right">
 
           <button
-            className="hok-desktop-header-btn"
+            className="hok-desktop-header-btn hok-desktop-header-wishlist-wrap"
             aria-label="Wishlist"
             onClick={handleWishlistClick}
           >
+            {wishlistCount > 0 && (
+              <span className="hok-desktop-header-wishlist-badge">
+                {wishlistCount}
+              </span>
+            )}
             <svg viewBox="0 0 24 24">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
 
-            <span>Wishlist</span>
+            <span>Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ""}</span>
           </button>
 
           <button

@@ -1,6 +1,12 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import "../../styles/maincategorypage/filters.css"
-
+import {
+  matchCategory,
+  matchGender,
+  matchDesigner,
+  matchOccasion,
+  matchColor,
+} from "../../components/MainCategory/utils/filterHelpers";
 
 const FilterGroup = ({title , children, defaultOpen = true}) =>{
   const [open, setOpen] = useState(defaultOpen)
@@ -25,33 +31,37 @@ const FilterGroup = ({title , children, defaultOpen = true}) =>{
   );
 };
 const DEFAULT_GENDER = [
-  ["Women", 480],
-  ["Men", 320],
-  ["Unisex", 380],
+  ["Women", 11],
+  ["Men", 2],
+  ["Unisex", 0],
 ];
 
 const DEFAULT_CATEGORY = [
-  ["Bridal Lehengas", 480],
-  ["Party Lehengas", 320],
-  ["Anarkalis", 380],
-  ["Sarees", 640],
-  ["Sherwanis", 210],
-  ["Indo-Western", 290],
-  ["Salwar Suits", 160],
+  ["Anarkalis", 2],
+  ["Bridal Lehengas", 4],
+  ["Gowns", 1],
+  ["Indo-Western", 1],
+  ["Kurta Sets", 0],
+  ["Lehengas", 1],
+  ["Sarees", 2],
+  ["Sherwanis", 1],
 ];
 
 const DEFAULT_OCCASION = [
-  ["Wedding", 820],
-  ["Mehendi", 340],
-  ["Sangeet", 280],
-  ["Reception", 460],
-  ["Haldi", 190],
-  ["Festive", 510],
+  ["Wedding", 3],
+  ["Mehendi", 0],
+  ["Sangeet", 1],
+  ["Reception", 0],
+  ["Haldi", 1],
+  ["Festive", 8],
 ];
 
-const DEFAULT_DESIGNER = [];
+const DEFAULT_DESIGNER = [
+  ["Neha Tomar", 5],
+  ["Other Designers", 8],
+];
 
-function Filters({ filters, setFilters }) {
+function Filters({ filters, setFilters, products = [] }) {
   const [min, setMin] = useState("");
   const [max, setMax] = useState("");
   const [filterData, setFilterData] = useState({
@@ -80,6 +90,57 @@ function Filters({ filters, setFilters }) {
         console.error("Error loading filter counts:", err);
       });
   }, []);
+
+  // Compute exact counts from real database products so counts and listings match 100%
+  const computedFilterData = useMemo(() => {
+    if (!products || products.length === 0) return filterData;
+
+    const genderList = filterData.gender && filterData.gender.length > 0 ? filterData.gender : DEFAULT_GENDER;
+    const categoryList = filterData.category && filterData.category.length > 0 ? filterData.category : DEFAULT_CATEGORY;
+    const occasionList = filterData.occasion && filterData.occasion.length > 0 ? filterData.occasion : DEFAULT_OCCASION;
+    const designerList = filterData.designer && filterData.designer.length > 0 ? filterData.designer : DEFAULT_DESIGNER;
+
+    const genderCounts = genderList.map(([name]) => [
+      name,
+      products.filter((p) => matchGender(p.gender, name)).length,
+    ]);
+
+    const categoryCounts = categoryList.map(([name]) => [
+      name,
+      products.filter((p) => matchCategory(p.category, name)).length,
+    ]);
+
+    const occasionCounts = occasionList.map(([name]) => [
+      name,
+      products.filter((p) => matchOccasion(p.occasion, name)).length,
+    ]);
+
+    const designerCounts = designerList.map(([name]) => [
+      name,
+      products.filter((p) => matchDesigner(p.designer, name)).length,
+    ]);
+
+    return {
+      gender: genderCounts,
+      category: categoryCounts,
+      occasion: occasionCounts,
+      designer: designerCounts,
+    };
+  }, [products, filterData]);
+
+  // Extract only colors that actually exist in the database products
+  const dbColors = useMemo(() => {
+    const allColors = [
+      "red", "pink", "orange", "yellow", "green", "blue",
+      "purple", "maroon", "gold", "ivory", "black", "white"
+    ];
+    if (!products || products.length === 0) return allColors;
+
+    const present = allColors.filter((col) =>
+      products.some((p) => matchColor(p.color, col))
+    );
+    return present.length > 0 ? present : allColors;
+  }, [products]);
 
   useEffect(() => {
   setMin(
@@ -156,7 +217,7 @@ function Filters({ filters, setFilters }) {
       
       <FilterGroup title="GENDER" defaultOpen={true}>
         <div className="checkboxList">
-          {filterData.gender.map(([name, count]) => (
+          {computedFilterData.gender.map(([name, count]) => (
             <label className="checkboxRow" key={name}>
               <input
                 type="checkbox"
@@ -185,7 +246,7 @@ function Filters({ filters, setFilters }) {
 
       <FilterGroup title="CATEGORY" defaultOpen={true}>
         <div className="checkboxList">
-          {filterData.category.map(([name, count]) => (
+          {computedFilterData.category.map(([name, count]) => (
             <label className="checkboxRow" key={name}>
               <input
                 type="checkbox"
@@ -212,7 +273,7 @@ function Filters({ filters, setFilters }) {
       {/* OCCASION */}
       <FilterGroup title="OCCASION" defaultOpen={true}>
         <div className="checkboxList">
-          {filterData.occasion.map(([name, count]) => (
+          {computedFilterData.occasion.map(([name, count]) => (
             <label className="checkboxRow" key={name}>
 
               <input
@@ -242,7 +303,7 @@ function Filters({ filters, setFilters }) {
       {/*DESIGNER*/}
       <FilterGroup title="DESIGNER" defaultOpen={true}>
         <div className="checkboxList">
-          {filterData.designer.map(([name, count]) => (
+          {computedFilterData.designer.map(([name, count]) => (
             <label className="checkboxRow" key={name}>
 
               <input
@@ -342,10 +403,7 @@ function Filters({ filters, setFilters }) {
       <FilterGroup title="COLOUR" defaultOpen={true}>
         <div className="colorSwatches">
 
-          {[
-            "red", "pink", "orange", "yellow", "green", "blue",
-            "purple", "maroon", "gold", "ivory", "black", "white"
-          ].map((c) => (
+          {dbColors.map((c) => (
             <div
               key={c}
               className={`swatch ${c} ${filters.color.includes(c) ? "active" : ""

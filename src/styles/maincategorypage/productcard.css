@@ -125,6 +125,10 @@ a {
 }
 
 /* ===== ACTIVE (WISHLISTED) ===== */
+.wishlist-btn.active {
+  opacity: 1;
+}
+
 .wishlist-btn.active .wishlist-icon {
   fill: #B85C38;
   stroke: #B85C38;

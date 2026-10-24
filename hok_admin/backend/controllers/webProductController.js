@@ -481,10 +481,20 @@ export const getFiltersData = async (req, res) => {
       else genderCounts.Women++;
 
       // 2. Category calculation
-      const c = norm(product.category);
+      const c = (product.category || "").toLowerCase().replace(/s$/, "").trim();
       categoryTemplates.forEach(([name]) => {
-        const cn = norm(name);
-        if (c.includes(cn) || cn.includes(c)) {
+        const cn = name.toLowerCase().replace(/s$/, "").trim();
+        let match = false;
+        if (cn === "bridal lehenga") {
+          match = c.includes("bridal");
+        } else if (cn === "lehenga") {
+          match = c === "lehenga" || (c.includes("lehenga") && !c.includes("bridal"));
+        } else if (cn === "sherwani") {
+          match = c.includes("sherwani");
+        } else {
+          match = c === cn || c.includes(cn) || cn.includes(c);
+        }
+        if (match) {
           catCounts[name] = (catCounts[name] || 0) + 1;
         }
       });
@@ -643,6 +653,12 @@ export const getWebProductById = async (req, res) => {
           ? product.condition.toLowerCase()
           : "excellent",
       },
+      originalRetailPrice: product.originalRetailPrice || 0,
+      retailPrice: product.originalRetailPrice || 0,
+      originalPrice: product.originalRetailPrice || 0,
+      rentalPrice: product.rentalPrice || 0,
+      listingPrice: product.listingPrice || 0,
+      price: product.rentalPrice || product.listingPrice || 0,
       images: (product.images || []).map((img) =>
         typeof img === "string" && img.startsWith("/uploads/")
           ? `https://res.cloudinary.com/dv7jcu8ss/image/upload/houseofkaira/products/${img.replace("/uploads/", "")}`
@@ -693,6 +709,8 @@ export const getWebProductById = async (req, res) => {
           pricing: {
             pricePerDay: product.rentalPrice ? Math.round(product.rentalPrice / 4) : (product.perDayRate || 2500),
             minDays: 3,
+            originalRetailPrice: product.originalRetailPrice || 0,
+            retailPrice: product.originalRetailPrice || 0,
             windows: [
               {
                 id: "standard",

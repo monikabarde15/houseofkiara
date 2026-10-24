@@ -269,6 +269,16 @@ h1, h2, h3 {
   margin-bottom: 0px;
 }
 
+/* price header row */
+.rental-price-header-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
 /* main price */
 .rental-main-price {
   /* margin-top: 0px; */
@@ -286,6 +296,37 @@ h1, h2, h3 {
   font-size: 18px;
   font-weight: 300;
   color: #8A7E72;
+}
+
+/* savings wrap */
+.rental-savings-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* retail struck price */
+.rental-retail-struck {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: #8A7E72;
+  text-decoration: line-through;
+}
+
+/* save badge */
+.rental-save-badge {
+  background: #6B7E5A;
+  color: #FFFFFF;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  display: inline-block;
+  line-height: 1.3;
 }
 
 /* subline */

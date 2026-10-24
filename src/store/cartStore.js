@@ -1,6 +1,75 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+const normalizeCartItem = (item) => {
+  if (!item) return item;
+  let type = item.type;
+  if (type === "rent" || type === "rental") type = "rental";
+
+  const booking = { ...(item.booking || {}) };
+  const startDate = booking.deliveryDate || booking.startDate || item.startDate;
+  const endDate = booking.returnDate || booking.endDate || item.endDate;
+
+  let days = booking.rentalWindowDays;
+  if (!days && startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    if (diff > 0) days = diff;
+  }
+  if (!days && type === "rental") days = 4;
+  if (days) booking.rentalWindowDays = days;
+  if (!booking.deliveryDate && startDate) booking.deliveryDate = startDate;
+  if (!booking.returnDate && endDate) booking.returnDate = endDate;
+
+  let price = item.price;
+  const product = { ...(item.product || {}) };
+
+  if (type === "rental") {
+    const rentalBase = Number(product.rentalPrice) || (days === 4 && price ? Number(price) : 0);
+    const perDay =
+      (rentalBase > 0 ? Math.round(rentalBase / 4) : 0) ||
+      product.modes?.rent?.pricing?.pricePerDay ||
+      product.rent?.pricing?.pricePerDay ||
+      product.perDayRate ||
+      (price && days ? Math.round(Number(price) / days) : 0);
+
+    if (days === 4 && rentalBase > 0) {
+      price = rentalBase;
+    } else if (perDay > 0) {
+      price = (days || 4) * perDay;
+    } else if (product.rentalPrice) {
+      price = Number(product.rentalPrice);
+    }
+  } else if (type === "preloved") {
+    if (!price || price === 0) {
+      price =
+        product.prelovedPrice ||
+        product.preloved?.pricing?.price ||
+        product.modes?.preloved?.pricing?.price ||
+        product.price ||
+        0;
+    }
+  } else if (type === "new" || type === "buy-new") {
+    if (!price || price === 0) {
+      price =
+        product.listingPrice ||
+        product.buyPrice ||
+        product.retailPrice ||
+        product.modes?.buyNew?.pricing?.price ||
+        0;
+    }
+  }
+
+  return {
+    ...item,
+    type,
+    booking,
+    product,
+    price: price || item.price || 0,
+  };
+};
+
 const useCartStore = create(
   persist(
     (set, get) => ({
@@ -20,7 +89,8 @@ const useCartStore = create(
           const data = await res.json();
           if (data.success && Array.isArray(data.data)) {
             if (data.data.length > 0) {
-              set({ items: data.data });
+              const normalized = data.data.map(normalizeCartItem);
+              set({ items: normalized });
             } else if (get().items.length > 0) {
               syncCartWithBackend(get().items);
             }
@@ -38,11 +108,51 @@ const useCartStore = create(
           const productId = String(
             product._id || product.productId || product.id || Date.now()
           );
-          const type = details.type || "rental";
+          const rawType = details.type || product.type || "rental";
+          const type = (rawType === "rent" || rawType === "rental") ? "rental" : rawType;
+
+          // Compute rental days if rental
+          let days = details.rentalWindowDays;
+          const startDate = details.deliveryDate || details.startDate || details.rentalDates?.start;
+          const endDate = details.returnDate || details.endDate || details.rentalDates?.end;
+          if (!days && startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+            if (diff > 0) days = diff;
+          }
+          if (!days) days = 4;
+
+          const rentalBase = Number(product.rentalPrice) || (days === 4 && details.price ? Number(details.price) : 0);
+          const perDay =
+            (rentalBase > 0 ? Math.round(rentalBase / 4) : 0) ||
+            product.modes?.rent?.pricing?.pricePerDay ||
+            product.rent?.pricing?.pricePerDay ||
+            product.perDayRate ||
+            0;
+
+          let resolvedPrice = details.price;
+          if (type === "rental") {
+            if (days === 4 && rentalBase > 0) {
+              resolvedPrice = rentalBase;
+            } else if (perDay > 0 && days > 0) {
+              resolvedPrice = days * perDay;
+            } else if (!resolvedPrice || resolvedPrice === 0) {
+              resolvedPrice = rentalBase || product.listingPrice || product.price || 0;
+            }
+          } else if (type === "preloved") {
+            if (!resolvedPrice || resolvedPrice === 0) {
+              resolvedPrice = product.prelovedPrice || product.preloved?.pricing?.price || product.price || 0;
+            }
+          } else if (type === "new" || type === "buy-new") {
+            if (!resolvedPrice || resolvedPrice === 0) {
+              resolvedPrice = product.price || product.buyPrice || product.retailPrice || 0;
+            }
+          }
 
           // Check if item already exists in cart with the same type
           const existingItemIndex = state.items.findIndex(
-            (item) => String(item.id) === productId && item.type === type
+            (item) => String(item.id) === productId && (item.type === type || (type === "rental" && item.type === "rent"))
           );
 
           if (existingItemIndex !== -1) {
@@ -51,6 +161,7 @@ const useCartStore = create(
             const existing = updatedItems[existingItemIndex];
             updatedItems[existingItemIndex] = {
               ...existing,
+              type: type,
               booking: {
                 ...existing.booking,
                 size:
@@ -71,55 +182,59 @@ const useCartStore = create(
                   details.returnDate ||
                   details.rentalDates?.end ||
                   existing.booking?.returnDate,
-                rentalWindowDays:
-                  details.rentalWindowDays ||
-                  existing.booking?.rentalWindowDays,
+                rentalWindowDays: days,
               },
-              price:
-                details.price !== undefined ? details.price : existing.price,
+              price: resolvedPrice !== undefined && resolvedPrice > 0 ? resolvedPrice : existing.price,
               quantity: (existing.quantity || 1) + (details.quantity || 1),
             };
-            return { items: updatedItems };
+            return { items: updatedItems.map(normalizeCartItem) };
           }
 
           added = true;
+          const resolvedImg =
+            details.image ||
+            product.image ||
+            (Array.isArray(product.images) && product.images[0]) ||
+            "";
+
           const newItem = {
             id: productId,
+            productId: productId,
             type: type,
             source: details.source || "web",
-            product: product,
+            product: {
+              ...product,
+              image: resolvedImg || product.image,
+            },
+            title: product.title || product.name || "",
+            name: product.name || product.title || "",
+            designer: product.designer || "",
+            image: resolvedImg,
             booking: {
-              size: details.size || "M",
+              size: details.size || (Array.isArray(product.sizes) && product.sizes[0]) || "M",
               color: details.color || "",
               deliveryDate:
                 details.deliveryDate || details.rentalDates?.start || null,
               eventDate: details.eventDate || null,
               returnDate:
                 details.returnDate || details.rentalDates?.end || null,
-              rentalWindowDays: details.rentalWindowDays || 4,
+              rentalWindowDays: days,
             },
             quantity: details.quantity || 1,
-            price:
-              details.price !== undefined
-                ? details.price
-                : product.rentalPrice ||
-                  product.listingPrice ||
-                  product.price ||
-                  0,
+            price: resolvedPrice,
             active: true,
           };
 
-          return { items: [...state.items, newItem] };
+          return { items: [...state.items.map(normalizeCartItem), newItem] };
         });
 
         if (added) {
           // If in wishlist, remove it
           import("./wishlistStore").then((m) => {
             const wishlistStore = m.default.getState();
-            const pid = product._id || product.productId || product.id;
-            if (wishlistStore.items.some((id) => String(id) === String(pid))) {
-              wishlistStore.toggleWishlist(pid);
-            }
+            const pid =
+              product._id || product.productId || product.id || product.sku;
+            wishlistStore.removeFromWishlist(pid, product);
           });
           syncCartWithBackend(get().items);
           try {
@@ -151,6 +266,11 @@ const useCartStore = create(
     }),
     {
       name: "hok-cart",
+      onRehydrateStorage: () => (state) => {
+        if (state && Array.isArray(state.items)) {
+          state.items = state.items.map(normalizeCartItem);
+        }
+      },
     }
   )
 );

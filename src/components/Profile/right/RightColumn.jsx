@@ -1,7 +1,7 @@
 // src\components\Profile\right\RightColumn.jsx
 import React from 'react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import "../../../styles/Profile/right/RightColumn.css";
 import ActiveRentalAlert from '../sections/ActiveRentalAlert';
 import SectionLabel from '../ui/SectionLabel';
@@ -22,8 +22,23 @@ import HelpSupportSection from '../sections/HelpSupportSection';
 
 const RightColumn = ({ dashboard }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeView, setActiveView] = useState('overview');
   const [openRentalDetailId, setOpenRentalDetailId] = useState(null);
+
+  useEffect(() => {
+    if (location.state?.tab) {
+      const targetId = location.state.tab;
+      setTimeout(() => {
+        const section = document.getElementById(targetId);
+        const rightCol = document.getElementById('profile-right-column');
+        if (section && rightCol) {
+          const offset = section.offsetTop - rightCol.offsetTop - 20;
+          rightCol.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+        }
+      }, 150);
+    }
+  }, [location.state]);
 
   const handleAlertBarClick = (id) => {
     setOpenRentalDetailId(id || dashboard?.activeRentalAlert?.id || null);
@@ -41,7 +56,7 @@ const RightColumn = ({ dashboard }) => {
 
   // For viewing all the Wishlist items
   const handleViewAllWishlist = () => {
-    setActiveView('wishlist');
+    navigate('/wishlist');
   };
 
   // For listing another piece
@@ -85,7 +100,7 @@ const RightColumn = ({ dashboard }) => {
             linkText={rentalsCount > 3 ? "View all" : ""} 
             onLinkClick={handleViewAllRentals}
           />
-          <MyRentalsSection rentals={dashboard?.rentals} openDetailId={openRentalDetailId} setOpenDetailId={setOpenRentalDetailId} />
+          <MyRentalsSection rentals={dashboard?.rentals} openDetailId={openRentalDetailId} setOpenDetailId={setOpenRentalDetailId} onUpdate={dashboard?.refetch} />
 
           {/* My Purchases Section */}
           <SectionLabel 
@@ -102,7 +117,7 @@ const RightColumn = ({ dashboard }) => {
             title="SAVED PIECES"
             count={savedPiecesCount}
             countLabel="SAVED"
-            linkText={savedPiecesCount > 3 ? "View all" : ""}
+            linkText={savedPiecesCount > 0 ? "View all" : ""}
             onLinkClick={handleViewAllWishlist}
           />
           <SavedPiecesSection savedPieces={dashboard?.savedPieces} onUpdate={dashboard?.refetch} />
@@ -161,7 +176,7 @@ const RightColumn = ({ dashboard }) => {
         
         {/* Full view rentals */}
         <div id="profile-fv-right-rentals" className={`profile-right-view ${activeView === 'rentals' ? 'profile-right-active' : ''}`}>
-          <ViewRentals rentals={dashboard?.rentals} onBack={handleBackToOverview} />
+          <ViewRentals rentals={dashboard?.rentals} onBack={handleBackToOverview} onUpdate={dashboard?.refetch} />
         </div>
         
         {/* Full view purchases */}

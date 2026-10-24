@@ -16,39 +16,13 @@ const MobileWishlistCard = ({
 
   const handleAddToBag = (e) => {
     e.stopPropagation();
-
-    const needsSize =
-      piece.sizes &&
-      piece.sizes.length > 1;
-
-    const needsColor =
-      piece.colors &&
-      piece.colors.length > 1;
-
-    const isRental =
-      piece.mode === "Rental";
-
-    const needsModal =
-      needsSize ||
-      needsColor ||
-      isRental;
-
-    if (needsModal) {
-      onAddToBag(piece);
-
-      return;
-    }
-
-    /*
-      TODO:
-      Direct add-to-bag integration
-    */
+    onAddToBag?.(piece);
   };
 
   const handleViewProduct = (e) => {
     e.stopPropagation();
 
-    onViewProduct(piece.id);
+    onViewProduct(piece.id, piece);
   };
 
   return (

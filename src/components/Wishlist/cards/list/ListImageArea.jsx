@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { navigateToProductDetail } from "../../../../utils/productNavigation";
 import ListModeStrip from "./ListModeStrip";
 import ListUnavailabilityVeil from "./ListUnavailabilityVeil";
 import "../../../../styles/wishlist/cards/list/list-image-area.css";
 
 const ListImageArea = ({ product, type, onRemove }) => {  // Remove onShowToast from props
+  const navigate = useNavigate();
   const [isHeartAnimating, setIsHeartAnimating] = useState(false);
 
   const getImageClass = () => {
@@ -37,13 +40,21 @@ const ListImageArea = ({ product, type, onRemove }) => {  // Remove onShowToast 
     onRemove();
   };
 
+  const handleImageClick = () => {
+    navigateToProductDetail(navigate, product);
+  };
+
   const isUnavailable = product.unavailable;
 
   return (
     <div className="desk-wishlist-list-image-column">
       <div className="desk-wishlist-list-image-wrapper">
         <div className={`desk-wishlist-list-image ${getImageClass()}`}>
-          <div className="desk-wishlist-list-image-inner">
+          <div
+            className="desk-wishlist-list-image-inner"
+            onClick={handleImageClick}
+            style={{ cursor: "pointer" }}
+          >
             {product.image ? (
               <img
                 src={product.image}

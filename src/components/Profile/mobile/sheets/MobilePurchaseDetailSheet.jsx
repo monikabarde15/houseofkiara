@@ -25,13 +25,14 @@ const MobilePurchaseDetailSheet = ({
         return "profile-mobile-b-del";
 
       case "Processing":
+      case "Confirmed":
         return "profile-mobile-b-pro";
 
       case "Cancelled":
         return "profile-mobile-b-can";
 
       default:
-        return "";
+        return "profile-mobile-b-pro";
     }
   };
 
@@ -272,13 +273,13 @@ const MobilePurchaseDetailSheet = ({
   };
 
   const currentRows =
-    detailRows[order.status] || [];
+    detailRows[order.status] || detailRows.Processing || detailRows.Delivered || [];
 
   const currentNote =
-    notes[order.status];
+    notes[order.status] || notes.Processing;
 
   const currentActions =
-    actions[order.status];
+    actions[order.status] || actions.Processing;
 
   return (
     <MobileBottomSheet
@@ -294,26 +295,30 @@ const MobilePurchaseDetailSheet = ({
         <div
           className="profile-mobile-sheet-product-img"
           style={{
-            "--sheet-bg":
-              order.imageGradient
+            overflow: "hidden",
+            borderRadius: "2px"
           }}
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-          >
-            <rect
-              x="4"
-              y="4"
-              width="16"
-              height="16"
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-          </svg>
+          {order.image ? (
+            <img src={order.image} alt={order.piece || "Product"} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          ) : (
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <rect
+                x="4"
+                y="4"
+                width="16"
+                height="16"
+                stroke="currentColor"
+                strokeWidth="1"
+              />
+            </svg>
+          )}
         </div>
 
         <div className="profile-mobile-sheet-product-info">

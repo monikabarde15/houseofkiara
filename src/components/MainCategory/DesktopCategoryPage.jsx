@@ -15,6 +15,15 @@ import staticProducts from "../../data/mainCategoryPageData";
 // For dropdown nav
 import { buildHeading } from "../../components/MainCategory/utils/buildHeading"
 import { buildBreadcrumb } from "../../components/MainCategory/utils/buildBreadcrumb";
+import {
+  matchCategory,
+  matchGender,
+  matchDesigner,
+  matchOccasion,
+  matchColor,
+  matchBudget,
+  getPriceNumber,
+} from "../../components/MainCategory/utils/filterHelpers";
 import { useSearchParams } from "react-router-dom";
 
 function DesktopCategoryPage({ productsData }) {
@@ -56,20 +65,44 @@ function DesktopCategoryPage({ productsData }) {
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
 
+  const activeCategory =
+    filters.category.length > 0
+      ? filters.category[0]
+      : filters.category.length === 0 && category
+      ? ""
+      : category;
+  const activeDesigner =
+    filters.designer.length > 0
+      ? filters.designer[0]
+      : filters.designer.length === 0 && designer
+      ? ""
+      : designer;
+  const activeOccasion =
+    filters.occasion.length > 0
+      ? filters.occasion[0]
+      : filters.occasion.length === 0 && occasion
+      ? ""
+      : occasion;
+  const activeSection =
+    filters.rentType.length > 0
+      ? filters.rentType[0]
+      : filters.rentType.length === 0 && section
+      ? ""
+      : section || mode || "rent";
+
   const heading = buildHeading({
-    section,
-    category,
-    designer,
-    occasion,
+    section: activeSection,
+    category: activeCategory,
+    designer: activeDesigner,
+    occasion: activeOccasion,
   });
 
-  const breadcrumb =
-    buildBreadcrumb({
-      section,
-      category,
-      designer,
-      occasion,
-    });
+  const breadcrumb = buildBreadcrumb({
+    section: activeSection,
+    category: activeCategory,
+    designer: activeDesigner,
+    occasion: activeOccasion,
+  });
   useEffect(() => {
     const nextFilters = {
       rentType: [],
@@ -166,173 +199,104 @@ function DesktopCategoryPage({ productsData }) {
 
   // FILTERING
 
-  const filteredProducts = products.filter(
-    (item) => {
-      // DESIGNER
+  const isRentActive =
+    filters.rentType.includes("rent") ||
+    (!filters.rentType.includes("preloved") &&
+      !filters.rentType.includes("new") &&
+      (section === "rent" || mode === "rent"));
+  const isBuyActive =
+    filters.rentType.includes("preloved") ||
+    filters.rentType.includes("new") ||
+    section === "preloved" ||
+    section === "new" ||
+    mode === "preloved" ||
+    mode === "new";
 
-      if (filters.designer.length) {
-        const normD = (s) => (s || "").toLowerCase().replace(/[^a-z]/g, "");
-        const isOtherSelected = filters.designer.includes("Other Designers");
-        const specificSelected = filters.designer.filter((d) => d !== "Other Designers");
-        const isExactMatch = specificSelected.some(
-          (d) =>
-            normD(d) === normD(item.designer) ||
-            (item.designer && normD(item.designer).includes(normD(d)))
-        );
-        const isOtherMatch =
-          isOtherSelected &&
-          !specificSelected.some((d) => normD(d) === normD(item.designer));
-
-        if (!isExactMatch && !isOtherMatch) {
-          return false;
-        }
-      }
-
-      // RENT TYPE
-
-      if (filters.rentType.length) {
-        const match =
-          filters.rentType.some(
-            (type) => {
-              if (type === "rent")
-                return item.rent;
-
-              if (
-                type === "preloved"
-              )
-                return item.preloved;
-
-              if (type === "new")
-                return item.isNew;
-
-              return false;
-            }
-          );
-
-        if (!match) return false;
-      }
-
-      // GENDER
-
-      if (filters.gender.length) {
-        const match = filters.gender.some(
-          (g) => item.gender && item.gender.toLowerCase() === g.toLowerCase()
-        );
-        if (!match) {
-          return false;
-        }
-      }
-
-      // CATEGORY
-
-      if (filters.category.length) {
-        const normCat = (s) => (s || "").toLowerCase().replace(/s$/, "").trim();
-        const match = filters.category.some(
-          (c) =>
-            normCat(c) === normCat(item.category) ||
-            (item.category && normCat(item.category).includes(normCat(c)))
-        );
-        if (!match) {
-          return false;
-        }
-      }
-
-      // OCCASION
-
-      if (filters.occasion.length) {
-        const match = filters.occasion.some(
-          (o) =>
-            item.occasion &&
-            item.occasion.toLowerCase().includes(o.toLowerCase())
-        );
-        if (!match) {
-          return false;
-        }
-      }
-
-      // BUDGET
-
-      const price = getPrice(
-        item.buyPrice
-      );
-
-      if (
-        price <
-        filters.budget.min ||
-        price >
-        filters.budget.max
-      ) {
-        return false;
-      }
-
-      // SIZE
-
-      if (filters.size.length) {
-        const itemSizes = Array.isArray(item.size)
-          ? item.size.map((s) => String(s).toUpperCase())
-          : [String(item.size || "").toUpperCase()];
-        const match = filters.size.some((s) =>
-          itemSizes.includes(String(s).toUpperCase())
-        );
-
-        if (!match) return false;
-      }
-
-      // COLOR
-
-      if (filters.color.length) {
-        const itemColors = Array.isArray(item.color)
-          ? item.color.map((c) => String(c).toLowerCase())
-          : [String(item.color || "").toLowerCase()];
-        const match = filters.color.some((c) =>
-          itemColors.some((ic) => ic.includes(c.toLowerCase()))
-        );
-
-        if (!match) return false;
-      }
-
-      return true;
+  const filteredProducts = products.filter((item) => {
+    // DESIGNER
+    if (filters.designer.length) {
+      const match = filters.designer.some((d) => matchDesigner(item.designer, d));
+      if (!match) return false;
     }
-  );
+
+    // RENT TYPE
+    if (filters.rentType.length) {
+      const match = filters.rentType.some((type) => {
+        if (type === "rent") return item.rent;
+        if (type === "preloved") return item.preloved;
+        if (type === "new") return item.isNew;
+        return false;
+      });
+      if (!match) return false;
+    }
+
+    // GENDER
+    if (filters.gender.length) {
+      const match = filters.gender.some((g) => matchGender(item.gender, g));
+      if (!match) return false;
+    }
+
+    // CATEGORY
+    if (filters.category.length) {
+      const match = filters.category.some((c) => matchCategory(item.category, c));
+      if (!match) return false;
+    }
+
+    // OCCASION
+    if (filters.occasion.length) {
+      const match = filters.occasion.some((o) => matchOccasion(item.occasion, o));
+      if (!match) return false;
+    }
+
+    // BUDGET
+    if (!matchBudget(item, filters.budget, isRentActive, isBuyActive)) {
+      return false;
+    }
+
+    // SIZE
+    if (filters.size.length) {
+      const itemSizes = Array.isArray(item.size)
+        ? item.size.map((s) => String(s).toUpperCase())
+        : [String(item.size || "").toUpperCase()];
+      const match = filters.size.some((s) =>
+        itemSizes.includes(String(s).toUpperCase())
+      );
+      if (!match) return false;
+    }
+
+    // COLOR
+    if (filters.color.length) {
+      const match = filters.color.some((c) => matchColor(item.color, c));
+      if (!match) return false;
+    }
+
+    return true;
+  });
 
   // SORTING
 
-  const sortedProducts = [
-    ...filteredProducts,
-  ].sort((a, b) => {
-    const priceA = getPrice(
-      a.buyPrice
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const priceA = isRentActive
+      ? getPriceNumber(a.rentPrice) || getPriceNumber(a.buyPrice)
+      : getPriceNumber(a.buyPrice) || getPriceNumber(a.rentPrice);
+
+    const priceB = isRentActive
+      ? getPriceNumber(b.rentPrice) || getPriceNumber(b.buyPrice)
+      : getPriceNumber(b.buyPrice) || getPriceNumber(b.rentPrice);
+
+    const originalA = getPriceNumber(
+      a.originalPrice || a.mrp || 0
     );
 
-    const priceB = getPrice(
-      b.buyPrice
-    );
-
-    const originalA = getPrice(
-      a.originalPrice ||
-      a.mrp ||
-      0
-    );
-
-    const originalB = getPrice(
-      b.originalPrice ||
-      b.mrp ||
-      0
+    const originalB = getPriceNumber(
+      b.originalPrice || b.mrp || 0
     );
 
     const discountA =
-      originalA
-        ? ((originalA - priceA) /
-          originalA) *
-        100
-        : 0;
+      originalA ? ((originalA - priceA) / originalA) * 100 : 0;
 
     const discountB =
-      originalB
-        ? ((originalB - priceB) /
-          originalB) *
-        100
-        : 0;
+      originalB ? ((originalB - priceB) / originalB) * 100 : 0;
 
     switch (sortBy) {
       case "low":
@@ -345,24 +309,16 @@ function DesktopCategoryPage({ productsData }) {
         return b.id - a.id;
 
       case "popular":
-        return (
-          (b.popularity || 0) -
-          (a.popularity || 0)
-        );
+        return (b.popularity || 0) - (a.popularity || 0);
 
       case "discount":
-        return (
-          discountB - discountA
-        );
+        return discountB - discountA;
 
       case "recommended":
         return (
-          (b.popularity || 0) *
-          0.6 +
+          (b.popularity || 0) * 0.6 +
           (b.id || 0) * 0.4 -
-          ((a.popularity || 0) *
-            0.6 +
-            (a.id || 0) * 0.4)
+          ((a.popularity || 0) * 0.6 + (a.id || 0) * 0.4)
         );
 
       default:

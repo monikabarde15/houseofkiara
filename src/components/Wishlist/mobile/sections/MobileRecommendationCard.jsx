@@ -1,8 +1,15 @@
-import { useState } from 'react';
+import useWishlistStore from '../../../../store/wishlistStore';
 import '../../../../styles/wishlist/mobile/sections/mobile-recommendation-card.css';
 
 const MobileRecommendationCard = ({ item, onAddToWishlist, onCardTap }) => {
-  const [isHeartFilled, setIsHeartFilled] = useState(false);
+  const wishlistItems = useWishlistStore((state) => state.items);
+
+  const isHeartFilled = wishlistItems.some((id) =>
+    [item.id, item.sku, item._id, item.productId]
+      .filter(Boolean)
+      .map(String)
+      .includes(String(id))
+  );
 
   const getModeLabel = () => {
     switch (item.mode) {
@@ -19,10 +26,15 @@ const MobileRecommendationCard = ({ item, onAddToWishlist, onCardTap }) => {
 
   const handleHeartClick = (e) => {
     e.stopPropagation();
-    // Fill the heart icon
-    setIsHeartFilled(true);
-    // Toast: "[name] added to your wishlist"
-    onAddToWishlist?.(`${item.name} added to your wishlist`);
+    const raw = item.rawProduct || item;
+    const targetId = raw.sku || raw.productId || raw._id || raw.id || item.id;
+    useWishlistStore.getState().toggleWishlist(targetId, raw);
+
+    if (!isHeartFilled) {
+      onAddToWishlist?.(`${item.name} added to your wishlist`);
+    } else {
+      onAddToWishlist?.(`${item.name} removed from your wishlist`);
+    }
   };
 
   const handleCardClick = () => {
@@ -34,7 +46,7 @@ const MobileRecommendationCard = ({ item, onAddToWishlist, onCardTap }) => {
       {/* Image Area */}
       <div 
         className="wishlist-mobile-recommendation-card__image"
-        style={{ backgroundColor: item.imageBg }}
+        style={{ backgroundColor: item.imageBg || '#FAF7F2' }}
       >
         {/* Heart Button */}
         <button 
@@ -50,24 +62,34 @@ const MobileRecommendationCard = ({ item, onAddToWishlist, onCardTap }) => {
           </svg>
         </button>
         
-        {/* Garment SVG */}
-        <svg className="wishlist-mobile-recommendation-card__garment" viewBox="0 0 38 50" fill="none">
-          <path d="M10 12L19 6L28 12L31 21L28 31L19 44L10 31L7 21L10 12Z" 
-            stroke={item.strokeColor} 
-            strokeWidth="0.65" 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            fill="none"/>
-          <path d="M19 6V44" stroke={item.strokeColor} strokeWidth="0.65" strokeLinecap="round" fill="none"/>
-        </svg>
-        
-        {/* Designer label on image */}
-        <span 
-          className="wishlist-mobile-recommendation-card__designer-label"
-          style={{ color: item.labelColor }}
-        >
-          {item.designer}
-        </span>
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={item.name}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : (
+          <>
+            {/* Garment SVG */}
+            <svg className="wishlist-mobile-recommendation-card__garment" viewBox="0 0 38 50" fill="none">
+              <path d="M10 12L19 6L28 12L31 21L28 31L19 44L10 31L7 21L10 12Z" 
+                stroke={item.strokeColor || "rgba(201, 169, 110, 0.22)"} 
+                strokeWidth="0.65" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                fill="none"/>
+              <path d="M19 6V44" stroke={item.strokeColor || "rgba(201, 169, 110, 0.22)"} strokeWidth="0.65" strokeLinecap="round" fill="none"/>
+            </svg>
+            
+            {/* Designer label on image */}
+            <span 
+              className="wishlist-mobile-recommendation-card__designer-label"
+              style={{ color: item.labelColor || "#8A7E72" }}
+            >
+              {item.designer}
+            </span>
+          </>
+        )}
       </div>
       
       {/* Content */}
@@ -84,7 +106,7 @@ const MobileRecommendationCard = ({ item, onAddToWishlist, onCardTap }) => {
         {/* Price label and Price */}
         <div className="wishlist-mobile-recommendation-card__price-row">
           <span className="wishlist-mobile-recommendation-card__price-label">{item.priceLabel}</span>
-          <span className="wishlist-mobile-recommendation-card__price">₹{item.price.toLocaleString('en-IN')}</span>
+          <span className="wishlist-mobile-recommendation-card__price">₹{Number(item.price).toLocaleString('en-IN')}</span>
           {item.mode === 'rent' && (
             <span className="wishlist-mobile-recommendation-card__rent-suffix"> / {item.rentalDuration}</span>
           )}

@@ -31,7 +31,7 @@ const GSTBreakdown = ({
           <div className="gst-text-group">
             <p className="gst-title">Taxes & GST</p>
             <p className="gst-note-inline">
-              included in total
+              {rentalGST > 0 ? "18% GST" : (newGST > 0 && prelovedGST === 0 ? "included in price" : "applicable GST")}
             </p>
           </div>
 
