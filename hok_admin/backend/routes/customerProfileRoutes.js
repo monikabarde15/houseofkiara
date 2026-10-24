@@ -9,6 +9,7 @@ import {
   deleteAddress,
   setDefaultAddress,
   getProfileDashboard,
+  getProfileSubmissions,
 } from "../controllers/customerProfileController.js";
 import { cancelOrder } from "../controllers/customerAuthController.js";
 import { requireCustomerAuth } from "../middleware/authMiddleware.js";
@@ -17,6 +18,7 @@ const router = express.Router();
 
 // Customer Profile Endpoints (Self-service, requires authentication)
 router.get("/dashboard", requireCustomerAuth, getProfileDashboard);
+router.get("/submissions", requireCustomerAuth, getProfileSubmissions);
 router.post("/orders/:orderId/cancel", requireCustomerAuth, cancelOrder);
 router.get("/", requireCustomerAuth, getProfile);
 router.get("/me", requireCustomerAuth, getProfile);

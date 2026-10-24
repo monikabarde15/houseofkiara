@@ -11,11 +11,11 @@ const SuccessPanel = () => {
       </div>
 
       {/* Tag */}
-      <div className="lyp-success__tag">SUBMISSION RECEIVED</div>
+      <div className="lyp-success__tag">PIECE SAVE HO GAYA HAI · SUBMISSION RECEIVED</div>
 
       {/* Title */}
       <h2 className="lyp-success__title">
-        Thank you — we'll be in touch within <em>48 hours</em>.
+        Piece save ho gaya hai, submit ho gaya! Thank you — we'll be in touch within <em>48 hours</em>.
       </h2>
 
       {/* Description */}

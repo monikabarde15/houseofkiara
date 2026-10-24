@@ -3,6 +3,7 @@ import Customer from "../models/Customer.js";
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 import Submission from "../models/Submission.js";
+import Lister from "../models/Lister.js";
 import {
   validateProfileUpdate,
   validateAddressInput,
@@ -873,30 +874,92 @@ export const getProfileDashboard = async (req, res) => {
       }
     }
 
-    // 4. Fetch Submissions
-    const subQueries = [];
-    if (cId) subQueries.push({ listerId: cId });
-    if (cEmail) subQueries.push({ listerId: cEmail });
-    if (cPhone) subQueries.push({ listerId: cPhone });
-
+    // 4. Fetch Submissions (search comprehensively by phone, email, customerId, and linked lister accounts)
     let submissions = [];
-    if (subQueries.length > 0) {
-      try {
-        const subs = await Submission.find({ $or: subQueries }).sort({
+    try {
+      const phoneDigits = normalizePhone(cPhone);
+      const emailRegex = cEmail ? new RegExp(`^${cEmail.trim()}$`, "i") : null;
+
+      const subQueries = [];
+      if (cId) {
+        subQueries.push({ customerId: cId });
+        subQueries.push({ customer_id: cId });
+        subQueries.push({ listerId: cId });
+      }
+      if (customer._id) {
+        subQueries.push({ customerId: String(customer._id) });
+        subQueries.push({ customer_id: String(customer._id) });
+      }
+      if (emailRegex) {
+        subQueries.push({ email: emailRegex });
+        subQueries.push({ listerEmail: emailRegex });
+      }
+      if (phoneDigits && phoneDigits.length >= 10) {
+        const phoneRegex = new RegExp(phoneDigits.slice(-10) + "$");
+        subQueries.push({ phone: phoneRegex });
+        subQueries.push({ listerPhone: phoneRegex });
+        subQueries.push({ mobile: phoneRegex });
+      }
+
+      // Also match any Lister accounts belonging to this customer
+      const listerConditions = [];
+      if (emailRegex) listerConditions.push({ email: emailRegex });
+      if (phoneDigits && phoneDigits.length >= 10) {
+        listerConditions.push({ phone: new RegExp(phoneDigits.slice(-10) + "$") });
+      }
+      if (cId) listerConditions.push({ listerId: cId });
+      if (customer.name) {
+        const nameSlug = customer.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        listerConditions.push({ listerId: new RegExp(nameSlug, "i") });
+      }
+
+      if (listerConditions.length > 0) {
+        const matchedListers = await Lister.find({ $or: listerConditions });
+        for (const ml of matchedListers) {
+          if (ml.listerId) {
+            subQueries.push({ listerId: ml.listerId });
+            subQueries.push({ listerID: ml.listerId });
+            subQueries.push({ lister_id: ml.listerId });
+          }
+        }
+      }
+
+      if (subQueries.length > 0) {
+        const rawSubs = await Submission.find({ $or: subQueries }).sort({
           createdAt: -1,
         });
-        submissions = (subs || []).map((sub) => {
+
+        // Deduplicate submissions by subid / _id
+        const seenSubs = new Set();
+        const subs = [];
+        for (const s of rawSubs) {
+          const key = s.subid || String(s._id);
+          if (!seenSubs.has(key)) {
+            seenSubs.add(key);
+            subs.push(s);
+          }
+        }
+
+        submissions = subs.map((sub) => {
           let status = "Under Review";
           if (sub.decision && typeof sub.decision === "object") {
-            status = sub.decision.status || "Under Review";
+            status = sub.decision.status || sub.decision.what || "Under Review";
           } else if (sub.status) {
             status = sub.status;
           }
+          if (status === "Pending" || status === "New" || status === "In Review") {
+            status = "Under Review";
+          }
+
+          const firstImage =
+            sub.media && sub.media.length > 0
+              ? sub.media[0]?.url || sub.media[0]
+              : "";
 
           return {
             id: sub.subid || String(sub._id),
             name: sub.piece || "Submission",
-            designer: sub.designer || "",
+            designer: sub.designer || "Designer Atelier",
             status,
             submittedDate:
               sub.submitted ||
@@ -908,20 +971,28 @@ export const getProfileDashboard = async (req, res) => {
                   })
                 : "Recent"),
             preferredOutcome: sub.intent || "Rent & Resale",
+            image: firstImage,
+            images: (sub.media || []).map((m) => m.url || m),
             imageGradient: "linear-gradient(160deg, #F0E8D8, #E0CDA8)",
-            pieceType: sub.category || "Piece",
-            colourFamily: sub.colour || "",
-            size: sub.size || "",
-            condition: sub.conditionClaim || "",
-            timesWorn: sub.timesWorn || "",
-            originalPrice: sub.originalPrice || "",
-            photosSubmitted: sub.photos ? `${sub.photos} photos` : "Photos submitted",
-            pickupCity: sub.pickupCity || "",
+            pieceType: sub.category || sub.pieceType || "Piece",
+            colourFamily: sub.colour || sub.color || "Multi",
+            size: sub.size || "Standard",
+            condition: sub.conditionClaim || sub.condition || "Excellent",
+            timesWorn: sub.timesWorn || (sub.worn ? `${sub.worn} times` : "1-2 times"),
+            originalPrice: sub.originalPrice
+              ? String(sub.originalPrice).replace(/[^0-9]/g, "")
+              : "",
+            photosSubmitted: sub.photos
+              ? `${sub.photos} photos`
+              : sub.media?.length
+                ? `${sub.media.length} photos`
+                : "Photos submitted",
+            pickupCity: sub.pickupCity || sub.city || "",
           };
         });
-      } catch (err) {
-        console.error("Dashboard submission query error:", err);
       }
+    } catch (err) {
+      console.error("Dashboard submission query error:", err);
     }
 
     // 5. Active Rental Alert
@@ -980,6 +1051,158 @@ export const getProfileDashboard = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal server error fetching profile dashboard.",
+      error: error.message,
+    });
+  }
+};
+
+// GET /api/customer/profile/submissions
+export const getProfileSubmissions = async (req, res) => {
+  try {
+    const customerId = req.user?._id || req.customer?._id || req.user?.id;
+    if (!customerId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required.",
+      });
+    }
+
+    const customer = await Customer.findById(customerId);
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer profile not found.",
+      });
+    }
+
+    const cId = customer.customerId;
+    const cEmail = customer.email;
+    const cPhone = customer.phone;
+
+    const phoneDigits = normalizePhone(cPhone);
+    const emailRegex = cEmail ? new RegExp(`^${cEmail.trim()}$`, "i") : null;
+
+    const subQueries = [];
+    if (cId) {
+      subQueries.push({ customerId: cId });
+      subQueries.push({ customer_id: cId });
+      subQueries.push({ listerId: cId });
+    }
+    if (customer._id) {
+      subQueries.push({ customerId: String(customer._id) });
+      subQueries.push({ customer_id: String(customer._id) });
+    }
+    if (emailRegex) {
+      subQueries.push({ email: emailRegex });
+      subQueries.push({ listerEmail: emailRegex });
+    }
+    if (phoneDigits && phoneDigits.length >= 10) {
+      const phoneRegex = new RegExp(phoneDigits.slice(-10) + "$");
+      subQueries.push({ phone: phoneRegex });
+      subQueries.push({ listerPhone: phoneRegex });
+      subQueries.push({ mobile: phoneRegex });
+    }
+
+    const listerConditions = [];
+    if (emailRegex) listerConditions.push({ email: emailRegex });
+    if (phoneDigits && phoneDigits.length >= 10) {
+      listerConditions.push({ phone: new RegExp(phoneDigits.slice(-10) + "$") });
+    }
+    if (cId) listerConditions.push({ listerId: cId });
+    if (customer.name) {
+      const nameSlug = customer.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      listerConditions.push({ listerId: new RegExp(nameSlug, "i") });
+    }
+
+    if (listerConditions.length > 0) {
+      const matchedListers = await Lister.find({ $or: listerConditions });
+      for (const ml of matchedListers) {
+        if (ml.listerId) {
+          subQueries.push({ listerId: ml.listerId });
+          subQueries.push({ listerID: ml.listerId });
+          subQueries.push({ lister_id: ml.listerId });
+        }
+      }
+    }
+
+    let submissions = [];
+    if (subQueries.length > 0) {
+      const rawSubs = await Submission.find({ $or: subQueries }).sort({
+        createdAt: -1,
+      });
+
+      const seenSubs = new Set();
+      const subs = [];
+      for (const s of rawSubs) {
+        const key = s.subid || String(s._id);
+        if (!seenSubs.has(key)) {
+          seenSubs.add(key);
+          subs.push(s);
+        }
+      }
+
+      submissions = subs.map((sub) => {
+        let status = "Under Review";
+        if (sub.decision && typeof sub.decision === "object") {
+          status = sub.decision.status || sub.decision.what || "Under Review";
+        } else if (sub.status) {
+          status = sub.status;
+        }
+        if (status === "Pending" || status === "New" || status === "In Review") {
+          status = "Under Review";
+        }
+
+        const firstImage =
+          sub.media && sub.media.length > 0
+            ? sub.media[0]?.url || sub.media[0]
+            : "";
+
+        return {
+          id: sub.subid || String(sub._id),
+          name: sub.piece || "Submission",
+          designer: sub.designer || "Designer Atelier",
+          status,
+          submittedDate:
+            sub.submitted ||
+            (sub.createdAt
+              ? new Date(sub.createdAt).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "Recent"),
+          preferredOutcome: sub.intent || "Rent & Resale",
+          image: firstImage,
+          images: (sub.media || []).map((m) => m.url || m),
+          imageGradient: "linear-gradient(160deg, #F0E8D8, #E0CDA8)",
+          pieceType: sub.category || sub.pieceType || "Piece",
+          colourFamily: sub.colour || sub.color || "Multi",
+          size: sub.size || "Standard",
+          condition: sub.conditionClaim || sub.condition || "Excellent",
+          timesWorn: sub.timesWorn || (sub.worn ? `${sub.worn} times` : "1-2 times"),
+          originalPrice: sub.originalPrice
+            ? String(sub.originalPrice).replace(/[^0-9]/g, "")
+            : "",
+          photosSubmitted: sub.photos
+            ? `${sub.photos} photos`
+            : sub.media?.length
+              ? `${sub.media.length} photos`
+              : "Photos submitted",
+          pickupCity: sub.pickupCity || sub.city || "",
+        };
+      });
+    }
+
+    return res.json({
+      success: true,
+      count: submissions.length,
+      data: submissions,
+    });
+  } catch (error) {
+    console.error("GetProfileSubmissions Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error fetching customer submissions.",
       error: error.message,
     });
   }

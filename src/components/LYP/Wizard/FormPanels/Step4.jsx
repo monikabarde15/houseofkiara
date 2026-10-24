@@ -1,46 +1,103 @@
 import React, { useState } from "react";
 import "../../../../styles/LYP/wizard/formPanels.css";
 import { Send, Check } from "lucide-react";
+import toast from "react-hot-toast";
+import useAuthStore from "../../../../store/authStore";
 
 const Step4 = ({ formData, photos, onBack, setStep, setSubmitted }) => {
-  const [agreed, setAgreed] = useState(false);
+  const [agreed, setAgreed] = useState(true);
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Submit and Validation
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+
     if (!agreed) {
       setError("Please agree to the terms to submit");
+      toast.error("Please agree to the terms to submit");
       return;
     }
 
+    if (isSubmitting) return;
+
     setError("");
+    setIsSubmitting(true);
+    toast.loading("Piece submit ho raha hai...", { id: "lyp-submit" });
 
     try {
       const formDataToSend = new FormData();
 
       // append fields
-      Object.entries(formData).forEach(([key, value]) => {
+      Object.entries(formData || {}).forEach(([key, value]) => {
         formDataToSend.append(key, value || "");
       });
 
+      // append customer info if logged in
+      const authUser = useAuthStore.getState().user;
+      const authToken = useAuthStore.getState().token;
+      if (authUser) {
+        if (authUser.customerId) formDataToSend.append("customerId", authUser.customerId);
+        if (authUser._id) formDataToSend.append("customer_id", String(authUser._id));
+      }
+
       // append photos
-      photos.forEach((file) => {
-        formDataToSend.append("photos[]", file.file);
+      (photos || []).forEach((file) => {
+        if (file?.file) {
+          formDataToSend.append("photos[]", file.file);
+        } else if (file instanceof File) {
+          formDataToSend.append("photos[]", file);
+        }
       });
 
-      // API call
-      await fetch(
-        `${import.meta.env.VITE_API_BASE_URL || ""}/api/lister-submissions`,
-        {
-          method: "POST",
-          body: formDataToSend,
+      console.log("Submitting piece data to /api/lister-submissions...");
+
+      // API call using same-origin /api endpoint (works with Vite proxy & production)
+      const headers = {};
+      if (authToken) {
+        headers["Authorization"] = `Bearer ${authToken}`;
+      }
+
+      const response = await fetch("/api/lister-submissions", {
+        method: "POST",
+        headers,
+        body: formDataToSend,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || "Failed to submit piece. Please try again.",
+        );
+      }
+
+      const resData = await response.json();
+      console.log("Submission successfully saved:", resData);
+
+      toast.success(resData.message || "Piece save ho gaya hai, submit ho gaya!", {
+        id: "lyp-submit",
+        duration: 6000,
+        icon: "🎉",
+        style: {
+          background: "#1A2E1A",
+          color: "#E8F5E9",
+          border: "1px solid #4CAF50",
+          fontSize: "14px",
+          fontWeight: "500",
+          padding: "12px 18px",
         },
-      );
+      });
 
       setSubmitted(true);
-      // window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      console.error("Submission failed:", err);
+      setError(err.message || "Something went wrong. Please try again.");
+      toast.error(err.message || "Submission failed. Please try again.", {
+        id: "lyp-submit",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -238,11 +295,15 @@ const Step4 = ({ formData, photos, onBack, setStep, setSubmitted }) => {
         <div className="lyp-step__progress">Step 4 of 4</div>
 
         <button
+          type="button"
+          id="btn-submit-piece"
           className="lyp-btn-primary lyp-btn-submit"
           onClick={handleSubmit}
+          disabled={isSubmitting}
+          style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "not-allowed" : "pointer" }}
         >
           <Send size={16} className="lyp-btn-icon" />
-          <span>SUBMIT MY PIECE</span>
+          <span>{isSubmitting ? "SUBMITTING PIECE..." : "SUBMIT MY PIECE"}</span>
         </button>
       </div>
     </div>

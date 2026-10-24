@@ -29,10 +29,18 @@ const SubmissionDetailPanel = ({ submission, isOpen, onClose }) => {
       {/* Panel Body */}
       <div className="profile-sub-dpb">
         {/* Image Cell */}
-        <div className="profile-sub-dp-img-cell" style={{ background: submission.imageGradient }}>
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-            <rect x="4" y="4" width="28" height="28" stroke="currentColor" strokeWidth="1" opacity="0.18" />
-          </svg>
+        <div className="profile-sub-dp-img-cell" style={{ background: submission.imageGradient, overflow: 'hidden' }}>
+          {submission.image ? (
+            <img
+              src={submission.image}
+              alt={submission.name}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <rect x="4" y="4" width="28" height="28" stroke="currentColor" strokeWidth="1" opacity="0.18" />
+            </svg>
+          )}
         </div>
 
         {/* Info Area */}

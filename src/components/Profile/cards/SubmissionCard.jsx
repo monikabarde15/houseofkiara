@@ -19,10 +19,18 @@ const SubmissionCard = ({ submission, isActive, onClick }) => {
       onClick={() => onClick(submission.id)}
     >
       {/* Thumbnail */}
-      <div className="profile-sub-thumb" style={{ background: submission.imageGradient }}>
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1" opacity="0.28" />
-        </svg>
+      <div className="profile-sub-thumb" style={{ background: submission.imageGradient, overflow: 'hidden' }}>
+        {submission.image ? (
+          <img
+            src={submission.image}
+            alt={submission.name}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1" opacity="0.28" />
+          </svg>
+        )}
       </div>
 
       {/* Info */}
