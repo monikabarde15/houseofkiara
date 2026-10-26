@@ -1,3 +1,4 @@
+
 /* src/styles/Header/header.css */
 
 /* ==========================================
@@ -29,12 +30,12 @@
   .hok-header-desktop {
     display: none;
   }
-
+  
   .hok-mobile-only {
     display: block;
   }
 
-  .desktop-only-announce {
+  .desktop-only-announce{
     display: none;
   }
 }

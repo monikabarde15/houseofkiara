@@ -189,7 +189,7 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
         new Date().toISOString(),
       base,
       discount,
-      customerPaid: Math.max(0, base - discount),
+      customerPaid: Number(order.grandTotal || order.amount) || Math.max(0, base - discount),
       status: order.status || "Confirmed",
     };
   });
@@ -212,6 +212,8 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
         code={code}
         derivedState={derivedState!}
         redemptions={redemptions}
+        orderValue={orderValueThroughCode}
+        discountFunded={discountFunded}
         onBack={handleBack}
         onPause={handlePause}
         onResume={handleResume}

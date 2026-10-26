@@ -1,10 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../../../styles/LYP/wizard/formPanels.css";
 import ConditionCard from "./components/ConditionCard";
 import OutcomeCard from "./components/OutcomeCard";
 import { Sparkle, Diamond, Circle } from "lucide-react";
 
 const Step2 = ({ onNext, onBack, formData, setFormData }) => {
+  const [categories, setCategories] = useState([]);
+  const [designers, setDesigners] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchAdminData = async () => {
+      try {
+        const [catRes, desRes] = await Promise.allSettled([
+          fetch("/api/categories"),
+          fetch("/api/designers"),
+        ]);
+
+        if (catRes.status === "fulfilled" && catRes.value.ok) {
+          const catData = await catRes.value.json();
+          const items = Array.isArray(catData) ? catData : catData.data || [];
+          if (isMounted && items.length > 0) {
+            setCategories(items);
+          }
+        }
+
+        if (desRes.status === "fulfilled" && desRes.value.ok) {
+          const desData = await desRes.value.json();
+          const items = Array.isArray(desData) ? desData : desData.data || [];
+          if (isMounted && items.length > 0) {
+            setDesigners(items);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch categories/designers:", err);
+      }
+    };
+
+    fetchAdminData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const validate = () => {
     const newErrors = {};
 
@@ -35,6 +73,21 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
   const condition = formData.condition || "";
   const outcome = formData.outcome || "";
   const [errors, setErrors] = useState({});
+
+  const mensKeywords = [
+    "sherwani",
+    "bandhgala",
+    "kurta pyjama",
+    "jodhpuri",
+    "nehru",
+    "suit",
+    "tuxedo",
+  ];
+  const isMens = (name) =>
+    mensKeywords.some((k) => (name || "").toLowerCase().includes(k));
+
+  const adminWomen = categories.filter((c) => !isMens(c.name));
+  const adminMen = categories.filter((c) => isMens(c.name));
 
   return (
     <div className="lyp-step">
@@ -80,29 +133,60 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
                 Select piece type
               </option>
 
-              <optgroup label="Women’s">
-                <option>Bridal Lehenga</option>
-                <option>Reception / Party Lehenga</option>
-                <option>Saree</option>
-                <option>Sharara Set</option>
-                <option>Anarkali</option>
-                <option>Palazzo Set</option>
-                <option>Kurta Set</option>
-                <option>Blouse (standalone)</option>
-                <option>Dupatta (standalone)</option>
-              </optgroup>
+              {categories.length > 0 ? (
+                <>
+                  {adminWomen.length > 0 && (
+                    <optgroup label="Women’s">
+                      {adminWomen.map((cat) => (
+                        <option key={cat.id || cat.name} value={cat.name}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
 
-              <optgroup label="Men’s">
-                <option>Sherwani</option>
-                <option>Bandhgala / Jodhpuri</option>
-                <option>Kurta Pyjama</option>
-                <option>Indo-Western Set</option>
-              </optgroup>
+                  {adminMen.length > 0 && (
+                    <optgroup label="Men’s">
+                      {adminMen.map((cat) => (
+                        <option key={cat.id || cat.name} value={cat.name}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
 
-              <optgroup label="Other">
-                <option>Accessories</option>
-                <option>Other</option>
-              </optgroup>
+                  <optgroup label="Other">
+                    <option value="Accessories">Accessories</option>
+                    <option value="Other">Other</option>
+                  </optgroup>
+                </>
+              ) : (
+                <>
+                  <optgroup label="Women’s">
+                    <option>Bridal Lehenga</option>
+                    <option>Reception / Party Lehenga</option>
+                    <option>Saree</option>
+                    <option>Sharara Set</option>
+                    <option>Anarkali</option>
+                    <option>Palazzo Set</option>
+                    <option>Kurta Set</option>
+                    <option>Blouse (standalone)</option>
+                    <option>Dupatta (standalone)</option>
+                  </optgroup>
+
+                  <optgroup label="Men’s">
+                    <option>Sherwani</option>
+                    <option>Bandhgala / Jodhpuri</option>
+                    <option>Kurta Pyjama</option>
+                    <option>Indo-Western Set</option>
+                  </optgroup>
+
+                  <optgroup label="Other">
+                    <option>Accessories</option>
+                    <option>Other</option>
+                  </optgroup>
+                </>
+              )}
             </select>
             {errors.piece_type && (
               <div className="lyp-error">{errors.piece_type}</div>
@@ -115,6 +199,7 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
               DESIGNER / BRAND <span>*</span>
             </label>
             <input
+              list="admin-designers-list"
               value={formData.designer}
               onChange={(e) => {
                 const value = e.target.value;
@@ -130,6 +215,13 @@ const Step2 = ({ onNext, onBack, formData, setFormData }) => {
               }}
               className={`lyp-input ${errors.designer ? "lyp-input--error" : ""}`}
             />
+            {designers.length > 0 && (
+              <datalist id="admin-designers-list">
+                {designers.map((d) => (
+                  <option key={d.id || d.name} value={d.name} />
+                ))}
+              </datalist>
+            )}
             {errors.designer && (
               <div className="lyp-error">{errors.designer}</div>
             )}

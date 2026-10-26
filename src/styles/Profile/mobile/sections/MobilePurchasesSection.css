@@ -11,10 +11,13 @@
    Item Block
    ============================================ */
 
-.profile-mobile-purchases-section .profile-mobile-item-block {
-  background: #fffefb;
+.profile-mobile-purchases-section
+.profile-mobile-item-block {
+  background: #FFFEFB;
 
-  border-top: 1px solid #f0eae0;
+  border-top:
+    1px solid #F0EAE0;
 
-  border-bottom: 1px solid #f0eae0;
+  border-bottom:
+    1px solid #F0EAE0;
 }

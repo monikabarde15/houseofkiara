@@ -48,8 +48,8 @@ const Step3 = ({ onNext, onBack, photos, setPhotos }) => {
 
     if (updated.length >= 3) {
       setError(""); // clear error when valid
-    } else if (newError) {
-      setError(newError);
+    } else {
+      setError("Please upload at least 3 photos to continue");
     }
   };
 

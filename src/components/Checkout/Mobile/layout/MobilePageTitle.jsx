@@ -1,7 +1,10 @@
 import React from "react";
 import "../../../../styles/checkout/mobile/layout/mobile-page-title.css";
 
-const MobilePageTitle = ({ cartItems = [], grandTotal = 0 }) => {
+const MobilePageTitle = ({
+  cartItems = [],
+  grandTotal = 0,
+}) => {
   const pieceCount = cartItems.length;
 
   return (
@@ -14,7 +17,8 @@ const MobilePageTitle = ({ cartItems = [], grandTotal = 0 }) => {
       {/* RIGHT NOTE - TWO LINES as per mobile spec */}
       <div className="mobile-page-title__note">
         {pieceCount} {pieceCount === 1 ? "piece" : "pieces"}
-        <br />₹{grandTotal.toLocaleString()}
+        <br />
+        ₹{grandTotal.toLocaleString()}
       </div>
     </div>
   );

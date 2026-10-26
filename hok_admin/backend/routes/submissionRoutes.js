@@ -9,12 +9,14 @@ import {
   getAssignees,
 } from "../controllers/submissionController.js";
 
+import upload from "../middleware/upload.js";
+
 const router = express.Router();
 
 router.get("/", getSubmissions);
 router.get("/assignees", getAssignees);
 router.get("/:id", getSubmission);
-router.post("/", createSubmission);
+router.post("/", upload.any(), createSubmission);
 router.put("/:id", updateSubmission);
 router.put("/:id/decision", updateSubmissionDecision);
 router.put("/:id/more-info", requestMoreInfo);

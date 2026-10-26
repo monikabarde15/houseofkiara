@@ -135,7 +135,17 @@ function PayoutCard({
     approvedBy: string,
   ) => void;
 }) {
-  const [pct, setPct] = useState("55");
+  const transactionAmt =
+    payout.transactionAmount ||
+    (payout.listerShare ?? 0) + (payout.hokCommission ?? 0);
+
+  const initialPct =
+    payout.payoutPercentage ||
+    (transactionAmt > 0 && payout.listerShare
+      ? Math.round((payout.listerShare / transactionAmt) * 100)
+      : 80);
+
+  const [pct, setPct] = useState(initialPct.toString());
   const [amt, setAmt] = useState((payout.listerShare ?? 0).toString());
   const [approvedBy, setApprovedBy] = useState(
     payout.submissionAssignedTo ||
@@ -145,9 +155,24 @@ function PayoutCard({
     "Automated pending payout generation for completed order.",
   );
 
-  const transactionAmt =
-    payout.transactionAmount ||
-    (payout.listerShare ?? 0) + (payout.hokCommission ?? 0);
+  const handlePctChange = (newPctStr: string) => {
+    setPct(newPctStr);
+    const numPct = parseFloat(newPctStr);
+    if (!isNaN(numPct)) {
+      const calculatedAmt = Math.round(transactionAmt * (numPct / 100));
+      setAmt(calculatedAmt.toString());
+    }
+  };
+
+  const handleAmtChange = (newAmtStr: string) => {
+    setAmt(newAmtStr);
+    const numAmt = parseFloat(newAmtStr.replace(/,/g, ""));
+    if (!isNaN(numAmt) && transactionAmt > 0) {
+      const calculatedPct = Math.round((numAmt / transactionAmt) * 100);
+      setPct(calculatedPct.toString());
+    }
+  };
+
   const proposedHokCommission = transactionAmt - Number(amt);
 
   return (
@@ -202,7 +227,7 @@ function PayoutCard({
               <input
                 type="text"
                 value={pct}
-                onChange={(e) => setPct(e.target.value)}
+                onChange={(e) => handlePctChange(e.target.value)}
                 className="w-full rounded-md border border-[#E5DFD5] bg-[#FAF8F5] px-3 py-2 text-sm font-medium text-[#1E1412] focus:border-[#C39A38] focus:outline-none"
               />
             </div>
@@ -234,7 +259,7 @@ function PayoutCard({
               <input
                 type="text"
                 value={amt}
-                onChange={(e) => setAmt(e.target.value)}
+                onChange={(e) => handleAmtChange(e.target.value)}
                 className="w-full rounded-md border-[#C39A38] bg-[#FAF8F5] px-3 py-2 text-2xl font-bold text-[#C39A38] focus:outline-none shadow-[0_0_0_1px_#C39A38]"
               />
             </div>

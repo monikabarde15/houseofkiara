@@ -47,7 +47,7 @@ const MobileConfirmationLayout = () => {
     {
       type: "rental",
       title: "Rental Booking",
-      items: confirmationItems.filter((item) => item.type === "rental"),
+      items: confirmationItems.filter((item) => item.type === "rental" || item.type === "rent"),
       status: "Dispatching soon",
       tag: "soon",
     },

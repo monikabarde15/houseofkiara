@@ -190,6 +190,8 @@ export interface Offer {
   channel?: string;
   phone?: string;
   note?: string;
+  promoCode?: string;
+  assignedTo?: string;
 }
 
 export interface Designer {

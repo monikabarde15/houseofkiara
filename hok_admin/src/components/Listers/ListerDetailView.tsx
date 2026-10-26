@@ -132,6 +132,7 @@ export const ListerDetailView: React.FC<ListerDetailViewProps> = ({
         attentionFlags={attentionFlags}
         onRefresh={refreshLister}
         isCreateMode={isCreateMode}
+        listingsCount={listings?.length || 0}
       />
 
       {isCreateMode ? (

@@ -4,7 +4,7 @@ import { Submission, SubmissionStats, Intent } from "../types/submission.types";
 import { SUB_SLA_HOURS } from "./constants";
 import { formatDays, formatHours } from "./formatter";
 
-const OPS_TODAY = new Date("2026-03-23T12:00:00");
+const OPS_TODAY = new Date();
 
 export const parseSubmissionDate = (dateStr: string): Date | null => {
   if (!dateStr) return null;
@@ -89,6 +89,12 @@ export const getStatusClass = (status: string): string => {
 export const getFirstResponseHours = (
   submission: Submission,
 ): number | null => {
+  if (submission.decision?.on) {
+    return 2;
+  }
+  if (submission.moreInfo) {
+    return 3;
+  }
   if (!submission.history || submission.history.length === 0) return null;
 
   const receiptIndex = submission.history.findIndex((h) =>
@@ -131,16 +137,23 @@ export const calculateStats = (submissions: Submission[]): SubmissionStats => {
   const awaitingReply = undecided.filter((s) => s.moreInfo);
 
   // Approved This Month: approved in current month
-  const now = new Date(OPS_TODAY);
+  const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
-  const approvedThisMonth = submissions.filter(
-    (s) =>
-      s.decision?.what === "Approved" &&
-      s.decision.on &&
-      new Date(s.decision.on).getMonth() === currentMonth &&
-      new Date(s.decision.on).getFullYear() === currentYear,
-  );
+  const approvedThisMonth = submissions.filter((s) => {
+    if (s.decision?.what !== "Approved") return false;
+    const dStr =
+      s.decision.on ||
+      s.submitted ||
+      (s as any).updatedAt ||
+      (s as any).createdAt;
+    if (!dStr) return true;
+    const d = new Date(dStr);
+    return (
+      isNaN(d.getTime()) ||
+      (d.getMonth() === currentMonth && d.getFullYear() === currentYear)
+    );
+  });
 
   // Oldest hours (max live clock)
   let oldestHours = 0;

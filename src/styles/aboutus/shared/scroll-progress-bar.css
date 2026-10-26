@@ -7,7 +7,7 @@
   left: 0;
   height: 2px;
   width: 0%;
-  background: #c9a96e;
+  background: #C9A96E; 
   z-index: 999;
   transition: width 0.08s linear;
   pointer-events: none;

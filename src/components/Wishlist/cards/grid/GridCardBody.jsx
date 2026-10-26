@@ -1,20 +1,27 @@
+import { useNavigate } from "react-router-dom";
+import { navigateToProductDetail } from "../../../../utils/productNavigation";
 import GridCardActions from "./GridCardActions";
 import "../../../../styles/wishlist/cards/grid/grid-card-body.css";
+
 const GridCardBody = ({ product, type, onRemove, onOpenModal }) => {
+  const navigate = useNavigate();
+
   const getConditionClass = () => {
-    if (product.condition === "Pristine condition")
-      return "desk-wishlist-condition-pristine";
-    if (product.condition === "Excellent condition")
-      return "desk-wishlist-condition-excellent";
+    if (product.condition === "Pristine condition") return "desk-wishlist-condition-pristine";
+    if (product.condition === "Excellent condition") return "desk-wishlist-condition-excellent";
     return "desk-wishlist-condition-good";
   };
 
   return (
     <div className="desk-wishlist-card-body">
-      <span className="desk-wishlist-card-designer-label">
-        {product.designer}
-      </span>
-      <h3 className="desk-wishlist-card-product-name">{product.name}</h3>
+      <span className="desk-wishlist-card-designer-label">{product.designer}</span>
+      <h3
+        className="desk-wishlist-card-product-name"
+        onClick={() => navigateToProductDetail(navigate, product)}
+        style={{ cursor: "pointer" }}
+      >
+        {product.name}
+      </h3>
 
       {type === "preloved" && (
         <div className={`desk-wishlist-condition-badge ${getConditionClass()}`}>
@@ -23,52 +30,56 @@ const GridCardBody = ({ product, type, onRemove, onOpenModal }) => {
       )}
 
       <div className="desk-wishlist-price-label">
-        {type === "rent"
-          ? "Rental price"
-          : type === "preloved"
-            ? "Preloved price"
-            : "Price"}
+        {type === "rent" ? "Rental price" : type === "preloved" ? "Preloved price" : "Price"}
       </div>
       <div className="desk-wishlist-price">₹{product.price}</div>
 
       {type === "rent" && !product.unavailable && (
         <div className="desk-wishlist-price-note">
           <span>for {product.duration}</span>
-          <span className="desk-wishlist-price-note-label">retail</span>
-          <span className="desk-wishlist-struck-price">
-            ₹{product.originalPrice}
-          </span>
-          <span className="desk-wishlist-save-badge">
-            Save {product.savePercentage}
-          </span>
+          {product.originalPrice && product.originalPrice !== "0" && product.savePercentage && (
+            <>
+              <span className="desk-wishlist-price-note-label">retail</span>
+              <span className="desk-wishlist-struck-price">₹{product.originalPrice}</span>
+              <span className="desk-wishlist-save-badge">Save {product.savePercentage}</span>
+            </>
+          )}
         </div>
       )}
 
       {type === "rent" && product.unavailable && (
-        <div className="desk-wishlist-unavailability-note">
-          {product.unavailableNote}
-        </div>
+        <div className="desk-wishlist-unavailability-note">{product.unavailableNote}</div>
       )}
 
       {type === "preloved" && (
         <div className="desk-wishlist-price-note">
-          <span className="desk-wishlist-price-note-label">retail</span>
-          <span className="desk-wishlist-struck-price">
-            ₹{product.originalPrice}
-          </span>
-          <span className="desk-wishlist-save-badge">
-            Save {product.savePercentage}
-          </span>
+          {product.originalPrice && product.originalPrice !== "0" && product.savePercentage ? (
+            <>
+              <span className="desk-wishlist-price-note-label">retail</span>
+              <span className="desk-wishlist-struck-price">₹{product.originalPrice}</span>
+              <span className="desk-wishlist-save-badge">Save {product.savePercentage}</span>
+            </>
+          ) : (
+            <span className="desk-wishlist-price-note-label">Preloved luxury</span>
+          )}
         </div>
       )}
 
       {type === "new" && (
-        <div className="desk-wishlist-new-note">New with tags</div>
+        product.originalPrice && product.originalPrice !== "0" && product.savePercentage ? (
+          <div className="desk-wishlist-price-note">
+            <span className="desk-wishlist-price-note-label">retail</span>
+            <span className="desk-wishlist-struck-price">₹{product.originalPrice}</span>
+            <span className="desk-wishlist-save-badge">Save {product.savePercentage}</span>
+          </div>
+        ) : (
+          <div className="desk-wishlist-new-note">New with tags</div>
+        )
       )}
 
       <GridCardActions
         product={product}
-        type={type}
+        type={type}           
         onOpenModal={onOpenModal}
       />
 

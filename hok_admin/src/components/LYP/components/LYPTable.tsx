@@ -9,12 +9,14 @@ interface LYPTableProps {
   submissions: Submission[];
   loading: boolean;
   onRowClick: (submission: Submission) => void;
+  onClearFilters?: () => void;
 }
 
 export const LYPTable: React.FC<LYPTableProps> = ({
   submissions,
   loading,
   onRowClick,
+  onClearFilters,
 }) => {
   if (loading) {
     return <div className="lyp-table-loading">Loading submissions...</div>;
@@ -25,7 +27,12 @@ export const LYPTable: React.FC<LYPTableProps> = ({
       <div className="lyp-table-empty">
         <div className="empty-state-boxed">
           No submissions match these filters.{" "}
-          <span className="qlnk">Clear filters</span>
+          <span
+            className="qlnk cursor-pointer underline hover:text-[#C7A55C]"
+            onClick={onClearFilters}
+          >
+            Clear filters
+          </span>
         </div>
       </div>
     );

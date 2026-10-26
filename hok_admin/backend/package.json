@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch-path=. --watch-preserve-output --watch server.js"
+    "dev": "node --watch-path=server.js --watch-path=controllers --watch-path=routes server.js"
   },
   "dependencies": {
     "axios": "^1.20.0",

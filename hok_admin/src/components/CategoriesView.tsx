@@ -6,6 +6,8 @@ import {
   Search,
   X,
   Image as ImageIcon,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import {
@@ -25,6 +27,8 @@ export default function CategoriesView({
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 6;
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -144,9 +148,19 @@ export default function CategoriesView({
     }
   };
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   const filtered = categories.filter((c) =>
     c.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const validPage = Math.min(Math.max(1, currentPage), totalPages);
+  const startIndex = (validPage - 1) * PAGE_SIZE;
+  const endIndex = Math.min(startIndex + PAGE_SIZE, filtered.length);
+  const paginatedCategories = filtered.slice(startIndex, endIndex);
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
@@ -186,61 +200,108 @@ export default function CategoriesView({
           <div className="w-6 h-6 border-2 border-stone-900 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((cat) => (
-            <div
-              key={cat.id}
-              className="bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-md transition-shadow group flex flex-col"
-            >
-              <div className="h-48 bg-stone-100 relative">
-                {cat.image ? (
-                  <img
-                    src={cat.image}
-                    alt={cat.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-stone-400">
-                    <ImageIcon className="h-8 w-8 mb-2 opacity-50" />
-                    <span className="text-xs uppercase tracking-widest font-semibold">
-                      No Image
-                    </span>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {paginatedCategories.map((cat) => (
+              <div
+                key={cat.id}
+                className="bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-md transition-shadow group flex flex-col"
+              >
+                <div className="h-48 bg-stone-100 relative">
+                  {cat.image ? (
+                    <img
+                      src={cat.image}
+                      alt={cat.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-stone-400">
+                      <ImageIcon className="h-8 w-8 mb-2 opacity-50" />
+                      <span className="text-xs uppercase tracking-widest font-semibold">
+                        No Image
+                      </span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    <button
+                      onClick={() => openModal(cat)}
+                      className="bg-white text-stone-900 p-2 rounded-full hover:bg-stone-100 shadow-sm"
+                      title="Edit"
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(cat.id, cat.name)}
+                      className="bg-rose-500 text-white p-2 rounded-full hover:bg-rose-600 shadow-sm"
+                      title="Delete"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
                   </div>
-                )}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                  <button
-                    onClick={() => openModal(cat)}
-                    className="bg-white text-stone-900 p-2 rounded-full hover:bg-stone-100 shadow-sm"
-                    title="Edit"
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(cat.id, cat.name)}
-                    className="bg-rose-500 text-white p-2 rounded-full hover:bg-rose-600 shadow-sm"
-                    title="Delete"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                </div>
+                <div className="p-4 flex-1 flex flex-col">
+                  <h3 className="font-serif font-bold text-lg text-stone-900 mb-1">
+                    {cat.name}
+                  </h3>
+                  <p className="text-sm text-stone-500 line-clamp-2 flex-1">
+                    {cat.description || "No description provided."}
+                  </p>
+                  <div className="mt-4 pt-4 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
+                    <span>ID: {cat.id.split("-").pop()}</span>
+                    <span>/{cat.slug}</span>
+                  </div>
                 </div>
               </div>
-              <div className="p-4 flex-1 flex flex-col">
-                <h3 className="font-serif font-bold text-lg text-stone-900 mb-1">
-                  {cat.name}
-                </h3>
-                <p className="text-sm text-stone-500 line-clamp-2 flex-1">
-                  {cat.description || "No description provided."}
-                </p>
-                <div className="mt-4 pt-4 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
-                  <span>ID: {cat.id.split("-").pop()}</span>
-                  <span>/{cat.slug}</span>
-                </div>
+            ))}
+            {filtered.length === 0 && (
+              <div className="col-span-full py-12 text-center text-stone-500 bg-white rounded-xl border border-stone-200 border-dashed">
+                No categories found. Try adjusting your search or add a new one.
               </div>
-            </div>
-          ))}
-          {filtered.length === 0 && (
-            <div className="col-span-full py-12 text-center text-stone-500 bg-white rounded-xl border border-stone-200 border-dashed">
-              No categories found. Try adjusting your search or add a new one.
+            )}
+          </div>
+
+          {filtered.length > 0 && totalPages > 1 && (
+            <div className="bg-white border border-stone-200 rounded-xl px-5 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+              <span className="text-xs text-stone-500">
+                Showing <strong className="text-stone-800">{startIndex + 1}</strong> to <strong className="text-stone-800">{endIndex}</strong> of <strong className="text-stone-800">{filtered.length}</strong> categories
+              </span>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={validPage <= 1}
+                  className="px-3 py-1.5 text-xs font-medium border border-stone-200 rounded-lg text-stone-600 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                  Previous
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => setCurrentPage(num)}
+                    className={`h-8 w-8 text-xs font-medium rounded-lg transition-colors ${
+                      num === validPage
+                        ? "bg-[#1e1412] text-white font-semibold"
+                        : "text-stone-600 hover:bg-stone-100 border border-stone-200"
+                    }`}
+                  >
+                    {num}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={validPage >= totalPages}
+                  className="px-3 py-1.5 text-xs font-medium border border-stone-200 rounded-lg text-stone-600 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
+                >
+                  Next
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
             </div>
           )}
         </div>

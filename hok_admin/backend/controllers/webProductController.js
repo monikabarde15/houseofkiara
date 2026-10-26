@@ -1,5 +1,201 @@
 import Product from "../models/Product.js";
+import Designer from "../models/Designer.js";
+import Category from "../models/Category.js";
 import mongoose from "mongoose";
+// Comprehensive detection helpers
+const recognizedColorsList = [
+  "red",
+  "pink",
+  "orange",
+  "yellow",
+  "green",
+  "blue",
+  "purple",
+  "maroon",
+  "gold",
+  "ivory",
+  "black",
+  "white",
+];
+
+const colorSynonymsMap = {
+  crimson: "red",
+  gulabi: "pink",
+  rose: "pink",
+  emerald: "green",
+  ivory: "ivory",
+  charcoal: "black",
+  wine: "maroon",
+  midnight: "blue",
+  golden: "gold",
+  champagne: "gold",
+  blush: "pink",
+  rajputana: "red",
+  saffron: "orange",
+  mustard: "yellow",
+  ruby: "red",
+  navy: "blue",
+  royal: "blue",
+  silver: "white",
+};
+
+const menKeywordsList = [
+  "sherwani",
+  "sherwanis",
+  "bandhgala",
+  "bandhgalas",
+  "kurta",
+  "tuxedo",
+  "groom",
+  "men",
+  "mens",
+  "nehru",
+  "achkan",
+];
+
+const womenKeywordsList = [
+  "lehenga",
+  "lehengas",
+  "saree",
+  "sarees",
+  "sari",
+  "saris",
+  "anarkali",
+  "anarkalis",
+  "sharara",
+  "shararas",
+  "gharara",
+  "gown",
+  "gowns",
+  "salwar",
+  "kurti",
+  "dupatta",
+  "blouse",
+  "choli",
+  "bridal",
+  "bride",
+  "women",
+  "womens",
+];
+
+export const detectProductGender = (product) => {
+  if (!product) return "Women";
+  // Priority 1: Explicit database field (when admin provides it now or in future)
+  if (product.gender && typeof product.gender === "string" && product.gender.trim()) {
+    const g = product.gender.trim().toLowerCase();
+    if (["men", "man", "male"].includes(g)) return "Men";
+    if (["women", "woman", "female"].includes(g)) return "Women";
+    if (["unisex", "other", "all"].includes(g)) return "Unisex";
+  }
+
+  // Priority 2: Text cues from name, category, subtitle, description
+  const words = [
+    product.name,
+    product.category,
+    product.subtitle,
+    product.description,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase()
+    .split(/[^a-z]+/);
+
+  if (words.some((w) => menKeywordsList.includes(w))) return "Men";
+  if (words.some((w) => womenKeywordsList.includes(w))) return "Women";
+
+  // Priority 3: Image URLs & image filenames
+  const images = Array.isArray(product.images)
+    ? product.images
+    : typeof product.image === "string"
+    ? [product.image]
+    : [];
+
+  const imageString = images.join(" ").toLowerCase();
+  if (
+    imageString.includes("sherwani") ||
+    imageString.includes("bandhgala") ||
+    imageString.includes("men") ||
+    imageString.includes("groom")
+  ) {
+    return "Men";
+  }
+
+  return "Women";
+};
+
+export const detectProductColors = (product) => {
+  if (!product) return ["gold"];
+  const found = new Set();
+
+  const words = [
+    product.color,
+    product.name,
+    product.description,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase()
+    .split(/[^a-z]+/);
+
+  words.forEach((w) => {
+    if (recognizedColorsList.includes(w)) found.add(w);
+    if (colorSynonymsMap[w]) found.add(colorSynonymsMap[w]);
+  });
+
+  // Check images for color cues if still empty
+  if (found.size === 0) {
+    const images = Array.isArray(product.images)
+      ? product.images
+      : typeof product.image === "string"
+      ? [product.image]
+      : [];
+    const imgWords = images.join(" ").toLowerCase().split(/[^a-z]+/);
+    imgWords.forEach((w) => {
+      if (recognizedColorsList.includes(w)) found.add(w);
+    });
+  }
+
+  if (found.size === 0) {
+    found.add("gold");
+  }
+
+  return Array.from(found);
+};
+
+export const detectProductSizes = (product) => {
+  if (!product) return ["Free"];
+  const sizes = new Set();
+  const rawSizes = Array.isArray(product.sizes)
+    ? product.sizes
+    : typeof product.sizes === "string"
+    ? product.sizes.split(/[,/ ]+/)
+    : [];
+
+  const sizeMap = {
+    "36": "XS",
+    "38": "S",
+    "40": "M",
+    "42": "L",
+    "44": "XL",
+    "46": "XXL",
+  };
+
+  rawSizes.forEach((raw) => {
+    if (!raw) return;
+    const s = String(raw).trim().toUpperCase();
+    sizes.add(s);
+    if (sizeMap[s]) {
+      sizes.add(sizeMap[s]);
+    }
+  });
+
+  if (sizes.size === 0) {
+    sizes.add("Free");
+  }
+
+  return Array.from(sizes);
+};
+
 export const getWebProducts = async (req, res) => {
   try {
     const {
@@ -34,28 +230,12 @@ export const getWebProducts = async (req, res) => {
       if (activeType === "new")
         query.listingModes = buildArrayRegex(["BUY NEW"]);
     }
-    if (category) query.category = category;
-    if (designer) query.designer = designer;
-    if (occasion) query.occasion = occasion;
-    // if (gender) {
-    //   const genderRegex = new RegExp(`^${gender}$`, "i");
-    //   if (gender.toLowerCase() === 'men') {
-    //     query.$or = [
-    //       { gender: genderRegex },
-    //       { gender: { $in: [null, ""] }, category: "Sherwanis" }
-    //     ];
-    //   } else if (gender.toLowerCase() === 'women') {
-    //     query.$or = [
-    //       { gender: genderRegex },
-    //       { gender: { $in: [null, ""] }, category: { $ne: "Sherwanis" } }
-    //     ];
-    //   } else {
-    //     query.gender = genderRegex;
-    //   }
-    // }
-
-    // if (size) query.sizes = { $regex: new RegExp(`[^a-zA-Z]${size}[^a-zA-Z]|(^${size}[^a-zA-Z])|([^a-zA-Z]${size}$)|^${size}$`, "i") };
-    // if (color) query.color = { $regex: new RegExp(color, "i") }; // handle substring since it could be comma-separated string in DB
+    if (category) {
+      const normCat = category.toLowerCase().replace(/s$/, "");
+      query.category = { $regex: new RegExp(normCat, "i") };
+    }
+    if (designer) query.designer = { $regex: new RegExp(designer, "i") };
+    if (occasion) query.occasion = { $regex: new RegExp(occasion, "i") };
 
     if (minPrice || maxPrice) {
       query.listingPrice = {};
@@ -64,8 +244,22 @@ export const getWebProducts = async (req, res) => {
     }
 
     // In-memory cache for default web products queries to make storefront load instantly
-    const isDefaultQuery = !section && !mode && !category && !designer && !occasion && !minPrice && !maxPrice;
-    if (isDefaultQuery && global.__webProductsCache && (Date.now() - global.__webProductsCacheTime < 30000)) {
+    const isDefaultQuery =
+      !section &&
+      !mode &&
+      !category &&
+      !designer &&
+      !occasion &&
+      !gender &&
+      !size &&
+      !color &&
+      !minPrice &&
+      !maxPrice;
+    if (
+      isDefaultQuery &&
+      global.__webProductsCache &&
+      Date.now() - global.__webProductsCacheTime < 30000
+    ) {
       return res.status(200).json({
         success: true,
         data: global.__webProductsCache,
@@ -76,7 +270,7 @@ export const getWebProducts = async (req, res) => {
     const findQuery = Product.find(query).sort({ createdAt: -1 });
     const products = await findQuery;
 
-    const formattedProducts = products.map((product) => {
+    let formattedProducts = products.map((product) => {
       const rawModes = Array.isArray(product.listingModes)
         ? product.listingModes
         : typeof product.listingModes === "string"
@@ -85,12 +279,11 @@ export const getWebProducts = async (req, res) => {
       const modesUpper = rawModes.map((m) => String(m).toUpperCase().trim());
 
       const preloved = modesUpper.some(
-        (m) => m.includes("PRELOVED") || m.includes("RE-SELL")
+        (m) => m.includes("PRELOVED") || m.includes("RE-SELL"),
       );
       const isNew = modesUpper.some(
-        (m) => m.includes("BUY") || m.includes("NEW")
+        (m) => m.includes("BUY") || m.includes("NEW"),
       );
-      // If it has rental price or rent mode or is not exclusively preloved/buy, enable rent
       const rent =
         modesUpper.some((m) => m.includes("RENT")) ||
         Boolean(product.rentalPrice) ||
@@ -109,16 +302,13 @@ export const getWebProducts = async (req, res) => {
         return Number(price).toLocaleString("en-IN");
       };
 
-      const defaultGender =
-        product.category && product.category.toLowerCase().includes("sherwani")
-          ? "Men"
-          : "Women";
-
       const primaryId = product.productId || product._id.toString();
 
       const normalizeImages = (imgs) => {
         if (!imgs || !Array.isArray(imgs) || imgs.length === 0) {
-          return ["https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875344/houseofkaira/products/grid-1.jpg"];
+          return [
+            "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875344/houseofkaira/products/grid-1.jpg",
+          ];
         }
         return imgs.map((img) => {
           if (typeof img === "string" && img.startsWith("/uploads/")) {
@@ -142,23 +332,39 @@ export const getWebProducts = async (req, res) => {
         rentPrice: formatPrice(product.rentalPrice),
         buyPrice: formatPrice(product.listingPrice),
         originalPrice: formatPrice(product.originalRetailPrice),
-        gender: product.gender || defaultGender,
+        gender: detectProductGender(product),
         category: product.category || "Uncategorized",
         occasion: product.occasion || "Festive",
-        size: product.sizes
-          ? product.sizes.map((s) => s.trim().toUpperCase())
-          : [],
-        color: product.color
-          ? String(product.color)
-              .split(",")
-              .map((c) => c.trim())
-          : [],
+        size: detectProductSizes(product),
+        color: detectProductColors(product),
         video: product.video || null,
         type: type,
         popularity: product.timesRented || 0,
         createdAtTimestamp: new Date(product.createdAt || Date.now()).getTime(),
       };
     });
+
+    // Apply post-detection filters for gender, color, and size
+    if (gender) {
+      const gNorm = gender.trim().toLowerCase();
+      formattedProducts = formattedProducts.filter(
+        (p) => p.gender && p.gender.toLowerCase() === gNorm,
+      );
+    }
+
+    if (color) {
+      const cNorm = color.trim().toLowerCase();
+      formattedProducts = formattedProducts.filter(
+        (p) => Array.isArray(p.color) && p.color.includes(cNorm),
+      );
+    }
+
+    if (size) {
+      const sNorm = size.trim().toUpperCase();
+      formattedProducts = formattedProducts.filter(
+        (p) => Array.isArray(p.size) && p.size.includes(sNorm),
+      );
+    }
 
     if (isDefaultQuery) {
       global.__webProductsCache = formattedProducts;
@@ -181,27 +387,154 @@ export const getWebProducts = async (req, res) => {
 export const getFiltersData = async (req, res) => {
   try {
     const query = { status: { $in: ["Live", "Out of Stock", "Out Of Stock"] } };
-    const products = await Product.find(query);
+    const [products, adminDesigners, adminCategories] = await Promise.all([
+      Product.find(query),
+      Designer.find({ status: { $ne: "Inactive" } }).sort({ isFeatured: -1, sortOrder: 1, name: 1 }),
+      Category.find({}).sort({ sortOrder: 1, name: 1 }),
+    ]);
 
+    const norm = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    // Template definitions matching Mohan's UI
+    const genderTemplates = [
+      ["Women", 0],
+      ["Men", 0],
+      ["Unisex", 0],
+    ];
+
+    // Categories: from Admin Category collection if exists, else fallback
+    const categoryTemplates =
+      adminCategories && adminCategories.length > 0
+        ? adminCategories.map((c) => [c.name, 0])
+        : [
+            ["Bridal Lehengas", 0],
+            ["Party Lehengas", 0],
+            ["Anarkalis", 0],
+            ["Sarees", 0],
+            ["Sherwanis", 0],
+            ["Indo-Western", 0],
+            ["Salwar Suits", 0],
+          ];
+
+    const occasionTemplates = [
+      ["Wedding", 0],
+      ["Mehendi", 0],
+      ["Sangeet", 0],
+      ["Reception", 0],
+      ["Haldi", 0],
+      ["Festive", 0],
+    ];
+
+    // Designers: REAL designers from Admin collection!
+    let designerTemplates = [];
+    if (adminDesigners && adminDesigners.length > 0) {
+      designerTemplates = adminDesigners.map((d) => [d.name, 0]);
+      // Check if there are live products with designers not in adminDesigners
+      const adminNamesSet = new Set(adminDesigners.map((d) => norm(d.name)));
+      const hasOther = products.some((p) => p.designer && !adminNamesSet.has(norm(p.designer)));
+      if (hasOther) {
+        designerTemplates.push(["Other Designers", 0]);
+      }
+    } else {
+      designerTemplates = [
+        ["Sabyasachi", 0],
+        ["Manish Malhotra", 0],
+        ["Tarun Tahiliani", 0],
+        ["Anita Dongre", 0],
+        ["Ritu Kumar", 0],
+        ["Rahul Mishra", 0],
+        ["Other Designers", 0],
+      ];
+    }
+
+    const genderCounts = { Women: 0, Men: 0, Unisex: 0 };
+    const catCounts = {};
+    categoryTemplates.forEach(([name]) => {
+      catCounts[name] = 0;
+    });
+
+    const occCounts = {
+      Wedding: 0,
+      Mehendi: 0,
+      Sangeet: 0,
+      Reception: 0,
+      Haldi: 0,
+      Festive: 0,
+    };
+
+    const desCounts = {};
+    designerTemplates.forEach(([name]) => {
+      desCounts[name] = 0;
+    });
+
+    let minPrice = Infinity;
+    let maxPrice = 0;
     const occasions = new Set();
     const sizes = new Set();
     const colors = new Set();
-    let minPrice = Infinity;
-    let maxPrice = 0;
 
     products.forEach((product) => {
+      // 1. Gender calculation using robust detection
+      const gen = detectProductGender(product);
+      if (gen === "Men") genderCounts.Men++;
+      else if (gen === "Unisex") genderCounts.Unisex++;
+      else genderCounts.Women++;
+
+      // 2. Category calculation
+      const c = (product.category || "").toLowerCase().replace(/s$/, "").trim();
+      categoryTemplates.forEach(([name]) => {
+        const cn = name.toLowerCase().replace(/s$/, "").trim();
+        let match = false;
+        if (cn === "bridal lehenga") {
+          match = c.includes("bridal");
+        } else if (cn === "lehenga") {
+          match = c === "lehenga" || (c.includes("lehenga") && !c.includes("bridal"));
+        } else if (cn === "sherwani") {
+          match = c.includes("sherwani");
+        } else {
+          match = c === cn || c.includes(cn) || cn.includes(c);
+        }
+        if (match) {
+          catCounts[name] = (catCounts[name] || 0) + 1;
+        }
+      });
+
+      // 3. Occasion calculation
       if (product.occasion) {
-        // Assume occasion might be comma separated or single
+        const occStr = product.occasion.toLowerCase();
         product.occasion.split(",").forEach((o) => occasions.add(o.trim()));
+        if (occStr.includes("wedding")) occCounts["Wedding"]++;
+        if (occStr.includes("mehendi")) occCounts["Mehendi"]++;
+        if (occStr.includes("sangeet")) occCounts["Sangeet"]++;
+        if (occStr.includes("reception")) occCounts["Reception"]++;
+        if (occStr.includes("haldi")) occCounts["Haldi"]++;
+        if (occStr.includes("festive")) occCounts["Festive"]++;
+      } else {
+        occCounts["Festive"]++;
       }
 
-      if (product.sizes && Array.isArray(product.sizes)) {
-        product.sizes.forEach((s) => sizes.add(s.trim().toUpperCase()));
+      // 4. Designer calculation
+      const d = norm(product.designer);
+      let matchedAny = false;
+      designerTemplates.forEach(([name]) => {
+        if (name !== "Other Designers") {
+          const dn = norm(name);
+          if (d.includes(dn) || dn.includes(d)) {
+            desCounts[name] = (desCounts[name] || 0) + 1;
+            matchedAny = true;
+          }
+        }
+      });
+      if (!matchedAny && desCounts["Other Designers"] !== undefined) {
+        desCounts["Other Designers"] = (desCounts["Other Designers"] || 0) + 1;
       }
 
-      if (product.color) {
-        product.color.split(",").forEach((c) => colors.add(c.trim()));
-      }
+      // 5. Sizes & Colors
+      const pSizes = detectProductSizes(product);
+      pSizes.forEach((s) => sizes.add(s));
+
+      const pColors = detectProductColors(product);
+      pColors.forEach((col) => colors.add(col));
 
       const price = Number(product.listingPrice) || 0;
       if (price > 0) {
@@ -215,6 +548,10 @@ export const getFiltersData = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
+        gender: genderTemplates.map(([name]) => [name, genderCounts[name] || 0]),
+        category: categoryTemplates.map(([name]) => [name, catCounts[name] || 0]),
+        occasion: occasionTemplates.map(([name]) => [name, occCounts[name] || 0]),
+        designer: designerTemplates.map(([name]) => [name, desCounts[name] || 0]),
         occasions: Array.from(occasions).filter(Boolean),
         sizes: Array.from(sizes).filter(Boolean),
         colors: Array.from(colors).filter(Boolean),
@@ -316,6 +653,12 @@ export const getWebProductById = async (req, res) => {
           ? product.condition.toLowerCase()
           : "excellent",
       },
+      originalRetailPrice: product.originalRetailPrice || 0,
+      retailPrice: product.originalRetailPrice || 0,
+      originalPrice: product.originalRetailPrice || 0,
+      rentalPrice: product.rentalPrice || 0,
+      listingPrice: product.listingPrice || 0,
+      price: product.rentalPrice || product.listingPrice || 0,
       images: (product.images || []).map((img) =>
         typeof img === "string" && img.startsWith("/uploads/")
           ? `https://res.cloudinary.com/dv7jcu8ss/image/upload/houseofkaira/products/${img.replace("/uploads/", "")}`
@@ -366,6 +709,8 @@ export const getWebProductById = async (req, res) => {
           pricing: {
             pricePerDay: product.rentalPrice ? Math.round(product.rentalPrice / 4) : (product.perDayRate || 2500),
             minDays: 3,
+            originalRetailPrice: product.originalRetailPrice || 0,
+            retailPrice: product.originalRetailPrice || 0,
             windows: [
               {
                 id: "standard",

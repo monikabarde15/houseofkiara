@@ -11,8 +11,9 @@
   font-size: 8.5px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #8a7e72;
+  color: #8A7E72;
   /* margin-bottom: 10px; */
+
 }
 
 /* 2 Column Grid */
@@ -33,7 +34,7 @@
   font-size: 8.5px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #8a7e72;
+  color: #8A7E72;
   font-weight: 400;
   margin-bottom: 6px;
 }
@@ -41,12 +42,12 @@
 /* Date Inputs */
 .desk-wishlist-date-input {
   height: 42px;
-  border: 1px solid #e8e0d4;
+  border: 1px solid #E8E0D4;
   padding: 0 12px;
   font-family: "DM Sans", sans-serif;
   font-size: 13px;
-  color: #1a1612;
-  background: #fffefb;
+  color: #1A1612;
+  background: #FFFEFB;
   outline: none;
   border-radius: 1px;
   width: 100%;
@@ -54,7 +55,7 @@
 }
 
 .desk-wishlist-date-input:focus {
-  border: 1px solid #c9a96e;
+  border: 1px solid #C9A96E;
 }
 
 .desk-wishlist-date-input::-webkit-calendar-picker-indicator {

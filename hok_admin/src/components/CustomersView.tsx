@@ -533,7 +533,20 @@ export default function CustomersView({
         ? detailOrders
         : orders;
     const customerId = cust.customerId || cust.id;
-    return sourceOrders.filter((order) => order.customerId === customerId);
+    const cId = cust.id || (cust as any)._id;
+    const cEmail = cust.email ? cust.email.toLowerCase().trim() : "";
+    const cPhone = cust.phone ? cust.phone.replace(/\D/g, "").slice(-10) : "";
+
+    return sourceOrders.filter((order: any) => {
+      if (customerId && order.customerId === customerId) return true;
+      if (cId && (order.customerId === cId || String(order.customerId) === String(cId))) return true;
+      if (cEmail && order.customerEmail && order.customerEmail.toLowerCase().trim() === cEmail) return true;
+      if (cPhone && order.customerPhone) {
+        const ordDigits = String(order.customerPhone).replace(/\D/g, "");
+        if (cPhone.length >= 10 && ordDigits.endsWith(cPhone)) return true;
+      }
+      return false;
+    });
   };
 
   if (editingCustomer || isAddingCustomer) {
@@ -787,7 +800,7 @@ export default function CustomersView({
                             Rentals completed
                           </span>
                           <span className="font-medium text-stone-900">
-                            0 • 1 upcoming
+                            {custOrders.filter((o: any) => ["Returned", "Complete", "Processed"].includes(o.status)).length} • {custOrders.filter((o: any) => ["Confirmed", "Dispatched", "Shipped"].includes(o.status)).length} upcoming
                           </span>
                         </div>
                         <div className="flex justify-between">
@@ -816,8 +829,10 @@ export default function CustomersView({
                           <span className="text-stone-500">
                             Cancelled orders
                           </span>
-                          <span className="font-medium text-stone-900">
-                            None
+                          <span className={`font-medium ${custOrders.filter((o: any) => o.status === "Cancelled").length > 0 ? "text-red-600" : "text-stone-900"}`}>
+                            {custOrders.filter((o: any) => o.status === "Cancelled").length > 0
+                              ? `${custOrders.filter((o: any) => o.status === "Cancelled").length} cancelled`
+                              : "None"}
                           </span>
                         </div>
                         <div className="flex justify-between">
@@ -1375,7 +1390,9 @@ export default function CustomersView({
                             <td className="px-4 py-4">
                               <span
                                 className={`px-2 py-1 rounded text-[10px] ${
-                                  o.status === "Delivered"
+                                  o.status === "Cancelled"
+                                    ? "bg-red-100 text-red-700 font-medium"
+                                    : o.status === "Delivered" || o.status === "Complete" || o.status === "Returned"
                                     ? "bg-green-100 text-green-700"
                                     : "bg-amber-100 text-amber-700"
                                 }`}
@@ -1786,7 +1803,7 @@ export default function CustomersView({
                               </td>
                               <td className="px-5 py-4">
                                 <span
-                                  className={`px-2 py-1 rounded text-[10px] ${["Dispatched", "Shipped", "Delivered"].includes(o.status) ? "bg-blue-100 text-blue-700" : ["Returned", "Complete", "Processed"].includes(o.status) ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
+                                  className={`px-2 py-1 rounded text-[10px] ${o.status === "Cancelled" ? "bg-red-100 text-red-700 font-medium" : ["Dispatched", "Shipped", "Delivered"].includes(o.status) ? "bg-blue-100 text-blue-700" : ["Returned", "Complete", "Processed"].includes(o.status) ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
                                 >
                                   {o.status}
                                 </span>

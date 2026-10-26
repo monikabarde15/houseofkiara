@@ -2,10 +2,10 @@ import { create } from "zustand";
 
 const useCheckoutStore = create((set) => ({
   contact: {
-    firstName: "John",
-    lastName: "Doe",
-    email: "johndoe@example.com",
-    whatsapp: "+91 98765 43210",
+    firstName: "",
+    lastName: "",
+    email: "",
+    whatsapp: "",
   },
   address: {
     address1: "",

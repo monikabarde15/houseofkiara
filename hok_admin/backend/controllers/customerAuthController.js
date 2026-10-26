@@ -363,16 +363,81 @@ export const toggleWishlist = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Customer not found" });
 
-    const productId = req.params.productId;
-    const index = customer.wishlist.findIndex(
-      (id) => id.toString() === productId,
+    const rawId = String(req.params.productId || "");
+    const aliases = new Set([rawId]);
+
+    let canonicalId = rawId;
+    try {
+      const prod = await Product.findOne({
+        $or: [
+          { _id: rawId },
+          { productId: rawId },
+          { sku: rawId },
+          { id: rawId },
+        ],
+      });
+      if (prod) {
+        if (prod._id) aliases.add(String(prod._id));
+        if (prod.productId) aliases.add(String(prod.productId));
+        if (prod.sku) aliases.add(String(prod.sku));
+        if (prod.id) aliases.add(String(prod.id));
+        canonicalId = prod.sku || prod.productId || String(prod._id || rawId);
+      }
+    } catch (e) {}
+
+    const aliasList = Array.from(aliases);
+    const existingIndex = (customer.wishlist || []).findIndex((id) =>
+      aliasList.includes(String(id))
     );
 
-    if (index === -1) {
-      customer.wishlist.push(productId);
+    if (existingIndex !== -1) {
+      customer.wishlist = customer.wishlist.filter(
+        (id) => !aliasList.includes(String(id))
+      );
     } else {
-      customer.wishlist.splice(index, 1);
+      customer.wishlist.push(canonicalId);
     }
+    customer.wishlistCount = customer.wishlist.length;
+
+    await customer.save();
+    res.json({ success: true, data: customer.wishlist });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const removeFromWishlist = async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.user._id);
+    if (!customer)
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found" });
+
+    const rawId = String(req.params.productId || "");
+    const aliases = new Set([rawId]);
+
+    try {
+      const prod = await Product.findOne({
+        $or: [
+          { _id: rawId },
+          { productId: rawId },
+          { sku: rawId },
+          { id: rawId },
+        ],
+      });
+      if (prod) {
+        if (prod._id) aliases.add(String(prod._id));
+        if (prod.productId) aliases.add(String(prod.productId));
+        if (prod.sku) aliases.add(String(prod.sku));
+        if (prod.id) aliases.add(String(prod.id));
+      }
+    } catch (e) {}
+
+    const aliasList = Array.from(aliases);
+    customer.wishlist = (customer.wishlist || []).filter(
+      (id) => !aliasList.includes(String(id))
+    );
     customer.wishlistCount = customer.wishlist.length;
 
     await customer.save();
@@ -391,6 +456,51 @@ export const getWishlist = async (req, res) => {
         .json({ success: false, message: "Customer not found" });
 
     res.json({ success: true, data: customer.wishlist });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const getWishlistProducts = async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.user._id);
+    if (!customer)
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found" });
+
+    const wishlistIds = Array.isArray(customer.wishlist)
+      ? customer.wishlist.filter(Boolean).map(String)
+      : [];
+
+    if (wishlistIds.length === 0) {
+      return res.json({ success: true, data: [] });
+    }
+
+    const products = await Product.find({
+      $or: [
+        { _id: { $in: wishlistIds } },
+        { productId: { $in: wishlistIds } },
+        { sku: { $in: wishlistIds } },
+        { id: { $in: wishlistIds } },
+      ],
+    });
+
+    res.json({ success: true, data: products });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const getCart = async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.user._id);
+    if (!customer)
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found" });
+
+    res.json({ success: true, data: customer.cart || [] });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -516,6 +626,14 @@ export const getMyOrderById = async (req, res) => {
 
 export const placeOrder = async (req, res) => {
   try {
+    const {
+      items = [],
+      totals = {},
+      address = "",
+      paymentMethod = "COD",
+      activePromo = null,
+    } = req.body || {};
+
     let customer = req.user; // populated by requireCustomerAuth
     try {
       const fresh = await Customer.findOne({
@@ -531,36 +649,87 @@ export const placeOrder = async (req, res) => {
     // Generate unique order ID
     const orderId = `HOK-ORD-${Date.now()}`;
 
-    // Map cart items to order items schema
-    const orderItems = items.map((item) => ({
-      productId: item.product?._id || item.product?.id || item.id,
-      productName:
-        item.product?.title ||
-        item.product?.name ||
-        item.title ||
-        item.productName ||
-        "Unknown Product",
-      designer: item.product?.designer || item.designer,
-      mode:
-        item.type === "rental"
-          ? "Rental"
-          : item.type === "preloved"
-            ? "Preloved"
-            : item.type === "new"
-              ? "Buy"
-              : "Buy",
-      size: item.booking?.size || item.size || "Standard",
-      amount: item.price || item.totalPrice || 0,
-      quantity: item.quantity || 1, // Assume 1 for now based on cart logic
-      status: "Confirmed",
-      image:
-        item.product?.images?.[0] ||
-        item.product?.image?.[0] ||
-        item.image ||
-        "",
-      rentalStartDate: item.booking?.rentalDates?.start || "",
-      rentalEndDate: item.booking?.rentalDates?.end || "",
-    }));
+    // Map cart items to order items schema with security deposit and lister resolution
+    const orderItems = await Promise.all(
+      items.map(async (item) => {
+        const isRental = item.type === "rental" || item.mode === "Rental";
+        let securityDeposit = Number(item.deposit || item.securityDeposit || 0);
+        let listerId = item.listerId || item.product?.listerId || "";
+        let listerName = item.listerName || item.product?.listerName || "";
+
+        const prodId =
+          item.product?._id || item.product?.id || item.id || item.productId;
+        if (prodId) {
+          try {
+            const prod = await Product.findOne({
+              $or: [{ productId: prodId }, { _id: prodId }],
+            });
+            if (prod) {
+              if (isRental && !securityDeposit) {
+                securityDeposit = Number(prod.securityDeposit || prod.deposit || 0);
+              }
+              if (!listerId) listerId = prod.listerId || "";
+              if (!listerName) listerName = prod.listerName || "";
+            }
+          } catch (e) {}
+        }
+
+        const rentalStart = item.booking?.rentalDates?.start || item.booking?.deliveryDate || item.rentalStartDate || "";
+        const rentalEnd = item.booking?.rentalDates?.end || item.booking?.returnDate || item.rentalEndDate || "";
+
+        let dispatchDate = "";
+        if (rentalStart) {
+          try {
+            const d = new Date(rentalStart);
+            d.setDate(d.getDate() - 2);
+            dispatchDate = d.toISOString().split("T")[0];
+          } catch (e) {}
+        } else {
+          dispatchDate = new Date().toISOString().split("T")[0];
+        }
+
+        return {
+          productId: prodId,
+          productName:
+            item.product?.title ||
+            item.product?.name ||
+            item.title ||
+            item.productName ||
+            "Unknown Product",
+          designer: item.product?.designer || item.designer,
+          mode:
+            item.type === "rental"
+              ? "Rental"
+              : item.type === "preloved"
+                ? "Preloved"
+                : item.type === "new"
+                  ? "Buy"
+                  : "Buy",
+          size: item.booking?.size || item.size || "Standard",
+          amount: item.price || item.totalPrice || 0,
+          deposit: isRental ? securityDeposit : 0,
+          quantity: item.quantity || 1, // Assume 1 for now based on cart logic
+          status: "Confirmed",
+          listerId,
+          listerName,
+          dispatchDate,
+          image:
+            item.product?.images?.[0] ||
+            item.product?.image?.[0] ||
+            item.image ||
+            "",
+          rentalStartDate: rentalStart,
+          rentalEndDate: rentalEnd,
+        };
+      }),
+    );
+
+    const calculatedDeposit = orderItems.reduce(
+      (sum, it) => sum + (Number(it.deposit) || 0),
+      0,
+    );
+    const finalDeposit = Number(totals.depositTotal) || calculatedDeposit || 0;
+    const finalGrandTotal = totals.finalTotal || totals.grandTotal || totals.itemTotal || 0;
 
     const newOrder = new Order({
       orderId,
@@ -570,21 +739,38 @@ export const placeOrder = async (req, res) => {
       customerEmail: customer.email,
       customerPhone: customer.phone,
       address: address || customer.address || "Address not provided",
-      paymentMethod: paymentMethod === "upi" ? "UPI" : paymentMethod === "nb" ? "Net Banking" : paymentMethod === "emi" ? "EMI" : paymentMethod === "card" ? "Card" : "COD",
+      paymentMethod:
+        paymentMethod === "upi"
+          ? "UPI"
+          : paymentMethod === "nb"
+            ? "Net Banking"
+            : paymentMethod === "emi"
+              ? "EMI"
+              : paymentMethod === "card"
+                ? "Card"
+                : "COD",
       promoCode: activePromo?.code || "",
-      promoDiscount: activePromo?.discount || 0,
-      priceBeforePromo: totals.itemTotal || 0,
+      promoDiscount: Number(totals.discount || totals.promoDiscount || activePromo?.discount || 0),
+      priceBeforePromo: Number(totals.subtotal || totals.itemTotal || (finalGrandTotal + (totals.discount || 0))),
       items: orderItems,
       mode: orderItems.length === 1 ? orderItems[0].mode : "Multi-item",
       status: "Confirmed",
-      amount: totals.finalTotal || totals.grandTotal || totals.itemTotal || 0,
-      grandTotal: totals.finalTotal || totals.grandTotal || totals.itemTotal || 0,
-      orderValue: totals.itemTotal || totals.finalTotal || totals.grandTotal || 0,
+      amount: finalGrandTotal,
+      grandTotal: finalGrandTotal,
+      orderValue: totals.itemTotal || finalGrandTotal,
       productName: orderItems[0]?.productName || "",
       designer: orderItems[0]?.designer || "",
-      depositHeld: totals.depositTotal || 0,
+      listerId: orderItems[0]?.listerId || "",
+      listerName: orderItems[0]?.listerName || "",
+      rentalStartDate: orderItems[0]?.rentalStartDate || "",
+      rentalEndDate: orderItems[0]?.rentalEndDate || "",
+      dispatchDate: orderItems[0]?.dispatchDate || new Date().toISOString().split("T")[0],
+      deposit: finalDeposit,
+      depositHeld: finalDeposit,
+      depositStatus: finalDeposit > 0 ? "Pending" : "None",
       discount: totals.discount || 0,
       gst: totals.gst || 0,
+      payoutStatus: "Pending Approval",
       logs: [
         {
           message: "Order placed by customer",
@@ -596,13 +782,41 @@ export const placeOrder = async (req, res) => {
 
     await newOrder.save();
 
-    // Update customer document - add to total spent and orders count
-    if (customer) {
-      customer.ordersCount = (customer.ordersCount || 0) + 1;
-      customer.totalSpent = (customer.totalSpent || 0) + newOrder.grandTotal;
-      customer.lastOrderDate = new Date().toISOString();
-      await customer.save();
+    // Update real promo stats if promo code used
+    if (newOrder.promoCode) {
+      try {
+        const PromoCode = (await import("../models/PromoCode.js")).default;
+        const promo = await PromoCode.findOne({
+          code: newOrder.promoCode.toUpperCase(),
+        });
+        if (promo) {
+          promo.redemptions = (promo.redemptions || 0) + 1;
+          promo.orderValue = (promo.orderValue || 0) + (newOrder.orderValue || 0);
+          promo.discountFunded = (promo.discountFunded || 0) + (newOrder.promoDiscount || 0);
+          await promo.save();
+        }
+      } catch (e) {
+        console.error("Error updating promo stats on order placement:", e);
+      }
     }
+
+    // Sync Customer metrics & Payouts in background
+    if (customer) {
+      try {
+        const { syncCustomerOrderStats } = await import("./customerController.js");
+        await syncCustomerOrderStats([customer]);
+      } catch (e) {
+        customer.ordersCount = (customer.ordersCount || 0) + 1;
+        customer.totalSpent = (customer.totalSpent || 0) + newOrder.grandTotal;
+        customer.lastOrderDate = new Date().toISOString();
+        await customer.save().catch(() => {});
+      }
+    }
+
+    try {
+      const { syncPayoutsFromOrders } = await import("./payoutController.js");
+      if (syncPayoutsFromOrders) await syncPayoutsFromOrders();
+    } catch (e) {}
 
     res.status(201).json({ success: true, data: newOrder });
   } catch (err) {
@@ -614,12 +828,44 @@ export const placeOrder = async (req, res) => {
 export const cancelOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
-    const customerId = req.user.customerId;
+    const customer = req.user;
+    const cId = customer?.customerId;
+    const cIdStr = customer?._id ? String(customer._id) : null;
+    const cEmail = customer?.email ? customer.email.toLowerCase().trim() : null;
 
-    const order = await Order.findOne({
-      $or: [{ orderId: orderId }, { _id: orderId }],
-      customerId,
+    const queries = [];
+    if (cId) queries.push({ customerId: cId });
+    if (cIdStr) {
+      queries.push({ customerId: cIdStr });
+      queries.push({ customerId: customer._id });
+    }
+    if (cEmail) {
+      queries.push({ customerEmail: { $regex: new RegExp(`^${cEmail}$`, "i") } });
+    }
+
+    let order = await Order.findOne({
+      $or: [{ orderId: orderId }, { _id: orderId }, { id: orderId }],
+      ...(queries.length > 0 ? { $or: queries } : {}),
     });
+
+    if (!order) {
+      order = await Order.findOne({
+        $or: [{ orderId: orderId }, { _id: orderId }, { id: orderId }],
+      });
+      if (order && customer) {
+        const orderEmail = order.customerEmail?.toLowerCase().trim();
+        const ordDigits = String(order.customerPhone || "").replace(/\D/g, "");
+        const custDigits = String(customer.phone || "").replace(/\D/g, "");
+        const emailMatch = cEmail && orderEmail && orderEmail === cEmail;
+        const phoneMatch = custDigits.length >= 10 && ordDigits.endsWith(custDigits.slice(-10));
+        const idMatch = cId && (order.customerId === cId || order.customerId === cIdStr);
+        if (!emailMatch && !phoneMatch && !idMatch) {
+          return res
+            .status(403)
+            .json({ success: false, message: "Unauthorized to cancel this order." });
+        }
+      }
+    }
 
     if (!order) {
       return res
@@ -653,10 +899,31 @@ export const cancelOrder = async (req, res) => {
     order.logs.push({
       message: "Order cancelled by customer",
       type: "Cancellation",
-      user: "Customer",
+      user: customer?.name || "Customer",
     });
 
     await order.save();
+
+    // Unblock rental dates on the product immediately
+    for (const item of order.items || []) {
+      if (!item.productId) continue;
+      try {
+        const product = await Product.findOne({
+          $or: [{ productId: item.productId }, { _id: item.productId }],
+        });
+        if (product && Array.isArray(product.blockedDates)) {
+          const orderTag = `Order ${order.orderId}`;
+          product.blockedDates = product.blockedDates.filter(
+            (bd) => !(bd.reason && bd.reason.includes(orderTag)),
+          );
+          await product.save();
+        }
+      } catch (e) {}
+    }
+
+    if (customer) {
+      syncCustomerOrderStats([customer]).catch(() => {});
+    }
 
     res.json({
       success: true,

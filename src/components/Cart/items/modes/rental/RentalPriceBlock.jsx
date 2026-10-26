@@ -2,47 +2,59 @@
 import React from "react";
 import "../../../../../styles/cart/items/price-block.css";
 
-const formatPrice = (num) => new Intl.NumberFormat("en-IN").format(num);
+const formatPrice = (num) =>
+  new Intl.NumberFormat("en-IN").format(num);
 
-const cleanPrice = (price) => {
-  if (!price) return 0;
-  return Number(String(price).replace(/[^\d]/g, ""));
-};
+const RentalPriceBlock = ({ product, booking, itemPrice }) => {
+  const rent = product?.rent || product?.modes?.rent;
 
-const RentalPriceBlock = ({ item, product, booking }) => {
-  const rent = product?.rent;
-
-  let days = booking?.rentalWindowDays || 0;
+  // DERIVE DAYS FROM WINDOW OR DATES
+  let days = booking?.rentalWindowDays;
   if (!days && booking?.deliveryDate && booking?.returnDate) {
     const start = new Date(booking.deliveryDate);
     const end = new Date(booking.returnDate);
     const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
-    days = diff > 0 ? diff : 0;
+    if (diff > 0) days = diff;
   }
   if (!days) days = 4;
 
   // PER DAY PRICE
-  const perDay = rent?.pricing?.pricePerDay || cleanPrice(item?.price) / 4 || 0;
+  const rentalBase = Number(String(product?.rentalPrice || "").replace(/[^\d]/g, "")) || (days === 4 ? Number(String(itemPrice || "").replace(/[^\d]/g, "")) : 0);
+  const perDay =
+    (rentalBase > 0 ? Math.round(rentalBase / 4) : 0) ||
+    rent?.pricing?.pricePerDay ||
+    product?.perDayRate ||
+    (itemPrice ? Math.round(Number(String(itemPrice).replace(/[^\d]/g, "")) / days) : 0);
 
   // TOTAL PRICE (MAIN CALCULATION)
-  const totalPrice = days * perDay;
+  let totalPrice = (days && perDay) ? days * perDay : (itemPrice || rentalBase || 0);
+  if (days === 4 && rentalBase > 0) {
+    totalPrice = rentalBase;
+  }
 
-  //  Safety fallback (avoid showing ₹0 UI)
-  if (!days || !perDay) return null;
+  // Safety fallback (avoid showing ₹0 UI)
+  if (!totalPrice) return null;
 
   return (
     <div className="cart-price cart-price--rental">
+
       {/* EYEBROW */}
-      <div className="cart-price__eyebrow">Rental fee · {days}-day window</div>
+      <div className="cart-price__eyebrow">
+        Rental fee · {days}-day window
+      </div>
 
       {/* PRICE */}
       <div className="cart-price__value">
-        <sup>₹</sup>
-        {formatPrice(totalPrice)}
+         <sup>₹</sup>{formatPrice(totalPrice)}
       </div>
 
       {/* NOTE */}
-      <div className="cart-price__note">₹{formatPrice(perDay)} per day</div>
+      {perDay > 0 && (
+        <div className="cart-price__note">
+          ₹{formatPrice(perDay)} per day
+        </div>
+      )}
+
     </div>
   );
 };

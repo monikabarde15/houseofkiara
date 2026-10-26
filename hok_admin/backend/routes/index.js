@@ -51,6 +51,7 @@ router.use("/listers", listerRouter);
 router.use("/designers", designerRouter);
 router.use("/tasks", taskRouter);
 router.use("/submissions", submissionRouter);
+router.use("/lister-submissions", submissionRouter);
 router.use("/promotions", promotionRouter);
 router.use("/notifications", notificationRouter);
 router.use("/categories", categoryRouter);

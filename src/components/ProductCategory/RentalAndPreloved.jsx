@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams , useNavigate, useLocation } from "react-router-dom";
 import { Heart, Star, TrendingUp, Gift, User, Calendar, CreditCard, MessageCircleCheck, Shield, CircleAlert, ArrowRight, ShoppingBag, X, Plus, Truck } from "lucide-react";
+import { formatProductDetail, parsePrice } from "../../utils/productNavigation";
+import staticProducts from "../../data/mainCategoryPageData";
 import GalleryColumn from "../GalleryColumn";
 import '../../styles/productcategory/rental-and-preloved.css'
 import RentalCalendar from "../RentalCalendar";
 import RelatedProduct from "../RelatedProduct";
 import useCartStore from "../../store/cartStore";
 import useWishlistStore from "../../store/wishlistStore";
-const tempSizes = [
-    { label: "XS", available: true },
-    { label: "S", available: true },
-    { label: "M", available: true },
-    { label: "L", available: false },
-    { label: "XL", available: false }
-];
+import useAuthStore from "../../store/authStore";
+import toast from "react-hot-toast";
 
 const gradeDotColor = {
     pristine: "#6B7E5A",
@@ -46,77 +43,131 @@ const gradeConfig = {
     }
 };
 
+
 export default function RentalAndPreloved() {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
 
-    const addToCart = useCartStore((state) => state.addToCart);
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-    const [mode, setMode] = useState("rent");
+    // ===== PRODUCT FETCH =====
+    const [product, setProduct] = useState(() => {
+        return location.state?.product ? formatProductDetail(location.state.product) : null;
+    });
+    const [loading, setLoading] = useState(!product);
 
     useEffect(() => {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-        fetch(`${backendUrl}/api/web-products/${id}`)
-            .then(res => {
-                if(!res.ok) throw new Error("Not found");
-                return res.json();
-            })
-            .then(data => {
-                if (data && data.success && data.data) {
-                    setProduct(data.data);
-                    if (data.data.modes?.rent?.enabled) {
-                        setMode("rent");
-                    } else if (data.data.modes?.preloved?.enabled || data.data.modes?.buy?.enabled) {
-                        setMode("buy");
+        let isMounted = true;
+        const fetchProduct = async () => {
+            try {
+                const res = await fetch(`/api/products/${id}`);
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json.success && json.data && isMounted) {
+                        setProduct(formatProductDetail(json.data));
+                        setLoading(false);
+                        return;
                     }
-                    setLoading(false);
-                } else {
-                    throw new Error("No data returned");
                 }
-            })
-            .catch(err => {
-                console.error("API error:", err);
-                setError(true);
-                setLoading(false);
-            });
+                // Fallback to static catalog if id is a mock ID (e.g., 1, 2, 3)
+                const staticItem = staticProducts?.find(
+                    (sp) => String(sp.id) === String(id) || String(sp.productId) === String(id)
+                );
+                if (staticItem && isMounted) {
+                    setProduct(formatProductDetail(staticItem));
+                    setLoading(false);
+                    return;
+                }
+            } catch (err) {
+                console.warn("Error fetching product by ID:", err);
+                const staticItem = staticProducts?.find(
+                    (sp) => String(sp.id) === String(id) || String(sp.productId) === String(id)
+                );
+                if (staticItem && isMounted) {
+                    setProduct(formatProductDetail(staticItem));
+                }
+            } finally {
+                if (isMounted) setLoading(false);
+            }
+        };
+
+        fetchProduct();
+        return () => {
+            isMounted = false;
+        };
     }, [id]);
 
+    const [mode, setMode] = useState("buy");
+
+    useEffect(() => {
+        if (product?.modes) {
+            setMode(product.modes.rent?.enabled ? "rent" : "buy");
+        }
+    }, [product]);
+
+    const { isAuthenticated } = useAuthStore();
     const wishlistItems = useWishlistStore((state) => state.items);
-    const toggleWishlistFn = useWishlistStore((state) => state.toggleWishlist);
-    const productId = product?._id || product?.id || id;    
-    const wish = productId ? wishlistItems.includes(productId) : false;
+    const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+
+    const targetId = String(product?.sku || product?.productId || product?._id || product?.id || id || "");
+    const prodSku = String(product?.sku || "");
+    const prodDbId = String(product?._id || "");
+    const prodPid = String(product?.productId || "");
+
+    const isWishlisted = targetId
+        ? wishlistItems.some((itemId) => {
+                const sid = String(itemId);
+                return (
+                    sid === targetId ||
+                    (prodSku && sid === prodSku) ||
+                    (prodDbId && sid === prodDbId) ||
+                    (prodPid && sid === prodPid)
+                );
+            })
+        : false;
+
     const [selectedWindow, setSelectedWindow] = useState("standard");
     const [selectedStart, setSelectedStart] = useState(null);
     const [selectedEnd, setSelectedEnd] = useState(null);
     const [selectedSize, setSelectedSize] = useState(null);
     const [openSections, setOpenSections] = useState(["details"]);
+
     const [isOfferOpen, setIsOfferOpen] = useState(false);
-    const [offer, setOffer] = useState(0);
-    const [inputValue, setInputValue] = useState(0);
-    const [note, setNote] = useState("");
-    const [name, setName] = useState("");
-    const [phone, setPhone] = useState("");
-    const [isSubmitted, setIsSubmitted] = useState(false);
-
-    useEffect(() => {
-        if (product) {
-            const initialPrice = product.modes?.preloved?.pricing?.price || product.modes?.buy?.pricing?.price || 185000;
-            const minOffr = Math.round(initialPrice * 0.54 / 5000) * 5000;
-            setOffer(minOffr);
-            setInputValue(minOffr);
-        }
-    }, [product]);
-
-    if (loading) return <h2 style={{ padding: 40 }}>Loading product...</h2>;
-    if (error || !product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
 
     // ===== DATA =====
-    const rentData = product.modes?.rent || null;
-    const buyData = product.modes?.buy || product.modes?.preloved || null;
-    const sizes = product.modes?.rent?.sizes || product.sizeTable || [];
+    const rentPrice =
+        parsePrice(product?.rentalPrice) ||
+        parsePrice(product?.rentPrice) ||
+        parsePrice(product?.modes?.rent?.pricing?.windows?.[0]?.price) ||
+        parsePrice(product?.price) ||
+        parsePrice(product?.listingPrice) ||
+        0;
+    const perDay =
+        (rentPrice > 0 ? Math.round(rentPrice / 4) : 0) || parsePrice(product?.perDayRate) || 0;
+    const rentData = (product?.modes?.rent?.pricing?.windows?.[0]?.price)
+        ? product.modes.rent
+        : {
+            pricing: {
+                pricePerDay: perDay,
+                minDays: product?.minimumDurationDays || 3,
+                windows: [
+                    { id: "standard", label: "Standard Window", price: rentPrice, days: 4, tag: "most popular" },
+                    { id: "extended", label: "Extended Window", price: Math.round((rentPrice / 4) * 7), days: 7, tag: "destination weddings" }
+                ]
+            },
+            deposit: { amount: product?.securityDeposit || Math.round(rentPrice * 1.5) || 0, returnDays: 5 }
+        };
+    const buyData = product?.modes?.buy || null;
+    const sizes = product?.modes?.rent?.sizes || [];
+
+    const availableSizes =
+        sizes.length > 0
+            ? sizes
+            : Array.isArray(product?.sizes) && product.sizes.length > 0
+                ? product.sizes.map((s) => ({
+                    label: typeof s === "object" ? s.label || s.size || "None" : s,
+                    available: true,
+                }))
+                : [];
 
     const isOpen = (key) => openSections.includes(key);
 
@@ -131,28 +182,52 @@ export default function RentalAndPreloved() {
     };
 
     // ===== SELECTED WINDOW =====
-    const displayWindows = rentData?.pricing?.windows?.length > 0 
-        ? rentData.pricing.windows 
-        : [
-            { id: "standard", label: "Standard", days: rentData?.pricing?.minDays || 4, price: (rentData?.pricing?.minDays || 4) * (rentData?.pricing?.pricePerDay || 0), tag: "most popular" },
-            { id: "extended", label: "Extended", days: (rentData?.pricing?.minDays || 4) + 2, price: ((rentData?.pricing?.minDays || 4) + 2) * (rentData?.pricing?.pricePerDay || 0), tag: "destination weddings" }
-        ];
-
-    const selectedWindowData = displayWindows.find((w) => w.id === selectedWindow) || displayWindows[0];
+    const selectedWindowData =
+        rentData?.pricing?.windows?.find((w) => w.id === selectedWindow) ||
+        rentData?.pricing?.windows?.[0];
 
     // for dot color
-    const grade = product.condition?.grade || "pristine";
+    const grade = product?.condition?.grade || "pristine";
 
     // ===============PRELOVED======================//
 
     // FOR DISCOUNT - 
-    const price = product.modes?.preloved?.pricing?.price || product.modes?.buy?.pricing?.price || 185000;
-    const retail = product.modes?.preloved?.pricing?.originalPrice || 420000;
-    const discount = Math.round(((retail - price) / retail) * 100);
+    const price =
+        (typeof product?.preloved?.pricing?.price === "number" && product.preloved.pricing.price > 0
+            ? product.preloved.pricing.price
+            : parsePrice(product?.listingPrice) || parsePrice(product?.buyPrice) || parsePrice(product?.price)) || 0;
+    const retail =
+        parsePrice(product?.originalRetailPrice) ||
+        parsePrice(product?.originalPrice) ||
+        parsePrice(product?.retailPrice) ||
+        parsePrice(product?.preloved?.pricing?.originalPrice) ||
+        parsePrice(product?.modes?.preloved?.pricing?.originalPrice) ||
+        parsePrice(product?.modes?.rent?.pricing?.originalRetailPrice) ||
+        price;
+    const discount = (retail > price && retail > 0 && price > 0)
+        ? Math.round(((retail - price) / retail) * 100)
+        : 0;
+
+    const currentRentPrice = parsePrice(selectedWindowData?.price) || rentPrice;
+    const rentDiscount =
+        retail > currentRentPrice && retail > 0 && currentRentPrice > 0
+            ? Math.round(((retail - currentRentPrice) / retail) * 100)
+            : 0;
 
     // MINIMUM AND MAXIMUM OFFER PRICE
-    const minOffer = Math.round(price * 0.54 / 5000) * 5000;
-    const maxOffer = price;
+    const minOffer = Math.round((price * 0.54) / 5000) * 5000 || 5000;
+    const maxOffer = price || 10000;
+
+    const [offer, setOffer] = useState(minOffer);      // number (slider)
+    const [inputValue, setInputValue] = useState(minOffer); // (typing)
+
+    useEffect(() => {
+        if (price) {
+            const min = Math.round((price * 0.54) / 5000) * 5000 || 5000;
+            setOffer(min);
+            setInputValue(min);
+        }
+    }, [price]);
 
     // CALCULATION ON TOP
     const savings = maxOffer - offer;
@@ -160,6 +235,17 @@ export default function RentalAndPreloved() {
 
     // Golden Progress Bar
     const progress = ((offer - minOffer) / (maxOffer - minOffer)) * 100;
+
+    // FOR INPUT AND NOTES
+    const [note, setNote] = useState("");
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+
+    // Offer submitted 
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    if (loading) return <div style={{ padding: 60, textAlign: "center", fontFamily: "Cinzel, serif" }}>Loading piece details...</div>;
+    if (!product) return <h2>Product not found</h2>;
 
     const formatDate = (date) => {
         const y = date.getFullYear();
@@ -175,26 +261,63 @@ export default function RentalAndPreloved() {
         const eventDate = new Date(selectedStart);
         eventDate.setDate(eventDate.getDate() + 2);
 
-        const details = {
-            type: "rental",
-            source: "rentandpreloved",
-            size: selectedSize || "M",
-            color: product?.colors?.[0]?.code || "",
-            measurements: null,
-            rentalDates: {
-                start: formatDate(selectedStart),
-                end: formatDate(selectedEnd),
-            },
-            price: selectedWindowData?.price || 0,
-        };
+        const rentalWindowDays =
+            Math.ceil(
+                (selectedEnd - selectedStart) /
+                (1000 * 60 * 60 * 24)
+            ) + 1;
 
-        addToCart(product, details);
+        const calculatedPerDay =
+            (rentPrice > 0 ? Math.round(rentPrice / 4) : 0) ||
+            rentData?.pricing?.pricePerDay ||
+            product?.perDayRate ||
+            0;
+
+        let price = selectedWindowData?.price || product?.rentalPrice || 0;
+        if (selectedWindow === "standard" || rentalWindowDays === 4) {
+            price = rentPrice || selectedWindowData?.price || 12000;
+        } else if (selectedWindow === "extended" && selectedWindowData?.price) {
+            price = selectedWindowData.price;
+        } else if (rentalWindowDays && calculatedPerDay > 0) {
+            price = rentalWindowDays * calculatedPerDay;
+        }
+
+        useCartStore.getState().addToCart(product, {
+            type: "rental",
+            size: selectedSize || "M",
+            deliveryDate: formatDate(selectedStart),
+            eventDate: formatDate(eventDate),
+            returnDate: formatDate(selectedEnd),
+            rentalWindowDays,
+            price,
+        });
+
         navigate("/cart");
     };
 
     // Wishlist Handler
-    const handleAddToWishlist = () => {
-      toggleWishlistFn(productId);
+    const handleAddToWishlist = (e) => {
+        e?.preventDefault?.();
+        e?.stopPropagation?.();
+
+        if (!isAuthenticated) {
+            toast.error("Please login to use your wishlist");
+            navigate("/auth");
+            return;
+        }
+
+        if (targetId) {
+            const willBeActive = !isWishlisted;
+            toggleWishlist(targetId, product);
+
+            if (willBeActive) {
+                toast.success("Added to your wishlist");
+            } else {
+                toast("Removed from your wishlist", {
+                    icon: "✕",
+                });
+            }
+        }
     };
 
     // WhatsApp Handler
@@ -237,16 +360,21 @@ Product ID: ${product.id}
 
     // Preloved Buy Now Handler
     const handleBuyNow = () => {
-        const details = {
-            type: "preloved",
-            source: "rentandpreloved",
-            size: sizes?.[0]?.label || product.prelovedSize || "Standard",
-            color: product?.colors?.[0]?.code || "",
-            measurements: null,
-            price: price,
-        };
+        const numericPrice =
+            typeof price === "number"
+                ? price
+                : Number(String(price).replace(/[^\d]/g, "")) ||
+                  product.listingPrice ||
+                  product.price ||
+                  0;
 
-        addToCart(product, details);
+        useCartStore.getState().addToCart(product, {
+            type: "preloved",
+            size: product.prelovedSize || product.size || "Free Size",
+            price: numericPrice,
+            quantity: 1,
+        });
+
         navigate("/cart");
     };
 
@@ -261,13 +389,13 @@ Product ID: ${product.id}
                     <div className="rap-breadcrumb">
                         <span className="rap-crumb">Home</span>
                         <span className="rap-sep">›</span>
-                        <span className="rap-crumb">Buy Preloved</span>
+                        <span className="rap-crumb">{mode === "rent" ? "Rent" : "Buy Preloved"}</span>
                         <span className="rap-sep">›</span>
-                        <span className="rap-crumb">Bridal Lehengas</span>
+                        <span className="rap-crumb">{product.category || "None"}</span>
                         <span className="rap-sep">›</span>
-                        <span className="rap-crumb current">Sabyasachi</span>
+                        <span className="rap-crumb current">{product.designer || "None"}</span>
                         <span className="rap-sep">›</span>
-                        <span className="rap-crumb current">{product.title}</span>
+                        <span className="rap-crumb current">{product.title || product.name || "None"}</span>
                     </div>
                 </div>
 
@@ -280,7 +408,8 @@ Product ID: ${product.id}
                             images={product.images}
                             video={product.video}
                             variant={mode === "rent" ? "rent" : "preloved"}
-                            productId={productId}
+                            productId={product.id || product.productId || id}
+                            product={product}
                         />
 
                     </Col>
@@ -301,7 +430,7 @@ Product ID: ${product.id}
                                     </button>
                                 )}
 
-                                {product.modes?.preloved?.enabled && (
+                                {product.modes?.buy?.enabled && (
                                     <button
                                         className={`rap-toggle-btn ${mode === "buy" ? "active" : ""}`}
                                         onClick={() => setMode("buy")}
@@ -314,13 +443,13 @@ Product ID: ${product.id}
 
                             {/* ================= COMMON PRODUCT INFO ================= */}
 
-                            <p className="rap-rental-designer-name">{product.designer}</p>
+                            <p className="rap-rental-designer-name">{product.designer || "None"}</p>
 
                             <h1 className="rap-rental-product-title">
-                                {product.title} <em>{product.subTitle}</em>
+                                {product.title || product.name || "None"} <em>{product.subTitle || ""}</em>
                             </h1>
 
-                            <p className="rap-rental-product-desc">{product.description}</p>
+                            <p className="rap-rental-product-desc">{product.description || "None"}</p>
 
                             {/* RATING */}
                             <div className="rap-rental-rating-row">
@@ -330,29 +459,25 @@ Product ID: ${product.id}
                                         className="rap-rental-star-icon"
                                         key={s}
                                         size={16}
-                                        fill={product.rating >= s ? "#c5a46d" : "none"}
+                                        fill={(product.rating || 0) >= s ? "#c5a46d" : "none"}
                                         stroke="#c5a46d"
                                     />
                                 ))}
 
-                                <span className="rap-rental-rating-text">{product.rating}.0</span>
+                                <span className="rap-rental-rating-text">{(product.rating || 0)}.0</span>
 
                                 <span className="rap-rental-rating-separator" />
 
-                                <span className="rap-rental-reviews">{product.reviews} reviews</span>
+                                <span className="rap-rental-reviews">{product.reviews || product.reviewCount || 0} reviews</span>
 
                                 <span className="rap-rental-rating-separator" />
 
                                 <span
                                     className="rap-rental-never-worn-soft"
-                                    style={{ "--dot-color": "#6B7E5A" }}
+                                    style={{ "--dot-color": gradeDotColor[grade] || "#6B7E5A" }}
                                 >
-                                    {mode === "rent" ? "AVAILABLE FOR RENT" : "IN STOCK"}
+                                    {gradeLabel[grade] || "AUTHENTIC PIECE"}
                                 </span>
-
-                                {/* <span className="rap-rental-rating-separator" /> */}
-
-
 
                             </div>
 
@@ -367,23 +492,38 @@ Product ID: ${product.id}
 
                                         <p className="rap-rental-price-label">Rental Price</p>
 
-                                        <h2 className="rap-rental-main-price">
-                                            ₹{selectedWindowData?.price}
-                                            <span className="rap-onlyduration">
-                                                {" "}
-                                                / {selectedWindowData?.days} days
-                                            </span>
-                                        </h2>
+                                        <div className="rap-rental-price-header-row">
+                                            <h2 className="rap-rental-main-price">
+                                                ₹{Number(selectedWindowData?.price || rentPrice || 0).toLocaleString("en-IN")}
+                                                <span className="rap-onlyduration">
+                                                    {" "}
+                                                    / {selectedWindowData?.days || 4} days
+                                                </span>
+                                            </h2>
+
+                                            {retail > 0 && (
+                                                <div className="rap-rental-savings-wrap">
+                                                    <span className="rap-rental-retail-struck">
+                                                        retail ₹{Number(retail).toLocaleString("en-IN")}
+                                                    </span>
+                                                    {rentDiscount > 0 && (
+                                                        <span className="rap-rental-save-badge">
+                                                            Save {rentDiscount}%
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
 
                                         <p className="rap-rental-price-subline">
-                                            ₹{rentData.pricing.pricePerDay} per day • Minimum{" "}
-                                            {rentData.pricing.minDays} days
+                                            ₹{Number(rentData?.pricing?.pricePerDay || 0).toLocaleString("en-IN")} per day • Minimum{" "}
+                                            {rentData?.pricing?.minDays || 3} days
                                         </p>
 
                                         {/* 2. RENTAL WINDOWS */}
                                         {/* WINDOWS */}
                                         <div className="rap-rental-rental-window">
-                                            {displayWindows.map((w) => (
+                                            {rentData.pricing.windows.map((w) => (
                                                 <div
                                                     key={w.id}
                                                     className={`rap-rental-rental-block ${selectedWindow === w.id ? "selected" : ""
@@ -430,21 +570,23 @@ Product ID: ${product.id}
 
                                         {/* SIZE PILLS */}
                                         <div className="rap-rental-size-options">
-                                            {sizes.map((size, i) => {
-                                                const isAvail = size.available !== false;
-                                                return (
-                                                <button
-                                                    key={i}
-                                                    disabled={!isAvail}
-                                                    onClick={() => isAvail && setSelectedSize(size.label)}
-                                                    className={`rap-rental-size-pill
-        ${!isAvail ? "unavailable" : ""}
-        ${selectedSize === size.label ? "active" : ""}
-      `}
-                                                >
-                                                    {size.label}
-                                                </button>
-                                            )})}
+                                            {availableSizes.length > 0 ? (
+                                                availableSizes.map((size, i) => (
+                                                    <button
+                                                        key={i}
+                                                        disabled={!size.available}
+                                                        onClick={() => size.available && setSelectedSize(size.label)}
+                                                        className={`rap-rental-size-pill
+                                                            ${!size.available ? "unavailable" : ""}
+                                                            ${selectedSize === size.label ? "active" : ""}
+                                                        `}
+                                                    >
+                                                        {size.label}
+                                                    </button>
+                                                ))
+                                            ) : (
+                                                <span className="rap-rental-size-pill">None</span>
+                                            )}
                                         </div>
 
                                     </div>
@@ -475,11 +617,20 @@ Product ID: ${product.id}
                                         </button>
 
                                         {/* WISHLIST */}
-                                        <button className="rap-rental-cta-wishlist"
+                                        <button className={`rap-rental-cta-wishlist ${isWishlisted ? "active" : ""}`}
                                             onClick={handleAddToWishlist}
                                         >
-                                            <span className="rap-rental-cta-icon"><Heart /></span>
-                                            {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
+                                            <span className="rap-rental-cta-icon">
+                                                <Heart
+                                                    style={{
+                                                        fill: isWishlisted ? "#B85C38" : "none",
+                                                        stroke: isWishlisted ? "#B85C38" : "currentColor",
+                                                        color: isWishlisted ? "#B85C38" : "currentColor",
+                                                        transition: "all 0.2s ease"
+                                                    }}
+                                                />
+                                            </span>
+                                            {isWishlisted ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                                         </button>
 
                                         {/* WHATSAPP */}
@@ -528,19 +679,19 @@ Product ID: ${product.id}
                                                     <div className="rap-rental-pdp-grid">
 
                                                         <div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Designer</span><p>{product.designer}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Fabric</span><p>{product.details?.fabric}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Craft Technique</span><p>{product.details?.technique}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Includes</span><p>{product.details?.includes}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Delivery Time</span><p>{product.details?.delivery}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Designer</span><p>{product.designer || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Fabric</span><p>{product.details?.fabric || product.material || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Craft Technique</span><p>{product.details?.technique || product.technique || product.embellishments || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Includes</span><p>{product.details?.includes || product.setIncludes || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Delivery Time</span><p>{product.details?.delivery || product.delivery || "None"}</p></div>
                                                         </div>
 
                                                         <div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Category</span><p>{product.subTitle}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Colour</span><p>{product.details?.color}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Thread</span><p>{product.details?.thread}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Occasion</span><p>{product.details?.occasion}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Origin</span><p>{product.details?.origin}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Category</span><p>{product.category || product.subTitle || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Colour</span><p>{product.details?.color || product.color || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Thread</span><p>{product.details?.thread || product.threadWork || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "None"}</p></div>
                                                         </div>
 
                                                     </div>
@@ -559,7 +710,7 @@ Product ID: ${product.id}
                                             {isOpen("craft") && (
                                                 <div className="rap-rental-pdp-content">
                                                     <p className="rap-rental-craft-text">
-                                                        {product.craft}
+                                                        {product.craft || product.story || product.description || "None"}
                                                     </p>
                                                 </div>
                                             )}
@@ -576,31 +727,58 @@ Product ID: ${product.id}
                                             {isOpen("size") && (
                                                 <div className="rap-rental-pdp-content">
 
-                                                    <p className="rap-rental-size-intro">{product.sizeNote}</p>
+                                                    {product.sizeNote || product.sizeGuide ? (
+                                                        <p className="rap-rental-size-intro">{product.sizeNote || product.sizeGuide}</p>
+                                                    ) : null}
 
-                                                    <table className="rap-rental-size-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Size</th>
-                                                                <th>Bust</th>
-                                                                <th>Waist</th>
-                                                                <th>Hips</th>
-                                                                <th>Height</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            {product.sizeTable?.map((row, i) => (
-                                                                <tr key={i} className={row.recommended ? "rap-rental-active-row" : ""}>
-                                                                    <td>{row.size}</td>
-                                                                    <td>{row.bust}</td>
-                                                                    <td>{row.waist}</td>
-                                                                    <td>{row.hips}</td>
-                                                                    <td>{row.height}</td>
+                                                    {product.sizeTable && product.sizeTable.length > 0 ? (
+                                                        <table className="rap-rental-size-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Size</th>
+                                                                    <th>Bust</th>
+                                                                    <th>Waist</th>
+                                                                    <th>Hips</th>
+                                                                    <th>Height</th>
                                                                 </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                {product.sizeTable.map((row, i) => (
+                                                                    <tr key={i} className={row.recommended ? "rap-rental-active-row" : ""}>
+                                                                        <td>{row.size || "None"}</td>
+                                                                        <td>{row.bust || "None"}</td>
+                                                                        <td>{row.waist || "None"}</td>
+                                                                        <td>{row.hips || "None"}</td>
+                                                                        <td>{row.height || "None"}</td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    ) : (product.measurements && (product.measurements.bust || product.measurements.waist || product.measurements.hips || product.measurements.length)) ? (
+                                                        <table className="rap-rental-size-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Size</th>
+                                                                    <th>Bust</th>
+                                                                    <th>Waist</th>
+                                                                    <th>Hips</th>
+                                                                    <th>Length</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr className="rap-rental-active-row">
+                                                                    <td>{product.sizes?.[0] || "Standard"}</td>
+                                                                    <td>{product.measurements.bust || "-"}</td>
+                                                                    <td>{product.measurements.waist || "-"}</td>
+                                                                    <td>{product.measurements.hips || "-"}</td>
+                                                                    <td>{product.measurements.length || "-"}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    ) : (!product.sizeNote && !product.sizeGuide) ? (
+                                                        <p className="rap-rental-size-intro" style={{ margin: 0 }}>None</p>
+                                                    ) : null}
 
                                                 </div>
                                             )}
@@ -617,12 +795,18 @@ Product ID: ${product.id}
                                             {isOpen("care") && (
                                                 <div className="rap-rental-pdp-content">
                                                     <ul className="rap-rental-care-list">
-                                                        {product.care?.map((item, i) => (
-                                                            <li key={i}>
-                                                                <span className="rap-rental-dash">—</span>
-                                                                <span>{item}</span>
+                                                        {Array.isArray(product.care) && product.care.length > 0 ? (
+                                                            product.care.map((item, i) => (
+                                                                <li key={i}>
+                                                                    <span className="rap-rental-dash">—</span>
+                                                                    <span>{item}</span>
+                                                                </li>
+                                                            ))
+                                                        ) : (
+                                                            <li>
+                                                                <span>None</span>
                                                             </li>
-                                                        ))}
+                                                        )}
                                                     </ul>
                                                 </div>
                                             )}
@@ -639,25 +823,29 @@ Product ID: ${product.id}
                                             {isOpen("shipping") && (
                                                 <div className="rap-rental-pdp-content">
 
-                                                    <table className="rap-rental-shipping-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Method</th>
-                                                                <th>Estimated time</th>
-                                                                <th>Cost</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            {product.shipping?.map((item, i) => (
-                                                                <tr key={i}>
-                                                                    <td>{item.method}</td>
-                                                                    <td>{item.time}</td>
-                                                                    <td className="rap-rental-cost">{item.cost}</td>
+                                                    {Array.isArray(product.shipping) && product.shipping.length > 0 ? (
+                                                        <table className="rap-rental-shipping-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Method</th>
+                                                                    <th>Estimated time</th>
+                                                                    <th>Cost</th>
                                                                 </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                {product.shipping.map((item, i) => (
+                                                                    <tr key={i}>
+                                                                        <td>{item.method || "Shipping"}</td>
+                                                                        <td>{item.time || "-"}</td>
+                                                                        <td className="rap-rental-cost">{item.cost || "-"}</td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    ) : (
+                                                        <p className="rap-rental-shipping-item">None</p>
+                                                    )}
 
                                                 </div>
                                             )}
@@ -682,17 +870,21 @@ Product ID: ${product.id}
                                         </p>
 
                                         <h2 className="rap-preloved-main-price">
-                                            ₹{price.toLocaleString()}
+                                            ₹{Number(price).toLocaleString()}
                                         </h2>
 
                                         <div className="rap-preloved-price-row">
-                                            <span className="rap-preloved-retail-price">
-                                                ₹{retail.toLocaleString()} retail
-                                            </span>
+                                            {retail > 0 && (
+                                                <span className="rap-preloved-retail-price">
+                                                    ₹{Number(retail).toLocaleString()} retail
+                                                </span>
+                                            )}
 
-                                            <span className="rap-preloved-discount-badge">
-                                                {discount}% OFF RETAIL
-                                            </span>
+                                            {discount > 0 && (
+                                                <span className="rap-preloved-discount-badge">
+                                                    {discount}% OFF RETAIL
+                                                </span>
+                                            )}
                                         </div>
 
                                     </div>
@@ -705,7 +897,7 @@ Product ID: ${product.id}
                                         </p>
 
                                         <p className="rap-preloved-disclosure-text">
-                                            {product.disclosure}
+                                            {product.disclosure || product.honestDisclosure || "None"}
                                         </p>
 
                                     </div>
@@ -718,9 +910,19 @@ Product ID: ${product.id}
                                         </p>
 
                                         <div className="rap-preloved-size-pills">
-                                            <span className="rap-preloved-size-pill active">
-                                                {sizes?.[0]?.label || product.prelovedSize || "Standard"}
-                                            </span>
+                                            {product.sizes && product.sizes.length > 0 ? (
+                                                product.sizes.map((s, idx) => (
+                                                    <span key={idx} className="rap-preloved-size-pill active">
+                                                        {typeof s === "object" ? (s.label || s.size || "None") : s}
+                                                    </span>
+                                                ))
+                                            ) : product.prelovedSize ? (
+                                                <span className="rap-preloved-size-pill active">
+                                                    {product.prelovedSize}
+                                                </span>
+                                            ) : (
+                                                <span className="rap-preloved-size-pill">None</span>
+                                            )}
                                         </div>
 
                                     </div>
@@ -738,13 +940,20 @@ Product ID: ${product.id}
 
                                         {/* WISHLIST */}
                                         <button
-                                            className="rap-preloved-btn outline"
+                                            className={`rap-preloved-btn outline ${isWishlisted ? "active" : ""}`}
                                             onClick={handleAddToWishlist}
                                         >
                                             <span className="rap-preloved-icon">
-                                                <Heart />
+                                                <Heart
+                                                    style={{
+                                                        fill: isWishlisted ? "#B85C38" : "none",
+                                                        stroke: isWishlisted ? "#B85C38" : "currentColor",
+                                                        color: isWishlisted ? "#B85C38" : "currentColor",
+                                                        transition: "all 0.2s ease"
+                                                    }}
+                                                />
                                             </span>
-                                            {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
+                                            {isWishlisted ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                                         </button>
 
                                     </div>
@@ -1042,44 +1251,44 @@ Product ID: ${product.id}
                                                         <div>
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Designer</span>
-                                                                <p>{product.designer}</p>
+                                                                <p>{product.designer || "None"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Fabric</span>
-                                                                <p>{product.details?.fabric}</p>
+                                                                <p>{product.details?.fabric || product.material || "None"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Embroidery</span>
-                                                                <p>{product.details?.technique}</p>
+                                                                <p>{product.details?.technique || product.technique || product.embellishments || "None"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Includes</span>
-                                                                <p>{product.details?.includes}</p>
+                                                                <p>{product.details?.includes || product.setIncludes || "None"}</p>
                                                             </div>
                                                         </div>
 
                                                         <div>
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Category</span>
-                                                                <p>{product.subTitle}</p>
+                                                                <p>{product.category || product.subTitle || "None"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Colour</span>
-                                                                <p>{product.details?.color}</p>
+                                                                <p>{product.details?.color || product.color || "None"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Occasion</span>
-                                                                <p>{product.details?.occasion}</p>
+                                                                <p>{product.details?.occasion || product.occasion || "None"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Origin</span>
-                                                                <p>{product.details?.origin}</p>
+                                                                <p>{product.details?.origin || product.origin || "None"}</p>
                                                             </div>
                                                         </div>
 
@@ -1111,8 +1320,7 @@ Product ID: ${product.id}
                                             <div className="rap-preloved-accordion-content">
 
                                                 <p className="rap-preloved-story-text">
-                                                    {product.story ||
-                                                        "Worn once for a wedding celebration, this piece carries delicate handwork and timeless elegance. Carefully preserved and professionally cleaned, it remains in excellent condition with no visible damage."}
+                                                    {product.story || product.description || "None"}
                                                 </p>
 
                                                 {product.stylingNote && (
@@ -1145,37 +1353,64 @@ Product ID: ${product.id}
                                             <div className="rap-preloved-accordion-content">
 
                                                 {/* INTRO */}
-                                                <p className="rap-preloved-size-intro">
-                                                    {product.sizeNote || "Fits true to size. Blouse tailored for a 32\" bust with adjustable waist."}
-                                                </p>
+                                                {product.sizeNote || product.sizeGuide ? (
+                                                    <p className="rap-preloved-size-intro">
+                                                        {product.sizeNote || product.sizeGuide}
+                                                    </p>
+                                                ) : null}
 
                                                 {/* TABLE */}
-                                                <table className="rap-preloved-size-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Size</th>
-                                                            <th>Bust</th>
-                                                            <th>Waist</th>
-                                                            <th>Hips</th>
-                                                            <th>Height</th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody>
-                                                        {product.sizeTable?.map((row, i) => (
-                                                            <tr
-                                                                key={i}
-                                                                className={row.recommended ? "active-row" : ""}
-                                                            >
-                                                                <td>{row.size}</td>
-                                                                <td>{row.bust}</td>
-                                                                <td>{row.waist}</td>
-                                                                <td>{row.hips}</td>
-                                                                <td>{row.height}</td>
+                                                {product.sizeTable && product.sizeTable.length > 0 ? (
+                                                    <table className="rap-preloved-size-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Size</th>
+                                                                <th>Bust</th>
+                                                                <th>Waist</th>
+                                                                <th>Hips</th>
+                                                                <th>Height</th>
                                                             </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            {product.sizeTable.map((row, i) => (
+                                                                <tr
+                                                                    key={i}
+                                                                    className={row.recommended ? "active-row" : ""}
+                                                                >
+                                                                    <td>{row.size || "None"}</td>
+                                                                    <td>{row.bust || "None"}</td>
+                                                                    <td>{row.waist || "None"}</td>
+                                                                    <td>{row.hips || "None"}</td>
+                                                                    <td>{row.height || "None"}</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                ) : (product.measurements && (product.measurements.bust || product.measurements.waist || product.measurements.hips || product.measurements.length)) ? (
+                                                    <table className="rap-preloved-size-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Size</th>
+                                                                <th>Bust</th>
+                                                                <th>Waist</th>
+                                                                <th>Hips</th>
+                                                                <th>Length</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr className="active-row">
+                                                                <td>{product.sizes?.[0] || product.prelovedSize || "Standard"}</td>
+                                                                <td>{product.measurements.bust || "-"}</td>
+                                                                <td>{product.measurements.waist || "-"}</td>
+                                                                <td>{product.measurements.hips || "-"}</td>
+                                                                <td>{product.measurements.length || "-"}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                ) : (!product.sizeNote && !product.sizeGuide) ? (
+                                                    <p className="rap-preloved-size-intro" style={{ margin: 0 }}>None</p>
+                                                ) : null}
 
                                             </div>
                                         )}
@@ -1256,12 +1491,16 @@ Product ID: ${product.id}
                                         {isOpen("care") && (
                                             <div className="rap-preloved-accordion-content">
 
-                                                {product.care?.map((item, i) => (
-                                                    <p key={i} className="rap-preloved-care-item">
-                                                        <span className="rap-preloved-care-dash">—</span>
-                                                        {item}
-                                                    </p>
-                                                ))}
+                                                {Array.isArray(product.care) && product.care.length > 0 ? (
+                                                    product.care.map((item, i) => (
+                                                        <p key={i} className="rap-preloved-care-item">
+                                                            <span className="rap-preloved-care-dash">—</span>
+                                                            {item}
+                                                        </p>
+                                                    ))
+                                                ) : (
+                                                    <p className="rap-preloved-care-item">None</p>
+                                                )}
 
                                             </div>
                                         )}
@@ -1287,19 +1526,25 @@ Product ID: ${product.id}
                                             <div className="rap-preloved-accordion-content">
 
                                                 {/* DELIVERY METHODS */}
-                                                {product.shipping?.map((item, i) => (
-                                                    <p key={i} className="rap-preloved-shipping-item">
-                                                        <span className="rap-preloved-shipping-dash">—</span>
-                                                        {item.method}: {item.time}, {item.cost}
-                                                    </p>
-                                                ))}
+                                                {(Array.isArray(product.shipping) && product.shipping.length > 0) || (Array.isArray(product.packaging) && product.packaging.length > 0) ? (
+                                                    <>
+                                                        {Array.isArray(product.shipping) && product.shipping.map((item, i) => (
+                                                            <p key={i} className="rap-preloved-shipping-item">
+                                                                <span className="rap-preloved-shipping-dash">—</span>
+                                                                {typeof item === "string" ? item : `${item.method || "Shipping"}: ${item.time || ""}${item.cost ? `, ${item.cost}` : ""}`}
+                                                            </p>
+                                                        ))}
 
-                                                {/* PACKAGING */}
-                                                {product.packaging?.map((text, i) => (
-                                                    <p key={i} className="rap-preloved-shipping-packaging">
-                                                        {text}
-                                                    </p>
-                                                ))}
+                                                        {/* PACKAGING */}
+                                                        {Array.isArray(product.packaging) && product.packaging.map((text, i) => (
+                                                            <p key={i} className="rap-preloved-shipping-packaging">
+                                                                {text}
+                                                            </p>
+                                                        ))}
+                                                    </>
+                                                ) : (
+                                                    <p className="rap-preloved-shipping-item">None</p>
+                                                )}
 
                                             </div>
                                         )}
@@ -1315,7 +1560,7 @@ Product ID: ${product.id}
 
                 </Row>
             </Container>
-            <RelatedProduct product={product} currentProductId={id} category={product?.category} />
+            <RelatedProduct />
         </section>
     );
 }

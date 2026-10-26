@@ -1,6 +1,6 @@
 /* Journey Swipe Cards (Mobile) - C8 */
 .hok-hiw-mobile-shop-section {
-  background: #faf7f2;
+  background: #FAF7F2;
   padding: 48px 16px;
   overflow: hidden;
 }
@@ -21,23 +21,23 @@
 .hok-hiw-mobile-shop-line {
   width: 24px;
   height: 1px;
-  background: #c9a96e;
+  background: #C9A96E;
 }
 
 .hok-hiw-mobile-shop-eyebrow-text {
-  font-family: "DM Sans", sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.28em;
-  color: #c9a96e;
+  color: #C9A96E;
   font-weight: 400;
 }
 
 .hok-hiw-mobile-shop-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: clamp(32px, 6vw, 52px);
   font-weight: 400;
-  color: #1a1612;
+  color: #1A1612;
   letter-spacing: -0.01em;
   line-height: 1.1;
   margin-bottom: 14px;
@@ -45,14 +45,14 @@
 
 .hok-hiw-mobile-shop-title em {
   font-style: italic;
-  color: #c9a96e;
+  color: #C9A96E;
 }
 
 .hok-hiw-mobile-shop-lead {
-  font-family: "DM Sans", sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 14px;
   font-weight: 300;
-  color: #8a7e72;
+  color: #8A7E72;
   line-height: 1.9;
   max-width: 520px;
   margin-bottom: 16px;
@@ -68,15 +68,15 @@
 .hok-hiw-mobile-shop-scroll-bar {
   width: 20px;
   height: 1px;
-  background: #e8e0d4;
+  background: #E8E0D4;
   display: inline-block;
 }
 
 .hok-hiw-mobile-shop-scroll-text {
-  font-family: "DM Sans", sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 10px;
   letter-spacing: 0.14em;
-  color: #8a7e72;
+  color: #8A7E72;
   text-transform: uppercase;
 }
 
@@ -111,13 +111,11 @@
   flex-shrink: 0;
   scroll-snap-align: start;
   padding: 36px 28px 28px;
-  background: #fffffb;
-  border: 1px solid #e8e0d4;
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
   border-radius: 1px;
   overflow: hidden;
-  transition:
-    border-color 0.3s ease,
-    transform 0.3s ease;
+  transition: border-color 0.3s ease, transform 0.3s ease;
   position: relative;
 }
 
@@ -128,7 +126,7 @@
 
 /* Ghost Number */
 .hok-hiw-mobile-jcard-ghost {
-  font-family: "Cormorant Garamond", serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: 100px;
   font-weight: 300;
   color: rgba(201, 169, 110, 0.055);
@@ -142,30 +140,30 @@
 
 /* Step Identifier */
 .hok-hiw-mobile-jstep-num {
-  font-family: "DM Sans", sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.26em;
-  color: #c9a96e;
+  color: #C9A96E;
   margin-bottom: 22px;
   position: relative;
 }
 
 .hok-hiw-mobile-jstep-num::after {
-  content: "";
+  content: '';
   display: block;
   max-width: 40px;
   height: 1px;
-  background: #e8d5b0;
+  background: #E8D5B0;
   margin-top: 12px;
 }
 
 /* Step Title */
 .hok-hiw-mobile-jstep-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: 26px;
   font-weight: 400;
-  color: #1a1612;
+  color: #1A1612;
   line-height: 1.2;
   letter-spacing: -0.01em;
   margin-bottom: 16px;
@@ -173,22 +171,22 @@
 
 .hok-hiw-mobile-jstep-title em {
   font-style: italic;
-  color: #c9a96e;
+  color: #C9A96E;
 }
 
 /* Step Body */
 .hok-hiw-mobile-jstep-body {
-  font-family: "DM Sans", sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: #8a7e72;
+  color: #8A7E72;
   line-height: 1.9;
   margin-bottom: 22px;
 }
 
 /* Details List */
 .hok-hiw-mobile-jstep-details {
-  border-top: 1px solid #f0eae0;
+  border-top: 1px solid #F0EAE0;
   padding-top: 22px;
 }
 
@@ -197,7 +195,7 @@
   flex-direction: row;
   gap: 10px;
   padding: 9px 0;
-  border-bottom: 1px solid #f0eae0;
+  border-bottom: 1px solid #F0EAE0;
 }
 
 .hok-hiw-mobile-jspd:last-child {
@@ -208,22 +206,22 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #e8d5b0;
+  background: #E8D5B0;
   margin-top: 5px;
   flex-shrink: 0;
 }
 
 .hok-hiw-mobile-jspd-text {
-  font-family: "DM Sans", sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   font-weight: 300;
-  color: #8a7e72;
+  color: #8A7E72;
   line-height: 1.55;
 }
 
 /* Dark Card (5th card - Loop) */
 .hok-hiw-mobile-jcard-dark {
-  background: #1a1612;
+  background: #1A1612;
   border-color: transparent;
 }
 
@@ -232,7 +230,7 @@
 }
 
 .hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-num {
-  color: #c9a96e;
+  color: #C9A96E;
 }
 
 .hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-num::after {
@@ -240,11 +238,11 @@
 }
 
 .hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-title {
-  color: #faf7f2;
+  color: #FAF7F2;
 }
 
 .hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-title em {
-  color: #c9a96e;
+  color: #C9A96E;
 }
 
 .hok-hiw-mobile-jcard-dark .hok-hiw-mobile-jstep-body {
@@ -285,18 +283,16 @@
 .hok-hiw-mobile-jdot {
   width: 16px;
   height: 2px;
-  background: #e8e0d4;
+  background: #E8E0D4;
   border-radius: 1px;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    width 0.2s ease;
+  transition: background 0.2s ease, width 0.2s ease;
   display: inline-block;
 }
 
 .hok-hiw-mobile-jdot.hok-hiw-mobile-on {
   width: 28px;
-  background: #c9a96e;
+  background: #C9A96E;
 }
 
 .hok-hiw-mobile-jdot:hover {

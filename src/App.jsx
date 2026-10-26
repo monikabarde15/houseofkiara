@@ -41,6 +41,7 @@ import ShippingPolicyPage from "./pages/ShippingPolicyPage";
 import NoSearchResultsPage from "./pages/NoSearchResultsPage";
 import PageNotFound from "./pages/PageNotFound";
 import MaintenancePage from "./pages/MaintenancePage";
+import PricingPolicyPage from "./pages/PricingPolicyPage";
 
 export default function App() {
   const location = useLocation();
@@ -143,6 +144,8 @@ export default function App() {
         <Route path="/seller-guidelines" element={<SellerGuidelinesPage />} />
         <Route path="/seller" element={<Navigate to="/seller-guidelines" replace />} />
         <Route path="/seller-faq" element={<Navigate to="/seller-guidelines" replace />} />
+        <Route path="/pricing-fees" element={<PricingPolicyPage />} />
+        <Route path="/pricing" element={<Navigate to="/pricing-fees" replace />} />
         <Route path="/contact-us" element={<ContactUsPage />} />
         <Route path="/contact" element={<Navigate to="/contact-us" replace />} />
         <Route path="/contactus" element={<Navigate to="/contact-us" replace />} />

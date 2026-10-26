@@ -29,7 +29,7 @@ const normalizeSubmission = (s: any): Submission => {
     subid: s.subid || s._id,
     listerID: rawId,
     listerName: listerDisplayName,
-    channel: s.channel || "Website",
+    channel: s.channel?.includes("Website") ? "Website" : s.channel || "Website",
     submittedAt:
       s.submittedAt || s.submitted || s.createdAt || new Date().toISOString(),
     piece: s.piece || "",
@@ -85,6 +85,7 @@ export const submissionService = {
       if (filters?.status) queryParams.append("status", filters.status);
       if (filters?.intent) queryParams.append("intent", filters.intent);
       if (filters?.channel) queryParams.append("channel", filters.channel);
+      if (filters?.view) queryParams.append("view", filters.view);
       if (filters?.dateFrom) queryParams.append("dateFrom", filters.dateFrom);
       if (filters?.dateTo) queryParams.append("dateTo", filters.dateTo);
 

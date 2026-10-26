@@ -109,27 +109,34 @@ export const ListersTable: React.FC<ListersTableProps> = ({
     );
   }
 
+  const matchesLister = (item: any, lister: any) => {
+    if (!item || !lister) return false;
+    const itemListerId = String(item.listerId || "").toLowerCase();
+    const itemListerName = String(item.listerName || "").toLowerCase();
+    const lId = String(lister.id || "").toLowerCase();
+    const lListerId = String(lister.listerId || "").toLowerCase();
+    const lMongoId = String(lister._id || "").toLowerCase();
+    const lName = String(lister.name || "").toLowerCase();
+
+    return Boolean(
+      (itemListerId && (itemListerId === lId || itemListerId === lListerId || itemListerId === lMongoId)) ||
+      (itemListerName && (itemListerName === lName || itemListerName === lListerId))
+    );
+  };
+
   // Sort dynamically on derived values
   const sortedListers = [...listers].sort((a, b) => {
     let aVal: any;
     let bVal: any;
 
-    const aPayouts = allPayouts.filter(
-      (p) => p.listerId === a.id || p.listerId === a.listerId,
-    );
-    const bPayouts = allPayouts.filter(
-      (p) => p.listerId === b.id || p.listerId === b.listerId,
-    );
+    const aPayouts = allPayouts.filter((p) => matchesLister(p, a));
+    const bPayouts = allPayouts.filter((p) => matchesLister(p, b));
 
     const aLedger = calculateLedger(aPayouts);
     const bLedger = calculateLedger(bPayouts);
 
-    const aProducts = allProducts.filter(
-      (p) => p.listerId === a.id || p.listerId === a.listerId,
-    );
-    const bProducts = allProducts.filter(
-      (p) => p.listerId === b.id || p.listerId === b.listerId,
-    );
+    const aProducts = allProducts.filter((p) => matchesLister(p, a));
+    const bProducts = allProducts.filter((p) => matchesLister(p, b));
 
     if (filters.sortBy === "name") {
       aVal = a.name;
@@ -232,10 +239,7 @@ export const ListersTable: React.FC<ListersTableProps> = ({
           </thead>
           <tbody>
             {sortedListers.map((lister) => {
-              const listerPayouts = allPayouts.filter(
-                (p) =>
-                  p.listerId === lister.id || p.listerId === lister.listerId,
-              );
+              const listerPayouts = allPayouts.filter((p) => matchesLister(p, lister));
               const listerSubmissions = allSubmissions.filter(
                 (s) =>
                   s.listerId === lister.id || s.listerId === lister.listerId,
@@ -246,10 +250,7 @@ export const ListersTable: React.FC<ListersTableProps> = ({
                   r.id === lister.id ||
                   r.pieceId === lister.listerId,
               );
-              const listerProducts = allProducts.filter(
-                (p) =>
-                  p.listerId === lister.id || p.listerId === lister.listerId,
-              );
+              const listerProducts = allProducts.filter((p) => matchesLister(p, lister));
 
               const ledger = calculateLedger(listerPayouts);
               const attentionFlags = calculateAttentionFlags(

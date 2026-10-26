@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { CalendarEvent } from "../types";
 import EventPill from "./EventPill";
-import "../css/DayEventsPopover.css";
+import "../css/DayEventspopover.css";
 
 interface DayEventsPopoverProps {
   dateLabel: string; // e.g. "25 March 2026"

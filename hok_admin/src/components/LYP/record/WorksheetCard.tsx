@@ -29,37 +29,73 @@ export const WorksheetCard: React.FC<WorksheetCardProps> = ({
   const getDefaultAssessment = (): Assessment => {
     const existing = submission.assessment;
 
-    // Parse values from string if needed, stripping commas
-    const askRent =
-      parseFloat(
-        String(
-          (submission as any).askRent || submission.expectation?.rent || 0,
-        ).replace(/,/g, ""),
-      ) || 0;
-    const askSell =
-      parseFloat(
-        String(
-          (submission as any).askSell || submission.expectation?.sell || 0,
-        ).replace(/,/g, ""),
-      ) || 0;
-    const originalPrice =
-      parseFloat(String(submission.originalPrice || 0).replace(/,/g, "")) || 0;
+    const parseCurrency = (val: any): number => {
+      if (!val) return 0;
+      if (typeof val === "number") return val;
+      const clean = String(val).replace(/[^0-9.]/g, "");
+      const parsed = parseFloat(clean);
+      return isNaN(parsed) ? 0 : parsed;
+    };
 
-    const priceStd =
-      existing && existing.priceStd > 0 ? existing.priceStd : askRent;
-    const resalePrice =
-      existing && existing.resalePrice > 0 ? existing.resalePrice : askSell;
+    const askRent = parseCurrency(
+      (submission as any).askRent || submission.expectation?.rent,
+    );
+    const askSell = parseCurrency(
+      (submission as any).askSell || submission.expectation?.sell,
+    );
+    const originalPrice = parseCurrency(submission.originalPrice);
+
     const retailPrice =
       existing && existing.retailPrice > 0
         ? existing.retailPrice
-        : originalPrice;
+        : originalPrice || 110000;
+    const resalePrice =
+      existing && existing.resalePrice > 0
+        ? existing.resalePrice
+        : askSell > 0
+          ? askSell
+          : Math.round(retailPrice * 0.45);
+
+    const defaultRent =
+      Math.round((retailPrice * 0.11) / 500) * 500 ||
+      (resalePrice ? Math.round((resalePrice * 0.25) / 500) * 500 : 12000);
+    const priceStd =
+      existing && existing.priceStd > 0
+        ? existing.priceStd
+        : askRent > 0
+          ? askRent
+          : defaultRent;
+
+    const designerStr = submission.designer || "SG";
+    const initials =
+      designerStr
+        .split(" ")
+        .map((w: string) => w[0])
+        .join("")
+        .substring(0, 3)
+        .toUpperCase() || "HOK";
+    const defaultSku =
+      existing?.sku ||
+      submission.sku ||
+      (submission as any)?.productId ||
+      `HOK-${initials}-001`;
+
+    const subMode: Mode =
+      submission.intent === "Sell it"
+        ? "Preloved"
+        : submission.intent === "Rent it"
+          ? "Rental"
+          : "Rental/Preloved";
 
     return {
-      sku: existing?.sku || "",
+      sku: defaultSku,
       name: existing?.name || submission.piece || "",
-      mode: existing?.mode || "Rental/Preloved",
+      mode: existing?.mode || subMode,
       grade: existing?.grade || "Pristine",
-      sizeLabel: existing?.sizeLabel || (submission.size as Size) || "M",
+      sizeLabel:
+        existing?.sizeLabel ||
+        (submission.size as Size) ||
+        "Custom / Free Size",
       measurements: existing?.measurements || null,
       priceStd,
       priceExt:
@@ -74,14 +110,14 @@ export const WorksheetCard: React.FC<WorksheetCardProps> = ({
       deposit:
         existing && existing.deposit > 0
           ? existing.deposit
-          : Math.round(retailPrice * 0.2),
+          : Math.round(retailPrice * 0.2 || priceStd * 1.5),
       resalePrice,
       minOffer:
         existing && existing.minOffer > 0
           ? existing.minOffer
           : Math.round(resalePrice * 0.8),
       retailPrice,
-      retailVerifiedVia: existing?.retailVerifiedVia || null,
+      retailVerifiedVia: existing?.retailVerifiedVia || "Retail listing",
       payoutPctRental: existing?.payoutPctRental || 40,
       payoutPctResale: existing?.payoutPctResale || 75,
     };

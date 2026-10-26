@@ -2,8 +2,8 @@
 /* src/styles/Profile/layout/PageTitleStrip.css */
 
 .profile-title-strip {
-  background: #fffffb;
-  border-bottom: 1px solid #e8e0d4;
+  background: #FFFFFB;
+  border-bottom: 1px solid #E8E0D4;
   flex-shrink: 0;
 }
 
@@ -23,12 +23,12 @@
   font-weight: 300;
   line-height: 1;
   letter-spacing: -0.015em;
-  color: #1a1612;
+  color: #1A1612;
 }
 
 .profile-title-italic {
   font-style: italic;
-  color: #c9a96e;
+  color: #C9A96E;
 }
 
 .profile-title-right {
@@ -62,7 +62,7 @@
   font-weight: 300;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #b0a898;
+  color: #B0A898;
 }
 
 @keyframes profile-pulse {

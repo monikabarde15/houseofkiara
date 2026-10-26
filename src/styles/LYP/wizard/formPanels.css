@@ -44,7 +44,7 @@
 
 /* PLACEHOLDER */
 .lyp-input::placeholder {
-  color: #c0b4a8;
+  color: #C0B4A8;
 }
 
 /* Focus */
@@ -52,7 +52,7 @@
   outline: none;
   background: var(--warm-white);
   border-color: var(--charcoal);
-  box-shadow: 0 0 0 3px rgba(26, 22, 18, 0.04);
+  box-shadow: 0 0 0 3px rgba(26,22,18,0.04);
 }
 
 /* Error */
@@ -95,6 +95,7 @@
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
   border-top: 5px solid var(--muted);
+  
 }
 
 /* ================= PHONE ================= */
@@ -164,6 +165,7 @@
   line-height: 1;
 }
 
+
 /* ================= STEP 1 HEADER ================= */
 
 .lyp-step__eyebrow {
@@ -206,16 +208,15 @@
 /* ------------------------ */
 /* Condition cards Section */
 
-.lyp-condition {
-  /*-STEP2.JSX-*/
+
+.lyp-condition { /*-STEP2.JSX-*/
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin: 24px 0;
 }
 
-.lyp-condition-card {
-  /*Conditioncard.JSX-*/
+.lyp-condition-card {  /*Conditioncard.JSX-*/
   display: flex;
   gap: 14px;
   padding: 14px 16px;
@@ -235,7 +236,7 @@
 .lyp-condition-card--selected {
   border-color: var(--charcoal);
   background: var(--warm-white);
-  box-shadow: 0 0 3px rgba(26, 22, 18, 0.04);
+  box-shadow: 0 0 3px rgba(26,22,18,0.04);
 }
 
 .lyp-condition-card__dot {
@@ -258,6 +259,7 @@
   font-weight: 300;
   line-height: 1.4;
 }
+
 
 /* ------------------------ */
 /* Outcome Card Section */
@@ -286,7 +288,7 @@
   transform: translateY(-1px);
 }
 
-.lyp-outcome-card__icon svg {
+.lyp-outcome-card__icon svg{
   height: 18px;
   width: 18px;
   margin-bottom: 8px;
@@ -323,7 +325,7 @@
 }
 
 .lyp-outcome-card--active-dark .lyp-outcome-card__desc {
-  color: #d8cfc5;
+  color: #D8CFC5;
 }
 
 .lyp-outcome-card--active-sage {
@@ -332,7 +334,7 @@
 }
 
 .lyp-outcome-card--active-sage .lyp-outcome-card__title {
-  color: #3d5230;
+  color: #3D5230;
 }
 
 /* ================= TEXTAREA ================= */
@@ -382,6 +384,7 @@
 /* =================================== */
 /* ============== Form STEP - 3 =========== */
 /* =================================== */
+
 
 /* Upload Progress Bar */
 
@@ -527,11 +530,12 @@
   margin-bottom: 20px;
 }
 
+
 .lyp-photo-item {
   position: relative;
 
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 3 / 4;   
 
   overflow: hidden;
   border-radius: 2px;
@@ -541,7 +545,7 @@
   width: 100%;
   height: 100%;
 
-  object-fit: cover; /* 🔥 prevents stretching */
+  object-fit: cover;   /* 🔥 prevents stretching */
   display: block;
 }
 
@@ -632,6 +636,7 @@
 
   margin-bottom: 6px;
 }
+
 
 .lyp-upload__error {
   margin-top: 10px;
@@ -804,9 +809,11 @@
   margin-top: 6px;
 }
 
+
+
 /* ===== SUBMIT BUTTON ===== */
 .lyp-btn-submit {
-  background: #6b7e5a; /* sage (spec) */
+  background: #6B7E5A; /* sage (spec) */
   color: #ffffff;
 
   display: inline-flex;
@@ -826,7 +833,7 @@
 
 /* hover */
 .lyp-btn-submit:hover {
-  background: #5a6b4a;
+  background: #5A6B4A;
 }
 
 /* icon */
@@ -835,10 +842,14 @@
   color: #ffffff;
 }
 
+
+
+
 /* =========================================
    STEP 1 FORM — MOBILE 
 ========================================= */
-@media (max-width: 960px) {
+@media (max-width: 960px){
+
   /* FORM GRID → SINGLE COLUMN */
   .lyp-form__row {
     grid-template-columns: 1fr;
@@ -907,12 +918,16 @@
     width: 100%;
     justify-content: center;
   }
+
 }
+
+
 
 /* =========================================
    STEP 2 — MOBILE 
 ========================================= */
-@media (max-width: 960px) {
+@media (max-width: 960px){
+
   /* ================= CONDITION CARDS ================= */
 
   .lyp-condition {
@@ -947,12 +962,12 @@
   /* ================= OUTCOME  ================= */
 
   .lyp-outcome {
-    flex-direction: column;
+    flex-direction: column; 
     gap: 8px;
   }
 
   .lyp-outcome-card {
-    display: flex;
+    display: flex;            
     align-items: center;
     text-align: left;
 
@@ -985,6 +1000,7 @@
     line-height: 1.5;
   }
 
+
   /* ================= CTA ================= */
   .lyp-step__cta {
     flex-direction: column;
@@ -1011,12 +1027,16 @@
     text-align: center;
     margin-top: 4px;
   }
+
+
 }
+
 
 /* =========================================
    STEP 3 — MOBILE 
 ========================================= */
-@media (max-width: 960px) {
+@media (max-width: 960px){
+
   /* ================= PHOTO GRID ================= */
 
   .lyp-photo-grid {
@@ -1028,15 +1048,15 @@
 
   .lyp-photo-remove {
     opacity: 1; /* 🔥 ALWAYS visible */
-
+    
     width: 26px;
     height: 26px;
 
     top: 5px;
     right: 5px;
 
-    background: rgba(250, 247, 242, 0.92); /* warm cream */
-    border: 1px solid rgba(26, 22, 18, 0.12);
+    background: rgba(250,247,242,0.92); /* warm cream */
+    border: 1px solid rgba(26,22,18,0.12);
 
     color: var(--charcoal);
     font-size: 14px;
@@ -1127,12 +1147,15 @@
     order: 3;
     text-align: center;
   }
+
 }
+
 
 /* =========================================
    STEP 4 — MOBILE 
 ========================================= */
-@media (max-width: 960px) {
+@media (max-width: 960px){
+
   /* ---------- Review Layout ---------- */
 
   .lyp-review-block {
@@ -1203,4 +1226,6 @@
     font-size: 12px;
     line-height: 1.6;
   }
+
 }
+

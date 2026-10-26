@@ -1,79 +1,65 @@
-import React from "react";
-import {
-  Clock,
-  ShoppingBag,
-  Heart,
-  Tag,
-  MapPin,
-  FileText,
-  Settings,
-  HelpCircle,
-} from "lucide-react";
-import useAuthStore from "../../../store/authStore";
-import useWishlistStore from "../../../store/wishlistStore";
+import React from 'react';
+import { Clock, ShoppingBag, Heart, Tag, MapPin, FileText, Settings, HelpCircle } from 'lucide-react';
 import "../../../styles/Profile/left/LeftNav.css";
 
-const LeftNav = () => {
-  const user = useAuthStore((state) => state.user);
-  const wishlistItems = useWishlistStore((state) => state.items);
-
-  const purchasesCount = user?.purchasesCount || 0;
-  const rentalsCount = user?.rentalsCount || 0;
-  const savedCount = wishlistItems?.length || 0;
-
-  const orderCountText =
-    purchasesCount === 1 ? "1 order" : `${purchasesCount} orders`;
-  const rentalCountText =
-    rentalsCount === 1 ? "1 booking" : `${rentalsCount} bookings`;
-  const savedCountText = savedCount === 1 ? "1 saved" : `${savedCount} saved`;
+const LeftNav = ({ counts }) => {
+  const rentalsCount = counts?.rentals ?? 0;
+  const purchasesCount = counts?.purchases ?? 0;
+  const savedCount = counts?.savedPieces ?? 0;
+  const listedCount = counts?.listedPieces ?? 0;
+  const addressesCount = counts?.addresses ?? 0;
+  const submissionsCount = counts?.submissions ?? 0;
 
   const navItems = [
     {
       id: "rentals",
       icon: Clock,
       label: "My Rentals",
-      subLabel: rentalCountText,
-      rightElement: rentalsCount > 0 ? "dot" : "none",
+      subLabel: `${rentalsCount} booking${rentalsCount === 1 ? '' : 's'}`,
+      rightElement: rentalsCount > 0 ? "dot" : "chevron",
     },
     {
       id: "purchases",
       icon: ShoppingBag,
       label: "My Purchases",
-      subLabel: orderCountText,
+      subLabel: `${purchasesCount} order${purchasesCount === 1 ? '' : 's'}`,
       rightElement: "chevron",
     },
     {
       id: "wishlist",
       icon: Heart,
       label: "Saved Pieces",
-      subLabel: savedCountText,
-      rightElement: "badge",
-      badgeValue: savedCount.toString(),
+      subLabel: `${savedCount} saved`,
+      rightElement: savedCount > 0 ? "badge" : "chevron",
+      badgeValue: String(savedCount),
       badgeClass: "lb-red",
     },
     {
       id: "listed",
       icon: Tag,
       label: "My Listed Pieces",
-      subLabel: "0 active listings",
-      rightElement: "none",
-      badgeValue: "0",
+      subLabel: `${listedCount} active listing${listedCount === 1 ? '' : 's'}`,
+      rightElement: listedCount > 0 ? "badge" : "chevron",
+      badgeValue: String(listedCount),
       badgeClass: "lb-gold",
     },
     {
       id: "addresses",
       icon: MapPin,
       label: "Saved Addresses",
-      subLabel: "0 addresses",
+      subLabel: `${addressesCount} address${addressesCount === 1 ? '' : 'es'}`,
       rightElement: "chevron",
     },
     {
       id: "submissions",
       icon: FileText,
       label: "My Submissions",
-      subLabel: "0 under review",
-      rightElement: "none",
-      badgeValue: "0",
+      subLabel:
+        submissionsCount > 0
+          ? `${submissionsCount} under review`
+          : "0 submissions",
+      rightElement: submissionsCount > 0 ? "badge" : "chevron",
+      badgeValue: String(submissionsCount),
       badgeClass: "lb-submission",
     },
     {
@@ -95,19 +81,19 @@ const LeftNav = () => {
   const handleNavClick = (e, targetId) => {
     e.preventDefault();
     const section = document.getElementById(targetId);
-    const rightCol = document.getElementById("profile-right-column");
+    const rightCol = document.getElementById('profile-right-column');
     if (section && rightCol) {
       const offset = section.offsetTop - rightCol.offsetTop - 20;
-      rightCol.scrollTo({ top: offset, behavior: "smooth" });
+      rightCol.scrollTo({ top: offset, behavior: 'smooth' });
     }
   };
 
   return (
     <div className="profile-left-nav">
       {navItems.map((item) => (
-        <a
-          key={item.id}
-          href={`#${item.id}`}
+        <a 
+          key={item.id} 
+          href={`#${item.id}`} 
           className="profile-left-nav-item"
           onClick={(e) => handleNavClick(e, item.id)}
         >
@@ -119,23 +105,10 @@ const LeftNav = () => {
             <div className="profile-left-nav-sub-label">{item.subLabel}</div>
           </div>
           <div className="profile-left-nav-right">
-            {item.rightElement === "dot" && (
-              <span className="profile-left-pulsing-dot"></span>
-            )}
+            {item.rightElement === "dot" && <span className="profile-left-pulsing-dot"></span>}
             {item.rightElement === "chevron" && (
-              <svg
-                className="profile-left-chevron"
-                width="11"
-                height="11"
-                viewBox="0 0 11 11"
-                fill="none"
-              >
-                <path
-                  d="M4 2L8 5.5L4 9"
-                  stroke="#E8E0D4"
-                  strokeWidth="1.5"
-                  fill="none"
-                />
+              <svg className="profile-left-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none">
+                <path d="M4 2L8 5.5L4 9" stroke="#E8E0D4" strokeWidth="1.5" fill="none"/>
               </svg>
             )}
             {item.rightElement === "badge" && (

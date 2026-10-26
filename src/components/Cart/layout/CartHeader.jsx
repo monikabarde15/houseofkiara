@@ -2,12 +2,14 @@ import React from "react";
 import "../../../styles/cart/layout/cart-header.css";
 
 const CartHeader = ({ cartItems }) => {
-  const activeItems = cartItems.filter((item) => item.active !== false);
+
+
+  const activeItems = cartItems.filter(item => item.active !== false);
 
   const itemCount = activeItems.length;
 
   // get unique types
-  const uniqueTypes = [...new Set(activeItems.map((item) => item.type))];
+  const uniqueTypes = [...new Set(activeItems.map(item => item.type))];
 
   let basketLabel = "";
 
@@ -20,30 +22,38 @@ const CartHeader = ({ cartItems }) => {
   const getCountText = () => {
     if (itemCount === 0) return "Cart is empty";
 
-    const base = itemCount === 1 ? "1 piece" : `${itemCount} pieces`;
+    const base =
+      itemCount === 1 ? "1 piece" : `${itemCount} pieces`;
 
     return basketLabel ? `${base} · ${basketLabel}` : base;
   };
 
   return (
     <div className="cart-header-wrapper">
-      <div className="cart-header">
-        {/* LEFT: TITLE */}
-        <h1 className="cart-title">
-          Your <em>Cart</em>
-        </h1>
 
-        {/* RIGHT: COUNT */}
-        <div className="cart-count">
-          <span className="cart-count__base">
-            {itemCount === 1 ? "1 piece" : `${itemCount} pieces`}
-          </span>
+        <div className="cart-header">
 
-          {basketLabel && (
-            <span className="cart-count__label">· {basketLabel}</span>
-          )}
+          {/* LEFT: TITLE */}
+          <h1 className="cart-title">
+            Your <em>Cart</em>
+          </h1>
+
+          {/* RIGHT: COUNT */}
+          <div className="cart-count">
+            <span className="cart-count__base">
+              {itemCount === 1 ? "1 piece" : `${itemCount} pieces`}
+            </span>
+
+            {basketLabel && (
+              <span className="cart-count__label">
+                · {basketLabel}
+              </span>
+            )}
+          </div>
+
         </div>
-      </div>
+
+      
     </div>
   );
 };

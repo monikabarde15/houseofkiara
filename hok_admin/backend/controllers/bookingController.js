@@ -4,6 +4,7 @@ import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import Payout from "../models/Payout.js";
 import Customer from "../models/Customer.js";
+import Lister from "../models/Lister.js";
 import { nextCustomerId } from "../services/customerIdService.js";
 import { validateBookingDates } from "../validations/bookingValidation.js";
 
@@ -420,13 +421,35 @@ export const addExternalBooking = async (req, res) => {
       console.warn("Customer creation warning in bookingController:", custErr);
     }
 
+    // Resolve Lister Info
+    let resolvedListerId = product.listerId || product.lister_id || "";
+    let resolvedListerName = product.listerName || product.lister_name || "";
+    if (resolvedListerId && !resolvedListerName) {
+      try {
+        const lRec = await Lister.findOne({
+          $or: [{ listerId: resolvedListerId }, { _id: resolvedListerId }],
+        });
+        if (lRec) resolvedListerName = lRec.name;
+      } catch (e) {}
+    }
+    if (!resolvedListerId) {
+      resolvedListerId = "simran-chouhan";
+      resolvedListerName = "Simran Chouhan";
+    }
+    if (!resolvedListerName) {
+      resolvedListerName =
+        resolvedListerId === "ananya-sharma" ? "Ananya Sharma" : "Simran Chouhan";
+    }
+
     // ✅ FLOW INTEGRATION: Create Order record for Rental Calendar & Dispatch Schedule
-    const extOrderId = `HOK-ORD-${Math.floor(100 + Math.random() * 900)}`;
+    const extOrderId = `HOK-ORD-${Date.now()}`;
     const totalAmount = Number(amount || product.rentalPrice || 0);
     const depositAmount = Number(product.securityDeposit || 0);
-    const listerSplit = Number(listerSplitPercent || 45);
+    const listerSplit = Number(
+      listerSplitPercent || product.payoutPercentage || 80,
+    );
     const listerPayoutAmount = Math.round((totalAmount * listerSplit) / 100);
-    const hokCommissionAmount = totalAmount - listerPayoutAmount;
+    const hokCommissionAmount = Math.max(0, totalAmount - listerPayoutAmount);
 
     try {
       await Order.create({
@@ -435,6 +458,12 @@ export const addExternalBooking = async (req, res) => {
         customerName,
         customerPhone: whatsappNumber || "",
         customerCity: city || "",
+        listerId: resolvedListerId,
+        listerName: resolvedListerName,
+        productName: product.name,
+        designer: product.designer || "House of Kaira",
+        rentalStartDate: startDate,
+        rentalEndDate: endDate,
         items: [
           {
             productId: product.productId,
@@ -446,6 +475,8 @@ export const addExternalBooking = async (req, res) => {
             rentalEndDate: endDate,
             amount: totalAmount,
             deposit: depositAmount,
+            listerId: resolvedListerId,
+            listerName: resolvedListerName,
             status: "Confirmed",
           },
         ],
@@ -453,8 +484,9 @@ export const addExternalBooking = async (req, res) => {
         status: "Confirmed",
         orderValue: totalAmount,
         depositHeld: depositAmount,
-        depositStatus: "Pending",
+        depositStatus: depositAmount > 0 ? "Pending" : "None",
         grandTotal: totalAmount,
+        amount: totalAmount,
         listerPayout: listerPayoutAmount,
         payoutStatus: "Pending Approval",
       });
@@ -464,21 +496,23 @@ export const addExternalBooking = async (req, res) => {
 
     // ✅ FLOW INTEGRATION: Create Payout record for Lister Payouts
     try {
+      const cleanOrdId = String(extOrderId).replace(/[^a-zA-Z0-9]/g, "");
       await Payout.create({
-        payoutId: `PXT-${Date.now()}`,
-        listerId: product.listerId || "13d417fcdbc92e9b969922df",
-        listerName: "rohit",
+        payoutId: `PAY-${cleanOrdId}`,
+        listerId: resolvedListerId,
+        listerName: resolvedListerName,
         orderId: extOrderId,
         productId: product.productId,
         productName: product.name,
         mode: "Rental",
         transactionAmount: totalAmount,
+        payoutPercentage: listerSplit,
         listerShare: listerPayoutAmount,
         hokCommission: hokCommissionAmount,
         taxDeduction: 0,
         netPayout: listerPayoutAmount,
         status: "Pending",
-        dueDate: new Date(endDate),
+        dueDate: endDate ? new Date(endDate) : new Date(Date.now() + 7 * 86400000),
       });
     } catch (payoutErr) {
       console.warn("Payout creation warning:", payoutErr.message);
@@ -564,6 +598,27 @@ export const reserveProduct = async (req, res) => {
         });
       }
 
+      let resolvedListerId = product.listerId || product.lister_id || "";
+      let resolvedListerName = product.listerName || product.lister_name || "";
+      if (resolvedListerId && !resolvedListerName) {
+        try {
+          const lRec = await Lister.findOne({
+            $or: [{ listerId: resolvedListerId }, { _id: resolvedListerId }],
+          });
+          if (lRec) resolvedListerName = lRec.name;
+        } catch (e) {}
+      }
+      if (!resolvedListerId) {
+        resolvedListerId = "simran-chouhan";
+        resolvedListerName = "Simran Chouhan";
+      }
+      if (!resolvedListerName) {
+        resolvedListerName =
+          resolvedListerId === "ananya-sharma"
+            ? "Ananya Sharma"
+            : "Simran Chouhan";
+      }
+
       await Order.create({
         orderId,
         customerId: customer.customerId,
@@ -573,8 +628,27 @@ export const reserveProduct = async (req, res) => {
         productId: product.productId || product._id,
         productName: product.name,
         designer: product.designer || "House of Kaira",
+        listerId: resolvedListerId,
+        listerName: resolvedListerName,
+        items: [
+          {
+            productId: product.productId || product._id,
+            productName: product.name,
+            designer: product.designer || "House of Kaira",
+            listerId: resolvedListerId,
+            listerName: resolvedListerName,
+            mode: "Rental",
+            size: product.sizes?.[0] || "S",
+            rentalStartDate: value.startDate,
+            rentalEndDate: value.endDate,
+            amount: rentalAmount,
+            deposit: Number(req.body.deposit || product.securityDeposit || 0),
+            status: "Confirmed",
+          },
+        ],
         mode: "Rental",
         amount: rentalAmount,
+        orderValue: rentalAmount,
         deposit: Number(req.body.deposit || product.securityDeposit || 0),
         discount: 0,
         grandTotal:
@@ -583,6 +657,7 @@ export const reserveProduct = async (req, res) => {
         rentalStartDate: value.startDate,
         rentalEndDate: value.endDate,
         status: "Confirmed",
+        payoutStatus: "Pending Approval",
         address: req.body.city || "External Order",
       });
     } catch (orderErr) {
@@ -592,17 +667,36 @@ export const reserveProduct = async (req, res) => {
     // 2. Create real Payout document for Lister
     try {
       const splitPct = Number(
-        req.body.listerSplitPercent || product.payoutPercentage || 50,
+        req.body.listerSplitPercent || product.payoutPercentage || 80,
       );
       const listerShare = Math.round((rentalAmount * splitPct) / 100);
+      const cleanOrderId = String(orderId).replace(/[^a-zA-Z0-9]/g, "");
+
+      let resolvedListerId = product.listerId || product.lister_id || "simran-chouhan";
+      let resolvedListerName = product.listerName || product.lister_name || "Simran Chouhan";
+
       await Payout.create({
-        payoutId: `PXT-${Date.now()}`,
+        payoutId: `PAY-${cleanOrderId}`,
         orderId,
+        productId: product.productId || product._id,
+        productName: product.name,
         piece: product.name,
-        listerId: product.listerId || "LST-001",
+        listerId: resolvedListerId,
+        listerName: resolvedListerName,
+        mode: "Rental",
+        transactionAmount: rentalAmount,
+        transactionValue: rentalAmount,
+        payoutPercentage: splitPct,
+        payoutPercent: splitPct,
+        listerShare,
         payoutAmount: listerShare,
-        status: "Scheduled",
-        dueDate: value.endDate,
+        hokCommission: Math.max(0, rentalAmount - listerShare),
+        taxDeduction: 0,
+        netPayout: listerShare,
+        status: "Pending",
+        dueDate: value.endDate
+          ? new Date(value.endDate)
+          : new Date(Date.now() + 7 * 86400000),
         splitPercent: splitPct,
       });
     } catch (payoutErr) {

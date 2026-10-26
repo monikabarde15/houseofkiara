@@ -814,7 +814,10 @@ export const buildWhereClause = (filter, tableName, params = []) => {
       }
 
       if (value instanceof RegExp) {
-        const flag = value.ignoreCase ? "~*" : "~";
+        const flag =
+          value.ignoreCase || (value.flags && value.flags.includes("i"))
+            ? "~*"
+            : "~";
         const p = addParam(value.source);
         subClauses.push(`(${jsonAccessor} ${flag} ${p})`);
         continue;
@@ -909,7 +912,12 @@ export const buildWhereClause = (filter, tableName, params = []) => {
                 subClauses.push(`(${jsonAccessor} ${sqlOp} ${p})`);
               }
             } else if (op === "$regex") {
-              const flag = (value.$options || "").includes("i") ? "~*" : "~";
+              const isInsensitive =
+                (value.$options || "").includes("i") ||
+                (opVal instanceof RegExp &&
+                  (opVal.ignoreCase ||
+                    (opVal.flags && opVal.flags.includes("i"))));
+              const flag = isInsensitive ? "~*" : "~";
               const regexStr = typeof opVal === "string" ? opVal : opVal.source;
               const p = addParam(regexStr);
               subClauses.push(`(${jsonAccessor} ${flag} ${p})`);

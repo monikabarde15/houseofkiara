@@ -1,5 +1,7 @@
 import { Parser } from "json2csv";
 import Offer from "../models/Offer.js";
+import Customer from "../models/Customer.js";
+import PromoCode from "../models/PromoCode.js";
 import { validateOffer } from "../validations/offerValidation.js";
 
 // ===============================
@@ -36,7 +38,118 @@ export const createOffer = async (req, res) => {
       assignedTo,
       expiresAt,
       notes,
+      customerId: providedCustomerId,
+      promoCode: customPromoCode,
     } = req.body;
+
+    const cleanEmail = customerEmail ? customerEmail.trim().toLowerCase() : "";
+    const cleanPhone = customerPhone ? customerPhone.trim() : "";
+    const cleanName = (customerName || "").trim();
+
+    // 1. Find existing customer or auto-create new customer
+    let customer = null;
+    if (providedCustomerId) {
+      customer = await Customer.findOne({
+        $or: [{ customerId: providedCustomerId }, { _id: providedCustomerId }],
+      });
+    }
+    if (!customer && cleanEmail) {
+      customer = await Customer.findOne({ email: cleanEmail });
+    }
+    if (!customer && cleanPhone) {
+      customer = await Customer.findOne({ phone: cleanPhone });
+    }
+    if (!customer && cleanName) {
+      customer = await Customer.findOne({ name: cleanName });
+    }
+
+    let assignedCustomerId = customer ? customer.customerId : null;
+
+    if (!customer && cleanName) {
+      try {
+        const customers = await Customer.find({}, "customerId").exec();
+        const existingCustIds = (customers || [])
+          .map((c) => c.customerId)
+          .filter((id) => id && id.startsWith("CUST-"))
+          .map((id) => parseInt(id.replace("CUST-", ""), 10))
+          .filter((num) => !isNaN(num));
+        const maxId = existingCustIds.length > 0 ? Math.max(...existingCustIds) : 0;
+        assignedCustomerId = `CUST-${String(maxId + 1).padStart(5, "0")}`;
+
+        customer = await Customer.create({
+          customerId: assignedCustomerId,
+          name: cleanName,
+          email: cleanEmail || `customer_${Date.now()}@houseofkaira.com`,
+          phone: cleanPhone || "",
+          location: customerCity || "India",
+          status: "Active",
+          source: `Offline Offer - ${req.body.channel || "Phone"}`,
+        });
+      } catch (custErr) {
+        console.error("Auto customer create note:", custErr.message);
+      }
+    } else if (customer && !assignedCustomerId) {
+      assignedCustomerId = customer.customerId;
+    }
+
+    // 2. Generate Promo Code if offered price gives a discount
+    const origAmt = Number(originalAmount) || 0;
+    const offAmt = Number(offeredAmount) || 0;
+    const calculatedDiscount =
+      origAmt > offAmt && offAmt > 0
+        ? origAmt - offAmt
+        : Number(discount) || 0;
+
+    let finalPromoCode = customPromoCode ? customPromoCode.trim().toUpperCase() : null;
+
+    if (calculatedDiscount > 0) {
+      if (!finalPromoCode) {
+        const namePart = (cleanName || "OFFER")
+          .replace(/[^a-zA-Z0-9]/g, "")
+          .slice(0, 5)
+          .toUpperCase();
+        const randNum = Math.floor(100 + Math.random() * 900);
+        finalPromoCode = `OFFER-${namePart}-${randNum}`;
+      }
+
+      try {
+        const today = new Date().toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+
+        const existingPromo = await PromoCode.findOne({ code: finalPromoCode });
+        if (!existingPromo) {
+          await PromoCode.create({
+            code: finalPromoCode,
+            type: "flat",
+            value: calculatedDiscount,
+            reason: `Negotiated offer for ${cleanName} on ${productName}`,
+            publicDesc: `Special Offer: ₹${calculatedDiscount.toLocaleString("en-IN")} OFF on ${productName}`,
+            scope: {
+              skus: productId ? [productId] : [],
+              productNames: productName ? [productName] : [],
+              categories: category ? [category] : [],
+              designerIds: [],
+            },
+            customerIds: [assignedCustomerId, cleanEmail, cleanPhone].filter(Boolean),
+            status: "Active",
+            audience: "private",
+            createdBy: assignedTo || "Admin",
+            createdOn: today,
+            history: [
+              {
+                e: `Offer code created for ${cleanName}`,
+                t: `${today} - ${assignedTo || "Admin"}`,
+              },
+            ],
+          });
+        }
+      } catch (promoErr) {
+        console.error("Auto promo code creation note:", promoErr.message);
+      }
+    }
 
     // Generate Unique Offer ID
     const offerId = `OFF-${Date.now()}`;
@@ -47,22 +160,24 @@ export const createOffer = async (req, res) => {
       productId,
       productName,
       category,
-      customerName,
-      customerEmail,
-      customerPhone,
+      customerId: assignedCustomerId,
+      customerName: cleanName,
+      customerEmail: cleanEmail || customer?.email || "",
+      customerPhone: cleanPhone || customer?.phone || "",
       customerCity,
       customerState,
       quantity,
-      originalAmount,
-      offeredAmount,
-      finalAmount: offeredAmount,
-      discount,
-      currency,
+      originalAmount: origAmt,
+      offeredAmount: offAmt,
+      finalAmount: offAmt || origAmt,
+      discount: calculatedDiscount,
+      promoCode: finalPromoCode,
+      currency: currency || "INR",
       assignedTo,
       expiresAt,
       channel: req.body.channel || "Website",
 
-      status: "Pending",
+      status: offAmt ? "Pending" : "Enquiry",
       negotiationStatus: "Not Started",
 
       notes: notes
@@ -78,8 +193,10 @@ export const createOffer = async (req, res) => {
       timeline: [
         {
           action: "Offer Created",
-          remarks: "Offer created successfully.",
-          user: "Admin",
+          remarks: finalPromoCode
+            ? `Offer created with website promo code ${finalPromoCode} (₹${calculatedDiscount} discount).`
+            : "Offer created successfully.",
+          user: assignedTo || "Admin",
           createdAt: new Date(),
         },
       ],
@@ -88,7 +205,13 @@ export const createOffer = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Offer created successfully.",
-      data: offer,
+      data: {
+        ...(offer.toObject ? offer.toObject() : offer),
+        promoCode: finalPromoCode,
+        customerId: assignedCustomerId,
+      },
+      customer: customer ? (customer.toObject ? customer.toObject() : customer) : null,
+      promoCode: finalPromoCode,
     });
   } catch (err) {
     console.error("Create Offer Error:", err);

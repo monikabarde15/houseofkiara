@@ -8,13 +8,13 @@
 .product-image {
   position: relative;
   overflow: hidden;
-  background: #faf7f2;
-  border: 1px solid #f0eae0;
+  background: #FAF7F2;
+  border: 1px solid #F0EAE0;
   aspect-ratio: 3 / 4;
   margin-bottom: 16px;
 }
 a {
-  text-decoration: none !important;
+    text-decoration: none !important;
 }
 /* IMAGE INNER */
 .product-img-inner {
@@ -24,7 +24,7 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap:10px;
   transition: transform 0.4s ease;
 }
 
@@ -32,7 +32,7 @@ a {
   font-family: "Cormorant Garamond";
   font-style: italic;
   font-size: 12px;
-  color: #8a7e72;
+  color: #8A7E72;
   opacity: 0.6;
 }
 
@@ -40,7 +40,7 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position:center top;
 }
 
 /* HOVER ZOOM */
@@ -58,28 +58,28 @@ a {
   z-index: 2;
 }
 
-.product-badges .badge {
-  font-size: 8px;
-  font-family: "DM Sans";
-  font-weight: 500;
-  padding: 3px 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  border-radius: 1px;
+ .product-badges .badge {
+    font-size: 8px;
+    font-family: 'DM Sans';
+    font-weight: 500;
+    padding: 3px 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 1px;
 }
 
 .badge.rent {
-  background: #1a1612;
-  color: #d4c5b0;
+  background: #1A1612;
+  color: #D4C5B0;
 }
 
 .badge.preloved {
-  background: #b85c38;
+  background: #B85C38;
   color: #fff;
 }
 
 .badge.new {
-  background: #6b7e5a;
+  background: #6B7E5A;
   color: #fff;
 }
 
@@ -94,14 +94,12 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #e8e0d4;
+  border: 1px solid #E8E0D4;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.92);
   cursor: pointer;
   opacity: 0;
-  transition:
-    opacity 0.2s,
-    border-color 0.2s;
+  transition: opacity 0.2s, border-color 0.2s;
 }
 
 /* SHOW ON PRODUCT CARD HOVER */
@@ -111,14 +109,14 @@ a {
 
 /* HOVER STATE (ONLY BORDER CHANGES) */
 .wishlist-btn:hover {
-  border-color: #c9a96e;
+  border-color: #C9A96E;
 }
 
 /* ===== ICON ===== */
 .wishlist-icon {
   width: 16px;
   height: 16px;
-  stroke: #1a1612;
+  stroke: #1A1612;
   fill: none;
   stroke-width: 1.5;
   stroke-linecap: round;
@@ -127,9 +125,13 @@ a {
 }
 
 /* ===== ACTIVE (WISHLISTED) ===== */
+.wishlist-btn.active {
+  opacity: 1;
+}
+
 .wishlist-btn.active .wishlist-icon {
-  fill: #b85c38;
-  stroke: #b85c38;
+  fill: #B85C38;
+  stroke: #B85C38;
 }
 
 /* ===== QUICK ADD ===== */
@@ -144,12 +146,12 @@ a {
   justify-content: center;
   gap: 8px;
   opacity: 0;
-  transition: opacity 0.25s;
+  transition:opacity 0.25s;
   cursor: pointer;
 }
 
 .quick-add span {
-  font-family: "DM Sans";
+  font-family: 'DM Sans';
   font-size: 10px;
   letter-spacing: 0.16em;
   color: #fff;
@@ -159,7 +161,7 @@ a {
 .quick-add .quick-add-icon {
   width: 12px;
   height: 12px;
-  stroke: #c9a96e;
+  stroke: #C9A96E;  
   fill: none;
   stroke-width: 1.5;
 }
@@ -183,7 +185,7 @@ a {
   font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #c9a96e;
+  color: #C9A96E;
   margin-bottom: 4px;
 }
 
@@ -192,7 +194,7 @@ a {
   font-family: "Cormorant Garamond";
   font-size: 17px;
   font-weight: 400;
-  color: #1a1612;
+  color: #1A1612;
   line-height: 1.3;
   margin-bottom: 6px;
 }
@@ -218,7 +220,7 @@ a {
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8a7e72;
+  color: #8A7E72;
   min-width: 36px;
 }
 
@@ -227,21 +229,21 @@ a {
   font-family: "DM Sans";
   font-size: 15px;
   font-weight: 500;
-  color: #1a1612;
+  color: #1A1612;
 }
 
 /* ===== PRICE SUB  ===== */
 .price-sub {
   font-family: "DM Sans";
   font-size: 11px;
-  color: #8a7e72;
+  color: #8A7E72;
 }
 
 /* ===== ORIGINAL PRICE (STRIKE) ===== */
 .price-orignal {
   font-family: "DM Sans";
   font-size: 11px;
-  color: #8a7e72;
+  color: #8A7E72;
   text-decoration: line-through;
   margin-left: 4px;
 }
@@ -252,7 +254,7 @@ a {
   font-weight: 400;
 
   letter-spacing: 0.06em;
-  color: #6b7e5a;
+  color: #6B7E5A;
 
   margin-top: 2px;
 }

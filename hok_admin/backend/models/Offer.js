@@ -151,6 +151,7 @@ const offerSchema = new mongoose.Schema(
     // can retrieve it directly and reliably.
     customerId: String,
     linkedOrderId: String,
+    promoCode: String,
 
     quantity: {
       type: Number,

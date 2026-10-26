@@ -1,3 +1,6 @@
+
+
+
 /* ================= CONTAINER ================= */
 .promo-zone {
   display: flex;
@@ -26,7 +29,7 @@
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #18140f;
+  color: #18140F;
   transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -45,13 +48,13 @@
 /* Success */
 .promo-input.success {
   border-bottom-color: #6b7e5a;
-  border-bottom: 2px solid #6b7e5a;
+  border-bottom: 2px solid #6B7E5A;
 }
 
 /* Error */
 .promo-input.error {
   border-bottom-color: #b85c38;
-  border-bottom: 2px solid #b85c38;
+  border-bottom: 2px solid #B85C38;
 }
 
 /* Disabled */
@@ -75,8 +78,8 @@
 }
 
 .promo-btn:hover {
-  color: #18140f;
-  border-bottom: 1px solid #3c3529;
+  color: #18140F;
+  border-bottom: 1px solid #3C3529;
 }
 
 /* ================= FEEDBACK ================= */
@@ -91,25 +94,27 @@
 
 /* Success */
 .promo-feedback.success {
-  color: #6b7e5a;
-  border-left-color: #6b7e5a;
+  color: #6B7E5A;
+  border-left-color: #6B7E5A;
 }
 
 /* Error */
 .promo-feedback.error {
-  color: #b85c38;
-  border-left-color: #b85c38;
+  color: #B85C38;
+  border-left-color: #B85C38;
 }
 
 .promo-feedback.show {
   display: block;
 }
 
+
 /* ============================= */
 /* MOBILE — PROMO INLINE */
 /* ============================= */
 
 @media (max-width: 430px) {
+
   /* ============================= */
   /* SEPARATOR (FOR PROMO START) */
   /* ============================= */
@@ -187,7 +192,7 @@
   }
 
   .promo-input:disabled {
-    opacity: 1;
+    opacity: 1; 
   }
 
   /* ============================= */
@@ -238,4 +243,5 @@
     color: var(--terracotta);
     border-left-color: var(--terracotta);
   }
+
 }

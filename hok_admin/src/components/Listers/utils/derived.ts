@@ -36,22 +36,29 @@ export const calculateLedger = (
 
     tv += txTv;
 
+    if (tx.type === "Preloved Sale" || tx.mode === "Preloved" || String(tx.type || "").includes("Preloved") || String(tx.type || "").includes("Sale")) {
+      sales++;
+    } else {
+      rentals++;
+    }
+
     if (txStatus === "Paid") {
       paid += txAmount;
       paidCount++;
-      if (tx.type === "Preloved Sale" || tx.mode === "Preloved") sales++;
-      else rentals++;
 
-      const pct =
-        tx.isDamage || tx.mode === "Damage Comp." ? tx.stdPct || 0 : txPct;
+    const pct =
+      tx.isDamage || tx.mode === "Damage Comp." ? tx.stdPct || 0 : txPct;
+    if (pct > 0) {
       pctSum += pct;
       pctCount++;
+    }
     }
 
     if (
       txStatus === "Pending Approval" ||
       txStatus === "Approved" ||
-      txStatus === "On Hold"
+      txStatus === "On Hold" ||
+      txStatus === "Pending"
     ) {
       pending += txAmount;
     }

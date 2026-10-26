@@ -40,22 +40,95 @@ const useWishlistStore = create(
         set({ items: Array.from(new Set(cleanedItems)) });
       },
 
-      toggleWishlist: async (productId) => {
+      removeFromWishlist: async (productId, productData) => {
+        const { token, isAuthenticated } = useAuthStore.getState();
+        const rawId = String(productId || "");
+        const aliases = new Set();
+        if (rawId) aliases.add(rawId);
+
+        if (productData) {
+          const orig = productData.originalData || productData || {};
+          const candidates = [
+            productData.sku,
+            productData.productId,
+            productData._id,
+            productData.id,
+            orig.sku,
+            orig.productId,
+            orig._id,
+            orig.id,
+          ].filter(Boolean);
+
+          candidates.forEach((c) => {
+            aliases.add(String(c));
+          });
+        }
+
+        const aliasList = Array.from(aliases);
+        const currentItems = get().items;
+        const newItems = currentItems.filter((id) => !aliasList.includes(String(id)));
+
+        set({
+          items: newItems,
+          unseenCount: Math.max(0, (get().unseenCount || 0) - 1),
+        });
+
+        if (!isAuthenticated) return;
+
+        const orig = productData?.originalData || productData || {};
+        const backendId = productData?.sku || orig.sku || productData?.productId || orig.productId || rawId;
+
+        try {
+          const response = await fetch(`/api/customer/auth/wishlist/remove/${encodeURIComponent(backendId)}`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await response.json();
+          if (data.success && Array.isArray(data.data)) {
+            set({ items: Array.from(new Set(data.data)) });
+          }
+        } catch (e) {
+          console.error("removeFromWishlist error:", e);
+        }
+      },
+
+      toggleWishlist: async (productId, productData) => {
         const { token, isAuthenticated } = useAuthStore.getState();
         get().cleanUpOldIds();
 
-        // Optimistic local update works for BOTH logged-in and guest users
+        const rawId = String(productId || "");
+        const aliases = new Set();
+        if (rawId) aliases.add(rawId);
+
+        if (productData) {
+          const orig = productData.originalData || productData || {};
+          const candidates = [
+            productData.sku,
+            productData.productId,
+            productData._id,
+            productData.id,
+            orig.sku,
+            orig.productId,
+            orig._id,
+            orig.id,
+          ].filter(Boolean);
+
+          candidates.forEach((c) => {
+            aliases.add(String(c));
+          });
+        }
+
+        const aliasList = Array.from(aliases);
         let currentItems = get().items;
-        const stringId = String(productId);
-        const isWishlisted = currentItems.some(id => String(id) === stringId);
+        const isWishlisted = currentItems.some((id) => aliasList.includes(String(id)));
         let currentUnseen = get().unseenCount || 0;
 
         set({
           items: Array.from(
             new Set(
               isWishlisted
-                ? currentItems.filter((id) => String(id) !== stringId)
-                : [...currentItems, productId],
+                ? currentItems.filter((id) => !aliasList.includes(String(id)))
+                : [...currentItems, rawId],
             ),
           ),
           unseenCount: isWishlisted
@@ -71,7 +144,7 @@ const useWishlistStore = create(
         // If authenticated, also sync with backend
         try {
           const response = await fetch(
-            `/api/customer/auth/wishlist/${productId}`,
+            `/api/customer/auth/wishlist/${encodeURIComponent(rawId)}`,
             {
               method: "POST",
               headers: {
@@ -80,14 +153,13 @@ const useWishlistStore = create(
             },
           );
           const data = await response.json();
-
-          if (!data.success) {
-            // Revert optimistic update on failure by refetching
+          if (data.success && Array.isArray(data.data)) {
+            set({ items: Array.from(new Set(data.data)) });
+          } else if (!data.success) {
             get().fetchWishlist();
           }
         } catch (error) {
           console.error("Error toggling wishlist:", error);
-          // Fallback: refetch from backend if there was a sync issue
           get().fetchWishlist();
         }
       },

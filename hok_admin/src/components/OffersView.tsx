@@ -1,27 +1,34 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import {
   Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock3,
+  Copy,
   Download,
   MessageCircle,
   Plus,
   RefreshCw,
+  Sparkles,
+  Tag,
+  UserCheck,
   X,
 } from "lucide-react";
-import { Offer, Product } from "../types";
+import toast from "react-hot-toast";
+import { Offer, Product, Customer } from "../types";
 import * as offerApi from "../services/offerApi";
 
 interface OffersViewProps {
   offers: Offer[];
   products: Product[];
+  customers?: Customer[];
   listers: any[];
   currentAdminName?: string;
   loading?: boolean;
   onUpdateOffer: (id: string, updatedFields: Partial<Offer>) => void;
   onAddOffer: (offer: Offer) => void;
+  onCustomerCreated?: (customer: Customer) => void;
 }
 
 const money = (value: number) => `₹${value.toLocaleString("en-IN")}`;
@@ -39,11 +46,13 @@ const PAGE_SIZE = 10;
 export default function OffersView({
   offers,
   products,
+  customers = [],
   listers,
   currentAdminName = "Soumya",
   loading = false,
   onUpdateOffer,
   onAddOffer,
+  onCustomerCreated,
 }: OffersViewProps) {
   const [selectedStatus, setSelectedStatus] = useState("All Status");
   const [page, setPage] = useState(1);
@@ -59,6 +68,7 @@ export default function OffersView({
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState<string[]>([]);
   const [form, setForm] = useState({
+    customerId: "",
     customerName: "",
     source: "Phone",
     email: "",
@@ -66,6 +76,7 @@ export default function OffersView({
     productName: "",
     assignedTo: currentAdminName,
     offerAmount: "",
+    promoCode: "",
     note: "",
   });
 
@@ -130,11 +141,27 @@ export default function OffersView({
     if (!form.customerName || !form.productName || !form.phone) return;
     const offerPrice = Number(form.offerAmount) || 0;
     const marketPrice = selectedProductPrice;
+    const discount =
+      marketPrice > offerPrice && offerPrice > 0
+        ? marketPrice - offerPrice
+        : 0;
+
+    let promoCode = form.promoCode ? form.promoCode.trim().toUpperCase() : "";
+    if (!promoCode && discount > 0) {
+      const cleanName = (form.customerName || "OFFER")
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .slice(0, 5)
+        .toUpperCase();
+      promoCode = `OFFER-${cleanName}-${Math.floor(100 + Math.random() * 900)}`;
+    }
+
     onAddOffer({
       id: `OFR-${Date.now().toString().slice(-6)}`,
+      customerId: form.customerId || undefined,
       customerName: form.customerName,
       customerEmail: form.email,
       phone: form.phone,
+      productId: selectedProduct?.id || selectedProduct?.productId,
       productName: form.productName,
       marketPrice,
       offerPrice,
@@ -146,6 +173,7 @@ export default function OffersView({
       channel: form.source,
       note: form.note,
       assignedTo: form.assignedTo,
+      promoCode: promoCode || undefined,
     });
     setShowNewOffer(false);
   };
@@ -253,6 +281,7 @@ export default function OffersView({
           onExport={exportOffers}
           onNew={() => {
             setForm({
+              customerId: "",
               customerName: "",
               source: "Phone",
               email: "",
@@ -260,6 +289,7 @@ export default function OffersView({
               productName: "",
               assignedTo: currentAdminName,
               offerAmount: "",
+              promoCode: "",
               note: "",
             });
             setShowNewOffer(true);
@@ -271,6 +301,7 @@ export default function OffersView({
             selectedProduct={selectedProduct}
             selectedProductPrice={selectedProductPrice}
             products={products}
+            customers={customers}
             listers={listers}
             currentAdminName={currentAdminName}
             updateForm={updateForm}
@@ -319,14 +350,39 @@ export default function OffersView({
                       offer.offerPrice ? "offered-price" : "enquiry-only"
                     }
                   >
-                    {offer.offerPrice
-                      ? money(offer.offerPrice)
-                      : "Enquiry only"}
+                    <div>
+                      {offer.offerPrice
+                        ? money(offer.offerPrice)
+                        : "Enquiry only"}
+                    </div>
+                    {offer.promoCode && (
+                      <button
+                        type="button"
+                        className="mt-1 inline-flex items-center gap-1 rounded bg-[#f5eddf] px-1.5 py-0.5 text-[10px] font-bold text-[#7a591e] border border-[#e4d4ba] hover:bg-[#ede0ca] transition-colors"
+                        title="Click to copy promo code"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigator.clipboard.writeText(offer.promoCode!);
+                          toast.success(`Promo code copied: ${offer.promoCode}`);
+                        }}
+                      >
+                        <Tag className="h-2.5 w-2.5 text-[#9a752e]" />
+                        <span>{offer.promoCode}</span>
+                        <Copy className="h-2.5 w-2.5 opacity-60" />
+                      </button>
+                    )}
                   </td>
                   <td>{offer.offerPrice ? `${offer.askPercentage}%` : "—"}</td>
                   <td>
                     <div className="customer-cell">
-                      <strong>{offer.customerName}</strong>
+                      <div>
+                        <strong>{offer.customerName}</strong>
+                        {offer.customerId && (
+                          <span className="block text-[10px] text-stone-500 font-mono font-medium">
+                            {offer.customerId}
+                          </span>
+                        )}
+                      </div>
                       <MessageCircle aria-label="WhatsApp" />
                     </div>
                   </td>
@@ -565,6 +621,7 @@ function NewOfferForm({
   selectedProduct,
   selectedProductPrice,
   products,
+  customers = [],
   listers,
   currentAdminName,
   updateForm,
@@ -572,6 +629,7 @@ function NewOfferForm({
   onCancel,
 }: {
   form: {
+    customerId?: string;
     customerName: string;
     source: string;
     email: string;
@@ -579,29 +637,80 @@ function NewOfferForm({
     productName: string;
     assignedTo: string;
     offerAmount: string;
+    promoCode?: string;
     note: string;
   };
   selectedProduct?: Product;
   selectedProductPrice: number;
   products: Product[];
+  customers?: Customer[];
   listers: any[];
   currentAdminName: string;
-  updateForm: (
-    key: keyof {
-      customerName: string;
-      source: string;
-      email: string;
-      phone: string;
-      productName: string;
-      assignedTo: string;
-      offerAmount: string;
-      note: string;
-    },
-    value: string,
-  ) => void;
+  updateForm: (key: string, value: string) => void;
   onSubmit: (event: React.FormEvent) => void;
   onCancel: () => void;
 }) {
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(() => {
+    if (form.customerId && customers) {
+      return (
+        customers.find(
+          (c) => c.customerId === form.customerId || c.id === form.customerId,
+        ) || null
+      );
+    }
+    return null;
+  });
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const query = (form.customerName || "").trim().toLowerCase();
+  const suggestions = useMemo(() => {
+    if (!query || query.length < 1 || !customers || customers.length === 0)
+      return [];
+    return customers
+      .filter((c) => {
+        const name = (c.name || "").toLowerCase();
+        const email = (c.email || "").toLowerCase();
+        const phone = c.phone || "";
+        const cid = (c.customerId || c.id || "").toLowerCase();
+        return (
+          name.includes(query) ||
+          email.includes(query) ||
+          phone.includes(query) ||
+          cid.includes(query)
+        );
+      })
+      .slice(0, 6);
+  }, [query, customers]);
+
+  const handleSelectCustomer = (cust: Customer) => {
+    updateForm("customerName", cust.name);
+    updateForm("email", cust.email || "");
+    updateForm("phone", cust.phone || "");
+    updateForm("customerId", cust.customerId || cust.id || "");
+    setSelectedCustomer(cust);
+    setShowSuggestions(false);
+  };
+
+  const offerAmt = Number(form.offerAmount) || 0;
+  const discountAmt =
+    selectedProductPrice > offerAmt && offerAmt > 0
+      ? selectedProductPrice - offerAmt
+      : 0;
+
   return (
     <form className="offline-offer-form" onSubmit={onSubmit}>
       <div className="offline-form-heading">
@@ -612,14 +721,70 @@ function NewOfferForm({
         </p>
       </div>
       <div className="offline-form-grid">
-        <Field label="Customer name">
+        <div className="offline-field relative" ref={dropdownRef}>
+          <span>Customer name</span>
           <input
             required
+            autoComplete="off"
             value={form.customerName}
-            onChange={(e) => updateForm("customerName", e.target.value)}
-            placeholder="e.g. Kavita Singh"
+            onChange={(e) => {
+              updateForm("customerName", e.target.value);
+              if (selectedCustomer && selectedCustomer.name !== e.target.value) {
+                setSelectedCustomer(null);
+                updateForm("customerId", "");
+              }
+              setShowSuggestions(true);
+            }}
+            onFocus={() => setShowSuggestions(true)}
+            placeholder="Type name (e.g. Kavita Singh)"
           />
-        </Field>
+          {showSuggestions && suggestions.length > 0 && (
+            <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-lg border border-[#c8aa68] bg-white shadow-xl">
+              <div className="p-2 text-[10px] font-bold uppercase tracking-wider text-[#918980] bg-[#faf8f5] border-b border-[#eee8df]">
+                Registered Website Customers ({suggestions.length})
+              </div>
+              {suggestions.map((c) => (
+                <div
+                  key={c.id || c.customerId || c.email}
+                  className="cursor-pointer border-b border-stone-100 p-2.5 transition-colors hover:bg-[#f6f2e9]"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleSelectCustomer(c);
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <strong className="text-[13px] text-[#312e2a] font-semibold">
+                      {c.name}
+                    </strong>
+                    <span className="rounded bg-[#e8deca] px-1.5 py-0.5 text-[10px] font-bold text-[#624e24]">
+                      {c.customerId || c.id || "Customer"}
+                    </span>
+                  </div>
+                  <div className="mt-0.5 flex flex-wrap gap-x-3 text-[11px] text-[#78716c]">
+                    {c.email && <span>✉️ {c.email}</span>}
+                    {c.phone && <span>📞 {c.phone}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {selectedCustomer ? (
+            <div className="mt-1 flex items-center gap-1.5 text-[11px] font-medium text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
+              <UserCheck className="h-3.5 w-3.5 text-emerald-600" />
+              <span>
+                Registered Customer linked: <strong>{selectedCustomer.name}</strong> (
+                {selectedCustomer.customerId || selectedCustomer.id})
+              </span>
+            </div>
+          ) : form.customerName.trim().length > 1 ? (
+            <div className="mt-1 flex items-center gap-1.5 text-[11px] text-[#8c7438] bg-[#fbf8f0] px-2.5 py-1 rounded border border-[#eedeb5]">
+              <Sparkles className="h-3.5 w-3.5 text-[#b99855]" />
+              <span>
+                New customer will be automatically registered in customer records.
+              </span>
+            </div>
+          ) : null}
+        </div>
         <Field label="Source">
           <select
             value={form.source}
@@ -636,7 +801,7 @@ function NewOfferForm({
             type="email"
             value={form.email}
             onChange={(e) => updateForm("email", e.target.value)}
-            placeholder="Optional"
+            placeholder="Auto-fills from customer or enter email"
           />
         </Field>
         <Field label="Phone">
@@ -644,7 +809,7 @@ function NewOfferForm({
             required
             value={form.phone}
             onChange={(e) => updateForm("phone", e.target.value)}
-            placeholder="Optional"
+            placeholder="Auto-fills from customer or enter phone"
           />
         </Field>
         <Field label="Product">
@@ -684,7 +849,7 @@ function NewOfferForm({
             placeholder="Auto-fills once a piece is selected"
           />
         </Field>
-        <Field label="Offer amount (₹) — leave blank if it's just an enquiry, no number offered yet">
+        <Field label="Offer amount (₹) — leave blank if enquiry only">
           <input
             type="number"
             value={form.offerAmount}
@@ -693,6 +858,43 @@ function NewOfferForm({
           />
         </Field>
       </div>
+
+      {discountAmt > 0 && (
+        <div className="mt-3 p-3.5 rounded-lg border border-[#d9c491] bg-gradient-to-r from-[#fcf9f2] to-[#f4eedf]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Tag className="h-4 w-4 text-[#a37f34]" />
+              <strong className="text-[13px] font-bold text-[#3d321d]">
+                Web Discount &amp; Promo Code Generated
+              </strong>
+            </div>
+            <span className="text-[12px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
+              Save ₹{discountAmt.toLocaleString("en-IN")} ({Math.round((discountAmt / selectedProductPrice) * 100)}% OFF)
+            </span>
+          </div>
+          <p className="mt-1 text-[12px] text-[#6d6457]">
+            An active promo code will be created so this customer can purchase <strong>{form.productName}</strong> at the offered price of <strong>{money(offerAmt)}</strong> on the website.
+          </p>
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-bold text-[#8a7657] uppercase tracking-wider">
+              Promo Code:
+            </span>
+            <input
+              type="text"
+              className="max-w-[240px] font-mono font-bold tracking-wider text-[13px] text-[#342407] uppercase bg-white border border-[#c8aa68] rounded px-2.5 py-1"
+              value={form.promoCode || ""}
+              onChange={(e) =>
+                updateForm("promoCode", e.target.value.toUpperCase())
+              }
+              placeholder={`e.g. OFFER-${(form.customerName || "USER").replace(/[^a-zA-Z0-9]/g, "").slice(0, 5).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`}
+            />
+            <small className="text-[11px] text-[#8a7657]">
+              (Auto-generated if left blank)
+            </small>
+          </div>
+        </div>
+      )}
+
       <Field label="Note">
         <textarea
           value={form.note}
@@ -753,6 +955,43 @@ function OfferDetail({
           value={`${money(offer.offerPrice)} (${offer.askPercentage}%)`}
         />
       </div>
+
+      {offer.promoCode && (
+        <div className="my-4 rounded-lg border border-[#d8be82] bg-gradient-to-r from-[#fbf8f0] to-[#f5edd9] p-3.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Tag className="h-4 w-4 text-[#9c772e]" />
+              <span className="text-[12px] font-bold text-[#3a2f1a] uppercase tracking-wider">
+                Website Promo Code
+              </span>
+              <code className="rounded bg-white px-2.5 py-0.5 font-mono text-[13px] font-bold text-[#8a6823] border border-[#d8c397]">
+                {offer.promoCode}
+              </code>
+            </div>
+            <button
+              type="button"
+              className="flex items-center gap-1 rounded bg-[#c5a65f] px-2.5 py-1 text-[11px] font-bold text-white shadow-sm hover:bg-[#b5954a] transition-colors"
+              onClick={() => {
+                navigator.clipboard.writeText(offer.promoCode!);
+                toast.success(`Promo code copied: ${offer.promoCode}`);
+              }}
+            >
+              <Copy className="h-3 w-3" /> Copy Code
+            </button>
+          </div>
+          <p className="mt-1.5 text-[11px] text-[#71644f]">
+            Share this promo code with the customer. When they enter it at website checkout, they will receive a flat discount of{" "}
+            <strong>
+              ₹
+              {(offer.marketPrice > offer.offerPrice
+                ? offer.marketPrice - offer.offerPrice
+                : 0
+              ).toLocaleString("en-IN")}
+            </strong>{" "}
+            to match the agreed price of {money(offer.offerPrice)}.
+          </p>
+        </div>
+      )}
       <div className="negotiation-log">
         <h4>Negotiation Log</h4>
         {notes.length === 0 && (

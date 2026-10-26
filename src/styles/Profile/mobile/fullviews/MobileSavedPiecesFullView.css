@@ -3,7 +3,7 @@
    ============================================ */
 
 .profile-mobile-fv-container {
-  background: #fffffb;
+  background: #FFFFFB;
   min-height: 100vh;
 }
 
@@ -15,10 +15,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1px;
-  background: #f0eae0;
+  background: #F0EAE0;
 }
 
 .profile-mobile-wl-phantom {
-  background: #fffffb;
+  background: #FFFFFB;
   pointer-events: none;
 }

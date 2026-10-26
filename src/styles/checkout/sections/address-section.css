@@ -2,7 +2,7 @@
 /* OPTIONAL LABEL SPAN */
 .checkout-label-optional {
   font-size: 8px;
-  color: #b0a898;
+  color: #B0A898;
   text-transform: none;
   letter-spacing: normal;
   margin-left: 6px;
@@ -14,7 +14,7 @@
 
 .address-section .checkout-label-optional {
   font-size: 8px;
-  color: #b0a898;
+  color: #B0A898;
   margin-left: 6px;
 }
 
@@ -25,7 +25,7 @@
 
 /* TOGGLE BLOCK */
 .address-section .checkout-toggle-block {
-  border-top: 1px solid #f0eae0;
+  border-top: 1px solid #F0EAE0;
   margin-top: 32px;
   padding-top: 32px;
 }
@@ -37,7 +37,7 @@
   gap: 12px;
 
   font-size: 12px;
-  color: #3c3529;
+  color: #3C3529;
   cursor: pointer;
 }
 
@@ -49,21 +49,18 @@
 .address-section .checkout-checkbox-box {
   width: 15px;
   height: 15px;
-  border: 1px solid #3c3529;
+  border: 1px solid #3C3529;
   position: relative;
 }
 
 /* CHECKED STATE (DEFAULT) */
-.address-section .checkout-checkbox input:checked + .checkout-checkbox-box {
-  background: #1a1612;
-  border-color: #1a1612;
+.address-section .checkout-checkbox input:checked+.checkout-checkbox-box {
+  background: #1A1612;
+  border-color: #1A1612;
 }
 
 /* CHECKMARK */
-.address-section
-  .checkout-checkbox
-  input:checked
-  + .checkout-checkbox-box::after {
+.address-section .checkout-checkbox input:checked+.checkout-checkbox-box::after {
   content: "";
   position: absolute;
   width: 4px;
@@ -85,7 +82,7 @@
 .address-section .checkout-gst-sub {
   margin-left: 6px;
   font-size: 11px;
-  color: #b0a898;
+  color: #B0A898;
 }
 
 /* SLIDE PANEL */
@@ -99,6 +96,7 @@
 .address-section .checkout-panel.gst.open {
   max-height: 200px;
 }
+
 
 /* =========================================================
    MOBILE OVERRIDES (max-width: 430px)
@@ -123,6 +121,7 @@
     grid-row: 2;
     grid-column: 1 / -1;
   }
+
 }
 
 /* =========================================================
@@ -135,7 +134,7 @@
   .address-section .checkout-toggle-block {
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid #f0eae0;
+    border-top: 1px solid #F0EAE0;
   }
 
   /* Toggle row */
@@ -151,22 +150,19 @@
     width: 16px;
     height: 16px;
     min-width: 16px;
-    border: 1px solid #e8e0d4;
+    border: 1px solid #E8E0D4;
     background: transparent;
     position: relative;
   }
 
   /* Checkbox checked state */
   .address-section .checkout-checkbox input:checked + .checkout-checkbox-box {
-    background: #1a1612;
-    border-color: #1a1612;
+    background: #1A1612;
+    border-color: #1A1612;
   }
 
   /* Checkmark */
-  .address-section
-    .checkout-checkbox
-    input:checked
-    + .checkout-checkbox-box::after {
+  .address-section .checkout-checkbox input:checked + .checkout-checkbox-box::after {
     content: "";
     position: absolute;
     width: 4px;
@@ -184,7 +180,7 @@
     font-family: "DM Sans", sans-serif;
     font-weight: 300;
     font-size: 12px;
-    color: #3c3529;
+    color: #3C3529;
     line-height: 1.5;
   }
 
@@ -193,9 +189,7 @@
     max-height: 0;
     overflow: hidden;
     padding-top: 0;
-    transition:
-      max-height 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-      padding 0.3s ease;
+    transition: max-height 0.38s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s ease;
   }
 
   /* Panel open */

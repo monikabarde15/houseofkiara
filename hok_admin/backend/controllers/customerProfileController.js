@@ -1,5 +1,9 @@
 import crypto from "crypto";
 import Customer from "../models/Customer.js";
+import Order from "../models/Order.js";
+import Product from "../models/Product.js";
+import Submission from "../models/Submission.js";
+import Lister from "../models/Lister.js";
 import {
   validateProfileUpdate,
   validateAddressInput,
@@ -535,3 +539,672 @@ export const setDefaultAddress = async (req, res) => {
     });
   }
 };
+
+// GET /api/customer/profile/dashboard
+export const getProfileDashboard = async (req, res) => {
+  try {
+    const customerId = req.user?._id || req.customer?._id || req.user?.id;
+    if (!customerId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required.",
+      });
+    }
+
+    const customer = await Customer.findById(customerId);
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer profile not found.",
+      });
+    }
+
+    const cId = customer.customerId;
+    const cEmail = customer.email;
+    const cPhone = customer.phone;
+
+    // 1. Fetch Orders (Rentals & Purchases)
+    const orderQueries = [];
+    if (cId) orderQueries.push({ customerId: cId });
+    if (customer._id) {
+      orderQueries.push({ customerId: String(customer._id) });
+      orderQueries.push({ customerId: customer._id });
+    }
+    if (cEmail) {
+      orderQueries.push({ customerEmail: { $regex: new RegExp(`^${cEmail.trim()}$`, "i") } });
+    }
+    if (cPhone) {
+      const digits = String(cPhone).replace(/\D/g, "");
+      if (digits.length >= 10) {
+        orderQueries.push({ customerPhone: new RegExp(digits.slice(-10) + "$") });
+      } else {
+        orderQueries.push({ customerPhone: cPhone });
+      }
+    }
+
+    let orders = [];
+    if (orderQueries.length > 0) {
+      try {
+        orders = await Order.find({ $or: orderQueries }).sort({ createdAt: -1 });
+      } catch (err) {
+        console.error("Dashboard order query error:", err);
+      }
+    }
+
+    // Look up products to enrich missing titles/designers/images
+    const prodLookup = new Map();
+    const productIdsToFetch = new Set();
+    (orders || []).forEach((o) => {
+      (o.items || []).forEach((it) => {
+        if (it && it.productId) productIdsToFetch.add(String(it.productId));
+      });
+    });
+
+    if (productIdsToFetch.size > 0) {
+      try {
+        const idList = Array.from(productIdsToFetch);
+        const prods = await Product.find({
+          $or: [
+            { _id: { $in: idList } },
+            { productId: { $in: idList } },
+            { id: { $in: idList } },
+          ],
+        });
+        prods.forEach((p) => {
+          if (p._id) prodLookup.set(String(p._id), p);
+          if (p.productId) prodLookup.set(String(p.productId), p);
+          if (p.id) prodLookup.set(String(p.id), p);
+        });
+      } catch (e) {
+        console.error("Dashboard product lookup error:", e);
+      }
+    }
+
+    const rentals = [];
+    const purchases = [];
+
+    (orders || []).forEach((order) => {
+      const items = Array.isArray(order.items) && order.items.length > 0 ? order.items : [];
+      const hasRentalItem = items.some(
+        (item) => String(item.mode || "").toLowerCase() === "rental"
+      );
+      const isRentalOrder =
+        String(order.mode || "").toLowerCase() === "rental" || hasRentalItem;
+
+      if (isRentalOrder) {
+        const item =
+          items.find((i) => String(i.mode || "").toLowerCase() === "rental") ||
+          items[0] ||
+          {};
+        const matchedProd = item.productId ? prodLookup.get(String(item.productId)) : null;
+        const resolvedName = (item.productName && item.productName !== "Designer Piece")
+          ? item.productName
+          : (matchedProd?.title || matchedProd?.name || order.productName || "Designer Piece");
+        const resolvedDesigner = (item.designer && item.designer !== "House of Kaira")
+          ? item.designer
+          : (matchedProd?.designer || order.designer || "House of Kaira");
+        const resolvedImage =
+          item.image ||
+          (Array.isArray(item.photos) && item.photos[0]) ||
+          (Array.isArray(matchedProd?.images) && matchedProd.images[0]) ||
+          matchedProd?.image ||
+          order.image ||
+          "";
+
+        const startDate = item.rentalStartDate || order.rentalStartDate || "";
+        const endDate = item.rentalEndDate || order.rentalEndDate || "";
+        const dates =
+          startDate && endDate
+            ? `${startDate}–${endDate}`
+            : order.createdAt
+            ? new Date(order.createdAt).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })
+            : "Upcoming";
+
+        let depositStatus = null;
+        if (
+          order.depositStatus === "Released" ||
+          order.depositStatus === "Partially Released"
+        ) {
+          depositStatus = "refunded";
+        } else if (order.depositHeld > 0 || order.depositStatus === "Pending") {
+          depositStatus = "pending";
+        }
+
+        const size = item.size || order.size || "M";
+        const fee = Number(order.grandTotal || order.orderValue || item.amount || 0);
+
+        rentals.push({
+          id: order.orderId || String(order._id),
+          piece: resolvedName,
+          designer: resolvedDesigner,
+          status: order.status || item.status || "Confirmed",
+          dates,
+          size,
+          fee,
+          depositStatus,
+          depositAmount: order.depositHeld || item.deposit || 0,
+          image: resolvedImage,
+          address: order.address || "",
+          createdAt: order.createdAt,
+        });
+      } else {
+        const item = items[0] || {};
+        const matchedProd = item.productId ? prodLookup.get(String(item.productId)) : null;
+        const resolvedName = (item.productName && item.productName !== "Designer Piece")
+          ? item.productName
+          : (matchedProd?.title || matchedProd?.name || order.productName || "Designer Piece");
+        const resolvedDesigner = (item.designer && item.designer !== "House of Kaira")
+          ? item.designer
+          : (matchedProd?.designer || order.designer || "House of Kaira");
+        const resolvedImage =
+          item.image ||
+          (Array.isArray(item.photos) && item.photos[0]) ||
+          (Array.isArray(matchedProd?.images) && matchedProd.images[0]) ||
+          matchedProd?.image ||
+          order.image ||
+          "";
+
+        const type = item.mode || order.mode || "Buy";
+        const typeDetail = `${type} - ${resolvedDesigner}`;
+        const orderedOn = new Date(order.createdAt || Date.now()).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const dateStr =
+          order.status === "Delivered"
+            ? `Delivered ${new Date(
+                order.updatedAt || order.createdAt
+              ).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}`
+            : `Ordered ${orderedOn}`;
+
+        const amount = Number(order.grandTotal || order.orderValue || item.amount || 0);
+        const size = item.size || order.size || "M";
+
+        purchases.push({
+          id: order.orderId || String(order._id),
+          piece: resolvedName,
+          designer: resolvedDesigner,
+          type,
+          typeDetail,
+          status: order.status || "Confirmed",
+          amount,
+          total: amount,
+          size,
+          orderedOn,
+          date: dateStr,
+          image: resolvedImage,
+          address: order.address || "",
+          createdAt: order.createdAt,
+        });
+      }
+    });
+
+    // 2. Fetch Wishlist Products
+    const wishlistIds = Array.isArray(customer.wishlist)
+      ? customer.wishlist.filter(Boolean).map(String)
+      : [];
+    let savedPieces = [];
+    if (wishlistIds.length > 0) {
+      try {
+        const products = await Product.find({
+          $or: [
+            { _id: { $in: wishlistIds } },
+            { productId: { $in: wishlistIds } },
+            { sku: { $in: wishlistIds } },
+            { id: { $in: wishlistIds } },
+          ],
+        });
+
+        savedPieces = (products || []).map((p) => {
+          const modesUpper = Array.isArray(p.listingModes)
+            ? p.listingModes.map((m) => String(m).toUpperCase())
+            : [];
+          const isRental = modesUpper.some((m) => m === "RENTAL" || m === "RENT");
+          const isPreloved = modesUpper.some((m) => m === "PRELOVED" || m === "PRE-LOVED");
+          const mode = isRental ? "Rental" : isPreloved ? "Preloved" : "Buy New";
+          const price = Number(
+            p.rentalPrice || p.listingPrice || p.originalRetailPrice || p.price || 0
+          );
+
+          const resolvedImage =
+            (Array.isArray(p.images) && p.images[0]) ||
+            (Array.isArray(p.image) && p.image[0]) ||
+            (typeof p.image === "string" && p.image) ||
+            "";
+
+          const pId = String(p._id);
+          return {
+            _id: pId,
+            id: pId,
+            productId: p.productId || p.sku || pId,
+            sku: p.sku || p.productId,
+            name: p.name,
+            designer: p.designer || "",
+            mode,
+            price,
+            sizes:
+              Array.isArray(p.sizes) && p.sizes.length > 0
+                ? p.sizes
+                : ["Free Size"],
+            colors: p.color ? [p.color] : [],
+            image: resolvedImage,
+            listingModes: p.listingModes || [mode.toUpperCase()],
+            rentalPrice: p.rentalPrice,
+            listingPrice: p.listingPrice,
+            originalRetailPrice: p.originalRetailPrice || p.retailPrice,
+            category: p.category || p.subTitle || "",
+            originalData: p,
+          };
+        });
+      } catch (err) {
+        console.error("Dashboard wishlist query error:", err);
+      }
+    }
+
+    // 3. Fetch Listed Pieces
+    const listerQueries = [];
+    if (cId) listerQueries.push({ listerId: cId });
+    if (cEmail) listerQueries.push({ listerId: cEmail });
+    if (cPhone) listerQueries.push({ listerId: cPhone });
+
+    let listedPieces = [];
+    if (listerQueries.length > 0) {
+      try {
+        const listedProducts = await Product.find({ $or: listerQueries }).sort({
+          createdAt: -1,
+        });
+        listedPieces = (listedProducts || []).map((p) => {
+          const isRental = p.listingModes?.includes("RENTAL");
+          const isResale =
+            p.listingModes?.includes("BUY") ||
+            p.listingModes?.includes("PRELOVED");
+          const mode =
+            isRental && isResale ? "Dual" : isResale ? "Resale" : "Rental";
+
+          const rentalPrice = Number(p.rentalPrice || 0);
+          const resalePrice = Number(
+            p.listingPrice || p.originalRetailPrice || 0
+          );
+          const price = mode === "Resale" ? resalePrice : rentalPrice;
+          const priceLabel = mode === "Resale" ? "Resale price" : "Rental price";
+          const priceSuffix = mode === "Resale" ? "" : " / booking";
+
+          return {
+            id: String(p._id),
+            productId: p.productId,
+            name: p.name,
+            designer: p.designer || "",
+            mode,
+            totalEarned: Number(p.totalEarned || 0),
+            timesRented: p.timesRented > 0 ? p.timesRented : null,
+            nextPayout: p.nextPayout || null,
+            imageGradient: "linear-gradient(160deg, #2C2018, #1A1210)",
+            status:
+              p.status === "Live" || p.status === "Active"
+                ? "active"
+                : p.status?.toLowerCase() || "draft",
+            listedSince: p.createdAt
+              ? new Date(p.createdAt).toLocaleDateString("en-GB", {
+                  month: "short",
+                  year: "numeric",
+                })
+              : "Recent",
+            size: (Array.isArray(p.sizes) && p.sizes[0]) || "Free Size",
+            priceLabel,
+            price,
+            priceSuffix,
+            rentalPrice,
+            rentalPriceSuffix: " / booking",
+            resalePrice,
+            resalePriceSuffix: "",
+            image: (Array.isArray(p.images) && p.images[0]) || "",
+          };
+        });
+      } catch (err) {
+        console.error("Dashboard listed query error:", err);
+      }
+    }
+
+    // 4. Fetch Submissions (search comprehensively by phone, email, customerId, and linked lister accounts)
+    let submissions = [];
+    try {
+      const phoneDigits = normalizePhone(cPhone);
+      const emailRegex = cEmail ? new RegExp(`^${cEmail.trim()}$`, "i") : null;
+
+      const subQueries = [];
+      if (cId) {
+        subQueries.push({ customerId: cId });
+        subQueries.push({ customer_id: cId });
+        subQueries.push({ listerId: cId });
+      }
+      if (customer._id) {
+        subQueries.push({ customerId: String(customer._id) });
+        subQueries.push({ customer_id: String(customer._id) });
+      }
+      if (emailRegex) {
+        subQueries.push({ email: emailRegex });
+        subQueries.push({ listerEmail: emailRegex });
+      }
+      if (phoneDigits && phoneDigits.length >= 10) {
+        const phoneRegex = new RegExp(phoneDigits.slice(-10) + "$");
+        subQueries.push({ phone: phoneRegex });
+        subQueries.push({ listerPhone: phoneRegex });
+        subQueries.push({ mobile: phoneRegex });
+      }
+
+      // Also match any Lister accounts belonging to this customer
+      const listerConditions = [];
+      if (emailRegex) listerConditions.push({ email: emailRegex });
+      if (phoneDigits && phoneDigits.length >= 10) {
+        listerConditions.push({ phone: new RegExp(phoneDigits.slice(-10) + "$") });
+      }
+      if (cId) listerConditions.push({ listerId: cId });
+      if (customer.name) {
+        const nameSlug = customer.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        listerConditions.push({ listerId: new RegExp(nameSlug, "i") });
+      }
+
+      if (listerConditions.length > 0) {
+        const matchedListers = await Lister.find({ $or: listerConditions });
+        for (const ml of matchedListers) {
+          if (ml.listerId) {
+            subQueries.push({ listerId: ml.listerId });
+            subQueries.push({ listerID: ml.listerId });
+            subQueries.push({ lister_id: ml.listerId });
+          }
+        }
+      }
+
+      if (subQueries.length > 0) {
+        const rawSubs = await Submission.find({ $or: subQueries }).sort({
+          createdAt: -1,
+        });
+
+        // Deduplicate submissions by subid / _id
+        const seenSubs = new Set();
+        const subs = [];
+        for (const s of rawSubs) {
+          const key = s.subid || String(s._id);
+          if (!seenSubs.has(key)) {
+            seenSubs.add(key);
+            subs.push(s);
+          }
+        }
+
+        submissions = subs.map((sub) => {
+          let status = "Under Review";
+          if (sub.decision && typeof sub.decision === "object") {
+            status = sub.decision.status || sub.decision.what || "Under Review";
+          } else if (sub.status) {
+            status = sub.status;
+          }
+          if (status === "Pending" || status === "New" || status === "In Review") {
+            status = "Under Review";
+          }
+
+          const firstImage =
+            sub.media && sub.media.length > 0
+              ? sub.media[0]?.url || sub.media[0]
+              : "";
+
+          return {
+            id: sub.subid || String(sub._id),
+            name: sub.piece || "Submission",
+            designer: sub.designer || "Designer Atelier",
+            status,
+            submittedDate:
+              sub.submitted ||
+              (sub.createdAt
+                ? new Date(sub.createdAt).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : "Recent"),
+            preferredOutcome: sub.intent || "Rent & Resale",
+            image: firstImage,
+            images: (sub.media || []).map((m) => m.url || m),
+            imageGradient: "linear-gradient(160deg, #F0E8D8, #E0CDA8)",
+            pieceType: sub.category || sub.pieceType || "Piece",
+            colourFamily: sub.colour || sub.color || "Multi",
+            size: sub.size || "Standard",
+            condition: sub.conditionClaim || sub.condition || "Excellent",
+            timesWorn: sub.timesWorn || (sub.worn ? `${sub.worn} times` : "1-2 times"),
+            originalPrice: sub.originalPrice
+              ? String(sub.originalPrice).replace(/[^0-9]/g, "")
+              : "",
+            photosSubmitted: sub.photos
+              ? `${sub.photos} photos`
+              : sub.media?.length
+                ? `${sub.media.length} photos`
+                : "Photos submitted",
+            pickupCity: sub.pickupCity || sub.city || "",
+          };
+        });
+      }
+    } catch (err) {
+      console.error("Dashboard submission query error:", err);
+    }
+
+    // 5. Active Rental Alert
+    const activeRental = rentals.find((r) =>
+      ["Dispatched", "Confirmed", "Shipped", "Delivered", "Return Due"].includes(
+        r.status
+      )
+    );
+
+    const activeRentalCount = rentals.filter((r) =>
+      ["Dispatched", "Confirmed", "Shipped", "Delivered", "Return Due"].includes(
+        r.status
+      )
+    ).length;
+
+    const addresses = customer.addresses || [];
+
+    return res.json({
+      success: true,
+      data: {
+        customer: sanitizeCustomer(customer),
+        rentals,
+        purchases,
+        savedPieces,
+        listedPieces,
+        submissions,
+        addresses,
+        counts: {
+          rentals: rentals.length,
+          purchases: purchases.length,
+          savedPieces: savedPieces.length,
+          listedPieces: listedPieces.length,
+          submissions: submissions.length,
+          addresses: addresses.length,
+          activeRentals: activeRentalCount,
+        },
+        activeRentalAlert: activeRental
+          ? {
+              id: activeRental.id,
+              title: `Active Rental - ${activeRental.status}`,
+              subtitle: `${activeRental.piece} · ${activeRental.designer} · ${
+                activeRental.dates
+              }${
+                activeRental.depositAmount
+                  ? ` · Deposit ₹${activeRental.depositAmount.toLocaleString()} ${
+                      activeRental.depositStatus || "pending refund"
+                    }`
+                  : ""
+              }`,
+            }
+          : null,
+      },
+    });
+  } catch (error) {
+    console.error("GetProfileDashboard Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error fetching profile dashboard.",
+      error: error.message,
+    });
+  }
+};
+
+// GET /api/customer/profile/submissions
+export const getProfileSubmissions = async (req, res) => {
+  try {
+    const customerId = req.user?._id || req.customer?._id || req.user?.id;
+    if (!customerId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required.",
+      });
+    }
+
+    const customer = await Customer.findById(customerId);
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer profile not found.",
+      });
+    }
+
+    const cId = customer.customerId;
+    const cEmail = customer.email;
+    const cPhone = customer.phone;
+
+    const phoneDigits = normalizePhone(cPhone);
+    const emailRegex = cEmail ? new RegExp(`^${cEmail.trim()}$`, "i") : null;
+
+    const subQueries = [];
+    if (cId) {
+      subQueries.push({ customerId: cId });
+      subQueries.push({ customer_id: cId });
+      subQueries.push({ listerId: cId });
+    }
+    if (customer._id) {
+      subQueries.push({ customerId: String(customer._id) });
+      subQueries.push({ customer_id: String(customer._id) });
+    }
+    if (emailRegex) {
+      subQueries.push({ email: emailRegex });
+      subQueries.push({ listerEmail: emailRegex });
+    }
+    if (phoneDigits && phoneDigits.length >= 10) {
+      const phoneRegex = new RegExp(phoneDigits.slice(-10) + "$");
+      subQueries.push({ phone: phoneRegex });
+      subQueries.push({ listerPhone: phoneRegex });
+      subQueries.push({ mobile: phoneRegex });
+    }
+
+    const listerConditions = [];
+    if (emailRegex) listerConditions.push({ email: emailRegex });
+    if (phoneDigits && phoneDigits.length >= 10) {
+      listerConditions.push({ phone: new RegExp(phoneDigits.slice(-10) + "$") });
+    }
+    if (cId) listerConditions.push({ listerId: cId });
+    if (customer.name) {
+      const nameSlug = customer.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      listerConditions.push({ listerId: new RegExp(nameSlug, "i") });
+    }
+
+    if (listerConditions.length > 0) {
+      const matchedListers = await Lister.find({ $or: listerConditions });
+      for (const ml of matchedListers) {
+        if (ml.listerId) {
+          subQueries.push({ listerId: ml.listerId });
+          subQueries.push({ listerID: ml.listerId });
+          subQueries.push({ lister_id: ml.listerId });
+        }
+      }
+    }
+
+    let submissions = [];
+    if (subQueries.length > 0) {
+      const rawSubs = await Submission.find({ $or: subQueries }).sort({
+        createdAt: -1,
+      });
+
+      const seenSubs = new Set();
+      const subs = [];
+      for (const s of rawSubs) {
+        const key = s.subid || String(s._id);
+        if (!seenSubs.has(key)) {
+          seenSubs.add(key);
+          subs.push(s);
+        }
+      }
+
+      submissions = subs.map((sub) => {
+        let status = "Under Review";
+        if (sub.decision && typeof sub.decision === "object") {
+          status = sub.decision.status || sub.decision.what || "Under Review";
+        } else if (sub.status) {
+          status = sub.status;
+        }
+        if (status === "Pending" || status === "New" || status === "In Review") {
+          status = "Under Review";
+        }
+
+        const firstImage =
+          sub.media && sub.media.length > 0
+            ? sub.media[0]?.url || sub.media[0]
+            : "";
+
+        return {
+          id: sub.subid || String(sub._id),
+          name: sub.piece || "Submission",
+          designer: sub.designer || "Designer Atelier",
+          status,
+          submittedDate:
+            sub.submitted ||
+            (sub.createdAt
+              ? new Date(sub.createdAt).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "Recent"),
+          preferredOutcome: sub.intent || "Rent & Resale",
+          image: firstImage,
+          images: (sub.media || []).map((m) => m.url || m),
+          imageGradient: "linear-gradient(160deg, #F0E8D8, #E0CDA8)",
+          pieceType: sub.category || sub.pieceType || "Piece",
+          colourFamily: sub.colour || sub.color || "Multi",
+          size: sub.size || "Standard",
+          condition: sub.conditionClaim || sub.condition || "Excellent",
+          timesWorn: sub.timesWorn || (sub.worn ? `${sub.worn} times` : "1-2 times"),
+          originalPrice: sub.originalPrice
+            ? String(sub.originalPrice).replace(/[^0-9]/g, "")
+            : "",
+          photosSubmitted: sub.photos
+            ? `${sub.photos} photos`
+            : sub.media?.length
+              ? `${sub.media.length} photos`
+              : "Photos submitted",
+          pickupCity: sub.pickupCity || sub.city || "",
+        };
+      });
+    }
+
+    return res.json({
+      success: true,
+      count: submissions.length,
+      data: submissions,
+    });
+  } catch (error) {
+    console.error("GetProfileSubmissions Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error fetching customer submissions.",
+      error: error.message,
+    });
+  }
+};
+

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./ShopByOccasion.css";
+import "./Shopbyoccasion.css";
 
 /* =====================================================
    TYPES

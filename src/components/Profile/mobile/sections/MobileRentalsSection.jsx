@@ -1,46 +1,17 @@
-import React, { useState } from "react";
-import MobileSectionLabel from "../ui/MobileSectionLabel";
-import MobileRentalRow from "../rows/MobileRentalRow";
+import React, { useState } from 'react';
+import MobileSectionLabel from '../ui/MobileSectionLabel';
+import MobileRentalRow from '../rows/MobileRentalRow';
 import "../../../../styles/Profile/mobile/sections/MobileRentalsSection.css";
-import MobileRentalDetailSheet from "../sheets/MobileRentalDetailSheet";
+import MobileRentalDetailSheet from '../sheets/MobileRentalDetailSheet';
 
-const MobileRentalsSection = ({ onViewAll }) => {
+const MobileRentalsSection = ({ rentals, onViewAll, onUpdate }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [rentalBookings, setRentalBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  const fetchRentals = async () => {
-    try {
-      const authStore = await import("../../../../store/authStore").then((m) =>
-        m.default.getState(),
-      );
-      const token = authStore.token;
-      if (!token) return;
-
-      const res = await fetch(`/api/customer/auth/orders`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (data.success) {
-        const rentals = data.data.filter(
-          (order) => order.type === "Rental" || order.typeDetail === "Rental",
-        );
-        setRentalBookings(rentals);
-      }
-    } catch (err) {
-      console.error("Error fetching rentals:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  React.useEffect(() => {
-    fetchRentals();
-  }, []);
+  const rentalBookings = Array.isArray(rentals) ? rentals : [];
 
   const handleRowClick = (id) => {
-    const booking = rentalBookings.find((b) => b.id === id);
+    const booking = rentalBookings.find(b => b.id === id);
     setSelectedBooking(booking);
     setIsSheetOpen(true);
   };
@@ -49,36 +20,31 @@ const MobileRentalsSection = ({ onViewAll }) => {
     <>
       <div className="profile-mobile-rentals-section">
         <div className="profile-mobile-section-container">
-          <MobileSectionLabel
+          <MobileSectionLabel 
             title="MY RENTALS"
-            count={5}
+            count={rentalBookings.length}
             countLabel="BOOKINGS"
-            linkText="View all"
+            linkText={rentalBookings.length > 3 ? "View all" : ""}
             onLinkClick={onViewAll}
           />
-          <div className="profile-mobile-item-block">
-            {loading ? (
-              <div style={{ padding: "20px", color: "#666", fontSize: "12px" }}>
-                Loading...
+          {rentalBookings.length === 0 ? (
+            <div className="profile-sub-empty" style={{ margin: "10px 0" }}>
+              <div className="profile-se-h">No rental bookings yet</div>
+              <div className="profile-se-s">
+                Explore luxury designer outfits for your upcoming occasions.
               </div>
-            ) : rentalBookings.length === 0 ? (
-              <div style={{ padding: "20px", color: "#666", fontSize: "12px" }}>
-                No rental bookings found.
-              </div>
-            ) : (
-              rentalBookings
-                .slice(0, 3)
-                .map((booking) => (
-                  <MobileRentalRow
-                    key={booking.id || booking.orderId}
-                    booking={booking}
-                    onClick={() =>
-                      handleRowClick(booking.id || booking.orderId)
-                    }
-                  />
-                ))
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="profile-mobile-item-block">
+              {rentalBookings.map((booking) => (
+                <MobileRentalRow
+                  key={booking.id}
+                  booking={booking}
+                  onClick={handleRowClick}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -86,10 +52,7 @@ const MobileRentalsSection = ({ onViewAll }) => {
         isOpen={isSheetOpen}
         onClose={() => setIsSheetOpen(false)}
         booking={selectedBooking}
-        onRefresh={() => {
-          fetchRentals();
-          setIsSheetOpen(false); // Optionally close the sheet
-        }}
+        onUpdate={onUpdate}
       />
     </>
   );

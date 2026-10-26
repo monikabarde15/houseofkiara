@@ -1,80 +1,55 @@
-import React, { useState } from "react";
-import MobileFullViewBar from "../common/MobileFullViewBar";
-import MobileRentalRow from "../rows/MobileRentalRow";
+import React, { useState } from 'react';
+import MobileFullViewBar from '../common/MobileFullViewBar';
+import MobileRentalRow from '../rows/MobileRentalRow';
+import MobileRentalDetailSheet from '../sheets/MobileRentalDetailSheet';
 import "../../../../styles/Profile/mobile/fullviews/MobileRentalsFullView.css";
 
-const MobileRentalsFullView = ({ onBack }) => {
-  const [rentalBookings] = useState([
-    {
-      id: "HOK-240524-001",
-      piece: "Ivory Tissue Lehenga",
-      designer: "Manish Malhotra",
-      status: "Dispatched",
-      dates: "24–28 May 2025",
-      fee: 8500,
-      depositStatus: "pending",
-    },
-    {
-      id: "HOK-100625-002",
-      piece: "Emerald Banarasi Saree",
-      designer: "Raw Mango",
-      status: "Confirmed",
-      dates: "10–14 Jun 2025",
-      fee: 4800,
-      depositStatus: null,
-    },
-    {
-      id: "HOK-120225-003",
-      piece: "Blush Anarkali Set",
-      designer: "Anita Dongre",
-      status: "Completed",
-      dates: "12–16 Feb 2025",
-      fee: 5200,
-      depositStatus: "refunded",
-    },
-    {
-      id: "HOK-180125-004",
-      piece: "Sage Chanderi Suit",
-      designer: "Mrunalini Rao",
-      status: "Returned",
-      dates: "18–22 Jan 2025",
-      fee: 3600,
-      depositStatus: "refunded",
-    },
-    {
-      id: "HOK-051224-005",
-      piece: "Burgundy Velvet Lehenga",
-      designer: "Tarun Tahiliani",
-      status: "Cancelled",
-      dates: "5–9 Dec 2024",
-      fee: 11200,
-      depositStatus: null,
-    },
-  ]);
+const MobileRentalsFullView = ({ rentals, onBack, onUpdate }) => {
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+
+  const rentalBookings = Array.isArray(rentals) ? rentals : [];
+  const countStr = `${rentalBookings.length} booking${rentalBookings.length === 1 ? '' : 's'}`;
 
   const handleRowClick = (id) => {
-    console.log("Open rental detail sheet for:", id);
+    const booking = rentalBookings.find(b => b.id === id);
+    setSelectedBooking(booking);
+    setIsSheetOpen(true);
   };
 
   return (
-    <div className="profile-mobile-fv-container">
-      <MobileFullViewBar
-        title="My Rentals"
-        count="5 bookings"
-        onBack={onBack}
-      />
-      <div className="profile-mobile-fv-content">
-        <div className="profile-mobile-item-block">
-          {rentalBookings.map((booking) => (
-            <MobileRentalRow
-              key={booking.id}
-              booking={booking}
-              onClick={handleRowClick}
-            />
-          ))}
+    <>
+      <div className="profile-mobile-fv-container">
+        <MobileFullViewBar title="My Rentals" count={countStr} onBack={onBack} />
+        <div className="profile-mobile-fv-content">
+          {rentalBookings.length === 0 ? (
+            <div className="profile-sub-empty" style={{ margin: "20px" }}>
+              <div className="profile-se-h">No rental bookings yet</div>
+              <div className="profile-se-s">
+                Explore luxury designer outfits for your upcoming occasions.
+              </div>
+            </div>
+          ) : (
+            <div className="profile-mobile-item-block">
+              {rentalBookings.map((booking) => (
+                <MobileRentalRow
+                  key={booking.id}
+                  booking={booking}
+                  onClick={handleRowClick}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
-    </div>
+
+      <MobileRentalDetailSheet
+        isOpen={isSheetOpen}
+        onClose={() => setIsSheetOpen(false)}
+        booking={selectedBooking}
+        onUpdate={onUpdate}
+      />
+    </>
   );
 };
 

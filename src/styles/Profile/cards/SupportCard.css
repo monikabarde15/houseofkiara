@@ -3,21 +3,19 @@
    ============================================ */
 
 .profile-support-c {
-  background: #fffffb;
-  border: 1px solid #e8e0d4;
+  background: #FFFFFB;
+  border: 1px solid #E8E0D4;
   border-radius: 11px;
   padding: 18px;
   cursor: pointer;
-  transition:
-    border-color 0.2s,
-    transform 0.15s;
+  transition: border-color 0.2s, transform 0.15s;
   display: flex;
   flex-direction: column;
   gap: 9px;
 }
 
 .profile-support-c:hover {
-  border-color: #e8d5b0;
+  border-color: #E8D5B0;
   transform: translateY(-1px);
 }
 
@@ -44,15 +42,15 @@
 }
 
 .profile-support-shi-s svg {
-  stroke: #6b7e5a;
+  stroke: #6B7E5A;
 }
 
 .profile-support-shi-g {
-  background: #f5edd8;
+  background: #F5EDD8;
 }
 
 .profile-support-shi-g svg {
-  stroke: #a8844a;
+  stroke: #A8844A;
 }
 
 .profile-support-shi-t {
@@ -60,7 +58,7 @@
 }
 
 .profile-support-shi-t svg {
-  stroke: #b85c38;
+  stroke: #B85C38;
 }
 
 /* Text */
@@ -68,13 +66,13 @@
   font-family: "DM Sans", sans-serif;
   font-size: 12.5px;
   font-weight: 500;
-  color: #3c3529;
+  color: #3C3529;
 }
 
 .profile-support-s {
   font-family: "DM Sans", sans-serif;
   font-size: 10.5px;
   font-weight: 300;
-  color: #8a7e72;
+  color: #8A7E72;
   line-height: 1.5;
 }

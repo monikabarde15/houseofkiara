@@ -1,4 +1,6 @@
 function EmptyCart() {
-  return <div>EmptyCart</div>;
+  return (
+    <div>EmptyCart</div>
+  )
 }
-export default EmptyCart;
+export default EmptyCart

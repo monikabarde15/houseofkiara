@@ -107,6 +107,7 @@ export const LYPView: React.FC = () => {
           submissions={submissions}
           loading={loading}
           onRowClick={handleRowClick}
+          onClearFilters={handleClearView}
         />
 
         <LYPTableFooter

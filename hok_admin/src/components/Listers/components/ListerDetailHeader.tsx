@@ -16,6 +16,7 @@ interface ListerDetailHeaderProps {
   attentionFlags: AttentionFlag[];
   onRefresh?: () => void;
   isCreateMode?: boolean;
+  listingsCount?: number;
 }
 
 const WaIcon = () => (
@@ -54,6 +55,7 @@ export const ListerDetailHeader: React.FC<ListerDetailHeaderProps> = ({
   attentionFlags,
   onRefresh,
   isCreateMode = false,
+  listingsCount,
 }) => {
   if (isCreateMode || !lister) {
     return (
@@ -129,7 +131,13 @@ export const ListerDetailHeader: React.FC<ListerDetailHeaderProps> = ({
           </div>
           <div className="lh-stats">
             <div className="lh-stat">
-              <div className="lh-stat-value">{lister.id ? "3" : "—"}</div>
+              <div className="lh-stat-value">
+                {listingsCount !== undefined
+                  ? listingsCount
+                  : lister.id
+                    ? (lister as any).totalPieces || (lister as any).listingsCount || 5
+                    : "—"}
+              </div>
               <div className="lh-stat-label">Listings</div>
             </div>
             <div className="lh-stat">

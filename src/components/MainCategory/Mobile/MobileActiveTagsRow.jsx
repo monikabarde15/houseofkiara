@@ -10,6 +10,7 @@ const MobileActiveTagsRow = ({ activeTags = [], onRemoveTag, onClearAll }) => {
   return (
     <div className="mob-active-tags-row">
       <div className="mob-active-tags-row__scroll">
+        
         {/* Individual Tag Chips */}
         {activeTags.map((tag, index) => (
           <button
@@ -33,9 +34,13 @@ const MobileActiveTagsRow = ({ activeTags = [], onRemoveTag, onClearAll }) => {
         ))}
 
         {/* Clear All Button */}
-        <button className="mob-active-tags-row__clear-all" onClick={onClearAll}>
+        <button
+          className="mob-active-tags-row__clear-all"
+          onClick={onClearAll}
+        >
           Clear All
         </button>
+
       </div>
     </div>
   );

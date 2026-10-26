@@ -121,28 +121,7 @@ export const RecordHeader: React.FC<RecordHeaderProps> = ({
           </div>
         </div>
 
-        <div className="record-head-right justify-center">
-          {/* Navigation - matches design: < Previous counter Next > */}
-          <div className="record-nav">
-            <button
-              className="btn btn-sec btn-sm"
-              onClick={onPrev}
-              disabled={!hasPrev}
-            >
-              ‹ Previous
-            </button>
-            <span className="record-counter">
-              {currentIndex} of {totalCount}
-            </span>
-            <button
-              className="btn btn-sec btn-sm"
-              onClick={onNext}
-              disabled={!hasNext}
-            >
-              Next ›
-            </button>
-          </div>
-        </div>
+        <div className="record-head-right justify-center" />
       </div>
     </div>
   );

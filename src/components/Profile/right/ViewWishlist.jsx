@@ -1,36 +1,57 @@
-import React, { useState } from "react";
-import { ChevronLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import WishlistCard from "../cards/WishlistCard";
-import AddToBagModal from "../../Wishlist/modal/AddToBagModal";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronLeft } from 'lucide-react';
+import { navigateToProductDetail } from '../../../utils/productNavigation';
+import WishlistCard from '../cards/WishlistCard';
+import AttributeSelectorModal from '../forms/AttributeSelectorModal';
+import Toast from '../ui/Toast';
+import useWishlistStore from '../../../store/wishlistStore';
+import useCartStore from '../../../store/cartStore';
 import "../../../styles/Profile/right/ViewWishlist.css";
-import { useWishlistProducts } from "../../Wishlist/hooks/useWishlistProducts";
-import useCartStore from "../../../store/cartStore";
-import { makeProductDetail } from "../../ProductList";
 
-const ViewWishlist = ({ onBack }) => {
+const ViewWishlist = ({ savedPieces, onBack, onUpdate }) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPiece, setSelectedPiece] = useState(null);
-  const [selectedPieceType, setSelectedPieceType] = useState("rent");
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
 
-  const { products, removeProduct } = useWishlistProducts();
-  const savedPieces = products || [];
+  const piecesList = Array.isArray(savedPieces) ? savedPieces : [];
+
+  const showToastMessage = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+  };
 
   const handleAddToBag = (piece) => {
-    if (!piece) return;
-    const isRental =
-      piece.condition === "Rental" ||
-      piece.mode === "Rental" ||
-      piece.originalData?.rent;
-    const isPreloved =
-      piece.condition === "Preloved" || piece.originalData?.preloved;
-    const type = isRental ? "rent" : isPreloved ? "preloved" : "new";
+    const needsSize = piece.sizes && piece.sizes.length > 1;
+    const needsColor = piece.colors && piece.colors.length > 1;
+    const isRental = String(piece.mode || '').toLowerCase() === 'rental';
+    
+    const needsModal = needsSize || needsColor || isRental;
+    
+    if (needsModal) {
+      setSelectedPiece(piece);
+      setIsModalOpen(true);
+    } else {
+      const rawProd = piece.originalData || piece.rawProduct || piece;
+      const chosenSize = Array.isArray(piece.sizes) && piece.sizes.length > 0
+        ? (typeof piece.sizes[0] === 'object' ? piece.sizes[0].name || piece.sizes[0].size : piece.sizes[0])
+        : "Free Size";
+      const chosenColor = Array.isArray(piece.colors) && piece.colors.length > 0 ? piece.colors[0] : "";
+      const numPrice = Number(piece.price || 0);
 
-    setSelectedPiece(piece);
-    setSelectedPieceType(type);
-    setIsModalOpen(true);
+      useCartStore.getState().addToCart(rawProd, {
+        type: String(piece.mode || "buy").toLowerCase(),
+        size: chosenSize,
+        color: chosenColor,
+        price: numPrice,
+        quantity: 1,
+        image: piece.image || rawProd.image || (Array.isArray(rawProd.images) && rawProd.images[0]) || "",
+      });
+
+      showToastMessage(`${piece.name} added to your bag`);
+    }
   };
 
   const handleCloseModal = () => {
@@ -38,87 +59,47 @@ const ViewWishlist = ({ onBack }) => {
     setSelectedPiece(null);
   };
 
-  const handleConfirmAddToBag = (details) => {
-    const rawProduct =
-      details.product?.originalData ||
-      details.product ||
-      selectedPiece?.originalData ||
-      selectedPiece;
-    const isRental =
-      selectedPieceType === "rent" || details.product?.condition === "Rental";
-    const normalizedType = isRental
-      ? "rental"
-      : selectedPieceType === "preloved"
-        ? "preloved"
-        : "buy";
+  const handleConfirmAddToBag = (selections) => {
+    const rawProd = selectedPiece?.originalData || selectedPiece?.rawProduct || selectedPiece;
+    const numPrice = Number(selectedPiece?.price || 0);
+    const chosenSize = selections.size || (Array.isArray(selectedPiece?.sizes) && selectedPiece.sizes[0]) || "Free Size";
+    const chosenColor = selections.color || "";
 
-    useCartStore.getState().addToCart(rawProduct, {
-      type: normalizedType,
-      size:
-        details.size ||
-        (rawProduct.sizes && rawProduct.sizes[0]) ||
-        "Default",
-      rentalDates:
-        details.startDate && details.endDate
-          ? { start: details.startDate, end: details.endDate }
-          : null,
-      price:
-        details.product?.price ||
-        selectedPiece?.price ||
-        rawProduct.buyPrice ||
-        rawProduct.rentPrice ||
-        0,
+    useCartStore.getState().addToCart(rawProd, {
+      type: String(selectedPiece?.mode || "buy").toLowerCase(),
+      size: chosenSize,
+      color: chosenColor,
+      deliveryDate: selections.startDate || null,
+      returnDate: selections.endDate || null,
+      price: numPrice,
+      quantity: 1,
+      image: selectedPiece?.image || rawProd?.image || (Array.isArray(rawProd?.images) && rawProd.images[0]) || "",
     });
 
-    toast.success(`${selectedPiece?.name || "Item"} added to your bag!`);
+    let message = selectedPiece?.name || 'Piece';
+    if (selections.size) message += ` · Size ${selections.size}`;
+    if (selections.color) message += ` · ${selections.color}`;
+    if (selections.startDate && selections.endDate) message += ` · ${selections.startDate} - ${selections.endDate}`;
+    message += ` added to your bag`;
+    
+    showToastMessage(message);
     setIsModalOpen(false);
     setSelectedPiece(null);
   };
 
-  const handleViewProduct = (id, piece) => {
-    const targetPiece =
-      piece || savedPieces.find((p) => String(p.id) === String(id));
-    const item = targetPiece?.originalData || targetPiece;
-    if (!item) return;
-
-    const productId = targetPiece?.id || item._id || item.id || id;
-    const productData = makeProductDetail ? makeProductDetail(item) : item;
-
-    const rent =
-      item.rent ||
-      targetPiece?.condition === "Rental" ||
-      targetPiece?.mode === "Rental";
-    const preloved =
-      item.preloved ||
-      targetPiece?.condition === "Preloved" ||
-      targetPiece?.mode === "Preloved";
-    const isNew =
-      item.isNew ||
-      targetPiece?.condition === "New" ||
-      targetPiece?.mode === "Buy New" ||
-      targetPiece?.mode === "New";
-
-    let path = `/onlyrental/${productId}`;
-    if (rent && preloved && isNew) {
-      path = `/all-modes/${productId}`;
-    } else if (rent && preloved) {
-      path = `/rentalandpreloved/${productId}`;
-    } else if (rent && isNew) {
-      path = `/rentalandbuy/${productId}`;
-    } else if (rent) {
-      path = `/onlyrental/${productId}`;
-    } else if (preloved) {
-      path = `/preloved/${productId}`;
-    } else {
-      path = `/buynew/${productId}`;
-    }
-
-    navigate(path, { state: { product: productData } });
+  const handleViewProduct = (pieceId, pieceObj) => {
+    const target = pieceObj || piecesList.find(p => (p.id === pieceId || p._id === pieceId || p.sku === pieceId)) || pieceId;
+    navigateToProductDetail(navigate, target);
   };
 
-  const handleRemoveItem = (id) => {
-    removeProduct(id);
-    toast.success("Item removed from your saved pieces");
+  const handleRemove = async (pieceId, pieceObj) => {
+    try {
+      await useWishlistStore.getState().removeFromWishlist(pieceId, pieceObj);
+      showToastMessage("Removed from saved pieces");
+      if (onUpdate) onUpdate();
+    } catch (err) {
+      showToastMessage("Removed from saved pieces");
+    }
   };
 
   return (
@@ -131,29 +112,43 @@ const ViewWishlist = ({ onBack }) => {
           </button>
           <div className="profile-fv-wishlist-bar-title">Saved Pieces</div>
           <div className="profile-fv-wishlist-bar-count">
-            {savedPieces.length} saved
+            {piecesList.length} item{piecesList.length === 1 ? '' : 's'}
           </div>
         </div>
 
-        <div className="profile-fv-wishlist-grid">
-          {savedPieces.map((piece) => (
-            <WishlistCard
-              key={piece.id}
-              piece={piece}
-              onAddToBag={handleAddToBag}
-              onViewProduct={handleViewProduct}
-              onRemove={handleRemoveItem}
-            />
-          ))}
-        </div>
+        {piecesList.length === 0 ? (
+          <div className="profile-sub-empty" style={{ margin: "24px" }}>
+            <div className="profile-se-h">No saved pieces yet</div>
+            <div className="profile-se-s">
+              Tap the heart icon on any outfit while browsing to curate your personal wishlist.
+            </div>
+          </div>
+        ) : (
+          <div className="profile-fv-wishlist-grid">
+            {piecesList.map((piece) => (
+              <WishlistCard
+                key={piece.id}
+                piece={piece}
+                onAddToBag={handleAddToBag}
+                onViewProduct={handleViewProduct}
+                onRemove={handleRemove}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      <AddToBagModal
+      <AttributeSelectorModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        product={selectedPiece}
-        type={selectedPieceType}
-        onAddToBag={handleConfirmAddToBag}
+        piece={selectedPiece}
+        onConfirm={handleConfirmAddToBag}
+      />
+
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
       />
     </>
   );

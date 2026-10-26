@@ -1,8 +1,10 @@
 // src\components\Cart\ui\RemoveDialog.jsx
 import React, { useEffect, useRef } from "react";
-import { Heart, X } from "lucide-react";
-import "../../../styles/cart/ui/remove-dialog.css";
+import { Heart,X } from "lucide-react";
+import '../../../styles/cart/ui/remove-dialog.css'
 const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
+
+
   const primaryBtnRef = useRef(null);
   const lastFocusedRef = useRef(null);
 
@@ -27,6 +29,7 @@ const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
       lastFocusedRef.current.focus();
     }
   }, [open]);
+
 
   // 🔒 Scroll lock (SPEC)
   useEffect(() => {
@@ -58,6 +61,7 @@ const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
 
   if (!open) return null;
 
+
   return (
     <div
       className="remove-overlay"
@@ -66,34 +70,38 @@ const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
       aria-modal="true"
       aria-labelledby="dialog-heading"
     >
+
       {/* PANEL */}
-      <div className="remove-dialog" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="remove-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
+
         {/* CLOSE BUTTON */}
-        <button className="remove-close" onClick={onClose} aria-label="Close">
+        <button
+          className="remove-close"
+          onClick={onClose}
+          aria-label="Close"
+        >
           <X size={14} strokeWidth={1.5} />
         </button>
 
         {/* ITEM PREVIEW STRIP */}
         <div className="remove-preview">
+
           <div className="remove-thumb">
-            <img
-              src={
-                item?.product?.images?.[0] ||
-                item?.product?.image?.[0] ||
-                "/placeholder.jpg"
-              }
-              alt={item?.product?.title || item?.product?.name || "Product"}
-            />
+            <img src={item?.product?.images?.[0]} alt="" />
           </div>
 
           <div className="remove-info">
             <div className="remove-brand">
-              {item?.product?.designer || item?.product?.brand}
+              {item?.product?.designer}
             </div>
             <div className="remove-name">
-              {item?.product?.title || item?.product?.name}
+              {item?.product?.title}
             </div>
           </div>
+
         </div>
 
         {/* TEXT */}
@@ -107,13 +115,12 @@ const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
 
         {/* CTA */}
         <div className="remove-actions">
+
           {/* PRIMARY */}
-          <button
-            ref={primaryBtnRef}
-            className="dialog-btn-primary"
-            onClick={onWishlist}
-          >
-            <Heart className="remove-dialog-icon-wishlist" />
+          <button  ref={primaryBtnRef} className="dialog-btn-primary"
+          onClick={onWishlist}>
+
+            <Heart className="remove-dialog-icon-wishlist"/>
             Add to Wishlist
           </button>
 
@@ -121,7 +128,9 @@ const RemoveDialog = ({ open, onClose, onConfirm, onWishlist, item }) => {
           <button className="dialog-btn-secondary" onClick={onConfirm}>
             Remove from Cart
           </button>
+
         </div>
+
       </div>
     </div>
   );

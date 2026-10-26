@@ -1,16 +1,17 @@
 // ProgressStrip.jsx
 
 import "../../../styles/checkout/layout/progress-strip.css";
-import { Check } from "lucide-react";
+import { Check } from 'lucide-react';
 
 const ProgressStrip = () => {
   return (
     <div className="progress-strip">
       <div className="progress-inner">
+
         {/* Step 1 */}
         <a href="/cart" className="prog-step done">
           <span className="prog-circle done">
-            <Check />
+            <Check/>
           </span>
           <span className="prog-text prog-lbl">Cart</span>
         </a>
@@ -30,6 +31,7 @@ const ProgressStrip = () => {
           <span className="prog-circle">3</span>
           <span className="prog-text prog-lbl">Confirmation</span>
         </div>
+
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import GSTBreakdown from "./GSTBreakdown";
 import FinalPaymentInfo from "./FinalPaymentInfo";
 
 const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
+
   const totals = calculateTotals(cartItems, activePromo);
 
   const {
@@ -27,53 +28,61 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
     itemsGrouped,
   } = totals;
 
-  const totalDeposit = cartItems.reduce((acc, item) => {
-    if (item.type === "rental") {
-      return acc + (item.product?.rent?.deposit?.amount || 0);
-    }
-    return acc;
-  }, 0);
-
   return (
     <div className="order-summary">
+
       {/* =========================
           HEADER
       ========================= */}
-      <div className="summary-eyebrow">Order Summary</div>
+      <div className="summary-eyebrow">
+        Order Summary
+      </div>
 
       {/* =========================
           ITEMS (UNCHANGED)
       ========================= */}
       <div className="summary-block">
+
         {itemsGrouped.rental.length > 0 && (
           <SummarySection
-            title={itemsGrouped.rental.some(i => i.source === "rentandpreloved") ? "Rent & Preloved" : "Rental"}
+            title="Rental"
             items={itemsGrouped.rental}
             showDeposit={hasRental}
           />
         )}
 
         {itemsGrouped.preloved.length > 0 && (
-          <SummarySection title="Preloved" items={itemsGrouped.preloved} />
+          <SummarySection
+            title="Preloved"
+            items={itemsGrouped.preloved}
+          />
         )}
 
         {itemsGrouped.new.length > 0 && (
-          <SummarySection title="Buy New" items={itemsGrouped.new} />
+          <SummarySection
+            title="Buy New"
+            items={itemsGrouped.new}
+          />
         )}
+
       </div>
 
       {/* =========================
           PRICE SUMMARY (CLEAN)
       ========================= */}
       <div className="summary-block">
+
         {/* SUBTOTAL */}
-        <SummaryRow title="Subtotal" value={subtotal} />
+        <SummaryRow
+          title="Subtotal"
+          value={subtotal}
+        />
 
         {/* DISCOUNT */}
         {discount > 0 && (
           <SummaryRow
-            title="Discount"
-            value={`- ${discount.toLocaleString()}`}
+            title={activePromo?.code ? `Discount (${activePromo.code})` : "Discount"}
+            value={`- ₹${Number(discount).toLocaleString("en-IN")}`}
             type="discount"
           />
         )}
@@ -93,6 +102,7 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
           newGST={newGST}
           totalGST={totalGST}
         />
+
       </div>
 
       {/* =========================
@@ -104,8 +114,11 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
           GRAND TOTAL
       ========================= */}
       <div className="summary-total">
+
         <div className="summary-total-top">
-          <span className="summary-total-label">Total at Checkout</span>
+          <span className="summary-total-label">
+            Total at Checkout
+          </span>
 
           <span className="summary-total-value">
             ₹{grandTotal.toLocaleString()}
@@ -114,9 +127,10 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
 
         <div className="summary-total-sub">
           {hasRental
-            ? `Excl. delivery + ₹${totalDeposit.toLocaleString()} security deposit`
+            ? "Excl. delivery + ₹15,000 security deposit"
             : "Excl. delivery charges"}
         </div>
+
       </div>
 
       {/* DIVIDER BELOW TOTAL */}
@@ -126,26 +140,24 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
           NOTES
       ========================= */}
       <div className="summary-notes">
+
         {hasRental && (
           <p>
-            <strong>
-              * Security deposit (₹{totalDeposit.toLocaleString()})
-            </strong>{" "}
-            not collected here — our team contacts you before dispatch. Refunded
-            within 3–5 business days of return inspection.
+            <strong>* Security deposit (₹15,000)</strong> not collected here — our team contacts you before dispatch. Refunded within 3–5 business days of return inspection.
           </p>
         )}
 
         <p>
-          <strong>† Delivery charge</strong> will be calculated at checkout
-          based on your delivery address and dispatch location.
+          <strong>† Delivery charge</strong> will be calculated at checkout based on your delivery address and dispatch location.
         </p>
+
       </div>
 
       {/* =========================
           CTA
       ========================= */}
-      <button className="checkout-btn" onClick={onCheckout}>
+      <button className="checkout-btn"
+        onClick={onCheckout}>
         Proceed to Checkout
       </button>
 
@@ -161,7 +173,8 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
           Final payment Notes
       ========================= */}
 
-      <FinalPaymentInfo />
+      <FinalPaymentInfo/>
+
     </div>
   );
 };

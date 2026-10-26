@@ -1,0 +1,39 @@
+/* src/styles/pricing/pricing-intro.css */
+/* Styles for Side Intro and Policy Body (D7) matching Page 20 of hok_pricing_fees_v4 */
+
+.dp-body {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 56px 40px 40px;
+  box-sizing: border-box;
+}
+
+.dp-intro-wrap {
+  margin-bottom: 24px;
+}
+
+.dp-intro {
+  font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+  font-size: 22px;
+  line-height: 1.6;
+  color: var(--ink-2, #4F463E);
+  font-weight: 400;
+  margin: 0;
+}
+
+.dp-intro strong {
+  font-weight: 500;
+  color: var(--charcoal, #1A1612);
+  font-style: italic;
+}
+
+/* 760px and narrower (Page 20) */
+@media (max-width: 760px) {
+  .dp-body {
+    padding: 36px 18px 24px;
+  }
+
+  .dp-intro {
+    font-size: 19px;
+  }
+}

@@ -406,7 +406,7 @@ const PerformancePiecesTab: React.FC<PerformancePiecesTabProps> = ({
           {activePieces.map((piece) => (
             <div className="piece-card" key={piece.id}>
               <div className="piece-card-image">
-                <span className="piece-card-tags">
+                <span className="piece-card-tags" style={{ zIndex: 2 }}>
                   {piece.listingTypes.map((t) => (
                     <span
                       key={t}
@@ -416,35 +416,54 @@ const PerformancePiecesTab: React.FC<PerformancePiecesTabProps> = ({
                     </span>
                   ))}
                 </span>
-                {piece.isLive && <span className="tag tag-live">Live</span>}
-                <svg
-                  className="piece-placeholder-icon"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect
-                    x="3"
-                    y="3"
-                    width="18"
-                    height="18"
-                    rx="2"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
+                {piece.isLive && (
+                  <span className="tag tag-live" style={{ zIndex: 2 }}>
+                    Live
+                  </span>
+                )}
+                {piece.imageUrl ? (
+                  <img
+                    src={piece.imageUrl}
+                    alt={piece.name}
+                    loading="lazy"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
                   />
-                  <circle
-                    cx="8.5"
-                    cy="8.5"
-                    r="1.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-                  <path
-                    d="M21 15l-5-5-9 9"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-                </svg>
+                ) : (
+                  <svg
+                    className="piece-placeholder-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect
+                      x="3"
+                      y="3"
+                      width="18"
+                      height="18"
+                      rx="2"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    />
+                    <circle
+                      cx="8.5"
+                      cy="8.5"
+                      r="1.5"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    />
+                    <path
+                      d="M21 15l-5-5-9 9"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    />
+                  </svg>
+                )}
               </div>
               <div className="piece-card-body">
                 <div className="piece-card-name">{piece.name}</div>

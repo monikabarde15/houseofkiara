@@ -1,5 +1,7 @@
+import jwt from "jsonwebtoken";
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
+import Lister from "../models/Lister.js";
 import Customer from "../models/Customer.js";
 import { calculateProductLine } from "../services/pricingService.js";
 import { syncCustomerOrderStats } from "./customerController.js";
@@ -17,6 +19,7 @@ const view = (order) => {
   const firstItem = items[0] || {};
 
   const itemsSum = items.reduce((sum, it) => sum + parseAmount(it.amount), 0);
+  const itemsDeposit = items.reduce((sum, it) => sum + parseAmount(it.deposit), 0);
 
   const rawAmount =
     parseAmount(obj.grandTotal) ||
@@ -28,6 +31,11 @@ const view = (order) => {
 
   const resolvedOrderValue = parseAmount(obj.orderValue) || itemsSum || rawAmount;
   const resolvedGrandTotal = parseAmount(obj.grandTotal) || rawAmount;
+  const deposit =
+    parseAmount(obj.deposit) ||
+    parseAmount(obj.depositHeld) ||
+    itemsDeposit ||
+    0;
 
   const productName =
     obj.productName ||
@@ -39,6 +47,10 @@ const view = (order) => {
 
   const designer = obj.designer || firstItem.designer || "";
   const mode = obj.mode || firstItem.mode || "Rental";
+  const image = obj.image || firstItem.image || "";
+
+  const listerId = obj.listerId || firstItem.listerId || "";
+  const listerName = obj.listerName || firstItem.listerName || "";
 
   return {
     ...obj,
@@ -47,9 +59,15 @@ const view = (order) => {
     orderValue: resolvedOrderValue,
     grandTotal: resolvedGrandTotal,
     totalAmount: rawAmount,
+    deposit,
+    depositHeld: deposit,
+    depositStatus: obj.depositStatus || (deposit > 0 ? "Pending" : "None"),
     productName,
     designer,
     mode,
+    image,
+    listerId,
+    listerName,
   };
 };
 const byId = (id) => ({ $or: [{ orderId: id }, { _id: id }] });
@@ -70,23 +88,132 @@ const calculateItems = async (items) => {
   return Promise.all(
     items.map(async (input) => {
       if (!input) return {};
-      if (!input.productId) return input;
-      // Only recalculate pricing if rental dates are provided or mode is not Rental
-      const mode = input.mode
-        ? input.mode.charAt(0).toUpperCase() + input.mode.slice(1).toLowerCase()
-        : "Rental";
-      const needsCalc = mode !== "Rental" || (input.startDate && input.endDate);
-      if (!needsCalc) return input; // Return as-is to preserve existing pricing
-      try {
-        const product = await Product.findOne({
-          $or: [{ productId: input.productId }, { _id: input.productId }],
-        });
-        if (!product) return input;
-        return calculateProductLine(product, input);
-      } catch (e) {
-        console.warn(`calculateItems skip for ${input.productId}:`, e.message);
-        return input;
+      const prodId = input.productId || input.id || input._id;
+      let product = null;
+      if (prodId) {
+        try {
+          product = await Product.findOne({
+            $or: [
+              { productId: prodId },
+              { _id: prodId },
+              { sku: prodId },
+              { id: prodId },
+            ],
+          });
+        } catch (e) {
+          console.warn(`calculateItems product lookup skip for ${prodId}:`, e.message);
+        }
       }
+
+      const resolvedImage =
+        input.image ||
+        (Array.isArray(input.photos) && input.photos[0]) ||
+        (Array.isArray(product?.images) && product.images[0]) ||
+        (Array.isArray(product?.image) && product.image[0]) ||
+        (typeof product?.image === "string" ? product.image : "") ||
+        "";
+
+      const resolvedName =
+        (input.productName && input.productName !== "Designer Piece")
+          ? input.productName
+          : (input.title || product?.title || product?.name || "Designer Piece");
+
+      const resolvedDesigner =
+        (input.designer && input.designer !== "House of Kaira")
+          ? input.designer
+          : (product?.designer || "House of Kaira");
+
+      const resolvedSize =
+        input.size ||
+        (Array.isArray(product?.sizes) && product.sizes[0]) ||
+        "Free Size";
+
+      const rawMode = input.mode || "Buy";
+      const resolvedMode =
+        rawMode.charAt(0).toUpperCase() + rawMode.slice(1).toLowerCase();
+
+      let calculated = {};
+      const needsCalc =
+        resolvedMode !== "Rental" ||
+        ((input.startDate || input.rentalStartDate) &&
+          (input.endDate || input.rentalEndDate));
+
+      if (needsCalc && product) {
+        try {
+          calculated = calculateProductLine(product, {
+            ...input,
+            startDate: input.startDate || input.rentalStartDate,
+            endDate: input.endDate || input.rentalEndDate,
+            mode: resolvedMode,
+          });
+        } catch (e) {
+          console.warn(`calculateProductLine skip for ${prodId}:`, e.message);
+        }
+      }
+
+      const finalAmount = parseAmount(
+        input.amount !== undefined ? input.amount : (
+          input.price !== undefined ? input.price : (
+            calculated.amount ||
+            (resolvedMode === "Rental" ? product?.rentalPrice : (product?.listingPrice || product?.price)) ||
+            0
+          )
+        )
+      );
+
+      let resolvedListerId =
+        input.listerId ||
+        product?.listerId ||
+        product?.lister_id ||
+        product?.data?.listerId ||
+        "";
+      let resolvedListerName =
+        input.listerName ||
+        product?.listerName ||
+        product?.lister_name ||
+        product?.data?.listerName ||
+        "";
+
+      if (resolvedListerId && !resolvedListerName) {
+        try {
+          const lRec = await Lister.findOne({
+            $or: [
+              { listerId: resolvedListerId },
+              { _id: resolvedListerId },
+              { id: resolvedListerId },
+            ],
+          });
+          if (lRec) resolvedListerName = lRec.name;
+        } catch (e) {}
+      }
+
+      if (!resolvedListerId) {
+        resolvedListerId = "simran-chouhan";
+        resolvedListerName = "Simran Chouhan";
+      }
+      if (!resolvedListerName) {
+        resolvedListerName =
+          resolvedListerId === "ananya-sharma"
+            ? "Ananya Sharma"
+            : "Simran Chouhan";
+      }
+
+      return {
+        ...input,
+        ...calculated,
+        productId: prodId || input.productId || product?.productId || "",
+        productName: resolvedName,
+        designer: resolvedDesigner,
+        image: resolvedImage,
+        size: resolvedSize,
+        mode: resolvedMode,
+        amount: finalAmount,
+        listerId: resolvedListerId,
+        listerName: resolvedListerName,
+        quantity: Math.max(1, Number(input.quantity || 1)),
+        rentalStartDate: input.rentalStartDate || input.startDate || "",
+        rentalEndDate: input.rentalEndDate || input.endDate || "",
+      };
     }),
   );
 };
@@ -116,7 +243,9 @@ const totalsFor = (items, discount = 0) => {
   return {
     orderValue,
     gst,
+    deposit: depositHeld,
     depositHeld,
+    depositStatus: depositHeld > 0 ? "Pending" : "None",
     amount: calculatedGrand || orderValue,
     grandTotal: calculatedGrand,
   };
@@ -198,16 +327,38 @@ export const createOrder = async (req, res) => {
   try {
     let customer = await customerById(req.body.customerId);
 
+    // If Authorization header was sent, decode customer
+    if (!customer && req.headers?.authorization) {
+      try {
+        const token = req.headers.authorization.replace("Bearer ", "");
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "hok_super_secret_key_123");
+        if (decoded?.id) {
+          customer = await Customer.findById(decoded.id);
+        }
+      } catch (e) {}
+    }
+
+    const email = req.body.customerEmail
+      ? req.body.customerEmail.trim().toLowerCase()
+      : "";
+    const phone = req.body.customerPhone ? req.body.customerPhone.trim() : "";
+
+    if (!customer && email && !email.includes("hok.local")) {
+      customer = await Customer.findOne({
+        email: { $regex: new RegExp(`^${email}$`, "i") },
+      });
+    }
+    if (!customer && phone) {
+      const digits = phone.replace(/\D/g, "");
+      if (digits.length >= 10) {
+        customer = await Customer.findOne({
+          phone: new RegExp(digits.slice(-10) + "$"),
+        });
+      }
+    }
+
     // Auto-create customer if missing
     if (!customer && req.body.customerName) {
-      const email = req.body.customerEmail
-        ? req.body.customerEmail.trim().toLowerCase()
-        : "";
-      const phone = req.body.customerPhone ? req.body.customerPhone.trim() : "";
-
-      if (email && !email.includes("hok.local"))
-        customer = await Customer.findOne({ email });
-      if (!customer && phone) customer = await Customer.findOne({ phone });
 
       if (!customer) {
         const customers = await Customer.find({}, "customerId").exec();
@@ -238,6 +389,31 @@ export const createOrder = async (req, res) => {
     }
 
     const items = await calculateItems(req.body.items);
+    const firstItem = items[0] || {};
+    let rentalStart = req.body.rentalStartDate || firstItem.rentalStartDate || firstItem.startDate || "";
+    let rentalEnd = req.body.rentalEndDate || firstItem.rentalEndDate || firstItem.endDate || "";
+    let dispatchDate = req.body.dispatchDate || firstItem.dispatchDate || "";
+    if (!dispatchDate && rentalStart) {
+      try {
+        const d = new Date(rentalStart);
+        d.setDate(d.getDate() - 2);
+        dispatchDate = d.toISOString().split("T")[0];
+      } catch (e) {}
+    } else if (!dispatchDate) {
+      dispatchDate = new Date().toISOString().split("T")[0];
+    }
+
+    const resolvedProductName =
+      (req.body.productName && req.body.productName !== "Designer Piece")
+        ? req.body.productName
+        : (firstItem.productName || "Designer Piece");
+    const resolvedDesigner =
+      (req.body.designer && req.body.designer !== "House of Kaira")
+        ? req.body.designer
+        : (firstItem.designer || "House of Kaira");
+    const resolvedMode = req.body.mode || firstItem.mode || "Rental";
+    const resolvedImage = req.body.image || firstItem.image || "";
+
     const order = await Order.create({
       ...req.body,
       orderId: req.body.orderId || `HOK-ORD-${Date.now()}`,
@@ -246,13 +422,27 @@ export const createOrder = async (req, res) => {
       customerEmail: customer?.email || req.body.customerEmail,
       customerPhone: customer?.phone || req.body.customerPhone,
       customerCity: customer?.location || req.body.customerCity,
+      address: req.body.address || customer?.location || "",
+      productName: resolvedProductName,
+      designer: resolvedDesigner,
+      image: resolvedImage,
+      mode: resolvedMode,
+      listerId: req.body.listerId || firstItem.listerId || "simran-chouhan",
+      listerName: req.body.listerName || firstItem.listerName || "Simran Chouhan",
+      rentalStartDate: rentalStart,
+      rentalEndDate: rentalEnd,
+      dispatchDate: dispatchDate,
       items,
-      ...totalsFor(items, req.body.discount),
+      discount: parseAmount(req.body.discount || req.body.promoDiscount || 0),
+      promoCode: req.body.promoCode || "",
+      ...totalsFor(items, req.body.discount || req.body.promoDiscount || 0),
+      ...(req.body.grandTotal ? { grandTotal: parseAmount(req.body.grandTotal), amount: parseAmount(req.body.grandTotal) } : {}),
+      payoutStatus: req.body.payoutStatus || "Pending Approval",
       logs: [
         {
           message: "Order placed",
           type: "Order",
-          user: req.body.createdBy || "Admin",
+          user: customer ? (customer.name || customer.email) : (req.body.createdBy || "Customer"),
         },
       ],
     });
@@ -282,6 +472,11 @@ export const createOrder = async (req, res) => {
     }
 
     if (customer) await syncCustomerOrderStats([customer]);
+    try {
+      const { syncPayoutsFromOrders } = await import("./payoutController.js");
+      if (syncPayoutsFromOrders) await syncPayoutsFromOrders();
+    } catch (e) {}
+
     res
       .status(201)
       .json({

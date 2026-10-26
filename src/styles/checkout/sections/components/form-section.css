@@ -6,12 +6,13 @@
 .checkout-form-section {
   padding-bottom: 64px;
   margin-bottom: 48px;
-  border-bottom: 1px solid #f0eae0;
+  border-bottom: 1px solid #F0EAE0;
 }
 
 .checkout-form-section:last-child {
   border-bottom: none;
 }
+
 
 /* =========================
    SECTION HEADER (GLOBAL)
@@ -23,7 +24,7 @@
   gap: 18px;
   padding-bottom: 24px;
   margin-bottom: 32px;
-  border-bottom: 1px solid #f0eae0;
+  border-bottom: 1px solid #F0EAE0;
 }
 
 .checkout-section-number {
@@ -31,7 +32,7 @@
   font-weight: 300;
   font-size: 10px;
   letter-spacing: 0.2em;
-  color: #c9a96e;
+  color: #C9A96E;
 }
 
 .checkout-section-title {
@@ -39,13 +40,14 @@
   font-weight: 400;
   font-size: 28px;
   line-height: 1;
-  color: #1a1612;
+  color: #1A1612;
 }
 
 .checkout-section-title em {
   font-style: italic;
-  color: #c9a96e;
+  color: #C9A96E;
 }
+
 
 /* =========================================================
    MOBILE OVERRIDES (max-width: 430px)
@@ -74,5 +76,6 @@
   .checkout-section-title {
     /* padding-top: 12px; */
     font-size: 22px;
+    
   }
 }

@@ -1,13 +1,17 @@
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { ShoppingBag, Heart, Star,Check, TrendingUp, Calendar, MessageCircleCheck, Shield, ArrowRight, X, Plus, Truck, Gift, ChevronRight, CircleAlert, User, CreditCard } from "lucide-react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import useWishlistStore from "../../store/wishlistStore";
-import { products, makeProductDetail } from "../ProductList";
+import { formatProductDetail, parsePrice } from "../../utils/productNavigation";
+import staticProducts from "../../data/mainCategoryPageData";
 import "../../styles/productcategory/preloved.css";
 import RelatedProduct from "../RelatedProduct";
 import GalleryColumn from "../GalleryColumn";
+import useCartStore from "../../store/cartStore";
+import useWishlistStore from "../../store/wishlistStore";
+import useAuthStore from "../../store/authStore";
+import toast from "react-hot-toast";
 const gradeDotColor = {
   pristine: "#6B7E5A",
   excellent: "#C9A96E",
@@ -46,47 +50,38 @@ export default function Preloved() {
 
   // ===== PRODUCT FETCH =====
   const [product, setProduct] = useState(() => {
-    if (location.state?.product) {
-      return makeProductDetail(location.state.product);
-    }
-    const localFound = products.find(
-      (p) => String(p.id) === String(id) || String(p._id) === String(id)
-    );
-    return localFound ? makeProductDetail(localFound) : null;
+    return location.state?.product ? formatProductDetail(location.state.product) : null;
   });
-
   const [loading, setLoading] = useState(!product);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
-
     const fetchProduct = async () => {
       try {
-        if (!location.state?.product) setLoading(true);
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-        const res = await fetch(`${backendUrl}/api/web-products/${id}`);
-        const data = await res.json();
-
-        if (isMounted) {
-          if (data.success && data.data) {
-            setProduct(makeProductDetail(data.data));
-          } else {
-            const localFound = products.find(
-              (p) => String(p.id) === String(id) || String(p._id) === String(id)
-            );
-            if (localFound) setProduct(makeProductDetail(localFound));
-            else setError("Failed to load product");
+        const res = await fetch(`/api/products/${id}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data && isMounted) {
+            setProduct(formatProductDetail(json.data));
+            setLoading(false);
+            return;
           }
         }
+        const staticItem = staticProducts?.find(
+          (sp) => String(sp.id) === String(id) || String(sp.productId) === String(id)
+        );
+        if (staticItem && isMounted) {
+          setProduct(formatProductDetail(staticItem));
+          setLoading(false);
+          return;
+        }
       } catch (err) {
-        console.error("Error fetching product:", err);
-        if (isMounted) {
-          const localFound = products.find(
-            (p) => String(p.id) === String(id) || String(p._id) === String(id)
-          );
-          if (localFound) setProduct(makeProductDetail(localFound));
-          else setError("Failed to load product");
+        console.warn("Error fetching product by ID:", err);
+        const staticItem = staticProducts?.find(
+          (sp) => String(sp.id) === String(id) || String(sp.productId) === String(id)
+        );
+        if (staticItem && isMounted) {
+          setProduct(formatProductDetail(staticItem));
         }
       } finally {
         if (isMounted) setLoading(false);
@@ -97,84 +92,71 @@ export default function Preloved() {
     return () => {
       isMounted = false;
     };
-  }, [id, location.state]);
+  }, [id]);
 
-  // ===== STATES MOVED BEFORE EARLY RETURNS =====
+  // ===== STATES =====
+  const { isAuthenticated } = useAuthStore();
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+
+  const targetId = String(product?.sku || product?.productId || product?._id || product?.id || id || "");
+  const prodSku = String(product?.sku || "");
+  const prodDbId = String(product?._id || "");
+  const prodPid = String(product?.productId || "");
+
+  const isWishlisted = targetId
+    ? wishlistItems.some((itemId) => {
+        const sid = String(itemId);
+        return (
+          sid === targetId ||
+          (prodSku && sid === prodSku) ||
+          (prodDbId && sid === prodDbId) ||
+          (prodPid && sid === prodPid)
+        );
+      })
+    : false;
+
   const [selectedWindow, setSelectedWindow] = useState("standard");
   const [openSections, setOpenSections] = useState(["details"]);
   const [isOfferOpen, setIsOfferOpen] = useState(false);
 
-  const [offer, setOffer] = useState(0);      // number (slider)
-  const [inputValue, setInputValue] = useState(0); // (typing)
-
-  const [note, setNote] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  
-  const wishlistItems = useWishlistStore((state) => state.items);
-  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
-  const productId = product?._id || product?.id || id;
-  const wish = productId ? wishlistItems.includes(productId) : false;
-
-  useEffect(() => {
-    if (product) {
-      const price = product.preloved?.pricing?.price || product.listingPrice || 0;
-      const minOffer = product.preloved?.minOffer || Math.round(price * 0.54 / 5000) * 5000;
-      setOffer(minOffer);
-      setInputValue(minOffer);
-    }
-  }, [product]);
-
-  if (loading) {
-    return (
-      <div style={{ padding: "100px 20px", textAlign: "center", minHeight: "60vh" }}>
-        <h2 style={{ fontFamily: "Cinzel, serif" }}>Loading product...</h2>
-      </div>
-    );
-  }
-
-  if (error || !product) {
-    return (
-      <div style={{ padding: "100px 20px", textAlign: "center", minHeight: "60vh" }}>
-        <h2 style={{ fontFamily: "Cinzel, serif", marginBottom: "16px" }}>
-          {error || "Product not found"}
-        </h2>
-        <button
-          onClick={() => navigate("/products")}
-          style={{
-            background: "#1e1412",
-            color: "#fcf9f5",
-            border: "none",
-            padding: "10px 24px",
-            cursor: "pointer",
-            fontSize: "13px",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-          }}
-        >
-          Return to Collection
-        </button>
-      </div>
-    );
-  }
-
   const isOpen = (key) => openSections.includes(key);
 
   // for Dot color
-  const grade = product.condition?.grade || product.condition || "pristine";
+  const grade = product?.condition?.grade || "pristine";
 
   // FOR DISCOUNT - 
-  const price = product.preloved?.pricing?.price || product.listingPrice || 0;
-  const retail = product.preloved?.pricing?.originalPrice || product.originalRetailPrice || 0;
-  const discount = retail > 0 ? Math.round(((retail - price) / retail) * 100) : 0;
-  
-  // DYNAMIC SIZES AND COLORS
-  const prelovedSize = product.prelovedSize || product.sizeTable?.[0]?.label || product.sizeTable?.[0]?.size || (Array.isArray(product.sizes) ? product.sizes[0] : null) || "One Size";
-  const prelovedColor = product.details?.color || product.color || product.colors?.[0]?.name || "N/A";
+  const price =
+    (typeof product?.preloved?.pricing?.price === "number" && product.preloved.pricing.price > 0
+      ? product.preloved.pricing.price
+      : parsePrice(product?.listingPrice) || parsePrice(product?.buyPrice) || parsePrice(product?.price)) || 0;
+  const retail =
+    parsePrice(product?.originalRetailPrice) ||
+    parsePrice(product?.originalPrice) ||
+    parsePrice(product?.retailPrice) ||
+    parsePrice(product?.preloved?.pricing?.originalPrice) ||
+    price;
+  const discount = (retail > price && retail > 0 && price > 0)
+    ? Math.round(((retail - price) / retail) * 100)
+    : 0;
+
   // MINIMUM AND MAXIMUM OFFER PRICE
-  const minOffer = product.preloved?.minOffer || Math.round(price * 0.54 / 5000) * 5000;
-  const maxOffer = product.preloved?.maxOffer || price;
+  const minOffer = Math.round((price * 0.54) / 5000) * 5000 || 5000;
+  const maxOffer = price || 10000;
+
+  const [offer, setOffer] = useState(minOffer);      // number (slider)
+  const [inputValue, setInputValue] = useState(minOffer); // (typing)
+
+  useEffect(() => {
+    if (price) {
+      const min = Math.round((price * 0.54) / 5000) * 5000 || 5000;
+      setOffer(min);
+      setInputValue(min);
+    }
+  }, [price]);
+
+  if (loading) return <div style={{ padding: 60, textAlign: "center", fontFamily: "Cinzel, serif" }}>Loading piece details...</div>;
+  if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
 
 
   // CALCULATION ON TOP
@@ -183,6 +165,14 @@ export default function Preloved() {
 
   // Golden Progress Bar
   const progress = ((offer - minOffer) / (maxOffer - minOffer)) * 100;
+
+  // FOR INPUT AND NOTES
+  const [note, setNote] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  // Offer submitted 
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const toggle = (key) => {
     setOpenSections((prev) =>
@@ -193,63 +183,49 @@ export default function Preloved() {
   };
 
 
-  const handleAddToCart = () => {
-    const details = {
-      type: "preloved",
-      size: prelovedSize,
-      color: prelovedColor,
-      price: price,
-      source: "add_to_cart",
-    };
-
-    const cartStoreModule = import("../../store/cartStore");
-    cartStoreModule.then((m) => {
-      m.default.getState().addToCart(product, details);
-      alert("Added to cart successfully!");
-    });
-  };
-
+  // function for adding to cart and redirecting to cart
   const handleBuyNow = () => {
-    const details = {
-      type: "preloved",
-      size: prelovedSize,
-      color: prelovedColor,
-      price: price,
-      source: "buy_now",
-    };
+    const numericPrice =
+      typeof price === "number"
+        ? price
+        : Number(String(price).replace(/[^\d]/g, "")) ||
+          product.listingPrice ||
+          product.price ||
+          0;
 
-    // Add to Zustand Cart Store
-    const cartStoreModule = import("../../store/cartStore");
-    cartStoreModule.then((m) => {
-      m.default.getState().addToCart(product, details);
-    });
-
-    // Create checkout item payload
-    const checkoutItem = {
-      id: product.id || product._id,
+    useCartStore.getState().addToCart(product, {
       type: "preloved",
-      source: "buy_now",
-      product: product,
-      booking: {
-        size: prelovedSize,
-        color: prelovedColor,
-      },
+      size: product.prelovedSize || product.size || "Free Size",
+      price: numericPrice,
       quantity: 1,
-      price: price,
-    };
-
-    // Redirect to checkout with state
-    navigate("/checkout", {
-      state: {
-        items: [checkoutItem],
-      },
     });
+
+    navigate("/cart");
   };
 
-  // function to add to the Wishlist and redirect
+  // function to add to the Wishlist
+  const handleAddToWishlist = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
 
-  const handleAddToWishlist = () => {
-    toggleWishlist(productId);
+    if (!isAuthenticated) {
+      toast.error("Please login to use your wishlist");
+      navigate("/auth");
+      return;
+    }
+
+    if (targetId) {
+      const willBeActive = !isWishlisted;
+      toggleWishlist(targetId, product);
+
+      if (willBeActive) {
+        toast.success("Added to your wishlist");
+      } else {
+        toast("Removed from your wishlist", {
+          icon: "✕",
+        });
+      }
+    }
   };
 
   // function to connect to the Whatsapp and redirect
@@ -266,7 +242,7 @@ Product: ${product.title}
 Designer: ${product.designer}
 Price: ₹${price.toLocaleString()}
 Condition: ${product.condition?.grade || "N/A"}
-Size: ${prelovedSize}
+Size: ${product.prelovedSize}
 
 Product ID: ${product.id}
 `;
@@ -289,11 +265,11 @@ Product ID: ${product.id}
             <span className="sep">›</span>
             <span className="crumb">Buy Preloved</span>
             <span className="sep">›</span>
-            <span className="crumb">Bridal Lehengas</span>
+            <span className="crumb">{product.category || "None"}</span>
             <span className="sep">›</span>
-            <span className="crumb current">Sabyasachi</span>
+            <span className="crumb current">{product.designer || "None"}</span>
             <span className="sep">›</span>
-            <span className="crumb current">{product.title}</span>
+            <span className="crumb current">{product.title || product.name || "None"}</span>
           </div>
         </div>
 
@@ -306,7 +282,8 @@ Product ID: ${product.id}
               images={product.images}
               video={product.video}
               variant="preloved"
-              productId={productId}
+              productId={product.id || product.productId || id}
+              product={product}
             />
           </Col>
 
@@ -319,13 +296,13 @@ Product ID: ${product.id}
                 <span className="preloved-eyebrow-text">PRELOVED PIECE</span>
               </div>
 
-              <p className="preloved-designer-name">{product.designer}</p>
+              <p className="preloved-designer-name">{product.designer || "None"}</p>
 
               <h1 className="preloved-product-title">
-                {product.title} <em>{product.subTitle}</em>
+                {product.title || product.name || "None"} <em>{product.subTitle || ""}</em>
               </h1>
 
-              <p className="preloved-product-desc">{product.description}</p>
+              <p className="preloved-product-desc">{product.description || "None"}</p>
 
               {/* RATING */}
               <div className="preloved-rating-row">
@@ -334,24 +311,24 @@ Product ID: ${product.id}
                   <Star
                     key={s}
                     size={16}
-                    fill={product.rating >= s ? "#c5a46d" : "none"}
+                    fill={(product.rating || 0) >= s ? "#c5a46d" : "none"}
                     stroke="#c5a46d"
                   />
                 ))}
 
-                <span className="preloved-rating-text">{product.rating}.0</span>
+                <span className="preloved-rating-text">{(product.rating || 0)}.0</span>
 
                 <span className="preloved-rating-separator" />
 
-                <span className="preloved-reviews">{product.reviews} reviews</span>
+                <span className="preloved-reviews">{product.reviews || product.reviewCount || 0} reviews</span>
 
                 <span className="preloved-rating-separator" />
 
                 <span
                   className="preloved-never-worn-soft"
-                  style={{ "--dot-color": gradeDotColor[grade] }}
+                  style={{ "--dot-color": gradeDotColor[grade] || "#6B7E5A" }}
                 >
-                  {gradeLabel[grade]}
+                  {gradeLabel[grade] || "AUTHENTIC PIECE"}
                 </span>
 
               </div>
@@ -365,23 +342,27 @@ Product ID: ${product.id}
                 </p>
 
                 <h2 className="preloved-main-price">
-                  ₹{price.toLocaleString()}
+                  ₹{Number(price).toLocaleString()}
                 </h2>
 
                 <div className="preloved-price-row">
-                  <span className="preloved-retail-price">
-                    ₹{retail.toLocaleString()} retail
-                  </span>
+                  {retail > 0 && (
+                    <span className="preloved-retail-price">
+                      ₹{Number(retail).toLocaleString()} retail
+                    </span>
+                  )}
 
-                  <span className="preloved-discount-badge">
-                    {discount}% OFF RETAIL
-                  </span>
+                  {discount > 0 && (
+                    <span className="preloved-discount-badge">
+                      {discount}% OFF RETAIL
+                    </span>
+                  )}
                 </div>
 
               </div>
 
 
-              {/* HONEST DISCLOUSRE */}
+              {/* HONEST DISCLOSURE */}
               <div className="preloved-disclosure">
 
                 <p className="preloved-disclosure-label">
@@ -389,7 +370,7 @@ Product ID: ${product.id}
                 </p>
 
                 <p className="preloved-disclosure-text">
-                  {product.disclosure}
+                  {product.disclosure || product.honestDisclosure || "None"}
                 </p>
 
               </div>
@@ -404,11 +385,19 @@ Product ID: ${product.id}
                 </p>
 
                 <div className="preloved-size-pills">
-                  <span className="preloved-size-pill active">
+                  {product.sizes && product.sizes.length > 0 ? (
+                    product.sizes.map((s, idx) => (
+                      <span key={idx} className="preloved-size-pill active">
+                        {typeof s === "object" ? (s.label || s.size || "None") : s}
+                      </span>
+                    ))
+                  ) : product.prelovedSize ? (
                     <span className="preloved-size-pill active">
-                      {prelovedSize}
+                      {product.prelovedSize}
                     </span>
-                  </span>
+                  ) : (
+                    <span className="preloved-size-pill">None</span>
+                  )}
                 </div>
 
               </div>
@@ -427,22 +416,22 @@ Product ID: ${product.id}
                   BUY NOW — ₹{price.toLocaleString()}
                 </button>
 
-                {/* ADD TO CART */}
-                <button
-                  className="preloved-btn outline"
-                  onClick={handleAddToCart}
-                >
-                  <span className="preloved-icon"><ShoppingBag /></span>
-                  ADD TO CART
-                </button>
-
                 {/* WISHLIST */}
                 <button
-                  className="preloved-btn outline"
+                  className={`preloved-btn outline ${isWishlisted ? "active" : ""}`}
                   onClick={handleAddToWishlist}
                 >
-                  <span className="preloved-icon"><Heart fill={wish ? "currentColor" : "none"} /></span>
-                  {wish ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
+                  <span className="preloved-icon">
+                    <Heart
+                      style={{
+                        fill: isWishlisted ? "#B85C38" : "none",
+                        stroke: isWishlisted ? "#B85C38" : "currentColor",
+                        color: isWishlisted ? "#B85C38" : "currentColor",
+                        transition: "all 0.2s ease"
+                      }}
+                    />
+                  </span>
+                  {isWishlisted ? "SAVED TO WISHLIST" : "SAVE TO WISHLIST"}
                 </button>
 
               </div>
@@ -450,247 +439,216 @@ Product ID: ${product.id}
 
 
               {/* // NAME YOUR PRICE */}
-              {product.preloved?.allowOffer === true && (
-                <>
-                  {/* ===== PRELOVED OFFER DIVIDER ===== */}
-                  <div className="preloved-offer-divider">
-                    <span className="preloved-offer-line"></span>
-                    <span className="preloved-offer-text">OR MAKE AN OFFER</span>
-                    <span className="preloved-offer-line"></span>
+
+              {/* ===== PRELOVED OFFER DIVIDER ===== */}
+              <div className="preloved-offer-divider">
+                <span className="preloved-offer-line"></span>
+                <span className="preloved-offer-text">OR MAKE AN OFFER</span>
+                <span className="preloved-offer-line"></span>
+              </div>
+
+              {/* ===== PRELOVED OFFER TRIGGER ===== */}
+              <div
+                className={`preloved-offer-trigger ${isOfferOpen ? "open" : ""}`}
+                onClick={() => setIsOfferOpen(!isOfferOpen)}
+              >
+
+                <div className="preloved-offer-left">
+                  <span className="preloved-offer-icon"><Gift /></span>
+
+                  <div>
+                    <p className="preloved-offer-title">Name Your Price</p>
+                    <p className="preloved-offer-sub">
+                      Submit a quote — our team responds within 24 hours
+                    </p>
                   </div>
+                </div>
 
-                  {/* ===== PRELOVED OFFER TRIGGER ===== */}
-                  <div
-                    className={`preloved-offer-trigger ${isOfferOpen ? "open" : ""}`}
-                    onClick={() => setIsOfferOpen(!isOfferOpen)}
-                  >
+                <span className={`preloved-offer-arrow ${isOfferOpen ? "rotate" : ""}`}>
+                  ›
+                </span>
 
-                    <div className="preloved-offer-left">
-                      <span className="preloved-offer-icon"><Gift /></span>
+              </div>
 
-                      <div>
-                        <p className="preloved-offer-title">Name Your Price</p>
-                        <p className="preloved-offer-sub">
-                          Submit a quote — our team responds within 24 hours
-                        </p>
-                      </div>
+              {/* Now triggered */}
+              {isOfferOpen && (
+                <div className="preloved-offer-panel">
+                  <div className="preloved-offer-price-row">
+
+                    {/* LEFT - LISTED PRICE */}
+                    <div className="preloved-offer-col">
+                      <p className="preloved-offer-label">LISTED AT</p>
+                      <h3 className="preloved-offer-amount">
+                        ₹{price.toLocaleString()}
+                      </h3>
                     </div>
 
-                    <span className={`preloved-offer-arrow ${isOfferOpen ? "rotate" : ""}`}>
-                      ›
-                    </span>
+                    {/* ARROW */}
+                    <div className="preloved-offer-arrow-icon">→</div>
+
+                    {/* RIGHT - YOUR OFFER */}
+                    <div className="preloved-offer-col">
+                      <p className="preloved-offer-label">YOUR OFFER</p>
+                      <h3 className="preloved-offer-amount highlight">
+                        ₹{offer.toLocaleString()}
+                      </h3>
+                    </div>
 
                   </div>
 
-                  {/* Now triggered */}
-                  {isOfferOpen && (
-                    <div className="preloved-offer-panel">
-                      <div className="preloved-offer-price-row">
+                  <div className="preloved-offer-slider-wrap">
 
-                        {/* LEFT - LISTED PRICE */}
-                        <div className="preloved-offer-col">
-                          <p className="preloved-offer-label">LISTED AT</p>
-                          <h3 className="preloved-offer-amount">
-                            ₹{price.toLocaleString()}
-                          </h3>
-                        </div>
+                    {/* LABELS */}
+                    <div className="preloved-slider-labels">
+                      <span>₹{minOffer.toLocaleString()}</span>
+                      <span>₹{maxOffer.toLocaleString()}</span>
+                    </div>
 
-                        {/* ARROW */}
-                        <div className="preloved-offer-arrow-icon">→</div>
+                    {/* SLIDER */}
+                    <input
+                      type="range"
+                      min={minOffer}
+                      max={maxOffer}
+                      step={5000}
+                      value={offer}
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        setOffer(val);
+                        setInputValue(val.toString());
+                      }}
+                      className="preloved-slider"
+                      style={{
+                        background: `linear-gradient(
+      to right,
+      #C9A96E 0%,
+      #C9A96E ${((offer - minOffer) / (maxOffer - minOffer)) * 100}%,
+      #E8E0D4 ${((offer - minOffer) / (maxOffer - minOffer)) * 100}%,
+      #E8E0D4 100%
+    )`
+                      }}
+                    />
 
-                        {/* RIGHT - YOUR OFFER */}
-                        <div className="preloved-offer-col">
-                          <p className="preloved-offer-label">YOUR OFFER</p>
-                          <h3 className="preloved-offer-amount highlight">
-                            ₹{offer.toLocaleString()}
-                          </h3>
-                        </div>
+                    {/* HINT */}
+                    <p className="preloved-slider-hint">
+                      Slide to set your offer · Min ₹{minOffer.toLocaleString()}
+                    </p>
+                  </div>
 
+                  {/* INPUT ROW */}
+                  <div className="preloved-offer-input-row">
+
+                    <div className="preloved-offer-input-wrap">
+                      <span className="preloved-rupee">₹</span>
+
+                      <input
+                        type="text"
+                        value={inputValue}
+                        onChange={(e) => {
+                          const val = e.target.value;
+
+                          // allow typing freely
+                          setInputValue(val);
+
+                          const num = Number(val);
+
+                          if (!isNaN(num)) {
+                            if (num >= minOffer && num <= maxOffer) {
+                              setOffer(num);
+                            }
+                          }
+                        }}
+                        className="preloved-offer-input"
+                      />
+                    </div>
+
+                    {/* SAVINGS */}
+                    {maxOffer - offer > 0 && (
+                      <div className="preloved-offer-savings-pill">
+                        Save ₹{(maxOffer - offer).toLocaleString()}
                       </div>
+                    )}
 
-                      <div className="preloved-offer-slider-wrap">
+                  </div>
 
-                        {/* LABELS */}
-                        <div className="preloved-slider-labels">
-                          <span>₹{minOffer.toLocaleString()}</span>
-                          <span>₹{maxOffer.toLocaleString()}</span>
-                        </div>
+                  {!isSubmitted ? (
+                    <>
 
-                        {/* SLIDER */}
+                      {/* ===== NOTE ===== */}
+                      <textarea
+                        className="preloved-note"
+                        placeholder='Add a note (optional) — e.g. "Available for immediate pickup..."'
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
+                      />
+
+                      {/* ===== CONTACT ===== */}
+                      <div className="preloved-contact-grid">
                         <input
-                          type="range"
-                          min={minOffer}
-                          max={maxOffer}
-                          step={5000}
-                          value={offer}
-                          onChange={(e) => {
-                            const val = Number(e.target.value);
-                            setOffer(val);
-                            setInputValue(val.toString());
-                          }}
-                          className="preloved-slider"
-                          style={{
-                            background: `linear-gradient(
-          to right,
-          #C9A96E 0%,
-          #C9A96E ${((offer - minOffer) / (maxOffer - minOffer)) * 100}%,
-          #E8E0D4 ${((offer - minOffer) / (maxOffer - minOffer)) * 100}%,
-          #E8E0D4 100%
-        )`
-                          }}
+                          type="text"
+                          placeholder="Your name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                         />
 
-                        {/* HINT */}
-                        <p className="preloved-slider-hint">
-                          Slide to set your offer · Min ₹{minOffer.toLocaleString()}
+                        <input
+                          type="text"
+                          placeholder="WhatsApp number"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                        />
+                      </div>
+
+                      {/* ===== TERMS ===== */}
+                      <div className="preloved-terms-row">
+                        <CircleAlert className="preloved-terms-icon" />
+
+                        <p className="preloved-terms-text">
+                          Submitting an offer does not reserve the piece. The listing remains active until a purchase is completed.
                         </p>
                       </div>
+                      <button
+                        className="preloved-submit-btn"
+                        onClick={() => {
+                          if (!name || !phone) {
+                            alert("Please fill name and phone");
+                            return;
+                          }
 
-                      {/* INPUT ROW */}
-                      <div className="preloved-offer-input-row">
+                          if (offer < minOffer) {
+                            alert("Offer too low");
+                            return;
+                          }
 
-                        <div className="preloved-offer-input-wrap">
-                          <span className="preloved-rupee">₹</span>
-
-                          <input
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => {
-                              const val = e.target.value;
-
-                              // allow typing freely
-                              setInputValue(val);
-
-                              const num = Number(val);
-
-                              if (!isNaN(num)) {
-                                if (num >= minOffer && num <= maxOffer) {
-                                  setOffer(num);
-                                }
-                              }
-                            }}
-                            className="preloved-offer-input"
-                          />
-                        </div>
-
-                        {/* SAVINGS */}
-                        {maxOffer - offer > 0 && (
-                          <div className="preloved-offer-savings-pill">
-                            Save ₹{(maxOffer - offer).toLocaleString()}
-                          </div>
-                        )}
-
+                          setIsSubmitted(true);
+                        }}
+                      >
+                        SUBMIT OFFER →
+                      </button>
+                    </>
+                  ) : (
+                    <div className="preloved-success">
+                      <div className="preloved-success-icon">
+                        <Check size={22} strokeWidth={2.2} />
                       </div>
 
-                      {!isSubmitted ? (
-                        <>
+                      <h3>Offer submitted</h3>
 
-                          {/* ===== NOTE ===== */}
-                          <textarea
-                            className="preloved-note"
-                            placeholder='Add a note (optional) — e.g. "Available for immediate pickup..."'
-                            value={note}
-                            onChange={(e) => setNote(e.target.value)}
-                          />
+                      <p>
+                        Our team will review your quote of ₹
+                        {offer.toLocaleString()} and get back to you within 24
+                        hours via WhatsApp or email.
+                      </p>
 
-                          {/* ===== CONTACT ===== */}
-                          <div className="preloved-contact-grid">
-                            <input
-                              type="text"
-                              placeholder="Your name"
-                              value={name}
-                              onChange={(e) => setName(e.target.value)}
-                            />
-
-                            <input
-                              type="text"
-                              placeholder="WhatsApp number"
-                              value={phone}
-                              onChange={(e) => setPhone(e.target.value)}
-                            />
-                          </div>
-
-                          {/* ===== TERMS ===== */}
-                          <div className="preloved-terms-row">
-                            <CircleAlert className="preloved-terms-icon" />
-
-                            <p className="preloved-terms-text">
-                              Submitting an offer does not reserve the piece. The listing remains active until a purchase is completed.
-                            </p>
-                          </div>
-                          <button
-                            className="preloved-submit-btn"
-                            onClick={async () => {
-                              if (!name || !phone) {
-                                alert("Please fill name and phone");
-                                return;
-                              }
-
-                              if (offer < minOffer) {
-                                alert("Offer too low");
-                                return;
-                              }
-
-                              try {
-                                const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-                                const res = await fetch(`${backendUrl}/api/offers`, {
-                                  method: "POST",
-                                  headers: {
-                                    "Content-Type": "application/json"
-                                  },
-                                  body: JSON.stringify({
-                                    productId: product.id,
-                                    productName: product.title,
-                                    category: product.subTitle || "Preloved",
-                                    customerName: name,
-                                    customerPhone: phone,
-                                    originalAmount: price,
-                                    offeredAmount: offer,
-                                    notes: note,
-                                    channel: "Website"
-                                  })
-                                });
-                                const data = await res.json();
-                                if(data.success) {
-                                  setIsSubmitted(true);
-                                } else {
-                                  alert("Failed to submit offer: " + (data.message || "Unknown error"));
-                                }
-                              } catch (err) {
-                                console.error(err);
-                                alert("Error submitting offer");
-                              }
-                            }}
-                          >
-                            SUBMIT OFFER →
-                          </button>
-                        </>
-                      ) : (
-                        <div className="preloved-success">
-                          <div className="preloved-success-icon">
-                            <Check size={22} strokeWidth={2.2} />
-                          </div>
-
-                          <h3>Offer submitted</h3>
-
-                          <p>
-                            Our team will review your quote of ₹
-                            {offer.toLocaleString()} and get back to you within 24
-                            hours via WhatsApp or email.
-                          </p>
-
-                          <button
-                            className="preloved-reset-btn"
-                            onClick={() => setIsSubmitted(false)}
-                          >
-                            Submit another offer
-                          </button>
-                        </div>
-                      )}
-
+                      <button
+                        className="preloved-reset-btn"
+                        onClick={() => setIsSubmitted(false)}
+                      >
+                        Submit another offer
+                      </button>
                     </div>
                   )}
-                </>
+
+                </div>
               )}
 
               {/* WHATSAPP ENQUIREY */}
@@ -783,44 +741,44 @@ Product ID: ${product.id}
                         <div>
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Designer</span>
-                            <p>{product.designer}</p>
+                            <p>{product.designer || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Fabric</span>
-                            <p>{product.details?.fabric}</p>
+                            <p>{product.details?.fabric || product.material || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Embroidery</span>
-                            <p>{product.details?.technique}</p>
+                            <p>{product.details?.technique || product.technique || product.embellishments || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Includes</span>
-                            <p>{product.details?.includes}</p>
+                            <p>{product.details?.includes || product.setIncludes || "None"}</p>
                           </div>
                         </div>
 
                         <div>
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Category</span>
-                            <p>{product.subTitle}</p>
+                            <p>{product.category || product.subTitle || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Colour</span>
-                            <p>{prelovedColor}</p>
+                            <p>{product.details?.color || product.color || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Occasion</span>
-                            <p>{product.details?.occasion}</p>
+                            <p>{product.details?.occasion || product.occasion || "None"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Origin</span>
-                            <p>{product.details?.origin}</p>
+                            <p>{product.details?.origin || product.origin || "None"}</p>
                           </div>
                         </div>
 
@@ -852,7 +810,7 @@ Product ID: ${product.id}
                   <div className="preloved-accordion-content">
 
                     <p className="preloved-story-text">
-                      {product.description || product.story || "No story provided."}
+                      {product.story || product.description || "None"}
                     </p>
 
                     {product.stylingNote && (
@@ -885,39 +843,64 @@ Product ID: ${product.id}
                   <div className="preloved-accordion-content">
 
                     {/* INTRO */}
-                    {product.sizeNote && (
+                    {product.sizeNote || product.sizeGuide ? (
                       <p className="preloved-size-intro">
-                        {product.sizeNote}
+                        {product.sizeNote || product.sizeGuide}
                       </p>
-                    )}
+                    ) : null}
 
                     {/* TABLE */}
-                    <table className="preloved-size-table">
-                      <thead>
-                        <tr>
-                          <th>Size</th>
-                          <th>Bust</th>
-                          <th>Waist</th>
-                          <th>Hips</th>
-                          <th>Height</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {product.sizeTable?.map((row, i) => (
-                          <tr
-                            key={i}
-                            className={row.recommended ? "active-row" : ""}
-                          >
-                            <td>{row.size}</td>
-                            <td>{row.bust}</td>
-                            <td>{row.waist}</td>
-                            <td>{row.hips}</td>
-                            <td>{row.height}</td>
+                    {product.sizeTable && product.sizeTable.length > 0 ? (
+                      <table className="preloved-size-table">
+                        <thead>
+                          <tr>
+                            <th>Size</th>
+                            <th>Bust</th>
+                            <th>Waist</th>
+                            <th>Hips</th>
+                            <th>Height</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+
+                        <tbody>
+                          {product.sizeTable.map((row, i) => (
+                            <tr
+                              key={i}
+                              className={row.recommended ? "active-row" : ""}
+                            >
+                              <td>{row.size || "None"}</td>
+                              <td>{row.bust || "None"}</td>
+                              <td>{row.waist || "None"}</td>
+                              <td>{row.hips || "None"}</td>
+                              <td>{row.height || "None"}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (product.measurements && (product.measurements.bust || product.measurements.waist || product.measurements.hips || product.measurements.length)) ? (
+                      <table className="preloved-size-table">
+                        <thead>
+                          <tr>
+                            <th>Size</th>
+                            <th>Bust</th>
+                            <th>Waist</th>
+                            <th>Hips</th>
+                            <th>Length</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="active-row">
+                            <td>{product.sizes?.[0] || product.prelovedSize || "Standard"}</td>
+                            <td>{product.measurements.bust || "-"}</td>
+                            <td>{product.measurements.waist || "-"}</td>
+                            <td>{product.measurements.hips || "-"}</td>
+                            <td>{product.measurements.length || "-"}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    ) : (!product.sizeNote && !product.sizeGuide) ? (
+                      <p className="preloved-size-intro" style={{ margin: 0 }}>None</p>
+                    ) : null}
 
                   </div>
                 )}
@@ -998,12 +981,16 @@ Product ID: ${product.id}
                 {isOpen("care") && (
                   <div className="preloved-accordion-content">
 
-                    {product.care?.map((item, i) => (
-                      <p key={i} className="preloved-care-item">
-                        <span className="preloved-care-dash">—</span>
-                        {item}
-                      </p>
-                    ))}
+                    {Array.isArray(product.care) && product.care.length > 0 ? (
+                      product.care.map((item, i) => (
+                        <p key={i} className="preloved-care-item">
+                          <span className="preloved-care-dash">—</span>
+                          {item}
+                        </p>
+                      ))
+                    ) : (
+                      <p className="preloved-care-item">None</p>
+                    )}
 
                   </div>
                 )}
@@ -1029,19 +1016,25 @@ Product ID: ${product.id}
                   <div className="preloved-accordion-content">
 
                     {/* DELIVERY METHODS */}
-                    {product.shipping?.map((item, i) => (
-                      <p key={i} className="preloved-shipping-item">
-                        <span className="preloved-shipping-dash">—</span>
-                        {item.method}: {item.time}, {item.cost}
-                      </p>
-                    ))}
+                    {(Array.isArray(product.shipping) && product.shipping.length > 0) || (Array.isArray(product.packaging) && product.packaging.length > 0) ? (
+                      <>
+                        {Array.isArray(product.shipping) && product.shipping.map((item, i) => (
+                          <p key={i} className="preloved-shipping-item">
+                            <span className="preloved-shipping-dash">—</span>
+                            {typeof item === "string" ? item : `${item.method || "Shipping"}: ${item.time || ""}${item.cost ? `, ${item.cost}` : ""}`}
+                          </p>
+                        ))}
 
-                    {/* PACKAGING */}
-                    {product.packaging?.map((text, i) => (
-                      <p key={i} className="preloved-shipping-packaging">
-                        {text}
-                      </p>
-                    ))}
+                        {/* PACKAGING */}
+                        {Array.isArray(product.packaging) && product.packaging.map((text, i) => (
+                          <p key={i} className="preloved-shipping-packaging">
+                            {text}
+                          </p>
+                        ))}
+                      </>
+                    ) : (
+                      <p className="preloved-shipping-item">None</p>
+                    )}
 
                   </div>
                 )}
@@ -1054,11 +1047,7 @@ Product ID: ${product.id}
           </Col>
         </Row>
       </Container>
-      <RelatedProduct 
-         product={product} 
-         currentProductId={id} 
-         category={product.subTitle || product.category} 
-      />
+      <RelatedProduct />
     </section>
 
   )

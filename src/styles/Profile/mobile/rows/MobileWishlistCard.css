@@ -3,11 +3,12 @@
    ============================================ */
 
 .profile-mobile-wl-item {
-  background: #fffefb;
+  background: #FFFEFB;
 
   padding: 12px;
 
-  transition: background-color 0.2s ease;
+  transition:
+    background-color 0.2s ease;
 }
 
 /* ============================================
@@ -15,7 +16,7 @@
    ============================================ */
 
 .profile-mobile-wl-item:active {
-  background: #faf7f2;
+  background: #FAF7F2;
 }
 
 /* ============================================
@@ -47,7 +48,7 @@
    ============================================ */
 
 .profile-mobile-wl-thumb svg {
-  stroke: #1a1612;
+  stroke: #1A1612;
 }
 
 .profile-mobile-wl-thumb rect {
@@ -70,7 +71,8 @@
   border: none;
   border-radius: 999px;
 
-  background: rgba(255, 254, 251, 0.88);
+  background:
+    rgba(255, 254, 251, 0.88);
 
   display: flex;
   align-items: center;
@@ -78,7 +80,8 @@
 
   cursor: pointer;
 
-  transition: transform 0.12s ease;
+  transition:
+    transform 0.12s ease;
 }
 
 .profile-mobile-wl-heart:active {
@@ -93,8 +96,8 @@
   width: 12px;
   height: 12px;
 
-  fill: #b85c38;
-  stroke: #b85c38;
+  fill: #B85C38;
+  stroke: #B85C38;
 
   flex-shrink: 0;
 }
@@ -106,7 +109,9 @@
 .profile-mobile-wl-name {
   margin-bottom: 2px;
 
-  font-family: "Cormorant Garamond", serif;
+  font-family:
+    "Cormorant Garamond",
+    serif;
 
   font-size: 13.5px;
 
@@ -114,7 +119,7 @@
 
   line-height: 1.25;
 
-  color: #1a1612;
+  color: #1A1612;
 
   overflow: hidden;
 
@@ -134,13 +139,15 @@
 .profile-mobile-wl-price {
   margin-bottom: 2px;
 
-  font-family: "DM Sans", sans-serif;
+  font-family:
+    "DM Sans",
+    sans-serif;
 
   font-size: 12px;
 
   font-weight: 400;
 
-  color: #3c3529;
+  color: #3C3529;
 }
 
 /* ============================================
@@ -150,7 +157,9 @@
 .profile-mobile-wl-mode {
   margin-bottom: 8px;
 
-  font-family: "DM Sans", sans-serif;
+  font-family:
+    "DM Sans",
+    sans-serif;
 
   font-size: 8px;
 
@@ -160,7 +169,7 @@
 
   text-transform: uppercase;
 
-  color: #b0a898;
+  color: #B0A898;
 }
 
 /* ============================================
@@ -172,7 +181,8 @@
 
   grid-template-columns: 1fr 1fr;
 
-  border-top: 1px solid #f0eae0;
+  border-top:
+    1px solid #F0EAE0;
 
   padding-top: 8px;
 }
@@ -187,7 +197,9 @@
 
   border: none;
 
-  font-family: "DM Sans", sans-serif;
+  font-family:
+    "DM Sans",
+    sans-serif;
 
   font-size: 8px;
 
@@ -205,13 +217,13 @@
    ============================================ */
 
 .profile-mobile-wl-btn-add {
-  background: #1a1612;
+  background: #1A1612;
 
-  color: #e8d5b0;
+  color: #E8D5B0;
 }
 
 .profile-mobile-wl-btn-add:active {
-  background: #2c2520;
+  background: #2C2520;
 }
 
 /* ============================================
@@ -219,13 +231,14 @@
    ============================================ */
 
 .profile-mobile-wl-btn-view {
-  border-left: 1px solid #f0eae0;
+  border-left:
+    1px solid #F0EAE0;
 
-  background: #fffefb;
+  background: #FFFEFB;
 
-  color: #8a7e72;
+  color: #8A7E72;
 }
 
 .profile-mobile-wl-btn-view:active {
-  background: #faf7f2;
+  background: #FAF7F2;
 }

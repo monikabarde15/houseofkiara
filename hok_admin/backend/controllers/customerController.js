@@ -40,9 +40,32 @@ export const syncCustomerOrderStats = async (customers) => {
   await Promise.all(
     customers.map(async (customer) => {
       const customerId = customer.customerId;
-      const matchingOrders = orders.filter(
-        (order) => order.customerId === customerId,
-      );
+      const cIdStr = customer._id ? String(customer._id) : null;
+      const cEmail = customer.email ? customer.email.toLowerCase().trim() : null;
+      const cPhone = customer.phone ? customer.phone.replace(/\D/g, "").slice(-10) : null;
+
+      const matchingOrders = orders.filter((order) => {
+        if (customerId && order.customerId === customerId) return true;
+        if (cIdStr && (order.customerId === cIdStr || String(order.customerId) === cIdStr)) return true;
+        if (cEmail && order.customerEmail && order.customerEmail.toLowerCase().trim() === cEmail) return true;
+        if (cPhone && order.customerPhone) {
+          const ordDigits = String(order.customerPhone).replace(/\D/g, "");
+          if (cPhone.length >= 10 && ordDigits.endsWith(cPhone)) return true;
+        }
+        return false;
+      });
+
+      // Backfill customerId on order if it was unlinked or different
+      if (customerId) {
+        for (const order of matchingOrders) {
+          if (order.customerId !== customerId) {
+            order.customerId = customerId;
+            try {
+              await order.save();
+            } catch (e) {}
+          }
+        }
+      }
 
       const lastOrderDate =
         matchingOrders.map(orderStartDate).filter(Boolean).sort().at(-1) || "—";

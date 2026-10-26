@@ -281,8 +281,28 @@ export default function App() {
   };
 
   const handleAddOffer = async (newOffer: Offer) => {
-    try { const created = await offerApi.createOffer(newOffer); setOffers(current => [created, ...current]); toast.success('Offer created successfully!'); }
-    catch (error) { console.error('Unable to create offer:', error); toast.error(error instanceof Error ? error.message : 'Failed to create offer'); }
+    try {
+      const created = await offerApi.createOffer(newOffer);
+      setOffers((current) => [created, ...current]);
+      if ((created as any).newCustomer) {
+        setCustomers((curr) => {
+          const exists = curr.some(
+            (c) =>
+              c.customerId === (created as any).newCustomer.customerId ||
+              c.id === (created as any).newCustomer.id,
+          );
+          return exists ? curr : [(created as any).newCustomer, ...curr];
+        });
+      }
+      toast.success(
+        created.promoCode
+          ? `Offer created! Web promo code: ${created.promoCode}`
+          : 'Offer created successfully!',
+      );
+    } catch (error) {
+      console.error('Unable to create offer:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to create offer');
+    }
   };
 
   const handleAddProduct = async (newProd: Product) => {
@@ -502,11 +522,15 @@ export default function App() {
         <OffersView 
           offers={offers}
           products={products}
+          customers={customers}
           listers={listers}
           currentAdminName={adminSession?.admin?.name || 'Soumya'}
           loading={offersLoading}
           onUpdateOffer={handleUpdateOffer}
           onAddOffer={handleAddOffer}
+          onCustomerCreated={(newCust) =>
+            setCustomers((curr) => [newCust, ...curr])
+          }
         />
       );
     }
@@ -583,15 +607,31 @@ export default function App() {
     }
 
     if (currentView === 'designers') {
-      return <DesignersView onEditingChange={setIsSectionEditing} />;
+      return (
+        <DesignersView
+          products={products}
+          orders={orders}
+          onEditingChange={setIsSectionEditing}
+          setView={setView}
+        />
+      );
     }
 
     if (currentView === 'categories') {
       return <CategoriesView onEditingChange={setIsSectionEditing} />;
     }
 
-    if (currentView === 'listers') {
-      return <ListersView onEditingChange={setIsSectionEditing} setView={setView} />;
+    if (currentView === 'listers' || currentView.startsWith('lister_detail:')) {
+      const initialListerId = currentView.startsWith('lister_detail:')
+        ? currentView.slice('lister_detail:'.length)
+        : undefined;
+      return (
+        <ListersView
+          initialListerId={initialListerId}
+          onEditingChange={setIsSectionEditing}
+          setView={setView}
+        />
+      );
     }
 
     // if (currentView === 'occasions') {
@@ -747,7 +787,7 @@ export default function App() {
         </header>
 
         {/* Desktop Sticky Header */}
-      {!isSectionEditing && currentView !== 'settings' && currentView !== 'homepage' && currentView !== 'pages' && (
+      {!isSectionEditing && currentView !== 'settings' && currentView !== 'homepage' && currentView !== 'pages' && !currentView.startsWith('lister_detail:') && (
           <header className="sticky top-0 z-40 hidden h-[52px] shrink-0 items-center justify-between border-b border-[#E8E0D6] bg-white px-6 lg:flex">
             <div className="flex items-center gap-3">
               {currentView === 'messaging' && messagingActiveTab === 'editor' && (

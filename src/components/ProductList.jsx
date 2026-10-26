@@ -2,8 +2,11 @@
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Heart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import useWishlistStore from "../store/wishlistStore";
+import useAuthStore from "../store/authStore";
 import "../styles/product-list.css";
 
 /* ================= DATA ================= */
@@ -860,7 +863,17 @@ export const makeProductDetail = (item) => {
                 ? "preloved"
                 : "new",
     title: item.name || item.title,
-    subTitle: item.subtitle || item.subTitle || "",
+    subTitle: item.subtitle || item.subTitle || item.category || "",
+    category: item.category || item.subTitle || "",
+    prelovedSize:
+      item.prelovedSize ||
+      (Array.isArray(item.sizes) && item.sizes.length > 0
+        ? typeof item.sizes[0] === "object"
+          ? item.sizes[0].label || item.sizes[0].size
+          : item.sizes[0]
+        : typeof item.sizes === "string"
+          ? item.sizes
+          : ""),
     modes: builtModes,
     // Shortcut getters for legacy code
     rent: builtModes.rent,
@@ -894,7 +907,7 @@ export const makeProductDetail = (item) => {
     })(),
     relatedProductIds: item.relatedProductIds || [],
     weight: item.weight || "",
-    originalRetailPrice: item.originalRetailPrice || 0,
+    originalRetailPrice: item.originalRetailPrice || item.retailPrice || 0,
     bestSuitedForHeight: item.bestSuitedForHeight || "",
     measurements: item.measurements || null,
     measurementsCm: item.measurementsCm || null,
@@ -907,10 +920,7 @@ export const makeProductDetail = (item) => {
     sizeNote: item.sizeNote || item.sizeGuide || "",
     note: item.sizeGuide || item.sizeNote || "",
     taxNote: item.taxNote || "",
-    packaging:
-      item.packaging && item.packaging.length > 0
-        ? item.packaging
-        : ["Arrives in a signature HOK protective garment bag."],
+    packaging: Array.isArray(item.packaging) ? item.packaging : [],
     sizeTable: item.sizeTable || [],
     features: item.features || [],
     images: item.images || item.image || [],
@@ -984,21 +994,9 @@ export const makeProductDetail = (item) => {
       }
       return [];
     })(),
-    sizes:
-      item.sizes && item.sizes.length > 0
-        ? item.sizes
-        : ["XS", "S", "M", "L", "XL"],
-    shipping:
-      item.shipping && item.shipping.length > 0
-        ? item.shipping
-        : [
-            { method: "Standard", time: "5-7 Business Days", cost: "Free" },
-            { method: "Express", time: "2-3 Business Days", cost: "₹500" },
-          ],
-    care:
-      item.care && item.care.length > 0
-        ? item.care
-        : ["Dry clean only", "Do not bleach", "Iron on low heat"],
+    sizes: Array.isArray(item.sizes) ? item.sizes : (item.sizes ? [item.sizes] : []),
+    shipping: Array.isArray(item.shipping) ? item.shipping : [],
+    care: Array.isArray(item.care) ? item.care : [],
     details: {
       fabric: item.material || item.details?.fabric || "",
       technique: item.technique || item.details?.technique || "",
@@ -1015,6 +1013,11 @@ export const makeProductDetail = (item) => {
 };
 /* ================= COMPONENT ================= */
 export default function ProductList() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+
   const [hoveredId, setHoveredId] = useState(null);
   const [fetchedProducts, setFetchedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1101,32 +1104,67 @@ export default function ProductList() {
                           </span>
                         )}
 
-                        <button
-                          className="wishlist"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation(); // 🔥 IMPORTANT
+                        {(() => {
+                          const targetId = String(item?.sku || item?.productId || item?._id || item?.id || "");
+                          const prodSku = String(item?.sku || "");
+                          const prodDbId = String(item?._id || "");
+                          const prodPid = String(item?.productId || "");
 
-                            const wishlistStore =
-                              import("../store/wishlistStore").then((m) =>
-                                m.default.getState(),
-                              );
-                            wishlistStore.then((store) =>
-                              store.toggleWishlist(
-                                (item.id || item._id).toString(),
-                              ),
-                            );
-                          }}
-                        >
-                          <Heart
-                            size={16}
-                            fill={(() => {
-                              // Dynamic fill based on store - we'll handle this purely visually or with a React hook later if needed
-                              // For now, let's keep it simple
-                              return "none";
-                            })()}
-                          />
-                        </button>
+                          const isWishlisted = targetId
+                            ? wishlistItems.some((id) => {
+                                const sid = String(id);
+                                return (
+                                  sid === targetId ||
+                                  (prodSku && sid === prodSku) ||
+                                  (prodDbId && sid === prodDbId) ||
+                                  (prodPid && sid === prodPid)
+                                );
+                              })
+                            : false;
+
+                          const handleToggleWishlist = (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            if (!isAuthenticated) {
+                              toast.error("Please login to use your wishlist");
+                              navigate("/auth");
+                              return;
+                            }
+
+                            if (targetId) {
+                              const willBeActive = !isWishlisted;
+                              toggleWishlist(targetId, item);
+
+                              if (willBeActive) {
+                                toast.success("Added to your wishlist");
+                              } else {
+                                toast("Removed from your wishlist", {
+                                  icon: "✕",
+                                });
+                              }
+                            }
+                          };
+
+                          return (
+                            <button
+                              type="button"
+                              className={`wishlist ${isWishlisted ? "active" : ""}`}
+                              onClick={handleToggleWishlist}
+                              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                            >
+                              <Heart
+                                size={16}
+                                fill={isWishlisted ? "#B85C38" : "none"}
+                                stroke={isWishlisted ? "#B85C38" : "currentColor"}
+                                style={{
+                                  color: isWishlisted ? "#B85C38" : "currentColor",
+                                  transition: "all 0.2s ease",
+                                }}
+                              />
+                            </button>
+                          );
+                        })()}
 
                         <div className="overlay"></div>
                       </div>

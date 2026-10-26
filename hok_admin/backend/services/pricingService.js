@@ -58,10 +58,18 @@ export const calculateProductLine = (product, input = {}) => {
   const commission = round(
     (itemAmount * Number(product.commissionRate || 25)) / 100,
   );
+  const resolvedImage =
+    input.image ||
+    (Array.isArray(input.photos) && input.photos[0]) ||
+    (Array.isArray(product.images) && product.images[0]) ||
+    product.image ||
+    "";
+
   return {
-    productId: product.productId,
-    productName: product.name,
-    designer: product.designer,
+    productId: product.productId || product._id || input.productId,
+    productName: product.name || product.title || input.productName || input.title,
+    designer: product.designer || input.designer,
+    image: resolvedImage,
     mode,
     quantity,
     durationDays,
@@ -74,8 +82,8 @@ export const calculateProductLine = (product, input = {}) => {
     commission,
     taxableAmount,
     lineTotal: round(taxableAmount + tax + deposit),
-    rentalStartDate: input.startDate,
-    rentalEndDate: input.endDate,
-    size: input.size,
+    rentalStartDate: input.startDate || input.rentalStartDate,
+    rentalEndDate: input.endDate || input.rentalEndDate,
+    size: input.size || (Array.isArray(product.sizes) && product.sizes[0]) || "Free Size",
   };
 };

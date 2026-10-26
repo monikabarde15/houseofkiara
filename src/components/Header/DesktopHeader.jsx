@@ -1,46 +1,33 @@
 // src\components\Header\DesktopHeader.jsx
-import { useLocation, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo/logo.png";
 import "../../styles/Header/desktop-header.css";
 import useAuthStore from "../../store/authStore";
 import useWishlistStore from "../../store/wishlistStore";
-import useCartStore from "../../store/cartStore";
 
 const DesktopHeader = ({ onSearchOpen }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user, isAuthenticated } = useAuthStore();
-  const { items: wishlistItems, unseenCount } = useWishlistStore();
-  const { items: cartItems } = useCartStore();
-
-  const isWishlistPage = location.pathname === "/wishlist";
-  const isCartPage = location.pathname === "/cart";
-
-  const wishlistCount = wishlistItems.length;
-  const cartCount = cartItems.length;
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const wishlistCount = Array.isArray(wishlistItems) ? wishlistItems.length : 0;
 
   const handleProfileClick = () => {
-    navigate("/auth");
-  };
+    navigate("/auth")
+  }
   const handleBagClick = () => {
-    navigate("/cart");
-  };
+    navigate("/cart")
+  }
   const handleWishlistClick = () => {
-    if (!isAuthenticated) {
-      toast.error("Please login to view your wishlist");
-      navigate("/auth");
-      return;
-    }
-    navigate("/wishlist");
-  };
+    navigate("/wishlist")
+  }
   const handleLogoClick = () => {
-    navigate("/");
-    window.scrollTo(0, 0);
+  navigate("/");
+  window.scrollTo(0, 0);
   };
   return (
     <header className="hok-desktop-header">
       <div className="hok-desktop-header-inner">
+
         {/* Left */}
         <div className="hok-desktop-header-left">
           <div
@@ -83,30 +70,29 @@ const DesktopHeader = ({ onSearchOpen }) => {
             className="hok-desktop-header-logo-img"
           />
 
-          <span className="hok-desktop-header-wordmark">House of Kaira</span>
+          <span className="hok-desktop-header-wordmark">
+            House of Kaira
+          </span>
         </div>
 
         {/* Right */}
         <div className="hok-desktop-header-right">
+
           <button
-            className="hok-desktop-header-btn hok-desktop-header-cart-wrap"
+            className="hok-desktop-header-btn hok-desktop-header-wishlist-wrap"
             aria-label="Wishlist"
             onClick={handleWishlistClick}
           >
-            {wishlistCount > 0 && !isWishlistPage && (
-              <span className="hok-desktop-header-badge">{wishlistCount}</span>
+            {wishlistCount > 0 && (
+              <span className="hok-desktop-header-wishlist-badge">
+                {wishlistCount}
+              </span>
             )}
-            <svg
-              viewBox="0 0 24 24"
-              style={{
-                fill: wishlistItems.length > 0 ? "#B85C38" : "none",
-                stroke: wishlistItems.length > 0 ? "#B85C38" : "currentColor",
-              }}
-            >
+            <svg viewBox="0 0 24 24">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
 
-            <span>Wishlist</span>
+            <span>Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ""}</span>
           </button>
 
           <button
@@ -114,9 +100,7 @@ const DesktopHeader = ({ onSearchOpen }) => {
             aria-label="Bag"
             onClick={handleBagClick}
           >
-            {cartCount > 0 && !isCartPage && (
-              <span className="hok-desktop-header-badge">{cartCount}</span>
-            )}
+            <span className="hok-desktop-header-cart-dot" />
 
             <svg viewBox="0 0 24 24">
               <path d="M6 2h12l3 4v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6l3-4z" />
@@ -143,12 +127,9 @@ const DesktopHeader = ({ onSearchOpen }) => {
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             </svg>
 
-            <span>
-              {isAuthenticated && user?.name
-                ? user.name.split(" ")[0]
-                : "Account"}
-            </span>
+            <span>{isAuthenticated && user?.name ? user.name.split(' ')[0] : 'Account'}</span>
           </button>
+
         </div>
       </div>
     </header>

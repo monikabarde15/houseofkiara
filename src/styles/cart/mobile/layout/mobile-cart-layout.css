@@ -2,9 +2,10 @@
   width: 100%;
   max-width: 430px;
   margin: 0 auto;
-  background: #fffffb;
+  background: #FFFFFB;
   min-height: 100vh;
 }
+
 
 .mobile-cart-content {
   padding: 0 16px 120px;

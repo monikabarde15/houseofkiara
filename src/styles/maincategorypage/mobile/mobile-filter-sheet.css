@@ -14,12 +14,8 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ===== SHEET CONTAINER - Spec 17.2 ===== */
@@ -28,7 +24,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: #fffefb;
+  background: #FFFEFB;
   border-radius: 16px 16px 0 0;
   max-height: 85vh;
   display: flex;
@@ -38,12 +34,8 @@
 }
 
 @keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
 /* ===== DRAG HANDLE  ===== */
@@ -51,14 +43,14 @@
   width: 36px;
   height: 4px;
   border-radius: 2px;
-  background: #e8e0d4;
+  background: #E8E0D4;
   margin: 12px auto 0;
 }
 
 /* ===== HEADER - Spec 17.4 ===== */
 .mob-filter-sheet__header {
   padding: 16px 20px;
-  border-bottom: 1px solid #f0eae0;
+  border-bottom: 1px solid #F0EAE0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -71,7 +63,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   font-weight: 500;
-  color: #1a1612;
+  color: #1A1612;
 }
 
 .mob-filter-sheet__clear-btn {
@@ -79,7 +71,7 @@
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #8a7e72;
+  color: #8A7E72;
   background: none;
   border: none;
   min-height: 36px;
@@ -89,7 +81,7 @@
 }
 
 .mob-filter-sheet__clear-btn:active {
-  color: #b85c38;
+  color: #B85C38;
 }
 
 /* ===== BODY  ===== */
@@ -102,7 +94,7 @@
 
 /* ===== FILTER GROUP ACCORDION - Spec 17.7 ===== */
 .mob-filter-group {
-  border-bottom: 1px solid #f0eae0;
+  border-bottom: 1px solid #F0EAE0;
 }
 
 .mob-filter-group__header {
@@ -117,7 +109,7 @@
 }
 
 .mob-filter-group__header:active {
-  background: #faf7f2;
+  background: #FAF7F2;
 }
 
 .mob-filter-group__label {
@@ -125,13 +117,13 @@
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #1a1612;
+  color: #1A1612;
 }
 
 .mob-filter-group__chevron {
   width: 12px;
   height: 12px;
-  stroke: #8a7e72;
+  stroke: #8A7E72;
   fill: none;
   stroke-width: 1.5;
   stroke-linecap: round;
@@ -162,14 +154,14 @@
 
 .mob-filter-chip {
   padding: 8px 14px;
-  border: 1px solid #e8e0d4;
+  border: 1px solid #E8E0D4;
   border-radius: 1px;
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   min-height: 36px;
   /* font-weight: 400; */
   background: transparent;
-  color: #1a1612;
+  color: #1A1612;
   white-space: nowrap;
   cursor: pointer;
   transition: all 0.15s;
@@ -177,35 +169,35 @@
 }
 
 .mob-filter-chip:active {
-  background: #faf7f2;
+  background: #FAF7F2;
 }
 
 /* Rent active state */
 .mob-filter-chip.rent.active {
-  background: #1a1612;
-  color: #d4c5b0;
-  border-color: #1a1612;
+  background: #1A1612;
+  color: #D4C5B0;
+  border-color: #1A1612;
 }
 
 /* Preloved active state */
 .mob-filter-chip.preloved.active-pre {
-  background: #b85c38;
-  color: #ffffff;
-  border-color: #b85c38;
+  background: #B85C38;
+  color: #FFFFFF;
+  border-color: #B85C38;
 }
 
 /* New active state */
 .mob-filter-chip.new.active-new {
-  background: #6b7e5a;
-  color: #ffffff;
-  border-color: #6b7e5a;
+  background: #6B7E5A;
+  color: #FFFFFF;
+  border-color: #6B7E5A;
 }
 
 /* Generic active state (Category, Occasion, Designer) */
 .mob-filter-chip.active {
-  background: #1a1612;
-  color: #d4c5b0;
-  border-color: #1a1612;
+  background: #1A1612;
+  color: #D4C5B0;
+  border-color: #1A1612;
 }
 
 /* ===== PRICE RANGE INPUTS  ===== */
@@ -221,26 +213,26 @@
   flex: 1;
   min-width: 0;
   padding: 10px;
-  border: 1px solid #e8e0d4;
+  border: 1px solid #E8E0D4;
   border-radius: 1px;
   font-family: "DM Sans", sans-serif;
   font-size: 16px;
   font-weight: 400;
-  color: #1a1612;
-  background: #faf7f2;
+  color: #1A1612;
+  background: #FAF7F2;
   min-height: 44px;
   outline: none;
   box-sizing: border-box;
 }
 
 .mob-price-input:focus {
-  border-color: #c9a96e;
+  border-color: #C9A96E;
 }
 
 .mob-price-separator {
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
-  color: #8a7e72;
+  color: #8A7E72;
   flex-shrink: 0;
 }
 
@@ -248,21 +240,21 @@
 .mob-date-input {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #e8e0d4;
+  border: 1px solid #E8E0D4;
   border-radius: 1px;
   font-family: "DM Sans", sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: #1a1612;
+  color: #1A1612;
   letter-spacing: 0.02em;
-  background: #faf7f2;
+  background: #FAF7F2;
   min-height: 40px;
   margin-bottom: 8px;
   outline: none;
 }
 
 .mob-date-input:focus {
-  border-color: #c9a96e;
+  border-color: #C9A96E;
 }
 
 .mob-date-input:last-child {
@@ -279,13 +271,13 @@
 
 .mob-size-chip {
   padding: 10px 4px;
-  border: 1px solid #e8e0d4;
+  border: 1px solid #E8E0D4;
   border-radius: 1px;
   text-align: center;
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   font-weight: 400;
-  color: #1a1612;
+  color: #1A1612;
   background: transparent;
   min-height: 40px;
   cursor: pointer;
@@ -294,13 +286,13 @@
 }
 
 .mob-size-chip:active {
-  background: #faf7f2;
+  background: #FAF7F2;
 }
 
 .mob-size-chip.active {
-  background: #1a1612;
-  color: #d4c5b0;
-  border-color: #1a1612;
+  background: #1A1612;
+  color: #D4C5B0;
+  border-color: #1A1612;
 }
 
 /* ===== COLOUR SWATCHES - Spec 18.8 ===== */
@@ -322,7 +314,7 @@
 }
 
 .mob-swatch.active {
-  border-color: #1a1612;
+    border-color: #1A1612;
 }
 
 .mob-swatch:active {
@@ -336,20 +328,20 @@
   gap: 10px;
   padding: 16px 20px;
   padding-bottom: max(16px, env(safe-area-inset-bottom));
-  border-top: 1px solid #f0eae0;
+  border-top: 1px solid #F0EAE0;
   flex-shrink: 0;
 }
 
 .mob-filter-sheet__reset-btn {
   padding: 14px;
-  border: 1px solid #e8e0d4;
+  border: 1px solid #E8E0D4;
   border-radius: 1px;
   background: transparent;
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #8a7e72;
+  color: #8A7E72;
   min-height: 48px;
   cursor: pointer;
   transition: all 0.15s;
@@ -357,19 +349,19 @@
 }
 
 .mob-filter-sheet__reset-btn:active {
-  background: #faf7f2;
+  background: #FAF7F2;
 }
 
 .mob-filter-sheet__apply-btn {
   padding: 14px;
   border: none;
   border-radius: 1px;
-  background: #1a1612;
+  background: #1A1612;
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: #FFFFFF;
   min-height: 48px;
   cursor: pointer;
   transition: all 0.15s;
@@ -377,5 +369,5 @@
 }
 
 .mob-filter-sheet__apply-btn:active {
-  background: #2e2520;
+  background: #2E2520;
 }

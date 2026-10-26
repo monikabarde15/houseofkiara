@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../../styles/maincategorypage/mobile/mobile-filter-sheet.css";
 
-const MobileFilterSheet = ({
-  isOpen,
-  onClose,
-  onApply,
-  filters,
-  setFilters,
-}) => {
+const MobileFilterSheet = ({ isOpen, onClose, onApply, filters, setFilters }) => {
   // Local state for filter selections (resets when sheet opens)
   const [localFilters, setLocalFilters] = useState({
     rentType: [],
@@ -19,19 +13,19 @@ const MobileFilterSheet = ({
     availabilityFrom: "",
     availabilityTo: "",
     size: [],
-    colour: [],
+    colour: []
   });
 
   // Accordion open/close states ( Groups 1-4 open, 5-8 closed)
   const [openGroups, setOpenGroups] = useState({
-    shopBy: true, // Group 1 - Open
-    category: true, // Group 2 - Open
-    occasion: true, // Group 3 - Open
-    designer: true, // Group 4 - Open
-    price: false, // Group 5 - Closed
+    shopBy: true,      // Group 1 - Open
+    category: true,    // Group 2 - Open
+    occasion: true,    // Group 3 - Open
+    designer: true,    // Group 4 - Open
+    price: false,      // Group 5 - Closed
     availability: false, // Group 6 - Closed
-    size: false, // Group 7 - Closed
-    colour: false, // Group 8 - Closed
+    size: false,       // Group 7 - Closed
+    colour: false      // Group 8 - Closed
   });
 
   // Check if Rent mode is selected (for showing Availability group - Option B)
@@ -46,53 +40,52 @@ const MobileFilterSheet = ({
         occasion: filters.occasion || [],
         designer: filters.designer || [],
         priceMin: filters.budget?.min > 0 ? String(filters.budget.min) : "",
-        priceMax:
-          filters.budget?.max !== Infinity ? String(filters.budget.max) : "",
+        priceMax: filters.budget?.max !== Infinity ? String(filters.budget.max) : "",
         availabilityFrom: filters.availabilityFrom || "",
         availabilityTo: filters.availabilityTo || "",
         size: filters.size || [],
-        colour: filters.colour || [],
+        colour: filters.colour || []
       });
     }
   }, [isOpen, filters]);
 
   // Toggle accordion group
   const toggleGroup = (group) => {
-    setOpenGroups((prev) => ({ ...prev, [group]: !prev[group] }));
+    setOpenGroups(prev => ({ ...prev, [group]: !prev[group] }));
   };
 
   // Toggle chip selection (multi-select)
   const toggleChip = (category, value) => {
-    setLocalFilters((prev) => ({
+    setLocalFilters(prev => ({
       ...prev,
       [category]: prev[category].includes(value)
-        ? prev[category].filter((v) => v !== value)
-        : [...prev[category], value],
+        ? prev[category].filter(v => v !== value)
+        : [...prev[category], value]
     }));
   };
 
   // Handle price input change
   const handlePriceChange = (type, value) => {
-    setLocalFilters((prev) => ({ ...prev, [type]: value }));
+    setLocalFilters(prev => ({ ...prev, [type]: value }));
   };
 
   // Handle size chip toggle
   const toggleSize = (size) => {
-    setLocalFilters((prev) => ({
+    setLocalFilters(prev => ({
       ...prev,
       size: prev.size.includes(size)
-        ? prev.size.filter((s) => s !== size)
-        : [...prev.size, size],
+        ? prev.size.filter(s => s !== size)
+        : [...prev.size, size]
     }));
   };
 
   // Handle colour swatch toggle
   const toggleColour = (colour) => {
-    setLocalFilters((prev) => ({
+    setLocalFilters(prev => ({
       ...prev,
       colour: prev.colour.includes(colour)
-        ? prev.colour.filter((c) => c !== colour)
-        : [...prev.colour, colour],
+        ? prev.colour.filter(c => c !== colour)
+        : [...prev.colour, colour]
     }));
   };
 
@@ -108,7 +101,7 @@ const MobileFilterSheet = ({
       availabilityFrom: "",
       availabilityTo: "",
       size: [],
-      colour: [],
+      colour: []
     });
   };
 
@@ -121,12 +114,12 @@ const MobileFilterSheet = ({
       designer: localFilters.designer,
       budget: {
         min: localFilters.priceMin ? parseInt(localFilters.priceMin) : 0,
-        max: localFilters.priceMax ? parseInt(localFilters.priceMax) : Infinity,
+        max: localFilters.priceMax ? parseInt(localFilters.priceMax) : Infinity
       },
       availabilityFrom: localFilters.availabilityFrom,
       availabilityTo: localFilters.availabilityTo,
       size: localFilters.size,
-      colour: localFilters.colour,
+      colour: localFilters.colour
     };
     setFilters(appliedFilters);
     onApply();
@@ -141,6 +134,7 @@ const MobileFilterSheet = ({
 
       {/* Filter Sheet  */}
       <div className="mob-filter-sheet">
+        
         {/* Drag Handle - */}
         <div className="mob-filter-sheet__handle" />
 
@@ -154,23 +148,16 @@ const MobileFilterSheet = ({
 
         {/* Body  */}
         <div className="mob-filter-sheet__body">
+          
           {/* GROUP 1: Shop by  */}
           <div className="mob-filter-group">
-            <div
-              className="mob-filter-group__header"
-              onClick={() => toggleGroup("shopBy")}
-            >
+            <div className="mob-filter-group__header" onClick={() => toggleGroup("shopBy")}>
               <span className="mob-filter-group__label">Shop by</span>
-              <svg
-                className={`mob-filter-group__chevron ${openGroups.shopBy ? "open" : ""}`}
-                viewBox="0 0 24 24"
-              >
+              <svg className={`mob-filter-group__chevron ${openGroups.shopBy ? "open" : ""}`} viewBox="0 0 24 24">
                 <polyline points="18 15 12 9 6 15" />
               </svg>
             </div>
-            <div
-              className={`mob-filter-group__body ${openGroups.shopBy ? "open" : ""}`}
-            >
+            <div className={`mob-filter-group__body ${openGroups.shopBy ? "open" : ""}`}>
               <div className="mob-filter-chips">
                 <button
                   className={`mob-filter-chip rent ${localFilters.rentType.includes("rent") ? "active" : ""}`}
@@ -196,31 +183,15 @@ const MobileFilterSheet = ({
 
           {/* GROUP 2: Category  */}
           <div className="mob-filter-group">
-            <div
-              className="mob-filter-group__header"
-              onClick={() => toggleGroup("category")}
-            >
+            <div className="mob-filter-group__header" onClick={() => toggleGroup("category")}>
               <span className="mob-filter-group__label">Category</span>
-              <svg
-                className={`mob-filter-group__chevron ${openGroups.category ? "open" : ""}`}
-                viewBox="0 0 24 24"
-              >
+              <svg className={`mob-filter-group__chevron ${openGroups.category ? "open" : ""}`} viewBox="0 0 24 24">
                 <polyline points="18 15 12 9 6 15" />
               </svg>
             </div>
-            <div
-              className={`mob-filter-group__body ${openGroups.category ? "open" : ""}`}
-            >
+            <div className={`mob-filter-group__body ${openGroups.category ? "open" : ""}`}>
               <div className="mob-filter-chips">
-                {[
-                  "Bridal Lehengas",
-                  "Sarees",
-                  "Anarkalis",
-                  "Sharara Sets",
-                  "Sherwanis",
-                  "Kurta Sets",
-                  "Gowns",
-                ].map((cat) => (
+                {["Bridal Lehengas", "Sarees", "Anarkalis", "Sharara Sets", "Sherwanis", "Kurta Sets", "Gowns"].map(cat => (
                   <button
                     key={cat}
                     className={`mob-filter-chip ${localFilters.category.includes(cat) ? "active" : ""}`}
@@ -235,31 +206,15 @@ const MobileFilterSheet = ({
 
           {/* GROUP 3: Occasion  */}
           <div className="mob-filter-group">
-            <div
-              className="mob-filter-group__header"
-              onClick={() => toggleGroup("occasion")}
-            >
+            <div className="mob-filter-group__header" onClick={() => toggleGroup("occasion")}>
               <span className="mob-filter-group__label">Occasion</span>
-              <svg
-                className={`mob-filter-group__chevron ${openGroups.occasion ? "open" : ""}`}
-                viewBox="0 0 24 24"
-              >
+              <svg className={`mob-filter-group__chevron ${openGroups.occasion ? "open" : ""}`} viewBox="0 0 24 24">
                 <polyline points="18 15 12 9 6 15" />
               </svg>
             </div>
-            <div
-              className={`mob-filter-group__body ${openGroups.occasion ? "open" : ""}`}
-            >
+            <div className={`mob-filter-group__body ${openGroups.occasion ? "open" : ""}`}>
               <div className="mob-filter-chips">
-                {[
-                  "Bridal",
-                  "Wedding Guest",
-                  "Mehendi & Sangeet",
-                  "Festive",
-                  "Cocktail",
-                  "Reception",
-                  "Groom",
-                ].map((occ) => (
+                {["Bridal", "Wedding Guest", "Mehendi & Sangeet", "Festive", "Cocktail", "Reception", "Groom"].map(occ => (
                   <button
                     key={occ}
                     className={`mob-filter-chip ${localFilters.occasion.includes(occ) ? "active" : ""}`}
@@ -274,31 +229,15 @@ const MobileFilterSheet = ({
 
           {/* GROUP 4: Designer */}
           <div className="mob-filter-group">
-            <div
-              className="mob-filter-group__header"
-              onClick={() => toggleGroup("designer")}
-            >
+            <div className="mob-filter-group__header" onClick={() => toggleGroup("designer")}>
               <span className="mob-filter-group__label">Designer</span>
-              <svg
-                className={`mob-filter-group__chevron ${openGroups.designer ? "open" : ""}`}
-                viewBox="0 0 24 24"
-              >
+              <svg className={`mob-filter-group__chevron ${openGroups.designer ? "open" : ""}`} viewBox="0 0 24 24">
                 <polyline points="18 15 12 9 6 15" />
               </svg>
             </div>
-            <div
-              className={`mob-filter-group__body ${openGroups.designer ? "open" : ""}`}
-            >
+            <div className={`mob-filter-group__body ${openGroups.designer ? "open" : ""}`}>
               <div className="mob-filter-chips">
-                {[
-                  "Sabyasachi",
-                  "Manish Malhotra",
-                  "Anita Dongre",
-                  "Tarun Tahiliani",
-                  "Raw Mango",
-                  "Torani",
-                  "Rimzim Dadu",
-                ].map((des) => (
+                {["Sabyasachi", "Manish Malhotra", "Anita Dongre", "Tarun Tahiliani", "Raw Mango", "Torani", "Rimzim Dadu"].map(des => (
                   <button
                     key={des}
                     className={`mob-filter-chip ${localFilters.designer.includes(des) ? "active" : ""}`}
@@ -313,30 +252,20 @@ const MobileFilterSheet = ({
 
           {/* GROUP 5: Price Range  */}
           <div className="mob-filter-group">
-            <div
-              className="mob-filter-group__header"
-              onClick={() => toggleGroup("price")}
-            >
+            <div className="mob-filter-group__header" onClick={() => toggleGroup("price")}>
               <span className="mob-filter-group__label">Price Range</span>
-              <svg
-                className={`mob-filter-group__chevron ${openGroups.price ? "open" : ""}`}
-                viewBox="0 0 24 24"
-              >
+              <svg className={`mob-filter-group__chevron ${openGroups.price ? "open" : ""}`} viewBox="0 0 24 24">
                 <polyline points="18 15 12 9 6 15" />
               </svg>
             </div>
-            <div
-              className={`mob-filter-group__body ${openGroups.price ? "open" : ""}`}
-            >
+            <div className={`mob-filter-group__body ${openGroups.price ? "open" : ""}`}>
               <div className="mob-price-inputs">
                 <input
                   type="text"
                   className="mob-price-input"
                   placeholder="Min"
                   value={localFilters.priceMin}
-                  onChange={(e) =>
-                    handlePriceChange("priceMin", e.target.value)
-                  }
+                  onChange={(e) => handlePriceChange("priceMin", e.target.value)}
                 />
                 <span className="mob-price-separator">—</span>
                 <input
@@ -344,9 +273,7 @@ const MobileFilterSheet = ({
                   className="mob-price-input"
                   placeholder="Max"
                   value={localFilters.priceMax}
-                  onChange={(e) =>
-                    handlePriceChange("priceMax", e.target.value)
-                  }
+                  onChange={(e) => handlePriceChange("priceMax", e.target.value)}
                 />
               </div>
             </div>
@@ -355,37 +282,25 @@ const MobileFilterSheet = ({
           {/* GROUP 6: Availability  (Only shown when Rent selected - Option B) */}
           {isRentSelected && (
             <div className="mob-filter-group">
-              <div
-                className="mob-filter-group__header"
-                onClick={() => toggleGroup("availability")}
-              >
+              <div className="mob-filter-group__header" onClick={() => toggleGroup("availability")}>
                 <span className="mob-filter-group__label">Availability</span>
-                <svg
-                  className={`mob-filter-group__chevron ${openGroups.availability ? "open" : ""}`}
-                  viewBox="0 0 24 24"
-                >
+                <svg className={`mob-filter-group__chevron ${openGroups.availability ? "open" : ""}`} viewBox="0 0 24 24">
                   <polyline points="18 15 12 9 6 15" />
                 </svg>
               </div>
-              <div
-                className={`mob-filter-group__body ${openGroups.availability ? "open" : ""}`}
-              >
+              <div className={`mob-filter-group__body ${openGroups.availability ? "open" : ""}`}>
                 <input
                   type="date"
                   className="mob-date-input"
                   value={localFilters.availabilityFrom}
-                  onChange={(e) =>
-                    handlePriceChange("availabilityFrom", e.target.value)
-                  }
+                  onChange={(e) => handlePriceChange("availabilityFrom", e.target.value)}
                   placeholder="Available from"
                 />
                 <input
                   type="date"
                   className="mob-date-input"
                   value={localFilters.availabilityTo}
-                  onChange={(e) =>
-                    handlePriceChange("availabilityTo", e.target.value)
-                  }
+                  onChange={(e) => handlePriceChange("availabilityTo", e.target.value)}
                   placeholder="Available until"
                 />
               </div>
@@ -394,54 +309,36 @@ const MobileFilterSheet = ({
 
           {/* GROUP 7: Size  */}
           <div className="mob-filter-group">
-            <div
-              className="mob-filter-group__header"
-              onClick={() => toggleGroup("size")}
-            >
+            <div className="mob-filter-group__header" onClick={() => toggleGroup("size")}>
               <span className="mob-filter-group__label">Size</span>
-              <svg
-                className={`mob-filter-group__chevron ${openGroups.size ? "open" : ""}`}
-                viewBox="0 0 24 24"
-              >
+              <svg className={`mob-filter-group__chevron ${openGroups.size ? "open" : ""}`} viewBox="0 0 24 24">
                 <polyline points="18 15 12 9 6 15" />
               </svg>
             </div>
-            <div
-              className={`mob-filter-group__body ${openGroups.size ? "open" : ""}`}
-            >
+            <div className={`mob-filter-group__body ${openGroups.size ? "open" : ""}`}>
               <div className="mob-size-grid">
-                {["XS", "S", "M", "L", "XL", "XXL", "Free", "Custom"].map(
-                  (sz) => (
-                    <button
-                      key={sz}
-                      className={`mob-size-chip ${localFilters.size.includes(sz) ? "active" : ""}`}
-                      onClick={() => toggleSize(sz)}
-                    >
-                      {sz}
-                    </button>
-                  ),
-                )}
+                {["XS", "S", "M", "L", "XL", "XXL", "Free", "Custom"].map(sz => (
+                  <button
+                    key={sz}
+                    className={`mob-size-chip ${localFilters.size.includes(sz) ? "active" : ""}`}
+                    onClick={() => toggleSize(sz)}
+                  >
+                    {sz}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
 
           {/* GROUP 8: Colour  */}
           <div className="mob-filter-group">
-            <div
-              className="mob-filter-group__header"
-              onClick={() => toggleGroup("colour")}
-            >
+            <div className="mob-filter-group__header" onClick={() => toggleGroup("colour")}>
               <span className="mob-filter-group__label">Colour</span>
-              <svg
-                className={`mob-filter-group__chevron ${openGroups.colour ? "open" : ""}`}
-                viewBox="0 0 24 24"
-              >
+              <svg className={`mob-filter-group__chevron ${openGroups.colour ? "open" : ""}`} viewBox="0 0 24 24">
                 <polyline points="18 15 12 9 6 15" />
               </svg>
             </div>
-            <div
-              className={`mob-filter-group__body ${openGroups.colour ? "open" : ""}`}
-            >
+            <div className={`mob-filter-group__body ${openGroups.colour ? "open" : ""}`}>
               <div className="mob-swatch-row">
                 {[
                   { name: "Crimson", color: "#B22222" },
@@ -455,16 +352,14 @@ const MobileFilterSheet = ({
                   { name: "Champagne", color: "#C9A96E" },
                   { name: "Ivory", color: "#F5EDD8", hasBorder: true },
                   { name: "Charcoal", color: "#1A1612", hasBorder: true },
-                  { name: "White", color: "#FFFFFF", hasBorder: true },
-                ].map((swatch) => (
+                  { name: "White", color: "#FFFFFF", hasBorder: true }
+                ].map(swatch => (
                   <div
                     key={swatch.name}
                     className={`mob-swatch ${localFilters.colour.includes(swatch.name) ? "active" : ""}`}
-                    style={{
+                    style={{ 
                       backgroundColor: swatch.color,
-                      border: swatch.hasBorder
-                        ? "1.5px solid #E8E0D4"
-                        : "2px solid transparent",
+                      border: swatch.hasBorder ? "1.5px solid #E8E0D4" : "2px solid transparent"
                     }}
                     onClick={() => toggleColour(swatch.name)}
                   />
@@ -472,6 +367,7 @@ const MobileFilterSheet = ({
               </div>
             </div>
           </div>
+
         </div>
 
         {/* Footer  */}
@@ -483,6 +379,7 @@ const MobileFilterSheet = ({
             Show Results
           </button>
         </div>
+
       </div>
     </>
   );

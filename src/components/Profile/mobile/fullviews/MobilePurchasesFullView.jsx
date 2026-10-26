@@ -1,43 +1,11 @@
-import React, { useState } from "react";
-import MobileFullViewBar from "../common/MobileFullViewBar";
-import MobilePurchaseRow from "../rows/MobilePurchaseRow";
+import React, { useState } from 'react';
+import MobileFullViewBar from '../common/MobileFullViewBar';
+import MobilePurchaseRow from '../rows/MobilePurchaseRow';
 import "../../../../styles/Profile/mobile/fullviews/MobilePurchasesFullView.css";
 
-const MobilePurchasesFullView = ({ onBack }) => {
-  const [purchaseOrders] = useState([
-    {
-      id: "#HOK-030325-007",
-      piece: "Coral Sharara Suit",
-      type: "Preloved",
-      typeDetail: "Preloved · Excellent condition",
-      status: "Delivered",
-      amount: 12500,
-    },
-    {
-      id: "#HOK-100525-011",
-      piece: "Sage Silk Dupatta Set",
-      type: "Buy New",
-      typeDetail: "Buy New · Anju Modi",
-      status: "Processing",
-      amount: 18000,
-    },
-    {
-      id: "#HOK-180125-008",
-      piece: "Ivory Silk Kurta Set",
-      type: "Buy New",
-      typeDetail: "Buy New · Ritu Kumar",
-      status: "Delivered",
-      amount: 8400,
-    },
-    {
-      id: "#HOK-021124-009",
-      piece: "Navy Chanderi Kurta",
-      type: "Buy New",
-      typeDetail: "Buy New · Sabyasachi",
-      status: "Cancelled",
-      amount: 14500,
-    },
-  ]);
+const MobilePurchasesFullView = ({ purchases, onBack }) => {
+  const purchaseOrders = Array.isArray(purchases) ? purchases : [];
+  const countStr = `${purchaseOrders.length} order${purchaseOrders.length === 1 ? '' : 's'}`;
 
   const handleRowClick = (id) => {
     console.log("Open purchase detail sheet for:", id);
@@ -45,21 +13,26 @@ const MobilePurchasesFullView = ({ onBack }) => {
 
   return (
     <div className="profile-mobile-fv-container">
-      <MobileFullViewBar
-        title="My Purchases"
-        count="4 orders"
-        onBack={onBack}
-      />
+      <MobileFullViewBar title="My Purchases" count={countStr} onBack={onBack} />
       <div className="profile-mobile-fv-content">
-        <div className="profile-mobile-item-block">
-          {purchaseOrders.map((order) => (
-            <MobilePurchaseRow
-              key={order.id}
-              order={order}
-              onClick={handleRowClick}
-            />
-          ))}
-        </div>
+        {purchaseOrders.length === 0 ? (
+          <div className="profile-sub-empty" style={{ margin: "20px" }}>
+            <div className="profile-se-h">No purchase orders yet</div>
+            <div className="profile-se-s">
+              Discover our curated preloved and ready-to-ship new designer couture.
+            </div>
+          </div>
+        ) : (
+          <div className="profile-mobile-item-block">
+            {purchaseOrders.map((order) => (
+              <MobilePurchaseRow
+                key={order.id}
+                order={order}
+                onClick={handleRowClick}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

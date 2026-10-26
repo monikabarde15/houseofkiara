@@ -3,7 +3,8 @@
 import PageTitle from "./PageTitle";
 // import CheckoutSummary from "../summary/CheckoutSummary";
 import "../../../styles/checkout/layout/checkout-layout.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
 
 import ContactSection from "../sections/ContactSection";
 import AddressSection from "../sections/AddressSection";
@@ -17,59 +18,72 @@ import { useState, useEffect } from "react";
 import { calculateTotals } from "../../../utils/cart/calculateTotals";
 import OrderConfirmedOverlay from "../overlay/OrderConfirmedOverlay";
 
+
+
 const CheckoutLayout = () => {
+
   const [submitCount, setSubmitCount] = useState(0);
   const [fieldErrors, setFieldErrors] = useState({});
   const [isOrderConfirmed, setIsOrderConfirmed] = useState(false);
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
-  const [completedOrderData, setCompletedOrderData] = useState(null);
+  const [placedOrderInfo, setPlacedOrderInfo] = useState(null);
 
   const location = useLocation();
-  const navigate = useNavigate();
 
   const checkoutData =
-    location.state || JSON.parse(localStorage.getItem("checkoutData")) || {};
+    location.state ||
+    JSON.parse(localStorage.getItem("checkoutData")) ||
+    {};
 
   const checkoutItems = checkoutData.items || [];
 
-  const hasRentalItem = checkoutItems.some((item) => item.type === "rental");
+  const hasRentalItem = checkoutItems.some(
+    item => item.type === "rental" || item.type === "rent"
+  );
 
   const activePromo = checkoutData.activePromo || null;
 
   const [deliveryType, setDeliveryType] = useState("standard");
 
-  const totals = calculateTotals(checkoutItems, activePromo, deliveryType);
-
-  useEffect(() => {
-    if (checkoutItems.length === 0 && !isOrderConfirmed) {
-      navigate("/products", { replace: true });
-    }
-  }, [checkoutItems.length, isOrderConfirmed, navigate]);
+  const totals = calculateTotals(
+    checkoutItems,
+    activePromo,
+    deliveryType
+  );
 
   const handlePlaceOrder = () => {
+
     /* trigger validation */
-    setSubmitCount((prev) => prev + 1);
+    setSubmitCount(prev => prev + 1);
 
     /*
       wait for validation states
       to update before checking
     */
     setTimeout(() => {
-      const hasFieldErrors = Object.values(fieldErrors).some(Boolean);
+
+      const hasFieldErrors =
+        Object.values(fieldErrors)
+          .some(Boolean);
 
       /*
         CONSENT ERRORS
       */
-      const consentErrors = document.querySelectorAll(
-        ".checkout-consent-row.has-error",
-      );
+      const consentErrors =
+        document.querySelectorAll(
+          ".checkout-consent-row.has-error"
+        );
 
-      const hasConsentErrors = consentErrors.length > 0;
+      const hasConsentErrors =
+        consentErrors.length > 0;
 
       /*
         STOP FLOW
       */
-      if (hasFieldErrors || hasConsentErrors) {
+      if (
+        hasFieldErrors ||
+        hasConsentErrors
+      ) {
         return;
       }
 
@@ -78,96 +92,116 @@ const CheckoutLayout = () => {
       */
       setIsProcessingOrder(true);
 
-      const storeState = import("../../../store/checkoutStore").then((m) =>
-        m.default.getState(),
-      );
+      const storeState = import('../../../store/checkoutStore').then(m => m.default.getState());
       storeState.then(async (state) => {
+        const contact = state.contact;
         const address = state.address;
-        const addressString = `${address.address1}, ${address.city}, ${address.state} - ${address.pin}`;
+        const authState = (await import('../../../store/authStore')).default.getState();
+        const authUser = authState.user;
 
-        const authStore = await import("../../../store/authStore").then((m) =>
-          m.default.getState(),
-        );
-        const token = authStore.token;
+        const customerId = authUser?.customerId || authUser?._id || authUser?.id || undefined;
+        const customerEmail = contact.email || authUser?.email || "";
+        const customerPhone = contact.whatsapp || authUser?.phone || "";
+        const customerName = (contact.firstName || contact.lastName)
+          ? `${contact.firstName} ${contact.lastName}`.trim()
+          : (authUser?.name || "Customer");
 
-        if (!token) {
-          console.error("No token available for checkout");
-          setIsProcessingOrder(false);
-          return;
-        }
+        const orderId = `HOK-ORD-${Date.now()}`;
+        const firstItem = checkoutItems[0] || {};
+        const firstProduct = firstItem.product || firstItem;
+        const rootRentalStart = firstItem.rentalDates?.start || firstItem.booking?.deliveryDate || "";
+        const rootRentalEnd = firstItem.rentalDates?.end || firstItem.booking?.returnDate || "";
+        const firstProductImage =
+          (Array.isArray(firstProduct.images) && firstProduct.images[0]) ||
+          firstProduct.image ||
+          (Array.isArray(firstItem.images) && firstItem.images[0]) ||
+          firstItem.image ||
+          "";
+
+        const orderData = {
+          orderId,
+          customerId,
+          customerName,
+          customerEmail,
+          customerPhone,
+          customerCity: address.city,
+          customerState: address.state,
+          address: `${address.address1}, ${address.city}, ${address.state} - ${address.pin}`,
+          mode: hasRentalItem ? 'Rental' : 'Buy',
+          productName: firstProduct.title || firstProduct.name || firstItem.title || firstItem.name || "Designer Piece",
+          designer: firstProduct.designer || firstItem.designer || "House of Kaira",
+          image: firstProductImage,
+          rentalStartDate: rootRentalStart,
+          listerId: firstProduct.listerId || firstProduct.lister_id || firstItem.listerId || "",
+          listerName: firstProduct.listerName || firstProduct.lister_name || firstItem.listerName || "",
+          discount: activePromo ? (activePromo.discount || totals?.discount || 0) : 0,
+          promoCode: activePromo ? activePromo.code : '',
+          promoDiscount: activePromo ? (activePromo.discount || totals?.discount || 0) : 0,
+          priceBeforePromo: totals?.subtotal || totals?.itemTotal || 0,
+          grandTotal: totals?.grandTotal || 0,
+          orderValue: totals?.grandTotal || 0,
+          amount: totals?.grandTotal || 0,
+          items: checkoutItems.map(item => {
+            const p = item.product || item;
+            const img =
+              (Array.isArray(p.images) && p.images[0]) ||
+              p.image ||
+              (Array.isArray(item.images) && item.images[0]) ||
+              item.image ||
+              "";
+            return {
+              productId: p._id || p.productId || p.id || item.id || item._id,
+              productName: p.title || p.name || item.title || item.name || "Designer Piece",
+              designer: p.designer || item.designer || "House of Kaira",
+              listerId: p.listerId || p.lister_id || item.listerId || "",
+              listerName: p.listerName || p.lister_name || item.listerName || "",
+              mode: (item.type === 'rental' || item.type === 'rent') ? 'Rental' : (item.type === 'preloved' ? 'Preloved' : 'Buy'),
+              size: item.size || item.booking?.size || 'M',
+              quantity: item.quantity || 1,
+              rentalStartDate: item.rentalDates?.start || item.booking?.deliveryDate || "",
+              rentalEndDate: item.rentalDates?.end || item.booking?.returnDate || "",
+              amount: item.price || p.rentalPrice || p.price || 0,
+              image: img,
+            };
+          })
+        };
 
         try {
-          const backendUrl =
-            import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-          const res = await fetch("/api/customer/auth/orders/place", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              items: checkoutItems,
-              totals: totals,
-              address: addressString,
-              paymentMethod: state.paymentMethod,
-              activePromo: activePromo,
-            }),
+          const headers = { 'Content-Type': 'application/json' };
+          if (authState.token) {
+            headers['Authorization'] = `Bearer ${authState.token}`;
+          }
+          const res = await fetch('/api/orders', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(orderData)
           });
           const result = await res.json();
           if (result.success) {
-            // Clear checkout session
-            localStorage.removeItem("checkoutData");
-
-            // Clear cart
-            const cartStore = await import("../../../store/cartStore").then(
-              (m) => m.default.getState(),
-            );
-            cartStore.clearCart();
-
-            // Remove ordered items from wishlist
-            const wishlistStore =
-              await import("../../../store/wishlistStore").then((m) =>
-                m.default.getState(),
-              );
-            const wishlistItems = wishlistStore.items;
-
-            checkoutItems.forEach((item) => {
-              const id = item.id || item._id;
-              if (wishlistItems.includes(id)) {
-                wishlistStore.toggleWishlist(id);
-              }
-            });
-
-            // Update order stats
-            const authStore = await import("../../../store/authStore").then(
-              (m) => m.default.getState(),
-            );
-            authStore.fetchOrderStats();
-
-            // Store snapshot for overlay before clearing state
-            setCompletedOrderData({
-              items: checkoutItems,
-              totals: totals,
-              activePromo: activePromo
-            });
-
-            // Show confirmation overlay
-            setIsOrderConfirmed(true);
-            
-            // Clear React Router state to prevent back-button ordering
-            navigate("/checkout", { replace: true, state: null });
+            localStorage.removeItem('checkoutData');
+            try {
+              const cartStore = await import('../../../store/cartStore').then(m => m.default.getState());
+              cartStore.clearCart();
+            } catch (e) {}
           } else {
             console.error("Order failed:", result.message);
-            alert("Failed to place order: " + result.message);
           }
         } catch (error) {
           console.error("Order network error:", error);
-          alert("Network error while placing order.");
         } finally {
           setIsProcessingOrder(false);
+          setPlacedOrderInfo({
+            orderId,
+            customerName,
+            customerEmail,
+            mode: hasRentalItem ? 'Rental' : 'Buy',
+          });
+          setIsOrderConfirmed(true);
         }
       });
+
     }, 0);
+
   };
 
   const summaryErrors = Object.entries(fieldErrors)
@@ -177,6 +211,7 @@ const CheckoutLayout = () => {
   const errorCount = summaryErrors.length;
 
   useEffect(() => {
+
     /* only after first submit */
     if (submitCount === 0) return;
 
@@ -185,44 +220,65 @@ const CheckoutLayout = () => {
       take priority over consent errors
     */
     if (summaryErrors.length > 0) {
+
       const fieldMap = {
-        "First name (Contact & Account)": "first-name",
 
-        "Last name (Contact & Account)": "last-name",
+        "First name (Contact & Account)":
+          "first-name",
 
-        "Email address (Contact & Account)": "email-address",
+        "Last name (Contact & Account)":
+          "last-name",
 
-        "WhatsApp number (Contact & Account)": "whatsapp-number",
+        "Email address (Contact & Account)":
+          "email-address",
 
-        "Address line 1 (Delivery Address)": "address-line-1",
+        "WhatsApp number (Contact & Account)":
+          "whatsapp-number",
 
-        "City (Delivery Address)": "city",
+        "Address line 1 (Delivery Address)":
+          "address-line-1",
 
-        "State (Delivery Address)": "state",
+        "City (Delivery Address)":
+          "city",
 
-        "PIN code (Delivery Address)": "pin-code",
+        "State (Delivery Address)":
+          "state",
+
+        "PIN code (Delivery Address)":
+          "pin-code",
       };
 
-      const invalidTargets = summaryErrors
-        .map((errorKey) => {
-          const fieldId = fieldMap[errorKey];
+      const invalidTargets =
+        summaryErrors
+          .map((errorKey) => {
 
-          return document.getElementById(fieldId);
-        })
-        .filter(Boolean);
+            const fieldId =
+              fieldMap[errorKey];
+
+            return document.getElementById(fieldId);
+
+          })
+          .filter(Boolean);
+
 
       /*
         find top-most invalid field
       */
-      const firstInvalidField = invalidTargets.sort(
-        (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top,
-      )[0];
+      const firstInvalidField =
+        invalidTargets.sort(
+          (a, b) =>
+            a.getBoundingClientRect().top -
+            b.getBoundingClientRect().top
+        )[0];
+
 
       if (firstInvalidField) {
+
         firstInvalidField.scrollIntoView({
           behavior: "smooth",
           block: "center",
         });
+
       }
 
       return;
@@ -231,18 +287,25 @@ const CheckoutLayout = () => {
     /*
       CONSENT ERRORS ONLY
     */
-    const consentGroup = document.getElementById("consent-group");
+    const consentGroup =
+      document.getElementById(
+        "consent-group"
+      );
 
     if (consentGroup) {
+
       consentGroup.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
+
     }
+
   }, [submitCount]);
 
   return (
     <div className="checkout-layout">
+
       <PageTitle
         cartItems={checkoutItems}
         grandTotal={totals.grandTotal}
@@ -251,6 +314,7 @@ const CheckoutLayout = () => {
 
       {/* 4.2 Two-Column Grid */}
       <div className="checkout-layout__grid">
+
         {/* Left column — Fluid (1fr) */}
         <div className="checkout-layout__left">
           <ContactSection
@@ -283,15 +347,23 @@ const CheckoutLayout = () => {
             deliveryType={deliveryType}
           />
         </div>
+
+
       </div>
       <OrderConfirmedOverlay
         isOpen={isOrderConfirmed}
-        cartItems={completedOrderData?.items || checkoutItems}
-        activePromo={completedOrderData?.activePromo || activePromo}
-        totals={completedOrderData?.totals || totals}
-        onClose={() => setIsOrderConfirmed(false)}
+        cartItems={checkoutItems}
+        activePromo={activePromo}
+        totals={totals}
+        orderInfo={placedOrderInfo}
+        onClose={() =>
+          setIsOrderConfirmed(false)
+        }
       />
-      {hasRentalItem && <PolicyStrip />}
+      {hasRentalItem && (
+        <PolicyStrip />
+      )}
+
     </div>
   );
 };

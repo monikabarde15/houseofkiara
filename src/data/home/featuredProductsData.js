@@ -10,7 +10,8 @@ const featuredProductsData = {
 
   products: [
     {
-      id: 1,
+      id: "HOK-SAB-002",
+      sku: "HOK-SAB-002",
       designer: "Sabyasachi",
       name: "Gulabi Silk Bridal Lehenga",
       badge: "Rent",
@@ -24,7 +25,8 @@ const featuredProductsData = {
     },
 
     {
-      id: 2,
+      id: "HOK-MM-001",
+      sku: "HOK-MM-001",
       designer: "Manish Malhotra",
       name: "Ivory Embroidered Sherwani",
       badge: "Preloved",
@@ -37,7 +39,8 @@ const featuredProductsData = {
     },
 
     {
-      id: 3,
+      id: "HOK-TT-001",
+      sku: "HOK-TT-001",
       designer: "Tarun Tahiliani",
       name: "Midnight Blue Crepe Saree",
       badge: "New",
@@ -48,7 +51,8 @@ const featuredProductsData = {
     },
 
     {
-      id: 4,
+      id: "HOK-AD-001",
+      sku: "HOK-AD-001",
       designer: "Anita Dongre",
       name: "Rose Georgette Anarkali",
       badge: "Rent",

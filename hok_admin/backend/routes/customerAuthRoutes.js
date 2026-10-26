@@ -10,12 +10,15 @@ import {
   googleLogin,
   getMe,
   toggleWishlist,
+  removeFromWishlist,
   getWishlist,
+  getWishlistProducts,
   getMyOrders,
   getMyOrderById,
   placeOrder,
   cancelOrder,
   syncCart,
+  getCart,
 } from "../controllers/customerAuthController.js";
 import { requireCustomerAuth } from "../middleware/authMiddleware.js";
 
@@ -39,9 +42,13 @@ router.get("/me", requireCustomerAuth, getMe);
 
 // Customer Wishlist
 router.post("/wishlist/:productId", requireCustomerAuth, toggleWishlist);
+router.delete("/wishlist/:productId", requireCustomerAuth, removeFromWishlist);
+router.post("/wishlist/remove/:productId", requireCustomerAuth, removeFromWishlist);
 router.get("/wishlist", requireCustomerAuth, getWishlist);
+router.get("/wishlist/products", requireCustomerAuth, getWishlistProducts);
 
 // Customer Cart
+router.get("/cart", requireCustomerAuth, getCart);
 router.put("/cart", requireCustomerAuth, syncCart);
 
 // Customer Orders

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ShoppingBag } from "lucide-react";
 import useCartStore from "../../../../store/cartStore";
-import { makeProductDetail } from "../../../ProductList";
+import useWishlistStore from "../../../../store/wishlistStore";
 import { calculateTotals } from "../../../../utils/cart/calculateTotals";
 import "../../../../styles/cart/mobile/layout/mobile-cart-layout.css";
 
@@ -10,7 +11,6 @@ import CartHeader from "../../layout/CartHeader";
 
 // Section 5 - Cart Items Column components
 import ModeSeparator from "../../ui/ModeSeparator";
-import CartItemDesktop from "../../items/CartItemDesktop";
 import MobileCartItem from "../items/MobileCartItem";
 import PromoCode from "../../ui/PromoCode";
 import PolicyStrip from "../../ui/PolicyStrip";
@@ -21,23 +21,44 @@ import OrderSummary from "../../summary/OrderSummary";
 const MobileCartLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const incomingItem = location.state?.newItem;
 
-  const { items: storeItems, removeFromCart } = useCartStore();
+  const storeItems = useCartStore((state) => state.items);
+  const addToCart = useCartStore((state) => state.addToCart);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const fetchCart = useCartStore((state) => state.fetchCart);
 
-  const [cartItemsState, setCartItemsState] = useState(storeItems);
   const [activePromo, setActivePromo] = useState(null);
   const [removeTarget, setRemoveTarget] = useState(null);
 
+  // Sync cart from backend when mounting
   useEffect(() => {
-    setCartItemsState(storeItems);
-  }, [storeItems]);
+    fetchCart();
+  }, [fetchCart]);
 
-  const activeItems = cartItemsState.filter((item) => item.active !== false);
+  // Handle incoming item from PDP navigation state
+  useEffect(() => {
+    const incomingItem = location.state?.newItem;
+    if (incomingItem && incomingItem.product) {
+      addToCart(incomingItem.product, {
+        type: incomingItem.type || "rental",
+        price: incomingItem.price,
+        size: incomingItem.booking?.size,
+        color: incomingItem.booking?.color,
+        deliveryDate: incomingItem.booking?.deliveryDate,
+        eventDate: incomingItem.booking?.eventDate,
+        returnDate: incomingItem.booking?.returnDate,
+        rentalWindowDays: incomingItem.booking?.rentalWindowDays,
+      });
+      window.history.replaceState({}, "");
+    }
+  }, [location.state, addToCart]);
+
+  const activeItems = (storeItems || []).filter(item => item.active !== false);
   const totals = calculateTotals(activeItems, activePromo);
-  const hasRentalItem = activeItems.some((item) => item.type === "rental");
-  const visibleItems = cartItemsState.filter((item) => item.active !== false);
+  const hasRentalItem = activeItems.some(item => item.type === "rental" || item.type === "rent");
+  const visibleItems = activeItems;
   const { grandTotal = 0 } = totals || {};
+
   const handleOpenRemove = (item) => {
     setRemoveTarget(item);
   };
@@ -48,129 +69,146 @@ const MobileCartLayout = () => {
 
   const handleConfirmRemove = () => {
     if (!removeTarget) return;
-
-    setCartItemsState((prev) =>
-      prev.map((item) =>
-        item.id === removeTarget.id ? { ...item, removing: true } : item,
-      ),
-    );
-
-    setTimeout(() => {
-      removeFromCart(removeTarget.id);
-    }, 300);
-
+    removeFromCart(removeTarget.id);
     setRemoveTarget(null);
   };
 
   const handleWishlist = () => {
     if (!removeTarget) return;
-    const { toggleWishlist } = import("../../../../store/wishlistStore").then(
-      (m) => m.default.getState().toggleWishlist(removeTarget.id),
-    );
-    handleConfirmRemove();
+    const pid = removeTarget.product?._id || removeTarget.product?.productId || removeTarget.product?.id || removeTarget.id;
+    if (pid) {
+      useWishlistStore.getState().toggleWishlist(pid);
+    }
+    removeFromCart(removeTarget.id);
+    setRemoveTarget(null);
   };
 
   const handleCheckout = () => {
-    localStorage.setItem(
-      "checkoutData",
-      JSON.stringify({ items: activeItems, activePromo }),
-    );
-
-    const storeState = import("../../../../store/authStore").then((m) => {
-      const { isAuthenticated } = m.default.getState();
-      if (!isAuthenticated) {
-        import("react-hot-toast").then((toast) => {
-          toast.default("Please login to proceed to checkout", { icon: "🔒" });
-        });
-        navigate("/auth");
-        return;
-      }
-      navigate("/checkout", { state: { items: activeItems, activePromo } });
-    });
+    localStorage.setItem("checkoutData", JSON.stringify({ items: activeItems, activePromo }));
+    navigate("/checkout", { state: { items: activeItems, activePromo } });
   };
 
   return (
     <div className="mobile-cart-layout">
       <div className="mobile-cart-content">
-        <CartHeader cartItems={cartItemsState} />
+        <CartHeader cartItems={activeItems} />
 
-        {/* Cart Items - Section 5 */}
-        <div className="mobile-cart-items">
-          {["rental", "preloved", "new"].flatMap((type, i) => {
-            const items = visibleItems.filter((item) => item.type === type);
-            if (!items.length) return [];
-            return [
-              <ModeSeparator
-                key={`sep-${type}`}
-                type={type}
-                dataRise={i + 2}
-              />,
-              ...items.map((item) => (
-                <MobileCartItem
-                  key={item.id}
-                  item={item}
-                  onRemove={handleOpenRemove}
-                />
-              )),
-            ];
-          })}
-        </div>
-
-        {/* Promo Code - Section 6 */}
-        {activeItems.length > 0 ? (
+        {activeItems.length === 0 ? (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "64px 20px 120px 20px",
+            }}
+          >
+            <div
+              style={{
+                width: "56px",
+                height: "56px",
+                borderRadius: "50%",
+                border: "1px solid #E8D5B0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 16px auto",
+                color: "#B85C38",
+                background: "#FAF7F2",
+              }}
+            >
+              <ShoppingBag size={24} strokeWidth={1.3} />
+            </div>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "10px",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: "#8A7E72",
+                marginBottom: "8px",
+              }}
+            >
+              Your bag is empty
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: "30px",
+                fontWeight: "400",
+                color: "#1A1714",
+                marginBottom: "12px",
+              }}
+            >
+              Nothing in your <em style={{ fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>cart</em> yet
+            </h2>
+            <p
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "13px",
+                color: "#8A7E72",
+                lineHeight: "1.6",
+                marginBottom: "28px",
+              }}
+            >
+              Explore our collection of designer lehengas, sarees, and gowns to rent or buy.
+            </p>
+            <button
+              onClick={() => navigate("/products")}
+              style={{
+                background: "#1A1714",
+                color: "#FAF7F2",
+                padding: "12px 32px",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "11px",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                border: "none",
+                cursor: "pointer",
+                borderRadius: "2px",
+              }}
+            >
+              Explore Collection
+            </button>
+          </div>
+        ) : (
           <>
-            {activeItems.some(
-              (item) =>
-                item.product?.promoCode ||
-                item.product?.promo_code ||
-                item.product?.coupon ||
-                item.product?.hasPromo,
-            ) && (
-              <div data-rise="5">
-                <PromoCode onApply={setActivePromo} />
-              </div>
-            )}
+            {/* Cart Items - Section 5 */}
+            <div className="mobile-cart-items">
+              {["rental", "preloved", "new"].flatMap((type, i) => {
+                const items = visibleItems.filter(item => {
+                  const itemType = (item.type === "rent" || item.type === "rental") ? "rental" : item.type;
+                  return itemType === type;
+                });
+                if (!items.length) return [];
+                return [
+                  <ModeSeparator key={`sep-${type}`} type={type} dataRise={i + 2} />,
+                  ...items.map(item => (
+                    <MobileCartItem
+                      key={item.id} 
+                      item={item} 
+                      onRemove={handleOpenRemove} 
+                    />
+                  ))
+                ];
+              })}
+            </div>
+
+            {/* Promo Code - Section 6 */}
+            <div data-rise="5">
+              <PromoCode onApply={setActivePromo} subtotal={totals?.subtotal} />
+            </div>
 
             <OrderSummary
               cartItems={activeItems}
               activePromo={activePromo}
               onCheckout={handleCheckout}
             />
-          </>
-        ) : (
-          <div
-            className="empty-cart-message"
-            style={{
-              padding: "40px 20px",
-              textAlign: "center",
-              color: "var(--text-light)",
-            }}
-          >
-            <p>Your cart is empty.</p>
-            <button
-              onClick={() => navigate("/products")}
-              style={{
-                marginTop: "16px",
-                padding: "12px 24px",
-                background: "var(--primary-dark)",
-                color: "#fff",
-                border: "none",
-                cursor: "pointer",
-                letterSpacing: "1px",
-                textTransform: "uppercase",
-                fontSize: "12px",
-              }}
-            >
-              Continue Shopping
-            </button>
-          </div>
-        )}
 
-        {/* Policy Strip - Section 8 */}
-        {hasRentalItem && (
-          <div className="mobile-cart-policy">
-            <PolicyStrip />
-          </div>
+            {/* Policy Strip - Section 8 */}
+            {hasRentalItem && (
+              <div className="mobile-cart-policy">
+                <PolicyStrip />
+              </div>
+            )}
+          </>
         )}
 
         {/* Remove Dialog - Section 11 */}

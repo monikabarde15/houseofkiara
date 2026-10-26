@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { makeProductDetail } from "../../../ProductList";
+import { navigateToProductDetail } from "../../../../utils/productNavigation";
 import "../../../../styles/wishlist/cards/grid/grid-card-actions.css";
 
 const GridCardActions = ({ product, type, onOpenModal }) => {
@@ -10,31 +10,9 @@ const GridCardActions = ({ product, type, onOpenModal }) => {
     if (onOpenModal) onOpenModal(product, type);
   };
 
-  const handleViewProduct = (e) => {
+  const handleViewProductClick = (e) => {
     e.stopPropagation();
-    const item = product.originalData;
-    if (!item) return;
-
-    const productId = product.id;
-    const productData = makeProductDetail(item);
-
-    const { rent, preloved, isNew } = item;
-
-    if (rent && preloved) {
-      navigate(`/rentalandpreloved/${productId}`, {
-        state: { product: productData },
-      });
-    } else if (rent && isNew) {
-      navigate(`/rentalandbuy/${productId}`, {
-        state: { product: productData },
-      });
-    } else if (rent) {
-      navigate(`/onlyrental/${productId}`, { state: { product: productData } });
-    } else if (preloved) {
-      navigate(`/preloved/${productId}`, { state: { product: productData } });
-    } else {
-      navigate(`/buynew/${productId}`, { state: { product: productData } });
-    }
+    navigateToProductDetail(navigate, product);
   };
 
   return (
@@ -47,7 +25,9 @@ const GridCardActions = ({ product, type, onOpenModal }) => {
       </button>
       <button
         className="desk-wishlist-secondary-cta"
-        onClick={handleViewProduct}
+        onClick={handleViewProductClick}
+        aria-label="View product detail"
+        title="View Product"
       >
         <svg width="13" height="13" viewBox="0 0 13 13">
           <path d="M1 6.5C1 6.5 3 2.5 6.5 2.5C10 2.5 12 6.5 12 6.5C12 6.5 10 10.5 6.5 10.5C3 10.5 1 6.5 1 6.5Z" />

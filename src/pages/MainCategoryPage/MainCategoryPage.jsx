@@ -13,8 +13,8 @@ const MainCategoryPage = () => {
   useEffect(() => {
     setLoading(true);
     const backendUrl =
-      import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-    fetch(`${backendUrl}/api/web-products${location.search}`)
+      import.meta.env.VITE_BACKEND_URL || "http://localhost:5003";
+    fetch(`${backendUrl}/api/web-products`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.data)) {
@@ -28,7 +28,7 @@ const MainCategoryPage = () => {
         setProducts([]);
       })
       .finally(() => setLoading(false));
-  }, [location.search]);
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 430px)");

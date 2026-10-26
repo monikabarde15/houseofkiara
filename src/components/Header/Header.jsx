@@ -1,5 +1,5 @@
 // src/components/Header/Header.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropdown } from "../../hooks/useDropdown";
 import { useSearch } from "../../hooks/useSearch";
@@ -12,8 +12,6 @@ import SearchOverlay from "./Search/SearchOverlay";
 import MobileAnnouncementBar from "./mobile/MobileAnnouncementBar";
 import MobileHeader from "./mobile/MobileHeader";
 import MobileDrawer from "./mobile/MobileDrawer";
-import toast from "react-hot-toast";
-import useAuthStore from "../../store/authStore";
 import "../../styles/Header/header.css";
 
 const Header = () => {
@@ -22,23 +20,25 @@ const Header = () => {
   const search = useSearch();
   const theme = useHeaderTheme();
 
+
   // const [isScrolled, setIsScrolled] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  // Handle scroll
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setIsScrolled(window.scrollY > 0);
+  //   };
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   // Drawer handlers
   const handleDrawerOpen = () => setIsDrawerOpen(true);
   const handleDrawerClose = () => setIsDrawerOpen(false);
 
   // Icon handlers
-  const handleWishlistClick = () => {
-    const { isAuthenticated } = useAuthStore.getState();
-    if (!isAuthenticated) {
-      toast.error("Please login to view your wishlist");
-      navigate("/auth");
-      return;
-    }
-    navigate("/wishlist");
-  };
+  const handleWishlistClick = () => navigate("/wishlist");
   const handleBagClick = () => navigate("/cart");
 
   return (
@@ -46,8 +46,9 @@ const Header = () => {
       {/* ==================== DESKTOP ==================== */}
       {/* Desktop */}
       <div className="desktop-only-announce">
-        <AnnouncementBar />
+      <AnnouncementBar/>
       </div>
+
 
       <div
         className="hok-header-desktop"
@@ -78,18 +79,18 @@ const Header = () => {
       <div className="hok-mobile-only">
         {/* Section 2: Announcement Bar */}
         <MobileAnnouncementBar />
-      </div>
-
-      {/* Section 3: Sticky Header */}
-      <MobileHeader
-        theme={theme}
-        // isScrolled={isScrolled}
-        isMenuOpen={isDrawerOpen}
-        onMenuOpen={handleDrawerOpen}
-        onSearchOpen={search.openSearch}
-        onWishlistClick={handleWishlistClick}
-        onBagClick={handleBagClick}
-      />
+        </div>
+        
+        {/* Section 3: Sticky Header */}
+        <MobileHeader
+          theme={theme}
+          // isScrolled={isScrolled}
+          isMenuOpen={isDrawerOpen}
+          onMenuOpen={handleDrawerOpen}
+          onSearchOpen={search.openSearch}
+          onWishlistClick={handleWishlistClick}
+          onBagClick={handleBagClick}
+        />
 
       {/* Sections 4 & 5: Drawer Overlay + Navigation Drawer */}
       <MobileDrawer
@@ -97,6 +98,8 @@ const Header = () => {
         onClose={handleDrawerClose}
         onSearchOpen={search.openSearch}
       />
+
+      
 
       {/* Search Overlay - Shared between desktop and mobile */}
       <SearchOverlay
