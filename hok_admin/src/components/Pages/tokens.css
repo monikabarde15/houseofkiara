@@ -1,0 +1,66 @@
+/* =========================================================
+   HOUSE OF KAIRA · ADMIN PANEL — THE PAGES SECTION
+   Design Tokens (Spec §2.1, §2.2 & §2.3)
+   Admin panel v217 · 20 October 2026
+   Rule: Zero dashes used as punctuation. Sentence case only.
+========================================================= */
+
+:root {
+  /* §2.1 Colour Tokens */
+  --hok-ink: #1A1612;             /* Words, bar above words, chosen button */
+  --hok-ground: #F7F2EA;          /* Behind level one */
+  --hok-desk: #EFE7DB;            /* Behind the paper, in a page workspace */
+  --hok-paper: #FFFEFB;           /* The page, workspace header and panel */
+  --hok-lines: #E6DCCB;           /* Hairlines between parts and rows */
+  --hok-lines-card: #EFE7DA;      /* Hairlines inside cards */
+  --hok-field-border: #D9CCB6;    /* Inputs, drop downs and quiet buttons */
+  --hok-muted: #6E6358;           /* Labels, lines under headings, counts */
+  --hok-muted-long: #5C5248;      /* Longer descriptive text */
+
+  /* Gold System */
+  --hok-gold: #C9A96E;            /* Figures on paper, tab line in view, main button */
+  --hok-gold-ink: #8A6A36;        /* Links and small actions written as words */
+  --hok-gold-wash: #F5EDD8;       /* Fill of a figure on paper, focus rings, active row */
+
+  /* Terracotta System */
+  --hok-terracotta: #A4512F;       /* Anything to fix, count of things to fix, Delete */
+
+  /* Importance Dots */
+  --hok-dot-high: #B85C38;         /* High importance check */
+  --hok-dot-medium: #D19A3C;       /* Medium importance check */
+  --hok-dot-low: #B4A99E;          /* Low importance check */
+  --hok-dot-clean: #6B7E5A;        /* Nothing to look at */
+
+  /* Scheduled */
+  --hok-scheduled: #3D6E8E;       /* Changes going live on a later date */
+
+  /* Figure States on Paper (§2.1 & §7.6) */
+  --hok-fig-waiting-bg: #E3F0DA;
+  --hok-fig-waiting-line: #6E8D58;
+  --hok-fig-retired-bg: #F8E3DA;
+  --hok-fig-retired-line: #B85C38;
+  --hok-fig-never-bg: #EEE9F5;
+  --hok-fig-never-line: #5B4A7A;
+
+  /* §2.3 Radii & Elevation */
+  --hok-radius-control: 6px;       /* Corners on controls and inputs */
+  --hok-radius-card: 8px;          /* Corners on cards and tiles */
+  --hok-radius-paper: 2px;         /* Corners on the paper sheet */
+  --hok-shadow-paper: 0 4px 20px -2px rgba(26, 22, 18, 0.08), 0 2px 6px -1px rgba(26, 22, 18, 0.04);
+}
+
+/* Base styles for the section */
+.hok-pages-root {
+  color: var(--hok-ink);
+  background-color: var(--hok-ground);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-serif {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
