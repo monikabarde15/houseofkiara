@@ -62,28 +62,17 @@ const SearchOverlay = ({
                         />
                     )}
 
-                {showResults &&
-                    results?.length > 0 && (
-                        <SearchResults
-                            query={query}
-                            results={results}
-                            viewFullCollection={
-                                viewFullCollection
-                            }
-                        />
-                    )}
-
-                {showResults &&
-                    results?.length === 0 && (
-                        <SearchNoResults
-                            query={query}
-                            setQuery={setQuery}
-                        />
-                    )}
-            </div>
-        </div>
-
-    );
+        {showResults && results?.length === 0 && (
+          <SearchNoResults
+            query={query}
+            setQuery={setQuery}
+            runSearch={runSearch}
+            closeSearch={closeSearch}
+          />
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default SearchOverlay;

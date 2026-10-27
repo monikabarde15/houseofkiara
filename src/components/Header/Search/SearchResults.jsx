@@ -30,11 +30,8 @@ const SearchResults = ({
             </p>
           </div>
 
-          <button
-            className="search-view-all-btn"
-            onClick={viewFullCollection}
-          >
-            View full collection →
+          <button className="search-view-all-btn" onClick={viewFullCollection}>
+            {results.length === 1 ? "View the piece →" : `View all ${results.length} pieces →`}
           </button>
         </div>
 

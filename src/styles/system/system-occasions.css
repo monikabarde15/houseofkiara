@@ -1,0 +1,186 @@
+/**
+ * House of Kaira: System Occasions Index (S7 / C9) Styles
+ * Section 4 C9 & Appendix B of System Pages Specification v1.0
+ */
+
+.sys-occasions-band {
+  background-color: var(--sys-warm-white);
+  padding: 88px 80px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.sys-occasions-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.sys-occasions-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.sys-occasions-eyebrow-rule {
+  width: 24px;
+  height: 1px;
+  background-color: var(--sys-gold);
+}
+
+.sys-occasions-eyebrow-text {
+  font-family: var(--sys-font-sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sys-gold-deep);
+}
+
+.sys-occasions-title {
+  font-family: var(--sys-font-serif);
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--sys-charcoal);
+  margin: 0 0 36px 0;
+}
+
+.sys-occasions-title em {
+  font-style: italic;
+  color: var(--sys-gold-deep);
+}
+
+/* 8-cell Grid */
+.sys-occasions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background-color: var(--sys-border);
+  border: 1px solid var(--sys-border);
+  box-sizing: border-box;
+}
+
+.sys-occasion-cell {
+  background-color: var(--sys-warm-white);
+  padding: 30px 28px 26px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 154px;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.sys-occasion-cell.all-designers {
+  background-color: var(--sys-cream);
+}
+
+.sys-occasion-cell:hover {
+  background-color: var(--sys-gold-pale);
+}
+
+.sys-occasion-num {
+  font-family: var(--sys-font-serif);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--sys-gold-deep);
+  line-height: 1;
+  margin-bottom: 18px;
+}
+
+.sys-occasion-cell.all-designers .sys-occasion-num {
+  font-family: var(--sys-font-sans);
+  font-size: 11px;
+  font-style: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sys-occasion-name {
+  font-family: var(--sys-font-serif);
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.20;
+  color: var(--sys-charcoal);
+  margin: 0 0 18px 0;
+  text-align: left;
+}
+
+.sys-occasion-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sys-font-sans);
+  font-size: 9.5px;
+  font-weight: 400;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--sys-ink-soft);
+  line-height: 1;
+}
+
+.sys-occasion-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.sys-occasion-cell:hover .sys-occasion-arrow {
+  transform: translateX(3px);
+}
+
+/* Breakpoint 1199px & iPad */
+@media (max-width: 1199px) {
+  .sys-occasions-band {
+    padding: 72px 40px;
+  }
+
+  .sys-occasions-title {
+    font-size: 36px;
+  }
+
+  .sys-occasion-cell {
+    padding: 26px 22px 22px 22px;
+    min-height: 142px;
+  }
+
+  .sys-occasion-name {
+    font-size: 22px;
+  }
+}
+
+/* Phone <= 760px */
+@media (max-width: 760px) {
+  .sys-occasions-band {
+    padding: 56px 20px;
+  }
+
+  .sys-occasions-title {
+    font-size: 30px;
+    margin-bottom: 28px;
+  }
+
+  .sys-occasions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sys-occasion-cell {
+    padding: 22px 18px 18px 18px;
+    min-height: 125px;
+  }
+
+  .sys-occasion-num {
+    margin-bottom: 14px;
+  }
+
+  .sys-occasion-name {
+    font-size: 21px;
+    margin-bottom: 14px;
+  }
+}

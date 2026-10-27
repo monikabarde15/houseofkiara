@@ -1,0 +1,78 @@
+/**
+ * House of Kaira: Invitation Frame Component (C1) Styles
+ * Section 4 C1 & Appendix B of System Pages Specification v1.0
+ */
+
+.sys-invitation-frame {
+  position: relative;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  background-color: var(--sys-warm-white);
+  border: 1px solid var(--sys-border);
+  box-shadow: 0 24px 60px rgba(26, 22, 18, 0.05);
+  box-sizing: border-box;
+  padding: 72px 88px 60px 88px;
+  text-align: center;
+}
+
+/* Inner Keyline C1a */
+.sys-frame-keyline {
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  border: 1px solid var(--sys-gold-keyline);
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* Top Center Diamond C1b */
+.sys-frame-diamond {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  background-color: var(--sys-warm-white);
+  border: 1px solid var(--sys-gold);
+  transform: translate(-50%, -50%) rotate(45deg);
+  pointer-events: none;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+/* Breakpoint 1199px and below (iPad Landscape & Portrait) */
+@media (max-width: 1199px) {
+  .sys-invitation-frame {
+    padding: 64px 64px 52px 64px;
+  }
+}
+
+@media (max-width: 900px) {
+  .sys-invitation-frame {
+    max-width: 740px;
+  }
+}
+
+/* Breakpoint 760px and below (Phones) */
+@media (max-width: 760px) {
+  .sys-invitation-frame {
+    width: calc(100% - 24px);
+    max-width: 100%;
+    padding: 48px 22px 36px 22px;
+    box-shadow: none;
+  }
+
+  .sys-frame-keyline {
+    top: 7px;
+    bottom: 7px;
+    left: 7px;
+    right: 7px;
+  }
+
+  .sys-frame-diamond {
+    top: 7px;
+  }
+}

@@ -1,0 +1,290 @@
+/**
+ * House of Kaira: System Pieces Band (S5) & Product Card (C6) Styles
+ * Sections 4 (C6, C7) & Appendix B of System Pages Specification v1.0
+ */
+
+/* S5 Pieces Band Container */
+.sys-pieces-band {
+  background-color: var(--sys-warm-white);
+  padding: 88px 80px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.sys-pieces-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* Heading Row */
+.sys-pieces-heading-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.sys-pieces-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.sys-pieces-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.sys-pieces-eyebrow-rule {
+  width: 24px;
+  height: 1px;
+  background-color: var(--sys-gold);
+}
+
+.sys-pieces-eyebrow-text {
+  font-family: var(--sys-font-sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sys-gold-deep);
+}
+
+.sys-pieces-title {
+  font-family: var(--sys-font-serif);
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--sys-charcoal);
+  margin: 0;
+}
+
+.sys-pieces-title em {
+  font-style: italic;
+  color: var(--sys-gold-deep);
+}
+
+.sys-pieces-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sys-font-sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--sys-charcoal);
+  text-decoration: none;
+  border-bottom: 1px solid var(--sys-charcoal);
+  padding-bottom: 2px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.sys-pieces-view-all:hover {
+  color: var(--sys-gold-deep);
+  border-color: var(--sys-gold-deep);
+}
+
+/* Cards Grid S5d */
+.sys-pieces-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* C6 Product Card */
+.sys-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  position: relative;
+}
+
+.sys-card-image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: var(--sys-cream);
+  border: 1px solid var(--sys-border-light);
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+.sys-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.sys-card:hover .sys-card-image {
+  transform: scale(1.03);
+}
+
+/* Badges C6b, C6c */
+.sys-card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  height: 18px;
+  padding: 4px 10px;
+  border-radius: 1px;
+  font-family: var(--sys-font-sans);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.sys-card-badge.rent {
+  background-color: var(--sys-charcoal);
+  color: #D4C5B0;
+}
+
+.sys-card-badge.preloved {
+  background-color: var(--sys-terracotta);
+  color: #FFFFFF;
+}
+
+/* Wishlist Button C6d, C6e */
+.sys-card-wishlist-tap {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 3;
+  padding: 0;
+}
+
+.sys-card-wishlist-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: rgba(255, 254, 251, 0.92);
+  border: 1px solid var(--sys-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sys-charcoal);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.sys-card-wishlist-tap:hover .sys-card-wishlist-circle {
+  background-color: var(--sys-warm-white);
+  transform: scale(1.05);
+}
+
+.sys-card-wishlist-circle.active {
+  color: var(--sys-terracotta);
+}
+
+/* Card Content Details */
+.sys-card-designer {
+  font-family: var(--sys-font-sans);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--sys-gold-deep);
+  margin-bottom: 5px;
+}
+
+.sys-card-name {
+  font-family: var(--sys-font-serif);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.30;
+  color: var(--sys-charcoal);
+  margin: 0 0 8px 0;
+}
+
+.sys-card-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--sys-font-sans);
+}
+
+.sys-card-price {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--sys-charcoal);
+}
+
+.sys-card-duration {
+  font-size: 11.5px;
+  font-weight: 300;
+  color: var(--sys-ink-soft);
+}
+
+/* Breakpoint 1199px & iPad */
+@media (max-width: 1199px) {
+  .sys-pieces-band {
+    padding: 72px 40px;
+  }
+
+  .sys-pieces-title {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 900px) {
+  .sys-pieces-grid {
+    gap: 16px;
+  }
+
+  .sys-card-name {
+    font-size: 16px;
+  }
+}
+
+/* Phone <= 760px */
+@media (max-width: 760px) {
+  .sys-pieces-band {
+    padding: 56px 20px;
+  }
+
+  .sys-pieces-heading-row {
+    margin-bottom: 28px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .sys-pieces-title {
+    font-size: 30px;
+  }
+
+  .sys-pieces-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 12px;
+  }
+
+  .sys-card-image-wrap {
+    margin-bottom: 12px;
+  }
+
+  .sys-card-price {
+    font-size: 13px;
+  }
+}

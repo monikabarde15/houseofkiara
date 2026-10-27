@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>We’ll be back very shortly · House of Kaira</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --sys-charcoal: #1A1612;
+      --sys-warm-white: #FFFEFB;
+      --sys-cream: #FAF7F2;
+      --sys-gold: #C9A96E;
+      --sys-gold-keyline: rgba(201, 169, 110, 0.42);
+      --sys-gold-light: #E8D5B0;
+      --sys-gold-pale: #F5EDD8;
+      --sys-gold-deep: #9C7C45;
+      --sys-ink-soft: #6B5E50;
+      --sys-muted: #8A7E72;
+      --sys-border: #E8E0D4;
+      --sys-border-light: #F0EAE0;
+      --sys-sage: #6B7E5A;
+      --sys-font-serif: "Cormorant Garamond", Georgia, serif;
+      --sys-font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--sys-cream);
+      font-family: var(--sys-font-sans);
+      color: var(--sys-charcoal);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px 28px 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 22px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      font-family: var(--sys-font-serif);
+      font-size: 26px;
+      font-weight: 500;
+      color: var(--sys-charcoal);
+      letter-spacing: 0.15em;
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+
+    .wordmark {
+      font-family: var(--sys-font-serif);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: var(--sys-charcoal);
+      text-align: center;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      background-color: var(--sys-warm-white);
+      border: 1px solid var(--sys-border);
+      box-shadow: 0 24px 60px rgba(26, 22, 18, 0.06);
+      padding: 52px 72px 42px 72px;
+      text-align: center;
+      margin-bottom: 26px;
+    }
+
+    .keyline {
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      border: 1px solid var(--sys-gold-keyline);
+      pointer-events: none;
+    }
+
+    .diamond {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      width: 7px;
+      height: 7px;
+      background-color: var(--sys-warm-white);
+      border: 1px solid var(--sys-gold);
+      transform: translate(-50%, -50%) rotate(45deg);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow-rule {
+      width: 32px;
+      height: 1px;
+      background-color: var(--sys-gold);
+    }
+
+    .eyebrow-text {
+      font-family: var(--sys-font-sans);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: var(--sys-gold-deep);
+    }
+
+    h1 {
+      font-family: var(--sys-font-serif);
+      font-size: 52px;
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      color: var(--sys-charcoal);
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--sys-gold-deep);
+    }
+
+    .lead {
+      font-family: var(--sys-font-sans);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--sys-ink-soft);
+      max-width: 520px;
+      margin: 20px auto 0;
+    }
+
+    .status-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background-color: var(--sys-cream);
+      border: 1px solid var(--sys-border);
+      border-radius: 1px;
+      padding: 12px 20px;
+      margin: 24px auto 0;
+      font-size: 13.5px;
+      font-weight: 400;
+      line-height: 1.50;
+      color: var(--sys-charcoal);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--sys-sage);
+      animation: breathe 2.4s infinite ease-in-out;
+    }
+
+    @keyframes breathe {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(107, 126, 90, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 0 4px rgba(107, 126, 90, 0.15);
+      }
+    }
+
+    .rule {
+      width: 100%;
+      max-width: 574px;
+      height: 1px;
+      background-color: var(--sys-border-light);
+      margin: 30px auto 26px;
+    }
+
+    h2 {
+      font-family: var(--sys-font-serif);
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1.25;
+      color: var(--sys-charcoal);
+      margin-bottom: 12px;
+    }
+
+    h2 em {
+      font-style: italic;
+      color: var(--sys-gold-deep);
+    }
+
+    .care-text {
+      font-family: var(--sys-font-sans);
+      font-size: 14.5px;
+      font-weight: 300;
+      line-height: 1.80;
+      color: var(--sys-ink-soft);
+      max-width: 500px;
+      margin: 0 auto 24px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 30px;
+      background-color: var(--sys-charcoal);
+      color: var(--sys-warm-white);
+      border: 1px solid var(--sys-charcoal);
+      border-radius: 1px;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #2E2520;
+      transform: translateY(-1px);
+    }
+
+    .insta-link {
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--sys-charcoal);
+      text-decoration: none;
+      border-bottom: 1px solid var(--sys-charcoal);
+      padding-bottom: 2px;
+    }
+
+    .insta-link:hover {
+      color: var(--sys-gold-deep);
+      border-color: var(--sys-gold-deep);
+    }
+
+    .hours {
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.80;
+      color: var(--sys-ink-soft);
+      max-width: 500px;
+      margin: 18px auto 0;
+    }
+
+    .refresh {
+      font-size: 12.5px;
+      font-weight: 400;
+      line-height: 1.60;
+      color: var(--sys-ink-soft);
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    footer {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--sys-muted);
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 32px 12px 28px 12px;
+        justify-content: flex-start;
+      }
+      .brand { margin: 8px 0 24px; }
+      .card { padding: 46px 22px 34px 22px; box-shadow: none; }
+      .keyline { top: 7px; bottom: 7px; left: 7px; right: 7px; }
+      .diamond { top: 7px; }
+      h1 { font-size: 36px; line-height: 1.10; }
+      .lead { font-size: 15px; margin-top: 16px; }
+      .status-box { margin-top: 24px; padding: 12px 14px; font-size: 13px; }
+      h2 { font-size: 23px; }
+      .care-text { font-size: 14px; }
+      .btn { width: 100%; }
+      .refresh { padding: 0 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <div class="logo-mark">HK</div>
+    <div class="wordmark">House of Kaira</div>
+  </div>
+
+  <article class="card">
+    <div class="keyline" aria-hidden="true"></div>
+    <div class="diamond" aria-hidden="true"></div>
+
+    <div class="eyebrow" aria-hidden="true">
+      <span class="eyebrow-rule"></span>
+      <span class="eyebrow-text">A short pause</span>
+      <span class="eyebrow-rule"></span>
+    </div>
+
+    <h1>We’ll be back <em>very shortly</em></h1>
+
+    <p class="lead" id="lead-text">
+      House of Kaira is taking a short pause while we put something right. Everything will be exactly where you left it.
+    </p>
+
+    <div class="status-box" role="status" aria-live="polite">
+      <span class="status-dot" id="status-dot" aria-hidden="true"></span>
+      <span id="status-text">We’re on it, and will be back as soon as we can.</span>
+    </div>
+
+    <div class="rule" aria-hidden="true"></div>
+
+    <h2>Celebrating <em>soon?</em></h2>
+
+    <p class="care-text">
+      Your bookings, orders and payouts are safe. Deliveries, pickups and returns carry on as planned, and our team is on WhatsApp if you need anything.
+    </p>
+
+    <div class="actions">
+      <a
+        href="https://wa.me/919340139300?text=Hello%20House%20of%20Kaira%2C%20I%20tried%20to%20visit%20the%20website%20while%20it%20was%20being%20updated.%20Could%20you%20help%20me%20with%20something%3F"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn"
+      >
+        Message us on WhatsApp
+      </a>
+
+      <a
+        href="https://www.instagram.com/houseofkaira/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="insta-link"
+      >
+        Our latest pieces on Instagram
+      </a>
+    </div>
+
+    <div class="hours">
+      We reply Monday to Friday, 10 AM to 8 PM.
+    </div>
+  </article>
+
+  <div class="refresh">
+    This page will refresh by itself the moment we’re back.
+  </div>
+
+  <footer>
+    © 2026 House of Kaira · Indore, India
+  </footer>
+
+  <script>
+    (function () {
+      setInterval(function () {
+        try {
+          var xhr = new XMLHttpRequest();
+          xhr.open("HEAD", window.location.href, true);
+          xhr.setRequestHeader("Cache-Control", "no-cache");
+          xhr.onload = function () {
+            if (xhr.status === 200 && !xhr.getResponseHeader("X-HOK-Maintenance")) {
+              window.location.reload();
+            }
+          };
+          xhr.send();
+        } catch (e) {}
+      }, 60000);
+    })();
+  </script>
+</body>
+</html>

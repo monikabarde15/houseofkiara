@@ -1,0 +1,80 @@
+/**
+ * House of Kaira: System Widen Notice (C10) Styles
+ * Section 4 C10 & Appendix B of System Pages Specification v1.0
+ */
+
+.sys-widen-box {
+  background-color: var(--sys-gold-pale);
+  border: 1px solid var(--sys-gold-light);
+  max-width: 580px;
+  width: 100%;
+  margin: 30px auto 0;
+  padding: 22px 24px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  text-align: left;
+}
+
+.sys-widen-text {
+  font-family: var(--sys-font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.70;
+  color: var(--sys-charcoal);
+  margin: 0;
+}
+
+.sys-widen-text strong {
+  font-weight: 500;
+}
+
+.sys-widen-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  padding: 0 20px;
+  background-color: var(--sys-charcoal);
+  color: var(--sys-warm-white);
+  border: 1px solid var(--sys-charcoal);
+  border-radius: 1px;
+  font-family: var(--sys-font-sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.sys-widen-btn:hover {
+  background-color: #2E2520;
+  color: var(--sys-warm-white);
+  transform: translateY(-1px);
+}
+
+.sys-widen-btn:focus-visible {
+  outline: 2px solid var(--sys-gold);
+  outline-offset: 2px;
+}
+
+/* Phone <= 760px */
+@media (max-width: 760px) {
+  .sys-widen-box {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 18px;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .sys-widen-btn {
+    width: 100%;
+  }
+}

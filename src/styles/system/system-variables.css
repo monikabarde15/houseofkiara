@@ -1,0 +1,28 @@
+/**
+ * House of Kaira: System Pages CSS Variables
+ * Section 3.1 & 3.2 of System Pages Specification v1.0
+ */
+
+:root {
+  --sys-charcoal: #1A1612;
+  --sys-warm-white: #FFFEFB;
+  --sys-cream: #FAF7F2;
+  --sys-gold: #C9A96E;
+  --sys-gold-keyline: rgba(201, 169, 110, 0.42);
+  --sys-gold-light: #E8D5B0;
+  --sys-gold-pale: #F5EDD8;
+  --sys-gold-deep: #9C7C45;
+  --sys-ink-soft: #6B5E50;
+  --sys-muted: #8A7E72;
+  --sys-placeholder: #8F8275;
+  --sys-border: #E8E0D4;
+  --sys-border-light: #F0EAE0;
+  --sys-sage: #6B7E5A;
+  --sys-terracotta: #B85C38;
+  --sys-on-dark-line: #C9BCAC;
+  --sys-on-dark-small: #B8AA9A;
+  --sys-whatsapp-green: #25D366;
+
+  --sys-font-serif: "Cormorant Garamond", Georgia, serif;
+  --sys-font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
