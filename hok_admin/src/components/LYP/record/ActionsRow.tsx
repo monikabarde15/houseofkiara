@@ -36,9 +36,14 @@ export const ActionsRow: React.FC<ActionsRowProps> = ({
   const hasOpenAsk = !!submission.moreInfo;
   const canExpire = isUndecided && !hasOpenAsk;
 
+  const userPhone =
+    submission.phone ||
+    (submission as any).listerPhone ||
+    (submission as any).mobile ||
+    "";
   const waLink = generateWhatsAppLink(
-    "",
-    getDefaultWhatsAppMessage(getFirstName(submission.listerID)),
+    userPhone,
+    getDefaultWhatsAppMessage(getFirstName(submission.listerName || submission.listerID)),
   );
 
   const handleApprove = () => {
@@ -62,7 +67,12 @@ export const ActionsRow: React.FC<ActionsRowProps> = ({
       <button className="btn btn-danger btn-sm" onClick={onReject}>
         Reject...
       </button>
-      <button className="btn btn-wa btn-sm" disabled={!waLink}>
+      <button
+        className="btn btn-wa btn-sm"
+        disabled={!waLink}
+        onClick={() => waLink && window.open(waLink, "_blank")}
+        title={waLink ? "Chat with lister on WhatsApp" : "No phone number available"}
+      >
         <svg viewBox="0 0 24 24" width="10" height="10">
           <path
             d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"

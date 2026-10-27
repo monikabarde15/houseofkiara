@@ -30,7 +30,10 @@ export const ReviewHistory: React.FC<ReviewHistoryProps> = ({ history }) => {
     const mapping: Record<string, string> = {
       gold: "tl-dot-gold",
       sage: "tl-dot-sage",
+      green: "tl-dot-sage",
       terra: "tl-dot-terra",
+      red: "tl-dot-terra",
+      orange: "tl-dot-gold",
       muted: "tl-dot-muted",
     };
     return mapping[color] || "tl-dot-muted";

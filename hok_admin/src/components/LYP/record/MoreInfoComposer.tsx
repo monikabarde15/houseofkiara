@@ -55,8 +55,12 @@ export const MoreInfoComposer: React.FC<MoreInfoComposerProps> = ({
     if (!message.trim()) return;
     setLoading(true);
 
-    // In production, this would send via WhatsApp API
-    const link = generateWhatsAppLink("", message);
+    const userPhone =
+      submission.phone ||
+      (submission as any).listerPhone ||
+      (submission as any).mobile ||
+      "";
+    const link = generateWhatsAppLink(userPhone, message);
     if (link) {
       window.open(link, "_blank");
     }

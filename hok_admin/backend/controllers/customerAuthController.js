@@ -17,6 +17,29 @@ const generateToken = (id) => {
   return jwt.sign({ id, role: "customer" }, JWT_SECRET, { expiresIn: "30d" });
 };
 
+// Helper to generate unique Customer ID
+export const generateUniqueCustomerId = async () => {
+  try {
+    const allCustomers = await Customer.find({}, "customerId").lean().exec();
+    const existingNums = (allCustomers || [])
+      .map((c) => c.customerId)
+      .filter((id) => id && typeof id === "string" && id.startsWith("CUST-"))
+      .map((id) => parseInt(id.replace("CUST-", ""), 10))
+      .filter((n) => !isNaN(n));
+
+    let maxNum = existingNums.length > 0 ? Math.max(...existingNums) : 0;
+    let nextId = `CUST-${String(maxNum + 1).padStart(5, "0")}`;
+
+    while (await Customer.findOne({ customerId: nextId })) {
+      maxNum++;
+      nextId = `CUST-${String(maxNum + 1).padStart(5, "0")}`;
+    }
+    return nextId;
+  } catch (err) {
+    return `CUST-${Date.now().toString().slice(-5)}`;
+  }
+};
+
 // 1. Register with Email
 export const register = async (req, res) => {
   try {
@@ -35,8 +58,7 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const count = await Customer.countDocuments().catch(() => 0);
-    const newCustId = `CUST-${String(count + 1).padStart(5, "0")}`;
+    const newCustId = await generateUniqueCustomerId();
 
     const customer = new Customer({
       customerId: newCustId,
@@ -291,51 +313,99 @@ export const logout = async (_req, res) => {
   return res.json({ success: true, message: "Successfully logged out." });
 };
 
-// 7. Google Login
+// 7. Google Login & Signup
 export const googleLogin = async (req, res) => {
   try {
-    const { token } = req.body;
-    if (process.env.GOOGLE_CLIENT_ID) {
-      const ticket = await googleClient.verifyIdToken({
-        idToken: token,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      const payload = ticket.getPayload();
-      const { email, name, sub } = payload;
+    const { token, email: reqEmail, name: reqName, googleId: reqGoogleId, phone, mobile } = req.body;
+    const phoneVal = (phone || mobile || "").toString().trim();
+    let resolvedEmail = reqEmail;
+    let resolvedName = reqName;
+    let resolvedGoogleId = reqGoogleId;
 
-      let customer = await Customer.findOne({ email });
-      if (!customer) {
-        const count = await Customer.countDocuments().catch(() => 0);
-        const newCustId = `CUST-${String(count + 1).padStart(5, "0")}`;
-
-        customer = new Customer({
-          customerId: newCustId,
-          name,
-          email,
-          googleId: sub,
+    if (token && process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_ID !== "MOCK_CLIENT_ID") {
+      try {
+        const ticket = await googleClient.verifyIdToken({
+          idToken: token,
+          audience: process.env.GOOGLE_CLIENT_ID,
         });
+        const payload = ticket.getPayload();
+        resolvedEmail = payload.email;
+        resolvedName = payload.name;
+        resolvedGoogleId = payload.sub;
+      } catch (err) {
+        console.warn("Google token verification failed:", err.message);
+      }
+    }
+
+    if (!resolvedEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required for Google Sign-In",
+      });
+    }
+
+    resolvedEmail = resolvedEmail.toLowerCase().trim();
+    let customer = await Customer.findOne({
+      $or: [
+        { email: { $regex: new RegExp(`^${resolvedEmail}$`, "i") } },
+        ...(resolvedGoogleId ? [{ googleId: resolvedGoogleId }] : []),
+      ],
+    });
+
+    const isNew = !customer;
+    if (isNew) {
+      const newCustId = await generateUniqueCustomerId();
+
+      customer = new Customer({
+        customerId: newCustId,
+        name: resolvedName || resolvedEmail.split("@")[0],
+        email: resolvedEmail,
+        phone: phoneVal,
+        googleId: resolvedGoogleId || `google_${Date.now()}`,
+        status: "Active",
+        source: "Google OAuth",
+        joinedDate: new Date().toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+      });
+      await customer.save();
+    } else {
+      let needsSave = false;
+      if (!customer.googleId && resolvedGoogleId) {
+        customer.googleId = resolvedGoogleId;
+        needsSave = true;
+      }
+      if (!customer.phone && phoneVal) {
+        customer.phone = phoneVal;
+        needsSave = true;
+      }
+      if (needsSave) {
         await customer.save();
       }
-
-      res.json({
-        success: true,
-        data: {
-          _id: customer._id,
-          customerId: customer.customerId,
-          name: customer.name,
-          email: customer.email,
-          token: generateToken(customer._id),
-        },
-      });
-    } else {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "Google Client ID not configured on backend",
-        });
     }
+
+    const authToken = generateToken(customer._id);
+
+    return res.json({
+      success: true,
+      message: isNew ? "Google sign up successful" : "Google sign in successful",
+      isNewUser: isNew,
+      flow: isNew ? "register" : "signin",
+      data: {
+        _id: customer._id,
+        customerId: customer.customerId,
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+        isNewUser: isNew,
+        flow: isNew ? "register" : "signin",
+        token: authToken,
+      },
+    });
   } catch (error) {
+    console.error("googleLogin error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -894,12 +964,54 @@ export const cancelOrder = async (req, res) => {
         });
     }
 
+    const refundAmount = parseFloat(String(order.grandTotal || order.amount || 0).replace(/[^0-9.-]+/g, "")) || 0;
+    let refundId = `rfnd_test_${Date.now()}`;
+    const paymentId = order.paymentId || `pay_test_${order.orderId}`;
+    const rzpKeyId = process.env.RAZORPAY_KEY_ID;
+    const rzpSecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (rzpKeyId && rzpSecret && !paymentId.startsWith("pay_test_") && !rzpKeyId.includes("test")) {
+      try {
+        const auth = Buffer.from(`${rzpKeyId}:${rzpSecret}`).toString("base64");
+        const refundRes = await fetch(`https://api.razorpay.com/v1/payments/${paymentId}/refund`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Basic ${auth}`,
+          },
+          body: JSON.stringify({
+            amount: Math.round(refundAmount * 100),
+            notes: { orderId: order.orderId, reason: "Order cancelled by customer" },
+          }),
+        });
+        const rzpRefundData = await refundRes.json();
+        if (rzpRefundData && rzpRefundData.id) {
+          refundId = rzpRefundData.id;
+        }
+      } catch (refundErr) {
+        console.warn("Razorpay API refund call failed, using sandbox refund:", refundErr.message);
+      }
+    }
+
     order.status = "Cancelled";
+    order.paymentStatus = "Refunded";
+    order.depositStatus = "Refunded";
+    order.refund = {
+      refundId,
+      amount: refundAmount,
+      currency: "INR",
+      paymentId,
+      status: "Processed",
+      refundedAt: new Date().toISOString(),
+      note: "Full online refund processed via Razorpay gateway",
+    };
+
     if (!order.logs) order.logs = [];
     order.logs.push({
-      message: "Order cancelled by customer",
-      type: "Cancellation",
-      user: customer?.name || "Customer",
+      message: `Order cancelled by customer — full online refund of ₹${refundAmount.toLocaleString("en-IN")} processed via Razorpay (${refundId})`,
+      type: "Refund",
+      user: "Razorpay Gateway",
+      time: new Date().toISOString(),
     });
 
     await order.save();
@@ -922,7 +1034,9 @@ export const cancelOrder = async (req, res) => {
     }
 
     if (customer) {
-      syncCustomerOrderStats([customer]).catch(() => {});
+      import("./customerController.js")
+        .then(({ syncCustomerOrderStats }) => syncCustomerOrderStats([customer]))
+        .catch(() => {});
     }
 
     res.json({

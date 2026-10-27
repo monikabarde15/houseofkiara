@@ -33,6 +33,15 @@ const SignInScreen = ({ switchScreen }) => {
     });
   };
 
+  const handleGoogleSuccess = (userData) => {
+    switchScreen("success", {
+      userData: {
+        ...userData,
+        flow: userData.flow || "signin",
+      },
+    });
+  };
+
   return (
     <div className="hok-auth-signin-screen">
       <FormEyebrow text="WELCOME BACK" />
@@ -65,7 +74,7 @@ const SignInScreen = ({ switchScreen }) => {
 
       <OrDivider />
       <GoogleButton
-        onClick={() => console.log("Google OAuth clicked")}
+        onSuccess={handleGoogleSuccess}
         marginTop="10px"
       />
 

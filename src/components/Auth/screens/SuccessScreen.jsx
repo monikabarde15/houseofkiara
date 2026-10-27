@@ -24,9 +24,12 @@ const SuccessScreen = ({ switchScreen, userData = {} }) => {
           eyebrow: "ACCOUNT CREATED",
           heading: "Welcome to ",
           italicText: "House of Kaira",
-          subText: "Your mobile number is verified and your account is ready",
+          subText:
+            userData.source === "Google OAuth"
+              ? "Your Google account is connected and your profile is ready."
+              : "Your mobile number is verified and your account is ready.",
           ctaText: "CONTINUE TO HOUSE OF KAIRA",
-          showEmailNote: true,
+          showEmailNote: userData.source === "Google OAuth" ? false : true,
         };
       case "otp-signin":
         return {

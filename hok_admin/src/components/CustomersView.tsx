@@ -213,18 +213,23 @@ export default function CustomersView({
   React.useEffect(() => {
     if (activeTab === "Offers" && editingCustomer) {
       setOffersLoading(true);
+      const cCustId = editingCustomer.customerId || editingCustomer.id || (editingCustomer as any)._id;
+      const cEmail = editingCustomer.email ? editingCustomer.email.toLowerCase().trim() : "";
+      const cPhone = editingCustomer.phone ? editingCustomer.phone.replace(/\D/g, "").slice(-10) : "";
+
       offerApi
         .getOffers()
         .then((allOffers) => {
-          const matching = allOffers.filter(
-            (o) =>
-              (o.customerId &&
-                o.customerId ===
-                  (editingCustomer.customerId || editingCustomer.id)) ||
-              (o.customerEmail && o.customerEmail === editingCustomer.email) ||
-              (o.customerName && o.customerName === editingCustomer.name) ||
-              (o.phone && o.phone === editingCustomer.phone),
-          );
+          const matching = allOffers.filter((o) => {
+            const oCustId = o.customerId || (o as any).customer?._id || (o as any).customer?.customerId;
+            if (cCustId && oCustId && String(oCustId) === String(cCustId)) return true;
+            if (cEmail && o.customerEmail && o.customerEmail.toLowerCase().trim() === cEmail) return true;
+            if (cPhone && cPhone.length >= 10 && o.phone) {
+              const oDigits = String(o.phone).replace(/\D/g, "");
+              if (oDigits.endsWith(cPhone)) return true;
+            }
+            return false;
+          });
           setCustomerOffers(matching);
         })
         .catch((err) => {

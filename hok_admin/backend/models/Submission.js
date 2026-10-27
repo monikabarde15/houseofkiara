@@ -26,6 +26,7 @@ const submissionSchema = new mongoose.Schema(
     sku: { type: String, default: null },
     decision: mongoose.Schema.Types.Mixed,
     moreInfo: mongoose.Schema.Types.Mixed,
+    history: [mongoose.Schema.Types.Mixed],
     assignedTo: { type: String, default: "Unassigned" },
   },
   { timestamps: true, strict: false },

@@ -57,12 +57,15 @@ router.use("/notifications", notificationRouter);
 router.use("/categories", categoryRouter);
 
 // Root /api endpoints (Products, Orders, Offers, Payouts, Admin Auth, Messages, Customers, Upload)
+import paymentRouter from "./paymentRoutes.js";
+
 router.use(productRouter);
 router.use("/web-products", webProductRouter);
 router.use(offerRouter);
 router.use(authRouter);
 router.use(payoutRouter);
 router.use(orderRouter);
+router.use("/payment", paymentRouter);
 router.use(uploadRouter);
 router.use(messageRouter);
 router.use(customerRouter);

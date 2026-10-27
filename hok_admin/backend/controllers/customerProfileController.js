@@ -810,23 +810,73 @@ export const getProfileDashboard = async (req, res) => {
       }
     }
 
-    // 3. Fetch Listed Pieces
+    // 3. Lookup Linked Lister Accounts for Listed Pieces & Submissions
+    const phoneDigits = normalizePhone(cPhone);
+    const emailRegex = cEmail ? new RegExp(`^${cEmail.trim()}$`, "i") : null;
+
+    const listerConditions = [];
+    if (emailRegex) listerConditions.push({ email: emailRegex });
+    if (phoneDigits && phoneDigits.length >= 10) {
+      listerConditions.push({ phone: new RegExp(phoneDigits.slice(-10) + "$") });
+    }
+    if (cId) listerConditions.push({ listerId: cId });
+    if (customer.name) {
+      const nameSlug = customer.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      listerConditions.push({ listerId: new RegExp(nameSlug, "i") });
+    }
+
+    const matchedListerIds = new Set();
+    if (cId) matchedListerIds.add(cId);
+    if (customer._id) matchedListerIds.add(String(customer._id));
+    if (cEmail) matchedListerIds.add(cEmail);
+    if (cPhone) matchedListerIds.add(cPhone);
+
+    if (listerConditions.length > 0) {
+      try {
+        const matchedListers = await Lister.find({ $or: listerConditions });
+        for (const ml of matchedListers) {
+          if (ml.listerId) matchedListerIds.add(ml.listerId);
+          if (ml._id) matchedListerIds.add(String(ml._id));
+        }
+      } catch (e) {
+        console.error("Dashboard lister lookup error:", e);
+      }
+    }
+
+    // Fetch Listed Pieces (Products linked to this customer's lister accounts)
     const listerQueries = [];
-    if (cId) listerQueries.push({ listerId: cId });
-    if (cEmail) listerQueries.push({ listerId: cEmail });
-    if (cPhone) listerQueries.push({ listerId: cPhone });
+    matchedListerIds.forEach((lid) => {
+      listerQueries.push({ listerId: lid });
+    });
+    if (cEmail) listerQueries.push({ listerEmail: emailRegex });
+    if (phoneDigits && phoneDigits.length >= 10) {
+      listerQueries.push({ listerPhone: new RegExp(phoneDigits.slice(-10) + "$") });
+    }
 
     let listedPieces = [];
     if (listerQueries.length > 0) {
       try {
-        const listedProducts = await Product.find({ $or: listerQueries }).sort({
+        const listedProducts = await Product.find({
+          $and: [
+            { $or: listerQueries },
+            { status: { $in: ["Live", "Active"] } },
+          ],
+        }).sort({
           createdAt: -1,
         });
         listedPieces = (listedProducts || []).map((p) => {
-          const isRental = p.listingModes?.includes("RENTAL");
+          const modes = Array.isArray(p.listingModes)
+            ? p.listingModes.map((m) => String(m).toUpperCase())
+            : [];
+          const isRental =
+            modes.includes("RENTAL") ||
+            modes.includes("RENT") ||
+            Number(p.rentalPrice) > 0;
           const isResale =
-            p.listingModes?.includes("BUY") ||
-            p.listingModes?.includes("PRELOVED");
+            modes.includes("BUY") ||
+            modes.includes("PRELOVED") ||
+            modes.includes("RESALE") ||
+            Number(p.listingPrice) > 0;
           const mode =
             isRental && isResale ? "Dual" : isResale ? "Resale" : "Rental";
 
@@ -838,15 +888,58 @@ export const getProfileDashboard = async (req, res) => {
           const priceLabel = mode === "Resale" ? "Resale price" : "Rental price";
           const priceSuffix = mode === "Resale" ? "" : " / booking";
 
+          const resolvedImage =
+            (Array.isArray(p.images) && p.images[0]) ||
+            (Array.isArray(p.image) && p.image[0]) ||
+            (typeof p.image === "string" && p.image) ||
+            p.data?.image ||
+            "";
+
+          const prodKeys = [String(p._id), p.productId, p.sku].filter(Boolean);
+          const pieceOrders = (orders || []).filter((o) =>
+            Array.isArray(o.items) &&
+            o.items.some((item) =>
+              prodKeys.includes(String(item.productId)) ||
+              prodKeys.includes(String(item.sku))
+            )
+          );
+          const pieceBookingHistory = pieceOrders.map((o) => ({
+            id: o.orderId || String(o._id),
+            date: new Date(o.createdAt || Date.now()).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            }),
+            customer: o.shippingAddress?.fullName || o.customerName || "Customer",
+            city: o.shippingAddress?.city || "",
+            earnings: Math.round(Number(o.total || p.rentalPrice || 0) * 0.4),
+            status:
+              o.status === "Completed" || o.status === "Delivered"
+                ? "paid"
+                : "pending",
+          }));
+
+          const paidEarnings = pieceBookingHistory
+            .filter((b) => b.status === "paid")
+            .reduce((sum, b) => sum + (Number(b.earnings) || 0), 0);
+
+          const pendingEarnings = pieceBookingHistory
+            .filter((b) => b.status === "pending")
+            .reduce((sum, b) => sum + (Number(b.earnings) || 0), 0);
+
+          const calculatedTotal = paidEarnings + pendingEarnings;
+          const totalEarned = Number(p.totalEarned || 0) > 0 ? Number(p.totalEarned) : calculatedTotal;
+          const nextPayout = pendingEarnings > 0 ? pendingEarnings : (p.nextPayout ? Number(p.nextPayout) : null);
+
           return {
             id: String(p._id),
-            productId: p.productId,
-            name: p.name,
-            designer: p.designer || "",
+            productId: p.productId || p.sku || String(p._id),
+            name: p.name || p.data?.name || "Designer Piece",
+            designer: p.designer || p.data?.designer || "House of Kaira",
             mode,
-            totalEarned: Number(p.totalEarned || 0),
-            timesRented: p.timesRented > 0 ? p.timesRented : null,
-            nextPayout: p.nextPayout || null,
+            totalEarned,
+            timesRented: p.timesRented > 0 ? p.timesRented : pieceBookingHistory.length,
+            nextPayout,
             imageGradient: "linear-gradient(160deg, #2C2018, #1A1210)",
             status:
               p.status === "Live" || p.status === "Active"
@@ -866,7 +959,8 @@ export const getProfileDashboard = async (req, res) => {
             rentalPriceSuffix: " / booking",
             resalePrice,
             resalePriceSuffix: "",
-            image: (Array.isArray(p.images) && p.images[0]) || "",
+            image: resolvedImage,
+            bookingHistory: pieceBookingHistory,
           };
         });
       } catch (err) {
@@ -877,14 +971,10 @@ export const getProfileDashboard = async (req, res) => {
     // 4. Fetch Submissions (search comprehensively by phone, email, customerId, and linked lister accounts)
     let submissions = [];
     try {
-      const phoneDigits = normalizePhone(cPhone);
-      const emailRegex = cEmail ? new RegExp(`^${cEmail.trim()}$`, "i") : null;
-
       const subQueries = [];
       if (cId) {
         subQueries.push({ customerId: cId });
         subQueries.push({ customer_id: cId });
-        subQueries.push({ listerId: cId });
       }
       if (customer._id) {
         subQueries.push({ customerId: String(customer._id) });
@@ -900,29 +990,11 @@ export const getProfileDashboard = async (req, res) => {
         subQueries.push({ listerPhone: phoneRegex });
         subQueries.push({ mobile: phoneRegex });
       }
-
-      // Also match any Lister accounts belonging to this customer
-      const listerConditions = [];
-      if (emailRegex) listerConditions.push({ email: emailRegex });
-      if (phoneDigits && phoneDigits.length >= 10) {
-        listerConditions.push({ phone: new RegExp(phoneDigits.slice(-10) + "$") });
-      }
-      if (cId) listerConditions.push({ listerId: cId });
-      if (customer.name) {
-        const nameSlug = customer.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-        listerConditions.push({ listerId: new RegExp(nameSlug, "i") });
-      }
-
-      if (listerConditions.length > 0) {
-        const matchedListers = await Lister.find({ $or: listerConditions });
-        for (const ml of matchedListers) {
-          if (ml.listerId) {
-            subQueries.push({ listerId: ml.listerId });
-            subQueries.push({ listerID: ml.listerId });
-            subQueries.push({ lister_id: ml.listerId });
-          }
-        }
-      }
+      matchedListerIds.forEach((lid) => {
+        subQueries.push({ listerId: lid });
+        subQueries.push({ listerID: lid });
+        subQueries.push({ lister_id: lid });
+      });
 
       if (subQueries.length > 0) {
         const rawSubs = await Submission.find({ $or: subQueries }).sort({
@@ -942,7 +1014,16 @@ export const getProfileDashboard = async (req, res) => {
 
         submissions = subs.map((sub) => {
           let status = "Under Review";
-          if (sub.decision && typeof sub.decision === "object") {
+          if (
+            sub.status === "Withdrawn" ||
+            sub.decision === "Withdrawn" ||
+            sub.decision?.what === "Withdrawn" ||
+            sub.decision?.status === "Withdrawn"
+          ) {
+            status = "Withdrawn";
+          } else if (sub.moreInfo && (!sub.decision || sub.decision.what !== "Approved")) {
+            status = "Action Required";
+          } else if (sub.decision && typeof sub.decision === "object") {
             status = sub.decision.status || sub.decision.what || "Under Review";
           } else if (sub.status) {
             status = sub.status;
@@ -961,6 +1042,16 @@ export const getProfileDashboard = async (req, res) => {
             name: sub.piece || "Submission",
             designer: sub.designer || "Designer Atelier",
             status,
+            moreInfo: sub.moreInfo
+              ? {
+                  requestedAt: sub.moreInfo.requestedAt,
+                  requestedBy: sub.moreInfo.requestedBy || "Curation Team",
+                  infoRequired: sub.moreInfo.infoRequired || sub.moreInfo.comment,
+                  deadline: sub.moreInfo.deadline,
+                  comment: sub.moreInfo.comment,
+                  seenByUser: sub.moreInfo.seenByUser || false,
+                }
+              : null,
             submittedDate:
               sub.submitted ||
               (sub.createdAt
@@ -1008,7 +1099,117 @@ export const getProfileDashboard = async (req, res) => {
       )
     ).length;
 
+    // 6. Deposit Tracker - Computed from actual rental and cancelled orders
+    const deposits = [];
+    (orders || []).forEach((order) => {
+      const items = Array.isArray(order.items) && order.items.length > 0 ? order.items : [];
+      const hasRentalItem = items.some(
+        (item) => String(item.mode || "").toLowerCase() === "rental"
+      );
+      const isRentalOrder =
+        String(order.mode || "").toLowerCase() === "rental" || hasRentalItem;
+
+      if (isRentalOrder || order.status === "Cancelled") {
+        const item = items[0] || {};
+        const matchedProd = item.productId ? prodLookup.get(String(item.productId)) : null;
+        const resolvedName = (item.productName && item.productName !== "Designer Piece")
+          ? item.productName
+          : (matchedProd?.title || matchedProd?.name || order.productName || "Designer Piece");
+        const resolvedDesigner = (item.designer && item.designer !== "House of Kaira")
+          ? item.designer
+          : (matchedProd?.designer || order.designer || "House of Kaira");
+        const resolvedImage =
+          item.image ||
+          (Array.isArray(item.photos) && item.photos[0]) ||
+          (Array.isArray(matchedProd?.images) && matchedProd.images[0]) ||
+          matchedProd?.image ||
+          order.image ||
+          "";
+
+        const orderId = order.orderId || String(order._id);
+        const depositAmount = Number(
+          order.deposit ||
+          order.securityDeposit ||
+          item.deposit ||
+          item.securityDeposit ||
+          (matchedProd?.rentalPrice ? Math.round(matchedProd.rentalPrice * 0.8) : 8000)
+        );
+
+        let statusText = "PENDING";
+        let valueClass = "profile-account-dpill-p";
+        let stepNumber = 1;
+        let stepName = "Deposit requested";
+        let statusDescription = "Due before dispatch";
+
+        if (order.status === "Cancelled") {
+          statusText = "REFUNDED";
+          valueClass = "profile-account-dpill-r";
+          stepNumber = 5;
+          stepName = "Refunded";
+          statusDescription = "Order cancelled — full refund processed within 3-5 days";
+        } else if (order.status === "Completed" || order.status === "Returned") {
+          statusText = "REFUNDED";
+          valueClass = "profile-account-dpill-r";
+          stepNumber = 5;
+          stepName = "Refunded";
+          statusDescription = "Inspected and refunded to original payment method";
+        } else if (order.status === "Delivered" || order.status === "Dispatched" || order.status === "Shipped") {
+          statusText = `₹${depositAmount.toLocaleString("en-IN")} HELD`;
+          valueClass = "profile-account-dpill-h";
+          stepNumber = 2;
+          stepName = "Deposit received";
+          statusDescription = "Safely held during your rental period";
+        } else {
+          statusText = `₹${depositAmount.toLocaleString("en-IN")} PENDING`;
+          valueClass = "profile-account-dpill-p";
+          stepNumber = 1;
+          stepName = "Deposit requested";
+          statusDescription = "Payable before dispatch";
+        }
+
+        deposits.push({
+          id: orderId,
+          orderId,
+          piece: resolvedName,
+          designer: resolvedDesigner,
+          image: resolvedImage,
+          depositAmount,
+          orderStatus: order.status,
+          statusText,
+          valueClass,
+          stepNumber,
+          stepName,
+          statusDescription,
+          dates: order.rentalDates || order.dates || "",
+          orderedOn: new Date(order.createdAt || Date.now()).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }),
+        });
+      }
+    });
+
     const addresses = customer.addresses || [];
+
+    const actionRequiredSub = submissions.find(
+      (s) =>
+        s.status === "Action Required" ||
+        (s.moreInfo && (!s.decision || s.decision.what !== "Approved"))
+    );
+    const activeSubmissionAlert = actionRequiredSub
+      ? {
+          id: actionRequiredSub.id,
+          subid: actionRequiredSub.id,
+          piece: actionRequiredSub.name,
+          designer: actionRequiredSub.designer,
+          title: "Action Required · Curation Request",
+          subtitle: `House of Kaira curation team requested details (${actionRequiredSub.moreInfo?.infoRequired || "Proof / photos"}) for ${actionRequiredSub.name}. Click to review & reply.`,
+          infoRequired: actionRequiredSub.moreInfo?.infoRequired || "",
+          deadline: actionRequiredSub.moreInfo?.deadline || "",
+          seenByUser: actionRequiredSub.moreInfo?.seenByUser || false,
+        }
+      : null;
 
     return res.json({
       success: true,
@@ -1019,6 +1220,7 @@ export const getProfileDashboard = async (req, res) => {
         savedPieces,
         listedPieces,
         submissions,
+        deposits,
         addresses,
         counts: {
           rentals: rentals.length,
@@ -1044,6 +1246,7 @@ export const getProfileDashboard = async (req, res) => {
               }`,
             }
           : null,
+        activeSubmissionAlert,
       },
     });
   } catch (error) {
@@ -1143,7 +1346,16 @@ export const getProfileSubmissions = async (req, res) => {
 
       submissions = subs.map((sub) => {
         let status = "Under Review";
-        if (sub.decision && typeof sub.decision === "object") {
+        if (
+          sub.status === "Withdrawn" ||
+          sub.decision === "Withdrawn" ||
+          sub.decision?.what === "Withdrawn" ||
+          sub.decision?.status === "Withdrawn"
+        ) {
+          status = "Withdrawn";
+        } else if (sub.moreInfo && (!sub.decision || sub.decision.what !== "Approved")) {
+          status = "Action Required";
+        } else if (sub.decision && typeof sub.decision === "object") {
           status = sub.decision.status || sub.decision.what || "Under Review";
         } else if (sub.status) {
           status = sub.status;
@@ -1162,6 +1374,16 @@ export const getProfileSubmissions = async (req, res) => {
           name: sub.piece || "Submission",
           designer: sub.designer || "Designer Atelier",
           status,
+          moreInfo: sub.moreInfo
+            ? {
+                requestedAt: sub.moreInfo.requestedAt,
+                requestedBy: sub.moreInfo.requestedBy || "Curation Team",
+                infoRequired: sub.moreInfo.infoRequired || sub.moreInfo.comment,
+                deadline: sub.moreInfo.deadline,
+                comment: sub.moreInfo.comment,
+                seenByUser: sub.moreInfo.seenByUser || false,
+              }
+            : null,
           submittedDate:
             sub.submitted ||
             (sub.createdAt
@@ -1203,6 +1425,169 @@ export const getProfileSubmissions = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal server error fetching customer submissions.",
+      error: error.message,
+    });
+  }
+};
+
+// POST /api/customer/profile/submissions/:id/withdraw
+export const withdrawSubmission = async (req, res) => {
+  try {
+    let customer = req.user || req.customer;
+    if (!customer) {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        const token = authHeader.split(" ")[1];
+        try {
+          const JWT_SECRET = process.env.JWT_SECRET || "hok_super_secret_key_123";
+          const decoded = jwt.verify(token, JWT_SECRET);
+          if (decoded && decoded.id) {
+            customer = await Customer.findById(decoded.id);
+          }
+        } catch (_) {}
+      }
+    }
+
+    if (!customer && !req.admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required.",
+      });
+    }
+
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Submission ID is required.",
+      });
+    }
+
+    // Find submission
+    const sub = await Submission.findOne({
+      $or: [{ subid: id }, { _id: id }],
+    });
+
+    if (!sub) {
+      return res.status(404).json({
+        success: false,
+        message: "Submission not found.",
+      });
+    }
+
+    // If customer is present, verify ownership
+    if (customer) {
+      const cId = customer.customerId;
+      const cEmail = customer.email;
+      const cPhone = customer.phone;
+      const phoneDigits = normalizePhone(cPhone);
+
+      const listerConditions = [];
+      if (cEmail) listerConditions.push({ email: new RegExp(`^${cEmail.trim()}$`, "i") });
+      if (phoneDigits && phoneDigits.length >= 10) {
+        listerConditions.push({ phone: new RegExp(phoneDigits.slice(-10) + "$") });
+      }
+      if (cId) listerConditions.push({ listerId: cId });
+      if (customer.name) {
+        const nameSlug = customer.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        listerConditions.push({ listerId: new RegExp(nameSlug, "i") });
+      }
+
+      const allowedListerIds = new Set();
+      if (cId) allowedListerIds.add(cId);
+      if (customer._id) allowedListerIds.add(String(customer._id));
+      if (cEmail) allowedListerIds.add(cEmail.toLowerCase());
+      if (cPhone) allowedListerIds.add(cPhone);
+
+      if (listerConditions.length > 0) {
+        const matchedListers = await Lister.find({ $or: listerConditions });
+        for (const ml of matchedListers) {
+          if (ml.listerId) allowedListerIds.add(ml.listerId);
+          if (ml._id) allowedListerIds.add(String(ml._id));
+        }
+      }
+
+      const subListerId = sub.listerId || sub.listerID || sub.lister_id;
+      const subCustId = sub.customerId || sub.customer_id;
+      const subEmail = (sub.email || sub.listerEmail || "").toLowerCase();
+      const subPhone = normalizePhone(sub.phone || sub.listerPhone || sub.mobile);
+
+      const isOwner =
+        (subCustId && (subCustId === cId || subCustId === String(customer._id))) ||
+        (subListerId && allowedListerIds.has(subListerId)) ||
+        (subEmail && subEmail === (cEmail || "").toLowerCase()) ||
+        (phoneDigits && subPhone && (subPhone.endsWith(phoneDigits.slice(-10)) || phoneDigits.endsWith(subPhone.slice(-10))));
+
+      if (!isOwner) {
+        return res.status(403).json({
+          success: false,
+          message: "You are not authorized to withdraw this submission.",
+        });
+      }
+    }
+
+    // Update submission
+    sub.status = "Withdrawn";
+    sub.decision = {
+      what: "Withdrawn",
+      status: "Withdrawn",
+      by: "Customer",
+      reason: req.body?.reason || "Withdrawn by lister via profile",
+      date: new Date().toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }),
+      timestamp: new Date().toISOString(),
+    };
+    await sub.save();
+
+    // If product exists, mark product status as Archived
+    if (sub.sku) {
+      try {
+        await Product.findOneAndUpdate(
+          { $or: [{ sku: sub.sku }, { productId: sub.sku }, { _id: sub.sku }] },
+          { status: "Archived" }
+        );
+      } catch (pErr) {
+        console.error("Error archiving product on withdrawal:", pErr);
+      }
+    }
+
+    // Log activity if lister exists
+    if (sub.listerId) {
+      try {
+        const lister = await Lister.findOne({
+          $or: [{ listerId: sub.listerId }, { _id: sub.listerId }],
+        });
+        if (lister) {
+          const entry = {
+            c: "orange",
+            e: `Submission "${sub.piece}" withdrawn by lister`,
+            t: new Date().toISOString(),
+          };
+          lister.activities = [entry, ...(lister.activities || [])];
+          await lister.save();
+        }
+      } catch (lErr) {
+        console.error("Error logging lister activity:", lErr);
+      }
+    }
+
+    return res.json({
+      success: true,
+      message: "Submission withdrawn successfully.",
+      data: {
+        id: sub.subid || String(sub._id),
+        status: "Withdrawn",
+        piece: sub.piece,
+      },
+    });
+  } catch (error) {
+    console.error("withdrawSubmission Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error withdrawing submission.",
       error: error.message,
     });
   }

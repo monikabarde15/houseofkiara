@@ -324,7 +324,15 @@ const RegisterScreen = ({ switchScreen }) => {
       </PrimaryButton>
 
       <GoogleButton
-        onClick={() => console.log("Google OAuth clicked")}
+        mobile={formData.mobile}
+        onSuccess={(userData) => {
+          switchScreen("success", {
+            userData: {
+              ...userData,
+              flow: "register",
+            },
+          });
+        }}
         marginTop="12px"
       />
     </div>

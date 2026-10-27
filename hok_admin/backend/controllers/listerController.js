@@ -19,11 +19,18 @@ const view = (x) => {
 
 const buildIdQuery = (id) => {
   const decoded = decodeURIComponent(id || "").trim();
+  const unPrefixed = decoded.replace(/^lister-/, "");
   const conditions = [
-    { listerId: decoded },
+    { _id: decoded },
     { id: decoded },
+    { listerId: decoded },
+    { _id: unPrefixed },
+    { id: unPrefixed },
+    { listerId: unPrefixed },
     { listerId: decoded.toLowerCase().replace(/\s+/g, "-") },
+    { listerId: unPrefixed.toLowerCase().replace(/\s+/g, "-") },
     { name: new RegExp(`^${decoded.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+    { name: new RegExp(`^${unPrefixed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
   ];
   if (mongoose.Types.ObjectId.isValid(decoded)) {
     conditions.push({ _id: decoded });

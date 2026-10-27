@@ -1,8 +1,9 @@
 // src\App.jsx
 import React, { useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useParams, useNavigate } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import useAuthStore from "./store/authStore";
+import { getProductDetailRoute } from "./utils/productNavigation";
 
 // Layout
 import Header from "./components/Header/Header";
@@ -39,6 +40,34 @@ import SellerGuidelinesPage from "./pages/SellerGuidelinesPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import ShippingPolicyPage from "./pages/ShippingPolicyPage";
 import PricingPolicyPage from "./pages/PricingPolicyPage";
+
+function ProductRedirect() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch(`/api/products/${id}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!isMounted) return;
+        if (json?.success && json?.data) {
+          const { path } = getProductDetailRoute(json.data);
+          navigate(path, { replace: true, state: { product: json.data } });
+        } else {
+          navigate(`/onlyrental/${id}`, { replace: true });
+        }
+      })
+      .catch(() => {
+        if (isMounted) navigate(`/onlyrental/${id}`, { replace: true });
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [id, navigate]);
+
+  return null;
+}
 
 export default function App() {
   useEffect(() => {
@@ -101,6 +130,7 @@ export default function App() {
         <Route path="/onlyrental/:id" element={<OnlyRentalDetail />} />
         <Route path="/rentalandpreloved/:id" element={<RentalAndPreloved />} />
         <Route path="/rentalandbuy/:id" element = {<RentalAndBuy/>} />
+        <Route path="/product/:id" element={<ProductRedirect />} />
 
         {/* <Route path="/rent/gowns" element={<DummyGowns />} /> */}
         <Route path="/list-your-piece/" element={<LypMain />} />

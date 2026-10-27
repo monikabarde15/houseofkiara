@@ -7,6 +7,7 @@ import Submission from "../models/Submission.js";
 import Lister from "../models/Lister.js";
 import Product from "../models/Product.js";
 import Designer from "../models/Designer.js";
+import Notification from "../models/Notification.js";
 import mongoose from "mongoose";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -53,7 +54,60 @@ const enrichSubmissionWithLister = async (subObj) => {
       // ignore
     }
   }
+
+  // Synthesize / format history timeline so Review History is never empty
+  let hist = Array.isArray(item.history) ? [...item.history] : [];
+  if (hist.length === 0) {
+    const createdTime =
+      item.submittedAt || item.createdAt || item.submitted || new Date().toISOString();
+    hist.push({
+      c: "muted",
+      e: `Submission intake received from ${item.listerName || item.listerId || "Lister"} via ${item.channel || "Website"}`,
+      t: createdTime,
+    });
+
+    if (item.moreInfo) {
+      hist.unshift({
+        c: "terra",
+        e: `Admin requested info: "${item.moreInfo.infoRequired || item.moreInfo.comment || "Proof / photos"}" via WhatsApp`,
+        t: item.moreInfo.requestedAt || new Date().toISOString(),
+      });
+      if (item.moreInfo.seenByUser) {
+        hist.unshift({
+          c: "sage",
+          e: `Lister opened and viewed info request on website`,
+          t: item.moreInfo.requestedAt || new Date().toISOString(),
+        });
+      }
+    }
+
+    if (item.decision) {
+      const decWhat = item.decision.what || item.decision.status || item.decision;
+      const decColor = decWhat === "Approved" ? "sage" : decWhat === "Rejected" ? "terra" : "gold";
+      hist.unshift({
+        c: decColor,
+        e: `Decision recorded: ${decWhat}${item.decision.reason ? ` · Reason: ${item.decision.reason}` : ""}`,
+        t: item.decision.on || new Date().toISOString(),
+      });
+    }
+  }
+
+  // Ensure newest first
+  hist.sort((a, b) => new Date(b.t || 0).getTime() - new Date(a.t || 0).getTime());
+  item.history = hist;
+
   return item;
+};
+
+const logSubmissionHistoryEntry = (sub, color, text) => {
+  if (!sub) return;
+  const entry = {
+    c: color || "muted",
+    e: text,
+    t: new Date().toISOString(),
+  };
+  sub.history = [entry, ...(Array.isArray(sub.history) ? sub.history : [])];
+  if (typeof sub.markModified === "function") sub.markModified("history");
 };
 
 // Get submissions (with full search, status, intent, channel filters)
@@ -588,21 +642,21 @@ export const updateSubmission = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body };
-    const updated = await Submission.findOneAndUpdate(
-      { $or: [{ subid: id }, { _id: id }] },
-      updateData,
-      { new: true },
-    );
-    if (!updated)
+    const sub = await Submission.findOne({ $or: [{ subid: id }, { _id: id }] });
+    if (!sub)
       return res.status(404).json({ message: "Submission not found" });
 
+    Object.assign(sub, updateData);
+    logSubmissionHistoryEntry(sub, "muted", "Worksheet details updated by Admin");
+    await sub.save();
+
     await logListerActivity(
-      updated.listerId,
+      sub.listerId,
       "muted",
-      `Updated submission details for "${updated.piece}"`,
+      `Updated submission details for "${sub.piece}"`,
     );
 
-    const enriched = await enrichSubmissionWithLister(updated);
+    const enriched = await enrichSubmissionWithLister(sub);
     res.json(enriched);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -614,25 +668,95 @@ export const updateSubmissionDecision = async (req, res) => {
   try {
     const { id } = req.params;
     const { decision } = req.body;
-    const updated = await Submission.findOneAndUpdate(
-      { $or: [{ subid: id }, { _id: id }] },
-      { $set: { decision: decision, moreInfo: null } },
-      { new: true },
-    );
-    if (!updated)
-      return res.status(404).json({ message: "Submission not found" });
+    const action = typeof decision === "object" ? (decision.what || decision.status) : decision;
+    const normalizedAction = action === "Approved" ? "Approved" : action === "Rejected" ? "Rejected" : action === "Withdrawn" ? "Withdrawn" : action;
+
+    const sub = await Submission.findOne({ $or: [{ subid: id }, { _id: id }] });
+    if (!sub) return res.status(404).json({ message: "Submission not found" });
+
+    sub.decision = typeof decision === "object" ? decision : { what: normalizedAction, by: "Admin", on: new Date().toISOString() };
+    sub.status = normalizedAction;
+    sub.moreInfo = null;
 
     let color = "muted";
-    if (decision === "Approved") color = "green";
-    if (decision === "Rejected") color = "red";
-    if (decision === "Withdrawn") color = "orange";
+    let histColor = "muted";
+    if (normalizedAction === "Approved") { color = "green"; histColor = "sage"; }
+    if (normalizedAction === "Rejected") { color = "red"; histColor = "terra"; }
+    if (normalizedAction === "Withdrawn") { color = "orange"; histColor = "gold"; }
+
+    const reasonSuffix = typeof decision === "object" && decision?.reason ? ` · Reason: ${decision.reason}` : "";
+    logSubmissionHistoryEntry(sub, histColor, `Submission decision set to "${normalizedAction}" by Admin${reasonSuffix}`);
+    await sub.save();
+
+    // Link/update Product based on decision
+    if (normalizedAction === "Approved") {
+      let linkedProduct = null;
+      if (sub.sku) {
+        linkedProduct = await Product.findOne({ $or: [{ sku: sub.sku }, { productId: sub.sku }] });
+      }
+      if (!linkedProduct && sub.piece) {
+        linkedProduct = await Product.findOne({
+          listerId: sub.listerId,
+          name: sub.piece,
+        });
+      }
+
+      if (linkedProduct) {
+        linkedProduct.status = "Live";
+        if (sub.media && sub.media.length > 0 && (!linkedProduct.images || linkedProduct.images.length === 0)) {
+          linkedProduct.images = sub.media.map((m) => m.url || m).filter(Boolean);
+        }
+        await linkedProduct.save();
+      } else if (sub.piece && sub.designer) {
+        // Auto-create live product if not found
+        const liveSku = sub.sku || `HOK-PRD-${Date.now()}`;
+        const origNum = parseFloat(String(sub.originalPrice || "").replace(/[^0-9.-]+/g, "")) || 0;
+        await Product.create({
+          productId: liveSku,
+          sku: liveSku,
+          status: "Live",
+          listerId: sub.listerId,
+          name: sub.piece,
+          designer: sub.designer,
+          category: sub.category || "Designer Piece",
+          color: sub.colour || "Multi",
+          sizes: sub.size ? [sub.size] : ["Free Size"],
+          originalRetailPrice: origNum || undefined,
+          rentalPrice: parseFloat(String(sub.askRent || "").replace(/[^0-9.-]+/g, "")) || Math.round(origNum * 0.2) || 4500,
+          listingPrice: parseFloat(String(sub.askSell || "").replace(/[^0-9.-]+/g, "")) || Math.round(origNum * 0.6) || 18000,
+          condition: sub.conditionClaim || "Pristine",
+          images: (sub.media || []).map((m) => m.url || m).filter(Boolean),
+          data: {
+            name: sub.piece,
+            designer: sub.designer,
+          },
+        });
+        sub.sku = liveSku;
+        await sub.save();
+      }
+    } else if (normalizedAction === "Rejected" || normalizedAction === "Withdrawn") {
+      // De-activate any linked products
+      if (sub.sku) {
+        await Product.updateMany(
+          { $or: [{ sku: sub.sku }, { productId: sub.sku }] },
+          { $set: { status: "Draft" } }
+        );
+      }
+      if (sub.listerId && sub.piece) {
+        await Product.updateMany(
+          { listerId: sub.listerId, name: sub.piece },
+          { $set: { status: "Draft" } }
+        );
+      }
+    }
+
     await logListerActivity(
-      updated.listerId,
+      sub.listerId,
       color,
-      `Submission decision set to "${decision}" for "${updated.piece}"`,
+      `Submission decision set to "${normalizedAction}" for "${sub.piece}"`,
     );
 
-    const enriched = await enrichSubmissionWithLister(updated);
+    const enriched = await enrichSubmissionWithLister(sub);
     res.json(enriched);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -647,27 +771,126 @@ export const requestMoreInfo = async (req, res) => {
     if (!sub) return res.status(404).json({ message: "Submission not found" });
     const infoPayload = {
       requestedAt: new Date().toISOString(),
-      requestedBy: requestedBy || "System",
-      infoRequired,
-      deadline,
-      comment,
+      requestedBy: requestedBy || "House of Kaira Curation Team",
+      infoRequired: infoRequired || comment,
+      deadline: deadline || new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+      comment: comment || infoRequired,
+      seenByUser: false,
     };
     sub.moreInfo = infoPayload;
     sub.status = "Action Required";
+    sub.decision = null; // Unapproved until admin explicitly approves
+    logSubmissionHistoryEntry(sub, "terra", `Admin requested info: "${infoRequired || comment}" via WhatsApp`);
     await sub.save();
 
+    // Ensure linked product stays as Draft (NOT live) while info is requested
+    if (sub.sku) {
+      await Product.updateMany(
+        { $or: [{ sku: sub.sku }, { productId: sub.sku }] },
+        { $set: { status: "Draft" } }
+      );
+    }
+    if (sub.listerId && sub.piece) {
+      await Product.updateMany(
+        { listerId: sub.listerId, name: sub.piece },
+        { $set: { status: "Draft" } }
+      );
+    }
+
+    // Log lister activity
     await logListerActivity(
       sub.listerId,
       "orange",
-      `Requested more info on submission "${sub.piece}": ${infoRequired}`,
+      `Requested more info on submission "${sub.piece}": ${infoRequired || comment}`,
     );
 
     res.json({
+      success: true,
       data: await enrichSubmissionWithLister(sub),
       message: "More info requested successfully",
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+export const markSubmissionInfoSeen = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sub = await Submission.findOne({ $or: [{ subid: id }, { _id: id }] });
+    if (!sub) return res.status(404).json({ success: false, message: "Submission not found" });
+    if (sub.moreInfo) {
+      sub.moreInfo.seenByUser = true;
+      if (typeof sub.markModified === "function") sub.markModified("moreInfo");
+      logSubmissionHistoryEntry(sub, "sage", "Lister opened and viewed info request on website");
+      await sub.save();
+    }
+    return res.json({ success: true, message: "Marked as seen" });
+  } catch (err) {
+    console.error("Error in markSubmissionInfoSeen:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const replySubmissionInfo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { message, replyText } = req.body || {};
+    const sub = await Submission.findOne({ $or: [{ subid: id }, { _id: id }] });
+    if (!sub) return res.status(404).json({ success: false, message: "Submission not found" });
+
+    let newMedia = Array.isArray(sub.media) ? [...sub.media] : [];
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      const rootUploadsDir = path.resolve(__dirname, "../../../public/uploads");
+      if (!fs.existsSync(rootUploadsDir)) {
+        fs.mkdirSync(rootUploadsDir, { recursive: true });
+      }
+
+      for (let idx = 0; idx < req.files.length; idx++) {
+        const file = req.files[idx];
+        const ext = path.extname(file.originalname || "") || ".jpg";
+        const filename = `reply_${Date.now()}_${idx}${ext}`;
+        const localPath = path.join(rootUploadsDir, filename);
+
+        try {
+          await fs.promises.writeFile(localPath, file.buffer);
+          newMedia.push({
+            name: file.originalname || `Proof Photo ${idx + 1}`,
+            url: `/uploads/${filename}`,
+            kind: "image",
+          });
+        } catch (fErr) {
+          console.error("Error saving reply upload:", fErr);
+        }
+      }
+    }
+
+    sub.media = newMedia;
+    sub.photos = newMedia.length;
+    sub.status = "Under Review";
+    sub.decision = null;
+    sub.moreInfo = null; // Cleared so status returns to Under Review!
+    sub.replyAt = new Date().toISOString();
+
+    const note = message || replyText || "Lister submitted additional photos / invoice proof";
+    logSubmissionHistoryEntry(sub, "sage", `Lister uploaded requested details: "${note}" · Resubmitted for curation review`);
+    await sub.save();
+
+    await logListerActivity(
+      sub.listerId,
+      "blue",
+      `Resubmitted piece "${sub.piece}" with requested information`,
+    );
+
+    const enriched = await enrichSubmissionWithLister(sub);
+    return res.json({
+      success: true,
+      data: enriched,
+      message: "Details submitted successfully! Your piece is back under review by the curation team.",
+    });
+  } catch (err) {
+    console.error("Error in replySubmissionInfo:", err);
+    return res.status(500).json({ success: false, message: err.message });
   }
 };
 

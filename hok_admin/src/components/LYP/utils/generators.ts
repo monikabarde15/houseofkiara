@@ -98,8 +98,11 @@ export const generateWhatsAppLink = (
   message?: string,
 ): string | null => {
   if (!phone) return null;
-  const digits = phone.replace(/\D/g, "");
+  let digits = phone.replace(/\D/g, "");
   if (!digits || digits.length < 10) return null;
+  if (digits.length === 10) {
+    digits = `91${digits}`;
+  }
 
   let url = `https://wa.me/${digits}`;
   if (message) {

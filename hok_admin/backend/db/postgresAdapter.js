@@ -1096,6 +1096,10 @@ export class PostgresDocument {
     return true;
   }
 
+  markModified() {
+    return this;
+  }
+
   set(path, value) {
     if (path.includes(".")) {
       setNestedValue(this._data, path, value);
