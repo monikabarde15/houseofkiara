@@ -241,11 +241,27 @@ export default function CustomersView({
     }
   }, [activeTab, editingCustomer]);
 
-  const startEditing = (customer: Customer) => {
+  const updateCustomerUrl = (cust: Customer | null, tab?: string) => {
+    if (typeof window === "undefined") return;
+    const search = new URLSearchParams(window.location.search);
+    if (cust) {
+      search.set("customerId", cust.customerId || cust.id || (cust as any)._id);
+      if (tab) search.set("tab", tab);
+    } else {
+      search.delete("customerId");
+      search.delete("tab");
+    }
+    const query = search.toString();
+    const newUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
+    window.history.replaceState({ customerId: cust?.customerId, tab }, "", newUrl);
+  };
+
+  const startEditing = (customer: Customer, initialTab = "Profile") => {
     setIsAddingCustomer(false);
     setEditingCustomer(customer);
     setDetailOrders(orders);
-    setActiveTab("Profile");
+    setActiveTab(initialTab as any);
+    updateCustomerUrl(customer, initialTab);
     setEditName(customer.name);
     setEditEmail(customer.email);
     setEditPhone(customer.phone);
@@ -286,9 +302,29 @@ export default function CustomersView({
     setNewOccasionDate("");
   };
 
+  // Rehydrate customer and tab from URL search parameters on refresh
+  React.useEffect(() => {
+    if (typeof window === "undefined" || !customers || customers.length === 0 || editingCustomer) return;
+    const search = new URLSearchParams(window.location.search);
+    const targetCustId = search.get("customerId") || search.get("id");
+    const targetTab = search.get("tab") || "Profile";
+    if (targetCustId) {
+      const match = customers.find(
+        (c) =>
+          c.customerId === targetCustId ||
+          c.id === targetCustId ||
+          (c as any)._id === targetCustId,
+      );
+      if (match) {
+        startEditing(match, targetTab);
+      }
+    }
+  }, [customers]);
+
   const startAdding = () => {
     setIsAddingCustomer(true);
     setEditingCustomer(null);
+    updateCustomerUrl(null);
     setActiveTab("Profile");
     setEditName("");
     setEditEmail("");
@@ -576,6 +612,7 @@ export default function CustomersView({
                 onClick={() => {
                   setEditingCustomer(null);
                   setIsAddingCustomer(false);
+                  updateCustomerUrl(null);
                 }}
                 className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E6DED3] bg-white px-3 text-[12px] font-medium text-[#6F675D] hover:bg-[#FAF8F5] transition shadow-2xs cursor-pointer"
               >
@@ -766,7 +803,10 @@ export default function CustomersView({
                 return (
                   <button
                     key={tab}
-                    onClick={() => setActiveTab(tab)}
+                    onClick={() => {
+                      setActiveTab(tab);
+                      updateCustomerUrl(editingCustomer, tab);
+                    }}
                     className={`py-2.5 text-[13px] transition cursor-pointer relative font-medium ${
                       isActive
                         ? "text-[#2B2520] font-semibold"

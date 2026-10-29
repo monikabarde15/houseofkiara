@@ -58,14 +58,31 @@ import * as customerApi from './services/customerApi';
 import * as taskApi from './services/taskApi';
 import AdminAuth from './components/AdminAuth';
 import { ArrowLeft, ExternalLink, Menu, Save, X } from 'lucide-react';
+import { parseAdminRoute, syncRoute } from './utils/adminRouter';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<string>('dashboard');
+  const [currentView, setCurrentView] = useState<string>(() => parseAdminRoute().view);
   const [isSectionEditing, setIsSectionEditing] = useState<boolean>(false);
   const setView = (view: string) => {
     setIsSectionEditing(false);
     setCurrentView(view);
+    syncRoute(view);
   };
+
+  useEffect(() => {
+    // Keep URL in sync on initial mount
+    const initial = parseAdminRoute();
+    syncRoute(initial.view, true, initial.searchParams);
+
+    const handlePopState = () => {
+      const parsed = parseAdminRoute();
+      setIsSectionEditing(false);
+      setCurrentView(parsed.view);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [adminSession, setAdminSession] = useState<any>(() => authApi.getSession());

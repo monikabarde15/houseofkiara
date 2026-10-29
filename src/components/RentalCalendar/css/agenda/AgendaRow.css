@@ -29,6 +29,10 @@
   color: #9a9382;
   font-style: italic;
 }
+.badge-internal-task {
+  background: #edf2f7;
+  color: #2b6cb0;
+}
 
 .agenda-row--done .agenda-row__date,
 .agenda-row--done .agenda-row__order,

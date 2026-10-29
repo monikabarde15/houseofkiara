@@ -48,6 +48,16 @@ const TYPE_CONFIG: Record<
     className: "badge-return-due",
   },
   cleaning: { label: "Cleaning", icon: "↻", className: "badge-cleaning" },
+  "internal-task": {
+    label: "Internal Task",
+    icon: "📋",
+    className: "badge-internal-task",
+  },
+  task: {
+    label: "Task",
+    icon: "📋",
+    className: "badge-internal-task",
+  },
 };
 
 interface AgendaRowProps {
@@ -67,7 +77,14 @@ const AgendaRow: React.FC<AgendaRowProps> = ({
   onSaveNote,
   onNotifyCustomer,
 }) => {
-  const cfg = TYPE_CONFIG[entry.type];
+  const normalizedKey = entry?.type ? String(entry.type).toLowerCase().trim() : "";
+  const cfg =
+    TYPE_CONFIG[normalizedKey] ||
+    TYPE_CONFIG[entry?.type] || {
+      label: entry?.type ? String(entry.type).replace(/[-_]/g, " ") : "Booking",
+      icon: "●",
+      className: "badge-rental-starts",
+    };
 
   return (
     <>
@@ -78,9 +95,9 @@ const AgendaRow: React.FC<AgendaRowProps> = ({
         <div className="agenda-row__icon">{entry.done ? "✦" : "👗"}</div>
         <div className="agenda-row__date">{entry.date}</div>
         <div className="agenda-row__type">
-          <span className={`agenda-badge ${cfg.className}`}>
-            <span className="agenda-badge__icon">{cfg.icon}</span>
-            {cfg.label}
+          <span className={`agenda-badge ${cfg.className || "badge-rental-starts"}`}>
+            <span className="agenda-badge__icon">{cfg.icon || "●"}</span>
+            {cfg.label || "Booking"}
           </span>
         </div>
         <div className="agenda-row__order">{entry.orderId}</div>
