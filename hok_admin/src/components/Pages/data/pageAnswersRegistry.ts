@@ -1,3 +1,4 @@
+import { ALL_120_FAQ_ANSWERS } from './faq';
 /* =========================================================
    HOUSE OF KAIRA · ADMIN PANEL — THE PAGES SECTION
    Registry: Page Answers (Spec §8.4, §8.12, §8.13, §8.14, §8.15)
@@ -67,59 +68,7 @@ const DEPOSIT_ANSWERS: AnswerItem[] = [
 ];
 
 // 2. Help & FAQs Answers (Spec §8.4)
-const FAQ_ANSWERS: AnswerItem[] = [
-  {
-    id: 'faq_1',
-    question: 'How early should I book for wedding season?',
-    section: 'Rentals & bookings',
-    side: 'rentals',
-    orderIndex: 1,
-    statusTag: { label: 'Recommended 6 to 8 weeks', tone: 'worth-knowing' },
-    paragraphs: [
-      {
-        id: 'fp1',
-        kind: 'paragraph',
-        text: 'Couture pieces are reserved quickly during peak celebration months (October to March). We recommend booking 6 to 8 weeks ahead of your event date.'
-      }
-    ],
-    searchWords: 'wedding season, advance booking, reserve dates',
-    linkName: 'wedding-season-booking'
-  },
-  {
-    id: 'faq_2',
-    question: 'Can I try on the outfit before renting?',
-    section: 'Rentals & bookings',
-    side: 'rentals',
-    orderIndex: 2,
-    statusTag: { label: 'Mumbai try on studio', tone: 'good-news' },
-    paragraphs: [
-      {
-        id: 'fp2',
-        kind: 'paragraph',
-        text: 'Clients in Mumbai can book a private styling appointment at our concierge studio. For clients outside Mumbai, our sizing concierge provides exact measurement consultations.'
-      }
-    ],
-    searchWords: 'try on, studio trial, fitting, sizing appointment',
-    linkName: 'try-on-options'
-  },
-  {
-    id: 'faq_3',
-    question: 'How do payouts work for piece listers?',
-    section: 'Preloved & selling',
-    side: 'preloved',
-    orderIndex: 3,
-    statusTag: { label: 'Bi-monthly bank transfer', tone: 'good-news' },
-    paragraphs: [
-      {
-        id: 'fp3',
-        kind: 'paragraph',
-        text: 'Lister earnings are transferred directly to your registered bank account twice a month following the successful return of your rented piece.'
-      }
-    ],
-    searchWords: 'payouts, lister earnings, commission, bank transfer',
-    linkName: 'lister-payout-cycle'
-  }
-];
+const FAQ_ANSWERS: AnswerItem[] = ALL_120_FAQ_ANSWERS;
 
 // 3. Care, Cleaning & Damage Policy Answers (Spec §8.14)
 const CARE_ANSWERS: AnswerItem[] = [

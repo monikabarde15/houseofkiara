@@ -4,18 +4,16 @@
    Admin panel v217 · 20 October 2026
    Rule: Zero dashes used as punctuation. Sentence case only.
 ========================================================= */
-
 import React, { useState } from 'react';
 import { PageCardData, FigureItem } from '../types';
-import { CheckItem } from '../types/checks.types';
 import { FloatingWordBar } from './FloatingWordBar';
 import { FigurePickerPopover } from './FigurePickerPopover';
 import { LinkPickerPopover } from './LinkPickerPopover';
 import { PagePaperHero } from './PagePaperHero';
 import { PagePaperOpening } from './PagePaperOpening';
+import { FaqPaperSection } from './faq/FaqPaperSection';
 import { MarginCheckMark } from './MarginCheckMark';
 import { getPageContent } from '../data/pageContentRegistry';
-
 export interface EditableFieldInfo {
   partId: string;
   fieldId: string;
@@ -23,7 +21,6 @@ export interface EditableFieldInfo {
   helpText?: string;
   isHeading?: boolean;
 }
-
 interface PagePaperCanvasProps {
   page: PageCardData;
   activePartId: string;
@@ -37,7 +34,6 @@ interface PagePaperCanvasProps {
   onFieldChange: (fieldId: string, value: string) => void;
   highlightedFigureKey?: string | null;
 }
-
 export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
   page,
   activePartId,
@@ -54,49 +50,28 @@ export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
   const [activeSide, setActiveSide] = useState<'rental' | 'preloved'>('rental');
   const [pickerOpen, setPickerOpen] = useState(false);
   const [linkOpen, setLinkOpen] = useState(false);
-
   const pageContent = getPageContent(page.slug);
   const getVal = (id: string, fallback: string) => (fieldValues[id] !== undefined ? fieldValues[id] : fallback);
-
   const handleFieldFocus = (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading = false) => {
     onSelectPart(partId);
     onFocusField({ partId, fieldId, fieldName, helpText, isHeading });
   };
-
   const handleInsertFigure = (fig: FigureItem) => {
     if (!focusedField) return;
     const current = getVal(focusedField.fieldId, '');
     onFieldChange(focusedField.fieldId, `${current} ${fig.displayValue}`.trim());
     setPickerOpen(false);
   };
-
   const handleSaveLink = (words: string) => {
     if (!focusedField) return;
     const current = getVal(focusedField.fieldId, '');
     onFieldChange(focusedField.fieldId, `${current} [${words}]`.trim());
     setLinkOpen(false);
   };
-
-  const openingChecks: CheckItem[] = [
-    {
-      id: 'chk_opening_figure',
-      pageSlug: page.slug,
-      pageName: page.name,
-      location: 'Opening statement',
-      kind: 'typed-figure',
-      importance: 'medium',
-      title: 'A figure typed by hand: "24 hours"',
-      detail: 'Typed words equal order_cancel_window today, so they will not move when the figure does.',
-      surroundingWords: 'You may cancel any rental order up to 24 hours after placing it',
-      suggestedFigureKey: 'order_cancel_window'
-    }
-  ];
-
   return (
     <div className="flex-1 min-w-0 flex flex-col items-center select-text">
       {/* Paper Sheet (max-w-[760px], Spec §7.3) */}
       <div className="w-full max-w-[760px] bg-white border border-[#ebe5dc] rounded-[8px] shadow-[0_4px_24px_rgba(26,22,18,0.06)] p-8 md:p-12 space-y-10 relative">
-
         {/* Floating Bar above active focused words (Spec §7.5) */}
         {focusedField && (
           <div className="sticky top-2 z-40 flex justify-center w-full pointer-events-none mb-2">
@@ -108,39 +83,37 @@ export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
                 onAddFigureClick={() => setPickerOpen(true)}
                 onGoldItalicClick={() => {}}
               />
-              {pickerOpen && (
-                <FigurePickerPopover
-                  pageSlug={page.slug}
-                  onSelectFigure={handleInsertFigure}
-                  onClose={() => setPickerOpen(false)}
-                  style={{ top: '38px', left: '50%', transform: 'translateX(-50%)' }}
-                />
-              )}
-              {linkOpen && (
-                <LinkPickerPopover
-                  initialWords={getVal(focusedField.fieldId, '').slice(0, 30)}
-                  onSaveLink={handleSaveLink}
-                  onClose={() => setLinkOpen(false)}
-                  style={{ top: '38px', left: '50%', transform: 'translateX(-50%)' }}
-                />
-              )}
+              {pickerOpen && <FigurePickerPopover pageSlug={page.slug} onSelectFigure={handleInsertFigure} onClose={() => setPickerOpen(false)} style={{ top: '38px', left: '50%', transform: 'translateX(-50%)' }} />}
+              {linkOpen && <LinkPickerPopover initialWords={getVal(focusedField.fieldId, '').slice(0, 30)} onSaveLink={handleSaveLink} onClose={() => setLinkOpen(false)} style={{ top: '38px', left: '50%', transform: 'translateX(-50%)' }} />}
             </div>
           </div>
         )}
-
-        {/* Part 1: Hero */}
-        <PagePaperHero
-          activePartId={activePartId}
-          heroContent={pageContent.hero}
-          focusedField={focusedField}
-          getVal={getVal}
-          onSelectPart={onSelectPart}
-          onFieldFocus={handleFieldFocus}
-          onFieldChange={onFieldChange}
-        />
-
+        {/* Help & FAQs specific layout (Screens 39, 40) or Standard Page Hero */}
+        {page.slug === 'faqs' ? (
+          <FaqPaperSection
+            activePartId={activePartId}
+            activeSide={activeSide}
+            onSideChange={setActiveSide}
+            focusedField={focusedField}
+            getVal={getVal}
+            onSelectPart={onSelectPart}
+            onFieldFocus={handleFieldFocus}
+            onFieldChange={onFieldChange}
+            answers={answers}
+            onOpenAnswersView={onOpenAnswersView}
+          />
+        ) : (
+          <PagePaperHero
+            activePartId={activePartId}
+            heroContent={pageContent.hero}
+            focusedField={focusedField}
+            getVal={getVal}
+            onSelectPart={onSelectPart}
+            onFieldFocus={handleFieldFocus}
+            onFieldChange={onFieldChange}
+          />
+        )}
         <div className="border-b border-dashed border-[#e6dccb]" />
-
         {/* Part 2: Two policies (Interactive sides toggle if supported) */}
         {pageContent.hasTwoSides && (
           <>
@@ -172,7 +145,6 @@ export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
                     {pageContent.rentalAnswersCount || 68} answers
                   </div>
                 </div>
-
                 <div
                   onClick={e => {
                     e.stopPropagation();
@@ -198,7 +170,6 @@ export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
             <div className="border-b border-dashed border-[#e6dccb]" />
           </>
         )}
-
         {/* Part 3: Opening Statement with live figure tokens & margin check mark */}
         <div className="relative">
           <PagePaperOpening
@@ -218,9 +189,7 @@ export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
             onClick={c => onOpenCheck && onOpenCheck(c)}
           />
         </div>
-
         <div className="border-b border-dashed border-[#e6dccb]" />
-
         {/* Part 4: Answers Card */}
         <section
           id="answers"
@@ -251,7 +220,6 @@ export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
           </p>
         </section>
       </div>
-
       {/* Footnote under paper (Spec §7.3) */}
       <div className="py-4 text-center text-xs text-[#73675a]">
         Click any words to change them where they print. Gold words are figures: click one to see every page it prints on.
@@ -259,5 +227,4 @@ export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
     </div>
   );
 };
-
 export default PagePaperCanvas;
