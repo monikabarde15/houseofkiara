@@ -1,0 +1,88 @@
+House of Kaira · Admin panel · The Pages section Build specification v2 
+Admin panel v217 · 20 October 2026 Page 32 of 84 
+Part What is edited, and where How it behaves 
+05 Two Sides 
+A switch between the two 
+people the platform 
+serves, each with its own 
+door. 
+On the page 
+• The words: Eyebrow · Heading 
+• The switch: First tab · Second tab 
+• For the person celebrating and For the person listing: 
+Heading · Body 
+Page settings 
+• Showing the band: the switch “Show this band on the 
+page” 
+• For the person celebrating and For the person listing: 
+Button 
+The switch shows one side at a time, 
+on the paper as on the page. Each 
+side’s button is set in Page settings. 
+06 From The Founder 
+Portrait, three 
+paragraphs, signature. 
+On the page 
+• The words: Eyebrow · Heading 
+• Who is speaking: Name · Role · Initials, shown until there 
+is a portrait · Signature line 
+• The letter: Paragraphs 
+Page settings 
+• Showing the band: the switch “Show this band on the 
+page” 
+• Who is speaking: Alt text · Keep this part in frame 
+• The letter: + Add a paragraph 
+The portrait’s alt text and crop are 
+settings. The initials show until there 
+is a portrait. 
+07 Why We Built It 
+The market argument, 
+with the circular mark 
+drawn behind it. 
+On the page 
+• The words: Eyebrow · Heading 
+• The argument: Paragraphs 
+Page settings 
+• Showing the band: the switch “Show this band on the 
+page” 
+• The argument: + Add a paragraph 
+• The mark: the switch “Draw the circular mark behind the 
+text” 
+The circular mark behind the text is 
+switched on or off in Page settings. 
+08 Three Ways 
+Rent, Buy Preloved and 
+List & Sell, and a line 
+about the fourth way. 
+On the page 
+• The words: Eyebrow · Heading · Line under the heading 
+• The three doors: Numeral · Title · Lead line · Body 
+• The line underneath: Line 
+Page settings 
+• Showing the band: the switch “Show this band on the 
+page” 
+• The three doors: Button, on each of 3 rows 
+• The line underneath: the switch “Show it” 
+The three doors are the platform’s 
+ways in; a fourth would promise a 
+way the catalogue cannot serve, so 
+none is added here. Each door’s 
+button is a setting, and the line 
+about the fourth way can be 
+switched off. 
+09 Closing 
+Two buttons and the 
+Instagram line. 
+On the page 
+• The words: Heading · Line under the heading 
+• The Instagram line: The words before it 
+Page settings 
+• Showing the band: the switch “Show this band on the 
+page” 
+• The two buttons: First button · Second button 
+• The Instagram line: the switch “Show the handle under 
+the buttons” 
+The Instagram line prints the handle 
+from Site Settings and can be 
+switched off. The two buttons’ 
+words are settings. 

@@ -1,0 +1,35 @@
+311:             fieldValues={fieldValues}
+312:             onFieldChange={onFieldChange}
+313:             onFocusField={onFocusField}
+314:             onOpenCheck={onOpenCheck}
+315:           />
+316:         ) : isRefunds ? (
+317:           /* Refund & Cancellation Policy Paper View (Spec §8.12, Screen 49/58) */
+318:           <RefundsPaperSection
+319:             page={page}
+320:             fieldValues={fieldValues}
+321:             onFieldChange={onFieldChange}
+322:             onFocusField={onFocusField}
+323:             onOpenAnswersView={onOpenAnswersView}
+324:             onSelectFigure={onSelectFigure}
+325:             onNavigateToPage={onSelectPage}
+326:             hiddenParts={hiddenParts}
+327:           /> : isDeposit ? (
+328:           /* Deposit Policy Paper View (Spec § 8.13, Screen 51) */
+329:           <DepositPaperSection
+330:             page={page}
+331:             fieldValues={fieldValues}
+332:             onFieldChange={onFieldChange}
+333:             onFocusField={onFocusField}
+334:             onOpenAnswersView={onOpenAnswersView}
+335:             onSelectFigure={onSelectFigure}
+336:             onNavigateToPage={onSelectPage}
+337:             hiddenParts={hiddenParts}
+338:           />
+339:         ) : (
+340:           /* Standard Policy Canvas */
+341:           <>
+342:             <PagePaperHero
+343:               activePartId={activePartId}
+344:               heroContent={pageContent.hero}
+345:               focusedField={focusedField}

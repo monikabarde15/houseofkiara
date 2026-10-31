@@ -54,10 +54,17 @@ server.on("error", (error) => {
   console.error("Admin API server error:", error.message);
 });
 
-connectDB()
-  .then(() => {
-    dbReady = true;
-  })
-  .catch((err) => {
-    console.error("Non-blocking DB connection note:", err.message);
-  });
+async function initializeDatabase() {
+  while (!dbReady) {
+    try {
+      await connectDB(2);
+      dbReady = true;
+      console.log("Database connected and ready.");
+      break;
+    } catch (err) {
+      console.error("Database connection failed, retrying in 3 seconds:", err.message);
+      await new Promise(res => setTimeout(res, 3000));
+    }
+  }
+}
+initializeDatabase();

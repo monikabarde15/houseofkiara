@@ -1,3 +1,5 @@
+import { DEPOSIT_ANSWERS } from './depositAnswers';
+import { REFUND_ANSWERS } from './refundAnswers';
 import { ALL_120_FAQ_ANSWERS } from './faq';
 /* =========================================================
    HOUSE OF KAIRA · ADMIN PANEL — THE PAGES SECTION
@@ -9,63 +11,7 @@ import { ALL_120_FAQ_ANSWERS } from './faq';
 import { AnswerItem } from '../types/answers.types';
 import { SEED_ANSWERS } from './seedAnswers';
 
-// 1. Deposit Policy Answers (Spec §8.13)
-const DEPOSIT_ANSWERS: AnswerItem[] = [
-  {
-    id: 'dep_1',
-    question: 'When do I get my security deposit back?',
-    section: 'Return timelines',
-    side: 'rentals',
-    orderIndex: 1,
-    statusTag: { label: 'Within 48 hours of return', tone: 'good-news' },
-    paragraphs: [
-      {
-        id: 'dp1',
-        kind: 'paragraph',
-        text: 'Once your piece arrives back at our Mumbai concierge studio, our master tailors inspect it within 24 hours. The pre-authorization or deposit hold is released automatically to your account within 48 hours.'
-      }
-    ],
-    searchWords: 'deposit release, return time, inspection, 48 hours',
-    linkName: 'deposit-release-time',
-    appearsIn: ['Security deposit policy', 'Popular questions on Hero']
-  },
-  {
-    id: 'dep_2',
-    question: 'What counts as normal wear and tear on a piece?',
-    section: 'What counts as damage',
-    side: 'rentals',
-    orderIndex: 2,
-    isShared: true,
-    statusTag: { label: 'Zero deduction', tone: 'good-news' },
-    paragraphs: [
-      {
-        id: 'dp2',
-        kind: 'paragraph',
-        text: 'Minor hem dust from evening wear, faint makeup traces that vanish during standard dry cleaning, and slight zipper stiffness are completely normal and never charged to you.',
-        sharedFrom: { pageName: 'Care, Cleaning & Damage Policy', questionTitle: 'What counts as normal wear and tear?' }
-      }
-    ],
-    searchWords: 'wear and tear, hem dust, stain, normal use',
-    linkName: 'normal-wear-definition'
-  },
-  {
-    id: 'dep_3',
-    question: 'How is repair cost assessed if accidental damage occurs?',
-    section: 'What counts as damage',
-    side: 'rentals',
-    orderIndex: 3,
-    statusTag: { label: 'At cost with receipts', tone: 'worth-knowing' },
-    paragraphs: [
-      {
-        id: 'dp3',
-        kind: 'paragraph',
-        text: 'If a tear or burn occurs, an independent atelier tailors quotation is provided before any amount is deducted. We never charge punitive fees.'
-      }
-    ],
-    searchWords: 'damage cost, repair estimate, independent atelier',
-    linkName: 'repair-cost-assessment'
-  }
-];
+// 1. Deposit Policy Answers (Spec §8.13, 61 items in depositAnswers.ts)
 
 // 2. Help & FAQs Answers (Spec §8.4)
 const FAQ_ANSWERS: AnswerItem[] = ALL_120_FAQ_ANSWERS;
@@ -147,10 +93,12 @@ const SHIPPING_ANSWERS: AnswerItem[] = [
 ];
 
 export const getPageAnswers = (slug: string): AnswerItem[] => {
-  switch (slug) {
+  const clean = slug.replace(/^\//, '');
+  switch (clean) {
     case 'deposit-policy':
       return DEPOSIT_ANSWERS;
     case 'faqs':
+    case 'faq':
       return FAQ_ANSWERS;
     case 'care-damage':
     case 'care-policy':
@@ -159,6 +107,7 @@ export const getPageAnswers = (slug: string): AnswerItem[] => {
     case 'shipping-policy':
       return SHIPPING_ANSWERS;
     case 'refunds':
+      return REFUND_ANSWERS;
     default:
       return SEED_ANSWERS;
   }

@@ -1,0 +1,96 @@
+House of Kaira · Admin panel · The Pages section Build specification v2 
+Admin panel v217 · 20 October 2026 Page 31 of 84 
+Part What is edited, and where How it behaves 
+08 Raising a concern 
+The Grievance Officer and 
+the National Consumer 
+Helpline. 
+On the page 
+• The words: Heading · Opening · Our promise · National 
+Consumer Helpline 
+The National Consumer Helpline line 
+prints the helpline figures set by law, 
+and the Grievance Officer’s details 
+are legal figures. 
+09 Our details 
+Who the business is, as 
+the law asks. 
+On the page 
+• The words and Sending something to us: Heading · Line 
+The registered entity is printed from 
+the legal figures; only the words 
+around them are edited here. 
+8.6 About HOK 
+The house, the name, and the person behind it. /about · built from hok_about_us · prints 1 figure · 9 items to 
+look at today. 
+Part What is edited, and where How it behaves 
+01 Hero 
+A full bleed portrait, three 
+facts, and the brand film 
+slot underneath. 
+On the page 
+• The words: Eyebrow · Headline · Line under the heading 
+• The three facts: Label · Value 
+• The brand film: What it says while there is no film 
+• Scroll cue: Word under the hero 
+Page settings 
+• Showing the band: the switch “Show this band on the 
+page” 
+• The picture: Alt text · Keep this part in frame · Layout · 
+Darken the picture behind the words (%) 
+• The three facts: a list of 3, in order · + Add a fact 
+• The brand film: Slot label · Note to whoever shoots it · Alt 
+text · the switch “Show the film slot” 
+A band can be switched off with 
+“Show this band on the page”; it 
+then stays on the paper, faded and 
+marked hidden. The picture is 
+uploaded to the media store; the 
+page keeps its name, alt text and 
+crop. Darkening is offered only for 
+the full bleed layout, and below 25% 
+the panel warns that the headline is 
+hard to read. The brand film slot 
+says the film is coming rather than 
+showing an empty player. 
+02 The Name 
+Five letters, K, A, I, R and 
+A, each one tappable and 
+each one meaning 
+something. 
+On the page 
+• The words: Eyebrow · Heading · Line under the heading 
+• The five letters: Letter · Word · What it means 
+• The close: Closing line · Where the name comes from 
+Page settings 
+• Showing the band: the switch “Show this band on the 
+page” 
+The five letters spell the name, so 
+none is added or taken away. Each 
+letter is a tab on the paper; choosing 
+one shows its word and what it 
+means. 
+03 Manifesto 
+One pulled quote on its 
+own. The only band with 
+nothing else in it. 
+On the page 
+• The quote: Quote · The paragraph under it 
+Page settings 
+• Showing the band: the switch “Show this band on the 
+page” 
+Words only. 
+04 What We Believe 
+Four ideas, each a 
+heading in two halves and 
+a paragraph. 
+On the page 
+• The words: Eyebrow · Heading 
+• The four beliefs: First half · Second half · The paragraph 
+Page settings 
+• Showing the band: the switch “Show this band on the 
+page” 
+• The four beliefs: a list of 4, in order · + Add a belief 
+Each belief’s heading is set in two 
+halves, the first in the serif and the 
+second in gold italic under it. 

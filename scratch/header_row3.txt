@@ -1,0 +1,90 @@
+181:           {isAbout ? (
+182:             <div className="flex items-center gap-3">
+183:               <span className="text-xs text-[#73675a]">1 change waiting</span>
+184:               <button
+185:                 type="button"
+186:                 className="px-3 py-1.5 rounded-[6px] bg-[#b89047] text-white font-medium text-xs hover:bg-[#a67e37] transition shadow-2xs cursor-pointer"
+187:               >
+188:                 Review and publish
+189:               </button>
+190:             </div>
+191:           ) : (
+192:             <span className="hidden sm:inline text-xs text-[#73675a]">No changes waiting</span>
+193:           )}
+194:         </div>
+195:       </div>
+196: 
+197:       {/* Row 3: Parts Strip (Spec §8.4 & §8.5, Screens 39 & 42) */}
+198:       <div className="px-6 flex items-center justify-between gap-4 overflow-x-auto text-[12.5px]">
+199:         {/* Left: The page's canonical parts in order */}
+200:         <div className="flex items-center gap-5 shrink-0 py-2.5">
+201:           {parts.map(part => {
+202:             const isActive = activePartId === part.id;
+203:             return (
+204:               <button
+205:                 key={part.id}
+206:                 type="button"
+207:                 onClick={() => onSelectPart(part.id)}
+208:                 className={`relative flex items-center gap-1.5 pb-0.5 cursor-pointer transition-colors ${
+209:                   isActive
+210:                     ? 'border-b-2 border-[#bda67b] font-medium text-[#1a1612]'
+211:                     : 'text-[#73675a] hover:text-[#1a1612]'
+212:                 }`}
+213:               >
+214:                 <span>{part.label}</span>
+215:                 {part.count !== undefined && (
+216:                   <span className="px-1.5 py-0.2 rounded-full bg-[#eee9df] text-[11px] text-[#5c5248]">
+217:                     {part.count}
+218:                   </span>
+219:                 )}
+220:                 {part.hasChecks && (
+221:                   <span className="w-1.5 h-1.5 rounded-full bg-[#b85c38]" />
+222:                 )}
+223:               </button>
+224:             );
+225:           })}
+226:         </div>
+227: 
+228:         {/* Right: Show dropdown, Figures, To look at, Page settings */}
+229:         <div className="flex items-center gap-4 shrink-0 py-2.5 text-xs">
+230:           {/* Show Mode Dropdown */}
+231:           <div className="flex items-center gap-1 text-[#73675a]">
+232:             <span className="text-[11px]">⎋</span>
+233:             <select
+234:               value={showMode}
+235:               onChange={e => onShowModeChange(e.target.value as any)}
+236:               className="bg-transparent text-[#73675a] hover:text-[#1a1612] cursor-pointer focus:outline-none"
+237:             >
+238:               <option value="waiting">With the changes waiting</option>
+239:               <option value="live">As it is live now</option>
+240:               <option value="date">As on a date</option>
+241:             </select>
+242:           </div>
+243: 
+244:           {/* Figures button */}
+245:           <button
+246:             type="button"
+247:             onClick={() => onSelectPanelTab(activePanelTab === 'figures' ? 'default' : 'figures')}
+248:             className={`cursor-pointer transition-colors ${
+249:               activePanelTab === 'figures'
+250:                 ? 'font-medium text-[#8a6a36]'
+251:                 : 'text-[#73675a] hover:text-[#1a1612]'
+252:             }`}
+253:           >
+254:             {figuresCount} {figuresCount === 1 ? 'figure' : 'figures'}
+255:           </button>
+256: 
+257:           {/* To look at button (terracotta when above nought) */}
+258:           <button
+259:             type="button"
+260:             onClick={() => onSelectPanelTab(activePanelTab === 'checks' ? 'default' : 'checks')}
+261:             className={`cursor-pointer transition-colors ${
+262:               checksCount > 0 ? 'text-[#b85c38] font-medium' : 'text-[#73675a] hover:text-[#1a1612]'
+263:             } ${activePanelTab === 'checks' ? 'underline' : ''}`}
+264:           >
+265:             {checksCount > 0 ? `${checksCount} to look at` : 'Nothing to look at'}
+266:           </button>
+267: 
+268:           {/* Page settings */}
+269:           <button
+270:             type="button"

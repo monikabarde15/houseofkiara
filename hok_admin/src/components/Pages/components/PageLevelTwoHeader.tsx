@@ -1,6 +1,6 @@
 /* =========================================================
    HOUSE OF KAIRA · ADMIN PANEL — THE PAGES SECTION
-   Component: PageLevelTwoHeader (Spec §3.1, §7.2, Screen 20)
+   Component: PageLevelTwoHeader (Spec §3.1, §7.2, Screen 20, 39, 42)
    Admin panel v217 · 20 October 2026
    Rule: Zero dashes used as punctuation. Sentence case only.
 ========================================================= */
@@ -47,10 +47,17 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
   onShowModeChange
 }) => {
   const [isPageSwitcherOpen, setIsPageSwitcherOpen] = useState(false);
+  const isContact = page.slug === '/contact' || page.slug === 'contact';
+  const isAbout = page.slug === '/about' || page.slug === 'about';
+  const isListYourPiece = page.slug === '/list-your-piece' || page.slug === 'list-your-piece';
+  const isPrivacy = page.slug === '/privacy' || page.slug === 'privacy';
+  const isCookies = page.slug === '/cookies' || page.slug === 'cookies';
+  const isRefunds = page.slug === '/refunds' || page.slug === 'refunds';
+  const isDeposit = page.slug === '/deposit-policy' || page.slug === 'deposit-policy';
 
   return (
     <header className="sticky top-0 z-30 bg-[#fffefb] border-b border-[#e6dccb] shadow-[0_1px_3px_rgba(26,22,18,0.03)]">
-      {/* Row 1: Back to All pages & Breadcrumb (Screen 20) */}
+      {/* Row 1: Back to All pages & Breadcrumb & Right Actions (Screen 39 & 42) */}
       <div className="h-[48px] border-b border-[#f0ebe3] px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
@@ -64,19 +71,36 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
           <span className="text-xs text-[#73675a]">Pages</span>
         </div>
 
-        <div className="flex items-center gap-4 text-xs text-[#5c5248]">
+        <div className="flex items-center gap-4 text-xs">
           <a
             href={page.slug}
             target="_blank"
             rel="noreferrer"
-            className="hover:text-[#1a1612] transition-colors"
+            className="text-[#5c5248] hover:text-[#1a1612] transition-colors"
           >
             View Live Site ↗
           </a>
+
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 text-[#5c5248] hover:text-[#1a1612] transition-colors cursor-pointer"
+          >
+            <span>Notifications</span>
+            <span className="w-4 h-4 rounded-full bg-[#b85c38] text-white text-[10px] font-semibold flex items-center justify-center">
+              12
+            </span>
+          </button>
+
+          <button
+            type="button"
+            className="px-3.5 py-1.5 rounded-[6px] bg-[#b89047] text-white font-medium text-xs hover:bg-[#a67e37] transition shadow-2xs cursor-pointer"
+          >
+            Save Changes
+          </button>
         </div>
       </div>
 
-      {/* Row 2: Page Identity, Switcher, Version, and Search (Screen 20) */}
+      {/* Row 2: Page Identity, Switcher, Version, and Search (Screen 39 & 42) */}
       <div className="py-2.5 px-6 flex items-center justify-between gap-4 border-b border-[#f0ebe3]">
         <div className="flex items-center gap-3 flex-wrap">
           <span className="text-xs text-[#8a7f73]">Pages</span>
@@ -121,21 +145,63 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
             Live
           </span>
 
-          {/* Version line */}
-          <span className="text-xs text-[#73675a]">
-            {page.version ? `${page.version}, ` : ''}reviewed {page.lastPublished || '23 September 2026'}
-          </span>
+          {/* Subtitle / review / edit date */}
+          {isAbout || isListYourPiece ? (
+            <span className="text-xs text-[#73675a]">
+              Edited {isListYourPiece ? '27 February 2026' : (page.lastPublished || '4 March 2026')}
+            </span>
+          ) : isPrivacy ? (
+            <span className="text-xs text-[#73675a]">
+              Reviewed 30 September 2026
+            </span>
+          ) : isCookies ? (
+            <span className="text-xs text-[#73675a]">
+              Reviewed 1 September 2026
+            </span>
+          ) : isDeposit ? (
+            <span className="text-xs text-[#73675a]">
+              Version 4, reviewed 6 October 2026
+            </span>
+          ) : isRefunds ? (
+            <span className="text-xs text-[#73675a]">
+              Version 7, reviewed 23 September 2026
+            </span>
+          ) : !isContact ? (
+            <span className="text-xs text-[#73675a]">
+              {page.version ? `${page.version}, ` : ''}reviewed {page.lastPublished || '17 September 2026'}
+            </span>
+          ) : null}
         </div>
 
-        {/* Global Find Trigger */}
-        <div className="text-xs text-[#73675a] flex items-center gap-3">
-          <span className="hidden sm:inline">No changes waiting</span>
+        {/* Global Find on any page & Status */}
+        <div className="flex items-center gap-4 text-xs">
+          <div className="relative">
+            <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#8a7f73] text-[11px]">🔍</span>
+            <input
+              type="text"
+              placeholder="Find on any page"
+              className="pl-7 pr-3 py-1 bg-white border border-[#e6dccb] rounded-[6px] text-xs text-[#1a1612] placeholder-[#8a7f73] w-48 focus:outline-none focus:border-[#bda67b]"
+            />
+          </div>
+          {isAbout ? (
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-[#73675a]">1 change waiting</span>
+              <button
+                type="button"
+                className="px-3 py-1.5 rounded-[6px] bg-[#b89047] text-white font-medium text-xs hover:bg-[#a67e37] transition shadow-2xs cursor-pointer"
+              >
+                Review and publish
+              </button>
+            </div>
+          ) : (
+            <span className="hidden sm:inline text-xs text-[#73675a]">No changes waiting</span>
+          )}
         </div>
       </div>
 
-      {/* Row 3: Parts Strip (Spec §7.2, Screen 20) */}
+      {/* Row 3: Parts Strip (Spec §8.4 & §8.5, Screens 39 & 42) */}
       <div className="px-6 flex items-center justify-between gap-4 overflow-x-auto text-[12.5px]">
-        {/* Left: The page's parts in order */}
+        {/* Left: The page's canonical parts in order */}
         <div className="flex items-center gap-5 shrink-0 py-2.5">
           {parts.map(part => {
             const isActive = activePartId === part.id;
@@ -152,7 +218,7 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
               >
                 <span>{part.label}</span>
                 {part.count !== undefined && (
-                  <span className="px-1.5 py-0.2 rounded bg-[#f4f0e8] text-[11px] text-[#5c5248]">
+                  <span className="px-1.5 py-0.2 rounded-full bg-[#eee9df] text-[11px] text-[#5c5248]">
                     {part.count}
                   </span>
                 )}
@@ -167,15 +233,18 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
         {/* Right: Show dropdown, Figures, To look at, Page settings */}
         <div className="flex items-center gap-4 shrink-0 py-2.5 text-xs">
           {/* Show Mode Dropdown */}
-          <select
-            value={showMode}
-            onChange={e => onShowModeChange(e.target.value as any)}
-            className="bg-transparent text-[#73675a] hover:text-[#1a1612] cursor-pointer focus:outline-none"
-          >
-            <option value="waiting">With the changes waiting</option>
-            <option value="live">As it is live now</option>
-            <option value="date">As on a date</option>
-          </select>
+          <div className="flex items-center gap-1 text-[#73675a]">
+            <span className="text-[11px]">⎋</span>
+            <select
+              value={showMode}
+              onChange={e => onShowModeChange(e.target.value as any)}
+              className="bg-transparent text-[#73675a] hover:text-[#1a1612] cursor-pointer focus:outline-none"
+            >
+              <option value="waiting">With the changes waiting</option>
+              <option value="live">As it is live now</option>
+              <option value="date">As on a date</option>
+            </select>
+          </div>
 
           {/* Figures button */}
           <button
@@ -187,7 +256,7 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
                 : 'text-[#73675a] hover:text-[#1a1612]'
             }`}
           >
-            {figuresCount} figures
+            {figuresCount} {figuresCount === 1 ? 'figure' : 'figures'}
           </button>
 
           {/* To look at button (terracotta when above nought) */}

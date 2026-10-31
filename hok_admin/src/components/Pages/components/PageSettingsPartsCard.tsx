@@ -1,23 +1,138 @@
 /* =========================================================
    HOUSE OF KAIRA · ADMIN PANEL — THE PAGES SECTION
-   Component: PageSettingsPartsCard (Spec §7.9, Screen 28)
+   Component: PageSettingsPartsCard (Spec §7.9, Screen 28, 46)
    Admin panel v217 · 20 October 2026
    Rule: Zero dashes used as punctuation. Sentence case only.
 ========================================================= */
 
 import React, { useState } from 'react';
 import { PageCardData } from '../types';
+import { AboutPageSettingsCard } from './about/AboutPageSettingsCard';
+import { HowItWorksPageSettingsCard } from './howItWorks/HowItWorksPageSettingsCard';
+import { ListYourPiecePageSettingsCard } from './listYourPiece/ListYourPiecePageSettingsCard';
+import { TermsPageSettingsCard } from './terms/TermsPageSettingsCard';
+import { PrivacyPageSettingsCard } from './privacy/PrivacyPageSettingsCard';
+import { CookiePageSettingsCard } from './cookies/CookiePageSettingsCard';
+import { RefundsPageSettingsCard } from './refunds/RefundsPageSettingsCard';
+import { DepositPageSettingsCard } from './deposit/DepositPageSettingsCard';
 
 interface PageSettingsPartsCardProps {
   page: PageCardData;
   onOpenAnswersView?: () => void;
   onJumpToPart: (partId: string) => void;
+  hiddenParts?: Record<string, boolean>;
+  onTogglePartHidden?: (partId: string) => void;
+  showCircularMark?: boolean;
+  onToggleCircularMark?: () => void;
+  showFourthWayLine?: boolean;
+  onToggleFourthWayLine?: () => void;
+  showInstagramLine?: boolean;
+  onToggleInstagramLine?: () => void;
+  showLoopCard?: boolean;
+  onToggleLoopCard?: () => void;
 }
 
 export const PageSettingsPartsCard: React.FC<PageSettingsPartsCardProps> = ({
+  page,
   onOpenAnswersView,
-  onJumpToPart
+  onJumpToPart,
+  hiddenParts = {},
+  onTogglePartHidden = () => {},
+  showCircularMark = true,
+  onToggleCircularMark = () => {},
+  showFourthWayLine = true,
+  onToggleFourthWayLine = () => {},
+  showInstagramLine = true,
+  onToggleInstagramLine = () => {},
+  showLoopCard = true,
+  onToggleLoopCard = () => {}
 }) => {
+  const isAbout = page.slug === '/about' || page.slug === 'about';
+  const isHowItWorks = page.slug === '/how-it-works' || page.slug === 'how-it-works';
+  const isListYourPiece = page.slug === '/list-your-piece' || page.slug === 'list-your-piece';
+  const isTerms = page.slug === '/terms' || page.slug === 'terms';
+
+  if (isTerms) {
+    return (
+      <TermsPageSettingsCard
+        hiddenParts={hiddenParts}
+        onTogglePartHidden={onTogglePartHidden}
+        onOpenClausesView={() => onJumpToPart('clauses')}
+      />
+    );
+  }
+
+  const isPrivacy = page.slug === '/privacy' || page.slug === 'privacy';
+
+  if (isPrivacy) {
+    return (
+      <PrivacyPageSettingsCard
+        hiddenParts={hiddenParts}
+        onTogglePartHidden={onTogglePartHidden}
+      />
+    );
+  }
+
+  const isCookies = page.slug === '/cookies' || page.slug === 'cookies';
+
+  if (isCookies) {
+    return (
+      <CookiePageSettingsCard
+        hiddenParts={hiddenParts}
+        onTogglePartHidden={onTogglePartHidden}
+      />
+    );
+  }
+
+  const isDeposit = page.slug === '/deposit-policy' || page.slug === 'deposit-policy';
+
+  if (isDeposit) {
+    return (
+      <DepositPageSettingsCard
+        hiddenParts={hiddenParts}
+        onTogglePartHidden={onTogglePartHidden}
+        onOpenAnswersView={() => onJumpToPart('answers')}
+      />
+    );
+  }
+
+  const isRefunds = page.slug === '/refunds' || page.slug === 'refunds';
+
+  if (isRefunds) {
+    return (
+      <RefundsPageSettingsCard
+        hiddenParts={hiddenParts}
+        onTogglePartHidden={onTogglePartHidden}
+        onOpenAnswersView={() => onJumpToPart('answers')}
+      />
+    );
+  }
+
+  if (isListYourPiece) {
+    return (
+      <ListYourPiecePageSettingsCard
+        hiddenParts={hiddenParts}
+        onTogglePartHidden={onTogglePartHidden}
+        onOpenAnswersView={onOpenAnswersView}
+      />
+    );
+  }
+
+  if (isHowItWorks) {
+    return (
+      <HowItWorksPageSettingsCard
+        page={page}
+        onJumpToPart={onJumpToPart}
+        hiddenParts={hiddenParts}
+        onTogglePartHidden={onTogglePartHidden}
+        showLoopCard={showLoopCard}
+        onToggleLoopCard={onToggleLoopCard}
+        showInstagramLine={showInstagramLine}
+        onToggleInstagramLine={onToggleInstagramLine}
+      />
+    );
+  }
+
   const [popularQuestions, setPopularQuestions] = useState<string[]>([
     'What do I get back if I cancel more than 7 days before my rental starts?',
     'When do I get my deposit back?',
@@ -28,6 +143,23 @@ export const PageSettingsPartsCard: React.FC<PageSettingsPartsCardProps> = ({
   const [whatsAppPrompt, setWhatsAppPrompt] = useState<string>(
     'Hello House of Kaira Concierge, I have a question regarding the policy.'
   );
+
+  if (isAbout) {
+    return (
+      <AboutPageSettingsCard
+        page={page}
+        onJumpToPart={onJumpToPart}
+        hiddenParts={hiddenParts}
+        onTogglePartHidden={onTogglePartHidden}
+        showCircularMark={showCircularMark}
+        onToggleCircularMark={onToggleCircularMark}
+        showFourthWayLine={showFourthWayLine}
+        onToggleFourthWayLine={onToggleFourthWayLine}
+        showInstagramLine={showInstagramLine}
+        onToggleInstagramLine={onToggleInstagramLine}
+      />
+    );
+  }
 
   const handleMoveQuestion = (index: number, direction: 'up' | 'down') => {
     const target = direction === 'up' ? index - 1 : index + 1;

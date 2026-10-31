@@ -1,6 +1,6 @@
 /* =========================================================
    HOUSE OF KAIRA · ADMIN PANEL — THE PAGES SECTION
-   Component: PagePaperView (Spec §7, §9, §10)
+   Component: PagePaperView (Spec §7, §8.4, §9, §10, Screens 39-41)
    Admin panel v217 · 20 October 2026
    Rule: Zero dashes used as punctuation. Sentence case only.
 ========================================================= */
@@ -44,6 +44,17 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
   const [selectedFigureKey, setSelectedFigureKey] = useState<string | null>(null);
 
+  const [hiddenParts, setHiddenParts] = useState<Record<string, boolean>>(() =>
+    page.slug === '/about' || page.slug === 'about' ? { manifesto: true } : {}
+  );
+  const [showCircularMark, setShowCircularMark] = useState<boolean>(true);
+  const [showFourthWayLine, setShowFourthWayLine] = useState<boolean>(true);
+  const [showInstagramLine, setShowInstagramLine] = useState<boolean>(true);
+
+  const handleTogglePartHidden = (partId: string) => {
+    setHiddenParts(prev => ({ ...prev, [partId]: !prev[partId] }));
+  };
+
   const [pageChecks, setPageChecks] = useState<CheckItem[]>(() =>
     ACTIVE_CHECKS.filter(c => c.pageSlug.includes(page.slug) || c.pageSlug === `/${page.slug}`)
   );
@@ -85,7 +96,7 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
 
   return (
     <div className="min-h-screen bg-[#f7f2ea] text-[#1a1612]">
-      {/* 1. Level Two Sticky Header & Parts Strip (Spec §7.2, Screen 20) */}
+      {/* 1. Level Two Sticky Header & Parts Strip (Spec §8.4, Screens 39-41) */}
       <PageLevelTwoHeader
         page={page}
         allPages={allPages}
@@ -103,8 +114,8 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }}
         parts={pageParts}
-        figuresCount={pageFigures.length || page.figuresCount || 23}
-        checksCount={pageChecks.length || page.checksCount || 5}
+        figuresCount={page.figuresCount || pageFigures.length || 29}
+        checksCount={page.checksCount || pageChecks.length || 14}
         activePanelTab={activePanelTab}
         onSelectPanelTab={setActivePanelTab}
         showMode={showMode}
@@ -126,6 +137,14 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
               setShowMode('date');
               setActivePanelTab('default');
             }}
+            hiddenParts={hiddenParts}
+            onTogglePartHidden={handleTogglePartHidden}
+            showCircularMark={showCircularMark}
+            onToggleCircularMark={() => setShowCircularMark(prev => !prev)}
+            showFourthWayLine={showFourthWayLine}
+            onToggleFourthWayLine={() => setShowFourthWayLine(prev => !prev)}
+            showInstagramLine={showInstagramLine}
+            onToggleInstagramLine={() => setShowInstagramLine(prev => !prev)}
           />
         ) : (
           <div className="flex-1 min-w-0 flex flex-col items-center w-full">
@@ -163,11 +182,16 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
               fieldValues={fieldValues}
               onFieldChange={handleFieldChange}
               highlightedFigureKey={selectedFigureKey}
+              onSelectPage={onSelectPage}
+              hiddenParts={hiddenParts}
+              showCircularMark={showCircularMark}
+              showFourthWayLine={showFourthWayLine}
+              showInstagramLine={showInstagramLine}
             />
           </div>
         )}
 
-        {/* Right-Hand Panel (384px wide, Spec §7.7, §9.1) */}
+        {/* Right-Hand Panel (384px wide, Spec §7.7, §8.4, Screens 39, 40) */}
         <div className="w-full lg:w-[384px] shrink-0 sticky top-36">
           {selectedFigure ? (
             <div className="space-y-2">

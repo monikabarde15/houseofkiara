@@ -11,6 +11,9 @@ import { AnswerItem } from '../../types';
 import { FaqPaperHero } from './FaqPaperHero';
 import { FaqPaperMoments } from './FaqPaperMoments';
 import { FaqPaperHygiene } from './FaqPaperHygiene';
+import { FaqPaperMostAsked } from './FaqPaperMostAsked';
+import { FaqPaperFullPolicies } from './FaqPaperFullPolicies';
+import { FaqPaperStillWondering } from './FaqPaperStillWondering';
 
 interface FaqPaperSectionProps {
   activePartId: string;
@@ -23,6 +26,7 @@ interface FaqPaperSectionProps {
   onFieldChange: (fieldId: string, value: string) => void;
   answers: AnswerItem[];
   onOpenAnswersView?: (questionId?: string) => void;
+  onNavigateToPage?: (slug: string) => void;
 }
 
 export const FaqPaperSection: React.FC<FaqPaperSectionProps> = ({
@@ -35,10 +39,12 @@ export const FaqPaperSection: React.FC<FaqPaperSectionProps> = ({
   onFieldFocus,
   onFieldChange,
   answers,
-  onOpenAnswersView
+  onOpenAnswersView,
+  onNavigateToPage
 }) => {
   return (
     <>
+      {/* 01 Hero */}
       <FaqPaperHero
         activePartId={activePartId}
         focusedField={focusedField}
@@ -48,6 +54,8 @@ export const FaqPaperSection: React.FC<FaqPaperSectionProps> = ({
         onFieldChange={onFieldChange}
         onSelectQuestionId={onOpenAnswersView}
       />
+
+      {/* 02 Moments */}
       <FaqPaperMoments
         activePartId={activePartId}
         selectedMomentId={activeSide === 'preloved' ? 'preloved' : 'before'}
@@ -59,6 +67,8 @@ export const FaqPaperSection: React.FC<FaqPaperSectionProps> = ({
         momentQuestions={answers}
         onOpenQuestionView={onOpenAnswersView}
       />
+
+      {/* 03 Hygiene promise */}
       <FaqPaperHygiene
         activePartId={activePartId}
         focusedField={focusedField}
@@ -67,6 +77,49 @@ export const FaqPaperSection: React.FC<FaqPaperSectionProps> = ({
         onFieldFocus={onFieldFocus}
         onFieldChange={onFieldChange}
         onOpenQuestionView={onOpenAnswersView}
+      />
+
+      {/* 04 Answers Banner on the paper */}
+      <div id="answers" className="mt-12 p-6 rounded-[8px] border border-[#e6dccb] bg-[#fbf9f5] flex items-center justify-between gap-4">
+        <div>
+          <span className="text-[11px] font-semibold tracking-wider text-[#8a6a36] uppercase block mb-1">
+            Part 04 · Canonical Knowledge Base
+          </span>
+          <h4 className="font-serif text-lg text-[#1a1612]">
+            One hundred and twenty canonical answers
+          </h4>
+          <p className="text-xs text-[#73675a] mt-0.5">
+            Every answer is edited in the dedicated Answers view alongside the question list, tokens, and verification status.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onOpenAnswersView?.()}
+          className="shrink-0 px-4 py-2 rounded-[6px] bg-[#1a1612] text-[#f7f2ea] text-xs font-medium hover:bg-[#8a6a36] transition cursor-pointer shadow-2xs"
+        >
+          Open Answers workspace ({answers.length || 120}) →
+        </button>
+      </div>
+
+      {/* 05 Most asked */}
+      <FaqPaperMostAsked
+        onOpenQuestion={qText => {
+          const match = answers.find(a => a.question.toLowerCase().includes(qText.toLowerCase().slice(0, 20)));
+          onOpenAnswersView?.(match?.id);
+        }}
+      />
+
+      {/* 07 Full policies */}
+      <FaqPaperFullPolicies
+        lastReviewed="17 September 2026"
+        onNavigateToPage={onNavigateToPage}
+      />
+
+      {/* 08 Still wondering */}
+      <FaqPaperStillWondering
+        whatsappNumber="+91 93401 39300"
+        supportEmail="concierge@houseofkaira.com"
       />
     </>
   );

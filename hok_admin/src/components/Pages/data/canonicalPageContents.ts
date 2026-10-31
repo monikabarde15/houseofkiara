@@ -8,18 +8,18 @@
 import { PageContentDefinition } from '../types/pageContent.types';
 
 export const CANONICAL_PAGE_CONTENTS: Record<string, PageContentDefinition> = {
-  // 1. Refunds & cancellations (Spec §8.12, Page 37)
+  // 1. Refunds & cancellations (Spec §8.12, Pages 38-39, Screen 49/58)
   'refunds': {
-    slug: 'refunds',
+    slug: '/refunds',
     parts: [
       { id: 'hero', label: 'Hero' },
       { id: 'two-policies', label: 'Two policies' },
       { id: 'opening', label: 'Opening' },
-      { id: 'policy-brief', label: 'The policy in brief' },
+      { id: 'the-policy-in-brief', label: 'The policy in brief' },
       { id: 'sections', label: 'Sections' },
       { id: 'answers', label: 'Answers', count: 103, hasChecks: true },
-      { id: 'related', label: 'Related policies' },
-      { id: 'cant-find', label: "Can't find it" }
+      { id: 'related-policies', label: 'Related policies' },
+      { id: 'cant-find-it', label: "Can't find it" }
     ],
     hasTwoSides: true,
     rentalAnswersCount: 68,
@@ -67,61 +67,52 @@ export const CANONICAL_PAGE_CONTENTS: Record<string, PageContentDefinition> = {
       { id: 'at-a-glance', label: 'At a glance' },
       { id: 'worked-example', label: 'Worked example' },
       { id: 'sections', label: 'Sections' },
-      { id: 'answers', label: 'Answers', count: 42 },
-      { id: 'related', label: 'Related policies' }
+      { id: 'answers', label: 'Answers', count: 61 },
+      { id: 'related-policies', label: 'Related policies' },
+      { id: 'cant-find-it', label: "Can't find it" }
     ],
     hero: {
-      tagline: 'Holding and returning trust',
+      tagline: 'A FULLY REFUNDABLE DEPOSIT',
       headingPrefix: 'Security deposit ',
       headingGoldItalic: 'policy',
-      lead: 'The deposit from request to refund, with worked examples you can follow step by step. Built to be transparent and returned promptly.',
-      searchPlaceholder: 'Search deposit questions, like "hold amount" or "inspection"',
+      lead: 'Everything you need to know about how your deposit is requested, held, and returned. Written in plain words, with every rule, timeline, and deduction worked out in public.',
+      searchPlaceholder: 'Search deposit questions, like "when is it due" or "normal wear"',
       popularQuestions: [
-        'When do I get my security deposit back?',
-        'What counts as normal wear and tear?'
+        'When is my deposit due?',
+        'When do I get my deposit back?',
+        'What counts as normal wear?',
+        'How is a deduction worked out?'
       ]
     },
     opening: {
-      sideLabel: 'Security deposit terms',
-      text: 'A security deposit is held purely as collateral during your rental period. It is never banked as revenue, remains segregated, and is returned to your original payment card immediately after concierge inspection.',
-      figures: [
-        {
-          key: 'deposit_standard_hold',
-          label: 'Standard deposit hold',
-          displayValue: '₹10,000',
-          contextBefore: 'The standard deposit hold for couture gowns is',
-          contextAfter: 'and is released within'
-        },
-        {
-          key: 'deposit_return_window_hours',
-          label: 'Deposit release window',
-          displayValue: '48 hours',
-          contextBefore: '',
-          contextAfter: 'of studio verification.'
-        }
-      ]
+      sideLabel: 'Opening note',
+      text: 'Every piece at House of Kaira carries a story, often one its owner holds dear. Your refundable security deposit keeps that story safe for the next person who wears it. It remains yours throughout: when your piece returns on time and as it left us, every rupee is returned to you.'
     }
   },
 
-  // 3. Help & FAQs (Spec §8.4, Page 28)
+  // 3. Help & FAQs (Spec §8.4, Page 28-29, Screens 39-41)
   'faqs': {
     slug: 'faqs',
     parts: [
       { id: 'hero', label: 'Hero' },
       { id: 'moments', label: 'Moments' },
-      { id: 'sections', label: 'Sections' },
+      { id: 'hygiene-promise', label: 'Hygiene promise' },
       { id: 'answers', label: 'Answers', count: 120, hasChecks: true },
-      { id: 'cant-find', label: "Can't find it" }
+      { id: 'most-asked', label: 'Most asked' },
+      { id: 'full-policies', label: 'Full policies' },
+      { id: 'still-wondering', label: 'Still wondering' }
     ],
     hero: {
-      tagline: 'Plain answers to real questions',
-      headingPrefix: 'Help & ',
-      headingGoldItalic: 'frequently asked questions',
-      lead: 'One hundred and twenty answers, sorted by the moment you are in. Everything from booking lead times to care, authentication, and lister payouts.',
-      searchPlaceholder: 'Ask anything about House of Kaira',
+      tagline: "Hello, we're so glad you're here",
+      headingPrefix: "What's on ",
+      headingGoldItalic: 'your mind?',
+      lead: 'One hundred and twenty answers, sorted by the moment a customer is in. The answers here are also the ones How It Works and List Your Piece show.',
+      searchPlaceholder: 'Ask anything: deposit, fit, late return, offer...',
       popularQuestions: [
-        'How early should I book for wedding season?',
-        'Can I try on the outfit before renting?'
+        'How do I know a piece will fit me?',
+        'When will I get my deposit back?',
+        'How far in advance should I book?',
+        'Can I return a preloved piece?'
       ]
     },
     opening: {
@@ -232,5 +223,277 @@ export const CANONICAL_PAGE_CONTENTS: Record<string, PageContentDefinition> = {
         }
       ]
     }
-  }
+  },
+
+  // 6. Contact Us (Spec §8.5, Page 29-31, Screens 42-43)
+  'contact': {
+    slug: '/contact',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'open-closed', label: 'Open or closed' },
+      { id: 'ways-to-reach', label: 'Ways to reach us', hasChecks: true },
+      { id: 'answers-any-time', label: 'Answers, any time' },
+      { id: 'write-a-note', label: 'Write us a note' },
+      { id: 'visit-us', label: 'Visit us', hasChecks: true },
+      { id: 'just-arrived', label: 'Just arrived' },
+      { id: 'raising-a-concern', label: 'Raising a concern' },
+      { id: 'our-details', label: 'Our details' }
+    ],
+    hero: {
+      tagline: 'Contact Us',
+      headingPrefix: 'We’d love to hear from ',
+      headingGoldItalic: 'you',
+      lead: 'Whether you are choosing a piece for a celebration, wearing one now, or thinking of listing your own, our team in Indore is here to help, personally.',
+      searchPlaceholder: 'Search contact details',
+      popularQuestions: [
+        'What are your customer care hours?',
+        'How do I book a visit in Indore?'
+      ]
+    },
+    opening: {
+      sideLabel: 'Concierge direct line',
+      text: 'Every way to reach us, up front. Phone numbers, email and hours are set in Site Settings and printed here, never typed.',
+      figures: [
+        {
+          key: 'support_sla',
+          label: 'Response SLA',
+          displayValue: '2 hours',
+          contextBefore: 'During our hours, we usually reply within',
+          contextAfter: 'on WhatsApp.'
+        }
+      ]
+    }
+  },
+
+  // 7. About HOK (Spec §8.6, Pages 31-33)
+  'about': {
+    slug: '/about',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'the-name', label: 'The Name' },
+      { id: 'manifesto', label: 'Manifesto' },
+      { id: 'what-we-believe', label: 'What We Believe' },
+      { id: 'two-sides', label: 'Two Sides' },
+      { id: 'from-the-founder', label: 'From The Founder' },
+      { id: 'why-we-built-it', label: 'Why We Built It' },
+      { id: 'three-ways', label: 'Three Ways' },
+      { id: 'closing', label: 'Closing' }
+    ],
+    hero: {
+      tagline: 'About House of Kaira',
+      headingPrefix: 'The House, ',
+      headingGoldItalic: 'in Motion',
+      lead: 'The house, the name, and the person behind it. A circular couture community built on craft and cherished beauty.',
+      searchPlaceholder: 'Search about the house',
+      popularQuestions: [
+        'Where does the name KAIRA come from?',
+        'Who founded House of Kaira?'
+      ]
+    },
+    opening: {
+      sideLabel: 'House narrative',
+      text: 'Every garment deserves a second standing ovation. We give occasionwear somewhere to go next.',
+      figures: [
+        {
+          key: 'instagram_handle',
+          label: 'Instagram handle',
+          displayValue: '@houseofkaira',
+          contextBefore: 'Follow our celebrations on Instagram at',
+          contextAfter: 'for live releases.'
+        }
+      ]
+    }
+  },
+
+  // 8. How It Works (Spec §8.7, Pages 33-35)
+  'how-it-works': {
+    slug: '/how-it-works',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'whats-on-this-page', label: "What's on this page" },
+      { id: 'shopping-steps', label: 'Shopping steps' },
+      { id: 'two-ways-to-shop', label: 'Two ways to shop' },
+      { id: 'the-craft-divider', label: 'The Craft divider' },
+      { id: 'list-and-earn', label: 'List & Earn' },
+      { id: 'good-to-know', label: 'Good to Know' },
+      { id: 'faq', label: 'FAQ', count: 6 },
+      { id: 'closing', label: 'Closing' }
+    ],
+    hero: {
+      tagline: 'Simple by Design',
+      headingPrefix: 'Fashion that moves ',
+      headingGoldItalic: 'beautifully',
+      lead: 'Everything you need to know about shopping, renting, selling, and giving beautiful pieces a longer life in one place, laid out clearly.',
+      searchPlaceholder: 'Search how it works',
+      popularQuestions: [
+        'How do I rent a piece for an event?',
+        'How much do I earn listing my piece?'
+      ]
+    },
+    opening: {
+      sideLabel: 'Two-sided ecosystem',
+      text: 'A circular luxury community connecting people who want to wear showstoppers with people whose closets deserve to earn.',
+      figures: [
+        {
+          key: 'free_delivery_min',
+          label: 'Free delivery threshold',
+          displayValue: '₹5,000',
+          contextBefore: 'Standard delivery is complimentary above',
+          contextAfter: 'across India.'
+        }
+      ]
+    }
+  },
+
+  // 9. List Your Piece (Spec §8.8, Pages 35-37)
+  'list-your-piece': {
+    slug: '/list-your-piece',
+    parts: [
+      { id: 'hero', label: 'Hero', hasChecks: true },
+      { id: 'the-listers-promise', label: "The Lister's Promise" },
+      { id: 'three-promises', label: 'Three Promises', hasChecks: true },
+      { id: 'how-it-works', label: 'How It Works', hasChecks: true },
+      { id: 'earnings-preview', label: 'Earnings preview', hasChecks: true },
+      { id: 'the-form', label: 'The Form', hasChecks: true },
+      { id: 'for-boutiques', label: 'For Boutiques' },
+      { id: 'faq', label: 'FAQ', count: 6 }
+    ],
+    hero: {
+      tagline: 'The Acquisition Page',
+      headingPrefix: "Your wardrobe's next life ",
+      headingGoldItalic: 'starts here.',
+      lead: 'Give the pieces you have celebrated in a second standing ovation. Earn on every booking without lifting a finger.',
+      searchPlaceholder: 'Search listing guidelines',
+      popularQuestions: [
+        'How is the rental price determined?',
+        'How and when do I get paid?'
+      ]
+    },
+    opening: {
+      sideLabel: 'Curated Circularity',
+      text: 'Every piece entrusted to us is treated as an heirloom in transit: authenticated, carefully maintained, and returned whenever you choose.',
+      figures: [
+        {
+          key: 'lister_share',
+          label: 'Lister share',
+          displayValue: 'Agreed piece by piece',
+          contextBefore: 'Earn on every booking with commission',
+          contextAfter: 'based on physical intake assessment.'
+        }
+      ]
+    }
+  },
+
+  // 10. Terms & Conditions (Spec §8.9, Pages 37-38)
+  'terms': {
+    slug: '/terms',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'where-to-start', label: 'Where to start' },
+      { id: 'opening', label: 'Opening' },
+      { id: 'the-essentials', label: 'The essentials' },
+      { id: 'clauses', label: 'Clauses', count: 59, hasChecks: true },
+      { id: 'our-policies', label: 'Our policies' },
+      { id: 'questions', label: 'Questions' }
+    ],
+    hero: {
+      tagline: 'The Agreement Between Us',
+      headingPrefix: 'Terms & ',
+      headingGoldItalic: 'conditions',
+      lead: 'Everything you and House of Kaira agree to when you rent, buy or list with us. Written to be read, with every clause numbered so it is easy to find and share.',
+      searchPlaceholder: 'Search the terms, like "deposit", "late return" or a clause number',
+      popularQuestions: [
+        'Your security deposit',
+        'Responsibility for the piece while it is with you',
+        'Late returns',
+        'If a preloved piece is not as described'
+      ]
+    },
+    opening: {
+      sideLabel: 'Master Platform Agreement',
+      text: 'These Terms are the agreement between you and House of Kaira. We have written them to be read, in plain words, with every clause numbered so it is easy to find and share.',
+      figures: [
+        {
+          key: 'support_email',
+          label: 'Support email',
+          displayValue: 'hello@houseofkaira.com',
+          contextBefore: 'For questions or notices, contact',
+          contextAfter: 'at our Indore office.'
+        }
+      ]
+    }
+  },
+
+  // 11. Privacy Policy (Spec §8.1 & §8.10, Screen 58)
+  'privacy': {
+    slug: '/privacy',
+    parts: [
+      { id: 'the-policy', label: 'The policy', hasChecks: true }
+    ],
+    hero: {
+      tagline: 'PRIVACY POLICY',
+      headingPrefix: 'Privacy ',
+      headingGoldItalic: 'Policy',
+      lead: 'Its words load here from its page file, which is still to come.',
+      searchPlaceholder: '',
+      popularQuestions: []
+    },
+    opening: {
+      sideLabel: 'Data & Privacy',
+      text: 'Privacy Policy is built at v3, on the same engine as the Terms. Its page file is still to come.',
+      figures: [
+        {
+          key: 'sep',
+          label: 'Title separator',
+          displayValue: '·',
+          contextBefore: 'Standard metadata separator symbol is',
+          contextAfter: 'used in search result title tags.'
+        },
+        {
+          key: 'site_name',
+          label: 'Site name',
+          displayValue: 'House of Kaira',
+          contextBefore: 'Data controller and service operator is',
+          contextAfter: 'under registered proprietorship.'
+        }
+      ]
+    }
+  },
+
+  // 12. Cookie Policy (Spec §8.1 & §8.11, Screen 58)
+  'cookies': {
+    slug: '/cookies',
+    parts: [
+      { id: 'the-policy', label: 'The policy', hasChecks: true }
+    ],
+    hero: {
+      tagline: 'COOKIE POLICY',
+      headingPrefix: 'Cookie ',
+      headingGoldItalic: 'Policy',
+      lead: 'Its words load here from its page file, which is still to come.',
+      searchPlaceholder: '',
+      popularQuestions: []
+    },
+    opening: {
+      sideLabel: 'Cookies & Consent',
+      text: 'Cookie Policy is built at v3, on the same engine as the Terms. Its page file is still to come.',
+      figures: [
+        {
+          key: 'sep',
+          label: 'Title separator',
+          displayValue: '·',
+          contextBefore: 'Standard metadata separator symbol is',
+          contextAfter: 'used in search result title tags.'
+        },
+        {
+          key: 'site_name',
+          label: 'Site name',
+          displayValue: 'House of Kaira',
+          contextBefore: 'Data controller and service operator is',
+          contextAfter: 'under registered proprietorship.'
+        }
+      ]
+    }
+  },
+
 };
