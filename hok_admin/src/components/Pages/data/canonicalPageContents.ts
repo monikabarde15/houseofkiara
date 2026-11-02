@@ -138,94 +138,264 @@ export const CANONICAL_PAGE_CONTENTS: Record<string, PageContentDefinition> = {
   },
 
   // 4. Care, Cleaning & Damage Policy (Spec §8.14, Page 40)
-  'care-damage': {
-    slug: 'care-damage',
+    'care-policy': {
+    slug: 'care-policy',
     parts: [
       { id: 'hero', label: 'Hero' },
-      { id: 'care-journey', label: 'Care journey' },
-      { id: 'normal-wear-test', label: 'Normal wear test' },
-      { id: 'sections', label: 'Sections' },
-      { id: 'answers', label: 'Answers', count: 36 },
-      { id: 'related', label: 'Related policies' }
+      { id: 'if-something-happens', label: 'If something happens' },
+      { id: 'our-one-request', label: 'Our one request' },
+      { id: 'moment-by-moment', label: 'Moment by moment' },
+      { id: 'wear-or-damage', label: 'Wear or damage' },
+      { id: 'piece-by-piece', label: 'Piece by piece' },
+      { id: 'our-care', label: 'Our care' },
+      { id: 'restoring', label: 'Restoring' },
+      { id: 'pieces-you-own', label: 'Pieces you own' },
+      { id: 'answers', label: 'Answers', count: 57 },
+      { id: 'related-policies', label: 'Related policies' },
+      { id: 'cant-find-it', label: "Can't find it" }
     ],
     hero: {
-      tagline: 'Every piece in safe hands',
+      tagline: 'OUR PROMISE TO EVERY PIECE',
       headingPrefix: 'Care, cleaning & ',
-      headingGoldItalic: 'damage policy',
-      lead: 'The care journey from arrival to return, and the single clear test that decides normal wear from repairable damage.',
+      headingGoldItalic: 'damage',
+      lead: 'How we look after every piece, how you can too, and what happens in the rare moment something goes wrong, explained simply and fairly.',
       searchPlaceholder: 'Search care rules, like "dry cleaning" or "hem dust"',
       popularQuestions: [
-        'Do I need to dry clean the piece before returning?',
-        'What happens if wine or makeup gets on the garment?'
+        'How do you decide which it is?',
+        'Can I use safety pins or fashion tape?',
+        'Can I steam or iron out a crease?',
+        'I spilled something on it'
       ]
     },
     opening: {
-      sideLabel: 'Garment preservation protocol',
-      text: 'Every garment returned to House of Kaira undergoes bespoke botanical dry cleaning and restoration by master tailors. You are never expected or permitted to wash or press garments yourself.',
-      figures: [
-        {
-          key: 'cleaning_included_flag',
-          label: 'Cleaning included',
-          displayValue: 'Included complimentary',
-          contextBefore: 'Professional dry cleaning is',
-          contextAfter: 'with every rental. Report accidental spills within'
-        },
-        {
-          key: 'damage_report_window_hours',
-          label: 'Spill report window',
-          displayValue: '12 hours',
-          contextBefore: '',
-          contextAfter: 'for optimal fiber recovery.'
-        }
+      sideLabel: 'Our one request',
+      text: 'We ask one thing of everyone who rents with us: treat the piece as your own. It was part of someone\'s most special day, and it will be part of someone else\'s next. The cleaning is always ours, and so are the gentle signs of a wonderful evening.'
+    }
+  },
+  'care-damage':  {
+    slug: 'care-policy',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'if-something-happens', label: 'If something happens' },
+      { id: 'our-one-request', label: 'Our one request' },
+      { id: 'moment-by-moment', label: 'Moment by moment' },
+      { id: 'wear-or-damage', label: 'Wear or damage' },
+      { id: 'piece-by-piece', label: 'Piece by piece' },
+      { id: 'our-care', label: 'Our care' },
+      { id: 'restoring', label: 'Restoring' },
+      { id: 'pieces-you-own', label: 'Pieces you own' },
+      { id: 'answers', label: 'Answers', count: 57 },
+      { id: 'related-policies', label: 'Related policies' },
+      { id: 'cant-find-it', label: "Can't find it" }
+    ],
+    hero: {
+      tagline: 'OUR PROMISE TO EVERY PIECE',
+      headingPrefix: 'Care, cleaning & ',
+      headingGoldItalic: 'damage',
+      lead: 'How we look after every piece, how you can too, and what happens in the rare moment something goes wrong, explained simply and fairly.',
+      searchPlaceholder: 'Search care rules, like "dry cleaning" or "hem dust"',
+      popularQuestions: [
+        'How do you decide which it is?',
+        'Can I use safety pins or fashion tape?',
+        'Can I steam or iron out a crease?',
+        'I spilled something on it'
       ]
+    },
+    opening: {
+      sideLabel: 'Our one request',
+      text: 'We ask one thing of everyone who rents with us: treat the piece as your own. It was part of someone\'s most special day, and it will be part of someone else\'s next. The cleaning is always ours, and so are the gentle signs of a wonderful evening.'
     }
   },
 
-  // 5. Shipping & Delivery Policy (Spec §8.15, Page 42)
-  'shipping-delivery': {
-    slug: 'shipping-delivery',
+  // 5. Shipping & Delivery Policy (Spec § 8.15, Screen 54)
+  'shipping-policy': {
+    slug: '/shipping-policy',
     parts: [
       { id: 'hero', label: 'Hero' },
       { id: 'rental-window', label: 'Rental window' },
-      { id: 'delivery-promise', label: 'Delivery promise' },
+      { id: 'opening', label: 'Opening' },
+      { id: 'ways-we-deliver', label: 'Ways we deliver' },
       { id: 'sections', label: 'Sections' },
-      { id: 'answers', label: 'Answers', count: 28 },
-      { id: 'related', label: 'Related policies' }
+      { id: 'answers', label: 'Answers', count: 50 },
+      { id: 'related-policies', label: 'Related policies' },
+      { id: 'cant-find-it', label: "Can't find it" }
     ],
     hero: {
-      tagline: 'From our studio to your door',
+      tagline: 'DELIVERED WITH CARE',
       headingPrefix: 'Shipping & ',
-      headingGoldItalic: 'delivery policy',
-      lead: 'Tracked courier dispatch, scheduled delivery promises, and door-to-door concierge returns across all major cities.',
-      searchPlaceholder: 'Search shipping details, like "dispatch tracking" or "return bag"',
+      headingGoldItalic: 'delivery',
+      lead: 'Every piece is prepared by hand and planned to reach you in good time for your celebration. Here is exactly how delivery and returns work, for every rental and every preloved piece.',
+      searchPlaceholder: 'Search delivery, like "pincode" or "return pickup"',
       popularQuestions: [
-        'When will my order arrive before my event?',
-        'How does the doorstep return collection work?'
+        'How does the rental window work?',
+        'When is delivery free?',
+        'How does my rental go back?',
+        'Do you deliver outside India?'
       ]
     },
     opening: {
-      sideLabel: 'Logistics promise',
-      text: 'We know how important your calendar is. Garments are dispatched 2 days prior to your rental start date to guarantee arrival before your celebrations begin.',
-      figures: [
-        {
-          key: 'delivery_lead_time_days',
-          label: 'Dispatch lead time',
-          displayValue: '2 business days',
-          contextBefore: 'Shipments depart the Mumbai atelier at least',
-          contextAfter: 'before booking start, with return pickup within'
-        },
-        {
-          key: 'return_pickup_window_hours',
-          label: 'Return pickup window',
-          displayValue: '24 hours',
-          contextBefore: '',
-          contextAfter: 'of rental conclusion.'
-        }
+      sideLabel: 'Hand prepared promise',
+      text: "Every House of Kaira piece is prepared by hand before it travels: pressed, wrapped in tissue, placed in its garment bag and boxed with care. Rentals are planned around your celebration, and standard delivery is free on every order of ₹5,000 or more, including a rental's journey back to us."
+    }
+  },
+  'shipping-delivery': {
+    slug: '/shipping-policy',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'rental-window', label: 'Rental window' },
+      { id: 'opening', label: 'Opening' },
+      { id: 'ways-we-deliver', label: 'Ways we deliver' },
+      { id: 'sections', label: 'Sections' },
+      { id: 'answers', label: 'Answers', count: 50 },
+      { id: 'related-policies', label: 'Related policies' },
+      { id: 'cant-find-it', label: "Can't find it" }
+    ],
+    hero: {
+      tagline: 'DELIVERED WITH CARE',
+      headingPrefix: 'Shipping & ',
+      headingGoldItalic: 'delivery',
+      lead: 'Every piece is prepared by hand and planned to reach you in good time for your celebration. Here is exactly how delivery and returns work, for every rental and every preloved piece.',
+      searchPlaceholder: 'Search delivery, like "pincode" or "return pickup"',
+      popularQuestions: [
+        'How does the rental window work?',
+        'When is delivery free?',
+        'How does my rental go back?',
+        'Do you deliver outside India?'
+      ]
+    },
+    opening: {
+      sideLabel: 'Hand prepared promise',
+      text: "Every House of Kaira piece is prepared by hand before it travels: pressed, wrapped in tissue, placed in its garment bag and boxed with care. Rentals are planned around your celebration, and standard delivery is free on every order of ₹5,000 or more, including a rental's journey back to us."
+    }
+  },
+  // 6. Pricing & Fees (Spec § 8.16, Screens 56 & 57)
+  'pricing': {
+    slug: '/pricing',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'two-sides', label: 'Two sides' },
+      { id: 'at-a-glance', label: 'At a glance' },
+      { id: 'opening', label: 'Opening' },
+      { id: 'worked-examples', label: 'Worked examples' },
+      { id: 'sections', label: 'Sections' },
+      { id: 'answers', label: 'Answers', count: 52 },
+      { id: 'related-policies', label: 'Related policies' },
+      { id: 'cant-find-it', label: 'A question for us' }
+    ],
+    hero: {
+      tagline: 'CLEAR FROM THE START',
+      headingPrefix: 'Pricing & ',
+      headingGoldItalic: 'fees',
+      lead: 'Every price, every charge and every share, explained plainly for renting, buying and listing with us, so that nothing ever comes as a surprise.',
+      searchPlaceholder: 'Search prices, like "cleaning included" or "payout time"',
+      popularQuestions: [
+        'How is a rental priced?',
+        'When is delivery free?',
+        'What does a late return cost?',
+        'How is my share decided?'
+      ]
+    },
+    opening: {
+      sideLabel: 'Pricing promise',
+      text: 'Every rental is priced for its window, and every preloved piece at the price agreed with its owner. GST is added at checkout, standard delivery is free on every order of ₹5,000 or more, and a deposit is simply held in safekeeping until your piece is home with us.'
+    }
+  },
+  'pricing-fees': {
+    slug: '/pricing',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'two-sides', label: 'Two sides' },
+      { id: 'at-a-glance', label: 'At a glance' },
+      { id: 'opening', label: 'Opening' },
+      { id: 'worked-examples', label: 'Worked examples' },
+      { id: 'sections', label: 'Sections' },
+      { id: 'answers', label: 'Answers', count: 52 },
+      { id: 'related-policies', label: 'Related policies' },
+      { id: 'cant-find-it', label: 'A question for us' }
+    ],
+    hero: {
+      tagline: 'CLEAR FROM THE START',
+      headingPrefix: 'Pricing & ',
+      headingGoldItalic: 'fees',
+      lead: 'Every price, every charge and every share, explained plainly for renting, buying and listing with us, so that nothing ever comes as a surprise.',
+      searchPlaceholder: 'Search prices, like "cleaning included" or "payout time"',
+      popularQuestions: [
+        'How is a rental priced?',
+        'When is delivery free?',
+        'What does a late return cost?',
+        'How is my share decided?'
+      ]
+    },
+    opening: {
+      sideLabel: 'Pricing promise',
+      text: 'Every rental is priced for its window, and every preloved piece at the price agreed with its owner. GST is added at checkout, standard delivery is free on every order of ₹5,000 or more, and a deposit is simply held in safekeeping until your piece is home with us.'
+    }
+  },
+  // 7. Seller Guidelines (Spec § 8.17, Screen 58)
+  'seller-guidelines': {
+    slug: '/seller-guidelines',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'your-piece-protected', label: 'Your piece, protected' },
+      { id: 'chapters', label: 'Chapters', hasChecks: true },
+      { id: 'closing', label: 'Closing' }
+    ],
+    hero: {
+      tagline: 'SELL WITH US',
+      headingPrefix: 'Seller ',
+      headingGoldItalic: 'Guidelines',
+      lead: 'Every piece listed with House of Kaira stays yours. With every celebration it joins, it recovers a meaningful part of what you invested in it, and the craft that went into it lives on in more stories. Here is how listing works, and how we look after your piece along the way.',
+      searchPlaceholder: 'Try payouts or damage',
+      popularQuestions: [
+        'payout',
+        'damage',
+        'take my piece back',
+        'share'
       ]
     }
   },
-
-  // 6. Contact Us (Spec §8.5, Page 29-31, Screens 42-43)
+    // 8. Page not found (Spec § 8.18, Screen 59)
+  '404': {
+    slug: '/404',
+    parts: [
+      { id: 'the-page', label: 'The page' }
+    ]
+  },
+  '/404': {
+    slug: '/404',
+    parts: [
+      { id: 'the-page', label: 'The page' }
+    ]
+  },
+  // 9. No search results (Spec § 8.19, Screen 60)
+  'search': {
+    slug: '/search',
+    parts: [
+      { id: 'the-page', label: 'The page' },
+      { id: 'trending', label: 'Trending' }
+    ]
+  },
+  '/search': {
+    slug: '/search',
+    parts: [
+      { id: 'the-page', label: 'The page' },
+      { id: 'trending', label: 'Trending' }
+    ]
+  },
+  // 10. Maintenance (Spec § 8.20, Screen 61)
+  'maintenance': {
+    slug: '/maintenance',
+    parts: [
+      { id: 'the-page', label: 'The page' }
+    ]
+  },
+  '/maintenance': {
+    slug: '/maintenance',
+    parts: [
+      { id: 'the-page', label: 'The page' }
+    ]
+  },
+      // 6. Contact Us (Spec §8.5, Page 29-31, Screens 42-43)
   'contact': {
     slug: '/contact',
     parts: [

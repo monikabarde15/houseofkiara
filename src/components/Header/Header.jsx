@@ -1,3 +1,4 @@
+import { getHeaderSettings, defaultHeaderConfig } from "../../services/headerApi";
 // src/components/Header/Header.jsx
 import { useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,10 +20,29 @@ const Header = () => {
   const dropdown = useDropdown();
   const search = useSearch();
   const theme = useHeaderTheme();
-
-
-  // const [isScrolled, setIsScrolled] = useState(false);
+  const [headerSettings, setHeaderSettings] = useState(defaultHeaderConfig);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadSettings = async (forceRefresh = false) => {
+      try {
+        const data = await getHeaderSettings(forceRefresh);
+        if (isMounted && data) {
+          setHeaderSettings(data);
+        }
+      } catch (err) {
+        console.warn("Failed to load header settings:", err);
+      }
+    };
+    loadSettings();
+    const handleUpdate = () => loadSettings(true);
+    window.addEventListener("hok_header_updated", handleUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("hok_header_updated", handleUpdate);
+    };
+  }, []);
 
   // Handle scroll
   // useEffect(() => {
@@ -52,6 +72,7 @@ const Header = () => {
 
       <div
         className="hok-header-desktop"
+        style={headerSettings.stickyHeader === false ? { position: "relative" } : undefined}
         onMouseEnter={() => {
           dropdown.inHeader.current = true;
         }}
@@ -60,11 +81,17 @@ const Header = () => {
           dropdown.scheduleClose();
         }}
       >
-        <DesktopHeader onSearchOpen={search.openSearch} />
+        <DesktopHeader
+          onSearchOpen={search.openSearch}
+          searchPlaceholder={headerSettings.searchPlaceholder}
+          bagCartLabel={headerSettings.bagCartLabel}
+          showTagline={headerSettings.showTagline}
+        />
 
         <DesktopNavigation
           activeDropdown={dropdown.activeDropdown}
           openDropdown={dropdown.openDropdown}
+          navItems={headerSettings.navItems}
         />
 
         {/* Desktop Dropdown */}
@@ -72,6 +99,7 @@ const Header = () => {
           activeDropdown={dropdown.activeDropdown}
           inDropdown={dropdown.inDropdown}
           scheduleClose={dropdown.scheduleClose}
+          navItems={headerSettings.navItems}
         />
       </div>
 
@@ -90,6 +118,7 @@ const Header = () => {
           onSearchOpen={search.openSearch}
           onWishlistClick={handleWishlistClick}
           onBagClick={handleBagClick}
+          bagCartLabel={headerSettings.bagCartLabel}
         />
 
       {/* Sections 4 & 5: Drawer Overlay + Navigation Drawer */}
@@ -97,12 +126,15 @@ const Header = () => {
         isOpen={isDrawerOpen}
         onClose={handleDrawerClose}
         onSearchOpen={search.openSearch}
+        navItems={headerSettings.navItems}
+        searchPlaceholder={headerSettings.searchPlaceholder}
       />
 
       
 
       {/* Search Overlay - Shared between desktop and mobile */}
       <SearchOverlay
+        searchPlaceholder={headerSettings.searchPlaceholder}
         isOpen={search.isOpen}
         query={search.query}
         results={search.results}

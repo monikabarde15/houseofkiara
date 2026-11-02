@@ -8,43 +8,47 @@
 import React, { useState } from 'react';
 
 export interface WordEditorPanelProps {
-  partTitle: string;
-  fieldName: string;
+  partTitle?: string;
+  fieldName?: string;
   helpText?: string;
-  fieldValue: string;
+  fieldValue?: string;
   onUseFigure?: (detectedText: string, figureKey: string, figureLabel: string) => void;
   onCloseWords: () => void;
 }
 
 export const WordEditorPanel: React.FC<WordEditorPanelProps> = ({
-  partTitle,
-  fieldName,
+  partTitle = 'this part',
+  fieldName = 'this field',
   helpText = 'Prints the standard window. Change the window in Figures and this follows.',
-  fieldValue,
+  fieldValue = '',
   onUseFigure,
   onCloseWords
 }) => {
   const [markedAsExample, setMarkedAsExample] = useState(false);
   const [substitutedNotice, setSubstitutedNotice] = useState<string | null>(null);
 
+  const safePartTitle = partTitle || 'this part';
+  const safeFieldName = fieldName || 'this field';
+  const safeFieldValue = fieldValue || '';
+
   // Spec §7.4 & Screen 36: Detect hand-typed figures
   const detectedHandTyped = (() => {
     if (markedAsExample || substitutedNotice) return null;
-    if (fieldValue.includes('24 hours')) {
+    if (safeFieldValue.includes('24 hours')) {
       return {
         matchedText: '24 hours',
         figureKey: 'order_cancel_window',
         figureLabel: 'Tell us about a problem within'
       };
     }
-    if (fieldValue.includes('₹2,999')) {
+    if (safeFieldValue.includes('₹2,999')) {
       return {
         matchedText: '₹2,999',
         figureKey: 'free_delivery_min',
         figureLabel: 'Free delivery from'
       };
     }
-    if (fieldValue.includes('7 days')) {
+    if (safeFieldValue.includes('7 days')) {
       return {
         matchedText: '7 days',
         figureKey: 'pre_rental_cancel_notice',
@@ -68,10 +72,10 @@ export const WordEditorPanel: React.FC<WordEditorPanelProps> = ({
       <div className="flex items-center justify-between border-b border-[#f5f1eb] pb-3">
         <div>
           <span className="text-[10.5px] uppercase tracking-wider text-[#8a7f73] font-semibold">
-            {partTitle}
+            {safePartTitle}
           </span>
           <h2 className="font-serif text-[17px] text-[#1a1612] font-normal leading-snug">
-            {fieldName}
+            {safeFieldName}
           </h2>
         </div>
         <button
@@ -136,10 +140,10 @@ export const WordEditorPanel: React.FC<WordEditorPanelProps> = ({
       {/* 4. Settings for the part (Spec §7.7) */}
       <div className="border-t border-[#f5f1eb] pt-4 space-y-3">
         <div className="text-[10px] uppercase tracking-wider font-semibold text-[#8a7f73]">
-          Settings for {partTitle}
+          Settings for {safePartTitle}
         </div>
 
-        {partTitle.toLowerCase().includes('hero') ? (
+        {safePartTitle.toLowerCase().includes('hero') ? (
           <p className="text-[11.5px] text-[#73675a] leading-relaxed">
             Hero has no settings besides its words.
           </p>

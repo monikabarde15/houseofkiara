@@ -1,0 +1,30 @@
+213:                 onDiscardChange={() => {}}
+214:                 onNavigateToPage={slug => onSelectPage(slug)}
+215:               />
+216:             </div>
+217:           ) : focusedField && activePanelTab !== 'settings' ? (
+218:             <WordEditorPanel
+219:               partTitle={focusedField.fieldName}
+220:               fieldName={focusedField.fieldName}
+221:               helpText={focusedField.helpText}
+222:               fieldValue={fieldValues[focusedField.fieldId] || ''}
+223:               onCloseWords={() => setFocusedField(null)}
+224:               onUseFigure={(detectedText, figureKey) => {
+225:                 const current = fieldValues[focusedField.fieldId] || '';
+226:                 handleFieldChange(focusedField.fieldId, current.replace(detectedText, `{{${figureKey}}}`));
+227:               }}
+228:             />
+229:           ) : activePanelTab === 'checks' ? (
+230:             <PageChecksPanel
+231:               checks={pageChecks}
+232:               onOpenCheckWords={handleOpenCheck}
+233:               onOpenFigure={key => {
+234:                 if (onNavigateToFigure) onNavigateToFigure(key);
+235:                 else setSelectedFigureKey(key);
+236:               }}
+237:               onAcknowledgeCheck={handleAcknowledgeCheck}
+238:               onClose={() => setActivePanelTab('default')}
+239:             />
+240:           ) : activePanelTab === 'figures' ? (
+241:             <PageFiguresPanel
+242:               figures={pageFigures}

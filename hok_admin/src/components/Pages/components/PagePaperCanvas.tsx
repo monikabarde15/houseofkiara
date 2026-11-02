@@ -25,6 +25,13 @@ import { PrivacyPaperSection } from './privacy/PrivacyPaperSection';
 import { CookiePaperSection } from './cookies/CookiePaperSection';
 import { RefundsPaperSection } from './refunds/RefundsPaperSection';
 import { DepositPaperSection } from './deposit/DepositPaperSection';
+import { CarePaperSection } from './care/CarePaperSection';
+import { ShippingPaperSection } from './shipping/ShippingPaperSection';
+import { PricingPaperSection } from './pricing/PricingPaperSection';
+import { SellerPaperSection } from './seller/SellerPaperSection';
+import { PageNotFoundPaperSection } from './notFound/PageNotFoundPaperSection';
+import { NoSearchPaperSection } from './noSearchResults/NoSearchPaperSection';
+import { MaintenancePaperSection } from './maintenance/MaintenancePaperSection';
 import { PagePaperOpening } from './PagePaperOpening';
 import { MarginCheckMark } from './MarginCheckMark';
 
@@ -150,6 +157,40 @@ export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
   const isDeposit =
     page.slug === 'deposit-policy' ||
     page.slug === '/deposit-policy';
+
+  const isCare =
+    page.slug === 'care-policy' ||
+    page.slug === '/care-policy' ||
+    page.slug === 'care-damage' ||
+    page.slug === '/care-damage';
+
+  const isShipping =
+    page.slug === 'shipping-policy' ||
+    page.slug === '/shipping-policy' ||
+    page.slug === 'shipping-delivery' ||
+    page.slug === '/shipping-delivery';
+
+  const isPricing =
+    page.slug === 'pricing' ||
+    page.slug === '/pricing' ||
+    page.slug === 'pricing-fees' ||
+    page.slug === '/pricing-fees';
+
+  const isSeller =
+    page.slug === 'seller-guidelines' ||
+    page.slug === '/seller-guidelines';
+
+  const is404 =
+    page.slug === '/404' ||
+    page.slug === '404';
+
+  const isSearch =
+    page.slug === '/search' ||
+    page.slug === 'search';
+
+  const isMaintenance =
+    page.slug === '/maintenance' ||
+    page.slug === 'maintenance';
 
   const isClausesMode = isTerms && activePartId === 'clauses';
 
@@ -338,6 +379,94 @@ export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
             onSelectFigure={onSelectFigure}
             onNavigateToPage={onSelectPage}
             hiddenParts={hiddenParts}
+          />
+        ) : isCare ? (
+          /* Care, Cleaning & Damage Policy Paper View (Spec § 8.14, Screen 52) */
+          <CarePaperSection
+            page={page}
+            activePartId={activePartId}
+            onSelectPart={onSelectPart}
+            fieldValues={fieldValues}
+            onFieldChange={onFieldChange}
+            onFocusField={onFocusField}
+            onOpenAnswersView={onOpenAnswersView}
+            onSelectFigure={onSelectFigure}
+            onNavigateToPage={onSelectPage}
+            hiddenParts={hiddenParts}
+          />
+        ) : isShipping ? (
+          /* Shipping & Delivery Policy Paper View (Spec § 8.15, Screen 54) */
+          <ShippingPaperSection
+            page={page}
+            activePartId={activePartId}
+            onSelectPart={onSelectPart}
+            fieldValues={fieldValues}
+            onFieldChange={onFieldChange}
+            onFocusField={onFocusField}
+            onOpenAnswersView={onOpenAnswersView}
+            onSelectFigure={onSelectFigure}
+            onNavigateToPage={onSelectPage}
+            hiddenParts={hiddenParts}
+          />
+        ) : isPricing ? (
+          /* Pricing & Fees Policy Paper View (Spec § 8.16, Screens 56 & 57) */
+          <PricingPaperSection
+            page={page}
+            activePartId={activePartId}
+            onSelectPart={onSelectPart}
+            fieldValues={fieldValues}
+            onFieldChange={onFieldChange}
+            onFocusField={onFocusField}
+            onOpenAnswersView={onOpenAnswersView || (() => {})}
+            onSelectFigure={onSelectFigure}
+            onNavigateToPage={onSelectPage}
+            hiddenParts={hiddenParts}
+          />
+        ) : isSeller ? (
+          /* Seller Guidelines Paper View (Spec § 8.17, Screen 58) */
+          <SellerPaperSection
+            page={page}
+            activePartId={activePartId}
+            onSelectPart={onSelectPart}
+            fieldValues={fieldValues}
+            onFieldChange={onFieldChange}
+            onFocusField={onFocusField}
+            onOpenAnswersView={onOpenAnswersView}
+            onSelectFigure={onSelectFigure}
+            onNavigateToPage={onSelectPage}
+            hiddenParts={hiddenParts}
+          />
+        ) : is404 ? (
+          /* Page not found System Page (Spec § 8.18, Screen 59) */
+          <PageNotFoundPaperSection
+            page={page}
+            onSelectFigure={onSelectFigure}
+            onNavigateToPage={onSelectPage}
+            fieldValues={fieldValues}
+            onFieldChange={onFieldChange}
+            onFocusField={onFocusField}
+          />
+        ) : isSearch ? (
+          /* No search results System Page (Spec § 8.19, Screen 60) */
+          <NoSearchPaperSection
+            page={page}
+            activePartId={activePartId}
+            onSelectPart={onSelectPart}
+            onSelectFigure={onSelectFigure}
+            onNavigateToPage={onSelectPage}
+            fieldValues={fieldValues}
+            onFieldChange={onFieldChange}
+            onFocusField={onFocusField}
+          />
+        ) : isMaintenance ? (
+          /* Maintenance System Page (Spec § 8.20, Screen 61) */
+          <MaintenancePaperSection
+            page={page}
+            onSelectFigure={onSelectFigure}
+            onNavigateToPage={onSelectPage}
+            fieldValues={fieldValues}
+            onFieldChange={onFieldChange}
+            onFocusField={onFocusField}
           />
         ) : (
           /* Standard Policy Canvas */

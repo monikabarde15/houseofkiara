@@ -58,6 +58,36 @@ export const SiteSettings: React.FC<SiteSettingsProps> = ({
 
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
+  // Hydrate from live backend API on mount
+  useEffect(() => {
+    let isMounted = true;
+    import('../../services/siteSettingsApi')
+      .then((api) => api.getSiteSettings())
+      .then((data) => {
+        if (!isMounted || !data) return;
+        setRegistry((prev) => {
+          const nextState: SiteSettingsRegistry = {
+            ...prev,
+            ...(data.registry || {}),
+            announcement: data.announcement
+              ? { ...prev.announcement, ...data.announcement }
+              : prev.announcement,
+            header: data.header
+              ? { ...prev.header, ...data.header }
+              : prev.header,
+          };
+          setBaseline(JSON.parse(JSON.stringify(nextState)));
+          return nextState;
+        });
+      })
+      .catch((err) => {
+        console.warn('Could not load site settings from API:', err);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Computed unsaved changes
   const unsavedChanges: ChangedAreaName[] = computeUnsavedChanges(registry, baseline);
 
@@ -96,14 +126,19 @@ export const SiteSettings: React.FC<SiteSettingsProps> = ({
   // Publish action (Spec 6.3)
   const handlePublish = async () => {
     try {
+      const api = await import('../../services/siteSettingsApi');
+      await api.updateSiteSettings(registry);
       if (onSaveToServer) {
         await onSaveToServer(registry);
       }
+      if (onUpdateSettings) {
+        onUpdateSettings(registry);
+      }
       setBaseline(JSON.parse(JSON.stringify(registry)));
       toast.success('Published to the live site');
-    } catch (err) {
-      setBaseline(JSON.parse(JSON.stringify(registry)));
-      toast.success('Published to the live site');
+    } catch (err: any) {
+      console.error('Error publishing site settings:', err);
+      toast.error(err?.message || 'Failed to save');
     }
   };
 

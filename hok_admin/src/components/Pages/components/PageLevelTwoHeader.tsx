@@ -54,6 +54,14 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
   const isCookies = page.slug === '/cookies' || page.slug === 'cookies';
   const isRefunds = page.slug === '/refunds' || page.slug === 'refunds';
   const isDeposit = page.slug === '/deposit-policy' || page.slug === 'deposit-policy';
+  const isCare = page.slug === '/care-policy' || page.slug === 'care-policy' || page.slug === 'care-damage' || page.slug === '/care-damage';
+  const isShipping = page.slug === '/shipping-policy' || page.slug === 'shipping-policy' || page.slug === 'shipping-delivery' || page.slug === '/shipping-delivery';
+  const isPricing = page.slug === '/pricing' || page.slug === 'pricing' || page.slug === '/pricing-fees' || page.slug === 'pricing-fees';
+  const isSeller = page.slug === '/seller-guidelines' || page.slug === 'seller-guidelines';
+  const is404 = page.slug === '/404' || page.slug === '404';
+  const isSearch = page.slug === '/search' || page.slug === 'search';
+  const isMaintenance = page.slug === '/maintenance' || page.slug === 'maintenance';
+  const isSystem = page.group === 'system' || is404 || isSearch || isMaintenance;
 
   return (
     <header className="sticky top-0 z-30 bg-[#fffefb] border-b border-[#e6dccb] shadow-[0_1px_3px_rgba(26,22,18,0.03)]">
@@ -140,10 +148,16 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
           </div>
 
           {/* Status Badge */}
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#f0f4ec] text-[#4a6b35] text-[11px] font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#4a6b35]" />
-            Live
-          </span>
+          {isSystem ? (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#f0eae1] text-[#73675a] text-[11px] font-medium">
+              System page
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#f0f4ec] text-[#4a6b35] text-[11px] font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4a6b35]" />
+              Live
+            </span>
+          )}
 
           {/* Subtitle / review / edit date */}
           {isAbout || isListYourPiece ? (
@@ -158,6 +172,14 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
             <span className="text-xs text-[#73675a]">
               Reviewed 1 September 2026
             </span>
+          ) : isShipping ? (
+            <span className="text-xs text-[#73675a]">
+              Version 3, reviewed 10 October 2026
+            </span>
+          ) : isCare ? (
+            <span className="text-xs text-[#73675a]">
+              Version 3, reviewed 7 October 2026
+            </span>
           ) : isDeposit ? (
             <span className="text-xs text-[#73675a]">
               Version 4, reviewed 6 October 2026
@@ -166,7 +188,7 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
             <span className="text-xs text-[#73675a]">
               Version 7, reviewed 23 September 2026
             </span>
-          ) : !isContact ? (
+          ) : (!isContact && !isSystem) ? (
             <span className="text-xs text-[#73675a]">
               {page.version ? `${page.version}, ` : ''}reviewed {page.lastPublished || '17 September 2026'}
             </span>

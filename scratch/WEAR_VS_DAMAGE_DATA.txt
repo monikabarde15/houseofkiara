@@ -1,0 +1,30 @@
+{
+  heading: "Normal wear, or damage?",
+  lead: "Every piece comes home to us with a little of its evening on it, and that is exactly as it should be. One simple test decides the rest.",
+  testSentence1: "If our regular cleaning and small touch-ups after every rental put it right, it is normal wear, and it is never charged.",
+  testSentence2: "If it needs specialist stain treatment, a karigar's repair or new materials, or cannot be put right at all, it is damage.",
+  alwaysOnUs: {
+    title: "Always on us",
+    definition: "The gentle signs of a piece being worn and enjoyed: a few loose threads, a little embellishment loss, light creasing.",
+    items: [
+      "Light makeup, perfume or deodorant marks that lift in our cleaning",
+      "A hook, button or a few sequins that come loose",
+      "Creases from wearing, sitting and travel",
+      "The scent of the evening, from perfume, food or incense"
+    ]
+  },
+  assessedWithCare: {
+    title: "Assessed with care",
+    definition: "Anything beyond normal wear, such as stains, tears, burns, significant bead or embroidery loss, or any alteration to the piece.",
+    items: [
+      "Stains that need specialist treatment, most often mehendi, haldi, sindoor, wine or oil",
+      "Tears, burns and pulled threads that need a karigar's repair, including damage from a pin",
+      "A patch of missing embroidery, zari or sequins",
+      "Any stitching, hemming, cutting or taking in",
+      "Harm from washing, steaming or ironing at home"
+    ]
+  },
+  perspiration: "One thing is always on us: natural perspiration, even when it needs more than our regular cleaning. A celebration is warm, joyful and full of dancing, and that is exactly how it should be.",
+  preDispatchLine: "We decide against the photographs and video we take of every piece just before dispatch, so only what is new is ever considered.",
+  questionIds: ["l-wear", "l-damage", "l-test", "l-sweat", "l-marks", "l-small", "l-stains"]
+}

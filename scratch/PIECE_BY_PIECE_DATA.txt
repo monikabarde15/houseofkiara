@@ -1,0 +1,60 @@
+[
+  {
+    id: "lehenga",
+    chip: "Lehengas",
+    title: "Caring for a lehenga",
+    targetId: "pc-lehenga",
+    points: [
+      "Hang the skirt by its inner loops, so its weight rests evenly and the waistband keeps its shape.",
+      "Gather the skirt before you sit, and lift the hem on stairs, where heels catch the hem and can-can.",
+      "Pin your dupatta through its plain edge or the blouse lining, never through the embroidered border.",
+      "When you pack it, fold along the plainer panels, and send back the can-can and every layer with it."
+    ]
+  },
+  {
+    id: "saree",
+    chip: "Sarees",
+    title: "Caring for a saree",
+    targetId: "pc-saree",
+    points: [
+      "A pre-draped or pre-stitched saree is set for you: wear it as it is, without re-pleating or re-stitching.",
+      "Pin pleats and pallu through the plain fall or the lining, never through zari or embroidery.",
+      "Keep the hem just off the floor, and lift it on stairs, where heels and jewellery snag a delicate border.",
+      "Fold it loosely along its original lines, with tissue between the folds."
+    ]
+  },
+  {
+    id: "sets",
+    chip: "Anarkalis & sets",
+    title: "Caring for an anarkali, sharara or kurta set",
+    targetId: "pc-sets",
+    points: [
+      "Slip an anarkali over your head with a light scarf over your face, so makeup stays off the neckline.",
+      "Lift sharara and gharara flares on stairs and steps, and keep them clear of wet ground.",
+      "Keep the dupatta, belt and every layer together, so each part comes back with the set."
+    ]
+  },
+  {
+    id: "gowns",
+    chip: "Gowns & Indo-western",
+    title: "Caring for a gown or Indo-western piece",
+    targetId: "pc-gowns",
+    points: [
+      "Gather a train or long hem when you walk outdoors, and let it rest on a clean surface when you sit.",
+      "Corsets, drapes and capes are shaped to fit as they are: please do not adjust their boning, seams or drapes.",
+      "Hang it by its inner loops on its padded hanger, so the shoulders and bodice keep their shape."
+    ]
+  },
+  {
+    id: "men",
+    chip: "Sherwanis & bandhgalas",
+    title: "Caring for a sherwani or bandhgala",
+    targetId: "pc-men",
+    points: [
+      "Button and unbutton slowly, especially on embroidered fronts, where the threads take the most strain.",
+      "Let deodorant dry fully before you dress, as a close-fitting jacket meets it at every seam.",
+      "Return everything listed with your outfit, such as a safa or stole.",
+      "Hang it on its shaped hanger with the shoulders supported, and keep the buttons fastened."
+    ]
+  }
+]

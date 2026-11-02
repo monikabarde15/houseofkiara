@@ -3,57 +3,94 @@ import { dropdownData } from "../../../data/dropdownData";
 import { useNavigate } from "react-router-dom";
 
 
-const DropdownBuyPreloved = () => {
+const DropdownBuyPreloved = ({ columns }) => {
   const data = dropdownData.buyPreloved;
   const navigate = useNavigate();
 
   return (
     <>
       {/* Left Column */}
-      <div className="dd-col-left">
-        <span className="dd-label">
-          {data.leftLabel}
-        </span>
+      {(() => {
+        const catCol = columns?.find(c => c.id === 'col-pre-cat' || c.heading?.toLowerCase().includes('category')) || columns?.[0];
+        const catLinks = catCol?.links ? catCol.links.filter(l => !l.hidden && l.position !== 'last') : null;
+        const condCol = columns?.find(c => c.id === 'col-pre-cond' || c.heading?.toLowerCase().includes('condition')) || columns?.[1];
+        const condLinks = condCol?.links ? condCol.links.filter(l => !l.hidden && l.position !== 'last') : null;
 
-        {/* Categeory */}
-        {data.categories.map(
-          (category) => (
-            <a
-              key={category}
-              className="dd-cat"
-              onClick={() =>
-                navigate(
-                  `/main-page?section=preloved&category=${encodeURIComponent(
-                    category
-                  )}`
-                )
-              }
-            >
-              {category}
-            </a>
-          )
-        )}
+        return (
+          <div className="dd-col-left">
+            <span className="dd-label">
+              {catCol?.heading || data.leftLabel}
+            </span>
 
-        <div className="dd-divider" />
+            {/* Category */}
+            {catLinks && catLinks.length > 0 ? (
+              catLinks.map((cat) => (
+                <a
+                  key={cat.id || cat.label}
+                  className="dd-cat"
+                  onClick={() =>
+                    navigate(
+                      cat.path?.startsWith('/main-page')
+                        ? cat.path
+                        : `/main-page?section=preloved&category=${encodeURIComponent(cat.label)}`
+                    )
+                  }
+                >
+                  {cat.label}
+                </a>
+              ))
+            ) : (
+              data.categories.map((category) => (
+                <a
+                  key={category}
+                  className="dd-cat"
+                  onClick={() =>
+                    navigate(
+                      `/main-page?section=preloved&category=${encodeURIComponent(category)}`
+                    )
+                  }
+                >
+                  {category}
+                </a>
+              ))
+            )}
 
-        {data.secondaryLinks.map(
-          (item) => (
-            <a
-              key={item}
-              className="dd-link"
-              onClick={() =>
-                navigate(
-                  `/main-page?section=preloved&condition=${encodeURIComponent(
-                    item
-                  )}`
-                )
-              }
-            >
-              {item}
-            </a>
-          )
-        )}
-      </div>
+            <div className="dd-divider" />
+
+            {condLinks && condLinks.length > 0 ? (
+              condLinks.map((item) => (
+                <a
+                  key={item.id || item.label}
+                  className="dd-link"
+                  onClick={() =>
+                    navigate(
+                      item.path?.startsWith('/main-page')
+                        ? item.path
+                        : `/main-page?section=preloved&condition=${encodeURIComponent(item.label)}`
+                    )
+                  }
+                >
+                  {item.label}
+                </a>
+              ))
+            ) : (
+              data.secondaryLinks.map((item) => (
+                <a
+                  key={item}
+                  className="dd-link"
+                  onClick={() =>
+                    navigate(
+                      `/main-page?section=preloved&condition=${encodeURIComponent(item)}`
+                    )
+                  }
+                >
+                  {item}
+                </a>
+              ))
+            )}
+          </div>
+        );
+      })()}
 
       {/* Middle Column */}
       <div className="dd-col-mid">

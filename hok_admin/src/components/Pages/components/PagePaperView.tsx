@@ -94,6 +94,38 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
     }
   };
 
+  const handleFieldFocusNormalized = (infoOrString: any) => {
+    if (showMode === 'date') return;
+    if (!infoOrString) {
+      setFocusedField(null);
+      return;
+    }
+    if (typeof infoOrString === 'string') {
+      const fieldId = infoOrString;
+      const cleanWords = fieldId
+        .replace(/^([a-z0-9]+_)+/, '')
+        .replace(/_/g, ' ');
+      const fieldName = cleanWords
+        ? cleanWords.charAt(0).toUpperCase() + cleanWords.slice(1)
+        : fieldId;
+      setFocusedField({
+        partId: activePartId || 'hero',
+        fieldId,
+        fieldName,
+        helpText: 'Prints the standard wording. Click any word to edit.'
+      });
+    } else {
+      setFocusedField({
+        partId: infoOrString.partId || activePartId || 'hero',
+        fieldId: infoOrString.fieldId || 'field',
+        fieldName: infoOrString.fieldName || infoOrString.fieldId || 'Field',
+        helpText: infoOrString.helpText,
+        isHeading: infoOrString.isHeading
+      });
+    }
+    setSelectedFigureKey(null);
+  };
+
   return (
     <div className="min-h-screen bg-[#f7f2ea] text-[#1a1612]">
       {/* 1. Level Two Sticky Header & Parts Strip (Spec §8.4, Screens 39-41) */}
@@ -174,11 +206,7 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
               onOpenAnswersView={onOpenAnswersView}
               onOpenCheck={handleOpenCheck}
               focusedField={showMode === 'date' ? null : focusedField}
-              onFocusField={info => {
-                if (showMode === 'date') return;
-                setFocusedField(info);
-                if (info) setSelectedFigureKey(null);
-              }}
+              onFocusField={handleFieldFocusNormalized}
               fieldValues={fieldValues}
               onFieldChange={handleFieldChange}
               highlightedFigureKey={selectedFigureKey}
@@ -216,12 +244,13 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
             </div>
           ) : focusedField && activePanelTab !== 'settings' ? (
             <WordEditorPanel
-              partTitle={focusedField.fieldName}
-              fieldName={focusedField.fieldName}
-              helpText={focusedField.helpText}
-              fieldValue={fieldValues[focusedField.fieldId] || ''}
+              partTitle={focusedField?.fieldName || 'this section'}
+              fieldName={focusedField?.fieldName || 'this field'}
+              helpText={focusedField?.helpText}
+              fieldValue={focusedField ? (fieldValues[focusedField.fieldId] || '') : ''}
               onCloseWords={() => setFocusedField(null)}
               onUseFigure={(detectedText, figureKey) => {
+                if (!focusedField) return;
                 const current = fieldValues[focusedField.fieldId] || '';
                 handleFieldChange(focusedField.fieldId, current.replace(detectedText, `{{${figureKey}}}`));
               }}

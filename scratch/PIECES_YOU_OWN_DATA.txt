@@ -1,0 +1,14 @@
+{
+  heading: "A piece that is yours to keep",
+  lead1: "A preloved piece is yours for every celebration to come. Every one is professionally cleaned before it leaves us, and arrives checked and pressed. A piece that has never been worn is checked and pressed instead of cleaned, so it stays exactly as new.",
+  lead2: "Because each piece is made differently, its own care notes are on its page, written for its fabric and craftsmanship, and you can open it any time from your order in My Account. A few things hold true for every one of them.",
+  notes: [
+    "Store it in breathable cotton or muslin, never plastic, somewhere cool, dry and dark.",
+    "Refold it along different lines every few months, so zari and embroidery never rest on one fold for long.",
+    "Keep perfume, deodorant and hairspray off the fabric.",
+    "Air it now and then, especially through the monsoon, and keep naphthalene or neem wrapped so it never touches the fabric.",
+    "Clean it only when it needs it, with a dry cleaner who specialises in hand-embroidered pieces.",
+    "Never pull a loose thread or bead. A karigar can secure it in minutes."
+  ],
+  questionIds: ["p-cleaned", "p-clean", "p-repair", "p-flaw", "p-next", "p-lister"]
+}

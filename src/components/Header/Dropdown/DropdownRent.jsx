@@ -2,86 +2,151 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
 import { useNavigate } from "react-router-dom";
-const DropdownRent = () => {
+const DropdownRent = ({ columns }) => {
   const data = dropdownData.rent;
 const navigate = useNavigate();
   return (
     <>
       {/* Left Column */}
-      <div className="dd-col-left">
-        <span className="dd-label">
-          {data.leftLabel}
-        </span>
-        {/* Categories */}
-        {data.categories.map(
-          (category) => (
-            <a
-              key={category}
-              className="dd-cat"
-              onClick={() =>
-                navigate(
-                  `/main-page?section=rent&mode=rent&category=${encodeURIComponent(
-                    category
-                  )}`
-                )
-              }
-            >
-              {category}
-            </a>
-          )
-        )}
+      {(() => {
+        const catCol = columns?.find(c => c.id === 'col-rent-cat' || c.heading?.toLowerCase().includes('category')) || columns?.[0];
+        const catLinks = catCol?.links ? catCol.links.filter(l => !l.hidden && l.position !== 'last') : null;
+        const catLastLinks = catCol?.links ? catCol.links.filter(l => !l.hidden && l.position === 'last') : null;
 
-        <div className="dd-divider" />
+        return (
+          <div className="dd-col-left">
+            <span className="dd-label">
+              {catCol?.heading || data.leftLabel}
+            </span>
+            {/* Categories */}
+            {catLinks && catLinks.length > 0 ? (
+              catLinks.map((cat) => (
+                <a
+                  key={cat.id || cat.label}
+                  className="dd-cat"
+                  onClick={() =>
+                    navigate(
+                      cat.path?.startsWith('/main-page')
+                        ? cat.path
+                        : `/main-page?section=rent&mode=rent&category=${encodeURIComponent(cat.label)}`
+                    )
+                  }
+                >
+                  {cat.label}
+                </a>
+              ))
+            ) : (
+              data.categories.map((category) => (
+                <a
+                  key={category}
+                  className="dd-cat"
+                  onClick={() =>
+                    navigate(
+                      `/main-page?section=rent&mode=rent&category=${encodeURIComponent(category)}`
+                    )
+                  }
+                >
+                  {category}
+                </a>
+              ))
+            )}
 
-        <a
-          className="dd-sub"
-          onClick={() =>
-            navigate("/main-page?section=rent&mode=rent")
-          }
-        >
-          {data.leftFooter}
-        </a>
-      </div>
+            <div className="dd-divider" />
+
+            {catLastLinks && catLastLinks.length > 0 ? (
+              catLastLinks.map((l) => (
+                <a
+                  key={l.id || l.label}
+                  className="dd-sub"
+                  onClick={() => navigate(l.path || "/main-page?section=rent&mode=rent")}
+                >
+                  {l.label} →
+                </a>
+              ))
+            ) : (
+              <a
+                className="dd-sub"
+                onClick={() =>
+                  navigate("/main-page?section=rent&mode=rent")
+                }
+              >
+                {data.leftFooter}
+              </a>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Middle Column */}
-      <div className="dd-col-mid">
-        <span className="dd-label">
-          {data.middleLabel}
-        </span>
+      {(() => {
+        const desCol = columns?.find(c => c.id === 'col-rent-des' || c.heading?.toLowerCase().includes('designer')) || columns?.[1];
+        const desLinks = desCol?.links ? desCol.links.filter(l => !l.hidden && l.position !== 'last') : null;
+        const desLastLinks = desCol?.links ? desCol.links.filter(l => !l.hidden && l.position === 'last') : null;
 
-        {/* Designers */}
-        {data.designers.map(
-          (designer) => (
-            <a
-              key={designer.label}
-              className={`dd-link ${designer.featured
-                  ? "bold"
-                  : ""
-                }`}
-              onClick={() =>
-                navigate(
-                  `/main-page?section=rent&mode=rent&designer=${encodeURIComponent(
-                    designer.label
-                  )}`
-                )
-              }
-            >
-              {designer.label}
-            </a>
-          )
-        )}
+        return (
+          <div className="dd-col-mid">
+            <span className="dd-label">
+              {desCol?.heading || data.middleLabel}
+            </span>
 
-        <div className="dd-divider" />
+            {/* Designers */}
+            {desLinks && desLinks.length > 0 ? (
+              desLinks.map((designer) => (
+                <a
+                  key={designer.id || designer.label}
+                  className="dd-link"
+                  onClick={() =>
+                    navigate(
+                      designer.path?.startsWith('/main-page')
+                        ? designer.path
+                        : `/main-page?section=rent&mode=rent&designer=${encodeURIComponent(designer.label)}`
+                    )
+                  }
+                >
+                  {designer.label}
+                </a>
+              ))
+            ) : (
+              data.designers.map((designer) => (
+                <a
+                  key={designer.label}
+                  className={`dd-link ${designer.featured ? "bold" : ""}`}
+                  onClick={() =>
+                    navigate(
+                      `/main-page?section=rent&mode=rent&designer=${encodeURIComponent(designer.label)}`
+                    )
+                  }
+                >
+                  {designer.label}
+                </a>
+              ))
+            )}
 
-        <a
-          className="dd-sub"
-          onClick={() =>
-            navigate("/main-page?section=rent")
-          }
-        >
-          {data.middleFooter}
-        </a>
-      </div>
+            <div className="dd-divider" />
+
+            {desLastLinks && desLastLinks.length > 0 ? (
+              desLastLinks.map((l) => (
+                <a
+                  key={l.id || l.label}
+                  className="dd-sub"
+                  onClick={() => navigate(l.path || "/main-page?section=rent")}
+                >
+                  {l.label} →
+                </a>
+              ))
+            ) : (
+              <a
+                className="dd-sub"
+                onClick={() =>
+                  navigate("/main-page?section=rent")
+                }
+              >
+                {data.middleFooter}
+              </a>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Right Column */}
       <div className="dd-col-right">

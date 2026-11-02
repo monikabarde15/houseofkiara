@@ -2,49 +2,81 @@ import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
 import { useNavigate } from "react-router-dom";
 
-const DropdownWomen = () => {
+const DropdownWomen = ({ columns }) => {
   const data = dropdownData.women;
   const navigate = useNavigate();
 
   return (
     <>
       {/* Left Column */}
-      <div className="dd-col-left">
-        <span className="dd-label">
-          {data.leftLabel}
-        </span>
+      {(() => {
+        const catCol = columns?.find(c => c.id === 'col-w-cat' || c.heading?.toLowerCase().includes('category')) || columns?.[0];
+        const catLinks = catCol?.links ? catCol.links.filter(l => !l.hidden && l.position !== 'last') : null;
+        const catLastLinks = catCol?.links ? catCol.links.filter(l => !l.hidden && l.position === 'last') : null;
 
-        {data.categories.map(
-          (category) => (
-            <a
-              key={category}
-              className="dd-cat"
-              onClick={() =>
-                navigate(
-                  `/main-page?section=women&gender=Women&category=${encodeURIComponent(
-                    category
-                  )}`
-                )
-              }
-            >
-              {category}
-            </a>
-          )
-        )}
+        return (
+          <div className="dd-col-left">
+            <span className="dd-label">
+              {catCol?.heading || data.leftLabel}
+            </span>
 
-        <div className="dd-divider" />
+            {catLinks && catLinks.length > 0 ? (
+              catLinks.map((cat) => (
+                <a
+                  key={cat.id || cat.label}
+                  className="dd-cat"
+                  onClick={() =>
+                    navigate(
+                      cat.path?.startsWith('/main-page')
+                        ? cat.path
+                        : `/main-page?section=women&gender=Women&category=${encodeURIComponent(cat.label)}`
+                    )
+                  }
+                >
+                  {cat.label}
+                </a>
+              ))
+            ) : (
+              data.categories.map((category) => (
+                <a
+                  key={category}
+                  className="dd-cat"
+                  onClick={() =>
+                    navigate(
+                      `/main-page?section=women&gender=Women&category=${encodeURIComponent(category)}`
+                    )
+                  }
+                >
+                  {category}
+                </a>
+              ))
+            )}
 
-        <a
-          className="dd-sub"
-          onClick={() =>
-            navigate(
-              "/main-page?section=women&gender=Women"
-            )
-          }
-        >
-          {data.leftFooter}
-        </a>
-      </div>
+            <div className="dd-divider" />
+
+            {catLastLinks && catLastLinks.length > 0 ? (
+              catLastLinks.map((l) => (
+                <a
+                  key={l.id || l.label}
+                  className="dd-sub"
+                  onClick={() => navigate(l.path || "/main-page?section=women&gender=Women")}
+                >
+                  {l.label} →
+                </a>
+              ))
+            ) : (
+              <a
+                className="dd-sub"
+                onClick={() =>
+                  navigate("/main-page?section=women&gender=Women")
+                }
+              >
+                {data.leftFooter}
+              </a>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Middle Column */}
       <div className="dd-col-mid">

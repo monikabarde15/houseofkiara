@@ -3,36 +3,57 @@ import { dropdownData } from "../../../data/dropdownData";
 import { useNavigate } from "react-router-dom";
 
 
-const DropdownOccasions = () => {
+const DropdownOccasions = ({ columns }) => {
   const data = dropdownData.occasions;
   const navigate = useNavigate();
 
   return (
     <>
       {/* Left Column */}
-      <div className="dd-col-left">
-        <span className="dd-label">
-          {data.leftLabel}
-        </span>
+      {(() => {
+        const occCol = columns?.find(c => c.id === 'col-occ-br' || c.heading?.toLowerCase().includes('occasion')) || columns?.[0];
+        const occLinks = occCol?.links ? occCol.links.filter(l => !l.hidden && l.position !== 'last') : null;
 
-        {data.categories.map(
-          (category) => (
-            <a
-              key={category}
-              className="dd-cat"
-              onClick={() =>
-                navigate(
-                  `/main-page?section=occasions&occasion=${encodeURIComponent(
-                    category
-                  )}`
-                )
-              }
-            >
-              {category}
-            </a>
-          )
-        )}
-      </div>
+        return (
+          <div className="dd-col-left">
+            <span className="dd-label">
+              {occCol?.heading || data.leftLabel}
+            </span>
+
+            {occLinks && occLinks.length > 0 ? (
+              occLinks.map((occ) => (
+                <a
+                  key={occ.id || occ.label}
+                  className="dd-cat"
+                  onClick={() =>
+                    navigate(
+                      occ.path?.startsWith('/main-page')
+                        ? occ.path
+                        : `/main-page?section=occasions&occasion=${encodeURIComponent(occ.label)}`
+                    )
+                  }
+                >
+                  {occ.label}
+                </a>
+              ))
+            ) : (
+              data.categories.map((category) => (
+                <a
+                  key={category}
+                  className="dd-cat"
+                  onClick={() =>
+                    navigate(
+                      `/main-page?section=occasions&occasion=${encodeURIComponent(category)}`
+                    )
+                  }
+                >
+                  {category}
+                </a>
+              ))
+            )}
+          </div>
+        );
+      })()}
 
       {/* Middle Column */}
       <div className="dd-col-mid">

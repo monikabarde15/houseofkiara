@@ -1,0 +1,45 @@
+16: // 2. Help & FAQs Answers (Spec §8.4)
+17: const FAQ_ANSWERS: AnswerItem[] = ALL_120_FAQ_ANSWERS;
+18: 
+19: // 3. Care, Cleaning & Damage Policy Answers (Spec §8.14)
+20: const CARE_ANSWERS: AnswerItem[] = [
+21:   {
+22:     id: 'care_1',
+23:     question: 'Do I need to dry clean the piece before returning?',
+24:     section: 'Care journey',
+25:     side: 'rentals',
+26:     orderIndex: 1,
+27:     statusTag: { label: 'Never wash or dry clean', tone: 'worth-knowing' },
+28:     paragraphs: [
+29:       {
+30:         id: 'cp1',
+31:         kind: 'paragraph',
+32:         text: 'No. Complimentary specialist couture dry cleaning is included with every rental. Attempting to wash or iron items at home can damage delicate zardozi or silk fibers.'
+33:       }
+34:     ],
+35:     searchWords: 'dry clean, ironing, home wash, care instructions',
+36:     linkName: 'no-home-cleaning'
+37:   },
+38:   {
+39:     id: 'care_2',
+40:     question: 'What happens if wine or perfume spills on the garment?',
+41:     section: 'Care journey',
+42:     side: 'rentals',
+43:     orderIndex: 2,
+44:     statusTag: { label: 'Notify concierge within 12 hours', tone: 'worth-knowing' },
+45:     paragraphs: [
+46:       {
+47:         id: 'cp2',
+48:         kind: 'paragraph',
+49:         text: 'Do not rub the fabric with napkins or water. Simply notify our WhatsApp team with a photo within 12 hours so our restoration team can prepare the proper organic solvent upon return.'
+50:       }
+51:     ],
+52:     searchWords: 'wine spill, perfume stain, spot treatment, accident',
+53:     linkName: 'spill-protocol'
+54:   }
+55: ];
+56: 
+57: // 4. Shipping & Delivery Policy Answers (Spec §8.15)
+58: const SHIPPING_ANSWERS: AnswerItem[] = [
+59:   {
+60:     id: 'ship_1',

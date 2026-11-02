@@ -33,6 +33,13 @@ export const PageDefaultPanel: React.FC<PageDefaultPanelProps> = ({
   const isCookies = page.slug === '/cookies' || page.slug === 'cookies';
   const isRefunds = page.slug === '/refunds' || page.slug === 'refunds';
   const isDeposit = page.slug === '/deposit-policy' || page.slug === 'deposit-policy';
+  const isCare = page.slug === '/care-policy' || page.slug === 'care-policy' || page.slug === 'care-damage' || page.slug === '/care-damage';
+  const isShipping = page.slug === '/shipping-policy' || page.slug === 'shipping-policy' || page.slug === 'shipping-delivery' || page.slug === '/shipping-delivery';
+  const isPricing = page.slug === '/pricing' || page.slug === 'pricing' || page.slug === '/pricing-fees' || page.slug === 'pricing-fees';
+  const isSeller = page.slug === '/seller-guidelines' || page.slug === 'seller-guidelines';
+  const is404 = page.slug === '/404' || page.slug === '404';
+  const isSearch = page.slug === '/search' || page.slug === 'search';
+  const isMaintenance = page.slug === '/maintenance' || page.slug === 'maintenance';
 
   const faqChecks = [
     { id: 'c1', type: 'high', title: 'Prints a retired figure: Extended rental window', location: 'Answers · How long can I keep a rental?' },
@@ -105,8 +112,37 @@ export const PageDefaultPanel: React.FC<PageDefaultPanelProps> = ({
   ];
 
   const depositChecks: any[] = [];
+  const careChecks: any[] = [];
+  const shippingChecks: any[] = [];
+  const notFoundChecks: any[] = [];
+  const searchChecks: any[] = [];
+  const maintenanceChecks = [
+    {
+      id: 'maint_chk_year',
+      type: 'medium',
+      title: 'A year typed by hand in a copyright line',
+      location: 'Words · Footnote'
+    }
+  ];
+  const pricingChecks = [
+    {
+      id: 'chk_pricing_designer',
+      type: 'high',
+      title: 'Links to a page that is not built: Designer Partners',
+      location: 'Answers · I am a designer or a boutique'
+    }
+  ];
 
-  const checks = isDeposit ? depositChecks : isFaq ? faqChecks : isContact ? contactChecks : isAbout ? aboutChecks : isHowItWorks ? howItWorksChecks : isListYourPiece ? listYourPieceChecks : isTerms ? termsChecks : isPrivacy ? privacyChecks : isCookies ? cookieChecks : isRefunds ? refundChecks : defaultChecks;
+  const sellerChecks = [
+    {
+      id: 'chk_seller_designer_partners',
+      type: 'high',
+      title: 'Links to a page that is not built: Designer Partners',
+      location: 'Chapters · Who can list a piece with House of Kaira?'
+    }
+  ];
+
+  const checks = isMaintenance ? maintenanceChecks : isSearch ? searchChecks : is404 ? notFoundChecks : isSeller ? sellerChecks : isPricing ? pricingChecks : isShipping ? shippingChecks : isCare ? careChecks : isDeposit ? depositChecks : isFaq ? faqChecks : isContact ? contactChecks : isAbout ? aboutChecks : isHowItWorks ? howItWorksChecks : isListYourPiece ? listYourPieceChecks : isTerms ? termsChecks : isPrivacy ? privacyChecks : isCookies ? cookieChecks : isRefunds ? refundChecks : defaultChecks;
 
   const faqFigures = [
     { key: 'problem_window', label: 'Tell us about a problem within', value: '24 hours', count: '5×' },
@@ -194,14 +230,71 @@ export const PageDefaultPanel: React.FC<PageDefaultPanelProps> = ({
     { key: 'deduction_reply_within', label: 'Time to reply to a deduction', value: '2 business days', count: '3×' }
   ];
 
-const figures = isDeposit ? depositFigures : isFaq ? faqFigures : isContact ? contactFigures : isAbout ? aboutFigures : isHowItWorks ? howItWorksFigures : isListYourPiece ? listYourPieceFigures : isTerms ? termsFigures : isPrivacy ? privacyFigures : isCookies ? cookieFigures : isRefunds ? refundFigures : defaultFigures;
+  const careFigures = [
+    { key: 'problem_window', label: 'Tell us about a problem within', value: '24 hours', count: '8×' },
+    { key: 'deduction_reply_within', label: 'Time to reply to a deduction', value: '2 business days', count: '3×' },
+    { key: 'deduction_notice_within', label: 'Deduction explained within', value: '2 business days', count: '3×' },
+    { key: 'support_hours', label: 'Hours we answer', value: '10 AM to 8 PM IST', count: '2×' },
+    { key: 'rental_arrival', label: 'A rental arrives', value: '1 day', count: '1×' },
+    { key: 'inspect_within', label: 'Returned piece inspected within', value: '24 hours', count: '1×' }
+  ];
+
+  const shippingFigures = [
+    { key: 'problem_window', label: 'Tell us about a problem within', value: '24 hours', count: '5×' },
+    { key: 'free_delivery_min', label: 'Free delivery from', value: '₹5,000', count: '5×' },
+    { key: 'rental_window_days', label: 'Standard rental window', value: '3 days', count: '4×' },
+    { key: 'standard_delivery', label: 'Standard delivery time', value: '3 to 5 business days', count: '3×' },
+    { key: 'express_delivery', label: 'Express delivery time', value: '1 to 2 business days', count: '3×' },
+    { key: 'intl_delivery', label: 'International delivery time', value: '10 business days', count: '3×' }
+  ];
+
+  const pricingFigures = [
+    { key: 'standard_rental_window', label: 'Standard rental window', value: '3 days', count: '6×' },
+    { key: 'gst_rental', label: 'GST on a rental', value: '18%', count: '6×' },
+    { key: 'free_delivery_min', label: 'Free delivery from', value: '₹5,000', count: '5×' },
+    { key: 'gst_preloved', label: 'GST on a preloved piece', value: '5%', count: '4×' },
+    { key: 'lister_payout_days', label: 'Lister payout within', value: '3 working days', count: '4×' },
+    { key: 'deposit_refund_window', label: 'Deposit returned within', value: '3 to 5 business days', count: '3×' }
+  ];
+
+  const sellerFigures = [
+    { key: 'free_return_after', label: 'Free return of a piece after', value: '90 days', count: '4×' },
+    { key: 'payout_cycle', label: 'Lister payout within', value: '3 working days', count: '3×' },
+    { key: 'submission_reply', label: 'Reply to a new listing within', value: '48 hours', count: '3×' },
+    { key: 'support_whatsapp', label: 'WhatsApp number', value: '+91 93401 39300', count: '1×' },
+    { key: 'issue_window', label: 'Tell us about a problem within', value: '24 hours', count: '1×' },
+    { key: 'title_separator', label: 'Title separator', value: '·', count: '1×' }
+  ];
+
+  const notFoundFigures = [
+    { key: 'support_days', label: 'Days we answer', value: 'Seven days a week', count: '1×' },
+    { key: 'support_hours', label: 'Hours we answer', value: '10 AM to 8 PM IST', count: '1×' },
+    { key: 'title_separator', label: 'Title separator', value: '·', count: '1×' },
+    { key: 'site_name', label: 'Site name', value: 'House of Kaira', count: '1×' }
+  ];
+
+  const searchFigures = [
+    { key: 'support_days', label: 'Days we answer', value: 'Seven days a week', count: '1×' },
+    { key: 'support_hours', label: 'Hours we answer', value: '10 AM to 8 PM IST', count: '1×' },
+    { key: 'title_separator', label: 'Title separator', value: '·', count: '1×' },
+    { key: 'site_name', label: 'Site name', value: 'House of Kaira', count: '1×' }
+  ];
+
+  const maintenanceFigures = [
+    { key: 'support_days', label: 'Days we answer', value: 'Seven days a week', count: '1×' },
+    { key: 'support_hours', label: 'Hours we answer', value: '10 AM to 8 PM IST', count: '1×' },
+    { key: 'title_separator', label: 'Title separator', value: '·', count: '1×' },
+    { key: 'site_name', label: 'Site name', value: 'House of Kaira', count: '1×' }
+  ];
+
+const figures = isMaintenance ? maintenanceFigures : isSearch ? searchFigures : is404 ? notFoundFigures : isSeller ? sellerFigures : isPricing ? pricingFigures : isShipping ? shippingFigures : isCare ? careFigures : isDeposit ? depositFigures : isFaq ? faqFigures : isContact ? contactFigures : isAbout ? aboutFigures : isHowItWorks ? howItWorksFigures : isListYourPiece ? listYourPieceFigures : isTerms ? termsFigures : isPrivacy ? privacyFigures : isCookies ? cookieFigures : isRefunds ? refundFigures : defaultFigures;
 
   return (
     <div className="bg-white border border-[#ebe5dc] rounded-[8px] p-5 shadow-2xs space-y-5 text-xs">
       {/* 1. Page Header Metadata */}
       <div>
         <div className="text-[11.5px] text-[#73675a] capitalize">
-          {page.group.replace('-', ' ')}
+          {page.group === 'system' ? 'System pages' : page.group.replace('-', ' ')}
         </div>
         <h2 className="font-serif text-[22px] font-normal text-[#1a1612] mt-0.5">
           {page.title}
@@ -217,10 +310,10 @@ const figures = isDeposit ? depositFigures : isFaq ? faqFigures : isContact ? co
           <span className="text-[#8a7f73]">Address</span>
           <span className="font-mono text-[#1a1612]">{page.slug}</span>
         </div>
-        {!isContact && !isAbout && !isListYourPiece && (
+        {!isContact && !isAbout && !isListYourPiece && !is404 && !isSearch && !isMaintenance && (
           <div className="flex justify-between">
             <span className="text-[#8a7f73]">Version</span>
-            <span className="text-[#1a1612]">{isDeposit ? 'Version 4' : isTerms ? 'Version 1.0' : (isPrivacy || isCookies) ? 'Version 3' : isRefunds ? 'Version 7' : (page.version || (isHowItWorks ? 'Version 4' : 'Version 6'))}</span>
+            <span className="text-[#1a1612]">{isSeller ? 'Version 2' : isPricing ? 'Version 4' : isShipping ? 'Version 3' : isCare ? 'Version 3' : isDeposit ? 'Version 4' : isTerms ? 'Version 1.0' : (isPrivacy || isCookies) ? 'Version 3' : isRefunds ? 'Version 7' : (page.version || (isHowItWorks ? 'Version 4' : 'Version 6'))}</span>
           </div>
         )}
         {isTerms && (
@@ -234,16 +327,16 @@ const figures = isDeposit ? depositFigures : isFaq ? faqFigures : isContact ? co
             <span className="text-[#8a7f73]">Last edited</span>
             <span className="text-[#1a1612]">{isListYourPiece ? '27 February 2026' : '4 March 2026'}</span>
           </div>
-        ) : !isContact && (
+        ) : !isContact && !is404 && !isSearch && !isMaintenance && (
           <div className="flex justify-between">
             <span className="text-[#8a7f73]">Last reviewed</span>
-            <span className="text-[#1a1612]">{isDeposit ? '6 October 2026' : isTerms ? '26 September 2026' : isPrivacy ? '30 September 2026' : isCookies ? '1 September 2026' : isRefunds ? '23 September 2026' : (page.lastPublished || '17 September 2026')}</span>
+            <span className="text-[#1a1612]">{isSeller ? '8 October 2026' : isPricing ? '11 October 2026' : isShipping ? '10 October 2026' : isCare ? '7 October 2026' : isDeposit ? '6 October 2026' : isTerms ? '26 September 2026' : isPrivacy ? '30 September 2026' : isCookies ? '1 September 2026' : isRefunds ? '23 September 2026' : (page.lastPublished || '17 September 2026')}</span>
           </div>
         )}
         <div className="flex justify-between">
           <span className="text-[#8a7f73]">Built from</span>
           <span className="font-mono text-[11px] text-[#5c5248]">
-            {isDeposit ? 'hok_deposit_policy_v4' : isAbout ? 'hok_about_us' : isContact ? 'hok_contact_v5' : isHowItWorks ? 'hok_how_it_works_v4' : isListYourPiece ? 'hok_list_your_piece' : isTerms ? 'hok_terms_v4' : isPrivacy ? 'hok_privacy_v3' : isCookies ? 'hok_cookie_v3' : isRefunds ? 'hok_refund_cancellation_v7' : (page.builtFrom || 'hok_faq_v6')}
+            {isMaintenance ? 'hok_maintenance_page_v1' : isSearch ? 'hok_no_search_results_v1' : is404 ? 'hok_404_page_v1' : isSeller ? 'hok_seller_guidelines_v2' : isPricing ? 'hok_pricing_fees_v4' : isShipping ? 'hok_shipping_policy_v3' : isCare ? 'hok_care_policy_v3' : isDeposit ? 'hok_deposit_policy_v4' : isAbout ? 'hok_about_us' : isContact ? 'hok_contact_v5' : isHowItWorks ? 'hok_how_it_works_v4' : isListYourPiece ? 'hok_list_your_piece' : isTerms ? 'hok_terms_v4' : isPrivacy ? 'hok_privacy_v3' : isCookies ? 'hok_cookie_v3' : isRefunds ? 'hok_refund_cancellation_v7' : (page.builtFrom || 'hok_faq_v6')}
           </span>
         </div>
       </div>
@@ -258,7 +351,7 @@ const figures = isDeposit ? depositFigures : isFaq ? faqFigures : isContact ? co
         >
           View on the site ↗
         </a>
-        {!isAbout && !isListYourPiece && !isPrivacy && !isCookies && (
+        {!isAbout && !isListYourPiece && !isPrivacy && !isCookies && !is404 && !isSearch && !isMaintenance && (
           <button
             type="button"
             onClick={onMarkReviewed}
@@ -281,7 +374,7 @@ const figures = isDeposit ? depositFigures : isFaq ? faqFigures : isContact ? co
               onClick={onOpenChecks}
               className="text-[#8a6a36] hover:underline cursor-pointer"
             >
-              All {isFaq ? 14 : isContact ? 2 : isAbout ? 9 : isHowItWorks ? 31 : isListYourPiece ? 30 : isTerms ? 9 : (page.checksCount || checks.length)}
+              All {isMaintenance ? 1 : isSeller ? 1 : isPricing ? 1 : isFaq ? 14 : isContact ? 2 : isAbout ? 9 : isHowItWorks ? 31 : isListYourPiece ? 30 : isTerms ? 9 : (page.checksCount || checks.length)}
             </button>
           )}
         </div>
@@ -318,7 +411,7 @@ const figures = isDeposit ? depositFigures : isFaq ? faqFigures : isContact ? co
             Figures on this page
           </h3>
           <span className="text-[#8a7f73]">
-            All {isDeposit ? 28 : isFaq ? 29 : isContact ? 19 : isAbout ? 1 : isHowItWorks ? 8 : isListYourPiece ? 7 : isTerms ? 48 : (page.figuresCount || 23)}
+            All {isMaintenance ? 4 : isSearch ? 4 : is404 ? 4 : isSeller ? 13 : isPricing ? 27 : isCare ? 13 : isDeposit ? 28 : isFaq ? 29 : isContact ? 19 : isAbout ? 1 : isHowItWorks ? 8 : isListYourPiece ? 7 : isTerms ? 48 : (page.figuresCount || 23)}
           </span>
         </div>
 
