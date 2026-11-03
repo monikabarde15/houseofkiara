@@ -307,7 +307,8 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
 
           const listerMap: Record<string, SupplyListerRow> = {};
           matchingProducts.forEach((p: any) => {
-            const rawLId = p.listerId || "ananya-sharma";
+            const rawLId = p.listerId;
+            if (!rawLId) return;
             const lId = rawLId === "Ananya Sharma" ? "ananya-sharma" : rawLId;
             const lName = p.listerName || (lId === "ananya-sharma" ? "Ananya Sharma" : lId);
             if (!listerMap[lId]) {
@@ -321,7 +322,8 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
           });
 
           matchingOrders.forEach((o: any) => {
-            const rawLId = o.listerId || "ananya-sharma";
+            const rawLId = o.listerId;
+            if (!rawLId) return;
             const lId = rawLId === "Ananya Sharma" ? "ananya-sharma" : rawLId;
             if (listerMap[lId] && (o.mode === "Rental" || o.rentalStartDate)) {
               listerMap[lId].lifetimeRentals += 1;
@@ -342,9 +344,9 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
               firstImg = p.image;
             }
 
-            const rawLId = p.listerId || "ananya-sharma";
-            const lId = rawLId === "Ananya Sharma" ? "ananya-sharma" : rawLId;
-            const lName = p.listerName || (lId === "ananya-sharma" ? "Ananya Sharma" : lId);
+            const rawLId = p.listerId || "";
+            const lId = rawLId;
+            const lName = p.listerName || (rawLId ? rawLId : "HOK Stock");
 
             return {
               id: p.id || p.productId || p._id,
@@ -357,43 +359,94 @@ const DesignerEdit: React.FC<DesignerEditProps> = ({
               rentPrice: p.rentalPrice || p.rentPrice || p.price,
               rentDuration: p.minimumDurationDays ? `${p.minimumDurationDays} days` : "3 days",
               sellPrice: p.originalRetailPrice || p.salePrice || p.listingPrice,
-              timesRented: p.timesRented || 1,
+              timesRented: p.timesRented || 0,
               imageUrl: firstImg,
             };
           });
 
-          const rentPrices = matchingProducts.map((p: any) => Number(p.rentalPrice || p.rentPrice || 0)).filter((v: number) => v > 0);
-          const deposits = matchingProducts.map((p: any) => Number(p.securityDeposit || p.deposit || 0)).filter((v: number) => v > 0);
-          const avgRent = rentPrices.length > 0 ? Math.round(rentPrices.reduce((a: number, b: number) => a + b, 0) / rentPrices.length) : 50000;
+          const rentPrices = matchingProducts
+            .map((p: any) => Number(p.rentalPrice || p.rentPrice || 0))
+            .filter((v: number) => v > 0);
+          const deposits = matchingProducts
+            .map((p: any) => Number(p.securityDeposit || p.deposit || 0))
+            .filter((v: number) => v > 0);
 
-          const pricingVelocity: PricingVelocity = {
-            rentalBandMin: rentPrices.length > 0 ? Math.min(...rentPrices) : 18000,
-            rentalBandMax: rentPrices.length > 0 ? Math.max(...rentPrices) : 50000,
-            averageRental: avgRent,
-            depositMin: deposits.length > 0 ? Math.min(...deposits) : 10000,
-            depositMax: deposits.length > 0 ? Math.max(...deposits) : 50000,
-            velocityPerPieceMonth: 1.8,
-            rating: 4.9,
-            reviewCount: matchingOrders.length || 14,
-          };
+          let pricingVelocity: PricingVelocity | undefined = undefined;
+          if (rentPrices.length > 0) {
+            const avgRent = Math.round(
+              rentPrices.reduce((a: number, b: number) => a + b, 0) / rentPrices.length
+            );
+            const minRent = Math.min(...rentPrices);
+            const maxRent = Math.max(...rentPrices);
+            const minDep =
+              deposits.length > 0
+                ? Math.min(...deposits)
+                : Math.round(minRent * 0.8);
+            const maxDep =
+              deposits.length > 0
+                ? Math.max(...deposits)
+                : Math.round(maxRent * 0.8);
 
-          const custOrdersMap: Record<string, number> = {};
-          matchingOrders.forEach((o: any) => {
-            const cName = o.customerName || "Customer";
-            custOrdersMap[cName] = (custOrdersMap[cName] || 0) + 1;
-          });
-          const distinctCustCount = Object.keys(custOrdersMap).length;
-          const repeatCount = Object.values(custOrdersMap).filter((cnt: number) => cnt >= 2).length;
-          const topCust = Object.entries(custOrdersMap).sort((a, b) => b[1] - a[1])[0] || ["monika Singh", 2];
+            const ratedProducts = matchingProducts.filter(
+              (p: any) => Number(p.rating || 0) > 0
+            );
+            const avgRating =
+              ratedProducts.length > 0
+                ? Number(
+                    (
+                      ratedProducts.reduce(
+                        (sum: number, p: any) => sum + Number(p.rating),
+                        0
+                      ) / ratedProducts.length
+                    ).toFixed(1)
+                  )
+                : 5.0;
 
-          const customerPull: CustomerPull = {
-            distinctCustomers: distinctCustCount || 1,
-            repeatOrders: repeatCount || 1,
-            topCustomerName: topCust[0],
-            topCustomerOrders: topCust[1],
-            offersEnquiries: 3,
-            offersOpen: 1,
-          };
+            const totalReviews = matchingProducts.reduce(
+              (sum: number, p: any) => sum + Number(p.reviewCount || 0),
+              0
+            );
+
+            pricingVelocity = {
+              rentalBandMin: minRent,
+              rentalBandMax: maxRent,
+              averageRental: avgRent,
+              depositMin: minDep,
+              depositMax: maxDep,
+              velocityPerPieceMonth:
+                liveCount > 0
+                  ? Number((lifetimeRentals / liveCount).toFixed(1))
+                  : 0,
+              rating: avgRating,
+              reviewCount: totalReviews || matchingOrders.length,
+            };
+          }
+
+          let customerPull: CustomerPull | undefined = undefined;
+          if (matchingOrders.length > 0) {
+            const custOrdersMap: Record<string, number> = {};
+            matchingOrders.forEach((o: any) => {
+              const cName = o.customerName || "Customer";
+              custOrdersMap[cName] = (custOrdersMap[cName] || 0) + 1;
+            });
+            const distinctCustCount = Object.keys(custOrdersMap).length;
+            const repeatCount = Object.values(custOrdersMap).filter(
+              (cnt: number) => cnt >= 2
+            ).length;
+            const sortedCusts = Object.entries(custOrdersMap).sort(
+              (a, b) => b[1] - a[1]
+            );
+            const topCust = sortedCusts[0] || ["—", 0];
+
+            customerPull = {
+              distinctCustomers: distinctCustCount,
+              repeatOrders: repeatCount,
+              topCustomerName: topCust[0],
+              topCustomerOrders: topCust[1],
+              offersEnquiries: 0,
+              offersOpen: 0,
+            };
+          }
 
           return (
             <PerformancePiecesTab

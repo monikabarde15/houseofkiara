@@ -74,6 +74,7 @@ const MobileCheckoutLayout = () => {
                     ? `${contact.firstName} ${contact.lastName}`.trim()
                     : (authUser?.name || "Customer");
 
+                const orderId = `HOK-ORD-${Date.now()}`;
                 const firstItem = checkoutItems[0] || {};
                 const firstProduct = firstItem.product || firstItem;
                 const rootRentalStart = firstItem.rentalDates?.start || firstItem.booking?.deliveryDate || "";

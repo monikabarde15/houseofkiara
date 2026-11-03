@@ -130,7 +130,7 @@ export const products = [
     mode: "Rent",
     page: "rent_bridal",
     imageClass: "ci-a",
-    tags: ["bridal", "lehenga", "red", "wedding"],
+    tags: ["bridal", "lehenga", "lehengas", "red", "wedding", "guest", "rent"],
   },
 
   {
@@ -142,7 +142,7 @@ export const products = [
     mode: "Rent",
     page: "rent_sabyasachi",
     imageClass: "ci-b",
-    tags: ["bridal", "gold", "lehenga"],
+    tags: ["bridal", "gold", "lehenga", "lehengas", "wedding", "guest", "rent"],
   },
 
   {
@@ -154,7 +154,7 @@ export const products = [
     mode: "Preloved",
     page: "preloved_mm",
     imageClass: "ci-c",
-    tags: ["cocktail", "gown"],
+    tags: ["cocktail", "gown", "gowns", "party", "reception", "preloved"],
   },
 
   {
@@ -166,7 +166,7 @@ export const products = [
     mode: "New",
     page: "new_torani",
     imageClass: "ci-d",
-    tags: ["anarkali", "festive"],
+    tags: ["anarkali", "anarkalis", "festive", "mehendi", "sangeet", "sharara", "new"],
   },
 
   {
@@ -178,7 +178,7 @@ export const products = [
     mode: "New",
     page: "new_rawmango",
     imageClass: "ci-e",
-    tags: ["saree", "handwoven"],
+    tags: ["saree", "sarees", "handwoven", "silk", "festive", "wedding", "guest", "new"],
   },
 
   {
@@ -190,7 +190,7 @@ export const products = [
     mode: "Rent",
     page: "rent_anita",
     imageClass: "ci-f",
-    tags: ["kurta", "bridal"],
+    tags: ["kurta", "bridal", "sharara", "mehendi", "sangeet", "sherwani", "sherwanis", "rent"],
   },
 ];
 

@@ -451,6 +451,14 @@ export const addExternalBooking = async (req, res) => {
             message: "The selected offer could not be found.",
           });
       }
+      const offerCust = String(selectedOffer.customerName || "").trim().toLowerCase();
+      const reqCust = String(customerName || "").trim().toLowerCase();
+      if (offerCust && reqCust && !reqCust.includes(offerCust) && !offerCust.includes(reqCust)) {
+        return res.status(422).json({
+          success: false,
+          message: `This offer is only valid for ${selectedOffer.customerName}. It cannot be applied to ${customerName}.`,
+        });
+      }
     }
 
     let selectedPromo = null;
@@ -466,6 +474,20 @@ export const addExternalBooking = async (req, res) => {
             success: false,
             message: "The selected promo code is not active.",
           });
+      }
+      const promoUpper = String(selectedPromo.code || "").toUpperCase();
+      const reqCustUpper = String(customerName || "").trim().toUpperCase();
+      const allCusts = await Customer.find({});
+      for (const c of allCusts) {
+        const cName = String(c.name || "").trim().toUpperCase();
+        if (cName && cName.length >= 3 && promoUpper.includes(cName)) {
+          if (!reqCustUpper.includes(cName)) {
+            return res.status(422).json({
+              success: false,
+              message: `Promo code "${selectedPromo.code}" is only valid for ${c.name}.`,
+            });
+          }
+        }
       }
     }
 

@@ -44,11 +44,13 @@ export const syncCustomerOrderStats = async (customers) => {
       const cEmail = customer.email ? customer.email.toLowerCase().trim() : null;
       const cPhone = customer.phone ? customer.phone.replace(/\D/g, "").slice(-10) : null;
 
+      const isTempUser = !cEmail || cEmail.includes("temp.com") || cEmail.includes("hok.local") || customer.name === "User";
+
       const matchingOrders = orders.filter((order) => {
         if (customerId && order.customerId === customerId) return true;
         if (cIdStr && (order.customerId === cIdStr || String(order.customerId) === cIdStr)) return true;
-        if (cEmail && order.customerEmail && order.customerEmail.toLowerCase().trim() === cEmail) return true;
-        if (cPhone && order.customerPhone) {
+        if (!isTempUser && cEmail && order.customerEmail && order.customerEmail.toLowerCase().trim() === cEmail) return true;
+        if (!isTempUser && cPhone && order.customerPhone) {
           const ordDigits = String(order.customerPhone).replace(/\D/g, "");
           if (cPhone.length >= 10 && ordDigits.endsWith(cPhone)) return true;
         }
@@ -56,7 +58,7 @@ export const syncCustomerOrderStats = async (customers) => {
       });
 
       // Backfill customerId on order if it was unlinked or different
-      if (customerId) {
+      if (customerId && !isTempUser) {
         for (const order of matchingOrders) {
           if (order.customerId !== customerId) {
             order.customerId = customerId;

@@ -26,7 +26,9 @@ const MobileHero = ({ heroData: customHeroData }) => {
   const secondaryButtonLink = data.secondaryCta?.link || "/how-it-works";
 
   const mobileImageUrl =
-    data.mobileImage?.url || data.mobileImage || defaultHeroData.mobileImage;
+    data.mobileImage?.url ||
+    (typeof data.mobileImage === "string" ? data.mobileImage : null) ||
+    defaultHeroData.mobileImage;
   const mobileImageAlt = data.mobileImage?.alt || "House of Kaira Hero";
   const mobileImageFocal = data.mobileImage?.focal?.toLowerCase() || "top";
 

@@ -9,7 +9,7 @@ import Toast from '../ui/Toast';
 import useAuthStore from '../../../store/authStore';
 import "../../../styles/Profile/sections/AccountSettingsSection.css";
 
-const AccountSettingsSection = () => {
+const AccountSettingsSection = ({ deposits = [], onOpenRentalDetail }) => {
   const navigate = useNavigate();
   const { user, token, updateProfile, logout } = useAuthStore();
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
@@ -139,7 +139,9 @@ const AccountSettingsSection = () => {
   };
 
   const handleOpenDetail = (detailId) => {
-    console.log("Open detail:", detailId);
+    if (typeof onOpenRentalDetail === "function" && detailId) {
+      onOpenRentalDetail(detailId);
+    }
   };
 
   const firstName = user?.firstName || (user?.name ? user.name.split(' ')[0] : 'Customer');
@@ -148,6 +150,22 @@ const AccountSettingsSection = () => {
   const email = user?.email || 'customer@houseofkaira.com';
   const mobile = user?.phone || user?.mobile || 'Not provided';
   const city = user?.location || user?.city || 'India';
+
+  const depositRows =
+    Array.isArray(deposits) && deposits.length > 0
+      ? deposits.map((dep) => ({
+          label: dep.piece || "Rental Piece",
+          value: dep.statusText || "REFUNDED",
+          valueClass: dep.valueClass || "profile-account-dpill-p",
+          onClick: () => handleOpenDetail(dep.orderId || dep.id),
+        }))
+      : [
+          {
+            label: "No refund requests yet",
+            value: "NONE",
+            valueClass: "",
+          },
+        ];
 
   const settingsCards = [
     {
@@ -202,20 +220,7 @@ const AccountSettingsSection = () => {
       title: "Deposit Tracker",
       iconType: "terracotta",
       icon: <Wallet size={13} strokeWidth={1.5} />,
-      rows: [
-        { 
-          label: "Ivory Tissue Lehenga", 
-          value: "₹15,000 PENDING", 
-          valueClass: "profile-account-dpill-p",
-          onClick: () => handleOpenDetail("lehenga") 
-        },
-        { 
-          label: "Blush Anarkali Set", 
-          value: "REFUNDED", 
-          valueClass: "profile-account-dpill-r",
-          onClick: () => handleOpenDetail("anarkali") 
-        }
-      ]
+      rows: depositRows,
     }
   ];
 

@@ -334,7 +334,7 @@ export const getWebProducts = async (req, res) => {
         originalPrice: formatPrice(product.originalRetailPrice),
         gender: detectProductGender(product),
         category: product.category || "Uncategorized",
-        occasion: product.occasion || "Festive",
+        occasion: product.occasion || "",
         size: detectProductSizes(product),
         color: detectProductColors(product),
         video: product.video || null,
@@ -386,6 +386,15 @@ export const getWebProducts = async (req, res) => {
 
 export const getFiltersData = async (req, res) => {
   try {
+    if (
+      global.__webFiltersCache &&
+      Date.now() - (global.__webFiltersCacheTime || 0) < 20000
+    ) {
+      return res.status(200).json({
+        success: true,
+        data: global.__webFiltersCache,
+      });
+    }
     const query = { status: { $in: ["Live", "Out of Stock", "Out Of Stock"] } };
     const [products, adminDesigners, adminCategories] = await Promise.all([
       Product.find(query),
@@ -453,14 +462,7 @@ export const getFiltersData = async (req, res) => {
       catCounts[name] = 0;
     });
 
-    const occCounts = {
-      Wedding: 0,
-      Mehendi: 0,
-      Sangeet: 0,
-      Reception: 0,
-      Haldi: 0,
-      Festive: 0,
-    };
+    const occCounts = {};
 
     const desCounts = {};
     designerTemplates.forEach(([name]) => {
@@ -499,18 +501,27 @@ export const getFiltersData = async (req, res) => {
         }
       });
 
-      // 3. Occasion calculation
-      if (product.occasion) {
-        const occStr = product.occasion.toLowerCase();
-        product.occasion.split(",").forEach((o) => occasions.add(o.trim()));
-        if (occStr.includes("wedding")) occCounts["Wedding"]++;
-        if (occStr.includes("mehendi")) occCounts["Mehendi"]++;
-        if (occStr.includes("sangeet")) occCounts["Sangeet"]++;
-        if (occStr.includes("reception")) occCounts["Reception"]++;
-        if (occStr.includes("haldi")) occCounts["Haldi"]++;
-        if (occStr.includes("festive")) occCounts["Festive"]++;
-      } else {
-        occCounts["Festive"]++;
+      // 3. Occasion calculation — strictly from actual product.occasion in DB
+      if (product.occasion && String(product.occasion).trim()) {
+        const seenInProduct = new Set();
+        String(product.occasion)
+          .split(",")
+          .map((o) => o.trim())
+          .filter(Boolean)
+          .forEach((rawOcc) => {
+            const formattedOcc =
+              rawOcc.charAt(0).toUpperCase() + rawOcc.slice(1);
+            const occKey = formattedOcc.toLowerCase();
+            if (!seenInProduct.has(occKey)) {
+              seenInProduct.add(occKey);
+              const existingKey =
+                Object.keys(occCounts).find(
+                  (k) => k.toLowerCase() === occKey,
+                ) || formattedOcc;
+              occCounts[existingKey] = (occCounts[existingKey] || 0) + 1;
+              occasions.add(existingKey);
+            }
+          });
       }
 
       // 4. Designer calculation
@@ -545,12 +556,12 @@ export const getFiltersData = async (req, res) => {
 
     if (minPrice === Infinity) minPrice = 0;
 
-    res.status(200).json({
-      success: true,
-      data: {
+    const filterPayload = {
         gender: genderTemplates.map(([name]) => [name, genderCounts[name] || 0]),
         category: categoryTemplates.map(([name]) => [name, catCounts[name] || 0]),
-        occasion: occasionTemplates.map(([name]) => [name, occCounts[name] || 0]),
+        occasion: Object.entries(occCounts)
+          .filter(([, count]) => count > 0)
+          .sort((a, b) => b[1] - a[1]),
         designer: designerTemplates.map(([name]) => [name, desCounts[name] || 0]),
         occasions: Array.from(occasions).filter(Boolean),
         sizes: Array.from(sizes).filter(Boolean),
@@ -559,7 +570,12 @@ export const getFiltersData = async (req, res) => {
           min: minPrice,
           max: maxPrice,
         },
-      },
+    };
+    global.__webFiltersCache = filterPayload;
+    global.__webFiltersCacheTime = Date.now();
+    res.status(200).json({
+      success: true,
+      data: filterPayload,
     });
   } catch (error) {
     console.error("Error fetching filters data:", error);

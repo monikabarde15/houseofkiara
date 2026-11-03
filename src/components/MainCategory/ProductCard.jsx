@@ -6,6 +6,9 @@ import { navigateToProductDetail } from "../../utils/productNavigation";
 import useWishlistStore from "../../store/wishlistStore";
 import useAuthStore from "../../store/authStore";
 
+const FALLBACK_CARD_IMAGE =
+    "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1792842137/submissions/image/file_h1auyp.jpg";
+
 const ProductCard = ({ item }) => {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuthStore();
@@ -57,41 +60,6 @@ const ProductCard = ({ item }) => {
         navigateToProductDetail(navigate, item);
     };
 
-    // const handleClick = () => {
-    //     const { rent, preloved, isNew, } = item;
-
-    //                 /*
-    //         ⚠️ TEMPORARY FIX:
-    //         Currently we have only static pages like:
-    //         /onlyrental/1, /preloved/1, /buy/1 etc.
-
-    //         But product cards are dynamic (id: 1–30),
-    //         so routes like /onlyrental/20 will break.
-
-    //         👉 For now, always redirect to `/1`
-
-    //         ✅ FUTURE:
-    //         Replace `/1` with `/${item.id}` once dynamic routing
-    //         and product detail pages are implemented, pass id to to the item.
-    //         */
-
-    //     if (rent && preloved) {
-    //         navigate(`/rentalandpreloved/1`);
-    //     }
-    //     else if (rent && isNew) {
-    //         navigate(`/rentalandbuy/1`);
-    //     }
-    //     else if (rent) {
-    //         navigate(`/onlyrental/1`);
-    //     }
-    //     else if (preloved) {
-    //         navigate(`/preloved/1`);
-    //     }
-    //     else {
-    //         navigate(`/product/1`);
-    //     }
-    // };
-
     // dynamic discount
     const discount =
         item.originalPrice && item.buyPrice
@@ -137,7 +105,19 @@ const ProductCard = ({ item }) => {
                 {/* IMAGE AND TEXT(!image))*/}
                 <div className="product-img-inner">
                     {item.image?.[0] ? (
-                        <img src={item.image[0]} alt={item.name} />
+                        <img
+                            src={
+                                String(item.image[0]).includes("sub_1792844248")
+                                    ? FALLBACK_CARD_IMAGE
+                                    : item.image[0]
+                            }
+                            alt={item.name}
+                            onError={(e) => {
+                                if (e.currentTarget.src !== FALLBACK_CARD_IMAGE) {
+                                    e.currentTarget.src = FALLBACK_CARD_IMAGE;
+                                }
+                            }}
+                        />
                     ) : (
                         <span className="product-placeholder">Bridal Lehenga</span>
                     )}

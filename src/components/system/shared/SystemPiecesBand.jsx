@@ -14,9 +14,10 @@ export default function SystemPiecesBand({
   title = "In the same spirit",
   highlightWord = null,
   link = null,
-  pieces = []
+  pieces = [],
+  minPieces = 2,
 }) {
-  if (!pieces || pieces.length < 2) {
+  if (!pieces || pieces.length < minPieces) {
     return null; // Section 5.6 item 4
   }
 

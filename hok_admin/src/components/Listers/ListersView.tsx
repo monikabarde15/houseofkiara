@@ -209,6 +209,17 @@ export const ListersView: React.FC<ListersViewProps> = ({
                       window.dispatchEvent(new Event("refreshListers"));
                       handleBack();
                     } else if (selectedListerId) {
+                      if (listerToSave.name !== undefined && !listerToSave.name.trim()) {
+                        toast.error("Name cannot be empty.");
+                        return;
+                      }
+                      if (listerToSave.phone !== undefined) {
+                        const digits = String(listerToSave.phone).replace(/\D/g, "");
+                        if (!digits || digits.length < 10) {
+                          toast.error("Phone number must contain at least 10 digits.");
+                          return;
+                        }
+                      }
                       const updated = await listerService.updateLister(
                         selectedListerId,
                         listerToSave,

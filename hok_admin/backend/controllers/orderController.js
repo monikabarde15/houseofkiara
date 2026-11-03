@@ -17,6 +17,7 @@ const view = (order) => {
   const obj = order.toObject ? order.toObject() : { ...order };
   const items = Array.isArray(obj.items) ? obj.items : [];
   const firstItem = items[0] || {};
+  const mode = obj.mode || firstItem.mode || "Rental";
 
   const itemsSum = items.reduce((sum, it) => sum + parseAmount(it.amount), 0);
   const itemsDeposit = items.reduce((sum, it) => sum + parseAmount(it.deposit), 0);
@@ -31,11 +32,15 @@ const view = (order) => {
 
   const resolvedOrderValue = parseAmount(obj.orderValue) || itemsSum || rawAmount;
   const resolvedGrandTotal = parseAmount(obj.grandTotal) || rawAmount;
-  const deposit =
+  const rawDeposit =
     parseAmount(obj.deposit) ||
     parseAmount(obj.depositHeld) ||
     itemsDeposit ||
     0;
+  const deposit =
+    rawDeposit > 0
+      ? rawDeposit
+      : (mode === "Rental" ? 10000 : 0);
 
   const productName =
     obj.productName ||
@@ -46,7 +51,6 @@ const view = (order) => {
       : "");
 
   const designer = obj.designer || firstItem.designer || "";
-  const mode = obj.mode || firstItem.mode || "Rental";
   const image = obj.image || firstItem.image || "";
 
   const listerId = obj.listerId || firstItem.listerId || "";
@@ -187,16 +191,24 @@ const calculateItems = async (items) => {
         } catch (e) {}
       }
 
-      if (!resolvedListerId) {
-        resolvedListerId = "simran-chouhan";
-        resolvedListerName = "Simran Chouhan";
+      if (!resolvedListerId || resolvedListerId === "simran-chouhan" || !resolvedListerId.trim()) {
+        resolvedListerId = "ananya-sharma";
+        resolvedListerName = "Ananya Sharma";
       }
-      if (!resolvedListerName) {
+      if (!resolvedListerName || !resolvedListerName.trim()) {
         resolvedListerName =
           resolvedListerId === "ananya-sharma"
             ? "Ananya Sharma"
-            : "Simran Chouhan";
+            : "Ananya Sharma";
       }
+
+      const finalDeposit = parseAmount(
+        input.deposit !== undefined
+          ? input.deposit
+          : (resolvedMode === "Rental"
+              ? (product?.securityDeposit || product?.deposit || product?.data?.securityDeposit || 10000)
+              : 0)
+      );
 
       return {
         ...input,
@@ -208,6 +220,8 @@ const calculateItems = async (items) => {
         size: resolvedSize,
         mode: resolvedMode,
         amount: finalAmount,
+        deposit: finalDeposit,
+        depositHeld: finalDeposit,
         listerId: resolvedListerId,
         listerName: resolvedListerName,
         quantity: Math.max(1, Number(input.quantity || 1)),
@@ -218,7 +232,7 @@ const calculateItems = async (items) => {
   );
 };
 
-const totalsFor = (items, discount = 0) => {
+const totalsFor = (items, discount = 0, currentDepositStatus) => {
   const orderValue = items.reduce(
     (sum, item) => sum + parseAmount(item.amount),
     0,
@@ -245,7 +259,7 @@ const totalsFor = (items, discount = 0) => {
     gst,
     deposit: depositHeld,
     depositHeld,
-    depositStatus: depositHeld > 0 ? "Pending" : "None",
+    depositStatus: (currentDepositStatus || (depositHeld > 0 ? "Pending" : "None")),
     amount: calculatedGrand || orderValue,
     grandTotal: calculatedGrand,
   };
@@ -351,9 +365,10 @@ export const createOrder = async (req, res) => {
     if (!customer && phone) {
       const digits = phone.replace(/\D/g, "");
       if (digits.length >= 10) {
-        customer = await Customer.findOne({
+        const pMatches = await Customer.find({
           phone: new RegExp(digits.slice(-10) + "$"),
         });
+        customer = pMatches.find((c) => c.email && !c.email.includes("temp.com") && c.name !== "User") || pMatches[0];
       }
     }
 
@@ -505,12 +520,17 @@ export const updateOrder = async (req, res) => {
       ? await calculateItems(req.body.items)
       : existing.items;
 
+    const targetDepositStatus = req.body.depositStatus || existing.depositStatus;
+    const calcTotals = req.body.items
+      ? totalsFor(items, req.body.discount ?? existing.discount, targetDepositStatus)
+      : {};
+    if (targetDepositStatus) {
+      calcTotals.depositStatus = targetDepositStatus;
+    }
     const updateData = {
       ...req.body,
       items,
-      ...(req.body.items
-        ? totalsFor(items, req.body.discount ?? existing.discount)
-        : {}),
+      ...calcTotals,
     };
 
     if (customer) {

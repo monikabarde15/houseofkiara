@@ -69,14 +69,11 @@ export const ProfileContactTab: React.FC<ProfileContactTabProps> = ({
   }, [lister, isCreateMode]);
 
   const handleUpdate = (updates: Partial<Lister>) => {
-    setLocalLister((prev) => {
-      const base = prev || defaultBlankLister;
-      const updated = { ...base, ...updates };
-      if (onListerChange) {
-        onListerChange(updated);
-      }
-      return updated;
-    });
+    const updated = { ...(localLister || defaultBlankLister), ...updates };
+    setLocalLister(updated);
+    if (onListerChange) {
+      onListerChange(updated);
+    }
   };
 
   if (!localLister && !isCreateMode) {

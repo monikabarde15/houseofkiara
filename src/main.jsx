@@ -10,6 +10,9 @@ import "./styles/index.css";
 import "./styles/global.css";
 import "./styles/base/buttons.css";
 import { BrowserRouter } from "react-router-dom";
+import { initOfficialClientValidation } from "./utils/officialClientValidation";
+
+initOfficialClientValidation();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

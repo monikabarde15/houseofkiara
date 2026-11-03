@@ -103,7 +103,7 @@ const orderSchema = new mongoose.Schema(
     depositHeld: Number,
     depositStatus: {
       type: String,
-      enum: ["Pending", "Released", "Partially Released", "Forfeited"],
+      enum: ["Pending", "Held", "Collected", "Released", "Partially Released", "Forfeited", "Refunded", "None"],
       default: "Pending",
     },
     grandTotal: Number,

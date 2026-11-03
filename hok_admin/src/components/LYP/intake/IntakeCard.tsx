@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 // src/components/LYP/intake/IntakeCard.tsx
 
 import React, { useState } from "react";
@@ -105,7 +106,12 @@ export const IntakeCard: React.FC<IntakeCardProps> = ({
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const keys = Object.keys(newErrors);
+    if (keys.length > 0) {
+      toast.error(newErrors[keys[0]]);
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async () => {
@@ -135,14 +141,12 @@ export const IntakeCard: React.FC<IntakeCardProps> = ({
         notes: specialNotes,
         media,
       });
+      toast.success("Piece submitted to queue successfully!");
       onSuccess();
-    } catch (error) {
-      setErrors({
-        submit:
-          error instanceof Error
-            ? error.message
-            : "Failed to create submission",
-      });
+    } catch (error: any) {
+      const msg = error instanceof Error ? error.message : "Failed to create submission";
+      toast.error(msg);
+      setErrors({ submit: msg });
     } finally {
       setLoading(false);
     }

@@ -145,7 +145,7 @@ const MobileProfileLayout = () => {
         </div>
 
         <div id="settings" className="profile-mobile-section">
-          <MobileAccountSettingsSection/>
+          <MobileAccountSettingsSection deposits={dashboard?.deposits} />
         </div>
 
         <div id="support" className="profile-mobile-section">

@@ -4,13 +4,21 @@
  */
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useWishlistStore from "../../../store/wishlistStore";
+import {
+  getProductDetailRoute,
+  navigateToProductDetail,
+} from "../../../utils/productNavigation";
 import toast from "react-hot-toast";
 import "../../../styles/system/system-variables.css";
 import "../../../styles/system/system-pieces.css";
 
+const FALLBACK_PIECE_IMAGE =
+  "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1792842137/submissions/image/file_h1auyp.jpg";
+
 export default function SystemProductCard({ piece }) {
+  const navigate = useNavigate();
   const { items: wishlistItems, toggleWishlist } = useWishlistStore();
 
   if (!piece) return null;
@@ -26,19 +34,37 @@ export default function SystemProductCard({ piece }) {
     }
   };
 
-  const productUrl =
-    piece.mode === "preloved"
-      ? `/preloved/${piece.id}`
-      : `/onlyrental/${piece.id}`;
+  const productUrl = piece.rawProduct
+    ? getProductDetailRoute(piece.rawProduct).path
+    : piece.mode === "preloved"
+    ? `/preloved/${piece.id}`
+    : `/onlyrental/${piece.id}`;
+
+  const handleCardNavigation = (e) => {
+    if (piece.rawProduct) {
+      e.preventDefault();
+      navigateToProductDetail(navigate, piece.rawProduct);
+    }
+  };
+
+  const resolvedImage =
+    piece.image && !String(piece.image).includes("sub_1792844248")
+      ? piece.image
+      : FALLBACK_PIECE_IMAGE;
 
   return (
     <article className="sys-card" aria-label={`${piece.name} by ${piece.designer}`}>
-      <Link to={productUrl} className="sys-card-image-wrap">
+      <Link to={productUrl} onClick={handleCardNavigation} className="sys-card-image-wrap">
         <img
-          src={piece.image}
+          src={resolvedImage}
           alt={piece.name}
           className="sys-card-image"
           loading="lazy"
+          onError={(e) => {
+            if (e.currentTarget.src !== FALLBACK_PIECE_IMAGE) {
+              e.currentTarget.src = FALLBACK_PIECE_IMAGE;
+            }
+          }}
         />
 
         {/* Badge C6b, C6c */}
@@ -74,7 +100,7 @@ export default function SystemProductCard({ piece }) {
       <div className="sys-card-designer">{piece.designer}</div>
 
       <h3 className="sys-card-name">
-        <Link to={productUrl} style={{ textDecoration: "none", color: "inherit" }}>
+        <Link to={productUrl} onClick={handleCardNavigation} style={{ textDecoration: "none", color: "inherit" }}>
           {piece.name}
         </Link>
       </h3>

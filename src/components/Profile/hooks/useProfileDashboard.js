@@ -11,6 +11,7 @@ export const useProfileDashboard = () => {
     savedPieces: [],
     listedPieces: [],
     submissions: [],
+    deposits: [],
     addresses: [],
     counts: {
       rentals: 0,
@@ -46,6 +47,7 @@ export const useProfileDashboard = () => {
           savedPieces: result.data.savedPieces || [],
           listedPieces: result.data.listedPieces || [],
           submissions: result.data.submissions || [],
+          deposits: result.data.deposits || [],
           addresses: result.data.addresses || [],
           counts: result.data.counts || {
             rentals: (result.data.rentals || []).length,

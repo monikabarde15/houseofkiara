@@ -4,6 +4,7 @@ import Customer from "../models/Customer.js";
 import Product from "../models/Product.js";
 import Lister from "../models/Lister.js";
 import { parseAmount } from "./orderController.js";
+import { syncPayoutsFromOrders } from "./payoutController.js";
 
 // Helper to create or verify customer
 const getOrCreateCustomer = async (reqBody, headers) => {
@@ -107,6 +108,7 @@ export const createRazorpayOrder = async (req, res) => {
 
     // Default Sandbox / Test Mode (no keys required)
     const simulatedOrderId = `order_test_${Date.now()}`;
+    try { await syncPayoutsFromOrders(); } catch (e) {}
     return res.json({
       success: true,
       orderId: simulatedOrderId,
@@ -187,6 +189,36 @@ export const verifyRazorpayPayment = async (req, res) => {
     const orderId = orderData.orderId || `HOK-ORD-${Date.now()}`;
     const paymentId = razorpay_payment_id || `pay_test_${Date.now()}`;
 
+    const prodId = firstItem.productId || firstItem.id || firstItem._id || orderData.productId;
+    let product = null;
+    if (prodId) {
+      try {
+        product = await Product.findOne({
+          $or: [{ productId: prodId }, { _id: prodId }, { sku: prodId }],
+        });
+      } catch (e) {}
+    }
+
+    const rawDeposit = parseAmount(
+      orderData.deposit ||
+      firstItem.deposit ||
+      (product?.securityDeposit && product.securityDeposit > 0 ? product.securityDeposit : 0) ||
+      (product?.deposit && product.deposit > 0 ? product.deposit : 0) ||
+      (resolvedMode === "Rental" ? 10000 : 0)
+    );
+    const deposit = resolvedMode === "Rental" ? (rawDeposit > 0 ? rawDeposit : 10000) : 0;
+    const depositStatus = deposit > 0 ? (orderData.depositStatus || "Pending") : "None";
+
+    let listerId = orderData.listerId || firstItem.listerId || product?.listerId || "ananya-sharma";
+    let listerName = orderData.listerName || firstItem.listerName || product?.listerName || "Ananya Sharma";
+
+    const enrichedItems = items.map((it) => ({
+      ...it,
+      deposit,
+      listerId,
+      listerName,
+    }));
+
     // Create confirmed order in PostgreSQL database
     const savedOrder = await Order.create({
       ...orderData,
@@ -209,7 +241,12 @@ export const verifyRazorpayPayment = async (req, res) => {
       amount: grandTotal,
       grandTotal: grandTotal,
       orderValue: grandTotal,
-      items,
+      deposit,
+      depositHeld: deposit,
+      depositStatus,
+      listerId,
+      listerName,
+      items: enrichedItems,
       logs: [
         {
           message: `Online payment of ₹${grandTotal.toLocaleString("en-IN")} received via Razorpay (${paymentId})`,

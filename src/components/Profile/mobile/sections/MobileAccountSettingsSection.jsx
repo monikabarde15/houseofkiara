@@ -18,7 +18,7 @@ import useAuthStore from "../../../../store/authStore";
 
 import "../../../../styles/Profile/mobile/sections/MobileAccountSettingsSection.css";
 
-const MobileAccountSettingsSection = () => {
+const MobileAccountSettingsSection = ({ deposits = [] }) => {
   const { user, token, updateProfile } = useAuthStore();
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -121,6 +121,8 @@ const MobileAccountSettingsSection = () => {
     console.log("Open deposit detail:", id);
   };
 
+  const hasDeposits = Array.isArray(deposits) && deposits.length > 0;
+
   return (
     <>
       <section className="profile-mobile-account-section">
@@ -182,7 +184,7 @@ const MobileAccountSettingsSection = () => {
           />
 
           {/* =================================
-            Deposit Tracker
+            Deposit Tracker (Dynamic from DB)
            ================================= */}
 
           <div className="profile-mobile-subsec">
@@ -190,65 +192,54 @@ const MobileAccountSettingsSection = () => {
               Deposit Tracker
             </div>
 
-            {/* Row 1 */}
+            {hasDeposits ? (
+              deposits.map((dep) => {
+                const isRefunded = String(dep.statusText || "")
+                  .toUpperCase()
+                  .includes("REFUNDED");
+                return (
+                  <button
+                    key={dep.orderId || dep.id}
+                    type="button"
+                    className="profile-mobile-deposit-row"
+                    onClick={() =>
+                      handleOpenRentalDetail(dep.orderId || dep.id)
+                    }
+                  >
+                    <div className="profile-mobile-set-icon">
+                      <Wallet size={13} strokeWidth={1.5} />
+                    </div>
 
-            <button
-              type="button"
-              className="profile-mobile-deposit-row"
-              onClick={() =>
-                handleOpenRentalDetail(
-                  "lehenga"
-                )
-              }
-            >
-              <div className="profile-mobile-set-icon">
-                <Wallet
-                  size={13}
-                  strokeWidth={1.5}
-                />
-              </div>
+                    <div className="profile-mobile-deposit-text">
+                      <div className="profile-mobile-deposit-name">
+                        {dep.piece || "Rental Piece"}
+                      </div>
 
-              <div className="profile-mobile-deposit-text">
-                <div className="profile-mobile-deposit-name">
-                  Ivory Tissue
-                  Lehenga
+                      <span
+                        className={
+                          isRefunded
+                            ? "profile-mobile-dpill-r"
+                            : "profile-mobile-dpill-p"
+                        }
+                      >
+                        {dep.statusText || "Pending"}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })
+            ) : (
+              <div className="profile-mobile-deposit-row">
+                <div className="profile-mobile-set-icon">
+                  <Wallet size={13} strokeWidth={1.5} />
                 </div>
-
-                <span className="profile-mobile-dpill-p">
-                  ₹15,000 pending
-                </span>
-              </div>
-            </button>
-
-            {/* Row 2 */}
-
-            <button
-              type="button"
-              className="profile-mobile-deposit-row"
-              onClick={() =>
-                handleOpenRentalDetail(
-                  "anarkali"
-                )
-              }
-            >
-              <div className="profile-mobile-set-icon">
-                <Wallet
-                  size={13}
-                  strokeWidth={1.5}
-                />
-              </div>
-
-              <div className="profile-mobile-deposit-text">
-                <div className="profile-mobile-deposit-name">
-                  Blush Anarkali
-                  Set
+                <div className="profile-mobile-deposit-text">
+                  <div className="profile-mobile-deposit-name">
+                    No refund requests yet
+                  </div>
                 </div>
-
-                <span className="profile-mobile-dpill-r">
-                  Refunded
-                </span>
               </div>
-            </button>
+            )}
           </div>
 
           {/* =================================

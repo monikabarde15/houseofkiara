@@ -13,20 +13,21 @@ import {
 import { withdrawSubmission } from "../controllers/customerProfileController.js";
 
 import upload from "../middleware/upload.js";
+import { officialValidationGuard } from "../middleware/officialValidationGuard.js";
 
 const router = express.Router();
 
 router.get("/", getSubmissions);
 router.get("/assignees", getAssignees);
 router.get("/:id", getSubmission);
-router.post("/", upload.any(), createSubmission);
+router.post("/", upload.any(), officialValidationGuard, createSubmission);
 router.put("/:id", updateSubmission);
 router.put("/:id/decision", updateSubmissionDecision);
 router.put("/:id/more-info", requestMoreInfo);
 router.post("/:id/seen", markSubmissionInfoSeen);
 router.put("/:id/seen", markSubmissionInfoSeen);
-router.post("/:id/reply", upload.any(), replySubmissionInfo);
-router.put("/:id/reply", upload.any(), replySubmissionInfo);
+router.post("/:id/reply", upload.any(), officialValidationGuard, replySubmissionInfo);
+router.put("/:id/reply", upload.any(), officialValidationGuard, replySubmissionInfo);
 router.post("/:id/withdraw", withdrawSubmission);
 router.put("/:id/withdraw", withdrawSubmission);
 

@@ -23,7 +23,7 @@ const Step4 = ({ formData, photos, onBack, setStep, setSubmitted }) => {
 
     setError("");
     setIsSubmitting(true);
-    toast.loading("Piece submit ho raha hai...", { id: "lyp-submit" });
+    toast.loading("Submitting your piece...", { id: "lyp-submit" });
 
     try {
       const formDataToSend = new FormData();
@@ -74,18 +74,9 @@ const Step4 = ({ formData, photos, onBack, setStep, setSubmitted }) => {
       const resData = await response.json();
       console.log("Submission successfully saved:", resData);
 
-      toast.success(resData.message || "Piece save ho gaya hai, submit ho gaya!", {
+      toast.success(resData.message || "Piece saved and submitted successfully!", {
         id: "lyp-submit",
-        duration: 6000,
-        icon: "🎉",
-        style: {
-          background: "#1A2E1A",
-          color: "#E8F5E9",
-          border: "1px solid #4CAF50",
-          fontSize: "14px",
-          fontWeight: "500",
-          padding: "12px 18px",
-        },
+        duration: 5000,
       });
 
       setSubmitted(true);

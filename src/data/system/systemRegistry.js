@@ -5,12 +5,16 @@
 
 export const SYSTEM_DESIGNERS = [
   { id: "sabyasachi", name: "Sabyasachi", path: "/main-page?section=designers&d=sabyasachi", hasLivePieces: true },
+  { id: "sabyasachi-mukherjee", name: "Sabyasachi Mukherjee", path: "/main-page?section=designers&d=sabyasachi", hasLivePieces: true },
+  { id: "neha-tomar", name: "Neha Tomar", path: "/main-page?section=designers&d=neha-tomar", hasLivePieces: true },
   { id: "manish-malhotra", name: "Manish Malhotra", path: "/main-page?section=designers&d=manish-malhotra", hasLivePieces: true },
   { id: "anita-dongre", name: "Anita Dongre", path: "/main-page?section=designers&d=anita-dongre", hasLivePieces: true },
+  { id: "tarun-tahiliani", name: "Tarun Tahiliani", path: "/main-page?section=designers&d=tarun-tahiliani", hasLivePieces: true },
+  { id: "gaurav-gupta", name: "Gaurav Gupta", path: "/main-page?section=designers&d=gaurav-gupta", hasLivePieces: true },
+  { id: "seema-gujral", name: "Seema Gujral", path: "/main-page?section=designers&d=seema-gujral", hasLivePieces: true },
   { id: "torani", name: "Torani", path: "/main-page?section=designers&d=torani", hasLivePieces: true },
   { id: "raw-mango", name: "Raw Mango", path: "/main-page?section=designers&d=raw-mango", hasLivePieces: true },
   { id: "rimzim-dadu", name: "Rimzim Dadu", path: "/main-page?section=designers&d=rimzim-dadu", hasLivePieces: true },
-  { id: "tarun-tahiliani", name: "Tarun Tahiliani", path: "/main-page?section=designers&d=tarun-tahiliani", hasLivePieces: true },
   { id: "rahul-mishra", name: "Rahul Mishra", path: "/main-page?section=designers&d=rahul-mishra", hasLivePieces: false }
 ];
 
@@ -47,7 +51,7 @@ export const SYSTEM_PIECES = [
     status: "withdrawn",
     image: "https://i.pinimg.com/736x/1a/c8/5b/1ac85b6db4980e7279c43ebb569afb3c.jpg"
   },
-  // Live pieces (Section 5.6 & 6)
+  // Fallback live pieces when backend is offline
   {
     id: "hok-sab-003",
     houseNumber: "HOK-SAB-003",
@@ -224,7 +228,6 @@ export const SYSTEM_PIECES = [
     createdOrder: 11,
     image: "https://i.pinimg.com/736x/1a/c8/5b/1ac85b6db4980e7279c43ebb569afb3c.jpg"
   },
-  // Single cape piece (to match screenshot 1: "zardozi cape" -> "Cape 1 PIECE")
   {
     id: "hok-ad-014",
     houseNumber: "HOK-AD-014",
@@ -243,20 +246,129 @@ export const SYSTEM_PIECES = [
   }
 ];
 
+let dynamicBackendPieces = [];
+
+export const mapBackendProductToSystemPiece = (p, idx = 0) => {
+  const rawModes = Array.isArray(p.listingModes)
+    ? p.listingModes.map((m) => String(m).toLowerCase())
+    : [];
+  const isPreloved =
+    p.preloved === true ||
+    String(p.type || "").toLowerCase() === "preloved" ||
+    rawModes.some((m) => m.includes("preloved"));
+  const mode = isPreloved ? "preloved" : "rent";
+
+  const rawPrice =
+    (isPreloved ? p.buyPrice || p.listingPrice : p.rentPrice || p.rentalPrice) ||
+    p.rentPrice ||
+    p.rentalPrice ||
+    p.buyPrice ||
+    p.listingPrice ||
+    p.price ||
+    "14,999";
+  const formattedPrice = String(rawPrice).startsWith("₹")
+    ? String(rawPrice)
+    : `₹${rawPrice}`;
+
+  const firstImage = Array.isArray(p.image)
+    ? p.image[0]
+    : Array.isArray(p.images)
+      ? p.images[0]
+      : p.image || "";
+
+  const designer = p.designer || "House of Kaira";
+  const designerId = String(designer)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const categoryRaw = String(p.category || "lehenga").toLowerCase();
+  const occasionsList = [
+    ...(Array.isArray(p.occasion)
+      ? p.occasion
+      : p.occasion
+      ? String(p.occasion).split(",")
+      : []),
+    ...(Array.isArray(p.occasions) ? p.occasions : []),
+    ...(Array.isArray(p.color) ? p.color : p.color ? [p.color] : []),
+  ]
+    .map((o) => String(o).trim().toLowerCase())
+    .filter(Boolean);
+
+  return {
+    id: p._id || p.id || p.productId || p.sku || `live-${idx}`,
+    houseNumber: p.productId || p.id || p.sku || `HOK-${idx + 1}`,
+    slug: String(p.name || p.title || `piece-${idx}`)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, ""),
+    name: p.name || p.title || "Designer Piece",
+    designer,
+    designerId,
+    category: categoryRaw,
+    occasions: occasionsList,
+    mode,
+    price: formattedPrice,
+    window: mode === "rent" ? "for 3 days" : null,
+    status: "live",
+    createdOrder: idx + 1,
+    image: typeof firstImage === "string" ? firstImage : firstImage?.url || "",
+    rawProduct: p,
+  };
+};
+
+export const setDynamicBackendPieces = (rawProducts = []) => {
+  if (!Array.isArray(rawProducts) || rawProducts.length === 0) return [];
+  dynamicBackendPieces = rawProducts.map((p, idx) =>
+    mapBackendProductToSystemPiece(p, idx)
+  );
+  return dynamicBackendPieces;
+};
+
+export const fetchAndSyncLivePieces = async () => {
+  const backendUrl =
+    (typeof import.meta !== "undefined" &&
+      import.meta.env &&
+      import.meta.env.VITE_BACKEND_URL) ||
+    "";
+  const urlsToTry = backendUrl
+    ? [`${backendUrl}/api/web-products`, "/api/web-products"]
+    : ["/api/web-products", "http://localhost:5003/api/web-products"];
+
+  for (const url of urlsToTry) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const json = await res.json();
+      if (json?.success && Array.isArray(json.data) && json.data.length > 0) {
+        return setDynamicBackendPieces(json.data);
+      }
+    } catch {
+      // try next url
+    }
+  }
+  return dynamicBackendPieces;
+};
+
 export const getLivePieces = () => {
+  if (dynamicBackendPieces.length > 0) {
+    return dynamicBackendPieces;
+  }
   return SYSTEM_PIECES.filter((p) => p.status === "live");
 };
 
 export const findPieceBySlugOrHouseNumber = (identifier) => {
   if (!identifier) return null;
   const clean = String(identifier).trim().toLowerCase();
+  const pool = [...dynamicBackendPieces, ...SYSTEM_PIECES];
   return (
-    SYSTEM_PIECES.find(
+    pool.find(
       (p) =>
-        p.houseNumber.toLowerCase() === clean ||
-        p.slug.toLowerCase() === clean ||
-        clean.includes(p.houseNumber.toLowerCase()) ||
-        clean.includes(p.slug.toLowerCase())
+        String(p.id || "").toLowerCase() === clean ||
+        String(p.houseNumber || "").toLowerCase() === clean ||
+        String(p.slug || "").toLowerCase() === clean ||
+        clean.includes(String(p.houseNumber || "").toLowerCase()) ||
+        clean.includes(String(p.slug || "").toLowerCase())
     ) || null
   );
 };
@@ -271,7 +383,11 @@ export const getPiecesByDesigner = (designerName, excludeSlug = null) => {
 export const getPiecesByCategory = (categoryName, excludeSlug = null) => {
   const norm = String(categoryName).trim().toLowerCase();
   return getLivePieces().filter(
-    (p) => p.category.toLowerCase() === norm && (!excludeSlug || p.slug !== excludeSlug)
+    (p) =>
+      (p.category.toLowerCase() === norm ||
+        p.category.toLowerCase().includes(norm) ||
+        norm.includes(p.category.toLowerCase())) &&
+      (!excludeSlug || p.slug !== excludeSlug)
   );
 };
 

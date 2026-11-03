@@ -160,7 +160,10 @@ const RightColumn = ({ dashboard }) => {
             countLabel=""
             linkText=""
           />
-          <AccountSettingsSection />
+          <AccountSettingsSection
+            deposits={dashboard?.deposits}
+            onOpenRentalDetail={(orderId) => setOpenRentalDetailId(orderId)}
+          />
 
           {/* Help & Support Section */}
           <SectionLabel

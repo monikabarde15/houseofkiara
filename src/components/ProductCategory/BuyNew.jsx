@@ -1,3 +1,4 @@
+import PageNotFound from "../../pages/PageNotFound";
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Heart, Star, Truck, Shield, User, Box, Plus, X } from "lucide-react";
@@ -134,7 +135,7 @@ export default function BuyNew() {
     return <h2 style={{ padding: 40 }}>Loading product...</h2>;
   }
 
-  if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
+  if (!product) return <PageNotFound />;
 
   const toggle = (key) => {
     setOpenSections((prev) => {
@@ -217,7 +218,7 @@ Hi,
 I am interested in this product:
 
 Product: ${product.title || product.name || "None"}
-Designer: ${product.designer || "None"}
+Designer: ${product.designer || "Designer Atelier"}
 Price: ${price}
 Size: ${selectedSize || "Not Selected"}
 Color: ${selectedColor || "Not Selected"}
@@ -245,7 +246,7 @@ Product ID: ${product.id || product._id || ""}
             <span className="sep">›</span>
             <span className="crumb">{product.category || "None"}</span>
             <span className="sep">›</span>
-            <span className="crumb">{product.designer || "None"}</span>
+            <span className="crumb">{product.designer || "Designer Atelier"}</span>
             <span className="sep">›</span>
             <span className="crumb current">
               {product.title || product.name || "None"}
@@ -288,7 +289,7 @@ Product ID: ${product.id || product._id || ""}
 
 
               <p className="buynew-designer-name">
-                {product.designer || "None"}
+                {product.designer || "Designer Atelier"}
               </p>
 
               <h1 className="buynew-product-title">
@@ -495,7 +496,7 @@ Product ID: ${product.id || product._id || ""}
                       <div className="buynew-pdp-grid">
 
                         <div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Designer</span><p>{product.designer || "None"}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Designer</span><p>{product.designer || "Designer Atelier"}</p></div>
                           <div className="buynew-pdp-row"><span className="buynew-pdp-label">Fabric</span><p>{product.details?.fabric || product.fabric || "None"}</p></div>
                           <div className="buynew-pdp-row"><span className="buynew-pdp-label">Craft Technique</span><p>{product.details?.technique || product.craftTechnique || "None"}</p></div>
                           <div className="buynew-pdp-row"><span className="buynew-pdp-label">Includes</span><p>{product.details?.includes || product.includes || "None"}</p></div>
@@ -503,11 +504,11 @@ Product ID: ${product.id || product._id || ""}
                         </div>
 
                         <div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Category</span><p>{product.category || product.subTitle || "None"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Colour</span><p>{product.details?.color || product.color || "None"}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Category</span><p>{product.category || product.subTitle || "Luxury Couture"}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Colour</span><p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p></div>
                           <div className="buynew-pdp-row"><span className="buynew-pdp-label">Thread</span><p>{product.details?.thread || product.thread || "None"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "None"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "None"}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p></div>
+                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "Lucknow, India"}</p></div>
                         </div>
 
                       </div>

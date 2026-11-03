@@ -15,6 +15,7 @@ import WidenNotice from "../components/system/shared/WidenNotice";
 import SystemPiecesBand from "../components/system/shared/SystemPiecesBand";
 import { SystemQueryLink } from "../components/system/shared/SystemButtons";
 import { TRENDING_SEARCHES } from "../data/system/systemVocabulary";
+import { fetchAndSyncLivePieces } from "../data/system/systemRegistry";
 import {
   executeSearch,
   analyzeNoResultsState,
@@ -28,9 +29,22 @@ export default function NoSearchResultsPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const headingRef = useRef(null);
+  const [syncVersion, setSyncVersion] = useState(0);
 
   const rawQuery = searchParams.get("q") || "";
   const urlMode = searchParams.get("mode") || null;
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchAndSyncLivePieces().then((pieces) => {
+      if (isMounted && Array.isArray(pieces) && pieces.length > 0) {
+        setSyncVersion((v) => v + 1);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Collapse spaces and trim
   const cleanQ = useMemo(() => {
@@ -49,13 +63,13 @@ export default function NoSearchResultsPage() {
   const liveResults = useMemo(() => {
     if (!cleanQ) return [];
     return executeSearch(cleanQ, urlMode);
-  }, [cleanQ, urlMode]);
+  }, [cleanQ, urlMode, syncVersion]);
 
   // Analyze the 0-results state
   const stateAnalysis = useMemo(() => {
     if (liveResults.length > 0) return null;
     return analyzeNoResultsState(cleanQ, urlMode);
-  }, [cleanQ, urlMode, liveResults.length]);
+  }, [cleanQ, urlMode, liveResults.length, syncVersion]);
 
   // Check for Did You Mean suggestion (Section 6.6)
   const didYouMean = useMemo(() => {
@@ -69,7 +83,9 @@ export default function NoSearchResultsPage() {
   useEffect(() => {
     const displayQuery = cleanQ.length > 60 ? cleanQ.slice(0, 60) + "…" : cleanQ;
 
-    if (stateAnalysis?.state === "designer_empty" && stateAnalysis.designer) {
+    if (liveResults.length > 0) {
+      document.title = `Pieces matching “${displayQuery}” · House of Kaira`;
+    } else if (stateAnalysis?.state === "designer_empty" && stateAnalysis.designer) {
       document.title = `Nothing by ${stateAnalysis.designer.name} right now · House of Kaira`;
     } else {
       document.title = `No results for “${displayQuery}” · House of Kaira`;
@@ -89,7 +105,7 @@ export default function NoSearchResultsPage() {
         robotsMeta.content = "index, follow";
       }
     };
-  }, [cleanQ, stateAnalysis]);
+  }, [cleanQ, stateAnalysis, liveResults.length]);
 
   // Reset scroll and focus heading on new search (Section 6.7)
   useEffect(() => {
@@ -130,6 +146,7 @@ export default function NoSearchResultsPage() {
           eyebrow="Results"
           title={`Pieces for “${cleanQ}”`}
           pieces={liveResults}
+          minPieces={1}
         />
 
         <SystemConciergeBand

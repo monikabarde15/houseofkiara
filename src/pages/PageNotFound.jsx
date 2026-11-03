@@ -20,6 +20,7 @@ import {
   analyze404Url,
   select404PiecesBand
 } from "../utils/system/urlParser404";
+import { formatProductDetail, parsePrice } from "../utils/productNavigation";
 import "../styles/system/system-variables.css";
 import "../styles/system/system-hero.css";
 
@@ -27,6 +28,7 @@ export default function PageNotFound() {
   const location = useLocation();
   const navigate = useNavigate();
   const [hasInternalReferrer, setHasInternalReferrer] = useState(false);
+  const [livePieces, setLivePieces] = useState([]);
 
   // Check if visitor arrived from another page on this site
   useEffect(() => {
@@ -39,14 +41,80 @@ export default function PageNotFound() {
     }
   }, []);
 
-  // Analyze URL to determine if it is a sold piece, gone piece, or general 404
+  // 1. Analyze URL to determine if it is a sold piece, gone piece, or general 404
   const analysis = useMemo(() => {
     return analyze404Url(location.pathname);
   }, [location.pathname]);
 
-  // Select 4 pieces for S5 pieces band
+  // 2. Select 4 pieces for S5 pieces band (static fallback)
   const piecesBandData = useMemo(() => {
     return select404PiecesBand(analysis);
+  }, [analysis]);
+
+  // 3. Fetch real live products from API for the bottom pieces band
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLiveProducts = async () => {
+      try {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
+        const res = await fetch(`${backendUrl}/api/web-products`);
+        if (!res.ok) return;
+        const json = await res.json();
+        const list = Array.isArray(json?.data) ? json.data : [];
+        if (list.length === 0 || !isMounted) return;
+
+        let candidates = list;
+        const words = (analysis?.extractedWords || []).map((w) => String(w).toLowerCase());
+        if (words.length > 0) {
+          const matched = list.filter((p) => {
+            const str = `${p.name || ""} ${p.designer || ""} ${p.category || ""}`.toLowerCase();
+            return words.some((w) => str.includes(w));
+          });
+          if (matched.length >= 2) {
+            candidates = matched;
+          }
+        }
+
+        const formatted = candidates.slice(0, 4).map((p) => {
+          const raw = formatProductDetail(p);
+          const isPrelovedOnly = raw.preloved && !raw.rent;
+          const priceNum = parsePrice(
+            isPrelovedOnly
+              ? raw.buyPrice || raw.listingPrice || raw.price
+              : raw.rentPrice || raw.rentalPrice || raw.price
+          );
+
+          const firstImg =
+            Array.isArray(raw.images) && raw.images.length > 0
+              ? raw.images[0]
+              : Array.isArray(raw.image) && raw.image.length > 0
+              ? raw.image[0]
+              : raw.image;
+
+          return {
+            id: raw.id || raw._id,
+            name: raw.name || raw.title || "Designer Piece",
+            designer: raw.designer || "House of Kaira",
+            image: firstImg,
+            mode: isPrelovedOnly ? "preloved" : "rent",
+            price: `₹${(priceNum || 0).toLocaleString("en-IN")}`,
+            window: isPrelovedOnly ? "" : "for 3 days",
+            rawProduct: raw,
+          };
+        });
+
+        if (isMounted && formatted.length > 0) {
+          setLivePieces(formatted);
+        }
+      } catch (err) {
+        console.warn("Could not load real products for 404 pieces band:", err);
+      }
+    };
+
+    fetchLiveProducts();
+    return () => {
+      isMounted = false;
+    };
   }, [analysis]);
 
   // Page title & noindex meta tag (Section 5.2)
@@ -163,13 +231,13 @@ export default function PageNotFound() {
         </InvitationFrame>
       </section>
 
-      {/* S5 Pieces Band (Section 5.6) */}
-      {piecesBandData && (
+      {/* S5 Pieces Band (Section 5.6 - Real Live API Products with Static Fallback) */}
+      {(livePieces.length >= 2 || piecesBandData) && (
         <SystemPiecesBand
-          eyebrow={piecesBandData.eyebrow}
-          title={piecesBandData.title}
-          link={piecesBandData.link}
-          pieces={piecesBandData.pieces}
+          eyebrow={piecesBandData?.eyebrow || "Just arrived"}
+          title={piecesBandData?.title || "New to the house"}
+          link={piecesBandData?.link || { label: "All new arrivals", href: "/main-page?section=new" }}
+          pieces={livePieces.length >= 2 ? livePieces : (piecesBandData?.pieces || [])}
         />
       )}
 

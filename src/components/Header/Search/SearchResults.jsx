@@ -5,6 +5,7 @@ const SearchResults = ({
   query,
   results,
   viewFullCollection,
+  closeSearch,
 }) => {
   if (!results || results.length === 0) {
     return null;
@@ -42,6 +43,7 @@ const SearchResults = ({
               <SearchResultCard
                 key={item.id}
                 item={item}
+                closeSearch={closeSearch}
               />
             ))}
         </div>

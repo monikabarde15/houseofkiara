@@ -80,6 +80,9 @@ export default function DispatchView({
       d.setDate(d.getDate() - 2);
       return d.toISOString().split("T")[0];
     }
+    if (order.createdAt) {
+      return new Date(order.createdAt).toISOString().split("T")[0];
+    }
     return "";
   };
 

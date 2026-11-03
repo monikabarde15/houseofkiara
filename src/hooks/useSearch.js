@@ -1,13 +1,76 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { designerPageMap } from "../data/designerMap";
-import { products, searchCatalogue } from "../data/searchData";
+import {
+  products as staticSearchProducts,
+  searchCatalogue as staticSearchCatalogue,
+  trendingSearches as staticTrendingSearches,
+} from "../data/searchData";
+import { SPELLING_VARIANTS, SMALL_WORDS_IGNORED } from "../data/system/systemVocabulary";
+import {
+  SYSTEM_DESIGNERS,
+  setDynamicBackendPieces,
+} from "../data/system/systemRegistry";
+
+const IMAGE_CLASSES = ["ci-a", "ci-b", "ci-c", "ci-d", "ci-e", "ci-f"];
+
+const STOP_WORDS = new Set([
+  ...(SMALL_WORDS_IGNORED || []),
+  "set",
+  "sets",
+  "&",
+]);
+
+const normalizeQueryTokens = (rawValue) => {
+  if (!rawValue) return [];
+  const cleaned = String(rawValue)
+    .toLowerCase()
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .trim();
+  if (!cleaned) return [];
+
+  const tokens = [];
+  for (const word of cleaned.split(/\s+/)) {
+    if (!word) continue;
+    const mapped = SPELLING_VARIANTS[word] || word;
+    for (const part of String(mapped).split(/\s+/)) {
+      if (part && !STOP_WORDS.has(part)) {
+        tokens.push(part);
+      }
+    }
+  }
+  return tokens.length > 0 ? tokens : cleaned.split(/\s+/).filter(Boolean);
+};
+
+const fetchBackendJson = async (endpoint) => {
+  const envUrl =
+    (typeof import.meta !== "undefined" &&
+      import.meta.env &&
+      import.meta.env.VITE_BACKEND_URL) ||
+    "";
+  const urls = envUrl
+    ? [`${envUrl}${endpoint}`, endpoint]
+    : [endpoint, `http://localhost:5003${endpoint}`];
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const json = await res.json();
+      if (json?.success) return json;
+    } catch {
+      // try next url
+    }
+  }
+  return null;
+};
 
 export const useSearch = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  const [query, setQuery] = useState("");
+  const [query, setQueryState] = useState("");
 
   const [results, setResults] = useState([]);
 
@@ -17,61 +80,328 @@ export const useSearch = () => {
 
   const [showResults, setShowResults] = useState(false);
 
+  const [liveProducts, setLiveProducts] = useState([]);
+  const [liveFilters, setLiveFilters] = useState(null);
+
   const focusTimerRef = useRef(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    Promise.all([
+      fetchBackendJson("/api/web-products"),
+      fetchBackendJson("/api/web-products/filters"),
+    ]).then(([productsJson, filtersJson]) => {
+      if (!isMounted) return;
+
+      if (filtersJson?.data) {
+        setLiveFilters(filtersJson.data);
+      }
+
+      if (Array.isArray(productsJson?.data) && productsJson.data.length > 0) {
+        setDynamicBackendPieces(productsJson.data);
+
+        const mapped = productsJson.data.map((p, idx) => {
+          const rawModes = Array.isArray(p.listingModes)
+            ? p.listingModes.map((m) => String(m).toLowerCase())
+            : [];
+          const isPreloved =
+            p.preloved === true ||
+            String(p.type || "").toLowerCase() === "preloved" ||
+            rawModes.some((m) => m.includes("preloved"));
+          const isRent =
+            p.rent === true ||
+            String(p.type || "").toLowerCase() === "rent" ||
+            rawModes.some((m) => m.includes("rent"));
+
+          const modeLabel = isPreloved
+            ? "Preloved"
+            : isRent
+            ? "Rent"
+            : "New";
+
+          const rawPrice =
+            (isPreloved ? p.buyPrice || p.listingPrice : p.rentPrice || p.rentalPrice) ||
+            p.rentPrice ||
+            p.rentalPrice ||
+            p.buyPrice ||
+            p.listingPrice ||
+            p.price ||
+            "14,999";
+          const formattedPrice = String(rawPrice).startsWith("₹")
+            ? String(rawPrice)
+            : `₹${rawPrice}`;
+
+          const firstImage = Array.isArray(p.image)
+            ? p.image[0]
+            : Array.isArray(p.images)
+            ? p.images[0]
+            : p.image || "";
+
+          const rawCat = String(p.category || "").toLowerCase();
+          const rawOcc = String(p.occasion || "").toLowerCase();
+          const extraSynonyms = [];
+          if (rawCat.includes("bridal") || rawCat.includes("lehenga")) {
+            extraSynonyms.push("bridal", "lehenga", "lehengas", "wedding");
+          }
+          if (rawCat.includes("anarkali")) {
+            extraSynonyms.push("anarkali", "anarkalis");
+          }
+          if (rawCat.includes("saree")) {
+            extraSynonyms.push("saree", "sarees", "sari", "cocktail");
+          }
+          if (rawCat.includes("sharara")) {
+            extraSynonyms.push("sharara", "shararas", "mehendi", "sangeet");
+          }
+          if (rawCat.includes("bandhgala") || rawCat.includes("sherwani")) {
+            extraSynonyms.push("bandhgala", "sherwani", "sherwanis", "men", "menswear");
+          }
+          if (rawCat.includes("gown") || rawCat.includes("indo")) {
+            extraSynonyms.push("gown", "gowns", "indo-western", "indowestern", "cocktail", "reception");
+          }
+          if (modeLabel === "Rent") {
+            extraSynonyms.push("rent", "rental", "rentals");
+          } else if (modeLabel === "Preloved") {
+            extraSynonyms.push("preloved", "resale", "preowned");
+          } else {
+            extraSynonyms.push("new", "buy");
+          }
+
+          return {
+            id: p._id || p.id || p.productId || p.sku || `live-${idx}`,
+            type: "product",
+            designer: p.designer || "House of Kaira",
+            label: p.name || p.title || "Designer Piece",
+            price: formattedPrice,
+            mode: modeLabel,
+            imageClass: IMAGE_CLASSES[idx % IMAGE_CLASSES.length],
+            image: typeof firstImage === "string" ? firstImage : firstImage?.url || "",
+            tags: [
+              rawCat,
+              rawOcc,
+              String(p.gender || "").toLowerCase(),
+              ...(Array.isArray(p.color) ? p.color : p.color ? [p.color] : []),
+              ...extraSynonyms,
+            ]
+              .join(" ")
+              .toLowerCase()
+              .split(/\s+/)
+              .filter(Boolean),
+            rawProduct: p,
+          };
+        });
+
+        setLiveProducts(mapped);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Use real backend products when loaded; fallback to static only if backend is unavailable
+  const allProducts = useMemo(() => {
+    if (liveProducts.length > 0) {
+      return liveProducts;
+    }
+    return staticSearchProducts;
+  }, [liveProducts]);
+
+  // Build dynamic suggestions catalogue from live backend products & filters
+  const fullCatalogue = useMemo(() => {
+    if (liveProducts.length === 0) {
+      return staticSearchCatalogue;
+    }
+
+    const dynamicCategoriesMap = new Map();
+    const dynamicOccasionsMap = new Map();
+    const dynamicDesignersMap = new Map();
+
+    liveProducts.forEach((lp) => {
+      const rawCat = lp.rawProduct?.category;
+      if (rawCat && !dynamicCategoriesMap.has(rawCat.toLowerCase())) {
+        dynamicCategoriesMap.set(rawCat.toLowerCase(), {
+          type: "category",
+          label: rawCat,
+          tags: [rawCat.toLowerCase(), ...lp.tags],
+        });
+      }
+
+      const rawOcc = lp.rawProduct?.occasion;
+      if (rawOcc && !dynamicOccasionsMap.has(rawOcc.toLowerCase())) {
+        dynamicOccasionsMap.set(rawOcc.toLowerCase(), {
+          type: "occasion",
+          label: rawOcc,
+          tags: [rawOcc.toLowerCase(), "occasion", "event"],
+        });
+      }
+
+      if (lp.designer && !dynamicDesignersMap.has(lp.designer.toLowerCase())) {
+        dynamicDesignersMap.set(lp.designer.toLowerCase(), {
+          type: "category",
+          label: lp.designer,
+          tags: [lp.designer.toLowerCase(), "designer"],
+        });
+      }
+    });
+
+    if (Array.isArray(liveFilters?.category)) {
+      liveFilters.category.forEach(([catName, count]) => {
+        if (catName && count > 0 && !dynamicCategoriesMap.has(catName.toLowerCase())) {
+          dynamicCategoriesMap.set(catName.toLowerCase(), {
+            type: "category",
+            label: catName,
+            tags: [catName.toLowerCase()],
+          });
+        }
+      });
+    }
+
+    if (Array.isArray(liveFilters?.occasion)) {
+      liveFilters.occasion.forEach(([occName, count]) => {
+        if (occName && count > 0 && !dynamicOccasionsMap.has(occName.toLowerCase())) {
+          dynamicOccasionsMap.set(occName.toLowerCase(), {
+            type: "occasion",
+            label: occName,
+            tags: [occName.toLowerCase(), "occasion"],
+          });
+        }
+      });
+    }
+
+    const dynamicModes = [
+      { type: "mode", label: "Rent", tags: ["rent", "rental", "rentals"] },
+      { type: "mode", label: "Preloved", tags: ["preloved", "resale", "secondhand"] },
+      { type: "mode", label: "New", tags: ["new", "buy", "fresh"] },
+    ];
+
+    return [
+      ...liveProducts,
+      ...Array.from(dynamicCategoriesMap.values()),
+      ...Array.from(dynamicOccasionsMap.values()),
+      ...Array.from(dynamicDesignersMap.values()),
+      ...dynamicModes,
+    ];
+  }, [liveProducts, liveFilters]);
+
+  // Dynamic Trending Now pills generated from live backend products & filters
+  const trendingSearches = useMemo(() => {
+    if (liveProducts.length === 0) {
+      return staticTrendingSearches;
+    }
+
+    const pills = [];
+    const addPill = (val) => {
+      if (!val) return;
+      const clean = String(val).trim();
+      if (
+        clean &&
+        clean.toLowerCase() !== "other designers" &&
+        clean.toLowerCase() !== "designer atelier" &&
+        !pills.some((p) => p.toLowerCase() === clean.toLowerCase())
+      ) {
+        pills.push(clean);
+      }
+    };
+
+    // 1. Top live categories with count > 0
+    if (Array.isArray(liveFilters?.category)) {
+      liveFilters.category
+        .filter(([, count]) => count > 0)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .forEach(([catName]) => addPill(catName));
+    }
+
+    // 2. Top live designers from backend products
+    const designerCounts = new Map();
+    liveProducts.forEach((lp) => {
+      if (lp.designer) {
+        designerCounts.set(lp.designer, (designerCounts.get(lp.designer) || 0) + 1);
+      }
+    });
+    Array.from(designerCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .forEach(([designerName]) => addPill(designerName));
+
+    // 3. Remaining distinct categories/occasions from live products
+    liveProducts.forEach((lp) => {
+      if (pills.length < 8 && lp.rawProduct?.category) {
+        addPill(lp.rawProduct.category);
+      }
+      if (pills.length < 8 && lp.rawProduct?.occasion) {
+        addPill(lp.rawProduct.occasion);
+      }
+    });
+
+    return pills.slice(0, 8);
+  }, [liveProducts, liveFilters]);
+
+  const setQuery = (value) => {
+    setQueryState(value);
+    setShowResults(false);
+    setHighlightedIndex(-1);
+  };
 
   /* ==========================
      SCORING
   ========================== */
 
   const scoreItem = (item, value) => {
-    if (!value) return 0;
+    if (!value || !String(value).trim()) return 0;
 
-    const query = value.toLowerCase();
+    const cleanQuery = String(value).toLowerCase().trim();
+
+    // Check if query explicitly targets a designer with no live pieces (e.g. Rahul Mishra)
+    const emptyDesigner = SYSTEM_DESIGNERS.find(
+      (d) =>
+        !d.hasLivePieces &&
+        cleanQuery.includes(d.name.toLowerCase()),
+    );
+    if (emptyDesigner) {
+      return 0;
+    }
 
     const label = item.label?.toLowerCase() || "";
-
     const designer = item.designer?.toLowerCase() || "";
-
+    const mode = item.mode?.toLowerCase() || "";
     const tags = (item.tags || []).join(" ").toLowerCase();
+    const searchable = `${label} ${designer} ${mode} ${tags}`;
 
-    if (label === query || designer === query) {
+    if (label === cleanQuery || designer === cleanQuery || mode === cleanQuery) {
       return 150;
     }
 
-    if (label.startsWith(query)) {
+    if (label.startsWith(cleanQuery)) {
       return 100;
     }
 
-    if (designer.startsWith(query)) {
+    if (designer.startsWith(cleanQuery)) {
       return 95;
     }
 
-    if (label.includes(query)) {
+    if (label.includes(cleanQuery)) {
       return 75;
     }
 
-    if (designer.includes(query)) {
+    if (designer.includes(cleanQuery)) {
       return 70;
     }
 
-    const words = query.split(" ");
+    const words = normalizeQueryTokens(cleanQuery);
+    if (words.length === 0) return 0;
 
-    const allMatch = words.every(
-      (word) =>
-        label.includes(word) || designer.includes(word) || tags.includes(word),
-    );
+    const allMatch = words.every((word) => searchable.includes(word));
 
     if (allMatch) {
       return 50;
     }
 
-    const anyMatch = words.some(
-      (word) =>
-        label.includes(word) || designer.includes(word) || tags.includes(word),
-    );
-
-    if (anyMatch) {
-      return 25;
+    const matchedWordsCount = words.filter((word) => searchable.includes(word)).length;
+    if (matchedWordsCount > 0) {
+      return 25 * matchedWordsCount;
     }
 
     return 0;
@@ -82,7 +412,7 @@ export const useSearch = () => {
   ========================== */
 
   const generateSuggestions = (value) => {
-    const matches = searchCatalogue
+    const matches = fullCatalogue
       .map((item) => ({
         ...item,
         score: scoreItem(item, value),
@@ -110,10 +440,15 @@ export const useSearch = () => {
   ========================== */
 
   const runSearch = (value) => {
-    const matches = products
+    const searchVal = value !== undefined ? value : query;
+    if (value !== undefined) {
+      setQueryState(value);
+    }
+
+    const matches = allProducts
       .map((item) => ({
         ...item,
-        score: scoreItem(item, value),
+        score: scoreItem(item, searchVal),
       }))
       .filter((item) => item.score > 0)
       .sort((a, b) => b.score - a.score)
@@ -121,13 +456,13 @@ export const useSearch = () => {
 
     setResults(matches);
     setShowResults(true);
+    setHighlightedIndex(-1);
   };
 
   const selectSuggestion = (suggestion) => {
-    setQuery(suggestion.label);
-
+    if (!suggestion) return;
+    setQueryState(suggestion.label);
     runSearch(suggestion.label);
-
     setHighlightedIndex(-1);
   };
 
@@ -150,7 +485,7 @@ export const useSearch = () => {
 
     document.body.style.overflow = "";
 
-    setQuery("");
+    setQueryState("");
     setSuggestions([]);
     setResults([]);
 
@@ -168,22 +503,22 @@ export const useSearch = () => {
   ========================== */
 
   const detectDesigner = (value) => {
-    const query = value.toLowerCase();
+    const q = value.toLowerCase();
 
     return Object.keys(designerPageMap).find((designer) =>
-      query.includes(designer),
+      q.includes(designer),
     );
   };
 
   const detectMode = (value) => {
-    const query = value.toLowerCase();
+    const q = value.toLowerCase();
 
-    if (query.includes("rent")) return "rent";
+    if (q.includes("rent")) return "rent";
 
-    if (query.includes("preloved") || query.includes("pre-loved"))
+    if (q.includes("preloved") || q.includes("pre-loved"))
       return "preloved";
 
-    if (query.includes("new")) return "new";
+    if (q.includes("new")) return "new";
 
     return "all";
   };
@@ -212,7 +547,7 @@ export const useSearch = () => {
     }, 120);
 
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, fullCatalogue]);
 
   /* ==========================
      KEYBOARD NAVIGATION
@@ -227,8 +562,9 @@ export const useSearch = () => {
         return;
       }
 
-      if (suggestions.length === 0) {
-        if (event.key === "Enter") {
+      if (suggestions.length === 0 || showResults) {
+        if (event.key === "Enter" && query.trim()) {
+          event.preventDefault();
           runSearch(query);
         }
         return;
@@ -253,9 +589,9 @@ export const useSearch = () => {
       if (event.key === "Enter") {
         event.preventDefault();
 
-        if (highlightedIndex >= 0) {
+        if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
           selectSuggestion(suggestions[highlightedIndex]);
-        } else {
+        } else if (query.trim()) {
           runSearch(query);
         }
       }
@@ -264,7 +600,7 @@ export const useSearch = () => {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, query, suggestions, highlightedIndex]);
+  }, [isOpen, query, suggestions, highlightedIndex, showResults]);
 
   /* ==========================
      HOTKEYS
@@ -305,6 +641,7 @@ export const useSearch = () => {
     suggestions,
     highlightedIndex,
     showResults,
+    trendingSearches,
 
     setQuery,
     setHighlightedIndex,

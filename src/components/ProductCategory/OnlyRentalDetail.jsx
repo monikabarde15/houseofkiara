@@ -1,3 +1,4 @@
+import PageNotFound from "../../pages/PageNotFound";
 // src\components\OnlyRentalDetail.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -203,7 +204,7 @@ export default function RentalProductDetail() {
   const grade = product?.condition?.grade || "pristine";
 
   if (loading) return <div style={{ padding: 60, textAlign: "center", fontFamily: "Cinzel, serif" }}>Loading rental details...</div>;
-  if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
+  if (!product) return <PageNotFound />;
 
   const formatDate = (date) => {
     const y = date.getFullYear();
@@ -591,19 +592,19 @@ Product ID: ${product.id}
                         <div className="rental-pdp-grid">
 
                           <div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Designer</span><p>{product.designer || "None"}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Fabric</span><p>{product.details?.fabric || product.material || "None"}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Craft Technique</span><p>{product.details?.technique || product.technique || product.embellishments || "None"}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Includes</span><p>{product.details?.includes || product.setIncludes || "None"}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Delivery Time</span><p>{product.details?.delivery || product.delivery || "None"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Designer</span><p>{product.designer || "Designer Atelier"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Fabric</span><p>{product.details?.fabric || product.material || "Pure Georgette & Silk"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Craft Technique</span><p>{product.details?.technique || product.technique || product.embellishments || "Hand Embroidered Zardozi"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Includes</span><p>{product.details?.includes || product.setIncludes || "Full Couture Set & Dupatta"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Delivery Time</span><p>{product.details?.delivery || product.delivery || "Express Courier (2-3 Days)"}</p></div>
                           </div>
 
                           <div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Category</span><p>{product.category || product.subTitle || "None"}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Colour</span><p>{product.details?.color || product.color || "None"}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Thread</span><p>{product.details?.thread || product.threadWork || "None"}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "None"}</p></div>
-                            <div className="rental-pdp-row"><span className="rental-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "None"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Category</span><p>{product.category || product.subTitle || "Luxury Couture"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Colour</span><p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Thread</span><p>{product.details?.thread || product.threadWork || "Metallic Zari Threadwork"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p></div>
+                            <div className="rental-pdp-row"><span className="rental-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "Lucknow, India"}</p></div>
                           </div>
 
                         </div>
@@ -622,7 +623,10 @@ Product ID: ${product.id}
                     {isOpen("craft") && (
                       <div className="rental-pdp-content">
                         <p className="rental-craft-text">
-                          {product.craft || product.story || product.description || "None"}
+                          {product.craft ||
+                            product.story ||
+                            product.description ||
+                            `Each piece in the House of Kaira rental archive begins as an exclusive conversation between master designer and artisan karigars. Handcrafted over weeks in artisanal ateliers, every motif is meticulously stitched to perfection.`}
                         </p>
                       </div>
                     )}
@@ -639,58 +643,83 @@ Product ID: ${product.id}
                     {isOpen("size") && (
                       <div className="rental-pdp-content">
 
-                        {product.sizeNote || product.sizeGuide ? (
-                          <p className="rental-size-intro">{product.sizeNote || product.sizeGuide}</p>
-                        ) : null}
+                        <p className="rental-size-intro">
+                          {product.sizeNote ||
+                            product.sizeGuide ||
+                            "This piece fits true to standard Indian couture sizing. Please refer to measurements below before confirming your dates."}
+                        </p>
 
-                        {product.sizeTable && product.sizeTable.length > 0 ? (
-                          <table className="rental-size-table">
-                            <thead>
-                              <tr>
-                                <th>Size</th>
-                                <th>Bust</th>
-                                <th>Waist</th>
-                                <th>Hips</th>
-                                <th>Height</th>
-                              </tr>
-                            </thead>
+                        <table className="rental-size-table">
+                          <thead>
+                            <tr>
+                              <th>Size</th>
+                              <th>Bust</th>
+                              <th>Waist</th>
+                              <th>Hips</th>
+                              <th>Height</th>
+                            </tr>
+                          </thead>
 
-                            <tbody>
-                              {product.sizeTable.map((row, i) => (
-                                <tr key={i} className={row.recommended ? "rental-active-row" : ""}>
-                                  <td>{row.size || "None"}</td>
-                                  <td>{row.bust || "None"}</td>
-                                  <td>{row.waist || "None"}</td>
-                                  <td>{row.hips || "None"}</td>
-                                  <td>{row.height || "None"}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        ) : (product.measurements && (product.measurements.bust || product.measurements.waist || product.measurements.hips || product.measurements.length)) ? (
-                          <table className="rental-size-table">
-                            <thead>
-                              <tr>
-                                <th>Size</th>
-                                <th>Bust</th>
-                                <th>Waist</th>
-                                <th>Hips</th>
-                                <th>Length</th>
+                          <tbody>
+                            {(product.sizeTable && product.sizeTable.length > 0
+                              ? product.sizeTable
+                              : [
+                                  {
+                                    size: "XS",
+                                    bust: '32"',
+                                    waist: '26"',
+                                    hips: '35"',
+                                    height: "5'2\" - 5'6\"",
+                                  },
+                                  {
+                                    size: "S",
+                                    bust: '34"',
+                                    waist: '28"',
+                                    hips: '37"',
+                                    height: "5'3\" - 5'7\"",
+                                  },
+                                  {
+                                    size: "M",
+                                    bust: '36"',
+                                    waist: '30"',
+                                    hips: '39"',
+                                    height: "5'4\" - 5'8\"",
+                                    recommended: true,
+                                  },
+                                  {
+                                    size: "L",
+                                    bust: '38"',
+                                    waist: '32"',
+                                    hips: '41"',
+                                    height: "5'4\" - 5'9\"",
+                                  },
+                                  {
+                                    size: "XL",
+                                    bust: '40"',
+                                    waist: '34"',
+                                    hips: '43"',
+                                    height: "5'4\" - 5'10\"",
+                                  },
+                                ]
+                            ).map((row, i) => (
+                              <tr
+                                key={i}
+                                className={
+                                  row.recommended ||
+                                  (typeof selectedSize !== 'undefined' && selectedSize === (row.size || row.label))
+                                    ? "rental-active-row"
+                                    : ""
+                                }
+                              >
+                                <td>{row.size || row.label}</td>
+                                <td>{row.bust || '36"'}</td>
+                                <td>{row.waist || '30"'}</td>
+                                <td>{row.hips || '39"'}</td>
+                                <td>{row.height || "Standard"}</td>
                               </tr>
-                            </thead>
-                            <tbody>
-                              <tr className="rental-active-row">
-                                <td>{product.sizes?.[0] || "Standard"}</td>
-                                <td>{product.measurements.bust || "-"}</td>
-                                <td>{product.measurements.waist || "-"}</td>
-                                <td>{product.measurements.hips || "-"}</td>
-                                <td>{product.measurements.length || "-"}</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        ) : (!product.sizeNote && !product.sizeGuide) ? (
-                          <p className="rental-size-intro" style={{ margin: 0 }}>None</p>
-                        ) : null}
+                            ))}
+                          </tbody>
+                        </table>
 
                       </div>
                     )}
@@ -707,18 +736,19 @@ Product ID: ${product.id}
                     {isOpen("care") && (
                       <div className="rental-pdp-content">
                         <ul className="rental-care-list">
-                          {Array.isArray(product.care) && product.care.length > 0 ? (
-                            product.care.map((item, i) => (
-                              <li key={i}>
-                                <span className="rental-dash">—</span>
-                                <span>{item}</span>
-                              </li>
-                            ))
-                          ) : (
-                            <li>
-                              <span>None</span>
+                          {(Array.isArray(product.care) && product.care.length > 0
+                            ? product.care
+                            : [
+                                "Professional dry clean only before and after rental.",
+                                "Do not iron directly over zardozi bullion threadwork or embellishments.",
+                                "Store in provided HOK garment sleeve when not in use.",
+                              ]
+                          ).map((item, i) => (
+                            <li key={i}>
+                              <span className="rental-dash">—</span>
+                              <span>{item}</span>
                             </li>
-                          )}
+                          ))}
                         </ul>
                       </div>
                     )}
@@ -735,29 +765,40 @@ Product ID: ${product.id}
                     {isOpen("shipping") && (
                       <div className="rental-pdp-content">
 
-                        {Array.isArray(product.shipping) && product.shipping.length > 0 ? (
-                          <table className="rental-shipping-table">
-                            <thead>
-                              <tr>
-                                <th>Method</th>
-                                <th>Estimated time</th>
-                                <th>Cost</th>
-                              </tr>
-                            </thead>
+                        <table className="rental-shipping-table">
+                          <thead>
+                            <tr>
+                              <th>Method</th>
+                              <th>Estimated time</th>
+                              <th>Cost</th>
+                            </tr>
+                          </thead>
 
-                            <tbody>
-                              {product.shipping.map((item, i) => (
-                                <tr key={i}>
-                                  <td>{item.method || "Shipping"}</td>
-                                  <td>{item.time || "-"}</td>
-                                  <td className="rental-cost">{item.cost || "-"}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        ) : (
-                          <p className="rental-shipping-item">None</p>
-                        )}
+                          <tbody>
+                            {(Array.isArray(product.shipping) &&
+                            product.shipping.length > 0
+                              ? product.shipping
+                              : [
+                                  {
+                                    method: "Insured White-Glove Courier",
+                                    time: "Delivered 1-2 days before start date",
+                                    cost: "Complimentary",
+                                  },
+                                  {
+                                    method: "Prepaid Return Pickup",
+                                    time: "Scheduled next morning after end date",
+                                    cost: "Included in booking",
+                                  },
+                                ]
+                            ).map((item, i) => (
+                              <tr key={i}>
+                                <td>{item.method}</td>
+                                <td>{item.time}</td>
+                                <td className="rental-cost">{item.cost}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
 
                       </div>
                     )}
@@ -771,7 +812,11 @@ Product ID: ${product.id}
           </Row>
         </Container>
       </section>
-      <RelatedProduct />
+      <RelatedProduct
+        product={product}
+        currentProductId={id}
+        category={product.subTitle || product.category}
+      />
     </>
   );
 }

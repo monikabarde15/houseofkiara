@@ -628,7 +628,7 @@ export const createSubmission = async (req, res) => {
     const enriched = await enrichSubmissionWithLister(saved);
     return res.status(201).json({
       success: true,
-      message: "Piece save ho gaya hai, submit ho gaya!",
+      message: "Piece saved and submitted successfully!",
       ...enriched,
     });
   } catch (err) {

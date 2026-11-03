@@ -27,18 +27,23 @@ export default function RelatedProduct({
           setLoading(false);
         } else {
           const backendUrl =
-            import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+            import.meta.env.VITE_BACKEND_URL || "";
           const res = await fetch(`${backendUrl}/api/web-products`);
           const data = await res.json();
           if (data.success && data.data) {
             const allProducts = data.data;
-            const filtered = allProducts.filter(
+            let filtered = allProducts.filter(
               (p) =>
                 (p.category === currentCategory ||
                   p.designer === currentDesigner) &&
                 p._id !== prodId &&
                 p.id !== prodId,
             );
+            if (filtered.length === 0) {
+              filtered = allProducts
+                .filter((p) => p._id !== prodId && p.id !== prodId)
+                .slice(0, 8);
+            }
             setRelatedProducts(filtered);
           }
           setLoading(false);

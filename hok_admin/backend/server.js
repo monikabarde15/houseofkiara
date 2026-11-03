@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-import { connectDB } from "./config/db.js";
+import { connectDB, pool } from "./config/db.js";
 import apiRouter from "./routes/index.js";
+import { officialValidationGuard } from "./middleware/officialValidationGuard.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,10 +12,38 @@ const __dirname = path.dirname(__filename);
 const app = express();
 let dbReady = false;
 
+// Disable ETag so API responses never return stale 304 browser cache
+app.set("etag", false);
+
 app.use(cors());
-app.use(express.json());
-app.use("/uploads", express.static(path.resolve(__dirname, "../../public/uploads")));
-app.use("/uploads", express.static(path.resolve(__dirname, "../public/uploads")));
+app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: true, limit: "2mb" }));
+
+// Prevent browser/proxy stale HTTP caching on all API endpoints
+app.use("/api", (req, res, next) => {
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate",
+  );
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  res.setHeader("Surrogate-Control", "no-store");
+  next();
+});
+
+app.use(officialValidationGuard);
+app.use(
+  "/uploads",
+  express.static(path.resolve(__dirname, "../../public/uploads"), {
+    maxAge: "1h",
+  }),
+);
+app.use(
+  "/uploads",
+  express.static(path.resolve(__dirname, "../public/uploads"), {
+    maxAge: "1h",
+  }),
+);
 
 app.use((req, res, next) => {
   if (dbReady) return next();
@@ -29,7 +58,9 @@ app.use("/api", apiRouter);
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found` });
+  res
+    .status(404)
+    .json({ success: false, message: `Route ${req.originalUrl} not found` });
 });
 
 // Global Error handler
@@ -54,10 +85,29 @@ server.on("error", (error) => {
   console.error("Admin API server error:", error.message);
 });
 
-connectDB()
-  .then(() => {
+const attemptConnect = async () => {
+  try {
+    await connectDB();
     dbReady = true;
-  })
-  .catch((err) => {
-    console.error("Non-blocking DB connection note:", err.message);
-  });
+    console.log("Database connected successfully! API is ready.");
+    // Pre-warm frequently accessed tables in the background for instant first load
+    Promise.allSettled([
+      pool.query(
+        `SELECT * FROM products WHERE (data->>'status' = ANY($1::text[])) ORDER BY created_at DESC`,
+        [["Live", "Out of Stock", "Out Of Stock"]],
+      ),
+      pool.query(`SELECT * FROM products WHERE 1=1 ORDER BY created_at DESC`),
+      pool.query(`SELECT * FROM designers WHERE 1=1 ORDER BY created_at DESC`),
+      pool.query(`SELECT * FROM categories WHERE 1=1 ORDER BY created_at DESC`),
+      pool.query(`SELECT * FROM orders WHERE 1=1 ORDER BY created_at DESC`),
+      pool.query(`SELECT * FROM submissions WHERE 1=1 ORDER BY created_at DESC`),
+      pool.query(`SELECT * FROM customers WHERE 1=1 ORDER BY created_at DESC`),
+      pool.query(`SELECT * FROM listers WHERE 1=1 ORDER BY created_at DESC`),
+    ]).catch(() => {});
+  } catch (err) {
+    console.error("DB connection attempt failed, retrying in 5 seconds:", err.message);
+    setTimeout(attemptConnect, 5000);
+  }
+};
+
+attemptConnect();

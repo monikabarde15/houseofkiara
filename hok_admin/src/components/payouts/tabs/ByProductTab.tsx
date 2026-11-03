@@ -13,28 +13,35 @@ const statusBadgeClasses: Record<string, string> = {
 };
 
 export default function ByProductTab({ payouts = [] }: ByProductTabProps) {
-  // Only show rental transactions or relevant payouts
-  const rentalPayouts = payouts.filter(
-    (p) => p.mode === "Rental" || p.mode === "Preloved Sale",
-  );
+  // Show all products with payouts (Rental, Preloved/Buy, etc.)
+  const productPayouts = payouts.filter((p) => Boolean(p.productName));
   const PRODUCT_NAMES = Array.from(
-    new Set(rentalPayouts.map((t) => t.productName)),
+    new Set(productPayouts.map((t) => t.productName).filter(Boolean)),
   ).sort();
 
   const [selectedProduct, setSelectedProduct] = useState<string>(
     PRODUCT_NAMES[0] ?? "",
   );
 
+  React.useEffect(() => {
+    if (
+      (!selectedProduct || !PRODUCT_NAMES.includes(selectedProduct)) &&
+      PRODUCT_NAMES.length > 0
+    ) {
+      setSelectedProduct(PRODUCT_NAMES[0]);
+    }
+  }, [PRODUCT_NAMES, selectedProduct]);
+
   const productTransactions = useMemo(
-    () => rentalPayouts.filter((t) => t.productName === selectedProduct),
-    [selectedProduct, rentalPayouts],
+    () => productPayouts.filter((t) => t.productName === selectedProduct),
+    [selectedProduct, productPayouts],
   );
 
   return (
     <div className="space-y-4 text-xs font-sans">
       <div className="space-y-1 max-w-md">
         <label className="uppercase text-[11px] tracking-wider font-bold text-stone-400">
-          Select Rental Product
+          Select Product
         </label>
         <select
           value={selectedProduct}

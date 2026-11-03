@@ -42,6 +42,7 @@ const view = (p) => {
     hokCommission,
     status,
     mode: obj.mode || "Rental",
+    designer: obj.designer || p.designer || "",
     dueDate: dueDateStr || new Date().toISOString().slice(0, 10),
   };
 };
@@ -145,6 +146,8 @@ export const syncPayoutsFromOrders = async () => {
           ],
         });
 
+        const designer = item.designer || ord.designer || prod?.designer || "House of Kaira";
+
         if (!existing) {
           await Payout.create({
             payoutId,
@@ -156,6 +159,7 @@ export const syncPayoutsFromOrders = async () => {
             listerId,
             listerName,
             productName,
+            designer,
             mode: item.mode || ord.mode || "Rental",
             transactionAmount,
             payoutPercentage,
@@ -175,6 +179,7 @@ export const syncPayoutsFromOrders = async () => {
           existing.listerShare = listerShare;
           existing.netPayout = listerShare;
           existing.hokCommission = hokCommission;
+          existing.designer = designer;
           if (listerId) existing.listerId = listerId;
           if (listerName) existing.listerName = listerName;
           await existing.save();

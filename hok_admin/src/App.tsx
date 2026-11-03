@@ -833,6 +833,14 @@ export default function App() {
               </button>
 
               <button
+                onClick={() => {
+                  const saveBtn = document.querySelector(".btn-gold, .btn-save, button[type='submit']") as HTMLButtonElement | null;
+                  if (saveBtn) {
+                    saveBtn.click();
+                  } else {
+                    toast.success("All changes are up to date!");
+                  }
+                }}
                 className="inline-flex h-8 items-center rounded-md bg-[#C7A55C] hover:bg-[#B9974B] px-4 text-[12px] font-semibold text-[#2A2118] transition cursor-pointer shadow-2xs"
               >
                 Save Changes

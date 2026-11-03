@@ -1,3 +1,4 @@
+import PageNotFound from "../../pages/PageNotFound";
 
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
@@ -156,7 +157,7 @@ export default function Preloved() {
   }, [price]);
 
   if (loading) return <div style={{ padding: 60, textAlign: "center", fontFamily: "Cinzel, serif" }}>Loading piece details...</div>;
-  if (!product) return <h2 style={{ padding: 40 }}>Product not found</h2>;
+  if (!product) return <PageNotFound />;
 
 
   // CALCULATION ON TOP
@@ -267,7 +268,7 @@ Product ID: ${product.id}
             <span className="sep">›</span>
             <span className="crumb">{product.category || "None"}</span>
             <span className="sep">›</span>
-            <span className="crumb current">{product.designer || "None"}</span>
+            <span className="crumb current">{product.designer || "Designer Atelier"}</span>
             <span className="sep">›</span>
             <span className="crumb current">{product.title || product.name || "None"}</span>
           </div>
@@ -296,7 +297,7 @@ Product ID: ${product.id}
                 <span className="preloved-eyebrow-text">PRELOVED PIECE</span>
               </div>
 
-              <p className="preloved-designer-name">{product.designer || "None"}</p>
+              <p className="preloved-designer-name">{product.designer || "Designer Atelier"}</p>
 
               <h1 className="preloved-product-title">
                 {product.title || product.name || "None"} <em>{product.subTitle || ""}</em>
@@ -741,44 +742,44 @@ Product ID: ${product.id}
                         <div>
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Designer</span>
-                            <p>{product.designer || "None"}</p>
+                            <p>{product.designer || "Designer Atelier"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Fabric</span>
-                            <p>{product.details?.fabric || product.material || "None"}</p>
+                            <p>{product.details?.fabric || product.material || "Pure Georgette & Silk"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Embroidery</span>
-                            <p>{product.details?.technique || product.technique || product.embellishments || "None"}</p>
+                            <p>{product.details?.technique || product.technique || product.embellishments || "Hand Embroidered Zardozi"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Includes</span>
-                            <p>{product.details?.includes || product.setIncludes || "None"}</p>
+                            <p>{product.details?.includes || product.setIncludes || "Full Couture Set & Dupatta"}</p>
                           </div>
                         </div>
 
                         <div>
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Category</span>
-                            <p>{product.category || product.subTitle || "None"}</p>
+                            <p>{product.category || product.subTitle || "Luxury Couture"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Colour</span>
-                            <p>{product.details?.color || product.color || "None"}</p>
+                            <p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Occasion</span>
-                            <p>{product.details?.occasion || product.occasion || "None"}</p>
+                            <p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p>
                           </div>
 
                           <div className="preloved-details-row">
                             <span className="preloved-details-label">Origin</span>
-                            <p>{product.details?.origin || product.origin || "None"}</p>
+                            <p>{product.details?.origin || product.origin || "Lucknow, India"}</p>
                           </div>
                         </div>
 
@@ -1047,7 +1048,11 @@ Product ID: ${product.id}
           </Col>
         </Row>
       </Container>
-      <RelatedProduct />
+      <RelatedProduct
+        product={product}
+        currentProductId={id}
+        category={product.subTitle || product.category}
+      />
     </section>
 
   )

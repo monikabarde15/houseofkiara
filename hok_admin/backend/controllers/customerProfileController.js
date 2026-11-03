@@ -1099,17 +1099,37 @@ export const getProfileDashboard = async (req, res) => {
       )
     ).length;
 
-    // 6. Deposit Tracker - Computed from actual rental and cancelled orders
+    // 6. Deposit Tracker - Computed only for orders where a refund/return/deposit release was requested or processed
     const deposits = [];
     (orders || []).forEach((order) => {
       const items = Array.isArray(order.items) && order.items.length > 0 ? order.items : [];
-      const hasRentalItem = items.some(
-        (item) => String(item.mode || "").toLowerCase() === "rental"
-      );
-      const isRentalOrder =
-        String(order.mode || "").toLowerCase() === "rental" || hasRentalItem;
+      const orderStatusLower = String(order.status || "").toLowerCase();
+      const depositStatusLower = String(order.depositStatus || "").toLowerCase();
+      const refundStatusLower = String(order.refundStatus || "").toLowerCase();
 
-      if (isRentalOrder || order.status === "Cancelled") {
+      const hasRefundOrReturnActivity =
+        order.refundRequested === true ||
+        order.returnRequested === true ||
+        Boolean(refundStatusLower && refundStatusLower !== "none") ||
+        [
+          "cancelled",
+          "returned",
+          "return requested",
+          "return due",
+          "refunded",
+          "refund requested",
+          "completed",
+        ].includes(orderStatusLower) ||
+        [
+          "released",
+          "partially released",
+          "refunded",
+          "refund requested",
+          "pending refund",
+          "forfeited",
+        ].includes(depositStatusLower);
+
+      if (hasRefundOrReturnActivity) {
         const item = items[0] || {};
         const matchedProd = item.productId ? prodLookup.get(String(item.productId)) : null;
         const resolvedName = (item.productName && item.productName !== "Designer Piece")
@@ -1132,39 +1152,41 @@ export const getProfileDashboard = async (req, res) => {
           order.securityDeposit ||
           item.deposit ||
           item.securityDeposit ||
+          order.totalAmount ||
           (matchedProd?.rentalPrice ? Math.round(matchedProd.rentalPrice * 0.8) : 8000)
         );
 
         let statusText = "PENDING";
         let valueClass = "profile-account-dpill-p";
-        let stepNumber = 1;
-        let stepName = "Deposit requested";
-        let statusDescription = "Due before dispatch";
+        let stepNumber = 3;
+        let stepName = "Refund requested";
+        let statusDescription = "Being reviewed and processed";
 
-        if (order.status === "Cancelled") {
+        const isFullyRefunded =
+          orderStatusLower === "cancelled" ||
+          orderStatusLower === "completed" ||
+          orderStatusLower === "returned" ||
+          orderStatusLower === "refunded" ||
+          refundStatusLower === "refunded" ||
+          refundStatusLower === "completed" ||
+          depositStatusLower === "released" ||
+          depositStatusLower === "refunded";
+
+        if (isFullyRefunded) {
           statusText = "REFUNDED";
           valueClass = "profile-account-dpill-r";
           stepNumber = 5;
           stepName = "Refunded";
-          statusDescription = "Order cancelled — full refund processed within 3-5 days";
-        } else if (order.status === "Completed" || order.status === "Returned") {
-          statusText = "REFUNDED";
-          valueClass = "profile-account-dpill-r";
-          stepNumber = 5;
-          stepName = "Refunded";
-          statusDescription = "Inspected and refunded to original payment method";
-        } else if (order.status === "Delivered" || order.status === "Dispatched" || order.status === "Shipped") {
-          statusText = `₹${depositAmount.toLocaleString("en-IN")} HELD`;
-          valueClass = "profile-account-dpill-h";
-          stepNumber = 2;
-          stepName = "Deposit received";
-          statusDescription = "Safely held during your rental period";
+          statusDescription =
+            orderStatusLower === "cancelled"
+              ? "Order cancelled — full refund processed within 3-5 days"
+              : "Inspected and refunded to original payment method";
         } else {
           statusText = `₹${depositAmount.toLocaleString("en-IN")} PENDING`;
           valueClass = "profile-account-dpill-p";
-          stepNumber = 1;
-          stepName = "Deposit requested";
-          statusDescription = "Payable before dispatch";
+          stepNumber = 4;
+          stepName = "Refund processing";
+          statusDescription = "Refund request received — processing to original payment method";
         }
 
         deposits.push({

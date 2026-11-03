@@ -12,6 +12,7 @@ const SearchOverlay = ({
     suggestions = [],
     highlightedIndex,
     showResults,
+    trendingSearches,
     setQuery,
     setHighlightedIndex,
     closeSearch,
@@ -22,7 +23,8 @@ const SearchOverlay = ({
         <div
             id="search-overlay"
             className={isOpen ? "open" : ""}
-        > <div
+        >
+            <div
                 className="search-backdrop"
                 onClick={closeSearch}
             />
@@ -41,6 +43,11 @@ const SearchOverlay = ({
 
                 {!query && (
                     <SearchTrending
+                        trendingItems={trendingSearches}
+                        doSearch={(term) => {
+                            setQuery(term);
+                            runSearch(term);
+                        }}
                         setQuery={setQuery}
                         runSearch={runSearch}
                     />
@@ -62,17 +69,29 @@ const SearchOverlay = ({
                         />
                     )}
 
-        {showResults && results?.length === 0 && (
-          <SearchNoResults
-            query={query}
-            setQuery={setQuery}
-            runSearch={runSearch}
-            closeSearch={closeSearch}
-          />
-        )}
-      </div>
-    </div>
-  );
+                {showResults &&
+                    results?.length > 0 && (
+                        <SearchResults
+                            query={query}
+                            results={results}
+                            viewFullCollection={
+                                viewFullCollection
+                            }
+                            closeSearch={closeSearch}
+                        />
+                    )}
+
+                {showResults && results?.length === 0 && (
+                    <SearchNoResults
+                        query={query}
+                        setQuery={setQuery}
+                        runSearch={runSearch}
+                        closeSearch={closeSearch}
+                    />
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default SearchOverlay;

@@ -2205,8 +2205,17 @@ export default function CustomersView({
                             String((order as any).offerId || "") ===
                               String(offer.id || ""),
                         );
-                        const coupon = (linkedOrder as any)?.promoCode || "";
+                        const coupon =
+                          (offer as any)?.promoCode ||
+                          (offer as any)?.coupon ||
+                          (linkedOrder as any)?.promoCode ||
+                          "";
                         const couponDiscount = Number(
+                          (offer as any)?.discount ||
+                            (offer as any)?.promoDiscount ||
+                            (offer.marketPrice && offer.offerPrice
+                              ? Math.max(0, Number(offer.marketPrice) - Number(offer.offerPrice))
+                              : 0) ||
                           (linkedOrder as any)?.promoDiscount ||
                             (linkedOrder as any)?.discount ||
                             0,
@@ -2249,11 +2258,13 @@ export default function CustomersView({
                               )}
                             </td>
                             <td className="px-5 py-4 text-stone-400">
-                              ₹
-                              {Math.max(
-                                0,
-                                Number(offer.counterPrice || 0),
-                              ).toLocaleString("en-IN")}
+                              {offer.counterPrice && Number(offer.counterPrice) > 0 ? (
+                                <span className="font-semibold text-stone-700">
+                                  ₹{Number(offer.counterPrice).toLocaleString("en-IN")}
+                                </span>
+                              ) : (
+                                "—"
+                              )}
                             </td>
                             <td className="px-5 py-4">
                               <span

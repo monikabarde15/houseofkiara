@@ -6,6 +6,9 @@ import { navigateToProductDetail } from "../../../utils/productNavigation";
 import useWishlistStore from "../../../store/wishlistStore";
 import useAuthStore from "../../../store/authStore";
 
+const FALLBACK_MOBILE_CARD_IMAGE =
+  "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1792842137/submissions/image/file_h1auyp.jpg";
+
 const MobileProductCard = ({ item, onWishlistToggle }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
@@ -142,9 +145,18 @@ const MobileProductCard = ({ item, onWishlistToggle }) => {
         <div className="mob-card__image-inner">
           {item.image?.[0] ? (
             <img 
-              src={item.image[0]} 
+              src={
+                String(item.image[0]).includes("sub_1792844248")
+                  ? FALLBACK_MOBILE_CARD_IMAGE
+                  : item.image[0]
+              }
               alt={item.name}
               className="mob-card__image"
+              onError={(e) => {
+                if (e.currentTarget.src !== FALLBACK_MOBILE_CARD_IMAGE) {
+                  e.currentTarget.src = FALLBACK_MOBILE_CARD_IMAGE;
+                }
+              }}
             />
           ) : (
             <div className={`mob-card__placeholder ci-${item.placeholderClass || 'a'}`}>

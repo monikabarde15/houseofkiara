@@ -109,6 +109,7 @@ const Header = () => {
         suggestions={search.suggestions}
         highlightedIndex={search.highlightedIndex}
         showResults={search.showResults}
+        trendingSearches={search.trendingSearches}
         setQuery={search.setQuery}
         setHighlightedIndex={search.setHighlightedIndex}
         closeSearch={search.closeSearch}

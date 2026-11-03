@@ -58,19 +58,35 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const newCustId = await generateUniqueCustomerId();
+    let customer = null;
+    if (phone) {
+      const pClean = phone.replace(/\D/g, "").slice(-10);
+      if (pClean.length === 10) {
+        customer = await Customer.findOne({
+          phone: new RegExp(pClean + "$"),
+          email: { $regex: /temp\.com$/i },
+        });
+      }
+    }
 
-    const customer = new Customer({
-      customerId: newCustId,
-      name,
-      email,
-      phone: phone || "",
-      passwordHash,
-      wishlist: [],
-      cart: [],
-    });
-
-    await customer.save();
+    if (customer) {
+      customer.name = name;
+      customer.email = email;
+      customer.passwordHash = passwordHash;
+      await customer.save();
+    } else {
+      const newCustId = await generateUniqueCustomerId();
+      customer = new Customer({
+        customerId: newCustId,
+        name,
+        email,
+        phone: phone || "",
+        passwordHash,
+        wishlist: [],
+        cart: [],
+      });
+      await customer.save();
+    }
 
     res.status(201).json({
       success: true,
@@ -127,7 +143,13 @@ export const sendOtp = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Phone required" });
 
-    let customer = await Customer.findOne({ phone });
+    const pClean = String(phone || "").replace(/\D/g, "").slice(-10);
+    let customer = await Customer.findOne({
+      $or: [
+        { phone },
+        ...(pClean.length === 10 ? [{ phone: new RegExp(pClean + "$") }] : [])
+      ]
+    });
     if (!customer) {
       // Auto-create stub customer
       const allCustomers = await Customer.find({}, "customerId").exec();
@@ -351,6 +373,22 @@ export const googleLogin = async (req, res) => {
         ...(resolvedGoogleId ? [{ googleId: resolvedGoogleId }] : []),
       ],
     });
+
+    if (!customer && phoneVal) {
+      const pDigits = phoneVal.replace(/\D/g, "").slice(-10);
+      if (pDigits.length === 10) {
+        const phoneMatch = await Customer.findOne({
+          phone: new RegExp(pDigits + "$"),
+        });
+        if (phoneMatch) {
+          customer = phoneMatch;
+          customer.email = resolvedEmail;
+          if (resolvedName) customer.name = resolvedName;
+          if (resolvedGoogleId) customer.googleId = resolvedGoogleId;
+          await customer.save();
+        }
+      }
+    }
 
     const isNew = !customer;
     if (isNew) {

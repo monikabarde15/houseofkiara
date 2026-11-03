@@ -69,7 +69,7 @@ export const validateProduct = (data) => {
     availability: Joi.string().default("Available Now"),
     status: Joi.string().allow("", null).default("Draft"),
     condition: Joi.string()
-      .valid("Excellent", "Very Good", "Good", "Fair")
+      .valid("Pristine", "Brand New", "Like New", "Excellent", "Very Good", "Good", "Fair")
       .allow("", null),
     honestDisclosure: Joi.string().allow("", null), // NEW
 
@@ -148,12 +148,29 @@ export const validateProduct = (data) => {
         }),
       )
       .default([]),
+    // ========== CURATION & ADDITIONAL SCHEMA FIELDS ==========
+    gender: Joi.string().allow("", null),
+    care: Joi.array().items(Joi.string().allow("")).default([]),
+    packaging: Joi.array().items(Joi.string().allow("")).default([]),
+    shipping: Joi.array()
+      .items(
+        Joi.object({
+          method: Joi.string().allow("", null),
+          time: Joi.string().allow("", null),
+          cost: Joi.string().allow("", null),
+        }),
+      )
+      .default([]),
+    video: Joi.string().allow("", null),
+    bookingHistory: Joi.array().default([]),
+    isPinnedToAteliers: Joi.boolean().default(false),
+    ateliersOrder: Joi.number().allow(null).default(null),
   });
 
   // ✅ FIX: cleanData ko validate karo and strip unknown fields safely
   return schema.validate(cleanData, {
     abortEarly: false,
-    allowUnknown: true,
-    stripUnknown: false,
+    allowUnknown: false,
+    stripUnknown: true,
   });
 };

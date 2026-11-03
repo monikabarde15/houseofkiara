@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import * as productSectionsApi from "../../../services/productSectionsApi";
 import * as offerApi from "../../../services/offerApi";
+import * as customerApi from "../../../services/customerApi";
 import { promotionService } from "../../Promotions/services/promotionService";
 import toast from "react-hot-toast";
 
@@ -166,10 +167,42 @@ export function AvailabilityCalendarTab({
   );
   // Kept only for the disabled legacy selector markup; customer lookup is
   // performed by the booking API from name/phone.
-  const customerList: any[] = [];
-  const selectedCustomerId = "";
-  const customerMode = "new";
-  const setSelectedCustomerId = () => {};
+  const [existingCustomers, setExistingCustomers] = useState<any[]>([]);
+  const [matchedCustomer, setMatchedCustomer] = useState<any | null>(null);
+  const customerList: any[] = existingCustomers;
+  const selectedCustomerId = matchedCustomer?.customerId || "";
+  const customerMode = matchedCustomer ? "existing" : "new";
+  const setSelectedCustomerId = (id: string) => {
+    const found = existingCustomers.find((c: any) => c.customerId === id || c._id === id);
+    if (found) {
+      setMatchedCustomer(found);
+      setCustomerName(found.name || "");
+      if (found.phone) setWhatsappNumber(found.phone);
+      if (found.location || found.city) setCity(found.location || found.city);
+    }
+  };
+
+  const handleCustomerNameChange = (val: string) => {
+    setCustomerName(val);
+    const trimmed = val.trim().toLowerCase();
+    if (!trimmed) {
+      setMatchedCustomer(null);
+      return;
+    }
+    const match = existingCustomers.find(
+      (c: any) =>
+        (c.name && c.name.toLowerCase().trim() === trimmed) ||
+        (c.email && c.email.toLowerCase().trim() === trimmed) ||
+        (c.phone && c.phone.replace(/\D/g, "") === trimmed.replace(/\D/g, "")),
+    );
+    if (match) {
+      setMatchedCustomer(match);
+      if (match.phone) setWhatsappNumber(match.phone);
+      if (match.location || match.city) setCity(match.location || match.city);
+    } else {
+      setMatchedCustomer(null);
+    }
+  };
   const setCustomerMode = () => {};
 
   // Reload these choices from PostgreSQL whenever a product calendar opens.
@@ -184,6 +217,13 @@ export function AvailabilityCalendarTab({
       .getPromoCodes()
       .then(setDatabasePromoCodes)
       .catch(() => setDatabasePromoCodes(null));
+    customerApi
+      .getCustomers()
+      .then((res: any) => {
+        const list = Array.isArray(res) ? res : res?.data || [];
+        setExistingCustomers(list);
+      })
+      .catch(() => setExistingCustomers([]));
   }, [editingProduct?.productId, (editingProduct as any)?._id]);
 
   if (!activeProduct) {
@@ -256,6 +296,8 @@ export function AvailabilityCalendarTab({
     const sourceOffers = databaseOffers ?? offers;
     const currentId =
       activeProduct.productId || (activeProduct as any)._id || activeProduct.id;
+    const currentCust = (customerName || "").trim().toLowerCase();
+
     return sourceOffers.filter((offer: any) => {
       const isPendingOrAccepted =
         offer.status === "Pending" || offer.status === "Accepted";
@@ -267,16 +309,49 @@ export function AvailabilityCalendarTab({
       const matchesName =
         offer.productName && offer.productName === activeProduct.name;
 
-      return matchesId || matchesName || hasNoProductLink;
+      if (!matchesId && !matchesName && !hasNoProductLink) return false;
+
+      // Restrict offer to the specific customer it was created for
+      if (offer.customerName) {
+        const oCust = offer.customerName.trim().toLowerCase();
+        if (currentCust) {
+          if (!currentCust.includes(oCust) && !oCust.includes(currentCust)) return false;
+        }
+      }
+      return true;
     });
-  }, [databaseOffers, offers, activeProduct]);
+  }, [databaseOffers, offers, activeProduct, customerName]);
 
   const activePromoCodes = useMemo(() => {
     const sourcePromoCodes = databasePromoCodes ?? promoCodes;
-    return sourcePromoCodes.filter(
-      (promo: any) => String(promo.status || "").toLowerCase() === "active",
-    );
-  }, [databasePromoCodes, promoCodes]);
+    const currentCust = (customerName || "").trim().toUpperCase();
+    const currentCustId = matchedCustomer?.customerId;
+
+    return sourcePromoCodes.filter((promo: any) => {
+      if (String(promo.status || "").toLowerCase() !== "active") return false;
+
+      // Private promo: restrict to assigned customerIds
+      if (promo.audience === "private" && Array.isArray(promo.customerIds) && promo.customerIds.length > 0) {
+        if (!currentCustId && !currentCust) return false;
+        const matches = promo.customerIds.some(
+          (cid: string) =>
+            (currentCustId && cid === currentCustId) ||
+            (currentCust && cid.toUpperCase().trim() === currentCust),
+        );
+        if (!matches) return false;
+      }
+
+      // Customer-specific code naming convention (e.g. OFFER-MEETU-778)
+      const codeUpper = String(promo.code || "").toUpperCase();
+      for (const cust of existingCustomers) {
+        const cName = String(cust.name || "").trim().toUpperCase();
+        if (cName && cName.length >= 3 && codeUpper.includes(cName)) {
+          if (!currentCust || !currentCust.includes(cName)) return false;
+        }
+      }
+      return true;
+    });
+  }, [databasePromoCodes, promoCodes, customerName, matchedCustomer, existingCustomers]);
 
   const bookingSummary = useMemo(() => {
     const basePrice = Number(
@@ -581,6 +656,43 @@ export function AvailabilityCalendarTab({
       );
       return;
     }
+
+    // Customer validation for selected Offer
+    if (selectedOfferId) {
+      const offer = (databaseOffers ?? offers ?? []).find(
+        (o: any) => o.id === selectedOfferId || o.offerId === selectedOfferId,
+      );
+      if (offer && offer.customerName) {
+        const oName = offer.customerName.trim().toLowerCase();
+        const cName = customerName.trim().toLowerCase();
+        if (oName && cName && !cName.includes(oName) && !oName.includes(cName)) {
+          toast.error(
+            `Offer "${offer.id || offer.offerId}" is only valid for ${offer.customerName}. It cannot be applied to ${customerName}.`,
+          );
+          return;
+        }
+      }
+    }
+
+    // Customer validation for selected Promo Code
+    if (selectedPromoCode) {
+      const promo = (databasePromoCodes ?? promoCodes ?? []).find(
+        (p: any) => p.id === selectedPromoCode || p.code === selectedPromoCode,
+      );
+      if (promo) {
+        const pCodeUpper = String(promo.code || "").toUpperCase();
+        const cNameUpper = customerName.trim().toUpperCase();
+        for (const cust of existingCustomers) {
+          const custNameUpper = String(cust.name || "").trim().toUpperCase();
+          if (custNameUpper && custNameUpper.length >= 3 && pCodeUpper.includes(custNameUpper)) {
+            if (!cNameUpper.includes(custNameUpper)) {
+              toast.error(`Promo code "${promo.code}" is valid only for ${cust.name}.`);
+              return;
+            }
+          }
+        }
+      }
+    }
     const overlapErr = checkOverlapError(blockFrom, blockTo);
     if (overlapErr) {
       toast.error(overlapErr);
@@ -619,7 +731,9 @@ export function AvailabilityCalendarTab({
         (activeProduct as any)._id ||
         activeProduct.id;
       const res = await productSectionsApi.addExternalBooking(targetId, {
-        customerName,
+        customerId: matchedCustomer?.customerId || undefined,
+        customerName: matchedCustomer?.name || customerName,
+        customerEmail: matchedCustomer?.email || undefined,
         startDate: blockFrom,
         endDate: blockTo,
         amount: finalAmount,
@@ -1097,11 +1211,24 @@ export function AvailabilityCalendarTab({
                 </label>
                 <input
                   type="text"
-                  placeholder="As shared on chat"
+                  list="registered-customers-list"
+                  placeholder="As shared on chat (type name to auto-fill)"
                   value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
+                  onChange={(e) => handleCustomerNameChange(e.target.value)}
                   className="w-full p-2 bg-white border border-stone-200 rounded text-xs"
                 />
+                <datalist id="registered-customers-list">
+                  {existingCustomers.map((c: any) => (
+                    <option key={c.customerId || c._id} value={c.name}>
+                      {c.phone ? `${c.phone} • ` : ""}{c.email || c.customerId}
+                    </option>
+                  ))}
+                </datalist>
+                {matchedCustomer && (
+                  <p className="text-[11px] text-emerald-700 font-medium bg-emerald-50 border border-emerald-200/60 rounded px-2 py-0.5 mt-1">
+                    ✓ Auto-filled: {matchedCustomer.name} ({matchedCustomer.email}) • Ph: {matchedCustomer.phone}
+                  </p>
+                )}
               </div>
               <div className="space-y-1">
                 <label className="text-stone-500 font-medium text-[10px] uppercase tracking-wide">

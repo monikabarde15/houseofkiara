@@ -1,3 +1,4 @@
+import PageNotFound from "../../pages/PageNotFound";
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
@@ -224,7 +225,7 @@ export default function RentalAndPreloved() {
     }, [product]);
 
     if (loading) return <div style={{ padding: 60, textAlign: "center", fontFamily: "Cinzel, serif" }}>Loading piece details...</div>;
-    if (!product) return <h2>Product not found</h2>;
+    if (!product) return <PageNotFound />;
 
     const formatDate = (date) => {
         const y = date.getFullYear();
@@ -396,7 +397,7 @@ Color: ${selectedColor || "Not Selected"}
                         <span className="rap-sep">›</span>
                         <span className="rap-crumb">{product.category || "None"}</span>
                         <span className="rap-sep">›</span>
-                        <span className="rap-crumb current">{product.designer || "None"}</span>
+                        <span className="rap-crumb current">{product.designer || "Designer Atelier"}</span>
                         <span className="rap-sep">›</span>
                         <span className="rap-crumb current">{product.title || product.name || "None"}</span>
                     </div>
@@ -446,7 +447,7 @@ Color: ${selectedColor || "Not Selected"}
 
                             {/* ================= COMMON PRODUCT INFO ================= */}
 
-                            <p className="rap-rental-designer-name">{product.designer || "None"}</p>
+                            <p className="rap-rental-designer-name">{product.designer || "Designer Atelier"}</p>
 
                             <h1 className="rap-rental-product-title">
                                 {product.title || product.name || "None"} <em>{product.subTitle || ""}</em>
@@ -681,7 +682,7 @@ Color: ${selectedColor || "Not Selected"}
                                                     <div className="rap-rental-pdp-grid">
 
                                                         <div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Designer</span><p>{product.designer || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Designer</span><p>{product.designer || "Designer Atelier"}</p></div>
                                                             <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Fabric</span><p>{product.details?.fabric || product.fabric || "None"}</p></div>
                                                             <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Craft Technique</span><p>{product.details?.technique || product.craftTechnique || "None"}</p></div>
                                                             <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Includes</span><p>{product.details?.includes || product.includes || "None"}</p></div>
@@ -689,11 +690,11 @@ Color: ${selectedColor || "Not Selected"}
                                                         </div>
 
                                                         <div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Category</span><p>{product.category || product.subTitle || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Colour</span><p>{product.details?.color || product.color || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Category</span><p>{product.category || product.subTitle || "Luxury Couture"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Colour</span><p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p></div>
                                                             <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Thread</span><p>{product.details?.thread || product.thread || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "Lucknow, India"}</p></div>
                                                         </div>
 
                                                     </div>
@@ -1026,7 +1027,7 @@ Color: ${selectedColor || "Not Selected"}
                                                     <div className="rab-pdp-grid">
 
                                                         <div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Designer</span><p>{product.designer || "None"}</p></div>
+                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Designer</span><p>{product.designer || "Designer Atelier"}</p></div>
                                                             <div className="rab-pdp-row"><span className="rab-pdp-label">Fabric</span><p>{product.details?.fabric || product.fabric || "None"}</p></div>
                                                             <div className="rab-pdp-row"><span className="rab-pdp-label">Craft Technique</span><p>{product.details?.technique || product.craftTechnique || "None"}</p></div>
                                                             <div className="rab-pdp-row"><span className="rab-pdp-label">Includes</span><p>{product.details?.includes || product.includes || "None"}</p></div>
@@ -1034,11 +1035,11 @@ Color: ${selectedColor || "Not Selected"}
                                                         </div>
 
                                                         <div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Category</span><p>{product.category || product.subTitle || "None"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Colour</span><p>{product.details?.color || product.color || "None"}</p></div>
+                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Category</span><p>{product.category || product.subTitle || "Luxury Couture"}</p></div>
+                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Colour</span><p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p></div>
                                                             <div className="rab-pdp-row"><span className="rab-pdp-label">Thread</span><p>{product.details?.thread || product.thread || "None"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "None"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "None"}</p></div>
+                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p></div>
+                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "Lucknow, India"}</p></div>
                                                         </div>
 
                                                     </div>
@@ -1203,7 +1204,11 @@ Color: ${selectedColor || "Not Selected"}
 
                 </Row>
             </Container>
-            <RelatedProduct />
+            <RelatedProduct
+        product={product}
+        currentProductId={id}
+        category={product.subTitle || product.category}
+      />
         </section>
     );
 }

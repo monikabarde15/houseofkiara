@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { pool } from "../config/db.js";
+import { pool, clearTableCache } from "../config/db.js";
 
 export const safeQuery = async (sql, params = []) => {
   try {
@@ -959,6 +959,43 @@ export const buildWhereClause = (filter, tableName, params = []) => {
   return { whereSql, params };
 };
 
+const PERSISTENCE_FORBIDDEN_KEYS = new Set([
+  "__proto__",
+  "constructor",
+  "prototype",
+  "__defineGetter__",
+  "__defineSetter__",
+  "__lookupGetter__",
+  "__lookupSetter__",
+]);
+
+export const sanitizeDocumentForPersistence = (val, depth = 0) => {
+  if (depth > 12 || val === null || val === undefined) return val;
+  if (typeof val === "string") {
+    return val
+      .replace(/\0/g, "")
+      .replace(/<\s*script\b[^>]*>[\s\S]*?<\s*\/\s*script\s*>/gi, "")
+      .replace(/<\s*script\b[^>]*>/gi, "");
+  }
+  if (val instanceof Date || val instanceof RegExp || val instanceof ObjectId) {
+    return val;
+  }
+  if (Array.isArray(val)) {
+    return val.map((item) => sanitizeDocumentForPersistence(item, depth + 1));
+  }
+  if (typeof val === "object") {
+    const clean = {};
+    for (const key of Object.keys(val)) {
+      if (PERSISTENCE_FORBIDDEN_KEYS.has(key) || key.startsWith("$")) {
+        continue;
+      }
+      clean[key] = sanitizeDocumentForPersistence(val[key], depth + 1);
+    }
+    return clean;
+  }
+  return val;
+};
+
 // Subdocument wrapping to support .toObject?.() and safe mutation
 export const wrapDocumentData = (data, modelInstance) => {
   if (!data || typeof data !== "object") return data;
@@ -1114,6 +1151,7 @@ export class PostgresDocument {
   }
 
   async save() {
+    this._data = wrapDocumentData(sanitizeDocumentForPersistence(this._data), this);
     this._data.updatedAt = new Date().toISOString();
     this._data._id = this._id;
 
@@ -1543,70 +1581,60 @@ export class PostgresModel {
 
   async findOneAndUpdate(filter, update, options = {}) {
     const config = this._config;
-    const client = await pool.connect();
-    try {
-      await client.query("BEGIN");
+    const { whereSql, params } = buildWhereClause(filter, config.tableName);
+    const selectSql = `SELECT * FROM ${config.tableName} WHERE ${whereSql}`;
+    const res = await safeQuery(selectSql, params);
 
-      // Lock matching candidate rows with FOR UPDATE to prevent race conditions
-      const { whereSql, params } = buildWhereClause(filter, config.tableName);
-      const selectSql = `SELECT * FROM ${config.tableName} WHERE ${whereSql} FOR UPDATE`;
-      const res = await client.query(selectSql, params);
+    const matchingRow = res.rows.find((r) => {
+      const d = r.data || {};
+      d._id = r._id;
+      return matchesFilter(d, filter);
+    });
 
-      const matchingRow = res.rows.find((r) => {
-        const d = r.data || {};
-        d._id = r._id;
-        return matchesFilter(d, filter);
-      });
-
-      if (!matchingRow) {
-        await client.query("COMMIT");
-        if (options.upsert) {
-          const newDoc = new PostgresDocument({ ...filter }, this);
-          applyUpdate(newDoc._data, update);
-          await newDoc.save();
-          return newDoc;
-        }
-        return null;
+    if (!matchingRow) {
+      if (options.upsert) {
+        const newDoc = new PostgresDocument({ ...filter }, this);
+        applyUpdate(newDoc._data, update);
+        await newDoc.save();
+        clearTableCache(config.tableName);
+        return newDoc;
       }
-
-      const originalData = deepClone(matchingRow.data || {});
-      originalData._id = matchingRow._id;
-
-      const updatedData = deepClone(originalData);
-      applyUpdate(updatedData, update);
-      updatedData.updatedAt = new Date().toISOString();
-
-      // Sync columns
-      const updates = ["data = $2", "updated_at = NOW()"];
-      const updateParams = [matchingRow._id, JSON.stringify(updatedData)];
-
-      let pIdx = 3;
-      for (const [modelProp, colName] of Object.entries(
-        config.columnMap || {},
-      )) {
-        const val = updatedData[modelProp];
-        updates.push(`${colName} = $${pIdx}`);
-        updateParams.push(val !== undefined ? val : null);
-        pIdx++;
-      }
-
-      const updateSql = `
-        UPDATE ${config.tableName}
-        SET ${updates.join(", ")}
-        WHERE _id = $1
-        RETURNING *;
-      `;
-      await client.query(updateSql, updateParams);
-      await client.query("COMMIT");
-
-      const returnData = options.new ? updatedData : originalData;
-      return new PostgresDocument(returnData, this);
-    } catch (err) {
-      await client.query("ROLLBACK");
-      throw err;
-    } finally {
-      client.release();
+      return null;
     }
+
+    const originalData = deepClone(matchingRow.data || {});
+    originalData._id = matchingRow._id;
+
+    let updatedData = deepClone(originalData);
+    applyUpdate(updatedData, update);
+    updatedData = sanitizeDocumentForPersistence(updatedData);
+    updatedData.updatedAt = new Date().toISOString();
+
+    const updates = ["data = $2", "updated_at = NOW()"];
+    const updateParams = [matchingRow._id, JSON.stringify(updatedData)];
+
+    let pIdx = 3;
+    for (const [modelProp, colName] of Object.entries(
+      config.columnMap || {},
+    )) {
+      const val = updatedData[modelProp];
+      updates.push(`${colName} = $${pIdx}`);
+      updateParams.push(val !== undefined ? val : null);
+      pIdx++;
+    }
+
+    const updateSql = `
+      UPDATE ${config.tableName}
+      SET ${updates.join(", ")}
+      WHERE _id = $1
+      RETURNING *;
+    `;
+    clearTableCache(config.tableName);
+    await safeQuery(updateSql, updateParams);
+    clearTableCache(config.tableName);
+
+    const returnData = options.new ? updatedData : originalData;
+    return new PostgresDocument(returnData, this);
   }
 
   async findByIdAndUpdate(id, update, options = {}) {
@@ -1617,38 +1645,29 @@ export class PostgresModel {
 
   async findOneAndDelete(filter) {
     const config = this._config;
-    const client = await pool.connect();
-    try {
-      await client.query("BEGIN");
-      const { whereSql, params } = buildWhereClause(filter, config.tableName);
-      const selectSql = `SELECT * FROM ${config.tableName} WHERE ${whereSql} FOR UPDATE`;
-      const res = await client.query(selectSql, params);
+    const { whereSql, params } = buildWhereClause(filter, config.tableName);
+    const selectSql = `SELECT * FROM ${config.tableName} WHERE ${whereSql}`;
+    const res = await safeQuery(selectSql, params);
 
-      const matchingRow = res.rows.find((r) => {
-        const d = r.data || {};
-        d._id = r._id;
-        return matchesFilter(d, filter);
-      });
+    const matchingRow = res.rows.find((r) => {
+      const d = r.data || {};
+      d._id = r._id;
+      return matchesFilter(d, filter);
+    });
 
-      if (!matchingRow) {
-        await client.query("COMMIT");
-        return null;
-      }
-
-      await client.query(`DELETE FROM ${config.tableName} WHERE _id = $1`, [
-        matchingRow._id,
-      ]);
-      await client.query("COMMIT");
-
-      const data = matchingRow.data || {};
-      data._id = matchingRow._id;
-      return new PostgresDocument(data, this);
-    } catch (err) {
-      await client.query("ROLLBACK");
-      throw err;
-    } finally {
-      client.release();
+    if (!matchingRow) {
+      return null;
     }
+
+    clearTableCache(config.tableName);
+    await safeQuery(`DELETE FROM ${config.tableName} WHERE _id = $1`, [
+      matchingRow._id,
+    ]);
+    clearTableCache(config.tableName);
+
+    const data = matchingRow.data || {};
+    data._id = matchingRow._id;
+    return new PostgresDocument(data, this);
   }
 
   async findByIdAndDelete(id) {
@@ -1671,56 +1690,48 @@ export class PostgresModel {
 
   async updateMany(filter, update, options = {}) {
     const config = this._config;
-    const client = await pool.connect();
-    try {
-      await client.query("BEGIN");
-      const { whereSql, params } = buildWhereClause(filter, config.tableName);
-      const selectSql = `SELECT * FROM ${config.tableName} WHERE ${whereSql} FOR UPDATE`;
-      const res = await client.query(selectSql, params);
+    const { whereSql, params } = buildWhereClause(filter, config.tableName);
+    const selectSql = `SELECT * FROM ${config.tableName} WHERE ${whereSql}`;
+    const res = await safeQuery(selectSql, params);
 
-      const matchingRows = res.rows.filter((r) => {
-        const d = r.data || {};
-        d._id = r._id;
-        return matchesFilter(d, filter);
-      });
+    const matchingRows = res.rows.filter((r) => {
+      const d = r.data || {};
+      d._id = r._id;
+      return matchesFilter(d, filter);
+    });
 
-      let modifiedCount = 0;
-      for (const row of matchingRows) {
-        const updatedData = deepClone(row.data || {});
-        updatedData._id = row._id;
-        applyUpdate(updatedData, update);
-        updatedData.updatedAt = new Date().toISOString();
+    let modifiedCount = 0;
+    for (const row of matchingRows) {
+      let updatedData = deepClone(row.data || {});
+      updatedData._id = row._id;
+      applyUpdate(updatedData, update);
+      updatedData = sanitizeDocumentForPersistence(updatedData);
+      updatedData.updatedAt = new Date().toISOString();
 
-        const updates = ["data = $2", "updated_at = NOW()"];
-        const updateParams = [row._id, JSON.stringify(updatedData)];
+      const updates = ["data = $2", "updated_at = NOW()"];
+      const updateParams = [row._id, JSON.stringify(updatedData)];
 
-        let pIdx = 3;
-        for (const [modelProp, colName] of Object.entries(
-          config.columnMap || {},
-        )) {
-          const val = updatedData[modelProp];
-          updates.push(`${colName} = $${pIdx}`);
-          updateParams.push(val !== undefined ? val : null);
-          pIdx++;
-        }
-
-        const updateSql = `UPDATE ${config.tableName} SET ${updates.join(", ")} WHERE _id = $1`;
-        await client.query(updateSql, updateParams);
-        modifiedCount++;
+      let pIdx = 3;
+      for (const [modelProp, colName] of Object.entries(
+        config.columnMap || {},
+      )) {
+        const val = updatedData[modelProp];
+        updates.push(`${colName} = $${pIdx}`);
+        updateParams.push(val !== undefined ? val : null);
+        pIdx++;
       }
 
-      await client.query("COMMIT");
-      return {
-        acknowledged: true,
-        matchedCount: matchingRows.length,
-        modifiedCount,
-      };
-    } catch (err) {
-      await client.query("ROLLBACK");
-      throw err;
-    } finally {
-      client.release();
+      const updateSql = `UPDATE ${config.tableName} SET ${updates.join(", ")} WHERE _id = $1`;
+      await safeQuery(updateSql, updateParams);
+      modifiedCount++;
     }
+
+    clearTableCache(config.tableName);
+    return {
+      acknowledged: true,
+      matchedCount: matchingRows.length,
+      modifiedCount,
+    };
   }
 
   async deleteOne(filter) {
@@ -1733,35 +1744,27 @@ export class PostgresModel {
 
   async deleteMany(filter) {
     const config = this._config;
-    const client = await pool.connect();
-    try {
-      await client.query("BEGIN");
-      const { whereSql, params } = buildWhereClause(filter, config.tableName);
-      const selectSql = `SELECT _id, data FROM ${config.tableName} WHERE ${whereSql} FOR UPDATE`;
-      const res = await client.query(selectSql, params);
+    const { whereSql, params } = buildWhereClause(filter, config.tableName);
+    const selectSql = `SELECT _id, data FROM ${config.tableName} WHERE ${whereSql}`;
+    const res = await safeQuery(selectSql, params);
 
-      const matchingIds = res.rows
-        .filter((r) => matchesFilter(r.data || { _id: r._id }, filter))
-        .map((r) => r._id);
+    const matchingIds = res.rows
+      .filter((r) => matchesFilter(r.data || { _id: r._id }, filter))
+      .map((r) => r._id);
 
-      if (matchingIds.length > 0) {
-        await client.query(
-          `DELETE FROM ${config.tableName} WHERE _id = ANY($1::text[])`,
-          [matchingIds],
-        );
-      }
-
-      await client.query("COMMIT");
-      return {
-        acknowledged: true,
-        deletedCount: matchingIds.length,
-      };
-    } catch (err) {
-      await client.query("ROLLBACK");
-      throw err;
-    } finally {
-      client.release();
+    if (matchingIds.length > 0) {
+      clearTableCache(config.tableName);
+      await safeQuery(
+        `DELETE FROM ${config.tableName} WHERE _id = ANY($1::text[])`,
+        [matchingIds],
+      );
+      clearTableCache(config.tableName);
     }
+
+    return {
+      acknowledged: true,
+      deletedCount: matchingIds.length,
+    };
   }
 
   async aggregate(pipeline = []) {

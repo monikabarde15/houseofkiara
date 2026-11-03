@@ -1,3 +1,4 @@
+import PageNotFound from "../../pages/PageNotFound";
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useParams , useNavigate, useLocation } from "react-router-dom";
@@ -245,7 +246,7 @@ export default function RentalAndPreloved() {
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     if (loading) return <div style={{ padding: 60, textAlign: "center", fontFamily: "Cinzel, serif" }}>Loading piece details...</div>;
-    if (!product) return <h2>Product not found</h2>;
+    if (!product) return <PageNotFound />;
 
     const formatDate = (date) => {
         const y = date.getFullYear();
@@ -393,7 +394,7 @@ Product ID: ${product.id}
                         <span className="rap-sep">›</span>
                         <span className="rap-crumb">{product.category || "None"}</span>
                         <span className="rap-sep">›</span>
-                        <span className="rap-crumb current">{product.designer || "None"}</span>
+                        <span className="rap-crumb current">{product.designer || "Designer Atelier"}</span>
                         <span className="rap-sep">›</span>
                         <span className="rap-crumb current">{product.title || product.name || "None"}</span>
                     </div>
@@ -443,7 +444,7 @@ Product ID: ${product.id}
 
                             {/* ================= COMMON PRODUCT INFO ================= */}
 
-                            <p className="rap-rental-designer-name">{product.designer || "None"}</p>
+                            <p className="rap-rental-designer-name">{product.designer || "Designer Atelier"}</p>
 
                             <h1 className="rap-rental-product-title">
                                 {product.title || product.name || "None"} <em>{product.subTitle || ""}</em>
@@ -679,19 +680,19 @@ Product ID: ${product.id}
                                                     <div className="rap-rental-pdp-grid">
 
                                                         <div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Designer</span><p>{product.designer || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Fabric</span><p>{product.details?.fabric || product.material || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Craft Technique</span><p>{product.details?.technique || product.technique || product.embellishments || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Includes</span><p>{product.details?.includes || product.setIncludes || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Delivery Time</span><p>{product.details?.delivery || product.delivery || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Designer</span><p>{product.designer || "Designer Atelier"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Fabric</span><p>{product.details?.fabric || product.material || "Pure Georgette & Silk"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Craft Technique</span><p>{product.details?.technique || product.technique || product.embellishments || "Hand Embroidered Zardozi"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Includes</span><p>{product.details?.includes || product.setIncludes || "Full Couture Set & Dupatta"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Delivery Time</span><p>{product.details?.delivery || product.delivery || "Express Courier (2-3 Days)"}</p></div>
                                                         </div>
 
                                                         <div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Category</span><p>{product.category || product.subTitle || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Colour</span><p>{product.details?.color || product.color || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Thread</span><p>{product.details?.thread || product.threadWork || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "None"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Category</span><p>{product.category || product.subTitle || "Luxury Couture"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Colour</span><p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Thread</span><p>{product.details?.thread || product.threadWork || "Metallic Zari Threadwork"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p></div>
+                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "Lucknow, India"}</p></div>
                                                         </div>
 
                                                     </div>
@@ -710,7 +711,10 @@ Product ID: ${product.id}
                                             {isOpen("craft") && (
                                                 <div className="rap-rental-pdp-content">
                                                     <p className="rap-rental-craft-text">
-                                                        {product.craft || product.story || product.description || "None"}
+                                                        {product.craft ||
+                            product.story ||
+                            product.description ||
+                            `Each piece in the House of Kaira rental archive begins as an exclusive conversation between master designer and artisan karigars. Handcrafted over weeks in artisanal ateliers, every motif is meticulously stitched to perfection.`}
                                                     </p>
                                                 </div>
                                             )}
@@ -1251,44 +1255,44 @@ Product ID: ${product.id}
                                                         <div>
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Designer</span>
-                                                                <p>{product.designer || "None"}</p>
+                                                                <p>{product.designer || "Designer Atelier"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Fabric</span>
-                                                                <p>{product.details?.fabric || product.material || "None"}</p>
+                                                                <p>{product.details?.fabric || product.material || "Pure Georgette & Silk"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Embroidery</span>
-                                                                <p>{product.details?.technique || product.technique || product.embellishments || "None"}</p>
+                                                                <p>{product.details?.technique || product.technique || product.embellishments || "Hand Embroidered Zardozi"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Includes</span>
-                                                                <p>{product.details?.includes || product.setIncludes || "None"}</p>
+                                                                <p>{product.details?.includes || product.setIncludes || "Full Couture Set & Dupatta"}</p>
                                                             </div>
                                                         </div>
 
                                                         <div>
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Category</span>
-                                                                <p>{product.category || product.subTitle || "None"}</p>
+                                                                <p>{product.category || product.subTitle || "Luxury Couture"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Colour</span>
-                                                                <p>{product.details?.color || product.color || "None"}</p>
+                                                                <p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Occasion</span>
-                                                                <p>{product.details?.occasion || product.occasion || "None"}</p>
+                                                                <p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p>
                                                             </div>
 
                                                             <div className="rap-preloved-details-row">
                                                                 <span className="rap-preloved-details-label">Origin</span>
-                                                                <p>{product.details?.origin || product.origin || "None"}</p>
+                                                                <p>{product.details?.origin || product.origin || "Lucknow, India"}</p>
                                                             </div>
                                                         </div>
 
@@ -1560,7 +1564,11 @@ Product ID: ${product.id}
 
                 </Row>
             </Container>
-            <RelatedProduct />
+            <RelatedProduct
+        product={product}
+        currentProductId={id}
+        category={product.subTitle || product.category}
+      />
         </section>
     );
 }
