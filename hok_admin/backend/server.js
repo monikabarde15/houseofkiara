@@ -85,29 +85,31 @@ server.on("error", (error) => {
   console.error("Admin API server error:", error.message);
 });
 
-const attemptConnect = async () => {
-  try {
-    await connectDB();
-    dbReady = true;
-    console.log("Database connected successfully! API is ready.");
-    // Pre-warm frequently accessed tables in the background for instant first load
-    Promise.allSettled([
-      pool.query(
-        `SELECT * FROM products WHERE (data->>'status' = ANY($1::text[])) ORDER BY created_at DESC`,
-        [["Live", "Out of Stock", "Out Of Stock"]],
-      ),
-      pool.query(`SELECT * FROM products WHERE 1=1 ORDER BY created_at DESC`),
-      pool.query(`SELECT * FROM designers WHERE 1=1 ORDER BY created_at DESC`),
-      pool.query(`SELECT * FROM categories WHERE 1=1 ORDER BY created_at DESC`),
-      pool.query(`SELECT * FROM orders WHERE 1=1 ORDER BY created_at DESC`),
-      pool.query(`SELECT * FROM submissions WHERE 1=1 ORDER BY created_at DESC`),
-      pool.query(`SELECT * FROM customers WHERE 1=1 ORDER BY created_at DESC`),
-      pool.query(`SELECT * FROM listers WHERE 1=1 ORDER BY created_at DESC`),
-    ]).catch(() => {});
-  } catch (err) {
-    console.error("DB connection attempt failed, retrying in 5 seconds:", err.message);
-    setTimeout(attemptConnect, 5000);
+async function initializeDatabase() {
+  while (!dbReady) {
+    try {
+      await connectDB(2);
+      dbReady = true;
+      console.log("Database connected and ready.");
+      // Pre-warm frequently accessed tables in the background for instant first load
+      Promise.allSettled([
+        pool.query(
+          `SELECT * FROM products WHERE (data->>'status' = ANY($1::text[])) ORDER BY created_at DESC`,
+          [["Live", "Out of Stock", "Out Of Stock"]],
+        ),
+        pool.query(`SELECT * FROM products WHERE 1=1 ORDER BY created_at DESC`),
+        pool.query(`SELECT * FROM designers WHERE 1=1 ORDER BY created_at DESC`),
+        pool.query(`SELECT * FROM categories WHERE 1=1 ORDER BY created_at DESC`),
+        pool.query(`SELECT * FROM orders WHERE 1=1 ORDER BY created_at DESC`),
+        pool.query(`SELECT * FROM submissions WHERE 1=1 ORDER BY created_at DESC`),
+        pool.query(`SELECT * FROM customers WHERE 1=1 ORDER BY created_at DESC`),
+        pool.query(`SELECT * FROM listers WHERE 1=1 ORDER BY created_at DESC`),
+      ]).catch(() => {});
+      break;
+    } catch (err) {
+      console.error("Database connection failed, retrying in 3 seconds:", err.message);
+      await new Promise((res) => setTimeout(res, 3000));
+    }
   }
-};
-
-attemptConnect();
+}
+initializeDatabase();

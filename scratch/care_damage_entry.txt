@@ -1,0 +1,42 @@
+'care-damage': {
+    slug: 'care-damage',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'care-journey', label: 'Care journey' },
+      { id: 'normal-wear-test', label: 'Normal wear test' },
+      { id: 'sections', label: 'Sections' },
+      { id: 'answers', label: 'Answers', count: 36 },
+      { id: 'related', label: 'Related policies' }
+    ],
+    hero: {
+      tagline: 'Every piece in safe hands',
+      headingPrefix: 'Care, cleaning & ',
+      headingGoldItalic: 'damage policy',
+      lead: 'The care journey from arrival to return, and the single clear test that decides normal wear from repairable damage.',
+      searchPlaceholder: 'Search care rules, like "dry cleaning" or "hem dust"',
+      popularQuestions: [
+        'Do I need to dry clean the piece before returning?',
+        'What happens if wine or makeup gets on the garment?'
+      ]
+    },
+    opening: {
+      sideLabel: 'Garment preservation protocol',
+      text: 'Every garment returned to House of Kaira undergoes bespoke botanical dry cleaning and restoration by master tailors. You are never expected or permitted to wash or press garments yourself.',
+      figures: [
+        {
+          key: 'cleaning_included_flag',
+          label: 'Cleaning included',
+          displayValue: 'Included complimentary',
+          contextBefore: 'Professional dry cleaning is',
+          contextAfter: 'with every rental. Report accidental spills within'
+        },
+        {
+          key: 'damage_report_window_hours',
+          label: 'Spill report window',
+          displayValue: '12 hours',
+          contextBefore: '',
+          contextAfter: 'for optimal fiber recovery.'
+        }
+      ]
+    }
+  },

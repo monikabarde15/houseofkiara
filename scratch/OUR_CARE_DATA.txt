@@ -1,0 +1,40 @@
+{
+  beforeAfter: {
+    heading: "Before you, and after you",
+    notes: [
+      "Professionally cleaned before and after every rental, by our partner specialists in couture care.",
+      "Checked by hand and pressed before it leaves us.",
+      "Photographed and filmed just before dispatch, so its condition is always on record.",
+      "Packed in tissue, on its padded hanger, inside its garment bag.",
+      "All of this is included in your rental fee, and never charged to you."
+    ],
+    questionIds: ["o-clean", "o-cost", "o-record", "o-repair"]
+  },
+  restoring: {
+    heading: "If a piece needs restoring",
+    steps: [
+      {
+        num: 1,
+        title: "Inspected with care",
+        line: `Within ${CARE_SETTINGS.inspect_within} of reaching us, against our photographs and video from before dispatch.`
+      },
+      {
+        num: 2,
+        title: "Shared with you",
+        line: `Within ${CARE_SETTINGS.deduction_notice_within}: photographs, the amount and how it was worked out. Nothing is deducted before you see it.`
+      },
+      {
+        num: 3,
+        title: "Your reply",
+        line: `You have ${CARE_SETTINGS.deduction_reply_within} to share anything you would like us to consider.`
+      },
+      {
+        num: 4,
+        title: "The rest returned",
+        line: `Everything not in question comes back within ${CARE_SETTINGS.deposit_refund_window} of inspection.`
+      }
+    ],
+    closingNote: "We only ever charge what restoring a piece truly costs, never a penalty. Every amount and timing is explained in our Deposit Policy.",
+    questionIds: ["x-amount", "x-notice", "x-reply", "x-long"]
+  }
+}

@@ -32,7 +32,7 @@ import SiteSettingsView from './components/SiteSettings';
 
 // import HomepageView from './components/HomepageView';
 import HomepageView from "./components/Homepage/HomepageView";
-import PagesView from './components/PagesView';
+import { PagesModule } from './components/Pages/PagesModule';
 
 import { 
   initialCustomers, 
@@ -694,6 +694,10 @@ export default function App() {
         <SiteSettingsView
           siteSettings={siteSettings}
           onUpdateSettings={setSiteSettings}
+          onSaveToServer={async (data) => {
+            const api = await import('./services/siteSettingsApi');
+            await api.updateSiteSettings(data);
+          }}
           onBack={() => setView('homepage')}
           onNavigateNotifications={() => setView('notifications')}
         />
@@ -720,7 +724,7 @@ export default function App() {
     }
 
     if (currentView === 'pages') {
-      return <PagesView onBackToDashboard={() => setView('dashboard')} />;
+      return <PagesModule onBackToDashboard={() => setView('dashboard')} />;
     }
 
     return (

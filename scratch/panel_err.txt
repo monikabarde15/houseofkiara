@@ -1,0 +1,65 @@
+261:         {!isAbout && !isListYourPiece && !isPrivacy && !isCookies && (
+262:           <button
+263:             type="button"
+264:             onClick={onMarkReviewed}
+265:             className="flex-1 py-1.5 px-3 bg-white border border-[#e6dccb] rounded-[4px] text-xs text-[#1a1612] hover:bg-[#faf7f2] cursor-pointer transition-colors"
+266:           >
+267:             Mark as reviewed today
+268:           </button>
+269:         )}
+270:       </div>
+271: 
+272:       {/* 4. Section: To look at (Spec §7.7, §8.6, Screen 44) */}
+273:       <div className="border-t border-[#f0ebe3] pt-4 space-y-2.5">
+274:         <div className="flex items-center justify-between">
+275:           <h3 className="text-[12.5px] font-semibold text-[#1a1612]">
+276:             To look at
+277:           </h3>
+278:           {onOpenChecks && checks.length > 0 && (
+279:             <button
+280:               type="button"
+281:               onClick={onOpenChecks}
+282:               className="text-[#8a6a36] hover:underline cursor-pointer"
+283:             >
+284:               All {isFaq ? 14 : isContact ? 2 : isAbout ? 9 : isHowItWorks ? 31 : isListYourPiece ? 30 : isTerms ? 9 : (page.checksCount || checks.length)}
+285:             </button>
+286:           )}
+287:         </div>
+288: 
+289:         {checks.length === 0 ? (
+290:           <p className="text-xs text-[#8a7f73]">
+291:             Nothing to look at on this page.
+292:           </p>
+293:         ) : (
+294:           <div className="space-y-2.5">
+295:             {checks.map(check => (
+296:             <div key={check.id} className="flex items-start gap-2">
+297:               <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
+298:                 check.type === 'high' ? 'bg-[#b85c38]' : check.type === 'low' ? 'bg-[#8a7f73]' : 'bg-[#d19a3c]'
+299:               }`} />
+300:               <div className="min-w-0">
+301:                 <div className="font-medium text-[#1a1612] leading-tight text-xs">
+302:                   {check.title}
+303:                 </div>
+304:                 <div className="text-[11px] text-[#8a7f73] mt-0.5 truncate">
+305:                   {check.location}
+306:                 </div>
+307:               </div>
+308:             </div>
+309:           ))}
+310:         </div>
+311:       </div>
+312: 
+313:       {/* 5. Section: Figures on this page (Spec §7.7, §8.6, Screen 44) */}
+314:       <div className="border-t border-[#f0ebe3] pt-4 space-y-2.5">
+315:         <div className="flex items-center justify-between">
+316:           <h3 className="text-[12.5px] font-semibold text-[#1a1612]">
+317:             Figures on this page
+318:           </h3>
+319:           <span className="text-[#8a7f73]">
+320:             All {isDeposit ? 28 : isFaq ? 29 : isContact ? 19 : isAbout ? 1 : isHowItWorks ? 8 : isListYourPiece ? 7 : isTerms ? 48 : (page.figuresCount || 23)}
+321:           </span>
+322:         </div>
+323: 
+324:         <div className="space-y-1.5">
+325:           {figures.map(fig => (

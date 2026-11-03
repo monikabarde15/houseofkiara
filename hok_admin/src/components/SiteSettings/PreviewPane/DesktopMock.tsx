@@ -147,10 +147,10 @@ export const DesktopMock: React.FC<DesktopMockProps> = ({
         {/* Mega Menu Overlay */}
         {activeRegion === 'header' && expandedNav && expandedNav.menuColumns && expandedNav.menuColumns.length > 0 && (
           <div className="hok-mock-mega-menu">
-            {expandedNav.menuColumns.slice(0, 3).map((col) => (
+            {expandedNav.menuColumns.filter(c => !c.hidden).map((col) => (
               <div key={col.id} className="hok-mock-mega-col">
                 <div className="hok-mock-mega-col-title">{col.heading}</div>
-                {(col.links || []).slice(0, 3).map((lnk) => (
+                {(col.links || []).filter(l => !l.hidden).map((lnk) => (
                   <div key={lnk.id} className="hok-mock-mega-col-link">
                     {lnk.label}
                   </div>

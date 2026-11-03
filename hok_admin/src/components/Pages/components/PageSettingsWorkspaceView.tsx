@@ -1,6 +1,6 @@
 /* =========================================================
    HOUSE OF KAIRA · ADMIN PANEL — THE PAGES SECTION
-   Component: PageSettingsWorkspaceView (Spec §7.9, Screens 28-30)
+   Component: PageSettingsWorkspaceView (Spec §7.9, Screens 28-30, 46)
    Admin panel v217 · 20 October 2026
    Rule: Zero dashes used as punctuation. Sentence case only.
 ========================================================= */
@@ -19,6 +19,14 @@ interface PageSettingsWorkspaceViewProps {
   onOpenAnswersView?: () => void;
   onJumpToPart: (partId: string) => void;
   onReadAsOnDate: (date: string) => void;
+  hiddenParts?: Record<string, boolean>;
+  onTogglePartHidden?: (partId: string) => void;
+  showCircularMark?: boolean;
+  onToggleCircularMark?: () => void;
+  showFourthWayLine?: boolean;
+  onToggleFourthWayLine?: () => void;
+  showInstagramLine?: boolean;
+  onToggleInstagramLine?: () => void;
 }
 
 export const PageSettingsWorkspaceView: React.FC<PageSettingsWorkspaceViewProps> = ({
@@ -26,7 +34,15 @@ export const PageSettingsWorkspaceView: React.FC<PageSettingsWorkspaceViewProps>
   onBackToPaper,
   onOpenAnswersView,
   onJumpToPart,
-  onReadAsOnDate
+  onReadAsOnDate,
+  hiddenParts = {},
+  onTogglePartHidden = () => {},
+  showCircularMark = true,
+  onToggleCircularMark = () => {},
+  showFourthWayLine = true,
+  onToggleFourthWayLine = () => {},
+  showInstagramLine = true,
+  onToggleInstagramLine = () => {}
 }) => {
   const showVersions = page.group === 'policies' || page.slug === 'faqs';
 
@@ -37,11 +53,19 @@ export const PageSettingsWorkspaceView: React.FC<PageSettingsWorkspaceViewProps>
         {/* 1. Header Overview Card */}
         <PageSettingsHeader page={page} onBackToPaper={onBackToPaper} />
 
-        {/* 2. Parts Settings Card (Screen 28) */}
+        {/* 2. Parts Settings Card (Screen 28, Screen 46) */}
         <PageSettingsPartsCard
           page={page}
           onOpenAnswersView={onOpenAnswersView}
           onJumpToPart={onJumpToPart}
+          hiddenParts={hiddenParts}
+          onTogglePartHidden={onTogglePartHidden}
+          showCircularMark={showCircularMark}
+          onToggleCircularMark={onToggleCircularMark}
+          showFourthWayLine={showFourthWayLine}
+          onToggleFourthWayLine={onToggleFourthWayLine}
+          showInstagramLine={showInstagramLine}
+          onToggleInstagramLine={onToggleInstagramLine}
         />
 
         {/* 3. Search & Sharing Card (Screen 29) */}

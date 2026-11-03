@@ -1,0 +1,70 @@
+241:         <a
+242:           href={page.slug}
+243:           target="_blank"
+244:           rel="noreferrer"
+245:           className="flex-1 py-1.5 px-3 bg-white border border-[#e6dccb] rounded-[4px] text-center text-xs text-[#1a1612] hover:bg-[#faf7f2] cursor-pointer transition-colors"
+246:         >
+247:           View on the site ↗
+248:         </a>
+249:         {!isAbout && !isListYourPiece && !isPrivacy && !isCookies && (
+250:           <button
+251:             type="button"
+252:             onClick={onMarkReviewed}
+253:             className="flex-1 py-1.5 px-3 bg-white border border-[#e6dccb] rounded-[4px] text-xs text-[#1a1612] hover:bg-[#faf7f2] cursor-pointer transition-colors"
+254:           >
+255:             Mark as reviewed today
+256:           </button>
+257:         )}
+258:       </div>
+259: 
+260:       {/* 4. Section: To look at (Spec §7.7, §8.6, Screen 44) */}
+261:       <div className="border-t border-[#f0ebe3] pt-4 space-y-2.5">
+262:         <div className="flex items-center justify-between">
+263:           <h3 className="text-[12.5px] font-semibold text-[#1a1612]">
+264:             To look at
+265:           </h3>
+266:           {onOpenChecks && (
+267:             <button
+268:               type="button"
+269:               onClick={onOpenChecks}
+270:               className="text-[#8a6a36] hover:underline cursor-pointer"
+271:             >
+272:               All {isFaq ? 14 : isContact ? 2 : isAbout ? 9 : isHowItWorks ? 31 : isListYourPiece ? 30 : isTerms ? 9 : (page.checksCount || checks.length)}
+273:             </button>
+274:           )}
+275:         </div>
+276: 
+277:         <div className="space-y-2.5">
+278:           {checks.map(check => (
+279:             <div key={check.id} className="flex items-start gap-2">
+280:               <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
+281:                 check.type === 'high' ? 'bg-[#b85c38]' : check.type === 'low' ? 'bg-[#8a7f73]' : 'bg-[#d19a3c]'
+282:               }`} />
+283:               <div className="min-w-0">
+284:                 <div className="font-medium text-[#1a1612] leading-tight text-xs">
+285:                   {check.title}
+286:                 </div>
+287:                 <div className="text-[11px] text-[#8a7f73] mt-0.5 truncate">
+288:                   {check.location}
+289:                 </div>
+290:               </div>
+291:             </div>
+292:           ))}
+293:         </div>
+294:       </div>
+295: 
+296:       {/* 5. Section: Figures on this page (Spec §7.7, §8.6, Screen 44) */}
+297:       <div className="border-t border-[#f0ebe3] pt-4 space-y-2.5">
+298:         <div className="flex items-center justify-between">
+299:           <h3 className="text-[12.5px] font-semibold text-[#1a1612]">
+300:             Figures on this page
+301:           </h3>
+302:           <span className="text-[#8a7f73]">
+303:             All {isFaq ? 29 : isContact ? 19 : isAbout ? 1 : isHowItWorks ? 8 : isListYourPiece ? 7 : isTerms ? 48 : (page.figuresCount || 23)}
+304:           </span>
+305:         </div>
+306: 
+307:         <div className="space-y-1.5">
+308:           {figures.map(fig => (
+309:             <div
+310:               key={fig.key}

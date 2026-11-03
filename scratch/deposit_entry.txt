@@ -1,0 +1,44 @@
+'deposit-policy': {
+    slug: 'deposit-policy',
+    parts: [
+      { id: 'hero', label: 'Hero' },
+      { id: 'five-steps', label: 'Five steps' },
+      { id: 'opening', label: 'Opening' },
+      { id: 'at-a-glance', label: 'At a glance' },
+      { id: 'worked-example', label: 'Worked example' },
+      { id: 'sections', label: 'Sections' },
+      { id: 'answers', label: 'Answers', count: 42 },
+      { id: 'related', label: 'Related policies' }
+    ],
+    hero: {
+      tagline: 'Holding and returning trust',
+      headingPrefix: 'Security deposit ',
+      headingGoldItalic: 'policy',
+      lead: 'The deposit from request to refund, with worked examples you can follow step by step. Built to be transparent and returned promptly.',
+      searchPlaceholder: 'Search deposit questions, like "hold amount" or "inspection"',
+      popularQuestions: [
+        'When do I get my security deposit back?',
+        'What counts as normal wear and tear?'
+      ]
+    },
+    opening: {
+      sideLabel: 'Security deposit terms',
+      text: 'A security deposit is held purely as collateral during your rental period. It is never banked as revenue, remains segregated, and is returned to your original payment card immediately after concierge inspection.',
+      figures: [
+        {
+          key: 'deposit_standard_hold',
+          label: 'Standard deposit hold',
+          displayValue: '₹10,000',
+          contextBefore: 'The standard deposit hold for couture gowns is',
+          contextAfter: 'and is released within'
+        },
+        {
+          key: 'deposit_return_window_hours',
+          label: 'Deposit release window',
+          displayValue: '48 hours',
+          contextBefore: '',
+          contextAfter: 'of studio verification.'
+        }
+      ]
+    }
+  },

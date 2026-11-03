@@ -1,0 +1,76 @@
+[
+  {
+    id: "arrives",
+    num: 1,
+    title: "When it arrives",
+    heading: "When your piece arrives",
+    subheading: `It reaches you cleaned, pressed and ready to wear, ${CARE_SETTINGS.arrive_before} before your event.`,
+    notes: [
+      `Open it within ${CARE_SETTINGS.issue_window} of delivery, in good light, and look it over before you wear it.`,
+      "Noticed a mark? Send us a photo before you wear it, and we note it on your booking, so it is never counted against you.",
+      `Try it on the same day. If the fit is not right, message us within ${CARE_SETTINGS.issue_window} and we will arrange a swap.`,
+      "Hang it on its padded hanger, inside its garment bag, somewhere cool, dry and out of direct sunlight.",
+      "Keep the tissue and garment bag for the journey back."
+    ],
+    questionIds: ["a-check", "a-listed", "a-fit", "a-store", "a-crease", "a-fresh"]
+  },
+  {
+    id: "ready",
+    num: 2,
+    title: "Getting ready",
+    heading: "Getting ready",
+    subheading: "A few small habits keep your piece as beautiful at the end of the night as at the start.",
+    notes: [
+      "Apply perfume, makeup and hairspray first, and let them dry before you dress.",
+      "Never spray perfume directly onto the fabric.",
+      "Put your jewellery on after you dress, and lift it clear of net and embroidery, where clasps catch.",
+      "Fashion tape and safety pins are welcome. Pin gently through the lining or a plain area, never through embroidery.",
+      "Please do not alter, stitch or hem it in any way."
+    ],
+    questionIds: ["w-makeup", "w-jewel", "w-pins", "w-alter", "w-mehendi"]
+  },
+  {
+    id: "celebration",
+    num: 3,
+    title: "At the celebration",
+    heading: "At the celebration",
+    subheading: "Wear it, dance in it, enjoy every moment. Just keep an eye on the few things that leave a lasting mark.",
+    notes: [
+      "Keep red wine, coffee and rich gravies at a careful distance.",
+      "At a haldi, mehendi or colour ceremony, keep your dupatta gathered close: turmeric, henna and sindoor set fast into silk.",
+      "During the pheras, and near diyas, candles or sparklers, gather your dupatta and pallu close.",
+      "Outdoors, lift your hem on grass, sand and steps, and keep the piece dry if it rains.",
+      "If anything happens, blot gently, send us a photo, and enjoy the rest of your evening."
+    ],
+    questionIds: ["w-food", "w-colour", "w-fire", "w-outdoor", "w-twice", "h-spill", "h-tear", "h-tell", "h-night", "h-guest", "h-keep"]
+  },
+  {
+    id: "after",
+    num: 4,
+    title: "After the celebration",
+    heading: "After the celebration",
+    subheading: "The cleaning is ours. All your piece needs now is a little air and a gentle fold.",
+    notes: [
+      "Take your jewellery off first, then open every hook and zip fully before you step out of it.",
+      "Hang it overnight to air, away from sunlight and damp.",
+      "Please do not wash, dry clean, spot clean, steam or iron it. All cleaning is ours, and included in your rental fee.",
+      "If anything happened during the evening, tell us now with a photo, if you have not already."
+    ],
+    questionIds: ["af-air", "r-clean"]
+  },
+  {
+    id: "sending",
+    num: 5,
+    title: "Sending it back",
+    heading: "Sending it back",
+    subheading: "Two easy ways, both with the prepaid label in your packaging.",
+    notes: [
+      "Pack it as it arrived, folded loosely in its tissue and garment bag.",
+      "Fold along the plainer panels, never across heavy embroidery.",
+      "Check that every part listed with your piece is there, such as the dupatta, blouse, belt, can-can or potli.",
+      "Drop it at the courier's nearest office, or book a pickup from your door, by your Return Date.",
+      "Keep the courier's receipt until your deposit is back with you."
+    ],
+    questionIds: ["r-how", "r-pack", "r-parts", "x-part", "r-label", "r-resp"]
+  }
+]

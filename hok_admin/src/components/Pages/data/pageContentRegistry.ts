@@ -11,19 +11,23 @@ import { CANONICAL_PAGE_CONTENTS } from './canonicalPageContents';
 export { CANONICAL_PAGE_CONTENTS } from './canonicalPageContents';
 
 export const getPageContent = (slug: string): PageContentDefinition => {
+  const cleanSlug = slug.replace(/^\//, '');
+  if (CANONICAL_PAGE_CONTENTS[cleanSlug]) {
+    return CANONICAL_PAGE_CONTENTS[cleanSlug];
+  }
   if (CANONICAL_PAGE_CONTENTS[slug]) {
     return CANONICAL_PAGE_CONTENTS[slug];
   }
 
   // Fallback for aliases or generic canonical pages
-  if (slug === 'care-policy' && CANONICAL_PAGE_CONTENTS['care-damage']) {
+  if ((cleanSlug === 'care-policy' || slug === '/care-policy') && CANONICAL_PAGE_CONTENTS['care-damage']) {
     return CANONICAL_PAGE_CONTENTS['care-damage'];
   }
-  if (slug === 'shipping-policy' && CANONICAL_PAGE_CONTENTS['shipping-delivery']) {
+  if ((cleanSlug === 'shipping-policy' || slug === '/shipping-policy') && CANONICAL_PAGE_CONTENTS['shipping-delivery']) {
     return CANONICAL_PAGE_CONTENTS['shipping-delivery'];
   }
 
-  const formattedTitle = slug
+  const formattedTitle = cleanSlug
     .split('-')
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');

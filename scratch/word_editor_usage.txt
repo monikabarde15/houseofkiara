@@ -1,0 +1,30 @@
+11: import { CheckItem } from '../types/checks.types';
+12: import { getPageContent } from '../data/pageContentRegistry';
+13: import { PageLevelTwoHeader } from './PageLevelTwoHeader';
+14: import { PagePaperCanvas, EditableFieldInfo } from './PagePaperCanvas';
+15: import { PageDefaultPanel } from './PageDefaultPanel';
+16: import { WordEditorPanel } from './WordEditorPanel';
+17: import { FigureInspector } from './FigureInspector';
+18: import { PageSettingsWorkspaceView } from './PageSettingsWorkspaceView';
+19: import { PageChecksPanel } from './PageChecksPanel';
+20: import { PageFiguresPanel } from './PageFiguresPanel';
+21: 
+22: interface PagePaperViewProps {
+23:   page: PageCardData;
+24:   allPages: PageCardData[];
+25:   onSelectPage: (slug: string) => void;
+26:   onBackToPages: () => void;
+27:   onNavigateToFigure?: (key: string) => void;
+28:   onOpenAnswersView?: () => void;
+29: }
+30: 
+31: export const PagePaperView: React.FC<PagePaperViewProps> = ({
+32:   page,
+33:   allPages,
+34:   onSelectPage,
+35:   onBackToPages,
+36:   onNavigateToFigure,
+37:   onOpenAnswersView
+38: }) => {
+39:   const [activePartId, setActivePartId] = useState<string>('hero');
+40:   const [activePanelTab, setActivePanelTab] = useState<'default' | 'figures' | 'checks' | 'settings'>('default');

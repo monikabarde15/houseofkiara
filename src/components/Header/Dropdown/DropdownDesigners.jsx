@@ -2,49 +2,81 @@ import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
 import { useNavigate } from "react-router-dom";
 
-const DropdownDesigners = () => {
+const DropdownDesigners = ({ columns }) => {
   const data = dropdownData.designers;
   const navigate = useNavigate();
 
   return (
     <>
       {/* Left Column */}
-      <div className="dd-col-left">
-        <span className="dd-label">
-          {data.leftLabel}
-        </span>
+      {(() => {
+        const desCol = columns?.find(c => c.id === 'col-des-feat' || c.heading?.toLowerCase().includes('designer')) || columns?.[0];
+        const desLinks = desCol?.links ? desCol.links.filter(l => !l.hidden && l.position !== 'last') : null;
+        const desLastLinks = desCol?.links ? desCol.links.filter(l => !l.hidden && l.position === 'last') : null;
 
-        {data.categories.map(
-          (designer) => (
-            <a
-              key={designer}
-              className="dd-cat"
-              onClick={() =>
-                navigate(
-                  `/main-page?section=designers&designer=${encodeURIComponent(
-                    designer
-                  )}`
-                )
-              }
-            >
-              {designer}
-            </a>
-          )
-        )}
+        return (
+          <div className="dd-col-left">
+            <span className="dd-label">
+              {desCol?.heading || data.leftLabel}
+            </span>
 
-        <div className="dd-divider" />
-        {/* A–Z Index */}
-        <a
-          className="dd-sub"
-          onClick={() =>
-            navigate(
-              "/main-page?section=designers"
-            )
-          }
-        >
-          {data.leftFooter}
-        </a>
-      </div>
+            {desLinks && desLinks.length > 0 ? (
+              desLinks.map((designer) => (
+                <a
+                  key={designer.id || designer.label}
+                  className="dd-cat"
+                  onClick={() =>
+                    navigate(
+                      designer.path?.startsWith('/main-page')
+                        ? designer.path
+                        : `/main-page?section=designers&designer=${encodeURIComponent(designer.label)}`
+                    )
+                  }
+                >
+                  {designer.label}
+                </a>
+              ))
+            ) : (
+              data.categories.map((designer) => (
+                <a
+                  key={designer}
+                  className="dd-cat"
+                  onClick={() =>
+                    navigate(
+                      `/main-page?section=designers&designer=${encodeURIComponent(designer)}`
+                    )
+                  }
+                >
+                  {designer}
+                </a>
+              ))
+            )}
+
+            <div className="dd-divider" />
+
+            {desLastLinks && desLastLinks.length > 0 ? (
+              desLastLinks.map((l) => (
+                <a
+                  key={l.id || l.label}
+                  className="dd-sub"
+                  onClick={() => navigate(l.path || "/main-page?section=designers")}
+                >
+                  {l.label} →
+                </a>
+              ))
+            ) : (
+              <a
+                className="dd-sub"
+                onClick={() =>
+                  navigate("/main-page?section=designers")
+                }
+              >
+                {data.leftFooter}
+              </a>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Middle Column */}
       <div className="dd-col-mid">

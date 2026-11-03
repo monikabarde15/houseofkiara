@@ -5,7 +5,7 @@ import "../../styles/Header/desktop-header.css";
 import useAuthStore from "../../store/authStore";
 import useWishlistStore from "../../store/wishlistStore";
 
-const DesktopHeader = ({ onSearchOpen }) => {
+const DesktopHeader = ({ onSearchOpen, searchPlaceholder, bagCartLabel = "Bag" }) => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuthStore();
   const wishlistItems = useWishlistStore((state) => state.items);
@@ -46,7 +46,7 @@ const DesktopHeader = ({ onSearchOpen }) => {
             </svg>
 
             <span className="hok-desktop-header-search-placeholder">
-              Search lehengas, designers, occasions...
+              {searchPlaceholder || "Search lehengas, designers, occasions..."}
             </span>
           </div>
         </div>
@@ -97,7 +97,7 @@ const DesktopHeader = ({ onSearchOpen }) => {
 
           <button
             className="hok-desktop-header-btn hok-desktop-header-cart-wrap"
-            aria-label="Bag"
+            aria-label={bagCartLabel || "Bag"}
             onClick={handleBagClick}
           >
             <span className="hok-desktop-header-cart-dot" />
@@ -108,7 +108,7 @@ const DesktopHeader = ({ onSearchOpen }) => {
               <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
 
-            <span>Bag</span>
+            <span>{bagCartLabel || "Bag"}</span>
           </button>
 
           <button

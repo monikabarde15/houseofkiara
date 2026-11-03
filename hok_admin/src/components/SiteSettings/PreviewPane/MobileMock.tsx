@@ -13,17 +13,43 @@ export const MobileMock: React.FC<MobileMockProps> = ({
   activeRegion,
   activePage
 }) => {
-  const { mobile, header, brand } = registry;
+  const { mobile, header, brand, announcement } = registry;
   const [showDrawer, setShowDrawer] = useState(false);
 
   const tabs = mobile?.tabs || [];
   const headerNavs = (header?.navItems || []).filter((i) => i.shown !== false);
+  const activeAnnMessages = (announcement?.messages || []).filter((m) => m.enabled);
 
   return (
     <div className="hok-mobile-mock-container">
       <div className="hok-mobile-phone-frame">
         {/* Notch */}
         <div className="hok-mobile-notch" />
+
+        {/* Announcement Bar */}
+        {announcement?.showAcrossSite && (
+          <div
+            className="hok-mobile-mock-announcement-bar"
+            style={{
+              backgroundColor: announcement.backgroundColor || '#1A1612',
+              color: announcement.textColor || '#C9A96E',
+              fontSize: '8.5px',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              padding: '4px 8px',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textAlign: 'center',
+              lineHeight: 1.2,
+              fontFamily: activeAnnMessages[0]?.italicSerif ? '"Cormorant Garamond", serif' : '"DM Sans", sans-serif',
+              fontStyle: activeAnnMessages[0]?.italicSerif ? 'italic' : 'normal',
+            }}
+          >
+            {activeAnnMessages[0]?.text
+              ? activeAnnMessages[0].text.replace(/\{\{[^}]+\}\}/g, '₹2,999')
+              : 'Complimentary shipping across India'}
+          </div>
+        )}
 
         {/* Top Header */}
         <div className="hok-mobile-header">

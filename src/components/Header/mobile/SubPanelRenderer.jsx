@@ -1,9 +1,10 @@
+import { resolveDropdownId } from '../../../services/headerApi';
 // src/components/Header/mobile/SubPanelRenderer.jsx
 import React from 'react';
 import { SubLabel, LinkRow } from './MobileSubPanelContent';
 import { dropdownData } from '../../../data/dropdownData';
 
-const SubPanelRenderer = ({ panelId, navigateAndClose }) => {
+const SubPanelRenderer = ({ panelId, navigateAndClose, navItems }) => {
   
   // Map panelId to dropdownData key
   const getDataKey = () => {
@@ -129,6 +130,48 @@ const SubPanelRenderer = ({ panelId, navigateAndClose }) => {
   };
 
   // Render content based on panel type
+  // Check if CMS navItems has custom columns for this sub-panel
+  const matchingNavItem = (navItems || []).find(item => {
+    const rawId = panelId.replace('sub-', '');
+    return resolveDropdownId(item) === rawId;
+  });
+
+  if (matchingNavItem?.menuColumns && matchingNavItem.menuColumns.length > 0) {
+    const visibleCols = matchingNavItem.menuColumns.filter(c => !c.hidden);
+    if (visibleCols.length > 0) {
+      return (
+        <>
+          {visibleCols.map(col => {
+            const visibleLinks = (col.links || []).filter(l => !l.hidden);
+            return (
+              <React.Fragment key={col.id}>
+                <SubLabel>{col.heading}</SubLabel>
+                {visibleLinks.map(link => {
+                  const isLast = link.position === 'last';
+                  return (
+                    <LinkRow
+                      key={link.id || link.label}
+                      isUtility={isLast}
+                      onClick={() =>
+                        handleLinkClick(
+                          link.path?.startsWith('/main-page')
+                            ? link.path
+                            : `/main-page?section=${panelId.replace('sub-', '')}&category=${encodeURIComponent(link.label)}`
+                        )
+                      }
+                    >
+                      {link.label} {isLast ? '→' : ''}
+                    </LinkRow>
+                  );
+                })}
+              </React.Fragment>
+            );
+          })}
+        </>
+      );
+    }
+  }
+
   const renderContent = () => {
     switch (panelId) {
       case 'sub-rent':

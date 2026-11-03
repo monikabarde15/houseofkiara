@@ -1,3 +1,4 @@
+import { resolveDropdownId, resolveItemStyle } from '../../../services/headerApi';
 // src/components/Header/mobile/MobileDrawer.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +10,9 @@ import SubPanelRenderer from './SubPanelRenderer';
 const MobileDrawer = ({ 
   isOpen, 
   onClose,
-  onSearchOpen 
+  onSearchOpen,
+  navItems,
+  searchPlaceholder
 }) => {
   const navigate = useNavigate();
   const drawerRef = useRef(null);
@@ -154,7 +157,7 @@ const MobileDrawer = ({
           <input
             type="text"
             className="drawer-search-input"
-            placeholder="Search designers, occasions..."
+            placeholder={searchPlaceholder || "Search designers, occasions..."}
             readOnly
             aria-label="Search"
           />
@@ -184,91 +187,135 @@ const MobileDrawer = ({
             </button>
           </div>
 
-          {/* Section 7: Section Navigation Rows */}
-          <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-rent')}>
-              <span className="drawer-section-label accent">Rent</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="9 6 15 12 9 18" />
-              </svg>
-            </button>
-          </div>
+          {/* Section 7 & 11: Dynamic Navigation Rows & Standalone Links */}
+          {(() => {
+            const hasCustomNav = Array.isArray(navItems) && navItems.length > 0;
+            if (!hasCustomNav) {
+              return (
+                <>
+                  <div className="drawer-section">
+                    <button className="drawer-section-head" onClick={() => openSubPanel('sub-rent')}>
+                      <span className="drawer-section-label accent">Rent</span>
+                      <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9 6 15 12 9 18" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="drawer-section">
+                    <button className="drawer-section-head" onClick={() => openSubPanel('sub-preloved')}>
+                      <span className="drawer-section-label">Buy Preloved</span>
+                      <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9 6 15 12 9 18" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="drawer-section">
+                    <button className="drawer-section-head" onClick={() => openSubPanel('sub-new')}>
+                      <span className="drawer-section-label green">Buy New</span>
+                      <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9 6 15 12 9 18" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="drawer-section">
+                    <button className="drawer-section-head" onClick={() => openSubPanel('sub-women')}>
+                      <span className="drawer-section-label">Women</span>
+                      <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9 6 15 12 9 18" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="drawer-section">
+                    <button className="drawer-section-head" onClick={() => openSubPanel('sub-men')}>
+                      <span className="drawer-section-label">Men</span>
+                      <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9 6 15 12 9 18" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="drawer-section">
+                    <button className="drawer-section-head" onClick={() => openSubPanel('sub-occasions')}>
+                      <span className="drawer-section-label">Occasions</span>
+                      <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9 6 15 12 9 18" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="drawer-section">
+                    <button className="drawer-section-head" onClick={() => openSubPanel('sub-designers')}>
+                      <span className="drawer-section-label">Designers</span>
+                      <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9 6 15 12 9 18" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="drawer-standalone">
+                    <button className="drawer-section-head" onClick={() => navigateAndClose('/profile')}>
+                      <span className="drawer-section-label">My Profile</span>
+                    </button>
+                  </div>
+                  <div className="drawer-standalone">
+                    <button className="drawer-section-head" onClick={() => navigateAndClose('/main-page?section=new')}>
+                      <span className="drawer-section-label">
+                        New Arrivals
+                        <span className="drawer-pill-new">New</span>
+                      </span>
+                    </button>
+                  </div>
+                  <div className="drawer-standalone">
+                    <button className="drawer-section-head" onClick={() => navigateAndClose('/list-your-piece')}>
+                      <span className="drawer-section-label green">List Your Piece</span>
+                    </button>
+                  </div>
+                </>
+              );
+            }
 
-          <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-preloved')}>
-              <span className="drawer-section-label">Buy Preloved</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="9 6 15 12 9 18" />
-              </svg>
-            </button>
-          </div>
+            const visibleItems = navItems.filter((i) => i.shown !== false);
+            return (
+              <>
+                {visibleItems.map((item) => {
+                  const dropdownId = resolveDropdownId(item);
+                  const hasMenu = (item.hasMenu !== false && item.menuEnabled !== false && !!dropdownId) || (!!item.dropdown && !!dropdownId);
+                  const itemStyle = resolveItemStyle(item);
+                  const targetRoute = item.link || item.route || '/';
 
-          <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-new')}>
-              <span className="drawer-section-label green">Buy New</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="9 6 15 12 9 18" />
-              </svg>
-            </button>
-          </div>
+                  if (hasMenu && dropdownId) {
+                    return (
+                      <div key={item.id} className="drawer-section">
+                        <button className="drawer-section-head" onClick={() => openSubPanel(`sub-${dropdownId}`)}>
+                          <span className={`drawer-section-label ${itemStyle}`}>{item.label}</span>
+                          <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polyline points="9 6 15 12 9 18" />
+                          </svg>
+                        </button>
+                      </div>
+                    );
+                  }
 
-          <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-women')}>
-              <span className="drawer-section-label">Women</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="9 6 15 12 9 18" />
-              </svg>
-            </button>
-          </div>
+                  return (
+                    <div key={item.id} className="drawer-standalone">
+                      <button className="drawer-section-head" onClick={() => navigateAndClose(targetRoute)}>
+                        <span className={`drawer-section-label ${itemStyle}`}>
+                          {item.label}
+                          {item.badge && <span className="drawer-pill-new">{item.badge}</span>}
+                        </span>
+                      </button>
+                    </div>
+                  );
+                })}
 
-          <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-men')}>
-              <span className="drawer-section-label">Men</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="9 6 15 12 9 18" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-occasions')}>
-              <span className="drawer-section-label">Occasions</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="9 6 15 12 9 18" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="drawer-section">
-            <button className="drawer-section-head" onClick={() => openSubPanel('sub-designers')}>
-              <span className="drawer-section-label">Designers</span>
-              <svg className="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="9 6 15 12 9 18" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Section 11: Standalone Links */}
-          <div className="drawer-standalone">
-            <button className="drawer-section-head" onClick={() => navigateAndClose('/profile')}>
-              <span className="drawer-section-label">My Profile</span>
-            </button>
-          </div>
-
-          <div className="drawer-standalone">
-            <button className="drawer-section-head" onClick={() => navigateAndClose('/main-page?section=new')}>
-              <span className="drawer-section-label">
-                New Arrivals
-                <span className="drawer-pill-new">New</span>
-              </span>
-            </button>
-          </div>
-
-          <div className="drawer-standalone">
-            <button className="drawer-section-head" onClick={() => navigateAndClose('/list-your-piece')}>
-              <span className="drawer-section-label green">List Your Piece</span>
-            </button>
-          </div>
+                {/* Profile link for quick account navigation if not in nav items */}
+                {!visibleItems.some((i) => (i.link || '').includes('/profile')) && (
+                  <div className="drawer-standalone">
+                    <button className="drawer-section-head" onClick={() => navigateAndClose('/profile')}>
+                      <span className="drawer-section-label">My Profile</span>
+                    </button>
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </div>
 
         {/* Section 11.4: Drawer Footer */}
@@ -296,7 +343,7 @@ const MobileDrawer = ({
           titleColor="accent" 
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-rent" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer panelId="sub-rent" navigateAndClose={navigateAndClose} navItems={navItems} />
         </MobileSubPanel>
 
         {/* Sub-Panel: Buy Preloved */}
@@ -306,7 +353,7 @@ const MobileDrawer = ({
           titleColor="default" 
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-preloved" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer panelId="sub-preloved" navigateAndClose={navigateAndClose} navItems={navItems} />
         </MobileSubPanel>
 
         {/* Sub-Panel: Buy New */}
@@ -316,7 +363,7 @@ const MobileDrawer = ({
           titleColor="green" 
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-new" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer panelId="sub-new" navigateAndClose={navigateAndClose} navItems={navItems} />
         </MobileSubPanel>
 
         {/* Sub-Panel: Women */}
@@ -326,7 +373,7 @@ const MobileDrawer = ({
           titleColor="default" 
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-women" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer panelId="sub-women" navigateAndClose={navigateAndClose} navItems={navItems} />
         </MobileSubPanel>
 
         {/* Sub-Panel: Men */}
@@ -336,7 +383,7 @@ const MobileDrawer = ({
           titleColor="default" 
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-men" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer panelId="sub-men" navigateAndClose={navigateAndClose} navItems={navItems} />
         </MobileSubPanel>
 
         {/* Sub-Panel: Occasions */}
@@ -346,7 +393,7 @@ const MobileDrawer = ({
           titleColor="default" 
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-occasions" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer panelId="sub-occasions" navigateAndClose={navigateAndClose} navItems={navItems} />
         </MobileSubPanel>
 
         {/* Sub-Panel: Designers */}
@@ -356,7 +403,7 @@ const MobileDrawer = ({
           titleColor="default" 
           onBack={closeSubPanel}
         >
-          <SubPanelRenderer panelId="sub-designers" navigateAndClose={navigateAndClose} />
+          <SubPanelRenderer panelId="sub-designers" navigateAndClose={navigateAndClose} navItems={navItems} />
         </MobileSubPanel>
 
       </aside>

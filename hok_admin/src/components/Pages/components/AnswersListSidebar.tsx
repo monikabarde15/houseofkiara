@@ -78,7 +78,7 @@ export const AnswersListSidebar: React.FC<AnswersListSidebarProps> = ({
         {/* Side filter pills: All 103, Rentals, Preloved, Both (Spec §7.8) */}
         <div className="flex items-center gap-1">
           {[
-            { id: 'all', label: 'All 103' },
+            { id: 'all', label: `All ${answers.length}` },
             { id: 'rentals', label: 'Rentals' },
             { id: 'preloved', label: 'Preloved' },
             { id: 'both', label: 'Both' }

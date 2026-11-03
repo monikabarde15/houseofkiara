@@ -4,6 +4,7 @@ const SearchInput = ({
   query,
   setQuery,
   closeSearch,
+  searchPlaceholder,
 }) => {
   return (
     <div className="search-input-row">
@@ -29,7 +30,7 @@ const SearchInput = ({
         onChange={(e) =>
           setQuery(e.target.value)
         }
-        placeholder="Search lehengas, designers, occasions..."
+        placeholder={searchPlaceholder || "Search lehengas, designers, occasions..."}
       />
 
       <button

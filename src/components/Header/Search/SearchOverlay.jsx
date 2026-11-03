@@ -18,6 +18,7 @@ const SearchOverlay = ({
     closeSearch,
     runSearch,
     viewFullCollection,
+    searchPlaceholder,
 }) => {
     return (
         <div
@@ -39,6 +40,7 @@ const SearchOverlay = ({
                     query={query}
                     setQuery={setQuery}
                     closeSearch={closeSearch}
+                    searchPlaceholder={searchPlaceholder}
                 />
 
                 {!query && (
