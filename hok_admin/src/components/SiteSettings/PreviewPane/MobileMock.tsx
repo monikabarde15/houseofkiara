@@ -16,8 +16,11 @@ export const MobileMock: React.FC<MobileMockProps> = ({
   const { mobile, header, brand, announcement } = registry;
   const [showDrawer, setShowDrawer] = useState(false);
 
-  const tabs = mobile?.tabs || [];
-  const headerNavs = (header?.navItems || []).filter((i) => i.shown !== false);
+  const tabs = (mobile?.tabs || []).filter((t) => t.shown !== false);
+  const itemVis = mobile?.drawer?.itemVisibility || {};
+  const headerNavs = (header?.navItems || []).filter(
+    (i) => i.shown !== false && itemVis[i.id] !== false
+  );
   const activeAnnMessages = (announcement?.messages || []).filter((m) => m.enabled);
 
   return (
@@ -128,7 +131,7 @@ export const MobileMock: React.FC<MobileMockProps> = ({
               className={`hok-mobile-tab-btn ${idx === 0 ? 'is-active' : ''}`}
             >
               <div className="hok-mobile-tab-dot" />
-              <span>{tab.label}</span>
+              <span>{tab.isBagTab ? (header?.bagCartLabel || tab.label) : tab.label}</span>
             </div>
           ))}
         </div>

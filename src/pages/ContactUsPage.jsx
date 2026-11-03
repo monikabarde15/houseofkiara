@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { CONTACT_PAGE_CONFIG } from "../data/contact/contactSettings";
+import {
+  getContactSettings,
+  defaultContactConfig,
+} from "../services/contactApi";
 
 import ContactHero from "../components/contact/ContactHero";
 import ContactAnswersSection from "../components/contact/ContactAnswersSection";
@@ -13,6 +17,7 @@ import "../styles/contact/contact-hero.css";
 export default function ContactUsPage() {
   const [toastMessage, setToastMessage] = useState("");
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [contactSettings, setContactSettings] = useState(defaultContactConfig);
   const toastTimeoutRef = useRef(null);
 
   // Set document title and meta description (Section 01)
@@ -26,7 +31,30 @@ export default function ContactUsPage() {
     }
     metaDesc.content = CONTACT_PAGE_CONFIG.meta_description;
 
+    let isMounted = true;
+    getContactSettings().then((cfg) => {
+      if (isMounted && cfg) {
+        setContactSettings(cfg);
+      }
+    });
+
+    const handleUpdated = (e) => {
+      if (e.detail) {
+        setContactSettings(e.detail);
+      } else {
+        getContactSettings(true).then((cfg) => {
+          if (isMounted && cfg) {
+            setContactSettings(cfg);
+          }
+        });
+      }
+    };
+
+    window.addEventListener("hok_contact_updated", handleUpdated);
+
     return () => {
+      isMounted = false;
+      window.removeEventListener("hok_contact_updated", handleUpdated);
       if (toastTimeoutRef.current) {
         clearTimeout(toastTimeoutRef.current);
       }
@@ -57,6 +85,7 @@ export default function ContactUsPage() {
         <ContactHero
           showCallRow={CONTACT_PAGE_CONFIG.adminSwitches.showCallRow}
           onShowToast={showToast}
+          contactSettings={contactSettings}
         />
 
         {/* Step 3: Band 2 Answers Policy Index */}
@@ -65,6 +94,7 @@ export default function ContactUsPage() {
         {/* Step 4 & 5: Band 3 Write us a note and Aside */}
         <ContactWriteSection
           showVisitCard={CONTACT_PAGE_CONFIG.adminSwitches.showVisitCard}
+          contactSettings={contactSettings}
         />
 
         {/* Step 6: Band 4 Raising a concern and Our details */}

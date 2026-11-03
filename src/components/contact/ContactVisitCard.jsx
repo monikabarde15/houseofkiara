@@ -1,6 +1,7 @@
 import React from "react";
 import { CONTACT_CONTENT } from "../../data/contact/contactContent";
 import { CONTACT_TOKENS } from "../../data/contact/contactSettings";
+import { buildWhatsAppUrl } from "../../services/contactApi";
 
 const WhatsAppIcon = ({ size = 15 }) => (
   <svg
@@ -19,13 +20,12 @@ const WhatsAppIcon = ({ size = 15 }) => (
   </svg>
 );
 
-export default function ContactVisitCard() {
+export default function ContactVisitCard({ contactSettings }) {
   const { title, intro, place, terms, buttonLabel, greeting } =
     CONTACT_CONTENT.side.visit;
 
-  const bookVisitUrl = `https://wa.me/${CONTACT_TOKENS.support_whatsapp_raw}?text=${encodeURIComponent(
-    greeting
-  )}`;
+  const waNumber = contactSettings?.whatsApp || CONTACT_TOKENS.support_whatsapp_raw;
+  const bookVisitUrl = buildWhatsAppUrl(waNumber, greeting);
 
   return (
     <div className="visit" aria-labelledby="visit-heading">

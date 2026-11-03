@@ -12,8 +12,13 @@ const MobileDrawer = ({
   onClose,
   onSearchOpen,
   navItems,
-  searchPlaceholder
+  searchPlaceholder,
+  mobileSettings,
+  brandSettings,
 }) => {
+  const showSearchField = mobileSettings?.drawer?.showSearchField !== false;
+  const showModeShortcuts = mobileSettings?.drawer?.showModeShortcuts !== false;
+  const itemVisibility = mobileSettings?.drawer?.itemVisibility || {};
   const navigate = useNavigate();
   const drawerRef = useRef(null);
   const [activeSubPanel, setActiveSubPanel] = useState(null);
@@ -149,6 +154,7 @@ const MobileDrawer = ({
         </div>
 
         {/* 5.3 Drawer Search Bar */}
+        {showSearchField && (
         <div className="drawer-search" onClick={handleSearchClick}>
           <svg className="drawer-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="7" />
@@ -162,10 +168,12 @@ const MobileDrawer = ({
             aria-label="Search"
           />
         </div>
+        )}
 
         {/* 5.4 Drawer Body - MAIN MENU CONTENT */}
         <div className="drawer-body">
           {/* Section 6: Mode Pills */}
+          {showModeShortcuts && (
           <div className="drawer-mode-pills">
             <button 
               className="mode-pill mode-pill--rent"
@@ -186,6 +194,7 @@ const MobileDrawer = ({
               Buy New
             </button>
           </div>
+          )}
 
           {/* Section 7 & 11: Dynamic Navigation Rows & Standalone Links */}
           {(() => {
@@ -271,7 +280,9 @@ const MobileDrawer = ({
               );
             }
 
-            const visibleItems = navItems.filter((i) => i.shown !== false);
+            const visibleItems = navItems.filter(
+              (i) => i.shown !== false && itemVisibility[i.id] !== false
+            );
             return (
               <>
                 {visibleItems.map((item) => {
@@ -321,7 +332,7 @@ const MobileDrawer = ({
         {/* Section 11.4: Drawer Footer */}
         <div className="drawer-footer">
           <div className="drawer-footer-brand">
-            House of Kaira - Circular Luxury Fashion
+            {brandSettings?.siteName || "House of Kaira"} - {brandSettings?.tagline || "Circular Luxury Fashion"}
           </div>
           <div className="drawer-footer-links">
             <a onClick={() => navigateAndClose('/main-page?section=rent')}>Rent</a>

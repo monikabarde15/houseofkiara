@@ -539,6 +539,167 @@ export function normalizeHeaderSettings(raw) {
   };
 }
 
+
+export const DEFAULT_FOOTER_SETTINGS = {
+  blurbUnderWordmark: "{{tagline}}",
+  copyrightLine: "© {{year}} House of Kaira. All rights reserved. Indore, India.",
+  trustBadges: "Secure Payments, Circular Fashion",
+  paymentMethods: {
+    upi: true,
+    visa: true,
+    mastercard: true,
+    rupay: true,
+    netbanking: true,
+    paytm: false,
+    amex: false,
+    nocost_emi: false,
+  },
+  newsletter: {
+    show: false,
+    heading: "Stay in the loop",
+    buttonLabel: "Subscribe",
+    body: "Get early access to drops and exclusive promotions.",
+    consentLine: "By subscribing you agree to our Privacy Policy.",
+  },
+  linkColumns: [
+    {
+      id: "col-shop",
+      heading: "Shop",
+      links: [
+        { id: "fl-1", label: "Rent", path: "/rent" },
+        { id: "fl-2", label: "Buy Preloved", path: "/preloved" },
+        { id: "fl-3", label: "Buy New", path: "/buy-new" },
+        { id: "fl-4", label: "Shop by Occasion", path: "/occasions" },
+        { id: "fl-5", label: "Shop by Category", path: "/categories" },
+        { id: "fl-6", label: "All Designers", path: "/designers" },
+      ],
+    },
+    {
+      id: "col-sell",
+      heading: "Sell with Us",
+      links: [
+        { id: "fl-7", label: "List Your Piece", path: "/list-your-piece" },
+        { id: "fl-8", label: "How It Works", path: "/how-it-works" },
+        { id: "fl-9", label: "Seller Guidelines", path: "/seller-guidelines" },
+        { id: "fl-10", label: "Pricing & Fees", path: "/pricing" },
+        { id: "fl-11", label: "Designer Partners", path: "/designer-partners" },
+      ],
+    },
+    {
+      id: "col-support",
+      heading: "Support",
+      links: [
+        { id: "fl-12", label: "FAQs", path: "/faqs" },
+        { id: "fl-13", label: "Care, Cleaning & Damage", path: "/care-policy" },
+        { id: "fl-14", label: "Deposit Policy", path: "/deposit-policy" },
+        { id: "fl-15", label: "Refunds & Cancellations", path: "/refunds" },
+        { id: "fl-16", label: "Contact Us", path: "/contact" },
+      ],
+    },
+    {
+      id: "col-company",
+      heading: "Company",
+      links: [
+        { id: "fl-17", label: "About HOK", path: "/about" },
+        { id: "fl-18", label: "Sustainability", path: "/sustainability" },
+        { id: "fl-19", label: "Careers", path: "/careers" },
+        { id: "fl-20", label: "Press", path: "/press" },
+        { id: "fl-21", label: "Blog", path: "/blog" },
+      ],
+    },
+  ],
+  legalRow: [
+    { id: "leg-1", label: "Terms & Conditions", path: "/terms" },
+    { id: "leg-2", label: "Privacy Policy", path: "/privacy" },
+    { id: "leg-3", label: "Refund & Cancellation Policy", path: "/refunds" },
+    { id: "leg-4", label: "Deposit Policy", path: "/deposit-policy" },
+    { id: "leg-5", label: "Care, Cleaning & Damage Policy", path: "/care-policy" },
+    { id: "leg-6", label: "Shipping Policy", path: "/shipping-policy" },
+    { id: "leg-7", label: "Cookie Policy", path: "/cookies" },
+  ],
+};
+
+export function normalizeFooterSettings(raw, context = {}) {
+  if (!raw) return { ...DEFAULT_FOOTER_SETTINGS };
+
+  const rawBlurb = raw.blurbUnderWordmark !== undefined
+    ? raw.blurbUnderWordmark
+    : DEFAULT_FOOTER_SETTINGS.blurbUnderWordmark;
+  const blurbUnderWordmark = resolveTemplateVariables(rawBlurb, context);
+
+  const rawCopyright = raw.copyrightLine !== undefined
+    ? raw.copyrightLine
+    : DEFAULT_FOOTER_SETTINGS.copyrightLine;
+  const copyrightLine = resolveTemplateVariables(rawCopyright, context);
+
+  const trustBadges =
+    typeof raw.trustBadges === "string"
+      ? raw.trustBadges
+      : DEFAULT_FOOTER_SETTINGS.trustBadges;
+
+  const paymentMethods = {
+    ...DEFAULT_FOOTER_SETTINGS.paymentMethods,
+    ...(raw.paymentMethods || {}),
+  };
+
+  const newsletter = {
+    show:
+      typeof raw.newsletter?.show === "boolean"
+        ? raw.newsletter.show
+        : DEFAULT_FOOTER_SETTINGS.newsletter.show,
+    heading:
+      raw.newsletter?.heading || DEFAULT_FOOTER_SETTINGS.newsletter.heading,
+    buttonLabel:
+      raw.newsletter?.buttonLabel ||
+      DEFAULT_FOOTER_SETTINGS.newsletter.buttonLabel,
+    body:
+      raw.newsletter?.body || DEFAULT_FOOTER_SETTINGS.newsletter.body,
+    consentLine:
+      raw.newsletter?.consentLine ||
+      DEFAULT_FOOTER_SETTINGS.newsletter.consentLine,
+  };
+
+  let linkColumns = [];
+  if (Array.isArray(raw.linkColumns) && raw.linkColumns.length > 0) {
+    linkColumns = raw.linkColumns.map((col, idx) => ({
+      id: col.id || `col-${idx + 1}`,
+      heading: col.heading || "",
+      links: Array.isArray(col.links)
+        ? col.links.map((lnk, lIdx) => ({
+            id: lnk.id || `fl-${lIdx + 1}`,
+            label: lnk.label || "",
+            path: lnk.path || "",
+          }))
+        : [],
+    }));
+  } else {
+    linkColumns = DEFAULT_FOOTER_SETTINGS.linkColumns;
+  }
+
+  let legalRow = [];
+  if (Array.isArray(raw.legalRow) && raw.legalRow.length > 0) {
+    legalRow = raw.legalRow.map((link, idx) => ({
+      id: link.id || `leg-${idx + 1}`,
+      label: link.label || "",
+      path: link.path || "",
+    }));
+  } else {
+    legalRow = DEFAULT_FOOTER_SETTINGS.legalRow;
+  }
+
+  return {
+    blurbUnderWordmark,
+    rawBlurbUnderWordmark: rawBlurb,
+    copyrightLine,
+    rawCopyrightLine: rawCopyright,
+    trustBadges,
+    paymentMethods,
+    newsletter,
+    linkColumns,
+    legalRow,
+  };
+}
+
 let inMemorySettings = {
   key: "global_settings",
   siteName: "House of Kaira",
@@ -560,6 +721,7 @@ let inMemorySettings = {
     messages: DEFAULT_ANNOUNCEMENT_SETTINGS.messages,
   },
   header: { ...DEFAULT_HEADER_SETTINGS },
+  footer: { ...DEFAULT_FOOTER_SETTINGS },
 };
 
 /**
@@ -917,6 +1079,1166 @@ router.put("/header", protectAdmin, async (req, res) => {
   }
 });
 
+
+/**
+ * GET /api/site-settings/footer/public
+ * Public storefront endpoint
+ */
+router.get("/footer/public", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const context = {
+      siteName: dbData.brand?.siteName || dbData.siteName,
+      tagline: dbData.brand?.tagline || dbData.tagline,
+      supportEmail: dbData.contact?.supportEmail || dbData.supportEmail,
+      whatsappNumber: dbData.contact?.whatsApp || dbData.whatsappNumber,
+      instagramHandle: dbData.contact?.social?.instagram || dbData.instagramHandle,
+    };
+    const footer = normalizeFooterSettings(dbData.footer, context);
+    return res.json({
+      success: true,
+      data: footer,
+    });
+  } catch (error) {
+    console.error("Error in public footer endpoint:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * GET /api/site-settings/footer
+ * Admin endpoint: retrieve footer configuration
+ */
+router.get("/footer", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const footer = normalizeFooterSettings(dbData.footer);
+    return res.json({
+      success: true,
+      data: footer,
+    });
+  } catch (error) {
+    console.error("Error retrieving footer configuration:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * PUT /api/site-settings/footer
+ * Admin endpoint: update footer configuration
+ */
+router.put("/footer", protectAdmin, async (req, res) => {
+  try {
+    const body = req.body || {};
+    const inputFooter = body.footer || body;
+    const normalized = normalizeFooterSettings(inputFooter);
+
+    const currentDbData = (await getSettingsFromDb()) || inMemorySettings;
+    const updatedData = {
+      ...currentDbData,
+      footer: normalized,
+    };
+
+    inMemorySettings = updatedData;
+    await saveSettingsToDb(updatedData);
+
+    return res.json({
+      success: true,
+      message: "Footer settings updated successfully",
+      data: normalized,
+    });
+  } catch (error) {
+    console.error("Error updating footer settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+
+// ==========================================
+// MOBILE BAR CMS INTEGRATION HELPERS & ROUTES
+// ==========================================
+
+const DEFAULT_MOBILE_SETTINGS = {
+  tabs: [
+    { id: "mtab-1", label: "Home", path: "/", shown: true },
+    { id: "mtab-2", label: "Browse", path: "/rent", shown: true },
+    { id: "mtab-3", label: "Wishlist", path: "/wishlist", shown: true },
+    { id: "mtab-4", label: "Bag", path: "/cart", shown: true, isBagTab: true },
+    { id: "mtab-5", label: "Account", path: "/profile", shown: true },
+  ],
+  drawer: {
+    showSearchField: true,
+    showModeShortcuts: true,
+    itemVisibility: {
+      "nav-rent": true,
+      "nav-preloved": true,
+      "nav-buy-new": true,
+      "nav-women": true,
+      "nav-men": true,
+      "nav-occasions": true,
+      "nav-designers": true,
+      "nav-shop-cat": true,
+      "nav-how-it-works": true,
+      "nav-about": true,
+      "nav-new-arrivals": true,
+      "nav-list-your-piece": true,
+    },
+  },
+};
+
+function normalizeMobileSettings(raw, context = {}) {
+  const source = raw || {};
+  const bagCartLabel = context?.header?.bagCartLabel || "Bag";
+
+  let tabs = [];
+  if (Array.isArray(source.tabs) && source.tabs.length > 0) {
+    tabs = source.tabs.map((tab, idx) => {
+      const isBag =
+        tab.isBagTab ||
+        tab.id === "mtab-4" ||
+        tab.label?.toLowerCase() === "bag" ||
+        tab.label?.toLowerCase() === "cart";
+      return {
+        id: String(tab.id || `mtab-${idx + 1}`),
+        label: isBag
+          ? context.forPublic
+            ? bagCartLabel
+            : tab.label || bagCartLabel
+          : String(tab.label || ""),
+        path: String(tab.path || "/"),
+        shown: tab.shown !== false,
+        isBagTab: !!isBag,
+      };
+    });
+  } else {
+    tabs = DEFAULT_MOBILE_SETTINGS.tabs.map((t) => ({ ...t }));
+  }
+
+  const drawerRaw = source.drawer || {};
+  const drawer = {
+    showSearchField: drawerRaw.showSearchField !== false,
+    showModeShortcuts: drawerRaw.showModeShortcuts !== false,
+    itemVisibility:
+      typeof drawerRaw.itemVisibility === "object" && drawerRaw.itemVisibility !== null
+        ? { ...DEFAULT_MOBILE_SETTINGS.drawer.itemVisibility, ...drawerRaw.itemVisibility }
+        : { ...DEFAULT_MOBILE_SETTINGS.drawer.itemVisibility },
+  };
+
+  return {
+    tabs,
+    drawer,
+  };
+}
+
+/**
+ * GET /api/site-settings/mobile/public
+ * Public endpoint: returns active mobile bar and drawer configuration for storefront
+ */
+router.get("/mobile/public", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const headerSettings = normalizeHeaderSettings(dbData.header);
+    const normalized = normalizeMobileSettings(dbData.mobile || dbData.mobileBar, {
+      header: headerSettings,
+      forPublic: true,
+    });
+
+    return res.json({
+      success: true,
+      data: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving public mobile settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * GET /api/site-settings/mobile
+ * Admin endpoint: retrieve raw mobile settings
+ */
+router.get("/mobile", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const headerSettings = normalizeHeaderSettings(dbData.header);
+    const normalized = normalizeMobileSettings(dbData.mobile || dbData.mobileBar, {
+      header: headerSettings,
+      forPublic: false,
+    });
+    merged.brand = normalizeBrandSettings(merged.brand);
+
+    return res.json({
+      success: true,
+      data: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving mobile configuration:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * PUT /api/site-settings/mobile
+ * Admin endpoint: update mobile configuration
+ */
+router.put("/mobile", protectAdmin, async (req, res) => {
+  try {
+    const body = req.body || {};
+    const inputMobile = body.mobile || body.mobileBar || body;
+    const currentDbData = (await getSettingsFromDb()) || inMemorySettings;
+    const headerSettings = normalizeHeaderSettings(currentDbData.header);
+    const normalized = normalizeMobileSettings(inputMobile, {
+      header: headerSettings,
+      forPublic: false,
+    });
+
+    const updatedData = {
+      ...currentDbData,
+      mobile: normalized,
+    };
+
+    inMemorySettings = updatedData;
+    await saveSettingsToDb(updatedData);
+
+    return res.json({
+      success: true,
+      message: "Mobile bar settings updated successfully",
+      data: normalized,
+    });
+  } catch (error) {
+    console.error("Error updating mobile settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+
+// ==========================================
+// BRAND CMS INTEGRATION HELPERS & ROUTES
+// ==========================================
+
+const DEFAULT_BRAND_SETTINGS = {
+  siteName: "House of Kaira",
+  tagline: "Circular Luxury Fashion",
+  brandQuote: "Every outfit has a story. We make sure it's never the last chapter.",
+  assets: {
+    logoMark: {
+      file: "hok-logo.png",
+      dataUrl: "",
+      dimensions: "512×512",
+      sizeKb: 24,
+      addedBy: "Soumya",
+      addedWhen: "12 days ago",
+    },
+    wordmark: { file: "", dataUrl: "", dimensions: "", sizeKb: 0 },
+    inverseMark: { file: "", dataUrl: "", dimensions: "", sizeKb: 0 },
+    browserTabIcon: { file: "", dataUrl: "", dimensions: "", sizeKb: 0 },
+    phoneHomeScreenIcon: { file: "", dataUrl: "", dimensions: "", sizeKb: 0 },
+    linkPreviewImage: { file: "", dataUrl: "", dimensions: "", sizeKb: 0 },
+  },
+};
+
+function normalizeAssetSlot(rawSlot, defaultSlot = {}) {
+  const slot = rawSlot || {};
+  return {
+    file: String(slot.file || defaultSlot.file || ""),
+    dataUrl: String(slot.dataUrl || defaultSlot.dataUrl || ""),
+    dimensions: String(slot.dimensions || defaultSlot.dimensions || ""),
+    sizeKb: typeof slot.sizeKb === "number" ? slot.sizeKb : (defaultSlot.sizeKb || 0),
+    addedBy: String(slot.addedBy || defaultSlot.addedBy || "Admin"),
+    addedWhen: String(slot.addedWhen || defaultSlot.addedWhen || "Recently"),
+  };
+}
+
+function normalizeBrandSettings(raw) {
+  const source = raw || {};
+  const rawAssets = source.assets || {};
+
+  return {
+    siteName: String(source.siteName || DEFAULT_BRAND_SETTINGS.siteName).trim(),
+    tagline: String(source.tagline || DEFAULT_BRAND_SETTINGS.tagline).trim(),
+    brandQuote: String(source.brandQuote || DEFAULT_BRAND_SETTINGS.brandQuote).trim(),
+    assets: {
+      logoMark: normalizeAssetSlot(rawAssets.logoMark, DEFAULT_BRAND_SETTINGS.assets.logoMark),
+      wordmark: normalizeAssetSlot(rawAssets.wordmark, DEFAULT_BRAND_SETTINGS.assets.wordmark),
+      inverseMark: normalizeAssetSlot(rawAssets.inverseMark, DEFAULT_BRAND_SETTINGS.assets.inverseMark),
+      browserTabIcon: normalizeAssetSlot(rawAssets.browserTabIcon, DEFAULT_BRAND_SETTINGS.assets.browserTabIcon),
+      phoneHomeScreenIcon: normalizeAssetSlot(rawAssets.phoneHomeScreenIcon, DEFAULT_BRAND_SETTINGS.assets.phoneHomeScreenIcon),
+      linkPreviewImage: normalizeAssetSlot(rawAssets.linkPreviewImage, DEFAULT_BRAND_SETTINGS.assets.linkPreviewImage),
+    },
+  };
+}
+
+/**
+ * GET /api/site-settings/brand/public
+ * Public endpoint: returns active brand settings (names, quotes, logo assets) for storefront
+ */
+router.get("/brand/public", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeBrandSettings(dbData.brand);
+
+    return res.json({
+      success: true,
+      data: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving public brand settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * GET /api/site-settings/brand
+ * Admin endpoint: retrieve brand settings
+ */
+router.get("/brand", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeBrandSettings(dbData.brand);
+
+    return res.json({
+      success: true,
+      data: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving brand configuration:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * PUT /api/site-settings/brand
+ * Admin endpoint: update brand configuration
+ */
+router.put("/brand", protectAdmin, async (req, res) => {
+  try {
+    const body = req.body || {};
+    const inputBrand = body.brand || body;
+    const normalized = normalizeBrandSettings(inputBrand);
+
+    const currentDbData = (await getSettingsFromDb()) || inMemorySettings;
+    const updatedData = {
+      ...currentDbData,
+      brand: normalized,
+    };
+
+    inMemorySettings = updatedData;
+    await saveSettingsToDb(updatedData);
+
+    return res.json({
+      success: true,
+      message: "Brand settings updated successfully",
+      data: normalized,
+    });
+  } catch (error) {
+    console.error("Error updating brand settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+
+export const DEFAULT_CONTACT_SETTINGS = {
+  supportEmail: "hello@houseofkaira.com",
+  phone: "+91 731 4005 220",
+  whatsApp: "+91 98765 43210",
+  daysOpen: "7 days a week",
+  hours: "10 AM – 8 PM IST",
+  replyWithinHrs: 2,
+  returnsAddress: {
+    addressedTo: "HOK Returns Desk",
+    addressLine1: "14 Vijay Nagar",
+    addressLine2: "Scheme 54",
+    landmark: "",
+    city: "Indore",
+    state: "Madhya Pradesh",
+    pinCode: "452010",
+    contactNumber: "+91 731 4005 220",
+  },
+  whatsAppButton: {
+    show: true,
+    tooltip: "Chat with us",
+    preFilledMessage: "Hi House of Kaira, I have a question about",
+  },
+  social: {
+    instagram: "@house_of_kaira",
+    followLabel: "Follow Us",
+    facebook: "",
+    pinterest: "",
+    youTube: "",
+    linkedIn: "",
+  },
+};
+
+export function normalizeContactSettings(raw) {
+  const c = raw || {};
+  const def = DEFAULT_CONTACT_SETTINGS;
+  const retAddr = c.returnsAddress || {};
+  const waBtn = c.whatsAppButton || {};
+  const soc = c.social || {};
+
+  return {
+    supportEmail: typeof c.supportEmail === "string" && c.supportEmail.trim()
+      ? c.supportEmail.trim()
+      : def.supportEmail,
+    phone: typeof c.phone === "string" && c.phone.trim()
+      ? c.phone.trim()
+      : def.phone,
+    whatsApp: typeof c.whatsApp === "string" && c.whatsApp.trim()
+      ? c.whatsApp.trim()
+      : def.whatsApp,
+    daysOpen: typeof c.daysOpen === "string" && c.daysOpen.trim()
+      ? c.daysOpen.trim()
+      : def.daysOpen,
+    hours: typeof c.hours === "string" && c.hours.trim()
+      ? c.hours.trim()
+      : def.hours,
+    replyWithinHrs: typeof c.replyWithinHrs === "number" && !isNaN(c.replyWithinHrs)
+      ? c.replyWithinHrs
+      : (parseInt(c.replyWithinHrs, 10) || def.replyWithinHrs),
+    returnsAddress: {
+      addressedTo: typeof retAddr.addressedTo === "string" ? retAddr.addressedTo.trim() : def.returnsAddress.addressedTo,
+      addressLine1: typeof retAddr.addressLine1 === "string" ? retAddr.addressLine1.trim() : def.returnsAddress.addressLine1,
+      addressLine2: typeof retAddr.addressLine2 === "string" ? retAddr.addressLine2.trim() : def.returnsAddress.addressLine2,
+      landmark: typeof retAddr.landmark === "string" ? retAddr.landmark.trim() : def.returnsAddress.landmark,
+      city: typeof retAddr.city === "string" ? retAddr.city.trim() : def.returnsAddress.city,
+      state: typeof retAddr.state === "string" ? retAddr.state.trim() : def.returnsAddress.state,
+      pinCode: typeof retAddr.pinCode === "string" ? retAddr.pinCode.replace(/\D/g, "").slice(0, 6) : def.returnsAddress.pinCode,
+      contactNumber: typeof retAddr.contactNumber === "string" ? retAddr.contactNumber.trim() : def.returnsAddress.contactNumber,
+    },
+    whatsAppButton: {
+      show: waBtn.show !== undefined ? !!waBtn.show : def.whatsAppButton.show,
+      tooltip: typeof waBtn.tooltip === "string" ? waBtn.tooltip.trim() : def.whatsAppButton.tooltip,
+      preFilledMessage: typeof waBtn.preFilledMessage === "string" ? waBtn.preFilledMessage : def.whatsAppButton.preFilledMessage,
+    },
+    social: {
+      instagram: typeof soc.instagram === "string" ? soc.instagram.trim() : def.social.instagram,
+      followLabel: typeof soc.followLabel === "string" ? soc.followLabel.trim() : def.social.followLabel,
+      facebook: typeof soc.facebook === "string" ? soc.facebook.trim() : def.social.facebook,
+      pinterest: typeof soc.pinterest === "string" ? soc.pinterest.trim() : def.social.pinterest,
+      youTube: typeof soc.youTube === "string" ? soc.youTube.trim() : def.social.youTube,
+      linkedIn: typeof soc.linkedIn === "string" ? soc.linkedIn.trim() : def.social.linkedIn,
+    },
+  };
+}
+
+/**
+ * GET /api/site-settings/contact/public
+ * Public endpoint: returns active contact configuration for storefront
+ */
+router.get("/contact/public", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeContactSettings(dbData.contact);
+
+    return res.json({
+      success: true,
+      data: normalized,
+      contact: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving public contact settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * GET /api/site-settings/contact
+ * Admin endpoint: retrieve contact settings
+ */
+router.get("/contact", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeContactSettings(dbData.contact);
+
+    return res.json({
+      success: true,
+      data: normalized,
+      contact: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving contact configuration:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * PUT /api/site-settings/contact
+ * Admin endpoint: update contact configuration
+ */
+router.put("/contact", protectAdmin, async (req, res) => {
+  try {
+    const body = req.body || {};
+    const inputContact = body.contact || body;
+    const normalized = normalizeContactSettings(inputContact);
+
+    const currentDbData = (await getSettingsFromDb()) || inMemorySettings;
+    const updatedData = {
+      ...currentDbData,
+      contact: normalized,
+    };
+
+    inMemorySettings = updatedData;
+    await saveSettingsToDb(updatedData);
+
+    return res.json({
+      success: true,
+      message: "Contact settings updated successfully",
+      data: normalized,
+      contact: normalized,
+    });
+  } catch (error) {
+    console.error("Error updating contact settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+
+export const DEFAULT_GOOGLE_SETTINGS = {
+  headline: "House of Kaira — Rent, Buy & List Luxury Indian Occasion Wear",
+  description: "Discover India’s most curated platform for luxury occasion wear — rent, buy preloved, or list your own Sabyasachi, Manish Malhotra, and more.",
+  allowSearchEngines: true,
+  tracking: {
+    googleAnalytics: "",
+    metaPixel: "",
+    googleSearchConsole: "",
+  },
+  devSettings: {
+    titleTemplate: "{{page_title}} {{sep}} {{site_name}}",
+    separator: "—",
+    canonicalAddress: "https://houseofkaira.com",
+    publishSitemap: true,
+  },
+};
+
+export function normalizeGoogleSettings(raw, context = {}) {
+  const g = raw || {};
+  const def = DEFAULT_GOOGLE_SETTINGS;
+  const trk = g.tracking || {};
+  const dev = g.devSettings || {};
+
+  const rawGA = typeof trk.googleAnalytics === "string" ? trk.googleAnalytics.trim() : "";
+  const cleanGA = /^(G-[A-Za-z0-9]+|UA-\d+-\d+)$/.test(rawGA)
+    ? rawGA
+    : (rawGA ? "" : def.tracking.googleAnalytics);
+
+  const rawPixel = typeof trk.metaPixel === "string" ? trk.metaPixel.trim() : "";
+  const cleanPixel = /^\d+$/.test(rawPixel)
+    ? rawPixel
+    : (rawPixel ? "" : def.tracking.metaPixel);
+
+  const rawGSC = typeof trk.googleSearchConsole === "string" ? trk.googleSearchConsole.trim() : "";
+  let cleanGSC = rawGSC;
+  const contentMatch = rawGSC.match(/content=["']([^"']+)["']/i);
+  if (contentMatch) {
+    cleanGSC = contentMatch[1].trim();
+  }
+
+  return {
+    headline:
+      typeof g.headline === "string" && g.headline.trim()
+        ? g.headline.trim()
+        : def.headline,
+    description:
+      typeof g.description === "string" && g.description.trim()
+        ? g.description.trim()
+        : def.description,
+    allowSearchEngines:
+      g.allowSearchEngines !== undefined
+        ? !!g.allowSearchEngines
+        : def.allowSearchEngines,
+    tracking: {
+      googleAnalytics: cleanGA,
+      metaPixel: cleanPixel,
+      googleSearchConsole: cleanGSC,
+    },
+    devSettings: {
+      titleTemplate:
+        typeof dev.titleTemplate === "string" && dev.titleTemplate.trim()
+          ? dev.titleTemplate.trim()
+          : def.devSettings.titleTemplate,
+      separator:
+        typeof dev.separator === "string" && dev.separator.trim()
+          ? dev.separator.trim()
+          : def.devSettings.separator,
+      canonicalAddress:
+        typeof dev.canonicalAddress === "string" && dev.canonicalAddress.trim()
+          ? dev.canonicalAddress.trim()
+          : def.devSettings.canonicalAddress,
+      publishSitemap:
+        dev.publishSitemap !== undefined
+          ? !!dev.publishSitemap
+          : def.devSettings.publishSitemap,
+    },
+  };
+}
+
+/**
+ * GET /api/site-settings/google/public
+ * Public endpoint: returns public SEO, analytics and verification settings
+ */
+router.get("/google/public", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeGoogleSettings(dbData.google);
+
+    return res.json({
+      success: true,
+      data: normalized,
+      google: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving public google settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * GET /api/site-settings/google
+ * Admin endpoint: retrieve Google & sharing settings
+ */
+router.get("/google", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeGoogleSettings(dbData.google);
+
+    return res.json({
+      success: true,
+      data: normalized,
+      google: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving google configuration:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * PUT /api/site-settings/google
+ * Admin endpoint: update Google & sharing configuration
+ */
+router.put("/google", protectAdmin, async (req, res) => {
+  try {
+    const body = req.body || {};
+    const inputGoogle = body.google || body;
+    const normalized = normalizeGoogleSettings(inputGoogle);
+
+    const currentDbData = (await getSettingsFromDb()) || inMemorySettings;
+    const updatedData = {
+      ...currentDbData,
+      google: normalized,
+    };
+
+    inMemorySettings = updatedData;
+    await saveSettingsToDb(updatedData);
+
+    return res.json({
+      success: true,
+      message: "Google settings updated successfully",
+      data: normalized,
+      google: normalized,
+    });
+  } catch (error) {
+    console.error("Error updating google settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * GET /api/site-settings/robots.txt
+ * Dynamic robots.txt based on Google allowSearchEngines and sitemap settings
+ */
+router.get("/robots.txt", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const google = normalizeGoogleSettings(dbData.google);
+    res.setHeader("Content-Type", "text/plain");
+    if (!google.allowSearchEngines) {
+      return res.send("User-agent: *\nDisallow: /\n");
+    }
+    const cleanCanonical = (google.devSettings.canonicalAddress || "").replace(/\/$/, "");
+    const sitemapLine = google.devSettings.publishSitemap && cleanCanonical
+      ? `\nSitemap: ${cleanCanonical}/sitemap.xml`
+      : "";
+    return res.send(`User-agent: *\nAllow: /${sitemapLine}\n`);
+  } catch (err) {
+    res.setHeader("Content-Type", "text/plain");
+    return res.send("User-agent: *\nAllow: /\n");
+  }
+});
+
+/**
+ * GET /api/site-settings/sitemap.xml
+ * Dynamic XML sitemap based on Google devSettings
+ */
+router.get("/sitemap.xml", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const google = normalizeGoogleSettings(dbData.google);
+    res.setHeader("Content-Type", "application/xml");
+    if (!google.devSettings.publishSitemap) {
+      return res.status(404).send("<error>Sitemap is disabled</error>");
+    }
+    const baseUrl = (google.devSettings.canonicalAddress || "").replace(/\/$/, "");
+    const pages = [
+      "",
+      "/rent",
+      "/preloved",
+      "/buy-new",
+      "/categories",
+      "/occasions",
+      "/designers",
+      "/contact",
+      "/terms",
+      "/privacy",
+      "/refunds",
+      "/deposit-policy",
+      "/care-policy",
+      "/shipping-policy",
+      "/cookies"
+    ];
+    const now = new Date().toISOString().split("T")[0];
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages
+      .map(
+        (p) =>
+          `  <url>\n    <loc>${baseUrl}${p}</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n  </url>`
+      )
+      .join("\n")}\n</urlset>`;
+    return res.send(xml);
+  } catch (err) {
+    return res.status(500).send("<error>Error generating sitemap</error>");
+  }
+});
+
+
+export const DEFAULT_LEGAL_SETTINGS = {
+  registeredEntity: {
+    registeredName: "House of Kaira Retail Pvt Ltd",
+    gstin: "23AABCH1234K1ZV",
+    cin: "U52609MP2025PTC071482",
+    registeredAddress: "14 Vijay Nagar, Scheme 54, Indore, Madhya Pradesh 452010",
+  },
+  cookieConsent: {
+    showBanner: false,
+    heading: "We use cookies",
+    position: "Bottom bar",
+    body: "We use cookies to run the site, remember your bag, and understand what people browse. You can accept all, or take only what the site needs to work.",
+    acceptLabel: "Accept all",
+    rejectLabel: "Only essential",
+    manageLabel: "Manage",
+    policyLink: "/cookies",
+    categories: {
+      essential: "Keeps you signed in, remembers your bag, and lets checkout work. These cannot be turned off.",
+      analytics: "Lets us see which pieces people browse and where they arrived from, so we know what to stock more of.",
+      marketing: "Lets us show House of Kaira pieces on Instagram and Facebook to people who have visited before.",
+    },
+  },
+};
+
+export function normalizeLegalSettings(raw) {
+  const l = raw || {};
+  const def = DEFAULT_LEGAL_SETTINGS;
+  const entity = l.registeredEntity || {};
+  const cookie = l.cookieConsent || {};
+  const cats = cookie.categories || {};
+
+  return {
+    registeredEntity: {
+      registeredName:
+        typeof entity.registeredName === "string" && entity.registeredName.trim()
+          ? entity.registeredName.trim()
+          : def.registeredEntity.registeredName,
+      gstin:
+        typeof entity.gstin === "string" && entity.gstin.trim()
+          ? entity.gstin.trim()
+          : def.registeredEntity.gstin,
+      cin:
+        typeof entity.cin === "string" && entity.cin.trim()
+          ? entity.cin.trim()
+          : def.registeredEntity.cin,
+      registeredAddress:
+        typeof entity.registeredAddress === "string" && entity.registeredAddress.trim()
+          ? entity.registeredAddress.trim()
+          : def.registeredEntity.registeredAddress,
+    },
+    cookieConsent: {
+      showBanner:
+        cookie.showBanner !== undefined
+          ? !!cookie.showBanner
+          : def.cookieConsent.showBanner,
+      heading:
+        typeof cookie.heading === "string" && cookie.heading.trim()
+          ? cookie.heading.trim()
+          : def.cookieConsent.heading,
+      position:
+        ["Bottom bar", "Bottom-left card", "Centre modal"].includes(cookie.position)
+          ? cookie.position
+          : def.cookieConsent.position,
+      body:
+        typeof cookie.body === "string" && cookie.body.trim()
+          ? cookie.body.trim()
+          : def.cookieConsent.body,
+      acceptLabel:
+        typeof cookie.acceptLabel === "string" && cookie.acceptLabel.trim()
+          ? cookie.acceptLabel.trim()
+          : def.cookieConsent.acceptLabel,
+      rejectLabel:
+        typeof cookie.rejectLabel === "string" && cookie.rejectLabel.trim()
+          ? cookie.rejectLabel.trim()
+          : def.cookieConsent.rejectLabel,
+      manageLabel:
+        typeof cookie.manageLabel === "string" && cookie.manageLabel.trim()
+          ? cookie.manageLabel.trim()
+          : def.cookieConsent.manageLabel,
+      policyLink:
+        typeof cookie.policyLink === "string" && cookie.policyLink.trim()
+          ? cookie.policyLink.trim()
+          : def.cookieConsent.policyLink,
+      categories: {
+        essential:
+          typeof cats.essential === "string" && cats.essential.trim()
+            ? cats.essential.trim()
+            : def.cookieConsent.categories.essential,
+        analytics:
+          typeof cats.analytics === "string" && cats.analytics.trim()
+            ? cats.analytics.trim()
+            : def.cookieConsent.categories.analytics,
+        marketing:
+          typeof cats.marketing === "string" && cats.marketing.trim()
+            ? cats.marketing.trim()
+            : def.cookieConsent.categories.marketing,
+      },
+    },
+  };
+}
+
+/**
+ * GET /api/site-settings/legal/public
+ * Public endpoint: returns public legal and cookie consent configuration
+ */
+router.get("/legal/public", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeLegalSettings(dbData.legal);
+
+    return res.json({
+      success: true,
+      data: normalized,
+      legal: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving public legal settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * GET /api/site-settings/legal
+ * Admin endpoint: retrieve legal & consent settings
+ */
+router.get("/legal", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeLegalSettings(dbData.legal);
+
+    return res.json({
+      success: true,
+      data: normalized,
+      legal: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving legal configuration:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * PUT /api/site-settings/legal
+ * Admin endpoint: update legal & consent configuration
+ */
+router.put("/legal", protectAdmin, async (req, res) => {
+  try {
+    const body = req.body || {};
+    const inputLegal = body.legal || body;
+    const normalized = normalizeLegalSettings(inputLegal);
+
+    const currentDbData = (await getSettingsFromDb()) || inMemorySettings;
+    const updatedData = {
+      ...currentDbData,
+      legal: normalized,
+    };
+
+    inMemorySettings = updatedData;
+    await saveSettingsToDb(updatedData);
+
+    return res.json({
+      success: true,
+      message: "Legal settings updated successfully",
+      data: normalized,
+      legal: normalized,
+    });
+  } catch (error) {
+    console.error("Error updating legal settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+export const DEFAULT_REGIONAL_SETTINGS = {
+  timezone: "Asia/Kolkata (IST)",
+  currency: "INR ₹",
+  dateFormat: "DD MMM YYYY",
+  numberFormat: "Indian — lakh and crore",
+};
+
+export function getCurrencySymbolFromCurrency(curr) {
+  if (!curr || typeof curr !== "string") return "₹";
+  if (curr.includes("INR") || curr.includes("₹")) return "₹";
+  if (curr.includes("USD") || curr.includes("$")) return "$";
+  if (curr.includes("AED") || curr.includes("د.إ")) return "AED ";
+  if (curr.includes("GBP") || curr.includes("£")) return "£";
+  if (curr.includes("EUR") || curr.includes("€")) return "€";
+  return "₹";
+}
+
+export function normalizeRegionalSettings(raw) {
+  if (!raw || typeof raw !== "object") {
+    return { ...DEFAULT_REGIONAL_SETTINGS };
+  }
+
+  const validTimezones = [
+    "Asia/Kolkata (IST)",
+    "Asia/Dubai (GST)",
+    "Europe/London (GMT)",
+    "Asia/Singapore (SGT)",
+    "America/New_York (EST)",
+  ];
+  const validCurrencies = ["INR ₹", "USD $", "AED د.إ", "GBP £", "EUR €"];
+  const validDateFormats = [
+    "DD MMM YYYY",
+    "DD/MM/YYYY",
+    "MMM DD, YYYY",
+    "MM/DD/YYYY",
+    "YYYY-MM-DD",
+  ];
+  const validNumberFormats = [
+    "Indian — lakh and crore",
+    "International — thousand and million",
+    "International — million and billion",
+  ];
+
+  return {
+    timezone: validTimezones.includes(raw.timezone)
+      ? raw.timezone
+      : typeof raw.timezone === "string" && raw.timezone.trim()
+      ? raw.timezone.trim()
+      : DEFAULT_REGIONAL_SETTINGS.timezone,
+    currency: validCurrencies.includes(raw.currency)
+      ? raw.currency
+      : typeof raw.currency === "string" && raw.currency.trim()
+      ? raw.currency.trim()
+      : DEFAULT_REGIONAL_SETTINGS.currency,
+    dateFormat: validDateFormats.includes(raw.dateFormat)
+      ? raw.dateFormat
+      : typeof raw.dateFormat === "string" && raw.dateFormat.trim()
+      ? raw.dateFormat.trim()
+      : DEFAULT_REGIONAL_SETTINGS.dateFormat,
+    numberFormat: validNumberFormats.includes(raw.numberFormat)
+      ? raw.numberFormat
+      : typeof raw.numberFormat === "string" && raw.numberFormat.trim()
+      ? raw.numberFormat.trim()
+      : DEFAULT_REGIONAL_SETTINGS.numberFormat,
+  };
+}
+
+/**
+ * GET /api/site-settings/regional/public
+ * Public endpoint: returns public regional formatting & timezone configuration
+ */
+router.get("/regional/public", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeRegionalSettings(dbData.regional);
+    const currencySymbol = getCurrencySymbolFromCurrency(normalized.currency);
+
+    const result = {
+      ...normalized,
+      currencySymbol,
+    };
+
+    return res.json({
+      success: true,
+      data: result,
+      regional: result,
+    });
+  } catch (error) {
+    console.error("Error retrieving public regional settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * GET /api/site-settings/regional
+ * Admin endpoint: retrieve regional settings
+ */
+router.get("/regional", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeRegionalSettings(dbData.regional);
+
+    return res.json({
+      success: true,
+      data: normalized,
+      regional: normalized,
+    });
+  } catch (error) {
+    console.error("Error retrieving regional configuration:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * PUT /api/site-settings/regional
+ * Admin endpoint: update regional configuration
+ */
+router.put("/regional", protectAdmin, async (req, res) => {
+  try {
+    const body = req.body || {};
+    const inputRegional = body.regional || body;
+    const normalized = normalizeRegionalSettings(inputRegional);
+
+    const currentDbData = (await getSettingsFromDb()) || inMemorySettings;
+    const updatedData = {
+      ...currentDbData,
+      regional: normalized,
+    };
+
+    inMemorySettings = updatedData;
+    await saveSettingsToDb(updatedData);
+
+    return res.json({
+      success: true,
+      message: "Regional settings updated successfully",
+      data: normalized,
+      regional: normalized,
+    });
+  } catch (error) {
+    console.error("Error updating regional settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+export const DEFAULT_MAINTENANCE_SETTINGS = {
+  maintenance: {
+    enabled: false,
+    heading: "We’ll be right back",
+    expectedBack: "",
+    body: "House of Kaira is briefly down for scheduled work. Rentals already booked are unaffected.",
+    allowList: "Soumya, Priya (Ops)",
+  },
+  notFoundPage: {
+    heading: "This piece has moved on",
+    body: "The page you were looking for is no longer here — which happens on a platform where pieces find new homes.",
+    suggestedLinks: "Rent, Buy Preloved, New Arrivals",
+  },
+};
+
+export function normalizeMaintenanceSettings(raw) {
+  if (!raw || typeof raw !== "object") {
+    return { ...DEFAULT_MAINTENANCE_SETTINGS };
+  }
+
+  const rawMaint = raw.maintenance || (raw.enabled !== undefined ? raw : {});
+  const raw404 = raw.notFoundPage || {};
+
+  return {
+    maintenance: {
+      enabled: rawMaint.enabled !== undefined ? !!rawMaint.enabled : DEFAULT_MAINTENANCE_SETTINGS.maintenance.enabled,
+      heading: typeof rawMaint.heading === "string" ? rawMaint.heading : DEFAULT_MAINTENANCE_SETTINGS.maintenance.heading,
+      expectedBack: typeof rawMaint.expectedBack === "string" ? rawMaint.expectedBack : DEFAULT_MAINTENANCE_SETTINGS.maintenance.expectedBack,
+      body: typeof rawMaint.body === "string" ? rawMaint.body : DEFAULT_MAINTENANCE_SETTINGS.maintenance.body,
+      allowList: typeof rawMaint.allowList === "string" ? rawMaint.allowList : DEFAULT_MAINTENANCE_SETTINGS.maintenance.allowList,
+    },
+    notFoundPage: {
+      heading: typeof raw404.heading === "string" ? raw404.heading : DEFAULT_MAINTENANCE_SETTINGS.notFoundPage.heading,
+      body: typeof raw404.body === "string" ? raw404.body : DEFAULT_MAINTENANCE_SETTINGS.notFoundPage.body,
+      suggestedLinks: typeof raw404.suggestedLinks === "string" ? raw404.suggestedLinks : DEFAULT_MAINTENANCE_SETTINGS.notFoundPage.suggestedLinks,
+    },
+  };
+}
+
+/**
+ * GET /api/site-settings/maintenance/public
+ * Public storefront endpoint: returns maintenance status, active copy, and 404 configuration
+ */
+router.get("/maintenance/public", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeMaintenanceSettings(dbData.maintenance);
+
+    return res.json({
+      success: true,
+      data: normalized,
+      maintenance: normalized.maintenance,
+      notFoundPage: normalized.notFoundPage,
+    });
+  } catch (error) {
+    console.error("Error retrieving public maintenance settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * GET /api/site-settings/maintenance
+ * Admin endpoint: retrieve maintenance and 404 configuration
+ */
+router.get("/maintenance", async (req, res) => {
+  try {
+    const dbData = (await getSettingsFromDb()) || inMemorySettings;
+    const normalized = normalizeMaintenanceSettings(dbData.maintenance);
+
+    return res.json({
+      success: true,
+      data: normalized,
+      maintenance: normalized.maintenance,
+      notFoundPage: normalized.notFoundPage,
+    });
+  } catch (error) {
+    console.error("Error retrieving maintenance configuration:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+/**
+ * PUT /api/site-settings/maintenance
+ * Admin endpoint: update maintenance mode and 404 settings
+ */
+router.put("/maintenance", protectAdmin, async (req, res) => {
+  try {
+    const body = req.body || {};
+    const inputData = body.maintenance && body.notFoundPage ? body : body.maintenance || body;
+    const normalized = normalizeMaintenanceSettings(inputData);
+
+    const currentDbData = (await getSettingsFromDb()) || inMemorySettings;
+    const updatedData = {
+      ...currentDbData,
+      maintenance: normalized,
+    };
+
+    inMemorySettings = updatedData;
+    await saveSettingsToDb(updatedData);
+
+    return res.json({
+      success: true,
+      message: "Maintenance settings updated successfully",
+      data: normalized,
+      maintenance: normalized.maintenance,
+      notFoundPage: normalized.notFoundPage,
+    });
+  } catch (error) {
+    console.error("Error updating maintenance settings:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 /**
  * GET /api/site-settings
  * Master settings endpoint (used by Admin)
@@ -931,6 +2253,16 @@ router.get("/", async (req, res) => {
       merged.announcement || merged.announcementBar
     );
     merged.header = normalizeHeaderSettings(merged.header);
+    merged.footer = normalizeFooterSettings(merged.footer);
+    merged.mobile = normalizeMobileSettings(merged.mobile || merged.mobileBar, {
+      header: merged.header,
+      forPublic: false,
+    });
+    merged.contact = normalizeContactSettings(merged.contact);
+    merged.google = normalizeGoogleSettings(merged.google);
+    merged.legal = normalizeLegalSettings(merged.legal);
+    merged.regional = normalizeRegionalSettings(merged.regional);
+    merged.maintenance = normalizeMaintenanceSettings(merged.maintenance);
 
     return res.json({
       success: true,
@@ -955,6 +2287,41 @@ router.put("/", protectAdmin, async (req, res) => {
       ...currentDbData,
       ...updatedData,
     };
+
+    if (updatedData.footer) {
+      merged.footer = normalizeFooterSettings(updatedData.footer);
+    }
+
+    if (updatedData.brand) {
+      merged.brand = normalizeBrandSettings(updatedData.brand);
+    }
+
+    if (updatedData.contact) {
+      merged.contact = normalizeContactSettings(updatedData.contact);
+    }
+
+    if (updatedData.google) {
+      merged.google = normalizeGoogleSettings(updatedData.google);
+    }
+
+    if (updatedData.legal) {
+      merged.legal = normalizeLegalSettings(updatedData.legal);
+    }
+
+    if (updatedData.regional) {
+      merged.regional = normalizeRegionalSettings(updatedData.regional);
+    }
+
+    if (updatedData.maintenance) {
+      merged.maintenance = normalizeMaintenanceSettings(updatedData.maintenance);
+    }
+
+    if (updatedData.mobile || updatedData.mobileBar) {
+      merged.mobile = normalizeMobileSettings(updatedData.mobile || updatedData.mobileBar, {
+        header: merged.header,
+        forPublic: false,
+      });
+    }
 
     if (updatedData.header) {
       merged.header = normalizeHeaderSettings(updatedData.header);

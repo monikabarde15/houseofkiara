@@ -1,8 +1,10 @@
 // src\components\Cart\items\modes\new\NewPriceBlock.jsx
 import React from "react";
+import { useRegionalSettings } from "../../../../../hooks/useRegionalSettings";
 import "../../../../../styles/cart/items/price-block.css";
 
 const NewPriceBlock = ({ product }) => {
+  const { currencySymbol, formatPrice } = useRegionalSettings();
   const pricing = product?.new?.pricing || product?.modes?.buy?.pricing || {};
 
   const price = pricing?.price || product?.listingPrice || product?.price || 0;
@@ -19,7 +21,7 @@ const NewPriceBlock = ({ product }) => {
 
       {/* PRICE */}
       <div className="new-price__main">
-       <sup>₹</sup>{price.toLocaleString()}
+       <sup>{currencySymbol}</sup>{formatPrice(price)}
       </div>
 
       {/* NOTE */}

@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { CONTACT_CONTENT } from "../../data/contact/contactContent";
+import {
+  buildWhatsAppUrl,
+  buildMailtoUrl,
+  cleanPhoneForTel,
+} from "../../services/contactApi";
 
 const WhatsAppIcon = ({ className = "wa", size = 20 }) => (
   <svg
@@ -53,15 +58,23 @@ const PhoneIcon = ({ className = "line", size = 20 }) => (
   </svg>
 );
 
-export default function ContactReachCard({ showCallRow = true, onShowToast }) {
+export default function ContactReachCard({
+  showCallRow = true,
+  onShowToast,
+  contactSettings,
+}) {
   const { title, whatsapp, email, call } = CONTACT_CONTENT.reachCard;
   const [isCopied, setIsCopied] = useState(false);
+
+  const emailValue = contactSettings?.supportEmail || email.value;
+  const whatsappValue = contactSettings?.whatsApp || whatsapp.value;
+  const callValue = contactSettings?.phone || call.value;
 
   const handleCopyEmail = (e) => {
     e.preventDefault();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard
-        .writeText(email.value)
+        .writeText(emailValue)
         .then(() => {
           setIsCopied(true);
           if (onShowToast) onShowToast(email.copiedToast);
@@ -75,13 +88,24 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
     }
   };
 
-  const whatsappUrl = `https://wa.me/${whatsapp.rawNumber}?text=${encodeURIComponent(
+  const whatsappUrl = buildWhatsAppUrl(
+    whatsappValue,
     whatsapp.greeting
-  )}`;
-  const mailtoUrl = `mailto:${email.value}?subject=${encodeURIComponent(
+  );
+  const mailtoUrl = buildMailtoUrl(
+    emailValue,
     email.subject
-  )}`;
-  const telUrl = `tel:${call.rawPhone}`;
+  );
+  const telUrl = `tel:${cleanPhoneForTel(callValue)}`;
+
+  const whatsappNote = contactSettings?.replyWithinHrs
+    ? `The quickest way to reach us. During our hours, we usually reply within ${contactSettings.replyWithinHrs} hours.`
+    : whatsapp.note;
+
+  const callNote =
+    contactSettings?.daysOpen && contactSettings?.hours
+      ? `${contactSettings.daysOpen}, ${contactSettings.hours}.`
+      : call.note;
 
   return (
     <section className="reach" aria-labelledby="reach-title">
@@ -106,11 +130,11 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
               rel="noopener noreferrer"
               className="ch-v"
             >
-              {whatsapp.value}
+              {whatsappValue}
             </a>
           </div>
 
-          <div className="ch-n">{whatsapp.note}</div>
+          <div className="ch-n">{whatsappNote}</div>
 
           <a
             href={whatsappUrl}
@@ -134,7 +158,7 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
 
           <div className="ch-line">
             <a href={mailtoUrl} className="ch-v">
-              {email.value}
+              {emailValue}
             </a>
             <button
               type="button"
@@ -161,11 +185,11 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
 
             <div className="ch-line">
               <a href={telUrl} className="ch-v">
-                {call.value}
+                {callValue}
               </a>
             </div>
 
-            <div className="ch-n">{call.note}</div>
+            <div className="ch-n">{callNote}</div>
           </div>
         )}
       </div>

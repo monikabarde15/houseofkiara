@@ -7,18 +7,41 @@ import React, { useState, useEffect } from "react";
 import logo from "../assets/logo/logo.png";
 import { SITE_SETTINGS } from "../data/system/systemTokens";
 import { formatMaintenanceTime } from "../utils/system/timeFormatter";
+import { getMaintenanceSettings } from "../services/maintenanceApi";
 import "../styles/system/system-variables.css";
 import "../styles/system/system-maintenance.css";
 
 export default function MaintenancePage({
   initialState = "planned",
-  backByTime = "2026-10-17T18:00:00+05:30"
+  backByTime = "2026-10-17T18:00:00+05:30",
+  settings: propSettings,
 }) {
   const [activeState, setActiveState] = useState(initialState);
+  const [cmsSettings, setCmsSettings] = useState(propSettings || null);
+
+  useEffect(() => {
+    if (propSettings) {
+      setCmsSettings(propSettings);
+    } else {
+      let isMounted = true;
+      getMaintenanceSettings().then((cfg) => {
+        if (isMounted && cfg?.maintenance) {
+          setCmsSettings(cfg.maintenance);
+        }
+      });
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [propSettings]);
+
+  const customHeading = cmsSettings?.heading;
+  const customBody = cmsSettings?.body;
+  const customExpected = cmsSettings?.expectedBack;
 
   // Set page title and noindex
   useEffect(() => {
-    document.title = "We’ll be back very shortly · House of Kaira";
+    document.title = `${customHeading || "We’ll be back very shortly"} · House of Kaira`;
 
     let robotsMeta = document.querySelector('meta[name="robots"]');
     if (!robotsMeta) {
@@ -33,7 +56,7 @@ export default function MaintenancePage({
         robotsMeta.content = "index, follow";
       }
     };
-  }, []);
+  }, [customHeading]);
 
   // Section 8.7: Auto-refresh polling every 60 seconds
   useEffect(() => {
@@ -55,11 +78,15 @@ export default function MaintenancePage({
   const isUnexpected = activeState === "unexpected";
   const isRunningLate = activeState === "late";
 
-  const leadText = isUnexpected
+  const leadText = customBody
+    ? customBody
+    : isUnexpected
     ? "House of Kaira is taking a short pause while we put something right. Everything will be exactly where you left it."
     : "We’re making a few refinements to House of Kaira. Everything will be exactly where you left it, from your wishlist to your bookings.";
 
-  const statusText = isUnexpected
+  const statusText = customExpected
+    ? `Expected back by ${customExpected}`
+    : isUnexpected
     ? "We’re on it, and will be back as soon as we can."
     : isRunningLate
     ? "Taking a little longer than planned. Thank you for waiting with us."
@@ -122,7 +149,13 @@ export default function MaintenancePage({
 
         {/* Heading */}
         <h1 className="sys-maint-h1">
-          We’ll be back <em>very shortly</em>
+          {customHeading ? (
+            customHeading
+          ) : (
+            <>
+              We’ll be back <em>very shortly</em>
+            </>
+          )}
         </h1>
 
         {/* Lead Line */}

@@ -11,7 +11,9 @@ const MobileHeader = ({
   onSearchOpen, 
   onWishlistClick, 
   onBagClick, 
-  bagCartLabel = "Bag"
+  bagCartLabel = "Bag",
+  siteName = "House of Kaira",
+  logoUrl
 }) => {
   const isDark = theme === 'dark';
   const wishlistItems = useWishlistStore((state) => state.items);
@@ -38,8 +40,8 @@ const MobileHeader = ({
 
         {/* Header Logo */}
         <div className="header-logo" onClick={() => window.location.href = '/'}>
-          <img className="logo-img" src={logo} alt="House of Kaira" />
-          <span className="logo-wordmark">HOUSE OF KAIRA</span>
+          <img className="logo-img" src={logoUrl || logo} alt={siteName || "House of Kaira"} />
+          <span className="logo-wordmark">{siteName ? siteName.toUpperCase() : "HOUSE OF KAIRA"}</span>
         </div>
 
         {/* Header Icon Cluster */}

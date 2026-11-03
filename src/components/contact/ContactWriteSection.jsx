@@ -5,7 +5,10 @@ import ContactArrivalNote from "./ContactArrivalNote";
 import { CONTACT_CONTENT } from "../../data/contact/contactContent";
 import "../../styles/contact/contact-write.css";
 
-export default function ContactWriteSection({ showVisitCard = true }) {
+export default function ContactWriteSection({
+  showVisitCard = true,
+  contactSettings,
+}) {
   const { title, intro } = CONTACT_CONTENT.write;
 
   return (
@@ -21,7 +24,9 @@ export default function ContactWriteSection({ showVisitCard = true }) {
 
           {/* Right Column: Side Aside for Visit and Arrival note (Section 13.1) */}
           <aside className="side" aria-label="Visits, and when a piece arrives">
-            {showVisitCard && <ContactVisitCard />}
+            {showVisitCard && (
+              <ContactVisitCard contactSettings={contactSettings} />
+            )}
             <ContactArrivalNote />
           </aside>
         </div>

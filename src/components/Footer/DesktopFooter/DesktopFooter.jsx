@@ -25,7 +25,7 @@ const LinkedinIcon = () => (
   </svg>
 );
 
-const DesktopFooter = () => {
+const DesktopFooter = ({ footerSettings, brandSettings, contactSettings }) => {
   const location = useLocation();
 
   const isCurrentPage = (link) => {
@@ -83,15 +83,49 @@ const DesktopFooter = () => {
     }
     return false;
   };
+
+  const columns =
+    footerSettings?.linkColumns && footerSettings.linkColumns.length > 0
+      ? footerSettings.linkColumns
+      : desktopFooterColumns;
+
+  let policyLinks =
+    footerSettings?.legalRow && footerSettings.legalRow.length > 0
+      ? [...footerSettings.legalRow]
+      : desktopPolicyLinks;
+
+  const hasCookieSettings = policyLinks.some(
+    (l) => l.isButton || l.label?.toLowerCase() === "cookie settings"
+  );
+  if (!hasCookieSettings) {
+    policyLinks.push({
+      label: "Cookie settings",
+      isButton: true,
+      action: "open-cookie-settings",
+    });
+  }
+
+  const blurb = footerSettings?.blurbUnderWordmark || "Circular Luxury Fashion";
+  const rawCopyright =
+    footerSettings?.copyrightLine || "© 2026 House of Kaira. All rights reserved. Indore, India.";
+  const cleanCopyright = rawCopyright.replace(/&copy;/g, "©");
+
+  const badges = footerSettings?.trustBadges
+    ? footerSettings.trustBadges
+        .split(",")
+        .map((b) => b.trim())
+        .filter(Boolean)
+    : ["Secure Payments", "Circular Fashion"];
+
   return (
     <footer className="hok-desktop-footer">
       <div className="hok-footer-top">
         {/* Brand Column (Column 1) */}
         <div className="hok-footer-brand">
-          <h3 className="hok-footer-brand-name">House of Kaira</h3>
-          <span className="hok-footer-brand-sub">Circular Luxury Fashion</span>
+          <h3 className="hok-footer-brand-name">{brandSettings?.siteName || "House of Kaira"}</h3>
+          <span className="hok-footer-brand-sub">{brandSettings?.tagline || blurb}</span>
           <p className="hok-footer-tagline">
-            &ldquo;Every outfit has a story. We make sure it&apos;s never the last chapter.&rdquo;
+            &ldquo;{brandSettings?.brandQuote || "Every outfit has a story. We make sure it's never the last chapter."}&rdquo;
           </p>
           <div className="hok-footer-socials">
             <button
@@ -99,11 +133,12 @@ const DesktopFooter = () => {
               aria-label="Instagram"
               onClick={() => {
                 showToast("Opening Instagram");
-                window.open(
-                  "https://instagram.com/houseofkaira",
-                  "_blank",
-                  "noopener,noreferrer"
-                );
+                const handle =
+                  contactSettings?.social?.instagram || "@house_of_kaira";
+                const url = handle.startsWith("http")
+                  ? handle
+                  : `https://instagram.com/${handle.replace(/^@/, "")}`;
+                window.open(url, "_blank", "noopener,noreferrer");
               }}
             >
               <InstagramIcon />
@@ -112,7 +147,16 @@ const DesktopFooter = () => {
             <button
               type="button"
               aria-label="Facebook"
-              onClick={() => showToast("Facebook coming soon")}
+              onClick={() => {
+                const fb = contactSettings?.social?.facebook;
+                if (fb && fb.trim()) {
+                  showToast("Opening Facebook");
+                  const url = fb.startsWith("http") ? fb : `https://facebook.com/${fb}`;
+                  window.open(url, "_blank", "noopener,noreferrer");
+                } else {
+                  showToast("Facebook coming soon");
+                }
+              }}
             >
               <FacebookIcon />
             </button>
@@ -120,7 +164,16 @@ const DesktopFooter = () => {
             <button
               type="button"
               aria-label="LinkedIn"
-              onClick={() => showToast("LinkedIn coming soon")}
+              onClick={() => {
+                const li = contactSettings?.social?.linkedIn;
+                if (li && li.trim()) {
+                  showToast("Opening LinkedIn");
+                  const url = li.startsWith("http") ? li : `https://linkedin.com/${li}`;
+                  window.open(url, "_blank", "noopener,noreferrer");
+                } else {
+                  showToast("LinkedIn coming soon");
+                }
+              }}
             >
               <LinkedinIcon />
             </button>
@@ -128,16 +181,16 @@ const DesktopFooter = () => {
         </div>
 
         {/* Footer Columns (Columns 2–5) */}
-        {desktopFooterColumns.map((column) => (
-          <div key={column.title} className="hok-footer-column">
-            <h4 className="hok-footer-column-heading">{column.title}</h4>
+        {columns.map((column) => (
+          <div key={column.heading || column.title || column.id} className="hok-footer-column">
+            <h4 className="hok-footer-column-heading">{column.heading || column.title}</h4>
             <div className="hok-footer-column-links">
-              {column.links.map((link) => {
+              {(column.links || []).map((link) => {
                 const isCurrent = isCurrentPage(link);
                 if (isCurrent) {
                   return (
                     <span
-                      key={link.label}
+                      key={link.id || link.label}
                       className="hok-footer-link here"
                       aria-current="page"
                     >
@@ -146,7 +199,7 @@ const DesktopFooter = () => {
                   );
                 }
                 return (
-                  <a href={link.path} key={link.label} className="hok-footer-link">
+                  <a href={link.path} key={link.id || link.label} className="hok-footer-link">
                     {link.label}
                   </a>
                 );
@@ -158,18 +211,19 @@ const DesktopFooter = () => {
 
       {/* Policy Links Row */}
       <div className="hok-footer-policy-row">
-        {desktopPolicyLinks.map((link, index) => {
-          const isLast = index === desktopPolicyLinks.length - 1;
+        {policyLinks.map((link, index) => {
+          const isLast = index === policyLinks.length - 1;
           const isCurrent = isCurrentPage(link);
+          const isBtn = link.isButton || link.label?.toLowerCase() === "cookie settings";
 
-          if (link.isButton) {
+          if (isBtn) {
             return (
               <button
                 type="button"
-                key={link.label}
+                key={link.id || link.label}
                 className={`hok-footer-policy-link ${isLast ? "last" : ""}`}
                 onClick={() => {
-                  if (typeof window !== 'undefined' && window.HOK_CONSENT) {
+                  if (typeof window !== "undefined" && window.HOK_CONSENT) {
                     window.HOK_CONSENT.open();
                   }
                 }}
@@ -182,7 +236,7 @@ const DesktopFooter = () => {
           if (isCurrent) {
             return (
               <span
-                key={link.label}
+                key={link.id || link.label}
                 className={`hok-footer-policy-link here ${isLast ? "last" : ""}`}
                 aria-current="page"
               >
@@ -194,7 +248,7 @@ const DesktopFooter = () => {
           return (
             <a
               href={link.path}
-              key={link.label}
+              key={link.id || link.label}
               className={`hok-footer-policy-link ${isLast ? "last" : ""}`}
             >
               {link.label}
@@ -205,12 +259,13 @@ const DesktopFooter = () => {
 
       {/* Copyright Bar */}
       <div className="hok-footer-bottom">
-        <p className="hok-footer-copyright">
-          &copy; 2025 House of Kaira. All rights reserved. Indore, India.
-        </p>
+        <p className="hok-footer-copyright">{cleanCopyright}</p>
         <div className="hok-footer-badges">
-          <span className="hok-footer-badge">Secure Payments</span>
-          <span className="hok-footer-badge">Circular Fashion</span>
+          {badges.map((badge, idx) => (
+            <span key={idx} className="hok-footer-badge">
+              {badge}
+            </span>
+          ))}
         </div>
       </div>
     </footer>

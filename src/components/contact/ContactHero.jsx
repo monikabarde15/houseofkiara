@@ -4,7 +4,11 @@ import ContactLiveStatus from "./ContactLiveStatus";
 import ContactReachCard from "./ContactReachCard";
 import { CONTACT_CONTENT } from "../../data/contact/contactContent";
 
-export default function ContactHero({ showCallRow = true, onShowToast }) {
+export default function ContactHero({
+  showCallRow = true,
+  onShowToast,
+  contactSettings,
+}) {
   const { eyebrow, title, lead } = CONTACT_CONTENT.hero;
 
   return (
@@ -22,7 +26,7 @@ export default function ContactHero({ showCallRow = true, onShowToast }) {
           <p className="lead">{lead}</p>
 
           {/* Live Status Engine */}
-          <ContactLiveStatus />
+          <ContactLiveStatus contactSettings={contactSettings} />
         </div>
 
         {/* Right Column: Ways to reach us card */}
@@ -30,6 +34,7 @@ export default function ContactHero({ showCallRow = true, onShowToast }) {
           <ContactReachCard
             showCallRow={showCallRow}
             onShowToast={onShowToast}
+            contactSettings={contactSettings}
           />
         </div>
       </div>

@@ -1,8 +1,10 @@
 // src\components\Cart\items\modes\preloved\PrelovedPriceBlock.jsx
 import React from "react";
+import { useRegionalSettings } from "../../../../../hooks/useRegionalSettings";
 import "../../../../../styles/cart/items/price-block.css";
 
 const PrelovedPriceBlock = ({ product }) => {
+  const { currencySymbol, formatPrice } = useRegionalSettings();
   const pricing = product?.preloved?.pricing || product?.modes?.preloved?.pricing || {};
 
   const resale = pricing?.price || product?.listingPrice || product?.price || 0;
@@ -27,12 +29,12 @@ const PrelovedPriceBlock = ({ product }) => {
       <div className="preloved-price__row">
 
         <span className="preloved-price__main">
-          <sup>₹</sup>{resale.toLocaleString()}
+          <sup>{currencySymbol}</sup>{formatPrice(resale)}
         </span>
 
         {retail > 0 && (
           <span className="preloved-price__strike">
-            ₹{retail.toLocaleString()}
+            {currencySymbol}{formatPrice(retail)}
           </span>
         )}
 
@@ -41,7 +43,7 @@ const PrelovedPriceBlock = ({ product }) => {
       {/* Savings */}
       {savings > 0 && (
         <div className="preloved-price__savings">
-          You save ₹{savings.toLocaleString()} · {percent}% below retail
+          You save {currencySymbol}{formatPrice(savings)} · {percent}% below retail
         </div>
       )}
 

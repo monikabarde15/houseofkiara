@@ -1,11 +1,47 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CONTACT_CONTENT } from "../../data/contact/contactContent";
 import { CONTACT_TOKENS } from "../../data/contact/contactSettings";
+import { getLegalSettings } from "../../services/legalApi";
 import "../../styles/contact/contact-legal.css";
 
 export default function ContactLegalSection() {
   const { concern, details } = CONTACT_CONTENT;
+  const [legalData, setLegalData] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    getLegalSettings().then((cfg) => {
+      if (mounted && cfg) {
+        setLegalData(cfg);
+      }
+    });
+
+    const handleLegalUpdate = () => {
+      getLegalSettings(true).then((cfg) => {
+        if (mounted && cfg) {
+          setLegalData(cfg);
+        }
+      });
+    };
+
+    window.addEventListener("hok_legal_updated", handleLegalUpdate);
+    return () => {
+      mounted = false;
+      window.removeEventListener("hok_legal_updated", handleLegalUpdate);
+    };
+  }, []);
+
+  const registeredEntity = legalData?.registeredEntity;
+  const entityName = registeredEntity?.registeredName || CONTACT_TOKENS.trade_name;
+  const address = registeredEntity?.registeredAddress || CONTACT_TOKENS.business_address;
+
+  const detailsRows = [
+    { label: "Principal place of business", value: address },
+    { label: "Website", value: CONTACT_TOKENS.site_url, isPlain: true },
+    ...(registeredEntity?.gstin ? [{ label: "GSTIN", value: registeredEntity.gstin }] : []),
+    ...(registeredEntity?.cin ? [{ label: "CIN", value: registeredEntity.cin }] : []),
+  ];
 
   return (
     <section
@@ -77,10 +113,12 @@ export default function ContactLegalSection() {
           {/* Right Column: Our details */}
           <div className="legal-col" aria-labelledby="details-heading">
             <h2 id="details-heading">{details.title}</h2>
-            <p className="intro">{details.intro}</p>
+            <p className="intro">
+              {`House of Kaira is a brand of ${entityName}, ${CONTACT_TOKENS.legal_form} owned by ${CONTACT_TOKENS.legal_name}.`}
+            </p>
 
             <dl className="dl">
-              {details.rows.map((row) => (
+              {detailsRows.map((row) => (
                 <div key={row.label} className="dl-row">
                   <dt className="dl-k">{row.label}</dt>
                   <dd className="dl-v">{row.value}</dd>

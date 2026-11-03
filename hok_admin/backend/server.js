@@ -24,6 +24,16 @@ app.use((req, res, next) => {
   });
 });
 
+// Root endpoints for SEO
+app.get("/robots.txt", (req, res, next) => {
+  req.url = "/site-settings/robots.txt";
+  apiRouter(req, res, next);
+});
+app.get("/sitemap.xml", (req, res, next) => {
+  req.url = "/site-settings/sitemap.xml";
+  apiRouter(req, res, next);
+});
+
 // Mount Centralized API Routes
 app.use("/api", apiRouter);
 
