@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { CONTACT_CONTENT } from "../../data/contact/contactContent";
+import {
+  buildWhatsAppUrl,
+  buildMailtoUrl,
+  cleanPhoneForTel,
+} from "../../services/contactApi";
 
-const WhatsAppIcon = ({ className = "wa", size = 20 }) => (
+const WhatsAppIcon = ({ size = 20, className = "" }) => (
   <svg
     viewBox="0 0 24 24"
     width={size}
@@ -18,34 +23,32 @@ const WhatsAppIcon = ({ className = "wa", size = 20 }) => (
   </svg>
 );
 
-const EnvelopeIcon = ({ className = "line", size = 20 }) => (
+const EnvelopeIcon = () => (
   <svg
     viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    className={className}
+    width="20"
+    height="20"
     aria-hidden="true"
     fill="none"
     stroke="currentColor"
-    strokeWidth="1.4"
+    strokeWidth="1.5"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    <rect x="3" y="5" width="18" height="14" rx="1" />
-    <path d="m3.5 6 8.5 7 8.5-7" />
+    <rect width="20" height="16" x="2" y="4" rx="2" />
+    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
   </svg>
 );
 
-const PhoneIcon = ({ className = "line", size = 20 }) => (
+const PhoneIcon = () => (
   <svg
     viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    className={className}
+    width="20"
+    height="20"
     aria-hidden="true"
     fill="none"
     stroke="currentColor"
-    strokeWidth="1.4"
+    strokeWidth="1.5"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
@@ -53,15 +56,48 @@ const PhoneIcon = ({ className = "line", size = 20 }) => (
   </svg>
 );
 
-export default function ContactReachCard({ showCallRow = true, onShowToast }) {
+export default function ContactReachCard({
+  showCallRow = true,
+  onShowToast,
+  contactSettings,
+  getVal,
+}) {
   const { title, whatsapp, email, call } = CONTACT_CONTENT.reachCard;
+
+  const fallbackWa = contactSettings?.whatsApp || whatsapp.value;
+  const fallbackEmail = contactSettings?.supportEmail || email.value;
+  const fallbackPhone = contactSettings?.phone || call.value;
+  const fallbackCallNote =
+    contactSettings?.daysOpen && contactSettings?.hours
+      ? `${contactSettings.daysOpen}, ${contactSettings.hours}.`
+      : call.note;
+
+  const cardTitle = getVal ? getVal("contact_reach_heading", title) : title;
+  const waTitle = getVal ? getVal("contact_wa_title", whatsapp.name) : whatsapp.name;
+  const waValue = getVal ? getVal("contact_wa_number", fallbackWa) : fallbackWa;
+  const waButton = getVal ? getVal("contact_wa_button", whatsapp.buttonLabel) : whatsapp.buttonLabel;
+  const emailTitle = getVal ? getVal("contact_email_title", email.name) : email.name;
+  const emailValue = getVal ? getVal("contact_email_address", fallbackEmail) : fallbackEmail;
+  const callTitle = getVal ? getVal("contact_call_title", call.name) : call.name;
+  const callValue = getVal ? getVal("contact_call_number", fallbackPhone) : fallbackPhone;
+  const waNote = getVal ? getVal("contact_wa_note", whatsapp.note) : whatsapp.note;
+  const emailNote = getVal ? getVal("contact_email_note", email.note) : email.note;
+  const callDays = getVal ? getVal("contact_call_days", "") : "";
+  const callHours = getVal ? getVal("contact_call_hours", "") : "";
+  const callNote =
+    callDays && callHours
+      ? `${callDays}, ${callHours}.`
+      : getVal
+      ? getVal("contact_call_note", fallbackCallNote)
+      : fallbackCallNote;
+
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopyEmail = (e) => {
     e.preventDefault();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard
-        .writeText(email.value)
+        .writeText(emailValue)
         .then(() => {
           setIsCopied(true);
           if (onShowToast) onShowToast(email.copiedToast);
@@ -75,18 +111,16 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
     }
   };
 
-  const whatsappUrl = `https://wa.me/${whatsapp.rawNumber}?text=${encodeURIComponent(
-    whatsapp.greeting
-  )}`;
-  const mailtoUrl = `mailto:${email.value}?subject=${encodeURIComponent(
-    email.subject
-  )}`;
-  const telUrl = `tel:${call.rawPhone}`;
+  const waMessage =
+    contactSettings?.whatsAppButton?.preFilledMessage || whatsapp.greeting;
+  const whatsappUrl = buildWhatsAppUrl(waValue, waMessage);
+  const mailtoUrl = buildMailtoUrl(emailValue, email.subject);
+  const telUrl = `tel:${cleanPhoneForTel(callValue) || call.rawPhone}`;
 
   return (
     <section className="reach" aria-labelledby="reach-title">
       <h2 className="reach-title" id="reach-title">
-        {title}
+        {cardTitle}
       </h2>
 
       <div id="channels">
@@ -96,7 +130,7 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
             <span className="ch-ic">
               <WhatsAppIcon size={20} className="wa" />
             </span>
-            <h3 className="ch-name">{whatsapp.name}</h3>
+            <h3 className="ch-name">{waTitle}</h3>
           </div>
 
           <div className="ch-line">
@@ -106,11 +140,11 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
               rel="noopener noreferrer"
               className="ch-v"
             >
-              {whatsapp.value}
+              {waValue}
             </a>
           </div>
 
-          <div className="ch-n">{whatsapp.note}</div>
+          <div className="ch-n">{waNote}</div>
 
           <a
             href={whatsappUrl}
@@ -119,7 +153,7 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
             className="btn btn-dark"
           >
             <WhatsAppIcon size={15} className="wa" />
-            <span>{whatsapp.buttonLabel}</span>
+            <span>{waButton}</span>
           </a>
         </div>
 
@@ -129,12 +163,12 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
             <span className="ch-ic">
               <EnvelopeIcon />
             </span>
-            <h3 className="ch-name">{email.name}</h3>
+            <h3 className="ch-name">{emailTitle}</h3>
           </div>
 
           <div className="ch-line">
             <a href={mailtoUrl} className="ch-v">
-              {email.value}
+              {emailValue}
             </a>
             <button
               type="button"
@@ -146,7 +180,7 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
             </button>
           </div>
 
-          <div className="ch-n">{email.note}</div>
+          <div className="ch-n">{emailNote}</div>
         </div>
 
         {/* Row 3: Call (Optional based on admin switch) */}
@@ -156,16 +190,16 @@ export default function ContactReachCard({ showCallRow = true, onShowToast }) {
               <span className="ch-ic">
                 <PhoneIcon />
               </span>
-              <h3 className="ch-name">{call.name}</h3>
+              <h3 className="ch-name">{callTitle}</h3>
             </div>
 
             <div className="ch-line">
               <a href={telUrl} className="ch-v">
-                {call.value}
+                {callValue}
               </a>
             </div>
 
-            <div className="ch-n">{call.note}</div>
+            <div className="ch-n">{callNote}</div>
           </div>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { usePageContent } from "../hooks/usePageContent";
 // src/pages/PricingPolicyPage.jsx
 // Main page shell for House of Kaira Pricing & Fees specification
 
@@ -35,6 +36,7 @@ import "../styles/pricing/pricing-closing.css";
 import "../styles/pricing/pricing-print.css";
 
 export default function PricingPolicyPage() {
+  const { getVal } = usePageContent("/pricing-fees");
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -188,7 +190,7 @@ export default function PricingPolicyPage() {
         <PricingBreadcrumb />
 
         {/* D2 Hero with D3 Search and D4 Popular questions */}
-        <PricingHero
+        <PricingHero getVal={getVal}
           activeSide={activeSide}
           onSelectQuestion={handleSelectQuestion}
           onShowToast={triggerCopyToast}
@@ -213,10 +215,10 @@ export default function PricingPolicyPage() {
           {/* Policy Body */}
           <div className="dp-body">
             {/* D7 Side Intro */}
-            <PricingSideIntro activeSide={activeSide} />
+            <PricingSideIntro activeSide={activeSide} getVal={getVal} />
 
             {/* D8 In Numbers (Worked Examples): Only rendered on What you pay side */}
-            {activeSide === "pay" && <PricingWorkedExamples />}
+            {activeSide === "pay" && <PricingWorkedExamples getVal={getVal} />}
 
             {/* D9 Sections List: Renders 8 sections on pay, 5 sections on earn */}
             <PricingSectionsList

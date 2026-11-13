@@ -8,7 +8,7 @@ import { FIRST_AID_STEPS } from "../../data/care/careRegistry";
 import { CARE_SETTINGS } from "../../data/care/careSettings";
 import { showToast } from "../AboutUs/shared/Toast";
 
-export default function CareFirstAidCard({ onStepClick }) {
+export default function CareFirstAidCard({ onStepClick, getVal }) {
   const handleWhatsAppClick = () => {
     if (typeof showToast === "function") {
       showToast("Opening WhatsApp");

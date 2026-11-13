@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import "../../../styles/aboutus/mobile/duality-mobile.css";
 import { showToast } from "../shared/Toast";
 
-const MobileDuality = () => {
+const MobileDuality = ({ getVal }) => {
   const [activeTab, setActiveTab] = useState("renter");
   const sectionRef = useRef(null);
   const navigate = useNavigate();
@@ -50,12 +50,10 @@ const MobileDuality = () => {
       <div className="mob-duality__head reveal">
         <div className="mob-duality__eyebrow">
           <span className="mob-duality__eyebrow-line"></span>
-          <span>Two Sides, One Wardrobe</span>
+          <span>{getVal ? getVal("about_sides_eyebrow", "Two Sides, One Wardrobe") : "Two Sides, One Wardrobe"}</span>
           <span className="mob-duality__eyebrow-line"></span>
         </div>
-        <h2 className="mob-duality__title">
-          Whichever side of the <em>story</em> you're on
-        </h2>
+        <h2 className="mob-duality__title">{getVal && getVal("about_sides_heading", null) ? getVal("about_sides_heading") : <>Whichever side of the <em>story</em> you're on</>}</h2>
       </div>
 
       {/* Toggle Control  */}
@@ -73,8 +71,7 @@ const MobileDuality = () => {
             aria-selected={activeTab === "renter"}
             onClick={() => handleTabSwitch("renter")}
           >
-            I'm celebrating
-          </button>
+            {getVal ? getVal("about_sides_tab1", "I'm celebrating") : "I'm celebrating"}</button>
 
           {/* Tab 2: Lister */}
           <button
@@ -83,8 +80,7 @@ const MobileDuality = () => {
             aria-selected={activeTab === "lister"}
             onClick={() => handleTabSwitch("lister")}
           >
-            I'm giving it new life
-          </button>
+            {getVal ? getVal("about_sides_tab2", "I'm giving it new life") : "I'm giving it new life"}</button>
         </div>
       </div>
 
@@ -95,17 +91,8 @@ const MobileDuality = () => {
           className={`mob-duality__panel ${activeTab === "renter" ? "active" : ""}`}
           id="panel-renter"
         >
-          <p className="mob-duality__panel-label mob-duality__panel-label--renter">
-            For the bride, the groom, the guest of honour
-          </p>
-          <p className="mob-duality__panel-body">
-            Maybe it's your wedding. Maybe it's your best friend's. Whatever the
-            occasion, you deserve a piece worthy of it — without it living in
-            your cupboard for the other 364 days of the year. Rent it, buy it
-            preloved, or buy it new: House of Kaira holds every option to the
-            same standard, exceptional design, honestly presented, beautifully
-            delivered.
-          </p>
+          <p className="mob-duality__panel-label mob-duality__panel-label--renter">{getVal ? getVal("about_side1_heading", "For the bride, the groom, the guest of honour") : "For the bride, the groom, the guest of honour"}</p>
+          <p className="mob-duality__panel-body">{getVal ? getVal("about_side1_body", "Maybe it's your wedding. Maybe it's your best friend's. Whatever the occasion, you deserve a piece worthy of it — without it living in your cupboard for the other 364 days of the year. Rent it, buy it preloved, or buy it new: House of Kaira holds every option to the same standard, exceptional design, honestly presented, beautifully delivered.") : "Maybe it's your wedding. Maybe it's your best friend's. Whatever the occasion, you deserve a piece worthy of it — without it living in your cupboard for the other 364 days of the year. Rent it, buy it preloved, or buy it new: House of Kaira holds every option to the same standard, exceptional design, honestly presented, beautifully delivered."}</p>
           <button
             className="mob-duality__cta mob-duality__cta--renter"
             onClick={handleRenterCTA}

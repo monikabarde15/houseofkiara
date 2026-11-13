@@ -1,11 +1,10 @@
 // src\components\Confirmation\pricing\ConfirmationRentalPriceBlock.jsx
 import { calculateGST } from "../../../utils/cart/gstCalculator";
-
+import { useRegionalSettings } from "../../../hooks/useRegionalSettings";
 import "../../../styles/confirmation/pricing/confirmation-price-block.css";
 
-const formatPrice = (num) => new Intl.NumberFormat("en-IN").format(num);
-
 const ConfirmationRentalPriceBlock = ({ product, booking }) => {
+  const { currencySymbol, formatPrice } = useRegionalSettings();
   const rent = product?.rent;
 
   const days = booking?.rentalWindowDays || 0;
@@ -23,12 +22,12 @@ const ConfirmationRentalPriceBlock = ({ product, booking }) => {
   return (
     <div className="confirmation-price-block">
       <div className="confirmation-price-block-price">
-        <sup>₹</sup>
+        <sup>{currencySymbol}</sup>
         {formatPrice(totalPrice)}
       </div>
 
       <div className="confirmation-price-block-note">
-        + ₹{formatPrice(gst)} GST (18%) · SAC 997326
+        + {currencySymbol}{formatPrice(gst)} GST (18%) · SAC 997326
       </div>
     </div>
   );

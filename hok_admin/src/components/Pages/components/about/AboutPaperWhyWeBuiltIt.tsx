@@ -101,7 +101,7 @@ export const AboutPaperWhyWeBuiltIt: React.FC<AboutPaperWhyWeBuiltItProps> = ({
                 focusedField?.fieldId === 'about_orbit_heading' ? 'ring-1 ring-[#bda67b] bg-[#faf7f2] outline-none' : 'hover:ring-1 hover:ring-[#bda67b]/40'
               }`}
             >
-              Circularity is the mechanism, <span className="italic text-[#8a6a36]">joy is the point</span>.
+              {getVal('about_orbit_heading', 'Circularity is the mechanism, joy is the point.')}
             </h2>
           </div>
 

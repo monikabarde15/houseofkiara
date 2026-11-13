@@ -107,7 +107,7 @@ export const AboutPaperThreeWays: React.FC<AboutPaperThreeWaysProps> = ({
             focusedField?.fieldId === 'about_three_heading' ? 'ring-1 ring-[#bda67b] bg-[#faf7f2] outline-none' : 'hover:ring-1 hover:ring-[#bda67b]/40'
           }`}
         >
-          Three ways to belong to <span className="italic text-[#8a6a36]">the story</span>
+          {getVal('about_three_heading', 'Three ways to belong to the story')}
         </h2>
 
         <p

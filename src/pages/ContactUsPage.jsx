@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { CONTACT_PAGE_CONFIG } from "../data/contact/contactSettings";
+import { usePageContent } from "../hooks/usePageContent";
+import {
+  getContactSettings,
+  defaultContactConfig,
+} from "../services/contactApi";
 
 import ContactHero from "../components/contact/ContactHero";
 import ContactAnswersSection from "../components/contact/ContactAnswersSection";
@@ -13,11 +18,15 @@ import "../styles/contact/contact-hero.css";
 export default function ContactUsPage() {
   const [toastMessage, setToastMessage] = useState("");
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [contactSettings, setContactSettings] = useState(defaultContactConfig);
   const toastTimeoutRef = useRef(null);
 
-  // Set document title and meta description (Section 01)
+  // Load dynamic content from PostgreSQL via pages API
+  const { getVal } = usePageContent("/contact");
+
+  // Set document title, meta description & subscribe to global Site Settings contact updates
   useEffect(() => {
-    document.title = CONTACT_PAGE_CONFIG.title;
+    document.title = getVal("contact_page_title", CONTACT_PAGE_CONFIG.title);
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) {
       metaDesc = document.createElement("meta");
@@ -25,8 +34,33 @@ export default function ContactUsPage() {
       document.head.appendChild(metaDesc);
     }
     metaDesc.content = CONTACT_PAGE_CONFIG.meta_description;
+  }, [getVal]);
+
+  useEffect(() => {
+    let isMounted = true;
+    getContactSettings().then((cfg) => {
+      if (isMounted && cfg) {
+        setContactSettings(cfg);
+      }
+    });
+
+    const handleUpdated = (e) => {
+      if (e.detail) {
+        setContactSettings(e.detail);
+      } else {
+        getContactSettings(true).then((cfg) => {
+          if (isMounted && cfg) {
+            setContactSettings(cfg);
+          }
+        });
+      }
+    };
+
+    window.addEventListener("hok_contact_updated", handleUpdated);
 
     return () => {
+      isMounted = false;
+      window.removeEventListener("hok_contact_updated", handleUpdated);
       if (toastTimeoutRef.current) {
         clearTimeout(toastTimeoutRef.current);
       }
@@ -57,18 +91,22 @@ export default function ContactUsPage() {
         <ContactHero
           showCallRow={CONTACT_PAGE_CONFIG.adminSwitches.showCallRow}
           onShowToast={showToast}
+          contactSettings={contactSettings}
+          getVal={getVal}
         />
 
         {/* Step 3: Band 2 Answers Policy Index */}
-        <ContactAnswersSection />
+        <ContactAnswersSection getVal={getVal} />
 
         {/* Step 4 & 5: Band 3 Write us a note and Aside */}
         <ContactWriteSection
           showVisitCard={CONTACT_PAGE_CONFIG.adminSwitches.showVisitCard}
+          contactSettings={contactSettings}
+          getVal={getVal}
         />
 
         {/* Step 6: Band 4 Raising a concern and Our details */}
-        <ContactLegalSection />
+        <ContactLegalSection getVal={getVal} contactSettings={contactSettings} />
       </main>
 
       {/* Polite toast feedback container (Section 10.1) */}

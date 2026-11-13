@@ -9,7 +9,7 @@ const CheckMarkIcon = () => (
   </svg>
 );
 
-export default function ContactWriteForm() {
+export default function ContactWriteForm({ getVal }) {
   const {
     fields,
     privacyNotice,
@@ -20,6 +20,15 @@ export default function ContactWriteForm() {
     failMessage,
     thankYou
   } = CONTACT_CONTENT.write;
+
+  const nameLabel = getVal ? (getVal("contact_field_name_label", null) || fields.name.label) : fields.name.label;
+  const emailLabel = getVal ? (getVal("contact_field_email_label", null) || fields.email.label) : fields.email.label;
+  const phoneLabel = getVal ? (getVal("contact_field_phone_label", null) || getVal("contact_field_wa_label", null) || fields.phone.label) : fields.phone.label;
+  const topicLabel = getVal ? (getVal("contact_field_topic_label", null) || fields.topic.label) : fields.topic.label;
+  const orderLabel = getVal ? (getVal("contact_field_order_label", null) || fields.orderRef.label) : fields.orderRef.label;
+  const messageLabel = getVal ? (getVal("contact_field_msg_label", null) || getVal("contact_field_message_label", null) || fields.message.label) : fields.message.label;
+  const submitButtonText = getVal ? (getVal("contact_write_button", null) || buttonLabel) : buttonLabel;
+  const privacyText = getVal ? getVal("contact_privacy_note", null) : null;
 
   const [values, setValues] = useState({
     name: "",
@@ -261,7 +270,7 @@ export default function ContactWriteForm() {
             {/* Field 1: Your name */}
             <div className={`field ${errors.name ? "invalid" : ""}`}>
               <label className="field-label" htmlFor="cu-name">
-                {fields.name.label}
+                {nameLabel}
                 <span className="req" aria-hidden="true">
                   *
                 </span>
@@ -288,7 +297,7 @@ export default function ContactWriteForm() {
             {/* Field 2: Email */}
             <div className={`field ${errors.email ? "invalid" : ""}`}>
               <label className="field-label" htmlFor="cu-email">
-                {fields.email.label}
+                {emailLabel}
                 <span className="req" aria-hidden="true">
                   *
                 </span>
@@ -317,7 +326,7 @@ export default function ContactWriteForm() {
             {/* Field 3: WhatsApp number */}
             <div className={`field ${errors.phone ? "invalid" : ""}`}>
               <label className="field-label" htmlFor="cu-wa">
-                {fields.phone.label}
+                {phoneLabel}
                 <span className="opt">{fields.phone.tag}</span>
               </label>
               <input
@@ -348,7 +357,7 @@ export default function ContactWriteForm() {
             {/* Field 4: What is it about? */}
             <div className={`field ${errors.topic ? "invalid" : ""}`}>
               <label className="field-label" htmlFor="cu-about">
-                {fields.topic.label}
+                {topicLabel}
                 <span className="req" aria-hidden="true">
                   *
                 </span>
@@ -381,7 +390,7 @@ export default function ContactWriteForm() {
             {/* Field 5: Order number or piece */}
             <div className="field full">
               <label className="field-label" htmlFor="cu-order">
-                {fields.orderRef.label}
+                {orderLabel}
                 <span className="opt">{fields.orderRef.tag}</span>
               </label>
               <input
@@ -404,7 +413,7 @@ export default function ContactWriteForm() {
             {/* Field 6: Your message */}
             <div className={`field full ${errors.message ? "invalid" : ""}`}>
               <label className="field-label" htmlFor="cu-message">
-                {fields.message.label}
+                {messageLabel}
                 <span className="req" aria-hidden="true">
                   *
                 </span>
@@ -451,11 +460,17 @@ export default function ContactWriteForm() {
 
           {/* Privacy notice (Section 7.5 & Appendix A) */}
           <div className="form-notice">
-            We use these details only to reply to you, as our{" "}
-            <Link to={privacyPath} className="tl">
-              Privacy Policy
-            </Link>{" "}
-            explains.
+            {privacyText ? (
+              privacyText
+            ) : (
+              <>
+                We use these details only to reply to you, as our{" "}
+                <Link to={privacyPath} className="tl">
+                  Privacy Policy
+                </Link>{" "}
+                explains.
+              </>
+            )}
           </div>
 
           {/* Send failed notice (Section 7.5 & Appendix A) */}
@@ -480,7 +495,7 @@ export default function ContactWriteForm() {
                   <span>{buttonSending}</span>
                 </>
               ) : (
-                <span>{buttonLabel}</span>
+                <span>{submitButtonText}</span>
               )}
             </button>
 

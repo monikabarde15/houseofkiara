@@ -1,3 +1,4 @@
+import { usePageContent } from '../hooks/usePageContent';
 import React, { useState, useEffect } from 'react';
 import TermsBreadcrumb from '../components/terms/TermsBreadcrumb.jsx';
 import TermsHero from '../components/terms/TermsHero.jsx';
@@ -28,6 +29,7 @@ import '../styles/terms/terms-print.css';
  * Complete Build Specification v3.0 (hok_terms_v4)
  */
 const TermsPage = () => {
+  const { getVal } = usePageContent("/terms");
   const [toastState, setToastState] = useState({ message: '', isVisible: false });
 
   // Handle URL hash on initial load
@@ -62,7 +64,7 @@ const TermsPage = () => {
       <TermsBreadcrumb />
 
       {/* 2. Hero & Real-Time Search */}
-      <TermsHero
+      <TermsHero getVal={getVal}
         onSelectClause={handleSelectClause}
         onPrint={handlePrint}
       />
@@ -82,7 +84,7 @@ const TermsPage = () => {
         <TheEssentials onSelectClause={handleSelectClause} />
 
         {/* 5.3 Complete 12 Parts & 59 Clauses */}
-        <TermsSectionsList onShowToast={showToast} />
+        <TermsSectionsList onShowToast={showToast} getVal={getVal} />
 
         {/* 5.4 Our Policies Footer Links & Document Metadata */}
         <TermsPoliciesLine onPrint={handlePrint} />

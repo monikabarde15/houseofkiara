@@ -112,7 +112,32 @@ export default function App() {
   }, []);
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
-  useEffect(() => { orderApi.getOrders().then(setOrders).catch((error) => console.error('Unable to load orders:', error)).finally(() => setOrdersLoading(false)); }, []);
+  useEffect(() => {
+    orderApi
+      .getOrders()
+      .then(setOrders)
+      .catch((error) => console.error('Unable to load orders:', error))
+      .finally(() => setOrdersLoading(false));
+  }, []);
+
+  // Refresh orders & products when switching into operational/calendar views so newly placed web orders appear immediately
+  useEffect(() => {
+    if (
+      currentView === 'orders' ||
+      currentView === 'dispatch' ||
+      currentView === 'returns' ||
+      currentView === 'calendar' ||
+      currentView === 'products' ||
+      currentView === 'dashboard'
+    ) {
+      orderApi
+        .getOrders()
+        .then((list) => {
+          if (Array.isArray(list)) setOrders(list);
+        })
+        .catch(() => {});
+    }
+  }, [currentView]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [offersLoading, setOffersLoading] = useState(true);
   useEffect(() => {
@@ -234,44 +259,62 @@ export default function App() {
   };
 
   const handleUpdateOrder = async (updated: Order) => {
-    let savedOrder = updated;
-    try {
-      savedOrder = await orderApi.updateOrder(updated.id, updated);
-      setOrders(current => current.map(o => o.id === updated.id ? savedOrder : o));
-    } catch (error) {
-      setOrders(current => {
-        const exists = current.some(o => o.id === updated.id);
-        return exists ? current.map(o => o.id === updated.id ? updated : o) : [updated, ...current];
-      });
+    const alreadySaved = Boolean((updated as any).__alreadySaved);
+    const cleanUpdated: any = { ...updated };
+    delete cleanUpdated.__alreadySaved;
+
+    const targetId = String(
+      cleanUpdated.id || cleanUpdated.orderId || cleanUpdated.orderNumber || cleanUpdated._id || '',
+    );
+    const matchesOrder = (o: any) =>
+      o.id === targetId ||
+      o.orderId === targetId ||
+      o.orderNumber === targetId ||
+      o._id === targetId;
+
+    let savedOrder: Order = cleanUpdated;
+    if (!alreadySaved) {
+      try {
+        savedOrder = await orderApi.updateOrder(targetId, cleanUpdated);
+      } catch (error) {
+        savedOrder = cleanUpdated;
+      }
     }
+
+    setOrders(current => {
+      const exists = current.some(matchesOrder);
+      return exists
+        ? current.map(o => (matchesOrder(o) ? { ...o, ...savedOrder } : o))
+        : [savedOrder, ...current];
+    });
 
     // Sync product bookingHistory & payout status immediately across state
     setProducts(currentProducts => {
       return currentProducts.map(p => {
         let modified = false;
         const newHistory = (p.bookingHistory || []).map((b: any) => {
-          if (b.orderId === updated.id || b.orderId === (updated as any).orderNumber || `HOK-ORD-${String(b.orderId || '').replace(/[^0-9]/g, '').slice(-3)}` === `HOK-ORD-${String(updated.id || '').replace(/[^0-9]/g, '').slice(-3)}`) {
+          if (b.orderId === targetId || b.orderId === (savedOrder as any).orderNumber || `HOK-ORD-${String(b.orderId || '').replace(/[^0-9]/g, '').slice(-3)}` === `HOK-ORD-${String(targetId || '').replace(/[^0-9]/g, '').slice(-3)}`) {
             modified = true;
-            return { ...b, status: updated.status };
+            return { ...b, status: savedOrder.status };
           }
           return b;
         });
 
         const newExternal = (p.externalBookings || []).map((b: any) => {
-          if (b.orderId === updated.id || b.orderId === (updated as any).orderNumber || `HOK-ORD-${String(b.orderId || '').replace(/[^0-9]/g, '').slice(-3)}` === `HOK-ORD-${String(updated.id || '').replace(/[^0-9]/g, '').slice(-3)}`) {
+          if (b.orderId === targetId || b.orderId === (savedOrder as any).orderNumber || `HOK-ORD-${String(b.orderId || '').replace(/[^0-9]/g, '').slice(-3)}` === `HOK-ORD-${String(targetId || '').replace(/[^0-9]/g, '').slice(-3)}`) {
             modified = true;
-            return { ...b, status: updated.status };
+            return { ...b, status: savedOrder.status };
           }
           return b;
         });
 
         if (modified) {
-          const rawId = updated.id || (updated as any).orderNumber;
+          const rawId = targetId || (savedOrder as any).orderNumber;
           const displayId = rawId.startsWith('HOK-ORD-') ? rawId : `HOK-ORD-${String(rawId).replace(/[^0-9]/g, '').slice(-3) || '889'}`;
           const newActivityLog = [
             ...(p.activityLog || []),
             {
-              action: `Order #${displayId} status updated to "${updated.status}" by Admin`,
+              action: `Order #${displayId} status updated to "${savedOrder.status}" by Admin`,
               user: 'Admin',
               timestamp: new Date().toISOString(),
               type: 'rental'
@@ -289,7 +332,9 @@ export default function App() {
       });
     });
 
-    toast.success('Order updated successfully!');
+    if (!alreadySaved) {
+      toast.success('Order updated successfully!');
+    }
   };
 
   const handleUpdateOffer = async (id: string, updatedFields: Partial<Offer>) => {
@@ -530,6 +575,7 @@ export default function App() {
           order={matchedOrder ? undefined : undefined} // We want it to fetch via API if possible.
           onBack={() => setView('orders')}
           onUpdateOrder={handleUpdateOrder}
+          onNavigateDispatch={() => setView('dispatch')}
         />
       );
     }

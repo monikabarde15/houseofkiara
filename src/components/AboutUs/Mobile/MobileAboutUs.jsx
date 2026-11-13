@@ -14,38 +14,38 @@ import MobileClosingCTA from "./MobileClosingCTA";
 import Toast from "../shared/Toast";
 import ScrollProgressBar from "../shared/ScrollProgressBar";
 
-const MobileAboutUs = () => {
+const MobileAboutUs = ({ getVal }) => {
   return (
     <div className="mob-about-us">
       {/* Scroll Progress Bar */}
       <ScrollProgressBar />
 
       {/* Section 1: Hero - Coming Soon */}
-      <MobileHero />
+      <MobileHero getVal={getVal} />
 
       {/* Section 2: The Name (KAIRA Interactive) */}
-      <MobileNameSection />
+      <MobileNameSection getVal={getVal} />
 
       {/* Section 3: Manifesto */}
-      <MobileManifesto />
+      <MobileManifesto getVal={getVal} />
 
       {/* Section 4: Philosophy */}
-      <MobilePhilosophy />
+      <MobilePhilosophy getVal={getVal} />
 
       {/* Section 5: Duality */}
-      <MobileDuality />
+      <MobileDuality getVal={getVal} />
 
       {/* Section 6: Founder */}
-      <MobileFounder />
+      <MobileFounder getVal={getVal} />
 
       {/* Section 7: Why We Built It (Orbit) */}
-      <MobileOrbit />
+      <MobileOrbit getVal={getVal} />
 
       {/* Section 8: Three Ways */}
-      <MobileThreeWays />
+      <MobileThreeWays getVal={getVal} />
 
       {/* Section 9: Closing CTA */}
-      <MobileClosingCTA />
+      <MobileClosingCTA getVal={getVal} />
 
       {/* Toast Notification */}
       <Toast />

@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { Search } from 'lucide-react';
-import { EditableFieldInfo } from './PagePaperCanvas';
+import { EditableFieldInfo } from '../PagePaperCanvas';
 
 interface FaqPaperHeroProps {
   activePartId: string;
@@ -29,10 +29,10 @@ export const FaqPaperHero: React.FC<FaqPaperHeroProps> = ({
   onSelectQuestionId
 }) => {
   const popularPicks = [
-    { id: 'fit-match', label: 'How do I know a piece will fit me?' },
-    { id: 'deposit-back', label: 'When will I get my deposit back?' },
-    { id: 'advance-booking', label: 'How far in advance should I book?' },
-    { id: 'preloved-return', label: 'Can I return a preloved piece?' }
+    { id: 'fit-match', label: getVal('faq_popular_1', 'How do I know a piece will fit me?') },
+    { id: 'deposit-back', label: getVal('faq_popular_2', 'When will I get my deposit back?') },
+    { id: 'advance-booking', label: getVal('faq_popular_3', 'How far in advance should I book?') },
+    { id: 'preloved-return', label: getVal('faq_popular_4', 'Can I return a preloved piece?') }
   ];
 
   return (
@@ -45,6 +45,9 @@ export const FaqPaperHero: React.FC<FaqPaperHeroProps> = ({
     >
       {/* 1. Centered Greeting in Cormorant Garamond cursive style */}
       <div
+        contentEditable
+        suppressContentEditableWarning
+        onBlur={e => onFieldChange('faq_greeting', e.currentTarget.textContent || '')}
         onClick={e => {
           e.stopPropagation();
           onFieldFocus('hero', 'faq_greeting', 'Greeting', 'The greeting above the main heading in italic font.');
@@ -58,6 +61,9 @@ export const FaqPaperHero: React.FC<FaqPaperHeroProps> = ({
 
       {/* 2. Main Title with gold italic: What's on your mind? */}
       <div
+        contentEditable
+        suppressContentEditableWarning
+        onBlur={e => onFieldChange('faq_heading', e.currentTarget.textContent || '')}
         onClick={e => {
           e.stopPropagation();
           onFieldFocus('hero', 'faq_heading', 'Heading', 'The main page heading. Words set in gold italic match the brand typography.', true);
@@ -66,8 +72,21 @@ export const FaqPaperHero: React.FC<FaqPaperHeroProps> = ({
           focusedField?.fieldId === 'faq_heading' ? 'ring-1 ring-[#bda67b] bg-white' : ''
         }`}
       >
-        <span>What&apos;s on </span>
-        <span className="italic text-[#bda67b]">your mind?</span>
+        {(() => {
+          const val = getVal('faq_heading', "What's on your mind?");
+          if (val.toLowerCase().includes('your mind?')) {
+            const idx = val.toLowerCase().indexOf('your mind?');
+            const prefix = val.slice(0, idx);
+            const matched = val.slice(idx);
+            return (
+              <>
+                <span>{prefix}</span>
+                <span className="italic text-[#bda67b]">{matched}</span>
+              </>
+            );
+          }
+          return <span>{val}</span>;
+        })()}
       </div>
 
       {/* 3. Search Box */}
@@ -103,7 +122,7 @@ export const FaqPaperHero: React.FC<FaqPaperHeroProps> = ({
             >
               {pick.label}
             </button>
-            {idx < popularPicks.length - 1 && <span className="text-[#d8cfc4]">·</span>}
+            {idx < popularPicks.length - 1 && <span className="text-[#c4b9aa]">·</span>}
           </React.Fragment>
         ))}
       </div>

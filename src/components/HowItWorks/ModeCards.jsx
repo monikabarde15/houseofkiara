@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/howitworks/mode-cards.css";
 
-const ModeCards = () => {
+const ModeCards = ({ getVal }) => {
   const navigate = useNavigate();
 
   const handleRentClick = () => {
@@ -19,12 +19,10 @@ const ModeCards = () => {
       <div className="hok-hiw-modes-header">
         <div className="hok-hiw-modes-eyebrow">
           <span className="hok-hiw-modes-line"></span>
-          <span className="hok-hiw-modes-eyebrow-text">Two ways to wear</span>
+          <span className="hok-hiw-modes-eyebrow-text">{getVal ? getVal("hiw_modes_eyebrow", "Two ways to wear") : "Two ways to wear"}</span>
         </div>
 
-        <h2 className="hok-hiw-modes-title">
-          Find what your <em>fits</em> moment
-        </h2>
+        <h2 className="hok-hiw-modes-title">{getVal && getVal("hiw_modes_heading", null) ? getVal("hiw_modes_heading") : <>Find what your <em>fits</em> moment</>}</h2>
       </div>
 
       {/* Mode Cards Grid */}
@@ -41,14 +39,10 @@ const ModeCards = () => {
           </div>
 
           {/* Title */}
-          <h3 className="hok-hiw-mcard-title">
-            Access couture <em>freely</em>.
-          </h3>
+          <h3 className="hok-hiw-mcard-title">{getVal ? getVal("hiw_rent_title", "Access couture freely.") : "Access couture freely."}</h3>
 
           {/* Subtitle */}
-          <p className="hok-hiw-mcard-subtitle">
-            The whole outfit. None of the storage.
-          </p>
+          <p className="hok-hiw-mcard-subtitle">{getVal ? getVal("hiw_rent_lead", "The whole outfit. None of the storage.") : "The whole outfit. None of the storage."}</p>
 
           {/* Steps */}
           <div className="hok-hiw-mcard-steps">

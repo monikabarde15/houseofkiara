@@ -5,7 +5,6 @@ import "../../styles/contact/contact-answers.css";
 
 const ArrowIcon = () => (
   <svg
-    className="arr"
     viewBox="0 0 24 24"
     width="16"
     height="16"
@@ -15,8 +14,11 @@ const ArrowIcon = () => (
   </svg>
 );
 
-export default function ContactAnswersSection() {
-  const { title, intro, pages } = CONTACT_CONTENT.answers;
+export default function ContactAnswersSection({ getVal }) {
+  const defaultAnswers = CONTACT_CONTENT.answers;
+  const title = getVal ? getVal("contact_answers_heading", defaultAnswers.title) : defaultAnswers.title;
+  const intro = getVal ? getVal("contact_answers_sub", defaultAnswers.intro) : defaultAnswers.intro;
+  const pages = defaultAnswers.pages;
   const rowsCount = Math.ceil(pages.length / 2);
 
   return (
@@ -31,12 +33,21 @@ export default function ContactAnswersSection() {
           {pages.map((item, idx) => {
             const isColEnd =
               idx + 1 === rowsCount || idx + 1 === pages.length;
+            const shortId = item.id.replace(/-policy$/, "").replace(/-guidelines$/, "");
+            
+            const rawNameLong = getVal ? getVal(`contact_page_name_${item.id}`, null) : null;
+            const rawNameShort = getVal ? getVal(`contact_page_name_${shortId}`, null) : null;
+            const itemName = rawNameLong || rawNameShort || item.name;
+
+            const rawDescLong = getVal ? getVal(`contact_page_desc_${item.id}`, null) : null;
+            const rawDescShort = getVal ? getVal(`contact_page_desc_${shortId}`, null) : null;
+            const itemDesc = rawDescLong || rawDescShort || item.desc;
 
             return (
               <li key={item.id} className={isColEnd ? "col-end" : ""}>
                 <Link to={item.path}>
-                  <span className="ix-name">{item.name}</span>
-                  <span className="ix-desc">{item.desc}</span>
+                  <span className="ix-name">{itemName}</span>
+                  <span className="ix-desc">{itemDesc}</span>
                   <ArrowIcon />
                 </Link>
               </li>

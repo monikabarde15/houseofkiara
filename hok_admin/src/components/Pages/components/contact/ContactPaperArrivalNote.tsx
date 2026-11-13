@@ -13,7 +13,7 @@ interface ContactPaperArrivalNoteProps {
   focusedField: EditableFieldInfo | null;
   getVal: (id: string, fallback: string) => string;
   onSelectPart: (partId: string) => void;
-  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean) => void;
+  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean, currentValue?: string) => void;
   onFieldChange: (fieldId: string, value: string) => void;
   onSelectFigure?: (figureKey: string) => void;
   onNavigateToPage?: (slug: string) => void;
@@ -35,21 +35,19 @@ export const ContactPaperArrivalNote: React.FC<ContactPaperArrivalNoteProps> = (
     <section
       id="just-arrived"
       onClick={() => onSelectPart('just-arrived')}
-      className={`mt-10 rounded-[8px] border border-[#e6dccb] bg-[#faf7f2]/60 p-6 space-y-2 transition-all cursor-pointer ${
-        isSelected ? 'ring-2 ring-[#bda67b] bg-[#fffdfa]' : 'hover:bg-[#faf7f2]'
-      }`}
+      className={`mt-10 rounded-[8px] border border-[#e6dccb] bg-[#faf7f2]/60 p-6 space-y-2 transition-all cursor-pointer ${isSelected ? 'ring-2 ring-[#bda67b] bg-[#fffdfa]' : 'hover:bg-[#faf7f2]'
+        }`}
     >
       <h4
         onClick={e => {
           e.stopPropagation();
-          onFieldFocus('just-arrived', 'contact_arrival_heading', 'Heading', 'Just arrived card title', true);
+          onFieldFocus('just-arrived', 'contact_arrival_heading', 'Heading', 'Just arrived card title', true, getVal('contact_arrival_heading', "Has a piece just arrived, and something isn’t right?"));
         }}
         contentEditable={focusedField?.fieldId === 'contact_arrival_heading'}
         suppressContentEditableWarning
         onInput={e => onFieldChange('contact_arrival_heading', e.currentTarget.textContent || '')}
-        className={`font-serif text-[18px] text-[#1a1612] cursor-text p-0.5 rounded inline-block ${
-          focusedField?.fieldId === 'contact_arrival_heading' ? 'ring-1 ring-[#bda67b] bg-white outline-none' : 'hover:ring-1 hover:ring-[#bda67b]/40'
-        }`}
+        className={`font-serif text-[18px] text-[#1a1612] cursor-text p-0.5 rounded inline-block ${focusedField?.fieldId === 'contact_arrival_heading' ? 'ring-1 ring-[#bda67b] bg-white outline-none' : 'hover:ring-1 hover:ring-[#bda67b]/40'
+          }`}
       >
         {getVal('contact_arrival_heading', "Has a piece just arrived, and something isn’t right?")}
       </h4>
@@ -58,14 +56,13 @@ export const ContactPaperArrivalNote: React.FC<ContactPaperArrivalNoteProps> = (
         <span
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('just-arrived', 'contact_arrival_lead_before', 'Line before window token', 'Instruction text');
+            onFieldFocus('just-arrived', 'contact_arrival_lead_before', 'Line before window token', 'Instruction text', false, getVal('contact_arrival_lead_before', 'Please tell us within '));
           }}
           contentEditable={focusedField?.fieldId === 'contact_arrival_lead_before'}
           suppressContentEditableWarning
           onInput={e => onFieldChange('contact_arrival_lead_before', e.currentTarget.textContent || '')}
-          className={`cursor-text p-0.5 rounded ${
-            focusedField?.fieldId === 'contact_arrival_lead_before' ? 'ring-1 ring-[#bda67b] bg-white outline-none' : 'hover:ring-1 hover:ring-[#bda67b]/30'
-          }`}
+          className={`cursor-text p-0.5 rounded ${focusedField?.fieldId === 'contact_arrival_lead_before' ? 'ring-1 ring-[#bda67b] bg-white outline-none' : 'hover:ring-1 hover:ring-[#bda67b]/30'
+            }`}
         >
           {getVal('contact_arrival_lead_before', 'Please tell us within ')}
         </span>
@@ -81,14 +78,13 @@ export const ContactPaperArrivalNote: React.FC<ContactPaperArrivalNoteProps> = (
         <span
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('just-arrived', 'contact_arrival_lead_after', 'Line after window token', 'Instruction text');
+            onFieldFocus('just-arrived', 'contact_arrival_lead_after', 'Line after window token', 'Instruction text', false, getVal('contact_arrival_lead_after', 'of delivery, with photographs, so we can put it right.'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_arrival_lead_after'}
           suppressContentEditableWarning
           onInput={e => onFieldChange('contact_arrival_lead_after', e.currentTarget.textContent || '')}
-          className={`cursor-text p-0.5 rounded ${
-            focusedField?.fieldId === 'contact_arrival_lead_after' ? 'ring-1 ring-[#bda67b] bg-white outline-none' : 'hover:ring-1 hover:ring-[#bda67b]/30'
-          }`}
+          className={`cursor-text p-0.5 rounded ${focusedField?.fieldId === 'contact_arrival_lead_after' ? 'ring-1 ring-[#bda67b] bg-white outline-none' : 'hover:ring-1 hover:ring-[#bda67b]/30'
+            }`}
         >
           {getVal('contact_arrival_lead_after', 'of delivery, with photographs, so we can put it right.')}
         </span>

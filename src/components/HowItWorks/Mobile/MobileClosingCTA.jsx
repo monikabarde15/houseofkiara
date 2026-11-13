@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../../styles/howitworks/mobile/mobile-closing-cta.css";
 
-const MobileClosingCTA = () => {
+const MobileClosingCTA = ({ getVal }) => {
   const navigate = useNavigate();
 
   const handleBrowseCollection = () => {
@@ -27,16 +27,10 @@ const MobileClosingCTA = () => {
         </div>
 
         {/* Title */}
-        <h2 className="hok-hiw-mobile-closing-title">
-          Every outfit has a story. <br />
-          We make sure it's <em>never</em> the last chapter.
-        </h2>
+        <h2 className="hok-hiw-mobile-closing-title">{getVal && getVal("hiw_closing_heading", null) ? getVal("hiw_closing_heading") : <>Ready when <em>you are.</em></>}</h2>
 
         {/* Body */}
-        <p className="hok-hiw-mobile-closing-body">
-          Whether you're dressing for a celebration or giving a beautiful piece
-          another moment to shine – this is where that story continues.
-        </p>
+        <p className="hok-hiw-mobile-closing-body">{getVal ? getVal("hiw_closing_sub", "Start exploring our collection or list your first piece today. Our concierge in Indore is on hand on WhatsApp.") : "Start exploring our collection..."}</p>
 
         {/* Buttons */}
         <div className="hok-hiw-mobile-closing-buttons">

@@ -9,6 +9,7 @@ import HygienePromise from "./HygienePromise";
 import AccountLink from "./AccountLink";
 
 export default function ConciergeHero({
+  getVal,
   selectedMomentId,
   onSelectMoment,
   onSelectQuestion,
@@ -16,7 +17,7 @@ export default function ConciergeHero({
 }) {
   return (
     <section className="ch-hero" aria-label="FAQ Concierge Hero">
-      <GreetingHeadline />
+      <GreetingHeadline getVal={getVal} />
       <SearchBox
         onSelectQuestion={onSelectQuestion}
         onShowToast={onShowToast}

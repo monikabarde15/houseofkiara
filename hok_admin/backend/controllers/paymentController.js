@@ -212,8 +212,39 @@ export const verifyRazorpayPayment = async (req, res) => {
     let listerId = orderData.listerId || firstItem.listerId || product?.listerId || "ananya-sharma";
     let listerName = orderData.listerName || firstItem.listerName || product?.listerName || "Ananya Sharma";
 
+    const rentalStartDate =
+      orderData.rentalStartDate ||
+      firstItem.rentalStartDate ||
+      firstItem.startDate ||
+      "";
+    const rentalEndDate =
+      orderData.rentalEndDate ||
+      firstItem.rentalEndDate ||
+      firstItem.endDate ||
+      "";
+    const todayIST = new Date().toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kolkata",
+    });
+    let dispatchDate =
+      orderData.dispatchDate || firstItem.dispatchDate || "";
+    if (!dispatchDate && rentalStartDate) {
+      try {
+        const d = new Date(rentalStartDate);
+        if (!isNaN(d.getTime())) {
+          d.setDate(d.getDate() - 2);
+          dispatchDate = d.toISOString().split("T")[0];
+        }
+      } catch (e) {}
+    }
+    if (!dispatchDate) {
+      dispatchDate = todayIST;
+    }
+
     const enrichedItems = items.map((it) => ({
       ...it,
+      rentalStartDate: it.rentalStartDate || it.startDate || rentalStartDate,
+      rentalEndDate: it.rentalEndDate || it.endDate || rentalEndDate,
+      dispatchDate: it.dispatchDate || dispatchDate,
       deposit,
       listerId,
       listerName,
@@ -223,6 +254,7 @@ export const verifyRazorpayPayment = async (req, res) => {
     const savedOrder = await Order.create({
       ...orderData,
       orderId,
+      orderDate: orderData.orderDate || new Date().toISOString(),
       customerId: customer?.customerId || orderData.customerId,
       customerName: customer?.name || orderData.customerName,
       customerEmail: customer?.email || orderData.customerEmail,
@@ -233,6 +265,9 @@ export const verifyRazorpayPayment = async (req, res) => {
       designer: resolvedDesigner,
       image: resolvedImage,
       mode: resolvedMode,
+      rentalStartDate,
+      rentalEndDate,
+      dispatchDate,
       status: "Confirmed",
       paymentStatus: "Paid",
       paymentMethod: "Razorpay",
@@ -262,6 +297,63 @@ export const verifyRazorpayPayment = async (req, res) => {
         },
       ],
     });
+
+    // Auto-block dates & sync bookingHistory on Product for all ordered items
+    for (const item of enrichedItems) {
+      if (!item.productId) continue;
+      try {
+        const prod = await Product.findOne({
+          $or: [
+            { productId: item.productId },
+            { _id: item.productId },
+            { sku: item.productId },
+          ],
+        });
+        if (!prod) continue;
+
+        const isRentalItem =
+          item.mode && item.mode.toLowerCase() === "rental";
+        const bookingStart = item.rentalStartDate || todayIST;
+        const bookingEnd = item.rentalEndDate || bookingStart;
+
+        if (isRentalItem && item.rentalStartDate && item.rentalEndDate) {
+          if (!prod.blockedDates) prod.blockedDates = [];
+          prod.blockedDates.push({
+            from: new Date(item.rentalStartDate),
+            to: new Date(item.rentalEndDate),
+            reason: `Rented (Order ${savedOrder.orderId})`,
+          });
+          prod.timesRented = Number(prod.timesRented || 0) + 1;
+        }
+
+        if (!Array.isArray(prod.bookingHistory)) prod.bookingHistory = [];
+        const alreadyInHistory = prod.bookingHistory.some(
+          (bh) => bh.orderId === savedOrder.orderId,
+        );
+        if (!alreadyInHistory) {
+          prod.bookingHistory.push({
+            orderId: savedOrder.orderId,
+            customerName: savedOrder.customerName || "Customer",
+            whatsappNumber: savedOrder.customerPhone || "",
+            city: savedOrder.customerCity || "",
+            startDate: bookingStart,
+            endDate: bookingEnd,
+            orderDate: savedOrder.orderDate || new Date().toISOString(),
+            mode: item.mode || savedOrder.mode || "Rental",
+            amount: Number(item.amount || grandTotal || 0),
+            deposit: Number(item.deposit || deposit || 0),
+            status: savedOrder.status || "Confirmed",
+          });
+        }
+        if (!Array.isArray(prod.activityLog)) prod.activityLog = [];
+        prod.activityLog.push({
+          action: `Web order ${savedOrder.orderId} (${item.mode || savedOrder.mode}) placed by ${savedOrder.customerName || "Customer"}`,
+          user: savedOrder.customerName || "Web Customer",
+        });
+        await prod.save();
+      } catch (e) {}
+    }
+    global.__webProductsCache = null;
 
     return res.json({
       success: true,

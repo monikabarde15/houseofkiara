@@ -4,6 +4,7 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { usePageContent } from "../hooks/usePageContent";
 import CareBreadcrumb from "../components/care/CareBreadcrumb";
 import CareHero from "../components/care/CareHero";
 import CareFirstAidCard from "../components/care/CareFirstAidCard";
@@ -37,6 +38,7 @@ import "../styles/care/care-closing.css";
 import "../styles/care/care-print.css";
 
 export default function CarePolicyPage() {
+  const { getVal } = usePageContent("/care-policy");
   const [activeMomentTab, setActiveMomentTab] = useState("arrives");
   const [activePieceChip, setActivePieceChip] = useState("lehenga");
   const [activeSection, setActiveSection] = useState("faCard");
@@ -174,13 +176,13 @@ export default function CarePolicyPage() {
       <CareBreadcrumb />
 
       {/* C2: Hero with C3: Search Box & Popular Links */}
-      <CareHero onSelectQuestion={handleSelectQuestion} />
+      <CareHero onSelectQuestion={handleSelectQuestion} getVal={getVal} />
 
       {/* C4: If something happens First Aid Card */}
-      <CareFirstAidCard onStepClick={handleSelectQuestion} />
+      <CareFirstAidCard onStepClick={handleSelectQuestion} getVal={getVal} />
 
       {/* C5: Intro Line */}
-      <CareIntro />
+      <CareIntro getVal={getVal} />
 
       {/* Care Wrap Container: Allows sticky section bar to release before C14 */}
       <div className="care-wrap">

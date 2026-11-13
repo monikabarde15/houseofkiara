@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../../styles/howitworks/mobile/mobile-mode-cards.css";
 
-const MobileModeCards = () => {
+const MobileModeCards = ({ getVal }) => {
   const navigate = useNavigate();
 
   const handleRentClick = () => {
@@ -19,14 +19,10 @@ const MobileModeCards = () => {
       <div className="hok-hiw-mobile-modes-header">
         <div className="hok-hiw-mobile-modes-eyebrow">
           <span className="hok-hiw-mobile-modes-line"></span>
-          <span className="hok-hiw-mobile-modes-eyebrow-text">
-            Two ways to wear
-          </span>
+          <span className="hok-hiw-mobile-modes-eyebrow-text">{getVal ? getVal("hiw_modes_eyebrow", "Two ways to wear") : "Two ways to wear"}</span>
         </div>
 
-        <h2 className="hok-hiw-mobile-modes-title">
-          Find what <em>fits</em> your moment
-        </h2>
+        <h2 className="hok-hiw-mobile-modes-title">{getVal && getVal("hiw_modes_heading", null) ? getVal("hiw_modes_heading") : <>Find what fits your <em>moment</em></>}</h2>
       </div>
 
       {/* Mode Cards Stack */}
@@ -43,14 +39,10 @@ const MobileModeCards = () => {
           </div>
 
           {/* Title */}
-          <h3 className="hok-hiw-mobile-mcard-title">
-            Access couture <em>freely</em>.
-          </h3>
+          <h3 className="hok-hiw-mobile-mcard-title">{getVal ? getVal("hiw_rent_title", "Access couture freely.") : "Access couture freely."}</h3>
 
           {/* Subtitle */}
-          <p className="hok-hiw-mobile-mcard-subtitle">
-            The whole outfit. None of the storage.
-          </p>
+          <p className="hok-hiw-mobile-mcard-subtitle">{getVal ? getVal("hiw_rent_lead", "The whole outfit. None of the storage.") : "The whole outfit. None of the storage."}</p>
 
           {/* Steps */}
           <div className="hok-hiw-mobile-mcard-steps">

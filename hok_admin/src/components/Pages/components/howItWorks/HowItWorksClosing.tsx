@@ -63,7 +63,7 @@ export const HowItWorksClosing: React.FC<HowItWorksClosingProps> = ({
             focusedField?.fieldId === 'hiw_closing_heading' ? 'ring-1 ring-[#d4af37] bg-[#2b241b] outline-none' : 'hover:ring-1 hover:ring-[#d4af37]/40'
           }`}
         >
-          Ready <span className="italic text-[#d4af37]">when you are</span>.
+          {getVal('hiw_closing_heading', 'Ready when you are.')}
         </h2>
 
         <p

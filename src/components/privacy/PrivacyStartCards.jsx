@@ -7,7 +7,7 @@ import React from 'react';
 import { WHERE_TO_START_CARDS } from '../../data/privacy/privacyKeywords.js';
 import { scrollToAnchor } from '../../utils/privacy/privacyFormatter.jsx';
 
-const PrivacyStartCards = ({ onSelectCard }) => {
+const PrivacyStartCards = ({ onSelectCard, getVal }) => {
   const handleCardClick = (card, e) => {
     e.preventDefault();
     if (onSelectCard) {

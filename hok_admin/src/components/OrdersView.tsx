@@ -47,6 +47,56 @@ const resolveProductName = (o: any) => {
   return "—";
 };
 
+const toValidDate = (val: any): Date | null => {
+  if (!val) return null;
+  if (typeof val === "string") {
+    const m = val.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (m) {
+      const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+      return isNaN(d.getTime()) ? null : d;
+    }
+  }
+  const d = new Date(val);
+  return isNaN(d.getTime()) ? null : d;
+};
+
+const toYMD = (d: Date): string =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate(),
+  ).padStart(2, "0")}`;
+
+const resolveBookedDate = (o: any): Date | null => {
+  const direct = toValidDate(o?.orderDate || o?.createdAt || o?.date);
+  if (direct) return direct;
+  const rawId = String(o?.orderId || o?.id || "");
+  if (rawId.startsWith("HOK-ORD-") && /^\d{13}$/.test(rawId.slice(8))) {
+    return toValidDate(Number(rawId.slice(8)));
+  }
+  return null;
+};
+
+const resolveRentalDates = (o: any) => {
+  const firstItem = Array.isArray(o?.items) ? o.items[0] : null;
+  const startRaw =
+    o?.rentalStartDate ||
+    o?.startDate ||
+    firstItem?.rentalStartDate ||
+    firstItem?.startDate ||
+    "";
+  const endRaw =
+    o?.rentalEndDate ||
+    o?.endDate ||
+    firstItem?.rentalEndDate ||
+    firstItem?.endDate ||
+    "";
+  return {
+    start: toValidDate(startRaw),
+    end: toValidDate(endRaw),
+    startRaw,
+    endRaw,
+  };
+};
+
 export default function OrdersView({
   orders,
   customers = [],
@@ -143,11 +193,15 @@ export default function OrdersView({
     const matchesMode = selectedMode === "All Modes" || o.mode === selectedMode;
 
     let matchesDates = true;
-    if (startDate && o.rentalStartDate) {
-      matchesDates = matchesDates && o.rentalStartDate >= startDate;
+    const { start: rStart, end: rEnd } = resolveRentalDates(o);
+    const bDate = resolveBookedDate(o);
+    const effectiveStartKey = rStart ? toYMD(rStart) : bDate ? toYMD(bDate) : "";
+    const effectiveEndKey = rEnd ? toYMD(rEnd) : effectiveStartKey;
+    if (startDate && effectiveStartKey) {
+      matchesDates = matchesDates && effectiveStartKey >= startDate;
     }
-    if (endDate && o.rentalEndDate) {
-      matchesDates = matchesDates && o.rentalEndDate <= endDate;
+    if (endDate && effectiveEndKey) {
+      matchesDates = matchesDates && effectiveEndKey <= endDate;
     }
 
     return matchesSearch && matchesStatus && matchesMode && matchesDates;
@@ -384,36 +438,84 @@ export default function OrdersView({
                       </div>
                     </td>
                     <td className="px-5 py-3.5 font-sans">
-                      {order.rentalStartDate || (order as any).startDate ? (
-                        <div className="flex flex-col">
-                          <span className="font-medium text-stone-700">
-                            {new Date(
-                              order.rentalStartDate ||
-                                (order as any).startDate ||
-                                "2026-09-10",
-                            ).toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "short",
-                            })}{" "}
-                            -{" "}
-                            {new Date(
-                              order.rentalEndDate ||
-                                (order as any).endDate ||
-                                "2026-09-14",
-                            ).toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "short",
-                            })}
-                          </span>
-                          <span className="text-[9px] text-stone-400 mt-0.5">
-                            4 nights
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-stone-400 font-medium">
-                          10 Sept - 14 Sept
-                        </span>
-                      )}
+                      {(() => {
+                        const { start, end } = resolveRentalDates(order);
+                        const booked = resolveBookedDate(order);
+                        const dispRaw =
+                          order.dispatchDetails?.date ||
+                          (order as any).dispatchDate ||
+                          (order.items?.[0] as any)?.dispatch?.date ||
+                          "";
+                        const dispDate = toValidDate(dispRaw);
+
+                        if (start) {
+                          const startStr = start.toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year:
+                              start.getFullYear() !== new Date().getFullYear()
+                                ? "numeric"
+                                : undefined,
+                          });
+                          const endStr = end
+                            ? end.toLocaleDateString("en-GB", {
+                                day: "numeric",
+                                month: "short",
+                                year:
+                                  end.getFullYear() !== new Date().getFullYear()
+                                    ? "numeric"
+                                    : undefined,
+                              })
+                            : "";
+                          const nights = end
+                            ? Math.max(
+                                1,
+                                Math.round(
+                                  (end.getTime() - start.getTime()) / 86400000,
+                                ),
+                              )
+                            : null;
+
+                          return (
+                            <div className="flex flex-col">
+                              <span className="font-medium text-stone-700">
+                                {endStr ? `${startStr} – ${endStr}` : startStr}
+                              </span>
+                              <span className="text-[9px] text-stone-400 mt-0.5">
+                                {nights
+                                  ? `${nights} ${nights === 1 ? "night" : "nights"}`
+                                  : "Rental"}
+                                {booked
+                                  ? ` · Booked ${booked.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`
+                                  : ""}
+                              </span>
+                            </div>
+                          );
+                        }
+
+                        if (booked) {
+                          return (
+                            <div className="flex flex-col">
+                              <span className="font-medium text-stone-700">
+                                {booked.toLocaleDateString("en-GB", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </span>
+                              <span className="text-[9px] text-stone-400 mt-0.5">
+                                {dispDate
+                                  ? `Dispatch: ${dispDate.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`
+                                  : "Order Date"}
+                              </span>
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <span className="text-stone-400 font-medium">—</span>
+                        );
+                      })()}
                     </td>
                     <td className="px-5 py-3.5">
                       <span

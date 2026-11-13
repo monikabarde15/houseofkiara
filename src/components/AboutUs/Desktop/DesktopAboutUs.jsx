@@ -14,37 +14,37 @@ import DesktopClosingCTA from "./DesktopClosingCTA";
 import Toast from "../shared/Toast";
 import ScrollProgressBar from "../shared/ScrollProgressBar";
 
-const DesktopAboutUs = () => {
+const DesktopAboutUs = ({ getVal }) => {
   return (
     <div className="au-desktop">
       {/* Scroll Progress Bar */}
       <ScrollProgressBar />
       {/* Section 1: Hero - Coming Soon */}
-      <DesktopHero />
+      <DesktopHero getVal={getVal} />
 
       {/* Section 2: The Name (KAIRA Interactive) */}
-      <DesktopNameSection />
+      <DesktopNameSection getVal={getVal} />
 
       {/* Section 3: Manifesto */}
-      <DesktopManifesto />
+      <DesktopManifesto getVal={getVal} />
 
       {/* Section 4: Philosophy */}
-      <DesktopPhilosophy />
+      <DesktopPhilosophy getVal={getVal} />
 
       {/* Section 5: Duality */}
-      <DesktopDuality />
+      <DesktopDuality getVal={getVal} />
 
       {/* Section 6: Founder */}
-      <DesktopFounder />
+      <DesktopFounder getVal={getVal} />
 
       {/* Section 7: Why We Built It (Orbit) */}
-      <DesktopOrbit />
+      <DesktopOrbit getVal={getVal} />
 
       {/* Section 8: Three Ways */}
-      <DesktopThreeWays />
+      <DesktopThreeWays getVal={getVal} />
 
       {/* Section 9: Closing CTA */}
-      <DesktopClosingCTA />
+      <DesktopClosingCTA getVal={getVal} />
 
       {/* Section 10: Footer - coming next */}
 

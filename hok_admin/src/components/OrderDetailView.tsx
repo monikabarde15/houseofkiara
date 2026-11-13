@@ -26,6 +26,7 @@ interface OrderDetailViewProps {
   order?: Order;
   onBack: () => void;
   onUpdateOrder: (updatedOrder: Order) => void;
+  onNavigateDispatch?: () => void;
 }
 
 const parseOrderAmount = (val: any) => {
@@ -53,6 +54,7 @@ export default function OrderDetailView({
   order: initialOrder,
   onBack,
   onUpdateOrder,
+  onNavigateDispatch,
 }: OrderDetailViewProps) {
   const [order, setOrder] = useState<Order | null>(initialOrder || null);
   const [loading, setLoading] = useState(!initialOrder && !!orderId);
@@ -64,14 +66,35 @@ export default function OrderDetailView({
       orderApi
         .getOrder(orderId)
         .then((data) => {
+          const firstIt: any = data.items?.[0] || {};
           setOrder(data);
           setStatus(data.status);
           setInternalNotes(data.internalNotes || "");
-          setDispatchedBy(data.dispatchDetails?.dispatchedBy || "");
-          setDispatchDate(data.dispatchDetails?.date || "");
-          setTrackingNumber(data.dispatchDetails?.trackingNumber || "");
-          setCourierPartner(data.dispatchDetails?.courierPartner || "");
-          setReturnDate(data.returnLogistics?.returnDate || "");
+          setDispatchedBy(
+            data.dispatchDetails?.dispatchedBy ||
+              firstIt.dispatch?.dispatchedBy ||
+              "",
+          );
+          setDispatchDate(
+            data.dispatchDetails?.date ||
+              firstIt.dispatch?.date ||
+              (data as any).dispatchDate ||
+              firstIt.dispatchDate ||
+              "",
+          );
+          setTrackingNumber(
+            data.dispatchDetails?.trackingNumber ||
+              firstIt.dispatch?.trackingNumber ||
+              "",
+          );
+          setCourierPartner(
+            data.dispatchDetails?.courierPartner ||
+              firstIt.dispatch?.courierPartner ||
+              "",
+          );
+          setReturnDate(
+            data.returnLogistics?.returnDate || firstIt.returnDueDate || "",
+          );
           setReturnMethod(data.returnLogistics?.returnMethod || "");
           setReturnCourier(data.returnLogistics?.courierPartner || "");
           setReceivedBy(data.conditionAssessment?.receivedBy || "Soumya");
@@ -196,23 +219,50 @@ export default function OrderDetailView({
     const finalStatus = overrideStatus || status;
     if (overrideStatus) setStatus(finalStatus);
 
+    const nextDispatchDetails = {
+      dispatchedBy: dispatchedBy.trim(),
+      date: dispatchDate,
+      trackingNumber: trackingNumber.trim(),
+      courierPartner: courierPartner.trim(),
+    };
+    const hasReturnLogistics = Boolean(
+      returnDate || returnMethod.trim() || returnCourier.trim(),
+    );
+    const nextReturnLogistics = hasReturnLogistics
+      ? {
+          returnDate,
+          returnMethod: returnMethod.trim(),
+          courierPartner: returnCourier.trim(),
+        }
+      : undefined;
+
+    const updatedItems = Array.isArray(order.items)
+      ? order.items.map((it: any) => ({
+          ...it,
+          ...(dispatchDate ? { dispatchDate } : {}),
+          dispatch: {
+            ...(it.dispatch || {}),
+            dispatchedBy: nextDispatchDetails.dispatchedBy,
+            date: nextDispatchDetails.date || it.dispatch?.date || "",
+            trackingNumber: nextDispatchDetails.trackingNumber,
+            courierPartner: nextDispatchDetails.courierPartner,
+            status:
+              finalStatus === "Dispatched" || finalStatus === "Shipped"
+                ? finalStatus
+                : it.dispatch?.status || "Scheduled",
+          },
+          ...(returnDate ? { returnDueDate: returnDate } : {}),
+        }))
+      : order.items;
+
     const updatedOrder: Order = {
       ...order,
       status: finalStatus as any,
       internalNotes,
-      dispatchDetails: {
-        dispatchedBy,
-        date: dispatchDate,
-        trackingNumber,
-        courierPartner,
-      },
-      returnLogistics: returnDate
-        ? {
-            returnDate,
-            returnMethod,
-            courierPartner: returnCourier,
-          }
-        : undefined,
+      ...(dispatchDate ? { dispatchDate } : {}),
+      dispatchDetails: nextDispatchDetails,
+      returnLogistics: nextReturnLogistics,
+      items: updatedItems,
       conditionAssessment: receivedDate
         ? {
             receivedDate,
@@ -232,11 +282,11 @@ export default function OrderDetailView({
     try {
       const saved = await orderApi.updateOrder(order.id, updatedOrder);
       setOrder(saved);
-      onUpdateOrder(saved);
+      onUpdateOrder({ ...(saved as any), __alreadySaved: true });
       toast.success(
         overrideStatus
           ? `Order advanced to ${overrideStatus}`
-          : "Order details updated.",
+          : "Order & dispatch logistics saved!",
       );
     } catch (e) {
       toast.error("Failed to update order");
@@ -452,7 +502,7 @@ export default function OrderDetailView({
           </select>
           <button
             onClick={() => handleSaveChanges()}
-            className="px-4 py-2 bg-[#1e1412] hover:bg-[#2c1d1a] text-white text-xs font-semibold rounded cursor-pointer transition"
+            className="btn-save px-4 py-2 bg-[#1e1412] hover:bg-[#2c1d1a] text-white text-xs font-semibold rounded cursor-pointer transition"
           >
             Save Changes
           </button>
@@ -631,47 +681,86 @@ export default function OrderDetailView({
               </div>
 
               {/* Booking timelines */}
-              <div>
-                <h4 className="font-serif font-bold text-[#1e1412] text-sm border-b border-stone-100 pb-2 tracking-wide">
-                  Rental Timelines
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-4">
-                  <div className="p-3 bg-stone-50 rounded border border-stone-100">
-                    <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
-                      Rental Start
-                    </p>
-                    <p className="text-xs font-semibold text-stone-800 mt-1 font-sans">
-                      {order.rentalStartDate
-                        ? new Date(order.rentalStartDate).toLocaleDateString(
-                            "en-GB",
-                            { day: "numeric", month: "short", year: "numeric" },
-                          )
-                        : "N/A"}
-                    </p>
+              {(() => {
+                const firstIt: any = (order as any).items?.[0] || {};
+                const rStart = order.rentalStartDate || firstIt.rentalStartDate || "";
+                const rEnd = order.rentalEndDate || firstIt.rentalEndDate || "";
+                const tsMatch = String(order.id || "").match(/HOK-ORD-(\d{13})/);
+                const bookedRaw =
+                  (order as any).orderDate ||
+                  (order as any).createdAt ||
+                  (order as any).invoiceDate ||
+                  (tsMatch ? new Date(Number(tsMatch[1])).toISOString() : "");
+                const fmtDate = (val: string) => {
+                  if (!val) return "N/A";
+                  const d = new Date(val);
+                  if (isNaN(d.getTime())) return val;
+                  return d.toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  });
+                };
+                const isRentalOrder =
+                  order.mode === "Rental" || Boolean(rStart) || Boolean(rEnd);
+                let nightsLabel = isRentalOrder ? "4 Nights" : firstIt.mode || order.mode || "Buy";
+                if (rStart && rEnd) {
+                  const s = new Date(rStart);
+                  const e = new Date(rEnd);
+                  if (!isNaN(s.getTime()) && !isNaN(e.getTime())) {
+                    const diff = Math.max(
+                      1,
+                      Math.round((e.getTime() - s.getTime()) / 86400000),
+                    );
+                    nightsLabel = `${diff} Night${diff === 1 ? "" : "s"}`;
+                  }
+                }
+                const savedDispDate =
+                  order.dispatchDetails?.date ||
+                  firstIt.dispatch?.date ||
+                  (order as any).dispatchDate ||
+                  firstIt.dispatchDate ||
+                  dispatchDate ||
+                  "";
+
+                return (
+                  <div>
+                    <h4 className="font-serif font-bold text-[#1e1412] text-sm border-b border-stone-100 pb-2 tracking-wide">
+                      Rental Timelines
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-4">
+                      <div className="p-3 bg-stone-50 rounded border border-stone-100">
+                        <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
+                          {isRentalOrder ? "Rental Start" : "Booking Date"}
+                        </p>
+                        <p className="text-xs font-semibold text-stone-800 mt-1 font-sans">
+                          {isRentalOrder ? fmtDate(rStart) : fmtDate(bookedRaw)}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-stone-50 rounded border border-stone-100">
+                        <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
+                          {isRentalOrder ? "Return Date" : "Dispatch Date"}
+                        </p>
+                        <p className="text-xs font-semibold text-stone-800 mt-1 font-sans">
+                          {isRentalOrder
+                            ? fmtDate(rEnd)
+                            : savedDispDate
+                              ? fmtDate(savedDispDate)
+                              : "N/A"}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-stone-50 rounded border border-stone-100">
+                        <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
+                          Duration
+                        </p>
+                        <p className="text-xs font-semibold text-stone-800 mt-1 font-sans">
+                          {nightsLabel}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-3 bg-stone-50 rounded border border-stone-100">
-                    <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
-                      Return Date
-                    </p>
-                    <p className="text-xs font-semibold text-stone-800 mt-1 font-sans">
-                      {order.rentalEndDate
-                        ? new Date(order.rentalEndDate).toLocaleDateString(
-                            "en-GB",
-                            { day: "numeric", month: "short", year: "numeric" },
-                          )
-                        : "N/A"}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-stone-50 rounded border border-stone-100">
-                    <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
-                      Duration
-                    </p>
-                    <p className="text-xs font-semibold text-stone-800 mt-1 font-sans">
-                      4 Nights
-                    </p>
-                  </div>
-                </div>
-              </div>
+                );
+              })()}
 
               {/* Internal Notes textarea */}
               <div className="space-y-2">

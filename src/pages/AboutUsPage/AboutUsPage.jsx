@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import DesktopAboutUs from "../../components/AboutUs/Desktop/DesktopAboutUs";
 import MobileAboutUs from "../../components/AboutUs/Mobile/MobileAboutUs";
+import { usePageContent } from "../../hooks/usePageContent";
 
 const AboutUsPage = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const { getVal } = usePageContent("/about");
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 430px)");
@@ -18,7 +20,7 @@ const AboutUsPage = () => {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  return isMobile ? <MobileAboutUs /> : <DesktopAboutUs />;
+  return isMobile ? <MobileAboutUs getVal={getVal} /> : <DesktopAboutUs getVal={getVal} />;
 };
 
 export default AboutUsPage;

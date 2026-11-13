@@ -4,8 +4,16 @@ import ContactLiveStatus from "./ContactLiveStatus";
 import ContactReachCard from "./ContactReachCard";
 import { CONTACT_CONTENT } from "../../data/contact/contactContent";
 
-export default function ContactHero({ showCallRow = true, onShowToast }) {
-  const { eyebrow, title, lead } = CONTACT_CONTENT.hero;
+export default function ContactHero({
+  showCallRow = true,
+  onShowToast,
+  contactSettings,
+  getVal,
+}) {
+  const defaultHero = CONTACT_CONTENT.hero;
+  const eyebrow = getVal ? getVal("contact_eyebrow", defaultHero.eyebrow) : defaultHero.eyebrow;
+  const title = getVal ? getVal("contact_heading", defaultHero.title) : defaultHero.title;
+  const lead = getVal ? getVal("contact_lead", defaultHero.lead) : defaultHero.lead;
 
   return (
     <section className="hero" aria-labelledby="contact-hero-heading">
@@ -22,7 +30,7 @@ export default function ContactHero({ showCallRow = true, onShowToast }) {
           <p className="lead">{lead}</p>
 
           {/* Live Status Engine */}
-          <ContactLiveStatus />
+          <ContactLiveStatus getVal={getVal} contactSettings={contactSettings} />
         </div>
 
         {/* Right Column: Ways to reach us card */}
@@ -30,6 +38,8 @@ export default function ContactHero({ showCallRow = true, onShowToast }) {
           <ContactReachCard
             showCallRow={showCallRow}
             onShowToast={onShowToast}
+            contactSettings={contactSettings}
+            getVal={getVal}
           />
         </div>
       </div>

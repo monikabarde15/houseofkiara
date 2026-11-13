@@ -1,7 +1,7 @@
 import React from "react";
 import "../../../styles/howitworks/mobile/mobile-hero-section.css";
 
-const MobileHeroSection = () => {
+const MobileHeroSection = ({ getVal }) => {
   return (
     <section id="top" className="hok-hiw-mobile-hero">
       {/* HOK Watermark */}
@@ -12,22 +12,12 @@ const MobileHeroSection = () => {
         <div className="hok-hiw-mobile-hero-content">
           <div className="hok-hiw-mobile-hero-eyebrow">
             <span className="hok-hiw-mobile-hero-line"></span>
-            <span className="hok-hiw-mobile-hero-eyebrow-text">
-              Simple by Design
-            </span>
+            <span className="hok-hiw-mobile-hero-eyebrow-text">{getVal ? getVal("hiw_kicker", "Simple by Design") : "Simple by Design"}</span>
           </div>
 
-          <h1 className="hok-hiw-mobile-hero-title">
-            Fashion that moves <em>beautifully</em>
-            <br />
-            and keeps moving.
-          </h1>
+          <h1 className="hok-hiw-mobile-hero-title">{getVal && getVal("hiw_heading", null) ? getVal("hiw_heading") : <>Fashion that moves <em>beautifully</em><br />and keeps moving.</>}</h1>
 
-          <p className="hok-hiw-mobile-hero-body">
-            Everything you need to know about shopping, renting, selling, and
-            giving beautiful pieces a longer life — in one place, laid out
-            clearly.
-          </p>
+          <p className="hok-hiw-mobile-hero-body">{getVal ? getVal("hiw_lead", "Everything you need to know about shopping, renting, selling, and giving beautiful pieces a longer life — in one place, laid out clearly.") : "Everything you need to know about shopping, renting, selling, and giving beautiful pieces a longer life — in one place, laid out clearly."}</p>
 
           <div className="hok-hiw-mobile-hero-buttons">
             <button
@@ -73,33 +63,31 @@ const MobileHeroSection = () => {
                 <span className="hok-hiw-mobile-hero-col-dot hok-hiw-mobile-hero-col-dot-shopping"></span>
                 Shopping
               </div>
-              <h3 className="hok-hiw-mobile-hero-col-title">
-                Rent or buy preloved with confidence
-              </h3>
+              <h3 className="hok-hiw-mobile-hero-col-title">{getVal ? getVal("hiw_left_col_title", "Rent or buy preloved with confidence") : "Rent or buy preloved with confidence"}</h3>
 
               <div className="hok-hiw-mobile-hero-steps">
                 <div className="hok-hiw-mobile-hero-step">
                   <span className="hok-hiw-mobile-hero-step-num">01</span>
                   <span className="hok-hiw-mobile-hero-step-text">
-                    Browse & discover
+                    {getVal ? getVal("hiw_step_0_title", "Browse & discover") : "Browse & discover"}
                   </span>
                 </div>
                 <div className="hok-hiw-mobile-hero-step">
                   <span className="hok-hiw-mobile-hero-step-num">02</span>
                   <span className="hok-hiw-mobile-hero-step-text">
-                    Choose your mode
+                    {getVal ? getVal("hiw_step_1_title", "Choose your mode") : "Choose your mode"}
                   </span>
                 </div>
                 <div className="hok-hiw-mobile-hero-step">
                   <span className="hok-hiw-mobile-hero-step-num">03</span>
                   <span className="hok-hiw-mobile-hero-step-text">
-                    Checkout & confirm
+                    {getVal ? getVal("hiw_step_2_title", "Checkout & confirm") : "Checkout & confirm"}
                   </span>
                 </div>
                 <div className="hok-hiw-mobile-hero-step">
                   <span className="hok-hiw-mobile-hero-step-num">04</span>
                   <span className="hok-hiw-mobile-hero-step-text">
-                    Delivered, ready to wear
+                    {getVal ? getVal("hiw_step_3_title", "Delivered, ready to wear") : "Delivered, ready to wear"}
                   </span>
                 </div>
               </div>
@@ -114,15 +102,13 @@ const MobileHeroSection = () => {
                 <span className="hok-hiw-mobile-hero-col-dot hok-hiw-mobile-hero-col-dot-listing"></span>
                 Listing
               </div>
-              <h3 className="hok-hiw-mobile-hero-col-title hok-hiw-mobile-hero-col-title-listing">
-                Give your wardrobe a second life
-              </h3>
+              <h3 className="hok-hiw-mobile-hero-col-title hok-hiw-mobile-hero-col-title-listing">{getVal ? getVal("hiw_right_col_title", "Give your wardrobe a second life") : "Give your wardrobe a second life"}</h3>
 
               <div className="hok-hiw-mobile-hero-steps">
                 <div className="hok-hiw-mobile-hero-step">
                   <span className="hok-hiw-mobile-hero-step-num">01</span>
                   <span className="hok-hiw-mobile-hero-step-text hok-hiw-mobile-hero-step-text-listing">
-                    Photograph & list
+                    {getVal ? getVal("hiw_lstep_0_title", "Photograph & list") : "Photograph & list"}
                   </span>
                 </div>
                 <div className="hok-hiw-mobile-hero-step">

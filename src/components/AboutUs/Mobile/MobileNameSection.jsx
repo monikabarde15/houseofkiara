@@ -2,36 +2,34 @@ import React, { useState, useEffect, useRef } from "react";
 import "../../../styles/aboutus/mobile/name-section-mobile.css";
 import { showToast } from "../shared/Toast";
 
-const MobileNameSection = () => {
+const MobileNameSection = ({ getVal }) => {
   const [activeLetter, setActiveLetter] = useState("K");
-  const [displayWord, setDisplayWord] = useState("Keepsake");
-  const [displayDesc, setDisplayDesc] = useState(
-    "Cherished beauty is worth keeping. We built a home for the pieces too precious to disappear into the back of a cupboard.",
-  );
+  const [displayWord, setDisplayWord] = useState(() => getVal ? getVal("about_letter_word_0", "Keepsake") : "Keepsake");
+  const [displayDesc, setDisplayDesc] = useState(() => getVal ? getVal("about_letter_meaning_0", "Cherished beauty is worth keeping. We built a home for the pieces too precious to disappear into the back of a cupboard.") : "Cherished beauty is worth keeping. We built a home for the pieces too precious to disappear into the back of a cupboard.");
   const [isAnimating, setIsAnimating] = useState(false);
   const sectionRef = useRef(null);
 
   // Letter data - same as desktop
   const letterData = {
     K: {
-      word: "Keepsake",
-      desc: "Cherished beauty is worth keeping. We built a home for the pieces too precious to disappear into the back of a cupboard.",
+      word: getVal ? getVal("about_letter_word_0", "Keepsake") : "Keepsake",
+      desc: getVal ? getVal("about_letter_meaning_0", "Cherished beauty is worth keeping. We built a home for the pieces too precious to disappear into the back of a cupboard.") : "Cherished beauty is worth keeping. We built a home for the pieces too precious to disappear into the back of a cupboard.",
     },
     A: {
-      word: "Adored",
-      desc: "Beloved. Adored. Those are the words we keep coming back to. Every piece here was loved once, and is built to be adored all over again.",
+      word: getVal ? getVal("about_letter_word_1", "Authentic") : "Authentic",
+      desc: getVal ? getVal("about_letter_meaning_1", "Pristine condition guaranteed, verified by master artisans before every wear and documented in detail.") : "Pristine condition guaranteed, verified by master artisans before every wear and documented in detail.",
     },
     I: {
-      word: "Inherited",
-      desc: "Memory, craft, and emotion are stitched into every piece. We don't let that get lost — we carry it forward, to whoever wears it next.",
+      word: getVal ? getVal("about_letter_word_2", "Inherited") : "Inherited",
+      desc: getVal ? getVal("about_letter_meaning_2", "Honouring the craft and hand-loomed heritage passed down across celebrations and generations.") : "Honouring the craft and hand-loomed heritage passed down across celebrations and generations.",
     },
     R: {
-      word: "Renewed",
-      desc: "Renewed purpose is the whole idea. A garment's first chapter was never meant to be its last.",
+      word: getVal ? getVal("about_letter_word_3", "Revolving") : "Revolving",
+      desc: getVal ? getVal("about_letter_meaning_3", "Giving storied garments a second life and a new audience, keeping exceptional design in continuous motion.") : "Giving storied garments a second life and a new audience, keeping exceptional design in continuous motion.",
     },
     A2: {
-      word: "Always",
-      desc: "Quietly distinctive, always. That is the kind of beloved House of Kaira was built to protect.",
+      word: getVal ? getVal("about_letter_word_4", "Affection") : "Affection",
+      desc: getVal ? getVal("about_letter_meaning_4", "Personal concierge care, bespoke fitting adjustments, and botanical restoration for every silhouette.") : "Personal concierge care, bespoke fitting adjustments, and botanical restoration for every silhouette.",
     },
   };
 
@@ -82,16 +80,11 @@ const MobileNameSection = () => {
       <div className="mob-name__head reveal">
         <div className="mob-name__eyebrow">
           <span className="mob-name__eyebrow-line"></span>
-          <span>THE NAME</span>
+          <span>{getVal ? getVal("about_name_eyebrow", "THE NAME") : "THE NAME"}</span>
           <span className="mob-name__eyebrow-line"></span>
         </div>
-        <h2 className="mob-name__title">
-          Where the story <em>begins</em>
-        </h2>
-        <p className="mob-name__sub">
-          Every house carries the meaning of its name. Ours carries five letters
-          — and every one of them means something to us. Tap each one.
-        </p>
+        <h2 className="mob-name__title">{getVal && getVal("about_name_heading", null) ? getVal("about_name_heading") : <>Where the story <em>begins</em></>}</h2>
+        <p className="mob-name__sub">{getVal ? getVal("about_name_lead", "Every house carries the meaning of its name. Ours carries five letters — and every one of them means something to us. Tap each one.") : "Every house carries the meaning of its name. Ours carries five letters — and every one of them means something to us. Tap each one."}</p>
       </div>
 
       {/* Letters - Mobile Spec §07.2 - Letter size 56px, gap 8px, horizontal scroll fallback */}

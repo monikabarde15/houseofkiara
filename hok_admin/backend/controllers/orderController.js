@@ -56,9 +56,66 @@ const view = (order) => {
   const listerId = obj.listerId || firstItem.listerId || "";
   const listerName = obj.listerName || firstItem.listerName || "";
 
+  const rentalStartDate =
+    obj.rentalStartDate ||
+    obj.startDate ||
+    firstItem.rentalStartDate ||
+    firstItem.startDate ||
+    "";
+  const rentalEndDate =
+    obj.rentalEndDate ||
+    obj.endDate ||
+    firstItem.rentalEndDate ||
+    firstItem.endDate ||
+    "";
+
+  const resolvedOrderId = obj.orderId || obj.id || obj._id || "";
+  let fallbackOrderDate = "";
+  if (
+    typeof resolvedOrderId === "string" &&
+    resolvedOrderId.startsWith("HOK-ORD-") &&
+    /^\d{13}$/.test(resolvedOrderId.slice(8))
+  ) {
+    fallbackOrderDate = new Date(Number(resolvedOrderId.slice(8))).toISOString();
+  }
+  const orderDate =
+    obj.orderDate || obj.createdAt || fallbackOrderDate || "";
+
+  const normalizedDispatchDetails =
+    obj.dispatchDetails ||
+    (firstItem.dispatch &&
+    (firstItem.dispatch.date ||
+      firstItem.dispatch.courierPartner ||
+      firstItem.dispatch.trackingNumber ||
+      firstItem.dispatch.dispatchedBy)
+      ? {
+          dispatchedBy: firstItem.dispatch.dispatchedBy || "",
+          date: firstItem.dispatch.date || obj.dispatchDate || "",
+          trackingNumber: firstItem.dispatch.trackingNumber || "",
+          courierPartner: firstItem.dispatch.courierPartner || "",
+        }
+      : undefined);
+
+  const dispatchDate =
+    normalizedDispatchDetails?.date ||
+    firstItem.dispatch?.date ||
+    obj.dispatchDate ||
+    firstItem.dispatchDate ||
+    "";
+
+  const normalizedReturnLogistics =
+    obj.returnLogistics ||
+    (firstItem.returnDueDate
+      ? {
+          returnDate: firstItem.returnDueDate,
+          returnMethod: "",
+          courierPartner: "",
+        }
+      : undefined);
+
   return {
     ...obj,
-    id: obj.orderId || obj.id || obj._id,
+    id: resolvedOrderId,
     amount: rawAmount,
     orderValue: resolvedOrderValue,
     grandTotal: resolvedGrandTotal,
@@ -72,6 +129,12 @@ const view = (order) => {
     image,
     listerId,
     listerName,
+    rentalStartDate,
+    rentalEndDate,
+    orderDate,
+    dispatchDate,
+    ...(normalizedDispatchDetails ? { dispatchDetails: normalizedDispatchDetails } : {}),
+    ...(normalizedReturnLogistics ? { returnLogistics: normalizedReturnLogistics } : {}),
   };
 };
 const byId = (id) => ({ $or: [{ orderId: id }, { _id: id }] });
@@ -462,29 +525,63 @@ export const createOrder = async (req, res) => {
       ],
     });
 
-    // Auto-block dates for rental items
+    // Auto-block dates and sync bookingHistory on Product for all items
+    const todayIST = new Date().toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kolkata",
+    });
     for (const item of items) {
-      if (
-        item.productId &&
-        item.mode &&
-        item.mode.toLowerCase() === "rental" &&
-        item.rentalStartDate &&
-        item.rentalEndDate
-      ) {
-        const product = await Product.findOne({
-          $or: [{ productId: item.productId }, { _id: item.productId }],
+      if (!item.productId) continue;
+      const product = await Product.findOne({
+        $or: [
+          { productId: item.productId },
+          { _id: item.productId },
+          { sku: item.productId },
+        ],
+      });
+      if (!product) continue;
+
+      const isRentalItem =
+        item.mode && item.mode.toLowerCase() === "rental";
+      const bookingStart = item.rentalStartDate || todayIST;
+      const bookingEnd = item.rentalEndDate || bookingStart;
+
+      if (isRentalItem && item.rentalStartDate && item.rentalEndDate) {
+        if (!product.blockedDates) product.blockedDates = [];
+        product.blockedDates.push({
+          from: new Date(item.rentalStartDate),
+          to: new Date(item.rentalEndDate),
+          reason: `Rented (Order ${order.orderId})`,
         });
-        if (product) {
-          if (!product.blockedDates) product.blockedDates = [];
-          product.blockedDates.push({
-            from: new Date(item.rentalStartDate),
-            to: new Date(item.rentalEndDate),
-            reason: `Rented (Order ${order.orderId})`,
-          });
-          await product.save();
-        }
+        product.timesRented = Number(product.timesRented || 0) + 1;
       }
+
+      if (!Array.isArray(product.bookingHistory)) product.bookingHistory = [];
+      const alreadyRecorded = product.bookingHistory.some(
+        (bh) => bh.orderId === order.orderId,
+      );
+      if (!alreadyRecorded) {
+        product.bookingHistory.push({
+          orderId: order.orderId,
+          customerName: order.customerName || "Customer",
+          whatsappNumber: order.customerPhone || "",
+          city: order.customerCity || "",
+          startDate: bookingStart,
+          endDate: bookingEnd,
+          orderDate: order.orderDate || new Date().toISOString(),
+          mode: item.mode || order.mode || "Rental",
+          amount: Number(item.amount || order.grandTotal || 0),
+          deposit: Number(item.deposit || order.deposit || 0),
+          status: order.status || "Confirmed",
+        });
+      }
+      if (!Array.isArray(product.activityLog)) product.activityLog = [];
+      product.activityLog.push({
+        action: `Order ${order.orderId} (${item.mode || order.mode}) booked by ${order.customerName || "Customer"}`,
+        user: order.customerName || "Web Customer",
+      });
+      await product.save();
     }
+    global.__webProductsCache = null;
 
     if (customer) await syncCustomerOrderStats([customer]);
     try {
@@ -516,21 +613,99 @@ export const updateOrder = async (req, res) => {
         .json({ success: false, message: "Order not found" });
     const custId = req.body.customerId || existing.customerId;
     const customer = custId ? await customerById(custId) : null;
-    const items = req.body.items
+    const rawItems = req.body.items
       ? await calculateItems(req.body.items)
       : existing.items;
 
+    const incomingDispatchDetails =
+      req.body.dispatchDetails !== undefined
+        ? req.body.dispatchDetails
+        : existing.dispatchDetails;
+    const incomingReturnLogistics =
+      req.body.returnLogistics !== undefined
+        ? req.body.returnLogistics
+        : existing.returnLogistics;
+    const resolvedDispatchDate =
+      incomingDispatchDetails?.date ||
+      req.body.dispatchDate ||
+      existing.dispatchDetails?.date ||
+      existing.dispatchDate ||
+      "";
+
+    const syncedItems = Array.isArray(rawItems)
+      ? rawItems.map((it) => {
+          const baseItem = it?.toObject ? it.toObject() : { ...it };
+          const updatedDispatch = incomingDispatchDetails
+            ? {
+                ...(baseItem.dispatch || {}),
+                dispatchedBy:
+                  incomingDispatchDetails.dispatchedBy ??
+                  baseItem.dispatch?.dispatchedBy ??
+                  "",
+                date:
+                  incomingDispatchDetails.date ||
+                  resolvedDispatchDate ||
+                  baseItem.dispatch?.date ||
+                  "",
+                trackingNumber:
+                  incomingDispatchDetails.trackingNumber ??
+                  baseItem.dispatch?.trackingNumber ??
+                  "",
+                courierPartner:
+                  incomingDispatchDetails.courierPartner ??
+                  baseItem.dispatch?.courierPartner ??
+                  "",
+                status:
+                  req.body.status === "Dispatched" ||
+                  req.body.status === "Shipped"
+                    ? req.body.status
+                    : baseItem.dispatch?.status || "Scheduled",
+              }
+            : baseItem.dispatch;
+
+          return {
+            ...baseItem,
+            ...(resolvedDispatchDate ? { dispatchDate: resolvedDispatchDate } : {}),
+            ...(updatedDispatch ? { dispatch: updatedDispatch } : {}),
+            ...(incomingReturnLogistics?.returnDate
+              ? { returnDueDate: incomingReturnLogistics.returnDate }
+              : {}),
+          };
+        })
+      : rawItems;
+
     const targetDepositStatus = req.body.depositStatus || existing.depositStatus;
-    const calcTotals = req.body.items
-      ? totalsFor(items, req.body.discount ?? existing.discount, targetDepositStatus)
-      : {};
+    const calcTotals =
+      req.body.recalculateTotals && req.body.items
+        ? totalsFor(syncedItems, req.body.discount ?? existing.discount, targetDepositStatus)
+        : {};
     if (targetDepositStatus) {
       calcTotals.depositStatus = targetDepositStatus;
     }
+
+    const preservedGrandTotal =
+      parseAmount(req.body.grandTotal) ||
+      parseAmount(existing.grandTotal) ||
+      parseAmount(req.body.amount) ||
+      parseAmount(existing.amount);
+
     const updateData = {
       ...req.body,
-      items,
+      items: syncedItems,
       ...calcTotals,
+      ...(preservedGrandTotal > 0
+        ? {
+            grandTotal: preservedGrandTotal,
+            amount: preservedGrandTotal,
+          }
+        : {}),
+      ...(resolvedDispatchDate ? { dispatchDate: resolvedDispatchDate } : {}),
+      ...(incomingDispatchDetails !== undefined
+        ? { dispatchDetails: incomingDispatchDetails }
+        : {}),
+      ...(incomingReturnLogistics !== undefined
+        ? { returnLogistics: incomingReturnLogistics }
+        : {}),
     };
 
     if (customer) {

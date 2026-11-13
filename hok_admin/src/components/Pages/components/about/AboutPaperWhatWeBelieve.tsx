@@ -109,7 +109,7 @@ export const AboutPaperWhatWeBelieve: React.FC<AboutPaperWhatWeBelieveProps> = (
               : 'hover:ring-1 hover:ring-[#d4af37]/40'
           }`}
         >
-          Four ideas we will <span className="italic text-[#d4af37]">never</span> compromise on
+          {getVal('about_believe_heading', 'Four ideas we will never compromise on')}
         </h2>
       </div>
 

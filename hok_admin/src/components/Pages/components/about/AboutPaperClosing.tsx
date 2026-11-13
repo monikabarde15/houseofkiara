@@ -63,7 +63,7 @@ export const AboutPaperClosing: React.FC<AboutPaperClosingProps> = ({
             focusedField?.fieldId === 'about_closing_heading' ? 'ring-1 ring-[#d4af37] bg-[#2b241b] outline-none' : 'hover:ring-1 hover:ring-[#d4af37]/40'
           }`}
         >
-          Your piece’s <span className="italic text-[#d4af37]">next chapter</span> starts here.
+          {getVal('about_closing_heading', 'Your piece’s next chapter starts here.')}
         </h2>
 
         <p

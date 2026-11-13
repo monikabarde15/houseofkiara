@@ -29,6 +29,9 @@ interface PageLevelTwoHeaderProps {
   onSelectPanelTab: (tab: 'default' | 'figures' | 'checks' | 'settings') => void;
   showMode: 'waiting' | 'live' | 'date';
   onShowModeChange: (mode: 'waiting' | 'live' | 'date') => void;
+  onSaveChanges?: () => void;
+  isSaving?: boolean;
+  hasSavedSuccess?: boolean;
 }
 
 export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
@@ -44,7 +47,10 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
   activePanelTab,
   onSelectPanelTab,
   showMode,
-  onShowModeChange
+  onShowModeChange,
+  onSaveChanges,
+  isSaving,
+  hasSavedSuccess
 }) => {
   const [isPageSwitcherOpen, setIsPageSwitcherOpen] = useState(false);
   const isContact = page.slug === '/contact' || page.slug === 'contact';
@@ -101,9 +107,11 @@ export const PageLevelTwoHeader: React.FC<PageLevelTwoHeaderProps> = ({
 
           <button
             type="button"
-            className="px-3.5 py-1.5 rounded-[6px] bg-[#b89047] text-white font-medium text-xs hover:bg-[#a67e37] transition shadow-2xs cursor-pointer"
+            onClick={onSaveChanges}
+            disabled={isSaving}
+            className="px-3.5 py-1.5 rounded-[6px] bg-[#b89047] text-white font-medium text-xs hover:bg-[#a67e37] transition shadow-2xs cursor-pointer disabled:opacity-60 flex items-center gap-1.5"
           >
-            Save Changes
+            {isSaving ? "Saving..." : hasSavedSuccess ? "✓ Saved" : "Save Changes"}
           </button>
         </div>
       </div>

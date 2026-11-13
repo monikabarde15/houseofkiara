@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../styles/howitworks/faq-section.css";
 
-const FAQSection = () => {
+const FAQSection = ({ getVal }) => {
   const [openIndex, setOpenIndex] = useState(0);
 
   const faqs = [
@@ -104,13 +104,11 @@ const FAQSection = () => {
         <div className="hok-hiw-faq-header">
           <div className="hok-hiw-faq-eyebrow">
             <span className="hok-hiw-faq-line"></span>
-            <span className="hok-hiw-faq-eyebrow-text">FAQ</span>
+            <span className="hok-hiw-faq-eyebrow-text">{getVal ? getVal("hiw_faq_eyebrow", "FAQ") : "FAQ"}</span>
             <span className="hok-hiw-faq-line"></span>
           </div>
 
-          <h2 className="hok-hiw-faq-title">
-            Questions you <em>probably have.</em>
-          </h2>
+          <h2 className="hok-hiw-faq-title">{getVal && getVal("hiw_faq_heading", null) ? getVal("hiw_faq_heading") : <>Questions you <em>probably have.</em></>}</h2>
         </div>
 
         {/* FAQ Items */}

@@ -474,10 +474,87 @@ export const migrationQueries = [
   `ALTER TABLE homepage_sections ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_homepage_sections_section_id ON homepage_sections(section_id);`,
   `CREATE INDEX IF NOT EXISTS idx_homepage_sections_data_gin ON homepage_sections USING GIN (data);`,
+  // 17. Pages Table
+  `CREATE TABLE IF NOT EXISTS pages (
+    _id VARCHAR(64) PRIMARY KEY,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    group_id VARCHAR(100) DEFAULT 'content-help',
+    built_from VARCHAR(100),
+    summary TEXT,
+    health VARCHAR(50) DEFAULT 'healthy',
+    version VARCHAR(50) DEFAULT 'Version 6',
+    last_published VARCHAR(100) DEFAULT '17 Sep 2026',
+    last_editor VARCHAR(100) DEFAULT 'Priya R.',
+    words_count INT DEFAULT 0,
+    figures_count INT DEFAULT 0,
+    checks_count INT DEFAULT 0,
+    high_checks_count INT DEFAULT 0,
+    medium_checks_count INT DEFAULT 0,
+    low_checks_count INT DEFAULT 0,
+    is_built BOOLEAN DEFAULT TRUE,
+    has_scheduled BOOLEAN DEFAULT FALSE,
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS slug VARCHAR(255);`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS title VARCHAR(255);`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS group_id VARCHAR(100) DEFAULT 'content-help';`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS built_from VARCHAR(100);`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS summary TEXT;`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS health VARCHAR(50) DEFAULT 'healthy';`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS version VARCHAR(50) DEFAULT 'Version 6';`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS last_published VARCHAR(100) DEFAULT '17 Sep 2026';`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS last_editor VARCHAR(100) DEFAULT 'Priya R.';`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS words_count INT DEFAULT 0;`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS figures_count INT DEFAULT 0;`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS checks_count INT DEFAULT 0;`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS high_checks_count INT DEFAULT 0;`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS medium_checks_count INT DEFAULT 0;`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS low_checks_count INT DEFAULT 0;`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS is_built BOOLEAN DEFAULT TRUE;`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS has_scheduled BOOLEAN DEFAULT FALSE;`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `ALTER TABLE pages ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_pages_slug ON pages(slug);`,
+  `CREATE INDEX IF NOT EXISTS idx_pages_data_gin ON pages USING GIN (data);`,
+
+  // 18. Page Figures Table
+  `CREATE TABLE IF NOT EXISTS page_figures (
+    _id VARCHAR(64) PRIMARY KEY,
+    key VARCHAR(255) UNIQUE NOT NULL,
+    label VARCHAR(255) NOT NULL,
+    display_value VARCHAR(255) NOT NULL,
+    subject VARCHAR(100),
+    owner VARCHAR(100) DEFAULT 'Set here',
+    status VARCHAR(50) DEFAULT 'live',
+    has_pending_change BOOLEAN DEFAULT FALSE,
+    waiting_change JSONB,
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS key VARCHAR(255);`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS label VARCHAR(255);`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS display_value VARCHAR(255);`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS subject VARCHAR(100);`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS owner VARCHAR(100) DEFAULT 'Set here';`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'live';`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS has_pending_change BOOLEAN DEFAULT FALSE;`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS waiting_change JSONB;`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_page_figures_key ON page_figures(key);`,
+  `CREATE INDEX IF NOT EXISTS idx_page_figures_data_gin ON page_figures USING GIN (data);`
 ];
 
 export const runMigrations = async () => {
-  console.log("Starting PostgreSQL schema migration for 16 tables...");
+  console.log("Starting PostgreSQL schema migration for 18 tables...");
   const client = await pool.connect();
   try {
     await client.query("BEGIN;");

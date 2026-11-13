@@ -77,8 +77,26 @@ const MobileCheckoutLayout = () => {
                 const orderId = `HOK-ORD-${Date.now()}`;
                 const firstItem = checkoutItems[0] || {};
                 const firstProduct = firstItem.product || firstItem;
-                const rootRentalStart = firstItem.rentalDates?.start || firstItem.booking?.deliveryDate || "";
-                const rootRentalEnd = firstItem.rentalDates?.end || firstItem.booking?.returnDate || "";
+                const rootRentalStart =
+                    firstItem.rentalDates?.start ||
+                    firstItem.booking?.deliveryDate ||
+                    firstItem.booking?.startDate ||
+                    firstItem.startDate ||
+                    "";
+                const rootRentalEnd =
+                    firstItem.rentalDates?.end ||
+                    firstItem.booking?.returnDate ||
+                    firstItem.booking?.endDate ||
+                    firstItem.endDate ||
+                    "";
+                const hasPrelovedItem = checkoutItems.some(
+                    (item) => item.type === "preloved"
+                );
+                const resolvedOrderMode = hasRentalItem
+                    ? "Rental"
+                    : hasPrelovedItem
+                        ? "Preloved"
+                        : "Buy";
                 const firstProductImage =
                     (Array.isArray(firstProduct.images) && firstProduct.images[0]) ||
                     firstProduct.image ||
@@ -88,6 +106,7 @@ const MobileCheckoutLayout = () => {
 
                 const orderData = {
                     orderId,
+                    orderDate: new Date().toISOString(),
                     customerId,
                     customerName,
                     customerEmail,
@@ -95,11 +114,12 @@ const MobileCheckoutLayout = () => {
                     customerCity: address.city,
                     customerState: address.state,
                     address: `${address.address1}, ${address.city}, ${address.state} - ${address.pin}`,
-                    mode: hasRentalItem ? 'Rental' : 'Buy',
+                    mode: resolvedOrderMode,
                     productName: firstProduct.title || firstProduct.name || firstItem.title || firstItem.name || "Designer Piece",
                     designer: firstProduct.designer || firstItem.designer || "House of Kaira",
                     image: firstProductImage,
                     rentalStartDate: rootRentalStart,
+                    rentalEndDate: rootRentalEnd,
                     listerId: firstProduct.listerId || firstProduct.lister_id || firstItem.listerId || "",
                     listerName: firstProduct.listerName || firstProduct.lister_name || firstItem.listerName || "",
                     discount: activePromo ? (activePromo.discount || totals?.discount || 0) : 0,
@@ -126,8 +146,8 @@ const MobileCheckoutLayout = () => {
                             mode: (item.type === 'rental' || item.type === 'rent') ? 'Rental' : (item.type === 'preloved' ? 'Preloved' : 'Buy'),
                             size: item.size || item.booking?.size || 'M',
                             quantity: item.quantity || 1,
-                            rentalStartDate: item.rentalDates?.start || item.booking?.deliveryDate || "",
-                            rentalEndDate: item.rentalDates?.end || item.booking?.returnDate || "",
+                            rentalStartDate: item.rentalDates?.start || item.booking?.deliveryDate || item.booking?.startDate || item.startDate || "",
+                            rentalEndDate: item.rentalDates?.end || item.booking?.returnDate || item.booking?.endDate || item.endDate || "",
                             amount: item.price || p.rentalPrice || p.price || 0,
                             image: img,
                         };
@@ -185,7 +205,7 @@ const MobileCheckoutLayout = () => {
                             try {
                                 const cartStore = await import("../../../../store/cartStore").then((m) => m.default.getState());
                                 cartStore.clearCart();
-                            } catch (e) {}
+                            } catch (e) { }
                         }
                     } catch (error) {
                         console.error("Order payment verify error:", error);
@@ -444,7 +464,7 @@ const MobileCheckoutLayout = () => {
                 cartItems={checkoutItems}
                 activePromo={activePromo}
                 deliveryType={deliveryType}
-                totals={totals}  
+                totals={totals}
             />
 
             <OrderConfirmedOverlay

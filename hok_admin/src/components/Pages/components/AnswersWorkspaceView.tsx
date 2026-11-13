@@ -9,6 +9,7 @@ import React, { useState, useMemo } from 'react';
 import { PageCardData } from '../types/pages.types';
 import { AnswerItem } from '../types/answers.types';
 import { getPageAnswers } from '../data/pageAnswersRegistry';
+import { getPageContent as getDbPageContent, savePageContent } from '../../../services/pageApi';
 import { AnswersHeaderStrip } from './AnswersHeaderStrip';
 import { AnswersListSidebar } from './AnswersListSidebar';
 import { AnswersPaperCanvas } from './AnswersPaperCanvas';
@@ -32,6 +33,37 @@ export const AnswersWorkspaceView: React.FC<AnswersWorkspaceViewProps> = ({
     return list[0]?.id || '';
   });
   const [pickerOpen, setPickerOpen] = useState(false);
+  const answersSaveTimeoutRef = React.useRef<any>(null);
+
+  const triggerSaveAnswers = (newAnswers: AnswerItem[]) => {
+    if (answersSaveTimeoutRef.current) clearTimeout(answersSaveTimeoutRef.current);
+    answersSaveTimeoutRef.current = setTimeout(async () => {
+      try {
+        await savePageContent(page.slug, { answers: newAnswers });
+      } catch (err) {
+        console.error('[AnswersWorkspaceView] Failed to save answers:', err);
+      }
+    }, 1200);
+  };
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const loadDbAnswers = async () => {
+      try {
+        const dbData = await getDbPageContent(page.slug);
+        if (isMounted && dbData && Array.isArray(dbData.answers) && dbData.answers.length > 0) {
+          setAnswers(dbData.answers);
+        }
+      } catch (err) {
+        console.warn('[AnswersWorkspaceView] Failed to load DB answers:', err);
+      }
+    };
+    loadDbAnswers();
+    return () => {
+      isMounted = false;
+      if (answersSaveTimeoutRef.current) clearTimeout(answersSaveTimeoutRef.current);
+    };
+  }, [page.slug]);
 
   const selectedAnswer = useMemo(() => {
     return answers.find(a => a.id === selectedAnswerId) || answers[0];
@@ -58,6 +90,7 @@ export const AnswersWorkspaceView: React.FC<AnswersWorkspaceViewProps> = ({
     const [moved] = updated.splice(idx, 1);
     updated.splice(targetIdx, 0, moved);
     setAnswers(updated);
+    triggerSaveAnswers(updated);
   };
 
   const handleDuplicate = () => {
@@ -69,7 +102,11 @@ export const AnswersWorkspaceView: React.FC<AnswersWorkspaceViewProps> = ({
       linkName: `${selectedAnswer.linkName}-copy`,
       paragraphs: selectedAnswer.paragraphs.map(p => ({ ...p, id: `p_${Date.now()}_${Math.random()}` }))
     };
-    setAnswers(prev => [...prev, duplicated]);
+    setAnswers(prev => {
+      const updated = [...prev, duplicated];
+      triggerSaveAnswers(updated);
+      return updated;
+    });
     setSelectedAnswerId(duplicated.id);
   };
 
@@ -77,6 +114,7 @@ export const AnswersWorkspaceView: React.FC<AnswersWorkspaceViewProps> = ({
     if (!selectedAnswer) return;
     const remaining = answers.filter(a => a.id !== selectedAnswer.id);
     setAnswers(remaining);
+    triggerSaveAnswers(remaining);
     if (remaining.length > 0) setSelectedAnswerId(remaining[0].id);
   };
 
@@ -96,13 +134,17 @@ export const AnswersWorkspaceView: React.FC<AnswersWorkspaceViewProps> = ({
         }
       ]
     };
-    setAnswers(prev => [newQuestion, ...prev]);
+    setAnswers(prev => {
+      const updated = [newQuestion, ...prev];
+      triggerSaveAnswers(updated);
+      return updated;
+    });
     setSelectedAnswerId(newQuestion.id);
   };
 
   const handleAddParagraph = (answerId: string, kind: 'paragraph' | 'bullet') => {
-    setAnswers(prev =>
-      prev.map(a =>
+    setAnswers(prev => {
+      const updated = prev.map(a =>
         a.id === answerId
           ? {
               ...a,
@@ -112,18 +154,22 @@ export const AnswersWorkspaceView: React.FC<AnswersWorkspaceViewProps> = ({
               ]
             }
           : a
-      )
-    );
+      );
+      triggerSaveAnswers(updated);
+      return updated;
+    });
   };
 
   const handleUpdateParagraph = (answerId: string, pId: string, newText: string) => {
-    setAnswers(prev =>
-      prev.map(a =>
+    setAnswers(prev => {
+      const updated = prev.map(a =>
         a.id === answerId
           ? { ...a, paragraphs: a.paragraphs.map(p => (p.id === pId ? { ...p, text: newText } : p)) }
           : a
-      )
-    );
+      );
+      triggerSaveAnswers(updated);
+      return updated;
+    });
   };
 
   const handleDetachShared = (answerId: string, pId: string) => {

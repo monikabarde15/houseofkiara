@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import './tokens.css';
 import { TopLevelTab, PageCardData, FigureItem, LinksAndAddressesData } from './types';
 import { SEED_PAGES, SEED_FIGURES, SEED_LINKS_ADDRESSES } from './data';
+import { getAllPages, getAllFigures, saveFigure as saveFigureApi, publishAllChanges } from '../../services/pageApi';
 import { PagesHeader } from './components/PagesHeader';
 import { PagesWorkspaceTab } from './components/PagesWorkspaceTab';
 import { FiguresWorkspaceTab } from './components/FiguresWorkspaceTab';
@@ -16,6 +17,10 @@ import { LinksWorkspaceTab } from './components/LinksWorkspaceTab';
 import { PagePaperView } from './components/PagePaperView';
 import { AnswersWorkspaceView } from './components/AnswersWorkspaceView';
 import { ReviewPublishDrawer } from './components/ReviewPublishDrawer';
+import { AddPolicyModal } from './components/AddPolicyModal';
+import { CANONICAL_PAGE_CONTENTS } from './data/pageContentRegistry';
+import { savePageContent as savePageContentApi } from '../../services/pageApi';
+import { savePage as savePageApi } from '../../services/pageApi';
 import { ViewOnlyBanner } from './components/ViewOnlyBanner';
 import { OtherSectionsPointersModal } from './components/OtherSectionsPointersModal';
 
@@ -25,14 +30,43 @@ interface PagesModuleProps {
 
 export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) => {
   const [activeTab, setActiveTab] = useState<TopLevelTab>('pages');
-  const [pages, setPages] = useState<PageCardData[]>(SEED_PAGES);
-  const [figures, setFigures] = useState<FigureItem[]>(SEED_FIGURES);
+  const [pages, setPages] = useState<PageCardData[]>([]);
+  const [figures, setFigures] = useState<FigureItem[]>([]);
   const [linksData, setLinksData] = useState<LinksAndAddressesData>(SEED_LINKS_ADDRESSES);
   const [selectedPageSlug, setSelectedPageSlug] = useState<string | null>(null);
   const [pageViewMode, setPageViewMode] = useState<'paper' | 'answers'>('paper');
   const [selectedFigureKey, setSelectedFigureKey] = useState<string | null>('free_delivery_min');
   const [reviewDrawerOpen, setReviewDrawerOpen] = useState(false);
   const [pointersModalOpen, setPointersModalOpen] = useState(false);
+  const [isAddPageOpen, setIsAddPageOpen] = useState(false);
+  const [targetAddGroup, setTargetAddGroup] = useState<string | undefined>(undefined);
+  const handleOpenAddPage = (group?: string) => {
+    setTargetAddGroup(group);
+    setIsAddPageOpen(true);
+  };
+
+  // Load dynamic real data from database via API
+  React.useEffect(() => {
+    let isMounted = true;
+    const fetchRealData = async () => {
+      try {
+        const [dbPages, dbFigures] = await Promise.all([
+          getAllPages(),
+          getAllFigures()
+        ]);
+        if (isMounted) {
+          setPages(Array.isArray(dbPages) ? dbPages : []);
+          setFigures(Array.isArray(dbFigures) ? dbFigures : []);
+        }
+      } catch (err) {
+        console.warn('[PagesModule] Failed to load data from API:', err);
+      }
+    };
+    fetchRealData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [userRole, setUserRole] = useState<'Super Admin' | 'Operations Manager' | 'Content Manager' | 'Viewer'>('Super Admin');
   const accessLevel: 'Full Access' | 'Edit' | 'View Only' =
@@ -54,7 +88,42 @@ export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) =
     }
   ]);
 
-  const handleConfirmPublish = () => {
+  
+  const handleSaveNewPage = async (pageData: Partial<PageCardData>, seedContent?: boolean) => {
+    try {
+      await savePageApi(pageData);
+      if (seedContent && pageData.slug) {
+        const cleanSlug = pageData.slug.replace(/^\//, '');
+        const initial = (CANONICAL_PAGE_CONTENTS as any)[cleanSlug] || (CANONICAL_PAGE_CONTENTS as any)[pageData.slug];
+        if (initial) {
+          await savePageContentApi(pageData.slug, initial);
+        }
+      }
+      const updated = await getAllPages();
+      setPages(Array.isArray(updated) ? updated : []);
+    } catch (err) {
+      console.error('Failed to add policy:', err);
+    }
+  };
+
+  const handleSeedAllPolicies = async () => {
+    try {
+      for (const p of SEED_PAGES) {
+        await savePageApi(p);
+      }
+      const updated = await getAllPages();
+      setPages(Array.isArray(updated) ? updated : []);
+    } catch (err) {
+      console.error('Failed to seed policies:', err);
+    }
+  };
+
+  const handleConfirmPublish = async () => {
+    try {
+      await publishAllChanges(userRole);
+    } catch (err) {
+      console.error('[PagesModule] publish error:', err);
+    }
     setPendingChanges([]);
     setFigures(prev =>
       prev.map(f => (f.hasPendingChange ? { ...f, status: 'live', hasPendingChange: false, displayValue: f.waitingChange?.value || f.displayValue } : f))
@@ -144,6 +213,7 @@ export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) =
         onRoleChange={setUserRole}
         accessLevel={accessLevel}
         onBackToDashboard={onBackToDashboard}
+        onOpenAddPage={() => handleOpenAddPage()}
       />
 
       {/* Main Workspace Body */}
@@ -153,6 +223,8 @@ export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) =
             pages={pages}
             onSelectPage={slug => setSelectedPageSlug(slug)}
             onNavigateToFigures={() => setActiveTab('figures')}
+            onOpenAddPage={handleOpenAddPage}
+            onSeedAllPolicies={handleSeedAllPolicies}
           />
         )}
         {activeTab === 'figures' && (
@@ -176,6 +248,15 @@ export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) =
           />
         )}
       </main>
+
+      {/* Add Page Modal */}
+      <AddPolicyModal
+        initialGroup={targetAddGroup}
+        isOpen={isAddPageOpen}
+        onClose={() => setIsAddPageOpen(false)}
+        onSavePage={handleSaveNewPage}
+        onSeedAll={handleSeedAllPolicies}
+      />
 
       {/* Slide-over Review & Publish Drawer (Spec §10.2, Screens 18, 19, 64) */}
       <ReviewPublishDrawer

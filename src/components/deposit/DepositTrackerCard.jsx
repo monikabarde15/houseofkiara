@@ -6,7 +6,7 @@
 import React from 'react';
 import { DEPOSIT_TRACKER_STEPS } from '../../data/deposit/depositRegistry.js';
 
-const DepositTrackerCard = ({ onSelectStep }) => {
+const DepositTrackerCard = ({ onSelectStep, getVal }) => {
   return (
     <section className="jr dp-enter dp-e3" aria-labelledby="deposit-tracker-title">
       {/* Header Row */}

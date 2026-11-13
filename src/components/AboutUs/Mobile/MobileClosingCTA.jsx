@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import "../../../styles/aboutus/mobile/closing-cta-mobile.css";
 import { showToast } from "../shared/Toast";
 
-const MobileClosingCTA = () => {
+const MobileClosingCTA = ({ getVal }) => {
   const sectionRef = useRef(null);
   const navigate = useNavigate();
 
@@ -52,16 +52,10 @@ const MobileClosingCTA = () => {
       {/* Inner Content - Mobile Spec §14 */}
       <div className="mob-closing__inner reveal">
         {/* H2 - Mobile: clamp(28px, 7vw, 42px) */}
-        <h2 className="mob-closing__title">
-          Your piece's <em>next chapter</em> starts here.
-        </h2>
+        <h2 className="mob-closing__title">{getVal && getVal("about_closing_heading", null) ? getVal("about_closing_heading") : <>Your piece's <em>next chapter</em> starts here.</>}</h2>
 
         {/* Paragraph - Mobile: 15px */}
-        <p className="mob-closing__paragraph">
-          Whether you're here to wear something unforgettable or to give
-          something unforgettable a second life, there's a place for you at
-          House of Kaira.
-        </p>
+        <p className="mob-closing__paragraph">{getVal ? getVal("about_closing_sub", getVal("about_closing_lead", "Whether you're here to wear something unforgettable or to give something unforgettable a second life, there's a place for you at House of Kaira.")) : "Whether you're here to wear something unforgettable or to give something unforgettable a second life, there's a place for you at House of Kaira."}</p>
 
         {/* Buttons - Mobile: flex column, gap 12px, each full width */}
         <div className="mob-closing__buttons">

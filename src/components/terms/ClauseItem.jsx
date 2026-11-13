@@ -7,7 +7,9 @@ import { formatTermsText } from '../../utils/terms/termsFormatter.jsx';
  * Terms & Conditions Individual Clause Item
  * Section 5.9 of Build Specification v3.0
  */
-const ClauseItem = ({ clause, onShowToast }) => {
+const ClauseItem = ({ clause, onShowToast, getVal }) => {
+  const dynamicTitle = getVal ? getVal(`terms_clause_${clause.number}_title`, clause.title) : clause.title;
+  const dynamicBody = getVal ? getVal(`terms_clause_${clause.number}_body`, null) : null;
   const [copiedHeader, setCopiedHeader] = useState(false);
   const [copiedSub, setCopiedSub] = useState(null);
 

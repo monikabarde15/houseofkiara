@@ -6,7 +6,7 @@
 import React from "react";
 import { SHIPPING_RENTAL_WINDOW_CARD } from "../../data/shipping/shippingRegistry";
 
-function ShippingRentalWindowCard({ onSelectQuestion }) {
+function ShippingRentalWindowCard({ onSelectQuestion, getVal }) {
   const handleNote2LinkClick = () => {
     if (onSelectQuestion) {
       onSelectQuestion(`#${SHIPPING_RENTAL_WINDOW_CARD.note2.targetAnswerId}`);
@@ -21,8 +21,8 @@ function ShippingRentalWindowCard({ onSelectQuestion }) {
       aria-labelledby="rental-window-title"
     >
       <div className="jr-hd">
-        <h2 id="rental-window-title">{SHIPPING_RENTAL_WINDOW_CARD.title}</h2>
-        <p>{SHIPPING_RENTAL_WINDOW_CARD.hint}</p>
+        <h2 id="rental-window-title">{getVal ? getVal("shipping_window_title", SHIPPING_RENTAL_WINDOW_CARD.title) : SHIPPING_RENTAL_WINDOW_CARD.title}</h2>
+        <p>{getVal ? getVal("shipping_window_hint", SHIPPING_RENTAL_WINDOW_CARD.hint) : SHIPPING_RENTAL_WINDOW_CARD.hint}</p>
       </div>
 
       <div className="wn">

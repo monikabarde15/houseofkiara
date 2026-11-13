@@ -12,18 +12,18 @@ import PoliciesSection from "../PoliciesSection";
 import FAQSection from "../FAQSection";
 import ClosingCTA from "../ClosingCTA";
 
-const HowItWorksLayout = ({ activeSection }) => {
+const HowItWorksLayout = ({ activeSection, getVal }) => {
   return (
     <div className="how-it-works-layout">
-      <HeroSection />
+      <HeroSection getVal={getVal} />
       <ChapterNav activeSection={activeSection} />
-      <ShoppingJourney />
-      <ModeCards />
-      <DividerBand />
-      <ListAndEarn />
-      <PoliciesSection />
-      <FAQSection />
-      <ClosingCTA />
+      <ShoppingJourney getVal={getVal} />
+      <ModeCards getVal={getVal} />
+      <DividerBand getVal={getVal} />
+      <ListAndEarn getVal={getVal} />
+      <PoliciesSection getVal={getVal} />
+      <FAQSection getVal={getVal} />
+      <ClosingCTA getVal={getVal} />
     </div>
   );
 };

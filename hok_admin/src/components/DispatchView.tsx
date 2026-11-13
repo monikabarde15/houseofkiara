@@ -36,6 +36,46 @@ interface DispatchViewProps {
   onUpdateOrder: (updatedOrder: Order) => void;
 }
 
+const toLocalYMD = (d: Date = new Date()): string => {
+  if (isNaN(d.getTime())) return "";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
+
+const normalizeDateToYMD = (raw: any): string => {
+  if (!raw) return "";
+  const str = String(raw).trim();
+  if (!str) return "";
+  const ymd = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (ymd) return `${ymd[1]}-${ymd[2]}-${ymd[3]}`;
+  const dmy = str.match(/^(\d{2})[-/](\d{2})[-/](\d{4})$/);
+  if (dmy) return `${dmy[3]}-${dmy[2]}-${dmy[1]}`;
+  const parsed = new Date(str);
+  return isNaN(parsed.getTime()) ? "" : toLocalYMD(parsed);
+};
+
+const addDaysYMD = (ymdStr: string, delta: number): string => {
+  const m = ymdStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return ymdStr;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  d.setDate(d.getDate() + delta);
+  return toLocalYMD(d);
+};
+
+const formatHumanDate = (raw: any): string => {
+  const ymd = normalizeDateToYMD(raw);
+  if (!ymd) return "";
+  const [y, m, d] = ymd.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dt.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
 export default function DispatchView({
   orders,
   setView,
@@ -46,44 +86,72 @@ export default function DispatchView({
     "Week",
   );
 
-  // Helper to format date
+  // Helper to format date badge
   const formatDateForDisplay = (dateString: string) => {
-    if (!dateString) return { day: "--", month: "---" };
-    try {
-      const d = new Date(dateString);
-      return {
-        day: d.getDate().toString(),
-        month: d.toLocaleString("default", { month: "short" }).toUpperCase(),
-      };
-    } catch (e) {
-      return { day: "--", month: "---" };
-    }
+    const ymd = normalizeDateToYMD(dateString);
+    if (!ymd) return { day: "--", month: "---" };
+    const [y, m, d] = ymd.split("-").map(Number);
+    const dt = new Date(y, m - 1, d);
+    if (isNaN(dt.getTime())) return { day: "--", month: "---" };
+    return {
+      day: dt.getDate().toString(),
+      month: dt.toLocaleString("en-GB", { month: "short" }).toUpperCase(),
+    };
   };
 
-  const [filterDateStr, setFilterDateStr] = useState<string>(
-    new Date().toISOString().split("T")[0],
+  const [filterDateStr, setFilterDateStr] = useState<string>(() =>
+    toLocalYMD(new Date()),
   );
 
-  const todayDate = new Date(filterDateStr);
-  const todayKey = todayDate.toISOString().split("T")[0];
+  const todayKey = normalizeDateToYMD(filterDateStr) || toLocalYMD(new Date());
+  const tomorrowKey = addDaysYMD(todayKey, 1);
+  const weekEndKey = addDaysYMD(todayKey, 7);
 
-  const tomorrowDate = new Date(todayDate);
-  tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-  const tomorrowKey = tomorrowDate.toISOString().split("T")[0];
-
-  const getDispatchDate = (order: any) => {
-    const item = order.items?.[0] || order;
-    if (item.dispatch?.date) return item.dispatch.date;
-    if (item.dispatchDate) return item.dispatchDate;
-    if (item.rentalStartDate) {
-      const d = new Date(item.rentalStartDate);
-      d.setDate(d.getDate() - 2);
-      return d.toISOString().split("T")[0];
-    }
-    if (order.createdAt) {
-      return new Date(order.createdAt).toISOString().split("T")[0];
+  const getBookedYMD = (order: any): string => {
+    const direct = normalizeDateToYMD(
+      order.orderDate || order.createdAt || order.invoiceDate,
+    );
+    if (direct) return direct;
+    const rawId = String(order.orderId || order.id || "");
+    const tsMatch = rawId.match(/HOK-ORD-(\d{13})/);
+    if (tsMatch) {
+      return toLocalYMD(new Date(Number(tsMatch[1])));
     }
     return "";
+  };
+
+  const getDispatchDate = (order: any): string => {
+    const item = order.items?.[0] || order;
+    const explicit =
+      normalizeDateToYMD(order.dispatchDetails?.date) ||
+      normalizeDateToYMD(item.dispatch?.date) ||
+      normalizeDateToYMD(order.dispatchDate) ||
+      normalizeDateToYMD(item.dispatchDate);
+    if (explicit) return explicit;
+
+    const rStart = normalizeDateToYMD(
+      order.rentalStartDate || item.rentalStartDate,
+    );
+    if (rStart) {
+      return addDaysYMD(rStart, -2);
+    }
+    return getBookedYMD(order);
+  };
+
+  const hasSavedLogistics = (o: any): boolean => {
+    const item = o.items?.[0] || {};
+    return Boolean(
+      o.dispatchDetails?.date ||
+        o.dispatchDetails?.dispatchedBy ||
+        o.dispatchDetails?.trackingNumber ||
+        o.dispatchDetails?.courierPartner ||
+        item.dispatch?.date ||
+        item.dispatch?.dispatchedBy ||
+        item.dispatch?.trackingNumber ||
+        item.dispatch?.courierPartner ||
+        o.returnLogistics?.returnDate ||
+        o.returnLogistics?.returnMethod,
+    );
   };
 
   const isValidDispatch = (o: any) => {
@@ -91,36 +159,45 @@ export default function DispatchView({
     return !!pName && !!o.customerName && pName !== "Unknown Product";
   };
 
-  const weekEndDate = new Date(todayDate);
-  weekEndDate.setDate(weekEndDate.getDate() + 7);
-  const weekEndKey = weekEndDate.toISOString().split("T")[0];
+  const isActiveStatus = (status: string) =>
+    status === "Confirmed" ||
+    status === "Packed" ||
+    status === "Dispatched" ||
+    status === "Shipped";
 
-  const dispatchToday = orders.filter(
-    (o) =>
-      o.status === "Confirmed" &&
-      getDispatchDate(o) <= todayKey &&
-      isValidDispatch(o),
-  );
-  const dispatchTomorrow = orders.filter(
-    (o) =>
-      o.status === "Confirmed" &&
-      getDispatchDate(o) === tomorrowKey &&
-      isValidDispatch(o),
-  );
+  const dispatchToday = orders
+    .filter((o: any) => {
+      if (!isValidDispatch(o) || !isActiveStatus(o.status)) return false;
+      const dDate = getDispatchDate(o);
+      if (!dDate) return false;
+      if (dDate === todayKey) return true;
+      if (
+        (o.status === "Confirmed" || o.status === "Packed") &&
+        dDate <= todayKey
+      )
+        return true;
+      return false;
+    })
+    .sort((a, b) => getDispatchDate(a).localeCompare(getDispatchDate(b)));
+
+  const dispatchTomorrow = orders
+    .filter((o: any) => {
+      if (!isValidDispatch(o) || !isActiveStatus(o.status)) return false;
+      return getDispatchDate(o) === tomorrowKey;
+    })
+    .sort((a, b) => getDispatchDate(a).localeCompare(getDispatchDate(b)));
 
   const dispatchWeek = orders
-    .filter((o) => {
-      if (!isValidDispatch(o)) return false;
-      if (
-        o.status !== "Confirmed" &&
-        o.status !== "Dispatched" &&
-        o.status !== "Shipped"
-      )
-        return false;
+    .filter((o: any) => {
+      if (!isValidDispatch(o) || !isActiveStatus(o.status)) return false;
       const dDate = getDispatchDate(o);
       if (!dDate) return false;
 
-      if (o.status === "Confirmed" && dDate <= weekEndKey) return true;
+      if (
+        (o.status === "Confirmed" || o.status === "Packed") &&
+        dDate <= weekEndKey
+      )
+        return true;
       if (
         (o.status === "Dispatched" || o.status === "Shipped") &&
         dDate >= todayKey &&
@@ -130,6 +207,14 @@ export default function DispatchView({
       return false;
     })
     .sort((a, b) => getDispatchDate(a).localeCompare(getDispatchDate(b)));
+
+  const dispatchAll = orders
+    .filter((o: any) => {
+      if (!isValidDispatch(o)) return false;
+      if (o.status === "Cancelled") return false;
+      return isActiveStatus(o.status) || hasSavedLogistics(o);
+    })
+    .sort((a, b) => getDispatchDate(b).localeCompare(getDispatchDate(a)));
 
   const handleMarkDispatched = (
     order: Order,
@@ -145,21 +230,30 @@ export default function DispatchView({
         return;
       }
     }
-    const updated: Order = {
+    const existingDisp: any =
+      order.dispatchDetails || (order as any).items?.[0]?.dispatch || {};
+    const resolvedDate =
+      normalizeDateToYMD(existingDisp.date) ||
+      normalizeDateToYMD((order as any).dispatchDate) ||
+      toLocalYMD(new Date());
+    const resolvedCourier = existingDisp.courierPartner || "DHL Express";
+    const resolvedHandledBy = existingDisp.dispatchedBy || resolvedCourier;
+    const resolvedTracking =
+      existingDisp.trackingNumber ||
+      "DHL" + Math.floor(100000 + Math.random() * 900000) + "IN";
+
+    const updated: any = {
       ...order,
       status: "Dispatched",
+      dispatchDate: resolvedDate,
       dispatchDetails: {
-        dispatchedBy: "DHL Express",
-        date: new Date().toISOString().split("T")[0],
-        trackingNumber:
-          "DHL" + Math.floor(100000 + Math.random() * 900000) + "IN",
-        courierPartner: "DHL Express",
+        dispatchedBy: resolvedHandledBy,
+        date: resolvedDate,
+        trackingNumber: resolvedTracking,
+        courierPartner: resolvedCourier,
       },
     };
     onUpdateOrder(updated);
-    toast.success(
-      `Order ${order.id} marked as Dispatched! Tracking number auto-generated.`,
-    );
   };
 
   const handleWhatsApp = (
@@ -255,25 +349,37 @@ export default function DispatchView({
                   order.depositStatus === "Partially Released" ||
                   order.paymentStatus === "Paid";
                 const pieces = order.items?.length || item.quantity || 1;
-                const rentalDates = item.rentalStartDate
-                  ? `${item.rentalStartDate} – ${item.rentalEndDate}`
-                  : "Dates missing";
+                const rStart = order.rentalStartDate || item.rentalStartDate;
+                const rEnd = order.rentalEndDate || item.rentalEndDate;
+                const bookedYMD = getBookedYMD(order);
+                const orderMode = item.mode || order.mode || "Rental";
+                const rentalDates =
+                  rStart && rEnd
+                    ? `${formatHumanDate(rStart)} – ${formatHumanDate(rEnd)}`
+                    : bookedYMD
+                      ? `${formatHumanDate(bookedYMD)} (${orderMode})`
+                      : `${orderMode}`;
                 const pName =
                   item.productName || order.productName || "Unknown Product";
                 const pDesigner = item.designer || order.designer || "Unknown";
                 const oId = order.orderId || order.id || order._id;
 
+                const handledBy =
+                  order.dispatchDetails?.dispatchedBy ||
+                  item.dispatch?.dispatchedBy ||
+                  "";
                 const courier =
-                  item.dispatch?.courierPartner ||
                   order.dispatchDetails?.courierPartner ||
+                  item.dispatch?.courierPartner ||
+                  handledBy ||
                   "TBD";
                 const tracking =
-                  item.dispatch?.trackingNumber ||
                   order.dispatchDetails?.trackingNumber ||
+                  item.dispatch?.trackingNumber ||
                   "";
 
                 return (
-                  <div key={order.id}>
+                  <div key={oId}>
                     <div className="dispatch-card">
                       <div className="dispatch-card-date">
                         <span className="day">{dateParts.day}</span>
@@ -301,6 +407,9 @@ export default function DispatchView({
                         </p>
 
                         <p>
+                          {handledBy && handledBy !== courier
+                            ? `Handled By: ${handledBy} · `
+                            : ""}
                           Courier: {courier} · Tracking:{" "}
                           {!tracking ? (
                             <span className="tracking-pending">
@@ -328,8 +437,8 @@ export default function DispatchView({
                         <button
                           className="btn-outline"
                           onClick={() => {
-                            setSelectedOrderId(order.id || order._id);
-                            setView(`order_detail:${order.id || order._id}`);
+                            setSelectedOrderId(oId);
+                            setView(`order_detail:${oId}`);
                           }}
                         >
                           View Order →
@@ -341,7 +450,8 @@ export default function DispatchView({
                           Print Label
                         </button>
 
-                        {order.status === "Confirmed" && (
+                        {(order.status === "Confirmed" ||
+                          order.status === "Packed") && (
                           <button
                             className="btn-mark-dispatched"
                             onClick={() =>

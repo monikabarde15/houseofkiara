@@ -1,3 +1,4 @@
+import { usePageContent } from "../../hooks/usePageContent";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import RefundHero from "../../components/Refunds/Hero/RefundHero";
@@ -28,6 +29,7 @@ import "../../styles/refunds/refunds-review.css";
 import "../../styles/refunds/refunds-print.css";
 
 export default function RefundsPage() {
+  const { getVal } = usePageContent("/refunds");
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -283,7 +285,7 @@ export default function RefundsPage() {
       }`.trim()}
     >
       {/* Hero Section with Breadcrumb, Search, and Popular Questions */}
-      <RefundHero
+      <RefundHero getVal={getVal}
         currentTab={activeTab}
         onJumpToQuestion={handleJumpToQuestion}
         onOpenWhatsApp={handleOpenWhatsApp}

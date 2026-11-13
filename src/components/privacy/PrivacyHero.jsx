@@ -3,7 +3,10 @@ import { PRIVACY_SETTINGS } from '../../data/privacy/privacySettings.js';
 import PrivacySearchBox from './PrivacySearchBox.jsx';
 import PrivacyPopularSearches from './PrivacyPopularSearches.jsx';
 
-const PrivacyHero = ({ onSelectClause, onPrint, onShowToast }) => {
+const PrivacyHero = ({ onSelectClause, onPrint, onShowToast, getVal }) => {
+  const eyebrow = getVal ? getVal("privacy_eyebrow", "PRIVACY POLICY") : "PRIVACY POLICY";
+  const heading = getVal ? getVal("privacy_heading", null) : null;
+  const lead = getVal ? getVal("privacy_lead", "How House of Kaira collects, uses, stores and protects your personal information across our rental, purchase and consignment services. Written to be read, with every clause numbered so it is easy to find and share.") : "How House of Kaira collects, uses, stores and protects your personal information across our rental, purchase and consignment services. Written to be read, with every clause numbered so it is easy to find and share.";
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (

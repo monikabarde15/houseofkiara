@@ -17,9 +17,9 @@ import {
   saveConsentRecord
 } from '../../utils/cookieBanner/cookieConsentStorage.js';
 import {
-  HOK_CONSENT,
   notifyConsentSettled
 } from '../../utils/cookieBanner/consentManager.js';
+import { getLegalSettings, defaultLegalConfig } from '../../services/legalApi.js';
 
 // Stylesheets
 import '../../styles/cookieBanner/cookie-banner-variables.css';
@@ -29,6 +29,7 @@ import '../../styles/cookieBanner/cookie-saved-note.css';
 import '../../styles/cookieBanner/cookie-banner-responsive.css';
 
 const CookieBannerContainer = () => {
+  const [legalConfig, setLegalConfig] = useState(defaultLegalConfig);
   const [viewMode, setViewMode] = useState('hidden'); // 'hidden' | 'first-view' | 'settings' | 'saved-note'
   const [isCardLeaving, setIsCardLeaving] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
@@ -38,21 +39,48 @@ const CookieBannerContainer = () => {
   const containerRef = useRef(null);
   const triggerElementRef = useRef(null);
 
+  // Fetch live Legal settings from CMS / API
+  useEffect(() => {
+    let isMounted = true;
+    getLegalSettings().then((cfg) => {
+      if (isMounted && cfg) {
+        setLegalConfig(cfg);
+      }
+    });
+
+    const handleLegalUpdate = () => {
+      getLegalSettings(true).then((cfg) => {
+        if (isMounted && cfg) {
+          setLegalConfig(cfg);
+        }
+      });
+    };
+
+    window.addEventListener('hok_legal_updated', handleLegalUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener('hok_legal_updated', handleLegalUpdate);
+    };
+  }, []);
+
   // 1. Initial Mount Check & 1,000ms Delay on First Visit (Section 4.5 & 10.2)
+  // Obey CMS showBanner toggle: auto-show on first visit only when showBanner is true
   useEffect(() => {
     const existing = getStoredConsent();
     setCurrentRecord(existing);
 
     if (!existing) {
-      const timer = setTimeout(() => {
-        setViewMode('first-view');
-      }, COOKIE_BANNER_CONFIG.arriveDelayMs);
+      if (legalConfig?.cookieConsent?.showBanner) {
+        const timer = setTimeout(() => {
+          setViewMode('first-view');
+        }, COOKIE_BANNER_CONFIG.arriveDelayMs);
 
-      return () => clearTimeout(timer);
+        return () => clearTimeout(timer);
+      }
     } else {
       notifyConsentSettled(existing);
     }
-  }, []);
+  }, [legalConfig?.cookieConsent?.showBanner]);
 
   // 2. Listen to custom event to reopen Cookie settings (Section 10.9)
   useEffect(() => {
@@ -218,10 +246,26 @@ const CookieBannerContainer = () => {
     );
   }
 
+  // Position class or styling according to CMS legalSettings.cookieConsent.position
+  const position = legalConfig?.cookieConsent?.position;
+  let positionStyle = {};
+  if (position === 'Bottom-left card') {
+    positionStyle = { left: '32px', right: 'auto' };
+  } else if (position === 'Centre modal') {
+    positionStyle = {
+      top: '50%',
+      left: '50%',
+      bottom: 'auto',
+      right: 'auto',
+      transform: 'translate(-50%, -50%)'
+    };
+  }
+
   return (
     <div
       ref={containerRef}
       className={`cb-banner-region ${isCardLeaving ? 'cb-animate-leave' : 'cb-animate-arrive'}`}
+      style={positionStyle}
       role="region"
       aria-label="Cookie choices"
     >
@@ -232,6 +276,7 @@ const CookieBannerContainer = () => {
         {/* View Switcher: First View vs Settings */}
         {viewMode === 'first-view' ? (
           <CookieFirstView
+            consentConfig={legalConfig.cookieConsent}
             onClose={handleCloseCard}
             onChooseEssential={handleChooseEssential}
             onChooseAllowAll={handleChooseAllowAll}
@@ -242,6 +287,7 @@ const CookieBannerContainer = () => {
           />
         ) : (
           <CookieSettingsView
+            consentConfig={legalConfig.cookieConsent}
             hasSavedChoice={Boolean(currentRecord)}
             savedDateText={formatSavedDate(currentRecord?.t)}
             initialChoices={currentRecord?.c || {}}

@@ -23,6 +23,7 @@ export const DepositHero: React.FC<DepositHeroProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const eyebrow = fieldValues['deposit_hero_eyebrow'] ?? 'A FULLY REFUNDABLE DEPOSIT';
+  const savedHeading = fieldValues['deposit_hero_heading'];
   const headingPrefix = fieldValues['deposit_hero_heading_prefix'] ?? 'Security deposit ';
   const headingAccent = fieldValues['deposit_hero_heading_accent'] ?? 'policy';
   const lead = fieldValues['deposit_hero_lead'] ??
@@ -68,12 +69,17 @@ export const DepositHero: React.FC<DepositHeroProps> = ({
           contentEditable
           suppressContentEditableWarning
           onFocus={() => onFocusField('deposit_hero_heading')}
+          onInput={(e) => onFieldChange('deposit_hero_heading', e.currentTarget.textContent || '')}
           onBlur={(e) => onFieldChange('deposit_hero_heading', e.currentTarget.textContent || '')}
           className="text-3xl md:text-[42px] font-serif text-[#1c1917] font-normal tracking-[-0.01em] cursor-text hover:bg-[#fbf4ea] px-3 py-1 rounded inline-block transition-colors outline-hidden"
           title="Click to edit heading"
         >
-          <span>{headingPrefix}</span>
-          <span className="italic font-normal text-[#935b1e]">{headingAccent}</span>
+          {savedHeading !== undefined ? savedHeading : (
+            <>
+              <span>{headingPrefix}</span>
+              <span className="italic font-normal text-[#935b1e]">{headingAccent}</span>
+            </>
+          )}
         </h1>
       </div>
 

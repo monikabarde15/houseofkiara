@@ -1,11 +1,11 @@
-/**
- * House of Kaira - Care Policy Intro Line (Component C5)
- * Section 5.5 & 7.3 of Build Specification 2.0
- */
-
 import React from "react";
 
-export default function CareIntro() {
+export default function CareIntro({ getVal }) {
+  const dynamicBody = getVal ? getVal("care_intro_body", null) : null;
+  if (dynamicBody) {
+    return <p className="care-intro">{dynamicBody}</p>;
+  }
+
   return (
     <p className="care-intro">
       We ask one thing of everyone who rents with us: treat the piece as your own.

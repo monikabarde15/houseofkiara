@@ -90,7 +90,7 @@ export const HowItWorksHero: React.FC<HowItWorksHeroProps> = ({
                 : 'hover:ring-1 hover:ring-[#d4af37]/40'
             }`}
           >
-            Fashion that moves <span className="italic text-[#d4af37]">beautifully</span>, and keeps moving.
+            {getVal('hiw_heading', 'Fashion that moves beautifully, and keeps moving.')}
           </h1>
         </div>
 

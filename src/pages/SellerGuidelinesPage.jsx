@@ -1,3 +1,4 @@
+import { usePageContent } from "../hooks/usePageContent";
 import React, { useEffect, useState } from "react";
 import { SELLER_PAGE_CONFIG } from "../data/seller/sellerSettings";
 import { SELLER_CHAPTERS, getChapterById, getQuestionsByChapterId } from "../data/seller/sellerRegistry";
@@ -26,6 +27,7 @@ import "../styles/seller/seller-features.css";
 import "../styles/seller/seller-closing.css";
 
 export default function SellerGuidelinesPage() {
+  const { getVal } = usePageContent("/seller-guidelines");
   const [activeChapterId, setActiveChapterId] = useState("ways");
   const [openQuestionIds, setOpenQuestionIds] = useState(new Set());
   const [toastMessage, setToastMessage] = useState("");
@@ -131,7 +133,7 @@ export default function SellerGuidelinesPage() {
       {/* Main Content Area */}
       <main id="main-content" role="main">
         {/* Step 2 & 3: Hero Band & Search */}
-        <SellerHero
+        <SellerHero getVal={getVal}
           onScrollToProtect={handleScrollToProtect}
           onSelectQuestion={handleSelectQuestion}
         />
@@ -251,7 +253,7 @@ export default function SellerGuidelinesPage() {
         />
 
         {/* Step 11: Closing Band */}
-        <SellerClosingBand />
+        <SellerClosingBand getVal={getVal} />
       </main>
 
       {/* Global Toast for Link Copied */}

@@ -7,16 +7,24 @@ import React from 'react';
 import { CloseCardIcon } from './CookieBannerIcons.jsx';
 
 const CookieFirstView = ({
+  consentConfig,
   onClose,
   onChooseEssential,
   onChooseAllowAll,
   onOpenSettings
 }) => {
+  const heading = consentConfig?.heading || "A note on cookies";
+  const bodyText = consentConfig?.body;
+  const policyLink = consentConfig?.policyLink || "/cookies";
+  const rejectLabel = consentConfig?.rejectLabel || "Only essential";
+  const acceptLabel = consentConfig?.acceptLabel || "Allow all";
+  const manageLabel = consentConfig?.manageLabel || "Cookie settings";
+
   return (
     <div className="cb-first-view-content">
       {/* 1. Header Row: Title & Close Button */}
       <div className="cb-header-row">
-        <h2 className="cb-card-title">A note on cookies</h2>
+        <h2 className="cb-card-title">{heading}</h2>
         <button
           type="button"
           className="cb-close-btn cb-focusable"
@@ -30,15 +38,27 @@ const CookieFirstView = ({
 
       {/* 2. Body Text with Policy Links */}
       <p className="cb-body-text">
-        A few cookies keep our website working, such as the ones that remember your bag. The rest, for Instagram posts, personalisation, analytics and marketing, stay off unless you allow them. Read our{' '}
-        <a href="/cookies" className="cb-inline-link cb-focusable">
-          Cookie Policy
-        </a>{' '}
-        and{' '}
-        <a href="/privacy" className="cb-inline-link cb-focusable">
-          Privacy Policy
-        </a>
-        .
+        {bodyText ? (
+          <>
+            {bodyText}{' '}
+            <a href={policyLink} className="cb-inline-link cb-focusable">
+              Cookie Policy
+            </a>
+            .
+          </>
+        ) : (
+          <>
+            A few cookies keep our website working, such as the ones that remember your bag. The rest, for Instagram posts, personalisation, analytics and marketing, stay off unless you allow them. Read our{' '}
+            <a href="/cookies" className="cb-inline-link cb-focusable">
+              Cookie Policy
+            </a>{' '}
+            and{' '}
+            <a href="/privacy" className="cb-inline-link cb-focusable">
+              Privacy Policy
+            </a>
+            .
+          </>
+        )}
       </p>
 
       {/* 3. Equal Outlined Button Pair (Section 2: Identical size, style & prominence) */}
@@ -48,14 +68,14 @@ const CookieFirstView = ({
           className="cb-btn-outline cb-focusable"
           onClick={onChooseEssential}
         >
-          Only essential
+          {rejectLabel}
         </button>
         <button
           type="button"
           className="cb-btn-outline cb-focusable"
           onClick={onChooseAllowAll}
         >
-          Allow all
+          {acceptLabel}
         </button>
       </div>
 
@@ -66,7 +86,7 @@ const CookieFirstView = ({
           className="cb-settings-link cb-focusable"
           onClick={onOpenSettings}
         >
-          Cookie settings
+          {manageLabel}
         </button>
       </div>
     </div>

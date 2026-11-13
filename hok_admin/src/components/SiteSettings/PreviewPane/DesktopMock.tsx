@@ -193,10 +193,10 @@ export const DesktopMock: React.FC<DesktopMockProps> = ({
       {/* 4. Footer */}
       <div className="hok-mock-footer">
         <div className="hok-mock-footer-columns">
-          {(footer?.linkColumns || []).slice(0, 2).map((col) => (
+          {(footer?.linkColumns || []).map((col) => (
             <div key={col.id} className="hok-mock-footer-col">
               <div className="hok-mock-footer-col-title">{col.heading}</div>
-              {(col.links || []).slice(0, 3).map((lnk) => (
+              {(col.links || []).map((lnk) => (
                 <span key={lnk.id} className="hok-mock-footer-link">
                   {lnk.label}
                 </span>

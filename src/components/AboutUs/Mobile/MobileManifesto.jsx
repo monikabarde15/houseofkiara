@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import "../../../styles/aboutus/mobile/manifesto-mobile.css";
 
-const MobileManifesto = () => {
+const MobileManifesto = ({ getVal }) => {
+  const quote = getVal ? getVal('about_manifesto_quote', 'Every garment deserves a second standing ovation.') : 'Every garment deserves a second standing ovation.';
+  const para = getVal ? getVal('about_manifesto_body', "We don't sell clothes — we give them somewhere to go next. A lehenga that watched one wedding doesn't retire after it. It waits, carefully kept, for its next entrance.") : "We don't sell clothes — we give them somewhere to go next. A lehenga that watched one wedding doesn't retire after it. It waits, carefully kept, for its next entrance.";
   const sectionRef = useRef(null);
 
   // Reveal animation observer
@@ -31,16 +33,10 @@ const MobileManifesto = () => {
       <div className="mob-manifesto__quote-mark">"</div>
 
       {/* Blockquote - Mobile: clamp(22px, 6vw, 32px) */}
-      <blockquote className="mob-manifesto__blockquote">
-        Every garment deserves a second <em>standing ovation</em>.
-      </blockquote>
+      <blockquote className="mob-manifesto__blockquote">{quote}</blockquote>
 
       {/* Supporting Paragraph - Mobile: 15px */}
-      <p className="mob-manifesto__paragraph">
-        We don't sell clothes — we give them somewhere to go next. A lehenga
-        that watched one wedding doesn't retire after it. It waits, carefully
-        kept, for its next entrance.
-      </p>
+      <p className="mob-manifesto__paragraph">{para}</p>
     </section>
   );
 };

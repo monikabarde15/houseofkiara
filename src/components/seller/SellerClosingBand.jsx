@@ -7,7 +7,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { SELLER_CLOSING_BAND } from "../../data/seller/sellerRegistry";
 
-export default function SellerClosingBand() {
+export default function SellerClosingBand({ getVal }) {
+  const title = getVal ? getVal("seller_closing_title", SELLER_CLOSING.title) : SELLER_CLOSING.title;
+  const lead = getVal ? getVal("seller_closing_lead", SELLER_CLOSING.lead) : SELLER_CLOSING.lead;
   return (
     <section className="sg-close" aria-labelledby="sg-close-heading">
       <div className="sg-close-inner">

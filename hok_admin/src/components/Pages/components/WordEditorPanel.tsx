@@ -14,6 +14,7 @@ export interface WordEditorPanelProps {
   fieldValue?: string;
   onUseFigure?: (detectedText: string, figureKey: string, figureLabel: string) => void;
   onCloseWords: () => void;
+  onFieldChange?: (value: string) => void;
 }
 
 export const WordEditorPanel: React.FC<WordEditorPanelProps> = ({
@@ -93,6 +94,20 @@ export const WordEditorPanel: React.FC<WordEditorPanelProps> = ({
           {helpText}
         </p>
       )}
+
+      {/* Direct field wording editor */}
+      <div className="space-y-1.5 pt-1">
+        <div className="text-[10px] uppercase tracking-wider font-semibold text-[#8a7f73]">
+          Wording
+        </div>
+        <textarea
+          value={safeFieldValue}
+          onChange={e => onFieldChange?.(e.target.value)}
+          rows={3}
+          placeholder="Enter text here..."
+          className="w-full p-2.5 text-xs text-[#1a1612] bg-[#fdfbf7] border border-[#e5ddd0] rounded-[6px] focus:ring-1 focus:ring-[#bda67b] focus:border-[#bda67b] outline-none transition-colors"
+        />
+      </div>
 
       {/* 3. Hints as the operator types (Spec §7.4, Screen 36) */}
       <div className="space-y-2 pt-1">

@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { usePageContent } from '../hooks/usePageContent';
 import DepositBreadcrumb from '../components/deposit/DepositBreadcrumb.jsx';
 import DepositHero from '../components/deposit/DepositHero.jsx';
 import DepositTrackerCard from '../components/deposit/DepositTrackerCard.jsx';
@@ -34,6 +35,7 @@ import '../styles/deposit/deposit-closing.css';
 import '../styles/deposit/deposit-print.css';
 
 const DepositPage = () => {
+  const { getVal } = usePageContent('/deposit-policy');
   const [toastMessage, setToastMessage] = useState('');
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [activeSectionId, setActiveSectionId] = useState('');
@@ -155,6 +157,7 @@ const DepositPage = () => {
       {/* 3. D4 "Your deposit, every step of the way" Tracker Card */}
       <DepositTrackerCard
         onSelectStep={handleJump}
+        getVal={getVal}
       />
 
       {/* 4. Policy Container: Holds sticky section bar & policy content so bar releases before related policies */}
@@ -168,7 +171,7 @@ const DepositPage = () => {
         {/* D6 Body Column: Intro, Glance, Worked Example & 9 Policy Sections */}
         <div className="dp-body">
           {/* D6 Opening Intro Paragraph */}
-          <DepositIntro />
+          <DepositIntro getVal={getVal} />
 
           {/* D7 Your deposit at a glance (6 Brief Rows) */}
           <DepositGlance onSelectRow={handleJump} />

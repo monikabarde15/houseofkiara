@@ -69,7 +69,7 @@ export const HowItWorksTwoWaysToShop: React.FC<HowItWorksTwoWaysToShopProps> = (
             focusedField?.fieldId === 'hiw_modes_heading' ? 'ring-1 ring-[#bda67b] bg-[#faf7f2] outline-none' : 'hover:ring-1 hover:ring-[#bda67b]/40'
           }`}
         >
-          Find what fits your <span className="italic text-[#8a6a36]">moment</span>
+          {getVal('hiw_modes_heading', 'Find what fits your moment')}
         </h2>
       </div>
 

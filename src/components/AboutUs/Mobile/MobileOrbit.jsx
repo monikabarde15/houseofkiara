@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import "../../../styles/aboutus/mobile/orbit-mobile.css";
 import { showToast } from "../shared/Toast";
 
-const MobileOrbit = () => {
+const MobileOrbit = ({ getVal }) => {
   const sectionRef = useRef(null);
 
   // Reveal animation observer - Mobile Spec §02.3
@@ -199,37 +199,19 @@ const MobileOrbit = () => {
           {/* Eyebrow */}
           <div className="mob-orbit__eyebrow">
             <span className="mob-orbit__eyebrow-line"></span>
-            <span>Why We Built It</span>
+            <span>{getVal ? getVal("about_orbit_eyebrow", "Why We Built It") : "Why We Built It"}</span>
             <span className="mob-orbit__eyebrow-line"></span>
           </div>
 
           {/* H2 - Mobile: clamp(26px, 6.5vw, 36px) */}
-          <h2 className="mob-orbit__title">
-            Circularity is the mechanism. <br />
-            <em>Joy</em> is the point.
-          </h2>
+          <h2 className="mob-orbit__title">{getVal && getVal("about_orbit_heading", null) ? getVal("about_orbit_heading") : <>Circularity is the mechanism. <br /><em>Joy</em> is the point.</>}</h2>
 
           {/* Body Paragraphs - Mobile: 15px */}
-          <p className="mob-orbit__body">
-            India's luxury occasion wear market is enormous, deeply emotional,
-            and almost entirely linear. Garments are bought, worn once, and
-            forgotten. Craftsmanship worth lakhs sits folded away in boxes that
-            are never reopened.
-          </p>
+          <p className="mob-orbit__body">{getVal ? getVal("about_orbit_p1", "India's luxury occasion wear market is enormous, deeply emotional, and almost entirely linear. Garments are bought, worn once, and forgotten. Craftsmanship worth lakhs sits folded away in boxes that are never reopened.") : "India's luxury occasion wear market is enormous, deeply emotional, and almost entirely linear. Garments are bought, worn once, and forgotten. Craftsmanship worth lakhs sits folded away in boxes that are never reopened."}</p>
 
-          <p className="mob-orbit__body">
-            We didn't build House of Kaira to lecture anyone about
-            sustainability. We built it because there is something genuinely
-            joyful about slipping into a lehenga that has already danced through
-            three weddings, and still carries the quiet energy of every room it
-            has been in.
-          </p>
+          <p className="mob-orbit__body">{getVal ? getVal("about_orbit_p2", "We didn't build House of Kaira to lecture anyone about sustainability. We built it because there is something genuinely joyful about slipping into a lehenga that has already danced through three weddings, and still carries the quiet energy of every room it has been in.") : "We didn't build House of Kaira to lecture anyone about sustainability. We built it because there is something genuinely joyful about slipping into a lehenga that has already danced through three weddings, and still carries the quiet energy of every room it has been in."}</p>
 
-          <p className="mob-orbit__body">
-            Circularity is just the mechanism here. Properly done, it isn't a
-            compromise, it's the most respectful thing you can do for a garment
-            made with that much care.
-          </p>
+          <p className="mob-orbit__body">{getVal ? getVal("about_orbit_p3", "Circularity is just the mechanism here. Properly done, it isn't a compromise, it's the most respectful thing you can do for a garment made with that much care.") : "Circularity is just the mechanism here. Properly done, it isn't a compromise, it's the most respectful thing you can do for a garment made with that much care."}</p>
         </div>
       </div>
     </section>

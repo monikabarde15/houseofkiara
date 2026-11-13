@@ -14,7 +14,7 @@ function ChevronRightIcon() {
   );
 }
 
-function ShippingWaysWeDeliver({ onSelectQuestion }) {
+function ShippingWaysWeDeliver({ onSelectQuestion, getVal }) {
   return (
     <section
       className="opt"
@@ -24,10 +24,10 @@ function ShippingWaysWeDeliver({ onSelectQuestion }) {
     >
       <div className="ex-hd">
         <h2 id="opts-title">
-          {SHIPPING_WAYS_WE_DELIVER.titlePrefix}
-          <em>{SHIPPING_WAYS_WE_DELIVER.italicWord}</em>
+          {getVal ? getVal("shipping_ways_prefix", SHIPPING_WAYS_WE_DELIVER.titlePrefix) : SHIPPING_WAYS_WE_DELIVER.titlePrefix}
+          <em>{getVal ? getVal("shipping_ways_italic", SHIPPING_WAYS_WE_DELIVER.italicWord) : SHIPPING_WAYS_WE_DELIVER.italicWord}</em>
         </h2>
-        <p>{SHIPPING_WAYS_WE_DELIVER.subline}</p>
+        <p>{getVal ? getVal("shipping_ways_subline", SHIPPING_WAYS_WE_DELIVER.subline) : SHIPPING_WAYS_WE_DELIVER.subline}</p>
       </div>
 
       <div className="opt-grid">

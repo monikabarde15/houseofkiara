@@ -9,37 +9,30 @@ import SellerProtectionCard from "./SellerProtectionCard";
 import SellerSearchBox from "./SellerSearchBox";
 import { SELLER_PAGE_CONFIG, SITE_TOKENS } from "../../data/seller/sellerSettings";
 
-export default function SellerHero({ onScrollToProtect, onSelectQuestion }) {
+export default function SellerHero({ onScrollToProtect, onSelectQuestion, getVal }) {
+  const eyebrow = getVal ? getVal("seller_hero_eyebrow", SELLER_PAGE_CONFIG.eyebrow) : SELLER_PAGE_CONFIG.eyebrow;
+  const heading = getVal ? getVal("seller_hero_title", getVal("seller_hero_heading", SELLER_PAGE_CONFIG.h1)) : SELLER_PAGE_CONFIG.h1;
+  const lead = getVal ? getVal("seller_hero_lead", SELLER_PAGE_CONFIG.lead) : SELLER_PAGE_CONFIG.lead;
+
   return (
     <section className="sg-hero" aria-labelledby="sg-main-heading">
       <SellerBreadcrumb items={SELLER_PAGE_CONFIG.breadcrumb} />
 
       <div className="sg-hero-inner">
         <div className="sg-hero-left">
-          <div className="sg-eyebrow">{SELLER_PAGE_CONFIG.eyebrow}</div>
+          <div className="sg-eyebrow">{eyebrow}</div>
 
           <h1 id="sg-main-heading" className="sg-h1">
-            {SELLER_PAGE_CONFIG.h1}
+            {heading}
           </h1>
 
-          <p className="sg-lead">{SELLER_PAGE_CONFIG.lead}</p>
+          <p className="sg-lead">{lead}</p>
 
-          <div className="sg-meta">
-            <span>Last updated {SITE_TOKENS.page_updated}</span>
-            <span className="sg-meta-sep" aria-hidden="true">
-              |
-            </span>
-            <a href={SELLER_PAGE_CONFIG.lister_terms_url}>
-              {SELLER_PAGE_CONFIG.lister_terms_label}
-            </a>
-          </div>
-
-          {/* Search Box Component (Step 3) */}
           <SellerSearchBox onSelectQuestion={onSelectQuestion} />
         </div>
 
         <div className="sg-hero-right">
-          <SellerProtectionCard onScrollToProtect={onScrollToProtect} />
+          <SellerProtectionCard onScrollToProtect={onScrollToProtect} getVal={getVal} />
         </div>
       </div>
     </section>

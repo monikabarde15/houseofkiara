@@ -1,7 +1,10 @@
-import { getHeaderSettings, defaultHeaderConfig } from "../../services/headerApi";
 // src/components/Header/Header.jsx
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getHeaderSettings, defaultHeaderConfig } from "../../services/headerApi";
+import { getMobileSettings, defaultMobileConfig } from "../../services/mobileBarApi";
+import { getBrandSettings, defaultBrandConfig, resolveAssetUrl } from "../../services/brandApi";
+import logo from "../../assets/logo/logo.png";
 import { useDropdown } from "../../hooks/useDropdown";
 import { useSearch } from "../../hooks/useSearch";
 import useHeaderTheme from "../../hooks/useHeaderTheme";
@@ -13,6 +16,7 @@ import SearchOverlay from "./Search/SearchOverlay";
 import MobileAnnouncementBar from "./mobile/MobileAnnouncementBar";
 import MobileHeader from "./mobile/MobileHeader";
 import MobileDrawer from "./mobile/MobileDrawer";
+import MobileBar from "./mobile/MobileBar";
 import "../../styles/Header/header.css";
 
 const Header = () => {
@@ -21,11 +25,13 @@ const Header = () => {
   const search = useSearch();
   const theme = useHeaderTheme();
   const [headerSettings, setHeaderSettings] = useState(defaultHeaderConfig);
+  const [mobileSettings, setMobileSettings] = useState(defaultMobileConfig);
+  const [brandSettings, setBrandSettings] = useState(defaultBrandConfig);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    const loadSettings = async (forceRefresh = false) => {
+    const loadHeaderSettings = async (forceRefresh = false) => {
       try {
         const data = await getHeaderSettings(forceRefresh);
         if (isMounted && data) {
@@ -35,23 +41,48 @@ const Header = () => {
         console.warn("Failed to load header settings:", err);
       }
     };
-    loadSettings();
-    const handleUpdate = () => loadSettings(true);
-    window.addEventListener("hok_header_updated", handleUpdate);
+
+    const loadMobileSettings = async (forceRefresh = false) => {
+      try {
+        const data = await getMobileSettings(forceRefresh);
+        if (isMounted && data) {
+          setMobileSettings(data);
+        }
+      } catch (err) {
+        console.warn("Failed to load mobile settings:", err);
+      }
+    };
+
+    const loadBrandSettings = async (forceRefresh = false) => {
+      try {
+        const data = await getBrandSettings(forceRefresh);
+        if (isMounted && data) {
+          setBrandSettings(data);
+        }
+      } catch (err) {
+        console.warn("Failed to load brand settings:", err);
+      }
+    };
+
+    loadHeaderSettings();
+    loadMobileSettings();
+    loadBrandSettings();
+
+    const handleHeaderUpdate = () => loadHeaderSettings(true);
+    const handleMobileUpdate = () => loadMobileSettings(true);
+    const handleBrandUpdate = () => loadBrandSettings(true);
+
+    window.addEventListener("hok_header_updated", handleHeaderUpdate);
+    window.addEventListener("hok_mobile_updated", handleMobileUpdate);
+    window.addEventListener("hok_brand_updated", handleBrandUpdate);
+
     return () => {
       isMounted = false;
-      window.removeEventListener("hok_header_updated", handleUpdate);
+      window.removeEventListener("hok_header_updated", handleHeaderUpdate);
+      window.removeEventListener("hok_mobile_updated", handleMobileUpdate);
+      window.removeEventListener("hok_brand_updated", handleBrandUpdate);
     };
   }, []);
-
-  // Handle scroll
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     setIsScrolled(window.scrollY > 0);
-  //   };
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
 
   // Drawer handlers
   const handleDrawerOpen = () => setIsDrawerOpen(true);
@@ -64,11 +95,9 @@ const Header = () => {
   return (
     <>
       {/* ==================== DESKTOP ==================== */}
-      {/* Desktop */}
       <div className="desktop-only-announce">
-      <AnnouncementBar/>
+        <AnnouncementBar />
       </div>
-
 
       <div
         className="hok-header-desktop"
@@ -86,6 +115,9 @@ const Header = () => {
           searchPlaceholder={headerSettings.searchPlaceholder}
           bagCartLabel={headerSettings.bagCartLabel}
           showTagline={headerSettings.showTagline}
+          siteName={brandSettings?.siteName}
+          logoUrl={resolveAssetUrl(brandSettings?.assets?.logoMark, logo)}
+          wordmarkUrl={resolveAssetUrl(brandSettings?.assets?.wordmark)}
         />
 
         <DesktopNavigation
@@ -107,19 +139,20 @@ const Header = () => {
       <div className="hok-mobile-only">
         {/* Section 2: Announcement Bar */}
         <MobileAnnouncementBar />
-        </div>
-        
-        {/* Section 3: Sticky Header */}
-        <MobileHeader
-          theme={theme}
-          // isScrolled={isScrolled}
-          isMenuOpen={isDrawerOpen}
-          onMenuOpen={handleDrawerOpen}
-          onSearchOpen={search.openSearch}
-          onWishlistClick={handleWishlistClick}
-          onBagClick={handleBagClick}
-          bagCartLabel={headerSettings.bagCartLabel}
-        />
+      </div>
+
+      {/* Section 3: Sticky Header */}
+      <MobileHeader
+        theme={theme}
+        isMenuOpen={isDrawerOpen}
+        onMenuOpen={handleDrawerOpen}
+        onSearchOpen={search.openSearch}
+        onWishlistClick={handleWishlistClick}
+        onBagClick={handleBagClick}
+        bagCartLabel={headerSettings.bagCartLabel}
+        siteName={brandSettings?.siteName}
+        logoUrl={resolveAssetUrl(brandSettings?.assets?.logoMark, logo)}
+      />
 
       {/* Sections 4 & 5: Drawer Overlay + Navigation Drawer */}
       <MobileDrawer
@@ -128,9 +161,15 @@ const Header = () => {
         onSearchOpen={search.openSearch}
         navItems={headerSettings.navItems}
         searchPlaceholder={headerSettings.searchPlaceholder}
+        mobileSettings={mobileSettings}
+        brandSettings={brandSettings}
       />
 
-      
+      {/* Mobile Bottom Navigation Bar */}
+      <MobileBar
+        mobileSettings={mobileSettings}
+        bagCartLabel={headerSettings.bagCartLabel}
+      />
 
       {/* Search Overlay - Shared between desktop and mobile */}
       <SearchOverlay

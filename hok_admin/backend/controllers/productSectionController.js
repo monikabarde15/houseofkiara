@@ -77,42 +77,116 @@ export const getAvailabilityCalendar = async (req, res) => {
       });
     });
 
+    const toISTDateStr = (raw) => {
+      if (!raw) return "";
+      if (typeof raw === "string" && /^\d{4}-\d{2}-\d{2}$/.test(raw.trim())) {
+        return raw.trim();
+      }
+      const d = new Date(raw);
+      if (isNaN(d.getTime())) return "";
+      return d.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+    };
+
     const formattedDbOrders = matchedDbOrders.map((o) => {
-      const firstItem =
-        Array.isArray(o.items) && o.items.length > 0 ? o.items[0] : {};
+      const items = Array.isArray(o.items) ? o.items : [];
+      const matchedItem =
+        items.find((item) => {
+          const itemProdId = String(item.productId || "").trim();
+          const itemProdName = String(item.productName || "")
+            .trim()
+            .toLowerCase();
+          return (
+            (itemProdId &&
+              (itemProdId === targetProdId ||
+                itemProdId === targetMongoId ||
+                itemProdId === req.params.id)) ||
+            (itemProdName && targetProdName && itemProdName === targetProdName)
+          );
+        }) ||
+        items[0] ||
+        {};
+
+      const resolvedOrderId = o.orderId || o.id || "";
+      let fallbackBookedTs = "";
+      if (
+        typeof resolvedOrderId === "string" &&
+        resolvedOrderId.startsWith("HOK-ORD-") &&
+        /^\d{13}$/.test(resolvedOrderId.slice(8))
+      ) {
+        fallbackBookedTs = new Date(
+          Number(resolvedOrderId.slice(8)),
+        ).toISOString();
+      }
+      const orderBookedDate = toISTDateStr(
+        o.orderDate || o.createdAt || fallbackBookedTs,
+      );
+
+      const resolvedMode = o.mode || matchedItem.mode || "Rental";
+      const rawStart =
+        matchedItem.rentalStartDate ||
+        matchedItem.startDate ||
+        o.rentalStartDate ||
+        o.startDate ||
+        "";
+      const rawEnd =
+        matchedItem.rentalEndDate ||
+        matchedItem.endDate ||
+        o.rentalEndDate ||
+        o.endDate ||
+        "";
+
+      const effectiveStart = rawStart || orderBookedDate;
+      const effectiveEnd = rawEnd || rawStart || orderBookedDate;
+
       return {
-        orderId: o.orderId || o.id,
-        customerName: o.customerName || firstItem.customerName || "",
+        orderId: resolvedOrderId,
+        customerName: o.customerName || matchedItem.customerName || "",
         whatsappNumber:
-          o.customerPhone || o.whatsappNumber || firstItem.whatsappNumber || "",
-        city: o.customerCity || o.city || o.address || firstItem.city || "",
+          o.customerPhone || o.whatsappNumber || matchedItem.whatsappNumber || "",
+        city: o.customerCity || o.city || o.address || matchedItem.city || "",
         amount: Number(
-          firstItem.amount || o.orderValue || o.grandTotal || o.amount || 0,
+          o.grandTotal || o.amount || o.orderValue || matchedItem.amount || 0,
         ),
-        deposit: Number(firstItem.deposit || o.depositHeld || o.deposit || 0),
-        startDate:
-          firstItem.rentalStartDate || o.rentalStartDate || o.startDate || "",
-        endDate: firstItem.rentalEndDate || o.rentalEndDate || o.endDate || "",
-        status: o.status || firstItem.status || "Confirmed",
-        depositStatus: o.depositStatus || "Pending",
-        mode: o.mode || firstItem.mode || "Rental",
+        deposit: Number(matchedItem.deposit || o.depositHeld || o.deposit || 0),
+        startDate: effectiveStart,
+        endDate: effectiveEnd,
+        rentalStartDate: rawStart,
+        rentalEndDate: rawEnd,
+        orderDate: orderBookedDate,
+        dispatchDate:
+          o.dispatchDetails?.date ||
+          matchedItem.dispatch?.date ||
+          o.dispatchDate ||
+          matchedItem.dispatchDate ||
+          "",
+        status: o.status || matchedItem.status || "Confirmed",
+        depositStatus:
+          o.depositStatus ||
+          (resolvedMode === "Rental" ? "Pending" : "None"),
+        mode: resolvedMode,
         listerSplitPercent: o.listerSplitPercent || 45,
       };
     });
 
-    const updatedBookings = formattedDbOrders.map((o) => ({
-      orderId: o.orderId,
-      customerName: o.customerName,
-      startDate: o.startDate,
-      endDate: o.endDate,
-      amount: o.amount,
-      mode: o.mode,
-      status: o.status,
-      city: o.city,
-      whatsappNumber: o.whatsappNumber,
-      depositStatus: o.depositStatus,
-      listerSplitPercent: o.listerSplitPercent,
-    }));
+    const updatedBookings = formattedDbOrders
+      .filter((o) => o.status !== "Cancelled")
+      .map((o) => ({
+        orderId: o.orderId,
+        customerName: o.customerName,
+        startDate: o.startDate,
+        endDate: o.endDate,
+        rentalStartDate: o.rentalStartDate,
+        rentalEndDate: o.rentalEndDate,
+        orderDate: o.orderDate,
+        dispatchDate: o.dispatchDate,
+        amount: o.amount,
+        mode: o.mode,
+        status: o.status,
+        city: o.city,
+        whatsappNumber: o.whatsappNumber,
+        depositStatus: o.depositStatus,
+        listerSplitPercent: o.listerSplitPercent,
+      }));
 
     res.json({
       success: true,

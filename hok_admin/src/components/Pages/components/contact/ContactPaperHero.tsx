@@ -13,7 +13,7 @@ interface ContactPaperHeroProps {
   focusedField: EditableFieldInfo | null;
   getVal: (id: string, fallback: string) => string;
   onSelectPart: (partId: string) => void;
-  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean) => void;
+  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean, currentValue?: string) => void;
   onFieldChange: (fieldId: string, value: string) => void;
 }
 
@@ -41,7 +41,7 @@ export const ContactPaperHero: React.FC<ContactPaperHeroProps> = ({
           <span
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('hero', 'contact_eyebrow', 'Eyebrow', 'Small label above main heading');
+              onFieldFocus('hero', 'contact_eyebrow', 'Eyebrow', 'Small label above main heading', false, getVal('contact_eyebrow', 'CONTACT US'));
             }}
             contentEditable={focusedField?.fieldId === 'contact_eyebrow'}
             suppressContentEditableWarning
@@ -61,7 +61,7 @@ export const ContactPaperHero: React.FC<ContactPaperHeroProps> = ({
           <h1
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('hero', 'contact_heading', 'Heading', 'Main hero heading on Contact Us', true);
+              onFieldFocus('hero', 'contact_heading', 'Heading', 'Main hero heading on Contact Us', true, getVal('contact_heading', 'We’d love to hear from you'));
             }}
             contentEditable={focusedField?.fieldId === 'contact_heading'}
             suppressContentEditableWarning
@@ -81,7 +81,7 @@ export const ContactPaperHero: React.FC<ContactPaperHeroProps> = ({
           <p
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('hero', 'contact_lead', 'Line under the heading', 'Explains who is on hand in Indore to help');
+              onFieldFocus('hero', 'contact_lead', 'Line under the heading', 'Explains who is on hand in Indore to help', false, getVal('contact_lead', 'Whether you are choosing a piece for a celebration, wearing one now, or thinking of listing your own, our team in Indore is here to help, personally.'));
             }}
             contentEditable={focusedField?.fieldId === 'contact_lead'}
             suppressContentEditableWarning

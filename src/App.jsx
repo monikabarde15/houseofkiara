@@ -1,9 +1,15 @@
-// src\App.jsx
-import React, { useEffect, useState, Component } from "react";
+// src/App.jsx
+import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useParams, useNavigate, useLocation } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import useAuthStore from "./store/authStore";
 import { getProductDetailRoute } from "./utils/productNavigation";
+import { getGoogleSettings, applyGoogleToDocument } from "./services/googleApi";
+import {
+  getMaintenanceSettings,
+  defaultMaintenanceConfig,
+  isUserBypassingMaintenance,
+} from "./services/maintenanceApi";
 
 // Layout
 import Header from "./components/Header/Header";
@@ -74,56 +80,155 @@ function ProductRedirect() {
 
 export default function App() {
   const location = useLocation();
-  const isMaintenancePage = location.pathname === "/maintenance";
+  const [maintenanceConfig, setMaintenanceConfig] = useState(defaultMaintenanceConfig);
+
+  const authUser = useAuthStore((state) => state.user);
 
   useEffect(() => {
     useAuthStore.getState().checkAuth();
+
+    let isMounted = true;
+    getGoogleSettings().then((google) => {
+      if (isMounted && google) {
+        applyGoogleToDocument(google);
+      }
+    });
+
+    getMaintenanceSettings().then((cfg) => {
+      if (isMounted && cfg) {
+        setMaintenanceConfig(cfg);
+      }
+    });
+
+    const handleGoogleUpdate = () => {
+      getGoogleSettings(true).then((google) => {
+        if (isMounted && google) {
+          applyGoogleToDocument(google);
+        }
+      });
+    };
+
+    const handleMaintenanceUpdate = () => {
+      getMaintenanceSettings(true).then((cfg) => {
+        if (isMounted && cfg) {
+          setMaintenanceConfig(cfg);
+        }
+      });
+    };
+
+    window.addEventListener("hok_google_updated", handleGoogleUpdate);
+    window.addEventListener("hok_maintenance_updated", handleMaintenanceUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("hok_google_updated", handleGoogleUpdate);
+      window.removeEventListener("hok_maintenance_updated", handleMaintenanceUpdate);
+    };
   }, []);
 
-  return (
-    <>
-      <Toaster 
-        position="top-right"
-        containerStyle={{
-          top: 55,
-          right: 28,
-          zIndex: 99999,
-        }}
-        toastOptions={{
-          duration: 3000,
+  // Periodic polling when maintenance is active to immediately restore site when disabled in CMS
+  useEffect(() => {
+    if (!maintenanceConfig?.maintenance?.enabled) return;
+
+    const interval = setInterval(() => {
+      getMaintenanceSettings(true).then((cfg) => {
+        if (cfg) {
+          setMaintenanceConfig(cfg);
+        }
+      });
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [maintenanceConfig?.maintenance?.enabled]);
+
+  // Track SPA route navigation if tracking is configured
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (typeof window.gtag === "function" && window.__hok_ga_id) {
+        window.gtag("event", "page_view", {
+          page_path: location.pathname + location.search,
+        });
+      }
+      if (typeof window.fbq === "function" && window.__hok_pixel_id) {
+        window.fbq("track", "PageView");
+      }
+    }
+  }, [location.pathname, location.search]);
+
+  // Check if visitor bypasses maintenance mode
+  const isBypassed = isUserBypassingMaintenance(
+    authUser,
+    maintenanceConfig?.maintenance?.allowList
+  );
+
+  const isMaintenanceActive =
+    Boolean(maintenanceConfig?.maintenance?.enabled) && !isBypassed;
+
+  const isMaintenancePage =
+    location.pathname === "/maintenance" || isMaintenanceActive;
+
+  // Global Toaster config
+  const toasterElement = (
+    <Toaster
+      position="top-right"
+      containerStyle={{
+        top: 55,
+        right: 28,
+        zIndex: 99999,
+      }}
+      toastOptions={{
+        duration: 3000,
+        style: {
+          background: '#1e1412',
+          color: '#fcf9f5',
+          border: '1px solid #c5a880',
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(197, 168, 128, 0.25)',
+          borderRadius: '8px',
+          padding: '12px 20px',
+          fontSize: '13.5px',
+          fontWeight: 500,
+          fontFamily: "'DM Sans', sans-serif",
+          letterSpacing: '0.02em',
+          whiteSpace: 'nowrap',
+          maxWidth: '400px',
+        },
+        success: {
+          iconTheme: {
+            primary: '#c5a880',
+            secondary: '#1e1412',
+          },
+        },
+        error: {
           style: {
             background: '#1e1412',
             color: '#fcf9f5',
-            border: '1px solid #c5a880',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(197, 168, 128, 0.25)',
-            borderRadius: '8px',
-            padding: '12px 20px',
-            fontSize: '13.5px',
-            fontWeight: 500,
-            fontFamily: "'DM Sans', sans-serif",
-            letterSpacing: '0.02em',
-            whiteSpace: 'nowrap',
-            maxWidth: '400px',
+            border: '1px solid #e06c75',
           },
-          success: {
-            iconTheme: {
-              primary: '#c5a880',
-              secondary: '#1e1412',
-            },
+          iconTheme: {
+            primary: '#e06c75',
+            secondary: '#1e1412',
           },
-          error: {
-            style: {
-              background: '#1e1412',
-              color: '#fcf9f5',
-              border: '1px solid #e06c75',
-            },
-            iconTheme: {
-              primary: '#e06c75',
-              secondary: '#1e1412',
-            },
-          },
-        }}
-      />
+        },
+      }}
+    />
+  );
+
+  // When maintenance is active, all public routes show maintenance, but auth and admin routes stay accessible
+  if (
+    isMaintenanceActive &&
+    location.pathname !== "/auth" &&
+    !location.pathname.startsWith("/hok_admin")
+  ) {
+    return (
+      <>
+        {toasterElement}
+        <MaintenancePage settings={maintenanceConfig.maintenance} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      {toasterElement}
       {!isMaintenancePage && <Header />}
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -179,7 +284,10 @@ export default function App() {
         <Route path="/contact-us" element={<ContactUsPage />} />
         <Route path="/contact" element={<Navigate to="/contact-us" replace />} />
         <Route path="/contactus" element={<Navigate to="/contact-us" replace />} />
-        <Route path="/maintenance" element={<MaintenancePage />} />
+        <Route
+          path="/maintenance"
+          element={<MaintenancePage settings={maintenanceConfig.maintenance} />}
+        />
         {/* Wildcard 404 handler: preserves exact requested address */}
         <Route path="*" element={<PageNotFound />} />
       </Routes>

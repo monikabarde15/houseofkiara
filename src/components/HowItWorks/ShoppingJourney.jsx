@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import "../../styles/howitworks/shopping-journey.css";
 
-const ShoppingJourney = () => {
+const ShoppingJourney = ({ getVal }) => {
   const trackRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -12,8 +12,8 @@ const ShoppingJourney = () => {
     {
       id: 1,
       number: "01",
-      title: "Browse and discover",
-      body: "Explore our curated collection of designer pieces. Filter by occasion, designer, size, and category to find exactly what you're looking for.",
+      title: getVal ? getVal("hiw_step_0_title", "Browse and discover") : "Browse and discover",
+      body: getVal ? getVal("hiw_step_0_body", "Explore our curated collection of designer pieces. Filter by occasion, designer, size, and category to find exactly what you're looking for.") : "Explore our curated collection of designer pieces. Filter by occasion, designer, size, and category to find exactly what you're looking for.",
       details: [
         "Filter by occasion, designer, size & category",
         "Save favourites to your wishlist",
@@ -23,8 +23,8 @@ const ShoppingJourney = () => {
     {
       id: 2,
       number: "02",
-      title: "Choose your mode",
-      body: "Decide whether you want to rent for a special occasion or buy preloved to keep forever. Every piece shows both options clearly.",
+      title: getVal ? getVal("hiw_step_1_title", "Choose your mode") : "Choose your mode",
+      body: getVal ? getVal("hiw_step_1_body", "Decide whether you want to rent for a special occasion or buy preloved to keep forever. Every piece shows both options clearly.") : "Decide whether you want to rent for a special occasion or buy preloved to keep forever. Every piece shows both options clearly.",
       details: [
         "Rent for 4-8 days starting at 20% of retail",
         "Buy preloved at 30-70% below retail",
@@ -34,8 +34,8 @@ const ShoppingJourney = () => {
     {
       id: 3,
       number: "03",
-      title: "Checkout and confirm",
-      body: "Review your order, select delivery dates, and complete payment. For rentals, the refundable deposit is held securely.",
+      title: getVal ? getVal("hiw_step_2_title", "Checkout and confirm") : "Checkout and confirm",
+      body: getVal ? getVal("hiw_step_2_body", "Review your order, select delivery dates, and complete payment. For rentals, the refundable deposit is held securely.") : "Review your order, select delivery dates, and complete payment. For rentals, the refundable deposit is held securely.",
       details: [
         "Secure payment via Razorpay",
         "Rental deposit held, not charged",
@@ -45,8 +45,8 @@ const ShoppingJourney = () => {
     {
       id: 4,
       number: "04",
-      title: "Delivered, <em>ready to wear</em>",
-      body: "Your piece arrives at your doorstep, professionally dry-cleaned and pressed. Ready to wear straight out of the box.",
+      title: getVal ? getVal("hiw_step_3_title", "Delivered, ready to wear") : "Delivered, ready to wear",
+      body: getVal ? getVal("hiw_step_3_body", "Your piece arrives at your doorstep, professionally dry-cleaned and pressed. Ready to wear straight out of the box.") : "Your piece arrives at your doorstep, professionally dry-cleaned and pressed. Ready to wear straight out of the box.",
       details: [
         "Doorstep delivery in sustainable packaging",
         "Pre-paid return label included",
@@ -56,12 +56,12 @@ const ShoppingJourney = () => {
     {
       id: 5,
       number: "05",
-      title: "The Loop — <em>keep it going</em>",
-      body: "After your event, return rental pieces easily. Or list your own pieces to earn and keep the circular fashion cycle moving.",
+      title: getVal ? getVal("hiw_loop_heading", "The Loop — keep it going") : "The Loop — keep it going",
+      body: getVal ? getVal("hiw_loop_body", "After your event, return rental pieces easily. Or list your own pieces to earn and keep the circular fashion cycle moving.") : "After your event, return rental pieces easily. Or list your own pieces to earn and keep the circular fashion cycle moving.",
       details: [
-        "Easy returns with scheduled pickup",
-        "List your own pieces to earn",
-        "Every piece gets a second life",
+        "Return packaging ready to go",
+        "Turn rented pieces into listed pieces",
+        "Earn credit for your next rental",
       ],
     },
   ];
@@ -144,17 +144,12 @@ const ShoppingJourney = () => {
       <div className="hok-hiw-shop-header">
         <div className="hok-hiw-shop-eyebrow">
           <span className="hok-hiw-shop-line"></span>
-          <span className="hok-hiw-shop-eyebrow-text">Shopping at HOK</span>
+          <span className="hok-hiw-shop-eyebrow-text">{getVal ? getVal("hiw_shop_eyebrow", "Shopping at HOK") : "Shopping at HOK"}</span>
         </div>
 
-        <h2 className="hok-hiw-shop-title">
-          From discovery to your <em>doorstep</em>
-        </h2>
+        <h2 className="hok-hiw-shop-title">{getVal && getVal("hiw_shop_heading", null) ? getVal("hiw_shop_heading") : <>From discovery to your <em>doorstep</em></>}</h2>
 
-        <p className="hok-hiw-shop-lead">
-          Four steps stand between you and wearing a Sabyasachi to that wedding
-          you've been circling on the calendar.
-        </p>
+        <p className="hok-hiw-shop-lead">{getVal ? getVal("hiw_shop_lead", "Four steps stand between you and wearing a Sabyasachi to that wedding you've been circling on the calendar.") : "Four steps stand between you and wearing a Sabyasachi to that wedding you've been circling on the calendar."}</p>
 
         <div className="hok-hiw-shop-scroll-hint">
           <span className="hok-hiw-shop-scroll-bar"></span>

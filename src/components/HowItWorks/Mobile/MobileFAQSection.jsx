@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../../styles/howitworks/mobile/mobile-faq-section.css";
 
-const MobileFAQSection = () => {
+const MobileFAQSection = ({ getVal }) => {
   const [openIndex, setOpenIndex] = useState(0);
 
   const faqs = [
@@ -100,13 +100,11 @@ const MobileFAQSection = () => {
       <div className="hok-hiw-mobile-faq-header">
         <div className="hok-hiw-mobile-faq-eyebrow">
           <span className="hok-hiw-mobile-faq-line"></span>
-          <span className="hok-hiw-mobile-faq-eyebrow-text">FAQ</span>
+          <span className="hok-hiw-mobile-faq-eyebrow-text">{getVal ? getVal("hiw_faq_eyebrow", "FAQ") : "FAQ"}</span>
           <span className="hok-hiw-mobile-faq-line"></span>
         </div>
 
-        <h2 className="hok-hiw-mobile-faq-title">
-          Questions you <em>probably have.</em>
-        </h2>
+        <h2 className="hok-hiw-mobile-faq-title">{getVal && getVal("hiw_faq_heading", null) ? getVal("hiw_faq_heading") : <>Questions you <em>probably have.</em></>}</h2>
       </div>
 
       {/* FAQ Items */}

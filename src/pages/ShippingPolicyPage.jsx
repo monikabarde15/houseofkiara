@@ -1,3 +1,4 @@
+import { usePageContent } from "../hooks/usePageContent";
 /**
  * House of Kaira: Shipping & Delivery Policy Page Root
  * Front end build specification v2 (hok_shipping_policy_v3)
@@ -41,6 +42,7 @@ import "../styles/shipping/shipping-closing.css";
 import "../styles/shipping/shipping-print.css";
 
 export default function ShippingPolicyPage() {
+  const { getVal } = usePageContent("/shipping-policy");
   const [toastMessage, setToastMessage] = useState("");
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [activeSectionId, setActiveSectionId] = useState("opts");
@@ -185,11 +187,11 @@ export default function ShippingPolicyPage() {
     <div className="sh-page" id="shipping-policy-page">
       <main id="sh-main">
         <ShippingBreadcrumb />
-        <ShippingHero
+        <ShippingHero getVal={getVal}
           onSelectQuestion={handleSelectQuestion}
           onShowToast={showToast}
         />
-        <ShippingRentalWindowCard onSelectQuestion={handleSelectQuestion} />
+        <ShippingRentalWindowCard onSelectQuestion={handleSelectQuestion} getVal={getVal} />
 
         <div className="sh-wrap">
           <ShippingSectionBar
@@ -197,8 +199,8 @@ export default function ShippingPolicyPage() {
             onSelectSection={handleSelectSection}
           />
           <div className="dp-body">
-            <ShippingIntro />
-            <ShippingWaysWeDeliver onSelectQuestion={handleSelectQuestion} />
+            <ShippingIntro getVal={getVal} />
+            <ShippingWaysWeDeliver onSelectQuestion={handleSelectQuestion} getVal={getVal} />
             <ShippingSectionsList
               openQuestionIds={openQuestionIds}
               onToggleQuestion={handleToggleQuestion}

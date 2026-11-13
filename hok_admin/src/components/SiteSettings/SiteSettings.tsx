@@ -75,6 +75,30 @@ export const SiteSettings: React.FC<SiteSettingsProps> = ({
             header: data.header
               ? { ...prev.header, ...data.header }
               : prev.header,
+            footer: data.footer
+              ? { ...prev.footer, ...data.footer }
+              : prev.footer,
+            mobile: data.mobile
+              ? { ...prev.mobile, ...data.mobile }
+              : prev.mobile,
+            brand: data.brand
+              ? { ...prev.brand, ...data.brand }
+              : prev.brand,
+            contact: data.contact
+              ? { ...prev.contact, ...data.contact }
+              : prev.contact,
+            google: data.google
+              ? { ...prev.google, ...data.google }
+              : prev.google,
+            legal: data.legal
+              ? { ...prev.legal, ...data.legal }
+              : prev.legal,
+            regional: data.regional
+              ? { ...prev.regional, ...data.regional }
+              : prev.regional,
+            maintenance: data.maintenance
+              ? { ...prev.maintenance, ...data.maintenance }
+              : prev.maintenance,
           };
           setBaseline(JSON.parse(JSON.stringify(nextState)));
           return nextState;

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../../../styles/aboutus/mobile/three-ways-mobile.css";
 import { showToast } from "../shared/Toast";
 
-const MobileThreeWays = () => {
+const MobileThreeWays = ({ getVal }) => {
   const sectionRef = useRef(null);
   const navigate = useNavigate();
 
@@ -34,11 +34,9 @@ const MobileThreeWays = () => {
       id: 1,
       numeral: "I",
       dotColor: "terracotta",
-      heading: "Rent",
-      tagline:
-        "For the night that deserves everything, and not a single thing more.",
-      description:
-        "Wear the showstopper. Send it back. No upkeep, no clutter, no compromise.",
+      heading: getVal ? getVal("about_door_0_title", "Rent") : "Rent",
+      tagline: getVal ? getVal("about_door_0_lead", "For the night that deserves everything, and not a single thing more.") : "For the night that deserves everything, and not a single thing more.",
+      description: getVal ? getVal("about_door_0_body", "Wear the showstopper. Send it back. No upkeep, no clutter, no compromise.") : "Wear the showstopper. Send it back. No upkeep, no clutter, no compromise.",
       linkLabel: "Explore Rentals",
       linkAction: "Opening Rent...",
     },
@@ -46,11 +44,9 @@ const MobileThreeWays = () => {
       id: 2,
       numeral: "II",
       dotColor: "gold",
-      heading: "Buy Preloved",
-      tagline:
-        "A piece doesn't lose its story when it changes hands. It gains yours.",
-      description:
-        "Inspected, disclosed honestly, and priced like the treasure it already is.",
+      heading: getVal ? getVal("about_door_1_title", "Buy Preloved") : "Buy Preloved",
+      tagline: getVal ? getVal("about_door_1_lead", "A piece doesn't lose its story when it changes hands. It gains yours.") : "A piece doesn't lose its story when it changes hands. It gains yours.",
+      description: getVal ? getVal("about_door_1_body", "Inspected, disclosed honestly, and priced like the treasure it already is.") : "Inspected, disclosed honestly, and priced like the treasure it already is.",
       linkLabel: "Shop Preloved",
       linkAction: "Opening Buy Preloved...",
     },
@@ -58,12 +54,10 @@ const MobileThreeWays = () => {
       id: 3,
       numeral: "III",
       dotColor: "sage",
-      heading: "List & Sell",
-      tagline:
-        "Somewhere in your wardrobe is a piece waiting for a second standing ovation.",
-      description:
-        "We handle pickup, photography, and payout — the piece does the rest.",
-      linkLabel: "List Your Piece",
+      heading: getVal ? getVal("about_door_2_title", "List Your Piece") : "List Your Piece",
+      tagline: getVal ? getVal("about_door_2_lead", "Your wardrobe's finest shouldn't spend its life in the dark.") : "Your wardrobe's finest shouldn't spend its life in the dark.",
+      description: getVal ? getVal("about_door_2_body", "We take care of every detail — cleaning, insurance, delivery, and payments.") : "We take care of every detail — cleaning, insurance, delivery, and payments.",
+      linkLabel: "Become a Lister",
       linkAction: "Opening List Your Piece...",
     },
   ];
@@ -98,16 +92,11 @@ const MobileThreeWays = () => {
       <div className="mob-ways__head reveal">
         <div className="mob-ways__eyebrow">
           <span className="mob-ways__eyebrow-line"></span>
-          <span>How It Works</span>
+          <span>{getVal ? getVal('about_three_eyebrow', 'How It Works') : 'How It Works'}</span>
           <span className="mob-ways__eyebrow-line"></span>
         </div>
-        <h2 className="mob-ways__title">
-          Three ways to belong to <em>the story</em>
-        </h2>
-        <p className="mob-ways__sub">
-          Every door leads to the same standard: curated pieces, honest
-          condition, and a process built to feel as good as the clothes look.
-        </p>
+        <h2 className="mob-ways__title">{getVal ? getVal('about_three_heading', 'Three ways to belong to the story') : 'Three ways to belong to the story'}</h2>
+        <p className="mob-ways__sub">{getVal ? getVal('about_three_lead', 'Every door leads to the same standard: curated pieces, honest condition, and a process built to feel as good as the clothes look.') : 'Every door leads to the same standard: curated pieces, honest condition, and a process built to feel as good as the clothes look.'}</p>
       </div>
 
       {/* Card Grid - Mobile Spec §13.2: flex column, gap: 16px */}

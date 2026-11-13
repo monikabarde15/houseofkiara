@@ -64,7 +64,11 @@ function initialsFromName(name: string) {
 }
 
 function toISODate(d: Date) {
-  return d.toISOString().slice(0, 10);
+  if (!d || isNaN(d.getTime())) return "";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 function addDays(d: Date, n: number) {
   const copy = new Date(d);
@@ -205,10 +209,40 @@ export function AvailabilityCalendarTab({
   };
   const setCustomerMode = () => {};
 
-  // Reload these choices from PostgreSQL whenever a product calendar opens.
-  // Parent state can be stale if offers/promos were added after initial login.
+  const [calendarApiData, setCalendarApiData] = useState<any | null>(null);
+
+  // Reload calendar bookings, offers, promos & customers from PostgreSQL whenever a product calendar opens.
   React.useEffect(() => {
     if (!editingProduct) return;
+    const targetId =
+      editingProduct.productId ||
+      (editingProduct as any)._id ||
+      editingProduct.id;
+
+    if (targetId) {
+      productSectionsApi
+        .getCalendar(targetId)
+        .then((cal: any) => {
+          setCalendarApiData(cal || null);
+          const bookings: any[] = cal?.bookingHistory || cal?.orderHistory || [];
+          if (bookings.length > 0 && !(editingProduct.bookingHistory || []).length) {
+            const firstWithDate = bookings.find(
+              (b: any) => b.startDate || b.rentalStartDate || b.orderDate,
+            );
+            const anchor = parseToStartOfDay(
+              firstWithDate?.startDate ||
+                firstWithDate?.rentalStartDate ||
+                firstWithDate?.orderDate,
+            );
+            if (!isNaN(anchor.getTime())) {
+              setViewMonth(anchor.getMonth());
+              setViewYear(anchor.getFullYear());
+            }
+          }
+        })
+        .catch(() => setCalendarApiData(null));
+    }
+
     offerApi
       .getOffers()
       .then(setDatabaseOffers)
@@ -224,7 +258,7 @@ export function AvailabilityCalendarTab({
         setExistingCustomers(list);
       })
       .catch(() => setExistingCustomers([]));
-  }, [editingProduct?.productId, (editingProduct as any)?._id]);
+  }, [editingProduct?.productId, (editingProduct as any)?._id, editingProduct?.id]);
 
   if (!activeProduct) {
     return (
@@ -244,18 +278,172 @@ export function AvailabilityCalendarTab({
     !isNaN(rawPost) && rawPost >= 0 && rawPost <= 14
       ? rawPost
       : DEFAULT_POST_BUFFER_DAYS;
-  const bookingHistory = (activeProduct.bookingHistory || []) as any[];
-  const blockedDates = activeProduct.blockedDates || [];
+
+  const blockedDates = useMemo(() => {
+    const base = Array.isArray(activeProduct.blockedDates)
+      ? activeProduct.blockedDates
+      : [];
+    const fromApi = Array.isArray(calendarApiData?.blockedDates)
+      ? calendarApiData.blockedDates
+      : [];
+    const seen = new Set<string>();
+    const out: any[] = [];
+    [...base, ...fromApi].forEach((b: any) => {
+      if (!b?.from || !b?.to) return;
+      const key = `${b.from}|${b.to}|${b.reason || ""}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        out.push(b);
+      }
+    });
+    return out;
+  }, [activeProduct.blockedDates, calendarApiData]);
+
+  const combinedProductBookings = useMemo(() => {
+    const pidCandidates = new Set(
+      [
+        activeProduct.productId,
+        (activeProduct as any)._id,
+        activeProduct.id,
+      ]
+        .filter(Boolean)
+        .map((x) => String(x)),
+    );
+    const pNameLower = String(activeProduct.name || "")
+      .trim()
+      .toLowerCase();
+
+    const extractBookedYMD = (obj: any): string => {
+      const raw =
+        obj?.orderDate || obj?.createdAt || obj?.invoiceDate || obj?.date || "";
+      if (raw) {
+        const d = parseToStartOfDay(raw);
+        if (!isNaN(d.getTime())) return toISODate(d);
+      }
+      const oid = String(obj?.orderId || obj?.id || obj?.orderNumber || "");
+      const m = oid.match(/HOK-ORD-(\d{13})/);
+      if (m) {
+        const d = parseToStartOfDay(new Date(Number(m[1])));
+        if (!isNaN(d.getTime())) return toISODate(d);
+      }
+      return "";
+    };
+
+    const mergedMap = new Map<string, any>();
+    const upsertEntry = (rawEntry: any) => {
+      if (!rawEntry) return;
+      const oid = String(
+        rawEntry.orderId ||
+          rawEntry.id ||
+          rawEntry.orderNumber ||
+          `${rawEntry.customerName || "guest"}-${rawEntry.startDate || rawEntry.rentalStartDate || ""}`,
+      );
+      const prev = mergedMap.get(oid) || {};
+      mergedMap.set(oid, { ...prev, ...rawEntry, orderId: oid });
+    };
+
+    // 1. Product static/saved history
+    ((activeProduct as any).orderHistory || []).forEach(upsertEntry);
+    (activeProduct.bookingHistory || []).forEach(upsertEntry);
+
+    // 2. Live Calendar API history
+    (calendarApiData?.orderHistory || []).forEach(upsertEntry);
+    (calendarApiData?.bookingHistory || []).forEach(upsertEntry);
+
+    // 3. Live global `orders` prop matching this product
+    (orders || []).forEach((o: any) => {
+      const itemsList: any[] = Array.isArray(o.items) ? o.items : [];
+      const matchedItem = itemsList.find(
+        (it: any) =>
+          (it?.productId && pidCandidates.has(String(it.productId))) ||
+          (pNameLower &&
+            it?.productName &&
+            String(it.productName).trim().toLowerCase() === pNameLower),
+      );
+      const rootMatches =
+        (o.productId && pidCandidates.has(String(o.productId))) ||
+        (pNameLower &&
+          o.productName &&
+          String(o.productName).trim().toLowerCase() === pNameLower);
+
+      if (!matchedItem && !rootMatches) return;
+
+      const it = matchedItem || itemsList[0] || {};
+      const oid = String(o.orderId || o.id || o.orderNumber || o._id || "");
+      const rStart = o.rentalStartDate || it.rentalStartDate || "";
+      const rEnd = o.rentalEndDate || it.rentalEndDate || "";
+      const bookedYMD = extractBookedYMD(o);
+      const resolvedMode = it.mode || o.mode || (rStart ? "Rental" : "Buy");
+
+      upsertEntry({
+        orderId: oid,
+        customerName: o.customerName || "Customer",
+        whatsappNumber: o.customerPhone || "",
+        mode: resolvedMode,
+        rentalStartDate: rStart,
+        rentalEndDate: rEnd,
+        orderDate: bookedYMD || o.orderDate || o.createdAt || "",
+        startDate: rStart || bookedYMD,
+        endDate: rEnd || rStart || bookedYMD,
+        status: o.status || "Confirmed",
+        depositStatus: o.depositStatus || "",
+        amount: Number(
+          o.grandTotal ?? o.amount ?? o.totalAmount ?? it.amount ?? 0,
+        ),
+        dispatchDate:
+          o.dispatchDetails?.date ||
+          it.dispatch?.date ||
+          o.dispatchDate ||
+          it.dispatchDate ||
+          "",
+      });
+    });
+
+    // Normalize every entry so both Rental and Buy/Preloved orders have valid startDate/endDate
+    return Array.from(mergedMap.values()).map((entry: any) => {
+      const rStart = entry.rentalStartDate || "";
+      const rEnd = entry.rentalEndDate || "";
+      const bookedYMD = extractBookedYMD(entry);
+      const modeStr = String(entry.mode || (rStart ? "Rental" : "Rental"));
+      const isRental =
+        modeStr.toLowerCase() === "rental" &&
+        Boolean(rStart || entry.startDate);
+      const finalStart =
+        (isRental ? rStart || entry.startDate : entry.startDate || bookedYMD) ||
+        bookedYMD;
+      const finalEnd =
+        (isRental
+          ? rEnd || entry.endDate || finalStart
+          : entry.endDate || finalStart) || finalStart;
+
+      return {
+        ...entry,
+        mode: modeStr,
+        isRental,
+        orderBookedYMD: bookedYMD,
+        startDate: finalStart,
+        endDate: finalEnd,
+      };
+    });
+  }, [activeProduct, calendarApiData, orders]);
+
+  const bookingHistory = combinedProductBookings;
 
   const activeBookings = useMemo(() => {
-    return bookingHistory
-      .filter((h) => h.startDate && h.endDate)
+    return combinedProductBookings
+      .filter(
+        (h) =>
+          h.startDate &&
+          h.endDate &&
+          String(h.status || "").toLowerCase() !== "cancelled",
+      )
       .map((h) => ({
         ...h,
         start: parseToStartOfDay(h.startDate),
         end: parseToStartOfDay(h.endDate),
-      }));
-  }, [bookingHistory]);
+      }))
+      .filter((h) => !isNaN(h.start.getTime()) && !isNaN(h.end.getTime()));
+  }, [combinedProductBookings]);
 
   // All context values are derived from booking rows returned by the calendar
   // API.  No split, count, or date on this card is a display-only constant.
@@ -425,6 +613,9 @@ export function AvailabilityCalendarTab({
         (b) => dateStart >= b.start && dateStart <= b.end,
       );
       const inBuffer = activeBookings.some((b) => {
+        if (b.isRental === false || String(b.mode || "Rental").toLowerCase() !== "rental") {
+          return false;
+        }
         const preStart = addDays(b.start, -preBufferDays);
         const preEnd = addDays(b.start, -1);
         const postStart = addDays(b.end, 1);
@@ -535,10 +726,13 @@ export function AvailabilityCalendarTab({
     for (const b of activeBookings) {
       const bStart = parseToStartOfDay(b.startDate || b.start);
       const bEnd = parseToStartOfDay(b.endDate || b.end);
-      const bPostEnd = addDays(bEnd, postBufferDays);
+      const isRent =
+        b.isRental !== false &&
+        String(b.mode || "Rental").toLowerCase() === "rental";
+      const bPostEnd = isRent ? addDays(bEnd, postBufferDays) : bEnd;
 
       if (start <= bPostEnd && end >= bStart) {
-        return `Selected dates overlap with rental for ${b.customerName || "customer"} (${b.orderId || "existing order"}) or its cleaning buffer. Only available dates can be booked.`;
+        return `Selected dates overlap with booking for ${b.customerName || "customer"} (${b.orderId || "existing order"})${isRent ? " or its cleaning buffer" : ""}. Only available dates can be booked.`;
       }
     }
 
@@ -993,12 +1187,18 @@ export function AvailabilityCalendarTab({
                     const booking = activeBookings.find(
                       (b) => selectedDate >= b.start && selectedDate <= b.end,
                     );
-                    const rawOrderId = booking?.orderId || "HOK-ORD-889";
+                    const rawOrderId = String(booking?.orderId || "-");
                     const displayOrderId = rawOrderId.startsWith("HOK-ORD-")
                       ? rawOrderId
                       : rawOrderId.startsWith("EXT-")
-                        ? `HOK-ORD-${rawOrderId.replace(/[^0-9]/g, "").slice(-3) || "889"}`
-                        : `HOK-ORD-${String(rawOrderId).padStart(3, "0")}`;
+                        ? rawOrderId
+                        : rawOrderId !== "-"
+                          ? `HOK-ORD-${String(rawOrderId).padStart(3, "0")}`
+                          : "-";
+                    const modeLabel = booking?.mode || "Rental";
+                    const isRent =
+                      String(modeLabel).toLowerCase() === "rental" &&
+                      booking?.isRental !== false;
 
                     return (
                       <div className="text-[11px] text-stone-600 space-y-1">
@@ -1581,35 +1781,15 @@ export function AvailabilityCalendarTab({
         </div>
 
         {(() => {
-          // Use backend-filtered orderHistory (already filtered by product in API)
-          const productOrderHistory: any[] =
-            (editingProduct as any)?.orderHistory || [];
-          const productBookingHistory: any[] = bookingHistory || [];
-
-          // Merge orderHistory + bookingHistory by orderId (deduplicate)
-          const mergedMap = new Map<string, any>();
-          [...productOrderHistory, ...productBookingHistory].forEach(
-            (entry: any) => {
-              const key =
-                entry.orderId ||
-                entry.id ||
-                entry.orderNumber ||
-                Math.random().toString();
-              if (!mergedMap.has(key)) mergedMap.set(key, entry);
-              else mergedMap.set(key, { ...mergedMap.get(key), ...entry });
-            },
-          );
-
-          // Also enrich with any global orders that match by orderId
-          mergedMap.forEach((entry, key) => {
-            const match = (orders || []).find(
-              (o: any) =>
-                o.orderId === key || o.id === key || o.orderNumber === key,
-            );
-            if (match) mergedMap.set(key, { ...entry, ...match });
+          const displayList = [...combinedProductBookings].sort((a: any, b: any) => {
+            const da = parseToStartOfDay(
+              a.orderDate || a.startDate || a.rentalStartDate,
+            ).getTime();
+            const db = parseToStartOfDay(
+              b.orderDate || b.startDate || b.rentalStartDate,
+            ).getTime();
+            return (isNaN(db) ? 0 : db) - (isNaN(da) ? 0 : da);
           });
-
-          const displayList = Array.from(mergedMap.values());
 
           if (displayList.length === 0) {
             return (
@@ -1618,6 +1798,17 @@ export function AvailabilityCalendarTab({
               </p>
             );
           }
+
+          const fmtPieceDate = (val: any) => {
+            if (!val) return "";
+            const d = parseToStartOfDay(val);
+            if (isNaN(d.getTime())) return String(val);
+            return d.toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            });
+          };
 
           return (
             <div className="overflow-x-auto">
@@ -1638,7 +1829,6 @@ export function AvailabilityCalendarTab({
                     const displayOrderId =
                       item.orderId || item.id || item.orderNumber || "-";
 
-                    // Lookup from master orders
                     const masterOrder =
                       (orders || []).find(
                         (o: any) =>
@@ -1647,50 +1837,68 @@ export function AvailabilityCalendarTab({
                           o.orderId === displayOrderId,
                       ) || item;
 
-                    const customerName =
+                    const firstIt = masterOrder.items?.[0] || {};
+                    const customerNameVal =
                       masterOrder.customerName ||
                       item.customerName ||
-                      "Riya Sharma";
-                    const startDate =
+                      "Customer";
+                    const modeVal =
+                      firstIt.mode ||
+                      masterOrder.mode ||
+                      item.mode ||
+                      "Rental";
+                    const rStart =
                       masterOrder.rentalStartDate ||
-                      masterOrder.startDate ||
-                      item.startDate;
-                    const endDate =
+                      firstIt.rentalStartDate ||
+                      item.rentalStartDate ||
+                      (String(modeVal).toLowerCase() === "rental"
+                        ? item.startDate
+                        : "");
+                    const rEnd =
                       masterOrder.rentalEndDate ||
-                      masterOrder.endDate ||
-                      item.endDate;
-                    const startFmt = startDate
-                      ? new Date(startDate).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })
-                      : "10 Sept 2026";
-                    const endFmt = endDate
-                      ? new Date(endDate).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })
-                      : "14 Sept 2026";
+                      firstIt.rentalEndDate ||
+                      item.rentalEndDate ||
+                      (String(modeVal).toLowerCase() === "rental"
+                        ? item.endDate
+                        : "");
+                    const bookedDateVal =
+                      item.orderBookedYMD ||
+                      masterOrder.orderDate ||
+                      masterOrder.createdAt ||
+                      item.orderDate ||
+                      item.startDate ||
+                      "";
+                    const isRentalRow =
+                      String(modeVal).toLowerCase() === "rental" &&
+                      Boolean(rStart);
+                    const datesLabel = isRentalRow
+                      ? `${fmtPieceDate(rStart)} — ${fmtPieceDate(rEnd || rStart)}`
+                      : bookedDateVal
+                        ? `Booked: ${fmtPieceDate(bookedDateVal)} (${modeVal})`
+                        : modeVal;
+
                     const amountVal = Number(
-                      masterOrder.amount ||
+                      masterOrder.grandTotal ||
+                        masterOrder.amount ||
                         masterOrder.totalAmount ||
                         item.amount ||
-                        editingProduct.rentalPrice ||
-                        8000,
+                        (isRentalRow
+                          ? editingProduct?.rentalPrice
+                          : (editingProduct as any)?.listingPrice) ||
+                        0,
                     );
                     const revenueFmt = `₹${amountVal.toLocaleString("en-IN")}`;
                     const status =
                       masterOrder.status || item.status || "Confirmed";
-                    const deposit =
-                      masterOrder.depositStatus ||
-                      item.depositStatus ||
-                      (status === "Returned"
-                        ? "Released"
-                        : status === "Partially Returned"
-                          ? "Held"
-                          : "Pending");
+                    const deposit = !isRentalRow
+                      ? "N/A"
+                      : masterOrder.depositStatus ||
+                        item.depositStatus ||
+                        (status === "Returned"
+                          ? "Released"
+                          : status === "Partially Returned"
+                            ? "Held"
+                            : "Pending");
 
                     return (
                       <tr key={idx} className="hover:bg-stone-50/80 transition">
@@ -1699,14 +1907,16 @@ export function AvailabilityCalendarTab({
                             {displayOrderId}
                           </span>
                           <span className="text-[10px] text-stone-400 font-medium block truncate max-w-[140px]">
-                            {masterOrder.productName || editingProduct.name}
+                            {masterOrder.productName ||
+                              firstIt.productName ||
+                              editingProduct?.name}
                           </span>
                         </td>
                         <td className="py-3 px-3 font-medium text-stone-800">
-                          {customerName}
+                          {customerNameVal}
                         </td>
                         <td className="py-3 px-3 text-stone-600">
-                          {startFmt} &mdash; {endFmt}
+                          {datesLabel}
                         </td>
                         <td className="py-3 px-3 font-semibold text-stone-900">
                           {revenueFmt}
@@ -1734,7 +1944,9 @@ export function AvailabilityCalendarTab({
                                     status === "Processed" ||
                                     status === "Complete"
                                   ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                                  : "bg-amber-50 text-amber-700 border border-amber-100"
+                                  : status === "Cancelled"
+                                    ? "bg-rose-50 text-rose-700 border border-rose-100"
+                                    : "bg-amber-50 text-amber-700 border border-amber-100"
                             }`}
                           >
                             {status}
@@ -1744,7 +1956,7 @@ export function AvailabilityCalendarTab({
                           <button
                             type="button"
                             onClick={() => onViewOrder?.(displayOrderId)}
-                            className="text-stone-700 hover:text-amber-800 font-semibold text-xs transition"
+                            className="text-stone-700 hover:text-amber-800 font-semibold text-xs transition cursor-pointer"
                           >
                             View &rarr;
                           </button>

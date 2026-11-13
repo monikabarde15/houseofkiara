@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../../styles/howitworks/mobile/mobile-list-and-earn.css";
 
-const MobileListAndEarn = () => {
+const MobileListAndEarn = ({ getVal }) => {
   const navigate = useNavigate();
 
   const handleListYourPiece = () => {
@@ -20,20 +20,14 @@ const MobileListAndEarn = () => {
           {/* Eyebrow */}
           <div className="hok-hiw-mobile-le-eyebrow">
             <span className="hok-hiw-mobile-le-line"></span>
-            <span className="hok-hiw-mobile-le-eyebrow-text">List & Earn</span>
+            <span className="hok-hiw-mobile-le-eyebrow-text">{getVal ? getVal("hiw_earn_eyebrow", "List & Earn") : "List & Earn"}</span>
           </div>
 
           {/* Title */}
-          <h2 className="hok-hiw-mobile-le-title">
-            Your wardrobe has been waiting <em>for this</em>.
-          </h2>
+          <h2 className="hok-hiw-mobile-le-title">{getVal && getVal("hiw_earn_heading", null) ? getVal("hiw_earn_heading") : <>Your wardrobe has been waiting <em>for this</em>.</>}</h2>
 
           {/* Lead */}
-          <p className="hok-hiw-mobile-le-lead">
-            The wedding lehenga in the back of your cupboard. The bridal set
-            that deserves another evening. Every designer piece you loved and
-            wore once is a piece someone is searching for right now.
-          </p>
+          <p className="hok-hiw-mobile-le-lead">{getVal ? getVal("hiw_earn_lead", "The wedding lehenga in the back of your cupboard. The bridal set that deserves another evening. Every designer piece you loved and wore once is a piece someone is searching for right now.") : "The wedding lehenga in the back of your cupboard..."}</p>
 
           {/* Commission Table */}
           <div className="hok-hiw-mobile-le-table">

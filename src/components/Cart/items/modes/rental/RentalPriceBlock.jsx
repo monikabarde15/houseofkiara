@@ -1,11 +1,10 @@
 // src\components\Cart\items\modes\rental\RentalPriceBlock.jsx
 import React from "react";
+import { useRegionalSettings } from "../../../../../hooks/useRegionalSettings";
 import "../../../../../styles/cart/items/price-block.css";
 
-const formatPrice = (num) =>
-  new Intl.NumberFormat("en-IN").format(num);
-
 const RentalPriceBlock = ({ product, booking, itemPrice }) => {
+  const { currencySymbol, formatPrice } = useRegionalSettings();
   const rent = product?.rent || product?.modes?.rent;
 
   // DERIVE DAYS FROM WINDOW OR DATES
@@ -45,13 +44,13 @@ const RentalPriceBlock = ({ product, booking, itemPrice }) => {
 
       {/* PRICE */}
       <div className="cart-price__value">
-         <sup>₹</sup>{formatPrice(totalPrice)}
+         <sup>{currencySymbol}</sup>{formatPrice(totalPrice)}
       </div>
 
       {/* NOTE */}
       {perDay > 0 && (
         <div className="cart-price__note">
-          ₹{formatPrice(perDay)} per day
+          {currencySymbol}{formatPrice(perDay)} per day
         </div>
       )}
 

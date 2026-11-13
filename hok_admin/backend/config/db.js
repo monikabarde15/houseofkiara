@@ -1,5 +1,10 @@
 import dns from "dns";
 dns.setDefaultResultOrder("ipv4first");
+try {
+  dns.setServers(["8.8.8.8", "1.1.1.1", "8.8.4.4"]);
+} catch (e) {
+  // Ignore if custom DNS setServers fails in environment
+}
 
 import pg from "pg";
 import dotenv from "dotenv";
@@ -24,7 +29,18 @@ export const pool = new pg.Pool({
   connectionTimeoutMillis: 30000,
   lookup: (hostname, options, callback) => {
     const cb = typeof options === "function" ? options : callback;
-    dns.lookup(hostname, { family: 4 }, cb);
+    dns.lookup(hostname, { family: 4 }, (err, address, family) => {
+      if (err) {
+        dns.resolve4(hostname, (resErr, addresses) => {
+          if (!resErr && addresses && addresses.length > 0) {
+            return cb(null, addresses[0], 4);
+          }
+          return cb(err);
+        });
+      } else {
+        cb(null, address, family);
+      }
+    });
   },
 });
 

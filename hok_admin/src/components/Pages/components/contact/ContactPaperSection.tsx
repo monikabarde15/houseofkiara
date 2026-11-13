@@ -21,7 +21,7 @@ interface ContactPaperSectionProps {
   focusedField: EditableFieldInfo | null;
   getVal: (id: string, fallback: string) => string;
   onSelectPart: (partId: string) => void;
-  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean) => void;
+  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean, currentValue?: string) => void;
   onFieldChange: (fieldId: string, value: string) => void;
   onSelectFigure?: (figureKey: string) => void;
   onNavigateToPage?: (slug: string) => void;
@@ -69,6 +69,7 @@ export const ContactPaperSection: React.FC<ContactPaperSectionProps> = ({
         getVal={getVal}
         onSelectPart={onSelectPart}
         onFieldFocus={onFieldFocus}
+        onFieldChange={onFieldChange}
         onSelectFigure={onSelectFigure}
         onOpenCheck={onOpenCheck}
       />
@@ -80,6 +81,7 @@ export const ContactPaperSection: React.FC<ContactPaperSectionProps> = ({
         getVal={getVal}
         onSelectPart={onSelectPart}
         onFieldFocus={onFieldFocus}
+        onFieldChange={onFieldChange}
         onNavigateToPage={onNavigateToPage}
       />
 
@@ -90,6 +92,7 @@ export const ContactPaperSection: React.FC<ContactPaperSectionProps> = ({
         getVal={getVal}
         onSelectPart={onSelectPart}
         onFieldFocus={onFieldFocus}
+        onFieldChange={onFieldChange}
         onSelectFigure={onSelectFigure}
       />
 
@@ -100,6 +103,7 @@ export const ContactPaperSection: React.FC<ContactPaperSectionProps> = ({
         getVal={getVal}
         onSelectPart={onSelectPart}
         onFieldFocus={onFieldFocus}
+        onFieldChange={onFieldChange}
         onSelectFigure={onSelectFigure}
         onOpenCheck={onOpenCheck}
       />
@@ -111,6 +115,7 @@ export const ContactPaperSection: React.FC<ContactPaperSectionProps> = ({
         getVal={getVal}
         onSelectPart={onSelectPart}
         onFieldFocus={onFieldFocus}
+        onFieldChange={onFieldChange}
         onSelectFigure={onSelectFigure}
         onNavigateToPage={onNavigateToPage}
       />
@@ -122,6 +127,7 @@ export const ContactPaperSection: React.FC<ContactPaperSectionProps> = ({
         getVal={getVal}
         onSelectPart={onSelectPart}
         onFieldFocus={onFieldFocus}
+        onFieldChange={onFieldChange}
         onSelectFigure={onSelectFigure}
         onNavigateToPage={onNavigateToPage}
       />

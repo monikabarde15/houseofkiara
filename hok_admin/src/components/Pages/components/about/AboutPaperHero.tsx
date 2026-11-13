@@ -83,7 +83,7 @@ export const AboutPaperHero: React.FC<AboutPaperHeroProps> = ({
                 : 'hover:ring-1 hover:ring-[#d4af37]/40'
             }`}
           >
-            A home for <span className="italic text-[#d4af37]">beloved</span> things.
+            {getVal('about_heading', 'A home for beloved things.')}
           </h1>
         </div>
 

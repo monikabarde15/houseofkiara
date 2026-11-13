@@ -13,7 +13,7 @@ interface ContactPaperLegalDetailsProps {
   focusedField: EditableFieldInfo | null;
   getVal: (id: string, fallback: string) => string;
   onSelectPart: (partId: string) => void;
-  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean) => void;
+  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean, currentValue?: string) => void;
   onFieldChange: (fieldId: string, value: string) => void;
   onSelectFigure?: (figureKey: string) => void;
   onNavigateToPage?: (slug: string) => void;
@@ -45,7 +45,7 @@ export const ContactPaperLegalDetails: React.FC<ContactPaperLegalDetailsProps> =
         <h3
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('raising-a-concern', 'contact_concern_heading', 'Heading', 'Raising a concern title', true);
+            onFieldFocus('raising-a-concern', 'contact_concern_heading', 'Heading', 'Raising a concern title', true, getVal('contact_concern_heading', 'Raising a concern'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_concern_heading'}
           suppressContentEditableWarning
@@ -60,7 +60,17 @@ export const ContactPaperLegalDetails: React.FC<ContactPaperLegalDetailsProps> =
         <p
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('raising-a-concern', 'contact_concern_intro', 'Intro paragraph', 'Encourages conversation first');
+            onFieldFocus(
+              'raising-a-concern',
+              'contact_concern_intro',
+              'Intro paragraph',
+              'Encourages conversation first',
+              false,
+              getVal(
+                'contact_concern_intro',
+                'We’d always rather put things right in conversation, so please message us first. If you’re not happy with how we’ve handled something, write to our Grievance Officer.'
+              )
+            );
           }}
           contentEditable={focusedField?.fieldId === 'contact_concern_intro'}
           suppressContentEditableWarning
@@ -79,7 +89,7 @@ export const ContactPaperLegalDetails: React.FC<ContactPaperLegalDetailsProps> =
           <span
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('raising-a-concern', 'contact_concern_promise_lead', 'Promise lead', 'Resolution timeline text');
+              onFieldFocus('raising-a-concern', 'contact_concern_promise_lead', 'Promise lead', 'Resolution timeline text', false, getVal('contact_concern_promise_lead', 'We acknowledge every complaint within '));
             }}
             contentEditable={focusedField?.fieldId === 'contact_concern_promise_lead'}
             suppressContentEditableWarning
@@ -158,7 +168,7 @@ export const ContactPaperLegalDetails: React.FC<ContactPaperLegalDetailsProps> =
         <h3
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('our-details', 'contact_details_heading', 'Heading', 'Our details title', true);
+            onFieldFocus('our-details', 'contact_details_heading', 'Heading', 'Our details title', true, getVal('contact_details_heading', 'Our details'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_details_heading'}
           suppressContentEditableWarning
@@ -209,7 +219,7 @@ export const ContactPaperLegalDetails: React.FC<ContactPaperLegalDetailsProps> =
           <div
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('our-details', 'contact_details_send_title', 'Subheading', 'Shipping return title');
+              onFieldFocus('our-details', 'contact_details_send_title', 'Subheading', 'Shipping return title', false, getVal('contact_details_send_title', 'Sending something to us?'));
             }}
             contentEditable={focusedField?.fieldId === 'contact_details_send_title'}
             suppressContentEditableWarning
@@ -224,7 +234,17 @@ export const ContactPaperLegalDetails: React.FC<ContactPaperLegalDetailsProps> =
           <p
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('our-details', 'contact_details_send_text', 'Instructions', 'Returns packing guidance');
+              onFieldFocus(
+                'our-details',
+                'contact_details_send_text',
+                'Instructions',
+                'Returns packing guidance',
+                false,
+                getVal(
+                  'contact_details_send_text',
+                  'Please speak to us before you send anything. Every return travels with our prepaid label or a collection we arrange, so it’s tracked and protected all the way.'
+                )
+              );
             }}
             contentEditable={focusedField?.fieldId === 'contact_details_send_text'}
             suppressContentEditableWarning

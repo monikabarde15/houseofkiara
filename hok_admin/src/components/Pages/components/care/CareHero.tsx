@@ -23,6 +23,7 @@ export const CareHero: React.FC<CareHeroProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const eyebrow = fieldValues['care_hero_eyebrow'] ?? 'OUR PROMISE TO EVERY PIECE';
+  const savedHeading = fieldValues['care_hero_heading'];
   const headingPrefix = fieldValues['care_hero_heading_prefix'] ?? 'Care, cleaning & ';
   const headingAccent = fieldValues['care_hero_heading_accent'] ?? 'damage';
   const lead = fieldValues['care_hero_lead'] ??
@@ -68,12 +69,17 @@ export const CareHero: React.FC<CareHeroProps> = ({
           contentEditable
           suppressContentEditableWarning
           onFocus={() => onFocusField('care_hero_heading')}
+          onInput={(e) => onFieldChange('care_hero_heading', e.currentTarget.textContent || '')}
           onBlur={(e) => onFieldChange('care_hero_heading', e.currentTarget.textContent || '')}
           className="text-3xl md:text-[42px] font-serif text-[#1c1917] font-normal tracking-[-0.01em] cursor-text hover:bg-[#fbf4ea] px-3 py-1 rounded inline-block transition-colors outline-hidden"
           title="Click to edit heading"
         >
-          <span>{headingPrefix}</span>
-          <span className="italic font-normal text-[#935b1e]">{headingAccent}</span>
+          {savedHeading !== undefined ? savedHeading : (
+            <>
+              <span>{headingPrefix}</span>
+              <span className="italic font-normal text-[#935b1e]">{headingAccent}</span>
+            </>
+          )}
         </h1>
       </div>
 

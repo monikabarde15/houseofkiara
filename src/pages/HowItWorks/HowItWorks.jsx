@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { usePageContent } from "../../hooks/usePageContent";
 import "../../styles/howitworks/how-it-works.css";
 
 // Layout Components
@@ -6,6 +7,7 @@ import HowItWorksLayout from "../../components/HowItWorks/layout/HowItWorksLayou
 import MobileHowItWorksLayout from "../../components/HowItWorks/Mobile/layout/MobileHowItWorksLayout";
 
 const HowItWorks = () => {
+  const { getVal } = usePageContent("/how-it-works");
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState("section-shop");
   const observerRef = useRef(null);
@@ -119,9 +121,9 @@ const HowItWorks = () => {
   return (
     <div className="hok-hiw-page">
       {isMobile ? (
-        <MobileHowItWorksLayout activeSection={activeSection} />
+        <MobileHowItWorksLayout activeSection={activeSection} getVal={getVal} />
       ) : (
-        <HowItWorksLayout activeSection={activeSection} />
+        <HowItWorksLayout activeSection={activeSection} getVal={getVal} />
       )}
     </div>
   );

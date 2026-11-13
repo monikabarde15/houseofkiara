@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/howitworks/closing-cta.css";
 
-const ClosingCTA = () => {
+const ClosingCTA = ({ getVal }) => {
   const navigate = useNavigate();
 
   const handleBrowseCollection = () => {
@@ -27,16 +27,10 @@ const ClosingCTA = () => {
         </div>
 
         {/* Title */}
-        <h2 className="hok-hiw-closing-title">
-          Every outfit has a story. <br />
-          We make sure it's <em>never</em> the last chapter.
-        </h2>
+        <h2 className="hok-hiw-closing-title">{getVal && getVal("hiw_closing_heading", null) ? getVal("hiw_closing_heading") : <>Every outfit has a story. <br />We make sure it's <em>never</em> the last chapter.</>}</h2>
 
         {/* Body */}
-        <p className="hok-hiw-closing-body">
-          Whether you're dressing for a celebration or giving a beautiful piece
-          another moment to shine – this is where that story continues.
-        </p>
+        <p className="hok-hiw-closing-body">{getVal ? getVal("hiw_closing_sub", "Whether you're dressing for a celebration or giving a beautiful piece another moment to shine – this is where that story continues.") : "Whether you're dressing for a celebration..."}</p>
 
         {/* Buttons */}
         <div className="hok-hiw-closing-buttons">

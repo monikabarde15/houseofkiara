@@ -13,7 +13,7 @@ interface ContactPaperWriteFormProps {
   focusedField: EditableFieldInfo | null;
   getVal: (id: string, fallback: string) => string;
   onSelectPart: (partId: string) => void;
-  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean) => void;
+  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean, currentValue?: string) => void;
   onFieldChange: (fieldId: string, value: string) => void;
   onSelectFigure?: (figureKey: string) => void;
 }
@@ -41,7 +41,7 @@ export const ContactPaperWriteForm: React.FC<ContactPaperWriteFormProps> = ({
         <h3
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('write-a-note', 'contact_write_heading', 'Heading', 'Write us a note title', true);
+            onFieldFocus('write-a-note', 'contact_write_heading', 'Heading', 'Write us a note title', true, getVal('contact_write_heading', 'Write us a note'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_write_heading'}
           suppressContentEditableWarning
@@ -57,7 +57,7 @@ export const ContactPaperWriteForm: React.FC<ContactPaperWriteFormProps> = ({
           <span
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('write-a-note', 'contact_write_lead', 'Line under heading', 'Explains that note will be answered by email');
+              onFieldFocus('write-a-note', 'contact_write_lead', 'Line under heading', 'Explains that note will be answered by email', false, getVal('contact_write_lead', 'Prefer to put it in writing? Send us a note here, and our team will reply by email within '));
             }}
             contentEditable={focusedField?.fieldId === 'contact_write_lead'}
             suppressContentEditableWarning
@@ -86,7 +86,7 @@ export const ContactPaperWriteForm: React.FC<ContactPaperWriteFormProps> = ({
           <label
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('write-a-note', 'contact_field_name_label', 'Your name label', 'Field label');
+              onFieldFocus('write-a-note', 'contact_field_name_label', 'Your name label', 'Field label', false, getVal('contact_field_name_label', 'Your name *'));
             }}
             contentEditable={focusedField?.fieldId === 'contact_field_name_label'}
             suppressContentEditableWarning
@@ -106,7 +106,7 @@ export const ContactPaperWriteForm: React.FC<ContactPaperWriteFormProps> = ({
           <label
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('write-a-note', 'contact_field_email_label', 'Email label', 'Field label');
+              onFieldFocus('write-a-note', 'contact_field_email_label', 'Email label', 'Field label', false, getVal('contact_field_email_label', 'Email *'));
             }}
             contentEditable={focusedField?.fieldId === 'contact_field_email_label'}
             suppressContentEditableWarning
@@ -127,7 +127,7 @@ export const ContactPaperWriteForm: React.FC<ContactPaperWriteFormProps> = ({
             <label
               onClick={e => {
                 e.stopPropagation();
-                onFieldFocus('write-a-note', 'contact_field_phone_label', 'WhatsApp label', 'Field label');
+                onFieldFocus('write-a-note', 'contact_field_phone_label', 'WhatsApp label', 'Field label', false, getVal('contact_field_phone_label', 'WhatsApp number'));
               }}
               contentEditable={focusedField?.fieldId === 'contact_field_phone_label'}
               suppressContentEditableWarning
@@ -149,7 +149,7 @@ export const ContactPaperWriteForm: React.FC<ContactPaperWriteFormProps> = ({
           <label
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('write-a-note', 'contact_field_topic_label', 'Topic label', 'Field label');
+              onFieldFocus('write-a-note', 'contact_field_topic_label', 'Topic label', 'Field label', false, getVal('contact_field_topic_label', 'What is it about? *'));
             }}
             contentEditable={focusedField?.fieldId === 'contact_field_topic_label'}
             suppressContentEditableWarning
@@ -171,7 +171,7 @@ export const ContactPaperWriteForm: React.FC<ContactPaperWriteFormProps> = ({
             <label
               onClick={e => {
                 e.stopPropagation();
-                onFieldFocus('write-a-note', 'contact_field_order_label', 'Order number label', 'Field label');
+                onFieldFocus('write-a-note', 'contact_field_order_label', 'Order number label', 'Field label', false, getVal('contact_field_order_label', 'Order number or piece'));
               }}
               contentEditable={focusedField?.fieldId === 'contact_field_order_label'}
               suppressContentEditableWarning
@@ -193,7 +193,7 @@ export const ContactPaperWriteForm: React.FC<ContactPaperWriteFormProps> = ({
           <label
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('write-a-note', 'contact_field_msg_label', 'Your message label', 'Field label');
+              onFieldFocus('write-a-note', 'contact_field_msg_label', 'Your message label', 'Field label', false, getVal('contact_field_msg_label', 'Your message *'));
             }}
             contentEditable={focusedField?.fieldId === 'contact_field_msg_label'}
             suppressContentEditableWarning
@@ -212,7 +212,7 @@ export const ContactPaperWriteForm: React.FC<ContactPaperWriteFormProps> = ({
         <p
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('write-a-note', 'contact_privacy_note', 'Privacy notice', 'Note under form');
+            onFieldFocus('write-a-note', 'contact_privacy_note', 'Privacy notice', 'Note under form', false, getVal('contact_privacy_note', 'We use these details only to reply to you, as our Privacy Policy explains.'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_privacy_note'}
           suppressContentEditableWarning
@@ -229,7 +229,7 @@ export const ContactPaperWriteForm: React.FC<ContactPaperWriteFormProps> = ({
             type="button"
             className="px-6 py-2.5 rounded-[4px] bg-[#1a1612] text-[#f7f2ea] text-xs font-semibold tracking-wider uppercase hover:bg-[#332b21] transition cursor-pointer"
           >
-            SEND YOUR NOTE
+            {getVal('contact_write_button', 'SEND YOUR NOTE')}
           </button>
         </div>
       </div>

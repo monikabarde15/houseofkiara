@@ -1,3 +1,4 @@
+import { usePageContent } from "../../hooks/usePageContent";
 import React, {
   useState,
   useEffect,
@@ -32,6 +33,7 @@ import "../../styles/faq/faq-still-wondering.css";
 import "../../styles/faq/faq-review.css";
 
 export default function FAQPage() {
+  const { getVal } = usePageContent('/faqs');
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -233,7 +235,7 @@ export default function FAQPage() {
       <Breadcrumb onSelectMoment={handleSelectMoment} />
 
       {/* Concierge Hero (B1-B13) */}
-      <ConciergeHero
+      <ConciergeHero getVal={getVal}
         selectedMomentId={momentId}
         onSelectMoment={handleSelectMoment}
         onSelectQuestion={handleSelectQuestion}

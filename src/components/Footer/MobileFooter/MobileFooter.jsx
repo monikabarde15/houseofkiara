@@ -25,7 +25,7 @@ const LinkedinIcon = () => (
   </svg>
 );
 
-const MobileFooter = () => {
+const MobileFooter = ({ footerSettings, brandSettings, contactSettings }) => {
   const location = useLocation();
 
   const isCurrentPage = (link) => {
@@ -84,14 +84,47 @@ const MobileFooter = () => {
     return false;
   };
 
+  const columns =
+    footerSettings?.linkColumns && footerSettings.linkColumns.length > 0
+      ? footerSettings.linkColumns
+      : mobileFooterColumns;
+
+  let policyLinks =
+    footerSettings?.legalRow && footerSettings.legalRow.length > 0
+      ? [...footerSettings.legalRow]
+      : mobilePolicyLinks;
+
+  const hasCookieSettings = policyLinks.some(
+    (l) => l.isButton || l.label?.toLowerCase() === "cookie settings"
+  );
+  if (!hasCookieSettings) {
+    policyLinks.push({
+      label: "Cookie settings",
+      isButton: true,
+      action: "open-cookie-settings",
+    });
+  }
+
+  const blurb = footerSettings?.blurbUnderWordmark || "Circular Luxury Fashion";
+  const rawCopyright =
+    footerSettings?.copyrightLine || "© 2026 House of Kaira. All rights reserved.";
+  const cleanCopyright = rawCopyright.replace(/&copy;/g, "©");
+
+  const badges = footerSettings?.trustBadges
+    ? footerSettings.trustBadges
+        .split(",")
+        .map((b) => b.trim())
+        .filter(Boolean)
+    : ["Secure Payments", "Circular Fashion"];
+
   return (
     <footer className="hok-mobile-footer" data-theme-trigger="light">
       {/* Brand Block */}
       <div className="hok-mobile-footer-brand">
-        <h3 className="hok-mobile-footer-brand-name">House of Kaira</h3>
-        <span className="hok-mobile-footer-brand-sub">Circular Luxury Fashion</span>
+        <h3 className="hok-mobile-footer-brand-name">{brandSettings?.siteName || "House of Kaira"}</h3>
+        <span className="hok-mobile-footer-brand-sub">{brandSettings?.tagline || blurb}</span>
         <p className="hok-mobile-footer-tagline">
-          &ldquo;Every outfit has a story. We make sure it&apos;s never the last chapter.&rdquo;
+          &ldquo;{brandSettings?.brandQuote || "Every outfit has a story. We make sure it's never the last chapter."}&rdquo;
         </p>
         <div className="hok-mobile-footer-socials">
           <button
@@ -99,11 +132,12 @@ const MobileFooter = () => {
             aria-label="Instagram"
             onClick={() => {
               showToast("Opening Instagram");
-              window.open(
-                "https://instagram.com/houseofkaira",
-                "_blank",
-                "noopener,noreferrer"
-              );
+              const handle =
+                contactSettings?.social?.instagram || "@house_of_kaira";
+              const url = handle.startsWith("http")
+                ? handle
+                : `https://instagram.com/${handle.replace(/^@/, "")}`;
+              window.open(url, "_blank", "noopener,noreferrer");
             }}
           >
             <InstagramIcon />
@@ -111,14 +145,32 @@ const MobileFooter = () => {
           <button
             type="button"
             aria-label="Facebook"
-            onClick={() => showToast("Facebook coming soon")}
+            onClick={() => {
+              const fb = contactSettings?.social?.facebook;
+              if (fb && fb.trim()) {
+                showToast("Opening Facebook");
+                const url = fb.startsWith("http") ? fb : `https://facebook.com/${fb}`;
+                window.open(url, "_blank", "noopener,noreferrer");
+              } else {
+                showToast("Facebook coming soon");
+              }
+            }}
           >
             <FacebookIcon />
           </button>
           <button
             type="button"
             aria-label="LinkedIn"
-            onClick={() => showToast("LinkedIn coming soon")}
+            onClick={() => {
+              const li = contactSettings?.social?.linkedIn;
+              if (li && li.trim()) {
+                showToast("Opening LinkedIn");
+                const url = li.startsWith("http") ? li : `https://linkedin.com/${li}`;
+                window.open(url, "_blank", "noopener,noreferrer");
+              } else {
+                showToast("LinkedIn coming soon");
+              }
+            }}
           >
             <LinkedinIcon />
           </button>
@@ -127,16 +179,16 @@ const MobileFooter = () => {
 
       {/* Footer Link Columns */}
       <div className="hok-mobile-footer-columns">
-        {mobileFooterColumns.map((column) => (
-          <div key={column.title} className="hok-mobile-footer-column">
-            <h4 className="hok-mobile-footer-column-heading">{column.title}</h4>
+        {columns.map((column) => (
+          <div key={column.heading || column.title || column.id} className="hok-mobile-footer-column">
+            <h4 className="hok-mobile-footer-column-heading">{column.heading || column.title}</h4>
             <div className="hok-mobile-footer-column-links">
-              {column.links.map((link) => {
+              {(column.links || []).map((link) => {
                 const isCurrent = isCurrentPage(link);
                 if (isCurrent) {
                   return (
                     <span
-                      key={link.label}
+                      key={link.id || link.label}
                       className="hok-mobile-footer-link here"
                       aria-current="page"
                     >
@@ -145,7 +197,7 @@ const MobileFooter = () => {
                   );
                 }
                 return (
-                  <a href={link.path} key={link.label} className="hok-mobile-footer-link">
+                  <a href={link.path} key={link.id || link.label} className="hok-mobile-footer-link">
                     {link.label}
                   </a>
                 );
@@ -157,18 +209,19 @@ const MobileFooter = () => {
 
       {/* Policy Links */}
       <div className="hok-mobile-footer-policy">
-        {mobilePolicyLinks.map((link, index) => {
+        {policyLinks.map((link, index) => {
           const isLast = index === mobilePolicyLinks.length - 1;
           const isCurrent = isCurrentPage(link);
+          const isBtn = link.isButton || link.label?.toLowerCase() === "cookie settings";
 
-          if (link.isButton) {
+          if (isBtn) {
             return (
               <button
                 type="button"
-                key={link.label}
+                key={link.id || link.label}
                 className={`hok-mobile-footer-policy-link ${isLast ? "last" : ""}`}
                 onClick={() => {
-                  if (typeof window !== 'undefined' && window.HOK_CONSENT) {
+                  if (typeof window !== "undefined" && window.HOK_CONSENT) {
                     window.HOK_CONSENT.open();
                   }
                 }}
@@ -181,7 +234,7 @@ const MobileFooter = () => {
           if (isCurrent) {
             return (
               <span
-                key={link.label}
+                key={link.id || link.label}
                 className={`hok-mobile-footer-policy-link here ${isLast ? "last" : ""}`}
                 aria-current="page"
               >
@@ -193,7 +246,7 @@ const MobileFooter = () => {
           return (
             <a
               href={link.path}
-              key={link.label}
+              key={link.id || link.label}
               className={`hok-mobile-footer-policy-link ${isLast ? "last" : ""}`}
             >
               {link.label}
@@ -205,11 +258,14 @@ const MobileFooter = () => {
       {/* Copyright Bar */}
       <div className="hok-mobile-footer-copyright">
         <p className="hok-mobile-footer-copyright-text">
-          &copy; 2026 House of Kaira. All rights reserved.
+          {cleanCopyright}
         </p>
         <div className="hok-mobile-footer-badges">
-          <span className="hok-mobile-footer-badge">Secure Payments</span>
-          <span className="hok-mobile-footer-badge">Circular Fashion</span>
+          {badges.map((badge, idx) => (
+            <span key={idx} className="hok-mobile-footer-badge">
+              {badge}
+            </span>
+          ))}
         </div>
       </div>
     </footer>

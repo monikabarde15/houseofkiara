@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import "../../../styles/aboutus/mobile/philosophy-mobile.css";
 import { showToast } from "../shared/Toast";
 
-const MobilePhilosophy = () => {
+const MobilePhilosophy = ({ getVal }) => {
   const sectionRef = useRef(null);
 
   // Reveal animation observer - Mobile Spec §02.3
@@ -31,26 +31,26 @@ const MobilePhilosophy = () => {
     {
       id: 1,
       icon: "star",
-      heading: "Celebration, <em>not ownership</em>",
-      desc: "You don't need to own a moment to live it fully. Wear the showstopper for the night it was made for, then let it move on to someone else's celebration.",
+      heading: `${getVal ? getVal("about_b_b1_h1", "Celebration,") : "Celebration,"} <em>${getVal ? getVal("about_b_b1_h2", "not ownership") : "not ownership"}</em>`,
+      desc: getVal ? getVal("about_b_b1_p", "You don't need to own a moment to live it fully. Wear the showstopper for the night it was made for, then let it move on to someone else's celebration.") : "You don't need to own a moment to live it fully. Wear the showstopper for the night it was made for, then let it move on to someone else's celebration.",
     },
     {
       id: 2,
       icon: "document",
-      heading: "Curation, <em>not catalogue</em>",
-      desc: "Every piece is chosen, not just accepted. If it doesn't meet our standard of craft and condition, it doesn't make it onto House of Kaira — no exceptions.",
+      heading: `${getVal ? getVal("about_b_b2_h1", "Curation,") : "Curation,"} <em>${getVal ? getVal("about_b_b2_h2", "not catalogue") : "not catalogue"}</em>`,
+      desc: getVal ? getVal("about_b_b2_p", "Every piece is chosen, not just accepted. If it doesn't meet our standard of craft and condition, it doesn't make it onto House of Kaira — no exceptions.") : "Every piece is chosen, not just accepted. If it doesn't meet our standard of craft and condition, it doesn't make it onto House of Kaira — no exceptions.",
     },
     {
       id: 3,
       icon: "refresh",
-      heading: "Renewal, <em>not relinquishment</em>",
-      desc: "Preloved, never pre-owned. Every piece that passes through House of Kaira leaves more storied than it arrived, never less valuable.",
+      heading: `${getVal ? getVal("about_b_b3_h1", "Turnaround,") : "Turnaround,"} <em>${getVal ? getVal("about_b_b3_h2", "not warehouse") : "not warehouse"}</em>`,
+      desc: getVal ? getVal("about_b_b3_p", "Pieces belong on women at celebrations, not resting in dark boxes. Fast dispatch, fast cleaning, and pieces back on the rack within 48 hours.") : "Pieces belong on women at celebrations, not resting in dark boxes. Fast dispatch, fast cleaning, and pieces back on the rack within 48 hours.",
     },
     {
       id: 4,
       icon: "trust",
-      heading: "Trust, <em>both ways</em>",
-      desc: "A bride trusts us with her biggest day. A lister trusts us with her wardrobe's legacy. We hold both with exactly the same care.",
+      heading: `${getVal ? getVal("about_b_b4_h1", "Care,") : "Care,"} <em>${getVal ? getVal("about_b_b4_h2", "first always") : "first always"}</em>`,
+      desc: getVal ? getVal("about_b_b4_p", "A lehenga returns from a wedding with memories, and sometimes turmeric. Our Indore atelier treats every fabric with museum grade attention before it departs again.") : "A lehenga returns from a wedding with memories, and sometimes turmeric. Our Indore atelier treats every fabric with museum grade attention before it departs again.",
     },
   ];
 
@@ -99,12 +99,10 @@ const MobilePhilosophy = () => {
       <div className="mob-philosophy__head reveal">
         <div className="mob-philosophy__eyebrow">
           <span className="mob-philosophy__eyebrow-line"></span>
-          <span>What We Believe</span>
+          <span>{getVal ? getVal("about_believe_eyebrow", "What We Believe") : "What We Believe"}</span>
           <span className="mob-philosophy__eyebrow-line"></span>
         </div>
-        <h2 className="mob-philosophy__title">
-          Four ideas we will <em>never</em> compromise on
-        </h2>
+        <h2 className="mob-philosophy__title">{getVal && getVal("about_believe_heading", null) ? getVal("about_believe_heading") : <>Four ideas we will <em>never</em> compromise on</>}</h2>
       </div>
 
       {/* Card Grid - Mobile Spec §09.2: flex column, gap: 1px */}

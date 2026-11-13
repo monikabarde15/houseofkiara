@@ -7,7 +7,10 @@ import React from 'react';
 import { COOKIE_SETTINGS } from '../../data/cookies/cookieSettings.js';
 import { scrollToAnchor } from '../../utils/cookies/cookieFormatter.jsx';
 
-const CookieHero = ({ onPrint, onOpenCookieSettings }) => {
+const CookieHero = ({ onPrint, onOpenCookieSettings, getVal }) => {
+  const eyebrow = getVal ? getVal("cookie_eyebrow", "COOKIE NOTICE & CHOICES") : "COOKIE NOTICE & CHOICES";
+  const heading = getVal ? getVal("cookie_heading", null) : null;
+  const lead = getVal ? getVal("cookie_lead", "How House of Kaira uses cookies and browser storage, which ones we set, why we need them, and how you can switch off everything that is not strictly necessary.") : "How House of Kaira uses cookies and browser storage, which ones we set, why we need them, and how you can switch off everything that is not strictly necessary.";
   const handleCookieSettingsClick = (e) => {
     e.preventDefault();
     if (onOpenCookieSettings) {

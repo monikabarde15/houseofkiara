@@ -5,7 +5,7 @@ import "../../styles/Header/desktop-header.css";
 import useAuthStore from "../../store/authStore";
 import useWishlistStore from "../../store/wishlistStore";
 
-const DesktopHeader = ({ onSearchOpen, searchPlaceholder, bagCartLabel = "Bag" }) => {
+const DesktopHeader = ({ onSearchOpen, searchPlaceholder, bagCartLabel = "Bag", siteName = "House of Kaira", logoUrl, wordmarkUrl }) => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuthStore();
   const wishlistItems = useWishlistStore((state) => state.items);
@@ -65,14 +65,23 @@ const DesktopHeader = ({ onSearchOpen, searchPlaceholder, bagCartLabel = "Bag" }
           }}
         >
           <img
-            src={logo}
-            alt="House of Kaira"
+            src={logoUrl || logo}
+            alt={siteName || "House of Kaira"}
             className="hok-desktop-header-logo-img"
           />
 
-          <span className="hok-desktop-header-wordmark">
-            House of Kaira
-          </span>
+          {wordmarkUrl ? (
+            <img
+              src={wordmarkUrl}
+              alt={siteName || "House of Kaira"}
+              className="hok-desktop-header-wordmark-img"
+              style={{ maxHeight: "32px", objectFit: "contain" }}
+            />
+          ) : (
+            <span className="hok-desktop-header-wordmark">
+              {siteName || "House of Kaira"}
+            </span>
+          )}
         </div>
 
         {/* Right */}

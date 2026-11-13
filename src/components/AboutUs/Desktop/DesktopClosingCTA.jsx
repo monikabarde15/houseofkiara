@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../../../styles/aboutus/desktop/closing-cta-desktop.css";
 import { showToast } from "../shared/Toast";
 
-const DesktopClosingCTA = () => {
+const DesktopClosingCTA = ({ getVal }) => {
   const sectionRef = useRef(null);
   const navigate = useNavigate();
 
@@ -52,16 +52,10 @@ const DesktopClosingCTA = () => {
       {/* Inner Content  */}
       <div className="au-closing__inner reveal">
         {/* H2  */}
-        <h2 className="au-closing__title">
-          Your piece's <em>next chapter</em> starts here.
-        </h2>
+        <h2 className="au-closing__title">{getVal && getVal("about_closing_heading", null) ? getVal("about_closing_heading") : <>Your piece's <em>next chapter</em> starts here.</>}</h2>
 
         {/* Paragraph  */}
-        <p className="au-closing__paragraph">
-          Whether you're here to wear something unforgettable or to give
-          something unforgettable a second life, there's a place for you at
-          House of Kaira.
-        </p>
+        <p className="au-closing__paragraph">{getVal ? getVal("about_closing_sub", getVal("about_closing_lead", "Whether you're here to wear something unforgettable or to give something unforgettable a second life, there's a place for you at House of Kaira.")) : "Whether you're here to wear something unforgettable or to give something unforgettable a second life, there's a place for you at House of Kaira."}</p>
 
         {/* Buttons */}
         <div className="au-closing__buttons">

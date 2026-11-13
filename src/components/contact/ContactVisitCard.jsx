@@ -1,6 +1,7 @@
 import React from "react";
 import { CONTACT_CONTENT } from "../../data/contact/contactContent";
 import { CONTACT_TOKENS } from "../../data/contact/contactSettings";
+import { buildWhatsAppUrl } from "../../services/contactApi";
 
 const WhatsAppIcon = ({ size = 15 }) => (
   <svg
@@ -19,13 +20,18 @@ const WhatsAppIcon = ({ size = 15 }) => (
   </svg>
 );
 
-export default function ContactVisitCard() {
-  const { title, intro, place, terms, buttonLabel, greeting } =
-    CONTACT_CONTENT.side.visit;
+export default function ContactVisitCard({ getVal, contactSettings }) {
+  const defaultVisit = CONTACT_CONTENT.side.visit;
+  const title = getVal ? getVal("contact_visit_heading", defaultVisit.title) : defaultVisit.title;
+  const intro = getVal ? getVal("contact_visit_lead", defaultVisit.intro) : defaultVisit.intro;
+  const place = getVal ? getVal("contact_visit_address", defaultVisit.place) : defaultVisit.place;
+  const terms = getVal ? getVal("contact_visit_terms", defaultVisit.terms) : defaultVisit.terms;
+  const buttonLabel = getVal ? getVal("contact_visit_button", defaultVisit.buttonLabel) : defaultVisit.buttonLabel;
+  const greeting = defaultVisit.greeting;
 
-  const bookVisitUrl = `https://wa.me/${CONTACT_TOKENS.support_whatsapp_raw}?text=${encodeURIComponent(
-    greeting
-  )}`;
+  const fallbackWa = contactSettings?.whatsApp || CONTACT_TOKENS.support_whatsapp_raw;
+  const waNumber = getVal ? getVal("contact_wa_number", fallbackWa) : fallbackWa;
+  const bookVisitUrl = buildWhatsAppUrl(waNumber, greeting);
 
   return (
     <div className="visit" aria-labelledby="visit-heading">

@@ -13,7 +13,7 @@ interface ContactPaperAnswersSectionProps {
   focusedField: EditableFieldInfo | null;
   getVal: (id: string, fallback: string) => string;
   onSelectPart: (partId: string) => void;
-  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean) => void;
+  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean, currentValue?: string) => void;
   onFieldChange: (fieldId: string, value: string) => void;
   onNavigateToPage?: (slug: string) => void;
 }
@@ -80,7 +80,7 @@ export const ContactPaperAnswersSection: React.FC<ContactPaperAnswersSectionProp
         <h3
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('answers-any-time', 'contact_answers_heading', 'Heading', 'Answers section heading', true);
+            onFieldFocus('answers-any-time', 'contact_answers_heading', 'Heading', 'Answers section heading', true, getVal('contact_answers_heading', 'Answers, any time'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_answers_heading'}
           suppressContentEditableWarning
@@ -95,7 +95,7 @@ export const ContactPaperAnswersSection: React.FC<ContactPaperAnswersSectionProp
         <p
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('answers-any-time', 'contact_answers_sub', 'Line under heading', 'Explains that questions are answered on these pages');
+            onFieldFocus('answers-any-time', 'contact_answers_sub', 'Line under heading', 'Explains that questions are answered on these pages', false, getVal('contact_answers_sub', 'Most questions are answered on these pages, ready whenever you are.'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_answers_sub'}
           suppressContentEditableWarning
@@ -128,7 +128,7 @@ export const ContactPaperAnswersSection: React.FC<ContactPaperAnswersSectionProp
             <div
               onClick={e => {
                 e.stopPropagation();
-                onFieldFocus('answers-any-time', `contact_page_desc_${page.id}`, `${page.name} description`, 'Summary line on Contact Us');
+                onFieldFocus('answers-any-time', `contact_page_desc_${page.id}`, `${page.name} description`, 'Summary line on Contact Us', false, getVal(`contact_page_desc_${page.id}`, page.defaultDesc));
               }}
               contentEditable={focusedField?.fieldId === `contact_page_desc_${page.id}`}
               suppressContentEditableWarning

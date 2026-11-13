@@ -6,7 +6,10 @@
 import React from "react";
 import { SELLER_PROTECTION_CARD } from "../../data/seller/sellerRegistry";
 
-export default function SellerProtectionCard({ onScrollToProtect }) {
+export default function SellerProtectionCard({ onScrollToProtect, getVal }) {
+  const title = getVal ? getVal("seller_protect_title", SELLER_PROTECTION_CARD.title) : SELLER_PROTECTION_CARD.title;
+  const line = getVal ? getVal("seller_protect_line", SELLER_PROTECTION_CARD.line) : SELLER_PROTECTION_CARD.line;
+
   const handleClick = (e) => {
     e.preventDefault();
     if (onScrollToProtect) {
@@ -22,8 +25,8 @@ export default function SellerProtectionCard({ onScrollToProtect }) {
 
   return (
     <aside className="sg-shield" aria-label="Your piece, protected">
-      <h2>{SELLER_PROTECTION_CARD.title}</h2>
-      <p className="sub">{SELLER_PROTECTION_CARD.line}</p>
+      <h2>{title}</h2>
+      <p className="sub">{line}</p>
 
       <ul>
         {SELLER_PROTECTION_CARD.points.map((point, index) => (

@@ -41,6 +41,7 @@ export interface EditableFieldInfo {
   fieldName: string;
   helpText?: string;
   isHeading?: boolean;
+  currentValue?: string;
 }
 
 interface PagePaperCanvasProps {
@@ -96,16 +97,31 @@ export const PagePaperCanvas: React.FC<PagePaperCanvasProps> = ({
     fieldId: string,
     fieldName: string,
     helpText?: string,
-    isHeading = false
+    isHeading = false,
+    currentValue?: string
   ) => {
     onSelectPart(partId);
-    onFocusField({ partId, fieldId, fieldName, helpText, isHeading });
+    let resolved = fieldValues[fieldId];
+    if (resolved === undefined && currentValue !== undefined) {
+      resolved = currentValue;
+    }
+    if (resolved === undefined) {
+      resolved = '';
+    }
+    onFocusField({ partId, fieldId, fieldName, helpText, isHeading, currentValue: resolved });
   };
 
-  const handleInsertFigure = (figureKey: string, formattedValue: string) => {
+  const handleInsertFigure = (figureOrKey: any, formattedValue?: string) => {
     if (!focusedField) return;
     const currentVal = getVal(focusedField.fieldId, '');
-    onFieldChange(focusedField.fieldId, currentVal + ' ' + formattedValue);
+    let valToInsert = '';
+    if (typeof figureOrKey === 'object' && figureOrKey !== null) {
+      valToInsert = figureOrKey.displayValue || figureOrKey.formattedValue || figureOrKey.value || figureOrKey.key || '';
+    } else {
+      valToInsert = formattedValue || figureOrKey || '';
+    }
+    if (!valToInsert || valToInsert === 'undefined') return;
+    onFieldChange(focusedField.fieldId, (currentVal ? currentVal + ' ' : '') + valToInsert);
     setPickerOpen(false);
   };
 

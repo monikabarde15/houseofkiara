@@ -1,7 +1,7 @@
 import React from "react";
 import "../../styles/howitworks/hero-section.css";
 
-const HeroSection = () => {
+const HeroSection = ({ getVal }) => {
   return (
     <section id="top" className="hok-hiw-hero">
       {/* HOK Watermark */}
@@ -12,19 +12,12 @@ const HeroSection = () => {
         <div className="hok-hiw-hero-left">
           <div className="hok-hiw-hero-eyebrow">
             <span className="hok-hiw-hero-line"></span>
-            <span className="hok-hiw-hero-eyebrow-text">Simple by Design</span>
+            <span className="hok-hiw-hero-eyebrow-text">{getVal ? getVal("hiw_kicker", "Simple by Design") : "Simple by Design"}</span>
           </div>
 
-          <h1 className="hok-hiw-hero-title">
-            Fashion that moves <em>beautifully </em>
-            {/* <br /> */}— and keeps moving.
-          </h1>
+          <h1 className="hok-hiw-hero-title">{getVal && getVal("hiw_heading", null) ? getVal("hiw_heading") : <>Fashion that moves <em>beautifully </em>— and keeps moving.</>}</h1>
 
-          <p className="hok-hiw-hero-body">
-            Everything you need to know about shopping, renting, selling, and
-            giving beautiful pieces a longer life — in one place, laid out
-            clearly.
-          </p>
+          <p className="hok-hiw-hero-body">{getVal ? getVal("hiw_lead", "Everything you need to know about shopping, renting, selling, and giving beautiful pieces a longer life — in one place, laid out clearly.") : "Everything you need to know about shopping, renting, selling, and giving beautiful pieces a longer life — in one place, laid out clearly."}</p>
 
           <div className="hok-hiw-hero-buttons">
             <button
@@ -72,33 +65,31 @@ const HeroSection = () => {
                 <span className="hok-hiw-hero-col-dot hok-hiw-hero-col-dot-shopping"></span>
                 Shopping
               </div>
-              <h3 className="hok-hiw-hero-col-title">
-                Rent or buy preloved with confidence
-              </h3>
+              <h3 className="hok-hiw-hero-col-title">{getVal ? getVal("hiw_left_col_title", "Rent or buy preloved with confidence") : "Rent or buy preloved with confidence"}</h3>
 
               <div className="hok-hiw-hero-steps">
                 <div className="hok-hiw-hero-step">
                   <span className="hok-hiw-hero-step-num">01</span>
                   <span className="hok-hiw-hero-step-text">
-                    Browse & discover
+                    {getVal ? getVal("hiw_step_0_title", "Browse & discover") : "Browse & discover"}
                   </span>
                 </div>
                 <div className="hok-hiw-hero-step">
                   <span className="hok-hiw-hero-step-num">02</span>
                   <span className="hok-hiw-hero-step-text">
-                    Choose your mode
+                    {getVal ? getVal("hiw_step_1_title", "Choose your mode") : "Choose your mode"}
                   </span>
                 </div>
                 <div className="hok-hiw-hero-step">
                   <span className="hok-hiw-hero-step-num">03</span>
                   <span className="hok-hiw-hero-step-text">
-                    Checkout & confirm
+                    {getVal ? getVal("hiw_step_2_title", "Checkout & confirm") : "Checkout & confirm"}
                   </span>
                 </div>
                 <div className="hok-hiw-hero-step">
                   <span className="hok-hiw-hero-step-num">04</span>
                   <span className="hok-hiw-hero-step-text">
-                    Delivered, ready to wear
+                    {getVal ? getVal("hiw_step_3_title", "Delivered, ready to wear") : "Delivered, ready to wear"}
                   </span>
                 </div>
               </div>
@@ -110,15 +101,13 @@ const HeroSection = () => {
                 <span className="hok-hiw-hero-col-dot hok-hiw-hero-col-dot-listing"></span>
                 Listing
               </div>
-              <h3 className="hok-hiw-hero-col-title hok-hiw-hero-col-title-listing">
-                Give your wardrobe a second life
-              </h3>
+              <h3 className="hok-hiw-hero-col-title hok-hiw-hero-col-title-listing">{getVal ? getVal("hiw_right_col_title", "Give your wardrobe a second life") : "Give your wardrobe a second life"}</h3>
 
               <div className="hok-hiw-hero-steps">
                 <div className="hok-hiw-hero-step">
                   <span className="hok-hiw-hero-step-num">01</span>
                   <span className="hok-hiw-hero-step-text hok-hiw-hero-step-text-listing">
-                    Photograph & list
+                    {getVal ? getVal("hiw_lstep_0_title", "Photograph & list") : "Photograph & list"}
                   </span>
                 </div>
                 <div className="hok-hiw-hero-step">

@@ -68,46 +68,182 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
 
   // Convert real orders and custom tasks to Calendar Events, Dispatches, Agenda, and Gantt formats
   const { events, dispatches, agendaEntries, ganttRows } = useMemo(() => {
-    const validOrders = orders.filter(
-      (o) =>
-        o.mode === "Rental" &&
-        (o.rentalStartDate || (o as any).items?.[0]?.rentalStartDate),
+    const parseLocalDay = (raw: any): Date | null => {
+      if (!raw) return null;
+      const s = String(raw).trim();
+      const ymd = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (ymd) {
+        return new Date(Number(ymd[1]), Number(ymd[2]) - 1, Number(ymd[3]));
+      }
+      const d = new Date(s);
+      if (isNaN(d.getTime())) return null;
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    };
+
+    const toISO = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+    const formatOrderId = (rawId: any) => {
+      const s = String(rawId || "");
+      return s.startsWith("HOK-ORD-") ? s : `HOK-ORD-${s}`;
+    };
+
+    const activeOrders = orders.filter(
+      (o: any) => String(o.status || "").toLowerCase() !== "cancelled",
     );
     const newEvents: CalendarEvent[] = [];
     const newDispatches: DispatchCard[] = [];
     const newAgenda: AgendaEntry[] = [];
     const newGantt: GanttOrderRow[] = [];
 
-    validOrders.forEach((order) => {
-      const item = (order as any).items?.[0] || order;
-      if (!item.rentalStartDate || !item.rentalEndDate) return;
+    activeOrders.forEach((order: any) => {
+      const item = order.items?.[0] || order;
+      const pName = item.productName || order.productName || "";
+      if (!pName || pName === "Unknown Product") return;
+      const pDesigner = item.designer || order.designer || "House of Kaira";
+      const rStartStr = order.rentalStartDate || item.rentalStartDate || "";
+      const rEndStr = order.rentalEndDate || item.rentalEndDate || "";
+      const savedDispStr =
+        order.dispatchDetails?.date ||
+        item.dispatch?.date ||
+        order.dispatchDate ||
+        item.dispatchDate ||
+        "";
+      const tsMatch = String(order.orderId || order.id || "").match(
+        /HOK-ORD-(\d{13})/,
+      );
+      const bookedDateObj =
+        parseLocalDay(order.orderDate || order.createdAt || order.invoiceDate) ||
+        (tsMatch ? parseLocalDay(new Date(Number(tsMatch[1]))) : null);
 
-      const start = new Date(item.rentalStartDate);
-      const end = new Date(item.rentalEndDate);
+      const oid = formatOrderId(order.orderId || order.id || order._id);
+      const isRental =
+        (order.mode === "Rental" || item.mode === "Rental" || Boolean(rStartStr)) &&
+        Boolean(rStartStr);
 
-      const dispatchDate = new Date(start);
-      dispatchDate.setDate(dispatchDate.getDate() - 2); // default dispatch 2 days before
+      if (!isRental) {
+        const dispDate = parseLocalDay(savedDispStr) || bookedDateObj;
+        if (!dispDate) return;
+        const modeLabel = item.mode || order.mode || "Buy";
+        const carrier =
+          order.dispatchDetails?.courierPartner ||
+          item.dispatch?.courierPartner ||
+          "TBD";
+        const detail = {
+          customerName: order.customerName,
+          customerLocation: (
+            order.address ||
+            order.customerCity ||
+            "India"
+          ).split(",")[0],
+          customerPhone: order.customerPhone || "N/A",
+          orderPlaced: bookedDateObj
+            ? bookedDateObj.toLocaleDateString("en-GB")
+            : dispDate.toLocaleDateString("en-GB"),
+          productName: pName,
+          productSubtitle: `${pDesigner} · ${modeLabel}`,
+          rentalPeriodLabel: `Booked ${dispDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })} (${modeLabel})`,
+          dispatchByLabel: dispDate.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }),
+          carrierLabel: carrier,
+          rentalAmountLabel: `₹${Number(order.grandTotal || order.amount || item.amount || 0).toLocaleString("en-IN")}`,
+          securityDepositLabel: "₹0",
+          depositStatusLabel: "N/A",
+        };
 
-      const returnDate = new Date(end);
-      returnDate.setDate(returnDate.getDate() + 1); // return 1 day after end
+        newEvents.push({
+          id: `disp_${oid}`,
+          type: "dispatched",
+          title: `Dispatch (${modeLabel}): ${pName}`,
+          date: toISO(dispDate),
+          orderId: oid,
+          detail,
+        });
 
-      const cleaningDate = new Date(end);
-      cleaningDate.setDate(cleaningDate.getDate() + 2);
+        const todayTime = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          currentDate.getDate(),
+        ).getTime();
+        const isDispatchToday = dispDate.getTime() === todayTime;
+        const dateStr = `${dispDate.getDate()} ${dispDate.toLocaleString("en-GB", { month: "short" }).toUpperCase()}`;
 
-      const pName = item.productName || order.productName || "Unknown Product";
-      const pDesigner = item.designer || order.designer || "Unknown";
+        newDispatches.push({
+          id: `side_disp_${oid}`,
+          dateLabel: isDispatchToday
+            ? `✦ TODAY — ${dateStr} · DISPATCH`
+            : `${dateStr} · DISPATCH`,
+          isToday: isDispatchToday,
+          title: pName,
+          subtitle: `${order.customerName} · ${modeLabel} · ${carrier}`,
+          orderId: oid,
+        });
+
+        newAgenda.push({
+          id: `agenda_${oid}_dispatched`,
+          date: dispDate.toLocaleDateString("en-GB", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+          }),
+          isoDate: toISO(dispDate),
+          type: "dispatched" as AgendaActionType,
+          orderId: oid,
+          customer: order.customerName,
+          product: pName,
+          note: `${modeLabel} order · Dispatch via ${carrier}`,
+          done: order.status === "Dispatched" || order.status === "Shipped",
+          detail: {
+            title: `Dispatch (${modeLabel}) — ${pName}`,
+            subtitle: `${modeLabel} order · Dispatch via ${carrier}`,
+            dueDate: dispDate.toLocaleDateString("en-GB", {
+              weekday: "short",
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            }),
+            relatedOrderId: oid,
+            relatedCustomer: order.customerName,
+          },
+        });
+        return;
+      }
+
+      const start = parseLocalDay(rStartStr);
+      const end = parseLocalDay(rEndStr || rStartStr);
+      if (!start || !end) return;
+
+      const defaultDisp = new Date(start);
+      defaultDisp.setDate(defaultDisp.getDate() - 2);
+      const dispatchDate = parseLocalDay(savedDispStr) || defaultDisp;
+
+      const returnDate =
+        parseLocalDay(order.returnLogistics?.returnDate || item.returnDueDate) ||
+        (() => {
+          const r = new Date(end);
+          r.setDate(r.getDate() + 1);
+          return r;
+        })();
+
+      const cleaningDate = new Date(returnDate);
+      cleaningDate.setDate(cleaningDate.getDate() + 1);
 
       const detail = {
         customerName: order.customerName,
         customerLocation: (
           order.address ||
-          (order as any).customerCity ||
+          order.customerCity ||
           "Unknown"
         ).split(",")[0],
         customerPhone: order.customerPhone || "N/A",
-        orderPlaced: order.invoiceDate
-          ? new Date(order.invoiceDate).toLocaleDateString("en-GB")
-          : "Unknown",
+        orderPlaced: bookedDateObj
+          ? bookedDateObj.toLocaleDateString("en-GB")
+          : order.invoiceDate
+            ? new Date(order.invoiceDate).toLocaleDateString("en-GB")
+            : "Unknown",
         productName: pName,
         productSubtitle: `${pDesigner} · Rental`,
         rentalPeriodLabel: `${start.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })} – ${end.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`,
@@ -117,62 +253,63 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
           year: "numeric",
         }),
         carrierLabel:
+          order.dispatchDetails?.courierPartner ||
           item.dispatch?.courierPartner ||
-          (order as any).dispatchDetails?.courierPartner ||
           "TBD",
-        rentalAmountLabel: `₹${(item.amount || order.amount || 0).toLocaleString("en-IN")}`,
-        securityDepositLabel: `₹${(item.deposit || (order as any).depositHeld || 0).toLocaleString("en-IN")}`,
+        rentalAmountLabel: `₹${Number(order.grandTotal || order.amount || item.amount || 0).toLocaleString("en-IN")}`,
+        securityDepositLabel: `₹${Number(item.deposit || order.depositHeld || order.deposit || 0).toLocaleString("en-IN")}`,
         depositStatusLabel:
           item.depositDecision?.status ||
-          (order as any).depositStatus ||
+          order.depositStatus ||
           "Pending",
       };
 
-      const toISO = (d: Date) => d.toISOString().split("T")[0];
-
       // Events
       newEvents.push({
-        id: `disp_${order.id || (order as any)._id}`,
+        id: `disp_${oid}`,
         type: "dispatched",
         title: `Dispatch: ${pName}`,
         date: toISO(dispatchDate),
-        orderId: order.id || (order as any)._id,
+        orderId: oid,
         detail,
       });
       newEvents.push({
-        id: `rent_${order.id || (order as any)._id}`,
+        id: `rent_${oid}`,
         type: "rental-starts",
         title: `Rental Starts: ${pName}`,
         date: toISO(start),
-        orderId: order.id || (order as any)._id,
+        orderId: oid,
         detail,
       });
       newEvents.push({
-        id: `ret_${order.id || (order as any)._id}`,
+        id: `ret_${oid}`,
         type: "return-due",
         title: `Return Due: ${pName}`,
         date: toISO(returnDate),
-        orderId: order.id || (order as any)._id,
+        orderId: oid,
         detail,
       });
 
       // Dispatches (Sidebar)
-      const todayTime = new Date().setHours(0, 0, 0, 0);
+      const todayTime = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate(),
+      ).getTime();
       const isDispatchToday = dispatchDate.getTime() === todayTime;
-      const dateStr = `${dispatchDate.getDate()} ${dispatchDate.toLocaleString("default", { month: "short" }).toUpperCase()}`;
+      const dateStr = `${dispatchDate.getDate()} ${dispatchDate.toLocaleString("en-GB", { month: "short" }).toUpperCase()}`;
 
       newDispatches.push({
-        id: `side_disp_${order.id || (order as any)._id}`,
+        id: `side_disp_${oid}`,
         dateLabel: isDispatchToday
           ? `✦ TODAY — ${dateStr} · DISPATCH`
           : `${dateStr} · DISPATCH`,
         isToday: isDispatchToday,
         title: pName,
         subtitle: `${order.customerName} · Dispatch via ${detail.carrierLabel}`,
-        orderId: `HOK-ORD-${order.id || (order as any)._id}`,
+        orderId: oid,
       });
 
-      // Agenda entries exactly matching the mock data structure
       const pushAgenda = (
         type: string,
         dDate: Date,
@@ -180,7 +317,7 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
         titlePre: string,
       ) => {
         newAgenda.push({
-          id: `agenda_${order.id || (order as any)._id}_${type}`,
+          id: `agenda_${oid}_${type}`,
           date: dDate.toLocaleDateString("en-GB", {
             weekday: "short",
             day: "numeric",
@@ -188,7 +325,7 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
           }),
           isoDate: toISO(dDate),
           type: type as AgendaActionType,
-          orderId: `HOK-ORD-${order.id || (order as any)._id}`,
+          orderId: oid,
           customer: order.customerName,
           product: pName,
           note: noteStr,
@@ -202,7 +339,7 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
               month: "short",
               year: "numeric",
             }),
-            relatedOrderId: `HOK-ORD-${order.id || (order as any)._id}`,
+            relatedOrderId: oid,
             relatedCustomer: order.customerName,
           },
         });
@@ -244,8 +381,8 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
 
       // Gantt
       newGantt.push({
-        id: `gantt_${order.id || (order as any)._id}`,
-        orderId: String(order.id || (order as any)._id),
+        id: `gantt_${oid}`,
+        orderId: oid,
         customer: order.customerName,
         product: pName,
         segments: [

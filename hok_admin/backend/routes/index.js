@@ -24,6 +24,7 @@ import categoryRouter from "./categoryRoutes.js";
 import webProductRouter from "./webProductRoutes.js";
 import consentRouter from "./consentRoutes.js";
 import homepageRouter from "./homepageRoutes.js";
+import pageRouter from "./pageRoutes.js";
 
 const router = express.Router();
 
@@ -46,6 +47,7 @@ router.use("/customer", customerProfileRouter);
  */
 // Scoped Administrative Endpoints
 router.use("/homepage", homepageRouter);
+router.use("/pages", pageRouter);
 router.use("/site-settings", siteSettingsRouter);
 router.use("/listers", listerRouter);
 router.use("/designers", designerRouter);

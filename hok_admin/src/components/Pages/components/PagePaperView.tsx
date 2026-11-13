@@ -10,6 +10,7 @@ import { PageCardData } from '../types';
 import { SEED_FIGURES, ACTIVE_CHECKS } from '../data';
 import { CheckItem } from '../types/checks.types';
 import { getPageContent } from '../data/pageContentRegistry';
+import { getPageContent as getDbPageContent, savePageContent } from '../../../services/pageApi';
 import { PageLevelTwoHeader } from './PageLevelTwoHeader';
 import { PagePaperCanvas, EditableFieldInfo } from './PagePaperCanvas';
 import { PageDefaultPanel } from './PageDefaultPanel';
@@ -43,6 +44,53 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
   const [focusedField, setFocusedField] = useState<EditableFieldInfo | null>(null);
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
   const [selectedFigureKey, setSelectedFigureKey] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [hasSavedSuccess, setHasSavedSuccess] = useState<boolean>(false);
+  const saveTimeoutRef = React.useRef<any>(null);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const loadContent = async () => {
+      try {
+        const dbData = await getDbPageContent(page.slug);
+        if (isMounted && dbData) {
+          if (dbData.fieldValues && typeof dbData.fieldValues === 'object') {
+            setFieldValues(dbData.fieldValues);
+          }
+          if (dbData.hiddenParts && typeof dbData.hiddenParts === 'object') {
+            setHiddenParts(dbData.hiddenParts);
+          }
+        }
+      } catch (err) {
+        console.warn('[PagePaperView] Failed to load DB content:', err);
+      }
+    };
+    loadContent();
+    return () => {
+      isMounted = false;
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [page.slug]);
+
+  const handleSaveChanges = async (updatedValues?: Record<string, string>) => {
+    try {
+      setIsSaving(true);
+      const payloadValues = updatedValues || fieldValues;
+      await savePageContent(page.slug, {
+        fieldValues: payloadValues,
+        hiddenParts,
+        showCircularMark,
+        showFourthWayLine,
+        showInstagramLine
+      });
+      setHasSavedSuccess(true);
+      setTimeout(() => setHasSavedSuccess(false), 2500);
+    } catch (err) {
+      console.error('[PagePaperView] Failed to save changes:', err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const [hiddenParts, setHiddenParts] = useState<Record<string, boolean>>(() =>
     page.slug === '/about' || page.slug === 'about' ? { manifesto: true } : {}
@@ -73,7 +121,14 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
   const pageParts = pageContent.parts;
 
   const handleFieldChange = (fieldId: string, value: string) => {
-    setFieldValues(prev => ({ ...prev, [fieldId]: value }));
+    setFieldValues(prev => {
+      const updated = { ...prev, [fieldId]: value };
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = setTimeout(() => {
+        handleSaveChanges(updated);
+      }, 1500);
+      return updated;
+    });
   };
 
   const handleFigureSelect = (key: string) => {
@@ -120,7 +175,8 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
         fieldId: infoOrString.fieldId || 'field',
         fieldName: infoOrString.fieldName || infoOrString.fieldId || 'Field',
         helpText: infoOrString.helpText,
-        isHeading: infoOrString.isHeading
+        isHeading: infoOrString.isHeading,
+        currentValue: infoOrString.currentValue
       });
     }
     setSelectedFigureKey(null);
@@ -152,6 +208,9 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
         onSelectPanelTab={setActivePanelTab}
         showMode={showMode}
         onShowModeChange={setShowMode}
+        onSaveChanges={() => handleSaveChanges()}
+        isSaving={isSaving}
+        hasSavedSuccess={hasSavedSuccess}
       />
 
       {/* 2. Main Desk Layout (Spec §7.3, §7.9) */}
@@ -247,7 +306,12 @@ export const PagePaperView: React.FC<PagePaperViewProps> = ({
               partTitle={focusedField?.fieldName || 'this section'}
               fieldName={focusedField?.fieldName || 'this field'}
               helpText={focusedField?.helpText}
-              fieldValue={focusedField ? (fieldValues[focusedField.fieldId] || '') : ''}
+              fieldValue={focusedField ? (fieldValues[focusedField.fieldId] !== undefined ? fieldValues[focusedField.fieldId] : (focusedField.currentValue || '')) : ''}
+              onFieldChange={val => {
+                if (focusedField) {
+                  handleFieldChange(focusedField.fieldId, val);
+                }
+              }}
               onCloseWords={() => setFocusedField(null)}
               onUseFigure={(detectedText, figureKey) => {
                 if (!focusedField) return;

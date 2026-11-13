@@ -13,7 +13,7 @@ interface ContactPaperVisitCardProps {
   focusedField: EditableFieldInfo | null;
   getVal: (id: string, fallback: string) => string;
   onSelectPart: (partId: string) => void;
-  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean) => void;
+  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean, currentValue?: string) => void;
   onFieldChange: (fieldId: string, value: string) => void;
   onSelectFigure?: (figureKey: string) => void;
   onOpenCheck?: () => void;
@@ -53,7 +53,7 @@ export const ContactPaperVisitCard: React.FC<ContactPaperVisitCardProps> = ({
         <h3
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('visit-us', 'contact_visit_heading', 'Heading', 'Visit card heading', true);
+            onFieldFocus('visit-us', 'contact_visit_heading', 'Heading', 'Visit card heading', true, getVal('contact_visit_heading', 'Visit us in Indore'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_visit_heading'}
           suppressContentEditableWarning
@@ -68,7 +68,17 @@ export const ContactPaperVisitCard: React.FC<ContactPaperVisitCardProps> = ({
         <p
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('visit-us', 'contact_visit_lead', 'Line under heading', 'Explains visits by appointment');
+            onFieldFocus(
+              'visit-us',
+              'contact_visit_lead',
+              'Line under heading',
+              'Explains visits by appointment',
+              false,
+              getVal(
+                'contact_visit_lead',
+                'See pieces in person and talk through your occasion with our team. Visits are by appointment, so the pieces you’d like to see are ready and waiting for you.'
+              )
+            );
           }}
           contentEditable={focusedField?.fieldId === 'contact_visit_lead'}
           suppressContentEditableWarning
@@ -87,11 +97,16 @@ export const ContactPaperVisitCard: React.FC<ContactPaperVisitCardProps> = ({
           <span
             onClick={e => {
               e.stopPropagation();
-              onSelectFigure?.('visit_area');
+              onFieldFocus('visit-us', 'contact_visit_address', 'Address / Area', 'Where visits happen', false, getVal('contact_visit_address', 'Old Palasiya, Indore'));
             }}
-            className="px-2.5 py-1 rounded bg-[#2b241b] border border-dashed border-[#d4af37] text-[#f5d77f] font-mono text-xs cursor-pointer hover:bg-[#382f23] transition-colors"
+            contentEditable={focusedField?.fieldId === 'contact_visit_address'}
+            suppressContentEditableWarning
+            onInput={e => onFieldChange('contact_visit_address', e.currentTarget.textContent || '')}
+            className={`px-2.5 py-1 rounded bg-[#2b241b] border border-dashed border-[#d4af37] text-[#f5d77f] font-mono text-xs cursor-text hover:bg-[#382f23] transition-colors ${
+              focusedField?.fieldId === 'contact_visit_address' ? 'ring-2 ring-[#d4af37] outline-none' : ''
+            }`}
           >
-            Old Palasiya, Indore
+            {getVal('contact_visit_address', 'Old Palasiya, Indore')}
           </span>
 
           <span className="text-[10px] font-semibold tracking-wider text-[#a89d8d] uppercase px-2 py-0.5 rounded border border-[#4a3f33]">

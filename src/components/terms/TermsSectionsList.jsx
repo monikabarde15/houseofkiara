@@ -7,7 +7,7 @@ import ClauseItem from './ClauseItem.jsx';
  * Terms & Conditions 12 Parts & 59 Clauses Container
  * Section 5.8 & 5.9 of Build Specification v3.0
  */
-const TermsSectionsList = ({ onShowToast }) => {
+const TermsSectionsList = ({ onShowToast, getVal }) => {
   return (
     <div className="terms-sections-list">
       {TERMS_PARTS.map((part) => {
@@ -27,6 +27,7 @@ const TermsSectionsList = ({ onShowToast }) => {
                   key={`clause-${clause.number}`}
                   clause={clause}
                   onShowToast={onShowToast}
+                  getVal={getVal}
                 />
               ))}
             </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import "../../styles/howitworks/divider-band.css";
 
-const DividerBand = () => {
+const DividerBand = ({ getVal }) => {
   return (
     <section className="hok-hiw-divider">
       {/* Decorative Infinity Watermark */}
@@ -12,14 +12,10 @@ const DividerBand = () => {
         <div className="hok-hiw-divider-quote">
           <div className="hok-hiw-divider-eyebrow">
             <span className="hok-hiw-divider-line"></span>
-            <span className="hok-hiw-divider-eyebrow-text">The Craft</span>
+            <span className="hok-hiw-divider-eyebrow-text">{getVal ? getVal("hiw_craft_eyebrow", "The Craft") : "The Craft"}</span>
           </div>
 
-          <blockquote className="hok-hiw-divider-quote-text">
-            "The zardozi on a Sabyasachi lehenga doesn't diminish because it's
-            been worn once. Designer craftsmanship deserves to be experienced –
-            not stored."
-          </blockquote>
+          <blockquote className="hok-hiw-divider-quote-text">{getVal ? getVal("hiw_craft_quote", "“The zardozi on a Sabyasachi lehenga doesn't diminish because it's been worn once. Designer craftsmanship deserves to be experienced – not stored.”") : "“The zardozi on a Sabyasachi lehenga doesn't diminish because it's been worn once. Designer craftsmanship deserves to be experienced – not stored.”"}</blockquote>
         </div>
 
         {/* Right - Stats */}

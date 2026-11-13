@@ -1,3 +1,4 @@
+import { usePageContent } from '../hooks/usePageContent';
 /**
  * House of Kaira - Cookie Policy Page
  * Complete Build Specification v1.0 (hok_cookie_v4)
@@ -27,6 +28,7 @@ import '../styles/cookies/cookie-closing-band.css';
 import '../styles/cookies/cookie-print.css';
 
 const CookiePage = () => {
+  const { getVal } = usePageContent("/cookies");
   const [toastState, setToastState] = useState({ message: '', isVisible: false });
 
   // Handle URL hash on initial load (Section 6)
@@ -71,13 +73,13 @@ const CookiePage = () => {
       <CookieBreadcrumb />
 
       {/* 2. Hero & 5-Item Version Row (No search per Section 1.1) */}
-      <CookieHero
+      <CookieHero getVal={getVal}
         onPrint={handlePrint}
         onOpenCookieSettings={handleOpenCookieSettings}
       />
 
       {/* 3. Where to Start Cards (Section 5.3) */}
-      <CookieStartCards />
+      <CookieStartCards getVal={getVal} />
 
       {/* 4. Sticky 6-Tab Section Bar (Section 5.4) */}
       <CookieSectionBar />

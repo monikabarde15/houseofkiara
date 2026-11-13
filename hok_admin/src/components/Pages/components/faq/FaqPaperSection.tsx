@@ -118,8 +118,8 @@ export const FaqPaperSection: React.FC<FaqPaperSectionProps> = ({
 
       {/* 08 Still wondering */}
       <FaqPaperStillWondering
-        whatsappNumber="+91 93401 39300"
-        supportEmail="concierge@houseofkaira.com"
+        whatsappNumber={getVal('faq_whatsapp_number', '+91 93401 39300')}
+        supportEmail={getVal('faq_support_email', 'concierge@houseofkaira.com')}
       />
     </>
   );

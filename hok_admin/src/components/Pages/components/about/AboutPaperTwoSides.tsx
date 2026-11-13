@@ -77,7 +77,7 @@ export const AboutPaperTwoSides: React.FC<AboutPaperTwoSidesProps> = ({
             focusedField?.fieldId === 'about_sides_heading' ? 'ring-1 ring-[#bda67b] bg-[#faf7f2] outline-none' : 'hover:ring-1 hover:ring-[#bda67b]/40'
           }`}
         >
-          Which side of the <span className="italic text-[#8a6a36]">story</span> are you on?
+          {getVal('about_sides_heading', 'Which side of the story are you on?')}
         </h2>
 
         {/* Switcher tabs */}

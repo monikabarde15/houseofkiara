@@ -12,18 +12,18 @@ import MobilePoliciesSection from "../MobilePoliciesSection";
 import MobileFAQSection from "../MobileFAQSection";
 import MobileClosingCTA from "../MobileClosingCTA";
 
-const MobileHowItWorksLayout = ({ activeSection }) => {
+const MobileHowItWorksLayout = ({ activeSection, getVal }) => {
   return (
     <div className="hok-hiw-mobile-layout">
-      <MobileHeroSection />
+      <MobileHeroSection getVal={getVal} />
       <MobileChapterNav activeSection={activeSection} />
-      <MobileShoppingJourney />
-      <MobileModeCards />
-      <MobileDividerBand />
-      <MobileListAndEarn />
-      <MobilePoliciesSection />
-      <MobileFAQSection />
-      <MobileClosingCTA />
+      <MobileShoppingJourney getVal={getVal} />
+      <MobileModeCards getVal={getVal} />
+      <MobileDividerBand getVal={getVal} />
+      <MobileListAndEarn getVal={getVal} />
+      <MobilePoliciesSection getVal={getVal} />
+      <MobileFAQSection getVal={getVal} />
+      <MobileClosingCTA getVal={getVal} />
     </div>
   );
 };

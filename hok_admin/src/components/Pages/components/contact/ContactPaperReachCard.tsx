@@ -13,7 +13,7 @@ interface ContactPaperReachCardProps {
   focusedField: EditableFieldInfo | null;
   getVal: (id: string, fallback: string) => string;
   onSelectPart: (partId: string) => void;
-  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean) => void;
+  onFieldFocus: (partId: string, fieldId: string, fieldName: string, helpText?: string, isHeading?: boolean, currentValue?: string) => void;
   onFieldChange: (fieldId: string, value: string) => void;
   onSelectFigure?: (figureKey: string) => void;
   onOpenCheck?: () => void;
@@ -54,7 +54,7 @@ export const ContactPaperReachCard: React.FC<ContactPaperReachCardProps> = ({
         <span
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('ways-to-reach', 'contact_reach_heading', 'Eyebrow', 'Card heading');
+            onFieldFocus('ways-to-reach', 'contact_reach_heading', 'Eyebrow', 'Card heading', false, getVal('contact_reach_heading', 'Ways to reach us'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_reach_heading'}
           suppressContentEditableWarning
@@ -72,7 +72,7 @@ export const ContactPaperReachCard: React.FC<ContactPaperReachCardProps> = ({
         <h4
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('ways-to-reach', 'contact_wa_title', 'WhatsApp heading', 'Method title', true);
+            onFieldFocus('ways-to-reach', 'contact_wa_title', 'WhatsApp heading', 'Method title', true, getVal('contact_wa_title', 'WhatsApp'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_wa_title'}
           suppressContentEditableWarning
@@ -88,11 +88,16 @@ export const ContactPaperReachCard: React.FC<ContactPaperReachCardProps> = ({
           <span
             onClick={e => {
               e.stopPropagation();
-              onSelectFigure?.('support_whatsapp');
+              onFieldFocus('ways-to-reach', 'contact_wa_number', 'WhatsApp number', 'WhatsApp contact phone number', false, getVal('contact_wa_number', '+91 93401 39300'));
             }}
-            className="px-2 py-0.5 rounded bg-[#f7f2ea] border border-[#bda67b]/50 text-[#8a6a36] font-semibold text-sm cursor-pointer hover:bg-[#ede5d8]"
+            contentEditable={focusedField?.fieldId === 'contact_wa_number'}
+            suppressContentEditableWarning
+            onInput={e => onFieldChange('contact_wa_number', e.currentTarget.textContent || '')}
+            className={`px-2 py-0.5 rounded bg-[#f7f2ea] border border-[#bda67b]/50 text-[#8a6a36] font-semibold text-sm cursor-text hover:bg-[#ede5d8] ${
+              focusedField?.fieldId === 'contact_wa_number' ? 'ring-2 ring-[#bda67b] outline-none' : ''
+            }`}
           >
-            +91 93401 39300
+            {getVal('contact_wa_number', '+91 93401 39300')}
           </span>
         </div>
 
@@ -100,7 +105,7 @@ export const ContactPaperReachCard: React.FC<ContactPaperReachCardProps> = ({
           <span
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('ways-to-reach', 'contact_wa_note', 'WhatsApp line', 'Explains WhatsApp reply speed');
+              onFieldFocus('ways-to-reach', 'contact_wa_note', 'WhatsApp line', 'Explains WhatsApp reply speed', false, getVal('contact_wa_note', 'The quickest way to reach us. During our hours, we usually reply within '));
             }}
             contentEditable={focusedField?.fieldId === 'contact_wa_note'}
             suppressContentEditableWarning
@@ -138,7 +143,7 @@ export const ContactPaperReachCard: React.FC<ContactPaperReachCardProps> = ({
         <h4
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('ways-to-reach', 'contact_email_title', 'Email heading', 'Method title', true);
+            onFieldFocus('ways-to-reach', 'contact_email_title', 'Email heading', 'Method title', true, getVal('contact_email_title', 'Email'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_email_title'}
           suppressContentEditableWarning
@@ -154,11 +159,16 @@ export const ContactPaperReachCard: React.FC<ContactPaperReachCardProps> = ({
           <span
             onClick={e => {
               e.stopPropagation();
-              onSelectFigure?.('support_email');
+              onFieldFocus('ways-to-reach', 'contact_email_address', 'Email address', 'Support email address', false, getVal('contact_email_address', 'hello@houseofkaira.com'));
             }}
-            className="px-2 py-0.5 rounded bg-[#f7f2ea] border border-[#bda67b]/50 text-[#8a6a36] font-semibold text-sm cursor-pointer hover:bg-[#ede5d8]"
+            contentEditable={focusedField?.fieldId === 'contact_email_address'}
+            suppressContentEditableWarning
+            onInput={e => onFieldChange('contact_email_address', e.currentTarget.textContent || '')}
+            className={`px-2 py-0.5 rounded bg-[#f7f2ea] border border-[#bda67b]/50 text-[#8a6a36] font-semibold text-sm cursor-text hover:bg-[#ede5d8] ${
+              focusedField?.fieldId === 'contact_email_address' ? 'ring-2 ring-[#bda67b] outline-none' : ''
+            }`}
           >
-            hello@houseofkaira.com
+            {getVal('contact_email_address', 'hello@houseofkaira.com')}
           </span>
         </div>
 
@@ -166,7 +176,7 @@ export const ContactPaperReachCard: React.FC<ContactPaperReachCardProps> = ({
           <span
             onClick={e => {
               e.stopPropagation();
-              onFieldFocus('ways-to-reach', 'contact_email_note', 'Email line', 'Explains email reply expectations');
+              onFieldFocus('ways-to-reach', 'contact_email_note', 'Email line', 'Explains email reply expectations', false, getVal('contact_email_note', 'Best for photographs and documents, and for press and partnerships. We reply within '));
             }}
             contentEditable={focusedField?.fieldId === 'contact_email_note'}
             suppressContentEditableWarning
@@ -195,7 +205,7 @@ export const ContactPaperReachCard: React.FC<ContactPaperReachCardProps> = ({
         <h4
           onClick={e => {
             e.stopPropagation();
-            onFieldFocus('ways-to-reach', 'contact_call_title', 'Call heading', 'Method title', true);
+            onFieldFocus('ways-to-reach', 'contact_call_title', 'Call heading', 'Method title', true, getVal('contact_call_title', 'Call'));
           }}
           contentEditable={focusedField?.fieldId === 'contact_call_title'}
           suppressContentEditableWarning
@@ -211,11 +221,16 @@ export const ContactPaperReachCard: React.FC<ContactPaperReachCardProps> = ({
           <span
             onClick={e => {
               e.stopPropagation();
-              onSelectFigure?.('support_phone');
+              onFieldFocus('ways-to-reach', 'contact_call_number', 'Call number', 'Support phone number', false, getVal('contact_call_number', '+91 93401 39300'));
             }}
-            className="px-2 py-0.5 rounded bg-[#f7f2ea] border border-[#bda67b]/50 text-[#8a6a36] font-semibold text-sm cursor-pointer hover:bg-[#ede5d8]"
+            contentEditable={focusedField?.fieldId === 'contact_call_number'}
+            suppressContentEditableWarning
+            onInput={e => onFieldChange('contact_call_number', e.currentTarget.textContent || '')}
+            className={`px-2 py-0.5 rounded bg-[#f7f2ea] border border-[#bda67b]/50 text-[#8a6a36] font-semibold text-sm cursor-text hover:bg-[#ede5d8] ${
+              focusedField?.fieldId === 'contact_call_number' ? 'ring-2 ring-[#bda67b] outline-none' : ''
+            }`}
           >
-            +91 93401 39300
+            {getVal('contact_call_number', '+91 93401 39300')}
           </span>
         </div>
 
@@ -223,21 +238,31 @@ export const ContactPaperReachCard: React.FC<ContactPaperReachCardProps> = ({
           <span
             onClick={e => {
               e.stopPropagation();
-              onSelectFigure?.('support_days');
+              onFieldFocus('ways-to-reach', 'contact_call_days', 'Call days', 'Support working days', false, getVal('contact_call_days', 'Seven days a week'));
             }}
-            className="px-1.5 py-0.5 rounded bg-[#fbf9f5] border border-[#bda67b]/40 text-[#8a6a36] font-mono text-[11px] cursor-pointer"
+            contentEditable={focusedField?.fieldId === 'contact_call_days'}
+            suppressContentEditableWarning
+            onInput={e => onFieldChange('contact_call_days', e.currentTarget.textContent || '')}
+            className={`px-1.5 py-0.5 rounded bg-[#fbf9f5] border border-[#bda67b]/40 text-[#8a6a36] font-mono text-[11px] cursor-text ${
+              focusedField?.fieldId === 'contact_call_days' ? 'ring-2 ring-[#bda67b] outline-none' : ''
+            }`}
           >
-            Seven days a week
+            {getVal('contact_call_days', 'Seven days a week')}
           </span>
           <span>,</span>
           <span
             onClick={e => {
               e.stopPropagation();
-              onSelectFigure?.('support_hours');
+              onFieldFocus('ways-to-reach', 'contact_call_hours', 'Call hours', 'Support working hours', false, getVal('contact_call_hours', '10 AM to 8 PM IST'));
             }}
-            className="px-1.5 py-0.5 rounded bg-[#fbf9f5] border border-[#bda67b]/40 text-[#8a6a36] font-mono text-[11px] cursor-pointer"
+            contentEditable={focusedField?.fieldId === 'contact_call_hours'}
+            suppressContentEditableWarning
+            onInput={e => onFieldChange('contact_call_hours', e.currentTarget.textContent || '')}
+            className={`px-1.5 py-0.5 rounded bg-[#fbf9f5] border border-[#bda67b]/40 text-[#8a6a36] font-mono text-[11px] cursor-text ${
+              focusedField?.fieldId === 'contact_call_hours' ? 'ring-2 ring-[#bda67b] outline-none' : ''
+            }`}
           >
-            10 AM to 8 PM IST
+            {getVal('contact_call_hours', '10 AM to 8 PM IST')}
           </span>
           <span>.</span>
         </div>

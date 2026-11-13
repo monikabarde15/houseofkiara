@@ -3,12 +3,13 @@
  * Section 6 & 13.2–13.4 of Build Specification v1.0 (hok_cookie_banner_spec_v1.docx)
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { COOKIE_KINDS } from '../../data/cookieBanner/cookieBannerConfig.js';
 import CookieKindItem from './CookieKindItem.jsx';
 import { BackArrowIcon, CloseCardIcon } from './CookieBannerIcons.jsx';
 
 const CookieSettingsView = ({
+  consentConfig,
   hasSavedChoice = false,
   savedDateText = '',
   initialChoices = {},
@@ -27,6 +28,24 @@ const CookieSettingsView = ({
 
   const scrollRef = useRef(null);
   const backBtnRef = useRef(null);
+
+  const policyLink = consentConfig?.policyLink || "/cookies";
+
+  // Merge dynamic category descriptions if configured in CMS
+  const kindsList = useMemo(() => {
+    return COOKIE_KINDS.map((kind) => {
+      if (kind.key === 'strictly' && consentConfig?.categories?.essential) {
+        return { ...kind, description: consentConfig.categories.essential };
+      }
+      if (kind.key === 'analytics' && consentConfig?.categories?.analytics) {
+        return { ...kind, description: consentConfig.categories.analytics };
+      }
+      if (kind.key === 'marketing' && consentConfig?.categories?.marketing) {
+        return { ...kind, description: consentConfig.categories.marketing };
+      }
+      return kind;
+    });
+  }, [consentConfig?.categories]);
 
   // Reset scroll to top and set initial focus on Back button when opened (Section 6.1 & 14)
   useEffect(() => {
@@ -105,7 +124,7 @@ const CookieSettingsView = ({
 
         {/* 2. Kinds List (Section 6.1 & 6.2) */}
         <div className="cb-kinds-list">
-          {COOKIE_KINDS.map((kind) => (
+          {kindsList.map((kind) => (
             <CookieKindItem
               key={`kind-${kind.key}`}
               kind={kind}
@@ -118,7 +137,7 @@ const CookieSettingsView = ({
         {/* 3. Lifetimes Line */}
         <div className="cb-lifetimes-line">
           <span>How long each cookie lasts is listed in our </span>
-          <a href="/cookies" className="cb-inline-link cb-focusable">
+          <a href={policyLink} className="cb-inline-link cb-focusable">
             Cookie Policy
           </a>
           <span>.</span>
@@ -141,7 +160,7 @@ const CookieSettingsView = ({
             className="cb-quick-link cb-focusable"
             onClick={onQuickEssential}
           >
-            Only essential
+            {consentConfig?.rejectLabel || "Only essential"}
           </button>
           <span className="cb-quick-link-divider" aria-hidden="true" />
           <button
@@ -149,7 +168,7 @@ const CookieSettingsView = ({
             className="cb-quick-link cb-focusable"
             onClick={onQuickAllowAll}
           >
-            Allow all
+            {consentConfig?.acceptLabel || "Allow all"}
           </button>
         </div>
       </div>

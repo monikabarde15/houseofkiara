@@ -1,3 +1,4 @@
+import { usePageContent } from '../hooks/usePageContent';
 /**
  * House of Kaira - Privacy Policy Page
  * Complete Build Specification v2.0 (hok_privacy_v2)
@@ -29,6 +30,7 @@ import '../styles/privacy/privacy-closing-band.css';
 import '../styles/privacy/privacy-print.css';
 
 const PrivacyPage = () => {
+  const { getVal } = usePageContent("/privacy");
   const [toastState, setToastState] = useState({ message: '', isVisible: false });
 
   // Handle URL hash on initial load (Section 6)
@@ -69,14 +71,14 @@ const PrivacyPage = () => {
       <PrivacyBreadcrumb />
 
       {/* 2. Hero & Real-Time Search */}
-      <PrivacyHero
+      <PrivacyHero getVal={getVal}
         onSelectClause={handleSelectClause}
         onPrint={handlePrint}
         onShowToast={showToast}
       />
 
       {/* 3. Where to Start 3-Card Quick Entry */}
-      <PrivacyStartCards
+      <PrivacyStartCards getVal={getVal}
         onSelectCard={handleSelectPart}
       />
 

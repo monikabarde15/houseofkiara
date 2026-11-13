@@ -84,7 +84,7 @@ export const HowItWorksListAndEarn: React.FC<HowItWorksListAndEarnProps> = ({
                 focusedField?.fieldId === 'hiw_earn_heading' ? 'ring-1 ring-[#d4af37] bg-[#2b241b] outline-none' : 'hover:ring-1 hover:ring-[#d4af37]/30'
               }`}
             >
-              Your wardrobe has been waiting <span className="italic text-[#d4af37]">for this</span>.
+              {getVal('hiw_earn_heading', 'Your wardrobe has been waiting for this.')}
             </h2>
 
             <p
