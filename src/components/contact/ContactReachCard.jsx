@@ -67,6 +67,9 @@ export default function ContactReachCard({
   const fallbackWa = contactSettings?.whatsApp || whatsapp.value;
   const fallbackEmail = contactSettings?.supportEmail || email.value;
   const fallbackPhone = contactSettings?.phone || call.value;
+  const fallbackWaNote = contactSettings?.replyWithinHrs
+    ? `The quickest way to reach us. During our hours, we usually reply within ${contactSettings.replyWithinHrs} hours.`
+    : whatsapp.note;
   const fallbackCallNote =
     contactSettings?.daysOpen && contactSettings?.hours
       ? `${contactSettings.daysOpen}, ${contactSettings.hours}.`
@@ -80,7 +83,7 @@ export default function ContactReachCard({
   const emailValue = getVal ? getVal("contact_email_address", fallbackEmail) : fallbackEmail;
   const callTitle = getVal ? getVal("contact_call_title", call.name) : call.name;
   const callValue = getVal ? getVal("contact_call_number", fallbackPhone) : fallbackPhone;
-  const waNote = getVal ? getVal("contact_wa_note", whatsapp.note) : whatsapp.note;
+  const waNote = getVal ? getVal("contact_wa_note", fallbackWaNote) : fallbackWaNote;
   const emailNote = getVal ? getVal("contact_email_note", email.note) : email.note;
   const callDays = getVal ? getVal("contact_call_days", "") : "";
   const callHours = getVal ? getVal("contact_call_hours", "") : "";
@@ -88,8 +91,8 @@ export default function ContactReachCard({
     callDays && callHours
       ? `${callDays}, ${callHours}.`
       : getVal
-      ? getVal("contact_call_note", fallbackCallNote)
-      : fallbackCallNote;
+        ? getVal("contact_call_note", fallbackCallNote)
+        : fallbackCallNote;
 
   const [isCopied, setIsCopied] = useState(false);
 

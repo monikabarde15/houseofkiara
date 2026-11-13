@@ -24,7 +24,7 @@ export default function ContactUsPage() {
   // Load dynamic content from PostgreSQL via pages API
   const { getVal } = usePageContent("/contact");
 
-  // Set document title, meta description & subscribe to global Site Settings contact updates
+  // Set document title & meta description
   useEffect(() => {
     document.title = getVal("contact_page_title", CONTACT_PAGE_CONFIG.title);
     let metaDesc = document.querySelector('meta[name="description"]');
@@ -36,6 +36,7 @@ export default function ContactUsPage() {
     metaDesc.content = CONTACT_PAGE_CONFIG.meta_description;
   }, [getVal]);
 
+  // Subscribe to global Site Settings contact updates
   useEffect(() => {
     let isMounted = true;
     getContactSettings().then((cfg) => {

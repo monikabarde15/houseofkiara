@@ -89,7 +89,7 @@ export default function MaintenancePage({
     ? "House of Kaira is taking a short pause while we put something right. Everything will be exactly where you left it."
     : "We’re making a few refinements to House of Kaira. Everything will be exactly where you left it, from your wishlist to your bookings.";
 
-  const leadText = getVal("maint_lead", customBody || defaultLead);
+  const leadText = customBody || getVal("maint_lead", defaultLead);
 
   const defaultStatus = customExpected
     ? `Expected back by ${customExpected}`
@@ -99,7 +99,9 @@ export default function MaintenancePage({
     ? "Taking a little longer than planned. Thank you for waiting with us."
     : formatMaintenanceTime(backByTime) || "Expected back by 6:00 PM IST today";
 
-  const statusText = getVal("maint_status_text", defaultStatus);
+  const statusText = customExpected
+    ? `Expected back by ${customExpected}`
+    : getVal("maint_status_text", defaultStatus);
 
   const dotClass = isRunningLate ? "gold" : "sage";
 
