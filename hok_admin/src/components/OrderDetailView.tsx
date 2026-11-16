@@ -101,8 +101,17 @@ export default function OrderDetailView({
           setReceivedDate(data.conditionAssessment?.receivedDate || "");
           setConditionGrade(data.conditionAssessment?.grade || "A");
           setConditionNotes(data.conditionAssessment?.notes || "");
-          setDepositStatus(data.depositDecision?.status || "Pending");
-          setReleasedAmount(data.depositDecision?.releasedAmount || 0);
+          const resolvedDecStatus =
+            data.depositDecision?.status && data.depositDecision.status !== "Pending"
+              ? data.depositDecision.status
+              : data.status === "Processed" || data.status === "Complete"
+                ? "Released"
+                : "Pending";
+          setDepositStatus(resolvedDecStatus);
+          setReleasedAmount(
+            data.depositDecision?.releasedAmount ||
+              (resolvedDecStatus === "Released" ? Number(data.deposit || 0) : 0),
+          );
           setDeductedAmount(data.depositDecision?.deductedAmount || 0);
           setDepositReason(data.depositDecision?.reason || "");
           setLogs(data.logs || []);
@@ -214,10 +223,34 @@ export default function OrderDetailView({
     }
   };
 
-  const handleSaveChanges = async (overrideStatus?: string) => {
+  const handleSaveChanges = async (
+    overrideStatus?: string,
+    overrideDepositStatus?: "Pending" | "Released" | "Partial" | "Forfeited",
+  ) => {
     if (!order) return;
-    const finalStatus = overrideStatus || status;
-    if (overrideStatus) setStatus(finalStatus);
+    const effectiveDepStatus =
+      overrideDepositStatus ||
+      (overrideStatus === "Processed" || overrideStatus === "Complete" || status === "Processed" || status === "Complete"
+        ? depositStatus === "Pending"
+          ? "Released"
+          : depositStatus
+        : depositStatus);
+
+    const finalStatus =
+      overrideStatus ||
+      (effectiveDepStatus !== "Pending" && status === "Returned"
+        ? "Complete"
+        : status);
+    if (overrideStatus || finalStatus !== status) setStatus(finalStatus as any);
+    if (effectiveDepStatus !== depositStatus) setDepositStatus(effectiveDepStatus);
+
+    const effectiveReleasedAmt =
+      effectiveDepStatus === "Released" && Number(releasedAmount) === 0 && Number(deductedAmount) === 0
+        ? Number(order.deposit || 0)
+        : Number(releasedAmount);
+    if (effectiveReleasedAmt !== Number(releasedAmount)) {
+      setReleasedAmount(effectiveReleasedAmt);
+    }
 
     const nextDispatchDetails = {
       dispatchedBy: dispatchedBy.trim(),
@@ -255,9 +288,26 @@ export default function OrderDetailView({
         }))
       : order.items;
 
+    const syncedTopDepositStatus =
+      effectiveDepStatus === "Released"
+        ? finalStatus === "Cancelled"
+          ? "Refunded"
+          : finalStatus === "Processed"
+            ? "Refunded"
+            : "Released"
+        : effectiveDepStatus === "Partial"
+          ? "Partially Released"
+          : effectiveDepStatus === "Forfeited"
+            ? "Forfeited"
+            : order.depositStatus;
+
+    const cleanOrder: any = { ...order };
+    delete cleanOrder._data;
+
     const updatedOrder: Order = {
-      ...order,
+      ...cleanOrder,
       status: finalStatus as any,
+      depositStatus: syncedTopDepositStatus as any,
       internalNotes,
       ...(dispatchDate ? { dispatchDate } : {}),
       dispatchDetails: nextDispatchDetails,
@@ -272,10 +322,15 @@ export default function OrderDetailView({
           }
         : undefined,
       depositDecision: {
-        status: depositStatus as any,
-        releasedAmount: Number(releasedAmount),
+        status: (effectiveDepStatus === "Released" &&
+        (finalStatus === "Cancelled" || finalStatus === "Processed")
+          ? "Refunded"
+          : effectiveDepStatus) as any,
+        releasedAmount: effectiveReleasedAmt,
         deductedAmount: Number(deductedAmount),
-        reason: depositReason,
+        reason:
+          depositReason ||
+          (effectiveDepStatus === "Released" ? "Full deposit refund processed" : ""),
       },
       logs,
     };
@@ -779,10 +834,103 @@ export default function OrderDetailView({
           )}
 
           {activeTab === "Items" && (
-            <div className="bg-white p-6 rounded-lg border border-stone-200/80 shadow-sm space-y-6 text-xs">
-              <h4 className="font-serif font-bold text-stone-900 text-sm border-b border-stone-100 pb-2">
-                Pricing & Invoice breakdown
-              </h4>
+            <div className="space-y-6">
+              {/* Ordered Items List */}
+              {(() => {
+                const itemsList: any[] =
+                  Array.isArray(order.items) && order.items.length > 0
+                    ? order.items
+                    : [
+                        {
+                          productId: (order as any).productId || "",
+                          productName: order.product || "Ordered Piece",
+                          designer: order.designer || "House of Kaira",
+                          mode: order.mode || "Rental",
+                          size: (order as any).size || "",
+                          rentalStartDate: order.rentalStartDate || "",
+                          rentalEndDate: order.rentalEndDate || "",
+                          amount: resolveOrderAmount(order),
+                          deposit: Number(order.deposit || 0),
+                        },
+                      ];
+
+                return (
+                  <div className="bg-white p-6 rounded-lg border border-stone-200/80 shadow-sm space-y-4 text-xs">
+                    <div className="flex items-center justify-between border-b border-stone-100 pb-2">
+                      <h4 className="font-serif font-bold text-stone-900 text-sm">
+                        Ordered Items ({itemsList.length})
+                      </h4>
+                      <span className="text-[11px] font-sans text-stone-400">
+                        Order {order.id}
+                      </span>
+                    </div>
+
+                    <div className="divide-y divide-stone-100">
+                      {itemsList.map((it: any, idx: number) => {
+                        const itemMode = it.mode || order.mode || "Rental";
+                        const itemAmt = parseOrderAmount(it.amount ?? order.amount);
+                        const itemDep = Number(it.deposit ?? order.deposit ?? 0);
+                        const rStart = it.rentalStartDate || order.rentalStartDate || "";
+                        const rEnd = it.rentalEndDate || order.rentalEndDate || "";
+                        const imgSrc = it.image || it.productImage || it.thumbnail || "";
+
+                        return (
+                          <div
+                            key={it.productId || `${it.productName}-${idx}`}
+                            className="py-3 first:pt-1 last:pb-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-sans"
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              {imgSrc ? (
+                                <img
+                                  src={imgSrc}
+                                  alt={it.productName || "Item"}
+                                  className="h-12 w-10 rounded object-cover border border-stone-200 shrink-0"
+                                />
+                              ) : null}
+                              <div className="min-w-0 space-y-0.5">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="font-semibold text-stone-900 text-xs">
+                                    {it.productName || order.product || "Ordered Piece"}
+                                  </span>
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#fcf9f5] border border-[#e6d5bc] text-[#7a5a2b]">
+                                    {itemMode}
+                                  </span>
+                                  {it.size ? (
+                                    <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-600 text-[10px] font-medium">
+                                      Size: {it.size}
+                                    </span>
+                                  ) : null}
+                                </div>
+                                <p className="text-[11px] text-stone-500">
+                                  {it.designer || order.designer || "House of Kaira"}
+                                  {it.productId ? ` · ${it.productId}` : ""}
+                                  {rStart && rEnd ? ` · ${rStart} → ${rEnd}` : ""}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex sm:flex-col items-end justify-between sm:justify-center gap-1 shrink-0 text-right">
+                              <span className="font-semibold text-stone-900 text-xs">
+                                ₹{itemAmt.toLocaleString("en-IN")}
+                              </span>
+                              {itemDep > 0 ? (
+                                <span className="text-[11px] text-stone-500">
+                                  Deposit: ₹{itemDep.toLocaleString("en-IN")}
+                                </span>
+                              ) : null}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <div className="bg-white p-6 rounded-lg border border-stone-200/80 shadow-sm space-y-6 text-xs">
+                <h4 className="font-serif font-bold text-stone-900 text-sm border-b border-stone-100 pb-2">
+                  Pricing & Invoice breakdown
+                </h4>
               <div className="space-y-3 font-sans">
                 <div className="flex justify-between py-1 border-b border-stone-50 text-stone-600">
                   <span>Rental fee / Retail price</span>
@@ -843,6 +991,7 @@ export default function OrderDetailView({
                   <span>Download Invoice</span>
                 </button>
               </div>
+            </div>
             </div>
           )}
 
@@ -1226,6 +1375,21 @@ export default function OrderDetailView({
                   placeholder="Reason for withholding or releasing deposit..."
                   className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
                 />
+              </div>
+
+              <div className="flex justify-end pt-2 border-t border-stone-100">
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleSaveChanges(
+                      order.status === "Cancelled" ? "Cancelled" : "Complete",
+                      depositStatus === "Pending" ? "Released" : (depositStatus as any),
+                    )
+                  }
+                  className="px-4 py-2 bg-[#1e1412] hover:bg-[#2c1d1a] text-white text-xs font-semibold rounded cursor-pointer transition"
+                >
+                  Confirm &amp; Save Deposit Decision
+                </button>
               </div>
             </div>
           )}

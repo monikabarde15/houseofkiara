@@ -214,6 +214,13 @@ export interface Offer {
   note?: string;
   promoCode?: string;
   assignedTo?: string;
+  mode?: "Rental" | "Preloved" | "Buy";
+  rentalStartDate?: string;
+  rentalEndDate?: string;
+  address?: string;
+  customerCity?: string;
+  linkedOrderId?: string;
+  createOrder?: boolean;
 }
 
 export interface Designer {

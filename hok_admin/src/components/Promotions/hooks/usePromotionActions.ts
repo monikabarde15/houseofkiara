@@ -6,6 +6,7 @@
    ======================================== */
 
 import { useState, useCallback } from "react";
+import toast from "react-hot-toast";
 import { PromoCode } from "../types/promotions.types";
 import { validatePromoCode } from "../utils/validators";
 import { promotionService } from "../services/promotionService";
@@ -38,6 +39,13 @@ export const usePromotionActions = (): UsePromotionActionsReturn => {
       setCreating(true);
       setError(null);
       try {
+        const hasRestrictedScope = Boolean(
+          data.scope &&
+            ((data.scope.categories && data.scope.categories.length > 0) ||
+              (data.scope.designerIds && data.scope.designerIds.length > 0) ||
+              (data.scope.skus && data.scope.skus.length > 0)),
+        );
+
         // Validate
         const errors = validatePromoCode(
           data.code || "",
@@ -47,7 +55,7 @@ export const usePromotionActions = (): UsePromotionActionsReturn => {
           data.maxDiscount || null,
           data.minOrder || null,
           data.modes || [],
-          data.scope ? true : false,
+          hasRestrictedScope,
           data.scope?.categories || [],
           data.scope?.designerIds || [],
           data.scope?.skus || [],
@@ -62,15 +70,19 @@ export const usePromotionActions = (): UsePromotionActionsReturn => {
 
         if (errors.length > 0) {
           setError(errors[0].message);
+          toast.error(errors[0].message);
           setCreating(false);
           return null;
         }
 
         const newCode = await promotionService.createPromotion(data);
+        toast.success(`Promo code ${newCode.code} created!`);
         setCreating(false);
         return newCode;
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to create code");
+        const msg = err instanceof Error ? err.message : "Failed to create code";
+        setError(msg);
+        toast.error(msg);
         setCreating(false);
         return null;
       }

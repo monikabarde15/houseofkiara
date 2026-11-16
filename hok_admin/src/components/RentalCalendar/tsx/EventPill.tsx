@@ -15,7 +15,9 @@ const EventPill: React.FC<EventPillProps> = ({
   onHoverStart,
   onHoverEnd,
 }) => {
-  const { color } = EVENT_STYLES[event.type];
+  const { color } =
+    EVENT_STYLES[event.type as keyof typeof EVENT_STYLES] ||
+    EVENT_STYLES["internal-task"];
   const ref = useRef<HTMLButtonElement>(null);
 
   return (

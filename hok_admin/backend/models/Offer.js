@@ -142,6 +142,20 @@ const offerSchema = new mongoose.Schema(
 
     customerState: String,
 
+    address: String,
+
+    mode: {
+      type: String,
+      enum: ["Rental", "Preloved", "Buy"],
+      default: "Rental",
+    },
+
+    size: String,
+
+    rentalStartDate: String,
+
+    rentalEndDate: String,
+
     channel: {
       type: String,
       default: "Website",
@@ -186,6 +200,7 @@ const offerSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: [
+        "Enquiry",
         "Pending",
         "Accepted",
         "Rejected",

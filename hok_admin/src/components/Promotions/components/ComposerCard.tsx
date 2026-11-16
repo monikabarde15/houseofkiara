@@ -5,6 +5,7 @@
    ======================================== */
 
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 import "./styles/ComposerCard.css";
 import { Card, Button, Link, FormField, Switch } from "./UI";
 import { ScopePicker } from "../shared/ScopePicker";
@@ -135,6 +136,7 @@ export const ComposerCard: React.FC<ComposerCardProps> = ({
 
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
+      toast.error(validationErrors[0].message);
       return;
     }
 

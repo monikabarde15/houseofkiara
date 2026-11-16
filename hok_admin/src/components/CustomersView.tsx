@@ -883,7 +883,31 @@ export default function CustomersView({
                         <div className="flex justify-between">
                           <span className="text-stone-500">Refunds issued</span>
                           <span className="font-medium text-stone-900">
-                            None
+                            {(() => {
+                              const refundedList = custOrders.filter((o: any) => {
+                                const ds = String(o.depositDecision?.status || o.depositStatus || "").toLowerCase();
+                                const st = String(o.status || "").toLowerCase();
+                                return (
+                                  String(o.paymentStatus || "").toLowerCase() === "refunded" ||
+                                  Boolean(o.refund && o.refund.amount > 0) ||
+                                  ["released", "refunded", "partial", "partially released"].includes(ds) ||
+                                  ["processed", "complete", "completed"].includes(st)
+                                );
+                              });
+                              if (refundedList.length === 0) return "None";
+                              const sum = refundedList.reduce((acc: number, o: any) => {
+                                return (
+                                  acc +
+                                  Number(
+                                    o.depositDecision?.releasedAmount ??
+                                      o.refund?.amount ??
+                                      o.deposit ??
+                                      0,
+                                  )
+                                );
+                              }, 0);
+                              return `${refundedList.length} (₹${sum.toLocaleString("en-IN")})`;
+                            })()}
                           </span>
                         </div>
                         <div className="flex justify-between">
@@ -1548,27 +1572,39 @@ export default function CustomersView({
               </div>
 
               <div className="p-5">
-                {!editingCustomer?.wishlist ||
-                editingCustomer.wishlist.length === 0 ? (
-                  <p className="text-stone-400 text-center py-6">
-                    No saved items yet.
-                  </p>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {products
-                      .filter((p) => {
-                        const w = editingCustomer.wishlist || [];
-                        return (p._id && w.includes(p._id)) ||
-                               (p.productId && w.includes(p.productId)) ||
-                               (p.id && w.includes(p.id));
-                      })
-                      .map((p) => (
+                {(() => {
+                  const rawWishlist = (editingCustomer?.wishlist || []).map((x: any) =>
+                    String(typeof x === "object" ? x.productId || x.id || x._id || "" : x).toLowerCase(),
+                  );
+                  const backendItems: any[] = Array.isArray((editingCustomer as any)?.wishlistItems)
+                    ? (editingCustomer as any).wishlistItems
+                    : [];
+                  const matchedFromProducts = products.filter((p: any) => {
+                    const keys = [p._id, p.productId, p.id, p.sku, p.urlSlug]
+                      .filter(Boolean)
+                      .map((k) => String(k).toLowerCase());
+                    return keys.some((k) => rawWishlist.includes(k));
+                  });
+                  const displayWishlist =
+                    backendItems.length > 0 ? backendItems : matchedFromProducts;
+
+                  if (displayWishlist.length === 0) {
+                    return (
+                      <p className="text-stone-400 text-center py-6">
+                        No saved items yet.
+                      </p>
+                    );
+                  }
+
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                      {displayWishlist.map((p: any) => (
                         <div
-                          key={p.id}
+                          key={p.id || p.productId || p._id}
                           className="border border-stone-200 rounded-lg overflow-hidden bg-white hover:shadow-sm transition"
                         >
                           <img
-                            src={p.images?.[0] || ""}
+                            src={p.images?.[0] || p.image || ""}
                             alt={p.name}
                             className="h-40 w-full object-cover"
                           />
@@ -1577,16 +1613,17 @@ export default function CustomersView({
                               {p.name}
                             </div>
                             <div className="text-[11px] text-stone-500">
-                              {p.designer} · {p.condition || "Preloved"}
+                              {p.designer || "House of Kaira"} · {p.condition || "Rental"}
                             </div>
                             <div className="text-sm font-bold text-stone-900 pt-1">
-                              ₹{(p.rentalPrice || 0).toLocaleString("en-IN")}
+                              ₹{Number(p.rentalPrice || p.listingPrice || 0).toLocaleString("en-IN")}
                             </div>
                           </div>
                         </div>
                       ))}
-                  </div>
-                )}
+                    </div>
+                  );
+                })()}
               </div>
 
               <div className="px-5 py-3 bg-stone-50 text-xs text-stone-500">
@@ -1933,7 +1970,7 @@ export default function CustomersView({
                         .toLocaleString("en-IN")}
                     </span>
                     <button
-                      onClick={() => setView("returns")}
+                      onClick={() => setView("returns:ledger")}
                       className="border border-stone-300 px-3 py-1.5 rounded-md font-medium hover:bg-stone-50 whitespace-nowrap"
                     >
                       Open Deposit Ledger →
@@ -1962,43 +1999,104 @@ export default function CustomersView({
                       </thead>
                       <tbody className="divide-y divide-stone-100 text-stone-600">
                         {custOrders
-                          .filter(
-                            (o) => o.mode === "Rental" && (o.deposit || 0) > 0,
-                          )
-                          .map((o) => {
-                            const isHeld =
-                              o.depositStatus === "Held" ||
+                          .filter((o: any) => {
+                            const ds = String(
+                              o.depositDecision?.status || o.depositStatus || "",
+                            ).toLowerCase();
+                            const hasRefund =
+                              String(o.paymentStatus || "").toLowerCase() ===
+                                "refunded" ||
+                              Boolean(o.refund && o.refund.amount > 0) ||
                               [
-                                "Dispatched",
-                                "Shipped",
-                                "Delivered",
-                                "Return Sent",
-                              ].includes(o.status);
-                            const isPending =
-                              o.status === "Confirmed" &&
-                              o.depositStatus !== "Held";
-                            const isPhysicalReturnComplete = [
-                              "Returned",
+                                "released",
+                                "refunded",
+                                "partial",
+                                "partially released",
+                                "forfeited",
+                              ].includes(ds);
+                            return (
+                              (o.mode === "Rental" && (o.deposit || 0) > 0) ||
+                              hasRefund
+                            );
+                          })
+                          .map((o: any) => {
+                            const rawDecision = String(
+                              o.depositDecision?.status ||
+                                o.items?.[0]?.depositDecision?.status ||
+                                "",
+                            );
+                            const rawTopDep = String(o.depositStatus || "");
+                            const explicitResolved = [
+                              "released",
+                              "refunded",
+                              "partial",
+                              "partially released",
+                              "forfeited",
+                            ];
+                            const resolvedDecision = explicitResolved.includes(
+                              rawDecision.toLowerCase(),
+                            )
+                              ? rawDecision
+                              : explicitResolved.includes(rawTopDep.toLowerCase())
+                                ? rawTopDep
+                                : String(o.paymentStatus || "").toLowerCase() ===
+                                      "refunded" ||
+                                    Boolean(o.refund && o.refund.amount > 0)
+                                  ? "Refunded"
+                                  : "";
+
+                            const isReturnedAwaitingDecision =
+                              o.status === "Returned";
+                            const isOrderSettledComplete = [
                               "Complete",
                               "Processed",
                             ].includes(o.status);
+                            const isHeld =
+                              !resolvedDecision &&
+                              !isReturnedAwaitingDecision &&
+                              !isOrderSettledComplete &&
+                              (o.depositStatus === "Held" ||
+                                [
+                                  "Dispatched",
+                                  "Shipped",
+                                  "Delivered",
+                                  "Return Sent",
+                                ].includes(o.status));
+                            const isPending =
+                              !resolvedDecision &&
+                              o.status === "Confirmed" &&
+                              o.depositStatus !== "Held";
 
                             let depositStatus = "Pending Collection";
-                            if (isPhysicalReturnComplete)
+                            if (resolvedDecision) {
                               depositStatus =
-                                o.depositDecision?.status || "Released";
-                            else if (isHeld) depositStatus = "Held";
+                                resolvedDecision.toLowerCase() === "partial"
+                                  ? "Partially Released"
+                                  : resolvedDecision;
+                            } else if (isOrderSettledComplete) {
+                              depositStatus =
+                                o.status === "Processed"
+                                  ? "Refunded"
+                                  : "Released";
+                            } else if (isReturnedAwaitingDecision) {
+                              depositStatus =
+                                o.depositDecision?.status || "Pending";
+                            } else if (isHeld) {
+                              depositStatus = "Held";
+                            }
 
                             const isDepositPendingRefund =
-                              isPhysicalReturnComplete &&
-                              depositStatus === "Pending";
+                              !resolvedDecision &&
+                              ((isReturnedAwaitingDecision &&
+                                depositStatus === "Pending") ||
+                                (o.status === "Cancelled" && (o.deposit || 0) > 0));
                             const isDepositDeducted =
-                              isPhysicalReturnComplete &&
-                              (depositStatus === "Partial" ||
-                                depositStatus === "Forfeited");
+                              depositStatus === "Partial" ||
+                              depositStatus === "Partially Released" ||
+                              depositStatus === "Forfeited";
                             const isDepositFullyReleased =
-                              isPhysicalReturnComplete &&
-                              depositStatus === "Released";
+                              depositStatus === "Released" ||
+                              depositStatus === "Refunded";
 
                             let badgeColor = "bg-stone-200 text-stone-600";
                             if (isHeld)
@@ -2009,6 +2107,12 @@ export default function CustomersView({
                               badgeColor = "bg-rose-100 text-rose-700";
                             else if (isDepositFullyReleased)
                               badgeColor = "bg-green-100 text-green-700";
+
+                            const shownDepAmount =
+                              Number(o.deposit) ||
+                              Number(o.refund?.amount) ||
+                              Number(o.depositDecision?.releasedAmount) ||
+                              0;
 
                             let displayStatus = depositStatus;
                             if (
@@ -2036,7 +2140,7 @@ export default function CustomersView({
                                   {resolveProductName(o)}
                                 </td>
                                 <td className="px-5 py-4 font-semibold text-stone-900">
-                                  ₹{(o.deposit || 0).toLocaleString("en-IN")}
+                                  ₹{shownDepAmount.toLocaleString("en-IN")}
                                 </td>
                                 <td className="px-5 py-4">
                                   <span

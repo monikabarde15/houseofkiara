@@ -1,12 +1,6 @@
 import DepositWarning from "./DepositWarning";
 import "./../css/DispatchItemCard.css";
 
-// ============================================================
-// WHATSAPP ICON
-// Real WhatsApp glyph SVG inside a green circle, not the lucide
-// MessageCircle icon. Defined locally in this file since it's
-// only used here.
-// ============================================================
 const WhatsAppIcon = () => (
   <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm">
     <svg className="h-3 w-3 fill-current" viewBox="0 0 24 24">
@@ -15,7 +9,29 @@ const WhatsAppIcon = () => (
   </span>
 );
 
-export default function DispatchItemCard({ order }) {
+export default function DispatchItemCard({
+  order,
+  onViewOrder,
+  onMarkDispatched,
+}) {
+  const firstName = String(order.customer || "Customer").split(" ")[0];
+  const openWhatsApp = () => {
+    const digits = String(order.phone || "").replace(/\D/g, "");
+    const phone =
+      digits.length === 10
+        ? `91${digits}`
+        : digits.length > 10
+          ? digits
+          : "";
+    const msg = encodeURIComponent(
+      `Hi ${firstName}, regarding your House of Kaira order ${order.orderId} (${order.itemName}).`,
+    );
+    window.open(
+      phone ? `https://wa.me/${phone}?text=${msg}` : `https://wa.me/?text=${msg}`,
+      "_blank",
+    );
+  };
+
   return (
     <>
       <div className="dispatch-card">
@@ -27,14 +43,16 @@ export default function DispatchItemCard({ order }) {
         <div className="dispatch-card-info">
           <h3>
             {order.itemName} — {order.designer}
-            {order.pieces && (
+            {order.pieces > 1 && (
               <span className="pieces-badge">{order.pieces} PIECES</span>
             )}
           </h3>
           <p>
             {order.orderId} · {order.customer} · {order.city} ·{" "}
-            {order.rentalDates} · Size: {order.size} · Dep: ₹
-            {Number(order.deposit).toLocaleString("en-IN")}
+            {order.rentalDates} · Size: {order.size}
+            {order.deposit > 0
+              ? ` · Dep: ₹${Number(order.deposit).toLocaleString("en-IN")}`
+              : ""}
           </p>
 
           {order.warnings && order.warnings.length > 0 ? (
@@ -60,16 +78,36 @@ export default function DispatchItemCard({ order }) {
         </div>
 
         <div className="dispatch-card-actions">
-          <button className="btn-whatsapp">
-            <WhatsAppIcon /> WhatsApp {order.customer.split(" ")[0]}
+          <button type="button" className="btn-whatsapp" onClick={openWhatsApp}>
+            <WhatsAppIcon /> WhatsApp {firstName}
           </button>
-          <button className="btn-outline">View Order →</button>
-          <button className="btn-outline">Print Label</button>
-          <button className="btn-mark-dispatched">Mark Dispatched</button>
+          <button
+            type="button"
+            className="btn-outline"
+            onClick={() => onViewOrder?.(order.rawOrderId || order.orderId)}
+          >
+            View Order →
+          </button>
+          <button
+            type="button"
+            className="btn-outline"
+            onClick={() => window.print()}
+          >
+            Print Label
+          </button>
+          <button
+            type="button"
+            className="btn-mark-dispatched"
+            onClick={() => onMarkDispatched?.(order.rawOrder)}
+          >
+            Mark Dispatched
+          </button>
         </div>
       </div>
 
-      {!order.depositCollected && <DepositWarning amount={order.deposit} />}
+      {order.deposit > 0 && !order.depositCollected && (
+        <DepositWarning amount={order.deposit} />
+      )}
     </>
   );
 }

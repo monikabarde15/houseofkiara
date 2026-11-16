@@ -78,6 +78,38 @@ const PromoCode = ({ onApply, subtotal = 0 }) => {
       return;
     }
 
+    const isPrivatePromo =
+      promoData.audience === "private" ||
+      (Array.isArray(promoData.customerIds) && promoData.customerIds.length > 0);
+    if (isPrivatePromo) {
+      if (!user) {
+        setError("Please sign in to apply this private promo code.");
+        setApplied(null);
+        onApply(null);
+        return;
+      }
+      const userEmail = (user.email || "").toLowerCase().trim();
+      const userPhone = (user.phone || "").replace(/\D/g, "");
+      const userCustId = (user.customerId || user.id || user._id || "")
+        .toLowerCase()
+        .trim();
+      const allowed = (promoData.customerIds || []).some((cid) => {
+        const c = String(cid).toLowerCase().trim();
+        const cDigits = String(cid).replace(/\D/g, "");
+        return (
+          (userEmail && c === userEmail) ||
+          (userCustId && c === userCustId) ||
+          (userPhone && cDigits && cDigits.endsWith(userPhone.slice(-10)))
+        );
+      });
+      if (!allowed) {
+        setError("This code is linked to a different account.");
+        setApplied(null);
+        onApply(null);
+        return;
+      }
+    }
+
     const minReq = Number(promoData.minOrder) || 0;
     const numSubtotal = Number(subtotal) || 0;
     if (minReq > 0 && numSubtotal > 0 && numSubtotal < minReq) {

@@ -4,7 +4,7 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.8
    ======================================== */
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./styles/CustomerPicker.css";
 
 interface CustomerPickerProps {
@@ -13,13 +13,11 @@ interface CustomerPickerProps {
   disabled?: boolean;
 }
 
-// Mock customer data
-const mockCustomers = [
-  { id: "cust_001", name: "Priya Sharma", email: "priya@example.com" },
-  { id: "cust_002", name: "Amit Patel", email: "amit@example.com" },
-  { id: "cust_003", name: "Neha Singh", email: "neha@example.com" },
-  { id: "cust_004", name: "Rahul Verma", email: "rahul@example.com" },
-];
+interface RegisteredCustomer {
+  id: string;
+  name: string;
+  email: string;
+}
 
 export const CustomerPicker: React.FC<CustomerPickerProps> = ({
   customers,
@@ -28,45 +26,116 @@ export const CustomerPicker: React.FC<CustomerPickerProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [registeredCustomers, setRegisteredCustomers] = useState<
+    RegisteredCustomer[]
+  >([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    fetch("/api/customers")
+      .then((res) => res.json())
+      .then((res) => {
+        if (!active) return;
+        const list = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+            ? res.data
+            : [];
+        const normalized: RegisteredCustomer[] = list
+          .map((c: any) => ({
+            id: String(c.customerId || c.id || c._id || ""),
+            name: String(c.name || c.fullName || c.email || "Customer"),
+            email: String(c.email || "").trim(),
+          }))
+          .filter((c: RegisteredCustomer) => Boolean(c.email || c.id));
+        setRegisteredCustomers(normalized);
+      })
+      .catch(() => {
+        if (active) setRegisteredCustomers([]);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const getCustomerKey = (c: RegisteredCustomer) =>
+    (c.email || c.id).toLowerCase().trim();
+
+  const isCustomerAssigned = useCallback(
+    (c: RegisteredCustomer) => {
+      const emailLower = c.email.toLowerCase().trim();
+      const idLower = c.id.toLowerCase().trim();
+      return customers.some((assigned) => {
+        const a = String(assigned).toLowerCase().trim();
+        return (emailLower && a === emailLower) || (idLower && a === idLower);
+      });
+    },
+    [customers],
+  );
 
   const addCustomer = useCallback(
-    (customerId: string) => {
-      if (!customers.includes(customerId)) {
-        onCustomersChange([...customers, customerId]);
+    (customer: RegisteredCustomer) => {
+      const key = getCustomerKey(customer);
+      if (!isCustomerAssigned(customer)) {
+        onCustomersChange([...customers, key]);
       }
       setSearchTerm("");
       setShowSuggestions(false);
     },
-    [customers, onCustomersChange],
+    [customers, isCustomerAssigned, onCustomersChange],
   );
 
   const removeCustomer = useCallback(
-    (customerId: string) => {
-      onCustomersChange(customers.filter((id) => id !== customerId));
+    (valueToRemove: string) => {
+      const target = valueToRemove.toLowerCase().trim();
+      onCustomersChange(
+        customers.filter((val) => String(val).toLowerCase().trim() !== target),
+      );
     },
     [customers, onCustomersChange],
   );
 
   const suggestions =
-    searchTerm.length > 0
-      ? mockCustomers.filter(
+    searchTerm.trim().length > 0
+      ? registeredCustomers.filter(
           (c) =>
-            (c.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (c.email || "").toLowerCase().includes(searchTerm.toLowerCase()),
+            c.name.toLowerCase().includes(searchTerm.toLowerCase().trim()) ||
+            c.email.toLowerCase().includes(searchTerm.toLowerCase().trim()),
         )
-      : mockCustomers;
+      : registeredCustomers;
 
-  const assignedCustomers = mockCustomers.filter((c) =>
-    customers.includes(c.id),
-  );
+  const assignedCustomers = customers.map((val) => {
+    const v = String(val).toLowerCase().trim();
+    const matched = registeredCustomers.find(
+      (c) =>
+        c.email.toLowerCase().trim() === v || c.id.toLowerCase().trim() === v,
+    );
+    return (
+      matched || {
+        id: val,
+        name: val,
+        email: val.includes("@") ? val : "",
+      }
+    );
+  });
 
   return (
     <div className="customer-picker">
       <div className="customer-picker__search-wrapper">
         <input
           type="text"
+          autoComplete="off"
           className="customer-picker__search"
-          placeholder="Search for a customer by name or email..."
+          placeholder={
+            loading
+              ? "Loading registered customers..."
+              : "Search for a customer by name or email..."
+          }
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
@@ -79,12 +148,15 @@ export const CustomerPicker: React.FC<CustomerPickerProps> = ({
         {showSuggestions && suggestions.length > 0 && (
           <div className="customer-picker__suggestions">
             {suggestions.map((customer) => {
-              const isAssigned = customers.includes(customer.id);
+              const isAssigned = isCustomerAssigned(customer);
               return (
                 <div
-                  key={customer.id}
+                  key={customer.id || customer.email}
                   className={`customer-picker__suggestion ${isAssigned ? "assigned" : ""}`}
-                  onClick={() => !isAssigned && addCustomer(customer.id)}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    if (!isAssigned) addCustomer(customer);
+                  }}
                 >
                   <span className="customer-picker__suggestion-name">
                     {customer.name}
@@ -102,27 +174,42 @@ export const CustomerPicker: React.FC<CustomerPickerProps> = ({
             })}
           </div>
         )}
+        {showSuggestions && !loading && suggestions.length === 0 && (
+          <div className="customer-picker__suggestions">
+            <div className="customer-picker__suggestion">
+              <span className="customer-picker__suggestion-email">
+                No registered customers found.
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {assignedCustomers.length > 0 && (
         <div className="customer-picker__chips">
-          {assignedCustomers.map((customer) => (
-            <span key={customer.id} className="customer-picker__chip">
-              <span className="customer-picker__chip-name">
-                {customer.name}
+          {assignedCustomers.map((customer) => {
+            const chipKey = getCustomerKey(customer);
+            return (
+              <span key={chipKey} className="customer-picker__chip">
+                <span className="customer-picker__chip-name">
+                  {customer.name}
+                </span>
+                {customer.email && customer.email !== customer.name && (
+                  <span className="customer-picker__chip-email">
+                    {customer.email}
+                  </span>
+                )}
+                <button
+                  type="button"
+                  className="customer-picker__chip-remove"
+                  onClick={() => removeCustomer(chipKey)}
+                  disabled={disabled}
+                >
+                  ×
+                </button>
               </span>
-              <span className="customer-picker__chip-email">
-                {customer.email}
-              </span>
-              <button
-                className="customer-picker__chip-remove"
-                onClick={() => removeCustomer(customer.id)}
-                disabled={disabled}
-              >
-                ×
-              </button>
-            </span>
-          ))}
+            );
+          })}
         </div>
       )}
 

@@ -1,4 +1,3 @@
-// import { cn } from "@/lib/utils";
 import { PayoutTab } from "../PayoutsView";
 
 interface PayoutTabsProps {
@@ -21,12 +20,11 @@ export default function PayoutTabs({
   const pendingCount = payouts.filter(
     (p) => p.status === "Pending" || p.status === "Pending Approval",
   ).length;
-  const paidCount = payouts.filter((p) => p.status === "Paid").length;
-  const failedCount = payouts.filter(
-    (p) => p.status === "Failed" || p.status === "Reversed",
-  ).length;
+
   const damageCompCount = payouts.filter(
-    (p) => p.mode === "Damage Comp." || p.mode === "Damage Compensation",
+    (p) =>
+      (p.mode === "Damage Comp." || p.mode === "Damage Compensation") &&
+      p.status !== "Paid",
   ).length;
 
   const tabs: TabItem[] = [
@@ -36,9 +34,8 @@ export default function PayoutTabs({
       count: pendingCount,
     },
     {
-      label: `All Payouts`,
+      label: "All Payouts",
       value: "all-payouts",
-      count: payouts.length,
     },
     {
       label: "By Lister",
@@ -65,7 +62,7 @@ export default function PayoutTabs({
             <button
               key={tab.value}
               onClick={() => onChange(tab.value)}
-              className={`relative inline-flex items-center gap-2.5 whitespace-nowrap pb-3 pt-1 text-sm font-medium transition-colors ${
+              className={`relative inline-flex items-center gap-2.5 whitespace-nowrap pb-3 pt-1 text-sm font-medium transition-colors cursor-pointer ${
                 active
                   ? "text-[#1E1412]"
                   : "text-[#78716C] hover:text-[#1E1412]"
@@ -73,7 +70,7 @@ export default function PayoutTabs({
             >
               <span>{tab.label}</span>
 
-              {tab.count !== undefined && tab.count > 0 && (
+              {tab.count !== undefined && (
                 <span className="inline-flex items-center justify-center rounded bg-[#F5EAD2] px-2 py-0.5 text-xs font-semibold text-[#8C6B20]">
                   {tab.count}
                 </span>

@@ -11,11 +11,13 @@ import { Order, Product } from "../types";
 interface ReportsViewProps {
   orders: Order[];
   products: Product[];
+  designers?: any[];
 }
 
 export default function ReportsView({
   orders = [],
   products = [],
+  designers = [],
 }: ReportsViewProps) {
   const [timeRange, setTimeRange] = useState<"30days" | "90days" | "1year">(
     "30days",
@@ -121,17 +123,45 @@ export default function ReportsView({
     }));
   }, [safeOrders]);
 
-  // Top Performing Designers dynamically derived from database orders
+  // Top Performing Designers dynamically derived from live Designers DB + database orders
   const designerEarnings = useMemo(() => {
     const designerMap: Record<string, { count: number; sales: number }> = {};
+    const canonicalByLower: Record<string, string> = {};
     let totalSales = 0;
 
+    (designers || []).forEach((d: any) => {
+      const dName = String(d?.name || "").trim();
+      if (!dName) return;
+      const key = dName.toLowerCase();
+      if (!canonicalByLower[key]) {
+        canonicalByLower[key] = dName;
+        designerMap[dName] = { count: 0, sales: 0 };
+      }
+    });
+
     safeOrders.forEach((o) => {
-      const designerName =
-        (o as any)?.designer ||
-        (o as any)?.designerName ||
-        (o as any)?.brand ||
-        "Independent";
+      const firstIt = Array.isArray(o.items) && o.items[0] ? (o.items[0] as any) : null;
+      const oProdId = (o as any)?.productId || firstIt?.productId;
+      const oProdName = (o.productName || firstIt?.productName || "").toLowerCase().trim();
+      const matchedProd = (products || []).find(
+        (p) =>
+          (oProdId && (p.id === oProdId || (p as any).productId === oProdId)) ||
+          (oProdName && (p.name || "").toLowerCase().trim() === oProdName),
+      );
+
+      const rawName = String(
+        matchedProd?.designer ||
+          (o as any)?.designer ||
+          (o as any)?.designerName ||
+          (o as any)?.brand ||
+          firstIt?.designer ||
+          "Independent",
+      ).trim();
+      const canonicalName = canonicalByLower[rawName.toLowerCase()];
+      if (Object.keys(canonicalByLower).length > 0 && !canonicalName) {
+        return;
+      }
+      const designerName = canonicalName || rawName;
       if (!designerMap[designerName]) {
         designerMap[designerName] = { count: 0, sales: 0 };
       }
@@ -152,7 +182,7 @@ export default function ReportsView({
             : "0%",
       }))
       .sort((a, b) => b.sales - a.sales);
-  }, [safeOrders]);
+  }, [safeOrders, products, designers]);
 
   return (
     <div className="space-y-6 text-xs font-sans">

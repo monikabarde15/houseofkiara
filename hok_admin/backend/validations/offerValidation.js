@@ -2,6 +2,8 @@ import Joi from "joi";
 
 export const validateOffer = (data) => {
   const schema = Joi.object({
+    offerId: Joi.string().allow("", null),
+
     enquiryId: Joi.string().allow("", null),
 
     productId: Joi.string().allow("", null),
@@ -26,6 +28,20 @@ export const validateOffer = (data) => {
 
     customerState: Joi.string().allow("", null),
 
+    address: Joi.string().allow("", null),
+
+    mode: Joi.string().valid("Rental", "Preloved", "Buy").allow("", null),
+
+    size: Joi.string().allow("", null),
+
+    rentalStartDate: Joi.string().allow("", null),
+
+    rentalEndDate: Joi.string().allow("", null),
+
+    createOrder: Joi.boolean().default(false),
+
+    paymentMethod: Joi.string().allow("", null),
+
     quantity: Joi.number().integer().min(1).max(100).default(1),
 
     originalAmount: Joi.number().min(0).precision(2).default(0),
@@ -47,35 +63,5 @@ export const validateOffer = (data) => {
     channel: Joi.string().allow("", null),
   });
 
-  return schema
-    .custom((value, helpers) => {
-      // Only validate amounts when both originalAmount and offeredAmount are non-zero
-      if (
-        value.offeredAmount > 0 &&
-        value.originalAmount > 0 &&
-        value.offeredAmount > value.originalAmount
-      )
-        return helpers.error("any.custom", {
-          message: "Offered amount cannot exceed original amount",
-        });
-      if (
-        value.discount > 0 &&
-        value.originalAmount > 0 &&
-        value.discount > value.originalAmount
-      )
-        return helpers.error("any.custom", {
-          message: "Discount cannot exceed original amount",
-        });
-      if (
-        value.finalAmount > 0 &&
-        value.originalAmount > 0 &&
-        value.finalAmount > value.originalAmount
-      )
-        return helpers.error("any.custom", {
-          message: "Final amount cannot exceed original amount",
-        });
-      return value;
-    })
-    .messages({ "any.custom": "{{#message}}" })
-    .validate(data, { abortEarly: false, stripUnknown: true });
+  return schema.validate(data, { abortEarly: false, stripUnknown: true });
 };

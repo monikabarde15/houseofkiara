@@ -106,18 +106,22 @@ const CheckoutLayout = () => {
 
         const orderId = `HOK-ORD-${Date.now()}`;
         const firstItem = checkoutItems[0] || {};
+        const primaryRentalItem =
+          checkoutItems.find(
+            (item) => item.type === "rental" || item.type === "rent",
+          ) || firstItem;
         const firstProduct = firstItem.product || firstItem;
         const rootRentalStart =
-          firstItem.rentalDates?.start ||
-          firstItem.booking?.deliveryDate ||
-          firstItem.booking?.startDate ||
-          firstItem.startDate ||
+          primaryRentalItem.rentalDates?.start ||
+          primaryRentalItem.booking?.deliveryDate ||
+          primaryRentalItem.booking?.startDate ||
+          primaryRentalItem.startDate ||
           "";
         const rootRentalEnd =
-          firstItem.rentalDates?.end ||
-          firstItem.booking?.returnDate ||
-          firstItem.booking?.endDate ||
-          firstItem.endDate ||
+          primaryRentalItem.rentalDates?.end ||
+          primaryRentalItem.booking?.returnDate ||
+          primaryRentalItem.booking?.endDate ||
+          primaryRentalItem.endDate ||
           "";
         const hasPrelovedItem = checkoutItems.some(
           (item) => item.type === "preloved"

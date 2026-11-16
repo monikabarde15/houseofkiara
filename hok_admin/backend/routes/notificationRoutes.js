@@ -1,7 +1,20 @@
 import express from "express";
 import Notification from "../models/Notification.js";
+import {
+  getDeskNotifications,
+  assignRecord,
+  putDownAlert,
+  pickUpAlert,
+  markSeenRecords,
+} from "../controllers/notificationDeskController.js";
 
 const router = express.Router();
+
+router.get("/desk", getDeskNotifications);
+router.put("/assign", assignRecord);
+router.put("/put-down", putDownAlert);
+router.delete("/put-down", pickUpAlert);
+router.put("/seen", markSeenRecords);
 
 // GET all notifications
 router.get("/", async (req, res) => {

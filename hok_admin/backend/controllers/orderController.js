@@ -15,6 +15,7 @@ export const parseAmount = (val) => {
 
 const view = (order) => {
   const obj = order.toObject ? order.toObject() : { ...order };
+  delete obj._data;
   const items = Array.isArray(obj.items) ? obj.items : [];
   const firstItem = items[0] || {};
   const mode = obj.mode || firstItem.mode || "Rental";
@@ -113,6 +114,32 @@ const view = (order) => {
         }
       : undefined);
 
+  const resolvedDepositDecision =
+    obj.depositDecision || firstItem.depositDecision || undefined;
+
+  let resolvedDepositStatus = obj.depositStatus || "";
+  if (
+    resolvedDepositDecision?.status &&
+    ["Released", "Partial", "Partially Released", "Forfeited", "Refunded"].includes(
+      resolvedDepositDecision.status,
+    )
+  ) {
+    resolvedDepositStatus =
+      resolvedDepositDecision.status === "Partial"
+        ? "Partially Released"
+        : resolvedDepositDecision.status;
+  } else if (
+    obj.paymentStatus === "Refunded" ||
+    obj.refund?.status === "Processed" ||
+    obj.status === "Processed"
+  ) {
+    resolvedDepositStatus = "Refunded";
+  } else if (obj.status === "Complete") {
+    resolvedDepositStatus = "Released";
+  } else if (!resolvedDepositStatus) {
+    resolvedDepositStatus = deposit > 0 ? "Pending" : "None";
+  }
+
   return {
     ...obj,
     id: resolvedOrderId,
@@ -122,7 +149,8 @@ const view = (order) => {
     totalAmount: rawAmount,
     deposit,
     depositHeld: deposit,
-    depositStatus: obj.depositStatus || (deposit > 0 ? "Pending" : "None"),
+    depositStatus: resolvedDepositStatus,
+    ...(resolvedDepositDecision ? { depositDecision: resolvedDepositDecision } : {}),
     productName,
     designer,
     mode,
@@ -466,19 +494,83 @@ export const createOrder = async (req, res) => {
       }
     }
 
+    const normalizeYMD = (val) => {
+      if (!val) return "";
+      const s = String(val).trim();
+      const ymd = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (ymd) return `${ymd[1]}-${ymd[2]}-${ymd[3]}`;
+      const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+      if (dmy) {
+        return `${dmy[3]}-${dmy[2].padStart(2, "0")}-${dmy[1].padStart(2, "0")}`;
+      }
+      const d = new Date(s);
+      if (isNaN(d.getTime())) return "";
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    };
+    const addDaysYMD = (ymdStr, delta) => {
+      const m = String(ymdStr || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!m) return "";
+      const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]) + delta);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    };
+    const todayISTStr = new Date().toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kolkata",
+    });
+
     const items = await calculateItems(req.body.items);
     const firstItem = items[0] || {};
-    let rentalStart = req.body.rentalStartDate || firstItem.rentalStartDate || firstItem.startDate || "";
-    let rentalEnd = req.body.rentalEndDate || firstItem.rentalEndDate || firstItem.endDate || "";
-    let dispatchDate = req.body.dispatchDate || firstItem.dispatchDate || "";
+    const primaryRentalItem =
+      items.find(
+        (it) =>
+          String(it?.mode || "").toLowerCase() === "rental" ||
+          it?.rentalStartDate ||
+          it?.startDate,
+      ) || firstItem;
+
+    const resolvedMode =
+      req.body.mode ||
+      (items.some((it) => String(it?.mode || "").toLowerCase() === "rental")
+        ? "Rental"
+        : firstItem.mode || "Rental");
+
+    let rentalStart = normalizeYMD(
+      req.body.rentalStartDate ||
+        primaryRentalItem.rentalStartDate ||
+        primaryRentalItem.startDate ||
+        "",
+    );
+    let rentalEnd = normalizeYMD(
+      req.body.rentalEndDate ||
+        primaryRentalItem.rentalEndDate ||
+        primaryRentalItem.endDate ||
+        "",
+    );
+    if (resolvedMode === "Rental" && !rentalStart) {
+      rentalStart = addDaysYMD(todayISTStr, 2);
+    }
+    if (resolvedMode === "Rental" && rentalStart && (!rentalEnd || rentalEnd < rentalStart)) {
+      rentalEnd = addDaysYMD(rentalStart, 3);
+    }
+
+    let dispatchDate = normalizeYMD(
+      req.body.dispatchDate || primaryRentalItem.dispatchDate || "",
+    );
     if (!dispatchDate && rentalStart) {
-      try {
-        const d = new Date(rentalStart);
-        d.setDate(d.getDate() - 2);
-        dispatchDate = d.toISOString().split("T")[0];
-      } catch (e) {}
+      dispatchDate = addDaysYMD(rentalStart, -2);
     } else if (!dispatchDate) {
-      dispatchDate = new Date().toISOString().split("T")[0];
+      dispatchDate = todayISTStr;
+    }
+
+    for (const it of items) {
+      if (String(it.mode || resolvedMode).toLowerCase() === "rental") {
+        it.mode = "Rental";
+        it.rentalStartDate = normalizeYMD(it.rentalStartDate || it.startDate) || rentalStart;
+        it.rentalEndDate = normalizeYMD(it.rentalEndDate || it.endDate) || rentalEnd;
+        it.dispatchDate = normalizeYMD(it.dispatchDate) || addDaysYMD(it.rentalStartDate, -2) || dispatchDate;
+        if (!it.returnDueDate && it.rentalEndDate) {
+          it.returnDueDate = addDaysYMD(it.rentalEndDate, 1);
+        }
+      }
     }
 
     const resolvedProductName =
@@ -489,7 +581,6 @@ export const createOrder = async (req, res) => {
       (req.body.designer && req.body.designer !== "House of Kaira")
         ? req.body.designer
         : (firstItem.designer || "House of Kaira");
-    const resolvedMode = req.body.mode || firstItem.mode || "Rental";
     const resolvedImage = req.body.image || firstItem.image || "";
 
     const order = await Order.create({
@@ -674,13 +765,37 @@ export const updateOrder = async (req, res) => {
         })
       : rawItems;
 
-    const targetDepositStatus = req.body.depositStatus || existing.depositStatus;
+    const incomingDepositDecision = req.body.depositDecision;
+    let derivedDecisionStatus = "";
+    if (
+      incomingDepositDecision?.status &&
+      ["Released", "Partial", "Partially Released", "Forfeited", "Refunded"].includes(
+        incomingDepositDecision.status,
+      )
+    ) {
+      derivedDecisionStatus =
+        incomingDepositDecision.status === "Partial"
+          ? "Partially Released"
+          : incomingDepositDecision.status;
+    }
+
+    const targetDepositStatus =
+      derivedDecisionStatus || req.body.depositStatus || existing.depositStatus;
     const calcTotals =
       req.body.recalculateTotals && req.body.items
         ? totalsFor(syncedItems, req.body.discount ?? existing.discount, targetDepositStatus)
         : {};
     if (targetDepositStatus) {
       calcTotals.depositStatus = targetDepositStatus;
+    }
+    if (incomingDepositDecision && Array.isArray(syncedItems) && syncedItems.length > 0) {
+      syncedItems[0] = {
+        ...syncedItems[0],
+        depositDecision: {
+          ...(syncedItems[0].depositDecision || {}),
+          ...incomingDepositDecision,
+        },
+      };
     }
 
     const preservedGrandTotal =
@@ -689,8 +804,11 @@ export const updateOrder = async (req, res) => {
       parseAmount(req.body.amount) ||
       parseAmount(existing.amount);
 
+    const cleanBody = { ...req.body };
+    delete cleanBody._data;
+
     const updateData = {
-      ...req.body,
+      ...cleanBody,
       items: syncedItems,
       ...calcTotals,
       ...(preservedGrandTotal > 0

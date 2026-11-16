@@ -2,7 +2,295 @@ import { Parser } from "json2csv";
 import Offer from "../models/Offer.js";
 import Customer from "../models/Customer.js";
 import PromoCode from "../models/PromoCode.js";
+import Order from "../models/Order.js";
+import Product from "../models/Product.js";
+import Lister from "../models/Lister.js";
 import { validateOffer } from "../validations/offerValidation.js";
+import { syncCustomerOrderStats } from "./customerController.js";
+
+const normalizeYMD = (val) => {
+  if (!val) return "";
+  const s = String(val).trim();
+  const ymd = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (ymd) return `${ymd[1]}-${ymd[2]}-${ymd[3]}`;
+  const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (dmy) {
+    return `${dmy[3]}-${dmy[2].padStart(2, "0")}-${dmy[1].padStart(2, "0")}`;
+  }
+  const d = new Date(s);
+  if (isNaN(d.getTime())) return "";
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
+
+const addDaysYMD = (ymdStr, deltaDays) => {
+  const m = String(ymdStr || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return "";
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]) + deltaDays);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
+
+const findOfferDoc = async (id) => {
+  if (!id) return null;
+  let doc = await Offer.findById(id).catch(() => null);
+  if (!doc) {
+    doc = await Offer.findOne({ offerId: id }).catch(() => null);
+  }
+  return doc;
+};
+
+const createOrderForAcceptedOffer = async (offer, existingCustomer = null, overrides = {}) => {
+  let product = null;
+  if (offer.productId) {
+    product = await Product.findOne({
+      $or: [
+        { productId: offer.productId },
+        { _id: offer.productId },
+        { sku: offer.productId },
+        { id: offer.productId },
+      ],
+    }).catch(() => null);
+  }
+  if (!product && offer.productName) {
+    product = await Product.findOne({ name: offer.productName }).catch(() => null);
+  }
+
+  let customer = existingCustomer;
+  if (!customer && offer.customerId) {
+    customer = await Customer.findOne({
+      $or: [{ customerId: offer.customerId }, { _id: offer.customerId }],
+    }).catch(() => null);
+  }
+  if (!customer && offer.customerEmail) {
+    customer = await Customer.findOne({
+      email: offer.customerEmail.trim().toLowerCase(),
+    }).catch(() => null);
+  }
+  if (!customer && offer.customerPhone) {
+    customer = await Customer.findOne({
+      phone: offer.customerPhone.trim(),
+    }).catch(() => null);
+  }
+  if (!customer && offer.customerName) {
+    const customers = await Customer.find({}, "customerId").exec();
+    const existingCustIds = (customers || [])
+      .map((c) => c.customerId)
+      .filter((id) => id && id.startsWith("CUST-"))
+      .map((id) => parseInt(id.replace("CUST-", ""), 10))
+      .filter((num) => !isNaN(num));
+    const maxId = existingCustIds.length > 0 ? Math.max(...existingCustIds) : 0;
+    const assignedCustomerId = `CUST-${String(maxId + 1).padStart(5, "0")}`;
+    customer = await Customer.create({
+      customerId: assignedCustomerId,
+      name: offer.customerName.trim(),
+      email: offer.customerEmail || `customer_${Date.now()}@houseofkaira.com`,
+      phone: offer.customerPhone || "",
+      location: overrides.address || offer.customerCity || "India",
+      status: "Active",
+      source: `Offline Order - ${offer.channel || "Admin"}`,
+    });
+  }
+
+  const todayIST = new Date().toLocaleDateString("en-CA", {
+    timeZone: "Asia/Kolkata",
+  });
+
+  const rawStart = normalizeYMD(overrides.rentalStartDate || offer.rentalStartDate);
+  const rawEnd = normalizeYMD(overrides.rentalEndDate || offer.rentalEndDate);
+
+  const productModes = Array.isArray(product?.listingModes)
+    ? product.listingModes.map((m) => String(m).toLowerCase())
+    : [];
+  const defaultProductMode =
+    productModes.includes("rental") || (!productModes.includes("buy") && Number(product?.rentalPrice || 0) > 0)
+      ? "Rental"
+      : "Buy";
+
+  const resolvedMode =
+    overrides.mode ||
+    offer.mode ||
+    (rawStart ? "Rental" : defaultProductMode);
+
+  let rentalStartDate = "";
+  let rentalEndDate = "";
+  let dispatchDate = todayIST;
+
+  if (resolvedMode === "Rental") {
+    rentalStartDate = rawStart || addDaysYMD(todayIST, 2);
+    const minDays = Math.max(1, Number(product?.minimumDurationDays || 4));
+    rentalEndDate =
+      rawEnd && rawEnd >= rentalStartDate
+        ? rawEnd
+        : addDaysYMD(rentalStartDate, minDays - 1);
+    dispatchDate = addDaysYMD(rentalStartDate, -2) || todayIST;
+  }
+
+  const agreedAmount = Number(
+    overrides.amount ||
+      offer.finalAmount ||
+      offer.offeredAmount ||
+      offer.originalAmount ||
+      (resolvedMode === "Rental"
+        ? product?.rentalPrice
+        : product?.listingPrice || product?.originalRetailPrice) ||
+      0,
+  );
+  const deposit =
+    resolvedMode === "Rental"
+      ? Number(product?.securityDeposit || product?.deposit || 10000)
+      : 0;
+  const discountVal = Number(offer.discount || 0);
+  const grandTotal = agreedAmount + deposit;
+
+  let listerId = product?.listerId || product?.lister_id || "";
+  let listerName = product?.listerName || product?.lister_name || "";
+  if (listerId && !listerName) {
+    const lRec = await Lister.findOne({
+      $or: [{ listerId }, { _id: listerId }, { id: listerId }],
+    }).catch(() => null);
+    if (lRec) listerName = lRec.name;
+  }
+  if (!listerId) {
+    listerId = "ananya-sharma";
+    listerName = "Ananya Sharma";
+  }
+  if (!listerName) listerName = "Ananya Sharma";
+
+  const resolvedImage =
+    offer.productImage ||
+    (Array.isArray(product?.images) && product.images[0]) ||
+    (typeof product?.image === "string" ? product.image : "") ||
+    "";
+  const resolvedDesigner = product?.designer || "House of Kaira";
+  const resolvedSize =
+    overrides.size ||
+    offer.size ||
+    (Array.isArray(product?.sizes) && product.sizes[0]) ||
+    "Free Size";
+  const resolvedProdId =
+    product?.productId || product?._id?.toString() || offer.productId || "";
+  const resolvedAddress =
+    overrides.address ||
+    offer.address ||
+    offer.customerCity ||
+    customer?.location ||
+    "India";
+
+  const orderId = `HOK-ORD-${Date.now()}`;
+  const createdOrder = await Order.create({
+    orderId,
+    orderDate: new Date().toISOString(),
+    customerId: customer?.customerId || offer.customerId || "",
+    customerName: customer?.name || offer.customerName,
+    customerEmail: customer?.email || offer.customerEmail || "",
+    customerPhone: customer?.phone || offer.customerPhone || "",
+    customerCity: offer.customerCity || customer?.location || "",
+    customerState: offer.customerState || "",
+    address: resolvedAddress,
+    productId: resolvedProdId,
+    productName: product?.name || offer.productName,
+    designer: resolvedDesigner,
+    image: resolvedImage,
+    mode: resolvedMode,
+    listerId,
+    listerName,
+    rentalStartDate,
+    rentalEndDate,
+    dispatchDate,
+    paymentMethod: overrides.paymentMethod || `Offline (${offer.channel || "Admin"})`,
+    status: "Confirmed",
+    orderValue: agreedAmount,
+    amount: grandTotal,
+    grandTotal,
+    priceBeforePromo: Number(offer.originalAmount || agreedAmount),
+    discount: discountVal,
+    offerId: offer.offerId,
+    deposit,
+    depositHeld: deposit,
+    depositStatus: deposit > 0 ? "Pending" : "None",
+    payoutStatus: "Pending Approval",
+    items: [
+      {
+        productId: resolvedProdId,
+        productName: product?.name || offer.productName,
+        designer: resolvedDesigner,
+        image: resolvedImage,
+        mode: resolvedMode,
+        size: resolvedSize,
+        rentalStartDate,
+        rentalEndDate,
+        dispatchDate,
+        returnDueDate: rentalEndDate ? addDaysYMD(rentalEndDate, 1) : "",
+        amount: agreedAmount,
+        deposit,
+        listerId,
+        listerName,
+        quantity: Number(offer.quantity || 1),
+        status: "Confirmed",
+      },
+    ],
+    logs: [
+      {
+        message: `Order created from Offer/Enquiry ${offer.offerId} (${offer.channel || "Admin"})`,
+        type: "Order",
+        user: offer.assignedTo || "Admin",
+      },
+    ],
+  });
+
+  if (product) {
+    if (resolvedMode === "Rental" && rentalStartDate && rentalEndDate) {
+      if (!Array.isArray(product.blockedDates)) product.blockedDates = [];
+      product.blockedDates.push({
+        from: new Date(rentalStartDate),
+        to: new Date(rentalEndDate),
+        reason: `Rented (Order ${orderId})`,
+      });
+      product.timesRented = Number(product.timesRented || 0) + 1;
+    }
+
+    const bookingRecord = {
+      orderId,
+      customerName: createdOrder.customerName || "Customer",
+      whatsappNumber: createdOrder.customerPhone || "",
+      city: createdOrder.customerCity || "",
+      startDate: rentalStartDate || todayIST,
+      endDate: rentalEndDate || rentalStartDate || todayIST,
+      orderDate: createdOrder.orderDate || new Date().toISOString(),
+      mode: resolvedMode,
+      amount: agreedAmount,
+      deposit,
+      status: "Confirmed",
+      source: offer.channel || "Admin Offer",
+    };
+
+    if (!Array.isArray(product.bookingHistory)) product.bookingHistory = [];
+    product.bookingHistory.push(bookingRecord);
+
+    if (resolvedMode === "Rental") {
+      if (!Array.isArray(product.externalBookings)) product.externalBookings = [];
+      product.externalBookings.push(bookingRecord);
+    }
+
+    if (!Array.isArray(product.activityLog)) product.activityLog = [];
+    product.activityLog.push({
+      action: `Order ${orderId} (${resolvedMode}) created from Offer ${offer.offerId} for ${createdOrder.customerName}`,
+      user: offer.assignedTo || "Admin",
+    });
+
+    await product.save().catch(() => {});
+    global.__webProductsCache = null;
+  }
+
+  if (customer) {
+    await syncCustomerOrderStats([customer]).catch(() => {});
+  }
+  try {
+    const { syncPayoutsFromOrders } = await import("./payoutController.js");
+    if (syncPayoutsFromOrders) await syncPayoutsFromOrders();
+  } catch (e) {}
+
+  return { order: createdOrder, customer };
+};
 
 // ===============================
 // Create Offer
@@ -92,7 +380,7 @@ export const createOffer = async (req, res) => {
       assignedCustomerId = customer.customerId;
     }
 
-    // 2. Generate Promo Code if offered price gives a discount
+    // 2. Calculate discount (Promo Code only created if explicitly passed)
     const origAmt = Number(originalAmount) || 0;
     const offAmt = Number(offeredAmount) || 0;
     const calculatedDiscount =
@@ -102,16 +390,7 @@ export const createOffer = async (req, res) => {
 
     let finalPromoCode = customPromoCode ? customPromoCode.trim().toUpperCase() : null;
 
-    if (calculatedDiscount > 0) {
-      if (!finalPromoCode) {
-        const namePart = (cleanName || "OFFER")
-          .replace(/[^a-zA-Z0-9]/g, "")
-          .slice(0, 5)
-          .toUpperCase();
-        const randNum = Math.floor(100 + Math.random() * 900);
-        finalPromoCode = `OFFER-${namePart}-${randNum}`;
-      }
-
+    if (finalPromoCode && calculatedDiscount > 0) {
       try {
         const today = new Date().toLocaleDateString("en-IN", {
           day: "numeric",
@@ -152,7 +431,11 @@ export const createOffer = async (req, res) => {
     }
 
     // Generate Unique Offer ID
-    const offerId = `OFF-${Date.now()}`;
+    const offerId = req.body.offerId || `OFF-${Date.now()}`;
+    const normalizedMode = req.body.mode || (req.body.rentalStartDate ? "Rental" : "Rental");
+    const normalizedStart = normalizeYMD(req.body.rentalStartDate);
+    const normalizedEnd = normalizeYMD(req.body.rentalEndDate);
+    const shouldCreateOrder = Boolean(req.body.createOrder);
 
     const offer = await Offer.create({
       offerId,
@@ -166,6 +449,11 @@ export const createOffer = async (req, res) => {
       customerPhone: cleanPhone || customer?.phone || "",
       customerCity,
       customerState,
+      address: req.body.address || customerCity || "",
+      mode: normalizedMode,
+      size: req.body.size || "",
+      rentalStartDate: normalizedStart,
+      rentalEndDate: normalizedEnd,
       quantity,
       originalAmount: origAmt,
       offeredAmount: offAmt,
@@ -177,8 +465,8 @@ export const createOffer = async (req, res) => {
       expiresAt,
       channel: req.body.channel || "Website",
 
-      status: offAmt ? "Pending" : "Enquiry",
-      negotiationStatus: "Not Started",
+      status: shouldCreateOrder ? "Accepted" : offAmt ? "Pending" : "Enquiry",
+      negotiationStatus: shouldCreateOrder ? "Completed" : "Not Started",
 
       notes: notes
         ? [
@@ -193,8 +481,8 @@ export const createOffer = async (req, res) => {
       timeline: [
         {
           action: "Offer Created",
-          remarks: finalPromoCode
-            ? `Offer created with website promo code ${finalPromoCode} (₹${calculatedDiscount} discount).`
+          remarks: shouldCreateOrder
+            ? "Offer logged & accepted directly by Admin."
             : "Offer created successfully.",
           user: assignedTo || "Admin",
           createdAt: new Date(),
@@ -202,14 +490,50 @@ export const createOffer = async (req, res) => {
       ],
     });
 
+    let createdOrder = null;
+    if (shouldCreateOrder) {
+      const orderResult = await createOrderForAcceptedOffer(offer, customer, {
+        mode: normalizedMode,
+        rentalStartDate: normalizedStart,
+        rentalEndDate: normalizedEnd,
+        address: req.body.address,
+        size: req.body.size,
+        paymentMethod: req.body.paymentMethod,
+        amount: offAmt || origAmt,
+      });
+      createdOrder = orderResult.order;
+      if (orderResult.customer && !customer) customer = orderResult.customer;
+
+      offer.linkedOrderId = createdOrder.orderId;
+      offer.rentalStartDate = createdOrder.rentalStartDate || normalizedStart;
+      offer.rentalEndDate = createdOrder.rentalEndDate || normalizedEnd;
+      offer.mode = createdOrder.mode || normalizedMode;
+      offer.customerId = customer?.customerId || assignedCustomerId;
+      offer.timeline.push({
+        action: "Converted to Order",
+        remarks: `Confirmed Order ${createdOrder.orderId} created (${offer.mode}${offer.rentalStartDate ? `: ${offer.rentalStartDate} to ${offer.rentalEndDate}` : ""}).`,
+        user: assignedTo || "Admin",
+        createdAt: new Date(),
+      });
+      await offer.save();
+    }
+
     return res.status(201).json({
       success: true,
-      message: "Offer created successfully.",
+      message: createdOrder
+        ? `Offer saved & Order ${createdOrder.orderId} created successfully.`
+        : "Offer created successfully.",
       data: {
         ...(offer.toObject ? offer.toObject() : offer),
         promoCode: finalPromoCode,
-        customerId: assignedCustomerId,
+        customerId: offer.customerId || assignedCustomerId,
+        linkedOrderId: offer.linkedOrderId || undefined,
       },
+      order: createdOrder
+        ? createdOrder.toObject
+          ? createdOrder.toObject()
+          : createdOrder
+        : null,
       customer: customer ? (customer.toObject ? customer.toObject() : customer) : null,
       promoCode: finalPromoCode,
     });
@@ -558,6 +882,7 @@ export const updateOfferStatus = async (req, res) => {
 
     // Allowed Status
     const allowedStatus = [
+      "Enquiry",
       "Pending",
       "Accepted",
       "Rejected",
@@ -588,7 +913,7 @@ export const updateOfferStatus = async (req, res) => {
       });
     }
 
-    const offer = await Offer.findById(id);
+    const offer = await findOfferDoc(id);
 
     if (!offer) {
       return res.status(404).json({
@@ -601,6 +926,18 @@ export const updateOfferStatus = async (req, res) => {
 
     offer.status = status;
     offer.updatedAt = new Date();
+    if (req.body.mode) offer.mode = req.body.mode;
+    if (req.body.rentalStartDate) {
+      offer.rentalStartDate = normalizeYMD(req.body.rentalStartDate);
+    }
+    if (req.body.rentalEndDate) {
+      offer.rentalEndDate = normalizeYMD(req.body.rentalEndDate);
+    }
+    if (req.body.address) offer.address = req.body.address;
+    if (req.body.amount !== undefined && Number(req.body.amount) > 0) {
+      offer.offeredAmount = Number(req.body.amount);
+      offer.finalAmount = Number(req.body.amount);
+    }
 
     // Timeline Entry
     offer.timeline.push({
@@ -610,12 +947,47 @@ export const updateOfferStatus = async (req, res) => {
       createdAt: new Date(),
     });
 
+    let createdOrder = null;
+    if (status === "Accepted" && !offer.linkedOrderId && req.body.createOrder !== false) {
+      const orderResult = await createOrderForAcceptedOffer(offer, null, {
+        mode: req.body.mode || offer.mode,
+        rentalStartDate: req.body.rentalStartDate || offer.rentalStartDate,
+        rentalEndDate: req.body.rentalEndDate || offer.rentalEndDate,
+        address: req.body.address || offer.address,
+        size: req.body.size || offer.size,
+        paymentMethod: req.body.paymentMethod,
+        amount: req.body.amount,
+      });
+      createdOrder = orderResult.order;
+      offer.linkedOrderId = createdOrder.orderId;
+      offer.mode = createdOrder.mode || offer.mode;
+      offer.rentalStartDate = createdOrder.rentalStartDate || offer.rentalStartDate;
+      offer.rentalEndDate = createdOrder.rentalEndDate || offer.rentalEndDate;
+      if (orderResult.customer?.customerId && !offer.customerId) {
+        offer.customerId = orderResult.customer.customerId;
+      }
+      offer.negotiationStatus = "Completed";
+      offer.timeline.push({
+        action: "Converted to Order",
+        remarks: `Confirmed Order ${createdOrder.orderId} created (${offer.mode}${offer.rentalStartDate ? `: ${offer.rentalStartDate} to ${offer.rentalEndDate}` : ""}).`,
+        user: updatedBy || "Admin",
+        createdAt: new Date(),
+      });
+    }
+
     await offer.save();
 
     return res.status(200).json({
       success: true,
-      message: "Offer status updated successfully.",
+      message: createdOrder
+        ? `Offer accepted & Order ${createdOrder.orderId} created.`
+        : "Offer status updated successfully.",
       data: offer,
+      order: createdOrder
+        ? createdOrder.toObject
+          ? createdOrder.toObject()
+          : createdOrder
+        : null,
     });
   } catch (err) {
     console.error("Update Status Error :", err);

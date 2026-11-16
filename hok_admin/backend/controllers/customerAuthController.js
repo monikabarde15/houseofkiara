@@ -782,8 +782,23 @@ export const placeOrder = async (req, res) => {
           } catch (e) {}
         }
 
-        const rentalStart = item.booking?.rentalDates?.start || item.booking?.deliveryDate || item.rentalStartDate || "";
-        const rentalEnd = item.booking?.rentalDates?.end || item.booking?.returnDate || item.rentalEndDate || "";
+        const rentalStart =
+          item.booking?.rentalDates?.start ||
+          item.booking?.deliveryDate ||
+          item.booking?.startDate ||
+          item.rentalDates?.start ||
+          item.rentalStartDate ||
+          item.startDate ||
+          "";
+        const rentalEnd =
+          item.booking?.rentalDates?.end ||
+          item.booking?.returnDate ||
+          item.booking?.endDate ||
+          item.rentalDates?.end ||
+          item.rentalEndDate ||
+          item.endDate ||
+          rentalStart ||
+          "";
 
         let dispatchDate = "";
         if (rentalStart) {
@@ -805,14 +820,12 @@ export const placeOrder = async (req, res) => {
             item.productName ||
             "Unknown Product",
           designer: item.product?.designer || item.designer,
-          mode:
-            item.type === "rental"
-              ? "Rental"
-              : item.type === "preloved"
-                ? "Preloved"
-                : item.type === "new"
-                  ? "Buy"
-                  : "Buy",
+          mode: (() => {
+            const t = String(item.type || item.mode || "").toLowerCase();
+            if (t === "rental" || t === "rent") return "Rental";
+            if (t === "preloved" || t === "pre-loved") return "Preloved";
+            return "Buy";
+          })(),
           size: item.booking?.size || item.size || "Standard",
           amount: item.price || item.totalPrice || 0,
           deposit: isRental ? securityDeposit : 0,

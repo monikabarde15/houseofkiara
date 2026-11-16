@@ -212,43 +212,87 @@ export const verifyRazorpayPayment = async (req, res) => {
     let listerId = orderData.listerId || firstItem.listerId || product?.listerId || "ananya-sharma";
     let listerName = orderData.listerName || firstItem.listerName || product?.listerName || "Ananya Sharma";
 
-    const rentalStartDate =
-      orderData.rentalStartDate ||
-      firstItem.rentalStartDate ||
-      firstItem.startDate ||
-      "";
-    const rentalEndDate =
-      orderData.rentalEndDate ||
-      firstItem.rentalEndDate ||
-      firstItem.endDate ||
-      "";
+    const normalizeYMD = (val) => {
+      if (!val) return "";
+      const s = String(val).trim();
+      const ymd = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (ymd) return `${ymd[1]}-${ymd[2]}-${ymd[3]}`;
+      const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+      if (dmy) {
+        return `${dmy[3]}-${dmy[2].padStart(2, "0")}-${dmy[1].padStart(2, "0")}`;
+      }
+      const d = new Date(s);
+      if (isNaN(d.getTime())) return "";
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    };
+
+    const addDaysYMD = (ymdStr, delta) => {
+      const m = String(ymdStr || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!m) return "";
+      const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]) + delta);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    };
+
     const todayIST = new Date().toLocaleDateString("en-CA", {
       timeZone: "Asia/Kolkata",
     });
-    let dispatchDate =
-      orderData.dispatchDate || firstItem.dispatchDate || "";
+
+    const primaryRentalItem =
+      items.find(
+        (it) =>
+          String(it?.mode || "").toLowerCase() === "rental" ||
+          it?.rentalStartDate ||
+          it?.startDate,
+      ) || firstItem;
+
+    let rentalStartDate = normalizeYMD(
+      orderData.rentalStartDate ||
+        primaryRentalItem.rentalStartDate ||
+        primaryRentalItem.startDate ||
+        "",
+    );
+    let rentalEndDate = normalizeYMD(
+      orderData.rentalEndDate ||
+        primaryRentalItem.rentalEndDate ||
+        primaryRentalItem.endDate ||
+        "",
+    );
+
+    if (resolvedMode === "Rental" && !rentalStartDate) {
+      rentalStartDate = addDaysYMD(todayIST, 2);
+    }
+    if (resolvedMode === "Rental" && rentalStartDate && (!rentalEndDate || rentalEndDate < rentalStartDate)) {
+      const minDays = Math.max(1, Number(product?.minimumDurationDays || 4));
+      rentalEndDate = addDaysYMD(rentalStartDate, minDays - 1);
+    }
+
+    let dispatchDate = normalizeYMD(
+      orderData.dispatchDate || primaryRentalItem.dispatchDate || "",
+    );
     if (!dispatchDate && rentalStartDate) {
-      try {
-        const d = new Date(rentalStartDate);
-        if (!isNaN(d.getTime())) {
-          d.setDate(d.getDate() - 2);
-          dispatchDate = d.toISOString().split("T")[0];
-        }
-      } catch (e) {}
+      dispatchDate = addDaysYMD(rentalStartDate, -2);
     }
     if (!dispatchDate) {
       dispatchDate = todayIST;
     }
 
-    const enrichedItems = items.map((it) => ({
-      ...it,
-      rentalStartDate: it.rentalStartDate || it.startDate || rentalStartDate,
-      rentalEndDate: it.rentalEndDate || it.endDate || rentalEndDate,
-      dispatchDate: it.dispatchDate || dispatchDate,
-      deposit,
-      listerId,
-      listerName,
-    }));
+    const enrichedItems = items.map((it) => {
+      const isItemRental = String(it.mode || resolvedMode).toLowerCase() === "rental";
+      const itemStart = normalizeYMD(it.rentalStartDate || it.startDate) || (isItemRental ? rentalStartDate : "");
+      const itemEnd = normalizeYMD(it.rentalEndDate || it.endDate) || (isItemRental ? rentalEndDate : "");
+      const itemDisp = normalizeYMD(it.dispatchDate) || (itemStart ? addDaysYMD(itemStart, -2) : dispatchDate);
+      return {
+        ...it,
+        mode: isItemRental ? "Rental" : (it.mode || resolvedMode),
+        rentalStartDate: itemStart,
+        rentalEndDate: itemEnd,
+        dispatchDate: itemDisp,
+        returnDueDate: itemEnd ? addDaysYMD(itemEnd, 1) : "",
+        deposit: isItemRental ? deposit : 0,
+        listerId: it.listerId || listerId,
+        listerName: it.listerName || listerName,
+      };
+    });
 
     // Create confirmed order in PostgreSQL database
     const savedOrder = await Order.create({

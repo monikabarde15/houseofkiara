@@ -30,12 +30,16 @@ interface SidebarProps {
   siteName: string;
   isMobile?: boolean;
   onLogout: () => void;
+  badges?: Record<string, number>;
 }
 
 const groups = [
   {
-    title: "",
-    items: [{ id: "dashboard", label: "Dashboard", icon: LayoutDashboard }],
+    title: "Overview",
+    items: [
+      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { id: "notifications", label: "Notifications", icon: Bell },
+    ],
   },
   {
     title: "Operations",
@@ -57,7 +61,6 @@ const groups = [
       { id: "designers", label: "Designers", icon: Award },
       { id: "listers", label: "Listers", icon: UserCheck },
       { id: "lyp", label: "LYP Submissions", icon: Grid },
-      { id: "occasions", label: "Occasions & Sizes", icon: Grid },
     ],
   },
   {
@@ -66,7 +69,6 @@ const groups = [
       { id: "reports", label: "Reports & Analytics", icon: BarChart3 },
       { id: "promotions", label: "Promotions", icon: Percent },
       { id: "messaging", label: "Messaging", icon: Mail },
-      { id: "notifications", label: "Notifications", icon: Bell },
     ],
   },
   {
@@ -75,15 +77,7 @@ const groups = [
       { id: "settings", label: "Site Settings", icon: Settings },
       { id: "homepage", label: "Homepage", icon: Home },
       { id: "pages", label: "Pages", icon: FileText },
-      { id: "circularity", label: "Circularity", icon: Layers },
       { id: "platform_legal", label: "Platform & Legal", icon: FileText },
-    ],
-  },
-  {
-    title: "Configuration",
-    items: [
-      { id: "master_data", label: "Master Data", icon: Settings },
-      { id: "roles_permissions", label: "Roles & Permissions", icon: Users },
     ],
   },
 ];
@@ -93,6 +87,7 @@ export default function Sidebar({
   setView,
   isMobile,
   onLogout,
+  badges = {},
 }: SidebarProps) {
   return (
     <aside
@@ -123,6 +118,8 @@ export default function Sidebar({
               const Icon = item.icon;
               const active =
                 currentView === item.id ||
+                (item.id === "returns" &&
+                  currentView.startsWith("returns:")) ||
                 (item.id === "listers" &&
                   currentView.startsWith("lister_detail:")) ||
                 (item.id === "orders" &&
@@ -135,7 +132,7 @@ export default function Sidebar({
                 >
                   <Icon />
                   <span>{item.label}</span>
-                  {item.badge && <b>{item.badge}</b>}
+                  {(badges[item.id] ?? 0) > 0 && <b>{badges[item.id]}</b>}
                 </button>
               );
             })}

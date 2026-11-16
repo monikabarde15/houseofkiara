@@ -6,7 +6,9 @@ export interface Payout {
   listerId: string;
   listerName: string;
   orderId: string;
+  productId?: string;
   productName: string;
+  designer?: string;
   mode: string;
   transactionAmount?: number;
   payoutPercentage?: number;
@@ -16,8 +18,13 @@ export interface Payout {
   netPayout?: number;
   status: "Paid" | "Pending" | "Failed" | "Reversed" | "Pending Approval";
   dueDate: string;
+  paidAt?: string;
+  paidBy?: string;
+  paymentReference?: string;
+  paymentMode?: string;
   notes?: string;
   submissionAssignedTo?: string;
+  createdAt?: string;
 }
 
 import { API_BASE_URL } from "./apiClient";
@@ -43,11 +50,27 @@ export const getPayouts = async (): Promise<PayoutsResponse> => {
 
 export const markPaid = async (
   id: string,
-  payload: { paidBy: string; paymentReference?: string; taxDeduction?: number },
+  payload: {
+    paidBy: string;
+    paymentReference?: string;
+    taxDeduction?: number;
+    notes?: string;
+    listerShare?: number;
+    payoutPercentage?: number;
+    hokCommission?: number;
+  },
 ) =>
   (
     await apiRequest(`/payouts/${encodeURIComponent(id)}/paid`, {
       method: "PATCH",
+      body: JSON.stringify(payload),
+    })
+  ).data as Payout;
+
+export const createPayout = async (payload: Partial<Payout>) =>
+  (
+    await apiRequest(`/payouts`, {
+      method: "POST",
       body: JSON.stringify(payload),
     })
   ).data as Payout;

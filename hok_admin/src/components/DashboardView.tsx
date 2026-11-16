@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   ShoppingBag,
   TrendingUp,
@@ -13,14 +13,15 @@ import {
   Check,
   X,
 } from "lucide-react";
-import { Order, ListerSubmission, Customer } from "../types";
+import { Order, Customer } from "../types";
 import { apiRequest } from "../services/apiClient";
 
 interface DashboardViewProps {
   orders: Order[];
   customers?: Customer[];
-  listerSubmissions: ListerSubmission[];
+  listerSubmissions: any[];
   activeListingsCount: number;
+  adminName?: string;
   setView: (view: string) => void;
   setSelectedOrderId: (id: string) => void;
   onApproveSubmission: (id: string) => void;
@@ -52,10 +53,25 @@ const resolveProductName = (o: any) => {
   if (o.productName && o.productName.trim()) return o.productName;
   if (Array.isArray(o.items) && o.items.length > 0) {
     const first = o.items[0]?.productName;
-    if (o.items.length > 1) return `${first || "Product"} (+${o.items.length - 1} more)`;
+    if (o.items.length > 1) {
+      return `${first || "Product"} (+${o.items.length - 1} more)`;
+    }
     return first || "—";
   }
   return "—";
+};
+
+const isPendingSubmission = (s: any) => {
+  if (!s) return false;
+  if (s.decision && s.decision.what) {
+    return (
+      s.decision.what === "Pending" ||
+      s.decision.what === "New" ||
+      s.decision.what === "More Info"
+    );
+  }
+  const st = String(s.status || "Pending").toLowerCase();
+  return st === "pending" || st === "new" || st === "awaiting review";
 };
 
 export default function DashboardView({
@@ -63,6 +79,7 @@ export default function DashboardView({
   customers = [],
   listerSubmissions,
   activeListingsCount,
+  adminName = "Soumya",
   setView,
   setSelectedOrderId,
   onApproveSubmission,
@@ -93,54 +110,133 @@ export default function DashboardView({
           apiRequest("/submissions").catch(() => ({ data: [] })),
           apiRequest("/products").catch(() => ({ data: [] })),
         ]);
-        if (ordRes.data && ordRes.data.length > 0) setDbOrders(ordRes.data);
-        if (subRes.data && subRes.data.length > 0)
+        if (Array.isArray(ordRes.data) && ordRes.data.length > 0) {
+          setDbOrders(ordRes.data);
+        }
+        if (Array.isArray(subRes.data) && subRes.data.length > 0) {
           setDbSubmissions(subRes.data);
-        if (prodRes.data && prodRes.data.length > 0)
-          setDbProductCount(prodRes.data.length);
-      } catch (e) {
+        }
+        if (Array.isArray(prodRes.data)) {
+          const liveProds = prodRes.data.filter(
+            (p: any) => p.status !== "Archived",
+          );
+          setDbProductCount(liveProds.length);
+        }
+      } catch {
         // ignore
       }
     };
     fetchDashboardData();
   }, []);
 
-  const displayOrders = orders;
+  const displayOrders = orders.length > 0 ? orders : dbOrders;
   const displaySubmissions =
-    dbSubmissions.length > 0 ? dbSubmissions : listerSubmissions;
-  const displayProductCount = activeListingsCount || dbProductCount || 0;
+    listerSubmissions.length > 0 ? listerSubmissions : dbSubmissions;
+  const displayProductCount =
+    activeListingsCount > 0 ? activeListingsCount : dbProductCount;
 
-  // Remove fallback details since data is now from real DB
-  const validOrders = displayOrders
-    .filter((o) => o.id || o.orderId || o.orderNumber)
-    .map((o: any) => {
-      const rawId = o.id || o.orderId || o.orderNumber;
-      const formattedId = rawId?.startsWith("HOK-ORD-")
-        ? rawId
-        : `HOK-ORD-${
-            String(rawId || "")
-              .replace(/[^0-9]/g, "")
-              .slice(-3) || "889"
-          }`;
+  const validOrders = useMemo(() => {
+    return displayOrders
+      .filter((o: any) => o && (o.id || o.orderId || o.orderNumber || o._id))
+      .slice()
+      .sort((a: any, b: any) => {
+        const ta = new Date(
+          a.createdAt || a.orderDate || a.date || 0,
+        ).getTime();
+        const tb = new Date(
+          b.createdAt || b.orderDate || b.date || 0,
+        ).getTime();
+        return (isNaN(tb) ? 0 : tb) - (isNaN(ta) ? 0 : ta);
+      })
+      .map((o: any) => {
+        const realId = String(o.orderId || o.id || o.orderNumber || o._id);
+        const displayId = realId.startsWith("HOK-ORD-")
+          ? realId
+          : o.orderNumber?.startsWith("HOK-ORD-")
+            ? o.orderNumber
+            : realId;
 
-      return {
-        ...o,
-        id: formattedId,
-        productName: resolveProductName(o),
-        amount: resolveOrderAmount(o),
-        status: o.status || "Confirmed",
-      };
-    });
+        const isRental =
+          String(o.mode || "").toLowerCase() === "rental" ||
+          Boolean(o.rentalStartDate) ||
+          (Array.isArray(o.items) &&
+            o.items.some(
+              (it: any) =>
+                String(it?.mode || "").toLowerCase() === "rental" ||
+                Boolean(it?.rentalStartDate),
+            ));
 
-  // Calculate stats
-  const mtdOrdersCount = validOrders.length;
-  const mtdRevenue = validOrders.reduce(
+        const depositVal =
+          parseAmount(o.deposit) ||
+          parseAmount(o.securityDeposit) ||
+          (Array.isArray(o.items)
+            ? o.items.reduce(
+                (s: number, it: any) =>
+                  s + parseAmount(it?.deposit || it?.securityDeposit),
+                0,
+              )
+            : 0);
+
+        return {
+          ...o,
+          realId,
+          id: displayId,
+          isRental,
+          deposit: depositVal,
+          customerName: resolveCustomerName(o),
+          productName: resolveProductName(o),
+          amount: resolveOrderAmount(o),
+          status: o.status || "Confirmed",
+        };
+      });
+  }, [displayOrders, customers]);
+
+  const nonCancelledOrders = useMemo(
+    () =>
+      validOrders.filter(
+        (o: any) => String(o.status || "").toLowerCase() !== "cancelled",
+      ),
+    [validOrders],
+  );
+
+  // Calculate live stats directly synced with Orders, Reports, Products, and LYP lists
+  const mtdOrdersCount = nonCancelledOrders.length;
+  const mtdRevenue = nonCancelledOrders.reduce(
     (sum: number, o: any) => sum + (Number(o.amount) || 0),
     0,
   );
-  const pendingSubmissions = displaySubmissions.filter(
-    (s: any) => !s.decision || s.status === "Pending" || s.status === "New",
-  );
+
+  const pendingSubmissions = useMemo(() => {
+    return displaySubmissions.filter(isPendingSubmission).map((s: any) => {
+      const subId = String(s.subid || s.id || s._id || "");
+      const submittedRaw =
+        s.submittedAt || s.submittedDate || s.submitted || s.createdAt;
+      const parsedDate = submittedRaw ? new Date(submittedRaw) : null;
+      const dateStr =
+        parsedDate && !isNaN(parsedDate.getTime())
+          ? parsedDate.toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
+          : "Recently";
+
+      return {
+        ...s,
+        id: subId,
+        listerId: s.listerID || s.listerId || "",
+        listerName: s.listerName || "Lister",
+        productName:
+          s.piece ||
+          s.productName ||
+          (s.designer ? `${s.designer} Piece` : "Submitted Piece"),
+        category: s.category || s.intent || "Couture",
+        description: s.story || s.notes || s.description || "",
+        formattedSubmittedDate: dateStr,
+      };
+    });
+  }, [displaySubmissions]);
+
   const pendingApprovalsCount = pendingSubmissions.length;
 
   return (
@@ -149,7 +245,7 @@ export default function DashboardView({
       <div className="flex justify-between items-start">
         <div>
           <h2 className="text-2xl font-serif text-stone-900 font-medium">
-            Good morning, Soumya
+            Good morning, {adminName}
           </h2>
           <p className="text-xs text-stone-500 mt-1">
             Get a quick overview - click any card or event to open the full
@@ -218,7 +314,7 @@ export default function DashboardView({
           </div>
           <div className="mt-4">
             <h3 className="text-2xl font-serif text-stone-900 font-bold">
-              {activeListingsCount}
+              {displayProductCount}
             </h3>
             <p className="text-[11px] text-stone-500 font-medium flex items-center gap-1 mt-1">
               <span>Ready for rental</span>
@@ -227,7 +323,7 @@ export default function DashboardView({
         </div>
 
         <div
-          onClick={() => setView("listers")}
+          onClick={() => setView("lyp")}
           className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm cursor-pointer hover:border-[#c5a880] hover:shadow transition-all group"
         >
           <div className="flex justify-between items-start">
@@ -282,10 +378,10 @@ export default function DashboardView({
                 <tbody className="divide-y divide-stone-100 text-stone-600">
                   {validOrders.slice(0, 4).map((order) => (
                     <tr
-                      key={order.id}
+                      key={order.realId}
                       onClick={() => {
-                        setSelectedOrderId(order.id);
-                        setView(`order_detail:${order.id}`);
+                        setSelectedOrderId(order.realId);
+                        setView(`order_detail:${order.realId}`);
                       }}
                       className="hover:bg-[#fcf9f5] cursor-pointer transition-colors"
                     >
@@ -293,13 +389,13 @@ export default function DashboardView({
                         {order.id}
                       </td>
                       <td className="px-5 py-3.5 font-medium text-stone-800">
-                        {resolveCustomerName(order)}
+                        {order.customerName}
                       </td>
                       <td className="px-5 py-3.5 max-w-[180px] truncate">
-                        {order.productName || resolveProductName(order)}
+                        {order.productName}
                       </td>
                       <td className="px-5 py-3.5 font-semibold text-stone-800">
-                        ₹{resolveOrderAmount(order).toLocaleString("en-IN")}
+                        ₹{Number(order.amount || 0).toLocaleString("en-IN")}
                       </td>
                       <td className="px-5 py-3.5">
                         <span
@@ -311,7 +407,9 @@ export default function DashboardView({
                               : order.status === "Shipped" ||
                                   order.status === "Dispatched"
                                 ? "bg-blue-50 text-blue-700 border border-blue-100"
-                                : "bg-amber-50 text-amber-700 border border-amber-100"
+                                : order.status === "Cancelled"
+                                  ? "bg-rose-50 text-rose-700 border border-rose-100"
+                                  : "bg-amber-50 text-amber-700 border border-amber-100"
                           }`}
                         >
                           {order.status}
@@ -319,6 +417,16 @@ export default function DashboardView({
                       </td>
                     </tr>
                   ))}
+                  {validOrders.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={5}
+                        className="px-5 py-6 text-center text-stone-400"
+                      >
+                        No orders recorded yet.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -358,30 +466,35 @@ export default function DashboardView({
                     key={sub.id}
                     className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3.5 bg-[#fcf9f5] border border-stone-100 rounded-md"
                   >
-                    <div className="space-y-1">
+                    <div
+                      onClick={() => setView("lyp")}
+                      className="space-y-1 cursor-pointer"
+                    >
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-stone-800 text-xs">
                           {sub.listerName}
                         </span>
                         <span className="text-[10px] text-stone-400 font-mono">
-                          Submitted{" "}
-                          {new Date(sub.submittedDate).toLocaleDateString(
-                            "en-GB",
-                            { day: "numeric", month: "short", year: "numeric" },
-                          )}
+                          Submitted {sub.formattedSubmittedDate}
                         </span>
                       </div>
                       <p className="text-xs text-stone-500 font-serif">
                         {sub.productName} ({sub.category})
                       </p>
-                      <p className="text-[10px] text-stone-400 line-clamp-1 italic">
-                        "{sub.description}"
-                      </p>
+                      {sub.description && (
+                        <p className="text-[10px] text-stone-400 line-clamp-1 italic">
+                          "{sub.description}"
+                        </p>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 mt-3 sm:mt-0 shrink-0">
                       <button
                         onClick={() => {
-                          setView(`lister_detail:${sub.listerId || "LST-003"}`);
+                          if (sub.listerId) {
+                            setView(`lister_detail:${sub.listerId}`);
+                          } else {
+                            setView("lyp");
+                          }
                         }}
                         className="px-3 py-1.5 bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 text-[11px] font-medium rounded transition cursor-pointer"
                       >
@@ -486,18 +599,26 @@ export default function DashboardView({
               {(() => {
                 const pendingDeposits = validOrders.filter(
                   (o: any) =>
-                    o.mode === "Rental" &&
+                    o.isRental &&
                     o.status === "Confirmed" &&
                     o.deposit > 0 &&
-                    o.depositStatus !== "Held",
+                    o.depositStatus !== "Held" &&
+                    o.depositDecision?.status !== "Held",
                 );
                 const pendingDispatches = validOrders.filter(
                   (o: any) =>
-                    o.status === "Confirmed" && o.depositStatus === "Held",
+                    o.status === "Confirmed" &&
+                    (!o.isRental ||
+                      o.deposit === 0 ||
+                      o.depositStatus === "Held" ||
+                      o.depositDecision?.status === "Held"),
                 );
                 const pendingReturns = validOrders.filter(
                   (o: any) =>
-                    o.status === "Shipped" || o.status === "Delivered",
+                    o.isRental &&
+                    ["Dispatched", "Shipped", "Delivered", "Return Sent", "Return Due"].includes(
+                      o.status,
+                    ),
                 );
 
                 if (
@@ -507,7 +628,7 @@ export default function DashboardView({
                 ) {
                   return (
                     <p className="text-stone-400 text-center py-4 text-xs">
-                      All caught up for today! 🎉
+                      All caught up for today!
                     </p>
                   );
                 }
@@ -516,11 +637,11 @@ export default function DashboardView({
                   <>
                     {pendingDeposits.slice(0, 3).map((o: any) => (
                       <div
-                        key={`act-dep-${o.id}`}
+                        key={`act-dep-${o.realId}`}
                         className="flex gap-3 items-start cursor-pointer hover:bg-stone-50 p-2 -mx-2 rounded transition"
                         onClick={() => {
-                          setSelectedOrderId(o.id);
-                          setView(`order_detail:${o.id}`);
+                          setSelectedOrderId(o.realId);
+                          setView(`order_detail:${o.realId}`);
                         }}
                       >
                         <div className="h-2 w-2 rounded-full bg-amber-500 mt-1.5 shrink-0" />
@@ -541,11 +662,11 @@ export default function DashboardView({
 
                     {pendingDispatches.slice(0, 3).map((o: any) => (
                       <div
-                        key={`act-disp-${o.id}`}
+                        key={`act-disp-${o.realId}`}
                         className="flex gap-3 items-start cursor-pointer hover:bg-stone-50 p-2 -mx-2 rounded transition"
                         onClick={() => {
-                          setSelectedOrderId(o.id);
-                          setView(`order_detail:${o.id}`);
+                          setSelectedOrderId(o.realId);
+                          setView(`order_detail:${o.realId}`);
                         }}
                       >
                         <div className="h-2 w-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
@@ -557,7 +678,7 @@ export default function DashboardView({
                             - {o.productName}
                           </p>
                           <span className="text-[10px] text-stone-400 font-mono">
-                            {o.id} • Deposit held
+                            {o.id} • {o.deposit > 0 ? "Deposit held" : "Ready to ship"}
                           </span>
                         </div>
                       </div>
@@ -565,11 +686,11 @@ export default function DashboardView({
 
                     {pendingReturns.slice(0, 3).map((o: any) => (
                       <div
-                        key={`act-ret-${o.id}`}
+                        key={`act-ret-${o.realId}`}
                         className="flex gap-3 items-start cursor-pointer hover:bg-stone-50 p-2 -mx-2 rounded transition"
                         onClick={() => {
-                          setSelectedOrderId(o.id);
-                          setView(`order_detail:${o.id}`);
+                          setSelectedOrderId(o.realId);
+                          setView(`order_detail:${o.realId}`);
                         }}
                       >
                         <div className="h-2 w-2 rounded-full bg-rose-500 mt-1.5 shrink-0" />

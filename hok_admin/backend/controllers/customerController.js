@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Customer from "../models/Customer.js";
 import Order from "../models/Order.js";
+import Product from "../models/Product.js";
 import { validateCustomerInput } from "../validations/customerValidation.js";
 
 const formatCustomerResponse = (doc) => {
@@ -137,10 +138,57 @@ export const getCustomers = async (req, res) => {
 
     const customers = await Customer.find(query).sort({ createdAt: -1 });
     await syncCustomerOrderStats(customers);
+
+    // Resolve wishlist products for all returned customers
+    const allWishIds = Array.from(
+      new Set(
+        customers.flatMap((c) =>
+          Array.isArray(c.wishlist) ? c.wishlist.filter(Boolean).map(String) : [],
+        ),
+      ),
+    );
+    const wishProducts =
+      allWishIds.length > 0
+        ? await Product.find({
+            $or: [
+              { _id: { $in: allWishIds } },
+              { productId: { $in: allWishIds } },
+              { sku: { $in: allWishIds } },
+              { id: { $in: allWishIds } },
+            ],
+          }).catch(() => [])
+        : [];
+
+    const dataWithWishlist = customers.map((doc) => {
+      const formatted = formatCustomerResponse(doc);
+      const ids = Array.isArray(formatted.wishlist)
+        ? formatted.wishlist.filter(Boolean).map((x) => String(x).toLowerCase())
+        : [];
+      formatted.wishlistItems = wishProducts
+        .filter((p) => {
+          const keys = [p._id, p.productId, p.sku, p.id]
+            .filter(Boolean)
+            .map((k) => String(k).toLowerCase());
+          return keys.some((k) => ids.includes(k));
+        })
+        .map((p) => ({
+          id: p.productId || p.id || String(p._id),
+          productId: p.productId || p.id || String(p._id),
+          sku: p.sku || "",
+          name: p.name || "Piece",
+          designer: p.designer || "House of Kaira",
+          condition: p.condition || "Rental",
+          rentalPrice: Number(p.rentalPrice || p.listingPrice || p.price || 0),
+          images: Array.isArray(p.images) ? p.images : p.image ? [p.image] : [],
+        }));
+      formatted.wishlistCount = ids.length;
+      return formatted;
+    });
+
     res.json({
       success: true,
-      count: customers.length,
-      data: customers.map(formatCustomerResponse),
+      count: dataWithWishlist.length,
+      data: dataWithWishlist,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

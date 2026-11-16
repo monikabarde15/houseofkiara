@@ -17,49 +17,57 @@ import { LinksWorkspaceTab } from './components/LinksWorkspaceTab';
 import { PagePaperView } from './components/PagePaperView';
 import { AnswersWorkspaceView } from './components/AnswersWorkspaceView';
 import { ReviewPublishDrawer } from './components/ReviewPublishDrawer';
-import { AddPolicyModal } from './components/AddPolicyModal';
-import { CANONICAL_PAGE_CONTENTS } from './data/pageContentRegistry';
-import { savePageContent as savePageContentApi } from '../../services/pageApi';
-import { savePage as savePageApi } from '../../services/pageApi';
 import { ViewOnlyBanner } from './components/ViewOnlyBanner';
 import { OtherSectionsPointersModal } from './components/OtherSectionsPointersModal';
 
 interface PagesModuleProps {
   onBackToDashboard?: () => void;
+  initialSlug?: string | null;
 }
 
-export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) => {
+export const PagesModule: React.FC<PagesModuleProps> = ({
+  onBackToDashboard,
+  initialSlug = null,
+}) => {
   const [activeTab, setActiveTab] = useState<TopLevelTab>('pages');
-  const [pages, setPages] = useState<PageCardData[]>([]);
-  const [figures, setFigures] = useState<FigureItem[]>([]);
+  const [pages, setPages] = useState<PageCardData[]>(SEED_PAGES);
+  const [figures, setFigures] = useState<FigureItem[]>(SEED_FIGURES);
   const [linksData, setLinksData] = useState<LinksAndAddressesData>(SEED_LINKS_ADDRESSES);
-  const [selectedPageSlug, setSelectedPageSlug] = useState<string | null>(null);
+  const [selectedPageSlug, setSelectedPageSlug] = useState<string | null>(initialSlug);
   const [pageViewMode, setPageViewMode] = useState<'paper' | 'answers'>('paper');
   const [selectedFigureKey, setSelectedFigureKey] = useState<string | null>('free_delivery_min');
   const [reviewDrawerOpen, setReviewDrawerOpen] = useState(false);
   const [pointersModalOpen, setPointersModalOpen] = useState(false);
-  const [isAddPageOpen, setIsAddPageOpen] = useState(false);
-  const [targetAddGroup, setTargetAddGroup] = useState<string | undefined>(undefined);
-  const handleOpenAddPage = (group?: string) => {
-    setTargetAddGroup(group);
-    setIsAddPageOpen(true);
-  };
 
-  // Load dynamic real data from database via API
+  // Load dynamic real data from database via API while preserving SEED_PAGES / SEED_FIGURES baseline
   React.useEffect(() => {
     let isMounted = true;
     const fetchRealData = async () => {
       try {
         const [dbPages, dbFigures] = await Promise.all([
           getAllPages(),
-          getAllFigures()
+          getAllFigures(),
         ]);
         if (isMounted) {
-          setPages(Array.isArray(dbPages) ? dbPages : []);
-          setFigures(Array.isArray(dbFigures) ? dbFigures : []);
+          if (Array.isArray(dbPages) && dbPages.length > 0) {
+            const dbBySlug = new Map(dbPages.map(p => [p.slug, p]));
+            const merged = SEED_PAGES.map(sp => dbBySlug.get(sp.slug) ? { ...sp, ...dbBySlug.get(sp.slug) } : sp);
+            dbPages.forEach(dp => {
+              if (!SEED_PAGES.some(sp => sp.slug === dp.slug)) merged.push(dp);
+            });
+            setPages(merged);
+          }
+          if (Array.isArray(dbFigures) && dbFigures.length > 0) {
+            const figByKey = new Map(dbFigures.map(f => [f.key, f]));
+            const mergedFigs = SEED_FIGURES.map(sf => figByKey.get(sf.key) ? { ...sf, ...figByKey.get(sf.key) } : sf);
+            dbFigures.forEach(df => {
+              if (!SEED_FIGURES.some(sf => sf.key === df.key)) mergedFigs.push(df);
+            });
+            setFigures(mergedFigs);
+          }
         }
       } catch (err) {
-        console.warn('[PagesModule] Failed to load data from API:', err);
+        console.warn('[PagesModule] Using seeded pages & figures:', err);
       }
     };
     fetchRealData();
@@ -88,36 +96,6 @@ export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) =
     }
   ]);
 
-  
-  const handleSaveNewPage = async (pageData: Partial<PageCardData>, seedContent?: boolean) => {
-    try {
-      await savePageApi(pageData);
-      if (seedContent && pageData.slug) {
-        const cleanSlug = pageData.slug.replace(/^\//, '');
-        const initial = (CANONICAL_PAGE_CONTENTS as any)[cleanSlug] || (CANONICAL_PAGE_CONTENTS as any)[pageData.slug];
-        if (initial) {
-          await savePageContentApi(pageData.slug, initial);
-        }
-      }
-      const updated = await getAllPages();
-      setPages(Array.isArray(updated) ? updated : []);
-    } catch (err) {
-      console.error('Failed to add policy:', err);
-    }
-  };
-
-  const handleSeedAllPolicies = async () => {
-    try {
-      for (const p of SEED_PAGES) {
-        await savePageApi(p);
-      }
-      const updated = await getAllPages();
-      setPages(Array.isArray(updated) ? updated : []);
-    } catch (err) {
-      console.error('Failed to seed policies:', err);
-    }
-  };
-
   const handleConfirmPublish = async () => {
     try {
       await publishAllChanges(userRole);
@@ -139,6 +117,10 @@ export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) =
   };
 
   const handleAddFigureChange = (key: string, newValue: string, when: 'now' | 'date', date?: string, why?: string) => {
+    const fig = figures.find(f => f.key === key);
+    if (fig) {
+      saveFigureApi({ ...fig, displayValue: newValue }).catch(() => {});
+    }
     setFigures(prev =>
       prev.map(f => (f.key === key ? {
         ...f,
@@ -146,7 +128,6 @@ export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) =
         waitingChange: { value: newValue, when, date, why: why || 'Value update', who: userRole, at: 'Just now' }
       } : f))
     );
-    const fig = figures.find(f => f.key === key);
     setPendingChanges(prev => [
       ...prev.filter(p => p.id !== key),
       { id: key, type: 'figure', title: fig ? fig.label : key, details: `${fig ? fig.displayValue : ''} to ${newValue}`, source: 'Figure register' }
@@ -213,7 +194,6 @@ export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) =
         onRoleChange={setUserRole}
         accessLevel={accessLevel}
         onBackToDashboard={onBackToDashboard}
-        onOpenAddPage={() => handleOpenAddPage()}
       />
 
       {/* Main Workspace Body */}
@@ -223,8 +203,6 @@ export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) =
             pages={pages}
             onSelectPage={slug => setSelectedPageSlug(slug)}
             onNavigateToFigures={() => setActiveTab('figures')}
-            onOpenAddPage={handleOpenAddPage}
-            onSeedAllPolicies={handleSeedAllPolicies}
           />
         )}
         {activeTab === 'figures' && (
@@ -248,15 +226,6 @@ export const PagesModule: React.FC<PagesModuleProps> = ({ onBackToDashboard }) =
           />
         )}
       </main>
-
-      {/* Add Page Modal */}
-      <AddPolicyModal
-        initialGroup={targetAddGroup}
-        isOpen={isAddPageOpen}
-        onClose={() => setIsAddPageOpen(false)}
-        onSavePage={handleSaveNewPage}
-        onSeedAll={handleSeedAllPolicies}
-      />
 
       {/* Slide-over Review & Publish Drawer (Spec §10.2, Screens 18, 19, 64) */}
       <ReviewPublishDrawer

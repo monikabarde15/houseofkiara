@@ -7,8 +7,7 @@ import OrderDetailView from './components/OrderDetailView';
 import OffersView from './components/OffersView';
 // import CalendarView from './components/CalendarView';
 import RentalCalendarView from './components/RentalCalendar/tsx';
-// import DispatchView from './components/Dispatch/jsx/DispatchView';
-import DispatchView from './components/DispatchView';
+import DispatchView from './components/Dispatch/jsx/DispatchView';
 import ReturnsView from './components/ReturnsView';
 // import PayoutsView from './components/PayoutsView';
 import PayoutsView from './components/payouts/PayoutsView';
@@ -19,15 +18,17 @@ import CategoriesView from './components/CategoriesView';
 import DesignersView from './components/Designers/tsx';
 // import ListersView from './components/ListersView';
 import ListersView from './components/Listers/ListersView';
-// import OccasionsView from './components/OccasionsView';
+import OccasionsView from './components/OccasionsView';
 import LYPSubmissionsView from './components/LYP';
+import { submissionService } from './components/LYP/services/submissionService';
 import ReportsView from './components/ReportsView';
 // import PromotionsView from './components/PromotionsView';
 import { PromotionsView } from './components/Promotions';
 import { MessagingView } from './components/Messaging/MessagingView';
 import { mockMessages } from './components/Messaging/data/mockMessages';
+import { messageService } from './components/Messaging/services/messageService';
 import { Message } from './components/Messaging/types/messaging.types';
-import NotificationsView from './components/NotificationsView';
+import { NotificationsView } from './components/Notifications/NotificationsView';
 import SiteSettingsView from './components/SiteSettings';
 
 // import HomepageView from './components/HomepageView';
@@ -57,7 +58,7 @@ import * as listerApi from './services/listerApi';
 import * as customerApi from './services/customerApi';
 import * as taskApi from './services/taskApi';
 import AdminAuth from './components/AdminAuth';
-import { ArrowLeft, ExternalLink, Menu, Save, X } from 'lucide-react';
+import { ArrowLeft, Bell, ExternalLink, Menu, Save, X } from 'lucide-react';
 import { parseAdminRoute, syncRoute } from './utils/adminRouter';
 
 export default function App() {
@@ -88,7 +89,15 @@ export default function App() {
   const [adminSession, setAdminSession] = useState<any>(() => authApi.getSession());
   const [messagingActiveTab, setMessagingActiveTab] = useState('messages');
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(mockMessages);
+  useEffect(() => {
+    messageService
+      .getMessages()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setMessages(data);
+      })
+      .catch(() => {});
+  }, []);
   // const [productBackHandler, setProductBackHandler] = useState<(() => void) | null>(null);
 
   // Consolidated global state synced with real database API
@@ -120,8 +129,23 @@ export default function App() {
       .finally(() => setOrdersLoading(false));
   }, []);
 
-  // Refresh orders & products when switching into operational/calendar views so newly placed web orders appear immediately
+  // Refresh orders & products when switching into operational/calendar views or when tab regains focus so newly placed web/admin orders appear immediately
   useEffect(() => {
+    const refreshLiveOperations = () => {
+      orderApi
+        .getOrders()
+        .then((list) => {
+          if (Array.isArray(list)) setOrders(list);
+        })
+        .catch(() => {});
+      productApi
+        .getProducts()
+        .then((list) => {
+          if (Array.isArray(list)) setProducts(list);
+        })
+        .catch(() => {});
+    };
+
     if (
       currentView === 'orders' ||
       currentView === 'dispatch' ||
@@ -130,13 +154,11 @@ export default function App() {
       currentView === 'products' ||
       currentView === 'dashboard'
     ) {
-      orderApi
-        .getOrders()
-        .then((list) => {
-          if (Array.isArray(list)) setOrders(list);
-        })
-        .catch(() => {});
+      refreshLiveOperations();
     }
+
+    window.addEventListener('focus', refreshLiveOperations);
+    return () => window.removeEventListener('focus', refreshLiveOperations);
   }, [currentView]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [offersLoading, setOffersLoading] = useState(true);
@@ -158,7 +180,21 @@ export default function App() {
         setCalendarTasks([]);
       });
   }, []);
-  const [submissions, setSubmissions] = useState<ListerSubmission[]>([]);
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  useEffect(() => {
+    const loadSubs = () => {
+      submissionService
+        .getSubmissions()
+        .then((res) => {
+          if (res && Array.isArray(res.data)) setSubmissions(res.data);
+        })
+        .catch(() => {});
+    };
+    loadSubs();
+    if (currentView === 'dashboard' || currentView === 'lyp') {
+      loadSubs();
+    }
+  }, [currentView]);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(initialSiteSettings);
@@ -337,30 +373,64 @@ export default function App() {
     }
   };
 
-  const handleUpdateOffer = async (id: string, updatedFields: Partial<Offer>) => {
-    try { const currentOffer = offers.find((offer) => offer.id === id); const updated = updatedFields.status ? await offerApi.updateOfferStatus(id, updatedFields.status, currentOffer?.backendId) : await offerApi.updateOffer(id, updatedFields, currentOffer?.backendId); setOffers(current => current.map(o => o.id === id ? { ...o, ...updated, ...updatedFields } : o)); toast.success('Offer updated successfully!'); }
-    catch (error) { console.error('Unable to update offer:', error); toast.error('Failed to update offer'); }
+  const handleUpdateOffer = async (id: string, updatedFields: Partial<Offer> & { amount?: number }) => {
+    try {
+      const currentOffer = offers.find((offer) => offer.id === id);
+      const updated: any = updatedFields.status
+        ? await offerApi.updateOfferStatus(id, updatedFields.status, currentOffer?.backendId, {
+            mode: updatedFields.mode,
+            rentalStartDate: updatedFields.rentalStartDate,
+            rentalEndDate: updatedFields.rentalEndDate,
+            address: updatedFields.address,
+            amount: updatedFields.amount ?? updatedFields.offerPrice,
+            createOrder: updatedFields.createOrder,
+          })
+        : await offerApi.updateOffer(id, updatedFields, currentOffer?.backendId);
+
+      setOffers((current) =>
+        current.map((o) =>
+          o.id === id ? { ...o, ...updatedFields, ...updated } : o,
+        ),
+      );
+
+      if (updated?.createdOrder) {
+        handleAddOrder(updated.createdOrder);
+        productApi.getProducts().then(setProducts).catch(() => {});
+        toast.success(
+          `Offer accepted & Order ${updated.createdOrder.orderId || updated.createdOrder.id} created!`,
+        );
+      } else {
+        toast.success('Offer updated successfully!');
+      }
+    } catch (error) {
+      console.error('Unable to update offer:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to update offer');
+    }
   };
 
   const handleAddOffer = async (newOffer: Offer) => {
     try {
-      const created = await offerApi.createOffer(newOffer);
+      const created: any = await offerApi.createOffer(newOffer);
       setOffers((current) => [created, ...current]);
-      if ((created as any).newCustomer) {
+      if (created.newCustomer) {
         setCustomers((curr) => {
           const exists = curr.some(
             (c) =>
-              c.customerId === (created as any).newCustomer.customerId ||
-              c.id === (created as any).newCustomer.id,
+              c.customerId === created.newCustomer.customerId ||
+              c.id === created.newCustomer.id,
           );
-          return exists ? curr : [(created as any).newCustomer, ...curr];
+          return exists ? curr : [created.newCustomer, ...curr];
         });
       }
-      toast.success(
-        created.promoCode
-          ? `Offer created! Web promo code: ${created.promoCode}`
-          : 'Offer created successfully!',
-      );
+      if (created.createdOrder) {
+        handleAddOrder(created.createdOrder);
+        productApi.getProducts().then(setProducts).catch(() => {});
+        toast.success(
+          `Order ${created.createdOrder.orderId || created.createdOrder.id} created & synced to Rental Calendar!`,
+        );
+      } else {
+        toast.success('Offer / Enquiry added to list!');
+      }
     } catch (error) {
       console.error('Unable to create offer:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to create offer');
@@ -418,53 +488,47 @@ export default function App() {
     toast.success('Submission updated successfully!');
   };
 
-  const handleApproveSubmission = (id: string) => {
-    const sub = submissions.find(s => s.id === id);
-    if (!sub) return;
-    
-    const newProd: Product = {
-      id: "HOK-PRD-" + Math.floor(100 + Math.random() * 900),
-      name: sub.productName,
-      designer: sub.productName.split(' - ')[1] || "Sabyasachi",
-      description: sub.description,
-      category: sub.category,
-      occasion: "Festive, Sangeet, Wedding",
-      material: "Satin Silk",
-      embellishments: "Hand embroidery",
-      sizes: ["M"],
-      listingModes: ["Rental"],
-      condition: sub.condition,
-      availability: "Available Now",
-      status: "Live",
-      rentalPrice: Math.round(sub.retailPrice * 0.08) || 5000,
-      securityDeposit: Math.round(sub.retailPrice * 0.15) || 12000,
-      listingPrice: sub.retailPrice,
-      commissionRate: 25,
-      minimumDurationDays: 4,
-      extensionWindowDays: 2,
-      cleaningBufferDays: 2,
-      images: ["https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=60"],
-      blockedDates: []
-    };
-
-    setProducts([newProd, ...products]);
-    setSubmissions(submissions.map(s => s.id === id ? { ...s, status: 'Approved' } : s));
-    
-    const matchingLister = listers.find(l => l.id === sub.listerId || l.name === sub.listerName);
-    if (matchingLister) {
-      handleUpdateLister({
-        ...matchingLister,
-        listingsCount: matchingLister.listingsCount + 1,
-        verified: true
-      });
+  const handleApproveSubmission = async (id: string) => {
+    const adminName = adminSession?.admin?.name || 'Soumya';
+    try {
+      await submissionService.approveSubmission(id, adminName);
+      setSubmissions((prev) =>
+        prev.map((s) =>
+          (s.subid || s.id) === id
+            ? {
+                ...s,
+                status: 'Approved',
+                decision: { what: 'Approved', on: new Date().toISOString(), by: adminName, reason: null },
+              }
+            : s,
+        ),
+      );
+      productApi.getProducts().then(setProducts).catch(() => {});
+      toast.success('Submission approved!');
+    } catch (err) {
+      toast.error('Failed to approve submission');
     }
-
-    toast.success(`Submission "${sub.productName}" approved! Piece is now Live.`);
   };
 
-  const handleRejectSubmission = (id: string) => {
-    setSubmissions(submissions.map(s => s.id === id ? { ...s, status: 'Rejected' } : s));
-    toast.success('Submission marked as rejected.');
+  const handleRejectSubmission = async (id: string) => {
+    const adminName = adminSession?.admin?.name || 'Soumya';
+    try {
+      await submissionService.rejectSubmission(id, adminName, 'OTHER', 'Declined from Dashboard');
+      setSubmissions((prev) =>
+        prev.map((s) =>
+          (s.subid || s.id) === id
+            ? {
+                ...s,
+                status: 'Rejected',
+                decision: { what: 'Rejected', on: new Date().toISOString(), by: adminName, reason: 'Declined from Dashboard' },
+              }
+            : s,
+        ),
+      );
+      toast.success('Submission marked as rejected.');
+    } catch (err) {
+      toast.error('Failed to reject submission');
+    }
   };
 
   const handleUpdateTemplate = (updated: EmailTemplate) => {
@@ -480,7 +544,8 @@ export default function App() {
           orders={orders}
           customers={customers}
           listerSubmissions={submissions}
-          activeListingsCount={products.filter(p => p.status !== 'Archived').length || products.length || 1}
+          activeListingsCount={products.filter(p => p.status !== 'Archived').length}
+          adminName={adminSession?.admin?.name || 'Soumya'}
           setView={setView}
           setSelectedOrderId={setSelectedOrderId}
           onApproveSubmission={handleApproveSubmission}
@@ -591,6 +656,7 @@ export default function App() {
           loading={offersLoading}
           onUpdateOffer={handleUpdateOffer}
           onAddOffer={handleAddOffer}
+          onSelectOrder={(oid) => setView(`order_detail:${oid}`)}
           onCustomerCreated={(newCust) =>
             setCustomers((curr) => [newCust, ...curr])
           }
@@ -599,14 +665,16 @@ export default function App() {
     }
 
     if (currentView === 'calendar') {
-  return (
-    <RentalCalendarView 
-      orders={orders} 
-      tasks={calendarTasks}
-      onAddTask={handleAddCalendarTask}
-    />
-  );
-}
+      return (
+        <RentalCalendarView 
+          orders={orders}
+          products={products}
+          tasks={calendarTasks}
+          onAddTask={handleAddCalendarTask}
+          onSelectOrder={(oid) => setView(`order_detail:${oid}`)}
+        />
+      );
+    }
 
     if (currentView === 'dispatch') {
       return (
@@ -619,20 +687,29 @@ export default function App() {
       );
     }
 
-    if (currentView === 'returns') {
+    if (currentView === 'returns' || currentView === 'returns:ledger') {
       return (
         <ReturnsView 
           orders={orders}
           setView={setView}
           setSelectedOrderId={setSelectedOrderId}
           onUpdateOrder={handleUpdateOrder}
+          initialTab={currentView === 'returns:ledger' ? 'ledger' : 'pipeline'}
         />
       );
     }
 
     if (currentView === 'payouts') {
-  return <PayoutsView />;
-}
+      return (
+        <PayoutsView
+          orders={orders}
+          products={products}
+          listers={listers}
+          onSelectOrder={(oid) => setView(`order_detail:${oid}`)}
+          onSelectLister={(lid) => setView(`lister_detail:${lid}`)}
+        />
+      );
+    }
 
     if (currentView === 'customers') {
       return (
@@ -697,16 +774,16 @@ export default function App() {
       );
     }
 
-    // if (currentView === 'occasions') {
-    //   return <OccasionsView />;
-    // }
+    if (currentView === 'occasions') {
+      return <OccasionsView />;
+    }
 
     if (currentView === 'lyp') {
       return <LYPSubmissionsView onEditingChange={setIsSectionEditing} />;
     }
 
     if (currentView === 'reports') {
-      return <ReportsView orders={orders} products={products} />;
+      return <ReportsView orders={orders} products={products} designers={designers} />;
     }
 
     if (currentView === 'promotions') {
@@ -769,8 +846,13 @@ export default function App() {
       );
     }
 
-    if (currentView === 'pages') {
-      return <PagesModule onBackToDashboard={() => setView('dashboard')} />;
+    if (currentView === 'pages' || currentView === 'platform_legal') {
+      return (
+        <PagesModule
+          initialSlug={currentView === 'platform_legal' ? '/terms' : null}
+          onBackToDashboard={() => setView('dashboard')}
+        />
+      );
     }
 
     return (
@@ -782,6 +864,57 @@ export default function App() {
 
   const handleLogout = () => { authApi.logoutAdmin(); setAdminSession(null); toast.success('Logged out successfully!'); };
   if (!adminSession) return <AdminAuth onLogin={(session) => { setAdminSession(session); toast.success('Logged in successfully!'); }} />;
+
+  const pendingOffersBadge = offers.filter((o) => o.status === 'Pending' || o.status === 'Enquiry').length;
+  const returnsActionBadge = orders.filter((o: any) => {
+    const isRental = String(o.mode || '').toLowerCase() === 'rental' || Boolean(o.rentalStartDate);
+    if (!isRental) return false;
+    const st = String(o.status || '').toLowerCase();
+    const depSt = String(o.depositDecision?.status || o.depositStatus || 'Pending').toLowerCase();
+    if (st === 'returned' && depSt === 'pending' && Number(o.deposit || 0) > 0) return true;
+    if (['dispatched', 'shipped', 'delivered', 'return sent', 'return due'].includes(st) && o.rentalEndDate) {
+      const end = new Date(o.rentalEndDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return end < today;
+    }
+    return false;
+  }).length;
+  const pendingLypBadge = submissions.filter((s: any) => {
+    if (s.decision && s.decision.what) {
+      return s.decision.what === 'Pending' || s.decision.what === 'New' || s.decision.what === 'More Info';
+    }
+    const st = String(s.status || 'Pending').toLowerCase();
+    return st === 'pending' || st === 'new';
+  }).length;
+  const totalNotifBadge = pendingOffersBadge + returnsActionBadge + pendingLypBadge;
+
+  const sidebarBadges: Record<string, number> = {
+    notifications: totalNotifBadge,
+    offers: pendingOffersBadge,
+    returns: returnsActionBadge,
+    lyp: pendingLypBadge,
+  };
+
+  const viewTitleMap: Record<string, string> = {
+    dashboard: 'Dashboard',
+    notifications: 'Notifications',
+    orders: 'Orders',
+    offers: 'Offers & Enquiries',
+    calendar: 'Rental Calendar',
+    dispatch: 'Dispatch Schedule',
+    returns: 'Returns & Deposits',
+    payouts: 'Payouts to Listers',
+    customers: 'Customers',
+    categories: 'Categories',
+    products: 'Products',
+    designers: 'Designers',
+    listers: 'Listers',
+    lyp: 'LYP Submissions',
+    reports: 'Reports & Analytics',
+    promotions: 'Promotions',
+    messaging: 'Messaging',
+  };
 
   return (
     <div className="flex h-screen bg-[#fcf9f5] text-stone-800 overflow-hidden font-sans relative">
@@ -814,6 +947,7 @@ export default function App() {
               }} 
               siteName={siteSettings.siteName}
               onLogout={handleLogout}
+              badges={sidebarBadges}
               isMobile
             />
           </div>
@@ -827,6 +961,7 @@ export default function App() {
           setView={setView} 
           siteName={siteSettings.siteName} 
           onLogout={handleLogout}
+          badges={sidebarBadges}
         />
       </div>
 
@@ -857,7 +992,7 @@ export default function App() {
       {!isSectionEditing && currentView !== 'settings' && currentView !== 'homepage' && currentView !== 'pages' && !currentView.startsWith('lister_detail:') && (
           <header className="sticky top-0 z-40 hidden h-[52px] shrink-0 items-center justify-between border-b border-[#E8E0D6] bg-white px-6 lg:flex">
             <div className="flex items-center gap-3">
-              {currentView === 'messaging' && messagingActiveTab === 'editor' && (
+              {currentView === 'messaging' && messagingActiveTab === 'editor' ? (
                 <button
                   onClick={() => {
                     setSelectedMessageId(null);
@@ -867,9 +1002,16 @@ export default function App() {
                 >
                   &lt; Back to Messages
                 </button>
-              )}
-              <span className="text-[14px] font-semibold text-[#2C2926] font-sans capitalize">
-                {currentView === "products" ? "Products" : currentView === "messaging" ? "Messaging" : currentView.replace(/-/g, " ")}
+              ) : currentView !== 'dashboard' ? (
+                <button
+                  onClick={() => setView('dashboard')}
+                  className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E5DDD3] bg-white px-3 text-[11.5px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition cursor-pointer shadow-2xs mr-1"
+                >
+                  &lt; Back to Dashboard
+                </button>
+              ) : null}
+              <span className="text-[14px] font-semibold text-[#2C2926] font-sans">
+                {viewTitleMap[currentView] || currentView.replace(/-/g, " ")}
               </span>
             </div>
 
@@ -880,6 +1022,19 @@ export default function App() {
               >
                 <ExternalLink className="h-3.5 w-3.5 text-[#6F675D]" />
                 <span>View Live Site</span>
+              </button>
+
+              <button
+                onClick={() => setView('notifications')}
+                className="relative inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E5DDD3] bg-white px-3.5 text-[12px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition cursor-pointer shadow-2xs"
+              >
+                <Bell className="h-3.5 w-3.5 text-[#6F675D]" />
+                <span>Notifications</span>
+                {totalNotifBadge > 0 && (
+                  <span className="ml-0.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#bf5b32] px-1 text-[10px] font-bold text-white">
+                    {totalNotifBadge}
+                  </span>
+                )}
               </button>
 
               <button
@@ -905,6 +1060,7 @@ export default function App() {
   currentView === 'settings' ||
   currentView === 'homepage' ||
   currentView === 'pages' ||
+  currentView === 'dispatch' ||
   isSectionEditing
     ? 'p-0'
     : 'p-6'

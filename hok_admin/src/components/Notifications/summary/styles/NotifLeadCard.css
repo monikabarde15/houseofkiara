@@ -1,0 +1,82 @@
+/* src/components/Notifications/summary/styles/NotifLeadCard.css */
+
+/* §5.1 — container */
+.ntf-lead {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 15px 17px;
+  background: #ffffff;
+  border: 1px solid #ede6dc;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+/* §5.2 — the big number square */
+.ntf-lead-n {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: #f7f4ef;
+  color: #8a7e72;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 21px;
+}
+.ntf-lead-n--hot {
+  background: #fdf1ee;
+  color: #7a2e1d;
+}
+
+/* §5.3 — middle column */
+.ntf-lead-mid {
+  flex: 1;
+}
+
+.ntf-lead-t {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 17px;
+  color: #1a1612;
+}
+.ntf-lead-s {
+  font-size: 11.5px;
+  color: #8a7e72;
+  line-height: 1.6;
+  margin-top: 3px;
+}
+
+/* §5.4 — money strip */
+.ntf-money {
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #7a2e1d;
+  background: #fdf1ee;
+  border: 1px solid rgba(184, 92, 56, 0.3);
+  border-radius: 4px;
+  padding: 5px 9px;
+  display: inline-block;
+}
+
+/* §5.5 — right column */
+.ntf-lead-r {
+  flex-shrink: 0;
+  text-align: right;
+  min-width: 170px;
+}
+.ntf-new-n {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #b85c38;
+}
+.ntf-seen {
+  font-size: 10.5px;
+  color: #8a7e72;
+  line-height: 1.5;
+}
+.ntf-lead-r > button {
+  margin-top: 7px;
+}

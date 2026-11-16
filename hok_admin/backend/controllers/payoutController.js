@@ -49,7 +49,45 @@ const view = (p) => {
 
 export const syncPayoutsFromOrders = async () => {
   try {
-    const orders = await Order.find({});
+    const [orders, existingPayouts] = await Promise.all([
+      Order.find({}),
+      Payout.find({}),
+    ]);
+
+    const existingByPayoutId = new Set(
+      existingPayouts.map((p) => String(p.payoutId || "")),
+    );
+    const existingDmgOrderIds = new Set(
+      existingPayouts
+        .filter((p) => p.mode === "Damage Comp." || p.mode === "Damage Compensation")
+        .map((p) => String(p.orderId || "")),
+    );
+
+    // Quick check: if every order item & every damage fine already has a payout, skip all per-order DB lookups!
+    const needsSync = orders.some((ord) => {
+      const orderId = ord.orderId || ord.id;
+      if (!orderId) return false;
+      const itemsArr =
+        Array.isArray(ord.items) && ord.items.length > 0 ? ord.items : [ord];
+      const cleanOrderId = String(orderId).replace(/[^a-zA-Z0-9]/g, "");
+      const missingItemPayout = itemsArr.some((_, idx) => {
+        const pid =
+          itemsArr.length > 1
+            ? `PAY-${cleanOrderId}-${idx + 1}`
+            : `PAY-${cleanOrderId}`;
+        return !existingByPayoutId.has(pid);
+      });
+      const fineAmt =
+        itemsArr.reduce(
+          (sum, i) => sum + Number(i.depositDecision?.deductedAmount || 0),
+          0,
+        ) || Number(ord.depositDecision?.deductedAmount || 0);
+      const missingDmg = fineAmt > 0 && !existingDmgOrderIds.has(String(orderId));
+      return missingItemPayout || missingDmg;
+    });
+
+    if (!needsSync) return;
+
     for (const ord of orders) {
       const orderId = ord.orderId || ord.id;
       if (!orderId) continue;
@@ -174,11 +212,13 @@ export const syncPayoutsFromOrders = async () => {
             status: isPaid ? "Paid" : "Pending",
           });
         } else {
-          existing.transactionAmount = transactionAmount;
-          existing.payoutPercentage = payoutPercentage;
-          existing.listerShare = listerShare;
-          existing.netPayout = listerShare;
-          existing.hokCommission = hokCommission;
+          if (!existing.transactionAmount) {
+            existing.transactionAmount = transactionAmount;
+            existing.payoutPercentage = payoutPercentage;
+            existing.listerShare = listerShare;
+            existing.netPayout = listerShare;
+            existing.hokCommission = hokCommission;
+          }
           existing.designer = designer;
           if (listerId) existing.listerId = listerId;
           if (listerName) existing.listerName = listerName;
@@ -288,10 +328,9 @@ export const getPayouts = async (req, res) => {
     const paidTotal = enrichedPayouts
       .filter((p) => p.status === "Paid")
       .reduce((sum, p) => sum + Number(p.listerShare || 0), 0);
-    const hokCommission = enrichedPayouts.reduce(
-      (sum, p) => sum + Number(p.hokCommission || 0),
-      0,
-    );
+    const hokCommission = enrichedPayouts
+      .filter((p) => p.status === "Paid")
+      .reduce((sum, p) => sum + Number(p.hokCommission || 0), 0);
 
     res.json({
       success: true,
@@ -412,22 +451,26 @@ export const markPayoutPaid = async (req, res) => {
     const taxDeduction = Math.max(0, Number(req.body.taxDeduction || 0));
 
     const idParam = req.params.id;
-    const queryConditions = [{ payoutId: idParam }, { status: "Pending" }];
+    const queryConditions = [{ payoutId: idParam }];
     if (mongoose.Types.ObjectId.isValid(idParam)) {
       queryConditions.push({ _id: idParam });
     }
 
-    // FIX: Removed the buggy netPayout math from the $set object
+    const updateFields = {
+      status: "Paid",
+      paidAt: new Date(),
+      paidBy: req.body.paidBy || "Admin",
+      paymentReference: req.body.paymentReference,
+      taxDeduction,
+    };
+    if (req.body.notes !== undefined) updateFields.notes = req.body.notes;
+    if (req.body.listerShare !== undefined) updateFields.listerShare = Number(req.body.listerShare);
+    if (req.body.payoutPercentage !== undefined) updateFields.payoutPercentage = Number(req.body.payoutPercentage);
+    if (req.body.hokCommission !== undefined) updateFields.hokCommission = Number(req.body.hokCommission);
+
     const p = await Payout.findOneAndUpdate(
       { $or: queryConditions },
-      {
-        status: "Paid",
-        paidAt: new Date(),
-        paidBy: req.body.paidBy || "Admin",
-        paymentReference: req.body.paymentReference,
-        taxDeduction,
-        notes: req.body.notes,
-      },
+      { $set: updateFields },
       { new: true },
     );
 

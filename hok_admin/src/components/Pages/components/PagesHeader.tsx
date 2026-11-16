@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    HOUSE OF KAIRA · ADMIN PANEL — THE PAGES SECTION
    Component: PagesHeader (Spec §3.1 & Screen 01)
    Admin panel v217 · 20 October 2026
@@ -6,7 +6,7 @@
 ========================================================= */
 
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Search, Calendar, CheckCircle2, Sparkles, ExternalLink, Bell, Plus } from 'lucide-react';
+import { ArrowLeft, Search, Calendar, CheckCircle2, Sparkles, ExternalLink, Bell } from 'lucide-react';
 import { TopLevelTab } from '../types';
 import { FindPopover } from './FindPopover';
 import { ScheduledPopover } from './ScheduledPopover';
@@ -30,7 +30,6 @@ interface PagesHeaderProps {
   onConfirmPublish?: () => void;
   onSelectFigure?: (figureKey: string) => void;
   onSelectPage?: (slug: string) => void;
-  onOpenAddPage?: () => void;
   userRole?: 'Super Admin' | 'Operations Manager' | 'Content Manager' | 'Viewer';
   onRoleChange?: (role: 'Super Admin' | 'Operations Manager' | 'Content Manager' | 'Viewer') => void;
   accessLevel?: 'Full Access' | 'Edit' | 'View Only';
@@ -49,7 +48,6 @@ export const PagesHeader: React.FC<PagesHeaderProps> = ({
   onConfirmPublish,
   onSelectFigure,
   onSelectPage,
-  onOpenAddPage,
   userRole = 'Super Admin',
   onRoleChange,
   accessLevel = 'Full Access',
@@ -129,22 +127,10 @@ export const PagesHeader: React.FC<PagesHeaderProps> = ({
               </span>
             </button>
 
-            {/* Single clean Common Add Policy button in Header */}
-            {accessLevel !== 'View Only' && onOpenAddPage && (
-              <button
-                onClick={onOpenAddPage}
-                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#b89047] hover:bg-[#a67e37] px-3.5 text-[12px] font-semibold text-white transition cursor-pointer shadow-2xs"
-                title="Add a new page or policy to the site"
-              >
-                <Plus className="h-3.5 w-3.5 text-white" />
-                <span>Add Page</span>
-              </button>
-            )}
-
             {accessLevel !== 'View Only' && (
               <button
                 onClick={() => onConfirmPublish ? onConfirmPublish() : undefined}
-                className="inline-flex h-8 items-center rounded-md bg-[#2c2926] hover:bg-[#1a1612] px-4 text-[12px] font-semibold text-[#fffefb] transition cursor-pointer shadow-2xs"
+                className="inline-flex h-8 items-center rounded-md bg-[#c7a55c] hover:bg-[#b9974b] px-4 text-[12px] font-semibold text-[#2a2118] transition cursor-pointer shadow-2xs"
               >
                 {accessLevel === 'Edit' ? 'See the changes' : 'Save Changes'}
               </button>
@@ -217,8 +203,8 @@ export const PagesHeader: React.FC<PagesHeaderProps> = ({
                       {accessLevel === 'Edit'
                         ? 'See the changes'
                         : accessLevel === 'View Only'
-                          ? 'View changes waiting'
-                          : 'Review and publish'}
+                        ? 'View changes waiting'
+                        : 'Review and publish'}
                     </span>
                   </button>
                 ) : (

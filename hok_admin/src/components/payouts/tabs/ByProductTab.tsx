@@ -1,23 +1,59 @@
 import React, { useMemo, useState } from "react";
 import { Payout } from "../../../services/payoutApi";
+import { Product } from "../../../types";
 
 interface ByProductTabProps {
   payouts?: Payout[];
+  products?: Product[];
+  onSelectOrder?: (orderId: string) => void;
+  onSelectLister?: (listerId: string) => void;
 }
 
 const statusBadgeClasses: Record<string, string> = {
   Paid: "bg-green-100 text-green-700",
+  "Pending Approval": "bg-[#fff3d6] text-[#8a6a2c]",
   Pending: "bg-[#fff3d6] text-[#8a6a2c]",
   Failed: "bg-red-100 text-red-700",
   Reversed: "bg-gray-100 text-gray-700",
 };
 
-export default function ByProductTab({ payouts = [] }: ByProductTabProps) {
-  // Show all products with payouts (Rental, Preloved/Buy, etc.)
-  const productPayouts = payouts.filter((p) => Boolean(p.productName));
-  const PRODUCT_NAMES = Array.from(
-    new Set(productPayouts.map((t) => t.productName).filter(Boolean)),
-  ).sort();
+const formatDateShort = (raw?: string) => {
+  if (!raw) return null;
+  const d = new Date(raw);
+  if (isNaN(d.getTime())) return raw;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+export default function ByProductTab({
+  payouts = [],
+  products = [],
+  onSelectOrder,
+  onSelectLister,
+}: ByProductTabProps) {
+  const rentalPayouts = useMemo(
+    () =>
+      payouts.filter((p) => {
+        if (!p.productName) return false;
+        const m = String(p.mode || "").toLowerCase();
+        return !m.includes("damage");
+      }),
+    [payouts],
+  );
+
+  const PRODUCT_NAMES = useMemo(() => {
+    const names = new Set<string>();
+    rentalPayouts.forEach((t) => {
+      if (t.productName) names.add(t.productName);
+    });
+    products.forEach((p) => {
+      if (p?.name) names.add(p.name);
+    });
+    return Array.from(names).sort();
+  }, [rentalPayouts, products]);
 
   const [selectedProduct, setSelectedProduct] = useState<string>(
     PRODUCT_NAMES[0] ?? "",
@@ -33,15 +69,24 @@ export default function ByProductTab({ payouts = [] }: ByProductTabProps) {
   }, [PRODUCT_NAMES, selectedProduct]);
 
   const productTransactions = useMemo(
-    () => productPayouts.filter((t) => t.productName === selectedProduct),
-    [selectedProduct, productPayouts],
+    () =>
+      rentalPayouts
+        .filter((t) => t.productName === selectedProduct)
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(a.dueDate || a.createdAt || 0).getTime() -
+            new Date(b.dueDate || b.createdAt || 0).getTime(),
+        ),
+    [selectedProduct, rentalPayouts],
   );
 
   return (
     <div className="space-y-4 text-xs font-sans">
+      {/* Product selector */}
       <div className="space-y-1 max-w-md">
         <label className="uppercase text-[11px] tracking-wider font-bold text-stone-400">
-          Select Product
+          Select Rental Product
         </label>
         <select
           value={selectedProduct}
@@ -57,70 +102,110 @@ export default function ByProductTab({ payouts = [] }: ByProductTabProps) {
         </select>
       </div>
 
+      {/* Rental history table for the selected product */}
       <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs whitespace-nowrap">
             <thead>
               <tr className="bg-stone-50 text-stone-400 uppercase text-[10px] tracking-wider border-b border-stone-200">
-                <th className="px-4 py-3">Mode</th>
-                <th className="px-4 py-3">Due Date</th>
+                <th className="px-4 py-3">Transaction</th>
+                <th className="px-4 py-3">Date</th>
                 <th className="px-4 py-3">Order</th>
                 <th className="px-4 py-3">Lister</th>
                 <th className="px-4 py-3">Transaction Value</th>
-                <th className="px-4 py-3">HOK Commission</th>
+                <th className="px-4 py-3">Payout %</th>
                 <th className="px-4 py-3">Amount</th>
                 <th className="px-4 py-3">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100 text-stone-600 font-sans">
-              {productTransactions.map((t, idx) => (
-                <tr
-                  key={t.id}
-                  className={`hover:bg-[#fcf9f5] transition-colors ${idx % 2 === 1 ? "bg-stone-50/40" : ""}`}
-                >
-                  <td className="px-4 py-3 text-stone-500">{t.mode}</td>
-                  <td className="px-4 py-3">
-                    {new Date(t.dueDate).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3 text-[#8a6a2c] font-mono text-[10px]">
-                    {t.orderId}
-                  </td>
-                  <td className="px-4 py-3 font-semibold text-[#8a6a2c]">
-                    {t.listerName}
-                  </td>
-                  <td className="px-4 py-3 font-medium">
-                    ₹
-                    {(
-                      Number(
-                        t.transactionAmount ||
-                          (t.listerShare || 0) + (t.hokCommission || 0),
-                      ) || 0
-                    ).toLocaleString("en-IN")}
-                  </td>
-                  <td className="px-4 py-3 text-stone-500">
-                    ₹{(Number(t.hokCommission) || 0).toLocaleString("en-IN")}
-                  </td>
-                  <td
-                    className={`px-4 py-3 font-semibold ${t.status === "Paid" ? "text-green-600" : "text-orange-500"}`}
+              {productTransactions.map((t, idx) => {
+                const modeLower = String(t.mode || "").toLowerCase();
+                const isPreloved =
+                  modeLower.includes("preloved") ||
+                  modeLower.includes("buy") ||
+                  modeLower.includes("sale");
+                const txLabel = isPreloved
+                  ? "Preloved Sale"
+                  : `Rental #${idx + 1}`;
+                const txVal =
+                  Number(t.transactionAmount) ||
+                  (Number(t.listerShare) || 0) + (Number(t.hokCommission) || 0);
+                const pctNum =
+                  t.payoutPercentage ||
+                  (txVal > 0
+                    ? Math.round(((Number(t.listerShare) || 0) / txVal) * 100)
+                    : 0);
+                const displayStatus =
+                  t.status === "Pending" ? "Pending Approval" : t.status;
+                const dateLabel =
+                  t.status === "Paid"
+                    ? formatDateShort(t.paidAt || t.dueDate)
+                    : null;
+
+                return (
+                  <tr
+                    key={t.id}
+                    className={`hover:bg-[#fcf9f5] transition-colors ${idx % 2 === 1 ? "bg-stone-50/40" : ""}`}
                   >
-                    ₹{(Number(t.listerShare) || 0).toLocaleString("en-IN")}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`px-2.5 py-1 rounded text-[10px] font-medium ${statusBadgeClasses[t.status] || statusBadgeClasses["Pending"]}`}
-                    >
-                      {t.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+                    <td className="px-4 py-3 font-semibold text-stone-900">
+                      {txLabel}
+                    </td>
+
+                    <td className="px-4 py-3">{dateLabel ?? "—"}</td>
+
+                    <td className="px-4 py-3">
+                      <button
+                        type="button"
+                        onClick={() => onSelectOrder?.(t.orderId)}
+                        className="text-[#8a6a2c] font-mono text-[10px] hover:underline cursor-pointer"
+                      >
+                        {t.orderId}
+                      </button>
+                    </td>
+
+                    <td className="px-4 py-3">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          onSelectLister?.(t.listerId || t.listerName)
+                        }
+                        className="text-[#8a6a2c] font-medium hover:underline cursor-pointer"
+                      >
+                        {t.listerName}
+                      </button>
+                    </td>
+
+                    <td className="px-4 py-3">
+                      ₹{txVal.toLocaleString("en-IN")}
+                    </td>
+
+                    <td className="px-4 py-3 font-semibold text-stone-900">
+                      {pctNum}%
+                    </td>
+
+                    <td className="px-4 py-3 font-medium">
+                      ₹{(Number(t.listerShare) || 0).toLocaleString("en-IN")}
+                    </td>
+
+                    <td className="px-4 py-3">
+                      <span
+                        className={`px-2.5 py-1 rounded text-[10px] font-medium ${statusBadgeClasses[displayStatus] || statusBadgeClasses["Pending Approval"]}`}
+                      >
+                        {displayStatus}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+
               {productTransactions.length === 0 && (
                 <tr>
                   <td
                     colSpan={8}
                     className="px-4 py-8 text-center text-stone-400"
                   >
-                    No transactions match this product.
+                    No rental history for this product yet.
                   </td>
                 </tr>
               )}
@@ -128,10 +213,6 @@ export default function ByProductTab({ payouts = [] }: ByProductTabProps) {
           </table>
         </div>
       </div>
-      <p className="text-stone-400 px-1">
-        This view isolates the rental and payout history of individual products
-        so you can track how much a specific piece has earned over its lifetime.
-      </p>
     </div>
   );
 }

@@ -52,6 +52,12 @@ export const mapOffer = (item: any): Offer => ({
   note: item.notes?.at(-1)?.message,
   promoCode: item.promoCode || item.code || "",
   assignedTo: item.assignedTo || "",
+  mode: item.mode || "Rental",
+  rentalStartDate: item.rentalStartDate || "",
+  rentalEndDate: item.rentalEndDate || "",
+  address: item.address || item.customerCity || "",
+  customerCity: item.customerCity || "",
+  linkedOrderId: item.linkedOrderId || "",
 });
 export const getOffers = async () => {
   const body = await request("/offers?limit=1000");
@@ -72,6 +78,12 @@ export const createOffer = async (offer: Partial<Offer>) => {
       customerName: offer.customerName,
       customerEmail: offer.customerEmail,
       customerPhone: offer.phone,
+      customerCity: offer.customerCity || offer.address,
+      address: offer.address,
+      mode: offer.mode,
+      rentalStartDate: offer.rentalStartDate,
+      rentalEndDate: offer.rentalEndDate,
+      createOrder: Boolean(offer.createOrder),
       originalAmount: offer.marketPrice,
       offeredAmount: offer.offerPrice,
       promoCode: offer.promoCode,
@@ -84,30 +96,41 @@ export const createOffer = async (offer: Partial<Offer>) => {
   return {
     ...mapped,
     newCustomer: res.customer,
+    createdOrder: res.order || null,
   };
 };
 export const updateOfferStatus = async (
   id: string,
   status: Offer["status"],
   backendId?: string,
-) =>
-  mapOffer(
-    (
-      await request(`/offers/${routeId(id, backendId)}/status`, {
-        method: "PATCH",
-        body: JSON.stringify({
-          status:
-            status === "Declined"
-              ? "Rejected"
-              : status === "Countered"
-                ? "Counter Offered"
-                : status === "On Hold"
-                  ? "Assigned"
-                  : status,
-        }),
-      })
-    ).data,
-  );
+  extra?: {
+    mode?: "Rental" | "Preloved" | "Buy";
+    rentalStartDate?: string;
+    rentalEndDate?: string;
+    address?: string;
+    amount?: number;
+    createOrder?: boolean;
+  },
+) => {
+  const res = await request(`/offers/${routeId(id, backendId)}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      status:
+        status === "Declined"
+          ? "Rejected"
+          : status === "Countered"
+            ? "Counter Offered"
+            : status === "On Hold"
+              ? "Assigned"
+              : status,
+      ...(extra || {}),
+    }),
+  });
+  return {
+    ...mapOffer(res.data),
+    createdOrder: res.order || null,
+  };
+};
 export const updateOffer = async (
   id: string,
   fields: Partial<Offer>,
