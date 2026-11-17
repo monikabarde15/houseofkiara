@@ -255,7 +255,7 @@ const CartLayout = () => {
             })}
 
             <div data-rise="5">
-              <PromoCode onApply={setActivePromo} subtotal={totals.subtotal} />
+              <PromoCode onApply={setActivePromo} subtotal={totals.subtotal} cartItems={activeItems} />
             </div>
           </div>
 

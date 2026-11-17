@@ -259,7 +259,9 @@ export default function ReturnsView({
         } else if (
           rawOrderDepStatus.toLowerCase() === "held" ||
           rawOrderDepStatus.toLowerCase() === "collected" ||
-          isPhysicallyOut
+          (isPhysicallyOut &&
+            (!rawOrderDepStatus ||
+              rawOrderDepStatus.toLowerCase() === "none"))
         ) {
           depStatusRaw = "Held";
         } else if (rawOrderDepStatus && rawOrderDepStatus !== "None") {
@@ -269,7 +271,7 @@ export default function ReturnsView({
         const deductedVal = Number(decisionObj?.deductedAmount ?? 0);
         const releasedVal =
           decisionObj?.releasedAmount !== undefined &&
-          (Number(decisionObj.releasedAmount) > 0 || deductedVal > 0)
+            (Number(decisionObj.releasedAmount) > 0 || deductedVal > 0)
             ? Number(decisionObj.releasedAmount)
             : o.refund?.amount !== undefined
               ? Number(o.refund.amount)
@@ -456,12 +458,17 @@ export default function ReturnsView({
       0,
     );
 
+    const isPendingDeposit = (statusVal: string) =>
+      ["pending", "not collected", "unpaid", "due"].includes(
+        String(statusVal || "").toLowerCase(),
+      );
+
     const collectBeforeShip = trackedOrders.filter(
       (x) =>
         x.isRental &&
         x.status.toLowerCase() === "confirmed" &&
         x.deposit > 0 &&
-        x.depStatus.toLowerCase() === "pending",
+        isPendingDeposit(x.depStatus),
     );
 
     const receivables = trackedOrders.filter(
@@ -469,7 +476,7 @@ export default function ReturnsView({
         x.isRental &&
         x.status.toLowerCase() !== "cancelled" &&
         x.deposit > 0 &&
-        x.depStatus.toLowerCase() === "pending",
+        isPendingDeposit(x.depStatus),
     );
 
     const resolvedLedger = trackedOrders.filter((x) =>

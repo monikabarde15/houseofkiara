@@ -16,6 +16,7 @@ import { FiguresWorkspaceTab } from './components/FiguresWorkspaceTab';
 import { LinksWorkspaceTab } from './components/LinksWorkspaceTab';
 import { PagePaperView } from './components/PagePaperView';
 import { AnswersWorkspaceView } from './components/AnswersWorkspaceView';
+import { PagesEditorTab } from './components/PagesEditorTab';
 import { ReviewPublishDrawer } from './components/ReviewPublishDrawer';
 import { ViewOnlyBanner } from './components/ViewOnlyBanner';
 import { OtherSectionsPointersModal } from './components/OtherSectionsPointersModal';
@@ -23,13 +24,15 @@ import { OtherSectionsPointersModal } from './components/OtherSectionsPointersMo
 interface PagesModuleProps {
   onBackToDashboard?: () => void;
   initialSlug?: string | null;
+  initialTab?: TopLevelTab;
 }
 
 export const PagesModule: React.FC<PagesModuleProps> = ({
   onBackToDashboard,
   initialSlug = null,
+  initialTab = 'pages',
 }) => {
-  const [activeTab, setActiveTab] = useState<TopLevelTab>('pages');
+  const [activeTab, setActiveTab] = useState<TopLevelTab>(initialTab);
   const [pages, setPages] = useState<PageCardData[]>(SEED_PAGES);
   const [figures, setFigures] = useState<FigureItem[]>(SEED_FIGURES);
   const [linksData, setLinksData] = useState<LinksAndAddressesData>(SEED_LINKS_ADDRESSES);
@@ -203,6 +206,12 @@ export const PagesModule: React.FC<PagesModuleProps> = ({
             pages={pages}
             onSelectPage={slug => setSelectedPageSlug(slug)}
             onNavigateToFigures={() => setActiveTab('figures')}
+          />
+        )}
+        {activeTab === 'editor' && (
+          <PagesEditorTab
+            pages={pages}
+            initialSlug={selectedPageSlug}
           />
         )}
         {activeTab === 'figures' && (

@@ -79,6 +79,18 @@ export const PagesHeaderTabs: React.FC<PagesHeaderTabsProps> = ({
           </span>
         )}
       </button>
+
+      {/* 4. Pages Editor tab */}
+      <button
+        onClick={() => onTabChange('editor')}
+        className={`px-3.5 py-2 text-xs font-medium rounded-t-[6px] transition-all flex items-center gap-2 border-b-2 cursor-pointer ${
+          activeTab === 'editor'
+            ? 'border-[#1a1612] text-[#1a1612] bg-[#f7f2ea]'
+            : 'border-transparent text-[#6e6358] hover:text-[#1a1612] hover:bg-[#efe7db]/40'
+        }`}
+      >
+        <span>Pages Editor</span>
+      </button>
     </div>
   );
 };

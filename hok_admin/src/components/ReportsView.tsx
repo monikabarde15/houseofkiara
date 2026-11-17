@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   BarChart2,
   TrendingUp,
@@ -22,6 +22,32 @@ export default function ReportsView({
   const [timeRange, setTimeRange] = useState<"30days" | "90days" | "1year">(
     "30days",
   );
+  const [liveDesigners, setLiveDesigners] = useState<any[]>([]);
+  const [designersLoaded, setDesignersLoaded] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/designers")
+      .then((res) => res.json())
+      .then((res) => {
+        if (!active) return;
+        const list = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+            ? res.data
+            : [];
+        setLiveDesigners(list);
+      })
+      .catch(() => {
+        if (active) setLiveDesigners([]);
+      })
+      .finally(() => {
+        if (active) setDesignersLoaded(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Filter orders based on timeRange if dates exist
   const safeOrders = useMemo(() => {
@@ -125,11 +151,12 @@ export default function ReportsView({
 
   // Top Performing Designers dynamically derived from live Designers DB + database orders
   const designerEarnings = useMemo(() => {
+    const activeDesigners = liveDesigners.length > 0 ? liveDesigners : designers;
     const designerMap: Record<string, { count: number; sales: number }> = {};
     const canonicalByLower: Record<string, string> = {};
     let totalSales = 0;
 
-    (designers || []).forEach((d: any) => {
+    (activeDesigners || []).forEach((d: any) => {
       const dName = String(d?.name || "").trim();
       if (!dName) return;
       const key = dName.toLowerCase();
@@ -138,6 +165,10 @@ export default function ReportsView({
         designerMap[dName] = { count: 0, sales: 0 };
       }
     });
+
+    if (!designersLoaded && Object.keys(canonicalByLower).length === 0) {
+      return [];
+    }
 
     safeOrders.forEach((o) => {
       const firstIt = Array.isArray(o.items) && o.items[0] ? (o.items[0] as any) : null;
@@ -158,10 +189,10 @@ export default function ReportsView({
           "Independent",
       ).trim();
       const canonicalName = canonicalByLower[rawName.toLowerCase()];
-      if (Object.keys(canonicalByLower).length > 0 && !canonicalName) {
+      if (!canonicalName) {
         return;
       }
-      const designerName = canonicalName || rawName;
+      const designerName = canonicalName;
       if (!designerMap[designerName]) {
         designerMap[designerName] = { count: 0, sales: 0 };
       }
@@ -182,7 +213,7 @@ export default function ReportsView({
             : "0%",
       }))
       .sort((a, b) => b.sales - a.sales);
-  }, [safeOrders, products, designers]);
+  }, [safeOrders, products, designers, liveDesigners, designersLoaded]);
 
   return (
     <div className="space-y-6 text-xs font-sans">

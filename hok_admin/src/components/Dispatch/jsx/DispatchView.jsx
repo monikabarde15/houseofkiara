@@ -31,17 +31,18 @@ export default function DispatchView({
   onUpdateOrder,
 }) {
   const [activeTab, setActiveTab] = useState("today");
-  const [demoDate, setDemoDate] = useState(() => toYMD(new Date()));
+  const [demoDate, setDemoDate] = useState("");
 
-  const refDate = useMemo(
-    () => parseLocalDay(demoDate) || parseLocalDay(toYMD(new Date())),
+  const realToday = useMemo(() => parseLocalDay(toYMD(new Date())), []);
+  const pickedDate = useMemo(
+    () => (demoDate ? parseLocalDay(demoDate) : null),
     [demoDate],
   );
 
   const { todayList, tomorrowList, weekList, conflictList, rotationItems } =
     useMemo(() => {
-      const tomorrowDate = addDays(refDate, 1);
-      const weekEnd = addDays(refDate, 7);
+      const tomorrowDate = addDays(realToday, 1);
+      const weekEnd = addDays(realToday, 7);
 
       const outboundStatuses = ["confirmed", "packed", "processing"];
       const inFieldRentals = orders.filter((o) => {
@@ -105,7 +106,7 @@ export default function DispatchView({
         const dispDate =
           explicitDisp ||
           (rStart ? addDays(rStart, -2) : parseLocalDay(o.orderDate || o.createdAt)) ||
-          refDate;
+          realToday;
 
         const courier =
           o.dispatchDetails?.courierPartner ||
@@ -173,17 +174,22 @@ export default function DispatchView({
         });
 
         const dispTime = dispDate.getTime();
-        const refTime = refDate.getTime();
+        const todayTime = realToday.getTime();
         const tomTime = tomorrowDate.getTime();
         const weekEndTime = weekEnd.getTime();
+        const pickedTime = pickedDate ? pickedDate.getTime() : null;
 
-        if (dispTime <= refTime) {
+        if (dispTime === todayTime && (!pickedTime || dispTime === pickedTime)) {
           todayArr.push(cardData);
-        } else if (dispTime === tomTime) {
+        } else if (dispTime === tomTime && (!pickedTime || dispTime === pickedTime)) {
           tomorrowArr.push(cardData);
         }
 
-        if (dispTime <= weekEndTime) {
+        const matchesWeek = pickedTime
+          ? dispTime === pickedTime
+          : dispTime <= weekEndTime;
+
+        if (matchesWeek) {
           if (conflicting) {
             const otherItem =
               (Array.isArray(conflicting.items) && conflicting.items[0]) ||
@@ -211,7 +217,7 @@ export default function DispatchView({
         conflictList: conflictsArr,
         rotationItems: rotationArr.slice(0, 5),
       };
-    }, [orders, refDate]);
+    }, [orders, realToday, pickedDate]);
 
   const handleViewOrder = (orderId) => {
     if (!orderId) return;

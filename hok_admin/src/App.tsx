@@ -846,10 +846,12 @@ export default function App() {
       );
     }
 
-    if (currentView === 'pages' || currentView === 'platform_legal') {
+    if (currentView === 'pages' || currentView === 'platform_legal' || currentView === 'pages_editor') {
       return (
         <PagesModule
+          key={currentView}
           initialSlug={currentView === 'platform_legal' ? '/terms' : null}
+          initialTab={currentView === 'pages_editor' ? 'editor' : 'pages'}
           onBackToDashboard={() => setView('dashboard')}
         />
       );
@@ -989,7 +991,7 @@ export default function App() {
         </header>
 
         {/* Desktop Sticky Header */}
-      {!isSectionEditing && currentView !== 'settings' && currentView !== 'homepage' && currentView !== 'pages' && !currentView.startsWith('lister_detail:') && (
+      {!isSectionEditing && currentView !== 'settings' && currentView !== 'homepage' && currentView !== 'pages' && currentView !== 'pages_editor' && !currentView.startsWith('lister_detail:') && (
           <header className="sticky top-0 z-40 hidden h-[52px] shrink-0 items-center justify-between border-b border-[#E8E0D6] bg-white px-6 lg:flex">
             <div className="flex items-center gap-3">
               {currentView === 'messaging' && messagingActiveTab === 'editor' ? (
@@ -1060,6 +1062,7 @@ export default function App() {
   currentView === 'settings' ||
   currentView === 'homepage' ||
   currentView === 'pages' ||
+  currentView === 'pages_editor' ||
   currentView === 'dispatch' ||
   isSectionEditing
     ? 'p-0'

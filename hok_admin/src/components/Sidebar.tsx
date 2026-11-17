@@ -77,6 +77,7 @@ const groups = [
       { id: "settings", label: "Site Settings", icon: Settings },
       { id: "homepage", label: "Homepage", icon: Home },
       { id: "pages", label: "Pages", icon: FileText },
+      { id: "pages_editor", label: "Pages Editor", icon: FileText },
       { id: "platform_legal", label: "Platform & Legal", icon: FileText },
     ],
   },

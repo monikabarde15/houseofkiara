@@ -5,7 +5,7 @@
    Rule: Zero dashes used as punctuation. Sentence case only.
 ========================================================= */
 
-export type TopLevelTab = 'pages' | 'figures' | 'links';
+export type TopLevelTab = 'pages' | 'figures' | 'links' | 'editor';
 
 export type PageGroupId = 'content-help' | 'policies' | 'not-built' | 'system';
 

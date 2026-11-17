@@ -8,6 +8,7 @@ import {
   deletePromoCode,
   logAttempt,
   getRefusedAttempts,
+  validatePromoCodeForCheckout,
 } from "../controllers/promotionController.js";
 
 const router = express.Router();
@@ -15,6 +16,7 @@ const router = express.Router();
 router.get("/", getAllPromoCodes);
 router.get("/refused-attempts", getRefusedAttempts);
 router.post("/log-attempt", logAttempt);
+router.post("/validate", validatePromoCodeForCheckout);
 router.get("/:code", getPromoCode);
 router.post("/", createPromoCode);
 router.put("/:code", updatePromoCode);

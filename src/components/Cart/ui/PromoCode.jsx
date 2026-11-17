@@ -4,7 +4,7 @@ import { PROMO_CODES } from "../../../utils/cart/promo";
 import GoldParticles from "./GoldParticles";
 import useAuthStore from "../../../store/authStore";
 
-const PromoCode = ({ onApply, subtotal = 0 }) => {
+const PromoCode = ({ onApply, subtotal = 0, cartItems = [] }) => {
   const [code, setCode] = useState("");
   const [applied, setApplied] = useState(null);
   const [error, setError] = useState("");
@@ -21,6 +21,8 @@ const PromoCode = ({ onApply, subtotal = 0 }) => {
     const userCustId = (user.customerId || user.id || user._id || "")
       .toLowerCase()
       .trim();
+    const now = new Date();
+    const todayYmd = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
     fetch("/api/promotions")
       .then((res) => res.json())
@@ -28,6 +30,10 @@ const PromoCode = ({ onApply, subtotal = 0 }) => {
         if (res.success && Array.isArray(res.data)) {
           const userPromos = res.data.filter((p) => {
             if (p.status !== "Active") return false;
+            const validFrom = p.validFrom ? String(p.validFrom).slice(0, 10) : "";
+            const validUntil = p.validUntil ? String(p.validUntil).slice(0, 10) : "";
+            if (validFrom && todayYmd < validFrom) return false;
+            if (validUntil && todayYmd > validUntil) return false;
             if (Array.isArray(p.customerIds) && p.customerIds.length > 0) {
               return p.customerIds.some((cid) => {
                 const c = String(cid).toLowerCase().trim();
@@ -55,14 +61,35 @@ const PromoCode = ({ onApply, subtotal = 0 }) => {
     setCode(trimmed);
 
     let promoData = null;
+    let validationErr = "";
 
     try {
-      const res = await fetch(`/api/promotions/${encodeURIComponent(trimmed)}`);
+      const res = await fetch("/api/promotions/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: trimmed,
+          subtotal: Number(subtotal) || 0,
+          items: Array.isArray(cartItems) ? cartItems : [],
+          customerEmail: user?.email || "",
+          customerId: user?.customerId || user?.id || user?._id || "",
+          customerPhone: user?.phone || "",
+        }),
+      });
       const data = await res.json().catch(() => ({}));
-      if (data.success && data.data && data.data.status === "Active") {
+      if (res.ok && data.success && data.data) {
         promoData = data.data;
+      } else if (res.status !== 404) {
+        validationErr = data.message || "This promo code cannot be applied.";
       }
     } catch (e) {}
+
+    if (validationErr) {
+      setError(validationErr);
+      setApplied(null);
+      onApply(null);
+      return;
+    }
 
     if (!promoData) {
       const localPromo = PROMO_CODES[trimmed];
@@ -78,38 +105,6 @@ const PromoCode = ({ onApply, subtotal = 0 }) => {
       return;
     }
 
-    const isPrivatePromo =
-      promoData.audience === "private" ||
-      (Array.isArray(promoData.customerIds) && promoData.customerIds.length > 0);
-    if (isPrivatePromo) {
-      if (!user) {
-        setError("Please sign in to apply this private promo code.");
-        setApplied(null);
-        onApply(null);
-        return;
-      }
-      const userEmail = (user.email || "").toLowerCase().trim();
-      const userPhone = (user.phone || "").replace(/\D/g, "");
-      const userCustId = (user.customerId || user.id || user._id || "")
-        .toLowerCase()
-        .trim();
-      const allowed = (promoData.customerIds || []).some((cid) => {
-        const c = String(cid).toLowerCase().trim();
-        const cDigits = String(cid).replace(/\D/g, "");
-        return (
-          (userEmail && c === userEmail) ||
-          (userCustId && c === userCustId) ||
-          (userPhone && cDigits && cDigits.endsWith(userPhone.slice(-10)))
-        );
-      });
-      if (!allowed) {
-        setError("This code is linked to a different account.");
-        setApplied(null);
-        onApply(null);
-        return;
-      }
-    }
-
     const minReq = Number(promoData.minOrder) || 0;
     const numSubtotal = Number(subtotal) || 0;
     if (minReq > 0 && numSubtotal > 0 && numSubtotal < minReq) {
@@ -119,10 +114,13 @@ const PromoCode = ({ onApply, subtotal = 0 }) => {
       return;
     }
 
-    const discountAmount =
+    let discountAmount =
       promoData.type === "percent" || promoData.type === "percentage"
         ? Math.round((numSubtotal * Number(promoData.value || 0)) / 100)
         : Number(promoData.value || 0);
+    if (promoData.maxDiscount && Number(promoData.maxDiscount) > 0) {
+      discountAmount = Math.min(discountAmount, Number(promoData.maxDiscount));
+    }
 
     const appliedData = {
       code: promoData.code,

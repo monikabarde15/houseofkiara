@@ -193,7 +193,7 @@ const MobileCartLayout = () => {
 
             {/* Promo Code - Section 6 */}
             <div data-rise="5">
-              <PromoCode onApply={setActivePromo} subtotal={totals?.subtotal} />
+              <PromoCode onApply={setActivePromo} subtotal={totals?.subtotal} cartItems={activeItems} />
             </div>
 
             <OrderSummary
