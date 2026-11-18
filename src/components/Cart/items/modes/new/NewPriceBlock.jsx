@@ -3,11 +3,13 @@ import React from "react";
 import { useRegionalSettings } from "../../../../../hooks/useRegionalSettings";
 import "../../../../../styles/cart/items/price-block.css";
 
-const NewPriceBlock = ({ product }) => {
+const NewPriceBlock = ({ product, itemPrice, quantity = 1 }) => {
   const { currencySymbol, formatPrice } = useRegionalSettings();
   const pricing = product?.new?.pricing || product?.modes?.buy?.pricing || {};
 
-  const price = pricing?.price || product?.listingPrice || product?.price || 0;
+  const unitPrice = itemPrice || pricing?.price || product?.listingPrice || product?.price || 0;
+  const qty = Math.max(1, Number(quantity) || 1);
+  const price = unitPrice * qty;
 
   if (!price) return null;
 

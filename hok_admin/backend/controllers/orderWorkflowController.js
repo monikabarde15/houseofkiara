@@ -129,6 +129,27 @@ export const transitionOrder = async (req, res) => {
           success: false,
           message: `Invalid order transition: ${o.status} → ${next}`,
         });
+    if (next === "Dispatched" || next === "Shipped") {
+      const baseDisp = o.dispatchDetails?.toObject
+        ? o.dispatchDetails.toObject()
+        : { ...(o.dispatchDetails || {}) };
+      const cPartner = baseDisp.courierPartner || "Delhivery";
+      let tNum = String(baseDisp.trackingNumber || "")
+        .trim()
+        .toUpperCase()
+        .replace(/[\s\-_]+/g, "");
+      if (!tNum) {
+        tNum = cPartner.toLowerCase().includes("dhl")
+          ? `DHL${Math.floor(10000 + Math.random() * 90000)}`
+          : `DEL${Math.floor(10000000 + Math.random() * 90000000)}IN`;
+      }
+      o.dispatchDetails = {
+        ...baseDisp,
+        date: baseDisp.date || new Date().toISOString().slice(0, 10),
+        courierPartner: cPartner,
+        trackingNumber: tNum,
+      };
+    }
     o.status = next;
     saveLog(o, `Order status changed to ${next}`);
     await o.save();
@@ -173,9 +194,13 @@ export const updateDispatch = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Order item not found" });
+    const cleanTrack = req.body.trackingNumber
+      ? String(req.body.trackingNumber).trim().toUpperCase().replace(/[\s\-_]+/g, "")
+      : item.dispatch?.trackingNumber || "";
     item.dispatch = {
       ...item.dispatch?.toObject?.(),
       ...req.body,
+      ...(cleanTrack ? { trackingNumber: cleanTrack } : {}),
       status: req.body.status || "Dispatched",
     };
     item.status = item.dispatch.status;

@@ -360,7 +360,7 @@ export function PayoutHistoryTab({
                 </h4>
                 <p className="text-xs text-stone-500 font-mono">
                   {selectedRecord.orderId
-                    ? selectedRecord.orderId.startsWith("HOK-ORD-")
+                    ? selectedRecord.orderId.startsWith("HOK-")
                       ? selectedRecord.orderId
                       : `HOK-ORD-${selectedRecord.orderId.padStart(3, "0")}`
                     : "HOK-ORD-889"}

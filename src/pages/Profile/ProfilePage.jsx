@@ -29,7 +29,8 @@ const ProfilePage = () => {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  if (isCheckingAuth) {
+  // Cached session (persisted) is enough to render while the check runs in the background
+  if (isCheckingAuth && !isAuthenticated) {
     return null;
   }
 

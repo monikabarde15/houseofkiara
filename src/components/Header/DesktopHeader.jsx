@@ -4,12 +4,19 @@ import logo from "../../assets/logo/logo.png";
 import "../../styles/Header/desktop-header.css";
 import useAuthStore from "../../store/authStore";
 import useWishlistStore from "../../store/wishlistStore";
+import useCartStore from "../../store/cartStore";
 
 const DesktopHeader = ({ onSearchOpen, searchPlaceholder, bagCartLabel = "Bag", siteName = "House of Kaira", logoUrl, wordmarkUrl }) => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuthStore();
   const wishlistItems = useWishlistStore((state) => state.items);
   const wishlistCount = Array.isArray(wishlistItems) ? wishlistItems.length : 0;
+  const cartItems = useCartStore((state) => state.items);
+  const cartCount = Array.isArray(cartItems)
+    ? cartItems
+        .filter((it) => it && it.active !== false)
+        .reduce((sum, it) => sum + Math.max(1, Number(it.quantity) || 1), 0)
+    : 0;
 
   const handleProfileClick = () => {
     navigate("/auth")
@@ -109,7 +116,13 @@ const DesktopHeader = ({ onSearchOpen, searchPlaceholder, bagCartLabel = "Bag", 
             aria-label={bagCartLabel || "Bag"}
             onClick={handleBagClick}
           >
-            <span className="hok-desktop-header-cart-dot" />
+            {cartCount > 0 ? (
+              <span className="hok-desktop-header-wishlist-badge">
+                {cartCount}
+              </span>
+            ) : (
+              <span className="hok-desktop-header-cart-dot" />
+            )}
 
             <svg viewBox="0 0 24 24">
               <path d="M6 2h12l3 4v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6l3-4z" />
@@ -117,7 +130,10 @@ const DesktopHeader = ({ onSearchOpen, searchPlaceholder, bagCartLabel = "Bag", 
               <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
 
-            <span>{bagCartLabel || "Bag"}</span>
+            <span>
+              {bagCartLabel || "Bag"}
+              {cartCount > 0 ? ` (${cartCount})` : ""}
+            </span>
           </button>
 
           <button

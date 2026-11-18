@@ -95,15 +95,19 @@ const useAuthStore = create(
           return null;
         }
 
+        // Never leave the app waiting forever if the server is slow / waking up
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 8000);
         try {
           const response = await fetch("/api/customer/profile", {
             method: "GET",
+            signal: controller.signal,
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
           });
-
+          clearTimeout(timer);
           const result = await response.json().catch(() => ({}));
 
           if (response.ok && result.success) {
@@ -137,6 +141,7 @@ const useAuthStore = create(
             return get().user;
           }
         } catch (networkErr) {
+          clearTimeout(timer);
           // Network offline / fetch failure: retain cached session
           set({ isCheckingAuth: false });
           return get().user;

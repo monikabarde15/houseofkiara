@@ -252,11 +252,31 @@ export default function OrderDetailView({
       setReleasedAmount(effectiveReleasedAmt);
     }
 
+    const rawCourier = courierPartner.trim() || (finalStatus === "Dispatched" || finalStatus === "Shipped" ? "Delhivery" : "");
+    let cleanTrack = trackingNumber
+      .trim()
+      .toUpperCase()
+      .replace(/[\s\-_]+/g, "");
+    if (
+      !cleanTrack &&
+      (finalStatus === "Dispatched" || finalStatus === "Shipped")
+    ) {
+      cleanTrack = rawCourier.toLowerCase().includes("dhl")
+        ? `DHL${Math.floor(10000 + Math.random() * 90000)}`
+        : `DEL${Math.floor(10000000 + Math.random() * 90000000)}IN`;
+      setTrackingNumber(cleanTrack);
+    } else if (cleanTrack !== trackingNumber) {
+      setTrackingNumber(cleanTrack);
+    }
+    if (rawCourier && rawCourier !== courierPartner) {
+      setCourierPartner(rawCourier);
+    }
+
     const nextDispatchDetails = {
       dispatchedBy: dispatchedBy.trim(),
-      date: dispatchDate,
-      trackingNumber: trackingNumber.trim(),
-      courierPartner: courierPartner.trim(),
+      date: dispatchDate || ((finalStatus === "Dispatched" || finalStatus === "Shipped") ? new Date().toISOString().slice(0, 10) : ""),
+      trackingNumber: cleanTrack,
+      courierPartner: rawCourier,
     };
     const hasReturnLogistics = Boolean(
       returnDate || returnMethod.trim() || returnCourier.trim(),
@@ -1033,7 +1053,7 @@ export default function OrderDetailView({
                     type="text"
                     value={trackingNumber}
                     onChange={(e) => setTrackingNumber(e.target.value)}
-                    placeholder="E.g. BD1234567"
+                    placeholder="E.g. DHL12345, DEL98765, DEL55231987IN"
                     className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
                   />
                 </div>

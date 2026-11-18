@@ -329,7 +329,7 @@ export default function App() {
       return currentProducts.map(p => {
         let modified = false;
         const newHistory = (p.bookingHistory || []).map((b: any) => {
-          if (b.orderId === targetId || b.orderId === (savedOrder as any).orderNumber || `HOK-ORD-${String(b.orderId || '').replace(/[^0-9]/g, '').slice(-3)}` === `HOK-ORD-${String(targetId || '').replace(/[^0-9]/g, '').slice(-3)}`) {
+          if (b.orderId === targetId || b.orderId === (savedOrder as any).orderNumber || (!/^HOK-(REN|PRL|NEW)-/.test(String(targetId)) && `HOK-ORD-${String(b.orderId || '').replace(/[^0-9]/g, '').slice(-3)}` === `HOK-ORD-${String(targetId || '').replace(/[^0-9]/g, '').slice(-3)}`)) {
             modified = true;
             return { ...b, status: savedOrder.status };
           }
@@ -337,7 +337,7 @@ export default function App() {
         });
 
         const newExternal = (p.externalBookings || []).map((b: any) => {
-          if (b.orderId === targetId || b.orderId === (savedOrder as any).orderNumber || `HOK-ORD-${String(b.orderId || '').replace(/[^0-9]/g, '').slice(-3)}` === `HOK-ORD-${String(targetId || '').replace(/[^0-9]/g, '').slice(-3)}`) {
+          if (b.orderId === targetId || b.orderId === (savedOrder as any).orderNumber || (!/^HOK-(REN|PRL|NEW)-/.test(String(targetId)) && `HOK-ORD-${String(b.orderId || '').replace(/[^0-9]/g, '').slice(-3)}` === `HOK-ORD-${String(targetId || '').replace(/[^0-9]/g, '').slice(-3)}`)) {
             modified = true;
             return { ...b, status: savedOrder.status };
           }
@@ -346,7 +346,7 @@ export default function App() {
 
         if (modified) {
           const rawId = targetId || (savedOrder as any).orderNumber;
-          const displayId = rawId.startsWith('HOK-ORD-') ? rawId : `HOK-ORD-${String(rawId).replace(/[^0-9]/g, '').slice(-3) || '889'}`;
+          const displayId = rawId.startsWith('HOK-') ? rawId : `HOK-ORD-${String(rawId).replace(/[^0-9]/g, '').slice(-3) || '889'}`;
           const newActivityLog = [
             ...(p.activityLog || []),
             {
@@ -561,6 +561,9 @@ export default function App() {
           customers={customers}
           setView={setView}
           setSelectedOrderId={setSelectedOrderId}
+          onOrderCreated={(o: any) =>
+            setOrders((current: any[]) => [o, ...current.filter((x: any) => x.id !== o.id)])
+          }
         />
       );
     }
@@ -588,7 +591,7 @@ export default function App() {
 
           if (foundBooking) {
             const rawId = foundBooking.orderId || orderId;
-            const formattedId = rawId.startsWith('HOK-ORD-')
+            const formattedId = rawId.startsWith('HOK-')
               ? rawId
               : rawId.startsWith('EXT-')
               ? `HOK-ORD-${rawId.replace(/[^0-9]/g, '').slice(-3)}`

@@ -1,3 +1,4 @@
+import { nextOrderId, ORDER_ID_REGEX } from "../services/orderIdService.js";
 import Product from "../models/Product.js";
 import Customer from "../models/Customer.js";
 import Lister from "../models/Lister.js";
@@ -321,7 +322,7 @@ export const getProductPayoutHistory = async (req, res) => {
       );
 
       const rawId = r.orderId || matchedOrder?.orderId || matchedOrder?.id;
-      const formattedOrderId = rawId?.startsWith("HOK-ORD-")
+      const formattedOrderId = rawId?.startsWith("HOK-")
         ? rawId
         : `HOK-ORD-${String(rawId || "").replace(/[^0-9]/g, "") || ""}`;
 
@@ -441,9 +442,8 @@ export const addExternalBooking = async (req, res) => {
       splitNote,
     } = req.body;
     let orderId = req.body.orderId;
-    if (!orderId || orderId.startsWith("EXT-")) {
-      const totalOrdersCount = await Order.countDocuments();
-      orderId = `HOK-ORD-${String(totalOrdersCount + 440).padStart(3, "0")}`;
+    if (!orderId || !ORDER_ID_REGEX.test(String(orderId))) {
+      orderId = await nextOrderId("Rental");
     }
     if (
       !customerName ||

@@ -94,13 +94,17 @@ export const calculateTotals = (
 
     if (basePrice <= 0) return;
 
-    subtotal += Number(basePrice);
+    const qty = Math.max(1, Number(item.quantity) || 1);
+    const lineTotal = Number(basePrice) * qty;
+    subtotal += lineTotal;
 
     itemsGrouped[type].push({
       id: item.id,
       type,
       productName: product?.title || product?.name,
-      basePrice,
+      basePrice: lineTotal,
+      unitPrice: Number(basePrice),
+      quantity: qty,
       size: booking?.size || product?.size,
       startDate: booking?.deliveryDate,
       endDate: booking?.returnDate,

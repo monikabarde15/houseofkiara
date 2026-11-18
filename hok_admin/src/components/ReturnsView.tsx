@@ -102,6 +102,29 @@ export default function ReturnsView({
       : 25;
   });
 
+  // Live products (for Per-Day Rate set in Product → Pricing & Tax)
+  const [liveProducts, setLiveProducts] = useState<any[]>([]);
+  React.useEffect(() => {
+    let active = true;
+    fetch("/api/products")
+      .then((r) => r.json())
+      .then((res) => {
+        if (!active) return;
+        const list = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+            ? res.data
+            : Array.isArray(res?.products)
+              ? res.products
+              : [];
+        setLiveProducts(list);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const refDate = useMemo(
     () => parseLocalDay(demoDate) || parseLocalDay(toYMD(new Date()))!,
     [demoDate],
@@ -199,7 +222,7 @@ export default function ReturnsView({
                 : 0;
 
         const rawId = String(o.orderId || o.id || o._id || "");
-        const displayId = rawId.startsWith("HOK-ORD-")
+        const displayId = rawId.startsWith("HOK-")
           ? rawId
           : `HOK-ORD-${rawId}`;
         const pName =
@@ -292,9 +315,22 @@ export default function ReturnsView({
         );
         const rentalDays =
           rStart && rEnd ? Math.max(1, diffDays(rEnd, rStart) + 1) : 4;
+        const itemPid = String(item.productId || o.productId || "");
+        const itemSku = String(item.sku || o.sku || "");
+        const prod = liveProducts.find(
+          (p: any) =>
+            (itemPid && (String(p.id) === itemPid || String(p._id) === itemPid || String(p.productId) === itemPid)) ||
+            (itemSku && String(p.sku) === itemSku) ||
+            (pName && String(p.name || p.title) === String(pName)),
+        );
+        const productPerDay = Number(
+          prod?.perDayRate ?? item.perDayRate ?? o.perDayRate ?? 0,
+        );
         const dailyRate =
-          Math.round((rentalAmt / rentalDays) * (lateFeeDailyPct / 100)) ||
-          1000;
+          productPerDay > 0
+            ? Math.round(productPerDay)
+            : Math.round((rentalAmt / rentalDays) * (lateFeeDailyPct / 100)) ||
+              1000;
 
         return {
           raw: o as Order,
@@ -386,7 +422,12 @@ export default function ReturnsView({
         nextBooking = trackedOrders.find(
           (other) =>
             other.rawId !== entry.rawId &&
-            other.status.toLowerCase() === "confirmed" &&
+            [
+              "confirmed",
+              "pending",
+              "ready to ship",
+              "pending dispatch",
+            ].includes(other.status.toLowerCase()) &&
             ((entry.productId &&
               other.productId &&
               String(entry.productId) === String(other.productId)) ||
@@ -504,7 +545,7 @@ export default function ReturnsView({
       receivables,
       resolvedLedger,
     };
-  }, [orders, refDate, tPlusDays, lateFeeDailyPct]);
+  }, [orders, refDate, tPlusDays, lateFeeDailyPct, liveProducts]);
 
   const totalActionThings =
     computed.overdue.length +

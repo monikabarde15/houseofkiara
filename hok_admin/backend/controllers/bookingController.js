@@ -1,3 +1,4 @@
+import { nextOrderId, ORDER_ID_REGEX } from "../services/orderIdService.js";
 // controllers/bookingController.js
 
 import Product from "../models/Product.js";
@@ -135,6 +136,46 @@ export const checkProductAvailability = async (req, res) => {
         available: false,
         reason: "DATE_CONFLICT",
         message: "Product is already booked for the requested dates",
+      });
+    }
+
+    // Overdue piece: a Dispatched rental that has passed its end date and has
+    // not been logged back is still with the customer, so its block extends to today.
+    const todayUtc = dateOnly(new Date());
+    const liveOrders = await Order.find({});
+    const overdueOrder = (liveOrders || []).find((o) => {
+      if (o.orderId === excludeOrderId) return false;
+      if (String(o.status || "").toLowerCase() !== "dispatched") return false;
+      if (o.returnedAt || o.conditionAssessment?.receivedDate) return false;
+      const its = Array.isArray(o.items) && o.items.length ? o.items : [o];
+      return its.some((it) => {
+        const pid = String(it.productId || o.productId || "");
+        const same =
+          pid &&
+          [product.productId, String(product._id), product.sku]
+            .filter(Boolean)
+            .map(String)
+            .includes(pid);
+        const end = it.rentalEndDate || o.rentalEndDate;
+        const isRental =
+          String(it.mode || o.mode || "").toLowerCase() === "rental";
+        return (
+          same &&
+          isRental &&
+          end &&
+          dateOnly(end) < todayUtc &&
+          overlaps(occupiedStart, occupiedEnd, end, todayUtc)
+        );
+      });
+    });
+
+    if (overdueOrder) {
+      return res.status(409).json({
+        success: false,
+        available: false,
+        reason: "PIECE_OVERDUE",
+        message:
+          "This piece is still with the previous customer (return overdue). Please choose later dates.",
       });
     }
 
@@ -442,7 +483,7 @@ export const addExternalBooking = async (req, res) => {
     }
 
     // ✅ FLOW INTEGRATION: Create Order record for Rental Calendar & Dispatch Schedule
-    const extOrderId = `HOK-ORD-${Date.now()}`;
+    const extOrderId = await nextOrderId("Rental");
     const totalAmount = Number(amount || product.rentalPrice || 0);
     const depositAmount = Number(product.securityDeposit || 0);
     const listerSplit = Number(
@@ -562,8 +603,9 @@ export const reserveProduct = async (req, res) => {
     const occupiedEnd = new Date(end);
     occupiedEnd.setUTCDate(end.getUTCDate() + buffer);
 
-    const orderId =
-      req.body.orderId || `HOK-ORD-${Date.now().toString().slice(-4)}`;
+    const orderId = ORDER_ID_REGEX.test(String(req.body.orderId || ""))
+      ? req.body.orderId
+      : await nextOrderId("Rental");
     const rentalAmount = Number(req.body.amount || product.rentalPrice || 0);
 
     const booking = {

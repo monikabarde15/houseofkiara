@@ -251,9 +251,60 @@ export default function RentalCalendar({
       ? rangeHasBlockedDate(selectedStart, hoverDate)
       : false;
 
+  // ─── Next available window (first run of >= minDays free days) ─────────
+  const minRentDays = rentData?.pricing?.minDays || 3;
+  const fmtYmd = (d) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const nextAvailable = (() => {
+    const cursor = new Date(minValidDate);
+    let runStart = null;
+    let runLen = 0;
+    for (let i = 0; i < 400; i++) {
+      const blocked = cursor < minValidDate || unavailableSet.has(fmtYmd(cursor));
+      if (blocked) {
+        runStart = null;
+        runLen = 0;
+      } else {
+        if (!runStart) runStart = new Date(cursor);
+        runLen += 1;
+        if (runLen >= minRentDays) return runStart;
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return null;
+  })();
+  const fmtNice = (d) =>
+    d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+  // Notice: selected dates start right after another customer's window closes
+  const tightPrevRange =
+    selectedStart && selectedEnd
+      ? blockedRanges
+          .filter((r) => r.to < toMidnight(selectedStart))
+          .sort((a, b) => b.to - a.to)
+          .find(
+            (r) =>
+              (toMidnight(selectedStart) - r.to) / 86400000 <= 4,
+          )
+      : null;
+
   return (
     <>
       <p className="calendar-section-label">Select Your Rental Dates</p>
+      {nextAvailable && (
+        <p
+          className="calendar-next-available"
+          style={{ fontSize: 13, margin: "0 0 10px", cursor: "pointer" }}
+          onClick={() =>
+            setCurrentDate(
+              new Date(nextAvailable.getFullYear(), nextAvailable.getMonth(), 1),
+            )
+          }
+        >
+          Next available: <strong>{fmtNice(nextAvailable)}</strong> onwards (min.{" "}
+          {minRentDays} days)
+        </p>
+      )}
       <div className="calendar">
         {/* HEADER */}
         <div className="calendar__header">
@@ -346,12 +397,23 @@ export default function RentalCalendar({
 
             <div className="legend-item">
               <span className="dot blocked"></span>
-              <span>Unavailable</span>
+              <span>Unavailable (booked or being prepared)</span>
             </div>
           </div>
         </div>
 
         {/* Conflict Warning */}
+        {tightPrevRange && (
+          <div
+            className="calendar-conflict-warning"
+            style={{ background: "#faf6ee", color: "#6b5a3a" }}
+          >
+            ℹ This piece is with another customer until{" "}
+            {fmtNice(tightPrevRange.to)} (including return and cleaning). Your
+            dates start soon after, so delivery depends on it coming back on
+            time. If anything changes, we will contact you before dispatch.
+          </div>
+        )}
         {hoverRangeConflicts && selectedStart && !selectedEnd && (
           <div className="calendar-conflict-warning">
             ⚠ This range includes booked dates — please choose different dates.

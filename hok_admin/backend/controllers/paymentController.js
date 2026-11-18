@@ -1,3 +1,4 @@
+import { nextOrderId, ORDER_ID_REGEX } from "../services/orderIdService.js";
 import crypto from "crypto";
 import Order from "../models/Order.js";
 import Customer from "../models/Customer.js";
@@ -186,7 +187,14 @@ export const verifyRazorpayPayment = async (req, res) => {
 
     const grandTotal = parseAmount(orderData.grandTotal || orderData.amount || 0);
 
-    const orderId = orderData.orderId || `HOK-ORD-${Date.now()}`;
+    // Order IDs are issued by the server (HOK-REN-26-0001). Ignore old client-made ids.
+    const orderId = ORDER_ID_REGEX.test(String(orderData.orderId || ""))
+      ? orderData.orderId
+      : await nextOrderId(
+          Array.isArray(orderData.items) && orderData.items.length
+            ? orderData.items
+            : resolvedMode,
+        );
     const paymentId = razorpay_payment_id || `pay_test_${Date.now()}`;
 
     const prodId = firstItem.productId || firstItem.id || firstItem._id || orderData.productId;

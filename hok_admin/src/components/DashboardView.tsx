@@ -150,9 +150,9 @@ export default function DashboardView({
       })
       .map((o: any) => {
         const realId = String(o.orderId || o.id || o.orderNumber || o._id);
-        const displayId = realId.startsWith("HOK-ORD-")
+        const displayId = realId.startsWith("HOK-")
           ? realId
-          : o.orderNumber?.startsWith("HOK-ORD-")
+          : o.orderNumber?.startsWith("HOK-")
             ? o.orderNumber
             : realId;
 

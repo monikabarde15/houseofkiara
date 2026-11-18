@@ -429,7 +429,7 @@ export function ProductSidebar({
             <>
               {(() => {
                 const rawId = selectedRental.orderId || "HOK-ORD-889";
-                const displayOrderId = rawId.startsWith("HOK-ORD-")
+                const displayOrderId = rawId.startsWith("HOK-")
                   ? rawId
                   : rawId.startsWith("EXT-")
                     ? `HOK-ORD-${rawId.replace(/[^0-9]/g, "").slice(-3) || "889"}`
@@ -464,7 +464,7 @@ export function ProductSidebar({
               <button
                 onClick={() => {
                   const rawId = selectedRental.orderId || "HOK-ORD-889";
-                  const displayOrderId = rawId.startsWith("HOK-ORD-")
+                  const displayOrderId = rawId.startsWith("HOK-")
                     ? rawId
                     : `HOK-ORD-${
                         String(rawId)

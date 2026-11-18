@@ -28,6 +28,20 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
     itemsGrouped,
   } = totals;
 
+  const totalDeposit = (cartItems || [])
+    .filter((it) => it.active !== false && (it.type === "rental" || it.type === "rent"))
+    .reduce(
+      (sum, it) =>
+        sum +
+        Number(
+          it.product?.securityDeposit ||
+            it.product?.rent?.deposit?.amount ||
+            it.product?.modes?.rent?.deposit?.amount ||
+            0,
+        ),
+      0,
+    );
+
   return (
     <div className="order-summary">
 
@@ -48,6 +62,7 @@ const OrderSummary = ({ cartItems, activePromo, onCheckout }) => {
             title="Rental"
             items={itemsGrouped.rental}
             showDeposit={hasRental}
+            totalDeposit={totalDeposit}
           />
         )}
 

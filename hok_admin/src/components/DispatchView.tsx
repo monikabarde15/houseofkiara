@@ -236,11 +236,18 @@ export default function DispatchView({
       normalizeDateToYMD(existingDisp.date) ||
       normalizeDateToYMD((order as any).dispatchDate) ||
       toLocalYMD(new Date());
-    const resolvedCourier = existingDisp.courierPartner || "DHL Express";
+    const resolvedCourier = existingDisp.courierPartner || "Delhivery";
     const resolvedHandledBy = existingDisp.dispatchedBy || resolvedCourier;
+    const cLow = String(resolvedCourier).toLowerCase();
+    const cleanExisting = String(existingDisp.trackingNumber || "")
+      .trim()
+      .toUpperCase()
+      .replace(/[\s\-_]+/g, "");
     const resolvedTracking =
-      existingDisp.trackingNumber ||
-      "DHL" + Math.floor(100000 + Math.random() * 900000) + "IN";
+      cleanExisting ||
+      (cLow.includes("dhl")
+        ? `DHL${Math.floor(10000 + Math.random() * 90000)}`
+        : `DEL${Math.floor(10000000 + Math.random() * 90000000)}IN`);
 
     const updated: any = {
       ...order,

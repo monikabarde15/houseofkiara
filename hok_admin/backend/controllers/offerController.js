@@ -1,3 +1,4 @@
+import { nextOrderId } from "../services/orderIdService.js";
 import { Parser } from "json2csv";
 import Offer from "../models/Offer.js";
 import Customer from "../models/Customer.js";
@@ -175,7 +176,7 @@ const createOrderForAcceptedOffer = async (offer, existingCustomer = null, overr
     customer?.location ||
     "India";
 
-  const orderId = `HOK-ORD-${Date.now()}`;
+  const orderId = await nextOrderId("Preloved");
   const createdOrder = await Order.create({
     orderId,
     orderDate: new Date().toISOString(),

@@ -72,6 +72,50 @@ export const parsePrice = (val) => {
 export const formatProductDetail = (p) => {
   if (!p) return null;
   const raw = p.originalData || p.rawProduct || p;
+
+  // ── Rental availability: live bookings + manual blocks (+ overdue pieces) ──
+  const preBuf = Number(raw.preRentalBufferDays ?? 2);
+  const postBuf = Number(raw.postRentalBufferDays ?? 3);
+  const ymdOf = (v) => {
+    if (!v) return "";
+    if (typeof v === "string" && /^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0, 10);
+    const d = new Date(v);
+    if (Number.isNaN(d.getTime())) return "";
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
+  const shiftYmd = (ymd, n) => {
+    const d = new Date(`${ymd}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + n);
+    return d.toISOString().slice(0, 10);
+  };
+  const rawRanges = [
+    ...(Array.isArray(raw.blockedDates) ? raw.blockedDates : []),
+    ...(Array.isArray(raw.overdueBlockedDates) ? raw.overdueBlockedDates : []),
+  ]
+    .map((r) => ({ from: ymdOf(r.from), to: ymdOf(r.to), reason: r.reason || "Booked" }))
+    .filter((r) => r.from && r.to);
+  const blockedRanges = rawRanges.map((r) => ({
+    from: shiftYmd(r.from, -preBuf),
+    to: shiftYmd(r.to, postBuf),
+    reason: r.reason,
+  }));
+  const unavailableDates = (() => {
+    const set = new Set();
+    blockedRanges.forEach((r) => {
+      let d = r.from;
+      let guard = 0;
+      while (d <= r.to && guard++ < 400) {
+        set.add(d);
+        d = shiftYmd(d, 1);
+      }
+    });
+    return [...set];
+  })();
+  const rentAvailability = {
+    unavailableDates,
+    blockedRanges,
+    preRentalBufferDays: preBuf,
+  };
   const rentPrice =
     parsePrice(raw.rentalPrice) ||
     parsePrice(raw.rentPrice) ||
@@ -161,6 +205,7 @@ export const formatProductDetail = (p) => {
     modes: {
       rent: {
         enabled: true,
+        availability: rentAvailability,
         pricing: {
           pricePerDay: perDay,
           minDays: raw.minimumDurationDays || 3,

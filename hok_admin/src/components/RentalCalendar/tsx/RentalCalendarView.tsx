@@ -93,7 +93,7 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
 
     const formatOrderId = (rawId: any) => {
       const s = String(rawId || "");
-      return s.startsWith("HOK-ORD-") || s.startsWith("EXT-")
+      return s.startsWith("HOK-") || s.startsWith("EXT-")
         ? s
         : `HOK-ORD-${s}`;
     };

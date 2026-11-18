@@ -63,7 +63,7 @@ export default function DispatchView({
         if (!pName) return;
 
         const rawId = o.orderId || o.id || o._id || "";
-        const displayId = String(rawId).startsWith("HOK-ORD-")
+        const displayId = String(rawId).startsWith("HOK-")
           ? String(rawId)
           : `HOK-ORD-${rawId}`;
 
@@ -165,10 +165,12 @@ export default function DispatchView({
               String(item.productId) === String(otherItem.productId)) ||
             pName === (otherItem.productName || other.productName);
           if (!samePiece) return false;
-          const otherEnd = parseLocalDay(
+          const rawOtherEnd = parseLocalDay(
             other.rentalEndDate || otherItem.rentalEndDate,
           );
-          if (!otherEnd) return false;
+          if (!rawOtherEnd) return false;
+          // Overdue piece (still out past its end date) is occupied until today
+          const otherEnd = rawOtherEnd < realToday ? realToday : rawOtherEnd;
           const clearDate = addDays(otherEnd, 3);
           return clearDate > dispDate;
         });
@@ -194,9 +196,10 @@ export default function DispatchView({
             const otherItem =
               (Array.isArray(conflicting.items) && conflicting.items[0]) ||
               conflicting;
-            const otherEnd = parseLocalDay(
+            const rawEnd = parseLocalDay(
               conflicting.rentalEndDate || otherItem.rentalEndDate,
             );
+            const otherEnd = rawEnd && rawEnd < realToday ? realToday : rawEnd;
             const clearDate = otherEnd ? addDays(otherEnd, 3) : dispDate;
             const otherId = conflicting.orderId || conflicting.id;
             conflictsArr.push({
@@ -228,16 +231,29 @@ export default function DispatchView({
   const handleMarkDispatched = (rawOrder) => {
     if (!rawOrder || !onUpdateOrder) return;
     const todayIso = toYMD(new Date());
+    const courier = rawOrder.dispatchDetails?.courierPartner || "Delhivery";
+    const cLow = String(courier).toLowerCase();
+    const awbPrefix = cLow.includes("dhl")
+      ? "DHL"
+      : cLow.includes("blue")
+        ? "DEL"
+        : "DEL";
+    const generatedAwb =
+      awbPrefix === "DHL"
+        ? `DHL${Math.floor(10000 + Math.random() * 90000)}`
+        : `DEL${Math.floor(10000000 + Math.random() * 90000000)}IN`;
+    const cleanExisting = String(rawOrder.dispatchDetails?.trackingNumber || "")
+      .trim()
+      .toUpperCase()
+      .replace(/[\s\-_]+/g, "");
     onUpdateOrder({
       ...rawOrder,
       status: "Dispatched",
       dispatchDetails: {
         dispatchedBy: "Admin",
         date: rawOrder.dispatchDetails?.date || todayIso,
-        courierPartner: rawOrder.dispatchDetails?.courierPartner || "Blue Dart",
-        trackingNumber:
-          rawOrder.dispatchDetails?.trackingNumber ||
-          `BD-${Date.now().toString().slice(-6)}`,
+        courierPartner: courier,
+        trackingNumber: cleanExisting || generatedAwb,
       },
     });
     toast.success(`Order ${rawOrder.orderId || rawOrder.id} marked Dispatched!`);

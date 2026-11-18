@@ -322,7 +322,75 @@ export const getDeskNotifications = async (req, res) => {
       }
     });
 
+    // Booking clashes: same piece, next booking starts before the previous
+    // one has been returned + 3 days cleaning. Overdue pieces extend to today.
+    const bookingClashRecords = [];
+    const CLEAN_DAYS = 3;
+    const ymdPlus = (ymd, n) => {
+      const d = new Date(`${ymd}T00:00:00Z`);
+      d.setUTCDate(d.getUTCDate() + n);
+      return d.toISOString().slice(0, 10);
+    };
+    const rentalList = (Array.isArray(orders) ? orders : [])
+      .map((o) => {
+        const st = String(o.status || "").toLowerCase();
+        const it = Array.isArray(o.items) && o.items[0] ? o.items[0] : {};
+        const mode = String(it.mode || o.mode || "Rental").toLowerCase();
+        const start = toYmd(o.rentalStartDate || it.rentalStartDate);
+        const end = toYmd(o.rentalEndDate || it.rentalEndDate);
+        const out = ["dispatched", "active", "delivered", "rented", "out for delivery"].includes(st);
+        return {
+          id: String(o.orderId || o.id || o._id || ""),
+          st,
+          mode,
+          start,
+          end,
+          out,
+          pid: String(it.productId || o.productId || it.productName || o.productName || ""),
+          name: o.productName || it.productName || "Piece",
+          customer: o.customerName || "Customer",
+        };
+      })
+      .filter(
+        (r) =>
+          r.id &&
+          r.mode === "rental" &&
+          r.start &&
+          r.end &&
+          !["cancelled", "returned", "completed", "refunded"].includes(r.st),
+      );
+    rentalList.forEach((a) => {
+      const effEnd = a.out && a.end < todayYmd ? todayYmd : a.end;
+      const clearDate = ymdPlus(effEnd, CLEAN_DAYS);
+      rentalList.forEach((b) => {
+        if (a.id === b.id || a.pid !== b.pid || !a.pid) return;
+        if (b.start <= a.start || b.out) return;
+        if (b.start < clearDate) {
+          bookingClashRecords.push({
+            id: b.id,
+            label: `${b.id} · ${b.customer}`,
+            sub: `${b.name} · starts ${b.start}, but ${a.id} (${a.customer}) ${a.out && a.end < todayYmd ? "is overdue and still out" : `returns ${a.end}`} and clears cleaning only on ${clearDate}`,
+            target: { page: "orders", orderId: b.id, tab: "overview" },
+          });
+        }
+      });
+    });
+
     const alerts = [
+      {
+        key: "bookingClashes",
+        band: "today",
+        surface: "desk",
+        title: "One piece booked twice too close together",
+        what: "A booking starts before the piece ahead of it has cleared return and cleaning. One of the two has to move, and the sooner the better.",
+        elsewhere: null,
+        act: "Open the rental calendar",
+        actTarget: { page: "calendar" },
+        blocked: false,
+        notCounted: false,
+        canPutDown: false,
+        records: bookingClashRecords,
+      },
       {
         key: "returnsOverdue",
         band: "today",

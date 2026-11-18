@@ -778,8 +778,12 @@ export const makeProductDetail = (item) => {
       availability: {
         unavailableDates: (() => {
           const dates = [];
-          if (Array.isArray(item.blockedDates)) {
-            item.blockedDates.forEach((bd) => {
+          const allBlocked = [
+            ...(Array.isArray(item.blockedDates) ? item.blockedDates : []),
+            ...(Array.isArray(item.overdueBlockedDates) ? item.overdueBlockedDates : []),
+          ];
+          if (allBlocked.length) {
+            allBlocked.forEach((bd) => {
               if (!bd.from || !bd.to) return;
               const start = new Date(bd.from);
               const end = new Date(bd.to);
@@ -801,8 +805,12 @@ export const makeProductDetail = (item) => {
           return [...new Set(dates)];
         })(),
         blockedRanges: (() => {
-          if (!Array.isArray(item.blockedDates)) return [];
-          return item.blockedDates
+          const allBlocked = [
+            ...(Array.isArray(item.blockedDates) ? item.blockedDates : []),
+            ...(Array.isArray(item.overdueBlockedDates) ? item.overdueBlockedDates : []),
+          ];
+          if (!allBlocked.length) return [];
+          return allBlocked
             .filter((bd) => bd.from && bd.to)
             .map((bd) => {
               const start = new Date(bd.from);

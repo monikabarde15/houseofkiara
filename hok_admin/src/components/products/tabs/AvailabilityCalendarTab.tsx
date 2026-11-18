@@ -1188,7 +1188,7 @@ export function AvailabilityCalendarTab({
                       (b) => selectedDate >= b.start && selectedDate <= b.end,
                     );
                     const rawOrderId = String(booking?.orderId || "-");
-                    const displayOrderId = rawOrderId.startsWith("HOK-ORD-")
+                    const displayOrderId = rawOrderId.startsWith("HOK-")
                       ? rawOrderId
                       : rawOrderId.startsWith("EXT-")
                         ? rawOrderId

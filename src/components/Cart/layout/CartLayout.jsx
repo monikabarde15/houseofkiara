@@ -64,7 +64,8 @@ const CartLayout = () => {
   }, [openRemoveDialog]);
 
   const activeItems = (storeItems || []).filter(item => item.active !== false);
-  const visibleItems = activeItems;
+  const modeRank = (t) => (t === "rental" || t === "rent" ? 0 : t === "preloved" ? 1 : 2);
+  const visibleItems = [...activeItems].sort((a, b) => modeRank(a.type) - modeRank(b.type));
 
   const hasRentalItem = activeItems.some(item => item.type === "rental" || item.type === "rent");
   const totals = calculateTotals(activeItems, activePromo);
@@ -253,6 +254,26 @@ const CartLayout = () => {
                 </React.Fragment>
               );
             })}
+
+              {/* Continue shopping link so customers can easily add more pieces */}
+              <div style={{ marginBottom: "20px", textAlign: "right" }}>
+                <button
+                  type="button"
+                  onClick={() => navigate("/products")}
+                  style={{
+                    background: "transparent",
+                    border: "1px solid #D9D0C3",
+                    color: "#2A2118",
+                    padding: "8px 16px",
+                    fontSize: "11px",
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    cursor: "pointer",
+                  }}
+                >
+                  + Add More Pieces
+                </button>
+              </div>
 
             <div data-rise="5">
               <PromoCode onApply={setActivePromo} subtotal={totals.subtotal} cartItems={activeItems} />

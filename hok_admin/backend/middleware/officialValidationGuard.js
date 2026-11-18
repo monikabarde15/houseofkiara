@@ -153,6 +153,9 @@ export const inspectAndSanitizeInput = (value, path = "root", depth = 0) => {
 const ORDER_ITEM_ALLOWED_KEYS = [
   "id",
   "_id",
+  "cartItemId",
+  "active",
+  "source",
   "productId",
   "productName",
   "title",

@@ -15,6 +15,7 @@ import NewPriceBlock from "./modes/new/NewPriceBlock";
 import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 import Notice from "../../shared/Notice/Notice";
+import useCartStore from "../../../store/cartStore";
 
 const CartItemDesktop = ({ item, onRemove }) => {
   const { product, booking } = item;
@@ -36,11 +37,24 @@ const CartItemDesktop = ({ item, onRemove }) => {
     good: "Good condition",
   };
 
+  const getEditUrl = () => {
+    const pid =
+      product?.productId || product?._id || product?.id || item.productId;
+    const modes = (product?.listingModes || []).map((m) => String(m).toUpperCase());
+    if (modes.includes("PRELOVED") || modes.includes("RE-SELL") || product?.modes?.preloved?.enabled) {
+      return `/rentalandpreloved/${pid}`;
+    }
+    if (modes.includes("BUY NEW") || modes.includes("BUY") || product?.modes?.buy?.enabled) {
+      return `/rentalandbuy/${pid}`;
+    }
+    return `/onlyrental/${pid}`;
+  };
+
   // ===== HANDLER =====
   const handleEditDates = () => {
     if (type !== "rental") return;
 
-    navigate(`/onlyrental/${product.id || product.productId || product._id}`, {
+    navigate(getEditUrl(), {
       state: {
         booking: {
           deliveryDate: booking?.deliveryDate,
@@ -101,6 +115,59 @@ const CartItemDesktop = ({ item, onRemove }) => {
         {/* META */}
         <div className="cart-item__meta">
           <span>Size {booking?.size || "-"}</span>
+
+          {type === "new" && (
+            <>
+              <span className="cart-item__meta-dot">•</span>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() =>
+                    useCartStore
+                      .getState()
+                      .updateQuantity(item.id, Math.max(1, (item.quantity || 1) - 1))
+                  }
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    border: "1px solid #D9D0C3",
+                    background: "#FAF7F2",
+                    cursor: "pointer",
+                    fontSize: "12px",
+                    lineHeight: 1,
+                  }}
+                >
+                  −
+                </button>
+                <span>Qty {item.quantity || 1}</span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    useCartStore
+                      .getState()
+                      .updateQuantity(item.id, (item.quantity || 1) + 1)
+                  }
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    border: "1px solid #D9D0C3",
+                    background: "#FAF7F2",
+                    cursor: "pointer",
+                    fontSize: "12px",
+                    lineHeight: 1,
+                  }}
+                >
+                  +
+                </button>
+              </span>
+            </>
+          )}
 
           {(type === "rental" || type === "preloved") && condition && (
             <>
@@ -204,11 +271,11 @@ const CartItemDesktop = ({ item, onRemove }) => {
             )}
 
             {type === "preloved" && (
-              <PrelovedPriceBlock product={product} />
+              <PrelovedPriceBlock product={product} itemPrice={item.price} />
             )}
 
             {type === "new" && (
-              <NewPriceBlock product={product} />
+              <NewPriceBlock product={product} itemPrice={item.price} quantity={item.quantity} />
             )}
           </div>
 
@@ -238,4 +305,5 @@ const CartItemDesktop = ({ item, onRemove }) => {
   );
 };
 
+export { CartItemDesktop };
 export default CartItemDesktop;

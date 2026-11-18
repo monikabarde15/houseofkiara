@@ -6,7 +6,10 @@ const CartHeader = ({ cartItems }) => {
 
   const activeItems = cartItems.filter(item => item.active !== false);
 
-  const itemCount = activeItems.length;
+  const itemCount = activeItems.reduce(
+    (sum, item) => sum + Math.max(1, Number(item.quantity) || 1),
+    0,
+  );
 
   // get unique types
   const uniqueTypes = [...new Set(activeItems.map(item => item.type))];

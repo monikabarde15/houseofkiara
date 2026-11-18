@@ -35,7 +35,55 @@ export const getProductById = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Product not found" });
 
-    res.json({ success: true, data: normalize(p) });
+    // Overdue pieces (Dispatched, past end date, not returned) stay blocked until today.
+    // Sent as a separate read-only field so it is never saved into blockedDates.
+    const out = normalize(p);
+    try {
+      const Order = (await import("../models/Order.js")).default;
+      const orders = await Order.find({});
+      const keys = [p.productId, String(p._id), p.sku].filter(Boolean).map(String);
+      const todayStr = new Date().toLocaleDateString("en-CA", {
+        timeZone: "Asia/Kolkata",
+      });
+      const overdue = [];
+      (orders || []).forEach((o) => {
+        const st = String(o.status || "").toLowerCase();
+        if (["cancelled", "rejected", "returned", "completed", "refunded"].includes(st)) return;
+        const its = Array.isArray(o.items) && o.items.length ? o.items : [o];
+        its.forEach((it) => {
+          const pid = String(it.productId || o.productId || "");
+          const isRental =
+            String(it.mode || o.mode || "").toLowerCase() === "rental";
+          const start = String(it.rentalStartDate || o.rentalStartDate || "").slice(0, 10);
+          const end = String(it.rentalEndDate || o.rentalEndDate || "").slice(0, 10);
+          if (!keys.includes(pid) || !isRental || !end) return;
+          // Live booking from orders (so web calendar blocks it even if blockedDates is missing)
+          overdue.push({
+            from: start || end,
+            to: end,
+            reason: `Booked (Order ${o.orderId})`,
+          });
+          // Overdue: dispatched, past end date, not returned -> blocked until today
+          if (
+            st === "dispatched" &&
+            !o.returnedAt &&
+            !o.conditionAssessment?.receivedDate &&
+            end < todayStr
+          ) {
+            overdue.push({
+              from: end,
+              to: todayStr,
+              reason: `Overdue return (Order ${o.orderId})`,
+            });
+          }
+        });
+      });
+      out.overdueBlockedDates = overdue;
+    } catch (err) {
+      out.overdueBlockedDates = [];
+    }
+
+    res.json({ success: true, data: out });
   } catch (e) {
     res.status(500).json({ success: false, message: e.message });
   }
@@ -81,6 +129,7 @@ export const createProduct = async (req, res) => {
   try {
     // ✅ FIX: Payload clean karo
     const cleanBody = cleanPayload(req.body);
+    delete cleanBody.overdueBlockedDates;
 
     const { error, value } = validateProduct(cleanBody);
     if (error) {
@@ -114,6 +163,7 @@ export const updateProduct = async (req, res) => {
 
     // ✅ FIX: Payload clean karo (Extra fields hatao)
     const cleanBody = cleanPayload(req.body);
+    delete cleanBody.overdueBlockedDates;
 
     // Merge existing with new data
     const updatedData = {

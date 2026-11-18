@@ -1,3 +1,4 @@
+import { nextOrderId, ORDER_ID_REGEX } from "../services/orderIdService.js";
 import jwt from "jsonwebtoken";
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
@@ -585,7 +586,9 @@ export const createOrder = async (req, res) => {
 
     const order = await Order.create({
       ...req.body,
-      orderId: req.body.orderId || `HOK-ORD-${Date.now()}`,
+      orderId: ORDER_ID_REGEX.test(String(req.body.orderId || ""))
+        ? req.body.orderId
+        : await nextOrderId(items.length ? items : resolvedMode),
       customerId: customer?.customerId || req.body.customerId,
       customerName: customer?.name || req.body.customerName,
       customerEmail: customer?.email || req.body.customerEmail,
@@ -708,10 +711,38 @@ export const updateOrder = async (req, res) => {
       ? await calculateItems(req.body.items)
       : existing.items;
 
-    const incomingDispatchDetails =
+    let incomingDispatchDetails =
       req.body.dispatchDetails !== undefined
         ? req.body.dispatchDetails
         : existing.dispatchDetails;
+
+    // Ensure clean uppercase AWB (e.g. DHL12345 / DEL98765 / DEL55231987IN) when dispatched/shipped
+    const targetStatus = req.body.status || existing.status || "";
+    const isOutStatus = ["Dispatched", "Shipped", "Delivered", "Returned", "Complete", "Partially Returned"].includes(
+      targetStatus,
+    );
+    if (incomingDispatchDetails || isOutStatus) {
+      const baseDisp = incomingDispatchDetails
+        ? incomingDispatchDetails.toObject
+          ? incomingDispatchDetails.toObject()
+          : { ...incomingDispatchDetails }
+        : {};
+      const cPartner = baseDisp.courierPartner || "Delhivery";
+      let tNum = String(baseDisp.trackingNumber || "")
+        .trim()
+        .toUpperCase()
+        .replace(/[\s\-_]+/g, "");
+      if (!tNum && ["Dispatched", "Shipped"].includes(targetStatus)) {
+        tNum = cPartner.toLowerCase().includes("dhl")
+          ? `DHL${Math.floor(10000 + Math.random() * 90000)}`
+          : `DEL${Math.floor(10000000 + Math.random() * 90000000)}IN`;
+      }
+      incomingDispatchDetails = {
+        ...baseDisp,
+        courierPartner: cPartner,
+        trackingNumber: tNum,
+      };
+    }
     const incomingReturnLogistics =
       req.body.returnLogistics !== undefined
         ? req.body.returnLogistics

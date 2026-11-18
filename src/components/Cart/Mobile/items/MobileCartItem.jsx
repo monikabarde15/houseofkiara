@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 import Notice from "../../../shared/Notice/Notice";
+import useCartStore from "../../../../store/cartStore";
 import RentalTimeline from "../../items/modes/rental/RentalTimeline";
 import RentalPriceBlock from "../../items/modes/rental/RentalPriceBlock";
 import PrelovedPriceBlock from "../../items/modes/preloved/PrelovedPriceBlock";
@@ -28,7 +29,16 @@ const MobileCartItem = ({ item, onRemove }) => {
 
   const handleEditDates = () => {
     if (type !== "rental") return;
-    navigate(`/onlyrental/${product.id || product.productId || product._id}`, {
+    const pid =
+      product?.productId || product?._id || product?.id || item.productId;
+    const modes = (product?.listingModes || []).map((m) => String(m).toUpperCase());
+    const route =
+      modes.includes("PRELOVED") || modes.includes("RE-SELL") || product?.modes?.preloved?.enabled
+        ? `/rentalandpreloved/${pid}`
+        : modes.includes("BUY NEW") || modes.includes("BUY") || product?.modes?.buy?.enabled
+          ? `/rentalandbuy/${pid}`
+          : `/onlyrental/${pid}`;
+    navigate(route, {
       state: { booking: { ...booking } },
     });
   };
@@ -71,6 +81,36 @@ const MobileCartItem = ({ item, onRemove }) => {
       {/* META ROW */}
       <div className="mobile-cart-item__meta">
         <span>Size {booking?.size || "-"}</span>
+        {type === "new" && (
+          <>
+            <span className="mobile-cart-item__meta-dot">•</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+              <button
+                type="button"
+                onClick={() =>
+                  useCartStore
+                    .getState()
+                    .updateQuantity(item.id, Math.max(1, (item.quantity || 1) - 1))
+                }
+                style={{ width: "18px", height: "18px", border: "1px solid #D9D0C3", background: "#FAF7F2" }}
+              >
+                −
+              </button>
+              <span>Qty {item.quantity || 1}</span>
+              <button
+                type="button"
+                onClick={() =>
+                  useCartStore
+                    .getState()
+                    .updateQuantity(item.id, (item.quantity || 1) + 1)
+                }
+                style={{ width: "18px", height: "18px", border: "1px solid #D9D0C3", background: "#FAF7F2" }}
+              >
+                +
+              </button>
+            </span>
+          </>
+        )}
         {(type === "rental" || type === "preloved") && condition && (
           <>
             <span className="mobile-cart-item__meta-dot">•</span>
@@ -120,8 +160,8 @@ const MobileCartItem = ({ item, onRemove }) => {
       <div className="mobile-cart-item__footer">
         <div className="mobile-cart-item__price">
           {type === "rental" && <RentalPriceBlock product={product} booking={booking} itemPrice={item.price} />}
-          {type === "preloved" && <PrelovedPriceBlock product={product} />}
-          {type === "new" && <NewPriceBlock product={product} />}
+          {type === "preloved" && <PrelovedPriceBlock product={product} itemPrice={item.price} />}
+          {type === "new" && <NewPriceBlock product={product} itemPrice={item.price} quantity={item.quantity} />}
         </div>
         <div className="mobile-cart-item__actions">
           <span className={`mobile-cart-item__action ${saved ? "saved" : ""}`} onClick={() => setSaved(true)}>
@@ -139,4 +179,5 @@ const MobileCartItem = ({ item, onRemove }) => {
   );
 };
 
+export { MobileCartItem };
 export default MobileCartItem;

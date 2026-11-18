@@ -56,7 +56,8 @@ const MobileCartLayout = () => {
   const activeItems = (storeItems || []).filter(item => item.active !== false);
   const totals = calculateTotals(activeItems, activePromo);
   const hasRentalItem = activeItems.some(item => item.type === "rental" || item.type === "rent");
-  const visibleItems = activeItems;
+  const modeRank = (t) => (t === "rental" || t === "rent" ? 0 : t === "preloved" ? 1 : 2);
+  const visibleItems = [...activeItems].sort((a, b) => modeRank(a.type) - modeRank(b.type));
   const { grandTotal = 0 } = totals || {};
 
   const handleOpenRemove = (item) => {

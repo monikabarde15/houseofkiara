@@ -96,11 +96,13 @@ const MobileCheckoutLayout = () => {
                 const hasPrelovedItem = checkoutItems.some(
                     (item) => item.type === "preloved"
                 );
-                const resolvedOrderMode = hasRentalItem
-                    ? "Rental"
-                    : hasPrelovedItem
-                        ? "Preloved"
-                        : "Buy";
+                const resolvedOrderMode = checkoutItems.length > 1
+                    ? "Multi-item"
+                    : hasRentalItem
+                        ? "Rental"
+                        : hasPrelovedItem
+                            ? "Preloved"
+                            : "Buy";
                 const firstProductImage =
                     (Array.isArray(firstProduct.images) && firstProduct.images[0]) ||
                     firstProduct.image ||
@@ -142,17 +144,17 @@ const MobileCheckoutLayout = () => {
                             item.image ||
                             "";
                         return {
-                            productId: p._id || p.productId || p.id || item.id || item._id,
+                            productId: p._id || p.productId || p.id || item.productId || item.id || item._id,
                             productName: p.title || p.name || item.title || item.name || "Designer Piece",
                             designer: p.designer || item.designer || "House of Kaira",
                             listerId: p.listerId || p.lister_id || item.listerId || "",
                             listerName: p.listerName || p.lister_name || item.listerName || "",
                             mode: (item.type === 'rental' || item.type === 'rent') ? 'Rental' : (item.type === 'preloved' ? 'Preloved' : 'Buy'),
                             size: item.size || item.booking?.size || 'M',
-                            quantity: item.quantity || 1,
+                            quantity: Math.max(1, Number(item.quantity) || 1),
                             rentalStartDate: item.rentalDates?.start || item.booking?.deliveryDate || item.booking?.startDate || item.startDate || "",
                             rentalEndDate: item.rentalDates?.end || item.booking?.returnDate || item.booking?.endDate || item.endDate || "",
-                            amount: item.price || p.rentalPrice || p.price || 0,
+                            amount: (Number(item.price || p.rentalPrice || p.price || 0)) * Math.max(1, Number(item.quantity) || 1),
                             image: img,
                         };
                     })
@@ -176,7 +178,8 @@ const MobileCheckoutLayout = () => {
                 };
 
                 const completeOrderConfirmation = async (paymentResult) => {
-                    const finalOrderData = {
+                    let confirmedOrderId = orderId;
+          const finalOrderData = {
                         ...orderData,
                         paymentMethod: paymentResult?.paymentMethod || "Razorpay",
                         paymentStatus: "Paid",
@@ -205,6 +208,7 @@ const MobileCheckoutLayout = () => {
 
                         const result = await res.json();
                         if (result.success) {
+              if (result.orderId) confirmedOrderId = result.orderId;
                             localStorage.removeItem("checkoutData");
                             try {
                                 const cartStore = await import("../../../../store/cartStore").then((m) => m.default.getState());
@@ -216,7 +220,7 @@ const MobileCheckoutLayout = () => {
                     } finally {
                         setIsProcessingOrder(false);
                         setPlacedOrderInfo({
-                            orderId,
+                            orderId: confirmedOrderId,
                             customerName,
                             customerEmail,
                             mode: hasRentalItem ? "Rental" : "Buy",

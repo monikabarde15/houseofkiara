@@ -3,11 +3,11 @@ import React from "react";
 import { useRegionalSettings } from "../../../../../hooks/useRegionalSettings";
 import "../../../../../styles/cart/items/price-block.css";
 
-const PrelovedPriceBlock = ({ product }) => {
+const PrelovedPriceBlock = ({ product, itemPrice }) => {
   const { currencySymbol, formatPrice } = useRegionalSettings();
   const pricing = product?.preloved?.pricing || product?.modes?.preloved?.pricing || {};
 
-  const resale = pricing?.price || product?.listingPrice || product?.price || 0;
+  const resale = itemPrice || pricing?.price || product?.listingPrice || product?.price || 0;
   const retail = pricing?.originalPrice || product?.originalRetailPrice || product?.oldPrice || 0;
 
   const savings = retail > resale ? retail - resale : 0;

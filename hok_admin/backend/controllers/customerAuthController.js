@@ -1,3 +1,4 @@
+import { nextOrderId } from "../services/orderIdService.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import axios from "axios";
@@ -755,7 +756,16 @@ export const placeOrder = async (req, res) => {
     } catch (e) {}
 
     // Generate unique order ID
-    const orderId = `HOK-ORD-${Date.now()}`;
+    const orderId = await nextOrderId(
+      (items || []).map((it) => ({
+        mode:
+          it.type === "rental" || it.type === "rent" || it.mode === "Rental"
+            ? "Rental"
+            : it.type === "preloved" || it.mode === "Preloved"
+              ? "Preloved"
+              : "Buy",
+      })),
+    );
 
     // Map cart items to order items schema with security deposit and lister resolution
     const orderItems = await Promise.all(

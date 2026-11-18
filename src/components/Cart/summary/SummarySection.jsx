@@ -51,10 +51,10 @@ const getSubtitle = (item) => {
         return "Final sale · non-returnable";
     }
 
-    return `Size ${item.size} · incl. GST`;
+    return `Size ${item.size}${item.quantity > 1 ? ` · Qty ${item.quantity}` : ""} · incl. GST`;
 };
 
-const SummarySection = ({ title, items, showDeposit }) => {
+const SummarySection = ({ title, items, showDeposit, totalDeposit = 0 }) => {
     if (!items.length) return null;
 
     return (
@@ -75,11 +75,11 @@ const SummarySection = ({ title, items, showDeposit }) => {
             ))}
 
             {/* ✅ DEPOSIT HERE */}
-            {showDeposit && (
+            {showDeposit && totalDeposit > 0 && (
                 <SummaryRow
                     title="Security deposit"
                     subtitle="Collected separately by ops team"
-                    value="15,000 *"
+                    value={`${Number(totalDeposit).toLocaleString("en-IN")} *`}
                     type="deposit"
                 />
             )}
