@@ -563,6 +563,10 @@ const OFFER_ALLOWED_KEYS = [
   "productId",
   "productName",
   "productImage",
+  "designer",
+  "pieces",
+  "pieceId",
+  "alsoPieceId",
   "category",
   "customerId",
   "customerName",
@@ -570,6 +574,13 @@ const OFFER_ALLOWED_KEYS = [
   "customerPhone",
   "customerCity",
   "customerState",
+  "address",
+  "mode",
+  "size",
+  "rentalStartDate",
+  "rentalEndDate",
+  "createOrder",
+  "paymentMethod",
   "channel",
   "linkedOrderId",
   "promoCode",
@@ -923,7 +934,52 @@ export const applyRouteWhitelist = (req) => {
     return;
   }
 
-  // 9. Offers (/offers*)
+  // 9. Offers & Enquiries (/offers*, /enquiries*)
+  if (url.startsWith("/enquiries")) {
+    req.body = pickAllowedKeys(
+      req.body,
+      new Set([
+        "enquiryId",
+        "customerId",
+        "isOnFile",
+        "customerName",
+        "customerEmail",
+        "email",
+        "customerPhone",
+        "phone",
+        "customerCity",
+        "city",
+        "channel",
+        "source",
+        "interestedIn",
+        "assignedTo",
+        "pieces",
+        "pieceId",
+        "alsoPieceId",
+        "addPieceId",
+        "removePieceKey",
+        "eventDate",
+        "holdStartDate",
+        "holdEndDate",
+        "followUpDate",
+        "whatSheAsked",
+        "note",
+        "status",
+        "linkedOrderId",
+        "linkedOfferId",
+        "author",
+        "updatedBy",
+        "target",
+        "productId",
+        "startDate",
+        "endDate",
+        "amount",
+        "offeredAmount",
+        "piece",
+      ]),
+    );
+    return;
+  }
   if (url.startsWith("/offers")) {
     req.body = pickAllowedKeys(req.body, offerAllowedSet);
     return;

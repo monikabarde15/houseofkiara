@@ -12,6 +12,21 @@ export const validateOffer = (data) => {
 
     productImage: Joi.string().allow("", null),
 
+    designer: Joi.string().allow("", null),
+
+    pieces: Joi.array()
+      .items(
+        Joi.object({
+          productId: Joi.string().allow("", null),
+          productName: Joi.string().allow("", null),
+          designer: Joi.string().allow("", null),
+          image: Joi.string().allow("", null),
+          listingPrice: Joi.number().min(0).allow(null),
+          rentalPrice: Joi.number().min(0).allow(null),
+        }).unknown(true),
+      )
+      .optional(),
+
     category: Joi.string().allow("", null),
 
     customerId: Joi.string().allow("", null),

@@ -4,6 +4,7 @@ export const VALID_VIEWS = [
   "dashboard",
   "orders",
   "offers",
+  "enquiries",
   "calendar",
   "dispatch",
   "returns",
@@ -60,6 +61,12 @@ export function parseAdminRoute(): {
       if ((section === "listers" || section === "lister") && subId) {
         return { view: `lister_detail:${subId}`, subId, searchParams };
       }
+      if ((section === "products" || section === "product") && subId) {
+        return { view: `product_detail:${subId}`, subId, searchParams };
+      }
+      if ((section === "customers" || section === "customer") && subId) {
+        return { view: `customer_detail:${subId}`, subId, searchParams };
+      }
       if (VALID_VIEWS.includes(section as any)) {
         return { view: section, subId, searchParams };
       }
@@ -104,6 +111,8 @@ export function parseAdminRoute(): {
       if (
         saved.startsWith("order_detail:") ||
         saved.startsWith("lister_detail:") ||
+        saved.startsWith("product_detail:") ||
+        saved.startsWith("customer_detail:") ||
         VALID_VIEWS.includes(saved as any)
       ) {
         return { view: saved, searchParams };
@@ -127,6 +136,12 @@ export function buildRouteUrl(
   } else if (view.startsWith("lister_detail:")) {
     const listerId = view.slice("lister_detail:".length);
     path = `${ADMIN_BASE}/listers/${listerId}`;
+  } else if (view.startsWith("product_detail:")) {
+    const prodId = view.slice("product_detail:".length);
+    path = `${ADMIN_BASE}/products/${prodId}`;
+  } else if (view.startsWith("customer_detail:")) {
+    const custId = view.slice("customer_detail:".length);
+    path = `${ADMIN_BASE}/customers/${custId}`;
   } else if (view && view !== "dashboard") {
     path = `${ADMIN_BASE}/${view}`;
   }

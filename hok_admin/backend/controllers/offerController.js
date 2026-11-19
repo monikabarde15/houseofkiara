@@ -39,6 +39,95 @@ const findOfferDoc = async (id) => {
   return doc;
 };
 
+const matchProductInList = (ref = {}, allProducts = []) => {
+  const pid = String(ref.productId || ref.id || "").trim();
+  const pname = String(ref.productName || ref.name || "").trim().toLowerCase();
+  return (allProducts || []).find((p) => {
+    const candIds = [p.productId, p._id, p.id, p.sku]
+      .filter(Boolean)
+      .map((x) => String(x).trim());
+    if (pid && candIds.includes(pid)) return true;
+    if (pname && String(p.name || "").trim().toLowerCase() === pname) return true;
+    return false;
+  });
+};
+
+const hydrateOfferWithLiveProducts = (offerDoc, allProducts = []) => {
+  const plain = offerDoc?.toObject ? offerDoc.toObject() : { ...(offerDoc || {}) };
+  const primaryProd = matchProductInList(
+    { productId: plain.productId, productName: plain.productName },
+    allProducts,
+  );
+  const extractImg = (p) =>
+    (Array.isArray(p?.images) && p.images[0]) ||
+    (typeof p?.image === "string" ? p.image : "") ||
+    "";
+
+  const rawPieces = Array.isArray(plain.pieces) && plain.pieces.length > 0
+    ? plain.pieces
+    : plain.productName
+      ? [
+          {
+            productId:
+              plain.productId ||
+              primaryProd?.productId ||
+              String(primaryProd?._id || ""),
+            productName: plain.productName,
+            designer: plain.designer || primaryProd?.designer || "",
+            image: plain.productImage || extractImg(primaryProd),
+            listingPrice: Number(
+              primaryProd?.listingPrice ||
+                primaryProd?.originalRetailPrice ||
+                plain.originalAmount ||
+                0,
+            ),
+            rentalPrice: Number(primaryProd?.rentalPrice || 0),
+          },
+        ]
+      : [];
+
+  const hydratedPieces = rawPieces.map((piece) => {
+    const pMatch = matchProductInList(piece, allProducts);
+    return {
+      productId:
+        piece.productId ||
+        pMatch?.productId ||
+        (pMatch?._id ? String(pMatch._id) : ""),
+      productName: piece.productName || pMatch?.name || "",
+      designer: piece.designer || pMatch?.designer || "",
+      image: piece.image || extractImg(pMatch),
+      listingPrice: Number(
+        piece.listingPrice ||
+          pMatch?.listingPrice ||
+          pMatch?.originalRetailPrice ||
+          0,
+      ),
+      rentalPrice: Number(piece.rentalPrice || pMatch?.rentalPrice || 0),
+    };
+  });
+
+  const firstHydrated = hydratedPieces[0];
+  return {
+    ...plain,
+    productId:
+      plain.productId ||
+      firstHydrated?.productId ||
+      primaryProd?.productId ||
+      (primaryProd?._id ? String(primaryProd._id) : ""),
+    productImage:
+      plain.productImage ||
+      firstHydrated?.image ||
+      extractImg(primaryProd) ||
+      "",
+    designer:
+      plain.designer ||
+      firstHydrated?.designer ||
+      primaryProd?.designer ||
+      "",
+    pieces: hydratedPieces,
+  };
+};
+
 const createOrderForAcceptedOffer = async (offer, existingCustomer = null, overrides = {}) => {
   let product = null;
   if (offer.productId) {
@@ -209,26 +298,68 @@ const createOrderForAcceptedOffer = async (offer, existingCustomer = null, overr
     depositHeld: deposit,
     depositStatus: deposit > 0 ? "Pending" : "None",
     payoutStatus: "Pending Approval",
-    items: [
-      {
-        productId: resolvedProdId,
-        productName: product?.name || offer.productName,
-        designer: resolvedDesigner,
-        image: resolvedImage,
-        mode: resolvedMode,
-        size: resolvedSize,
-        rentalStartDate,
-        rentalEndDate,
-        dispatchDate,
-        returnDueDate: rentalEndDate ? addDaysYMD(rentalEndDate, 1) : "",
-        amount: agreedAmount,
-        deposit,
-        listerId,
-        listerName,
-        quantity: Number(offer.quantity || 1),
-        status: "Confirmed",
-      },
-    ],
+    items: (() => {
+      const offerPieces = Array.isArray(offer.pieces) && offer.pieces.length > 0
+        ? offer.pieces
+        : null;
+      if (!offerPieces || offerPieces.length <= 1) {
+        return [
+          {
+            productId: resolvedProdId,
+            productName: product?.name || offer.productName,
+            designer: resolvedDesigner,
+            image: resolvedImage,
+            mode: resolvedMode,
+            size: resolvedSize,
+            rentalStartDate,
+            rentalEndDate,
+            dispatchDate,
+            returnDueDate: rentalEndDate ? addDaysYMD(rentalEndDate, 1) : "",
+            amount: agreedAmount,
+            deposit,
+            listerId,
+            listerName,
+            quantity: Number(offer.quantity || 1),
+            status: "Confirmed",
+          },
+        ];
+      }
+      const totalList =
+        offerPieces.reduce(
+          (sum, p) => sum + Number(p.listingPrice || p.rentalPrice || 0),
+          0,
+        ) || 1;
+      let allocated = 0;
+      return offerPieces.map((p, idx) => {
+        const pieceShare =
+          idx === offerPieces.length - 1
+            ? Math.max(0, agreedAmount - allocated)
+            : Math.round(
+                (agreedAmount *
+                  Number(p.listingPrice || p.rentalPrice || 0)) /
+                  totalList,
+              );
+        allocated += pieceShare;
+        return {
+          productId: p.productId || (idx === 0 ? resolvedProdId : ""),
+          productName: p.productName || offer.productName,
+          designer: p.designer || resolvedDesigner,
+          image: p.image || (idx === 0 ? resolvedImage : ""),
+          mode: resolvedMode,
+          size: resolvedSize,
+          rentalStartDate,
+          rentalEndDate,
+          dispatchDate,
+          returnDueDate: rentalEndDate ? addDaysYMD(rentalEndDate, 1) : "",
+          amount: pieceShare,
+          deposit: idx === 0 ? deposit : 0,
+          listerId,
+          listerName,
+          quantity: 1,
+          status: "Confirmed",
+        };
+      });
+    })(),
     logs: [
       {
         message: `Order created from Offer/Enquiry ${offer.offerId} (${offer.channel || "Admin"})`,
@@ -433,16 +564,63 @@ export const createOffer = async (req, res) => {
 
     // Generate Unique Offer ID
     const offerId = req.body.offerId || `OFF-${Date.now()}`;
-    const normalizedMode = req.body.mode || (req.body.rentalStartDate ? "Rental" : "Rental");
+    const normalizedMode = req.body.mode || (req.body.rentalStartDate ? "Rental" : "Preloved");
     const normalizedStart = normalizeYMD(req.body.rentalStartDate);
     const normalizedEnd = normalizeYMD(req.body.rentalEndDate);
     const shouldCreateOrder = Boolean(req.body.createOrder);
 
+    const allProducts = await Product.find({}).catch(() => []);
+    const incomingPieces = Array.isArray(req.body.pieces) && req.body.pieces.length > 0
+      ? req.body.pieces
+      : [
+          {
+            productId,
+            productName,
+            designer: req.body.designer || "",
+            image: req.body.productImage || "",
+            listingPrice: origAmt,
+          },
+        ];
+
+    const resolvedPieces = incomingPieces
+      .map((piece) => {
+        const pMatch = matchProductInList(piece, allProducts);
+        return {
+          productId:
+            piece.productId ||
+            pMatch?.productId ||
+            (pMatch?._id ? String(pMatch._id) : ""),
+          productName: piece.productName || pMatch?.name || productName,
+          designer: piece.designer || pMatch?.designer || "",
+          image:
+            piece.image ||
+            (Array.isArray(pMatch?.images) && pMatch.images[0]) ||
+            (typeof pMatch?.image === "string" ? pMatch.image : "") ||
+            "",
+          listingPrice: Number(
+            piece.listingPrice ||
+              pMatch?.listingPrice ||
+              pMatch?.originalRetailPrice ||
+              0,
+          ),
+          rentalPrice: Number(piece.rentalPrice || pMatch?.rentalPrice || 0),
+        };
+      })
+      .filter((p) => p.productName);
+
+    const primaryPiece = resolvedPieces[0];
+    const effectiveOrigAmt =
+      origAmt ||
+      resolvedPieces.reduce((sum, p) => sum + Number(p.listingPrice || 0), 0);
+
     const offer = await Offer.create({
       offerId,
       enquiryId,
-      productId,
-      productName,
+      productId: primaryPiece?.productId || productId,
+      productName: primaryPiece?.productName || productName,
+      productImage: req.body.productImage || primaryPiece?.image || "",
+      designer: req.body.designer || primaryPiece?.designer || "",
+      pieces: resolvedPieces,
       category,
       customerId: assignedCustomerId,
       customerName: cleanName,
@@ -455,10 +633,10 @@ export const createOffer = async (req, res) => {
       size: req.body.size || "",
       rentalStartDate: normalizedStart,
       rentalEndDate: normalizedEnd,
-      quantity,
-      originalAmount: origAmt,
+      quantity: Math.max(Number(quantity || 1), resolvedPieces.length),
+      originalAmount: effectiveOrigAmt,
       offeredAmount: offAmt,
-      finalAmount: offAmt || origAmt,
+      finalAmount: offAmt > 0 ? offAmt : effectiveOrigAmt,
       discount: calculatedDiscount,
       promoCode: finalPromoCode,
       currency: currency || "INR",
@@ -525,7 +703,7 @@ export const createOffer = async (req, res) => {
         ? `Offer saved & Order ${createdOrder.orderId} created successfully.`
         : "Offer created successfully.",
       data: {
-        ...(offer.toObject ? offer.toObject() : offer),
+        ...hydrateOfferWithLiveProducts(offer, allProducts),
         promoCode: finalPromoCode,
         customerId: offer.customerId || assignedCustomerId,
         linkedOrderId: offer.linkedOrderId || undefined,
@@ -599,12 +777,19 @@ export const getOffers = async (req, res) => {
       total = 0;
     }
 
-    const offers = await Offer.find(filter)
-      .sort({
-        [sortBy]: order === "asc" ? 1 : -1,
-      })
-      .skip((page - 1) * Number(limit))
-      .limit(Number(limit));
+    const [offers, allProducts] = await Promise.all([
+      Offer.find(filter)
+        .sort({
+          [sortBy]: order === "asc" ? 1 : -1,
+        })
+        .skip((page - 1) * Number(limit))
+        .limit(Number(limit)),
+      Product.find({}).catch(() => []),
+    ]);
+
+    const hydratedOffers = (offers || []).map((o) =>
+      hydrateOfferWithLiveProducts(o, allProducts),
+    );
 
     return res.status(200).json({
       success: true,
@@ -617,7 +802,7 @@ export const getOffers = async (req, res) => {
         totalPages: Math.ceil(total / limit),
       },
 
-      data: offers,
+      data: hydratedOffers,
     });
   } catch (err) {
     console.error("Get Offers Error:", err);
@@ -699,7 +884,7 @@ export const updateOffer = async (req, res) => {
       });
     }
 
-    const offer = await Offer.findById(id);
+    const offer = await findOfferDoc(id);
 
     if (!offer) {
       return res.status(404).json({
@@ -708,10 +893,46 @@ export const updateOffer = async (req, res) => {
       });
     }
 
+    const allProducts = await Product.find({}).catch(() => []);
+
     // Update Fields
     offer.enquiryId = req.body.enquiryId ?? offer.enquiryId;
     offer.productId = req.body.productId ?? offer.productId;
     offer.productName = req.body.productName ?? offer.productName;
+    offer.productImage = req.body.productImage ?? offer.productImage;
+    offer.designer = req.body.designer ?? offer.designer;
+    if (Array.isArray(req.body.pieces)) {
+      offer.pieces = req.body.pieces.map((piece) => {
+        const pMatch = matchProductInList(piece, allProducts);
+        return {
+          productId:
+            piece.productId ||
+            pMatch?.productId ||
+            (pMatch?._id ? String(pMatch._id) : ""),
+          productName: piece.productName || pMatch?.name || "",
+          designer: piece.designer || pMatch?.designer || "",
+          image:
+            piece.image ||
+            (Array.isArray(pMatch?.images) && pMatch.images[0]) ||
+            (typeof pMatch?.image === "string" ? pMatch.image : "") ||
+            "",
+          listingPrice: Number(
+            piece.listingPrice ||
+              pMatch?.listingPrice ||
+              pMatch?.originalRetailPrice ||
+              0,
+          ),
+          rentalPrice: Number(piece.rentalPrice || pMatch?.rentalPrice || 0),
+        };
+      });
+      if (offer.pieces.length > 0) {
+        offer.productId = offer.pieces[0].productId || offer.productId;
+        offer.productName = offer.pieces[0].productName || offer.productName;
+        offer.productImage = offer.pieces[0].image || offer.productImage;
+        offer.designer = offer.pieces[0].designer || offer.designer;
+        offer.quantity = offer.pieces.length;
+      }
+    }
     offer.category = req.body.category ?? offer.category;
 
     offer.customerName = req.body.customerName ?? offer.customerName;
@@ -753,7 +974,7 @@ export const updateOffer = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Offer updated successfully.",
-      data: offer,
+      data: hydrateOfferWithLiveProducts(offer, allProducts),
     });
   } catch (err) {
     console.error("Update Offer Error:", err);

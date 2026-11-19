@@ -188,10 +188,22 @@ export interface Order {
   internalNotes?: string;
 }
 
+export interface OfferPiece {
+  productId?: string;
+  productName: string;
+  designer?: string;
+  image?: string;
+  listingPrice?: number;
+  rentalPrice?: number;
+}
+
 export interface Offer {
   id: string;
   backendId?: string;
   productId?: string;
+  productImage?: string;
+  designer?: string;
+  pieces?: OfferPiece[];
   customerId?: string;
   customerName: string;
   customerEmail: string;

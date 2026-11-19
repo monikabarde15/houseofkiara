@@ -227,6 +227,22 @@ const TABLE_CONFIGS = {
       orderIndex: "order_index",
     },
   },
+  Enquiry: {
+    tableName: "enquiries",
+    entityIdField: "enquiryId",
+    columnMap: {
+      enquiryId: "enquiry_id",
+      customerId: "customer_id",
+      customerName: "customer_name",
+      customerEmail: "customer_email",
+      customerPhone: "customer_phone",
+      interestedIn: "interested_in",
+      channel: "channel",
+      assignedTo: "assigned_to",
+      status: "status",
+      linkedOrderId: "linked_order_id",
+    },
+  },
 };
 
 // Generate 24-character hexadecimal ObjectId

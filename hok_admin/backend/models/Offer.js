@@ -122,6 +122,19 @@ const offerSchema = new mongoose.Schema(
 
     productImage: String,
 
+    designer: String,
+
+    pieces: [
+      {
+        productId: String,
+        productName: String,
+        designer: String,
+        image: String,
+        listingPrice: Number,
+        rentalPrice: Number,
+      },
+    ],
+
     category: String,
 
     customerName: {
@@ -264,6 +277,7 @@ const offerSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    strict: false,
   },
 );
 

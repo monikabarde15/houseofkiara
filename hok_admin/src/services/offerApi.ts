@@ -18,25 +18,45 @@ const request = async (path: string, options?: RequestInit) => {
     throw new Error(body.message || "Offer request failed");
   return body;
 };
-export const mapOffer = (item: any): Offer => ({
-  id: item.offerId || item.id || item._id,
-  backendId: item._id,
-  productId: item.productId || "",
-  customerId: item.customerId || "",
-  customerName: item.customerName || "",
-  customerEmail: item.customerEmail || "",
-  phone: item.customerPhone || "",
-  productName: item.productName || "",
-  marketPrice: Number(item.originalAmount || 0),
-  offerPrice: Number(item.offeredAmount || item.finalAmount || 0),
-  askPercentage: item.originalAmount
-    ? Math.round(
-        (Number(item.offeredAmount || 0) / Number(item.originalAmount)) * 100,
-      )
-    : 0,
-  date: item.createdAt || new Date().toISOString(),
-  status:
-    Number(item.offeredAmount || item.finalAmount || 0) === 0
+export const mapOffer = (item: any): Offer => {
+  const rawOffered = Number(item.offeredAmount || 0);
+  const isEnquiryOnly =
+    item.status === "Enquiry" ||
+    (rawOffered === 0 && !["Accepted", "Completed", "Counter Offered"].includes(item.status));
+  const effectiveOfferPrice = isEnquiryOnly
+    ? 0
+    : Number(item.offeredAmount || item.finalAmount || 0);
+  const marketPrice = Number(item.originalAmount || 0);
+
+  return {
+    id: item.offerId || item.id || item._id,
+    backendId: item._id,
+    productId: item.productId || "",
+    productImage: item.productImage || item.pieces?.[0]?.image || "",
+    designer: item.designer || item.pieces?.[0]?.designer || "",
+    pieces: Array.isArray(item.pieces)
+      ? item.pieces.map((p: any) => ({
+          productId: p.productId || "",
+          productName: p.productName || "",
+          designer: p.designer || "",
+          image: p.image || "",
+          listingPrice: Number(p.listingPrice || 0),
+          rentalPrice: Number(p.rentalPrice || 0),
+        }))
+      : [],
+    customerId: item.customerId || "",
+    customerName: item.customerName || "",
+    customerEmail: item.customerEmail || "",
+    phone: item.customerPhone || "",
+    productName: item.productName || "",
+    marketPrice,
+    offerPrice: effectiveOfferPrice,
+    askPercentage:
+      effectiveOfferPrice > 0 && marketPrice > 0
+        ? Math.round((effectiveOfferPrice / marketPrice) * 100)
+        : 0,
+    date: item.createdAt || new Date().toISOString(),
+    status: isEnquiryOnly
       ? "Enquiry"
       : item.status === "Rejected"
         ? "Declined"
@@ -47,18 +67,19 @@ export const mapOffer = (item: any): Offer => ({
             : item.status === "Completed"
               ? "Accepted"
               : item.status || "Pending",
-  counterPrice: item.counterOffers?.at(-1)?.amount,
-  channel: item.channel || "Website",
-  note: item.notes?.at(-1)?.message,
-  promoCode: item.promoCode || item.code || "",
-  assignedTo: item.assignedTo || "",
-  mode: item.mode || "Rental",
-  rentalStartDate: item.rentalStartDate || "",
-  rentalEndDate: item.rentalEndDate || "",
-  address: item.address || item.customerCity || "",
-  customerCity: item.customerCity || "",
-  linkedOrderId: item.linkedOrderId || "",
-});
+    counterPrice: item.counterOffers?.at(-1)?.amount,
+    channel: item.channel || "Website",
+    note: item.notes?.at(-1)?.message,
+    promoCode: item.promoCode || item.code || "",
+    assignedTo: item.assignedTo || "",
+    mode: item.mode || "Preloved",
+    rentalStartDate: item.rentalStartDate || "",
+    rentalEndDate: item.rentalEndDate || "",
+    address: item.address || item.customerCity || "",
+    customerCity: item.customerCity || "",
+    linkedOrderId: item.linkedOrderId || "",
+  };
+};
 export const getOffers = async () => {
   const body = await request("/offers?limit=1000");
   const items = Array.isArray(body.data)
@@ -74,6 +95,9 @@ export const createOffer = async (offer: Partial<Offer>) => {
     body: JSON.stringify({
       productId: offer.productId,
       productName: offer.productName,
+      productImage: offer.productImage,
+      designer: offer.designer,
+      pieces: offer.pieces,
       customerId: offer.customerId,
       customerName: offer.customerName,
       customerEmail: offer.customerEmail,
@@ -144,9 +168,15 @@ export const updateOffer = async (
           customerName: fields.customerName,
           customerEmail: fields.customerEmail,
           customerPhone: fields.phone,
+          productId: fields.productId,
           productName: fields.productName,
+          productImage: fields.productImage,
+          designer: fields.designer,
+          pieces: fields.pieces,
           originalAmount: fields.marketPrice,
           offeredAmount: fields.offerPrice,
+          assignedTo: fields.assignedTo,
+          channel: fields.channel,
         }),
       })
     ).data,

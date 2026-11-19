@@ -74,6 +74,7 @@ interface CustomersViewProps {
   setView: (view: string) => void;
   setSelectedOrderId: (id: string) => void;
   onEditingChange?: (isEditing: boolean) => void;
+  initialCustomerId?: string;
 }
 
 export default function CustomersView({
@@ -85,6 +86,7 @@ export default function CustomersView({
   setView,
   setSelectedOrderId,
   onEditingChange,
+  initialCustomerId,
 }: CustomersViewProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
@@ -302,7 +304,38 @@ export default function CustomersView({
     setNewOccasionDate("");
   };
 
-  // Rehydrate customer and tab from URL search parameters on refresh
+  // Rehydrate customer and tab from URL search parameters or initialCustomerId route
+  const openedInitialCustRef = React.useRef<string>("");
+  React.useEffect(() => {
+    if (!initialCustomerId) {
+      openedInitialCustRef.current = "";
+      return;
+    }
+    if (!customers || customers.length === 0) return;
+    const decoded = decodeURIComponent(initialCustomerId).trim();
+    if (!decoded || openedInitialCustRef.current === decoded) return;
+    const lower = decoded.toLowerCase();
+    const digits = decoded.replace(/\D/g, "").slice(-10);
+
+    const match = customers.find((c) => {
+      const cIds = [c.customerId, c.id, (c as any)._id]
+        .filter(Boolean)
+        .map((x) => String(x).trim().toLowerCase());
+      if (cIds.includes(lower)) return true;
+      if (c.email && c.email.trim().toLowerCase() === lower) return true;
+      if (digits.length === 10 && c.phone && c.phone.replace(/\D/g, "").slice(-10) === digits) {
+        return true;
+      }
+      if (c.name && c.name.trim().toLowerCase() === lower) return true;
+      return false;
+    });
+
+    if (match) {
+      openedInitialCustRef.current = decoded;
+      startEditing(match, "Profile");
+    }
+  }, [initialCustomerId, customers]);
+
   React.useEffect(() => {
     if (typeof window === "undefined" || !customers || customers.length === 0 || editingCustomer) return;
     const search = new URLSearchParams(window.location.search);

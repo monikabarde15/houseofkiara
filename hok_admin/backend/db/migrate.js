@@ -550,7 +550,43 @@ export const migrationQueries = [
   `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
   `ALTER TABLE page_figures ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_page_figures_key ON page_figures(key);`,
-  `CREATE INDEX IF NOT EXISTS idx_page_figures_data_gin ON page_figures USING GIN (data);`
+  `CREATE INDEX IF NOT EXISTS idx_page_figures_data_gin ON page_figures USING GIN (data);`,
+
+  // 19. Enquiries Table
+  `CREATE TABLE IF NOT EXISTS enquiries (
+    _id VARCHAR(64) PRIMARY KEY,
+    enquiry_id VARCHAR(255) UNIQUE NOT NULL,
+    customer_id VARCHAR(255),
+    customer_name VARCHAR(255) NOT NULL,
+    customer_email VARCHAR(255),
+    customer_phone VARCHAR(100),
+    interested_in VARCHAR(100) DEFAULT 'Rent',
+    channel VARCHAR(100) DEFAULT 'WhatsApp',
+    assigned_to VARCHAR(255),
+    status VARCHAR(50) DEFAULT 'New',
+    linked_order_id VARCHAR(255),
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS enquiry_id VARCHAR(255);`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS customer_id VARCHAR(255);`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS customer_name VARCHAR(255);`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS customer_email VARCHAR(255);`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS customer_phone VARCHAR(100);`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS interested_in VARCHAR(100) DEFAULT 'Rent';`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS channel VARCHAR(100) DEFAULT 'WhatsApp';`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS assigned_to VARCHAR(255);`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'New';`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS linked_order_id VARCHAR(255);`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_enquiries__id ON enquiries(_id);`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_enquiries_enquiry_id ON enquiries(enquiry_id);`,
+  `CREATE INDEX IF NOT EXISTS idx_enquiries_status ON enquiries(status);`,
+  `CREATE INDEX IF NOT EXISTS idx_enquiries_data_gin ON enquiries USING GIN (data);`
 ];
 
 export const runMigrations = async () => {

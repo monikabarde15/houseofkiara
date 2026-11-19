@@ -22,6 +22,7 @@ import {
   Layers,
   Search,
   LogOut,
+  MessageSquare,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -45,7 +46,8 @@ const groups = [
     title: "Operations",
     items: [
       { id: "orders", label: "Orders", icon: ShoppingBag },
-      { id: "offers", label: "Offers & Enquiries", icon: Tag },
+      { id: "offers", label: "Offers", icon: Tag },
+      { id: "enquiries", label: "Enquiries", icon: MessageSquare },
       { id: "calendar", label: "Rental Calendar", icon: Calendar },
       { id: "dispatch", label: "Dispatch Schedule", icon: Truck },
       { id: "returns", label: "Returns & Deposits", icon: RotateCcw },
@@ -124,7 +126,11 @@ export default function Sidebar({
                 (item.id === "listers" &&
                   currentView.startsWith("lister_detail:")) ||
                 (item.id === "orders" &&
-                  currentView.startsWith("order_detail:"));
+                  currentView.startsWith("order_detail:")) ||
+                (item.id === "products" &&
+                  currentView.startsWith("product_detail:")) ||
+                (item.id === "customers" &&
+                  currentView.startsWith("customer_detail:"));
               return (
                 <button
                   key={`${item.label}-${index}`}

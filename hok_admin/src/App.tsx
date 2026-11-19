@@ -5,6 +5,8 @@ import DashboardView from './components/DashboardView';
 import OrdersView from './components/OrdersView';
 import OrderDetailView from './components/OrderDetailView';
 import OffersView from './components/OffersView';
+import EnquiriesView from './components/EnquiriesView';
+import * as enquiryApi from './services/enquiryApi';
 // import CalendarView from './components/CalendarView';
 import RentalCalendarView from './components/RentalCalendar/tsx';
 import DispatchView from './components/Dispatch/jsx/DispatchView';
@@ -144,14 +146,25 @@ export default function App() {
           if (Array.isArray(list)) setProducts(list);
         })
         .catch(() => {});
+      customerApi
+        .getCustomers()
+        .then((list) => {
+          if (Array.isArray(list)) setCustomers(list);
+        })
+        .catch(() => {});
     };
 
     if (
       currentView === 'orders' ||
+      currentView === 'enquiries' ||
+      currentView === 'offers' ||
+      currentView === 'customers' ||
+      currentView.startsWith('customer_detail:') ||
       currentView === 'dispatch' ||
       currentView === 'returns' ||
       currentView === 'calendar' ||
       currentView === 'products' ||
+      currentView.startsWith('product_detail:') ||
       currentView === 'dashboard'
     ) {
       refreshLiveOperations();
@@ -168,6 +181,21 @@ export default function App() {
       .catch((error) => console.error('Unable to load offers:', error))
       .finally(() => setOffersLoading(false));
   }, []);
+  const [enquiries, setEnquiries] = useState<enquiryApi.Enquiry[]>([]);
+  const [enquiriesLoading, setEnquiriesLoading] = useState(true);
+  useEffect(() => {
+    const loadEnqs = () => {
+      enquiryApi
+        .getEnquiries()
+        .then(setEnquiries)
+        .catch(() => {})
+        .finally(() => setEnquiriesLoading(false));
+    };
+    loadEnqs();
+    if (currentView === 'enquiries' || currentView === 'dashboard') {
+      loadEnqs();
+    }
+  }, [currentView]);
   const [designers, setDesigners] = useState<Designer[]>([]);
   const [listers, setListers] = useState<any[]>([]);
   useEffect(() => { listerApi.getListers().then((data) => setListers(Array.isArray(data) ? data : [])).catch((error) => { console.error('Unable to load listers:', error); setListers([]); }); }, []);
@@ -659,10 +687,43 @@ export default function App() {
           loading={offersLoading}
           onUpdateOffer={handleUpdateOffer}
           onAddOffer={handleAddOffer}
+          onOfferRecordUpdated={(updatedOff) =>
+            setOffers((curr) =>
+              curr.map((o) => (o.id === updatedOff.id ? updatedOff : o)),
+            )
+          }
+          onNavigateView={setView}
           onSelectOrder={(oid) => setView(`order_detail:${oid}`)}
           onCustomerCreated={(newCust) =>
             setCustomers((curr) => [newCust, ...curr])
           }
+        />
+      );
+    }
+
+    if (currentView === 'enquiries') {
+      return (
+        <EnquiriesView
+          enquiries={enquiries}
+          products={products}
+          orders={orders}
+          customers={customers}
+          currentAdminName={adminSession?.admin?.name || 'Soumya'}
+          loading={enquiriesLoading}
+          onEnquiriesChange={setEnquiries}
+          onCustomerCreated={(newCust) => {
+            handleAddCustomer(newCust);
+          }}
+          onOrderCreated={(newOrd) => {
+            handleAddOrder(newOrd);
+            productApi.getProducts().then(setProducts).catch(() => {});
+          }}
+          onOfferCreated={(newOff) => {
+            if (newOff) {
+              offerApi.getOffers().then(setOffers).catch(() => {});
+            }
+          }}
+          onNavigateView={setView}
         />
       );
     }
@@ -714,7 +775,10 @@ export default function App() {
       );
     }
 
-    if (currentView === 'customers') {
+    if (currentView === 'customers' || currentView.startsWith('customer_detail:')) {
+      const initialCustomerId = currentView.startsWith('customer_detail:')
+        ? currentView.slice('customer_detail:'.length)
+        : undefined;
       return (
         <CustomersView 
           customers={customers}
@@ -725,11 +789,15 @@ export default function App() {
           setView={setView}
           setSelectedOrderId={setSelectedOrderId}
           onEditingChange={setIsSectionEditing}
+          initialCustomerId={initialCustomerId}
         />
       );
     }
 
-    if (currentView === 'products') {
+    if (currentView === 'products' || currentView.startsWith('product_detail:')) {
+      const initialProductId = currentView.startsWith('product_detail:')
+        ? currentView.slice('product_detail:'.length)
+        : undefined;
       return (
         <ProductsView
           products={products}
@@ -745,6 +813,7 @@ export default function App() {
           customers={customers}
           onAddCustomer={handleAddCustomer}
           onAddOrder={handleAddOrder}
+          initialProductId={initialProductId}
         />
       );
     }
@@ -870,7 +939,19 @@ export default function App() {
   const handleLogout = () => { authApi.logoutAdmin(); setAdminSession(null); toast.success('Logged out successfully!'); };
   if (!adminSession) return <AdminAuth onLogin={(session) => { setAdminSession(session); toast.success('Logged in successfully!'); }} />;
 
-  const pendingOffersBadge = offers.filter((o) => o.status === 'Pending' || o.status === 'Enquiry').length;
+  const pendingOffersBadge = offers.filter((o) => o.status === 'Pending').length;
+  const openEnquiriesBadge = enquiries.filter((e) => {
+    const isConv = Boolean(
+      e.status === 'Converted' || e.linkedOrderId || e.linkedOfferId,
+    );
+    if (isConv) return false;
+    if (e.status === 'New') return true;
+    if (e.followUpDate && !['Converted', 'Closed'].includes(e.status)) {
+      const todayKey = new Date().toISOString().slice(0, 10);
+      return String(e.followUpDate).slice(0, 10) <= todayKey;
+    }
+    return false;
+  }).length;
   const returnsActionBadge = orders.filter((o: any) => {
     const isRental = String(o.mode || '').toLowerCase() === 'rental' || Boolean(o.rentalStartDate);
     if (!isRental) return false;
@@ -892,11 +973,12 @@ export default function App() {
     const st = String(s.status || 'Pending').toLowerCase();
     return st === 'pending' || st === 'new';
   }).length;
-  const totalNotifBadge = pendingOffersBadge + returnsActionBadge + pendingLypBadge;
+  const totalNotifBadge = pendingOffersBadge + openEnquiriesBadge + returnsActionBadge + pendingLypBadge;
 
   const sidebarBadges: Record<string, number> = {
     notifications: totalNotifBadge,
     offers: pendingOffersBadge,
+    enquiries: openEnquiriesBadge,
     returns: returnsActionBadge,
     lyp: pendingLypBadge,
   };
@@ -905,7 +987,8 @@ export default function App() {
     dashboard: 'Dashboard',
     notifications: 'Notifications',
     orders: 'Orders',
-    offers: 'Offers & Enquiries',
+    offers: 'Offers',
+    enquiries: 'Enquiries',
     calendar: 'Rental Calendar',
     dispatch: 'Dispatch Schedule',
     returns: 'Returns & Deposits',
@@ -1016,7 +1099,13 @@ export default function App() {
                 </button>
               ) : null}
               <span className="text-[14px] font-semibold text-[#2C2926] font-sans">
-                {viewTitleMap[currentView] || currentView.replace(/-/g, " ")}
+                {currentView.startsWith('product_detail:')
+                  ? 'Products'
+                  : currentView.startsWith('customer_detail:')
+                    ? 'Customers'
+                    : currentView.startsWith('order_detail:')
+                      ? 'Orders'
+                      : viewTitleMap[currentView] || currentView.replace(/-/g, " ")}
               </span>
             </div>
 

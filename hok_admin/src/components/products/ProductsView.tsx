@@ -44,6 +44,7 @@ interface ProductsViewProps {
   onAddCustomer?: (newCustomer: any) => void;
   onAddOrder?: (newOrder: any) => void;
   customers?: any[];
+  initialProductId?: string;
 }
 
 export default function ProductsView({
@@ -60,6 +61,7 @@ export default function ProductsView({
   onAddCustomer,
   onAddOrder,
   customers = [],
+  initialProductId,
 }: ProductsViewProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -157,6 +159,42 @@ export default function ProductsView({
   useEffect(() => {
     onEditingChange?.(isEditing);
   }, [isEditing, onEditingChange]);
+
+  const openedInitialRef = React.useRef<string>("");
+  useEffect(() => {
+    if (!initialProductId) {
+      openedInitialRef.current = "";
+      return;
+    }
+    const decoded = decodeURIComponent(initialProductId).trim();
+    if (!decoded || openedInitialRef.current === decoded) return;
+    if (!products || products.length === 0) return;
+
+    const lower = decoded.toLowerCase();
+    const matched = products.find((p: any) => {
+      const ids = [p.id, p._id, p.productId, p.sku]
+        .filter(Boolean)
+        .map((x) => String(x).trim().toLowerCase());
+      if (ids.includes(lower)) return true;
+      if (String(p.name || "").trim().toLowerCase() === lower) return true;
+      return false;
+    });
+
+    if (matched) {
+      openedInitialRef.current = decoded;
+      const safeData: any = {
+        ...matched,
+        id: matched.id || (matched as any)._id || matched.productId,
+        _id: (matched as any)._id || matched.id || matched.productId,
+      };
+      startEditing(safeData);
+      setFormData(safeData);
+      setActiveTab("Core");
+    } else if (!loading) {
+      openedInitialRef.current = decoded;
+      fetchProduct(decoded);
+    }
+  }, [initialProductId, products, loading]);
 
   useEffect(() => {
     if (state.editingProduct) {
