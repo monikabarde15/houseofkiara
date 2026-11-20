@@ -70,10 +70,10 @@ export function ProductHeader({
     return (
       <div className="space-y-5">
         {/* Product Header */}
-        <div className="flex items-start justify-between gap-12 pt-1">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6 xl:gap-12 pt-1">
           {/* Left */}
           <div className="min-w-0 flex-1">
-            <h1 className="font-serif text-[44px] leading-[1.08] font-normal tracking-[-0.02em] text-[#2A241F]">
+            <h1 className="font-serif text-[28px] sm:text-[34px] xl:text-[42px] leading-[1.08] font-normal tracking-[-0.02em] text-[#2A241F] break-words">
               {productName}
             </h1>
 
@@ -115,7 +115,7 @@ export function ProductHeader({
           </div>
 
           {/* Right */}
-          <div className="flex items-center gap-2.5 self-start shrink-0">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 self-start shrink-0">
             {/* STATUS */}
             <span className="inline-flex h-6 items-center rounded-md bg-[#EEF8EE] px-2.5 text-[11px] font-semibold text-[#4E8E58]">
               {status || "Live"}
@@ -137,23 +137,6 @@ export function ProductHeader({
               className={`inline-flex h-8 items-center rounded-md border border-[#F3D5CF] bg-white px-3.5 text-[12px] font-medium text-[#CC6E56] transition hover:bg-[#FFF8F6] ${isSaving ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               Archive
-            </button>
-
-            <button className="inline-flex h-8 items-center rounded-md border border-[#E7DED2] bg-white px-3.5 text-[12px] font-medium text-[#3D3832] transition hover:bg-[#FBF9F6]">
-              View on Site →
-            </button>
-
-            {/* ✅ SAVE CHANGES BUTTON */}
-            <button
-              onClick={onSave}
-              disabled={isSaving}
-              className={`inline-flex h-8 items-center rounded-md px-4 text-[12px] font-semibold shadow-sm transition ${
-                isSaving
-                  ? "bg-gray-400 text-gray-100 cursor-not-allowed opacity-70"
-                  : "bg-[#C9A75B] text-[#2A2118] hover:bg-[#BC9A4F]"
-              }`}
-            >
-              {isSaving ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </div>

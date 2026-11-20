@@ -983,6 +983,9 @@ const PERSISTENCE_FORBIDDEN_KEYS = new Set([
   "__defineSetter__",
   "__lookupGetter__",
   "__lookupSetter__",
+  "_data",
+  "_model",
+  "_isNew",
 ]);
 
 export const sanitizeDocumentForPersistence = (val, depth = 0) => {
@@ -1131,6 +1134,9 @@ export class PostgresDocument {
 
   toObject() {
     const obj = deepClone(this._data);
+    delete obj._data;
+    delete obj._model;
+    delete obj._isNew;
     obj._id = this._id;
     const config = TABLE_CONFIGS[this._model?.modelName];
     if (config && config.entityIdField && obj[config.entityIdField]) {

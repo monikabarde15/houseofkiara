@@ -1,4 +1,5 @@
 import PageNotFound from "../../pages/PageNotFound";
+import { openSizeGuide } from "../../utils/sizeGuide";
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useParams , useNavigate, useLocation } from "react-router-dom";
@@ -566,7 +567,21 @@ Product ID: ${product.id}
                                         {/* HEADER */}
                                         <div className="rap-rental-size-header">
                                             <span className="rap-rental-size-label">Select Size</span>
-                                            <span className="rap-rental-size-guide">Size & Measurement Guide</span>
+                                            <span
+                      className="rap-rental-size-guide"
+                      role="button"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => openSizeGuide(setOpenSections)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          openSizeGuide(setOpenSections);
+                        }
+                      }}
+                    >
+                      Size & Measurement Guide
+                    </span>
                                         </div>
 
                                         {/* SIZE PILLS */}
@@ -722,7 +737,7 @@ Product ID: ${product.id}
 
                                         {/* ================= SIZE & FIT ================= */}
                                         <div className="rap-pdp-rental-item">
-                                            <div className="rap-pdp-rental-header" onClick={() => toggle("size")}>
+                                            <div data-size-guide className="rap-pdp-rental-header" onClick={() => toggle("size")}>
                                                 <span>SIZE & FIT</span>
 
                                                 <Plus className={`rap-onlyrental-icon ${isOpen("size") ? "open" : ""}`} />
@@ -1342,6 +1357,7 @@ Product ID: ${product.id}
                                     <div className="rap-preloved-accordion-item">
 
                                         <div
+                                            data-size-guide
                                             className="rap-preloved-accordion-header"
                                             onClick={() => toggle("size")}
                                         >

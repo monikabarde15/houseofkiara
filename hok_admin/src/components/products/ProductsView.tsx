@@ -16,6 +16,7 @@ import { SEOTab } from "./tabs/SEOTab";
 import { RelatedProductsTab } from "./tabs/RelatedProductsTab";
 import { AvailabilityCalendarTab } from "./tabs/AvailabilityCalendarTab";
 import { PayoutHistoryTab } from "./tabs/PayoutHistoryTab";
+import { EnquiryHistoryTab } from "./tabs/EnquiryHistoryTab";
 import { ActivityLogTab } from "./tabs/ActivityLogTab";
 import { ProductSidebar } from "./ProductSidebar";
 import toast from "react-hot-toast";
@@ -28,12 +29,14 @@ type ProductTab =
   | "SEO"
   | "Calendar"
   | "Payout History"
+  | "Enquiry History"
   | "Activity Log";
 
 interface ProductsViewProps {
   products: Product[];
   orders?: any[];
   offers?: any[];
+  enquiries?: any[];
   promoCodes?: any[];
   loading?: boolean;
   onAddProduct: (newProduct: Product) => Promise<any> | any;
@@ -41,8 +44,12 @@ interface ProductsViewProps {
   listers: any[];
   onEditingChange?: (isEditing: boolean) => void;
   onViewOrder?: (orderId: string) => void;
+  onOpenEnquiry?: (enquiryId: string) => void;
+  onLogEnquiryForPiece?: (product: Product) => void;
   onAddCustomer?: (newCustomer: any) => void;
   onAddOrder?: (newOrder: any) => void;
+  onListerCreated?: (newLister: any) => void;
+  onDesignerCreated?: (newDesigner: any) => void;
   customers?: any[];
   initialProductId?: string;
 }
@@ -51,6 +58,7 @@ export default function ProductsView({
   products,
   orders = [],
   offers = [],
+  enquiries = [],
   promoCodes = [],
   loading = false,
   onAddProduct,
@@ -58,8 +66,12 @@ export default function ProductsView({
   listers,
   onEditingChange,
   onViewOrder,
+  onOpenEnquiry,
+  onLogEnquiryForPiece,
   onAddCustomer,
   onAddOrder,
+  onListerCreated,
+  onDesignerCreated,
   customers = [],
   initialProductId,
 }: ProductsViewProps) {
@@ -88,7 +100,17 @@ export default function ProductsView({
   useEffect(() => {
     const fetchDesigners = async () => {
       try {
-        setDbDesigners(await getDesigners());
+        const list = await getDesigners();
+        const valid = (Array.isArray(list) ? list : []).filter(
+          (d: any) =>
+            d &&
+            d.name &&
+            String(d.name).trim() !== "" &&
+            d.name !== "undefined" &&
+            d.status !== "Suspended" &&
+            d.status !== "Inactive",
+        );
+        setDbDesigners(valid);
       } catch (e) {
         console.warn("Failed to fetch designers:", e);
       }
@@ -232,7 +254,10 @@ export default function ProductsView({
 
       const matchesCat =
         selectedCategory === "All Categories" ||
-        p.category === selectedCategory;
+        String(p.category || "")
+          .split(",")
+          .map((c) => c.trim().toLowerCase())
+          .includes(selectedCategory.trim().toLowerCase());
       const matchesMode =
         selectedMode === "All Modes" ||
         pListingModes.includes(selectedMode as any);
@@ -290,6 +315,19 @@ export default function ProductsView({
       toast.error("Designer / Brand is required.");
       return;
     }
+    if (
+      dbDesigners.length > 0 &&
+      !dbDesigners.some(
+        (d: any) =>
+          String(d.name || "").trim().toLowerCase() ===
+          String(formData.designer || "").trim().toLowerCase(),
+      )
+    ) {
+      toast.error(
+        `"${formData.designer}" is not in the Designers list. Please select a registered designer.`,
+      );
+      return;
+    }
     if (!formData.listingModes?.length) {
       toast.success("Select at least one listing mode.");
       return;
@@ -329,15 +367,254 @@ export default function ProductsView({
     try {
       let savedProduct: Product | null = null;
 
+      const normalizeConditionGrade = (raw?: string): string => {
+        const s = String(raw || "").trim();
+        if (!s) return "Excellent";
+        const lower = s.toLowerCase();
+        if (lower.startsWith("pristine")) return "Pristine";
+        if (lower.startsWith("brand new")) return "Brand New";
+        if (lower.startsWith("like new")) return "Like New";
+        if (lower.startsWith("very good")) return "Very Good";
+        if (lower.startsWith("excellent")) return "Excellent";
+        if (lower.startsWith("good")) return "Good";
+        if (lower.startsWith("fair")) return "Fair";
+        return "Excellent";
+      };
+
+      const sanitizeOutgoingProduct = (rawObj: any): Product => {
+        const ALLOWED_PRODUCT_KEYS = [
+          "productId",
+          "sku",
+          "name",
+          "designer",
+          "subtitle",
+          "description",
+          "story",
+          "gender",
+          "category",
+          "occasion",
+          "material",
+          "color",
+          "colors",
+          "craft",
+          "technique",
+          "embellishments",
+          "threadYarnDetail",
+          "threadWork",
+          "setIncludes",
+          "origin",
+          "sizes",
+          "sizeGuide",
+          "measurements",
+          "measurementsCm",
+          "bestSuitedForHeight",
+          "weight",
+          "listingModes",
+          "availability",
+          "status",
+          "condition",
+          "honestDisclosure",
+          "rentalPrice",
+          "extendedWindowPrice",
+          "perDayRate",
+          "securityDeposit",
+          "listingPrice",
+          "originalRetailPrice",
+          "resalePayoutPercentage",
+          "minimumOffer",
+          "allowMakeOffer",
+          "stylistConsultationBanner",
+          "commissionRate",
+          "minimumDurationDays",
+          "extensionWindowDays",
+          "cleaningBufferDays",
+          "preRentalBufferDays",
+          "postRentalBufferDays",
+          "deliveryTiming",
+          "care",
+          "packaging",
+          "shipping",
+          "taxRate",
+          "gstRate",
+          "cleaningFee",
+          "extensionPrice",
+          "listerId",
+          "payoutPercentage",
+          "payoutTerms",
+          "rating",
+          "reviewCount",
+          "timesRented",
+          "images",
+          "video",
+          "seoTitle",
+          "seoDescription",
+          "urlSlug",
+          "tags",
+          "relatedProductIds",
+          "blockedDates",
+          "bookingHistory",
+          "externalBookings",
+          "activityLog",
+          "isPinnedToAteliers",
+          "ateliersOrder",
+        ];
+
+        const out: any = {};
+        for (const k of ALLOWED_PRODUCT_KEYS) {
+          if (rawObj[k] !== undefined) {
+            out[k] = rawObj[k];
+          }
+        }
+
+        const safeNum = (v: any, def = 0, min = 0, max?: number) => {
+          const n = Number(v);
+          let res = Number.isFinite(n) ? Math.max(min, n) : def;
+          if (max !== undefined) res = Math.min(max, res);
+          return res;
+        };
+
+        out.condition = normalizeConditionGrade(out.condition);
+        out.weight = out.weight !== undefined && out.weight !== null ? String(out.weight) : "";
+        out.bestSuitedForHeight =
+          out.bestSuitedForHeight !== undefined && out.bestSuitedForHeight !== null
+            ? String(out.bestSuitedForHeight)
+            : "";
+        out.listerId =
+          out.listerId && String(out.listerId).trim()
+            ? String(out.listerId).trim()
+            : "LST-GENERAL";
+
+        out.rentalPrice = safeNum(out.rentalPrice, 0, 0);
+        out.extendedWindowPrice = safeNum(out.extendedWindowPrice, 0, 0);
+        out.perDayRate = safeNum(out.perDayRate, 0, 0);
+        out.securityDeposit = safeNum(out.securityDeposit, 0, 0);
+        out.listingPrice = safeNum(out.listingPrice, 0, 0);
+        out.originalRetailPrice = safeNum(out.originalRetailPrice, 0, 0);
+        out.resalePayoutPercentage = safeNum(out.resalePayoutPercentage, 0, 0, 100);
+        out.minimumOffer = safeNum(out.minimumOffer, 0, 0);
+        out.commissionRate = safeNum(out.commissionRate, 25, 0, 100);
+        out.minimumDurationDays = safeNum(out.minimumDurationDays, 3, 1);
+        out.extensionWindowDays = safeNum(out.extensionWindowDays, 2, 0);
+        out.cleaningBufferDays = safeNum(out.cleaningBufferDays, 2, 0);
+        out.preRentalBufferDays = safeNum(out.preRentalBufferDays, 2, 0);
+        out.postRentalBufferDays = safeNum(out.postRentalBufferDays, 3, 0);
+        out.taxRate = safeNum(out.taxRate, 0, 0);
+        out.gstRate = safeNum(out.gstRate, 0, 0);
+        out.cleaningFee = safeNum(out.cleaningFee, 0, 0);
+        out.extensionPrice = safeNum(out.extensionPrice, 0, 0);
+        out.payoutPercentage = safeNum(out.payoutPercentage, 0, 0, 100);
+        out.rating = safeNum(out.rating, 0, 0, 5);
+        out.reviewCount = safeNum(out.reviewCount, 0, 0);
+        out.timesRented = safeNum(out.timesRented, 0, 0);
+
+        out.images = Array.isArray(out.images)
+          ? out.images.filter((x: any) => typeof x === "string" && x.trim() !== "")
+          : [];
+        out.sizes = Array.isArray(out.sizes)
+          ? out.sizes.map((x: any) => String(x).trim()).filter(Boolean)
+          : [];
+        out.tags = Array.isArray(out.tags)
+          ? out.tags.map((x: any) => String(x).trim()).filter(Boolean)
+          : [];
+        out.relatedProductIds = Array.isArray(out.relatedProductIds)
+          ? out.relatedProductIds.map((x: any) => String(x).trim()).filter(Boolean)
+          : [];
+
+        out.measurements = {
+          bust: String(out.measurements?.bust ?? ""),
+          waist: String(out.measurements?.waist ?? ""),
+          hips: String(out.measurements?.hips ?? ""),
+          length: String(out.measurements?.length ?? ""),
+        };
+        out.measurementsCm = {
+          bust: String(out.measurementsCm?.bust ?? ""),
+          waist: String(out.measurementsCm?.waist ?? ""),
+          hips: String(out.measurementsCm?.hips ?? ""),
+          length: String(out.measurementsCm?.length ?? ""),
+        };
+
+        out.blockedDates = Array.isArray(out.blockedDates)
+          ? out.blockedDates
+              .map((b: any) => {
+                const toYmd = (v: any) => {
+                  if (!v) return "";
+                  if (typeof v === "string") return v.slice(0, 10);
+                  const d = new Date(v);
+                  return isNaN(d.getTime()) ? "" : d.toISOString().slice(0, 10);
+                };
+                const from = toYmd(b?.from);
+                const to = toYmd(b?.to);
+                if (!from || !to) return null;
+                return {
+                  from,
+                  to,
+                  ...(b?.depositStatus ? { depositStatus: String(b.depositStatus) } : {}),
+                };
+              })
+              .filter(Boolean)
+          : [];
+
+        const stripInternalKeys = (item: any) => {
+          if (!item || typeof item !== "object" || Array.isArray(item)) return item;
+          const cleanItem: any = {};
+          for (const k of Object.keys(item)) {
+            if (!k.startsWith("_") && k !== "data") {
+              cleanItem[k] = item[k];
+            }
+          }
+          return cleanItem;
+        };
+
+        out.activityLog = Array.isArray(out.activityLog)
+          ? out.activityLog.map((a: any) => ({
+              action: String(a?.action || "Updated"),
+              user: String(a?.user || "Admin"),
+              ...(a?.createdAt ? { createdAt: a.createdAt } : {}),
+              remarks: String(a?.remarks || ""),
+            }))
+          : [];
+        out.bookingHistory = Array.isArray(out.bookingHistory)
+          ? out.bookingHistory.map(stripInternalKeys)
+          : [];
+        out.externalBookings = Array.isArray(out.externalBookings)
+          ? out.externalBookings.map(stripInternalKeys)
+          : [];
+
+        if (out.care !== undefined && !Array.isArray(out.care)) {
+          out.care = out.care ? [String(out.care)] : [];
+        }
+        out.colors = Array.isArray(out.colors)
+          ? out.colors
+              .filter((c: any) => c && String(c.name || "").trim())
+              .map((c: any) => ({
+                name: String(c.name).trim(),
+                hex: String(c.hex || ""),
+                family: String(c.family || ""),
+              }))
+          : [];
+        if (out.colors.length > 0) {
+          out.color = out.colors.map((c: any) => c.name).join(", ");
+        }
+        if (out.packaging !== undefined && !Array.isArray(out.packaging)) {
+          out.packaging = out.packaging ? [String(out.packaging)] : [];
+        }
+        if (out.shipping !== undefined && !Array.isArray(out.shipping)) {
+          delete out.shipping;
+        }
+
+        return out as Product;
+      };
+
       if (state.isAdding) {
-        const newProduct: Product = {
+        const newProduct: Product = sanitizeOutgoingProduct({
+          ...formData,
           productId: `HOK-PRD-${Date.now()}`,
           name: formData.name || "",
           designer: formData.designer || "",
-          listerId: formData.listerId || undefined,
+          listerId: formData.listerId || "LST-GENERAL",
           description: formData.description || "",
-          category: formData.category || "Bridal Lehenga",
-          occasion: formData.occasion || "",
+          category: formData.category ?? "",
+          occasion: formData.occasion ?? "",
           material: formData.material || "",
           embellishments: formData.embellishments || "",
           threadYarnDetail: formData.threadYarnDetail || "",
@@ -358,15 +635,13 @@ export default function ProductsView({
           resalePayoutPercentage: Number(formData.resalePayoutPercentage || 0),
           minimumOffer: Number(formData.minimumOffer || 0),
           commissionRate: Number(formData.commissionRate || 25),
-          minimumDurationDays: Number(formData.minimumDurationDays || 4),
+          minimumDurationDays: Math.max(1, Number(formData.minimumDurationDays || 4)),
           extensionWindowDays: Number(formData.extensionWindowDays || 2),
           cleaningBufferDays: Number(formData.cleaningBufferDays || 2),
           preRentalBufferDays: Number(formData.preRentalBufferDays || 2),
           postRentalBufferDays: Number(formData.postRentalBufferDays || 3),
           deliveryTiming: formData.deliveryTiming || "",
-          images: formData.images?.length
-            ? formData.images
-            : [formData.images?.[0] || ""],
+          images: formData.images || [],
           seoTitle: formData.seoTitle || "",
           seoDescription: formData.seoDescription || "",
           urlSlug:
@@ -401,33 +676,35 @@ export default function ProductsView({
           externalBookings: formData.externalBookings || [],
           activityLog: formData.activityLog || [],
           timesRented: 0,
-          rating: 0,
-          reviewCount: 0,
-          ...formData,
-        };
+          rating: Number(formData.rating || 0),
+          reviewCount: Number(formData.reviewCount || 0),
+        });
 
         const result = await onAddProduct(newProduct);
         savedProduct = result as Product;
         console.log("✅ Product created:", savedProduct);
       } else if (state.editingProduct) {
-        const updated: Product = {
+        const updated: Product = sanitizeOutgoingProduct({
           ...state.editingProduct,
           ...formData,
           name: formData.name || state.editingProduct.name,
           designer: formData.designer || state.editingProduct.designer,
           listerId:
             formData.listerId !== undefined
-              ? formData.listerId || undefined
-              : state.editingProduct.listerId,
+              ? formData.listerId || "LST-GENERAL"
+              : state.editingProduct.listerId || "LST-GENERAL",
           description:
             formData.description !== undefined
               ? formData.description
               : state.editingProduct.description,
-          category: formData.category || state.editingProduct.category,
+          category:
+            formData.category !== undefined
+              ? formData.category
+              : state.editingProduct.category || "",
           occasion:
             formData.occasion !== undefined
               ? formData.occasion
-              : state.editingProduct.occasion,
+              : state.editingProduct.occasion || "",
           material:
             formData.material !== undefined
               ? formData.material
@@ -568,13 +845,14 @@ export default function ProductsView({
             formData.relatedProductIds ||
             state.editingProduct.relatedProductIds ||
             [],
-          timesRented:
+          timesRented: Number(
             formData.timesRented ?? state.editingProduct.timesRented ?? 0,
-          rating: formData.rating ?? state.editingProduct.rating ?? 0,
-          reviewCount:
+          ),
+          rating: Number(formData.rating ?? state.editingProduct.rating ?? 0),
+          reviewCount: Number(
             formData.reviewCount ?? state.editingProduct.reviewCount ?? 0,
-          ...formData,
-        };
+          ),
+        });
 
         const result = await onUpdateProduct(updated);
         savedProduct = result as Product;
@@ -697,24 +975,24 @@ export default function ProductsView({
     return (
       <div className="text-xs font-sans relative">
         <header className="sticky top-0 z-40 bg-white border-b border-[#E8E0D6]">
-          <div className="flex items-center justify-between px-6 py-3">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 py-2.5 sm:py-3">
+            <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
               <button
                 onClick={cancelEditing}
                 className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E6DED3] bg-white px-3 text-[12px] font-medium text-[#6F675D] hover:bg-[#FAF8F5]"
               >
                 <ArrowLeft className="h-3.5 w-3.5" /> Back
               </button>
-              <div className="flex items-center gap-2 text-[13px]">
+              <div className="flex min-w-0 items-center gap-1.5 sm:gap-2 text-[13px]">
                 <span className="text-[#9B9287]">Products</span>
                 <span className="text-[#C3BAAF]">/</span>
-                <span className="font-semibold text-[#2C2926]">
+                <span className="truncate font-semibold text-[#2C2926]">
                   {formData.name || state.editingProduct?.name || "New Product"}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
               {!state.isAdding && (
                 <button
                   onClick={() =>
@@ -765,9 +1043,7 @@ export default function ProductsView({
           </div>
         </header>
 
-        <div className="h-[57px]" />
-
-        <div className="px-6 pt-6 space-y-6">
+        <div className="px-4 sm:px-6 pt-4 sm:pt-6 pb-8 space-y-5 sm:space-y-6">
           <div>
             {(() => {
               const history = (state.editingProduct?.bookingHistory ||
@@ -863,7 +1139,7 @@ export default function ProductsView({
             </div>
           </div>
 
-          <div className="flex flex-col gap-6 lg:flex-row">
+          <div className="flex flex-col gap-5 xl:flex-row xl:gap-6">
             <div className="min-w-0 flex-1 space-y-6">
               {state.activeTab === "Core" && (
                 <CoreDetailsTab
@@ -871,24 +1147,23 @@ export default function ProductsView({
                   onFieldChange={updateFormField}
                   listers={listers}
                   designers={dbDesigners}
-                  onSave={(savedProduct) => {
-                    if (savedProduct) {
-                      const productWithId = {
-                        ...savedProduct,
-                        productId:
-                          savedProduct.productId ||
-                          savedProduct._id ||
-                          savedProduct.id,
-                        _id:
-                          savedProduct._id ||
-                          savedProduct.id ||
-                          savedProduct.productId,
-                      };
-                      startEditing(productWithId);
-                      setFormData(productWithId);
-                      updateFormField("productId", productWithId.productId);
-                      updateFormField("_id", productWithId._id);
+                  onDesignerCreated={(newDes) => {
+                    setDbDesigners((prev) => [newDes, ...prev]);
+                    onDesignerCreated?.(newDes);
+                  }}
+                  onListerCreated={(newLis) => {
+                    onListerCreated?.(newLis);
+                  }}
+                  onCategoryCreated={(newCat) => {
+                    if (newCat?.name) {
+                      setDbCategories((prev) =>
+                        prev.includes(newCat.name)
+                          ? prev
+                          : [...prev, newCat.name],
+                      );
                     }
+                  }}
+                  onSave={() => {
                     handleSave();
                   }}
                   productId={state.editingProduct?.productId}
@@ -962,6 +1237,17 @@ export default function ProductsView({
                     isAdding={state.isAdding}
                   />
                 )}
+              {state.activeTab === "Enquiry History" &&
+                (state.editingProduct || state.isAdding) && (
+                  <EnquiryHistoryTab
+                    product={state.editingProduct}
+                    enquiries={enquiries}
+                    orders={orders}
+                    isAdding={state.isAdding}
+                    onOpenEnquiry={onOpenEnquiry}
+                    onLogEnquiryForPiece={onLogEnquiryForPiece}
+                  />
+                )}
               {state.activeTab === "Activity Log" &&
                 (state.isAdding ? (
                   <div className="overflow-hidden rounded-lg border border-[#E8E0D6] bg-white shadow-sm">
@@ -985,7 +1271,7 @@ export default function ProductsView({
             </div>
 
             {(state.editingProduct || state.isAdding) && (
-              <div className="w-full lg:w-[340px] lg:shrink-0">
+              <div className="w-full xl:w-[300px] 2xl:w-[330px] xl:shrink-0">
                 <ProductSidebar
                   product={(state.editingProduct || formData) as Product}
                   isNew={state.isAdding}

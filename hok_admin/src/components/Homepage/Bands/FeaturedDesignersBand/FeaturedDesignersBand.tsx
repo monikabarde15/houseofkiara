@@ -3,7 +3,7 @@
    Spec Section 8.7 (v213)
 ========================================================= */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FeaturedDesignersBand.css';
 import { DesignersSettings, HealthIssue } from '../../types/homepage.types';
 import { Card } from '../../shared/Card/Card';
@@ -15,6 +15,7 @@ import { Deck } from '../../shared/Deck/Deck';
 import { DeckTileItem } from '../../shared/Deck/DeckTile';
 import { Inspector } from '../../shared/Deck/Inspector';
 import { DoorArrowIcon } from '../../shared/icons/HomepageIcons';
+import { getDesigners } from '../../../../services/designerApi';
 
 interface FeaturedDesignersBandProps {
   settings: DesignersSettings;
@@ -24,31 +25,6 @@ interface FeaturedDesignersBandProps {
   issues: HealthIssue[];
   onNavigateToModule?: (mod: string) => void;
 }
-
-// Master Designers data registry (derived from Designers module)
-const ALL_MASTER_DESIGNERS = [
-  { id: 'sabyasachi', name: 'Sabyasachi', type: 'Couture House', city: 'Kolkata, India', livePieces: 3, initials: 'SB', img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=400&q=80' },
-  { id: 'manish-malhotra', name: 'Manish Malhotra', type: 'Couture House', city: 'Mumbai, India', livePieces: 0, initials: 'MM', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80' },
-  { id: 'tarun-tahiliani', name: 'Tarun Tahiliani', type: 'Couture House', city: 'New Delhi, India', livePieces: 1, initials: 'TT', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80' },
-  { id: 'anita-dongre', name: 'Anita Dongre', type: 'Couture House', city: 'Mumbai, India', livePieces: 1, initials: 'AD', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80' },
-  { id: 'raw-mango', name: 'Raw Mango', type: 'Contemporary Label', city: 'New Delhi, India', livePieces: 0, initials: 'RM', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80' },
-  { id: 'abu-jani-sandeep', name: 'Abu Jani Sandeep', type: 'Couture House', city: 'Mumbai, India', livePieces: 0, initials: 'AJ', img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80' },
-  { id: 'torani', name: 'Torani', type: 'Contemporary Label', city: 'New Delhi, India', livePieces: 0, initials: 'TR', img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80' },
-  { id: 'ekaya', name: 'Ekaya', type: 'Heritage Weave', city: 'New Delhi, India', livePieces: 0, initials: 'EK', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80' },
-  { id: 'papa-dont-preach', name: "Papa Don't Preach", type: 'Contemporary Label', city: 'Mumbai, India', livePieces: 0, initials: 'PD', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=400&q=80' },
-  { id: 'rahul-mishra', name: 'Rahul Mishra', type: 'Couture House', city: 'New Delhi, India', livePieces: 0, initials: 'RM', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80' },
-  { id: 'rimzim-dadu', name: 'Rimzim Dadu', type: 'Contemporary Label', city: 'New Delhi, India', livePieces: 0, initials: 'RD', img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=400&q=80' }
-];
-
-const DEFAULT_SLOTS = [
-  'sabyasachi',
-  'manish-malhotra',
-  'tarun-tahiliani',
-  'anita-dongre',
-  'raw-mango',
-  'abu-jani-sandeep',
-  'torani'
-];
 
 export const FeaturedDesignersBand: React.FC<FeaturedDesignersBandProps> = ({
   settings,
@@ -60,14 +36,63 @@ export const FeaturedDesignersBand: React.FC<FeaturedDesignersBandProps> = ({
 }) => {
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
   const [showAddPanel, setShowAddPanel] = useState<boolean>(false);
+  const [masterDesigners, setMasterDesigners] = useState<
+    Array<{
+      id: string;
+      name: string;
+      type: string;
+      city: string;
+      livePieces: number;
+      initials: string;
+      img?: string;
+    }>
+  >([]);
 
-  const slots = settings.slots && settings.slots.length > 0 ? settings.slots : DEFAULT_SLOTS;
+  useEffect(() => {
+    getDesigners()
+      .then((list) => {
+        if (!Array.isArray(list)) return;
+        const mapped = list
+          .filter(
+            (d: any) =>
+              d &&
+              d.name &&
+              String(d.name).trim() !== '' &&
+              d.status !== 'Suspended' &&
+              d.status !== 'Inactive',
+          )
+          .map((d: any) => {
+            const nm = String(d.name).trim();
+            const initials = nm
+              .split(/\s+/)
+              .slice(0, 2)
+              .map((w) => w[0]?.toUpperCase() || '')
+              .join('');
+            return {
+              id: String(d.slug || d.id || d.designerId || nm.toLowerCase().replace(/[^a-z0-9]+/g, '-')),
+              name: nm,
+              type: d.type || 'Indie Designer',
+              city: 'India',
+              livePieces: Number(d.livePieces || 0),
+              initials: initials || 'HK',
+            };
+          });
+        setMasterDesigners(mapped);
+      })
+      .catch(() => {});
+  }, []);
+
+  const validMasterIds = masterDesigners.map((d) => d.id);
+  const rawSlots = settings.slots && settings.slots.length > 0 ? settings.slots : validMasterIds;
+  const slots = masterDesigners.length > 0
+    ? rawSlots.filter((sid) => validMasterIds.includes(sid))
+    : [];
   const cap = settings.cap || 6;
-  const unfeaturedDesigners = ALL_MASTER_DESIGNERS.filter((d) => !slots.includes(d.id));
+  const unfeaturedDesigners = masterDesigners.filter((d) => !slots.includes(d.id));
 
   // Deck items
   const deckItems: DeckTileItem[] = slots.map((designerId, idx) => {
-    const master = ALL_MASTER_DESIGNERS.find((m) => m.id === designerId);
+    const master = masterDesigners.find((m) => m.id === designerId);
     const displayName = master?.name || designerId;
     const pieces = master?.livePieces ?? 0;
     const isPastCut = idx >= cap;
@@ -97,7 +122,7 @@ export const FeaturedDesignersBand: React.FC<FeaturedDesignersBandProps> = ({
       : null;
 
   const selectedMaster = selectedDesignerId
-    ? ALL_MASTER_DESIGNERS.find((m) => m.id === selectedDesignerId)
+    ? masterDesigners.find((m) => m.id === selectedDesignerId)
     : null;
 
   const handleMoveSlot = (index: number, direction: 'up' | 'down') => {

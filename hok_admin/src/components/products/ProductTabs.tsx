@@ -17,6 +17,7 @@ export const DEFAULT_TAB_LABELS: Record<ProductTab, string> = {
   SEO: "SEO",
   Calendar: "Availability Calendar",
   "Payout History": "Payout History",
+  "Enquiry History": "Enquiry History",
   "Activity Log": "Activity Log",
 };
 
@@ -28,6 +29,7 @@ const ALL_TABS: ProductTab[] = [
   "SEO",
   "Calendar",
   "Payout History",
+  "Enquiry History",
   "Activity Log",
 ];
 
@@ -44,8 +46,9 @@ export function ProductTabs({
       {visibleTabs.map((tab) => {
         const isActive = activeTab === tab;
 
-        // ✅ Check karo ki yeh Calendar hai aur kya hum Adding mode mein hain
-        const isDisabled = isAdding && tab === "Calendar";
+        // ✅ Check karo ki yeh Calendar ya Enquiry History hai aur kya hum Adding mode mein hain
+        const isDisabled =
+          isAdding && (tab === "Calendar" || tab === "Enquiry History");
 
         return (
           <button
@@ -56,7 +59,7 @@ export function ProductTabs({
                 onTabChange(tab);
               }
             }}
-            className={`px-4 py-2 border-b-2 text-xs transition cursor-pointer ${
+            className={`shrink-0 px-3 xl:px-4 py-2 border-b-2 text-xs transition cursor-pointer ${
               isDisabled
                 ? "border-transparent text-stone-300 cursor-not-allowed" // ✅ Disabled look
                 : isActive

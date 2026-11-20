@@ -1,4 +1,5 @@
 import PageNotFound from "../../pages/PageNotFound";
+import { openSizeGuide } from "../../utils/sizeGuide";
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Heart, Star, Truck, Shield, User, Box, Plus, X } from "lucide-react";
@@ -376,7 +377,21 @@ Product ID: ${product.id || product._id || ""}
               <div className="buynew-section">
                 <div className="buynew-size-header">
                   <p className="buynew-size-label">Select Size</p>
-                  <span className="buynew-size-guide">Size Guide & Measurements</span>
+                  <span
+                      className="buynew-size-guide"
+                      role="button"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => openSizeGuide(setOpenSections)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          openSizeGuide(setOpenSections);
+                        }
+                      }}
+                    >
+                      Size Guide & Measurements
+                    </span>
                 </div>
                 <div className="buynew-sizes">
                   {availableSizes.length > 0 ? (
@@ -535,7 +550,7 @@ Product ID: ${product.id || product._id || ""}
 
                 {/* ================= SIZE & FIT ================= */}
                 <div className="buynew-pdp-item">
-                  <div className="buynew-pdp-header" onClick={() => toggle("size")}>
+                  <div data-size-guide className="buynew-pdp-header" onClick={() => toggle("size")}>
                     <span>SIZE & FIT</span>
 
                     <Plus className={`buynew-pdp-icon ${isOpen("size") ? "open" : ""}`} />

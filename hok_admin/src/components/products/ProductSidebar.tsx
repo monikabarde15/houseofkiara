@@ -207,11 +207,11 @@ export function ProductSidebar({
   // ── Only the JSX branches on `isNew` — no hooks below this point. ──
   if (isNew) {
     return (
-      <div className="w-full lg:h-full">
-        <div className="lg:sticky lg:top-24 space-y-5">
+      <div className="w-full xl:h-full">
+        <div className="xl:sticky xl:top-20 space-y-5">
           {/* =========================== Availability (empty state) =========================== */}
           <div className="rounded-xl border border-[#E8E0D6] bg-white shadow-sm overflow-hidden">
-            <div className="flex items-center justify-between border-b border-[#F1EBE3] px-5 py-4">
+            <div className="flex items-center justify-between border-b border-[#F1EBE3] px-4 py-3.5 2xl:px-5 2xl:py-4">
               <h3 className="text-[15px] font-semibold text-[#2D2926]">
                 Availability
               </h3>
@@ -241,7 +241,7 @@ export function ProductSidebar({
 
           {/* =========================== Quick Actions (new) =========================== */}
           <div className="overflow-hidden rounded-xl border border-[#E8E0D6] bg-white shadow-sm">
-            <div className="border-b border-[#EFE8DE] px-5 py-4">
+            <div className="border-b border-[#EFE8DE] px-4 py-3.5 2xl:px-5 2xl:py-4">
               <h3 className="text-[15px] font-semibold text-[#2D2926]">
                 Quick Actions
               </h3>
@@ -250,7 +250,7 @@ export function ProductSidebar({
             <div className="space-y-3 p-4">
               <button
                 onClick={onOpenGlobalCalendar}
-                className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5]"
+                className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5]"
               >
                 <Calendar className="h-4 w-4" />
                 <span>Global Rental Calendar</span>
@@ -264,11 +264,11 @@ export function ProductSidebar({
 
   return (
     <div className="w-full">
-      <div className="lg:sticky lg:top-24 space-y-5">
+      <div className="xl:sticky xl:top-20 space-y-5">
         {/* =========================== Availability =========================== */}
 
         <div className="rounded-xl border border-[#E8E0D6] bg-white shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between border-b border-[#F1EBE3] px-5 py-4">
+          <div className="flex items-center justify-between border-b border-[#F1EBE3] px-4 py-3.5 2xl:px-5 2xl:py-4">
             <h3 className="text-[15px] font-semibold text-[#2D2926]">
               Availability
             </h3>
@@ -280,7 +280,7 @@ export function ProductSidebar({
             </button>
           </div>
 
-          <div className="p-5">
+          <div className="p-4 2xl:p-5">
             {/* Month */}
             <div className="mb-5 flex items-center justify-between">
               <button
@@ -290,7 +290,7 @@ export function ProductSidebar({
               >
                 ←
               </button>
-              <h4 className="font-serif text-[22px] text-[#312C27]">
+              <h4 className="font-serif text-[19px] 2xl:text-[22px] text-[#312C27]">
                 {monthLabel}
               </h4>
               <button
@@ -513,7 +513,7 @@ export function ProductSidebar({
                 =========================== */}
 
         <div className="overflow-hidden rounded-xl border border-[#E8E0D6] bg-white shadow-sm">
-          <div className="border-b border-[#EFE8DE] px-5 py-4">
+          <div className="border-b border-[#EFE8DE] px-4 py-3.5 2xl:px-5 2xl:py-4">
             <h3 className="text-[15px] font-semibold text-[#2D2926]">
               Quick Actions
             </h3>
@@ -522,7 +522,7 @@ export function ProductSidebar({
           <div className="space-y-3 p-4">
             <button
               onClick={onViewLive}
-              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5]"
+              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5]"
             >
               <ExternalLink className="h-4 w-4" />
               <span>View Live PDP</span>
@@ -530,7 +530,7 @@ export function ProductSidebar({
 
             <button
               onClick={onOpenGlobalCalendar}
-              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5]"
+              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5]"
             >
               <Calendar className="h-4 w-4" />
               <span>Global Rental Calendar</span>
@@ -538,7 +538,7 @@ export function ProductSidebar({
 
             <button
               onClick={onArchive}
-              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#F2B8A8] bg-[#FFF8F6] px-4 text-[15px] font-medium text-[#C7683B] transition-colors hover:bg-[#FFF2EE]"
+              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#F2B8A8] bg-[#FFF8F6] px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#C7683B] transition-colors hover:bg-[#FFF2EE]"
             >
               <Archive className="h-4 w-4" />
               <span>Archive Product</span>

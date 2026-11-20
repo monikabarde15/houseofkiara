@@ -1,4 +1,5 @@
 import PageNotFound from "../../pages/PageNotFound";
+import { openSizeGuide } from "../../utils/sizeGuide";
 // src\components\OnlyRentalDetail.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -476,7 +477,21 @@ Product ID: ${product.id}
                   {/* HEADER */}
                   <div className="rental-size-header">
                     <span className="rental-size-label">Select Size</span>
-                    <span className="rental-size-guide">Size & Measurement Guide</span>
+                    <span
+                      className="rental-size-guide"
+                      role="button"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => openSizeGuide(setOpenSections)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          openSizeGuide(setOpenSections);
+                        }
+                      }}
+                    >
+                      Size & Measurement Guide
+                    </span>
                   </div>
 
                   {/* SIZE PILLS */}
@@ -634,7 +649,7 @@ Product ID: ${product.id}
 
                   {/* ================= SIZE & FIT ================= */}
                   <div className="pdp-rental-item">
-                    <div className="pdp-rental-header" onClick={() => toggle("size")}>
+                    <div data-size-guide className="pdp-rental-header" onClick={() => toggle("size")}>
                       <span>SIZE & FIT</span>
 
                       <Plus className={`onlyrental-icon ${isOpen("size") ? "open" : ""}`} />

@@ -11,6 +11,8 @@ export interface Product {
   occasion?: string;
   material?: string;
   color?: string;
+  /** Structured colours picked in admin; first entry = primary colour */
+  colors?: { name: string; hex: string; family: string }[];
   craft?: string;
   technique?: string;
   embellishments?: string;
@@ -176,4 +178,5 @@ export type ProductTab =
   | "SEO"
   | "Calendar"
   | "Payout History"
+  | "Enquiry History"
   | "Activity Log";

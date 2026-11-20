@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "server": "npm run start --prefix hok_admin/backend"
+    "server": "npm run dev --prefix hok_admin/backend"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

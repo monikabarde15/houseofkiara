@@ -87,6 +87,10 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [enquiryNavIntent, setEnquiryNavIntent] = useState<{
+    enquiryId?: string;
+    addPieceId?: string;
+  } | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [adminSession, setAdminSession] = useState<any>(() => authApi.getSession());
   const [messagingActiveTab, setMessagingActiveTab] = useState('messages');
@@ -466,13 +470,40 @@ export default function App() {
   };
 
   const handleAddProduct = async (newProd: Product) => {
-    try { const created = await productApi.createProduct(newProd); setProducts(current => [created, ...current]); toast.success('Product created successfully!'); }
-    catch (error) { console.error('Unable to create product:', error); toast.error(error instanceof Error ? error.message : 'Unable to create product'); }
+    try {
+      const created = await productApi.createProduct(newProd);
+      setProducts((current) => [created, ...current]);
+      toast.success('Product created successfully!');
+      return created;
+    } catch (error) {
+      console.error('Unable to create product:', error);
+      toast.error(error instanceof Error ? error.message : 'Unable to create product');
+      throw error;
+    }
   };
 
   const handleUpdateProduct = async (updated: Product) => {
-    try { const saved = await productApi.updateProduct(updated); setProducts(current => current.map(p => p.id === updated.id ? saved : p)); toast.success('Product updated successfully!'); }
-    catch (error) { console.error('Unable to update product:', error); toast.error(error instanceof Error ? error.message : 'Unable to update product'); }
+    try {
+      const saved = await productApi.updateProduct(updated);
+      setProducts((current) =>
+        current.map((p) => {
+          const same =
+            (p.productId && saved.productId && p.productId === saved.productId) ||
+            (p.id && saved.id && p.id === saved.id) ||
+            (p.id && updated.id && p.id === updated.id) ||
+            ((p as any)._id &&
+              (saved as any)._id &&
+              String((p as any)._id) === String((saved as any)._id));
+          return same ? saved : p;
+        }),
+      );
+      toast.success('Product updated successfully!');
+      return saved;
+    } catch (error) {
+      console.error('Unable to update product:', error);
+      toast.error(error instanceof Error ? error.message : 'Unable to update product');
+      throw error;
+    }
   };
 
   const handleAddDesigner = (newDes: Designer) => {
@@ -710,6 +741,9 @@ export default function App() {
           customers={customers}
           currentAdminName={adminSession?.admin?.name || 'Soumya'}
           loading={enquiriesLoading}
+          initialEnquiryId={enquiryNavIntent?.enquiryId}
+          initialAddPieceId={enquiryNavIntent?.addPieceId}
+          onClearInitialIntent={() => setEnquiryNavIntent(null)}
           onEnquiriesChange={setEnquiries}
           onCustomerCreated={(newCust) => {
             handleAddCustomer(newCust);
@@ -803,6 +837,7 @@ export default function App() {
           products={products}
           orders={orders}
           offers={offers}
+          enquiries={enquiries}
           promoCodes={promoCodes}
           loading={productsLoading}
           onAddProduct={handleAddProduct}
@@ -810,9 +845,32 @@ export default function App() {
           listers={listers}
           onEditingChange={setIsSectionEditing}
           onViewOrder={(orderId) => setView(`order_detail:${orderId}`)}
+          onOpenEnquiry={(enquiryId) => {
+            setEnquiryNavIntent({ enquiryId });
+            setView('enquiries');
+          }}
+          onLogEnquiryForPiece={(prod) => {
+            const pid = String(
+              prod.productId || prod.id || (prod as any)._id || prod.name || '',
+            );
+            setEnquiryNavIntent({ addPieceId: pid });
+            setView('enquiries');
+          }}
           customers={customers}
           onAddCustomer={handleAddCustomer}
           onAddOrder={handleAddOrder}
+          onDesignerCreated={(newDes) => {
+            setDesigners((curr) => [newDes, ...curr]);
+          }}
+          onListerCreated={(newLis) => {
+            setListers((curr) => {
+              const uid = newLis?.listerId || newLis?.id || newLis?._id;
+              const exists = curr.some(
+                (l: any) => (l.listerId || l.id || l._id) === uid,
+              );
+              return exists ? curr : [newLis, ...curr];
+            });
+          }}
           initialProductId={initialProductId}
         />
       );
@@ -1054,7 +1112,7 @@ export default function App() {
       </div>
 
       {/* Main Content Workspace viewport */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
+      <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
         {/* Mobile Navigation Header */}
         <header className="lg:hidden flex items-center justify-between px-6 py-4 bg-[#1e1412] text-[#fcf9f5] border-b border-[#2d1f1c] shrink-0">
           <div className="flex items-center gap-3">
@@ -1158,7 +1216,7 @@ export default function App() {
   currentView === 'dispatch' ||
   isSectionEditing
     ? 'p-0'
-    : 'p-6'
+    : 'p-4 sm:p-6'
 }`}>
             {renderContent()}
           </div>

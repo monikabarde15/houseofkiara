@@ -46,22 +46,43 @@ export function useProductEditor() {
 
   // ✅ Helper function to clean product data
   const cleanProductData = (product: Product): Product => {
-    const cleanProduct = { ...product };
+    const cleanProduct: any = { ...product };
 
-    // ✅ Remove internal DB fields only
-    const forbiddenFields = ["__v", "listingModels", "listingMode"];
+    // ✅ Remove internal DB / adapter fields so nested _data never leaks
+    const forbiddenFields = [
+      "__v",
+      "_data",
+      "_model",
+      "_isNew",
+      "data",
+      "listingModels",
+      "listingMode",
+    ];
     forbiddenFields.forEach((field) => {
-      if ((cleanProduct as any)[field] !== undefined) {
-        delete (cleanProduct as any)[field];
+      if (cleanProduct[field] !== undefined) {
+        delete cleanProduct[field];
       }
     });
+
+    // Normalize long LYP condition strings ("Excellent — Worn once...") to canonical grade
+    const rawCond = String(cleanProduct.condition || "").trim();
+    if (rawCond) {
+      const lower = rawCond.toLowerCase();
+      if (lower.startsWith("pristine")) cleanProduct.condition = "Pristine";
+      else if (lower.startsWith("brand new")) cleanProduct.condition = "Brand New";
+      else if (lower.startsWith("like new")) cleanProduct.condition = "Like New";
+      else if (lower.startsWith("very good")) cleanProduct.condition = "Very Good";
+      else if (lower.startsWith("excellent")) cleanProduct.condition = "Excellent";
+      else if (lower.startsWith("good")) cleanProduct.condition = "Good";
+      else if (lower.startsWith("fair")) cleanProduct.condition = "Fair";
+    }
 
     // ✅ Ensure listingModes is uppercase
     cleanProduct.listingModes = normalizeListingModes(
       cleanProduct.listingModes,
     );
 
-    return cleanProduct;
+    return cleanProduct as Product;
   };
 
   const loadProductSections = useCallback(async (productId: string) => {
@@ -139,8 +160,8 @@ export function useProductEditor() {
       name: "",
       designer: "",
       description: "",
-      category: "Bridal Lehenga",
-      occasion: "Wedding",
+      category: "",
+      occasion: "",
       material: "Silk Organza",
       embellishments: "Zardozi",
       sizes: ["S", "M"],

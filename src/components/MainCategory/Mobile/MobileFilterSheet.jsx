@@ -1,7 +1,42 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../../styles/maincategorypage/mobile/mobile-filter-sheet.css";
 
+const FALLBACK_COLOUR_SWATCHES = [
+    { name: "red", color: "#C62828" },
+    { name: "pink", color: "#F48FB1" },
+    { name: "orange", color: "#FB8C00" },
+    { name: "gold", color: "#C9A96E" },
+    { name: "green", color: "#2E7D32" },
+    { name: "blue", color: "#1E40AF" },
+    { name: "purple", color: "#6A1B9A" },
+    { name: "maroon", color: "#800020" },
+    { name: "ivory", color: "#F5EDD8", hasBorder: true },
+    { name: "black", color: "#1A1612", hasBorder: true },
+    { name: "white", color: "#FFFFFF", hasBorder: true },
+];
+
 const MobileFilterSheet = ({ isOpen, onClose, onApply, filters, setFilters }) => {
+    // Colour circles = primary colour families from admin products
+    const [colourSwatches, setColourSwatches] = useState(FALLBACK_COLOUR_SWATCHES);
+    useEffect(() => {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5003";
+        fetch(`${backendUrl}/api/web-products/filters`)
+            .then((r) => r.json())
+            .then((d) => {
+                const list = d?.data?.colorSwatches;
+                if (Array.isArray(list)) {
+                    setColourSwatches(
+                        list.map((s) => ({
+                            name: s.name,
+                            label: s.label || s.name,
+                            color: s.hex,
+                            hasBorder: ["white", "ivory", "beige", "silver", "black"].includes(s.name),
+                        }))
+                    );
+                }
+            })
+            .catch(() => {});
+    }, []);
     // Local state for filter selections
     const [localFilters, setLocalFilters] = useState({
         rentType: [],
@@ -370,22 +405,11 @@ const MobileFilterSheet = ({ isOpen, onClose, onApply, filters, setFilters }) =>
                         </div>
                         <div className={`mob-filter-group__body ${openGroups.colour ? "open" : ""}`}>
                             <div className="mob-swatch-row">
-                                {[
-                                    { name: "Crimson", color: "#B22222" },
-                                    { name: "Blush Pink", color: "#FFB6C1", hasBorder: true },
-                                    { name: "Orange", color: "#FF8C00" },
-                                    { name: "Gold", color: "#FFD700" },
-                                    { name: "Forest Green", color: "#228B22" },
-                                    { name: "Navy", color: "#00008B" },
-                                    { name: "Indigo", color: "#4B0082" },
-                                    { name: "Burgundy", color: "#800020" },
-                                    { name: "Champagne", color: "#C9A96E" },
-                                    { name: "Ivory", color: "#F5EDD8", hasBorder: true },
-                                    { name: "Charcoal", color: "#1A1612", hasBorder: true },
-                                    { name: "White", color: "#FFFFFF", hasBorder: true }
-                                ].map(swatch => (
+                                {(colourSwatches || []).map(swatch => (
                                     <div
                                         key={swatch.name}
+                                        title={swatch.label || swatch.name}
+                                        aria-label={swatch.label || swatch.name}
                                         className={`mob-swatch ${localFilters.colour.includes(swatch.name) ? "active" : ""}`}
                                         style={{
                                             backgroundColor: swatch.color,

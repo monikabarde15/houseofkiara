@@ -2,6 +2,13 @@ import Product from "../models/Product.js";
 import Designer from "../models/Designer.js";
 import Category from "../models/Category.js";
 import mongoose from "mongoose";
+import {
+  COLOR_FAMILIES,
+  familyHex,
+  findPaletteByName,
+  normalizeHex,
+  resolveFamily,
+} from "../utils/colorPalette.js";
 // Comprehensive detection helpers
 const recognizedColorsList = [
   "red",
@@ -162,6 +169,43 @@ export const detectProductColors = (product) => {
   return Array.from(found);
 };
 
+/**
+ * Structured colour info for a product.
+ * - Uses admin-picked `colors` [{name, hex, family}] (first = primary) when present
+ * - Falls back to text detection for older products
+ */
+export const getProductColorInfo = (product) => {
+  const list = Array.isArray(product?.colors)
+    ? product.colors.filter((c) => c && String(c.name || "").trim())
+    : [];
+
+  if (list.length > 0) {
+    const entries = list.map((c) => {
+      const name = String(c.name).trim();
+      const hex = normalizeHex(c.hex) || findPaletteByName(name)?.hex || "";
+      const family = String(c.family || "").trim() || resolveFamily(name, hex);
+      return { name, hex, family };
+    });
+    const families = Array.from(
+      new Set(entries.map((e) => e.family.toLowerCase()).filter(Boolean)),
+    );
+    return {
+      entries,
+      families,
+      names: entries.map((e) => e.name.toLowerCase()),
+      primaryFamily: (entries[0].family || "").toLowerCase(),
+    };
+  }
+
+  // Strict: only colours picked in admin count. No guessing from name/description/images.
+  return {
+    entries: [],
+    families: [],
+    names: [],
+    primaryFamily: "",
+  };
+};
+
 export const detectProductSizes = (product) => {
   if (!product) return ["Free"];
   const sizes = new Set();
@@ -319,6 +363,8 @@ export const getWebProducts = async (req, res) => {
         });
       };
 
+      const colorInfo = getProductColorInfo(product);
+
       return {
         id: primaryId,
         productId: primaryId,
@@ -336,7 +382,10 @@ export const getWebProducts = async (req, res) => {
         category: product.category || "Uncategorized",
         occasion: product.occasion || "",
         size: detectProductSizes(product),
-        color: detectProductColors(product),
+        color: colorInfo.families,
+        colorNames: colorInfo.names,
+        primaryColorFamily: colorInfo.primaryFamily,
+        colorSwatches: colorInfo.entries,
         video: product.video || null,
         type: type,
         popularity: product.timesRented || 0,
@@ -353,9 +402,18 @@ export const getWebProducts = async (req, res) => {
     }
 
     if (color) {
-      const cNorm = color.trim().toLowerCase();
-      formattedProducts = formattedProducts.filter(
-        (p) => Array.isArray(p.color) && p.color.includes(cNorm),
+      // Accepts a family ("red") or a shade name ("light pink"); comma = any of
+      const wanted = String(color)
+        .split(",")
+        .map((c) => c.trim().toLowerCase())
+        .filter(Boolean);
+      formattedProducts = formattedProducts.filter((p) =>
+        wanted.some(
+          (w) =>
+            (Array.isArray(p.color) && p.color.includes(w)) ||
+            (Array.isArray(p.colorNames) &&
+              p.colorNames.some((n) => n === w || n.includes(w))),
+        ),
       );
     }
 
@@ -434,26 +492,12 @@ export const getFiltersData = async (req, res) => {
       ["Festive", 0],
     ];
 
-    // Designers: REAL designers from Admin collection!
+    // Designers: strictly from Admin Designers collection (never inject hardcoded designers)
     let designerTemplates = [];
     if (adminDesigners && adminDesigners.length > 0) {
-      designerTemplates = adminDesigners.map((d) => [d.name, 0]);
-      // Check if there are live products with designers not in adminDesigners
-      const adminNamesSet = new Set(adminDesigners.map((d) => norm(d.name)));
-      const hasOther = products.some((p) => p.designer && !adminNamesSet.has(norm(p.designer)));
-      if (hasOther) {
-        designerTemplates.push(["Other Designers", 0]);
-      }
-    } else {
-      designerTemplates = [
-        ["Sabyasachi", 0],
-        ["Manish Malhotra", 0],
-        ["Tarun Tahiliani", 0],
-        ["Anita Dongre", 0],
-        ["Ritu Kumar", 0],
-        ["Rahul Mishra", 0],
-        ["Other Designers", 0],
-      ];
+      designerTemplates = adminDesigners
+        .filter((d) => d && d.name && String(d.name).trim() !== "" && d.status !== "Suspended")
+        .map((d) => [d.name, 0]);
     }
 
     const genderCounts = { Women: 0, Men: 0, Unisex: 0 };
@@ -474,6 +518,7 @@ export const getFiltersData = async (req, res) => {
     const occasions = new Set();
     const sizes = new Set();
     const colors = new Set();
+    const familyShades = {};
 
     products.forEach((product) => {
       // 1. Gender calculation using robust detection
@@ -482,20 +527,21 @@ export const getFiltersData = async (req, res) => {
       else if (gen === "Unisex") genderCounts.Unisex++;
       else genderCounts.Women++;
 
-      // 2. Category calculation
-      const c = (product.category || "").toLowerCase().replace(/s$/, "").trim();
+      // 2. Category calculation (supports single or comma-separated multiple categories)
+      const rawCats = String(product.category || "")
+        .split(",")
+        .map((s) => s.toLowerCase().replace(/s$/, "").trim())
+        .filter(Boolean);
       categoryTemplates.forEach(([name]) => {
         const cn = name.toLowerCase().replace(/s$/, "").trim();
-        let match = false;
-        if (cn === "bridal lehenga") {
-          match = c.includes("bridal");
-        } else if (cn === "lehenga") {
-          match = c === "lehenga" || (c.includes("lehenga") && !c.includes("bridal"));
-        } else if (cn === "sherwani") {
-          match = c.includes("sherwani");
-        } else {
-          match = c === cn || c.includes(cn) || cn.includes(c);
-        }
+        const match = rawCats.some((c) => {
+          if (cn === "bridal lehenga") return c.includes("bridal");
+          if (cn === "lehenga") {
+            return c === "lehenga" || (c.includes("lehenga") && !c.includes("bridal"));
+          }
+          if (cn === "sherwani") return c.includes("sherwani");
+          return c === cn || c.includes(cn) || cn.includes(c);
+        });
         if (match) {
           catCounts[name] = (catCounts[name] || 0) + 1;
         }
@@ -544,8 +590,17 @@ export const getFiltersData = async (req, res) => {
       const pSizes = detectProductSizes(product);
       pSizes.forEach((s) => sizes.add(s));
 
-      const pColors = detectProductColors(product);
-      pColors.forEach((col) => colors.add(col));
+      const pColors = getProductColorInfo(product);
+      // Only PRIMARY colour families become filter circles (deduplicated)
+      if (pColors.primaryFamily) {
+        colors.add(pColors.primaryFamily);
+        // Remember the exact admin shade name(s) behind each circle for the tooltip
+        const shade = pColors.entries[0]?.name;
+        if (shade) {
+          if (!familyShades[pColors.primaryFamily]) familyShades[pColors.primaryFamily] = new Set();
+          familyShades[pColors.primaryFamily].add(shade);
+        }
+      }
 
       const price = Number(product.listingPrice) || 0;
       if (price > 0) {
@@ -566,6 +621,19 @@ export const getFiltersData = async (req, res) => {
         occasions: Array.from(occasions).filter(Boolean),
         sizes: Array.from(sizes).filter(Boolean),
         colors: Array.from(colors).filter(Boolean),
+        // One circle per colour family, in a stable palette order
+        colorSwatches: COLOR_FAMILIES.filter((f) =>
+          colors.has(f.name.toLowerCase()),
+        ).map((f) => {
+          const key = f.name.toLowerCase();
+          const shades = Array.from(familyShades[key] || []).sort();
+          return {
+            name: key,
+            label: shades.length ? shades.join(", ") : f.name,
+            shades,
+            hex: f.hex,
+          };
+        }),
         budget: {
           min: minPrice,
           max: maxPrice,
@@ -633,11 +701,20 @@ export const getWebProductById = async (req, res) => {
       }));
     }
 
-    // Build colors array
+    // Build colors array (real hex codes from admin colour picker when available)
     let colors = [];
-    if (product.color) {
+    const colorInfo = getProductColorInfo(product);
+    if (colorInfo.entries.length > 0) {
+      colors = colorInfo.entries.map((c, i) => ({
+        code: c.hex || familyHex(c.family) || "#000000",
+        name: c.name,
+        family: c.family,
+        primary: i === 0,
+        images: product.images || [],
+      }));
+    } else if (product.color) {
       colors = product.color.split(",").map((c) => ({
-        code: c.trim(),
+        code: findPaletteByName(c.trim())?.hex || c.trim(),
         name: c.trim(),
         images: product.images || [],
       }));

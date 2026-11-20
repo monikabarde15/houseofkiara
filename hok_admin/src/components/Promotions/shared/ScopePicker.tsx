@@ -4,9 +4,11 @@
    Based on HOK_Promotions_UI_Spec_v150.pdf Section 5.7
    ======================================== */
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./styles/ScopePicker.css";
 import { PromoCodeScope, PromoMode } from "../types/promotions.types";
+import { getDesigners } from "../../../services/designerApi";
+import { getCategories } from "../../../services/categoryApi";
 
 interface ScopePickerProps {
   scope: PromoCodeScope;
@@ -17,21 +19,6 @@ interface ScopePickerProps {
   livePieces: number;
   disabled?: boolean;
 }
-
-// Mock data
-const mockCategories = [
-  "Bridal Lehenga",
-  "Saree",
-  "Anarkali",
-  "Sharara",
-  "Indo-Western",
-];
-const mockDesigners = [
-  "Sabyasachi",
-  "Manish Malhotra",
-  "Ritu Kumar",
-  "Tarun Tahiliani",
-];
 
 export const ScopePicker: React.FC<ScopePickerProps> = ({
   scope,
@@ -44,6 +31,40 @@ export const ScopePicker: React.FC<ScopePickerProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [mockCategories, setMockCategories] = useState<string[]>([]);
+  const [mockDesigners, setMockDesigners] = useState<string[]>([]);
+
+  useEffect(() => {
+    getDesigners()
+      .then((list) => {
+        if (Array.isArray(list)) {
+          setMockDesigners(
+            list
+              .filter(
+                (d: any) =>
+                  d &&
+                  d.name &&
+                  String(d.name).trim() !== "" &&
+                  d.status !== "Suspended" &&
+                  d.status !== "Inactive",
+              )
+              .map((d: any) => String(d.name).trim()),
+          );
+        }
+      })
+      .catch(() => {});
+    getCategories()
+      .then((list) => {
+        if (Array.isArray(list)) {
+          setMockCategories(
+            list
+              .filter((c: any) => c && c.name)
+              .map((c: any) => String(c.name).trim()),
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const toggleCategory = useCallback(
     (category: string) => {

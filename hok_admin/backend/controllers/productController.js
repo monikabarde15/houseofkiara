@@ -1,8 +1,50 @@
 import Product from "../models/Product.js";
+import Designer from "../models/Designer.js";
 import mongoose from "mongoose";
+import { pool } from "../config/db.js";
 import { validateProduct } from "../validations/productValidation.js";
 
-const normalize = (p) => ({ ...p.toObject(), id: p.productId });
+// Ensure products.category supports long comma-separated multi-category strings
+pool
+  .query("ALTER TABLE products ALTER COLUMN category TYPE TEXT")
+  .catch(() => {});
+pool
+  .query(
+    "UPDATE products SET data = data - '_data' - '_model' - '_isNew' WHERE data ? '_data' OR data ? '_model' OR data ? '_isNew'",
+  )
+  .catch(() => {});
+
+const assertDesignerExistsInRegistry = async (designerName) => {
+  const trimmed = String(designerName || "").trim();
+  if (!trimmed) return { valid: true, canonicalName: "" };
+  const activeDesigners = await Designer.find({
+    status: { $nin: ["Suspended", "Inactive"] },
+  }).catch(() => []);
+  const validList = (activeDesigners || []).filter(
+    (d) => d && d.name && String(d.name).trim() !== "",
+  );
+  if (validList.length === 0) {
+    return { valid: true, canonicalName: trimmed };
+  }
+  const matched = validList.find(
+    (d) => String(d.name).trim().toLowerCase() === trimmed.toLowerCase(),
+  );
+  if (!matched) {
+    return {
+      valid: false,
+      message: `Designer "${trimmed}" is not registered in the Designers table. Please select an existing designer from Designers first.`,
+    };
+  }
+  return { valid: true, canonicalName: String(matched.name).trim() };
+};
+
+const normalize = (p) => {
+  const obj = p.toObject();
+  delete obj._data;
+  delete obj._model;
+  delete obj._isNew;
+  return { ...obj, id: p.productId };
+};
 
 // ✅ FIXED: Sirf EK baar define kiya gaya hai
 const productFilter = (id) => {
@@ -139,13 +181,27 @@ export const createProduct = async (req, res) => {
       });
     }
 
-    // Ensure productId is set
+    const designerCheck = await assertDesignerExistsInRegistry(value.designer);
+    if (!designerCheck.valid) {
+      return res.status(422).json({
+        success: false,
+        message: designerCheck.message,
+      });
+    }
+    if (designerCheck.canonicalName) {
+      value.designer = designerCheck.canonicalName;
+    }
+
+    // Ensure productId and non-null listerId are set
     if (!value.productId) {
       value.productId = `HOK-PRD-${Date.now()}`;
     }
+    if (!value.listerId || !String(value.listerId).trim()) {
+      value.listerId = "LST-GENERAL";
+    }
 
     const p = await Product.create(value);
-    global.__webProductsCache = null;
+    global.__webProductsCache = null; global.__webFiltersCache = null;
     res.status(201).json({ success: true, data: normalize(p) });
   } catch (e) {
     res.status(400).json({ success: false, message: e.message });
@@ -205,11 +261,28 @@ export const updateProduct = async (req, res) => {
       });
     }
 
+    if (cleanBody.designer !== undefined) {
+      const designerCheck = await assertDesignerExistsInRegistry(value.designer);
+      if (!designerCheck.valid) {
+        return res.status(422).json({
+          success: false,
+          message: designerCheck.message,
+        });
+      }
+      if (designerCheck.canonicalName) {
+        value.designer = designerCheck.canonicalName;
+      }
+    }
+
+    if (!value.listerId || !String(value.listerId).trim()) {
+      value.listerId = existing.listerId || "LST-GENERAL";
+    }
+
     const p = await Product.findByIdAndUpdate(existing._id, value, {
       new: true,
       runValidators: true,
     });
-    global.__webProductsCache = null;
+    global.__webProductsCache = null; global.__webFiltersCache = null;
 
     res.json({ success: true, data: normalize(p) });
   } catch (e) {
@@ -224,7 +297,7 @@ export const deleteProduct = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Product not found" });
-    global.__webProductsCache = null;
+    global.__webProductsCache = null; global.__webFiltersCache = null;
     res.json({ success: true });
   } catch (e) {
     res.status(400).json({ success: false, message: e.message });
@@ -251,7 +324,7 @@ export const archiveProduct = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Product not found" });
-    global.__webProductsCache = null;
+    global.__webProductsCache = null; global.__webFiltersCache = null;
     res.json({ success: true, data: normalize(p) });
   } catch (e) {
     res.status(422).json({ success: false, message: e.message });

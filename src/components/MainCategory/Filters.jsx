@@ -83,6 +83,9 @@ function Filters({ filters, setFilters, products = [] }) {
             category: data.data.category || DEFAULT_CATEGORY,
             occasion: data.data.occasion || DEFAULT_OCCASION,
             designer: data.data.designer || DEFAULT_DESIGNER,
+            colorSwatches: Array.isArray(data.data.colorSwatches)
+              ? data.data.colorSwatches
+              : null,
           });
         }
       })
@@ -128,8 +131,12 @@ function Filters({ filters, setFilters, products = [] }) {
     };
   }, [products, filterData]);
 
-  // Extract only colors that actually exist in the database products
+  // Colour circles: one per PRIMARY colour family from admin (deduplicated by backend)
   const dbColors = useMemo(() => {
+    // Backend list is the source of truth (even when empty = no colours added yet)
+    if (Array.isArray(filterData.colorSwatches)) {
+      return filterData.colorSwatches.map((s) => s.name);
+    }
     const allColors = [
       "red", "pink", "orange", "yellow", "green", "blue",
       "purple", "maroon", "gold", "ivory", "black", "white"
@@ -140,7 +147,25 @@ function Filters({ filters, setFilters, products = [] }) {
       products.some((p) => matchColor(p.color, col))
     );
     return present.length > 0 ? present : allColors;
-  }, [products]);
+  }, [products, filterData.colorSwatches]);
+
+  const swatchHex = useMemo(() => {
+    const map = {};
+    (filterData.colorSwatches || []).forEach((s) => {
+      map[s.name] = s.hex;
+    });
+    return map;
+  }, [filterData.colorSwatches]);
+
+  // Tooltip / label = exact admin colour names (e.g. "Blood Red"), not the family key
+  const swatchLabel = useMemo(() => {
+    const map = {};
+    (filterData.colorSwatches || []).forEach((s) => {
+      map[s.name] = s.label || s.name;
+    });
+    return map;
+  }, [filterData.colorSwatches]);
+  const labelOf = (c) => swatchLabel[c] || c.charAt(0).toUpperCase() + c.slice(1);
 
   useEffect(() => {
   setMin(
@@ -406,6 +431,17 @@ function Filters({ filters, setFilters, products = [] }) {
           {dbColors.map((c) => (
             <div
               key={c}
+              title={labelOf(c)}
+              style={
+                swatchHex[c]
+                  ? {
+                      background: swatchHex[c],
+                      ...(["white", "ivory", "beige", "silver"].includes(c)
+                        ? { border: "1px solid #E8E0D4" }
+                        : {}),
+                    }
+                  : undefined
+              }
               className={`swatch ${c} ${filters.color.includes(c) ? "active" : ""
                 }`}
               onClick={() => {
@@ -424,12 +460,6 @@ function Filters({ filters, setFilters, products = [] }) {
           ))}
 
         </div>
-
-        <p className="colorLabel">
-          {filters.color.length
-            ? filters.color.join(" · ")
-            : "No color selected"}
-        </p>
       </FilterGroup>
 
     </aside>

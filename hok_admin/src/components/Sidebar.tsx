@@ -94,7 +94,7 @@ export default function Sidebar({
 }: SidebarProps) {
   return (
     <aside
-      className={`sidebar-reference ${isMobile ? "w-full" : "w-[320px]"} h-screen shrink-0 select-none`}
+      className={`sidebar-reference ${isMobile ? "w-full" : "w-[230px] xl:w-[252px] 2xl:w-[272px]"} h-screen shrink-0 select-none`}
     >
       <div className="sidebar-brand">
         <div className="sidebar-brand-logo-wrapper">

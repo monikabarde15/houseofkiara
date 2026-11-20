@@ -181,6 +181,9 @@ export const useSearch = () => {
               rawOcc,
               String(p.gender || "").toLowerCase(),
               ...(Array.isArray(p.color) ? p.color : p.color ? [p.color] : []),
+              // Admin colour shade names, e.g. "light pink", "light maroon"
+              ...(Array.isArray(p.colorNames) ? p.colorNames : []),
+              ...(Array.isArray(p.colorNames) && p.colorNames.length ? ["colour", "color"] : []),
               ...extraSynonyms,
             ]
               .join(" ")

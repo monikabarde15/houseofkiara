@@ -124,6 +124,9 @@ export const inspectAndSanitizeInput = (value, path = "root", depth = 0) => {
     const sanitizedObj = {};
     for (const key of keys) {
       const trimmedKey = key.trim();
+      if (trimmedKey === "_data" || trimmedKey === "_model" || trimmedKey === "_isNew") {
+        continue;
+      }
       if (FORBIDDEN_KEYS.has(trimmedKey) || FORBIDDEN_KEYS.has(key)) {
         throw new Error(`Security Validation Error: Forbidden prototype key "${key}" detected at "${path}".`);
       }
@@ -266,6 +269,7 @@ const PRODUCT_ALLOWED_KEYS = [
   "occasion",
   "material",
   "color",
+  "colors",
   "craft",
   "technique",
   "embellishments",
@@ -684,6 +688,8 @@ const CATEGORY_ALLOWED_KEYS = [
   "slug",
   "image",
   "description",
+  "hex",
+  "family",
 ];
 
 const MESSAGE_ALLOWED_KEYS = [

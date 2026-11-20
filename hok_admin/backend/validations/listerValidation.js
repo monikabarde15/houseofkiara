@@ -10,15 +10,16 @@ export const validateListerInput = (data, isUpdate = false) => {
     }
   }
 
-  // Phone validation
-  if (!isUpdate || data.phone !== undefined) {
-    if (!data.phone || typeof data.phone !== "string" || !data.phone.trim()) {
-      errors.push("Phone is required — WhatsApp is how we reach listers.");
-    } else {
-      const digits = data.phone.replace(/\D/g, "");
-      if (digits.length < 10) {
-        errors.push("Phone number must contain at least 10 digits.");
-      }
+  // Phone validation (if provided, must have at least 10 digits; can also be completed later on Lister profile)
+  if (
+    data.phone !== undefined &&
+    data.phone !== null &&
+    typeof data.phone === "string" &&
+    data.phone.trim().length > 0
+  ) {
+    const digits = data.phone.replace(/\D/g, "");
+    if (digits.length < 10) {
+      errors.push("Phone number must contain at least 10 digits.");
     }
   }
 

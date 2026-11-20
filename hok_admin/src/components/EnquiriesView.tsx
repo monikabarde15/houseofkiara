@@ -27,6 +27,9 @@ interface EnquiriesViewProps {
   customers: Customer[];
   currentAdminName?: string;
   loading?: boolean;
+  initialEnquiryId?: string;
+  initialAddPieceId?: string;
+  onClearInitialIntent?: () => void;
   onEnquiriesChange: React.Dispatch<React.SetStateAction<Enquiry[]>>;
   onCustomerCreated?: (customer: any) => void;
   onOrderCreated?: (order: any) => void;
@@ -404,6 +407,9 @@ export default function EnquiriesView({
   customers,
   currentAdminName = "Soumya",
   loading = false,
+  initialEnquiryId,
+  initialAddPieceId,
+  onClearInitialIntent,
   onEnquiriesChange,
   onCustomerCreated,
   onOrderCreated,
@@ -437,6 +443,7 @@ export default function EnquiriesView({
 
   const detailCardRef = useRef<HTMLDivElement | null>(null);
   const tableRef = useRef<HTMLDivElement | null>(null);
+  const logFormRef = useRef<HTMLFormElement | null>(null);
 
   // Log New Enquiry Form state
   const [formCustomerId, setFormCustomerId] = useState<string>("");
@@ -1077,6 +1084,93 @@ export default function EnquiriesView({
       tableRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, 40);
   };
+
+  // Handle deep-link intent from Product -> Enquiry History tab
+  // 1) initialEnquiryId: select that enquiry row and open its detail panel below
+  // 2) initialAddPieceId: open '+ Log New Enquiry' form with that product pre-selected
+  useEffect(() => {
+    const search =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search)
+        : null;
+    const targetEnqId =
+      initialEnquiryId || search?.get("enquiryId") || "";
+    const targetAddPiece =
+      initialAddPieceId || search?.get("addPiece") || "";
+
+    if (targetAddPiece && listedProducts.length > 0) {
+      const lower = decodeURIComponent(targetAddPiece).trim().toLowerCase();
+      const matchedProd: any = listedProducts.find((p: any) => {
+        const ids = [p.productId, p._id, p.id, p.sku]
+          .filter(Boolean)
+          .map((x) => String(x).trim().toLowerCase());
+        if (ids.includes(lower)) return true;
+        if (String(p.name || "").trim().toLowerCase() === lower) return true;
+        return false;
+      });
+      const pieceKey = matchedProd
+        ? String(matchedProd.productId || matchedProd._id || matchedProd.id)
+        : decodeURIComponent(targetAddPiece).trim();
+      const modes: string[] = Array.isArray(matchedProd?.listingModes)
+        ? matchedProd.listingModes.map((m: any) => String(m).toUpperCase())
+        : [];
+      const nextInterest: EnquiryInterest =
+        modes.length > 0 && !modes.includes("RENTAL")
+          ? modes.includes("PRELOVED")
+            ? "Buy preloved"
+            : "Buy new"
+          : "Rent";
+
+      setSelectedEnquiryId(null);
+      setStatusFilter("All Status");
+      setInterestFilter("All Interests");
+      setFormInterest(nextInterest);
+      setFormPieceId(pieceKey);
+      setShowLogForm(true);
+      onClearInitialIntent?.();
+      setTimeout(() => {
+        (logFormRef.current || tableRef.current)?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 80);
+      return;
+    }
+
+    if (targetEnqId && enquiries.length > 0) {
+      const lower = decodeURIComponent(targetEnqId).trim().toLowerCase();
+      const matchedEnq = enquiries.find(
+        (e) =>
+          String(e.enquiryId || "").trim().toLowerCase() === lower ||
+          String(e.id || "").trim().toLowerCase() === lower,
+      );
+      if (matchedEnq) {
+        setShowLogForm(false);
+        setStatusFilter("All Status");
+        setInterestFilter("All Interests");
+        setSelectedEnquiryId(matchedEnq.id);
+        setEditingDates(false);
+        setEditEventDate(matchedEnq.eventDate || "");
+        setEditHoldStart(matchedEnq.holdStartDate || "");
+        setEditHoldEnd(matchedEnq.holdEndDate || "");
+        setShowLinkOrderModal(false);
+        setShowFollowUpModal(false);
+        setShowConvertOfferModal(false);
+        onClearInitialIntent?.();
+        setTimeout(() => {
+          detailCardRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 100);
+      }
+    }
+  }, [
+    initialEnquiryId,
+    initialAddPieceId,
+    enquiries,
+    listedProducts.length,
+  ]);
 
   const selectedEnquiry = useMemo(
     () => enquiries.find((e) => e.id === selectedEnquiryId) || null,
@@ -1797,6 +1891,7 @@ export default function EnquiriesView({
         {/* Inline Log an Enquiry Form (exact match to Screenshot 1) */}
         {showLogForm && (
           <form
+            ref={logFormRef}
             onSubmit={handleSubmitNewEnquiry}
             className="border-b border-[#e8e1d5] bg-[#faf7f1] px-6 py-5 space-y-4"
           >

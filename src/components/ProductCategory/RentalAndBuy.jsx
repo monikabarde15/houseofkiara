@@ -1,4 +1,5 @@
 import PageNotFound from "../../pages/PageNotFound";
+import { openSizeGuide } from "../../utils/sizeGuide";
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
@@ -569,7 +570,21 @@ Color: ${selectedColor || "Not Selected"}
                                         {/* HEADER */}
                                         <div className="rap-rental-size-header">
                                             <span className="rap-rental-size-label">Select Size</span>
-                                            <span className="rap-rental-size-guide">Size & Measurement Guide</span>
+                                            <span
+                      className="rap-rental-size-guide"
+                      role="button"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => openSizeGuide(setOpenSections)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          openSizeGuide(setOpenSections);
+                        }
+                      }}
+                    >
+                      Size & Measurement Guide
+                    </span>
                                         </div>
 
                                         {/* SIZE PILLS */}
@@ -721,7 +736,7 @@ Color: ${selectedColor || "Not Selected"}
 
                                         {/* ================= SIZE & FIT ================= */}
                                         <div className="rap-pdp-rental-item">
-                                            <div className="rap-pdp-rental-header" onClick={() => toggle("size")}>
+                                            <div data-size-guide className="rap-pdp-rental-header" onClick={() => toggle("size")}>
                                                 <span>SIZE & FIT</span>
 
                                                 <Plus className={`rap-onlyrental-icon ${isOpen("size") ? "open" : ""}`} />
@@ -909,7 +924,21 @@ Color: ${selectedColor || "Not Selected"}
                                     <div className="rab-section">
                                         <div className="rab-size-header">
                                             <p className="rab-size-label">Select Size</p>
-                                            <span className="rab-size-guide">Size Guide & Measurements</span>
+                                            <span
+                      className="rab-size-guide"
+                      role="button"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => openSizeGuide(setOpenSections)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          openSizeGuide(setOpenSections);
+                        }
+                      }}
+                    >
+                      Size Guide & Measurements
+                    </span>
                                         </div>
                                         <div className="rab-sizes">
                                             {availableSizes.length > 0 ? (
@@ -1066,7 +1095,7 @@ Color: ${selectedColor || "Not Selected"}
 
                                         {/* ================= SIZE & FIT ================= */}
                                         <div className="rab-pdp-item">
-                                            <div className="rab-pdp-header" onClick={() => toggle("size")}>
+                                            <div data-size-guide className="rab-pdp-header" onClick={() => toggle("size")}>
                                                 <span>SIZE & FIT</span>
 
                                                 <Plus className={`rab-pdp-icon ${isOpen("size") ? "open" : ""}`} />

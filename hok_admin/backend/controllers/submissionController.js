@@ -535,7 +535,8 @@ export const createSubmission = async (req, res) => {
       }
     }
 
-    // Auto-create Designer if it doesn't exist
+    // Update existing Designer piece count only if designer already exists in Admin Designers registry
+    // (Never auto-create unlisted designers in Admin Designers!)
     if (submissionData.designer) {
       try {
         const designerSlug = submissionData.designer
@@ -553,25 +554,12 @@ export const createSubmission = async (req, res) => {
                 submissionData.designer.toLowerCase()),
         );
 
-        if (!existing) {
-          await Designer.create({
-            designerId: `DES-${Date.now()}`,
-            name: submissionData.designer,
-            slug: designerSlug,
-            type: "Indie Designer",
-            status: "Active",
-            joinedAt: new Date().toISOString().split("T")[0],
-            isNewToHOK: true,
-            isFeatured: false,
-            livePieces: 0,
-            totalPieces: 1,
-          });
-        } else {
+        if (existing) {
           existing.totalPieces = (existing.totalPieces || 0) + 1;
           await existing.save();
         }
       } catch (err) {
-        console.error("Error auto-creating designer:", err);
+        console.error("Error updating designer piece count:", err);
       }
     }
 

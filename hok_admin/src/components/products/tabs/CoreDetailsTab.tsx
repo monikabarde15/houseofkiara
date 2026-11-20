@@ -1,9 +1,13 @@
 import React, { useState } from "react";
+import { Plus, X } from "lucide-react";
 import { Product, Lister } from "../../types/product";
 import toast from "react-hot-toast";
-import { getDesigners } from "../../../services/designerApi";
+import { getDesigners, createDesigner } from "../../../services/designerApi";
+import { createLister } from "../../../services/listerApi";
 import { apiRequest } from "../../../services/apiClient";
 import DynamicCategorySelect from "../../ui/DynamicCategorySelect";
+import DynamicOccasionSelect from "../../ui/DynamicOccasionSelect";
+import DynamicColorSelect from "../../ui/DynamicColorSelect";
 
 interface Designer {
   id: string;
@@ -14,7 +18,10 @@ interface CoreDetailsTabProps {
   formData: Partial<Product>;
   onFieldChange: <K extends keyof Product>(field: K, value: Product[K]) => void;
   listers: Lister[];
-  designers?: Designer[]; // ✅ NEW — dropdown source; see note below
+  designers?: Designer[];
+  onDesignerCreated?: (newDesigner: any) => void;
+  onListerCreated?: (newLister: any) => void;
+  onCategoryCreated?: (newCategory: any) => void;
   onSave: (data?: Product) => void;
   productId?: string;
   isSaving?: boolean;
@@ -35,6 +42,9 @@ export function CoreDetailsTab({
   onFieldChange,
   listers,
   designers = [],
+  onDesignerCreated,
+  onListerCreated,
+  onCategoryCreated,
   onSave,
   productId,
   isSaving: externalIsSaving = false,
@@ -44,14 +54,49 @@ export function CoreDetailsTab({
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [localSaving, setLocalSaving] = useState(false);
   const [fetchedDesigners, setFetchedDesigners] = useState<Designer[]>([]);
+  const [localListers, setLocalListers] = useState<Lister[]>([]);
+
+  // Inline Quick-Create Designer state
+  const [showNewDesignerBox, setShowNewDesignerBox] = useState(false);
+  const [newDesignerName, setNewDesignerName] = useState("");
+  const [newDesignerType, setNewDesignerType] = useState<
+    "Indie Designer" | "Couture House" | "Contemporary Label" | "Heritage Weave"
+  >("Indie Designer");
+  const [creatingDesigner, setCreatingDesigner] = useState(false);
+
+  // Inline Quick-Create Lister state
+  const [showNewListerBox, setShowNewListerBox] = useState(false);
+  const [newListerName, setNewListerName] = useState("");
+  const [newListerPhone, setNewListerPhone] = useState("");
+  const [newListerCity, setNewListerCity] = useState("");
+  const [creatingLister, setCreatingLister] = useState(false);
 
   React.useEffect(() => {
     const fetchDesignersFromApi = async () => {
       try {
         const data = await getDesigners();
-        setFetchedDesigners(
-          data.map((d: any) => ({ id: d.id || d._id, name: d.name })),
-        );
+        const valid = (Array.isArray(data) ? data : [])
+          .filter(
+            (d: any) =>
+              d &&
+              d.name &&
+              String(d.name).trim() !== "" &&
+              d.name !== "undefined" &&
+              d.status !== "Suspended" &&
+              d.status !== "Inactive",
+          )
+          .map((d: any) => ({
+            id: String(d.id || d.designerId || d._id || d.name),
+            name: String(d.name).trim(),
+          }));
+        const seen = new Set<string>();
+        const deduped = valid.filter((d) => {
+          const k = d.name.toLowerCase();
+          if (seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        });
+        setFetchedDesigners(deduped);
       } catch (e) {
         console.warn("Failed to fetch designers in CoreDetailsTab:", e);
       }
@@ -59,7 +104,188 @@ export function CoreDetailsTab({
     fetchDesignersFromApi();
   }, []);
 
-  const activeDesigners = designers.length > 0 ? designers : fetchedDesigners;
+  const activeDesigners = React.useMemo(() => {
+    const raw = [...designers, ...fetchedDesigners];
+    const seen = new Set<string>();
+    return raw.filter((d: any) => {
+      if (!d || !d.name || !String(d.name).trim() || d.name === "undefined") {
+        return false;
+      }
+      if (d.status === "Suspended" || d.status === "Inactive") return false;
+      const k = String(d.name).trim().toLowerCase();
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }, [designers, fetchedDesigners]);
+
+  const activeListers = React.useMemo(() => {
+    const merged = [...listers, ...localListers];
+    const seen = new Set<string>();
+    return merged.filter((l: any) => {
+      const uid = String(l?.listerId || l?._id || l?.id || "").trim();
+      const nm = String(l?.name || "").trim();
+      if (!uid || !nm) return false;
+      const key = uid.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [listers, localListers]);
+
+  const matchedListerValue = React.useMemo(() => {
+    const raw = String(formData.listerId || "").trim();
+    if (!raw) return "";
+    const lower = raw.toLowerCase();
+    const found = activeListers.find((l: any) => {
+      const uid = String(l.listerId || l._id || l.id || "").trim();
+      return (
+        uid === raw ||
+        uid.toLowerCase() === lower ||
+        String(l._id || "").toLowerCase() === lower ||
+        String(l.id || "").toLowerCase() === lower ||
+        String(l.name || "").trim().toLowerCase() === lower ||
+        String(l.name || "")
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-") === lower
+      );
+    });
+    return found ? String(found.listerId || found._id || found.id || "") : "";
+  }, [formData.listerId, activeListers]);
+
+  const handleQuickCreateDesigner = async (overrideName?: string) => {
+    const trimmed = String(overrideName ?? newDesignerName).trim();
+    if (!trimmed) {
+      toast.error("Please enter a designer name.");
+      return;
+    }
+    const existing = activeDesigners.find(
+      (d) => d.name.trim().toLowerCase() === trimmed.toLowerCase(),
+    );
+    if (existing) {
+      onFieldChange("designer", existing.name);
+      setShowNewDesignerBox(false);
+      setNewDesignerName("");
+      toast.success(`Selected existing designer "${existing.name}"`);
+      return;
+    }
+
+    setCreatingDesigner(true);
+    try {
+      const created: any = await createDesigner({
+        name: trimmed,
+        type: newDesignerType,
+        status: "Active",
+      } as any);
+      const createdEntry = {
+        id: String(created?.id || created?.designerId || created?._id || trimmed),
+        name: String(created?.name || trimmed).trim(),
+      };
+      setFetchedDesigners((prev) => [createdEntry, ...prev]);
+      onDesignerCreated?.(created || createdEntry);
+      onFieldChange("designer", createdEntry.name);
+      setNewDesignerName("");
+      setShowNewDesignerBox(false);
+      toast.success(
+        `Designer "${createdEntry.name}" created & selected! You can edit full details anytime in Designers.`,
+      );
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to create designer");
+    } finally {
+      setCreatingDesigner(false);
+    }
+  };
+
+  const handleQuickCreateLister = async () => {
+    const trimmedName = newListerName.trim();
+    const trimmedPhone = newListerPhone.trim();
+    const trimmedCity = newListerCity.trim();
+
+    if (!trimmedName) {
+      toast.error("Please enter the lister's name.");
+      return;
+    }
+    if (trimmedPhone && trimmedPhone.replace(/\D/g, "").length < 10) {
+      toast.error("Phone number must have at least 10 digits (or leave blank to add later).");
+      return;
+    }
+
+    const existing = activeListers.find(
+      (l) => String(l.name || "").trim().toLowerCase() === trimmedName.toLowerCase(),
+    );
+    if (existing) {
+      const uid = String(existing.listerId || existing._id || existing.id || "");
+      onFieldChange("listerId", uid);
+      setShowNewListerBox(false);
+      setNewListerName("");
+      setNewListerPhone("");
+      setNewListerCity("");
+      toast.success(`Selected existing lister "${existing.name}"`);
+      return;
+    }
+
+    setCreatingLister(true);
+    try {
+      let created: any;
+      try {
+        created = await createLister({
+          name: trimmedName,
+          ...(trimmedPhone ? { phone: trimmedPhone } : {}),
+          ...(trimmedCity ? { city: trimmedCity } : {}),
+          status: "Verified",
+        } as any);
+      } catch (firstErr: any) {
+        if (
+          !trimmedPhone &&
+          String(firstErr?.message || "")
+            .toLowerCase()
+            .includes("phone")
+        ) {
+          created = await createLister({
+            name: trimmedName,
+            phone: "0000000000",
+            ...(trimmedCity ? { city: trimmedCity } : {}),
+            status: "Verified",
+          } as any);
+        } else {
+          throw firstErr;
+        }
+      }
+      const newUid = String(
+        created?.listerId || created?.id || created?._id || trimmedName,
+      );
+      const listerObj: Lister = {
+        ...created,
+        id: created?.id || newUid,
+        listerId: newUid,
+        name: created?.name || trimmedName,
+      };
+      setLocalListers((prev) => [listerObj, ...prev]);
+      onListerCreated?.(listerObj);
+      onFieldChange("listerId", newUid);
+      setNewListerName("");
+      setNewListerPhone("");
+      setNewListerCity("");
+      setShowNewListerBox(false);
+      toast.success(
+        `Lister "${listerObj.name}" created & selected! You can update full details anytime in Listers.`,
+      );
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to create lister");
+    } finally {
+      setCreatingLister(false);
+    }
+  };
+
+  const matchedRegisteredDesigner = React.useMemo(() => {
+    const cur = String(formData.designer || "").trim().toLowerCase();
+    if (!cur) return "";
+    const match = activeDesigners.find(
+      (d) => String(d.name).trim().toLowerCase() === cur,
+    );
+    return match ? match.name : "";
+  }, [formData.designer, activeDesigners]);
 
   const data = formData as Record<string, any>;
 
@@ -121,27 +347,28 @@ export function CoreDetailsTab({
   const handleSaveCoreDetails = async () => {
     if (isSaving || localSaving || externalIsSaving) return;
 
+    if (!formData.designer?.trim()) {
+      setSaveError("Designer / Brand is required.");
+      toast.error("Designer / Brand is required.");
+      return;
+    }
+    if (activeDesigners.length > 0 && !matchedRegisteredDesigner) {
+      const msg = `"${formData.designer}" is not in the Designers list. Please select a registered designer.`;
+      setSaveError(msg);
+      toast.error(msg);
+      return;
+    }
+
     setIsSaving(true);
     setLocalSaving(true);
     setSaveError(null);
     setSaveSuccess(false);
 
     try {
-      const payload = prepareProductData(formData);
-      const endpoint = productId ? `/products/${productId}` : "/products";
-      const method = productId ? "PUT" : "POST";
-
-      const result = await apiRequest(endpoint, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (onSave) onSave(result.data);
-
+      await Promise.resolve(onSave());
       setSaveSuccess(true);
       setLocalSaving(false);
       setIsSaving(false);
-
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
       setSaveError(
@@ -293,8 +520,15 @@ export function CoreDetailsTab({
           <div>
             <label className={labelClass}>Designer</label>
             <select
-              value={formData.designer || ""}
-              onChange={(e) => onFieldChange("designer", e.target.value)}
+              value={matchedRegisteredDesigner}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "__CREATE_NEW_DESIGNER__") {
+                  setShowNewDesignerBox(true);
+                  return;
+                }
+                onFieldChange("designer", val);
+              }}
               className={inputClass}
             >
               <option value="">Select designer...</option>
@@ -303,12 +537,68 @@ export function CoreDetailsTab({
                   {d.name}
                 </option>
               ))}
-              {/* keep an existing free-text value visible even if it's not in the registry yet */}
-              {formData.designer &&
-                !activeDesigners.some((d) => d.name === formData.designer) && (
-                  <option value={formData.designer}>{formData.designer}</option>
-                )}
+              <option value="__CREATE_NEW_DESIGNER__">
+                + Create new designer...
+              </option>
             </select>
+
+            {formData.designer &&
+              !matchedRegisteredDesigner &&
+              activeDesigners.length > 0 && (
+                <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2 rounded border border-amber-200 bg-amber-50/70 px-2.5 py-1.5 text-[11px] text-amber-800">
+                  <span>
+                    &ldquo;{formData.designer}&rdquo; is not in Designers yet.
+                  </span>
+                  <button
+                    type="button"
+                    disabled={creatingDesigner}
+                    onClick={() =>
+                      handleQuickCreateDesigner(String(formData.designer || ""))
+                    }
+                    className="font-semibold text-[#8F5E16] underline hover:text-[#5E3C0B] cursor-pointer"
+                  >
+                    + Add &ldquo;{formData.designer}&rdquo; to Designers
+                  </button>
+                </div>
+              )}
+
+            {showNewDesignerBox && (
+              <div className="mt-2 flex items-center gap-2">
+                <input
+                  type="text"
+                  autoFocus
+                  value={newDesignerName}
+                  onChange={(e) => setNewDesignerName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleQuickCreateDesigner();
+                    }
+                    if (e.key === "Escape") {
+                      setShowNewDesignerBox(false);
+                    }
+                  }}
+                  placeholder="Enter new designer name..."
+                  className="flex-1 rounded border border-[#D8CFC2] bg-white px-2.5 py-1.5 text-xs text-stone-800 outline-none focus:border-[#C7A55C]"
+                />
+                <button
+                  type="button"
+                  disabled={creatingDesigner}
+                  onClick={() => handleQuickCreateDesigner()}
+                  className="rounded bg-[#C7A55C] hover:bg-[#B8954B] px-3 py-1.5 text-xs font-semibold text-[#2A2118] disabled:opacity-60 cursor-pointer shrink-0"
+                >
+                  {creatingDesigner ? "Adding..." : "Add"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowNewDesignerBox(false)}
+                  className="rounded border border-stone-300 bg-white px-2.5 py-1.5 text-xs font-medium text-stone-600 hover:bg-stone-50 cursor-pointer shrink-0"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+
             <p className={helpClass}>
               One registry, one spelling — mapping here is what powers the
               designer page, filter facet and reports for this piece.
@@ -320,20 +610,69 @@ export function CoreDetailsTab({
         <div>
           <label className={labelClass}>Lister — Supply Owner</label>
           <select
-            value={formData.listerId || ""}
-            onChange={(e) => onFieldChange("listerId", e.target.value)}
+            value={matchedListerValue}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val === "__CREATE_NEW_LISTER__") {
+                setShowNewListerBox(true);
+                return;
+              }
+              onFieldChange("listerId", val);
+            }}
             className={inputClass}
           >
-            <option value="">Select a lister</option>
-            {listers.map((lister) => {
-              const uniqueId = lister.listerId || lister._id || lister.id || "";
+            <option value="">Select a lister (or leave empty for HOK stock)</option>
+            {activeListers.map((lister) => {
+              const uniqueId =
+                lister.listerId || lister._id || lister.id || "";
               return (
                 <option key={uniqueId} value={uniqueId}>
                   {lister.name} ({uniqueId})
                 </option>
               );
             })}
+            <option value="__CREATE_NEW_LISTER__">
+              + Create new lister...
+            </option>
           </select>
+
+          {showNewListerBox && (
+            <div className="mt-2 flex items-center gap-2">
+              <input
+                type="text"
+                autoFocus
+                value={newListerName}
+                onChange={(e) => setNewListerName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleQuickCreateLister();
+                  }
+                  if (e.key === "Escape") {
+                    setShowNewListerBox(false);
+                  }
+                }}
+                placeholder="Enter new lister name..."
+                className="flex-1 rounded border border-[#D8CFC2] bg-white px-2.5 py-1.5 text-xs text-stone-800 outline-none focus:border-[#C7A55C]"
+              />
+              <button
+                type="button"
+                disabled={creatingLister}
+                onClick={handleQuickCreateLister}
+                className="rounded bg-[#C7A55C] hover:bg-[#B8954B] px-3 py-1.5 text-xs font-semibold text-[#2A2118] disabled:opacity-60 cursor-pointer shrink-0"
+              >
+                {creatingLister ? "Adding..." : "Add"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowNewListerBox(false)}
+                className="rounded border border-stone-300 bg-white px-2.5 py-1.5 text-xs font-medium text-stone-600 hover:bg-stone-50 cursor-pointer shrink-0"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+
           <p className={helpClass}>
             Who owns this piece — powers the lister profile grid, payout
             attribution and supply reports. Leave on HOK stock for
@@ -404,16 +743,16 @@ export function CoreDetailsTab({
             <DynamicCategorySelect
               value={formData.category || ""}
               onChange={(value) => onFieldChange("category", value)}
+              onCategoryCreated={onCategoryCreated}
               className="mt-1"
             />
           </div>
           <div>
             <label className={labelClass}>Occasion(s)</label>
-            <input
-              type="text"
+            <DynamicOccasionSelect
               value={formData.occasion || ""}
-              onChange={(e) => onFieldChange("occasion", e.target.value)}
-              className={inputClass}
+              onChange={(value) => onFieldChange("occasion", value)}
+              className="mt-1"
             />
           </div>
         </div>
@@ -433,11 +772,17 @@ export function CoreDetailsTab({
           </div>
           <div>
             <label className={labelClass}>Colour</label>
-            <input
-              type="text"
-              value={formData.color || ""}
-              onChange={(e) => onFieldChange("color", e.target.value)}
-              className={inputClass}
+            <DynamicColorSelect
+              colorText={formData.color || ""}
+              colors={formData.colors || []}
+              onChange={(list) => {
+                onFieldChange("colors", list as any);
+                onFieldChange(
+                  "color",
+                  list.map((c) => c.name).join(", ") as any,
+                );
+              }}
+              className="mt-1"
             />
           </div>
         </div>
@@ -718,11 +1063,10 @@ export function CoreDetailsTab({
             disabled={
               isSaving || localSaving || saveSuccess || externalIsSaving
             }
-            className={`px-4 py-2 text-xs font-semibold rounded transition ${
-              isSaving || localSaving || saveSuccess || externalIsSaving
+            className={`px-4 py-2 text-xs font-semibold rounded transition ${isSaving || localSaving || saveSuccess || externalIsSaving
                 ? "bg-gray-400 cursor-not-allowed opacity-70"
                 : "bg-amber-700 hover:bg-amber-800 text-white"
-            }`}
+              }`}
           >
             {isSaving || localSaving
               ? "Saving..."
@@ -766,7 +1110,7 @@ export function CoreDetailsTab({
                 <input
                   value={
                     formData.measurements?.[
-                      row.key as keyof typeof formData.measurements
+                    row.key as keyof typeof formData.measurements
                     ] || ""
                   }
                   onChange={(e) =>
@@ -782,7 +1126,7 @@ export function CoreDetailsTab({
                 <input
                   value={
                     formData.measurementsCm?.[
-                      row.key as keyof typeof formData.measurementsCm
+                    row.key as keyof typeof formData.measurementsCm
                     ] || ""
                   }
                   onChange={(e) =>
@@ -844,23 +1188,22 @@ export function CoreDetailsTab({
                 !formData.measurementsCm?.length &&
                 !formData.bestSuitedForHeight)
             }
-            className={`px-4 py-2 text-xs font-semibold rounded transition ${
-              isSaving ||
-              localSaving ||
-              saveSuccess ||
-              externalIsSaving ||
-              (!formData.measurements?.bust &&
-                !formData.measurements?.waist &&
-                !formData.measurements?.hips &&
-                !formData.measurements?.length &&
-                !formData.measurementsCm?.bust &&
-                !formData.measurementsCm?.waist &&
-                !formData.measurementsCm?.hips &&
-                !formData.measurementsCm?.length &&
-                !formData.bestSuitedForHeight)
+            className={`px-4 py-2 text-xs font-semibold rounded transition ${isSaving ||
+                localSaving ||
+                saveSuccess ||
+                externalIsSaving ||
+                (!formData.measurements?.bust &&
+                  !formData.measurements?.waist &&
+                  !formData.measurements?.hips &&
+                  !formData.measurements?.length &&
+                  !formData.measurementsCm?.bust &&
+                  !formData.measurementsCm?.waist &&
+                  !formData.measurementsCm?.hips &&
+                  !formData.measurementsCm?.length &&
+                  !formData.bestSuitedForHeight)
                 ? "bg-gray-400 cursor-not-allowed opacity-70"
                 : "bg-amber-700 hover:bg-amber-800 text-white"
-            }`}
+              }`}
           >
             {isSaving || localSaving
               ? "Saving..."

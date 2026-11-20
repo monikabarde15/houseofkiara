@@ -4,10 +4,18 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
+  getOccasions,
+  createOccasion,
+  getColors,
+  createColor,
 } from "../controllers/categoryController.js";
 
 const router = express.Router();
 
+router.get("/occasions", getOccasions);
+router.post("/occasions", createOccasion);
+router.get("/colors", getColors);
+router.post("/colors", createColor);
 router.get("/", getCategories);
 router.post("/", createCategory);
 router.put("/:id", updateCategory);

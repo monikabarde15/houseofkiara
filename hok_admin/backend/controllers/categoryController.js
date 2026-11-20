@@ -1,5 +1,25 @@
 import Category from "../models/Category.js";
+import SiteSettings from "../models/SiteSettings.js";
+import Product from "../models/Product.js";
 import mongoose from "mongoose";
+import {
+  COLOR_PALETTE,
+  COLOR_FAMILIES,
+  findPaletteByName,
+  normalizeHex,
+  resolveFamily,
+} from "../utils/colorPalette.js";
+
+const DEFAULT_OCCASIONS = [
+  "Wedding",
+  "Mehendi",
+  "Haldi",
+  "Sangeet",
+  "Reception",
+  "Cocktail",
+  "Engagement",
+  "Festive",
+];
 
 const initialCategories = [
   {
@@ -197,6 +217,197 @@ export const deleteCategory = async (req, res) => {
     return res.json({ success: true, message: "Category deleted" });
   } catch (err) {
     console.error("🔥 Error in deleteCategory:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// GET /api/categories/occasions
+export const getOccasions = async (req, res) => {
+  try {
+    const [settingsDoc, allProducts] = await Promise.all([
+      SiteSettings.findOne({ key: "master_occasions" }).catch(() => null),
+      Product.find({}).catch(() => []),
+    ]);
+
+    const savedNames = Array.isArray(settingsDoc?.occasions)
+      ? settingsDoc.occasions
+      : [];
+
+    const fromProducts = [];
+    (allProducts || []).forEach((p) => {
+      if (!p?.occasion) return;
+      String(p.occasion)
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .forEach((o) => fromProducts.push(o));
+    });
+
+    const seen = new Set();
+    const merged = [];
+    [...DEFAULT_OCCASIONS, ...savedNames, ...fromProducts].forEach((raw) => {
+      const clean = String(raw || "").trim();
+      if (!clean) return;
+      const k = clean.toLowerCase();
+      if (seen.has(k)) return;
+      seen.add(k);
+      merged.push({
+        id: clean.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        name: clean,
+      });
+    });
+
+    merged.sort((a, b) => a.name.localeCompare(b.name));
+    return res.json({ success: true, data: merged });
+  } catch (err) {
+    console.error("Error in getOccasions:", err);
+    return res.json({
+      success: true,
+      data: DEFAULT_OCCASIONS.map((name) => ({
+        id: name.toLowerCase(),
+        name,
+      })),
+    });
+  }
+};
+
+// POST /api/categories/occasions
+export const createOccasion = async (req, res) => {
+  try {
+    const rawName = String(req.body?.name || "").trim();
+    if (!rawName) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Occasion name is required" });
+    }
+
+    let doc = await SiteSettings.findOne({ key: "master_occasions" }).catch(
+      () => null,
+    );
+    const currentList = Array.isArray(doc?.occasions)
+      ? [...doc.occasions]
+      : [...DEFAULT_OCCASIONS];
+
+    const existing = currentList.find(
+      (o) => String(o || "").trim().toLowerCase() === rawName.toLowerCase(),
+    );
+    const finalName = existing ? String(existing).trim() : rawName;
+
+    if (!existing) {
+      currentList.push(finalName);
+      if (doc) {
+        doc.occasions = currentList;
+        await doc.save();
+      } else {
+        await SiteSettings.create({
+          key: "master_occasions",
+          occasions: currentList,
+        });
+      }
+    }
+
+    global.__webFiltersCache = null;
+
+    return res.status(201).json({
+      success: true,
+      data: {
+        id: finalName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        name: finalName,
+      },
+    });
+  } catch (err) {
+    console.error("Error in createOccasion:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ================== MASTER COLOURS ==================
+const toColorEntry = (raw) => {
+  const name = String(raw?.name || "").trim();
+  if (!name) return null;
+  const palette = findPaletteByName(name);
+  const hex = normalizeHex(raw?.hex) || palette?.hex || "";
+  const family =
+    String(raw?.family || "").trim() || resolveFamily(name, hex) || "";
+  return {
+    id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+    name,
+    hex,
+    family,
+  };
+};
+
+// GET /api/categories/colors
+export const getColors = async (req, res) => {
+  try {
+    const [settingsDoc, allProducts] = await Promise.all([
+      SiteSettings.findOne({ key: "master_colors" }).catch(() => null),
+      Product.find({}).catch(() => []),
+    ]);
+    const saved = Array.isArray(settingsDoc?.colors) ? settingsDoc.colors : [];
+    const fromProducts = [];
+    (allProducts || []).forEach((p) => {
+      if (Array.isArray(p?.colors)) p.colors.forEach((c) => fromProducts.push(c));
+    });
+
+    const map = new Map();
+    // Saved/custom entries override palette defaults with the same name
+    [...COLOR_PALETTE, ...fromProducts, ...saved].forEach((raw) => {
+      const entry = toColorEntry(raw);
+      if (entry) map.set(entry.name.toLowerCase(), entry);
+    });
+    const data = Array.from(map.values()).sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+    return res.json({ success: true, data, families: COLOR_FAMILIES });
+  } catch (err) {
+    console.error("Error in getColors:", err);
+    return res.json({
+      success: true,
+      data: COLOR_PALETTE.map(toColorEntry),
+      families: COLOR_FAMILIES,
+    });
+  }
+};
+
+// POST /api/categories/colors  { name, hex, family }
+export const createColor = async (req, res) => {
+  try {
+    const entry = toColorEntry(req.body || {});
+    if (!entry) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Colour name is required" });
+    }
+    if (!entry.hex) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Please pick a colour (hex code)" });
+    }
+
+    const doc = await SiteSettings.findOne({ key: "master_colors" }).catch(
+      () => null,
+    );
+    const list = Array.isArray(doc?.colors) ? [...doc.colors] : [];
+    const idx = list.findIndex(
+      (c) => String(c?.name || "").trim().toLowerCase() === entry.name.toLowerCase(),
+    );
+    const stored = { name: entry.name, hex: entry.hex, family: entry.family };
+    if (idx >= 0) list[idx] = stored;
+    else list.push(stored);
+
+    if (doc) {
+      doc.colors = list;
+      await doc.save();
+    } else {
+      await SiteSettings.create({ key: "master_colors", colors: list });
+    }
+
+    global.__webFiltersCache = null;
+    global.__webProductsCache = null;
+    return res.status(201).json({ success: true, data: entry });
+  } catch (err) {
+    console.error("Error in createColor:", err);
     return res.status(500).json({ success: false, message: err.message });
   }
 };

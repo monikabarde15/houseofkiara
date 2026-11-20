@@ -1,8 +1,28 @@
 // src\components\MainCategory\ActiveFilters.jsx
+import { useEffect, useState } from "react";
+
 function ActiveFilters({
   filters,
   setFilters,
 }) {
+  // Colour chips show the admin colour name (e.g. "Blood Red"), not the family key
+  const [colorLabels, setColorLabels] = useState({});
+  useEffect(() => {
+    const backendUrl =
+      import.meta.env.VITE_BACKEND_URL || "http://localhost:5003";
+    fetch(`${backendUrl}/api/web-products/filters`)
+      .then((res) => res.json())
+      .then((data) => {
+        const map = {};
+        (data?.data?.colorSwatches || []).forEach((s) => {
+          map[s.name] = s.label || s.name;
+        });
+        setColorLabels(map);
+      })
+      .catch(() => {});
+  }, []);
+  const colorLabel = (c) =>
+    colorLabels[c] || c.charAt(0).toUpperCase() + c.slice(1);
 
   const clearAllFilters = () => {
     setFilters({
@@ -151,7 +171,7 @@ function ActiveFilters({
 
         {filters.color.map((c) => (
           <div className="clp__tag" key={c}>
-            {c}
+            {colorLabel(c)}
             <span
               className="clp__tagClose"
               onClick={() => {
