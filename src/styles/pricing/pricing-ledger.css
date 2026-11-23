@@ -221,6 +221,15 @@
   font-weight: 400;
 }
 
+/* Custom Admin Added Rows (Static Info Cell) */
+.lg-c.static {
+  cursor: default;
+}
+
+.lg-c.static:hover {
+  background: none;
+}
+
 /* Foot Line */
 .lg-foot {
   margin: 0 32px;

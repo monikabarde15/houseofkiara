@@ -13,6 +13,7 @@ import useCartStore from "../../store/cartStore";
 import useWishlistStore from "../../store/wishlistStore"; 
 import useAuthStore from "../../store/authStore";
 import toast from "react-hot-toast";
+import ProductCoreAccordions, { formatRatingValue } from "./ProductCoreAccordions";
 
 export default function BuyNew() {
   const location = useLocation();
@@ -117,7 +118,11 @@ export default function BuyNew() {
   useEffect(() => {
     if (product) {
       if (product.colors?.length) {
-        setSelectedColor(product.colors[0].code);
+        setSelectedColor(
+          product.colors[0].code ||
+            product.colors[0].hex ||
+            product.colors[0].name,
+        );
         if (product.colors[0].images?.[0]) {
           setActiveImage(product.colors[0].images[0]);
         }
@@ -218,8 +223,8 @@ Hi,
 
 I am interested in this product:
 
-Product: ${product.title || product.name || "None"}
-Designer: ${product.designer || "Designer Atelier"}
+Product: ${product.title || product.name || ""}
+Designer: ${product.designer || ""}
 Price: ${price}
 Size: ${selectedSize || "Not Selected"}
 Color: ${selectedColor || "Not Selected"}
@@ -234,6 +239,16 @@ Product ID: ${product.id || product._id || ""}
     window.open(whatsappUrl, "_blank");
   };
 
+  const buySwatches = (Array.isArray(product.colors) ? product.colors : []).filter(
+    (c) => c && (c.code || c.hex || c.name),
+  );
+  const resolvedSizeNote =
+    product.sizeGuide && product.sizeGuide !== "None"
+      ? product.sizeGuide
+      : product.sizeNote && product.sizeNote !== "None"
+        ? product.sizeNote
+        : "";
+
   return (
     <section className="pdp">
       <Container>
@@ -244,13 +259,21 @@ Product ID: ${product.id || product._id || ""}
             <span className="crumb">Home</span>
             <span className="sep">›</span>
             <span className="crumb">Buy New</span>
-            <span className="sep">›</span>
-            <span className="crumb">{product.category || "None"}</span>
-            <span className="sep">›</span>
-            <span className="crumb">{product.designer || "Designer Atelier"}</span>
+            {product.category && (
+              <>
+                <span className="sep">›</span>
+                <span className="crumb">{product.category}</span>
+              </>
+            )}
+            {product.designer && (
+              <>
+                <span className="sep">›</span>
+                <span className="crumb">{product.designer}</span>
+              </>
+            )}
             <span className="sep">›</span>
             <span className="crumb current">
-              {product.title || product.name || "None"}
+              {product.title || product.name || ""}
             </span>
           </div>
         </div>
@@ -289,17 +312,22 @@ Product ID: ${product.id || product._id || ""}
               </div>
 
 
-              <p className="buynew-designer-name">
-                {product.designer || "Designer Atelier"}
-              </p>
+              {product.designer && (
+                <p className="buynew-designer-name">
+                  {product.designer}
+                </p>
+              )}
 
               <h1 className="buynew-product-title">
-                {product.title || product.name || "None"} <em>{product.subTitle || ""}</em>
+                {product.title || product.name || ""}{" "}
+                {product.subTitle ? <em>{product.subTitle}</em> : null}
               </h1>
 
-              <p className="buynew-product-desc">
-                {product.description || "None"}
-              </p>
+              {product.description && product.description !== "None" && (
+                <p className="buynew-product-desc">
+                  {product.description}
+                </p>
+              )}
 
               <div className="buynew-rating-row">
                 {[1, 2, 3, 4, 5].map((s) => (
@@ -312,8 +340,12 @@ Product ID: ${product.id || product._id || ""}
                   />
                 ))}
 
-                <span className="buynew-rating-text">{product.rating || 0}.0</span>
-                <span className="buynew-reviews">{product.reviews || 0} reviews</span>
+                <span className="buynew-rating-text">
+                  {formatRatingValue(product.rating)}
+                </span>
+                <span className="buynew-reviews">
+                  {product.reviewCount ?? product.reviews ?? 0} reviews
+                </span>
 
                 <span className="buynew-never-worn-soft">
                   NEVER WORN
@@ -340,38 +372,53 @@ Product ID: ${product.id || product._id || ""}
                 </div>
 
                 <p className="buynew-delivery-text">
-                  <span className="buynew-strong">Ready to ship</span> · Dispatches in 2–3 days · Standard delivery 4–6 days
+                  {product.deliveryTiming ? (
+                    product.deliveryTiming
+                  ) : (
+                    <>
+                      <span className="buynew-strong">Ready to ship</span> · Dispatches in 2–3 days · Standard delivery 4–6 days
+                    </>
+                  )}
                 </p>
               </div>
 
               {/* COLORS */}
-              <div className="buynew-color-section">
-                <p className="buynew-section-label">SELECT COLOUR</p>
-                <div className="buynew-swatches-details">
-                  {Array.isArray(product.colors) && product.colors.length > 0 ? (
-                    product.colors.map((c, i) => (
-                      <div
-                        key={i}
-                        className={`buynew-swatches-details ${selectedColor === c.code ? "active" : ""}`}
-                        onClick={() => {
-                          setSelectedColor(c.code);
-                          if (c.images?.[0]) setActiveImage(c.images[0]);
-                        }}
-                      >
-                        <div
-                          className="buynew-swatch-circle-details"
-                          style={{ backgroundColor: c.code }}
-                        ></div>
-                        <span className="buynew-swatch-name">
-                          {c.name}
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <span style={{ fontSize: "14px", color: "#666" }}>{product.color || "None"}</span>
-                  )}
+              {(buySwatches.length > 0 || (product.color && product.color !== "None")) && (
+                <div className="buynew-color-section">
+                  <p className="buynew-section-label">SELECT COLOUR</p>
+                  <div className="buynew-swatches-details">
+                    {buySwatches.length > 0 ? (
+                      buySwatches.map((c, i) => {
+                        const swatchVal = c.code || c.hex || c.name;
+                        return (
+                          <div
+                            key={i}
+                            className={`buynew-swatches-details ${selectedColor === swatchVal ? "active" : ""}`}
+                            onClick={() => {
+                              setSelectedColor(swatchVal);
+                              if (c.images?.[0]) setActiveImage(c.images[0]);
+                            }}
+                          >
+                            {c.code || c.hex ? (
+                              <div
+                                className="buynew-swatch-circle-details"
+                                style={{ backgroundColor: c.code || c.hex }}
+                              ></div>
+                            ) : null}
+                            <span className="buynew-swatch-name">
+                              {c.name}
+                            </span>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <span style={{ fontSize: "14px", color: "#666" }}>
+                        {product.color}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* SIZE */}
               <div className="buynew-section">
@@ -405,12 +452,14 @@ Product ID: ${product.id || product._id || ""}
                       </span>
                     ))
                   ) : (
-                    <span className="active">{product.prelovedSize || "None"}</span>
+                    <span className="active">
+                      {product.prelovedSize || "Free Size"}
+                    </span>
                   )}
                 </div>
-                <p className="buynew-size-note">
-                  {product.sizeNote || "None"}
-                </p>
+                {resolvedSizeNote && (
+                  <p className="buynew-size-note">{resolvedSizeNote}</p>
+                )}
               </div>
 
               {/* CTA Section */}
@@ -495,183 +544,32 @@ Product ID: ${product.id || product._id || ""}
               </div>
 
               {/* PRODUCTS PAGE DETAILS */}
-
-              <div className="buynew-pdp-accordion">
-
-                {/* ================= PRODUCT DETAILS ================= */}
-                <div className="buynew-pdp-item">
-                  <div className="buynew-pdp-header" onClick={() => toggle("details")}>
-                    <span>PRODUCT DETAILS</span>
-
-                    <Plus className={`buynew-pdp-icon ${isOpen("details") ? "open" : ""}`} />
-                  </div>
-
-                  {isOpen("details") && (
-                    <div className="buynew-pdp-content">
-                      <div className="buynew-pdp-grid">
-
-                        <div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Designer</span><p>{product.designer || "Designer Atelier"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Fabric</span><p>{product.details?.fabric || product.fabric || "None"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Craft Technique</span><p>{product.details?.technique || product.craftTechnique || "None"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Includes</span><p>{product.details?.includes || product.includes || "None"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Delivery Time</span><p>{product.details?.delivery || product.deliveryTime || "None"}</p></div>
-                        </div>
-
-                        <div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Category</span><p>{product.category || product.subTitle || "Luxury Couture"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Colour</span><p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Thread</span><p>{product.details?.thread || product.thread || "None"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p></div>
-                          <div className="buynew-pdp-row"><span className="buynew-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "Lucknow, India"}</p></div>
-                        </div>
-
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* ================= THE CRAFT ================= */}
-                <div className="buynew-pdp-item">
-                  <div className="buynew-pdp-header" onClick={() => toggle("craft")}>
-                    <span>THE CRAFT</span>
-
-                    <Plus className={`buynew-pdp-icon ${isOpen("craft") ? "open" : ""}`} />
-                  </div>
-
-                  {isOpen("craft") && (
-                    <div className="buynew-pdp-content">
-                      <p className="buynew-craft-text">
-                        {product.craft || product.craftStory || product.story || "None"}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* ================= SIZE & FIT ================= */}
-                <div className="buynew-pdp-item">
-                  <div data-size-guide className="buynew-pdp-header" onClick={() => toggle("size")}>
-                    <span>SIZE & FIT</span>
-
-                    <Plus className={`buynew-pdp-icon ${isOpen("size") ? "open" : ""}`} />
-                  </div>
-
-                  {isOpen("size") && (
-                    <div className="buynew-pdp-content">
-
-                      <p className="buynew-size-intro">{product.sizeNote || "None"}</p>
-
-                      <table className="buynew-size-table">
-                        <thead>
-                          <tr>
-                            <th>Size</th>
-                            <th>Bust</th>
-                            <th>Waist</th>
-                            <th>Hips</th>
-                            <th>Height</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {Array.isArray(product.sizeTable) && product.sizeTable.length > 0 ? (
-                            product.sizeTable.map((row, i) => (
-                              <tr key={i} className={row.recommended ? "buynew-active-row" : ""}>
-                                <td>{row.size || "None"}</td>
-                                <td>{row.bust || "None"}</td>
-                                <td>{row.waist || "None"}</td>
-                                <td>{row.hips || "None"}</td>
-                                <td>{row.height || "None"}</td>
-                              </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td>{selectedSize || "None"}</td>
-                              <td>{product.measurements?.bust || "None"}</td>
-                              <td>{product.measurements?.waist || "None"}</td>
-                              <td>{product.measurements?.hips || "None"}</td>
-                              <td>{product.measurements?.length || "None"}</td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-
-                    </div>
-                  )}
-                </div>
-
-                {/* ================= CARE ================= */}
-                <div className="buynew-pdp-item">
-                  <div className="buynew-pdp-header" onClick={() => toggle("care")}>
-                    <span>CARE INSTRUCTIONS</span>
-
-                    <Plus className={`buynew-pdp-icon ${isOpen("care") ? "open" : ""}`} />
-                  </div>
-
-                  {isOpen("care") && (
-                    <div className="buynew-pdp-content">
-                      <ul className="buynew-care-list">
-                        {Array.isArray(product.care) && product.care.length > 0 ? (
-                          product.care.map((item, i) => (
-                            <li key={i}>
-                              <span className="buynew-dash">—</span>
-                              <span>{item}</span>
-                            </li>
-                          ))
-                        ) : (
-                          <li>
-                            <span className="buynew-dash">—</span>
-                            <span>None</span>
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-
-                {/* ================= SHIPPING ================= */}
-                <div className="buynew-pdp-item">
-                  <div className="buynew-pdp-header" onClick={() => toggle("shipping")}>
-                    <span>SHIPPING & DELIVERY</span>
-
-                    <Plus className={`buynew-pdp-icon ${isOpen("shipping") ? "open" : ""}`} />
-                  </div>
-
-                  {isOpen("shipping") && (
-                    <div className="buynew-pdp-content">
-
-                      <table className="buynew-shipping-table">
-                        <thead>
-                          <tr>
-                            <th>Method</th>
-                            <th>Estimated time</th>
-                            <th>Cost</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {Array.isArray(product.shipping) && product.shipping.length > 0 ? (
-                            product.shipping.map((item, i) => (
-                              <tr key={i}>
-                                <td>{item.method || "None"}</td>
-                                <td>{item.time || "None"}</td>
-                                <td className="buynew-cost">{item.cost || "None"}</td>
-                              </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td>{product.deliveryTiming ? "Standard Delivery" : "None"}</td>
-                              <td>{product.deliveryTiming || "None"}</td>
-                              <td className="buynew-cost">None</td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-
-                    </div>
-                  )}
-                </div>
-
-              </div>
+              <ProductCoreAccordions
+                product={product}
+                isOpen={isOpen}
+                toggle={toggle}
+                includeDisclosureInDetails={true}
+                shippingMode="table"
+                classes={{
+                  accordion: "buynew-pdp-accordion",
+                  item: "buynew-pdp-item",
+                  header: "buynew-pdp-header",
+                  icon: "buynew-pdp-icon",
+                  content: "buynew-pdp-content",
+                  grid: "buynew-pdp-grid",
+                  row: "buynew-pdp-row",
+                  label: "buynew-pdp-label",
+                  craftText: "buynew-craft-text",
+                  storyNote: "buynew-craft-text",
+                  sizeIntro: "buynew-size-intro",
+                  sizeTable: "buynew-size-table",
+                  activeRow: "buynew-active-row",
+                  careList: "buynew-care-list",
+                  careDash: "buynew-dash",
+                  shippingTable: "buynew-shipping-table",
+                  shippingCost: "buynew-cost",
+                }}
+              />
             </div>
           </Col>
 
@@ -679,7 +577,11 @@ Product ID: ${product.id || product._id || ""}
       </Container>
 
       {/* ================= RELATED PRODUCT SECTION ================= */}
-      <RelatedProduct/>
+      <RelatedProduct
+        product={product}
+        currentProductId={id}
+        category={product.category || product.subTitle}
+      />
 
     </section>
   );

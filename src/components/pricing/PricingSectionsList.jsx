@@ -7,12 +7,16 @@ import PricingSectionBlock from "./PricingSectionBlock";
 
 function PricingSectionsList({
   activeSide,
+  sections = PRICING_SECTIONS,
+  isSectionHidden,
   openQuestionIds,
   onToggleQuestion,
   onSelectQuestion,
   onShowToast,
 }) {
-  const currentSections = PRICING_SECTIONS.filter((sec) => sec.side === activeSide);
+  const currentSections = (sections || PRICING_SECTIONS).filter(
+    (sec) => sec.side === activeSide && !(isSectionHidden && isSectionHidden(sec.id))
+  );
 
   return (
     <div className="dp-sections-list">

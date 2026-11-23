@@ -12,6 +12,7 @@ export default function RentalCalendar({
 }) {
   const [currentDate, setCurrentDate] = useState(selectedStart || new Date());
   const [hoverDate, setHoverDate] = useState(null);
+  const [selectionWarning, setSelectionWarning] = useState("");
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth(); // 0–11
@@ -67,6 +68,21 @@ export default function RentalCalendar({
     return copy;
   };
 
+  const fmtYmd = (d) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+  const diffDaysInclusive = (a, b) =>
+    Math.round(
+      (toMidnight(new Date(b)).getTime() - toMidnight(new Date(a)).getTime()) /
+        (1000 * 60 * 60 * 24),
+    ) + 1;
+
+  const rawMinDays = Number(rentData?.pricing?.minDays);
+  const minRentDays =
+    Number.isFinite(rawMinDays) && rawMinDays >= 1
+      ? Math.floor(rawMinDays)
+      : 3;
+
   const today = toMidnight(new Date());
 
   const bufferDays =
@@ -107,51 +123,115 @@ export default function RentalCalendar({
     if (!a || !b) return false;
     const start = toMidnight(new Date(Math.min(a, b)));
     const end = toMidnight(new Date(Math.max(a, b)));
-    let d = new Date(start);
+    const d = new Date(start);
     while (d <= end) {
-      const str = d.toISOString().split("T")[0];
-      if (unavailableSet.has(str)) return true;
+      if (unavailableSet.has(fmtYmd(d))) return true;
       d.setDate(d.getDate() + 1);
     }
     return false;
+  };
+
+  const minEndDate =
+    selectedStart && !selectedEnd && minRentDays > 1
+      ? (() => {
+          const d = toMidnight(selectedStart);
+          d.setDate(d.getDate() + minRentDays - 1);
+          return d;
+        })()
+      : null;
+
+  const isBelowMinDays = (day) => {
+    if (!day || !selectedStart || selectedEnd || minRentDays <= 1) return false;
+    const date = toMidnight(new Date(year, month, day));
+    const startMid = toMidnight(selectedStart);
+    if (date < startMid) return false;
+    return diffDaysInclusive(startMid, date) < minRentDays;
   };
 
   // ─── Date selection handler ────────────────────────────────────────────
   const handleDateClick = (day) => {
     if (!day) return;
     if (isUnavailable(day)) {
-      alert("This date is already booked and unavailable for rental.");
+      setSelectionWarning(
+        "This date is already booked or unavailable for rental.",
+      );
       return;
     }
 
     const clicked = toMidnight(new Date(year, month, day));
 
-    // First click OR reset (already have both selected)
-    if (!selectedStart || (selectedStart && selectedEnd)) {
-      setSelectedStart(clicked);
-      setSelectedEnd(null);
-      return;
-    }
-
-    // Second click → set end date
-    if (selectedStart && !selectedEnd) {
-      if (clicked < selectedStart) {
-        // User clicked earlier → swap: make clicked the new start
+    // When minimum rental duration is 1 day: single click immediately selects a 1-day rental;
+    // clicking a later available date extends it to a multi-day range.
+    if (minRentDays === 1) {
+      if (!selectedStart || !selectedEnd) {
         setSelectedStart(clicked);
-        setSelectedEnd(null);
+        setSelectedEnd(clicked);
+        setSelectionWarning("");
         return;
       }
 
-      // ⛔ Block if any date in selected range is unavailable
-      if (rangeHasBlockedDate(selectedStart, clicked)) {
-        alert("Your selected range includes dates that are already booked.");
-        // Reset selection — range crosses a booked date
+      const startMid = toMidnight(selectedStart);
+      const endMid = toMidnight(selectedEnd);
+      const isSingleDaySelected = startMid.getTime() === endMid.getTime();
+
+      if (isSingleDaySelected && clicked > startMid) {
+        if (rangeHasBlockedDate(startMid, clicked)) {
+          setSelectionWarning(
+            "Your selected range includes dates that are already booked.",
+          );
+          setSelectedStart(clicked);
+          setSelectedEnd(clicked);
+          return;
+        }
+        setSelectedEnd(clicked);
+        setSelectionWarning("");
+        return;
+      }
+
+      setSelectedStart(clicked);
+      setSelectedEnd(clicked);
+      setSelectionWarning("");
+      return;
+    }
+
+    // When minimum rental duration is >= 2 days: require start -> valid end >= minRentDays
+    if (!selectedStart || (selectedStart && selectedEnd)) {
+      setSelectedStart(clicked);
+      setSelectedEnd(null);
+      setSelectionWarning("");
+      return;
+    }
+
+    if (selectedStart && !selectedEnd) {
+      const startMid = toMidnight(selectedStart);
+      if (clicked < startMid) {
+        setSelectedStart(clicked);
+        setSelectedEnd(null);
+        setSelectionWarning("");
+        return;
+      }
+
+      const chosenDays = diffDaysInclusive(startMid, clicked);
+      if (chosenDays < minRentDays) {
+        const reqEnd = new Date(startMid);
+        reqEnd.setDate(reqEnd.getDate() + minRentDays - 1);
+        setSelectionWarning(
+          `Minimum rental duration is ${minRentDays} days. Please select an end date on or after ${formatDate(reqEnd)}.`,
+        );
+        return;
+      }
+
+      if (rangeHasBlockedDate(startMid, clicked)) {
+        setSelectionWarning(
+          "Your selected range includes dates that are already booked.",
+        );
         setSelectedStart(clicked);
         setSelectedEnd(null);
         return;
       }
 
       setSelectedEnd(clicked);
+      setSelectionWarning("");
     }
   };
 
@@ -208,9 +288,7 @@ export default function RentalCalendar({
   // ─── Pricing calculations ──────────────────────────────────────────────
   const getDays = () => {
     if (!selectedStart || !selectedEnd) return 0;
-    const diff =
-      toMidnight(new Date(selectedEnd)) - toMidnight(new Date(selectedStart));
-    return Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
+    return diffDaysInclusive(selectedStart, selectedEnd);
   };
 
   const totalDays = getDays();
@@ -252,9 +330,6 @@ export default function RentalCalendar({
       : false;
 
   // ─── Next available window (first run of >= minDays free days) ─────────
-  const minRentDays = rentData?.pricing?.minDays || 3;
-  const fmtYmd = (d) =>
-    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   const nextAvailable = (() => {
     const cursor = new Date(minValidDate);
     let runStart = null;
@@ -302,7 +377,7 @@ export default function RentalCalendar({
           }
         >
           Next available: <strong>{fmtNice(nextAvailable)}</strong> onwards (min.{" "}
-          {minRentDays} days)
+          {minRentDays} {minRentDays === 1 ? "day" : "days"})
         </p>
       )}
       <div className="calendar">
@@ -347,6 +422,7 @@ export default function RentalCalendar({
               const unavailable = isUnavailable(day);
               const conflict = isRangeConflict(day);
               const inRange = !conflict && isInRange(day);
+              const tooShort = !unavailable && isBelowMinDays(day);
 
               return (
                 <div
@@ -359,11 +435,14 @@ export default function RentalCalendar({
                       ? "This date is unavailable"
                       : conflict
                         ? "This range includes booked dates"
-                        : undefined
+                        : tooShort
+                          ? `Minimum rental duration is ${minRentDays} days`
+                          : undefined
                   }
                   className={`calendar__day
                                         ${!day ? "empty" : ""}
                                         ${unavailable ? "blocked" : "available"}
+                                        ${tooShort ? "too-short" : ""}
                                         ${isStart(day) ? "start" : ""}
                                         ${isEnd(day) ? "end" : ""}
                                         ${inRange ? "range" : ""}
@@ -414,6 +493,31 @@ export default function RentalCalendar({
             time. If anything changes, we will contact you before dispatch.
           </div>
         )}
+        {selectionWarning && (
+          <div className="calendar-conflict-warning">
+            ⚠ {selectionWarning}
+          </div>
+        )}
+        {selectedStart &&
+          !selectedEnd &&
+          minRentDays > 1 &&
+          minEndDate &&
+          !selectionWarning &&
+          !hoverRangeConflicts && (
+            <div
+              className="calendar-conflict-warning"
+              style={{
+                background: "#faf6ee",
+                borderColor: "#e8d5b0",
+                color: "#6b5a3a",
+              }}
+            >
+              Start date: <strong>{formatDate(selectedStart)}</strong> — select
+              an end date on or after{" "}
+              <strong>{formatDate(minEndDate)}</strong> (minimum {minRentDays}{" "}
+              days).
+            </div>
+          )}
         {hoverRangeConflicts && selectedStart && !selectedEnd && (
           <div className="calendar-conflict-warning">
             ⚠ This range includes booked dates — please choose different dates.
@@ -426,7 +530,10 @@ export default function RentalCalendar({
             <span>Rental dates</span>
             <span>
               {selectedStart && selectedEnd
-                ? `${formatDate(selectedStart)} – ${formatDate(selectedEnd)}`
+                ? toMidnight(selectedStart).getTime() ===
+                  toMidnight(selectedEnd).getTime()
+                  ? formatDate(selectedStart)
+                  : `${formatDate(selectedStart)} – ${formatDate(selectedEnd)}`
                 : "Select dates above"}
             </span>
           </div>
@@ -434,7 +541,9 @@ export default function RentalCalendar({
           <div className="summary-row" id="sumDuration">
             <span>Duration</span>
             <span>
-              {selectedStart && selectedEnd ? `${totalDays} days` : "— days"}
+              {selectedStart && selectedEnd
+                ? `${totalDays} ${totalDays === 1 ? "day" : "days"}`
+                : "— days"}
             </span>
           </div>
 
@@ -449,12 +558,20 @@ export default function RentalCalendar({
 
           <div className="summary-row" id="sumFee">
             <span>Rental fee</span>
-            <span>{selectedStart && selectedEnd ? `₹${totalPrice}` : "—"}</span>
+            <span>
+              {selectedStart && selectedEnd
+                ? `₹${Number(totalPrice).toLocaleString("en-IN")}`
+                : "—"}
+            </span>
           </div>
 
           <div className="summary-row total" id="sumTotal">
             <span>Total payable now</span>
-            <span>{selectedStart && selectedEnd ? `₹${totalPrice}` : "—"}</span>
+            <span>
+              {selectedStart && selectedEnd
+                ? `₹${Number(totalPrice).toLocaleString("en-IN")}`
+                : "—"}
+            </span>
           </div>
         </div>
       </div>

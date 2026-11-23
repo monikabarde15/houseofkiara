@@ -175,10 +175,23 @@ export const detectProductColors = (product) => {
  * - Falls back to text detection for older products
  */
 export const getProductColorInfo = (product) => {
+  const explicitFamilyRaw = String(product?.colorFamily || "").trim();
+  const explicitColorText = String(product?.color || "").trim();
   const list = Array.isArray(product?.colors)
     ? product.colors.filter((c) => c && String(c.name || "").trim())
     : [];
 
+  const appendExplicitColorName = (namesList) => {
+    if (
+      explicitColorText &&
+      !namesList.includes(explicitColorText.toLowerCase())
+    ) {
+      namesList.push(explicitColorText.toLowerCase());
+    }
+    return namesList;
+  };
+
+  // Priority 1: Multi-select structured colours picked in Admin (`product.colors`)
   if (list.length > 0) {
     const entries = list.map((c) => {
       const name = String(c.name).trim();
@@ -189,11 +202,59 @@ export const getProductColorInfo = (product) => {
     const families = Array.from(
       new Set(entries.map((e) => e.family.toLowerCase()).filter(Boolean)),
     );
+    const names = appendExplicitColorName(
+      Array.from(new Set(entries.map((e) => e.name.toLowerCase()))),
+    );
     return {
       entries,
       families,
-      names: entries.map((e) => e.name.toLowerCase()),
+      names,
       primaryFamily: (entries[0].family || "").toLowerCase(),
+    };
+  }
+
+  // Priority 2: Explicit comma-separated or single `product.colorFamily` fallback
+  if (explicitFamilyRaw) {
+    const familyTokens = explicitFamilyRaw
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const entries = [];
+    const seen = new Set();
+
+    familyTokens.forEach((rawFam) => {
+      const matchedFamilyObj = COLOR_FAMILIES.find(
+        (f) => f.name.toLowerCase() === rawFam.toLowerCase(),
+      );
+      const canonicalFamily = matchedFamilyObj?.name || rawFam;
+      const key = canonicalFamily.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const primaryName =
+        entries.length === 0 && explicitColorText
+          ? explicitColorText
+          : canonicalFamily;
+      const primaryHex =
+        findPaletteByName(primaryName)?.hex ||
+        familyHex(canonicalFamily) ||
+        matchedFamilyObj?.hex ||
+        "";
+
+      entries.push({ name: primaryName, hex: primaryHex, family: canonicalFamily });
+    });
+
+    const families = Array.from(
+      new Set(entries.map((e) => e.family.toLowerCase()).filter(Boolean)),
+    );
+    const names = appendExplicitColorName(
+      Array.from(new Set(entries.map((e) => e.name.toLowerCase()))),
+    );
+    return {
+      entries,
+      families,
+      names,
+      primaryFamily: (entries[0]?.family || "").toLowerCase(),
     };
   }
 
@@ -707,49 +768,101 @@ export const getWebProductById = async (req, res) => {
     if (colorInfo.entries.length > 0) {
       colors = colorInfo.entries.map((c, i) => ({
         code: c.hex || familyHex(c.family) || "#000000",
+        hex: c.hex || familyHex(c.family) || "",
         name: c.name,
         family: c.family,
         primary: i === 0,
         images: product.images || [],
       }));
     } else if (product.color) {
-      colors = product.color.split(",").map((c) => ({
-        code: findPaletteByName(c.trim())?.hex || c.trim(),
-        name: c.trim(),
-        images: product.images || [],
-      }));
-    } else {
-      // fallback color so the UI doesn't crash if it expects an array
-      colors = [
-        { code: "#000000", name: "Standard", images: product.images || [] },
-      ];
+      colors = product.color
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean)
+        .map((c, i) => ({
+          code: findPaletteByName(c)?.hex || "",
+          hex: findPaletteByName(c)?.hex || "",
+          name: c,
+          primary: i === 0,
+          images: product.images || [],
+        }));
     }
 
-    const sizes = product.sizes
-      ? product.sizes.map((s) => ({
-          label: s.trim().toUpperCase(),
-          available: true,
-        }))
-      : [];
+    const cleanSizes = Array.isArray(product.sizes)
+      ? product.sizes.map((s) => String(s || "").trim()).filter(Boolean)
+      : typeof product.sizes === "string" && product.sizes.trim()
+        ? product.sizes
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : [];
+
+    const sizePills = cleanSizes.map((s) => ({
+      label: s.toUpperCase(),
+      available: true,
+    }));
+
+    const minRentalDays =
+      Number(product.minimumDurationDays) >= 1
+        ? Math.floor(Number(product.minimumDurationDays))
+        : 3;
+    const resolvedPerDay =
+      Number(product.perDayRate) > 0
+        ? Number(product.perDayRate)
+        : product.rentalPrice
+          ? Math.round(product.rentalPrice / 4)
+          : 2500;
+    const resolvedColorFamily =
+      String(product.colorFamily || "").trim() ||
+      Array.from(
+        new Set(colorInfo.entries.map((e) => e.family).filter(Boolean)),
+      ).join(", ");
+    const resolvedCondition = String(product.condition || "").trim();
+    const resolvedRating = Number(product.rating) || 0;
+    const resolvedReviewCount = Number(product.reviewCount) || 0;
+    const resolvedTimesRented = Number(product.timesRented) || 0;
 
     const formattedProduct = {
       id: product.productId || product._id.toString(),
+      productId: product.productId || product._id.toString(),
       _id: product._id.toString(),
-      designer: product.designer || "Unknown Designer",
+      designer: product.designer || "",
       title: product.name,
-      subTitle: product.subtitle || product.category || "",
-      description: product.description || product.story || "",
-      craft: product.craft || product.material || "",
+      name: product.name,
+      subtitle: product.subtitle || "",
+      subTitle: product.subtitle || "",
+      category: product.category || "",
+      occasion: product.occasion || "",
+      description: product.description || "",
+      story: product.story || "",
+      material: product.material || "",
+      fabric: product.material || "",
+      color: product.color || "",
+      craft: product.craft || "",
+      technique: product.technique || "",
+      embellishments: product.embellishments || "",
+      threadYarnDetail: product.threadYarnDetail || product.threadWork || "",
+      setIncludes: product.setIncludes || "",
+      origin: product.origin || "",
+      weight: product.weight || "",
+      deliveryTiming: product.deliveryTiming || "",
+      sizes: cleanSizes,
+      measurements: product.measurements || {},
+      measurementsCm: product.measurementsCm || {},
+      bestSuitedForHeight: product.bestSuitedForHeight || "",
+      sizeGuide: product.sizeGuide || "",
       disclosure: product.honestDisclosure || "",
+      honestDisclosure: product.honestDisclosure || "",
       condition: {
-        grade: product.condition
-          ? product.condition.toLowerCase()
-          : "excellent",
+        grade: resolvedCondition ? resolvedCondition.toLowerCase() : "",
+        label: resolvedCondition,
       },
       originalRetailPrice: product.originalRetailPrice || 0,
       retailPrice: product.originalRetailPrice || 0,
       originalPrice: product.originalRetailPrice || 0,
       rentalPrice: product.rentalPrice || 0,
+      perDayRate: resolvedPerDay,
+      minimumDurationDays: minRentalDays,
       listingPrice: product.listingPrice || 0,
       price: product.rentalPrice || product.listingPrice || 0,
       images: (product.images || []).map((img) =>
@@ -759,26 +872,42 @@ export const getWebProductById = async (req, res) => {
       ),
       video: product.video || null,
       colors: colors,
-      sizeTable: sizes,
+      colorFamily: resolvedColorFamily,
+      sizeTable: [],
       details: {
+        designer: product.designer || "",
+        category: product.category || "",
         fabric: product.material || "",
-        technique: product.technique || "",
-        includes: product.setIncludes || "",
-        delivery: product.deliveryTiming || "",
         color: product.color || "",
+        colorFamily: resolvedColorFamily,
+        craft: product.craft || "",
+        technique: product.technique || "",
+        embellishments: product.embellishments || "",
         thread: product.threadYarnDetail || product.threadWork || "",
+        includes: product.setIncludes || "",
         occasion: product.occasion || "",
         origin: product.origin || "",
+        weight: product.weight || "",
+        delivery: product.deliveryTiming || "",
+        sku: product.sku || "",
+        condition: resolvedCondition,
       },
-      rating: product.rating || 5,
-      reviews: product.reviewCount || 12,
-      rentInfo: { rentedCount: product.timesRented || 45 },
-      care: product.care || [],
+      sku: product.sku || "",
+      tags: Array.isArray(product.tags) ? product.tags.filter(Boolean) : [],
+      rating: resolvedRating,
+      reviewCount: resolvedReviewCount,
+      reviews: resolvedReviewCount,
+      timesRented: resolvedTimesRented,
+      rentInfo: { rentedCount: resolvedTimesRented },
+      careByFabric: product.careByFabric || "",
+      care: Array.isArray(product.care) ? product.care.filter(Boolean) : [],
+      packaging: Array.isArray(product.packaging) ? product.packaging : [],
       shipping: product.shipping || [],
       relatedProducts: relatedProducts,
       modes: {
         rent: {
           enabled: rent,
+          sizes: sizePills,
           availability: {
             unavailableDates: [],
             blockedRanges: [
@@ -800,8 +929,8 @@ export const getWebProductById = async (req, res) => {
             ],
           },
           pricing: {
-            pricePerDay: product.rentalPrice ? Math.round(product.rentalPrice / 4) : (product.perDayRate || 2500),
-            minDays: 3,
+            pricePerDay: resolvedPerDay,
+            minDays: minRentalDays,
             originalRetailPrice: product.originalRetailPrice || 0,
             retailPrice: product.originalRetailPrice || 0,
             windows: [

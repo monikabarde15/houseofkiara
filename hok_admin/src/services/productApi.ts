@@ -4,6 +4,13 @@ import { apiRequest } from "./apiClient";
 export const getProducts = async () =>
   (await apiRequest("/products")).data as Product[];
 
+export const getNextSku = async (afterSku?: string): Promise<string> => {
+  const qs = afterSku?.trim()
+    ? `?after=${encodeURIComponent(afterSku.trim())}`
+    : "";
+  return String((await apiRequest(`/products/next-sku${qs}`)).data?.sku || "").trim();
+};
+
 export const createProduct = async (product: Product) =>
   (
     await apiRequest("/products", {

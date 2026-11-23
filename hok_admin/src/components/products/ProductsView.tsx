@@ -8,7 +8,7 @@ import { useProductEditor } from "../hooks/useProductEditor";
 import { ProductHeader } from "./ProductHeader";
 import { ProductFilters } from "./ProductFilters";
 import { ProductTable } from "./ProductTable";
-import { ProductTabs } from "./ProductTabs";
+import { ProductTabs, DEFAULT_TAB_LABELS } from "./ProductTabs";
 import { CoreDetailsTab } from "./tabs/CoreDetailsTab";
 import { PricingTaxTab } from "./tabs/PricingTaxTab";
 import { ImagesTab } from "./tabs/ImagesTab";
@@ -20,6 +20,11 @@ import { EnquiryHistoryTab } from "./tabs/EnquiryHistoryTab";
 import { ActivityLogTab } from "./tabs/ActivityLogTab";
 import { ProductSidebar } from "./ProductSidebar";
 import toast from "react-hot-toast";
+import {
+  validateProductForm,
+  ProductValidationIssue,
+  normalizeProductListingModes,
+} from "./utils/validateProductForm";
 
 type ProductTab =
   | "Core"
@@ -54,6 +59,37 @@ interface ProductsViewProps {
   initialProductId?: string;
 }
 
+const computeLocalNextSku = (list: Product[], afterSku?: string): string => {
+  const existingSet = new Set<string>();
+  let maxNum = 0;
+
+  const inspect = (raw?: string) => {
+    const rawSku = String(raw || "").trim();
+    if (!rawSku) return;
+    existingSet.add(rawSku.toUpperCase());
+    const match = rawSku.match(/^HOK-SKU-(\d+)$/i);
+    if (match) {
+      const parsed = Number.parseInt(match[1], 10);
+      if (Number.isFinite(parsed) && parsed > maxNum) {
+        maxNum = parsed;
+      }
+    }
+  };
+
+  for (const item of list || []) {
+    inspect(item?.sku);
+  }
+  inspect(afterSku);
+
+  let nextNum = maxNum + 1;
+  let candidate = `HOK-SKU-${String(nextNum).padStart(4, "0")}`;
+  while (existingSet.has(candidate.toUpperCase())) {
+    nextNum += 1;
+    candidate = `HOK-SKU-${String(nextNum).padStart(4, "0")}`;
+  }
+  return candidate;
+};
+
 export default function ProductsView({
   products,
   orders = [],
@@ -78,9 +114,16 @@ export default function ProductsView({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [isSaving, setIsSaving] = useState(false);
+  const [generatingSku, setGeneratingSku] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isFinalSaving, setIsFinalSaving] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
+  const [validationIssues, setValidationIssues] = useState<
+    ProductValidationIssue[]
+  >([]);
 
   const [selectedMode, setSelectedMode] = useState("All Modes");
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
@@ -144,6 +187,72 @@ export default function ProductsView({
     console.log("🔄 Form reset for new product.");
   };
 
+  const skuSessionRef = React.useRef<string>("");
+
+  const prefillNextSku = React.useCallback(
+    (currentProducts: Product[], targetKey: string) => {
+      const previewSku = computeLocalNextSku(currentProducts);
+      setFormData((prev) => {
+        const existing = String(prev.sku || "").trim();
+        return existing ? prev : { ...prev, sku: previewSku };
+      });
+      productApi
+        .getNextSku()
+        .then((serverSku) => {
+          const cleanServerSku = String(serverSku || "").trim();
+          if (!cleanServerSku || skuSessionRef.current !== targetKey) return;
+          setFormData((prev) => ({ ...prev, sku: cleanServerSku }));
+        })
+        .catch(() => {
+          // Keep local increment preview if server fetch fails
+        });
+    },
+    [setFormData],
+  );
+
+  const handleAutoGenerateSku = async () => {
+    const currentSku = String(formData.sku || "").trim();
+    const sessionKey = skuSessionRef.current;
+    const localNext = computeLocalNextSku(products, currentSku);
+    handleFormFieldChange("sku", localNext);
+    setGeneratingSku(true);
+    try {
+      const serverNext = await productApi.getNextSku(currentSku);
+      const cleanServerSku = String(serverNext || "").trim();
+      if (cleanServerSku && skuSessionRef.current === sessionKey) {
+        handleFormFieldChange("sku", cleanServerSku);
+      }
+    } catch {
+      // Keep local incremented SKU if server request fails
+    } finally {
+      setGeneratingSku(false);
+    }
+  };
+
+  useEffect(() => {
+    const sessionKey = state.isAdding
+      ? "__NEW__"
+      : String(
+          state.editingProduct?.productId ||
+            (state.editingProduct as any)?._id ||
+            state.editingProduct?.id ||
+            "",
+        );
+    skuSessionRef.current = sessionKey;
+    if (!sessionKey) return;
+
+    const existingSku = state.isAdding
+      ? ""
+      : String(state.editingProduct?.sku || "").trim();
+    if (!existingSku) {
+      prefillNextSku(products, sessionKey);
+    }
+  }, [
+    state.isAdding,
+    state.editingProduct?.productId,
+    (state.editingProduct as any)?._id,
+  ]);
+
   const fetchProduct = async (productId: string) => {
     try {
       console.log("📤 Fetching product:", productId);
@@ -157,7 +266,18 @@ export default function ProductsView({
         };
         startEditing(safeData);
         await new Promise((r) => setTimeout(r, 100));
-        setFormData(safeData);
+        const resolvedSku =
+          String(safeData.sku || "").trim() || computeLocalNextSku(products);
+        setFormData({ ...safeData, sku: resolvedSku });
+        if (!String(safeData.sku || "").trim()) {
+          const targetKey = String(
+            safeData.productId || safeData._id || safeData.id || "",
+          );
+          if (targetKey) {
+            skuSessionRef.current = targetKey;
+            prefillNextSku(products, targetKey);
+          }
+        }
         updateFormField("name", safeData.name || "");
         updateFormField("designer", safeData.designer || "");
         updateFormField("listerId", safeData.listerId || "");
@@ -294,71 +414,120 @@ export default function ProductsView({
     startIndex + pageSize,
   );
 
+  const clearValidationState = () => {
+    setValidationErrors({});
+    setValidationIssues([]);
+    setSaveError(null);
+  };
+
+  const handleStartAdding = () => {
+    clearValidationState();
+    startAdding();
+    skuSessionRef.current = "__NEW__";
+    prefillNextSku(products, "__NEW__");
+  };
+
+  const handleCancelEditing = () => {
+    clearValidationState();
+    cancelEditing();
+  };
+
   const handleEditWithTab = (product: Product, initialTab?: ProductTab) => {
+    clearValidationState();
     startEditing(product);
     if (initialTab) {
       setActiveTab(initialTab);
     }
   };
 
-  const handleSave = async () => {
+  const handleFormFieldChange = <K extends keyof Product>(
+    field: K,
+    value: Product[K],
+  ) => {
+    updateFormField(field, value);
+
+    const fieldKey = String(field);
+    const keysToClear = new Set<string>([
+      fieldKey,
+      ...(fieldKey === "taxRate" || fieldKey === "gstRate"
+        ? ["gstRate", "taxRate"]
+        : []),
+    ]);
+
+    if (fieldKey === "listingModes" && Array.isArray(value)) {
+      const nextModes = normalizeProductListingModes(value as string[]);
+      if (!nextModes.includes("RENTAL")) {
+        [
+          "rentalPrice",
+          "perDayRate",
+          "extendedWindowPrice",
+          "securityDeposit",
+          "minimumDurationDays",
+          "payoutPercentage",
+          "preRentalBufferDays",
+          "postRentalBufferDays",
+          "cleaningBufferDays",
+          "cleaningFee",
+          "extensionPrice",
+        ].forEach((k) => keysToClear.add(k));
+      }
+      if (!nextModes.includes("PRELOVED") && !nextModes.includes("BUY NEW")) {
+        ["listingPrice", "originalRetailPrice"].forEach((k) =>
+          keysToClear.add(k),
+        );
+      }
+      if (!nextModes.includes("PRELOVED")) {
+        ["resalePayoutPercentage", "minimumOffer"].forEach((k) =>
+          keysToClear.add(k),
+        );
+      }
+    }
+
+    setValidationErrors((prev) => {
+      let changed = false;
+      const next = { ...prev };
+      keysToClear.forEach((k) => {
+        if (k in next) {
+          delete next[k];
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+
+    setValidationIssues((prev) => {
+      const filtered = prev.filter((issue) => !keysToClear.has(issue.field));
+      return filtered.length === prev.length ? prev : filtered;
+    });
+  };
+
+  const handleSave = async (): Promise<boolean> => {
     if (isSaving || isFinalSaving) {
       console.log("⏳ Save already in progress...");
-      return;
+      return false;
     }
 
-    if (!formData.name?.trim() || formData.name.trim().length < 3) {
-      toast.error("Listing title must be at least 3 characters.");
-      return;
-    }
-    if (!formData.designer?.trim()) {
-      toast.error("Designer / Brand is required.");
-      return;
-    }
-    if (
-      dbDesigners.length > 0 &&
-      !dbDesigners.some(
-        (d: any) =>
-          String(d.name || "").trim().toLowerCase() ===
-          String(formData.designer || "").trim().toLowerCase(),
-      )
-    ) {
-      toast.error(
-        `"${formData.designer}" is not in the Designers list. Please select a registered designer.`,
-      );
-      return;
-    }
-    if (!formData.listingModes?.length) {
-      toast.success("Select at least one listing mode.");
-      return;
-    }
-    if (
-      formData.listingModes?.includes("RENTAL") &&
-      Number(formData.rentalPrice || 0) <= 0
-    ) {
-      toast.error(
-        "Rental price must be greater than zero for Rental listings.",
-      );
-      return;
-    }
-    if (
-      (formData.listingModes?.includes("BUY NEW") ||
-        formData.listingModes?.includes("PRELOVED")) &&
-      Number(formData.listingPrice || 0) <= 0
-    ) {
-      toast.error(
-        "Listing price must be greater than zero for Buy / Preloved listings.",
-      );
-      return;
-    }
-    if (
-      Number(formData.commissionRate || 0) < 0 ||
-      Number(formData.commissionRate || 0) > 100
-    ) {
-      toast.error("Commission must be between 0% and 100%.");
-      return;
+    const validation = validateProductForm(formData, dbDesigners, products);
+    if (!validation.valid) {
+      setValidationErrors(validation.errors);
+      setValidationIssues(validation.issues);
+      const firstIssue = validation.issues[0];
+      const extraCount = validation.issues.length - 1;
+      const extraSuffix =
+        extraCount > 0
+          ? ` (+${extraCount} more issue${extraCount > 1 ? "s" : ""})`
+          : "";
+      toast.error(`${firstIssue.message}${extraSuffix}`);
+      if (
+        validation.firstErrorTab &&
+        !validation.errorTabs.includes(state.activeTab)
+      ) {
+        setActiveTab(validation.firstErrorTab);
+      }
+      return false;
     }
 
+    clearValidationState();
     setIsSaving(true);
     setIsFinalSaving(true);
     setSaveError(null);
@@ -369,7 +538,7 @@ export default function ProductsView({
 
       const normalizeConditionGrade = (raw?: string): string => {
         const s = String(raw || "").trim();
-        if (!s) return "Excellent";
+        if (!s) return "";
         const lower = s.toLowerCase();
         if (lower.startsWith("pristine")) return "Pristine";
         if (lower.startsWith("brand new")) return "Brand New";
@@ -378,7 +547,7 @@ export default function ProductsView({
         if (lower.startsWith("excellent")) return "Excellent";
         if (lower.startsWith("good")) return "Good";
         if (lower.startsWith("fair")) return "Fair";
-        return "Excellent";
+        return "";
       };
 
       const sanitizeOutgoingProduct = (rawObj: any): Product => {
@@ -395,6 +564,7 @@ export default function ProductsView({
           "occasion",
           "material",
           "color",
+          "colorFamily",
           "colors",
           "craft",
           "technique",
@@ -431,6 +601,7 @@ export default function ProductsView({
           "preRentalBufferDays",
           "postRentalBufferDays",
           "deliveryTiming",
+          "careByFabric",
           "care",
           "packaging",
           "shipping",
@@ -473,7 +644,23 @@ export default function ProductsView({
           return res;
         };
 
+        const safeOptionalNum = (
+          v: any,
+          min = 0,
+          max?: number,
+        ): number | null => {
+          if (v === undefined || v === null || String(v).trim() === "") {
+            return null;
+          }
+          const n = Number(v);
+          if (!Number.isFinite(n)) return null;
+          let res = Math.max(min, n);
+          if (max !== undefined) res = Math.min(max, res);
+          return res;
+        };
+
         out.condition = normalizeConditionGrade(out.condition);
+        out.listingModes = normalizeProductListingModes(out.listingModes);
         out.weight = out.weight !== undefined && out.weight !== null ? String(out.weight) : "";
         out.bestSuitedForHeight =
           out.bestSuitedForHeight !== undefined && out.bestSuitedForHeight !== null
@@ -484,25 +671,25 @@ export default function ProductsView({
             ? String(out.listerId).trim()
             : "LST-GENERAL";
 
-        out.rentalPrice = safeNum(out.rentalPrice, 0, 0);
-        out.extendedWindowPrice = safeNum(out.extendedWindowPrice, 0, 0);
-        out.perDayRate = safeNum(out.perDayRate, 0, 0);
-        out.securityDeposit = safeNum(out.securityDeposit, 0, 0);
-        out.listingPrice = safeNum(out.listingPrice, 0, 0);
-        out.originalRetailPrice = safeNum(out.originalRetailPrice, 0, 0);
-        out.resalePayoutPercentage = safeNum(out.resalePayoutPercentage, 0, 0, 100);
-        out.minimumOffer = safeNum(out.minimumOffer, 0, 0);
-        out.commissionRate = safeNum(out.commissionRate, 25, 0, 100);
-        out.minimumDurationDays = safeNum(out.minimumDurationDays, 3, 1);
-        out.extensionWindowDays = safeNum(out.extensionWindowDays, 2, 0);
-        out.cleaningBufferDays = safeNum(out.cleaningBufferDays, 2, 0);
-        out.preRentalBufferDays = safeNum(out.preRentalBufferDays, 2, 0);
-        out.postRentalBufferDays = safeNum(out.postRentalBufferDays, 3, 0);
-        out.taxRate = safeNum(out.taxRate, 0, 0);
-        out.gstRate = safeNum(out.gstRate, 0, 0);
-        out.cleaningFee = safeNum(out.cleaningFee, 0, 0);
-        out.extensionPrice = safeNum(out.extensionPrice, 0, 0);
-        out.payoutPercentage = safeNum(out.payoutPercentage, 0, 0, 100);
+        out.rentalPrice = safeOptionalNum(out.rentalPrice, 0);
+        out.extendedWindowPrice = safeOptionalNum(out.extendedWindowPrice, 0);
+        out.perDayRate = safeOptionalNum(out.perDayRate, 0);
+        out.securityDeposit = safeOptionalNum(out.securityDeposit, 0);
+        out.listingPrice = safeOptionalNum(out.listingPrice, 0);
+        out.originalRetailPrice = safeOptionalNum(out.originalRetailPrice, 0);
+        out.resalePayoutPercentage = safeOptionalNum(out.resalePayoutPercentage, 0, 100);
+        out.minimumOffer = safeOptionalNum(out.minimumOffer, 0);
+        out.commissionRate = safeOptionalNum(out.commissionRate, 0, 100);
+        out.minimumDurationDays = safeOptionalNum(out.minimumDurationDays, 1);
+        out.extensionWindowDays = safeOptionalNum(out.extensionWindowDays, 0);
+        out.cleaningBufferDays = safeOptionalNum(out.cleaningBufferDays, 0);
+        out.preRentalBufferDays = safeOptionalNum(out.preRentalBufferDays, 0);
+        out.postRentalBufferDays = safeOptionalNum(out.postRentalBufferDays, 0);
+        out.taxRate = safeOptionalNum(out.taxRate, 0, 100);
+        out.gstRate = safeOptionalNum(out.gstRate, 0, 100);
+        out.cleaningFee = safeOptionalNum(out.cleaningFee, 0);
+        out.extensionPrice = safeOptionalNum(out.extensionPrice, 0);
+        out.payoutPercentage = safeOptionalNum(out.payoutPercentage, 0, 100);
         out.rating = safeNum(out.rating, 0, 0, 5);
         out.reviewCount = safeNum(out.reviewCount, 0, 0);
         out.timesRented = safeNum(out.timesRented, 0, 0);
@@ -582,7 +769,14 @@ export default function ProductsView({
 
         if (out.care !== undefined && !Array.isArray(out.care)) {
           out.care = out.care ? [String(out.care)] : [];
+        } else if (Array.isArray(out.care)) {
+          out.care = out.care
+            .map((line: any) => String(line || "").trim())
+            .filter(Boolean);
         }
+        out.colorFamily = String(out.colorFamily || "").trim();
+        out.careByFabric = String(out.careByFabric || "").trim();
+        out.color = String(out.color ?? "").trim();
         out.colors = Array.isArray(out.colors)
           ? out.colors
               .filter((c: any) => c && String(c.name || "").trim())
@@ -592,7 +786,7 @@ export default function ProductsView({
                 family: String(c.family || ""),
               }))
           : [];
-        if (out.colors.length > 0) {
+        if (!out.color && out.colors.length > 0 && !out.colorFamily) {
           out.color = out.colors.map((c: any) => c.name).join(", ");
         }
         if (out.packaging !== undefined && !Array.isArray(out.packaging)) {
@@ -622,43 +816,51 @@ export default function ProductsView({
           origin: formData.origin || "",
           weight: formData.weight || "",
           sizes: formData.sizes || [],
-          listingModes: formData.listingModes || ["RENTAL"],
-          condition: formData.condition || "Excellent",
+          listingModes: formData.listingModes || [],
+          condition: formData.condition || "",
           availability: "Available Now",
-          status: formData.status || "Review",
-          rentalPrice: Number(formData.rentalPrice || 0),
-          extendedWindowPrice: Number(formData.extendedWindowPrice || 0),
-          perDayRate: Number(formData.perDayRate || 0),
-          securityDeposit: Number(formData.securityDeposit || 0),
-          listingPrice: Number(formData.listingPrice || 0),
-          originalRetailPrice: Number(formData.originalRetailPrice || 0),
-          resalePayoutPercentage: Number(formData.resalePayoutPercentage || 0),
-          minimumOffer: Number(formData.minimumOffer || 0),
-          commissionRate: Number(formData.commissionRate || 25),
-          minimumDurationDays: Math.max(1, Number(formData.minimumDurationDays || 4)),
-          extensionWindowDays: Number(formData.extensionWindowDays || 2),
-          cleaningBufferDays: Number(formData.cleaningBufferDays || 2),
-          preRentalBufferDays: Number(formData.preRentalBufferDays || 2),
-          postRentalBufferDays: Number(formData.postRentalBufferDays || 3),
+          status: formData.status || "Draft",
+          rentalPrice: formData.rentalPrice,
+          extendedWindowPrice: formData.extendedWindowPrice,
+          perDayRate: formData.perDayRate,
+          securityDeposit: formData.securityDeposit,
+          listingPrice: formData.listingPrice,
+          originalRetailPrice: formData.originalRetailPrice,
+          resalePayoutPercentage: formData.resalePayoutPercentage,
+          minimumOffer: formData.minimumOffer,
+          commissionRate: formData.commissionRate,
+          minimumDurationDays: formData.minimumDurationDays,
+          extensionWindowDays: formData.extensionWindowDays,
+          cleaningBufferDays: formData.cleaningBufferDays,
+          preRentalBufferDays: formData.preRentalBufferDays,
+          postRentalBufferDays: formData.postRentalBufferDays,
           deliveryTiming: formData.deliveryTiming || "",
           images: formData.images || [],
           seoTitle: formData.seoTitle || "",
           seoDescription: formData.seoDescription || "",
           urlSlug:
             formData.urlSlug ||
-            formData.name?.toLowerCase().replace(/[^a-z0-9]+/g, "-") ||
+            formData.name
+              ?.toLowerCase()
+              .trim()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/^-|-$/g, "") ||
             "",
           sku: formData.sku || "",
           color: formData.color || "",
+          colorFamily: formData.colorFamily || "",
+          colors: formData.colors || [],
+          careByFabric: formData.careByFabric || "",
+          care: formData.care || [],
           craft: formData.craft || "",
           technique: formData.technique || "",
           story: formData.story || "",
           tags: formData.tags || [],
-          taxRate: Number(formData.taxRate || 0),
-          gstRate: Number(formData.gstRate || 0),
-          cleaningFee: Number(formData.cleaningFee || 0),
-          extensionPrice: Number(formData.extensionPrice || 0),
-          payoutPercentage: Number(formData.payoutPercentage || 0),
+          taxRate: formData.taxRate,
+          gstRate: formData.gstRate,
+          cleaningFee: formData.cleaningFee,
+          extensionPrice: formData.extensionPrice,
+          payoutPercentage: formData.payoutPercentage,
           payoutTerms: formData.payoutTerms || "",
           measurements: {
             bust: formData.measurements?.bust || "",
@@ -687,8 +889,8 @@ export default function ProductsView({
         const updated: Product = sanitizeOutgoingProduct({
           ...state.editingProduct,
           ...formData,
-          name: formData.name || state.editingProduct.name,
-          designer: formData.designer || state.editingProduct.designer,
+          name: formData.name ?? state.editingProduct.name,
+          designer: formData.designer ?? state.editingProduct.designer,
           listerId:
             formData.listerId !== undefined
               ? formData.listerId || "LST-GENERAL"
@@ -713,49 +915,83 @@ export default function ProductsView({
             formData.embellishments !== undefined
               ? formData.embellishments
               : state.editingProduct.embellishments,
-          sizes: formData.sizes || state.editingProduct.sizes,
-          listingModes: formData.listingModes ||
-            state.editingProduct.listingModes || ["RENTAL"],
-          condition: formData.condition || state.editingProduct.condition,
-          status: formData.status || state.editingProduct.status,
-          rentalPrice: Number(
-            formData.rentalPrice ?? state.editingProduct.rentalPrice ?? 0,
-          ),
-          securityDeposit: Number(
-            formData.securityDeposit ??
-              state.editingProduct.securityDeposit ??
-              0,
-          ),
-          listingPrice: Number(
-            formData.listingPrice ?? state.editingProduct.listingPrice ?? 0,
-          ),
-          commissionRate: Number(
-            formData.commissionRate ??
-              state.editingProduct.commissionRate ??
-              25,
-          ),
-          cleaningBufferDays: Number(
-            formData.cleaningBufferDays ??
-              state.editingProduct.cleaningBufferDays ??
-              2,
-          ),
-          preRentalBufferDays: Number(
-            formData.preRentalBufferDays ??
-              state.editingProduct.preRentalBufferDays ??
-              2,
-          ),
-          postRentalBufferDays: Number(
-            formData.postRentalBufferDays ??
-              state.editingProduct.postRentalBufferDays ??
-              3,
-          ),
+          sizes:
+            formData.sizes !== undefined
+              ? formData.sizes
+              : state.editingProduct.sizes,
+          listingModes:
+            formData.listingModes !== undefined
+              ? formData.listingModes
+              : state.editingProduct.listingModes || [],
+          condition:
+            formData.condition !== undefined
+              ? formData.condition
+              : state.editingProduct.condition,
+          status: formData.status || state.editingProduct.status || "Draft",
+          rentalPrice:
+            formData.rentalPrice !== undefined
+              ? formData.rentalPrice
+              : state.editingProduct.rentalPrice,
+          extendedWindowPrice:
+            formData.extendedWindowPrice !== undefined
+              ? formData.extendedWindowPrice
+              : state.editingProduct.extendedWindowPrice,
+          perDayRate:
+            formData.perDayRate !== undefined
+              ? formData.perDayRate
+              : state.editingProduct.perDayRate,
+          securityDeposit:
+            formData.securityDeposit !== undefined
+              ? formData.securityDeposit
+              : state.editingProduct.securityDeposit,
+          listingPrice:
+            formData.listingPrice !== undefined
+              ? formData.listingPrice
+              : state.editingProduct.listingPrice,
+          originalRetailPrice:
+            formData.originalRetailPrice !== undefined
+              ? formData.originalRetailPrice
+              : state.editingProduct.originalRetailPrice,
+          resalePayoutPercentage:
+            formData.resalePayoutPercentage !== undefined
+              ? formData.resalePayoutPercentage
+              : state.editingProduct.resalePayoutPercentage,
+          minimumOffer:
+            formData.minimumOffer !== undefined
+              ? formData.minimumOffer
+              : state.editingProduct.minimumOffer,
+          commissionRate:
+            formData.commissionRate !== undefined
+              ? formData.commissionRate
+              : state.editingProduct.commissionRate,
+          minimumDurationDays:
+            formData.minimumDurationDays !== undefined
+              ? formData.minimumDurationDays
+              : state.editingProduct.minimumDurationDays,
+          extensionWindowDays:
+            formData.extensionWindowDays !== undefined
+              ? formData.extensionWindowDays
+              : state.editingProduct.extensionWindowDays,
+          cleaningBufferDays:
+            formData.cleaningBufferDays !== undefined
+              ? formData.cleaningBufferDays
+              : state.editingProduct.cleaningBufferDays,
+          preRentalBufferDays:
+            formData.preRentalBufferDays !== undefined
+              ? formData.preRentalBufferDays
+              : state.editingProduct.preRentalBufferDays,
+          postRentalBufferDays:
+            formData.postRentalBufferDays !== undefined
+              ? formData.postRentalBufferDays
+              : state.editingProduct.postRentalBufferDays,
           deliveryTiming:
             formData.deliveryTiming !== undefined
               ? formData.deliveryTiming
               : state.editingProduct.deliveryTiming,
-          images: formData.images?.length
-            ? formData.images
-            : state.editingProduct.images,
+          images:
+            formData.images !== undefined
+              ? formData.images
+              : state.editingProduct.images || [],
           seoTitle:
             formData.seoTitle !== undefined
               ? formData.seoTitle
@@ -764,7 +1000,10 @@ export default function ProductsView({
             formData.seoDescription !== undefined
               ? formData.seoDescription
               : state.editingProduct.seoDescription || "",
-          urlSlug: formData.urlSlug || state.editingProduct.urlSlug || "",
+          urlSlug:
+            formData.urlSlug !== undefined
+              ? formData.urlSlug
+              : state.editingProduct.urlSlug || "",
           sku:
             formData.sku !== undefined
               ? formData.sku
@@ -773,6 +1012,22 @@ export default function ProductsView({
             formData.color !== undefined
               ? formData.color
               : state.editingProduct.color || "",
+          colorFamily:
+            formData.colorFamily !== undefined
+              ? formData.colorFamily
+              : state.editingProduct.colorFamily || "",
+          colors:
+            formData.colors !== undefined
+              ? formData.colors
+              : state.editingProduct.colors || [],
+          careByFabric:
+            formData.careByFabric !== undefined
+              ? formData.careByFabric
+              : state.editingProduct.careByFabric || "",
+          care:
+            formData.care !== undefined
+              ? formData.care
+              : (state.editingProduct as any).care || [],
           craft:
             formData.craft !== undefined
               ? formData.craft
@@ -785,24 +1040,30 @@ export default function ProductsView({
             formData.story !== undefined
               ? formData.story
               : state.editingProduct.story || "",
-          tags: formData.tags || state.editingProduct.tags || [],
-          taxRate: Number(
-            formData.taxRate ?? state.editingProduct.taxRate ?? 0,
-          ),
-          gstRate: Number(
-            formData.gstRate ?? state.editingProduct.gstRate ?? 0,
-          ),
-          cleaningFee: Number(
-            formData.cleaningFee ?? state.editingProduct.cleaningFee ?? 0,
-          ),
-          extensionPrice: Number(
-            formData.extensionPrice ?? state.editingProduct.extensionPrice ?? 0,
-          ),
-          payoutPercentage: Number(
-            formData.payoutPercentage ??
-              state.editingProduct.payoutPercentage ??
-              0,
-          ),
+          tags:
+            formData.tags !== undefined
+              ? formData.tags
+              : state.editingProduct.tags || [],
+          taxRate:
+            formData.taxRate !== undefined
+              ? formData.taxRate
+              : state.editingProduct.taxRate,
+          gstRate:
+            formData.gstRate !== undefined
+              ? formData.gstRate
+              : state.editingProduct.gstRate,
+          cleaningFee:
+            formData.cleaningFee !== undefined
+              ? formData.cleaningFee
+              : state.editingProduct.cleaningFee,
+          extensionPrice:
+            formData.extensionPrice !== undefined
+              ? formData.extensionPrice
+              : state.editingProduct.extensionPrice,
+          payoutPercentage:
+            formData.payoutPercentage !== undefined
+              ? formData.payoutPercentage
+              : state.editingProduct.payoutPercentage,
           payoutTerms:
             formData.payoutTerms !== undefined
               ? formData.payoutTerms
@@ -842,9 +1103,9 @@ export default function ProductsView({
               ? formData.honestDisclosure
               : state.editingProduct.honestDisclosure || "",
           relatedProductIds:
-            formData.relatedProductIds ||
-            state.editingProduct.relatedProductIds ||
-            [],
+            formData.relatedProductIds !== undefined
+              ? formData.relatedProductIds
+              : state.editingProduct.relatedProductIds || [],
           timesRented: Number(
             formData.timesRented ?? state.editingProduct.timesRented ?? 0,
           ),
@@ -879,14 +1140,16 @@ export default function ProductsView({
       setSaveSuccess(true);
       setIsSaving(false);
       setIsFinalSaving(false);
+      return true;
     } catch (error) {
       console.error("❌ Save error:", error);
-      setSaveError(
-        error instanceof Error ? error.message : "Failed to save product",
-      );
-      toast.error("❌ Failed to save product!");
+      const message =
+        error instanceof Error ? error.message : "Failed to save product";
+      setSaveError(message);
+      toast.error(message);
       setIsFinalSaving(false);
       setIsSaving(false);
+      return false;
     }
   };
 
@@ -905,6 +1168,7 @@ export default function ProductsView({
       const duplicateProduct: Product = {
         ...originalProduct,
         productId: `HOK-PRD-${Date.now()}`,
+        sku: "",
         name: `${originalProduct.name} (Draft)`,
         status: "Draft",
         images: [...(originalProduct.images || [])],
@@ -912,7 +1176,7 @@ export default function ProductsView({
         sizes: [...(originalProduct.sizes || [])],
         measurements: { ...(originalProduct.measurements || {}) },
         measurementsCm: { ...(originalProduct.measurementsCm || {}) },
-        listingModes: [...(originalProduct.listingModes || ["RENTAL"])],
+        listingModes: [...(originalProduct.listingModes || [])],
         blockedDates: [],
         bookingHistory: [],
         externalBookings: [],
@@ -978,7 +1242,7 @@ export default function ProductsView({
           <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 py-2.5 sm:py-3">
             <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
               <button
-                onClick={cancelEditing}
+                onClick={handleCancelEditing}
                 className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E6DED3] bg-white px-3 text-[12px] font-medium text-[#6F675D] hover:bg-[#FAF8F5]"
               >
                 <ArrowLeft className="h-3.5 w-3.5" /> Back
@@ -1085,22 +1349,50 @@ export default function ProductsView({
                 }
               }
 
+              const liveModes = normalizeProductListingModes(
+                formData.listingModes !== undefined
+                  ? formData.listingModes
+                  : state.editingProduct?.listingModes,
+              );
+              const liveSizes =
+                formData.sizes !== undefined
+                  ? formData.sizes
+                  : state.editingProduct?.sizes || [];
+
               return (
                 <ProductHeader
                   isEditing={!!state.editingProduct}
                   isAdding={state.isAdding}
-                  productName={state.editingProduct?.name || formData.name}
-                  designer={state.editingProduct?.designer || formData.designer}
-                  sku={state.editingProduct?.sku || formData.sku}
+                  productName={
+                    formData.name !== undefined
+                      ? formData.name
+                      : state.editingProduct?.name
+                  }
+                  designer={
+                    formData.designer !== undefined
+                      ? formData.designer
+                      : state.editingProduct?.designer
+                  }
+                  sku={
+                    formData.sku !== undefined
+                      ? formData.sku
+                      : state.editingProduct?.sku
+                  }
                   listingMode={
-                    state.editingProduct?.listingModes?.[0] ||
-                    formData.listingModes?.[0]
+                    liveModes.length > 0 ? liveModes.join(" · ") : ""
                   }
                   condition={
-                    state.editingProduct?.condition || formData.condition
+                    formData.condition !== undefined
+                      ? formData.condition
+                      : state.editingProduct?.condition || ""
                   }
-                  size={state.editingProduct?.sizes?.[0] || formData.sizes?.[0]}
-                  status={state.editingProduct?.status || formData.status}
+                  size={liveSizes.length > 0 ? liveSizes.join(", ") : ""}
+                  status={
+                    formData.status !== undefined
+                      ? formData.status
+                      : state.editingProduct?.status ||
+                        (state.isAdding ? "Draft" : "Live")
+                  }
                   listerName={
                     state.editingProduct?.listerName ||
                     listers.find(
@@ -1123,7 +1415,7 @@ export default function ProductsView({
                   earnedAmount={earnedAmount}
                   isSaving={isFinalSaving}
                   onSave={handleSave}
-                  onAdd={startAdding}
+                  onAdd={handleStartAdding}
                   showAddButton={false}
                   onDuplicate={handleDuplicate}
                   onArchive={handleArchive}
@@ -1135,16 +1427,58 @@ export default function ProductsView({
                 activeTab={state.activeTab}
                 onTabChange={setActiveTab}
                 isAdding={state.isAdding}
+                errorTabs={Array.from(
+                  new Set(validationIssues.map((issue) => issue.tab)),
+                )}
               />
             </div>
           </div>
+
+          {validationIssues.length > 0 && (
+            <div className="rounded-lg border border-red-200 bg-red-50/90 px-4 py-3 text-red-800 shadow-sm">
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-1.5 flex-1">
+                  <p className="text-xs font-semibold text-red-900">
+                    Please complete the required details before saving (
+                    {validationIssues.length} issue
+                    {validationIssues.length > 1 ? "s" : ""}):
+                  </p>
+                  <ul className="space-y-1 text-xs">
+                    {validationIssues.map((issue, idx) => (
+                      <li
+                        key={`${issue.field}-${idx}`}
+                        className="flex flex-wrap items-center gap-2"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab(issue.tab)}
+                          className="rounded border border-red-300 bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-red-700 hover:bg-red-100 transition cursor-pointer"
+                        >
+                          {DEFAULT_TAB_LABELS[issue.tab] || issue.tab}
+                        </button>
+                        <span>{issue.message}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <button
+                  type="button"
+                  onClick={clearValidationState}
+                  aria-label="Dismiss validation errors"
+                  className="text-xs font-semibold text-red-600 hover:text-red-900 px-1.5 py-0.5 cursor-pointer"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="flex flex-col gap-5 xl:flex-row xl:gap-6">
             <div className="min-w-0 flex-1 space-y-6">
               {state.activeTab === "Core" && (
                 <CoreDetailsTab
                   formData={formData}
-                  onFieldChange={updateFormField}
+                  onFieldChange={handleFormFieldChange}
                   listers={listers}
                   designers={dbDesigners}
                   onDesignerCreated={(newDes) => {
@@ -1163,38 +1497,57 @@ export default function ProductsView({
                       );
                     }
                   }}
-                  onSave={() => {
-                    handleSave();
-                  }}
+                  onSave={handleSave}
+                  onDiscard={handleCancelEditing}
+                  errors={validationErrors}
                   productId={state.editingProduct?.productId}
-                  isSaving={isFinalSaving}
+                  isSaving={isSaving || isFinalSaving}
+                  onAutoGenerateSku={handleAutoGenerateSku}
+                  generatingSku={generatingSku}
                 />
               )}
               {state.activeTab === "Pricing" && (
                 <PricingTaxTab
                   formData={formData}
-                  onFieldChange={updateFormField}
+                  onFieldChange={handleFormFieldChange}
                   isAdding={state.isAdding}
+                  errors={validationErrors}
+                  onSave={handleSave}
+                  isSaving={isSaving || isFinalSaving}
+                  onNavigateToCore={() => setActiveTab("Core")}
                 />
               )}
               {state.activeTab === "Images" && (
                 <ImagesTab
                   formData={formData}
-                  onFieldChange={updateFormField}
+                  onFieldChange={handleFormFieldChange}
                   uploadingImages={state.uploadingImages}
                   setUploadingImages={setUploadingImages}
+                  onSave={handleSave}
+                  errors={validationErrors}
+                  isSaving={isSaving || isFinalSaving}
                 />
               )}
               {state.activeTab === "Related Products" && (
                 <RelatedProductsTab
                   formData={formData}
-                  onFieldChange={updateFormField}
+                  onFieldChange={handleFormFieldChange}
                   allProducts={products}
                   currentProductId={state.editingProduct?._id}
+                  onSave={handleSave}
+                  isSaving={isSaving || isFinalSaving}
                 />
               )}
               {state.activeTab === "SEO" && (
-                <SEOTab formData={formData} onFieldChange={updateFormField} />
+                <SEOTab
+                  formData={formData}
+                  onFieldChange={handleFormFieldChange}
+                  onSave={handleSave}
+                  onNavigateToRelatedProducts={() =>
+                    setActiveTab("Related Products")
+                  }
+                  isSaving={isSaving || isFinalSaving}
+                />
               )}
               {state.activeTab === "Calendar" && state.editingProduct && (
                 <AvailabilityCalendarTab
@@ -1282,13 +1635,7 @@ export default function ProductsView({
                       "_blank",
                     )
                   }
-                  onArchive={() => {
-                    if (!state.editingProduct) return;
-                    if (confirm("Archive this product?")) {
-                      updateFormField("status", "Archived");
-                      handleSave();
-                    }
-                  }}
+                  onArchive={handleArchive}
                   onOpenGlobalCalendar={() => {
                     console.log("Open global rental calendar");
                   }}
@@ -1348,7 +1695,7 @@ export default function ProductsView({
         isAdding={false}
         onBack={() => {}}
         onSave={() => {}}
-        onAdd={startAdding}
+        onAdd={handleStartAdding}
       />
 
       <ProductFilters
@@ -1363,7 +1710,7 @@ export default function ProductsView({
         onStatusChange={setSelectedStatus}
         sortOption={sortOption}
         onSortChange={setSortOption}
-        onAddProduct={startAdding}
+        onAddProduct={handleStartAdding}
       />
 
       <div className="bg-white rounded-lg border border-stone-200/80 shadow-sm overflow-hidden">

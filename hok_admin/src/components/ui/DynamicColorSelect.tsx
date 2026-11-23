@@ -24,6 +24,7 @@ interface Props {
   colors: ColorEntry[];
   onChange: (list: ColorEntry[]) => void;
   className?: string;
+  placeholder?: string;
 }
 
 // Resolve any CSS colour name the browser knows ("salmon", "teal") to hex
@@ -62,6 +63,7 @@ export default function DynamicColorSelect({
   colors,
   onChange,
   className = "",
+  placeholder = "Select colours...",
 }: Props) {
   // Show built-in palette instantly; live master list replaces it when loaded
   const [options, setOptions] = useState<ColorOption[]>(() =>
@@ -260,7 +262,7 @@ export default function DynamicColorSelect({
               </span>
             ))
           ) : (
-            <span className="px-0.5 text-stone-400">Select colours...</span>
+            <span className="px-0.5 text-stone-400">{placeholder}</span>
           )}
         </div>
         <ChevronDown

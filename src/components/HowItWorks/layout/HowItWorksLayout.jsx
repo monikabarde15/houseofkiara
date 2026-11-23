@@ -12,18 +12,19 @@ import PoliciesSection from "../PoliciesSection";
 import FAQSection from "../FAQSection";
 import ClosingCTA from "../ClosingCTA";
 
-const HowItWorksLayout = ({ activeSection, getVal }) => {
+const HowItWorksLayout = ({ activeSection, getVal, isSectionHidden }) => {
+  const hide = (id) => (isSectionHidden ? isSectionHidden(id) : false);
   return (
     <div className="how-it-works-layout">
-      <HeroSection getVal={getVal} />
+      {!hide("hero") && <HeroSection getVal={getVal} />}
       <ChapterNav activeSection={activeSection} />
-      <ShoppingJourney getVal={getVal} />
-      <ModeCards getVal={getVal} />
-      <DividerBand getVal={getVal} />
-      <ListAndEarn getVal={getVal} />
-      <PoliciesSection getVal={getVal} />
-      <FAQSection getVal={getVal} />
-      <ClosingCTA getVal={getVal} />
+      {!hide("shopping_journey") && <ShoppingJourney getVal={getVal} />}
+      {!hide("modes") && <ModeCards getVal={getVal} />}
+      {!hide("divider") && <DividerBand getVal={getVal} />}
+      {!hide("list_and_earn") && <ListAndEarn getVal={getVal} />}
+      {!hide("policies") && <PoliciesSection getVal={getVal} />}
+      {!hide("faq") && <FAQSection getVal={getVal} />}
+      {!hide("closing") && <ClosingCTA getVal={getVal} />}
     </div>
   );
 };

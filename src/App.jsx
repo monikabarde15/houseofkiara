@@ -49,6 +49,7 @@ import NoSearchResultsPage from "./pages/NoSearchResultsPage";
 import PageNotFound from "./pages/PageNotFound";
 import MaintenancePage from "./pages/MaintenancePage";
 import PricingPolicyPage from "./pages/PricingPolicyPage";
+import { DynamicPageRoute, CustomSlugDynamicPage } from "./components/common/DynamicPageRoute";
 
 function ProductRedirect() {
   const { id } = useParams();
@@ -253,41 +254,43 @@ export default function App() {
         <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/auth" element={<AuthPage />} />
 
-        <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/about-us" element={<AboutUsPage />} />
-        <Route path="/faqs" element={<FAQPage />} />
-        <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
+        <Route path="/how-it-works" element={<DynamicPageRoute slug="/how-it-works" fallback={<HowItWorks />} />} />
+        <Route path="/about-us" element={<DynamicPageRoute slug="/about" fallback={<AboutUsPage />} />} />
+        <Route path="/faqs" element={<DynamicPageRoute slug="/faqs" fallback={<FAQPage />} />} />
+        <Route path="/shipping-policy" element={<DynamicPageRoute slug="/shipping-policy" fallback={<ShippingPolicyPage />} />} />
         <Route path="/shipping" element={<Navigate to="/shipping-policy" replace />} />
         <Route path="/shipping-and-delivery" element={<Navigate to="/shipping-policy" replace />} />
-        <Route path="/refunds" element={<RefundsPage />} />
+        <Route path="/refunds" element={<DynamicPageRoute slug="/refunds" fallback={<RefundsPage />} />} />
         <Route path="/refunds-cancellations" element={<Navigate to="/refunds" replace />} />
         <Route path="/refund" element={<Navigate to="/refunds" replace />} />
-        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/terms" element={<DynamicPageRoute slug="/terms" fallback={<TermsPage />} />} />
         <Route path="/terms-and-conditions" element={<Navigate to="/terms" replace />} />
         <Route path="/terms-conditions" element={<Navigate to="/terms" replace />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/privacy" element={<DynamicPageRoute slug="/privacy" fallback={<PrivacyPage />} />} />
         <Route path="/privacy-policy" element={<Navigate to="/privacy" replace />} />
-        <Route path="/cookies" element={<CookiePage />} />
+        <Route path="/cookies" element={<DynamicPageRoute slug="/cookies" fallback={<CookiePage />} />} />
         <Route path="/cookie" element={<Navigate to="/cookies" replace />} />
         <Route path="/cookie-policy" element={<Navigate to="/cookies" replace />} />
-        <Route path="/deposit" element={<DepositPage />} />
+        <Route path="/deposit" element={<DynamicPageRoute slug="/deposit-policy" fallback={<DepositPage />} />} />
         <Route path="/deposit-policy" element={<Navigate to="/deposit" replace />} />
-        <Route path="/care-policy" element={<CarePolicyPage />} />
+        <Route path="/care-policy" element={<DynamicPageRoute slug="/care-policy" fallback={<CarePolicyPage />} />} />
         <Route path="/care" element={<Navigate to="/care-policy" replace />} />
         <Route path="/care-cleaning-damage" element={<Navigate to="/care-policy" replace />} />
         <Route path="/care-damage" element={<Navigate to="/care-policy" replace />} />
-        <Route path="/seller-guidelines" element={<SellerGuidelinesPage />} />
+        <Route path="/seller-guidelines" element={<DynamicPageRoute slug="/seller-guidelines" fallback={<SellerGuidelinesPage />} />} />
         <Route path="/seller" element={<Navigate to="/seller-guidelines" replace />} />
         <Route path="/seller-faq" element={<Navigate to="/seller-guidelines" replace />} />
-        <Route path="/pricing-fees" element={<PricingPolicyPage />} />
+        <Route path="/pricing-fees" element={<DynamicPageRoute slug="/pricing-fees" fallback={<PricingPolicyPage />} />} />
         <Route path="/pricing" element={<Navigate to="/pricing-fees" replace />} />
-        <Route path="/contact-us" element={<ContactUsPage />} />
+        <Route path="/contact-us" element={<DynamicPageRoute slug="/contact" fallback={<ContactUsPage />} />} />
         <Route path="/contact" element={<Navigate to="/contact-us" replace />} />
         <Route path="/contactus" element={<Navigate to="/contact-us" replace />} />
         <Route
           path="/maintenance"
           element={<MaintenancePage settings={maintenanceConfig.maintenance} />}
         />
+        <Route path="/p/:slug" element={<CustomSlugDynamicPage />} />
+        <Route path="/:slug" element={<CustomSlugDynamicPage />} />
         {/* Wildcard 404 handler: preserves exact requested address */}
         <Route path="*" element={<PageNotFound />} />
       </Routes>

@@ -23,13 +23,14 @@ import CantFindAnswerBand from "../../components/Refunds/ClosingBand/CantFindAns
 import RefundReviewBar from "../../components/Refunds/ReviewMode/RefundReviewBar";
 import RefundPrintDocument from "../../components/Refunds/Print/RefundPrintDocument";
 import RefundFloatingWhatsApp from "../../components/Refunds/common/RefundFloatingWhatsApp";
+import CustomPageSections from "../../components/common/CustomPageSections";
 import "../../styles/refunds/refunds-policy-body.css";
 import "../../styles/refunds/refunds-closing-band.css";
 import "../../styles/refunds/refunds-review.css";
 import "../../styles/refunds/refunds-print.css";
 
 export default function RefundsPage() {
-  const { getVal } = usePageContent("/refunds");
+  const { getVal, settings } = usePageContent("/refunds");
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -323,6 +324,8 @@ export default function RefundsPage() {
 
       {/* Related Policies Line (Section 08) */}
       <RelatedPoliciesLine onPrint={() => window.print()} />
+
+      <CustomPageSections sections={settings?.customSections} />
 
       {/* "Can't Find Your Answer?" Closing Band (Section 09) */}
       <CantFindAnswerBand onOpenWhatsApp={handleOpenWhatsApp} />

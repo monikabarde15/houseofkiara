@@ -13,35 +13,11 @@ import useCartStore from "../../store/cartStore";
 import useWishlistStore from "../../store/wishlistStore";
 import useAuthStore from "../../store/authStore";
 import toast from "react-hot-toast";
-const gradeDotColor = {
-  pristine: "#6B7E5A",
-  excellent: "#C9A96E",
-  good: "#B85C38"
-};
-
-const gradeLabel = {
-  pristine: "PRISTINE CONDITION",
-  excellent: "EXCELLENT CONDITION",
-  good: "GOOD CONDITION"
-};
-
-const gradeConfig = {
-  pristine: {
-    label: "PRISTINE",
-    color: "#6B7E5A",
-    desc: "Unworn or worn once for a short photoshoot. Tags may be attached. No visible wear whatsoever."
-  },
-  excellent: {
-    label: "EXCELLENT",
-    color: "#C9A96E",
-    desc: "Worn once for a full-day event. Professionally cleaned. No visible damage, alteration, or significant bead loss. Any minor imperfections are fully disclosed and photographed above."
-  },
-  good: {
-    label: "GOOD",
-    color: "#B85C38",
-    desc: "Worn 2–3 times. Any minor imperfections clearly photographed and disclosed in listing notes."
-  }
-};
+import ProductCoreAccordions, {
+  CONDITION_DOT_COLOR,
+  CONDITION_LABEL,
+  formatRatingValue,
+} from "./ProductCoreAccordions";
 
 export default function Preloved() {
 
@@ -124,7 +100,9 @@ export default function Preloved() {
   const isOpen = (key) => openSections.includes(key);
 
   // for Dot color
-  const grade = product?.condition?.grade || "pristine";
+  const grade = product?.condition?.grade
+    ? String(product.condition.grade).toLowerCase()
+    : "";
 
   // FOR DISCOUNT - 
   const price =
@@ -265,12 +243,20 @@ Product ID: ${product.id}
             <span className="crumb">Home</span>
             <span className="sep">›</span>
             <span className="crumb">Buy Preloved</span>
+            {product.category && (
+              <>
+                <span className="sep">›</span>
+                <span className="crumb">{product.category}</span>
+              </>
+            )}
+            {product.designer && (
+              <>
+                <span className="sep">›</span>
+                <span className="crumb current">{product.designer}</span>
+              </>
+            )}
             <span className="sep">›</span>
-            <span className="crumb">{product.category || "None"}</span>
-            <span className="sep">›</span>
-            <span className="crumb current">{product.designer || "Designer Atelier"}</span>
-            <span className="sep">›</span>
-            <span className="crumb current">{product.title || product.name || "None"}</span>
+            <span className="crumb current">{product.title || product.name || ""}</span>
           </div>
         </div>
 
@@ -297,13 +283,18 @@ Product ID: ${product.id}
                 <span className="preloved-eyebrow-text">PRELOVED PIECE</span>
               </div>
 
-              <p className="preloved-designer-name">{product.designer || "Designer Atelier"}</p>
+              {product.designer && (
+                <p className="preloved-designer-name">{product.designer}</p>
+              )}
 
               <h1 className="preloved-product-title">
-                {product.title || product.name || "None"} <em>{product.subTitle || ""}</em>
+                {product.title || product.name || ""}{" "}
+                {product.subTitle ? <em>{product.subTitle}</em> : null}
               </h1>
 
-              <p className="preloved-product-desc">{product.description || "None"}</p>
+              {product.description && product.description !== "None" && (
+                <p className="preloved-product-desc">{product.description}</p>
+              )}
 
               {/* RATING */}
               <div className="preloved-rating-row">
@@ -317,20 +308,29 @@ Product ID: ${product.id}
                   />
                 ))}
 
-                <span className="preloved-rating-text">{(product.rating || 0)}.0</span>
-
-                <span className="preloved-rating-separator" />
-
-                <span className="preloved-reviews">{product.reviews || product.reviewCount || 0} reviews</span>
-
-                <span className="preloved-rating-separator" />
-
-                <span
-                  className="preloved-never-worn-soft"
-                  style={{ "--dot-color": gradeDotColor[grade] || "#6B7E5A" }}
-                >
-                  {gradeLabel[grade] || "AUTHENTIC PIECE"}
+                <span className="preloved-rating-text">
+                  {formatRatingValue(product.rating)}
                 </span>
+
+                <span className="preloved-rating-separator" />
+
+                <span className="preloved-reviews">
+                  {product.reviewCount ?? product.reviews ?? 0} reviews
+                </span>
+
+                {grade && CONDITION_LABEL[grade] && (
+                  <>
+                    <span className="preloved-rating-separator" />
+                    <span
+                      className="preloved-never-worn-soft"
+                      style={{
+                        "--dot-color": CONDITION_DOT_COLOR[grade] || "#6B7E5A",
+                      }}
+                    >
+                      {CONDITION_LABEL[grade]}
+                    </span>
+                  </>
+                )}
 
               </div>
 
@@ -364,44 +364,39 @@ Product ID: ${product.id}
 
 
               {/* HONEST DISCLOSURE */}
-              <div className="preloved-disclosure">
-
-                <p className="preloved-disclosure-label">
-                  HONEST DISCLOSURE
-                </p>
-
-                <p className="preloved-disclosure-text">
-                  {product.disclosure || product.honestDisclosure || "None"}
-                </p>
-
-              </div>
+              {(product.honestDisclosure || product.disclosure) &&
+                String(product.honestDisclosure || product.disclosure).trim() !== "None" && (
+                  <div className="preloved-disclosure">
+                    <p className="preloved-disclosure-label">
+                      HONEST DISCLOSURE
+                    </p>
+                    <p className="preloved-disclosure-text" style={{ whiteSpace: "pre-line" }}>
+                      {product.honestDisclosure || product.disclosure}
+                    </p>
+                  </div>
+                )}
 
 
               {/* SIZE BLOCK */}
-
-              <div className="preloved-size-block">
-
-                <p className="preloved-size-label">
-                  SIZE
-                </p>
-
-                <div className="preloved-size-pills">
-                  {product.sizes && product.sizes.length > 0 ? (
-                    product.sizes.map((s, idx) => (
-                      <span key={idx} className="preloved-size-pill active">
-                        {typeof s === "object" ? (s.label || s.size || "None") : s}
+              {((Array.isArray(product.sizes) && product.sizes.length > 0) ||
+                product.prelovedSize) && (
+                <div className="preloved-size-block">
+                  <p className="preloved-size-label">SIZE</p>
+                  <div className="preloved-size-pills">
+                    {Array.isArray(product.sizes) && product.sizes.length > 0 ? (
+                      product.sizes.map((s, idx) => (
+                        <span key={idx} className="preloved-size-pill active">
+                          {typeof s === "object" ? (s.label || s.size || "") : s}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="preloved-size-pill active">
+                        {product.prelovedSize}
                       </span>
-                    ))
-                  ) : product.prelovedSize ? (
-                    <span className="preloved-size-pill active">
-                      {product.prelovedSize}
-                    </span>
-                  ) : (
-                    <span className="preloved-size-pill">None</span>
-                  )}
+                    )}
+                  </div>
                 </div>
-
-              </div>
+              )}
 
 
               {/* CTA BUTTONS  */}
@@ -713,336 +708,41 @@ Product ID: ${product.id}
               </div>
 
 
-              {/*  PRELOVED PAGE ACCORDANCE*/}
-
-
-
-              {/* ================= PRODUCT DETAILS ================= */}
-              <div className="preloved-accordion">
-
-                <div className="preloved-accordion-item">
-
-                  <div
-                    className="preloved-accordion-header"
-                    onClick={() => toggle("details")}
-                  >
-                    <span>PRODUCT DETAILS</span>
-
-                    <Plus
-                      className={`preloved-accordion-icon ${isOpen("details") ? "open" : ""
-                        }`}
-                    />
-                  </div>
-
-                  {isOpen("details") && (
-                    <div className="preloved-accordion-content">
-
-                      <div className="preloved-details-grid">
-
-                        <div>
-                          <div className="preloved-details-row">
-                            <span className="preloved-details-label">Designer</span>
-                            <p>{product.designer || "Designer Atelier"}</p>
-                          </div>
-
-                          <div className="preloved-details-row">
-                            <span className="preloved-details-label">Fabric</span>
-                            <p>{product.details?.fabric || product.material || "Pure Georgette & Silk"}</p>
-                          </div>
-
-                          <div className="preloved-details-row">
-                            <span className="preloved-details-label">Embroidery</span>
-                            <p>{product.details?.technique || product.technique || product.embellishments || "Hand Embroidered Zardozi"}</p>
-                          </div>
-
-                          <div className="preloved-details-row">
-                            <span className="preloved-details-label">Includes</span>
-                            <p>{product.details?.includes || product.setIncludes || "Full Couture Set & Dupatta"}</p>
-                          </div>
-                        </div>
-
-                        <div>
-                          <div className="preloved-details-row">
-                            <span className="preloved-details-label">Category</span>
-                            <p>{product.category || product.subTitle || "Luxury Couture"}</p>
-                          </div>
-
-                          <div className="preloved-details-row">
-                            <span className="preloved-details-label">Colour</span>
-                            <p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p>
-                          </div>
-
-                          <div className="preloved-details-row">
-                            <span className="preloved-details-label">Occasion</span>
-                            <p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p>
-                          </div>
-
-                          <div className="preloved-details-row">
-                            <span className="preloved-details-label">Origin</span>
-                            <p>{product.details?.origin || product.origin || "Lucknow, India"}</p>
-                          </div>
-                        </div>
-
-                      </div>
-
-                    </div>
-                  )}
-
-                </div>
-
-              </div>
-
-              {/* ================= THE CRAFT ================= */}
-              <div className="preloved-accordion-item">
-
-                <div
-                  className="preloved-accordion-header"
-                  onClick={() => toggle("story")}
-                >
-                  <span>THE STORY OF THIS PIECE</span>
-
-                  <Plus
-                    className={`preloved-accordion-icon ${isOpen("story") ? "open" : ""
-                      }`}
-                  />
-                </div>
-
-                {isOpen("story") && (
-                  <div className="preloved-accordion-content">
-
-                    <p className="preloved-story-text">
-                      {product.story || product.description || "None"}
-                    </p>
-
-                    {product.stylingNote && (
-                      <p className="preloved-story-note">
-                        {product.stylingNote}
-                      </p>
-                    )}
-
-                  </div>
-                )}
-
-              </div>
-
-              {/* ================= SIZE & FIT ================= */}
-              <div className="preloved-accordion-item">
-
-                <div
-                  className="preloved-accordion-header"
-                  onClick={() => toggle("size")}
-                >
-                  <span>SIZE & FIT</span>
-
-                  <Plus
-                    className={`preloved-accordion-icon ${isOpen("size") ? "open" : ""
-                      }`}
-                  />
-                </div>
-
-                {isOpen("size") && (
-                  <div className="preloved-accordion-content">
-
-                    {/* INTRO */}
-                    {product.sizeNote || product.sizeGuide ? (
-                      <p className="preloved-size-intro">
-                        {product.sizeNote || product.sizeGuide}
-                      </p>
-                    ) : null}
-
-                    {/* TABLE */}
-                    {product.sizeTable && product.sizeTable.length > 0 ? (
-                      <table className="preloved-size-table">
-                        <thead>
-                          <tr>
-                            <th>Size</th>
-                            <th>Bust</th>
-                            <th>Waist</th>
-                            <th>Hips</th>
-                            <th>Height</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {product.sizeTable.map((row, i) => (
-                            <tr
-                              key={i}
-                              className={row.recommended ? "active-row" : ""}
-                            >
-                              <td>{row.size || "None"}</td>
-                              <td>{row.bust || "None"}</td>
-                              <td>{row.waist || "None"}</td>
-                              <td>{row.hips || "None"}</td>
-                              <td>{row.height || "None"}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    ) : (product.measurements && (product.measurements.bust || product.measurements.waist || product.measurements.hips || product.measurements.length)) ? (
-                      <table className="preloved-size-table">
-                        <thead>
-                          <tr>
-                            <th>Size</th>
-                            <th>Bust</th>
-                            <th>Waist</th>
-                            <th>Hips</th>
-                            <th>Length</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr className="active-row">
-                            <td>{product.sizes?.[0] || product.prelovedSize || "Standard"}</td>
-                            <td>{product.measurements.bust || "-"}</td>
-                            <td>{product.measurements.waist || "-"}</td>
-                            <td>{product.measurements.hips || "-"}</td>
-                            <td>{product.measurements.length || "-"}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    ) : (!product.sizeNote && !product.sizeGuide) ? (
-                      <p className="preloved-size-intro" style={{ margin: 0 }}>None</p>
-                    ) : null}
-
-                  </div>
-                )}
-
-              </div>
-
-              {/* ====================CONDITION GRADE========================== */}
-
-              <div className="preloved-accordion-item">
-
-                <div
-                  className="preloved-accordion-header"
-                  onClick={() => toggle("condition")}
-                >
-                  <span>CONDITION GRADE</span>
-
-                  <Plus
-                    className={`preloved-accordion-icon ${isOpen("condition") ? "open" : ""
-                      }`}
-                  />
-                </div>
-
-                {isOpen("condition") && (
-                  <div className="preloved-accordion-content">
-
-                    {Object.keys(gradeConfig).map((key) => {
-                      const item = gradeConfig[key];
-                      const isActive = product.condition?.grade === key;
-
-                      return (
-                        <div
-                          key={key}
-                          className={`preloved-grade-item ${isActive ? "active" : ""
-                            }`}
-                        >
-                          <div className="preloved-grade-header">
-
-                            <span
-                              className="preloved-grade-dot"
-                              style={{ background: item.color }}
-                            />
-
-                            <span className="preloved-grade-name">
-                              {item.label}
-                              {isActive && " ← THIS PIECE"}
-                            </span>
-
-                          </div>
-
-                          <p className="preloved-grade-desc">
-                            {item.desc}
-                          </p>
-                        </div>
-                      );
-                    })}
-
-                  </div>
-                )}
-
-              </div>
-
-
-              {/* ================= CARE ================= */}
-              <div className="preloved-accordion-item">
-
-                <div
-                  className="preloved-accordion-header"
-                  onClick={() => toggle("care")}
-                >
-                  <span>CARE INSTRUCTIONS</span>
-
-                  <Plus
-                    className={`preloved-accordion-icon ${isOpen("care") ? "open" : ""
-                      }`}
-                  />
-                </div>
-
-                {isOpen("care") && (
-                  <div className="preloved-accordion-content">
-
-                    {Array.isArray(product.care) && product.care.length > 0 ? (
-                      product.care.map((item, i) => (
-                        <p key={i} className="preloved-care-item">
-                          <span className="preloved-care-dash">—</span>
-                          {item}
-                        </p>
-                      ))
-                    ) : (
-                      <p className="preloved-care-item">None</p>
-                    )}
-
-                  </div>
-                )}
-
-              </div>
-
-              {/* ================= SHIPPING ================= */}
-              <div className="preloved-accordion-item">
-
-                <div
-                  className="preloved-accordion-header"
-                  onClick={() => toggle("shipping")}
-                >
-                  <span>SHIPPING & DELIVERY</span>
-
-                  <Plus
-                    className={`preloved-accordion-icon ${isOpen("shipping") ? "open" : ""
-                      }`}
-                  />
-                </div>
-
-                {isOpen("shipping") && (
-                  <div className="preloved-accordion-content">
-
-                    {/* DELIVERY METHODS */}
-                    {(Array.isArray(product.shipping) && product.shipping.length > 0) || (Array.isArray(product.packaging) && product.packaging.length > 0) ? (
-                      <>
-                        {Array.isArray(product.shipping) && product.shipping.map((item, i) => (
-                          <p key={i} className="preloved-shipping-item">
-                            <span className="preloved-shipping-dash">—</span>
-                            {typeof item === "string" ? item : `${item.method || "Shipping"}: ${item.time || ""}${item.cost ? `, ${item.cost}` : ""}`}
-                          </p>
-                        ))}
-
-                        {/* PACKAGING */}
-                        {Array.isArray(product.packaging) && product.packaging.map((text, i) => (
-                          <p key={i} className="preloved-shipping-packaging">
-                            {text}
-                          </p>
-                        ))}
-                      </>
-                    ) : (
-                      <p className="preloved-shipping-item">None</p>
-                    )}
-
-                  </div>
-                )}
-
-              </div>
-
-
+              {/* PRELOVED PAGE ACCORDION */}
+              <ProductCoreAccordions
+                product={product}
+                isOpen={isOpen}
+                toggle={toggle}
+                showConditionGradeAccordion={true}
+                includeDisclosureInDetails={false}
+                showStoryAlways={true}
+                shippingMode="list"
+                classes={{
+                  accordion: "preloved-accordion",
+                  item: "preloved-accordion-item",
+                  header: "preloved-accordion-header",
+                  icon: "preloved-accordion-icon",
+                  content: "preloved-accordion-content",
+                  grid: "preloved-details-grid",
+                  row: "preloved-details-row",
+                  label: "preloved-details-label",
+                  craftText: "preloved-story-text",
+                  storyNote: "preloved-story-note",
+                  sizeIntro: "preloved-size-intro",
+                  sizeTable: "preloved-size-table",
+                  activeRow: "active-row",
+                  careItem: "preloved-care-item",
+                  careDash: "preloved-care-dash",
+                  shippingItem: "preloved-shipping-item",
+                  shippingDash: "preloved-shipping-dash",
+                  shippingPackaging: "preloved-shipping-packaging",
+                  gradeItem: "preloved-grade-item",
+                  gradeHeader: "preloved-grade-header",
+                  gradeDot: "preloved-grade-dot",
+                  gradeName: "preloved-grade-name",
+                  gradeDesc: "preloved-grade-desc",
+                }}
+              />
 
             </div>
           </Col>
@@ -1051,7 +751,7 @@ Product ID: ${product.id}
       <RelatedProduct
         product={product}
         currentProductId={id}
-        category={product.subTitle || product.category}
+        category={product.category || product.subTitle}
       />
     </section>
 

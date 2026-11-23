@@ -26,6 +26,7 @@ import ShippingSectionsList from "../components/shipping/ShippingSectionsList";
 import ShippingRelatedPolicies from "../components/shipping/ShippingRelatedPolicies";
 import ShippingClosingBand from "../components/shipping/ShippingClosingBand";
 import ShippingPrintDocument from "../components/shipping/ShippingPrintDocument";
+import CustomPageSections from "../components/common/CustomPageSections";
 import FloatingWhatsApp from "../components/FAQ/common/FloatingWhatsApp";
 
 // Styles
@@ -42,7 +43,7 @@ import "../styles/shipping/shipping-closing.css";
 import "../styles/shipping/shipping-print.css";
 
 export default function ShippingPolicyPage() {
-  const { getVal } = usePageContent("/shipping-policy");
+  const { getVal, settings } = usePageContent("/shipping-policy");
   const [toastMessage, setToastMessage] = useState("");
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [activeSectionId, setActiveSectionId] = useState("opts");
@@ -211,6 +212,7 @@ export default function ShippingPolicyPage() {
         </div>
 
         <ShippingRelatedPolicies />
+        <CustomPageSections sections={settings?.customSections} />
         <ShippingClosingBand onShowToast={showToast} />
       </main>
 

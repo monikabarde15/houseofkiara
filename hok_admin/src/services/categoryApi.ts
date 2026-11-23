@@ -143,3 +143,33 @@ export const createColor = async (
   });
   return res.data;
 };
+
+// ================== FABRIC CARE ==================
+export interface FabricCareOption {
+  id: string;
+  label: string;
+  instructions: string[];
+}
+
+export const getFabricCareOptions = async (): Promise<FabricCareOption[]> => {
+  try {
+    const res = await apiRequest("/categories/fabric-care");
+    return Array.isArray(res?.data) ? res.data : [];
+  } catch {
+    return [];
+  }
+};
+
+export const createFabricCareOption = async (payload: {
+  label: string;
+  instructions?: string[];
+}): Promise<FabricCareOption> => {
+  const res = await apiRequest("/categories/fabric-care", {
+    method: "POST",
+    body: JSON.stringify({
+      label: payload.label.trim(),
+      instructions: payload.instructions || [],
+    }),
+  });
+  return res.data;
+};

@@ -22,6 +22,7 @@ import SplitLayout from "../../components/FAQ/ReadingPane/SplitLayout";
 import PoliciesLine from "../../components/FAQ/Policies/PoliciesLine";
 import StillWonderingBand from "../../components/FAQ/StillWondering/StillWonderingBand";
 import ReviewBar from "../../components/FAQ/ReviewMode/ReviewBar";
+import CustomPageSections from "../../components/common/CustomPageSections";
 import "../../styles/faq/faq-variables.css";
 import "../../styles/faq/faq-chrome.css";
 import "../../styles/faq/faq-hero.css";
@@ -33,7 +34,7 @@ import "../../styles/faq/faq-still-wondering.css";
 import "../../styles/faq/faq-review.css";
 
 export default function FAQPage() {
-  const { getVal } = usePageContent('/faqs');
+  const { getVal, settings } = usePageContent('/faqs');
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -263,6 +264,8 @@ export default function FAQPage() {
 
       {/* Policies Line (E1) */}
       <PoliciesLine onShowToast={showToast} />
+
+      <CustomPageSections sections={settings?.customSections} />
 
       {/* Still Wondering Support Band (F1-F3) */}
       <StillWonderingBand onShowToast={showToast} />

@@ -4,17 +4,18 @@
 import React from "react";
 import { scrollToPricingTarget } from "../../utils/pricing/pricingScroll";
 
-export default function PricingWayAcross({ activeSide, onSideChange }) {
+export default function PricingWayAcross({ activeSide, onSideChange, getVal }) {
+  const gv = (k, fb) => (getVal ? getVal(k, fb) : fb);
   const isPay = activeSide === "pay";
   const targetSide = isPay ? "earn" : "pay";
 
   const questionLine = isPay
-    ? "Listing a piece of your own?"
-    : "Renting or buying with us?";
+    ? gv("pricing_way_pay_q", "Listing a piece of your own?")
+    : gv("pricing_way_earn_q", "Renting or buying with us?");
 
   const actionText = isPay
-    ? "See what you earn"
-    : "See what you pay";
+    ? gv("pricing_way_pay_cta", "See what you earn")
+    : gv("pricing_way_earn_cta", "See what you pay");
 
   const handleClick = () => {
     if (onSideChange) {

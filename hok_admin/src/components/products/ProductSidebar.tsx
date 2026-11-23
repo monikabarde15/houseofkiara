@@ -95,14 +95,22 @@ export function ProductSidebar({
     [bookingHistory],
   );
 
-  const rawPre = Number((product as any)?.preRentalBufferDays);
-  const rawPost = Number((product as any)?.postRentalBufferDays);
+  const preRawVal = (product as any)?.preRentalBufferDays;
+  const postRawVal = (product as any)?.postRentalBufferDays;
+  const rawPre =
+    preRawVal !== undefined && preRawVal !== null && preRawVal !== ""
+      ? Number(preRawVal)
+      : NaN;
+  const rawPost =
+    postRawVal !== undefined && postRawVal !== null && postRawVal !== ""
+      ? Number(postRawVal)
+      : NaN;
   const preBufferDays =
-    !isNaN(rawPre) && rawPre >= 0 && rawPre <= 14
+    Number.isFinite(rawPre) && rawPre >= 0 && rawPre <= 14
       ? rawPre
       : DEFAULT_PRE_BUFFER_DAYS;
   const postBufferDays =
-    !isNaN(rawPost) && rawPost >= 0 && rawPost <= 14
+    Number.isFinite(rawPost) && rawPost >= 0 && rawPost <= 14
       ? rawPost
       : DEFAULT_POST_BUFFER_DAYS;
 

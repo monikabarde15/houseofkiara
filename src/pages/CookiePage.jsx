@@ -14,6 +14,7 @@ import CookiePoliciesLine from '../components/cookies/CookiePoliciesLine.jsx';
 import CookieQuestionsBand from '../components/cookies/CookieQuestionsBand.jsx';
 import CookiePrintDocument from '../components/cookies/CookiePrintDocument.jsx';
 import CookieToast from '../components/cookies/CookieToast.jsx';
+import CustomPageSections from '../components/common/CustomPageSections.jsx';
 import FloatingWhatsApp from '../components/FAQ/common/FloatingWhatsApp';
 import { scrollToAnchor } from '../utils/cookies/cookieFormatter.jsx';
 
@@ -28,7 +29,7 @@ import '../styles/cookies/cookie-closing-band.css';
 import '../styles/cookies/cookie-print.css';
 
 const CookiePage = () => {
-  const { getVal } = usePageContent("/cookies");
+  const { getVal, settings } = usePageContent("/cookies");
   const [toastState, setToastState] = useState({ message: '', isVisible: false });
 
   // Handle URL hash on initial load (Section 6)
@@ -95,6 +96,8 @@ const CookiePage = () => {
         onPrint={handlePrint}
         onOpenCookieSettings={handleOpenCookieSettings}
       />
+
+      <CustomPageSections sections={settings?.customSections} />
 
       {/* 7. Dark Questions Band (WhatsApp, Email, Grievance contact) */}
       <CookieQuestionsBand

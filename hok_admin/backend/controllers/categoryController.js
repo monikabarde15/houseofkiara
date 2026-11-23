@@ -2,6 +2,7 @@ import Category from "../models/Category.js";
 import SiteSettings from "../models/SiteSettings.js";
 import Product from "../models/Product.js";
 import mongoose from "mongoose";
+import { pool } from "../config/db.js";
 import {
   COLOR_PALETTE,
   COLOR_FAMILIES,
@@ -408,6 +409,233 @@ export const createColor = async (req, res) => {
     return res.status(201).json({ success: true, data: entry });
   } catch (err) {
     console.error("Error in createColor:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ================== MASTER FABRIC CARE ==================
+const MASTER_FABRIC_CARE_KEY = "master_fabric_care";
+
+const INITIAL_FABRIC_CARE = [
+  {
+    id: "silk-pure",
+    label: "Silk & Pure Silk (Banarasi, Kanjivaram, Raw Silk)",
+    instructions: [
+      "Specialist dry clean only; never wash with water or home detergents",
+      "Steam lightly from the reverse side using low heat — never press directly on zari or silk weave",
+      "Store in breathable unbleached muslin away from direct sunlight and dampness",
+      "Keep perfume, hairspray, and haldi/sindoor well away from raw silk and metallic weave",
+    ],
+  },
+  {
+    id: "silk-organza-tissue",
+    label: "Silk Organza & Tissue",
+    instructions: [
+      "Delicate hydrocarbon dry clean only — zero wringing, soaking, or twisting",
+      "Always wear jewellery after dressing so clasps never pull fine organza threads",
+      "Hang on a padded hanger with acid-free tissue between folds to prevent crinkle tears",
+      "Avoid direct steam nozzles or hot irons; vertical mist steam gently from a safe distance",
+    ],
+  },
+  {
+    id: "velvet-brocade",
+    label: "Velvet & Brocade",
+    instructions: [
+      "Specialist dry clean only; avoid water spotting which flattens velvet pile permanently",
+      "Steam gently from the inside only — never place a flat iron directly on velvet nap",
+      "Hang padded at waist and shoulders rather than folding tightly to avoid crush marks",
+      "Brush lightly along the grain with a soft garment brush before storage",
+    ],
+  },
+  {
+    id: "georgette-chiffon-crepe",
+    label: "Georgette, Chiffon & Crepe",
+    instructions: [
+      "Dry clean only to preserve drape, bias fall, and pleat tension",
+      "Pin dupattas or pallus strictly through the plain border or lining, never through sheer body",
+      "Low-temperature steam while hanging; avoid pulling stitched seams while warm",
+      "Keep away from sharp jewellery, rough handbags, and velcro edges",
+    ],
+  },
+  {
+    id: "net-embroidered-couture",
+    label: "Net, Tulle & Heavy Embroidery (Zardozi / Sequin / Mirror)",
+    instructions: [
+      "Couture specialist spot & solvent dry clean only — handle beaded panels by lining weight",
+      "Never rub stains, stretch tulle panels, or iron over sequins, dabka, or mirror work",
+      "Fold flat with butter paper or muslin between embroidered layers to prevent snagging",
+      "Support skirt weight by inner hanging loops so delicate net shoulders do not stretch",
+    ],
+  },
+  {
+    id: "chanderi-cotton-silk",
+    label: "Chanderi, Maheshwari & Cotton Silk",
+    instructions: [
+      "Gentle dry clean recommended to protect sheen and handwoven zari borders",
+      "Low to medium press on the reverse side with a thin cotton press cloth",
+      "Air out in shade after wear and refold along alternating lines every few months",
+      "Store with wrapped neem or cedar away from direct contact with the fabric",
+    ],
+  },
+  {
+    id: "linen-cotton-handloom",
+    label: "Linen, Cotton & Handloom Weaves",
+    instructions: [
+      "Soft dry clean or cool delicate wash recommended for dyed and block-printed weaves",
+      "Steam or warm press while slightly damp on the reverse side",
+      "Dry strictly in shade to prevent natural dye fading",
+      "Store loosely folded in cool, ventilated cotton bags",
+    ],
+  },
+  {
+    id: "satin-taffeta-gown",
+    label: "Satin, Taffeta & Structured Gowns",
+    instructions: [
+      "Professional dry clean only to retain bodice boning, structure, and satin lustre",
+      "Avoid spot-wiping water drops on satin or taffeta as water rings show clearly",
+      "Steam lightly through a protective cloth; never bend corset bones or structured pleats",
+      "Hang on wide contoured hanger in a full-length breathable garment cover",
+    ],
+  },
+];
+
+const normalizeFabricCareItem = (raw) => {
+  const label = String(raw?.label || raw?.name || "").trim();
+  if (!label) return null;
+  const id =
+    String(raw?.id || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, "-")
+      .replace(/^-|-$/g, "") ||
+    label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  const instructions = Array.isArray(raw?.instructions)
+    ? raw.instructions.map((s) => String(s || "").trim()).filter(Boolean)
+    : typeof raw?.instructions === "string"
+      ? raw.instructions
+          .split(/\r?\n|;/)
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+  return { id, label, instructions };
+};
+
+// GET /api/categories/fabric-care
+export const getFabricCare = async (req, res) => {
+  try {
+    let items = [];
+    const dbRes = await pool.query(
+      `SELECT data FROM site_settings WHERE key = $1 LIMIT 1`,
+      [MASTER_FABRIC_CARE_KEY],
+    );
+
+    if (dbRes?.rows?.length > 0) {
+      const rawData =
+        typeof dbRes.rows[0].data === "string"
+          ? JSON.parse(dbRes.rows[0].data)
+          : dbRes.rows[0].data || {};
+      if (Array.isArray(rawData.items)) {
+        items = rawData.items.map(normalizeFabricCareItem).filter(Boolean);
+      }
+    } else {
+      items = INITIAL_FABRIC_CARE.map(normalizeFabricCareItem).filter(Boolean);
+      await pool.query(
+        `INSERT INTO site_settings (key, data, updated_at)
+         VALUES ($1, $2, NOW())
+         ON CONFLICT (key) DO NOTHING`,
+        [MASTER_FABRIC_CARE_KEY, JSON.stringify({ items })],
+      );
+    }
+
+    const byId = new Set(items.map((i) => i.id.toLowerCase()));
+    const byLabel = new Set(items.map((i) => i.label.toLowerCase()));
+
+    const allProducts = await Product.find({}).catch(() => []);
+    (allProducts || []).forEach((p) => {
+      const rawCbf = String(p?.careByFabric || "").trim();
+      if (!rawCbf) return;
+      const lower = rawCbf.toLowerCase();
+      if (byId.has(lower) || byLabel.has(lower)) return;
+      const entry = normalizeFabricCareItem({
+        id: rawCbf,
+        label: rawCbf,
+        instructions: Array.isArray(p?.care) ? p.care : [],
+      });
+      if (entry && !byId.has(entry.id.toLowerCase())) {
+        items.push(entry);
+        byId.add(entry.id.toLowerCase());
+        byLabel.add(entry.label.toLowerCase());
+      }
+    });
+
+    items.sort((a, b) => a.label.localeCompare(b.label));
+    return res.json({ success: true, data: items });
+  } catch (err) {
+    console.error("Error in getFabricCare:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// POST /api/categories/fabric-care { label, instructions }
+export const createFabricCare = async (req, res) => {
+  try {
+    const entry = normalizeFabricCareItem(req.body || {});
+    if (!entry) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Fabric care label is required" });
+    }
+
+    const dbRes = await pool.query(
+      `SELECT data FROM site_settings WHERE key = $1 LIMIT 1`,
+      [MASTER_FABRIC_CARE_KEY],
+    );
+    let current = [];
+    if (dbRes?.rows?.length > 0) {
+      const rawData =
+        typeof dbRes.rows[0].data === "string"
+          ? JSON.parse(dbRes.rows[0].data)
+          : dbRes.rows[0].data || {};
+      if (Array.isArray(rawData.items)) {
+        current = rawData.items.map(normalizeFabricCareItem).filter(Boolean);
+      }
+    } else {
+      current = INITIAL_FABRIC_CARE.map(normalizeFabricCareItem).filter(Boolean);
+    }
+
+    const idx = current.findIndex(
+      (item) =>
+        item.id.toLowerCase() === entry.id.toLowerCase() ||
+        item.label.toLowerCase() === entry.label.toLowerCase(),
+    );
+    if (idx >= 0) {
+      current[idx] = {
+        ...current[idx],
+        label: entry.label,
+        instructions:
+          entry.instructions.length > 0
+            ? entry.instructions
+            : current[idx].instructions,
+      };
+    } else {
+      current.push(entry);
+    }
+
+    await pool.query(
+      `INSERT INTO site_settings (key, data, updated_at)
+       VALUES ($1, $2, NOW())
+       ON CONFLICT (key)
+       DO UPDATE SET data = $2, updated_at = NOW()`,
+      [MASTER_FABRIC_CARE_KEY, JSON.stringify({ items: current })],
+    );
+
+    const savedItem = idx >= 0 ? current[idx] : entry;
+    return res.status(201).json({ success: true, data: savedItem });
+  } catch (err) {
+    console.error("Error in createFabricCare:", err);
     return res.status(500).json({ success: false, message: err.message });
   }
 };

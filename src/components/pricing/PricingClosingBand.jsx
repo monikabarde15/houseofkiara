@@ -33,7 +33,8 @@ function PackageIcon() {
   );
 }
 
-export default function PricingClosingBand({ onShowToast }) {
+export default function PricingClosingBand({ onShowToast, getVal }) {
+  const gv = (k, fb) => (getVal ? getVal(k, fb) : fb);
   const whatsAppUrl = `https://wa.me/${PRICING_TOKENS.support_whatsapp_raw}?text=Hello%20House%20of%20Kaira%2C%20I%20have%20a%20question%20about%20pricing.`;
   const emailUrl = `mailto:${PRICING_TOKENS.support_email}?subject=A%20question%20about%20pricing`;
 
@@ -56,22 +57,25 @@ export default function PricingClosingBand({ onShowToast }) {
         <div>
           <div className="fq-eyebrow">
             <i aria-hidden="true" />
-            <span>We are here for you</span>
+            <span>{gv("pricing_closing_eyebrow", "We are here for you")}</span>
             <i aria-hidden="true" />
           </div>
 
           <h2 id="closing-band-title">
-            A question about a <em>price?</em>
+            {gv("pricing_closing_heading", "A question about a ")}{" "}
+            <em>{gv("pricing_closing_italic", "price?")}</em>
           </h2>
 
           <p className="still-p">
-            Every piece has its own story, and its own prices. If you would like
-            the exact figures for a piece, help planning a rental around your
-            celebrations, or a word about listing with us, message us. We would
-            much rather help you directly, and nothing is too small to ask.
+            {gv(
+              "pricing_closing_body",
+              "Every piece has its own story, and its own prices. If you would like the exact figures for a piece, help planning a rental around your celebrations, or a word about listing with us, message us. We would much rather help you directly, and nothing is too small to ask."
+            )}
           </p>
 
-          <p className="still-sign">With love, the House of Kaira team</p>
+          <p className="still-sign">
+            {gv("pricing_closing_signoff", "With love, the House of Kaira team")}
+          </p>
 
           <div className="still-btns">
             <a
@@ -82,7 +86,7 @@ export default function PricingClosingBand({ onShowToast }) {
               onClick={handleWhatsAppClick}
             >
               <WhatsAppIcon />
-              <span>Message us on WhatsApp</span>
+              <span>{gv("pricing_closing_wa_btn", "Message us on WhatsApp")}</span>
             </a>
             <a
               href={emailUrl}
@@ -90,7 +94,7 @@ export default function PricingClosingBand({ onShowToast }) {
               onClick={handleEmailClick}
             >
               <EmailIcon />
-              <span>Write to us</span>
+              <span>{gv("pricing_closing_email_btn", "Write to us")}</span>
             </a>
           </div>
         </div>
@@ -107,8 +111,10 @@ export default function PricingClosingBand({ onShowToast }) {
             <div>
               <div className="chan-k">WhatsApp</div>
               <div className="chan-v">
-                The fastest way to reach us. Seven days a week, 10 AM to 8 PM
-                IST, with replies usually within 2 hours.
+                {gv(
+                  "pricing_closing_wa_desc",
+                  "The fastest way to reach us. Seven days a week, 10 AM to 8 PM IST, with replies usually within 2 hours."
+                )}
               </div>
             </div>
             <a
@@ -130,8 +136,10 @@ export default function PricingClosingBand({ onShowToast }) {
             <div>
               <div className="chan-k">Email</div>
               <div className="chan-v">
-                {PRICING_TOKENS.support_email}. Best for anything you would
-                like in writing, such as an invoice or a payout statement.
+                {gv(
+                  "pricing_closing_email_desc",
+                  `${PRICING_TOKENS.support_email}. Best for anything you would like in writing, such as an invoice or a payout statement.`
+                )}
               </div>
             </div>
             <a
@@ -149,9 +157,14 @@ export default function PricingClosingBand({ onShowToast }) {
               <PackageIcon />
             </div>
             <div>
-              <div className="chan-k">Every order and payout, in one place</div>
+              <div className="chan-k">
+                {gv("pricing_closing_account_title", "Every order and payout, in one place")}
+              </div>
               <div className="chan-v">
-                Your bookings, receipts, deposits and payouts, in My Account.
+                {gv(
+                  "pricing_closing_account_desc",
+                  "Your bookings, receipts, deposits and payouts, in My Account."
+                )}
               </div>
             </div>
             <Link to="/profile" className="chan-go">

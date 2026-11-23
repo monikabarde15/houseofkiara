@@ -14,29 +14,30 @@ function MagnifierIcon() {
   );
 }
 
-function PricingSearchBox({ activeSide, onSelectQuestion, onShowToast }) {
+function PricingSearchBox({ activeSide, onSelectQuestion, onShowToast, getVal, sections }) {
+  const desktopPlaceholder = getVal
+    ? getVal("pricing_search_placeholder", "Search a question, like 'late return' or 'my share'")
+    : "Search a question, like 'late return' or 'my share'";
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [totalFound, setTotalFound] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const [placeholder, setPlaceholder] = useState(
-    "Search a question, like 'late return' or 'my share'"
-  );
+  const [placeholder, setPlaceholder] = useState(desktopPlaceholder);
 
   useEffect(() => {
     const updatePlaceholder = () => {
       if (typeof window !== "undefined" && window.innerWidth <= 760) {
         setPlaceholder("Search your question");
       } else {
-        setPlaceholder("Search a question, like 'late return' or 'my share'");
+        setPlaceholder(desktopPlaceholder);
       }
     };
     updatePlaceholder();
     window.addEventListener("resize", updatePlaceholder);
     return () => window.removeEventListener("resize", updatePlaceholder);
-  }, []);
+  }, [desktopPlaceholder]);
 
   const containerRef = useRef(null);
   const inputRef = useRef(null);
@@ -52,12 +53,12 @@ function PricingSearchBox({ activeSide, onSelectQuestion, onShowToast }) {
       return;
     }
 
-    const scored = searchPricing(trimmed, activeSide);
+    const scored = searchPricing(trimmed, activeSide, sections);
     setResults(scored);
     setTotalFound(scored.length);
     setIsOpen(true);
     setSelectedIndex(0);
-  }, [query, activeSide]);
+  }, [query, activeSide, sections]);
 
   // Click outside listener
   useEffect(() => {

@@ -200,6 +200,13 @@
   cursor: not-allowed;
 }
 
+/* End dates shorter than Admin minimum rental duration */
+.calendar__day.too-short {
+  color: #a89f94;
+  border: 1px dashed #e2d8ca;
+  cursor: not-allowed;
+}
+
 /* Warning banner below legend */
 .calendar-conflict-warning {
   margin: 0 20px 14px;

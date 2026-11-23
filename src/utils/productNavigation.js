@@ -141,6 +141,121 @@ export const formatProductDetail = (p) => {
     0;
   const perDay =
     parsePrice(raw.perDayRate) || (rentPrice > 0 ? Math.round(rentPrice / 4) : 0);
+  const extendedPrice =
+    parsePrice(raw.extendedWindowPrice) ||
+    parsePrice(raw.modes?.rent?.pricing?.windows?.[1]?.price) ||
+    Math.round((rentPrice / 4) * 7);
+  const minRentalDays =
+    Number(raw.minimumDurationDays) >= 1
+      ? Math.floor(Number(raw.minimumDurationDays))
+      : Number(raw.modes?.rent?.pricing?.minDays) >= 1
+        ? Math.floor(Number(raw.modes.rent.pricing.minDays))
+        : 3;
+
+  const rawCategory =
+    raw.category !== undefined && raw.category !== null
+      ? String(raw.category).trim()
+      : "";
+  const rawSubtitle =
+    raw.subtitle !== undefined && raw.subtitle !== null
+      ? String(raw.subtitle).trim()
+      : raw.subTitle !== undefined &&
+          raw.subTitle !== null &&
+          String(raw.subTitle).trim() !== rawCategory
+        ? String(raw.subTitle).trim()
+        : "";
+
+  const normalizedColors = (Array.isArray(raw.colors) ? raw.colors : [])
+    .map((c, idx) => {
+      if (!c || typeof c !== "object") return null;
+      const name = String(c.name || "").trim();
+      const hex = String(c.hex || c.code || "").trim();
+      const family = String(c.family || "").trim();
+      if (!name && !hex) return null;
+      if (
+        name === "Standard" &&
+        hex === "#000000" &&
+        !family &&
+        !raw.color &&
+        !raw.colorFamily
+      ) {
+        return null;
+      }
+      return {
+        ...c,
+        name: name || family || hex,
+        hex: hex || "",
+        code: hex || "",
+        family,
+        primary: c.primary !== undefined ? Boolean(c.primary) : idx === 0,
+        images:
+          Array.isArray(c.images) && c.images.length > 0
+            ? c.images
+            : raw.images || [],
+      };
+    })
+    .filter(Boolean);
+
+  const derivedFamilies = Array.from(
+    new Set(normalizedColors.map((c) => c.family).filter(Boolean)),
+  ).join(", ");
+  const resolvedColorFamily =
+    String(raw.colorFamily || raw.details?.colorFamily || "").trim() ||
+    derivedFamilies;
+
+  const rawConditionObj =
+    raw.condition && typeof raw.condition === "object" ? raw.condition : null;
+  const rawConditionLabel = rawConditionObj
+    ? String(rawConditionObj.label || rawConditionObj.grade || "").trim()
+    : String(raw.condition || "").trim();
+  const normalizedCondition = {
+    grade: rawConditionLabel.toLowerCase(),
+    label: rawConditionLabel,
+  };
+
+  const normalizedWeight =
+    raw.weight !== undefined && raw.weight !== null
+      ? String(raw.weight).trim()
+      : "";
+  const normalizedHeight =
+    raw.bestSuitedForHeight !== undefined && raw.bestSuitedForHeight !== null
+      ? String(raw.bestSuitedForHeight).trim()
+      : "";
+  const normalizedCare = (
+    Array.isArray(raw.care)
+      ? raw.care
+      : typeof raw.care === "string"
+        ? raw.care.split(/\r?\n|;/)
+        : []
+  )
+    .map((item) => String(item || "").trim())
+    .filter((item) => item && item.toLowerCase() !== "none");
+  const normalizedTags = (
+    Array.isArray(raw.tags)
+      ? raw.tags
+      : typeof raw.tags === "string"
+        ? raw.tags.split(",")
+        : []
+  )
+    .map((t) => String(t || "").trim())
+    .filter((t) => t && t.toLowerCase() !== "none");
+  const rawSizeSource = Array.isArray(raw.sizes)
+    ? raw.sizes
+    : Array.isArray(raw.modes?.rent?.sizes)
+      ? raw.modes.rent.sizes
+      : raw.sizes
+        ? [raw.sizes]
+        : [];
+  const normalizedSizes = rawSizeSource
+    .map((s) => (typeof s === "object" ? s?.size || s?.label : s))
+    .map((s) => String(s || "").trim())
+    .filter((s) => s && s.toLowerCase() !== "none");
+
+  const resolvedRating = Number(raw.rating) || 0;
+  const resolvedReviewCount = Number(raw.reviewCount ?? raw.reviews) || 0;
+  const resolvedTimesRented =
+    Number(raw.timesRented ?? raw.rentInfo?.rentedCount) || 0;
+  const rawSkuOnly = String(raw.details?.sku || raw.sku || "").trim();
 
   return {
     ...raw,
@@ -150,12 +265,16 @@ export const formatProductDetail = (p) => {
     sku: raw.sku || raw.productId,
     title: raw.name || raw.title || "",
     name: raw.name || raw.title || "",
-    subTitle: raw.category || raw.subTitle || "",
-    category: raw.category || raw.subTitle || "",
+    subtitle: rawSubtitle,
+    subTitle: rawSubtitle,
+    category: rawCategory,
     designer: raw.designer || "",
     description: raw.description || "",
     price: rentPrice || listPrice,
     rentalPrice: rentPrice,
+    extendedWindowPrice: extendedPrice,
+    perDayRate: perDay,
+    minimumDurationDays: minRentalDays,
     listingPrice: listPrice,
     originalRetailPrice: retailPrice,
     retailPrice: retailPrice,
@@ -167,39 +286,74 @@ export const formatProductDetail = (p) => {
           ? raw.image
           : [raw.image]
         : [],
-    sizes: Array.isArray(raw.sizes)
-      ? raw.sizes.map((s) => (typeof s === "object" ? s.size || s.label : s))
-      : raw.sizes
-      ? [raw.sizes]
-      : [],
-    availableSizes: Array.isArray(raw.sizes)
-      ? raw.sizes.map((s) => (typeof s === "object" ? s.size || s.label : s))
-      : [],
+    sizes: normalizedSizes,
+    availableSizes: normalizedSizes,
+    colors: normalizedColors,
+    colorFamily: resolvedColorFamily,
     details: {
+      designer: raw.details?.designer || raw.designer || "",
+      category: raw.details?.category || rawCategory,
       fabric: raw.details?.fabric || raw.material || raw.fabric || "",
-      technique: raw.details?.technique || raw.technique || raw.craftTechnique || raw.craft || raw.embellishments || "",
-      includes: raw.details?.includes || raw.setIncludes || raw.includes || "",
-      delivery: raw.details?.delivery || raw.deliveryTiming || raw.delivery || raw.deliveryTime || "",
       color: raw.details?.color || raw.color || "",
-      thread: raw.details?.thread || raw.threadWork || raw.threadYarnDetail || raw.thread || "",
+      colorFamily: resolvedColorFamily,
+      craft: raw.details?.craft || raw.craft || "",
+      technique:
+        raw.details?.technique || raw.technique || raw.craftTechnique || "",
+      embellishments: raw.details?.embellishments || raw.embellishments || "",
+      thread:
+        raw.details?.thread ||
+        raw.threadYarnDetail ||
+        raw.threadWork ||
+        raw.thread ||
+        "",
+      includes: raw.details?.includes || raw.setIncludes || raw.includes || "",
       occasion: raw.details?.occasion || raw.occasion || "",
       origin: raw.details?.origin || raw.origin || "",
+      weight: raw.details?.weight || normalizedWeight,
+      delivery:
+        raw.details?.delivery ||
+        raw.deliveryTiming ||
+        raw.delivery ||
+        raw.deliveryTime ||
+        "",
+      sku: rawSkuOnly,
+      condition: normalizedCondition.label,
     },
     fabric: raw.material || raw.fabric || "",
-    craft: raw.craft || raw.technique || raw.embellishments || "",
-    craftTechnique: raw.technique || raw.craft || raw.embellishments || "",
+    craft: raw.craft || "",
+    technique: raw.technique || raw.craftTechnique || "",
+    craftTechnique: raw.technique || raw.craftTechnique || "",
+    embellishments: raw.embellishments || "",
+    threadYarnDetail: raw.threadYarnDetail || raw.threadWork || "",
     includes: raw.setIncludes || raw.includes || "",
+    weight: normalizedWeight,
+    deliveryTiming: raw.deliveryTiming || raw.delivery || raw.deliveryTime || "",
     deliveryTime: raw.deliveryTiming || raw.delivery || raw.deliveryTime || "",
     delivery: raw.deliveryTiming || raw.delivery || raw.deliveryTime || "",
-    story: raw.story || raw.craftStory || raw.description || "",
-    craftStory: raw.story || raw.craftStory || raw.description || "",
+    story: raw.story || raw.craftStory || "",
+    craftStory: raw.story || raw.craftStory || "",
     disclosure: raw.honestDisclosure || raw.disclosure || "",
     honestDisclosure: raw.honestDisclosure || raw.disclosure || "",
-    sizeNote: raw.sizeNote || raw.sizeGuide || (raw.bestSuitedForHeight ? `Best suited for height: ${raw.bestSuitedForHeight}` : ""),
+    sizeNote: raw.sizeNote || raw.sizeGuide || "",
     sizeGuide: raw.sizeGuide || raw.sizeNote || "",
-    measurements: raw.measurements || null,
-    condition: typeof raw.condition === "object" ? raw.condition : { grade: String(raw.condition || "pristine").toLowerCase() },
-    care: Array.isArray(raw.care) ? raw.care : (raw.care ? [raw.care] : []),
+    measurements:
+      raw.measurements && typeof raw.measurements === "object"
+        ? raw.measurements
+        : {},
+    measurementsCm:
+      raw.measurementsCm && typeof raw.measurementsCm === "object"
+        ? raw.measurementsCm
+        : {},
+    bestSuitedForHeight: normalizedHeight,
+    condition: normalizedCondition,
+    careByFabric: raw.careByFabric || "",
+    care: normalizedCare,
+    tags: normalizedTags,
+    rating: resolvedRating,
+    reviewCount: resolvedReviewCount,
+    reviews: resolvedReviewCount,
+    timesRented: resolvedTimesRented,
+    rentInfo: { rentedCount: resolvedTimesRented },
     packaging: Array.isArray(raw.packaging) ? raw.packaging : (raw.packaging ? [raw.packaging] : []),
     shipping: Array.isArray(raw.shipping) ? raw.shipping : [],
     modes: {
@@ -208,7 +362,7 @@ export const formatProductDetail = (p) => {
         availability: rentAvailability,
         pricing: {
           pricePerDay: perDay,
-          minDays: raw.minimumDurationDays || 3,
+          minDays: minRentalDays,
           windows: [
             {
               id: "standard",
@@ -220,7 +374,7 @@ export const formatProductDetail = (p) => {
             {
               id: "extended",
               label: "Extended Window",
-              price: Math.round((rentPrice / 4) * 7),
+              price: extendedPrice,
               days: 7,
               tag: "destination weddings",
             },
@@ -256,7 +410,7 @@ export const formatProductDetail = (p) => {
     rent: {
       pricing: {
         pricePerDay: perDay,
-        minDays: raw.minimumDurationDays || 3,
+        minDays: minRentalDays,
         windows: [
           {
             id: "standard",
@@ -268,7 +422,7 @@ export const formatProductDetail = (p) => {
           {
             id: "extended",
             label: "Extended Window",
-            price: Math.round((rentPrice / 4) * 7),
+            price: extendedPrice,
             days: 7,
             tag: "destination weddings",
           },

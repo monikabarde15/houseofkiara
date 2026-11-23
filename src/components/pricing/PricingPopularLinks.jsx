@@ -4,16 +4,17 @@
 import React from "react";
 import { PRICING_POPULAR_QUERIES } from "../../data/pricing/pricingRegistry";
 
-function PricingPopularLinks({ onSelectQuestion }) {
+function PricingPopularLinks({ onSelectQuestion, getVal }) {
   const handleClick = (item) => {
     if (onSelectQuestion) {
       onSelectQuestion(item.id, item.side);
     }
   };
+  const label = getVal ? getVal("pricing_popular_label", "Popular:") : "Popular:";
 
   return (
     <div className="ch-pop enter e4" aria-label="Popular questions">
-      <span className="pop-lbl">Popular:</span>
+      <span className="pop-lbl">{label}</span>
       {PRICING_POPULAR_QUERIES.map((item) => (
         <button
           key={item.id}

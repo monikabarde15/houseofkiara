@@ -178,11 +178,16 @@ export const savePageContent = async (req, res) => {
     }
     const variantList = Array.from(variants);
     const placeholders = variantList.map((_, i) => `$${i + 1}`).join(", ");
+    const exactParamIdx = variantList.length + 1;
+    const altParamIdx = variantList.length + 2;
 
-    // 1. Fetch current data to perform safe deep merge
+    // 1. Fetch existing rows (prioritize exact slug match so canonical row is primary)
     const existing = await pool.query(
-      `SELECT _id, slug, data, title, group_id, summary FROM pages WHERE slug IN (${placeholders}) LIMIT 1`,
-      variantList
+      `SELECT _id, slug, data, title, group_id, summary
+       FROM pages
+       WHERE slug IN (${placeholders})
+       ORDER BY CASE WHEN slug = $${exactParamIdx} THEN 0 WHEN slug = $${altParamIdx} THEN 1 ELSE 2 END`,
+      [...variantList, cleanSlug, altSlug]
     );
 
     let currentData = {};
@@ -229,15 +234,33 @@ export const savePageContent = async (req, res) => {
       RETURNING *;
     `;
 
+    const serializedData = JSON.stringify(mergedData);
     const upsertRes = await pool.query(query, [
       pageId,
       targetSlug,
       pageTitle,
       pageGroup,
       pageSummary,
-      JSON.stringify(mergedData),
+      serializedData,
     ]);
     const saved = upsertRes.rows[0];
+
+    // Keep any pre-existing slug alias rows (e.g. /about and /about-us) synchronized
+    if (existing.rows.length > 1) {
+      const siblingSlugs = existing.rows
+        .map((r) => r.slug)
+        .filter((s) => s && s !== targetSlug);
+      if (siblingSlugs.length > 0) {
+        await pool.query(
+          `UPDATE pages
+           SET title = COALESCE($1, pages.title),
+               data = $2,
+               updated_at = NOW()
+           WHERE slug = ANY($3::text[])`,
+          [pageTitle, serializedData, siblingSlugs]
+        );
+      }
+    }
 
     return res.json({
       success: true,
@@ -305,9 +328,6 @@ export const savePage = async (req, res) => {
         wordsCount || 0,
         figuresCount || 0,
         checksCount || 0,
-        highChecksCount !== undefined ? highChecksCount : (checksCount || 0),
-        mediumChecksCount !== undefined ? mediumChecksCount : 0,
-        lowChecksCount !== undefined ? lowChecksCount : 0,
         isBuilt !== false,
         Boolean(hasScheduled),
         JSON.stringify(data || {}),

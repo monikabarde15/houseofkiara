@@ -1,0 +1,225 @@
+/* Editorial luxury styling for admin-added Custom Sections & Rich Word-Paste Content */
+
+.hok-custom-sections {
+  max-width: 1040px;
+  margin: 48px auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+  color: var(--ink-2, #4F463E);
+  font-family: var(--sans, "DM Sans", sans-serif);
+}
+
+.hok-custom-sections--compact {
+  max-width: 100%;
+  margin: 44px 0;
+  padding: 0;
+}
+
+.hok-custom-sec {
+  padding-top: 36px;
+  border-top: 1px solid var(--border, #E8E0D4);
+}
+
+.hok-custom-sec + .hok-custom-sec {
+  margin-top: 40px;
+}
+
+.hok-custom-sec-hd {
+  margin-bottom: 18px;
+}
+
+.hok-custom-sec-hd h2 {
+  font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--charcoal, #1A1612);
+  margin: 0;
+}
+
+.hok-custom-sec-hd p {
+  font-family: var(--sans, "DM Sans", sans-serif);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--muted, #8A7E72);
+  margin: 8px 0 0;
+}
+
+.hok-rich-content {
+  font-family: var(--sans, "DM Sans", sans-serif);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--ink-2, #4F463E);
+  word-break: break-word;
+  overflow-x: auto;
+}
+
+.hok-rich-content > *:first-child {
+  margin-top: 0;
+}
+
+.hok-rich-content > *:last-child {
+  margin-bottom: 0;
+}
+
+.hok-rich-content h1:not([style]),
+.hok-rich-content h2:not([style]),
+.hok-rich-content h3:not([style]),
+.hok-rich-content h4:not([style]) {
+  font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--charcoal, #1A1612);
+  margin: 22px 0 10px;
+}
+
+.hok-rich-content h1:not([style]) {
+  font-size: 30px;
+}
+
+.hok-rich-content h2:not([style]) {
+  font-size: 26px;
+}
+
+.hok-rich-content h3:not([style]) {
+  font-size: 21px;
+}
+
+.hok-rich-content h4:not([style]) {
+  font-size: 18px;
+}
+
+.hok-rich-content p:not([style]) {
+  margin: 0 0 12px;
+}
+
+.hok-rich-content strong,
+.hok-rich-content b {
+  font-weight: 600;
+}
+
+.hok-rich-content ul:not([style]) {
+  list-style: disc;
+  padding-left: 22px;
+  margin: 12px 0;
+}
+
+.hok-rich-content ol:not([style]) {
+  list-style: decimal;
+  padding-left: 22px;
+  margin: 12px 0;
+}
+
+.hok-rich-content li:not([style]) {
+  display: list-item;
+  margin: 4px 0;
+  padding: 0;
+  line-height: 1.75;
+}
+
+.hok-rich-content li::before {
+  display: none !important;
+  content: none !important;
+}
+
+.hok-rich-content blockquote:not([style]) {
+  margin: 16px 0;
+  padding: 6px 0 6px 16px;
+  border-left: 2px solid var(--gold, #C9A96E);
+  font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink-3, #5A4F46);
+}
+
+.hok-rich-content a:not([style]) {
+  color: var(--gold-deep, #9C7C45);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hok-rich-content a:not([style]):hover {
+  color: var(--charcoal, #1A1612);
+}
+
+.hok-rich-content hr:not([style]) {
+  border: none;
+  border-top: 1px solid var(--border, #E8E0D4);
+  margin: 24px 0;
+}
+
+.hok-rich-content table {
+  max-width: 100%;
+  border-collapse: collapse;
+}
+
+.hok-rich-content table:not([style]) {
+  width: 100%;
+  margin: 16px 0;
+  font-size: 13.5px;
+  background: var(--warm-white, #FFFEFB);
+  border: 1px solid var(--border, #E8E0D4);
+}
+
+.hok-rich-content th:not([style]),
+.hok-rich-content td:not([style]) {
+  border: 1px solid var(--border, #E8E0D4);
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.hok-rich-content th:not([style]) {
+  background: var(--cream, #FAF7F2);
+  color: var(--charcoal, #1A1612);
+  font-weight: 600;
+}
+
+.hok-rich-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.hok-rich-content img:not([style]) {
+  display: block;
+  margin: 18px auto;
+  border-radius: 4px;
+  border: 1px solid var(--border, #E8E0D4);
+}
+
+.hok-rich-content figure {
+  margin: 18px 0;
+  text-align: center;
+}
+
+.hok-rich-content figcaption {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted, #8A7E72);
+}
+
+@media (max-width: 760px) {
+  .hok-custom-sections {
+    margin: 36px auto;
+    padding: 0 16px;
+  }
+
+  .hok-custom-sections--compact {
+    margin: 32px 0;
+    padding: 0;
+  }
+
+  .hok-custom-sec-hd h2 {
+    font-size: 26px;
+  }
+
+  .hok-rich-content th,
+  .hok-rich-content td {
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+}

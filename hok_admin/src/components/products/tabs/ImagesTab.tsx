@@ -10,7 +10,9 @@ interface ImagesTabProps {
   onFieldChange: <K extends keyof Product>(field: K, value: Product[K]) => void;
   uploadingImages: boolean;
   setUploadingImages: (loading: boolean) => void;
-  onSave?: () => void;
+  onSave?: () => Promise<boolean> | boolean | void;
+  errors?: Record<string, string>;
+  isSaving?: boolean;
 }
 
 export function ImagesTab({
@@ -19,6 +21,8 @@ export function ImagesTab({
   uploadingImages,
   setUploadingImages,
   onSave,
+  errors = {},
+  isSaving = false,
 }: ImagesTabProps) {
   const [newImageUrl, setNewImageUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -85,10 +89,26 @@ export function ImagesTab({
   };
 
   return (
-    <div className="bg-white p-5 rounded-lg border border-[#e8dfd8] shadow-sm space-y-4">
-      <h3 className="font-serif font-bold text-stone-900 text-sm">
-        Visual Assets Carousels (Images & Videos)
-      </h3>
+    <div
+      className={`bg-white p-5 rounded-lg border shadow-sm space-y-4 ${
+        errors.images ? "border-red-300" : "border-[#e8dfd8]"
+      }`}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="font-serif font-bold text-stone-900 text-sm">
+          Visual Assets Carousels (Images & Videos){" "}
+          <span className="text-red-500">*</span>
+        </h3>
+        <span className="text-[11px] text-stone-500">
+          At least 1 image is required
+        </span>
+      </div>
+
+      {errors.images && (
+        <div className="rounded border border-red-200 bg-red-50/70 px-3 py-2 text-xs font-medium text-red-700">
+          {errors.images}
+        </div>
+      )}
 
       <div className="space-y-3">
         <div className="space-y-1">
@@ -133,62 +153,78 @@ export function ImagesTab({
           </label>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {images.map((mediaUrl, index) => (
-            <div
-              key={`${mediaUrl}-${index}`}
-              className="rounded border border-stone-200 p-2 bg-white"
-            >
-              {isVideoUrl(mediaUrl) ? (
-                <video
-                  src={mediaUrl}
-                  controls
-                  className="h-28 w-full rounded object-cover bg-black"
-                />
-              ) : (
-                <img
-                  src={mediaUrl}
-                  alt={`Product Asset ${index + 1}`}
-                  className="h-28 w-full rounded object-cover"
-                />
-              )}
-              <div className="mt-2 flex justify-between text-[10px]">
-                <button
-                  type="button"
-                  disabled={index === 0}
-                  onClick={() => handleMoveImage(index, "left")}
-                  className="disabled:opacity-30 text-stone-600 hover:text-stone-900"
-                >
-                  ←
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage(index)}
-                  className="text-rose-600 hover:text-rose-800 font-semibold"
-                >
-                  Remove
-                </button>
-                <button
-                  type="button"
-                  disabled={index === images.length - 1}
-                  onClick={() => handleMoveImage(index, "right")}
-                  className="disabled:opacity-30 text-stone-600 hover:text-stone-900"
-                >
-                  →
-                </button>
+        {images.length === 0 ? (
+          <div
+            className={`rounded-lg border-2 border-dashed p-6 text-center text-xs ${
+              errors.images
+                ? "border-red-300 bg-red-50/30 text-red-700"
+                : "border-stone-200 bg-[#fcf9f5] text-stone-500"
+            }`}
+          >
+            No product images added yet. Upload an image or paste an image URL
+            above to save this product.
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {images.map((mediaUrl, index) => (
+              <div
+                key={`${mediaUrl}-${index}`}
+                className="rounded border border-stone-200 p-2 bg-white"
+              >
+                {isVideoUrl(mediaUrl) ? (
+                  <video
+                    src={mediaUrl}
+                    controls
+                    className="h-28 w-full rounded object-cover bg-black"
+                  />
+                ) : (
+                  <img
+                    src={mediaUrl}
+                    alt={`Product Asset ${index + 1}`}
+                    className="h-28 w-full rounded object-cover"
+                  />
+                )}
+                <div className="mt-2 flex justify-between text-[10px]">
+                  <button
+                    type="button"
+                    disabled={index === 0}
+                    onClick={() => handleMoveImage(index, "left")}
+                    className="disabled:opacity-30 text-stone-600 hover:text-stone-900"
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    className="text-rose-600 hover:text-rose-800 font-semibold"
+                  >
+                    Remove
+                  </button>
+                  <button
+                    type="button"
+                    disabled={index === images.length - 1}
+                    onClick={() => handleMoveImage(index, "right")}
+                    className="disabled:opacity-30 text-stone-600 hover:text-stone-900"
+                  >
+                    →
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end pt-2 border-t border-[#e8dfd8]">
         <button
           type="button"
-          onClick={onSave}
-          className="rounded bg-[#C7A55C] px-5 py-2 text-xs font-bold text-stone-900 hover:bg-[#b8931f] transition"
+          onClick={() => onSave?.()}
+          disabled={uploadingImages || isSaving}
+          className={`rounded bg-[#C7A55C] px-5 py-2 text-xs font-bold text-stone-900 hover:bg-[#b8931f] transition ${
+            uploadingImages || isSaving ? "opacity-60 cursor-not-allowed" : ""
+          }`}
         >
-          Save Images
+          {isSaving ? "Saving..." : "Save Images"}
         </button>
       </div>
     </div>

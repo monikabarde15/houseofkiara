@@ -1,0 +1,600 @@
+[
+  {
+    "id": "s-renting",
+    "side": "pay",
+    "number": "01",
+    "title": "Renting a piece",
+    "italic": "piece",
+    "summary": "How a rental is priced, and everything its price includes.",
+    "questions": [
+      {
+        "id": "r-price",
+        "side": "pay",
+        "sectionId": "s-renting",
+        "question": "How is a rental priced?",
+        "tagText": "One price for 3 days",
+        "tagTone": "neutral",
+        "answerText": "Every rental piece has one price for its standard rental window of 3 days: it arrives the day\n\nbefore your celebration, is yours for the day itself, and goes back the day after. Here is how the window works\n\n[opens page shipping-policy].\n\nEach piece also has a daily rate for every additional day, shown on its page. Both are set for each piece, by its\n\ndesigner, its value and its condition, and your booking summary adds everything up before you pay."
+      },
+      {
+        "id": "r-extra",
+        "side": "pay",
+        "sectionId": "s-renting",
+        "question": "How do extra days work?",
+        "tagText": "Daily rate per day",
+        "tagTone": "neutral",
+        "answerText": "Simply add one extra day for each additional day of celebrations, at the piece's daily rate. With a haldi and sangeet\n\non one day and the wedding the next, you would book your standard 3 days plus 1 extra day.\n\nSee it in numbers [scrolls to In numbers].\n\nOnce your piece is with you, you can still ask to keep it longer [opens answer x-extend]. If no one has booked it\n\nstraight after you, each extra day costs the same daily rate."
+      },
+      {
+        "id": "r-included",
+        "side": "pay",
+        "sectionId": "s-renting",
+        "question": "What is included in the rental price?",
+        "tagText": "Always included",
+        "tagTone": "good",
+        "answerText": "Everything that keeps the piece at its best, and everything you need to enjoy it:\n\n- professional cleaning before your rental, and again after it\n- pressing, careful checks and any small touch-ups\n- its garment bag and box, wrapped in tissue\n- a prepaid return label, so sending it back costs nothing more\n\nYou never pay for cleaning, and please never clean the piece yourself. Our Care, Cleaning & Damage Policy\n\n[opens page care-policy] explains why."
+      },
+      {
+        "id": "r-gst",
+        "side": "pay",
+        "sectionId": "s-renting",
+        "question": "Is GST included in the rental price?",
+        "tagText": "18% at checkout",
+        "tagTone": "neutral",
+        "answerText": "Rental prices are shown before GST. GST at 18% is added to your rental fee at checkout, and you\n\nsee the exact amount before you pay.\n\nYour deposit carries no GST, because it is held for you rather than paid to us."
+      },
+      {
+        "id": "r-several",
+        "side": "pay",
+        "sectionId": "s-renting",
+        "question": "I am renting several pieces for the same celebration",
+        "tagText": "One delivery",
+        "tagTone": "good",
+        "answerText": "Each piece has its own price for the window you share, and every piece booked for the same dates travels\n\ntogether: one delivery and one pickup, counted as one order towards free delivery [opens answer c-free]. Each\n\npiece also has its own deposit.\n\nThe price of a preloved piece, offers, and buying from outside India."
+      }
+    ]
+  },
+  {
+    "id": "s-preloved",
+    "side": "pay",
+    "number": "02",
+    "title": "Buying preloved",
+    "italic": "preloved",
+    "summary": "The price of a preloved piece, offers, and buying from outside India.",
+    "questions": [
+      {
+        "id": "p-price",
+        "side": "pay",
+        "sectionId": "s-preloved",
+        "question": "How is a preloved piece priced?",
+        "tagText": "5% at checkout",
+        "tagTone": "neutral",
+        "answerText": "Every preloved piece has one price, agreed with its owner and shown on its page. It reflects the piece's designer\n\nand its condition, and every detail of that condition is disclosed alongside it.\n\nGST at 5% is added at checkout, and you see the exact amount before you pay."
+      },
+      {
+        "id": "p-offer",
+        "side": "pay",
+        "sectionId": "s-preloved",
+        "question": "Can I make an offer?",
+        "tagText": "Preloved only",
+        "tagTone": "neutral",
+        "answerText": "Yes, on any preloved piece. Offers are never taken on rentals.\n\nName your price on the piece's page, and our team replies within 24 hours. If we accept your offer,\n\nit becomes your price, and GST and delivery are added at checkout in the usual way.\n\nAn offer does not reserve the piece, so it stays available to others until a purchase is complete."
+      },
+      {
+        "id": "p-included",
+        "side": "pay",
+        "sectionId": "s-preloved",
+        "question": "Is cleaning included when I buy a preloved piece?",
+        "tagText": "Always included",
+        "tagTone": "good",
+        "answerText": "Yes. Every preloved piece is professionally cleaned before it leaves us, and arrives checked and pressed. A piece\n\nthat has never been worn is checked and pressed instead of cleaned, so it stays exactly as new."
+      },
+      {
+        "id": "p-abroad",
+        "side": "pay",
+        "sectionId": "s-preloved",
+        "question": "I am buying from outside India",
+        "tagText": "Prices in rupees",
+        "tagTone": "neutral",
+        "answerText": "the amount and may add a charge of its own.\n\nInternational delivery is quoted for your country at checkout, and customs duties and import taxes are paid by you\n\nwhen your piece arrives. Before any piece travels abroad, we show it to you properly first, as our Shipping &\n\nDelivery Policy [opens page shipping-policy] explains.\n\nHeld in safekeeping while a rental is in your care, and returned once it is home with us."
+      }
+    ]
+  },
+  {
+    "id": "s-deposit",
+    "side": "pay",
+    "number": "03",
+    "title": "Your deposit",
+    "italic": "deposit",
+    "summary": "Held in safekeeping while a rental is in your care, and returned once it is home with us.",
+    "questions": [
+      {
+        "id": "d-what",
+        "side": "pay",
+        "sectionId": "s-deposit",
+        "question": "How much is the deposit?",
+        "tagText": "Set for each piece",
+        "tagTone": "neutral",
+        "answerText": "Each rental piece has its own deposit, set to protect it and shown on its page before you book. It is held in\n\nsafekeeping while the piece is in your care, and returned once it is home with us.\n\nIt is never a charge: it carries no GST, and it is never put towards your rental fee."
+      },
+      {
+        "id": "d-pay",
+        "side": "pay",
+        "sectionId": "s-deposit",
+        "question": "When and how do I pay the deposit?",
+        "tagText": "Paid separately",
+        "tagTone": "neutral",
+        "answerText": "Separately from your order, never at checkout. Our team arranges it with you on WhatsApp, and you pay it by UPI\n\nor bank transfer, 10 days before your piece is dispatched. For a booking made closer to the\n\ndate, it is due within 48 hours of our request, and always before dispatch.\n\nCash is welcome only for bookings made in person with us in Indore. We confirm receipt in writing within 48 hours\n\n."
+      },
+      {
+        "id": "d-back",
+        "side": "pay",
+        "sectionId": "s-deposit",
+        "question": "When is my deposit returned?",
+        "tagText": "Within 3 to 5 business days",
+        "tagTone": "good",
+        "answerText": "Within 3 to 5 business days of your piece being inspected on its return, and always to the\n\naccount it came from. If all is well, it comes back in full."
+      },
+      {
+        "id": "d-deduct",
+        "side": "pay",
+        "sectionId": "s-deposit",
+        "question": "Can anything be taken from my deposit?",
+        "tagText": "Only beyond normal wear",
+        "tagTone": "neutral",
+        "answerText": "Only what a rental genuinely leaves behind: late days [opens answer x-late] at the daily rate, or the cost of\n\nrestoring damage beyond normal wear [opens answer l-damage], decided on evidence. We tell you within 2 days\n\nof the piece reaching us, with photographs, and give you 2 days\n\nto reply before anything is settled.\n\nNormal wear, and our cleaning after every rental, are never taken from it. Our Deposit Policy [opens page deposit-\n\npolicy] explains every step.\n\nWhen delivery is on us, and what faster delivery costs."
+      }
+    ]
+  },
+  {
+    "id": "s-delivery",
+    "side": "pay",
+    "number": "04",
+    "title": "Delivery charges",
+    "italic": "charges",
+    "summary": "When delivery is on us, and what faster delivery costs.",
+    "questions": [
+      {
+        "id": "c-free",
+        "side": "pay",
+        "sectionId": "s-delivery",
+        "question": "When is delivery free?",
+        "tagText": "Free from ₹5,000",
+        "tagTone": "good",
+        "answerText": "Standard delivery within India is free on every order of ₹5,000 or more, measured on the price\n\nof your pieces before GST. For a rental, that covers both journeys: to you, and back to us.\n\nYour deposit is not counted towards it, as it is held separately from your order."
+      },
+      {
+        "id": "c-below",
+        "side": "pay",
+        "sectionId": "s-delivery",
+        "question": "What does delivery cost on smaller orders?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "It is worked out for your delivery address and shown at checkout, before you pay. For a rental, it already covers\n\nthe journey back to us, so there is nothing more to pay when your piece comes home."
+      },
+      {
+        "id": "c-express",
+        "side": "pay",
+        "sectionId": "s-delivery",
+        "question": "What do express and same day delivery cost?",
+        "tagText": "Quoted before you pay",
+        "tagTone": "neutral",
+        "answerText": "They depend on where your piece is travelling, so we never quote a flat fee. Whenever they are available for your\n\norder, you see the exact charge at checkout, before you pay.\n\nBoth are faster services on top of standard delivery, so they are charged even when standard delivery is free.\n\nSame day delivery is offered within Indore."
+      },
+      {
+        "id": "c-intl",
+        "side": "pay",
+        "sectionId": "s-delivery",
+        "question": "What does international delivery cost?",
+        "tagText": "Quoted for your country",
+        "tagTone": "neutral",
+        "answerText": "It depends on the country and the weight of your piece, so it is quoted for your address at checkout, before you\n\npay. International delivery is for preloved pieces, and it is never part of free delivery.\n\nFaster international delivery is available at an extra charge, also quoted before you pay. Customs duties and\n\nimport taxes are charged by your country, and paid when your piece arrives.\n\nKeeping a piece longer, returning it late, and missed deliveries or pickups."
+      }
+    ]
+  },
+  {
+    "id": "s-extras",
+    "side": "pay",
+    "number": "05",
+    "title": "Extra days and late returns",
+    "italic": "late returns",
+    "summary": "Keeping a piece longer, returning it late, and missed deliveries or pickups.",
+    "questions": [
+      {
+        "id": "x-extend",
+        "side": "pay",
+        "sectionId": "s-extras",
+        "question": "I would like to keep my piece a little longer",
+        "tagText": "Daily rate plus GST",
+        "tagTone": "neutral",
+        "answerText": "Message us before your Return Date. If no one has booked the piece straight after you, we extend your rental at\n\nits daily rate, plus 18% GST, for each extra day."
+      },
+      {
+        "id": "x-late",
+        "side": "pay",
+        "sectionId": "s-extras",
+        "question": "What does a late return cost?",
+        "tagText": "Daily rate plus GST",
+        "tagTone": "caution",
+        "answerText": "Each extra day is charged at the piece's daily rate plus 18% GST, exactly like an extra day of rental,\n\nbecause someone else may be waiting for it. There is no separate late fee.\n\nYou are never charged when a delay is ours or our delivery partner's. If a piece has not been handed back 5 days\n\nafter its Return Date, it is treated as not returned [opens answer l-loss]."
+      },
+      {
+        "id": "x-missed",
+        "side": "pay",
+        "sectionId": "s-extras",
+        "question": "I missed a delivery or a pickup",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "Simply message us and we will arrange another. If the first was missed because no one was available, the second\n\ncarries a charge: our delivery partner's charge to us, plus GST, shown to you before it is booked.\n\nFor a pickup, you are also welcome to drop the piece at our delivery partner's nearest office instead, at no cost. A\n\nmissed pickup is a delivery charge, never a late return."
+      },
+      {
+        "id": "x-change",
+        "side": "pay",
+        "sectionId": "s-extras",
+        "question": "Can I change my dates?",
+        "tagText": "Usually possible",
+        "tagTone": "good",
+        "answerText": "Usually, yes, as long as your piece has not been dispatched. Message us with your new dates. If the piece is free,\n\nwe move your booking and settle any difference in price, with no charge for the change itself.\n\nIf your celebration has moved rather than been called off, changing your dates is almost always better than\n\ncancelling.\n\nWhat comes back to you if your plans change, and how quickly."
+      }
+    ]
+  },
+  {
+    "id": "s-cancel",
+    "side": "pay",
+    "number": "06",
+    "title": "Cancellations and refunds",
+    "italic": "refunds",
+    "summary": "What comes back to you if your plans change, and how quickly.",
+    "questions": [
+      {
+        "id": "k-rent-early",
+        "side": "pay",
+        "sectionId": "s-cancel",
+        "question": "I cancel a rental more than 7 days before it starts",
+        "tagText": "Full refund",
+        "tagTone": "good",
+        "answerText": "You receive a full refund: your rental fee, the GST on it, and any delivery charge you paid. If your deposit has\n\nalready been paid, it comes back in full too.\n\nYour rental starts on the day your piece arrives, the day before your celebration."
+      },
+      {
+        "id": "k-rent-late",
+        "side": "pay",
+        "sectionId": "s-cancel",
+        "question": "I cancel a rental within 7 days of its start, before it is dispatched",
+        "tagText": "70% refunded",
+        "tagTone": "neutral",
+        "answerText": "By then, your piece has been turned away from everyone else and is being prepared for you. You receive 70%\n\nof your rental fee back, with the GST paid on it, and any delivery charge and deposit\n\nin full.\n\nIf your celebration has simply moved, change your dates [opens answer x-change] instead: there is no charge, and\n\nnothing is lost."
+      },
+      {
+        "id": "k-rent-sent",
+        "side": "pay",
+        "sectionId": "s-cancel",
+        "question": "I cancel a rental after it has been dispatched",
+        "tagText": "No refund",
+        "tagTone": "caution",
+        "answerText": "Once a rental is on its way, it can no longer be cancelled or refunded, as the next celebration is planned around its\n\nreturn. Your deposit comes back as usual, once the piece is home with us.\n\nIf something is wrong when it arrives, message us within 24 hours of delivery, and we will put it\n\nright."
+      },
+      {
+        "id": "k-pre",
+        "side": "pay",
+        "sectionId": "s-cancel",
+        "question": "I cancel a preloved order",
+        "tagText": "Free until dispatch",
+        "tagTone": "neutral",
+        "answerText": "Until your piece is dispatched, you can cancel for a full refund, including GST and delivery.\n\nOnce it is on its way, a preloved purchase is final, as every piece is one of a kind. If it is not as described,\n\nmessage us within 24 hours of delivery, or within 30 days for a flaw that could not\n\nhave been seen on arrival, and our Refund & Cancellation Policy [opens page refund-policy] applies."
+      },
+      {
+        "id": "k-we",
+        "side": "pay",
+        "sectionId": "s-cancel",
+        "question": "What if House of Kaira has to cancel?",
+        "tagText": "Full refund",
+        "tagTone": "good",
+        "answerText": "You receive everything you paid, automatically. And if we cancel at a time when cancelling yourself would have\n\ncost you something, we pay you that same amount on top, as our Terms & Conditions [opens page terms] promise."
+      },
+      {
+        "id": "k-time",
+        "side": "pay",
+        "sectionId": "s-cancel",
+        "question": "How long does a refund take?",
+        "tagText": "Within 7 to 14 days",
+        "tagTone": "neutral",
+        "answerText": "We start your refund the moment a cancellation is confirmed. It reaches the payment method you used at\n\ncheckout within 7 to 14 days, depending on your bank. A deposit always goes back to the\n\naccount it came from.\n\nNormal wear is never charged. Here is what applies beyond it."
+      }
+    ]
+  },
+  {
+    "id": "s-damage",
+    "side": "pay",
+    "number": "07",
+    "title": "If something happens",
+    "italic": "happens",
+    "summary": "Normal wear is never charged. Here is what applies beyond it.",
+    "questions": [
+      {
+        "id": "l-wear",
+        "side": "pay",
+        "sectionId": "s-damage",
+        "question": "Will I be charged for normal wear?",
+        "tagText": "Never charged",
+        "tagTone": "good",
+        "answerText": "Never. If our regular cleaning and small touch-ups after every rental put it right, it is normal wear, and it is\n\nnever charged. Natural perspiration is never charged either.\n\nIf it needs specialist stain treatment, a karigar's repair or new materials, or cannot be put right at all, it is damage,\n\nand here is what applies [opens answer l-damage]."
+      },
+      {
+        "id": "l-damage",
+        "side": "pay",
+        "sectionId": "s-damage",
+        "question": "What if my piece is damaged?",
+        "tagText": "Restoration only",
+        "tagTone": "neutral",
+        "answerText": "Tell us straight away, and please do not try to fix it yourself. The cost of restoring it is taken from your deposit,\n\ndecided against the photographs and video we take before dispatch, and shared with you first. It carries no GST,\n\nbecause it restores the piece rather than paying for anything.\n\nIf the cost is more than your deposit, the balance is settled within 7 days of our written statement,\n\nonce we have talked it through with you. Our Care, Cleaning & Damage Policy [opens page care-policy] explains\n\nmore."
+      },
+      {
+        "id": "l-loss",
+        "side": "pay",
+        "sectionId": "s-damage",
+        "question": "What if a piece is lost or not returned?",
+        "tagText": "Replacement Value",
+        "tagTone": "caution",
+        "answerText": "Every rental piece has a Replacement Value, shown in your booking summary before you pay. If a piece is lost,\n\nstolen, not returned or damaged beyond repair, its Replacement Value is owed, less your deposit, with no GST\n\nand no late days on top.\n\nWe always talk it through with you first. Our Deposit Policy [opens page deposit-policy] explains every step.\n\nWays to pay, promo codes and your GST invoice."
+      }
+    ]
+  },
+  {
+    "id": "s-paying",
+    "side": "pay",
+    "number": "08",
+    "title": "How you pay",
+    "italic": "pay",
+    "summary": "Ways to pay, promo codes and your GST invoice.",
+    "questions": [
+      {
+        "id": "y-ways",
+        "side": "pay",
+        "sectionId": "s-paying",
+        "question": "How can I pay?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "Securely through Razorpay, by UPI, debit or credit card, or net banking.\n\nYour card and UPI details are never stored by us. Your deposit is the one amount paid separately, as arranged\n\nwith you [opens answer d-pay]."
+      },
+      {
+        "id": "y-fees",
+        "side": "pay",
+        "sectionId": "s-paying",
+        "question": "Are there any other fees?",
+        "tagText": "None",
+        "tagTone": "good",
+        "answerText": "No. There is no convenience fee, no platform fee and nothing extra for paying by card or UPI. Every charge that\n\ncan ever apply is on this page, and everything for your order is shown before you pay."
+      },
+      {
+        "id": "y-promo",
+        "side": "pay",
+        "sectionId": "s-paying",
+        "question": "How do promo codes work?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "Enter your code at checkout, and you see the saving before you pay. A promo code applies to the price of your\n\npieces, never to a deposit."
+      },
+      {
+        "id": "y-invoice",
+        "side": "pay",
+        "sectionId": "s-paying",
+        "question": "Will I receive a GST invoice?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "Yes, for every order, with the GST on each charge set out clearly. If you are buying for a business, add your\n\nGSTIN at checkout and it appears on your invoice.\n\nW H A T  Y O U  E A R N\n\nHow your share is set, and what it is calculated on."
+      }
+    ]
+  },
+  {
+    "id": "s-share",
+    "side": "earn",
+    "number": "01",
+    "title": "Your share",
+    "italic": "share",
+    "summary": "How your share is set, and what it is calculated on.",
+    "questions": [
+      {
+        "id": "e-how",
+        "side": "earn",
+        "sectionId": "s-share",
+        "question": "How is my share decided?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "Your share is set for each piece and discussed openly with you before it goes live. It reflects your piece's value\n\nand condition, and the effort it takes from our team to rent or sell it: collecting and cleaning it, photographing it\n\nbeautifully, and marketing it to the right people.\n\nWhatever the piece, our aim stays the same: that you recover a meaningful part of what you invested in it,\n\nand that we keep only what truly reflects our work for it. Your share is then confirmed in its Listing Terms."
+      },
+      {
+        "id": "e-fixed",
+        "side": "earn",
+        "sectionId": "s-share",
+        "question": "Is there a fixed share for every piece?",
+        "tagText": "Agreed piece by piece",
+        "tagTone": "neutral",
+        "answerText": "No, and that is deliberate. Every piece is different: some find their first renter almost at once, while others need\n\nmore of our time, care and marketing to reach the right person.\n\nSo rather than one figure for everyone, we agree a share for your piece with you before it goes live, and every\n\npayout statement shows exactly how it was worked out. Here is how your share is decided [opens answer e-how]."
+      },
+      {
+        "id": "e-on",
+        "side": "earn",
+        "sectionId": "s-share",
+        "question": "What is my share calculated on?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "On the rental fee of each booking, and on the final price of a sale, including an offer we have accepted.\n\nGST, deposits and delivery charges are never part of it: GST goes to the government, a deposit is the renter's own\n\nmoney held in safekeeping, and delivery pays for the journey."
+      },
+      {
+        "id": "e-promo",
+        "side": "earn",
+        "sectionId": "s-share",
+        "question": "Do promo codes reduce my share?",
+        "tagText": "Never",
+        "tagTone": "good",
+        "answerText": "Never. When we run a promo code, we fund it ourselves, so your share is worked out on the price before the code.\n\nListing is free. These are the only costs that can ever be yours."
+      }
+    ]
+  },
+  {
+    "id": "s-costs",
+    "side": "earn",
+    "number": "02",
+    "title": "What listing costs",
+    "italic": "costs",
+    "summary": "Listing is free. These are the only costs that can ever be yours.",
+    "questions": [
+      {
+        "id": "e-free",
+        "side": "earn",
+        "sectionId": "s-costs",
+        "question": "Does it cost anything to list a piece?",
+        "tagText": "Nothing upfront",
+        "tagTone": "good",
+        "answerText": "Nothing upfront. Listing is free, and collection, photography, cleaning and every delivery to renters and buyers are\n\non us."
+      },
+      {
+        "id": "e-costs",
+        "side": "earn",
+        "sectionId": "s-costs",
+        "question": "Which costs can ever be mine?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "Only these, and you always know them in advance:\n\n- a repair your piece needs to be ready to rent or sell, agreed with you first and taken from its payout\n- the return delivery, if you take your piece back within 90 days of it going live\n- a second collection, if the first is missed because no one was available\n- the delivery both ways when you borrow your piece back to wear\n\nA renter's damage is never taken from your payout."
+      },
+      {
+        "id": "e-clean",
+        "side": "earn",
+        "sectionId": "s-costs",
+        "question": "Who pays for cleaning?",
+        "tagText": "Always on us",
+        "tagTone": "good",
+        "answerText": "We do, always: after every rental, when a preloved piece first comes to us, and when you borrow your piece back\n\nto wear, both before it goes to you and when it returns."
+      },
+      {
+        "id": "e-repair",
+        "side": "earn",
+        "sectionId": "s-costs",
+        "question": "Who pays if my piece needs a repair?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "Work needed to bring your piece up to our standard is yours. We agree it with you first, carry it out once someone\n\nis interested in your piece, and take it from that piece's payout, so nothing is charged upfront.\n\nDamage that happens during a rental is ours to deal with, from the renter's deposit. Our Seller Guidelines [opens\n\npage seller-guidelines] explain how your piece is looked after.\n\nWhen you are paid, where, and with what record."
+      }
+    ]
+  },
+  {
+    "id": "s-payouts",
+    "side": "earn",
+    "number": "03",
+    "title": "Your payouts",
+    "italic": "payouts",
+    "summary": "When you are paid, where, and with what record.",
+    "questions": [
+      {
+        "id": "e-when",
+        "side": "earn",
+        "sectionId": "s-payouts",
+        "question": "When will I be paid?",
+        "tagText": "Within 3 working days",
+        "tagTone": "neutral",
+        "answerText": "Within 3 working days. For a rental, that is once it has ended and your piece is back with us and\n\ninspected. For a sale, it is once the buyer has received the piece."
+      },
+      {
+        "id": "e-where",
+        "side": "earn",
+        "sectionId": "s-payouts",
+        "question": "Where is my payout sent?",
+        "tagText": "Your own account",
+        "tagTone": "good",
+        "answerText": "Into a bank account or UPI ID in your own name. To keep your earnings safe, we cannot pay into anyone else's\n\naccount."
+      },
+      {
+        "id": "e-statement",
+        "side": "earn",
+        "sectionId": "s-payouts",
+        "question": "Will I see how my payout is worked out?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "Yes. Every payout comes with a statement showing the price, your share and anything deducted from it."
+      },
+      {
+        "id": "e-deduct",
+        "side": "earn",
+        "sectionId": "s-payouts",
+        "question": "Can anything be deducted from my payout?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "Only what you have agreed to, or what the law requires: one of the costs that can be yours [opens answer e-costs],\n\ntax the law requires us to deduct, or an amount you owe under our Lister Terms [opens page lister-terms], such as\n\nfor a sale reversed because something was not disclosed.\n\nGST, tax deducted from payouts, and the tax on your own earnings."
+      }
+    ]
+  },
+  {
+    "id": "s-tax",
+    "side": "earn",
+    "number": "04",
+    "title": "Tax and your PAN",
+    "italic": "your PAN",
+    "summary": "GST, tax deducted from payouts, and the tax on your own earnings.",
+    "questions": [
+      {
+        "id": "e-gst",
+        "side": "earn",
+        "sectionId": "s-tax",
+        "question": "Is GST taken from my share?",
+        "tagText": "Never from your share",
+        "tagTone": "good",
+        "answerText": "No. GST is paid by the renter or buyer on top of the price, and we pay it to the government. Your share is worked\n\nout on the price before GST."
+      },
+      {
+        "id": "e-pan",
+        "side": "earn",
+        "sectionId": "s-tax",
+        "question": "Why do you ask for my PAN?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "We ask for your PAN before your piece goes live, together with your payout details, because the law can require\n\nus to deduct tax from some payouts. When it does, we deduct it and send you the certificate, so you can claim it in\n\nyour income tax return.\n\nWe never ask for your full Aadhaar number."
+      },
+      {
+        "id": "e-owntax",
+        "side": "earn",
+        "sectionId": "s-tax",
+        "question": "Do I pay tax on my earnings?",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "You are responsible for any tax on your earnings, and your payout statements give you a clear record for your\n\nreturn. If you are unsure how your earnings are treated, a tax adviser can guide you.\n\nHow the price of your piece is set, and how offers work."
+      }
+    ]
+  },
+  {
+    "id": "s-prices",
+    "side": "earn",
+    "number": "05",
+    "title": "Prices and offers",
+    "italic": "offers",
+    "summary": "How the price of your piece is set, and how offers work.",
+    "questions": [
+      {
+        "id": "e-price",
+        "side": "earn",
+        "sectionId": "s-prices",
+        "question": "Who sets the price of my piece?",
+        "tagText": "Agreed with you",
+        "tagTone": "good",
+        "answerText": "We agree it with you. We suggest a rental price, a daily rate and a sale price from your piece's designer, condition\n\nand demand, and nothing goes live until you are happy with them.\n\nWe never lower a price on our own, and there is no fixed listing period and no automatic markdown. A price\n\nchanges only when you agree."
+      },
+      {
+        "id": "e-offers",
+        "side": "earn",
+        "sectionId": "s-prices",
+        "question": "How do offers on my piece work?",
+        "tagText": "Preloved only",
+        "tagTone": "neutral",
+        "answerText": "Offers are taken only on pieces for sale, never on rentals. We agree with you the lowest offer we can accept, and\n\nonly ever accept offers at or above it. Your share is then calculated on the price the buyer pays."
+      },
+      {
+        "id": "e-partner",
+        "side": "earn",
+        "sectionId": "s-prices",
+        "question": "I am a designer or a boutique",
+        "tagText": "",
+        "tagTone": "neutral",
+        "answerText": "We would love to hear from you. Designers and boutiques listing a collection work with us as Designer Partners,\n\nand our Designer Partners [opens page designer-partners] page explains how.\n\n9.6 The way across\n\nElement End of What you pay End of What you earn\n\nLine Listing a piece of your own? Renting or buying with us?\n\nLink See what you earn (opens What you earn) See what you pay (opens What you pay)\n\n9.7 Related policies and fine print\n\nElement Copy\n\nLabel Related policies\n\nLink (refund-policy) Refund & Cancellation Policy\n\nLink (deposit-policy) Deposit Policy\n\nLink (shipping-policy) Shipping & Delivery Policy\n\nLink (care-policy) Care, Cleaning & Damage Policy\n\nLink (seller-guidelines) Seller Guidelines\n\nLink (terms) Terms & Conditions\n\nLink (faq) Help & FAQs\n\nFine print This page explains our prices, charges and shares in plain words. Where it ever differs\n\nfrom our Terms & Conditions, the Terms apply. Last reviewed 11 October 2026.\n\nPrint link Print or save as PDF\n\n9.8 A question about a price?\n\nElement Copy\n\nEyebrow We are here for you\n\nTitle A question about a price? (italic: price?)\n\nParagraph Every piece has its own story, and its own prices. If you would like the exact figures for\n\na piece, help planning a rental around your celebrations, or a word about listing with us,\n\nmessage us. We would much rather help you directly, and nothing is too small to ask.\n\nButtons Message us on WhatsApp\n\nWrite to us\n\nChannel: WhatsApp The fastest way to reach us. Seven days a week, 10 AM to 8 PM IST, with replies\n\nusually within 2 hours.\n\nAction: Start a chat\n\nChannel: Email hello@houseofkaira.com. Best for anything you would like in writing, such as an invoice\n\nor a payout statement.\n\nAction: Send an email\n\nChannel: Every order and payout, in\n\none place\n\nYour bookings, receipts, deposits and payouts, in My Account.\n\nAction: Go to my account\n\n9.9 Messages\n\nWhen Copy\n\nResult count \"<n> answers\" or \"1 answer\", then \", showing the closest <k>\" when more than 8 match\n\nResult line under each question <side> · <section title>, for example \"What you pay · Extra days and late returns\"\n\nNo results We could not find that one\n\nAsk us directly and we will answer it personally.\n\nButton: Ask on WhatsApp\n\nAnswer footer Still unsure? Ask us about this\n\nCopy link\n\nAfter Copy link (toast) Link copied. Paste it anywhere to share this answer.\n\nWhatsApp message, from an\n\nanswer or no results\n\nEmail subject A question about pricing\n\nLedger cell, accessible name <column>. <row>: <figure>. <line> Opens the full answer. (the column only on What\n\nyou pay)\n\npriced, GST, deposits, delivery, extra days, cancellations, and how listers' shares are\n\nagreed and when they are paid."
+      }
+    ]
+  }
+]

@@ -15,10 +15,10 @@ function tokenize(text) {
 }
 
 // Extract all searchable questions across both sides
-export function getAllPricingQuestions() {
+export function getAllPricingQuestions(sections = PRICING_SECTIONS) {
   const allQuestions = [];
-  PRICING_SECTIONS.forEach((section) => {
-    section.questions.forEach((q) => {
+  (sections || PRICING_SECTIONS).forEach((section) => {
+    (section.questions || []).forEach((q) => {
       allQuestions.push({
         ...q,
         sectionTitle: section.title,
@@ -30,7 +30,7 @@ export function getAllPricingQuestions() {
 }
 
 // Perform scored query search
-export function searchPricing(query, activeSide = "pay") {
+export function searchPricing(query, activeSide = "pay", sections = PRICING_SECTIONS) {
   if (!query || typeof query !== "string") return [];
   const cleanQuery = query.trim().toLowerCase();
   if (cleanQuery.length < 2) return [];
@@ -38,7 +38,7 @@ export function searchPricing(query, activeSide = "pay") {
   const queryTerms = tokenize(cleanQuery);
   if (queryTerms.length === 0) return [];
 
-  const questions = getAllPricingQuestions();
+  const questions = getAllPricingQuestions(sections);
   const scoredResults = [];
 
   questions.forEach((item) => {

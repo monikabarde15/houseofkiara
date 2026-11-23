@@ -9,7 +9,8 @@ interface RelatedProductsTabProps {
   onFieldChange: <K extends keyof Product>(field: K, value: Product[K]) => void;
   allProducts: Product[];
   currentProductId?: string;
-  onSave?: () => void;
+  onSave?: () => Promise<boolean> | boolean | void;
+  isSaving?: boolean;
 }
 
 export function RelatedProductsTab({
@@ -18,6 +19,7 @@ export function RelatedProductsTab({
   allProducts,
   currentProductId,
   onSave,
+  isSaving = false,
 }: RelatedProductsTabProps) {
   const [query, setQuery] = useState("");
 
@@ -169,10 +171,13 @@ export function RelatedProductsTab({
       <div className="pt-3 border-t border-stone-100 flex justify-end">
         <button
           type="button"
-          onClick={onSave}
-          className="rounded-md bg-amber-700/90 hover:bg-amber-700 text-white text-xs font-medium px-4 py-2 transition shadow-sm"
+          onClick={() => onSave?.()}
+          disabled={isSaving}
+          className={`rounded-md bg-amber-700/90 hover:bg-amber-700 text-white text-xs font-medium px-4 py-2 transition shadow-sm ${
+            isSaving ? "opacity-60 cursor-not-allowed" : ""
+          }`}
         >
-          Save Related Products
+          {isSaving ? "Saving..." : "Save Related Products"}
         </button>
       </div>
     </div>

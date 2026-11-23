@@ -36,6 +36,7 @@ import SiteSettingsView from './components/SiteSettings';
 // import HomepageView from './components/HomepageView';
 import HomepageView from "./components/Homepage/HomepageView";
 import { PagesModule } from './components/Pages/PagesModule';
+import { PagesEditorTab } from './components/Pages/components/PagesEditorTab';
 
 import { 
   initialCustomers, 
@@ -976,12 +977,48 @@ export default function App() {
       );
     }
 
-    if (currentView === 'pages' || currentView === 'platform_legal' || currentView === 'pages_editor') {
+    if (currentView === 'pages_editor') {
+      return (
+        <div className="min-h-screen bg-[#f7f2ea] text-[#1a1612]">
+          <header className="sticky top-0 z-30 border-b border-[#e6dccb] bg-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setView('dashboard')}
+                className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E5DDD3] bg-white px-3 text-[11.5px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition cursor-pointer"
+              >
+                &lt; Back to Dashboard
+              </button>
+              <div>
+                <h1 className="font-serif text-xl sm:text-2xl font-normal text-[#1a1612] leading-tight">
+                  Pages Editor
+                </h1>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => window.open('/', '_blank')}
+                className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E5DDD3] bg-white px-3.5 text-[12px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition cursor-pointer"
+              >
+                <ExternalLink className="h-3.5 w-3.5 text-[#6F675D]" />
+                <span>View Live Site</span>
+              </button>
+            </div>
+          </header>
+          <div className="max-w-[1440px] mx-auto p-4 sm:p-6">
+            <PagesEditorTab />
+          </div>
+        </div>
+      );
+    }
+
+    if (currentView === 'pages' || currentView === 'platform_legal') {
       return (
         <PagesModule
           key={currentView}
           initialSlug={currentView === 'platform_legal' ? '/terms' : null}
-          initialTab={currentView === 'pages_editor' ? 'editor' : 'pages'}
+          initialTab="pages"
           onBackToDashboard={() => setView('dashboard')}
         />
       );

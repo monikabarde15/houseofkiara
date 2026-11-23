@@ -5,9 +5,10 @@ import "../../styles/howitworks/how-it-works.css";
 // Layout Components
 import HowItWorksLayout from "../../components/HowItWorks/layout/HowItWorksLayout";
 import MobileHowItWorksLayout from "../../components/HowItWorks/Mobile/layout/MobileHowItWorksLayout";
+import CustomPageSections from "../../components/common/CustomPageSections";
 
 const HowItWorks = () => {
-  const { getVal } = usePageContent("/how-it-works");
+  const { getVal, isSectionHidden, settings } = usePageContent("/how-it-works");
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState("section-shop");
   const observerRef = useRef(null);
@@ -121,10 +122,11 @@ const HowItWorks = () => {
   return (
     <div className="hok-hiw-page">
       {isMobile ? (
-        <MobileHowItWorksLayout activeSection={activeSection} getVal={getVal} />
+        <MobileHowItWorksLayout activeSection={activeSection} getVal={getVal} isSectionHidden={isSectionHidden} />
       ) : (
-        <HowItWorksLayout activeSection={activeSection} getVal={getVal} />
+        <HowItWorksLayout activeSection={activeSection} getVal={getVal} isSectionHidden={isSectionHidden} />
       )}
+      <CustomPageSections sections={settings?.customSections} />
     </div>
   );
 };

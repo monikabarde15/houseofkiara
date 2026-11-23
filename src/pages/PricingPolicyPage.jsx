@@ -2,11 +2,12 @@ import { usePageContent } from "../hooks/usePageContent";
 // src/pages/PricingPolicyPage.jsx
 // Main page shell for House of Kaira Pricing & Fees specification
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PRICING_PAGE_CONFIG } from "../data/pricing/pricingSettings";
-import { PRICING_SECTION_BAR_ITEMS } from "../data/pricing/pricingRegistry";
+import { PRICING_SECTION_BAR_ITEMS, PRICING_SECTIONS } from "../data/pricing/pricingRegistry";
 import { scrollToPricingTarget } from "../utils/pricing/pricingScroll";
+import { buildDynamicPricingSections } from "../utils/pricing/mergePricingData";
 
 // Components
 import PricingBreadcrumb from "../components/pricing/PricingBreadcrumb";
@@ -21,6 +22,7 @@ import PricingRelatedPolicies from "../components/pricing/PricingRelatedPolicies
 import PricingClosingBand from "../components/pricing/PricingClosingBand";
 import PricingFloatingWhatsApp from "../components/pricing/PricingFloatingWhatsApp";
 import PricingPrintDocument from "../components/pricing/PricingPrintDocument";
+import CustomPageSections from "../components/common/CustomPageSections";
 
 // Stylesheets
 import "../styles/pricing/pricing-variables.css";
@@ -36,9 +38,18 @@ import "../styles/pricing/pricing-closing.css";
 import "../styles/pricing/pricing-print.css";
 
 export default function PricingPolicyPage() {
-  const { getVal } = usePageContent("/pricing-fees");
+  const { getVal, isSectionHidden, fieldValues, answers, settings } = usePageContent("/pricing-fees");
   const location = useLocation();
   const navigate = useNavigate();
+
+  const extraQaSections = settings?.extraQaSections || [];
+  const customSections = settings?.customSections || [];
+  const extraLedgerRows = settings?.extraLedgerRows || {};
+
+  const dynamicSections = useMemo(
+    () => buildDynamicPricingSections(PRICING_SECTIONS, fieldValues, answers, extraQaSections),
+    [fieldValues, answers, extraQaSections]
+  );
 
   // Active side state: "pay" (What you pay) or "earn" (What you earn)
   const [activeSide, setActiveSide] = useState("pay");
@@ -190,17 +201,37 @@ export default function PricingPolicyPage() {
         <PricingBreadcrumb />
 
         {/* D2 Hero with D3 Search and D4 Popular questions */}
-        <PricingHero getVal={getVal}
+        {!isSectionHidden("hero") && (
+          <PricingHero
+            getVal={getVal}
+            sections={dynamicSections}
+            activeSide={activeSide}
+            onSelectQuestion={handleSelectQuestion}
+            onShowToast={triggerCopyToast}
+          />
+        )}
+
+        <CustomPageSections
+          sections={customSections}
+          placement="after_hero"
           activeSide={activeSide}
-          onSelectQuestion={handleSelectQuestion}
-          onShowToast={triggerCopyToast}
         />
 
         {/* D5 Price Ledger Card (rests on hero lower edge) */}
-        <PricingLedgerCard
+        {!isSectionHidden("ledger") && (
+          <PricingLedgerCard
+            getVal={getVal}
+            extraLedgerRows={extraLedgerRows}
+            activeSide={activeSide}
+            onSideChange={handleSideChange}
+            onSelectQuestion={handleSelectQuestion}
+          />
+        )}
+
+        <CustomPageSections
+          sections={customSections}
+          placement="after_ledger"
           activeSide={activeSide}
-          onSideChange={handleSideChange}
-          onSelectQuestion={handleSelectQuestion}
         />
 
         {/* D6 Section Bar & Body Wrapper */}
@@ -210,38 +241,75 @@ export default function PricingPolicyPage() {
             activeSectionId={activeSectionId}
             onSideChange={handleSideChange}
             onSelectSection={handleSelectSection}
+            isSectionHidden={isSectionHidden}
+            extraSections={extraQaSections}
           />
 
           {/* Policy Body */}
           <div className="dp-body">
             {/* D7 Side Intro */}
-            <PricingSideIntro activeSide={activeSide} getVal={getVal} />
+            {!isSectionHidden("side_intro") && (
+              <PricingSideIntro activeSide={activeSide} getVal={getVal} />
+            )}
 
             {/* D8 In Numbers (Worked Examples): Only rendered on What you pay side */}
-            {activeSide === "pay" && <PricingWorkedExamples getVal={getVal} />}
+            {activeSide === "pay" && !isSectionHidden("worked_examples") && (
+              <PricingWorkedExamples getVal={getVal} />
+            )}
+
+            <CustomPageSections
+              sections={customSections}
+              placement="after_examples"
+              activeSide={activeSide}
+              compact
+            />
 
             {/* D9 Sections List: Renders 8 sections on pay, 5 sections on earn */}
-            <PricingSectionsList
+            {!isSectionHidden("qa_sections") && (
+              <PricingSectionsList
+                activeSide={activeSide}
+                sections={dynamicSections}
+                isSectionHidden={isSectionHidden}
+                openQuestionIds={openQuestionIds}
+                onToggleQuestion={handleToggleQuestion}
+                onSelectQuestion={handleSelectQuestion}
+                onShowToast={triggerCopyToast}
+              />
+            )}
+
+            <CustomPageSections
+              sections={customSections}
+              placement="after_qa"
               activeSide={activeSide}
-              openQuestionIds={openQuestionIds}
-              onToggleQuestion={handleToggleQuestion}
-              onSelectQuestion={handleSelectQuestion}
-              onShowToast={triggerCopyToast}
+              compact
             />
 
             {/* D12 The Way Across: perspective switcher */}
-            <PricingWayAcross
-              activeSide={activeSide}
-              onSideChange={handleSideChange}
-            />
+            {!isSectionHidden("way_across") && (
+              <PricingWayAcross
+                activeSide={activeSide}
+                onSideChange={handleSideChange}
+                getVal={getVal}
+              />
+            )}
           </div>
         </div>
 
         {/* D13 Related Policies */}
-        <PricingRelatedPolicies />
+        {!isSectionHidden("related_policies") && (
+          <PricingRelatedPolicies getVal={getVal} />
+        )}
+
+        <CustomPageSections
+          sections={customSections}
+          placement="before_closing"
+          activeSide={activeSide}
+        />
 
         {/* D14 Closing Band */}
-        <PricingClosingBand onShowToast={triggerCopyToast} />
+        {!isSectionHidden("closing_band") && (
+          <PricingClosingBand getVal={getVal} onShowToast={triggerCopyToast} />
+        )}
 
         {/* D16 Print Document */}
         <PricingPrintDocument />

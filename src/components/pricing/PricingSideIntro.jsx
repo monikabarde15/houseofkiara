@@ -4,8 +4,12 @@
 import React from "react";
 import { PRICING_SIDE_INTROS } from "../../data/pricing/pricingRegistry";
 
-function PricingSideIntro({ activeSide }) {
-  const introText = activeSide === "pay" ? PRICING_SIDE_INTROS.pay : PRICING_SIDE_INTROS.earn;
+function PricingSideIntro({ activeSide, getVal }) {
+  const gv = (k, fb) => (getVal ? getVal(k, fb) : fb);
+  const introText =
+    activeSide === "pay"
+      ? gv("pricing_intro_pay", PRICING_SIDE_INTROS.pay)
+      : gv("pricing_intro_earn", PRICING_SIDE_INTROS.earn);
 
   return (
     <div className="dp-intro-wrap" aria-label="Perspective overview">

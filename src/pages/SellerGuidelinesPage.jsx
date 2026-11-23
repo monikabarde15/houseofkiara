@@ -15,6 +15,7 @@ import SellerTwoWaysFeature from "../components/seller/SellerTwoWaysFeature";
 import SellerFiveStepsFeature from "../components/seller/SellerFiveStepsFeature";
 import SellerCareTrioFeature from "../components/seller/SellerCareTrioFeature";
 import SellerClosingBand from "../components/seller/SellerClosingBand";
+import CustomPageSections from "../components/common/CustomPageSections";
 
 import "../styles/seller/seller-variables.css";
 import "../styles/seller/seller-chrome.css";
@@ -27,7 +28,7 @@ import "../styles/seller/seller-features.css";
 import "../styles/seller/seller-closing.css";
 
 export default function SellerGuidelinesPage() {
-  const { getVal } = usePageContent("/seller-guidelines");
+  const { getVal, settings } = usePageContent("/seller-guidelines");
   const [activeChapterId, setActiveChapterId] = useState("ways");
   const [openQuestionIds, setOpenQuestionIds] = useState(new Set());
   const [toastMessage, setToastMessage] = useState("");
@@ -251,6 +252,8 @@ export default function SellerGuidelinesPage() {
           onSelectChapter={handleSelectChapter}
           onShowToast={showToast}
         />
+
+        <CustomPageSections sections={settings?.customSections} />
 
         {/* Step 11: Closing Band */}
         <SellerClosingBand getVal={getVal} />

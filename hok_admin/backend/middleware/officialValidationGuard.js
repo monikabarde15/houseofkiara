@@ -65,9 +65,9 @@ const XSS_PATTERNS = [
 ];
 
 const MAX_DEPTH = 10;
-const MAX_KEYS_PER_OBJECT = 200;
+const MAX_KEYS_PER_OBJECT = 1000;
 const MAX_ARRAY_LENGTH = 1000;
-const MAX_STRING_LENGTH = 100000;
+const MAX_STRING_LENGTH = 2000000;
 
 /**
  * Recursively inspects and sanitizes an input value.
@@ -269,6 +269,7 @@ const PRODUCT_ALLOWED_KEYS = [
   "occasion",
   "material",
   "color",
+  "colorFamily",
   "colors",
   "craft",
   "technique",
@@ -307,6 +308,7 @@ const PRODUCT_ALLOWED_KEYS = [
   "preRentalBufferDays",
   "postRentalBufferDays",
   "deliveryTiming",
+  "careByFabric",
   "care",
   "packaging",
   "shipping",
@@ -684,10 +686,13 @@ const TASK_ALLOWED_KEYS = [
 
 const CATEGORY_ALLOWED_KEYS = [
   "categoryId",
+  "id",
   "name",
+  "label",
   "slug",
   "image",
   "description",
+  "instructions",
   "hex",
   "family",
 ];

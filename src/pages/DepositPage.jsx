@@ -16,6 +16,7 @@ import DepositSectionsList from '../components/deposit/DepositSectionsList.jsx';
 import DepositRelatedPolicies from '../components/deposit/DepositRelatedPolicies.jsx';
 import DepositClosingBand from '../components/deposit/DepositClosingBand.jsx';
 import DepositPrintDocument from '../components/deposit/DepositPrintDocument.jsx';
+import CustomPageSections from '../components/common/CustomPageSections.jsx';
 import FloatingWhatsApp from '../components/FAQ/common/FloatingWhatsApp';
 
 import { DEPOSIT_SECTIONS } from '../data/deposit/depositRegistry.js';
@@ -35,7 +36,7 @@ import '../styles/deposit/deposit-closing.css';
 import '../styles/deposit/deposit-print.css';
 
 const DepositPage = () => {
-  const { getVal } = usePageContent('/deposit-policy');
+  const { getVal, settings } = usePageContent('/deposit-policy');
   const [toastMessage, setToastMessage] = useState('');
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [activeSectionId, setActiveSectionId] = useState('');
@@ -195,6 +196,8 @@ const DepositPage = () => {
 
       {/* 5. D12 Related Policies & Last Reviewed */}
       <DepositRelatedPolicies />
+
+      <CustomPageSections sections={settings?.customSections} />
 
       {/* 6. D13 "Can't find your answer?" Closing Band */}
       <DepositClosingBand onShowToast={showToast} />

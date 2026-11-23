@@ -12,18 +12,19 @@ import MobilePoliciesSection from "../MobilePoliciesSection";
 import MobileFAQSection from "../MobileFAQSection";
 import MobileClosingCTA from "../MobileClosingCTA";
 
-const MobileHowItWorksLayout = ({ activeSection, getVal }) => {
+const MobileHowItWorksLayout = ({ activeSection, getVal, isSectionHidden }) => {
+  const hide = (id) => (isSectionHidden ? isSectionHidden(id) : false);
   return (
     <div className="hok-hiw-mobile-layout">
-      <MobileHeroSection getVal={getVal} />
+      {!hide("hero") && <MobileHeroSection getVal={getVal} />}
       <MobileChapterNav activeSection={activeSection} />
-      <MobileShoppingJourney getVal={getVal} />
-      <MobileModeCards getVal={getVal} />
-      <MobileDividerBand getVal={getVal} />
-      <MobileListAndEarn getVal={getVal} />
-      <MobilePoliciesSection getVal={getVal} />
-      <MobileFAQSection getVal={getVal} />
-      <MobileClosingCTA getVal={getVal} />
+      {!hide("shopping_journey") && <MobileShoppingJourney getVal={getVal} />}
+      {!hide("modes") && <MobileModeCards getVal={getVal} />}
+      {!hide("divider") && <MobileDividerBand getVal={getVal} />}
+      {!hide("list_and_earn") && <MobileListAndEarn getVal={getVal} />}
+      {!hide("policies") && <MobilePoliciesSection getVal={getVal} />}
+      {!hide("faq") && <MobileFAQSection getVal={getVal} />}
+      {!hide("closing") && <MobileClosingCTA getVal={getVal} />}
     </div>
   );
 };

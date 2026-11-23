@@ -8,15 +8,15 @@ import { Link } from "react-router-dom";
 import { SELLER_CLOSING_BAND } from "../../data/seller/sellerRegistry";
 
 export default function SellerClosingBand({ getVal }) {
-  const title = getVal ? getVal("seller_closing_title", SELLER_CLOSING.title) : SELLER_CLOSING.title;
-  const lead = getVal ? getVal("seller_closing_lead", SELLER_CLOSING.lead) : SELLER_CLOSING.lead;
+  const title = getVal ? getVal("seller_closing_title", SELLER_CLOSING_BAND.title) : SELLER_CLOSING_BAND.title;
+  const lead = getVal ? getVal("seller_closing_lead", SELLER_CLOSING_BAND.lead) : SELLER_CLOSING_BAND.lead;
   return (
     <section className="sg-close" aria-labelledby="sg-close-heading">
       <div className="sg-close-inner">
         {/* Left Column: CTA & WhatsApp */}
         <div>
-          <h2 id="sg-close-heading">{SELLER_CLOSING_BAND.title}</h2>
-          <p className="sg-close-lead">{SELLER_CLOSING_BAND.lead}</p>
+          <h2 id="sg-close-heading">{title}</h2>
+          <p className="sg-close-lead">{lead}</p>
 
           <div className="sg-btns">
             <a

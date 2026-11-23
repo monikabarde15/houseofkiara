@@ -14,36 +14,11 @@ import useCartStore from "../../store/cartStore";
 import useWishlistStore from "../../store/wishlistStore";
 import useAuthStore from "../../store/authStore";
 import toast from "react-hot-toast";
-
-const gradeDotColor = {
-    pristine: "#6B7E5A",
-    excellent: "#C9A96E",
-    good: "#B85C38"
-};
-
-const gradeLabel = {
-    pristine: "PRISTINE CONDITION",
-    excellent: "EXCELLENT CONDITION",
-    good: "GOOD CONDITION"
-};
-
-const gradeConfig = {
-    pristine: {
-        label: "PRISTINE",
-        color: "#6B7E5A",
-        desc: "Unworn or worn once for a short photoshoot. Tags may be attached. No visible wear whatsoever."
-    },
-    excellent: {
-        label: "EXCELLENT",
-        color: "#C9A96E",
-        desc: "Worn once for a full-day event. Professionally cleaned. No visible damage, alteration, or significant bead loss. Any minor imperfections are fully disclosed and photographed above."
-    },
-    good: {
-        label: "GOOD",
-        color: "#B85C38",
-        desc: "Worn 2–3 times. Any minor imperfections clearly photographed and disclosed in listing notes."
-    }
-};
+import ProductCoreAccordions, {
+    CONDITION_DOT_COLOR,
+    CONDITION_LABEL,
+    formatRatingValue,
+} from "./ProductCoreAccordions";
 
 
 export default function RentalAndPreloved() {
@@ -147,20 +122,39 @@ export default function RentalAndPreloved() {
         parsePrice(product?.listingPrice) ||
         0;
     const perDay =
-        (rentPrice > 0 ? Math.round(rentPrice / 4) : 0) || parsePrice(product?.perDayRate) || 0;
+        parsePrice(product?.perDayRate) || (rentPrice > 0 ? Math.round(rentPrice / 4) : 0);
     const rentData = (product?.modes?.rent?.pricing?.windows?.[0]?.price)
         ? product.modes.rent
         : {
             pricing: {
                 pricePerDay: perDay,
-                minDays: product?.minimumDurationDays || 3,
+                minDays:
+                    Number(product?.minimumDurationDays) >= 1
+                        ? Math.floor(Number(product.minimumDurationDays))
+                        : 3,
                 windows: [
                     { id: "standard", label: "Standard Window", price: rentPrice, days: 4, tag: "most popular" },
-                    { id: "extended", label: "Extended Window", price: Math.round((rentPrice / 4) * 7), days: 7, tag: "destination weddings" }
+                    { id: "extended", label: "Extended Window", price: parsePrice(product?.extendedWindowPrice) || Math.round((rentPrice / 4) * 7), days: 7, tag: "destination weddings" }
                 ]
             },
             deposit: { amount: product?.securityDeposit || Math.round(rentPrice * 1.5) || 0, returnDays: 5 }
         };
+    const minRentDays =
+        Number(rentData?.pricing?.minDays) >= 1
+            ? Math.floor(Number(rentData.pricing.minDays))
+            : Number(product?.minimumDurationDays) >= 1
+                ? Math.floor(Number(product.minimumDurationDays))
+                : 3;
+    const selectedDurationDays =
+        selectedStart && selectedEnd
+            ? Math.round(
+                (new Date(selectedEnd).setHours(0, 0, 0, 0) -
+                    new Date(selectedStart).setHours(0, 0, 0, 0)) /
+                (1000 * 60 * 60 * 24)
+            ) + 1
+            : 0;
+    const isDateRangeValid =
+        Boolean(selectedStart && selectedEnd) && selectedDurationDays >= minRentDays;
     const buyData = product?.modes?.buy || null;
     const sizes = product?.modes?.rent?.sizes || [];
 
@@ -207,7 +201,9 @@ export default function RentalAndPreloved() {
             : 0;
 
     // for dot color
-    const grade = product?.condition?.grade || "pristine";
+    const grade = product?.condition?.grade
+        ? String(product.condition.grade).toLowerCase()
+        : "";
 
     // ===============BUY NOW======================//
     const buyPriceNumeric = product?.listingPrice || product?.price || 0;
@@ -220,7 +216,11 @@ export default function RentalAndPreloved() {
             const numeric = typeof bp === 'number' ? bp : Number(String(bp).replace(/[^\d]/g, "")) || 0;
             setPrice(`₹${numeric.toLocaleString()}`);
             if (product.colors?.length) {
-                setSelectedColor(product.colors[0].code);
+                setSelectedColor(
+                    product.colors[0].code ||
+                        product.colors[0].hex ||
+                        product.colors[0].name,
+                );
             }
         }
     }, [product]);
@@ -244,25 +244,31 @@ export default function RentalAndPreloved() {
         eventDate.setDate(eventDate.getDate() + 2);
 
         const rentalWindowDays =
-            Math.ceil(
-                (selectedEnd - selectedStart) /
+            Math.round(
+                (new Date(selectedEnd).setHours(0, 0, 0, 0) -
+                    new Date(selectedStart).setHours(0, 0, 0, 0)) /
                 (1000 * 60 * 60 * 24)
             ) + 1;
 
-        const calculatedPerDay =
-            (rentPrice > 0 ? Math.round(rentPrice / 4) : 0) ||
-            rentData?.pricing?.pricePerDay ||
-            product?.perDayRate ||
-            0;
-
-        let price = selectedWindowData?.price || product?.rentalPrice || 0;
-        if (selectedWindow === "standard" || rentalWindowDays === 4) {
-            price = rentPrice || selectedWindowData?.price || 12000;
-        } else if (selectedWindow === "extended" && selectedWindowData?.price) {
-            price = selectedWindowData.price;
-        } else if (rentalWindowDays && calculatedPerDay > 0) {
-            price = rentalWindowDays * calculatedPerDay;
+        if (rentalWindowDays < minRentDays) {
+            toast.error(
+                `Minimum rental duration is ${minRentDays} ${minRentDays === 1 ? "day" : "days"}.`
+            );
+            return;
         }
+
+        const calculatedPerDay =
+            Number(rentData?.pricing?.pricePerDay || product?.perDayRate) ||
+            (rentPrice > 0 ? Math.round(rentPrice / 4) : 0);
+
+        const matchedWindow = rentData?.pricing?.windows?.find(
+            (w) => w.days === rentalWindowDays
+        );
+        let price = matchedWindow
+            ? matchedWindow.price
+            : calculatedPerDay > 0
+                ? rentalWindowDays * calculatedPerDay
+                : selectedWindowData?.price || product?.rentalPrice || 0;
 
         useCartStore.getState().addToCart(product, {
             type: "rental",
@@ -385,6 +391,16 @@ Color: ${selectedColor || "Not Selected"}
     };
 
 
+    const buySwatches = (Array.isArray(product.colors) ? product.colors : []).filter(
+        (c) => c && (c.code || c.hex || c.name),
+    );
+    const resolvedSizeNote =
+        product.sizeGuide && product.sizeGuide !== "None"
+            ? product.sizeGuide
+            : product.sizeNote && product.sizeNote !== "None"
+                ? product.sizeNote
+                : "";
+
     return (
         <section className={`rap-root ${mode === "buy" ? "buy-mode" : "rent-mode"}`}>
             <Container>
@@ -395,12 +411,20 @@ Color: ${selectedColor || "Not Selected"}
                         <span className="rap-crumb">Home</span>
                         <span className="rap-sep">›</span>
                         <span className="rap-crumb">{mode === "rent" ? "Rent" : "Buy New"}</span>
+                        {product.category && (
+                            <>
+                                <span className="rap-sep">›</span>
+                                <span className="rap-crumb">{product.category}</span>
+                            </>
+                        )}
+                        {product.designer && (
+                            <>
+                                <span className="rap-sep">›</span>
+                                <span className="rap-crumb current">{product.designer}</span>
+                            </>
+                        )}
                         <span className="rap-sep">›</span>
-                        <span className="rap-crumb">{product.category || "None"}</span>
-                        <span className="rap-sep">›</span>
-                        <span className="rap-crumb current">{product.designer || "Designer Atelier"}</span>
-                        <span className="rap-sep">›</span>
-                        <span className="rap-crumb current">{product.title || product.name || "None"}</span>
+                        <span className="rap-crumb current">{product.title || product.name || ""}</span>
                     </div>
                 </div>
 
@@ -448,13 +472,18 @@ Color: ${selectedColor || "Not Selected"}
 
                             {/* ================= COMMON PRODUCT INFO ================= */}
 
-                            <p className="rap-rental-designer-name">{product.designer || "Designer Atelier"}</p>
+                            {product.designer && (
+                                <p className="rap-rental-designer-name">{product.designer}</p>
+                            )}
 
                             <h1 className="rap-rental-product-title">
-                                {product.title || product.name || "None"} <em>{product.subTitle || ""}</em>
+                                {product.title || product.name || ""}{" "}
+                                {product.subTitle ? <em>{product.subTitle}</em> : null}
                             </h1>
 
-                            <p className="rap-rental-product-desc">{product.description || "None"}</p>
+                            {product.description && product.description !== "None" && (
+                                <p className="rap-rental-product-desc">{product.description}</p>
+                            )}
 
                             {/* RATING */}
                             <div className="rap-rental-rating-row">
@@ -469,20 +498,36 @@ Color: ${selectedColor || "Not Selected"}
                                     />
                                 ))}
 
-                                <span className="rap-rental-rating-text">{(product.rating || 0)}.0</span>
-
-                                <span className="rap-rental-rating-separator" />
-
-                                <span className="rap-rental-reviews">{product.reviews || product.reviewCount || 0} reviews</span>
-
-                                <span className="rap-rental-rating-separator" />
-
-                                <span
-                                    className="rap-rental-never-worn-soft"
-                                    style={{ "--dot-color": gradeDotColor[grade] || "#6B7E5A" }}
-                                >
-                                    {gradeLabel[grade] || "AUTHENTIC PIECE"}
+                                <span className="rap-rental-rating-text">
+                                    {formatRatingValue(product.rating)}
                                 </span>
+
+                                <span className="rap-rental-rating-separator" />
+
+                                <span className="rap-rental-reviews">
+                                    {product.reviewCount ?? product.reviews ?? 0} reviews
+                                </span>
+
+                                {grade && CONDITION_LABEL[grade] && (
+                                    <>
+                                        <span className="rap-rental-rating-separator" />
+                                        <span
+                                            className="rap-rental-never-worn-soft"
+                                            style={{ "--dot-color": CONDITION_DOT_COLOR[grade] || "#6B7E5A" }}
+                                        >
+                                            {CONDITION_LABEL[grade]}
+                                        </span>
+                                    </>
+                                )}
+
+                                {mode === "rent" && (
+                                    <>
+                                        <span className="rap-rental-rating-separator" />
+                                        <span className="rap-rental-rent-count">
+                                            Rented {product.rentInfo?.rentedCount ?? product.timesRented ?? 0}×
+                                        </span>
+                                    </>
+                                )}
 
                             </div>
 
@@ -522,7 +567,7 @@ Color: ${selectedColor || "Not Selected"}
 
                                         <p className="rap-rental-price-subline">
                                             ₹{Number(rentData?.pricing?.pricePerDay || 0).toLocaleString("en-IN")} per day • Minimum{" "}
-                                            {rentData?.pricing?.minDays || 3} days
+                                            {minRentDays} {minRentDays === 1 ? "day" : "days"}
                                         </p>
 
                                         {/* 2. RENTAL WINDOWS */}
@@ -604,7 +649,7 @@ Color: ${selectedColor || "Not Selected"}
                                                     </button>
                                                 ))
                                             ) : (
-                                                <span className="rap-rental-size-pill">None</span>
+                                                <span className="rap-rental-size-pill">Free Size</span>
                                             )}
                                         </div>
 
@@ -624,8 +669,8 @@ Color: ${selectedColor || "Not Selected"}
 
                                         {/* PRIMARY CTA */}
                                         <button
-                                            className={`rap-rental-cta-primary ${selectedStart && selectedEnd ? "active" : "disabled"}`}
-                                            disabled={!(selectedStart && selectedEnd)}
+                                            className={`rap-rental-cta-primary ${isDateRangeValid ? "active" : "disabled"}`}
+                                            disabled={!isDateRangeValid}
                                             onClick={handleConfirmBooking}
                                         >
                                             <span className="rap-rental-cta-icon"><Calendar /></span>
@@ -680,184 +725,32 @@ Color: ${selectedColor || "Not Selected"}
                                     </div>
 
                                     {/* 8. ACCORDION */}
-                                    {/*  RENTAL PAGE ACCORDANCE*/}
-
-                                    <div className="rap-pdp-rental-accordion">
-
-                                        {/* ================= PRODUCT DETAILS ================= */}
-                                        <div className="rap-pdp-rental-item">
-                                            <div className="rap-pdp-rental-header" onClick={() => toggle("details")}>
-                                                <span>PRODUCT DETAILS</span>
-
-                                                <Plus className={`rap-onlyrental-icon ${isOpen("details") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("details") && (
-                                                <div className="rap-rental-pdp-content">
-                                                    <div className="rap-rental-pdp-grid">
-
-                                                        <div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Designer</span><p>{product.designer || "Designer Atelier"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Fabric</span><p>{product.details?.fabric || product.fabric || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Craft Technique</span><p>{product.details?.technique || product.craftTechnique || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Includes</span><p>{product.details?.includes || product.includes || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Delivery Time</span><p>{product.details?.delivery || product.deliveryTime || "None"}</p></div>
-                                                        </div>
-
-                                                        <div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Category</span><p>{product.category || product.subTitle || "Luxury Couture"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Colour</span><p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Thread</span><p>{product.details?.thread || product.thread || "None"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "Lucknow, India"}</p></div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= THE CRAFT ================= */}
-                                        <div className="rap-pdp-rental-item">
-                                            <div className="rap-pdp-rental-header" onClick={() => toggle("craft")}>
-                                                <span>THE CRAFT</span>
-
-                                                <Plus className={`rap-onlyrental-icon ${isOpen("craft") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("craft") && (
-                                                <div className="rap-rental-pdp-content">
-                                                    <p className="rap-rental-craft-text">
-                                                        {product.craft || product.craftStory || product.story || "None"}
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= SIZE & FIT ================= */}
-                                        <div className="rap-pdp-rental-item">
-                                            <div data-size-guide className="rap-pdp-rental-header" onClick={() => toggle("size")}>
-                                                <span>SIZE & FIT</span>
-
-                                                <Plus className={`rap-onlyrental-icon ${isOpen("size") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("size") && (
-                                                <div className="rap-rental-pdp-content">
-
-                                                    <p className="rap-rental-size-intro">{product.sizeNote || "None"}</p>
-
-                                                    <table className="rap-rental-size-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Size</th>
-                                                                <th>Bust</th>
-                                                                <th>Waist</th>
-                                                                <th>Hips</th>
-                                                                <th>Height</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            {Array.isArray(product.sizeTable) && product.sizeTable.length > 0 ? (
-                                                                product.sizeTable.map((row, i) => (
-                                                                    <tr key={i} className={row.recommended ? "rap-rental-active-row" : ""}>
-                                                                        <td>{row.size || "None"}</td>
-                                                                        <td>{row.bust || "None"}</td>
-                                                                        <td>{row.waist || "None"}</td>
-                                                                        <td>{row.hips || "None"}</td>
-                                                                        <td>{row.height || "None"}</td>
-                                                                    </tr>
-                                                                ))
-                                                            ) : (
-                                                                <tr>
-                                                                    <td>{selectedSize || "None"}</td>
-                                                                    <td>{product.measurements?.bust || "None"}</td>
-                                                                    <td>{product.measurements?.waist || "None"}</td>
-                                                                    <td>{product.measurements?.hips || "None"}</td>
-                                                                    <td>{product.measurements?.length || "None"}</td>
-                                                                </tr>
-                                                            )}
-                                                        </tbody>
-                                                    </table>
-
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= CARE ================= */}
-                                        <div className="rap-pdp-rental-item">
-                                            <div className="rap-pdp-rental-header" onClick={() => toggle("care")}>
-                                                <span>CARE INSTRUCTIONS</span>
-
-                                                <Plus className={`rap-onlyrental-icon ${isOpen("care") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("care") && (
-                                                <div className="rap-rental-pdp-content">
-                                                    <ul className="rap-rental-care-list">
-                                                        {Array.isArray(product.care) && product.care.length > 0 ? (
-                                                            product.care.map((item, i) => (
-                                                                <li key={i}>
-                                                                    <span className="rap-rental-dash">—</span>
-                                                                    <span>{item}</span>
-                                                                </li>
-                                                            ))
-                                                        ) : (
-                                                            <li>
-                                                                <span className="rap-rental-dash">—</span>
-                                                                <span>None</span>
-                                                            </li>
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= SHIPPING ================= */}
-                                        <div className="rap-pdp-rental-item">
-                                            <div className="rap-pdp-rental-header" onClick={() => toggle("shipping")}>
-                                                <span>SHIPPING & DELIVERY</span>
-
-                                                <Plus className={`rap-onlyrental-icon ${isOpen("shipping") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("shipping") && (
-                                                <div className="rap-rental-pdp-content">
-
-                                                    <table className="rap-rental-shipping-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Method</th>
-                                                                <th>Estimated time</th>
-                                                                <th>Cost</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            {Array.isArray(product.shipping) && product.shipping.length > 0 ? (
-                                                                product.shipping.map((item, i) => (
-                                                                    <tr key={i}>
-                                                                        <td>{item.method || "None"}</td>
-                                                                        <td>{item.time || "None"}</td>
-                                                                        <td className="rap-rental-cost">{item.cost || "None"}</td>
-                                                                    </tr>
-                                                                ))
-                                                            ) : (
-                                                                <tr>
-                                                                    <td>{product.deliveryTiming ? "Standard Delivery" : "None"}</td>
-                                                                    <td>{product.deliveryTiming || "None"}</td>
-                                                                    <td className="rap-rental-cost">None</td>
-                                                                </tr>
-                                                            )}
-                                                        </tbody>
-                                                    </table>
-
-                                                </div>
-                                            )}
-                                        </div>
-
-                                    </div>
+                                    <ProductCoreAccordions
+                                        product={product}
+                                        isOpen={isOpen}
+                                        toggle={toggle}
+                                        includeDisclosureInDetails={true}
+                                        shippingMode="table"
+                                        classes={{
+                                            accordion: "rap-pdp-rental-accordion",
+                                            item: "rap-pdp-rental-item",
+                                            header: "rap-pdp-rental-header",
+                                            icon: "rap-onlyrental-icon",
+                                            content: "rap-rental-pdp-content",
+                                            grid: "rap-rental-pdp-grid",
+                                            row: "rap-rental-pdp-row",
+                                            label: "rap-rental-pdp-label",
+                                            craftText: "rap-rental-craft-text",
+                                            storyNote: "rap-rental-craft-text",
+                                            sizeIntro: "rap-rental-size-intro",
+                                            sizeTable: "rap-rental-size-table",
+                                            activeRow: "rap-rental-active-row",
+                                            careList: "rap-rental-care-list",
+                                            careDash: "rap-rental-dash",
+                                            shippingTable: "rap-rental-shipping-table",
+                                            shippingCost: "rap-rental-cost",
+                                        }}
+                                    />
 
                                 </div>
                             )}
@@ -887,38 +780,51 @@ Color: ${selectedColor || "Not Selected"}
                                         </div>
 
                                         <p className="rab-delivery-text">
-                                            <span className="rab-strong">Ready to ship</span> · Dispatches in 2–3 days · Standard delivery 4–6 days
+                                            {product.deliveryTiming ? (
+                                                product.deliveryTiming
+                                            ) : (
+                                                <>
+                                                    <span className="rab-strong">Ready to ship</span> · Dispatches in 2–3 days · Standard delivery 4–6 days
+                                                </>
+                                            )}
                                         </p>
                                     </div>
 
                                     {/* COLORS */}
-                                    <div className="rab-color-section">
-                                        <p className="rab-section-label">SELECT COLOUR</p>
-                                        <div className="rab-swatches-details">
-                                            {Array.isArray(product.colors) && product.colors.length > 0 ? (
-                                                product.colors.map((c, i) => (
-                                                    <div
-                                                        key={i}
-                                                        className={`rab-swatches-details ${selectedColor === c.code ? "active" : ""}`}
-                                                        onClick={() => {
-                                                            setSelectedColor(c.code);
-                                                            if (c.images?.[0]) setActiveImage(c.images[0]);
-                                                        }}
-                                                    >
-                                                        <div
-                                                            className="rab-swatch-circle-details"
-                                                            style={{ backgroundColor: c.code }}
-                                                        ></div>
-                                                        <span className="rab-swatch-name">
-                                                            {c.name}
-                                                        </span>
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <span style={{ fontSize: "14px", color: "#666" }}>{product.color || "None"}</span>
-                                            )}
+                                    {(buySwatches.length > 0 || (product.color && product.color !== "None")) && (
+                                        <div className="rab-color-section">
+                                            <p className="rab-section-label">SELECT COLOUR</p>
+                                            <div className="rab-swatches-details">
+                                                {buySwatches.length > 0 ? (
+                                                    buySwatches.map((c, i) => {
+                                                        const swatchVal = c.code || c.hex || c.name;
+                                                        return (
+                                                            <div
+                                                                key={i}
+                                                                className={`rab-swatches-details ${selectedColor === swatchVal ? "active" : ""}`}
+                                                                onClick={() => {
+                                                                    setSelectedColor(swatchVal);
+                                                                    if (c.images?.[0]) setActiveImage(c.images[0]);
+                                                                }}
+                                                            >
+                                                                {(c.code || c.hex) && (
+                                                                    <div
+                                                                        className="rab-swatch-circle-details"
+                                                                        style={{ backgroundColor: c.code || c.hex }}
+                                                                    ></div>
+                                                                )}
+                                                                <span className="rab-swatch-name">
+                                                                    {c.name}
+                                                                </span>
+                                                            </div>
+                                                        );
+                                                    })
+                                                ) : (
+                                                    <span style={{ fontSize: "14px", color: "#666" }}>{product.color}</span>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
 
                                     {/* SIZE */}
                                     <div className="rab-section">
@@ -952,12 +858,12 @@ Color: ${selectedColor || "Not Selected"}
                                                     </span>
                                                 ))
                                             ) : (
-                                                <span className="active">{product.prelovedSize || "None"}</span>
+                                                <span className="active">{product.prelovedSize || "Free Size"}</span>
                                             )}
                                         </div>
-                                        <p className="rab-size-note">
-                                            {product.sizeNote || "None"}
-                                        </p>
+                                        {resolvedSizeNote && (
+                                            <p className="rab-size-note">{resolvedSizeNote}</p>
+                                        )}
                                     </div>
 
                                     {/* CTA Section */}
@@ -1040,189 +946,32 @@ Color: ${selectedColor || "Not Selected"}
                                     </div>
 
                                     {/* PRODUCTS PAGE DETAILS */}
-
-                                    <div className="rab-pdp-accordion">
-
-                                        {/* ================= PRODUCT DETAILS ================= */}
-                                        <div className="rab-pdp-item">
-                                            <div className="rab-pdp-header" onClick={() => toggle("details")}>
-                                                <span>PRODUCT DETAILS</span>
-
-                                                <Plus className={`rab-pdp-icon ${isOpen("details") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("details") && (
-                                                <div className="rab-pdp-content">
-                                                    <div className="rab-pdp-grid">
-
-                                                        <div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Designer</span><p>{product.designer || "Designer Atelier"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Fabric</span><p>{product.details?.fabric || product.fabric || "None"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Craft Technique</span><p>{product.details?.technique || product.craftTechnique || "None"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Includes</span><p>{product.details?.includes || product.includes || "None"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Delivery Time</span><p>{product.details?.delivery || product.deliveryTime || "None"}</p></div>
-                                                        </div>
-
-                                                        <div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Category</span><p>{product.category || product.subTitle || "Luxury Couture"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Colour</span><p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Thread</span><p>{product.details?.thread || product.thread || "None"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p></div>
-                                                            <div className="rab-pdp-row"><span className="rab-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "Lucknow, India"}</p></div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= THE CRAFT ================= */}
-                                        <div className="rab-pdp-item">
-                                            <div className="rab-pdp-header" onClick={() => toggle("craft")}>
-                                                <span>THE CRAFT</span>
-
-                                                <Plus className={`rab-pdp-icon ${isOpen("craft") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("craft") && (
-                                                <div className="rab-pdp-content">
-                                                    <p className="rab-craft-text">
-                                                        {product.craft || product.craftStory || product.story || "None"}
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= SIZE & FIT ================= */}
-                                        <div className="rab-pdp-item">
-                                            <div data-size-guide className="rab-pdp-header" onClick={() => toggle("size")}>
-                                                <span>SIZE & FIT</span>
-
-                                                <Plus className={`rab-pdp-icon ${isOpen("size") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("size") && (
-                                                <div className="rab-pdp-content">
-
-                                                    <p className="rab-size-intro">{product.sizeNote || "None"}</p>
-
-                                                    <table className="rab-size-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Size</th>
-                                                                <th>Bust</th>
-                                                                <th>Waist</th>
-                                                                <th>Hips</th>
-                                                                <th>Height</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            {Array.isArray(product.sizeTable) && product.sizeTable.length > 0 ? (
-                                                                product.sizeTable.map((row, i) => (
-                                                                    <tr key={i} className={row.recommended ? "rab-active-row" : ""}>
-                                                                        <td>{row.size || "None"}</td>
-                                                                        <td>{row.bust || "None"}</td>
-                                                                        <td>{row.waist || "None"}</td>
-                                                                        <td>{row.hips || "None"}</td>
-                                                                        <td>{row.height || "None"}</td>
-                                                                    </tr>
-                                                                ))
-                                                            ) : (
-                                                                <tr>
-                                                                    <td>{selectedSize || "None"}</td>
-                                                                    <td>{product.measurements?.bust || "None"}</td>
-                                                                    <td>{product.measurements?.waist || "None"}</td>
-                                                                    <td>{product.measurements?.hips || "None"}</td>
-                                                                    <td>{product.measurements?.length || "None"}</td>
-                                                                </tr>
-                                                            )}
-                                                        </tbody>
-                                                    </table>
-
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= CARE ================= */}
-                                        <div className="rab-pdp-item">
-                                            <div className="rab-pdp-header" onClick={() => toggle("care")}>
-                                                <span>CARE INSTRUCTIONS</span>
-
-                                                <Plus className={`rab-pdp-icon ${isOpen("care") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("care") && (
-                                                <div className="rab-pdp-content">
-                                                    <ul className="rab-care-list">
-                                                        {Array.isArray(product.care) && product.care.length > 0 ? (
-                                                            product.care.map((item, i) => (
-                                                                <li key={i}>
-                                                                    <span className="rab-dash">—</span>
-                                                                    <span>{item}</span>
-                                                                </li>
-                                                            ))
-                                                        ) : (
-                                                            <li>
-                                                                <span className="rab-dash">—</span>
-                                                                <span>None</span>
-                                                            </li>
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= SHIPPING ================= */}
-                                        <div className="rab-pdp-item">
-                                            <div className="rab-pdp-header" onClick={() => toggle("shipping")}>
-                                                <span>SHIPPING & DELIVERY</span>
-
-                                                <Plus className={`rab-pdp-icon ${isOpen("shipping") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("shipping") && (
-                                                <div className="rab-pdp-content">
-
-                                                    <table className="rab-shipping-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Method</th>
-                                                                <th>Estimated time</th>
-                                                                <th>Cost</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            {Array.isArray(product.shipping) && product.shipping.length > 0 ? (
-                                                                product.shipping.map((item, i) => (
-                                                                    <tr key={i}>
-                                                                        <td>{item.method || "None"}</td>
-                                                                        <td>{item.time || "None"}</td>
-                                                                        <td className="rab-cost">{item.cost || "None"}</td>
-                                                                    </tr>
-                                                                ))
-                                                            ) : (
-                                                                <tr>
-                                                                    <td>{product.deliveryTiming ? "Standard Delivery" : "None"}</td>
-                                                                    <td>{product.deliveryTiming || "None"}</td>
-                                                                    <td className="rab-cost">None</td>
-                                                                </tr>
-                                                            )}
-                                                        </tbody>
-                                                    </table>
-
-                                                </div>
-                                            )}
-                                        </div>
-
-                                    </div>
-
-
-
-
-
-
+                                    <ProductCoreAccordions
+                                        product={product}
+                                        isOpen={isOpen}
+                                        toggle={toggle}
+                                        includeDisclosureInDetails={true}
+                                        shippingMode="table"
+                                        classes={{
+                                            accordion: "rab-pdp-accordion",
+                                            item: "rab-pdp-item",
+                                            header: "rab-pdp-header",
+                                            icon: "rab-pdp-icon",
+                                            content: "rab-pdp-content",
+                                            grid: "rab-pdp-grid",
+                                            row: "rab-pdp-row",
+                                            label: "rab-pdp-label",
+                                            craftText: "rab-craft-text",
+                                            storyNote: "rab-craft-text",
+                                            sizeIntro: "rab-size-intro",
+                                            sizeTable: "rab-size-table",
+                                            activeRow: "rab-active-row",
+                                            careList: "rab-care-list",
+                                            careDash: "rab-dash",
+                                            shippingTable: "rab-shipping-table",
+                                            shippingCost: "rab-cost",
+                                        }}
+                                    />
 
                                 </div>
                             )}
@@ -1236,7 +985,7 @@ Color: ${selectedColor || "Not Selected"}
             <RelatedProduct
         product={product}
         currentProductId={id}
-        category={product.subTitle || product.category}
+        category={product.category || product.subTitle}
       />
         </section>
     );

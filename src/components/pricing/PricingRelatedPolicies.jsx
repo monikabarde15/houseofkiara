@@ -14,7 +14,8 @@ const RELATED_LINKS = [
   { label: "Help & FAQs", path: "/faqs" },
 ];
 
-export default function PricingRelatedPolicies() {
+export default function PricingRelatedPolicies({ getVal }) {
+  const gv = (k, fb) => (getVal ? getVal(k, fb) : fb);
   const handlePrint = (e) => {
     if (e && e.preventDefault) {
       e.preventDefault();
@@ -27,7 +28,7 @@ export default function PricingRelatedPolicies() {
   return (
     <div className="pol" aria-label="Related policies and document information">
       <div className="pol-in">
-        <b>Related policies</b>
+        <b>{gv("pricing_related_heading", "Related policies")}</b>
         {RELATED_LINKS.map((item) => (
           <Link key={item.path} to={item.path}>
             {item.label}
@@ -36,15 +37,16 @@ export default function PricingRelatedPolicies() {
       </div>
 
       <p>
-        This page explains our prices, charges and shares in plain words. Where
-        it ever differs from our Terms & Conditions, the Terms apply. Last
-        reviewed 11 October 2026.
+        {gv(
+          "pricing_related_note",
+          "This page explains our prices, charges and shares in plain words. Where it ever differs from our Terms & Conditions, the Terms apply. Last reviewed 11 October 2026."
+        )}
         <button
           type="button"
           onClick={handlePrint}
           aria-label="Print or save as PDF"
         >
-          Print or save as PDF
+          {gv("pricing_related_print_btn", "Print or save as PDF")}
         </button>
       </p>
     </div>

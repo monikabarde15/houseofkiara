@@ -19,6 +19,7 @@ import CareOwnedSection from "../components/care/CareOwnedSection";
 import CareRelatedPolicies from "../components/care/CareRelatedPolicies";
 import CareClosingBand from "../components/care/CareClosingBand";
 import CarePrintDocument from "../components/care/CarePrintDocument";
+import CustomPageSections from "../components/common/CustomPageSections";
 
 import { scrollToTarget } from "../utils/care/careScroll";
 import { ALL_QUESTIONS } from "../data/care/careRegistry";
@@ -38,7 +39,7 @@ import "../styles/care/care-closing.css";
 import "../styles/care/care-print.css";
 
 export default function CarePolicyPage() {
-  const { getVal } = usePageContent("/care-policy");
+  const { getVal, settings } = usePageContent("/care-policy");
   const [activeMomentTab, setActiveMomentTab] = useState("arrives");
   const [activePieceChip, setActivePieceChip] = useState("lehenga");
   const [activeSection, setActiveSection] = useState("faCard");
@@ -287,6 +288,8 @@ export default function CarePolicyPage() {
 
       {/* C14: Related policies and last reviewed (outside .care-wrap so secbar releases) */}
       <CareRelatedPolicies />
+
+      <CustomPageSections sections={settings?.customSections} />
 
       {/* C15: Can't find your answer? closing band */}
       <CareClosingBand />

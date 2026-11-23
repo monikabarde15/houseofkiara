@@ -2,6 +2,7 @@ import express from "express";
 import {
   getProducts,
   getProductById,
+  getNextSku,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -36,6 +37,7 @@ const router = express.Router();
 // ========== PRODUCT ROUTES ==========
 // GET routes
 router.get("/products", getProducts);
+router.get("/products/next-sku", getNextSku);
 router.get("/products/:id/availability", checkProductAvailability);
 router.get("/products/:id/quote", calculateProductQuote);
 router.get("/products/:id/calendar", getAvailabilityCalendar);

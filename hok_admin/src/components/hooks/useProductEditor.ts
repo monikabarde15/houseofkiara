@@ -32,10 +32,10 @@ export function useProductEditor() {
 
   const [formData, setFormData] = useState<Partial<Product>>({});
 
-  // ✅ Helper function to ensure listingModes is uppercase
+  // Helper function to ensure listingModes is uppercase without forcing defaults
   const normalizeListingModes = (modes?: string[]): string[] => {
     if (!modes || !Array.isArray(modes) || modes.length === 0) {
-      return ["RENTAL"];
+      return [];
     }
     return modes
       .map((mode: string) => mode.toUpperCase())
@@ -75,6 +75,15 @@ export function useProductEditor() {
       else if (lower.startsWith("excellent")) cleanProduct.condition = "Excellent";
       else if (lower.startsWith("good")) cleanProduct.condition = "Good";
       else if (lower.startsWith("fair")) cleanProduct.condition = "Fair";
+    }
+
+    // Sync colour family from structured colors if not explicitly saved on legacy products
+    if (
+      !cleanProduct.colorFamily &&
+      Array.isArray(cleanProduct.colors) &&
+      cleanProduct.colors[0]?.family
+    ) {
+      cleanProduct.colorFamily = cleanProduct.colors[0].family;
     }
 
     // ✅ Ensure listingModes is uppercase
@@ -154,31 +163,28 @@ export function useProductEditor() {
     [loadProductSections],
   );
 
-  // ✅ FIXED: startAdding with UPPERCASE listingModes
+  // Clean blank product state when starting a new listing (no static pre-filled defaults)
   const startAdding = useCallback(() => {
     const defaultProduct: Partial<Product> = {
       name: "",
       designer: "",
+      subtitle: "",
       description: "",
       category: "",
       occasion: "",
-      material: "Silk Organza",
-      embellishments: "Zardozi",
-      sizes: ["S", "M"],
-      listingModes: ["RENTAL"], // ✅ FIXED - UPPERCASE!
-      condition: "Excellent",
-      status: "Review",
-      rentalPrice: 5000,
-      securityDeposit: 10000,
-      listingPrice: 150000,
-      commissionRate: 25,
-      cleaningBufferDays: 2,
-      images: [
-        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=60",
-      ],
-      taxRate: 0,
-      cleaningFee: 0,
-      extensionPrice: 0,
+      material: "",
+      embellishments: "",
+      color: "",
+      colorFamily: "",
+      colors: [],
+      careByFabric: "",
+      care: [],
+      sizes: [],
+      listingModes: [],
+      condition: "",
+      status: "Draft",
+      images: [],
+      tags: [],
       relatedProductIds: [],
     };
 
@@ -250,7 +256,7 @@ export function useProductEditor() {
     });
 
     // Normalize listingModes
-    if (cleanData.listingModes) {
+    if (Array.isArray(cleanData.listingModes)) {
       cleanData.listingModes = normalizeListingModes(
         cleanData.listingModes as string[],
       );

@@ -16,6 +16,7 @@ import PrivacyPoliciesLine from '../components/privacy/PrivacyPoliciesLine.jsx';
 import PrivacyQuestionsBand from '../components/privacy/PrivacyQuestionsBand.jsx';
 import PrivacyPrintDocument from '../components/privacy/PrivacyPrintDocument.jsx';
 import PrivacyToast from '../components/privacy/PrivacyToast.jsx';
+import CustomPageSections from '../components/common/CustomPageSections.jsx';
 import FloatingWhatsApp from '../components/FAQ/common/FloatingWhatsApp';
 import { scrollToAnchor } from '../utils/privacy/privacyFormatter.jsx';
 
@@ -30,7 +31,7 @@ import '../styles/privacy/privacy-closing-band.css';
 import '../styles/privacy/privacy-print.css';
 
 const PrivacyPage = () => {
-  const { getVal } = usePageContent("/privacy");
+  const { getVal, settings } = usePageContent("/privacy");
   const [toastState, setToastState] = useState({ message: '', isVisible: false });
 
   // Handle URL hash on initial load (Section 6)
@@ -107,6 +108,8 @@ const PrivacyPage = () => {
           onJumpClause={handleSelectClause}
         />
       </div>
+
+      <CustomPageSections sections={settings?.customSections} />
 
       {/* 6. Dark Questions Band (Contact Channels & Grievance Redressal) */}
       <PrivacyQuestionsBand

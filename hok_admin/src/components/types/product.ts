@@ -11,8 +11,11 @@ export interface Product {
   occasion?: string;
   material?: string;
   color?: string;
+  colorFamily?: string;
   /** Structured colours picked in admin; first entry = primary colour */
   colors?: { name: string; hex: string; family: string }[];
+  careByFabric?: string;
+  care?: string[];
   craft?: string;
   technique?: string;
   embellishments?: string;

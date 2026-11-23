@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus, RefreshCw, X } from "lucide-react";
 import { Product, Lister } from "../../types/product";
 import toast from "react-hot-toast";
 import { getDesigners, createDesigner } from "../../../services/designerApi";
@@ -8,6 +8,11 @@ import { apiRequest } from "../../../services/apiClient";
 import DynamicCategorySelect from "../../ui/DynamicCategorySelect";
 import DynamicOccasionSelect from "../../ui/DynamicOccasionSelect";
 import DynamicColorSelect from "../../ui/DynamicColorSelect";
+import {
+  FabricCareOption,
+  getFabricCareOptions,
+  createFabricCareOption,
+} from "../../../services/categoryApi";
 
 interface Designer {
   id: string;
@@ -22,10 +27,14 @@ interface CoreDetailsTabProps {
   onDesignerCreated?: (newDesigner: any) => void;
   onListerCreated?: (newLister: any) => void;
   onCategoryCreated?: (newCategory: any) => void;
-  onSave: (data?: Product) => void;
+  onSave: (data?: Product) => Promise<boolean> | boolean | void;
+  onDiscard?: () => void;
+  errors?: Record<string, string>;
   productId?: string;
   isSaving?: boolean;
   resetForm?: () => void;
+  onAutoGenerateSku?: () => Promise<void> | void;
+  generatingSku?: boolean;
 }
 
 const STATUS_OPTIONS = [
@@ -46,8 +55,12 @@ export function CoreDetailsTab({
   onListerCreated,
   onCategoryCreated,
   onSave,
+  onDiscard,
+  errors = {},
   productId,
   isSaving: externalIsSaving = false,
+  onAutoGenerateSku,
+  generatingSku = false,
 }: CoreDetailsTabProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -70,6 +83,16 @@ export function CoreDetailsTab({
   const [newListerPhone, setNewListerPhone] = useState("");
   const [newListerCity, setNewListerCity] = useState("");
   const [creatingLister, setCreatingLister] = useState(false);
+
+  // Fabric Care (DB-backed via /api/categories/fabric-care)
+  const [fabricCareOptions, setFabricCareOptions] = useState<
+    FabricCareOption[]
+  >([]);
+  const [loadingFabricCare, setLoadingFabricCare] = useState(false);
+  const [showNewFabricCareBox, setShowNewFabricCareBox] = useState(false);
+  const [newFabricCareLabel, setNewFabricCareLabel] = useState("");
+  const [newFabricCareNotes, setNewFabricCareNotes] = useState("");
+  const [creatingFabricCare, setCreatingFabricCare] = useState(false);
 
   React.useEffect(() => {
     const fetchDesignersFromApi = async () => {
@@ -101,7 +124,21 @@ export function CoreDetailsTab({
         console.warn("Failed to fetch designers in CoreDetailsTab:", e);
       }
     };
+    const fetchFabricCareFromApi = async () => {
+      setLoadingFabricCare(true);
+      try {
+        const items = await getFabricCareOptions();
+        if (Array.isArray(items)) {
+          setFabricCareOptions(items);
+        }
+      } catch (e) {
+        console.warn("Failed to fetch fabric care options:", e);
+      } finally {
+        setLoadingFabricCare(false);
+      }
+    };
     fetchDesignersFromApi();
+    fetchFabricCareFromApi();
   }, []);
 
   const activeDesigners = React.useMemo(() => {
@@ -289,75 +326,120 @@ export function CoreDetailsTab({
 
   const data = formData as Record<string, any>;
 
+  const selectedCareOptionId = React.useMemo(() => {
+    const explicit = String(formData.careByFabric || "")
+      .trim()
+      .toLowerCase();
+    if (explicit) {
+      const matchByField = fabricCareOptions.find(
+        (o) =>
+          o.id.toLowerCase() === explicit || o.label.toLowerCase() === explicit,
+      );
+      if (matchByField) return matchByField.id;
+    }
+
+    if (Array.isArray(formData.care) && formData.care.length > 0) {
+      const normalizedCare = formData.care
+        .map((line) => String(line || "").trim())
+        .filter(Boolean);
+      if (normalizedCare.length > 0) {
+        const matchByInstructions = fabricCareOptions.find(
+          (o) =>
+            o.instructions.length === normalizedCare.length &&
+            o.instructions.every((line, idx) => line === normalizedCare[idx]),
+        );
+        return matchByInstructions ? matchByInstructions.id : "__CUSTOM_CARE__";
+      }
+    }
+    return "";
+  }, [formData.careByFabric, formData.care, fabricCareOptions]);
+
+  const handleCareByFabricChange = (value: string) => {
+    if (value === "__CREATE_NEW_FABRIC_CARE__") {
+      setShowNewFabricCareBox(true);
+      return;
+    }
+    if (!value) {
+      onFieldChange("careByFabric", "" as any);
+      onFieldChange("care", [] as any);
+      return;
+    }
+    if (value === "__CUSTOM_CARE__") {
+      return;
+    }
+    const chosen = fabricCareOptions.find(
+      (o) => o.id.toLowerCase() === value.toLowerCase(),
+    );
+    if (chosen) {
+      onFieldChange("careByFabric", chosen.id as any);
+      onFieldChange("care", [...(chosen.instructions || [])] as any);
+    }
+  };
+
+  const handleQuickCreateFabricCare = async () => {
+    const label = newFabricCareLabel.trim();
+    if (!label) {
+      toast.error("Please enter a fabric care title.");
+      return;
+    }
+    const existing = fabricCareOptions.find(
+      (o) => o.label.toLowerCase() === label.toLowerCase(),
+    );
+    if (existing) {
+      onFieldChange("careByFabric", existing.id as any);
+      onFieldChange("care", [...(existing.instructions || [])] as any);
+      setShowNewFabricCareBox(false);
+      setNewFabricCareLabel("");
+      setNewFabricCareNotes("");
+      toast.success(`Selected existing "${existing.label}"`);
+      return;
+    }
+
+    const instructions = newFabricCareNotes
+      .split(/\r?\n|;/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    setCreatingFabricCare(true);
+    try {
+      const created = await createFabricCareOption({ label, instructions });
+      setFabricCareOptions((prev) =>
+        [...prev.filter((p) => p.id !== created.id), created].sort((a, b) =>
+          a.label.localeCompare(b.label),
+        ),
+      );
+      onFieldChange("careByFabric", created.id as any);
+      onFieldChange("care", [...(created.instructions || [])] as any);
+      setNewFabricCareLabel("");
+      setNewFabricCareNotes("");
+      setShowNewFabricCareBox(false);
+      toast.success(`"${created.label}" added to Fabric Care database!`);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to save fabric care");
+    } finally {
+      setCreatingFabricCare(false);
+    }
+  };
+
   const labelClass =
     "text-[11px] font-semibold text-stone-500 tracking-wide uppercase";
-  const inputClass =
-    "w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs mt-1 focus:outline-none focus:ring-1 focus:ring-stone-400";
+  const baseInputClass =
+    "w-full p-2 rounded text-xs mt-1 focus:outline-none focus:ring-1 border";
+  const inputClass = `${baseInputClass} bg-[#fcf9f5] border-stone-200 focus:ring-stone-400`;
+  const getInputClass = (field: string, extra = "") =>
+    `${baseInputClass} ${
+      errors[field]
+        ? "bg-red-50/40 border-red-400 focus:ring-red-300"
+        : "bg-[#fcf9f5] border-stone-200 focus:ring-stone-400"
+    } ${extra}`.trim();
+  const renderError = (field: string) =>
+    errors[field] ? (
+      <p className="text-[11px] text-red-600 mt-1">{errors[field]}</p>
+    ) : null;
   const helpClass = "text-[11px] text-stone-400 mt-1";
-
-  const prepareProductData = (data: Partial<Product>): any => {
-    const {
-      id,
-      _id,
-      __v,
-      createdAt,
-      updatedAt,
-      listerName,
-      listingModels,
-      listingMode,
-      listingmodel,
-      ...cleanData
-    } = data as any;
-
-    const payload: any = {};
-    Object.keys(cleanData).forEach((key) => {
-      if (
-        cleanData[key] !== undefined &&
-        cleanData[key] !== null &&
-        cleanData[key] !== ""
-      ) {
-        payload[key] = cleanData[key];
-      }
-    });
-
-    if (!payload.productId) payload.productId = `HOK-PRD-${Date.now()}`;
-
-    if (
-      !payload.listingModes ||
-      !Array.isArray(payload.listingModes) ||
-      payload.listingModes.length === 0
-    ) {
-      payload.listingModes = ["RENTAL"];
-    }
-    const validModes = ["RENTAL", "PRELOVED", "BUY NEW"];
-    payload.listingModes = payload.listingModes
-      .map((mode: string) => mode.toUpperCase())
-      .filter((mode: string) => validModes.includes(mode));
-    if (payload.listingModes.length === 0) payload.listingModes = ["RENTAL"];
-
-    if (!payload.measurements) payload.measurements = {};
-
-    Object.keys(payload).forEach((key) => {
-      if (payload[key] === "") delete payload[key];
-    });
-
-    return payload;
-  };
 
   const handleSaveCoreDetails = async () => {
     if (isSaving || localSaving || externalIsSaving) return;
-
-    if (!formData.designer?.trim()) {
-      setSaveError("Designer / Brand is required.");
-      toast.error("Designer / Brand is required.");
-      return;
-    }
-    if (activeDesigners.length > 0 && !matchedRegisteredDesigner) {
-      const msg = `"${formData.designer}" is not in the Designers list. Please select a registered designer.`;
-      setSaveError(msg);
-      toast.error(msg);
-      return;
-    }
 
     setIsSaving(true);
     setLocalSaving(true);
@@ -365,11 +447,13 @@ export function CoreDetailsTab({
     setSaveSuccess(false);
 
     try {
-      await Promise.resolve(onSave());
-      setSaveSuccess(true);
+      const saved = await Promise.resolve(onSave());
       setLocalSaving(false);
       setIsSaving(false);
-      setTimeout(() => setSaveSuccess(false), 3000);
+      if (saved === true) {
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+      }
     } catch (error) {
       setSaveError(
         error instanceof Error
@@ -382,11 +466,19 @@ export function CoreDetailsTab({
   };
 
   const handleSaveMeasurements = async () => {
-    if (
-      Object.keys(formData.measurements || {}).length === 0 &&
-      !formData.bestSuitedForHeight
-    )
-      return;
+    const hasInches = Boolean(
+      formData.measurements?.bust ||
+        formData.measurements?.waist ||
+        formData.measurements?.hips ||
+        formData.measurements?.length,
+    );
+    const hasCm = Boolean(
+      formData.measurementsCm?.bust ||
+        formData.measurementsCm?.waist ||
+        formData.measurementsCm?.hips ||
+        formData.measurementsCm?.length,
+    );
+    if (!hasInches && !hasCm && !formData.bestSuitedForHeight) return;
     if (!productId) {
       toast.error("⚠️ Please save Core Details first!");
       return;
@@ -509,16 +601,22 @@ export function CoreDetailsTab({
         {/* Product Title / Designer */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Product Title</label>
+            <label className={labelClass}>
+              Product Title <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               value={formData.name || ""}
               onChange={(e) => onFieldChange("name", e.target.value)}
-              className={inputClass}
+              placeholder="Enter product title..."
+              className={getInputClass("name")}
             />
+            {renderError("name")}
           </div>
           <div>
-            <label className={labelClass}>Designer</label>
+            <label className={labelClass}>
+              Designer <span className="text-red-500">*</span>
+            </label>
             <select
               value={matchedRegisteredDesigner}
               onChange={(e) => {
@@ -529,7 +627,7 @@ export function CoreDetailsTab({
                 }
                 onFieldChange("designer", val);
               }}
-              className={inputClass}
+              className={getInputClass("designer")}
             >
               <option value="">Select designer...</option>
               {activeDesigners.map((d) => (
@@ -603,6 +701,7 @@ export function CoreDetailsTab({
               One registry, one spelling — mapping here is what powers the
               designer page, filter facet and reports for this piece.
             </p>
+            {renderError("designer")}
           </div>
         </div>
 
@@ -694,13 +793,17 @@ export function CoreDetailsTab({
 
         {/* Full Description */}
         <div>
-          <label className={labelClass}>Full Description</label>
+          <label className={labelClass}>
+            Full Description <span className="text-red-500">*</span>
+          </label>
           <textarea
             value={formData.description || ""}
             onChange={(e) => onFieldChange("description", e.target.value)}
             rows={4}
-            className={inputClass}
+            placeholder="Describe the garment, fit, styling notes, and fabric details..."
+            className={getInputClass("description")}
           />
+          {renderError("description")}
         </div>
 
         {/* Rating / Review Count */}
@@ -759,7 +862,7 @@ export function CoreDetailsTab({
 
         <div className="border-t border-stone-100" />
 
-        {/* Fabric/Material / Colour */}
+        {/* Fabric/Material & Colour, as described */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Fabric / Material</label>
@@ -771,19 +874,113 @@ export function CoreDetailsTab({
             />
           </div>
           <div>
-            <label className={labelClass}>Colour</label>
+            <label className={labelClass}>Colour, as described</label>
+            <input
+              type="text"
+              value={formData.color || ""}
+              onChange={(e) => onFieldChange("color", e.target.value)}
+              placeholder="e.g. Deep crimson, Ivory with antique gold"
+              className={inputClass}
+            />
+          </div>
+        </div>
+
+        {/* Colour Family & Care by Fabric */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>Colour Family</label>
             <DynamicColorSelect
-              colorText={formData.color || ""}
+              colorText={
+                !Array.isArray(formData.colors) || formData.colors.length === 0
+                  ? formData.colorFamily || ""
+                  : ""
+              }
               colors={formData.colors || []}
+              placeholder="Pick colour family / shades..."
               onChange={(list) => {
                 onFieldChange("colors", list as any);
-                onFieldChange(
-                  "color",
-                  list.map((c) => c.name).join(", ") as any,
+                const uniqueFamilies = Array.from(
+                  new Set(
+                    list
+                      .map((c) => String(c.family || c.name || "").trim())
+                      .filter(Boolean),
+                  ),
                 );
+                onFieldChange("colorFamily", uniqueFamilies.join(", ") as any);
               }}
               className="mt-1"
             />
+            <p className={helpClass}>
+              From Master Data, Colours. The storefront colour filter finds the
+              piece by it.
+            </p>
+          </div>
+          <div>
+            <label className={labelClass}>Care by Fabric</label>
+            <select
+              value={selectedCareOptionId}
+              onChange={(e) => handleCareByFabricChange(e.target.value)}
+              className={inputClass}
+            >
+              <option value="">
+                {loadingFabricCare
+                  ? "Loading care options..."
+                  : "No care instructions"}
+              </option>
+              {selectedCareOptionId === "__CUSTOM_CARE__" && (
+                <option value="__CUSTOM_CARE__">
+                  Custom care instructions (saved)
+                </option>
+              )}
+              {fabricCareOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.label}
+                </option>
+              ))}
+              <option value="__CREATE_NEW_FABRIC_CARE__">
+                + Add new fabric care...
+              </option>
+            </select>
+            {showNewFabricCareBox && (
+              <div className="mt-2 space-y-2 rounded border border-[#D8CFC2] bg-[#FAF7F2] p-2.5">
+                <input
+                  type="text"
+                  autoFocus
+                  value={newFabricCareLabel}
+                  onChange={(e) => setNewFabricCareLabel(e.target.value)}
+                  placeholder="Fabric care title (e.g. Organza & Handloom Silk)"
+                  className="w-full rounded border border-[#D8CFC2] bg-white px-2.5 py-1.5 text-xs text-stone-800 outline-none focus:border-[#C7A55C]"
+                />
+                <textarea
+                  rows={2}
+                  value={newFabricCareNotes}
+                  onChange={(e) => setNewFabricCareNotes(e.target.value)}
+                  placeholder="Care instructions (one per line or separated by ;)..."
+                  className="w-full rounded border border-[#D8CFC2] bg-white px-2.5 py-1.5 text-xs text-stone-800 outline-none focus:border-[#C7A55C]"
+                />
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowNewFabricCareBox(false)}
+                    className="rounded border border-stone-300 bg-white px-2.5 py-1 text-xs font-medium text-stone-600 hover:bg-stone-50 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={creatingFabricCare}
+                    onClick={handleQuickCreateFabricCare}
+                    className="rounded bg-[#C7A55C] hover:bg-[#B8954B] px-3 py-1 text-xs font-semibold text-[#2A2118] disabled:opacity-60 cursor-pointer"
+                  >
+                    {creatingFabricCare ? "Saving..." : "Add to DB"}
+                  </button>
+                </div>
+              </div>
+            )}
+            <p className={helpClass}>
+              From Master Data, Fabric care. Prints the Care Instructions on its
+              product page.
+            </p>
           </div>
         </div>
 
@@ -916,8 +1113,16 @@ export function CoreDetailsTab({
 
         {/* Listing Mode(s) */}
         <div>
-          <label className={labelClass}>Listing Mode(s)</label>
-          <div className="flex items-center gap-6 mt-2">
+          <label className={labelClass}>
+            Listing Mode(s) <span className="text-red-500">*</span>
+          </label>
+          <div
+            className={`flex flex-wrap items-center gap-6 mt-2 rounded p-2.5 border ${
+              errors.listingModes
+                ? "border-red-400 bg-red-50/40"
+                : "border-transparent"
+            }`}
+          >
             {(["RENTAL", "PRELOVED", "BUY NEW"] as const).map((mode) => {
               const modes = Array.isArray(formData.listingModes)
                 ? formData.listingModes
@@ -926,7 +1131,7 @@ export function CoreDetailsTab({
               return (
                 <label
                   key={mode}
-                  className="flex items-center gap-2 text-xs font-semibold text-stone-700"
+                  className="flex items-center gap-2 text-xs font-semibold text-stone-700 cursor-pointer"
                 >
                   <input
                     type="checkbox"
@@ -944,6 +1149,11 @@ export function CoreDetailsTab({
               );
             })}
           </div>
+          <p className={helpClass}>
+            Pricing &amp; Tax validation adjusts automatically based on the
+            Listing Mode(s) checked here.
+          </p>
+          {renderError("listingModes")}
         </div>
 
         {/* Condition Grade */}
@@ -1015,13 +1225,43 @@ export function CoreDetailsTab({
             />
           </div>
           <div>
-            <label className={labelClass}>SKU</label>
-            <input
-              type="text"
-              value={formData.sku || ""}
-              onChange={(e) => onFieldChange("sku", e.target.value)}
-              className={inputClass}
-            />
+            <div className="flex items-center justify-between gap-2">
+              <label className={labelClass}>SKU</label>
+              <span className="inline-flex items-center rounded bg-amber-50 border border-amber-200/80 px-1.5 py-0.5 text-[10px] font-medium text-amber-800">
+                Auto-generated · Unique
+              </span>
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <input
+                type="text"
+                readOnly
+                value={formData.sku || ""}
+                placeholder="Generating unique SKU..."
+                className={`flex-1 min-w-0 p-2 rounded text-xs focus:outline-none focus:ring-1 border font-mono cursor-not-allowed ${
+                  errors.sku
+                    ? "bg-red-50/40 border-red-400 focus:ring-red-300 text-red-800"
+                    : "bg-stone-100/80 border-stone-200 text-stone-700 focus:ring-stone-300"
+                }`}
+              />
+              <button
+                type="button"
+                disabled={
+                  generatingSku || isSaving || localSaving || externalIsSaving
+                }
+                onClick={() => onAutoGenerateSku?.()}
+                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded border border-amber-300 bg-amber-50 hover:bg-amber-100 text-[11px] font-semibold text-amber-900 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                <RefreshCw
+                  className={`h-3.5 w-3.5 ${generatingSku ? "animate-spin" : ""}`}
+                />
+                {generatingSku ? "Generating..." : "Auto-generate"}
+              </button>
+            </div>
+            {renderError("sku")}
+            <p className={helpClass}>
+              Auto-incremented and guaranteed unique for every piece. Click
+              Auto-generate to assign the next SKU.
+            </p>
           </div>
         </div>
 
@@ -1048,6 +1288,7 @@ export function CoreDetailsTab({
         <div className="flex justify-end gap-3 pt-2 border-t border-stone-100">
           <button
             type="button"
+            onClick={() => onDiscard?.()}
             className="px-4 py-2 text-xs font-semibold rounded border border-stone-300 bg-white text-stone-700 hover:bg-stone-50"
           >
             Discard

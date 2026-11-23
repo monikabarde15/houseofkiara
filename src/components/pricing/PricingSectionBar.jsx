@@ -4,12 +4,40 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { PRICING_SECTION_BAR_ITEMS } from "../../data/pricing/pricingRegistry";
 
-function PricingSectionBar({ activeSide, activeSectionId, onSideChange, onSelectSection }) {
+function PricingSectionBar({
+  activeSide,
+  activeSectionId,
+  onSideChange,
+  onSelectSection,
+  isSectionHidden,
+  extraSections = [],
+}) {
   const scrollRef = useRef(null);
   const [fadeLeft, setFadeLeft] = useState(false);
   const [fadeRight, setFadeRight] = useState(false);
 
-  const links = PRICING_SECTION_BAR_ITEMS[activeSide] || [];
+  const extraLinks = (Array.isArray(extraSections) ? extraSections : [])
+    .filter(
+      (sec) =>
+        sec &&
+        sec.id &&
+        (sec.side || "pay") === activeSide &&
+        !(isSectionHidden && (isSectionHidden("qa_sections") || isSectionHidden(sec.id)))
+    )
+    .map((sec) => ({
+      id: sec.id,
+      label: sec.title || "More",
+      tooltip: sec.summary || sec.title || "",
+    }));
+
+  const links = [
+    ...(PRICING_SECTION_BAR_ITEMS[activeSide] || []).filter((item) => {
+      if (!isSectionHidden) return true;
+      if (item.id === "numbers") return !isSectionHidden("worked_examples");
+      return !isSectionHidden("qa_sections") && !isSectionHidden(item.id);
+    }),
+    ...extraLinks,
+  ];
 
   // Update edge fades based on scroll position
   const updateFades = useCallback(() => {

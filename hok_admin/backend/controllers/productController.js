@@ -3,6 +3,11 @@ import Designer from "../models/Designer.js";
 import mongoose from "mongoose";
 import { pool } from "../config/db.js";
 import { validateProduct } from "../validations/productValidation.js";
+import {
+  generateNextUniqueSku,
+  resolveUniqueSku,
+  withSkuLock,
+} from "../utils/skuGenerator.js";
 
 // Ensure products.category supports long comma-separated multi-category strings
 pool
@@ -52,6 +57,16 @@ const productFilter = (id) => {
     return { _id: id };
   }
   return { $or: [{ productId: id }, { sku: id }] };
+};
+
+export const getNextSku = async (req, res) => {
+  try {
+    const afterSku = String(req.query?.after || "").trim();
+    const sku = await generateNextUniqueSku(Product, { afterSku });
+    res.json({ success: true, data: { sku } });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
 };
 
 export const getProducts = async (req, res) => {
@@ -173,7 +188,7 @@ export const createProduct = async (req, res) => {
     const cleanBody = cleanPayload(req.body);
     delete cleanBody.overdueBlockedDates;
 
-    const { error, value } = validateProduct(cleanBody);
+    const { error, value } = validateProduct(cleanBody, { strict: true });
     if (error) {
       return res.status(422).json({
         success: false,
@@ -200,7 +215,26 @@ export const createProduct = async (req, res) => {
       value.listerId = "LST-GENERAL";
     }
 
-    const p = await Product.create(value);
+    const created = await withSkuLock(async () => {
+      const skuResolution = await resolveUniqueSku(Product, value.sku, {
+        allowAutoBump: true,
+      });
+      if (skuResolution.error) {
+        return { skuError: skuResolution.error };
+      }
+      value.sku = skuResolution.sku;
+      const p = await Product.create(value);
+      return { product: p };
+    });
+
+    if (created.skuError) {
+      return res.status(409).json({
+        success: false,
+        message: created.skuError,
+      });
+    }
+
+    const p = created.product;
     global.__webProductsCache = null; global.__webFiltersCache = null;
     res.status(201).json({ success: true, data: normalize(p) });
   } catch (e) {
@@ -221,26 +255,52 @@ export const updateProduct = async (req, res) => {
     const cleanBody = cleanPayload(req.body);
     delete cleanBody.overdueBlockedDates;
 
-    // Merge existing with new data
+    const existingObj = existing.toObject();
+
+    // Merge existing with new data (preserve explicit empty arrays like listingModes: [] or images: [])
     const updatedData = {
-      ...existing.toObject(),
+      ...existingObj,
       ...cleanBody,
       productId: existing.productId,
-      // Ensure arrays are handled properly
-      listingModes: cleanBody.listingModes ||
-        existing.listingModes || ["RENTAL"],
-      tags: cleanBody.tags || existing.tags || [],
-      images: cleanBody.images || existing.images || [],
-      sizes: cleanBody.sizes || existing.sizes || [],
-      measurements: cleanBody.measurements || existing.measurements || {},
-      measurementsCm: cleanBody.measurementsCm || existing.measurementsCm || {},
-      blockedDates: cleanBody.blockedDates || existing.blockedDates || [],
-      bookingHistory: cleanBody.bookingHistory || existing.bookingHistory || [],
+      listingModes:
+        cleanBody.listingModes !== undefined
+          ? cleanBody.listingModes
+          : existing.listingModes || [],
+      tags: cleanBody.tags !== undefined ? cleanBody.tags : existing.tags || [],
+      images:
+        cleanBody.images !== undefined
+          ? cleanBody.images
+          : existing.images || [],
+      sizes:
+        cleanBody.sizes !== undefined ? cleanBody.sizes : existing.sizes || [],
+      measurements:
+        cleanBody.measurements !== undefined
+          ? cleanBody.measurements
+          : existing.measurements || {},
+      measurementsCm:
+        cleanBody.measurementsCm !== undefined
+          ? cleanBody.measurementsCm
+          : existing.measurementsCm || {},
+      blockedDates:
+        cleanBody.blockedDates !== undefined
+          ? cleanBody.blockedDates
+          : existing.blockedDates || [],
+      bookingHistory:
+        cleanBody.bookingHistory !== undefined
+          ? cleanBody.bookingHistory
+          : existing.bookingHistory || [],
       externalBookings:
-        cleanBody.externalBookings || existing.externalBookings || [],
-      activityLog: cleanBody.activityLog || existing.activityLog || [],
+        cleanBody.externalBookings !== undefined
+          ? cleanBody.externalBookings
+          : existing.externalBookings || [],
+      activityLog:
+        cleanBody.activityLog !== undefined
+          ? cleanBody.activityLog
+          : existing.activityLog || [],
       relatedProductIds:
-        cleanBody.relatedProductIds || existing.relatedProductIds || [],
+        cleanBody.relatedProductIds !== undefined
+          ? cleanBody.relatedProductIds
+          : existing.relatedProductIds || [],
       timesRented:
         cleanBody.timesRented !== undefined
           ? cleanBody.timesRented
@@ -253,7 +313,34 @@ export const updateProduct = async (req, res) => {
           : existing.reviewCount || 0,
     };
 
-    const { error, value } = validateProduct(updatedData);
+    const coreOrPricingChanged = [
+      "name",
+      "designer",
+      "description",
+      "listingModes",
+      "images",
+      "rentalPrice",
+      "perDayRate",
+      "listingPrice",
+      "commissionRate",
+      "gstRate",
+      "taxRate",
+    ].some(
+      (k) =>
+        cleanBody[k] !== undefined &&
+        JSON.stringify(cleanBody[k]) !== JSON.stringify(existingObj[k]),
+    );
+    const isArchiveOnly =
+      cleanBody.status === "Archived" && !coreOrPricingChanged;
+    const isCalendarOnly =
+      (cleanBody.bookingHistory !== undefined ||
+        cleanBody.blockedDates !== undefined ||
+        cleanBody.externalBookings !== undefined) &&
+      !coreOrPricingChanged;
+
+    const { error, value } = validateProduct(updatedData, {
+      strict: !(isArchiveOnly || isCalendarOnly),
+    });
     if (error) {
       return res.status(422).json({
         success: false,
@@ -278,10 +365,33 @@ export const updateProduct = async (req, res) => {
       value.listerId = existing.listerId || "LST-GENERAL";
     }
 
-    const p = await Product.findByIdAndUpdate(existing._id, value, {
-      new: true,
-      runValidators: true,
+    const updated = await withSkuLock(async () => {
+      if (!(isArchiveOnly || isCalendarOnly)) {
+        const skuResolution = await resolveUniqueSku(Product, value.sku, {
+          excludeDoc: existing,
+          allowAutoBump: true,
+        });
+        if (skuResolution.error) {
+          return { skuError: skuResolution.error };
+        }
+        value.sku = skuResolution.sku;
+      }
+
+      const p = await Product.findByIdAndUpdate(existing._id, value, {
+        new: true,
+        runValidators: true,
+      });
+      return { product: p };
     });
+
+    if (updated.skuError) {
+      return res.status(409).json({
+        success: false,
+        message: updated.skuError,
+      });
+    }
+
+    const p = updated.product;
     global.__webProductsCache = null; global.__webFiltersCache = null;
 
     res.json({ success: true, data: normalize(p) });

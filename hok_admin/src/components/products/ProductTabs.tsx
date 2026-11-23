@@ -7,6 +7,7 @@ interface ProductTabsProps {
   activeTab: ProductTab;
   onTabChange: (tab: ProductTab) => void;
   isAdding: boolean;
+  errorTabs?: ProductTab[];
 }
 
 export const DEFAULT_TAB_LABELS: Record<ProductTab, string> = {
@@ -37,6 +38,7 @@ export function ProductTabs({
   activeTab,
   onTabChange,
   isAdding,
+  errorTabs = [],
 }: ProductTabsProps) {
   // ✅ Sab tabs dikhao
   const visibleTabs = ALL_TABS;
@@ -45,6 +47,7 @@ export function ProductTabs({
     <div className="flex border-b border-stone-200 gap-1 select-none font-semibold overflow-x-auto whitespace-nowrap scrollbar-none pb-px">
       {visibleTabs.map((tab) => {
         const isActive = activeTab === tab;
+        const hasError = errorTabs.includes(tab);
 
         // ✅ Check karo ki yeh Calendar ya Enquiry History hai aur kya hum Adding mode mein hain
         const isDisabled =
@@ -59,7 +62,7 @@ export function ProductTabs({
                 onTabChange(tab);
               }
             }}
-            className={`shrink-0 px-3 xl:px-4 py-2 border-b-2 text-xs transition cursor-pointer ${
+            className={`shrink-0 px-3 xl:px-4 py-2 border-b-2 text-xs transition cursor-pointer inline-flex items-center gap-1.5 ${
               isDisabled
                 ? "border-transparent text-stone-300 cursor-not-allowed" // ✅ Disabled look
                 : isActive
@@ -67,7 +70,13 @@ export function ProductTabs({
                   : "border-transparent text-stone-500 hover:text-stone-800"
             }`}
           >
-            {DEFAULT_TAB_LABELS[tab]}
+            <span>{DEFAULT_TAB_LABELS[tab]}</span>
+            {hasError && (
+              <span
+                className="h-1.5 w-1.5 rounded-full bg-red-500"
+                title="Has required fields"
+              />
+            )}
           </button>
         );
       })}

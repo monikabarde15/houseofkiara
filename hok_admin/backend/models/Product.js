@@ -55,6 +55,7 @@ const productSchema = new mongoose.Schema(
     // ========== MATERIAL & CRAFT ==========
     material: String,
     color: String,
+    colorFamily: String,
     craft: String,
     technique: String,
     embellishments: String,
@@ -86,7 +87,7 @@ const productSchema = new mongoose.Schema(
     weight: String, // Already exists
 
     // ========== LISTING & AVAILABILITY ==========
-    listingModes: { type: [String], default: ["RENTAL"] }, // Already exists
+    listingModes: { type: [String], default: [] },
     availability: String,
     status: { type: String, default: "Draft" },
     condition: String,
@@ -104,11 +105,12 @@ const productSchema = new mongoose.Schema(
     minimumDurationDays: Number,
     extensionWindowDays: Number,
     cleaningBufferDays: Number,
-    preRentalBufferDays: { type: Number, default: 2 }, // NEW: Auto-block before dispatch
-    postRentalBufferDays: { type: Number, default: 3 }, // NEW: Auto-block after return
+    preRentalBufferDays: Number,
+    postRentalBufferDays: Number,
 
     // ========== DELIVERY & CARE ==========
     deliveryTiming: String, // Already exists
+    careByFabric: String,
     care: [String], // NEW: Care instructions
     packaging: [String], // NEW: Packaging info
     shipping: [

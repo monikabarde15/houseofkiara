@@ -14,36 +14,11 @@ import useCartStore from "../../store/cartStore";
 import useWishlistStore from "../../store/wishlistStore";
 import useAuthStore from "../../store/authStore";
 import toast from "react-hot-toast";
-
-const gradeDotColor = {
-    pristine: "#6B7E5A",
-    excellent: "#C9A96E",
-    good: "#B85C38"
-};
-
-const gradeLabel = {
-    pristine: "PRISTINE CONDITION",
-    excellent: "EXCELLENT CONDITION",
-    good: "GOOD CONDITION"
-};
-
-const gradeConfig = {
-    pristine: {
-        label: "PRISTINE",
-        color: "#6B7E5A",
-        desc: "Unworn or worn once for a short photoshoot. Tags may be attached. No visible wear whatsoever."
-    },
-    excellent: {
-        label: "EXCELLENT",
-        color: "#C9A96E",
-        desc: "Worn once for a full-day event. Professionally cleaned. No visible damage, alteration, or significant bead loss. Any minor imperfections are fully disclosed and photographed above."
-    },
-    good: {
-        label: "GOOD",
-        color: "#B85C38",
-        desc: "Worn 2–3 times. Any minor imperfections clearly photographed and disclosed in listing notes."
-    }
-};
+import ProductCoreAccordions, {
+    CONDITION_DOT_COLOR,
+    CONDITION_LABEL,
+    formatRatingValue,
+} from "./ProductCoreAccordions";
 
 
 export default function RentalAndPreloved() {
@@ -144,20 +119,39 @@ export default function RentalAndPreloved() {
         parsePrice(product?.listingPrice) ||
         0;
     const perDay =
-        (rentPrice > 0 ? Math.round(rentPrice / 4) : 0) || parsePrice(product?.perDayRate) || 0;
+        parsePrice(product?.perDayRate) || (rentPrice > 0 ? Math.round(rentPrice / 4) : 0);
     const rentData = (product?.modes?.rent?.pricing?.windows?.[0]?.price)
         ? product.modes.rent
         : {
             pricing: {
                 pricePerDay: perDay,
-                minDays: product?.minimumDurationDays || 3,
+                minDays:
+                    Number(product?.minimumDurationDays) >= 1
+                        ? Math.floor(Number(product.minimumDurationDays))
+                        : 3,
                 windows: [
                     { id: "standard", label: "Standard Window", price: rentPrice, days: 4, tag: "most popular" },
-                    { id: "extended", label: "Extended Window", price: Math.round((rentPrice / 4) * 7), days: 7, tag: "destination weddings" }
+                    { id: "extended", label: "Extended Window", price: parsePrice(product?.extendedWindowPrice) || Math.round((rentPrice / 4) * 7), days: 7, tag: "destination weddings" }
                 ]
             },
             deposit: { amount: product?.securityDeposit || Math.round(rentPrice * 1.5) || 0, returnDays: 5 }
         };
+    const minRentDays =
+        Number(rentData?.pricing?.minDays) >= 1
+            ? Math.floor(Number(rentData.pricing.minDays))
+            : Number(product?.minimumDurationDays) >= 1
+                ? Math.floor(Number(product.minimumDurationDays))
+                : 3;
+    const selectedDurationDays =
+        selectedStart && selectedEnd
+            ? Math.round(
+                (new Date(selectedEnd).setHours(0, 0, 0, 0) -
+                    new Date(selectedStart).setHours(0, 0, 0, 0)) /
+                (1000 * 60 * 60 * 24)
+            ) + 1
+            : 0;
+    const isDateRangeValid =
+        Boolean(selectedStart && selectedEnd) && selectedDurationDays >= minRentDays;
     const buyData = product?.modes?.buy || null;
     const sizes = product?.modes?.rent?.sizes || [];
 
@@ -189,7 +183,9 @@ export default function RentalAndPreloved() {
         rentData?.pricing?.windows?.[0];
 
     // for dot color
-    const grade = product?.condition?.grade || "pristine";
+    const grade = product?.condition?.grade
+        ? String(product.condition.grade).toLowerCase()
+        : "";
 
     // ===============PRELOVED======================//
 
@@ -264,25 +260,31 @@ export default function RentalAndPreloved() {
         eventDate.setDate(eventDate.getDate() + 2);
 
         const rentalWindowDays =
-            Math.ceil(
-                (selectedEnd - selectedStart) /
+            Math.round(
+                (new Date(selectedEnd).setHours(0, 0, 0, 0) -
+                    new Date(selectedStart).setHours(0, 0, 0, 0)) /
                 (1000 * 60 * 60 * 24)
             ) + 1;
 
-        const calculatedPerDay =
-            (rentPrice > 0 ? Math.round(rentPrice / 4) : 0) ||
-            rentData?.pricing?.pricePerDay ||
-            product?.perDayRate ||
-            0;
-
-        let price = selectedWindowData?.price || product?.rentalPrice || 0;
-        if (selectedWindow === "standard" || rentalWindowDays === 4) {
-            price = rentPrice || selectedWindowData?.price || 12000;
-        } else if (selectedWindow === "extended" && selectedWindowData?.price) {
-            price = selectedWindowData.price;
-        } else if (rentalWindowDays && calculatedPerDay > 0) {
-            price = rentalWindowDays * calculatedPerDay;
+        if (rentalWindowDays < minRentDays) {
+            toast.error(
+                `Minimum rental duration is ${minRentDays} ${minRentDays === 1 ? "day" : "days"}.`
+            );
+            return;
         }
+
+        const calculatedPerDay =
+            Number(rentData?.pricing?.pricePerDay || product?.perDayRate) ||
+            (rentPrice > 0 ? Math.round(rentPrice / 4) : 0);
+
+        const matchedWindow = rentData?.pricing?.windows?.find(
+            (w) => w.days === rentalWindowDays
+        );
+        let price = matchedWindow
+            ? matchedWindow.price
+            : calculatedPerDay > 0
+                ? rentalWindowDays * calculatedPerDay
+                : selectedWindowData?.price || product?.rentalPrice || 0;
 
         useCartStore.getState().addToCart(product, {
             type: "rental",
@@ -392,12 +394,20 @@ Product ID: ${product.id}
                         <span className="rap-crumb">Home</span>
                         <span className="rap-sep">›</span>
                         <span className="rap-crumb">{mode === "rent" ? "Rent" : "Buy Preloved"}</span>
+                        {product.category && (
+                            <>
+                                <span className="rap-sep">›</span>
+                                <span className="rap-crumb">{product.category}</span>
+                            </>
+                        )}
+                        {product.designer && (
+                            <>
+                                <span className="rap-sep">›</span>
+                                <span className="rap-crumb current">{product.designer}</span>
+                            </>
+                        )}
                         <span className="rap-sep">›</span>
-                        <span className="rap-crumb">{product.category || "None"}</span>
-                        <span className="rap-sep">›</span>
-                        <span className="rap-crumb current">{product.designer || "Designer Atelier"}</span>
-                        <span className="rap-sep">›</span>
-                        <span className="rap-crumb current">{product.title || product.name || "None"}</span>
+                        <span className="rap-crumb current">{product.title || product.name || ""}</span>
                     </div>
                 </div>
 
@@ -445,13 +455,18 @@ Product ID: ${product.id}
 
                             {/* ================= COMMON PRODUCT INFO ================= */}
 
-                            <p className="rap-rental-designer-name">{product.designer || "Designer Atelier"}</p>
+                            {product.designer && (
+                                <p className="rap-rental-designer-name">{product.designer}</p>
+                            )}
 
                             <h1 className="rap-rental-product-title">
-                                {product.title || product.name || "None"} <em>{product.subTitle || ""}</em>
+                                {product.title || product.name || ""}{" "}
+                                {product.subTitle ? <em>{product.subTitle}</em> : null}
                             </h1>
 
-                            <p className="rap-rental-product-desc">{product.description || "None"}</p>
+                            {product.description && product.description !== "None" && (
+                                <p className="rap-rental-product-desc">{product.description}</p>
+                            )}
 
                             {/* RATING */}
                             <div className="rap-rental-rating-row">
@@ -466,20 +481,36 @@ Product ID: ${product.id}
                                     />
                                 ))}
 
-                                <span className="rap-rental-rating-text">{(product.rating || 0)}.0</span>
-
-                                <span className="rap-rental-rating-separator" />
-
-                                <span className="rap-rental-reviews">{product.reviews || product.reviewCount || 0} reviews</span>
-
-                                <span className="rap-rental-rating-separator" />
-
-                                <span
-                                    className="rap-rental-never-worn-soft"
-                                    style={{ "--dot-color": gradeDotColor[grade] || "#6B7E5A" }}
-                                >
-                                    {gradeLabel[grade] || "AUTHENTIC PIECE"}
+                                <span className="rap-rental-rating-text">
+                                    {formatRatingValue(product.rating)}
                                 </span>
+
+                                <span className="rap-rental-rating-separator" />
+
+                                <span className="rap-rental-reviews">
+                                    {product.reviewCount ?? product.reviews ?? 0} reviews
+                                </span>
+
+                                {grade && CONDITION_LABEL[grade] && (
+                                    <>
+                                        <span className="rap-rental-rating-separator" />
+                                        <span
+                                            className="rap-rental-never-worn-soft"
+                                            style={{ "--dot-color": CONDITION_DOT_COLOR[grade] || "#6B7E5A" }}
+                                        >
+                                            {CONDITION_LABEL[grade]}
+                                        </span>
+                                    </>
+                                )}
+
+                                {mode === "rent" && (
+                                    <>
+                                        <span className="rap-rental-rating-separator" />
+                                        <span className="rap-rental-rent-count">
+                                            Rented {product.rentInfo?.rentedCount ?? product.timesRented ?? 0}×
+                                        </span>
+                                    </>
+                                )}
 
                             </div>
 
@@ -519,7 +550,7 @@ Product ID: ${product.id}
 
                                         <p className="rap-rental-price-subline">
                                             ₹{Number(rentData?.pricing?.pricePerDay || 0).toLocaleString("en-IN")} per day • Minimum{" "}
-                                            {rentData?.pricing?.minDays || 3} days
+                                            {minRentDays} {minRentDays === 1 ? "day" : "days"}
                                         </p>
 
                                         {/* 2. RENTAL WINDOWS */}
@@ -601,7 +632,7 @@ Product ID: ${product.id}
                                                     </button>
                                                 ))
                                             ) : (
-                                                <span className="rap-rental-size-pill">None</span>
+                                                <span className="rap-rental-size-pill">Free Size</span>
                                             )}
                                         </div>
 
@@ -621,11 +652,11 @@ Product ID: ${product.id}
 
                                         {/* PRIMARY CTA */}
                                         <button
-                                            className={`rap-rental-cta-primary ${selectedStart && selectedEnd
+                                            className={`rap-rental-cta-primary ${isDateRangeValid
                                                     ? "active"
                                                     : "disabled"
                                                 }`}
-                                            disabled={!(selectedStart && selectedEnd)}
+                                            disabled={!isDateRangeValid}
                                             onClick={handleConfirmBooking}
                                         >
                                             <span className="rap-rental-cta-icon"><Calendar /></span>
@@ -678,199 +709,32 @@ Product ID: ${product.id}
                                     </div>
 
                                     {/* 8. ACCORDION */}
-                                    {/*  RENTAL PAGE ACCORDANCE*/}
-
-                                    <div className="rap-pdp-rental-accordion">
-
-                                        {/* ================= PRODUCT DETAILS ================= */}
-                                        <div className="rap-pdp-rental-item">
-                                            <div className="rap-pdp-rental-header" onClick={() => toggle("details")}>
-                                                <span>PRODUCT DETAILS</span>
-
-                                                <Plus className={`rap-onlyrental-icon ${isOpen("details") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("details") && (
-                                                <div className="rap-rental-pdp-content">
-                                                    <div className="rap-rental-pdp-grid">
-
-                                                        <div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Designer</span><p>{product.designer || "Designer Atelier"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Fabric</span><p>{product.details?.fabric || product.material || "Pure Georgette & Silk"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Craft Technique</span><p>{product.details?.technique || product.technique || product.embellishments || "Hand Embroidered Zardozi"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Includes</span><p>{product.details?.includes || product.setIncludes || "Full Couture Set & Dupatta"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Delivery Time</span><p>{product.details?.delivery || product.delivery || "Express Courier (2-3 Days)"}</p></div>
-                                                        </div>
-
-                                                        <div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Category</span><p>{product.category || product.subTitle || "Luxury Couture"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Colour</span><p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Thread</span><p>{product.details?.thread || product.threadWork || "Metallic Zari Threadwork"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Occasion</span><p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p></div>
-                                                            <div className="rap-rental-pdp-row"><span className="rap-rental-pdp-label">Origin</span><p>{product.details?.origin || product.origin || "Lucknow, India"}</p></div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= THE CRAFT ================= */}
-                                        <div className="rap-pdp-rental-item">
-                                            <div className="rap-pdp-rental-header" onClick={() => toggle("craft")}>
-                                                <span>THE CRAFT</span>
-
-                                                <Plus className={`rap-onlyrental-icon ${isOpen("craft") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("craft") && (
-                                                <div className="rap-rental-pdp-content">
-                                                    <p className="rap-rental-craft-text">
-                                                        {product.craft ||
-                            product.story ||
-                            product.description ||
-                            `Each piece in the House of Kaira rental archive begins as an exclusive conversation between master designer and artisan karigars. Handcrafted over weeks in artisanal ateliers, every motif is meticulously stitched to perfection.`}
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= SIZE & FIT ================= */}
-                                        <div className="rap-pdp-rental-item">
-                                            <div data-size-guide className="rap-pdp-rental-header" onClick={() => toggle("size")}>
-                                                <span>SIZE & FIT</span>
-
-                                                <Plus className={`rap-onlyrental-icon ${isOpen("size") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("size") && (
-                                                <div className="rap-rental-pdp-content">
-
-                                                    {product.sizeNote || product.sizeGuide ? (
-                                                        <p className="rap-rental-size-intro">{product.sizeNote || product.sizeGuide}</p>
-                                                    ) : null}
-
-                                                    {product.sizeTable && product.sizeTable.length > 0 ? (
-                                                        <table className="rap-rental-size-table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Size</th>
-                                                                    <th>Bust</th>
-                                                                    <th>Waist</th>
-                                                                    <th>Hips</th>
-                                                                    <th>Height</th>
-                                                                </tr>
-                                                            </thead>
-
-                                                            <tbody>
-                                                                {product.sizeTable.map((row, i) => (
-                                                                    <tr key={i} className={row.recommended ? "rap-rental-active-row" : ""}>
-                                                                        <td>{row.size || "None"}</td>
-                                                                        <td>{row.bust || "None"}</td>
-                                                                        <td>{row.waist || "None"}</td>
-                                                                        <td>{row.hips || "None"}</td>
-                                                                        <td>{row.height || "None"}</td>
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
-                                                    ) : (product.measurements && (product.measurements.bust || product.measurements.waist || product.measurements.hips || product.measurements.length)) ? (
-                                                        <table className="rap-rental-size-table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Size</th>
-                                                                    <th>Bust</th>
-                                                                    <th>Waist</th>
-                                                                    <th>Hips</th>
-                                                                    <th>Length</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr className="rap-rental-active-row">
-                                                                    <td>{product.sizes?.[0] || "Standard"}</td>
-                                                                    <td>{product.measurements.bust || "-"}</td>
-                                                                    <td>{product.measurements.waist || "-"}</td>
-                                                                    <td>{product.measurements.hips || "-"}</td>
-                                                                    <td>{product.measurements.length || "-"}</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    ) : (!product.sizeNote && !product.sizeGuide) ? (
-                                                        <p className="rap-rental-size-intro" style={{ margin: 0 }}>None</p>
-                                                    ) : null}
-
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= CARE ================= */}
-                                        <div className="rap-pdp-rental-item">
-                                            <div className="rap-pdp-rental-header" onClick={() => toggle("care")}>
-                                                <span>CARE INSTRUCTIONS</span>
-
-                                                <Plus className={`rap-onlyrental-icon ${isOpen("care") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("care") && (
-                                                <div className="rap-rental-pdp-content">
-                                                    <ul className="rap-rental-care-list">
-                                                        {Array.isArray(product.care) && product.care.length > 0 ? (
-                                                            product.care.map((item, i) => (
-                                                                <li key={i}>
-                                                                    <span className="rap-rental-dash">—</span>
-                                                                    <span>{item}</span>
-                                                                </li>
-                                                            ))
-                                                        ) : (
-                                                            <li>
-                                                                <span>None</span>
-                                                            </li>
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* ================= SHIPPING ================= */}
-                                        <div className="rap-pdp-rental-item">
-                                            <div className="rap-pdp-rental-header" onClick={() => toggle("shipping")}>
-                                                <span>SHIPPING & DELIVERY</span>
-
-                                                <Plus className={`rap-onlyrental-icon ${isOpen("shipping") ? "open" : ""}`} />
-                                            </div>
-
-                                            {isOpen("shipping") && (
-                                                <div className="rap-rental-pdp-content">
-
-                                                    {Array.isArray(product.shipping) && product.shipping.length > 0 ? (
-                                                        <table className="rap-rental-shipping-table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Method</th>
-                                                                    <th>Estimated time</th>
-                                                                    <th>Cost</th>
-                                                                </tr>
-                                                            </thead>
-
-                                                            <tbody>
-                                                                {product.shipping.map((item, i) => (
-                                                                    <tr key={i}>
-                                                                        <td>{item.method || "Shipping"}</td>
-                                                                        <td>{item.time || "-"}</td>
-                                                                        <td className="rap-rental-cost">{item.cost || "-"}</td>
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
-                                                    ) : (
-                                                        <p className="rap-rental-shipping-item">None</p>
-                                                    )}
-
-                                                </div>
-                                            )}
-                                        </div>
-
-                                    </div>
+                                    <ProductCoreAccordions
+                                        product={product}
+                                        isOpen={isOpen}
+                                        toggle={toggle}
+                                        includeDisclosureInDetails={true}
+                                        shippingMode="table"
+                                        classes={{
+                                            accordion: "rap-pdp-rental-accordion",
+                                            item: "rap-pdp-rental-item",
+                                            header: "rap-pdp-rental-header",
+                                            icon: "rap-onlyrental-icon",
+                                            content: "rap-rental-pdp-content",
+                                            grid: "rap-rental-pdp-grid",
+                                            row: "rap-rental-pdp-row",
+                                            label: "rap-rental-pdp-label",
+                                            craftText: "rap-rental-craft-text",
+                                            storyNote: "rap-rental-craft-text",
+                                            sizeIntro: "rap-rental-size-intro",
+                                            sizeTable: "rap-rental-size-table",
+                                            activeRow: "rap-rental-active-row",
+                                            careList: "rap-rental-care-list",
+                                            careDash: "rap-rental-dash",
+                                            shippingTable: "rap-rental-shipping-table",
+                                            shippingCost: "rap-rental-cost",
+                                        }}
+                                    />
 
                                 </div>
                             )}
@@ -909,42 +773,38 @@ Product ID: ${product.id}
                                     </div>
 
                                     {/* 2. DISCLOSURE */}
-                                    <div className="rap-preloved-disclosure">
-
-                                        <p className="rap-preloved-disclosure-label">
-                                            HONEST DISCLOSURE
-                                        </p>
-
-                                        <p className="rap-preloved-disclosure-text">
-                                            {product.disclosure || product.honestDisclosure || "None"}
-                                        </p>
-
-                                    </div>
+                                    {(product.honestDisclosure || product.disclosure) &&
+                                        String(product.honestDisclosure || product.disclosure).trim() !== "None" && (
+                                            <div className="rap-preloved-disclosure">
+                                                <p className="rap-preloved-disclosure-label">
+                                                    HONEST DISCLOSURE
+                                                </p>
+                                                <p className="rap-preloved-disclosure-text" style={{ whiteSpace: "pre-line" }}>
+                                                    {product.honestDisclosure || product.disclosure}
+                                                </p>
+                                            </div>
+                                        )}
 
                                     {/* 3. SIZE */}
-                                    <div className="rap-preloved-size-block">
-
-                                        <p className="rap-preloved-size-label">
-                                            SIZE
-                                        </p>
-
-                                        <div className="rap-preloved-size-pills">
-                                            {product.sizes && product.sizes.length > 0 ? (
-                                                product.sizes.map((s, idx) => (
-                                                    <span key={idx} className="rap-preloved-size-pill active">
-                                                        {typeof s === "object" ? (s.label || s.size || "None") : s}
+                                    {((Array.isArray(product.sizes) && product.sizes.length > 0) ||
+                                        product.prelovedSize) && (
+                                        <div className="rap-preloved-size-block">
+                                            <p className="rap-preloved-size-label">SIZE</p>
+                                            <div className="rap-preloved-size-pills">
+                                                {Array.isArray(product.sizes) && product.sizes.length > 0 ? (
+                                                    product.sizes.map((s, idx) => (
+                                                        <span key={idx} className="rap-preloved-size-pill active">
+                                                            {typeof s === "object" ? (s.label || s.size || "") : s}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className="rap-preloved-size-pill active">
+                                                        {product.prelovedSize}
                                                     </span>
-                                                ))
-                                            ) : product.prelovedSize ? (
-                                                <span className="rap-preloved-size-pill active">
-                                                    {product.prelovedSize}
-                                                </span>
-                                            ) : (
-                                                <span className="rap-preloved-size-pill">None</span>
-                                            )}
+                                                )}
+                                            </div>
                                         </div>
-
-                                    </div>
+                                    )}
 
                                     {/* 4. CTA */}
                                     <div className="rap-preloved-cta-group">
@@ -1244,333 +1104,41 @@ Product ID: ${product.id}
 
                                     </div>
 
-                                    {/* 8.PRELOVED PAGE ACCORDANCE* */}
-
-                                    <div className="rap-preloved-accordion">
-
-                                        <div className="rap-preloved-accordion-item">
-
-                                            <div
-                                                className="rap-preloved-accordion-header"
-                                                onClick={() => toggle("details")}
-                                            >
-                                                <span>PRODUCT DETAILS</span>
-
-                                                <Plus
-                                                    className={`rap-preloved-accordion-icon ${isOpen("details") ? "open" : ""
-                                                        }`}
-                                                />
-                                            </div>
-
-                                            {isOpen("details") && (
-                                                <div className="rap-preloved-accordion-content">
-
-                                                    <div className="rap-preloved-details-grid">
-
-                                                        <div>
-                                                            <div className="rap-preloved-details-row">
-                                                                <span className="rap-preloved-details-label">Designer</span>
-                                                                <p>{product.designer || "Designer Atelier"}</p>
-                                                            </div>
-
-                                                            <div className="rap-preloved-details-row">
-                                                                <span className="rap-preloved-details-label">Fabric</span>
-                                                                <p>{product.details?.fabric || product.material || "Pure Georgette & Silk"}</p>
-                                                            </div>
-
-                                                            <div className="rap-preloved-details-row">
-                                                                <span className="rap-preloved-details-label">Embroidery</span>
-                                                                <p>{product.details?.technique || product.technique || product.embellishments || "Hand Embroidered Zardozi"}</p>
-                                                            </div>
-
-                                                            <div className="rap-preloved-details-row">
-                                                                <span className="rap-preloved-details-label">Includes</span>
-                                                                <p>{product.details?.includes || product.setIncludes || "Full Couture Set & Dupatta"}</p>
-                                                            </div>
-                                                        </div>
-
-                                                        <div>
-                                                            <div className="rap-preloved-details-row">
-                                                                <span className="rap-preloved-details-label">Category</span>
-                                                                <p>{product.category || product.subTitle || "Luxury Couture"}</p>
-                                                            </div>
-
-                                                            <div className="rap-preloved-details-row">
-                                                                <span className="rap-preloved-details-label">Colour</span>
-                                                                <p>{product.details?.color || product.color || "Ivory / Crimson Red"}</p>
-                                                            </div>
-
-                                                            <div className="rap-preloved-details-row">
-                                                                <span className="rap-preloved-details-label">Occasion</span>
-                                                                <p>{product.details?.occasion || product.occasion || "Bridal / Wedding"}</p>
-                                                            </div>
-
-                                                            <div className="rap-preloved-details-row">
-                                                                <span className="rap-preloved-details-label">Origin</span>
-                                                                <p>{product.details?.origin || product.origin || "Lucknow, India"}</p>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-                                            )}
-
-                                        </div>
-
-                                    </div>
-
-                                    {/* ================= THE CRAFT ================= */}
-                                    <div className="rap-preloved-accordion-item">
-
-                                        <div
-                                            className="rap-preloved-accordion-header"
-                                            onClick={() => toggle("story")}
-                                        >
-                                            <span>THE STORY OF THIS PIECE</span>
-
-                                            <Plus
-                                                className={`rap-preloved-accordion-icon ${isOpen("story") ? "open" : ""
-                                                    }`}
-                                            />
-                                        </div>
-
-                                        {isOpen("story") && (
-                                            <div className="rap-preloved-accordion-content">
-
-                                                <p className="rap-preloved-story-text">
-                                                    {product.story || product.description || "None"}
-                                                </p>
-
-                                                {product.stylingNote && (
-                                                    <p className="rap-preloved-story-note">
-                                                        {product.stylingNote}
-                                                    </p>
-                                                )}
-
-                                            </div>
-                                        )}
-
-                                    </div>
-
-                                    {/* ================= SIZE & FIT ================= */}
-                                    <div className="rap-preloved-accordion-item">
-
-                                        <div
-                                            data-size-guide
-                                            className="rap-preloved-accordion-header"
-                                            onClick={() => toggle("size")}
-                                        >
-                                            <span>SIZE & FIT</span>
-
-                                            <Plus
-                                                className={`rap-preloved-accordion-icon ${isOpen("size") ? "open" : ""
-                                                    }`}
-                                            />
-                                        </div>
-
-                                        {isOpen("size") && (
-                                            <div className="rap-preloved-accordion-content">
-
-                                                {/* INTRO */}
-                                                {product.sizeNote || product.sizeGuide ? (
-                                                    <p className="rap-preloved-size-intro">
-                                                        {product.sizeNote || product.sizeGuide}
-                                                    </p>
-                                                ) : null}
-
-                                                {/* TABLE */}
-                                                {product.sizeTable && product.sizeTable.length > 0 ? (
-                                                    <table className="rap-preloved-size-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Size</th>
-                                                                <th>Bust</th>
-                                                                <th>Waist</th>
-                                                                <th>Hips</th>
-                                                                <th>Height</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            {product.sizeTable.map((row, i) => (
-                                                                <tr
-                                                                    key={i}
-                                                                    className={row.recommended ? "active-row" : ""}
-                                                                >
-                                                                    <td>{row.size || "None"}</td>
-                                                                    <td>{row.bust || "None"}</td>
-                                                                    <td>{row.waist || "None"}</td>
-                                                                    <td>{row.hips || "None"}</td>
-                                                                    <td>{row.height || "None"}</td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-                                                ) : (product.measurements && (product.measurements.bust || product.measurements.waist || product.measurements.hips || product.measurements.length)) ? (
-                                                    <table className="rap-preloved-size-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Size</th>
-                                                                <th>Bust</th>
-                                                                <th>Waist</th>
-                                                                <th>Hips</th>
-                                                                <th>Length</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr className="active-row">
-                                                                <td>{product.sizes?.[0] || product.prelovedSize || "Standard"}</td>
-                                                                <td>{product.measurements.bust || "-"}</td>
-                                                                <td>{product.measurements.waist || "-"}</td>
-                                                                <td>{product.measurements.hips || "-"}</td>
-                                                                <td>{product.measurements.length || "-"}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                ) : (!product.sizeNote && !product.sizeGuide) ? (
-                                                    <p className="rap-preloved-size-intro" style={{ margin: 0 }}>None</p>
-                                                ) : null}
-
-                                            </div>
-                                        )}
-
-                                    </div>
-
-                                    {/* ====================CONDITION GRADE========================== */}
-
-                                    <div className="rap-preloved-accordion-item">
-
-                                        <div
-                                            className="rap-preloved-accordion-header"
-                                            onClick={() => toggle("condition")}
-                                        >
-                                            <span>CONDITION GRADE</span>
-
-                                            <Plus
-                                                className={`rap-preloved-accordion-icon ${isOpen("condition") ? "open" : ""
-                                                    }`}
-                                            />
-                                        </div>
-
-                                        {isOpen("condition") && (
-                                            <div className="rap-preloved-accordion-content">
-
-                                                {Object.keys(gradeConfig).map((key) => {
-                                                    const item = gradeConfig[key];
-                                                    const isActive = product.condition?.grade === key;
-
-                                                    return (
-                                                        <div
-                                                            key={key}
-                                                            className={`rap-preloved-grade-item ${isActive ? "active" : ""
-                                                                }`}
-                                                        >
-                                                            <div className="rap-preloved-grade-header">
-
-                                                                <span
-                                                                    className="rap-preloved-grade-dot"
-                                                                    style={{ background: item.color }}
-                                                                />
-
-                                                                <span className="rap-preloved-grade-name">
-                                                                    {item.label}
-                                                                    {isActive && " ← THIS PIECE"}
-                                                                </span>
-
-                                                            </div>
-
-                                                            <p className="rap-preloved-grade-desc">
-                                                                {item.desc}
-                                                            </p>
-                                                        </div>
-                                                    );
-                                                })}
-
-                                            </div>
-                                        )}
-
-                                    </div>
-
-
-                                    {/* ================= CARE ================= */}
-                                    <div className="rap-preloved-accordion-item">
-
-                                        <div
-                                            className="rap-preloved-accordion-header"
-                                            onClick={() => toggle("care")}
-                                        >
-                                            <span>CARE INSTRUCTIONS</span>
-
-                                            <Plus
-                                                className={`rap-preloved-accordion-icon ${isOpen("care") ? "open" : ""
-                                                    }`}
-                                            />
-                                        </div>
-
-                                        {isOpen("care") && (
-                                            <div className="rap-preloved-accordion-content">
-
-                                                {Array.isArray(product.care) && product.care.length > 0 ? (
-                                                    product.care.map((item, i) => (
-                                                        <p key={i} className="rap-preloved-care-item">
-                                                            <span className="rap-preloved-care-dash">—</span>
-                                                            {item}
-                                                        </p>
-                                                    ))
-                                                ) : (
-                                                    <p className="rap-preloved-care-item">None</p>
-                                                )}
-
-                                            </div>
-                                        )}
-
-                                    </div>
-
-                                    {/* ================= SHIPPING ================= */}
-                                    <div className="rap-preloved-accordion-item">
-
-                                        <div
-                                            className="rap-preloved-accordion-header"
-                                            onClick={() => toggle("shipping")}
-                                        >
-                                            <span>SHIPPING & DELIVERY</span>
-
-                                            <Plus
-                                                className={`rap-preloved-accordion-icon ${isOpen("shipping") ? "open" : ""
-                                                    }`}
-                                            />
-                                        </div>
-
-                                        {isOpen("shipping") && (
-                                            <div className="rap-preloved-accordion-content">
-
-                                                {/* DELIVERY METHODS */}
-                                                {(Array.isArray(product.shipping) && product.shipping.length > 0) || (Array.isArray(product.packaging) && product.packaging.length > 0) ? (
-                                                    <>
-                                                        {Array.isArray(product.shipping) && product.shipping.map((item, i) => (
-                                                            <p key={i} className="rap-preloved-shipping-item">
-                                                                <span className="rap-preloved-shipping-dash">—</span>
-                                                                {typeof item === "string" ? item : `${item.method || "Shipping"}: ${item.time || ""}${item.cost ? `, ${item.cost}` : ""}`}
-                                                            </p>
-                                                        ))}
-
-                                                        {/* PACKAGING */}
-                                                        {Array.isArray(product.packaging) && product.packaging.map((text, i) => (
-                                                            <p key={i} className="rap-preloved-shipping-packaging">
-                                                                {text}
-                                                            </p>
-                                                        ))}
-                                                    </>
-                                                ) : (
-                                                    <p className="rap-preloved-shipping-item">None</p>
-                                                )}
-
-                                            </div>
-                                        )}
-
-                                    </div>
-
+                                    {/* 8. PRELOVED PAGE ACCORDION */}
+                                    <ProductCoreAccordions
+                                        product={product}
+                                        isOpen={isOpen}
+                                        toggle={toggle}
+                                        showConditionGradeAccordion={true}
+                                        includeDisclosureInDetails={false}
+                                        showStoryAlways={true}
+                                        shippingMode="list"
+                                        classes={{
+                                            accordion: "rap-preloved-accordion",
+                                            item: "rap-preloved-accordion-item",
+                                            header: "rap-preloved-accordion-header",
+                                            icon: "rap-preloved-accordion-icon",
+                                            content: "rap-preloved-accordion-content",
+                                            grid: "rap-preloved-details-grid",
+                                            row: "rap-preloved-details-row",
+                                            label: "rap-preloved-details-label",
+                                            craftText: "rap-preloved-story-text",
+                                            storyNote: "rap-preloved-story-note",
+                                            sizeIntro: "rap-preloved-size-intro",
+                                            sizeTable: "rap-preloved-size-table",
+                                            activeRow: "active-row",
+                                            careItem: "rap-preloved-care-item",
+                                            careDash: "rap-preloved-care-dash",
+                                            shippingItem: "rap-preloved-shipping-item",
+                                            shippingDash: "rap-preloved-shipping-dash",
+                                            shippingPackaging: "rap-preloved-shipping-packaging",
+                                            gradeItem: "rap-preloved-grade-item",
+                                            gradeHeader: "rap-preloved-grade-header",
+                                            gradeDot: "rap-preloved-grade-dot",
+                                            gradeName: "rap-preloved-grade-name",
+                                            gradeDesc: "rap-preloved-grade-desc",
+                                        }}
+                                    />
 
                                 </div>
                             )}
@@ -1583,7 +1151,7 @@ Product ID: ${product.id}
             <RelatedProduct
         product={product}
         currentProductId={id}
-        category={product.subTitle || product.category}
+        category={product.category || product.subTitle}
       />
         </section>
     );

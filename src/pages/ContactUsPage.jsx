@@ -10,6 +10,7 @@ import ContactHero from "../components/contact/ContactHero";
 import ContactAnswersSection from "../components/contact/ContactAnswersSection";
 import ContactWriteSection from "../components/contact/ContactWriteSection";
 import ContactLegalSection from "../components/contact/ContactLegalSection";
+import CustomPageSections from "../components/common/CustomPageSections";
 
 import "../styles/contact/contact-variables.css";
 import "../styles/contact/contact-chrome.css";
@@ -22,7 +23,7 @@ export default function ContactUsPage() {
   const toastTimeoutRef = useRef(null);
 
   // Load dynamic content from PostgreSQL via pages API
-  const { getVal } = usePageContent("/contact");
+  const { getVal, settings } = usePageContent("/contact");
 
   // Set document title & meta description
   useEffect(() => {
@@ -108,6 +109,8 @@ export default function ContactUsPage() {
 
         {/* Step 6: Band 4 Raising a concern and Our details */}
         <ContactLegalSection getVal={getVal} contactSettings={contactSettings} />
+
+        <CustomPageSections sections={settings?.customSections} />
       </main>
 
       {/* Polite toast feedback container (Section 10.1) */}

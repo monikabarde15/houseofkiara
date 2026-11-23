@@ -8,7 +8,8 @@ interface SEOTabProps {
   formData: Partial<Product>;
   onFieldChange: <K extends keyof Product>(field: K, value: Product[K]) => void;
   onNavigateToRelatedProducts?: () => void;
-  onSave?: () => void;
+  onSave?: () => Promise<boolean> | boolean | void;
+  isSaving?: boolean;
   siteDomain?: string;
 }
 
@@ -20,6 +21,7 @@ export function SEOTab({
   onFieldChange,
   onNavigateToRelatedProducts,
   onSave,
+  isSaving = false,
   siteDomain = "houseofkaira.com",
 }: SEOTabProps) {
   const ogImageInputRef = useRef<HTMLInputElement>(null);
@@ -204,10 +206,13 @@ export function SEOTab({
       <div className="pt-3 border-t border-stone-100 flex justify-end">
         <button
           type="button"
-          onClick={onSave}
-          className="rounded-md bg-amber-700/90 hover:bg-amber-700 text-white text-xs font-medium px-4 py-2 transition shadow-sm"
+          onClick={() => onSave?.()}
+          disabled={isSaving}
+          className={`rounded-md bg-amber-700/90 hover:bg-amber-700 text-white text-xs font-medium px-4 py-2 transition shadow-sm ${
+            isSaving ? "opacity-60 cursor-not-allowed" : ""
+          }`}
         >
-          Save SEO
+          {isSaving ? "Saving..." : "Save SEO"}
         </button>
       </div>
     </div>

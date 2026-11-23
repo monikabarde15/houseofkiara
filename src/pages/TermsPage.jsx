@@ -11,6 +11,7 @@ import TermsPoliciesLine from '../components/terms/TermsPoliciesLine.jsx';
 import TermsQuestionsBand from '../components/terms/TermsQuestionsBand.jsx';
 import TermsPrintDocument from '../components/terms/TermsPrintDocument.jsx';
 import TermsToast from '../components/terms/TermsToast.jsx';
+import CustomPageSections from '../components/common/CustomPageSections.jsx';
 import FloatingWhatsApp from '../components/FAQ/common/FloatingWhatsApp';
 import { scrollToClause } from '../utils/terms/termsFormatter.jsx';
 
@@ -29,7 +30,7 @@ import '../styles/terms/terms-print.css';
  * Complete Build Specification v3.0 (hok_terms_v4)
  */
 const TermsPage = () => {
-  const { getVal } = usePageContent("/terms");
+  const { getVal, settings } = usePageContent("/terms");
   const [toastState, setToastState] = useState({ message: '', isVisible: false });
 
   // Handle URL hash on initial load
@@ -89,6 +90,8 @@ const TermsPage = () => {
         {/* 5.4 Our Policies Footer Links & Document Metadata */}
         <TermsPoliciesLine onPrint={handlePrint} />
       </div>
+
+      <CustomPageSections sections={settings?.customSections} />
 
       {/* 6. Questions Band (Contact Channels & Grievance Redressal) */}
       <TermsQuestionsBand onShowToast={showToast} />

@@ -9,7 +9,13 @@ function formatInr(num) {
   return "₹" + num.toLocaleString("en-IN");
 }
 
-function PricingWorkedExamples() {
+const toNum = (v, fallback) => {
+  const n = Number(String(v ?? "").replace(/[^0-9.]/g, ""));
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+};
+
+function PricingWorkedExamples({ getVal }) {
+  const gv = (k, fb) => (getVal ? getVal(k, fb) : fb);
   const [activeTab, setActiveTab] = useState("rental");
   const [rentalChoice, setRentalChoice] = useState("two"); // Default "Two days" (Page 34 & 45)
   const [prelovedChoice, setPrelovedChoice] = useState("list"); // Default "The listed price" (Page 34 & 45)
@@ -17,15 +23,21 @@ function PricingWorkedExamples() {
   const rentalData = PRICING_WORKED_EXAMPLES.examples[0];
   const prelovedData = PRICING_WORKED_EXAMPLES.examples[1];
 
+  const rentalWindowPrice = toNum(gv("pricing_ex_rental_window_price", rentalData.windowPrice), rentalData.windowPrice);
+  const rentalDailyRate = toNum(gv("pricing_ex_rental_daily_rate", rentalData.dailyRate), rentalData.dailyRate);
+  const rentalDepositAmount = toNum(gv("pricing_ex_rental_deposit", rentalData.depositAmount), rentalData.depositAmount);
+
   // Rental math according to Section 5.6
   const extraDays = rentalChoice === "one" ? 0 : rentalChoice === "two" ? 1 : 2;
-  const extraCost = extraDays * rentalData.dailyRate;
-  const rentalFee = rentalData.windowPrice + extraCost;
+  const extraCost = extraDays * rentalDailyRate;
+  const rentalFee = rentalWindowPrice + extraCost;
   const rentalGst = Math.round(rentalFee * 0.18);
   const rentalTotal = rentalFee + rentalGst;
 
   // Preloved math according to Section 5.6
-  const prelovedPrice = prelovedChoice === "list" ? 60000 : 54000;
+  const prelovedListPrice = toNum(gv("pricing_ex_preloved_list_price", 60000), 60000);
+  const prelovedOfferPrice = toNum(gv("pricing_ex_preloved_offer_price", 54000), 54000);
+  const prelovedPrice = prelovedChoice === "list" ? prelovedListPrice : prelovedOfferPrice;
   const prelovedGst = Math.round(prelovedPrice * 0.05);
   const prelovedTotal = prelovedPrice + prelovedGst;
 
@@ -34,10 +46,10 @@ function PricingWorkedExamples() {
       {/* Heading */}
       <div className="ex-hd">
         <h2>
-          {PRICING_WORKED_EXAMPLES.titlePrefix}
-          <em>{PRICING_WORKED_EXAMPLES.italicWord}</em>
+          {gv("pricing_ex_title_prefix", PRICING_WORKED_EXAMPLES.titlePrefix)}
+          <em>{gv("pricing_ex_italic", PRICING_WORKED_EXAMPLES.italicWord)}</em>
         </h2>
-        <p>{PRICING_WORKED_EXAMPLES.subline}</p>
+        <p>{gv("pricing_ex_subline", PRICING_WORKED_EXAMPLES.subline)}</p>
       </div>
 
       {/* Example Tabs */}
@@ -51,7 +63,7 @@ function PricingWorkedExamples() {
           className="ex-tab"
           onClick={() => setActiveTab("rental")}
         >
-          {rentalData.tabLabel}
+          {gv("pricing_ex_rental_tab", rentalData.tabLabel)}
         </button>
         <button
           type="button"
@@ -62,7 +74,7 @@ function PricingWorkedExamples() {
           className="ex-tab"
           onClick={() => setActiveTab("preloved")}
         >
-          {prelovedData.tabLabel}
+          {gv("pricing_ex_preloved_tab", prelovedData.tabLabel)}
         </button>
       </div>
 
@@ -71,7 +83,7 @@ function PricingWorkedExamples() {
           <div className="num-body">
             {/* The Example */}
             <div className="num-left">
-              <p className="num-lead">{rentalData.lead}</p>
+              <p className="num-lead">{gv("pricing_ex_rental_lead", rentalData.lead)}</p>
 
               <div className="chips-k">{rentalData.choiceLabel}</div>
               <div className="chips" role="group" aria-label="Days of celebrations choices">
@@ -88,7 +100,7 @@ function PricingWorkedExamples() {
                 ))}
               </div>
 
-              <p className="num-note">{rentalData.note}</p>
+              <p className="num-note">{gv("pricing_ex_rental_note", rentalData.note)}</p>
             </div>
 
             {/* The Receipt */}
@@ -96,19 +108,19 @@ function PricingWorkedExamples() {
               <div className="rc" aria-label="Rental receipt breakdown">
                 <div className="rc-row">
                   <span>Standard rental window, 3 days</span>
-                  <b>{formatInr(rentalData.windowPrice)}</b>
+                  <b>{formatInr(rentalWindowPrice)}</b>
                 </div>
 
                 {extraDays === 1 && (
                   <div className="rc-row">
-                    <span>1 extra day at {formatInr(rentalData.dailyRate)}</span>
+                    <span>1 extra day at {formatInr(rentalDailyRate)}</span>
                     <b>{formatInr(extraCost)}</b>
                   </div>
                 )}
 
                 {extraDays === 2 && (
                   <div className="rc-row">
-                    <span>2 extra days at {formatInr(rentalData.dailyRate)} each</span>
+                    <span>2 extra days at {formatInr(rentalDailyRate)} each</span>
                     <b>{formatInr(extraCost)}</b>
                   </div>
                 )}
@@ -137,9 +149,9 @@ function PricingWorkedExamples() {
                 <aside className="rc-aside" aria-label="Security deposit held separately">
                   <div>
                     <span>Deposit, held separately</span>
-                    <b>{formatInr(rentalData.depositAmount)}</b>
+                    <b>{formatInr(rentalDepositAmount)}</b>
                   </div>
-                  <p>{rentalData.depositNote}</p>
+                  <p>{gv("pricing_ex_rental_deposit_note", rentalData.depositNote)}</p>
                 </aside>
               </div>
             </div>
@@ -148,7 +160,7 @@ function PricingWorkedExamples() {
           <div className="num-body">
             {/* The Example */}
             <div className="num-left">
-              <p className="num-lead">{prelovedData.lead}</p>
+              <p className="num-lead">{gv("pricing_ex_preloved_lead", prelovedData.lead)}</p>
 
               <div className="chips-k">{prelovedData.choiceLabel}</div>
               <div className="chips" role="group" aria-label="Bought at choices">
@@ -165,7 +177,7 @@ function PricingWorkedExamples() {
                 ))}
               </div>
 
-              <p className="num-note">{prelovedData.note}</p>
+              <p className="num-note">{gv("pricing_ex_preloved_note", prelovedData.note)}</p>
             </div>
 
             {/* The Receipt */}

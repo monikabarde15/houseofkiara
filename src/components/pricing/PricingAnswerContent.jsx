@@ -4,6 +4,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { PRICING_TOKENS } from "../../data/pricing/pricingSettings";
+import { sanitizeRichHtml } from "../../utils/sanitizeRichHtml";
+import "../../styles/custom-page-sections.css";
 
 function WhatsAppIcon({ className }) {
   return (
@@ -57,6 +59,17 @@ function PricingAnswerContent({ question, onSelectQuestion, onShowToast }) {
   };
 
   const renderContentBlocks = () => {
+    if (question.answerHtml && String(question.answerHtml).trim()) {
+      return (
+        <div
+          className="hok-rich-content"
+          dangerouslySetInnerHTML={{
+            __html: sanitizeRichHtml(question.answerHtml),
+          }}
+        />
+      );
+    }
+
     if (!question.content || question.content.length === 0) {
       return <p>{question.summary}</p>;
     }

@@ -742,34 +742,65 @@ export const makeProductDetail = (item) => {
     listingModes.includes("BUY") ||
     item.isNew === true;
 
+  const resolvedMinDays =
+    Number(item.minimumDurationDays) >= 1
+      ? Math.floor(Number(item.minimumDurationDays))
+      : Number(item.modes?.rent?.pricing?.minDays) >= 1
+        ? Math.floor(Number(item.modes.rent.pricing.minDays))
+        : 3;
+  const resolvedPerDay =
+    Number(item.perDayRate) > 0
+      ? Number(item.perDayRate)
+      : item.rentalPrice
+        ? Math.round(item.rentalPrice / 4)
+        : Number(item.modes?.rent?.pricing?.pricePerDay) || 0;
+
   // Build modes object (used by detail page toggle buttons)
-  const builtModes = item.modes || {
-    rent: {
-      enabled: rentEnabled,
-        pricing: {
-          pricePerDay: item.rentalPrice ? Math.round(item.rentalPrice / 4) : (item.perDayRate || 0),
-          minDays: item.minimumDurationDays || 3,
-          windows: [
-            {
-              id: "standard",
-              label: item.standardWindowLabel || "Standard Window",
-              price: item.rentalPrice || 0,
-              days: 4,
-              tag: item.standardWindowTag || "most popular",
-            },
-            {
-              id: "extended",
-              label: item.extendedWindowLabel || "Extended Window",
-              price: item.extendedWindowPrice && item.extendedWindowPrice !== item.rentalPrice
-                ? item.extendedWindowPrice
-                : item.rentalPrice
-                ? Math.round((item.rentalPrice / 4) * 7)
-                : 0,
-              days: 7,
-              tag: item.extendedWindowTag || "destination weddings",
-            },
-          ],
-        },
+  const builtModes = item.modes
+    ? {
+        ...item.modes,
+        ...(item.modes.rent
+          ? {
+              rent: {
+                ...item.modes.rent,
+                pricing: {
+                  ...item.modes.rent.pricing,
+                  pricePerDay: resolvedPerDay,
+                  minDays: resolvedMinDays,
+                },
+              },
+            }
+          : {}),
+      }
+    : {
+        rent: {
+          enabled: rentEnabled,
+          pricing: {
+            pricePerDay: resolvedPerDay,
+            minDays: resolvedMinDays,
+            windows: [
+              {
+                id: "standard",
+                label: item.standardWindowLabel || "Standard Window",
+                price: item.rentalPrice || 0,
+                days: 4,
+                tag: item.standardWindowTag || "most popular",
+              },
+              {
+                id: "extended",
+                label: item.extendedWindowLabel || "Extended Window",
+                price:
+                  item.extendedWindowPrice &&
+                  item.extendedWindowPrice !== item.rentalPrice
+                    ? item.extendedWindowPrice
+                    : item.rentalPrice
+                      ? Math.round((item.rentalPrice / 4) * 7)
+                      : 0,
+                days: 7,
+                tag: item.extendedWindowTag || "destination weddings",
+              },
+            ],
+          },
       deposit: {
         amount: item.securityDeposit || 0,
         refundable: true,

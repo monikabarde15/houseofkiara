@@ -9,6 +9,11 @@ import Product from "../models/Product.js";
 import Designer from "../models/Designer.js";
 import Notification from "../models/Notification.js";
 import mongoose from "mongoose";
+import {
+  generateNextUniqueSku,
+  resolveUniqueSku,
+  withSkuLock,
+} from "../utils/skuGenerator.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -500,32 +505,36 @@ export const createSubmission = async (req, res) => {
           : null;
 
         if (!existingProduct) {
-          const draftSku = `HOK-PRD-${Date.now()}`;
-          const newProduct = {
-            productId: draftSku,
-            sku: draftSku,
-            status: "Draft",
-            listerId: finalListerId,
-            name: submissionData.piece,
-            designer: submissionData.designer,
-            category: submissionData.category,
-            color: submissionData.colour,
-            sizes: submissionData.size ? [submissionData.size] : [],
-            originalRetailPrice: origNum || undefined,
-            rentalPrice:
-              parseFloat(submissionData.askRent?.replace(/[^0-9.-]+/g, "")) ||
-              undefined,
-            listingPrice:
-              parseFloat(submissionData.askSell?.replace(/[^0-9.-]+/g, "")) ||
-              undefined,
-            condition: submissionData.conditionClaim,
-            images: (submissionData.media || []).map((m) => m.url).filter(Boolean),
-            data: {
+          const draftProductId = `HOK-PRD-${Date.now()}`;
+          const draftSku = await withSkuLock(async () => {
+            const allocatedSku = await generateNextUniqueSku(Product);
+            const newProduct = {
+              productId: draftProductId,
+              sku: allocatedSku,
+              status: "Draft",
+              listerId: finalListerId,
               name: submissionData.piece,
               designer: submissionData.designer,
-            },
-          };
-          await Product.create(newProduct);
+              category: submissionData.category,
+              color: submissionData.colour,
+              sizes: submissionData.size ? [submissionData.size] : [],
+              originalRetailPrice: origNum || undefined,
+              rentalPrice:
+                parseFloat(submissionData.askRent?.replace(/[^0-9.-]+/g, "")) ||
+                undefined,
+              listingPrice:
+                parseFloat(submissionData.askSell?.replace(/[^0-9.-]+/g, "")) ||
+                undefined,
+              condition: submissionData.conditionClaim,
+              images: (submissionData.media || []).map((m) => m.url).filter(Boolean),
+              data: {
+                name: submissionData.piece,
+                designer: submissionData.designer,
+              },
+            };
+            await Product.create(newProduct);
+            return allocatedSku;
+          });
           productId = draftSku;
         }
 
@@ -697,27 +706,35 @@ export const updateSubmissionDecision = async (req, res) => {
         await linkedProduct.save();
       } else if (sub.piece && sub.designer) {
         // Auto-create live product if not found
-        const liveSku = sub.sku || `HOK-PRD-${Date.now()}`;
+        const liveProductId = `HOK-PRD-${Date.now()}`;
         const origNum = parseFloat(String(sub.originalPrice || "").replace(/[^0-9.-]+/g, "")) || 0;
-        await Product.create({
-          productId: liveSku,
-          sku: liveSku,
-          status: "Live",
-          listerId: sub.listerId,
-          name: sub.piece,
-          designer: sub.designer,
-          category: sub.category || "Designer Piece",
-          color: sub.colour || "Multi",
-          sizes: sub.size ? [sub.size] : ["Free Size"],
-          originalRetailPrice: origNum || undefined,
-          rentalPrice: parseFloat(String(sub.askRent || "").replace(/[^0-9.-]+/g, "")) || Math.round(origNum * 0.2) || 4500,
-          listingPrice: parseFloat(String(sub.askSell || "").replace(/[^0-9.-]+/g, "")) || Math.round(origNum * 0.6) || 18000,
-          condition: sub.conditionClaim || "Pristine",
-          images: (sub.media || []).map((m) => m.url || m).filter(Boolean),
-          data: {
+        const liveSku = await withSkuLock(async () => {
+          const skuRes = await resolveUniqueSku(Product, sub.sku, {
+            allowAutoBump: true,
+          });
+          const allocatedSku =
+            skuRes.sku || (await generateNextUniqueSku(Product));
+          await Product.create({
+            productId: liveProductId,
+            sku: allocatedSku,
+            status: "Live",
+            listerId: sub.listerId,
             name: sub.piece,
             designer: sub.designer,
-          },
+            category: sub.category || "Designer Piece",
+            color: sub.colour || "Multi",
+            sizes: sub.size ? [sub.size] : ["Free Size"],
+            originalRetailPrice: origNum || undefined,
+            rentalPrice: parseFloat(String(sub.askRent || "").replace(/[^0-9.-]+/g, "")) || Math.round(origNum * 0.2) || 4500,
+            listingPrice: parseFloat(String(sub.askSell || "").replace(/[^0-9.-]+/g, "")) || Math.round(origNum * 0.6) || 18000,
+            condition: sub.conditionClaim || "Pristine",
+            images: (sub.media || []).map((m) => m.url || m).filter(Boolean),
+            data: {
+              name: sub.piece,
+              designer: sub.designer,
+            },
+          });
+          return allocatedSku;
         });
         sub.sku = liveSku;
         await sub.save();

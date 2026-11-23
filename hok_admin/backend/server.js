@@ -16,8 +16,8 @@ let dbReady = false;
 app.set("etag", false);
 
 app.use(cors());
-app.use(express.json({ limit: "2mb" }));
-app.use(express.urlencoded({ extended: true, limit: "2mb" }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Prevent browser/proxy stale HTTP caching on all API endpoints
 app.use("/api", (req, res, next) => {
