@@ -83,12 +83,13 @@ function DesktopCategoryPage({ productsData }) {
       : filters.occasion.length === 0 && occasion
       ? ""
       : occasion;
+  const NON_MODE_SECTIONS = ["women", "men", "occasions", "designers"];
   const activeSection =
     filters.rentType.length > 0
       ? filters.rentType[0]
-      : filters.rentType.length === 0 && section
-      ? ""
-      : section || mode || "rent";
+      : NON_MODE_SECTIONS.includes(section)
+      ? section
+      : "";
 
   const heading = buildHeading({
     section: activeSection,

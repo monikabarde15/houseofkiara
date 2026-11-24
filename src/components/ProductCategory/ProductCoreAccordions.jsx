@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus } from "lucide-react";
+import { Plus, Star } from "lucide-react";
 
 export const CONDITION_DOT_COLOR = {
   pristine: "#6B7E5A",
@@ -50,6 +50,104 @@ export const formatRatingValue = (rating) => {
   if (!Number.isFinite(num) || num <= 0) return "0.0";
   return num.toFixed(1);
 };
+
+export function getMetaRatingSegments(
+  product,
+  { grade = "", showRentedCount = false, staticBadge = "" } = {},
+) {
+  if (!product) return [];
+  const ratingVal = Number(product?.rating) || 0;
+  const reviewCountVal = Number(product?.reviewCount ?? product?.reviews) || 0;
+  const rentedCountVal =
+    Number(product?.rentInfo?.rentedCount ?? product?.timesRented) || 0;
+
+  const segments = [];
+  if (ratingVal > 0) {
+    segments.push({ type: "rating", value: ratingVal });
+  }
+  if (reviewCountVal > 0) {
+    segments.push({ type: "reviews", value: reviewCountVal });
+  }
+  const normalizedGrade = String(grade || "").trim().toLowerCase();
+  if (staticBadge) {
+    segments.push({ type: "staticBadge", label: staticBadge });
+  } else if (normalizedGrade && CONDITION_LABEL[normalizedGrade]) {
+    segments.push({
+      type: "grade",
+      grade: normalizedGrade,
+      label: CONDITION_LABEL[normalizedGrade],
+      color: CONDITION_DOT_COLOR[normalizedGrade] || "#6B7E5A",
+    });
+  }
+  if (showRentedCount && rentedCountVal > 0) {
+    segments.push({ type: "rentedCount", value: rentedCountVal });
+  }
+  return segments;
+}
+
+export function ProductMetaRatingRow({
+  product,
+  grade = "",
+  showRentedCount = false,
+  staticBadge = "",
+  classes = {},
+}) {
+  const segments = getMetaRatingSegments(product, {
+    grade,
+    showRentedCount,
+    staticBadge,
+  });
+
+  if (segments.length === 0) return null;
+
+  return (
+    <div className={classes.row}>
+      {segments.map((seg, idx) => (
+        <React.Fragment key={seg.type}>
+          {idx > 0 && classes.separator ? (
+            <span className={classes.separator} />
+          ) : null}
+          {seg.type === "rating" && (
+            <>
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star
+                  className={classes.star}
+                  key={s}
+                  size={16}
+                  fill={seg.value >= s ? "#c5a46d" : "none"}
+                  stroke="#c5a46d"
+                  strokeWidth={1.5}
+                />
+              ))}
+              <span className={classes.ratingText}>
+                {formatRatingValue(seg.value)}
+              </span>
+            </>
+          )}
+          {seg.type === "reviews" && (
+            <span className={classes.reviews}>
+              {seg.value} {seg.value === 1 ? "review" : "reviews"}
+            </span>
+          )}
+          {seg.type === "staticBadge" && (
+            <span className={classes.badge}>{seg.label}</span>
+          )}
+          {seg.type === "grade" && (
+            <span
+              className={classes.badge}
+              style={{ "--dot-color": seg.color }}
+            >
+              {seg.label}
+            </span>
+          )}
+          {seg.type === "rentedCount" && (
+            <span className={classes.rentedCount}>Rented {seg.value}×</span>
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
 
 export const cleanText = (val) => {
   if (val === undefined || val === null) return "";
@@ -109,14 +207,6 @@ export function buildProductDetailRows(product, { includeDisclosure = true } = {
     .map(cleanText)
     .filter(Boolean);
 
-  const structuredSwatches = (Array.isArray(product.colors) ? product.colors : [])
-    .filter((c) => c && cleanText(c.name || c.family))
-    .map((c) => ({
-      name: cleanText(c.name) || cleanText(c.family),
-      hex: cleanText(c.hex || c.code),
-      family: cleanText(c.family),
-    }));
-
   const rawWeight = cleanText(details.weight || product.weight);
   const formattedWeight = rawWeight
     ? /^\d+(\.\d+)?$/.test(rawWeight)
@@ -130,24 +220,12 @@ export function buildProductDetailRows(product, { includeDisclosure = true } = {
       : product.condition;
   const conditionText = toTitleCaseCondition(details.condition || rawCondition);
 
-  const rawColorFamily = cleanText(details.colorFamily || product.colorFamily);
-  const derivedSwatchesFamily = Array.from(
-    new Set(structuredSwatches.map((s) => s.family).filter(Boolean)),
-  ).join(", ");
-  const colorFamilyValue = rawColorFamily || derivedSwatchesFamily;
-
   const candidates = [
     { key: "designer", label: "Designer", value: cleanText(details.designer || product.designer) },
     { key: "category", label: "Category", value: cleanText(details.category || product.category) },
     { key: "occasion", label: "Occasion(s)", value: cleanText(details.occasion || product.occasion) },
     { key: "fabric", label: "Fabric / Material", value: cleanText(details.fabric || product.material || product.fabric) },
     { key: "color", label: "Colour", value: cleanText(details.color || product.color) },
-    {
-      key: "colorFamily",
-      label: "Colour Family",
-      value: colorFamilyValue,
-      swatches: structuredSwatches.length > 0 ? structuredSwatches : null,
-    },
     { key: "craft", label: "Craft", value: cleanText(details.craft || product.craft) },
     { key: "technique", label: "Technique", value: cleanText(details.technique || product.technique || product.craftTechnique) },
     { key: "embellishments", label: "Embroidery Details", value: cleanText(details.embellishments || product.embellishments) },
@@ -170,12 +248,7 @@ export function buildProductDetailRows(product, { includeDisclosure = true } = {
     });
   }
 
-  return candidates.filter((row) => {
-    if (row.key === "colorFamily") {
-      return Boolean(row.value || (row.swatches && row.swatches.length > 0));
-    }
-    return Boolean(row.value);
-  });
+  return candidates.filter((row) => Boolean(row.value));
 }
 
 const DEFAULT_CRAFT_COPY =

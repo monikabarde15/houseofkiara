@@ -15,9 +15,7 @@ import useWishlistStore from "../../store/wishlistStore";
 import useAuthStore from "../../store/authStore";
 import toast from "react-hot-toast";
 import ProductCoreAccordions, {
-    CONDITION_DOT_COLOR,
-    CONDITION_LABEL,
-    formatRatingValue,
+    ProductMetaRatingRow,
 } from "./ProductCoreAccordions";
 
 
@@ -469,50 +467,20 @@ Product ID: ${product.id}
                             )}
 
                             {/* RATING */}
-                            <div className="rap-rental-rating-row">
-
-                                {[1, 2, 3, 4, 5].map((s) => (
-                                    <Star
-                                        className="rap-rental-star-icon"
-                                        key={s}
-                                        size={16}
-                                        fill={(product.rating || 0) >= s ? "#c5a46d" : "none"}
-                                        stroke="#c5a46d"
-                                    />
-                                ))}
-
-                                <span className="rap-rental-rating-text">
-                                    {formatRatingValue(product.rating)}
-                                </span>
-
-                                <span className="rap-rental-rating-separator" />
-
-                                <span className="rap-rental-reviews">
-                                    {product.reviewCount ?? product.reviews ?? 0} reviews
-                                </span>
-
-                                {grade && CONDITION_LABEL[grade] && (
-                                    <>
-                                        <span className="rap-rental-rating-separator" />
-                                        <span
-                                            className="rap-rental-never-worn-soft"
-                                            style={{ "--dot-color": CONDITION_DOT_COLOR[grade] || "#6B7E5A" }}
-                                        >
-                                            {CONDITION_LABEL[grade]}
-                                        </span>
-                                    </>
-                                )}
-
-                                {mode === "rent" && (
-                                    <>
-                                        <span className="rap-rental-rating-separator" />
-                                        <span className="rap-rental-rent-count">
-                                            Rented {product.rentInfo?.rentedCount ?? product.timesRented ?? 0}×
-                                        </span>
-                                    </>
-                                )}
-
-                            </div>
+                            <ProductMetaRatingRow
+                                product={product}
+                                grade={grade}
+                                showRentedCount={mode === "rent"}
+                                classes={{
+                                    row: "rap-rental-rating-row",
+                                    star: "rap-rental-star-icon",
+                                    ratingText: "rap-rental-rating-text",
+                                    separator: "rap-rental-rating-separator",
+                                    reviews: "rap-rental-reviews",
+                                    badge: "rap-rental-never-worn-soft",
+                                    rentedCount: "rap-rental-rent-count",
+                                }}
+                            />
 
                             {/* ================= RENT MODE ================= */}
                             {mode === "rent" && (

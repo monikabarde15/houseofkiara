@@ -14,9 +14,7 @@ import useWishlistStore from "../../store/wishlistStore";
 import useAuthStore from "../../store/authStore";
 import toast from "react-hot-toast";
 import ProductCoreAccordions, {
-  CONDITION_DOT_COLOR,
-  CONDITION_LABEL,
-  formatRatingValue,
+  ProductMetaRatingRow,
 } from "./ProductCoreAccordions";
 
 export default function Preloved() {
@@ -297,42 +295,18 @@ Product ID: ${product.id}
               )}
 
               {/* RATING */}
-              <div className="preloved-rating-row">
-
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star
-                    key={s}
-                    size={16}
-                    fill={(product.rating || 0) >= s ? "#c5a46d" : "none"}
-                    stroke="#c5a46d"
-                  />
-                ))}
-
-                <span className="preloved-rating-text">
-                  {formatRatingValue(product.rating)}
-                </span>
-
-                <span className="preloved-rating-separator" />
-
-                <span className="preloved-reviews">
-                  {product.reviewCount ?? product.reviews ?? 0} reviews
-                </span>
-
-                {grade && CONDITION_LABEL[grade] && (
-                  <>
-                    <span className="preloved-rating-separator" />
-                    <span
-                      className="preloved-never-worn-soft"
-                      style={{
-                        "--dot-color": CONDITION_DOT_COLOR[grade] || "#6B7E5A",
-                      }}
-                    >
-                      {CONDITION_LABEL[grade]}
-                    </span>
-                  </>
-                )}
-
-              </div>
+              <ProductMetaRatingRow
+                product={product}
+                grade={grade}
+                showRentedCount={false}
+                classes={{
+                  row: "preloved-rating-row",
+                  ratingText: "preloved-rating-text",
+                  separator: "preloved-rating-separator",
+                  reviews: "preloved-reviews",
+                  badge: "preloved-never-worn-soft",
+                }}
+              />
 
               {/* Price Block */}
 

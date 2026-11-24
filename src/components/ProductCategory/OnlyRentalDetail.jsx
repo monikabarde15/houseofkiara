@@ -17,9 +17,7 @@ import useWishlistStore from "../../store/wishlistStore";
 import useAuthStore from "../../store/authStore";
 import toast from "react-hot-toast";
 import ProductCoreAccordions, {
-  CONDITION_DOT_COLOR,
-  CONDITION_LABEL,
-  formatRatingValue,
+  ProductMetaRatingRow,
 } from "./ProductCoreAccordions";
 
 
@@ -398,49 +396,20 @@ Product ID: ${product.id}
                 )}
 
                 {/* RATING */}
-                <div className="rental-rating-row">
-
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star
-                      className="rental-star-icon"
-                      key={s}
-                      size={16}
-                      fill={(product.rating || 0) >= s ? "#c5a46d" : "none"}
-                      stroke="#c5a46d"
-                    />
-                  ))}
-
-                  <span className="rental-rating-text">
-                    {formatRatingValue(product.rating)}
-                  </span>
-
-                  <span className="rental-rating-separator" />
-
-                  <span className="rental-reviews">
-                    {product.reviewCount ?? product.reviews ?? 0} reviews
-                  </span>
-
-                  {grade && CONDITION_LABEL[grade] && (
-                    <>
-                      <span className="rating-separator" />
-                      <span
-                        className="rental-never-worn-soft"
-                        style={{
-                          "--dot-color": CONDITION_DOT_COLOR[grade] || "#6B7E5A",
-                        }}
-                      >
-                        {CONDITION_LABEL[grade]}
-                      </span>
-                    </>
-                  )}
-
-                  <span className="rating-separator" />
-
-                  <span className="rental-rent-count">
-                    Rented {product.rentInfo?.rentedCount ?? product.timesRented ?? 0}×
-                  </span>
-
-                </div>
+                <ProductMetaRatingRow
+                  product={product}
+                  grade={grade}
+                  showRentedCount={true}
+                  classes={{
+                    row: "rental-rating-row",
+                    star: "rental-star-icon",
+                    ratingText: "rental-rating-text",
+                    separator: "rental-rating-separator",
+                    reviews: "rental-reviews",
+                    badge: "rental-never-worn-soft",
+                    rentedCount: "rental-rent-count",
+                  }}
+                />
 
                 {/* Price Block */}
                 <div className="rental-price-block">

@@ -6,7 +6,7 @@ export const desktopFooterColumns = [
       { label: "Buy Preloved", path: "/main-page?section=preloved" },
       { label: "Buy New", path: "/main-page?section=new" },
       { label: "Shop by Occasion", path: "/main-page?section=occasions" },
-      { label: "Shop by Category", path: "/main-page?section=new&category" },
+      { label: "Shop by Category", path: "/main-page" },
       { label: "All Designers", path: "/main-page?section=designers" },
     ],
   },

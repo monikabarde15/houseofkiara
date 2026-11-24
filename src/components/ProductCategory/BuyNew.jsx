@@ -13,7 +13,9 @@ import useCartStore from "../../store/cartStore";
 import useWishlistStore from "../../store/wishlistStore"; 
 import useAuthStore from "../../store/authStore";
 import toast from "react-hot-toast";
-import ProductCoreAccordions, { formatRatingValue } from "./ProductCoreAccordions";
+import ProductCoreAccordions, {
+  ProductMetaRatingRow,
+} from "./ProductCoreAccordions";
 
 export default function BuyNew() {
   const location = useLocation();
@@ -329,28 +331,17 @@ Product ID: ${product.id || product._id || ""}
                 </p>
               )}
 
-              <div className="buynew-rating-row">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star
-                    key={s}
-                    size={16}
-                    fill={(product.rating || 0) >= s ? "#c5a46d" : "none"}
-                    stroke="#c5a46d"
-                    strokeWidth={1.5}
-                  />
-                ))}
-
-                <span className="buynew-rating-text">
-                  {formatRatingValue(product.rating)}
-                </span>
-                <span className="buynew-reviews">
-                  {product.reviewCount ?? product.reviews ?? 0} reviews
-                </span>
-
-                <span className="buynew-never-worn-soft">
-                  NEVER WORN
-                </span>
-              </div>
+              <ProductMetaRatingRow
+                product={product}
+                staticBadge="NEVER WORN"
+                showRentedCount={false}
+                classes={{
+                  row: "buynew-rating-row",
+                  ratingText: "buynew-rating-text",
+                  reviews: "buynew-reviews",
+                  badge: "buynew-never-worn-soft",
+                }}
+              />
 
               {/* ========PRICE BLOCK ====== */}
 

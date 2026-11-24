@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 import categoriesData from "../../../data/home/categoriesData";
+import { buildCategoryFilterUrl } from "../../../services/categoryApi";
 
 const MobileCategories = ({ data }) => {
   const slides = useMemo(() => {
@@ -62,7 +63,7 @@ const MobileCategories = ({ data }) => {
   };
 
   const handleMobileCategoryClick = (slide) => {
-    navigate(`/main-page?section=new&category=${slide.variant}`);
+    navigate(buildCategoryFilterUrl(slide.variant || slide.name));
   };
 
   return (

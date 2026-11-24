@@ -16,7 +16,7 @@ const Categories = () => {
     heading: defaultCategoriesData.title,
     viewAll: {
       text: "View All →",
-      link: "/main-page?section=new&category",
+      link: "/main-page",
     },
     ctaLbl: "Shop Now",
     rowOne: defaultCategoriesData.rowOne,

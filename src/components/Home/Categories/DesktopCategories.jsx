@@ -6,12 +6,16 @@ import SectionEyebrow from "../../shared/SectionEyebrow";
 import SectionTitle from "../../shared/SectionTitle";
 import ViewAllLink from "../../shared/ViewAllLink";
 import { renderHeadline } from "../../../utils/headlineParser";
+import {
+  buildCategoryFilterUrl,
+  normalizeCategoryViewAllLink,
+} from "../../../services/categoryApi";
 
 const CategoryTile = ({ category, isLarge = false }) => {
   const navigate = useNavigate();
 
   const handleCategoryClick = () => {
-    navigate(`/main-page?section=new&category=${category.variant}`);
+    navigate(buildCategoryFilterUrl(category.variant || category.name));
 
     setTimeout(() => {
       window.scrollTo({
@@ -65,7 +69,7 @@ const DesktopCategories = ({ data }) => {
   const eyebrow = categories.eyebrow || categoriesData.eyebrow;
   const heading = categories.heading || categoriesData.title || "Shop by *Category*";
   const viewAllText = categories.viewAll?.text || categories.viewAll?.lbl || "View All →";
-  const viewAllHref = categories.viewAll?.link || categories.viewAll?.url || "/main-page?section=new&category";
+  const viewAllHref = normalizeCategoryViewAllLink(categories.viewAll?.link || categories.viewAll?.url);
   const rowOne = categories.rowOne && categories.rowOne.length > 0 ? categories.rowOne : categoriesData.rowOne;
   const rowTwo = categories.rowTwo && categories.rowTwo.length > 0 ? categories.rowTwo : categoriesData.rowTwo;
 

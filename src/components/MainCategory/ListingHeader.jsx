@@ -13,9 +13,10 @@ function ListingHeader({
       <div className="clp__headerLeft">
 
         <h1 className="clp__title">
-  {heading.title}{" "}
-  <em>{heading.highlight}</em>
-</h1>
+          {heading.title}
+          {heading.title && heading.highlight ? " " : ""}
+          {heading.highlight ? <em>{heading.highlight}</em> : null}
+        </h1>
 
         <p className="clp__count">
           Showing {totalProducts} pieces

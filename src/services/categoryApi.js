@@ -4,6 +4,37 @@ const API_BASE_URL =
   import.meta.env.VITE_API_URL ||
   (window.location.hostname === "localhost" ? "http://localhost:5003/api" : "/api");
 
+/**
+ * Builds a clean /main-page category URL without forcing any section filter
+ * and without double-encoding already encoded category values.
+ */
+export function buildCategoryFilterUrl(categoryValue) {
+  const raw = String(categoryValue || "").trim();
+  if (!raw) {
+    return "/main-page";
+  }
+
+  let decoded = raw;
+  try {
+    decoded = decodeURIComponent(raw);
+  } catch {
+    decoded = raw;
+  }
+
+  return `/main-page?category=${encodeURIComponent(decoded)}`;
+}
+
+/**
+ * Normalizes legacy Shop by Category View All links that forced section=new.
+ */
+export function normalizeCategoryViewAllLink(rawUrl) {
+  const trimmed = String(rawUrl || "").trim();
+  if (!trimmed || /^\/main-page\?section=new&category=?$/i.test(trimmed)) {
+    return "/main-page";
+  }
+  return trimmed;
+}
+
 // Master Category fallback map referencing default storefront items and assets
 const MASTER_CATEGORY_MAP = {
   "bridal-lehenga": {
@@ -143,7 +174,7 @@ export async function getCategorySection() {
         heading: data.heading || defaultCategoriesData.title,
         viewAll: {
           text: data.viewAll?.text || data.viewAll?.lbl || "View All →",
-          link: data.viewAll?.link || data.viewAll?.url || "/main-page?section=new&category",
+          link: normalizeCategoryViewAllLink(data.viewAll?.link || data.viewAll?.url),
         },
         ctaLbl: data.ctaLbl || "Shop Now",
         rowOne,
@@ -161,7 +192,7 @@ export async function getCategorySection() {
     heading: defaultCategoriesData.title,
     viewAll: {
       text: "View All →",
-      link: "/main-page?section=new&category",
+      link: "/main-page",
     },
     ctaLbl: "Shop Now",
     rowOne: defaultCategoriesData.rowOne,

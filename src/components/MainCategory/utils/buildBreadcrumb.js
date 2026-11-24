@@ -6,10 +6,13 @@ export const buildBreadcrumb = ({
   occasion,
 }) => {
 
-  const breadcrumb = {
-    parent: "Rent",
-    current: "All Rental Pieces",
-  };
+  const breadcrumb = category
+    ? { parent: "Categories", current: category }
+    : designer
+    ? { parent: "Designers", current: designer }
+    : occasion
+    ? { parent: "Occasions", current: occasion }
+    : { parent: "Shop", current: "All Pieces" };
 
   // RENT
 

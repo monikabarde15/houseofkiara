@@ -150,7 +150,7 @@ let inMemoryFeatured = {
 export const DEFAULT_CATEGORY_SETTINGS = {
   eyebrow: "Curated for Every Occasion",
   heading: "Shop by *Category*",
-  viewAll: { lbl: "View All →", url: "/main-page?section=new&category" },
+  viewAll: { lbl: "View All →", url: "/main-page" },
   layout: "Mosaic",
   layoutMob: "Carousel",
   header: true,

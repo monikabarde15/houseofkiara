@@ -104,14 +104,31 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
   }, [section, mode, category, designer, occasion, gender]);
 
   // Build heading and breadcrumb
+  const NON_MODE_SECTIONS = ["women", "men", "occasions", "designers"];
   const activeCategory =
-    filters.category.length > 0 ? filters.category[0] : category;
+    filters.category.length > 0
+      ? filters.category[0]
+      : filters.category.length === 0 && category
+      ? ""
+      : category;
   const activeDesigner =
-    filters.designer.length > 0 ? filters.designer[0] : designer;
+    filters.designer.length > 0
+      ? filters.designer[0]
+      : filters.designer.length === 0 && designer
+      ? ""
+      : designer;
   const activeOccasion =
-    filters.occasion.length > 0 ? filters.occasion[0] : occasion;
+    filters.occasion.length > 0
+      ? filters.occasion[0]
+      : filters.occasion.length === 0 && occasion
+      ? ""
+      : occasion;
   const activeSection =
-    filters.rentType.length > 0 ? filters.rentType[0] : section || mode || "rent";
+    filters.rentType.length > 0
+      ? filters.rentType[0]
+      : NON_MODE_SECTIONS.includes(section)
+      ? section
+      : "";
 
   const heading = buildHeading({
     section: activeSection,
@@ -313,7 +330,9 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
 
       <div className="mob-heading-zone">
         <h1 className="mob-heading-zone__title">
-          {heading.title} <em>{heading.highlight}</em>
+          {heading.title}
+          {heading.title && heading.highlight ? " " : ""}
+          {heading.highlight ? <em>{heading.highlight}</em> : null}
         </h1>
         <p className="mob-heading-zone__count">
           Showing {visibleProducts.length} of {sortedProducts.length} pieces
