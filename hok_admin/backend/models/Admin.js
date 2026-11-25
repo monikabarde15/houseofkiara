@@ -13,6 +13,9 @@ const adminSchema = new mongoose.Schema(
     passwordHash: { type: String, required: true },
     passwordSalt: { type: String, required: true },
     sessionToken: String,
+    roleId: { type: String, default: "founder" },
+    personId: String,
+    status: { type: String, default: "Active" },
   },
   { timestamps: true },
 );

@@ -1,8 +1,10 @@
 // src/components/Listers/tabs/ProfileContact/BankCard.tsx
 
 import React, { useState } from "react";
+import { Lock } from "lucide-react";
 import { Lister } from "../../types/lister.types";
 import { validatePAN, validateGSTIN } from "../../utils/validators";
+import { useTeamPermissions } from "../../../TeamPermissions";
 import "./styles/BankCard.css";
 
 interface BankCardProps {
@@ -25,6 +27,8 @@ export const BankCard: React.FC<BankCardProps> = ({
   onUpdate,
   isCreateMode = false,
 }) => {
+  const { hasDecision, refuseDecision } = useTeamPermissions();
+  const canVerifyBank = hasDecision("verify_lister_bank");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showGSTIN, setShowGSTIN] = useState(lister?.gstReg || false);
 
@@ -44,6 +48,10 @@ export const BankCard: React.FC<BankCardProps> = ({
   const handleToggle = (field: string, value: boolean) => {
     switch (field) {
       case "bank.verified":
+        if (value && !canVerifyBank) {
+          refuseDecision("verify_lister_bank");
+          return;
+        }
         updateBank("verified", value);
         break;
 
@@ -196,9 +204,17 @@ export const BankCard: React.FC<BankCardProps> = ({
 
         <div className="fld g2">
           <div className="fld-group">
-            <label className="fld-label">Bank Account Verified</label>
+            <label className="fld-label flex items-center gap-1.5">
+              <span>Bank Account Verified</span>
+              {!canVerifyBank && !bank.verified && (
+                <Lock className="w-3 h-3 text-[#8E77AB]" />
+              )}
+            </label>
 
-            <div className="fld-toggle">
+            <div
+              className="fld-toggle"
+              style={!canVerifyBank && !bank.verified ? { opacity: 0.55 } : undefined}
+            >
               <button
                 type="button"
                 className={`tgl-track ${bank.verified ? "tgl-on" : ""}`}

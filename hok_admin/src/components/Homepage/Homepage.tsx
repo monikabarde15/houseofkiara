@@ -23,6 +23,7 @@ import { OurCommitmentBand } from './Bands/OurCommitmentBand/OurCommitmentBand';
 import { FeaturedDesignersBand } from './Bands/FeaturedDesignersBand/FeaturedDesignersBand';
 import { TestimonialsBand } from './Bands/TestimonialsBand/TestimonialsBand';
 import { InstagramBand } from './Bands/InstagramBand/InstagramBand';
+import { useTeamPermissions } from '../TeamPermissions';
 
 interface HomepageProps {
   homepage?: any;
@@ -97,6 +98,16 @@ export const Homepage: React.FC<HomepageProps> = ({
 
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
+  const {
+    canEditSection,
+    hasDecision,
+    refuseDecision,
+    refuseViewOnlySave,
+    effectivePermissions,
+  } = useTeamPermissions();
+  const canEditHomepage = canEditSection('homepage');
+  const canPublishWebsite = hasDecision('publish_to_website');
+
   // Computed unsaved diffs (Spec 14.2)
   const unsavedChanges = detectHomepageDiffs(registry, baseline);
 
@@ -134,8 +145,16 @@ export const Homepage: React.FC<HomepageProps> = ({
     }, 100);
   };
 
-  // Publish action (Spec 14.2)
+  // Publish action (Spec 14.2 + RBAC 9.4)
   const handlePublish = async () => {
+    if (!canEditHomepage) {
+      refuseViewOnlySave('homepage');
+      return;
+    }
+    if (!canPublishWebsite) {
+      refuseDecision('publish_to_website');
+      return;
+    }
     setIsPublishing(true);
     try {
       const api = await import('../../services/homepageApi');

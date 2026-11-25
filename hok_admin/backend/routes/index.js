@@ -26,6 +26,7 @@ import webProductRouter from "./webProductRoutes.js";
 import consentRouter from "./consentRoutes.js";
 import homepageRouter from "./homepageRoutes.js";
 import pageRouter from "./pageRoutes.js";
+import teamPermissionsRouter from "./teamPermissionsRoutes.js";
 
 const router = express.Router();
 
@@ -58,6 +59,7 @@ router.use("/lister-submissions", submissionRouter);
 router.use("/promotions", promotionRouter);
 router.use("/notifications", notificationRouter);
 router.use("/categories", categoryRouter);
+router.use("/team-permissions", teamPermissionsRouter);
 
 // Root /api endpoints (Products, Orders, Offers, Payouts, Admin Auth, Messages, Customers, Upload)
 import paymentRouter from "./paymentRoutes.js";

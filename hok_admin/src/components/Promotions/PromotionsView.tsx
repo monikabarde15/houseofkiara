@@ -20,6 +20,7 @@ import { useCheckoutRules } from "./hooks/useCheckoutRules";
 import { useShopperMessages } from "./hooks/useShopperMessages";
 import { useRefusedAttempts } from "./hooks/useRefusedAttempts";
 import { usePromotionActions } from "./hooks/usePromotionActions";
+import { useTeamPermissions } from "../TeamPermissions";
 
 interface PromotionsViewProps {
   orders?: any[];
@@ -57,6 +58,9 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({
     useShopperMessages();
   const { getUnknownCodes } = useRefusedAttempts();
   const { createCode } = usePromotionActions();
+  const { hasDecision, refuseDecision } = useTeamPermissions();
+  const canChangePromos = hasDecision("create_change_promo_codes");
+  const canDownload = hasDecision("download_lists");
 
   // Compute stats for snapshot cards
   const liveCodes = codes.filter((c) => getDerivedState(c) === "Active").length;
@@ -108,10 +112,18 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({
   };
 
   const handleCreateClick = () => {
+    if (!composerOpen && !canChangePromos) {
+      refuseDecision("create_change_promo_codes");
+      return;
+    }
     setComposerOpen(!composerOpen);
   };
 
   const handleCreateCode = async (data: any) => {
+    if (!canChangePromos) {
+      refuseDecision("create_change_promo_codes");
+      return null;
+    }
     const result = await createCode(data);
     if (result) {
       refresh();
@@ -136,6 +148,7 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({
         onDigestClick={handleDigestClick}
         onCreateClick={handleCreateClick}
         composerOpen={composerOpen}
+        createLocked={!canChangePromos}
       />
 
       <SnapshotCards
@@ -158,7 +171,13 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({
       <CheckoutRulesCard
         rules={rules}
         linkedPairs={[]}
-        onSave={updateRules}
+        onSave={(nextRules) => {
+          if (!canChangePromos) {
+            refuseDecision("create_change_promo_codes");
+            return;
+          }
+          updateRules(nextRules);
+        }}
         loading={false}
       />
 
@@ -182,7 +201,13 @@ export const PromotionsView: React.FC<PromotionsViewProps> = ({
         onSearchChange={setSearch}
         statusFilter={statusFilter}
         onStatusFilterChange={setStatusFilter}
-        onExport={() => console.log("Export CSV")}
+        onExport={() => {
+          if (!canDownload) {
+            refuseDecision("download_lists");
+            return;
+          }
+          console.log("Export CSV");
+        }}
         snapshotFilter={activeSnapshot}
         onSnapshotClear={() => handleSnapshotClick(null)}
       />

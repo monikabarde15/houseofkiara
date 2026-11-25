@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Plus, RefreshCw, X } from "lucide-react";
 import { Product, Lister } from "../../types/product";
 import toast from "react-hot-toast";
+import { useTeamPermissions } from "../../TeamPermissions";
 import { getDesigners, createDesigner } from "../../../services/designerApi";
 import { createLister } from "../../../services/listerApi";
 import { apiRequest } from "../../../services/apiClient";
@@ -62,6 +63,8 @@ export function CoreDetailsTab({
   onAutoGenerateSku,
   generatingSku = false,
 }: CoreDetailsTabProps) {
+  const { hasDecision, refuseDecision, canEditSection, refuseDoor } =
+    useTeamPermissions();
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -192,6 +195,10 @@ export function CoreDetailsTab({
   }, [formData.listerId, activeListers]);
 
   const handleQuickCreateDesigner = async (overrideName?: string) => {
+    if (!canEditSection("designers")) {
+      refuseDoor("designers");
+      return;
+    }
     const trimmed = String(overrideName ?? newDesignerName).trim();
     if (!trimmed) {
       toast.error("Please enter a designer name.");
@@ -235,6 +242,10 @@ export function CoreDetailsTab({
   };
 
   const handleQuickCreateLister = async () => {
+    if (!canEditSection("listers")) {
+      refuseDoor("listers");
+      return;
+    }
     const trimmedName = newListerName.trim();
     const trimmedPhone = newListerPhone.trim();
     const trimmedCity = newListerCity.trim();
@@ -578,14 +589,25 @@ export function CoreDetailsTab({
           </label>
           <select
             value={formData.status || "Draft"}
-            onChange={(e) =>
-              onFieldChange("status", e.target.value as Product["status"])
-            }
+            onChange={(e) => {
+              const next = e.target.value as Product["status"];
+              if (
+                next === "Live" &&
+                formData.status !== "Live" &&
+                !hasDecision("put_piece_live")
+              ) {
+                refuseDecision("put_piece_live");
+                return;
+              }
+              onFieldChange("status", next);
+            }}
             className={`${inputClass} max-w-sm`}
           >
             {STATUS_OPTIONS.map((status) => (
               <option key={status} value={status}>
-                {status}
+                {status === "Live" && !hasDecision("put_piece_live")
+                  ? "Live (locked)"
+                  : status}
               </option>
             ))}
           </select>

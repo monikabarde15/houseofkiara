@@ -12,9 +12,11 @@ import {
   BarChart3,
   Check,
   X,
+  Lock,
 } from "lucide-react";
 import { Order, Customer } from "../types";
 import { apiRequest } from "../services/apiClient";
+import { useTeamPermissions } from "./TeamPermissions";
 
 interface DashboardViewProps {
   orders: Order[];
@@ -85,6 +87,11 @@ export default function DashboardView({
   onApproveSubmission,
   onRejectSubmission,
 }: DashboardViewProps) {
+  const { canEditSection, hasDecision, refuseDecision, refuseDoor } =
+    useTeamPermissions();
+  const canAddProduct = canEditSection("products");
+  const canDecideSubmission = hasDecision("decide_lyp_submission");
+
   const [dbOrders, setDbOrders] = useState<any[]>([]);
   const [dbSubmissions, setDbSubmissions] = useState<any[]>([]);
   const [dbProductCount, setDbProductCount] = useState<number>(0);
@@ -501,15 +508,31 @@ export default function DashboardView({
                         View Profile
                       </button>
                       <button
-                        onClick={() => onApproveSubmission(sub.id)}
-                        className="p-1.5 bg-green-600 hover:bg-green-700 text-white rounded transition cursor-pointer"
+                        onClick={() => {
+                          if (!canDecideSubmission) {
+                            refuseDecision("decide_lyp_submission");
+                            return;
+                          }
+                          onApproveSubmission(sub.id);
+                        }}
+                        className={`p-1.5 bg-green-600 hover:bg-green-700 text-white rounded transition cursor-pointer ${
+                          !canDecideSubmission ? "tp-locked-btn" : ""
+                        }`}
                         title="Approve"
                       >
                         <Check className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={() => onRejectSubmission(sub.id)}
-                        className="p-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded transition cursor-pointer"
+                        onClick={() => {
+                          if (!canDecideSubmission) {
+                            refuseDecision("decide_lyp_submission");
+                            return;
+                          }
+                          onRejectSubmission(sub.id);
+                        }}
+                        className={`p-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded transition cursor-pointer ${
+                          !canDecideSubmission ? "tp-locked-btn" : ""
+                        }`}
                         title="Reject"
                       >
                         <X className="h-4 w-4" />
@@ -531,9 +554,20 @@ export default function DashboardView({
             </h3>
             <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={() => setView("products")}
-                className="flex flex-col items-center justify-center p-4 bg-[#fcf9f5] border border-stone-100 rounded hover:border-[#c5a880] transition group text-center cursor-pointer"
+                onClick={() => {
+                  if (!canAddProduct) {
+                    refuseDoor("products");
+                    return;
+                  }
+                  setView("products");
+                }}
+                className={`flex flex-col items-center justify-center p-4 bg-[#fcf9f5] border border-stone-100 rounded hover:border-[#c5a880] transition group text-center cursor-pointer ${
+                  !canAddProduct ? "tp-locked-btn" : ""
+                }`}
               >
+                {!canAddProduct && (
+                  <Lock className="h-3.5 w-3.5 text-stone-400 mb-1" />
+                )}
                 <PlusCircle className="h-5 w-5 text-stone-400 group-hover:text-[#c5a880] transition" />
                 <span className="text-xs font-medium text-stone-700 mt-2">
                   Add Product

@@ -2,6 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { Order } from "../types";
+import { useTeamPermissions } from "./TeamPermissions";
 
 interface ReturnsViewProps {
   orders: Order[];
@@ -61,6 +62,17 @@ export default function ReturnsView({
   onUpdateOrder,
   initialTab = "pipeline",
 }: ReturnsViewProps) {
+  const { hasDecision, refuseDecision, getTeamNamesFor } = useTeamPermissions();
+  const returnTeamOptions = React.useMemo(
+    () => getTeamNamesFor({ kind: "section", sectionId: "returns" }),
+    [getTeamNamesFor],
+  );
+  const [receivedByName, setReceivedByName] = useState("Soumya");
+  React.useEffect(() => {
+    if (returnTeamOptions.length > 0) {
+      setReceivedByName(returnTeamOptions[0].value);
+    }
+  }, [returnTeamOptions]);
   const [demoDate, setDemoDate] = useState(() => toYMD(new Date()));
   const [activeTab, setActiveTab] = useState<
     "pipeline" | "ledger" | "released" | "receivables" | "settings"
@@ -600,7 +612,8 @@ export default function ReturnsView({
       depositStatus: "Held",
       conditionAssessment: {
         receivedDate: todayIso,
-        receivedBy: "Soumya",
+        receivedBy:
+          receivedByName || returnTeamOptions[0]?.value || "Soumya",
         grade: returnCondition,
         notes: returnNotes || "Logged via Returns & Deposits pipeline.",
       },
@@ -621,6 +634,18 @@ export default function ReturnsView({
     mode: "Released" | "Partial" | "Forfeited",
   ) => {
     if (!decideModalOrder) return;
+    const isDeductionMode =
+      mode === "Partial" ||
+      mode === "Forfeited" ||
+      Number(deductionAmount || 0) > 0;
+    if (isDeductionMode && !hasDecision("decide_deductions_late_fees_waivers")) {
+      refuseDecision("decide_deductions_late_fees_waivers");
+      return;
+    }
+    if (!isDeductionMode && !hasDecision("refund_deposit_in_full")) {
+      refuseDecision("refund_deposit_in_full");
+      return;
+    }
     const isCancelled =
       String(decideModalOrder.status || "").toLowerCase() === "cancelled";
     const dep = Number(
@@ -1864,6 +1889,23 @@ export default function ReturnsView({
                 <option value="B">Grade B — Minor Cleaning Needed</option>
                 <option value="C">Grade C — Repairable Damage</option>
                 <option value="D">Grade D — Severe Damage</option>
+              </select>
+            </label>
+            <label className="block text-[12px] font-semibold text-[#5c5347]">
+              Received By
+              <select
+                value={receivedByName}
+                onChange={(e) => setReceivedByName(e.target.value)}
+                className="mt-1 w-full rounded border border-[#dcd4c6] px-3 py-2 text-[13px]"
+              >
+                {(returnTeamOptions.length > 0
+                  ? returnTeamOptions
+                  : [{ value: "Soumya", label: "Soumya" }]
+                ).map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
               </select>
             </label>
             <label className="block text-[12px] font-semibold text-[#5c5347]">

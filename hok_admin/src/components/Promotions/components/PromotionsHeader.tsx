@@ -5,6 +5,7 @@
    ======================================== */
 
 import React from "react";
+import { Lock } from "lucide-react";
 import "./styles/PromotionsHeader.css";
 import { Button } from "./UI";
 
@@ -12,12 +13,14 @@ interface PromotionsHeaderProps {
   onDigestClick?: () => void;
   onCreateClick?: () => void;
   composerOpen: boolean;
+  createLocked?: boolean;
 }
 
 export const PromotionsHeader: React.FC<PromotionsHeaderProps> = ({
   onDigestClick,
   onCreateClick,
   composerOpen,
+  createLocked = false,
 }) => {
   return (
     <div className="promotions-header">
@@ -35,7 +38,15 @@ export const PromotionsHeader: React.FC<PromotionsHeaderProps> = ({
         <Button variant="secondary" size="small" onClick={onDigestClick}>
           Digest on WhatsApp
         </Button>
-        <Button variant="primary" size="small" onClick={onCreateClick}>
+        <Button
+          variant="primary"
+          size="small"
+          onClick={onCreateClick}
+          className={createLocked && !composerOpen ? "opacity-50" : ""}
+        >
+          {createLocked && !composerOpen && (
+            <Lock className="inline-block w-3 h-3 mr-1" />
+          )}
           {composerOpen ? "Close Composer" : "+ Create Promo Code"}
         </Button>
       </div>

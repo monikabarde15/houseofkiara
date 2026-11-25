@@ -11,6 +11,7 @@ import { PromotionsTableRow } from "./PromotionsTableRow";
 import { PromotionsTableToolbar } from "./PromotionsTableToolbar";
 import { PromotionsTableFooter } from "./PromotionsTableFooter";
 import { getAttentionFlags } from "../utils/derived";
+import { useTeamPermissions } from "../../TeamPermissions";
 
 interface PromotionsTableProps {
   codes: PromoCode[];
@@ -43,6 +44,8 @@ export const PromotionsTable: React.FC<PromotionsTableProps> = ({
 }) => {
   const [selectedCodes, setSelectedCodes] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
+  const { hasDecision, refuseDecision } = useTeamPermissions();
+  const canChangePromos = hasDecision("create_change_promo_codes");
 
   const handleSelectAll = (checked: boolean) => {
     setSelectAll(checked);
@@ -65,11 +68,19 @@ export const PromotionsTable: React.FC<PromotionsTableProps> = ({
   };
 
   const handleBulkPause = () => {
+    if (!canChangePromos) {
+      refuseDecision("create_change_promo_codes");
+      return;
+    }
     // Bulk pause logic
     console.log("Pausing:", Array.from(selectedCodes));
   };
 
   const handleBulkResume = () => {
+    if (!canChangePromos) {
+      refuseDecision("create_change_promo_codes");
+      return;
+    }
     // Bulk resume logic
     console.log("Resuming:", Array.from(selectedCodes));
   };

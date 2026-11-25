@@ -1,3 +1,4 @@
+import { useState } from "react";
 import logo from "../assets/logo.png";
 import {
   LayoutDashboard,
@@ -23,7 +24,13 @@ import {
   Search,
   LogOut,
   MessageSquare,
+  ShieldCheck,
 } from "lucide-react";
+import {
+  useTeamPermissions,
+  computeInitials,
+  getFirstName,
+} from "./TeamPermissions";
 
 interface SidebarProps {
   currentView: string;
@@ -83,6 +90,12 @@ const groups = [
       { id: "platform_legal", label: "Platform & Legal", icon: FileText },
     ],
   },
+  {
+    title: "Configuration",
+    items: [
+      { id: "roles_permissions", label: "Team & Permissions", icon: ShieldCheck },
+    ],
+  },
 ];
 
 export default function Sidebar({
@@ -92,6 +105,74 @@ export default function Sidebar({
   onLogout,
   badges = {},
 }: SidebarProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    roles,
+    currentPerson,
+    actualPermissions,
+    effectivePermissions,
+    canOpenSection,
+    preview,
+    stopPreview,
+    setActiveTab,
+    setSelectedPersonId,
+  } = useTeamPermissions();
+
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+
+  const visibleGroups = groups
+    .map((group) => {
+      const items = group.items.filter((item) => {
+        if (item.id === "roles_permissions") {
+          if (!effectivePermissions.isFounder) return false;
+        } else if (!canOpenSection(item.id)) {
+          return false;
+        }
+        if (
+          normalizedSearch &&
+          !item.label.toLowerCase().includes(normalizedSearch)
+        ) {
+          return false;
+        }
+        return true;
+      });
+      return { ...group, items };
+    })
+    .filter((g) => g.items.length > 0);
+
+  const activeRoleObj = roles.find(
+    (r) => r.roleId === effectivePermissions.roleId,
+  );
+  const avatarColour = activeRoleObj?.colour || "#C6A05C";
+  const footerDisplayName = preview.active
+    ? preview.personFirstName
+      ? `Previewing ${preview.personFirstName}`
+      : "Previewing a role"
+    : currentPerson?.shownOnRecordsAs ||
+      getFirstName(currentPerson?.fullName || "Soumya");
+  const footerSubtitle = preview.active
+    ? `${effectivePermissions.roleName} · click to stop`
+    : effectivePermissions.roleName || "Founder";
+  const footerInitials = preview.active
+    ? computeInitials(
+        preview.personFirstName || effectivePermissions.roleName || "Role",
+      )
+    : computeInitials(
+        currentPerson?.fullName || currentPerson?.shownOnRecordsAs || "Soumya",
+      );
+
+  const handleUserCardClick = () => {
+    if (preview.active) {
+      stopPreview();
+      return;
+    }
+    if (actualPermissions.isFounder && currentPerson?.personId) {
+      setActiveTab("team");
+      setSelectedPersonId(currentPerson.personId);
+      setView("roles_permissions");
+    }
+  };
+
   return (
     <aside
       className={`sidebar-reference ${isMobile ? "w-full" : "w-[230px] xl:w-[252px] 2xl:w-[272px]"} h-screen shrink-0 select-none`}
@@ -111,10 +192,15 @@ export default function Sidebar({
       </div>
       <div className="sidebar-search">
         <Search />
-        <input aria-label="Search sections" placeholder="Search sections..." />
+        <input
+          aria-label="Search sections"
+          placeholder="Search sections..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
       <nav className="sidebar-nav">
-        {groups.map((group) => (
+        {visibleGroups.map((group) => (
           <div className="sidebar-group" key={group.title || "home"}>
             {group.title && <p>{group.title}</p>}
             {group.items.map((item, index) => {
@@ -146,15 +232,37 @@ export default function Sidebar({
           </div>
         ))}
       </nav>
-      <div className="sidebar-user">
-        <span>S</span>
+      <div
+        className="sidebar-user"
+        onClick={handleUserCardClick}
+        style={{
+          cursor:
+            preview.active ||
+            (actualPermissions.isFounder && currentPerson?.personId)
+              ? "pointer"
+              : "default",
+        }}
+        title={
+          preview.active
+            ? "Click to stop preview"
+            : actualPermissions.isFounder
+              ? "Manage your profile"
+              : undefined
+        }
+      >
+        <span style={{ backgroundColor: avatarColour, color: "#FFFFFF" }}>
+          {footerInitials}
+        </span>
         <div className="min-w-0 flex-1">
-          <strong>Soumya</strong>
-          <small>Platform Admin</small>
+          <strong className="truncate">{footerDisplayName}</strong>
+          <small className="truncate">{footerSubtitle}</small>
         </div>
         <button
           className="sidebar-logout"
-          onClick={onLogout}
+          onClick={(e) => {
+            e.stopPropagation();
+            onLogout();
+          }}
           title="Logout"
           aria-label="Logout"
         >

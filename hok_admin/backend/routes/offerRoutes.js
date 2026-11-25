@@ -26,6 +26,7 @@ import {
   getOfferStatistics,
   exportOffersCSV,
 } from "../controllers/offerController.js";
+import { enforceDecisionIfAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ router.get("/offers/statistics", getOfferStatistics);
 // Export
 // ===============================
 
-router.get("/offers/export/csv", exportOffersCSV);
+router.get("/offers/export/csv", enforceDecisionIfAdmin("download_lists"), exportOffersCSV);
 
 // ===============================
 // Offer Listing
@@ -93,13 +94,13 @@ router.post("/offers/:id/duplicate", duplicateOffer);
 // Status
 // ===============================
 
-router.patch("/offers/:id/status", updateOfferStatus);
+router.patch("/offers/:id/status", enforceDecisionIfAdmin("accept_counter_decline_offer"), updateOfferStatus);
 
 // ===============================
 // Counter Offer
 // ===============================
 
-router.post("/offers/:id/counter-offer", sendCounterOffer);
+router.post("/offers/:id/counter-offer", enforceDecisionIfAdmin("accept_counter_decline_offer"), sendCounterOffer);
 
 router.get("/offers/:id/counter-offers", getCounterOfferHistory);
 

@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { Lock } from "lucide-react";
 import toast from "react-hot-toast";
 import { Payout } from "../../../services/payoutApi";
 import * as payoutApi from "../../../services/payoutApi";
 import { Order } from "../../../types";
+import { useTeamPermissions } from "../../TeamPermissions";
 
 const WhatsAppIcon = ({ onClick }: { onClick?: () => void }) => (
   <button
@@ -52,19 +54,23 @@ export default function DamageCompensationTab({
   const damagePayouts = payouts.filter(
     (p) => p.mode === "Damage Comp." || p.mode === "Damage Compensation",
   );
-  const [assignees, setAssignees] = useState<string[]>(["Priya (Ops)"]);
-
-  useEffect(() => {
-    payoutApi
-      .getAdmins()
-      .then((admins) => {
-        const uniqueNames = Array.from(
-          new Set(admins.map((a) => a.name).filter(Boolean)),
-        );
-        if (uniqueNames.length > 0) setAssignees(uniqueNames);
-      })
-      .catch(() => {});
-  }, []);
+  const { hasDecision, refuseDecision, getTeamNamesFor } = useTeamPermissions();
+  const canApprovePayout = hasDecision("approve_pay_lister_payouts");
+  const approverList = useMemo(
+    () =>
+      getTeamNamesFor({
+        kind: "decision",
+        decisionId: "approve_pay_lister_payouts",
+      }),
+    [getTeamNamesFor],
+  );
+  const assignees = useMemo(
+    () =>
+      approverList.length > 0
+        ? approverList.map((a) => a.value)
+        : ["Soumya"],
+    [approverList],
+  );
 
   const openWhatsApp = (listerName: string, listerId?: string) => {
     const match = listers.find(
@@ -92,6 +98,10 @@ export default function DamageCompensationTab({
     approvedBy: string,
     reason: string,
   ) => {
+    if (!canApprovePayout) {
+      refuseDecision("approve_pay_lister_payouts");
+      return;
+    }
     if (!setPayouts || !setPending || !setPaid) return;
     try {
       const updated = await payoutApi.markPaid(record.id, {
@@ -159,6 +169,8 @@ export default function DamageCompensationTab({
             onWhatsApp={() => openWhatsApp(record.listerName, record.listerId)}
             onSelectOrder={onSelectOrder}
             onSelectLister={onSelectLister}
+            canApprovePayout={canApprovePayout}
+            onRefuseApprove={() => refuseDecision("approve_pay_lister_payouts")}
           />
         );
       })}
@@ -175,6 +187,8 @@ function DamageCompCard({
   onWhatsApp,
   onSelectOrder,
   onSelectLister,
+  canApprovePayout = true,
+  onRefuseApprove,
 }: {
   record: Payout;
   matchedOrder?: any;
@@ -191,6 +205,8 @@ function DamageCompCard({
   onWhatsApp: () => void;
   onSelectOrder?: (orderId: string) => void;
   onSelectLister?: (listerId: string) => void;
+  canApprovePayout?: boolean;
+  onRefuseApprove?: () => void;
 }) {
   const deductedFromCustomer =
     Number(matchedOrder?.depositDecision?.deductedAmount) ||
@@ -468,7 +484,11 @@ function DamageCompCard({
         ) : (
           <button
             type="button"
-            onClick={() =>
+            onClick={() => {
+              if (!canApprovePayout) {
+                onRefuseApprove?.();
+                return;
+              }
               onApprove(
                 record,
                 compAmount,
@@ -476,10 +496,13 @@ function DamageCompCard({
                 hokRetains,
                 approvedBy,
                 reason,
-              )
-            }
-            className="rounded-md bg-[#C39A38] px-4 py-1.5 text-sm font-semibold text-[#1E1412] shadow-sm transition-colors hover:bg-[#B38A28] cursor-pointer"
+              );
+            }}
+            className={`inline-flex items-center gap-1.5 rounded-md bg-[#C39A38] px-4 py-1.5 text-sm font-semibold text-[#1E1412] shadow-sm transition-colors hover:bg-[#B38A28] cursor-pointer ${
+              !canApprovePayout ? "tp-locked-btn" : ""
+            }`}
           >
+            {!canApprovePayout && <Lock className="h-3.5 w-3.5" />}
             Approve Compensation Payout
           </button>
         )}

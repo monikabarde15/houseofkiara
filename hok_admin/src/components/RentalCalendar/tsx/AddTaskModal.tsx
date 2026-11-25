@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { CalendarEvent } from "../types";
+import { useTeamPermissions } from "../../TeamPermissions";
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -13,9 +14,26 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   onClose,
   onSave,
 }) => {
+  const { getTeamNamesFor } = useTeamPermissions();
+  const assigneeOptions = useMemo(() => {
+    const opts = getTeamNamesFor({ kind: "section", sectionId: "calendar" });
+    return opts.length > 0 ? opts : [{ value: "Soumya", label: "Soumya" }];
+  }, [getTeamNamesFor]);
+
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [category, setCategory] = useState("Alteration / Maintenance");
+  const [assignedTo, setAssignedTo] = useState(assigneeOptions[0]?.value || "Soumya");
+
+  useEffect(() => {
+    if (assigneeOptions.length > 0) {
+      setAssignedTo((prev) =>
+        assigneeOptions.some((o) => o.value === prev)
+          ? prev
+          : assigneeOptions[0].value,
+      );
+    }
+  }, [assigneeOptions]);
 
   if (!isOpen) return null;
 
@@ -25,15 +43,15 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     const newTask: CalendarEvent = {
       id: `task_${Date.now()}`,
       type: "internal-task",
-      title: `${category}: ${title}`,
+      title: `${category}: ${title} (${assignedTo})`,
       date: date,
       detail: {
         customerName: "Internal Task",
-        customerLocation: "HQ",
+        customerLocation: assignedTo,
         customerPhone: "-",
         orderPlaced: "-",
         productName: category,
-        productSubtitle: "-",
+        productSubtitle: assignedTo,
         rentalPeriodLabel: "-",
         dispatchByLabel: "-",
         carrierLabel: "-",
@@ -121,6 +139,23 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
               <option value="Dry Cleaning">Dry Cleaning</option>
               <option value="Client Follow-up">Client Follow-up</option>
               <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">
+              Assigned to
+            </label>
+            <select
+              value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
+              className="w-full px-3 py-2 border border-stone-200 rounded text-sm text-stone-700 focus:outline-none focus:border-[#C7A55C]"
+            >
+              {assigneeOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
             </select>
           </div>
         </div>

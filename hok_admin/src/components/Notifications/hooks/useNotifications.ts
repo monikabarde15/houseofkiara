@@ -12,6 +12,7 @@ import {
   buildSummaryCounts,
   getPutDownCount,
 } from "../utils/counting";
+import { useTeamPermissions } from "../../TeamPermissions";
 
 // Flip to false once the real backend endpoint (§19.1) is live.
 const USE_MOCK_DATA = false;
@@ -36,7 +37,9 @@ export interface UseNotificationsResult {
 }
 
 export function useNotifications(): UseNotificationsResult {
-  const [data, setData] = useState<NotificationsResponse | null>(null);
+  const { canOpenSection, effectivePermissions, getTeamNamesFor } =
+    useTeamPermissions();
+  const [rawData, setRawData] = useState<NotificationsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,7 +50,7 @@ export function useNotifications(): UseNotificationsResult {
       const result = USE_MOCK_DATA
         ? mockNotificationsResponse
         : await fetchNotifications();
-      setData(result);
+      setRawData(result);
     } catch (err) {
       // §15.1 — a computation failing must never take the page down; the
       // page still has to render something. We surface the error but do
@@ -63,6 +66,62 @@ export function useNotifications(): UseNotificationsResult {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Spec 9.8: Filter alerts to sections the role can open, and derive owner chips from Team & Permissions
+  const data = useMemo<NotificationsResponse | null>(() => {
+    if (!rawData) return null;
+    const notifEditTeam = getTeamNamesFor({
+      kind: "section",
+      sectionId: "notifications",
+    });
+    const dynamicTeam =
+      notifEditTeam.length > 0
+        ? notifEditTeam.map((m) => m.value)
+        : rawData.team;
+
+    if (effectivePermissions.isFounder) {
+      return { ...rawData, team: dynamicTeam };
+    }
+
+    const mapTargetToSection = (section?: string, type?: string): string | null => {
+      if (section) {
+        if (section === "return" || section === "returns") return "returns";
+        if (section === "submission" || section === "lyp") return "lyp";
+        return section;
+      }
+      if (type === "order") return "orders";
+      if (type === "submission") return "lyp";
+      if (type === "offer") return "offers";
+      if (type === "payout") return "payouts";
+      if (type === "lister") return "listers";
+      if (type === "product") return "products";
+      return null;
+    };
+
+    const filteredAlerts = (rawData.alerts || []).map((alert) => {
+      const actSec = mapTargetToSection(
+        alert.actTarget?.section,
+        alert.actTarget?.type,
+      );
+      if (actSec && !canOpenSection(actSec)) {
+        return { ...alert, records: [] };
+      }
+      const allowedRecords = (alert.records || []).filter((rec) => {
+        const recSec = mapTargetToSection(
+          rec.target?.section,
+          rec.target?.type,
+        );
+        return !recSec || canOpenSection(recSec);
+      });
+      return { ...alert, records: allowedRecords };
+    });
+
+    return {
+      ...rawData,
+      team: dynamicTeam,
+      alerts: filteredAlerts,
+    };
+  }, [rawData, canOpenSection, effectivePermissions.isFounder, getTeamNamesFor]);
 
   // §6.2.1 / §17.3 — one pass, everything else reads from it.
   const urgency = useMemo(() => {

@@ -19,6 +19,7 @@ import {
   createEnquiry,
   updateEnquiry,
 } from "../services/enquiryApi";
+import { useTeamPermissions } from "./TeamPermissions";
 
 interface EnquiriesViewProps {
   enquiries: Enquiry[];
@@ -416,6 +417,15 @@ export default function EnquiriesView({
   onOfferCreated,
   onNavigateView,
 }: EnquiriesViewProps) {
+  const {
+    canEditSection,
+    refuseDoor,
+    hasDecision,
+    refuseDecision,
+    getTeamNamesFor,
+    getSignedByLabel,
+    currentPerson,
+  } = useTeamPermissions();
   const [interestFilter, setInterestFilter] = useState<string>("All Interests");
   const [statusFilter, setStatusFilter] = useState<string>("All Status");
   const [showLogForm, setShowLogForm] = useState<boolean>(false);
@@ -622,17 +632,17 @@ export default function EnquiriesView({
   );
 
   const teamMembers = useMemo(() => {
-    const base = new Set<string>();
-    dbAdmins.forEach((a: any) => {
-      if (a?.name) base.add(String(a.name));
-    });
-    if (currentAdminName) base.add(currentAdminName);
-    enquiries.forEach((e) => {
-      if (e.assignedTo) base.add(e.assignedTo);
-    });
-    if (base.size === 0) base.add("Soumya");
-    return Array.from(base);
-  }, [dbAdmins, currentAdminName, enquiries]);
+    const opts = getTeamNamesFor({ kind: "section", sectionId: "enquiries" });
+    return opts.length > 0 ? opts : [{ value: "Soumya", label: "Soumya" }];
+  }, [getTeamNamesFor]);
+
+  const activeAdminSignature = useMemo(() => {
+    try {
+      return getSignedByLabel();
+    } catch {
+      return currentAdminName;
+    }
+  }, [getSignedByLabel, currentAdminName]);
 
   const toPieceOptionItem = (
     p: any,
@@ -1229,7 +1239,11 @@ export default function EnquiriesView({
     setFormEmail("");
     setFormCity("");
     setFormInterest("Rent");
-    setFormAssigned(currentAdminName);
+    setFormAssigned(
+      teamMembers[0]?.value ||
+        currentPerson?.shownOnRecordsAs ||
+        currentAdminName,
+    );
     setFormPieceId("");
     setFormAlsoPieceId("");
     setFormEventDate("");
@@ -1462,6 +1476,14 @@ export default function EnquiriesView({
       onNavigateView?.("offers");
       return;
     }
+    if (target === "order" && !canEditSection("orders")) {
+      refuseDoor("orders");
+      return;
+    }
+    if (target === "offer" && !canEditSection("offers")) {
+      refuseDoor("offers");
+      return;
+    }
 
     if (!enq.pieces || enq.pieces.length === 0) {
       toast.error(
@@ -1540,6 +1562,10 @@ export default function EnquiriesView({
   };
 
   const exportCsv = () => {
+    if (!hasDecision("download_lists")) {
+      refuseDecision("download_lists");
+      return;
+    }
     const esc = (v: any) => {
       const s = v === undefined || v === null ? "" : String(v);
       return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
@@ -2131,8 +2157,8 @@ export default function EnquiriesView({
                   className={inputCls}
                 >
                   {teamMembers.map((tm) => (
-                    <option key={tm} value={tm}>
-                      {tm}
+                    <option key={tm.value} value={tm.value}>
+                      {tm.label}
                     </option>
                   ))}
                 </select>
@@ -2805,9 +2831,16 @@ export default function EnquiriesView({
                 }
                 className="mt-1 rounded-[4px] border border-[#ded6c8] bg-white px-2.5 py-1.5 text-[12px] text-[#2b2118] outline-none focus:border-[#c08829]"
               >
-                {teamMembers.map((tm) => (
-                  <option key={tm} value={tm}>
-                    {tm}
+                {getTeamNamesFor(
+                  { kind: "section", sectionId: "enquiries" },
+                  selectedEnquiry.assignedTo,
+                ).map((tm) => (
+                  <option
+                    key={tm.value}
+                    value={tm.value}
+                    disabled={Boolean(tm.isHistorical)}
+                  >
+                    {tm.label}
                   </option>
                 ))}
               </select>
@@ -3554,6 +3587,10 @@ export default function EnquiriesView({
                     onClick={() => {
                       if (selectedEnquiry.linkedOfferId) {
                         onNavigateView?.("offers");
+                        return;
+                      }
+                      if (!canEditSection("offers")) {
+                        refuseDoor("offers");
                         return;
                       }
                       const p0 = selectedEnquiry.pieces[0];

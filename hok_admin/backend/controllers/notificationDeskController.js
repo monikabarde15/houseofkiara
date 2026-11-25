@@ -4,7 +4,7 @@ import Offer from "../models/Offer.js";
 import Submission from "../models/Submission.js";
 import Payout from "../models/Payout.js";
 import Product from "../models/Product.js";
-import Admin from "../models/Admin.js";
+import TeamMember from "../models/TeamMember.js";
 import Message from "../models/Message.js";
 
 const DESK_STATE_ID = "DESK_STATE";
@@ -85,7 +85,7 @@ export const getDeskNotifications = async (req, res) => {
       submissions,
       payouts,
       products,
-      admins,
+      teamMembers,
       messages,
       stateDoc,
     ] = await Promise.all([
@@ -94,17 +94,25 @@ export const getDeskNotifications = async (req, res) => {
       Submission.find({}).catch(() => []),
       Payout.find({}).catch(() => []),
       Product.find({}).catch(() => []),
-      Admin.find({}).catch(() => []),
+      TeamMember.find({}).catch(() => []),
       Message.find({}).catch(() => []),
       getDeskStateDoc(),
     ]);
 
     const todayYmd = toYmd(new Date().toISOString());
-    const teamList = (Array.isArray(admins) ? admins : [])
-      .map((a) => a.name || a.username || a.email)
+    const teamList = (Array.isArray(teamMembers) ? teamMembers : [])
+      .filter((m) => m.status !== "Left")
+      .map((m) => m.shownOnRecordsAs || m.fullName)
       .filter(Boolean);
-    const team = teamList.length > 0 ? Array.from(new Set(teamList)) : ["Soumya"];
-    const currentUser = (req.user && req.user.name) || team[0] || "Soumya";
+    const team =
+      teamList.length > 0
+        ? Array.from(new Set(teamList))
+        : ["Soumya", "Priya (Ops)"];
+    const currentUser =
+      (req.teamMember && req.teamMember.shownOnRecordsAs) ||
+      (req.admin && req.admin.name) ||
+      team[0] ||
+      "Soumya";
 
     const returnsOverdueRecords = [];
     const returnsDueTodayRecords = [];

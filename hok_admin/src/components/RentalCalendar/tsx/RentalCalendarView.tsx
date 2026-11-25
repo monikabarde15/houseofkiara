@@ -16,6 +16,7 @@ import AgendaView from "./agenda/AgendaView";
 import GanttView from "./gantt/GanttView";
 import AddTaskModal from "./AddTaskModal";
 import { Order, Product } from "../../../types";
+import { useTeamPermissions } from "../../TeamPermissions";
 
 const MONTH_FORMATTER = new Intl.DateTimeFormat("en-US", {
   month: "long",
@@ -41,6 +42,8 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
   onSaveChanges,
   onViewLiveSite,
 }) => {
+  const { canEditSection, refuseDoor, hasDecision, refuseDecision } =
+    useTeamPermissions();
   const currentDate = new Date();
   const [month, setMonth] = useState(
     () => new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
@@ -62,6 +65,10 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
   };
 
   const handleAddTask = () => {
+    if (!canEditSection("calendar")) {
+      refuseDoor("calendar");
+      return;
+    }
     setIsModalOpen(true);
   };
 
@@ -460,7 +467,12 @@ const RentalCalendarView: React.FC<RentalCalendarViewProps> = ({
           onViewModeChange={setViewMode}
           onDemoDateChange={setDemoDate}
           onAddTask={handleAddTask}
-          onExport={() => {}}
+          onExport={() => {
+            if (!hasDecision("download_lists")) {
+              refuseDecision("download_lists");
+              return;
+            }
+          }}
         />
 
         <div className="rental-calendar-page__content">
