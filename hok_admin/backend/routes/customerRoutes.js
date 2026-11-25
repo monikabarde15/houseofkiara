@@ -9,18 +9,19 @@ import {
   addCustomerOccasion,
   addCustomerCommLog,
 } from "../controllers/customerController.js";
+import { enforceSectionIfAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/customers", getCustomers);
-router.post("/customers", createCustomer);
-router.get("/customers/:id", getCustomer);
-router.put("/customers/:id", updateCustomer);
-router.patch("/customers/:id", updateCustomer);
-router.delete("/customers/:id", deleteCustomer);
+router.get("/customers", enforceSectionIfAdmin("customers", "View"), getCustomers);
+router.post("/customers", enforceSectionIfAdmin("customers", "Edit"), createCustomer);
+router.get("/customers/:id", enforceSectionIfAdmin("customers", "View"), getCustomer);
+router.put("/customers/:id", enforceSectionIfAdmin("customers", "Edit"), updateCustomer);
+router.patch("/customers/:id", enforceSectionIfAdmin("customers", "Edit"), updateCustomer);
+router.delete("/customers/:id", enforceSectionIfAdmin("customers", "Edit"), deleteCustomer);
 
-router.post("/customers/:id/addresses", addCustomerAddress);
-router.post("/customers/:id/occasions", addCustomerOccasion);
-router.post("/customers/:id/communication-log", addCustomerCommLog);
+router.post("/customers/:id/addresses", enforceSectionIfAdmin("customers", "Edit"), addCustomerAddress);
+router.post("/customers/:id/occasions", enforceSectionIfAdmin("customers", "Edit"), addCustomerOccasion);
+router.post("/customers/:id/communication-log", enforceSectionIfAdmin("customers", "Edit"), addCustomerCommLog);
 
 export default router;

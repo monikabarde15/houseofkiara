@@ -6,12 +6,19 @@ import {
   updateTask,
   deleteTask,
 } from "../controllers/taskController.js";
-import { requireAuth } from "../middleware/authMiddleware.js";
+import { requireAuth, enforceSectionIfAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.route("/").get(getTasks).post(createTask);
+router
+  .route("/")
+  .get(enforceSectionIfAdmin("calendar", "View"), getTasks)
+  .post(enforceSectionIfAdmin("calendar", "Edit"), createTask);
 
-router.route("/:id").get(getTaskById).put(updateTask).delete(deleteTask);
+router
+  .route("/:id")
+  .get(enforceSectionIfAdmin("calendar", "View"), getTaskById)
+  .put(enforceSectionIfAdmin("calendar", "Edit"), updateTask)
+  .delete(enforceSectionIfAdmin("calendar", "Edit"), deleteTask);
 
 export default router;

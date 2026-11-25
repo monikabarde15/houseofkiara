@@ -7,17 +7,18 @@ import {
   pickUpAlert,
   markSeenRecords,
 } from "../controllers/notificationDeskController.js";
+import { enforceSectionIfAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/desk", getDeskNotifications);
-router.put("/assign", assignRecord);
-router.put("/put-down", putDownAlert);
-router.delete("/put-down", pickUpAlert);
-router.put("/seen", markSeenRecords);
+router.get("/desk", enforceSectionIfAdmin("notifications", "View"), getDeskNotifications);
+router.put("/assign", enforceSectionIfAdmin("notifications", "Edit"), assignRecord);
+router.put("/put-down", enforceSectionIfAdmin("notifications", "Edit"), putDownAlert);
+router.delete("/put-down", enforceSectionIfAdmin("notifications", "Edit"), pickUpAlert);
+router.put("/seen", enforceSectionIfAdmin("notifications", "View"), markSeenRecords);
 
 // GET all notifications
-router.get("/", async (req, res) => {
+router.get("/", enforceSectionIfAdmin("notifications", "View"), async (req, res) => {
   try {
     const notifications = await Notification.find({}).sort({ createdAt: -1 });
     res.json({ success: true, data: notifications });
@@ -27,7 +28,7 @@ router.get("/", async (req, res) => {
 });
 
 // PUT mark all as read
-router.put("/read-all", async (req, res) => {
+router.put("/read-all", enforceSectionIfAdmin("notifications", "Edit"), async (req, res) => {
   try {
     await Notification.updateMany({}, { $set: { unread: false } });
     res.json({ success: true, message: "Marked all as read" });
@@ -37,7 +38,7 @@ router.put("/read-all", async (req, res) => {
 });
 
 // PUT mark single notification read
-router.put("/:id/read", async (req, res) => {
+router.put("/:id/read", enforceSectionIfAdmin("notifications", "Edit"), async (req, res) => {
   try {
     const { id } = req.params;
     const updated = await Notification.findOneAndUpdate(
@@ -52,7 +53,7 @@ router.put("/:id/read", async (req, res) => {
 });
 
 // DELETE single notification
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", enforceSectionIfAdmin("notifications", "Edit"), async (req, res) => {
   try {
     const { id } = req.params;
     await Notification.deleteOne({

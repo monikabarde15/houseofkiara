@@ -27,6 +27,7 @@ import { usePromotionDetail } from "./hooks/usePromotionDetail";
 import { usePromotionActions } from "./hooks/usePromotionActions";
 import { useTestBag } from "./hooks/useTestBag";
 import { useRefusedAttempts } from "./hooks/useRefusedAttempts";
+import { useTeamPermissions } from "../TeamPermissions";
 import {
   AttentionFlag,
   getAttentionFlags,
@@ -59,6 +60,8 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
   } = usePromotionDetail(codeId);
   const { pauseCode, resumeCode, deleteCode, copyCode, updateCode } =
     usePromotionActions();
+  const { hasDecision, refuseDecision } = useTeamPermissions();
+  const canChangePromos = hasDecision("create_change_promo_codes");
   const { getAttemptsForCode } = useRefusedAttempts();
   const {
     items,
@@ -101,6 +104,10 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
   };
 
   const handlePause = async () => {
+    if (!canChangePromos) {
+      refuseDecision("create_change_promo_codes");
+      return;
+    }
     if (code) {
       const result = await pauseCode(code.code);
       if (result) refresh();
@@ -108,6 +115,10 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
   };
 
   const handleResume = async () => {
+    if (!canChangePromos) {
+      refuseDecision("create_change_promo_codes");
+      return;
+    }
     if (code) {
       const result = await resumeCode(code.code);
       if (result) refresh();
@@ -115,6 +126,10 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
   };
 
   const handleDelete = async () => {
+    if (!canChangePromos) {
+      refuseDecision("create_change_promo_codes");
+      return;
+    }
     if (
       code &&
       window.confirm(
@@ -127,6 +142,10 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
   };
 
   const handleCopy = async (changes: any) => {
+    if (!canChangePromos) {
+      refuseDecision("create_change_promo_codes");
+      return;
+    }
     if (code) {
       const result = await copyCode(code.code, changes);
       if (result) {
@@ -258,6 +277,10 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
               <DiscountRulesCard
                 code={code}
                 onSave={(data) => {
+                  if (!canChangePromos) {
+                    refuseDecision("create_change_promo_codes");
+                    return;
+                  }
                   updateCode(code.code, data);
                 }}
                 onCopy={(data) => handleCopy(data)}
@@ -267,7 +290,13 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
             <div className="promotions-detail-view__rules-right">
               <AudienceCard
                 code={code}
-                onSave={(data) => updateCode(code.code, data)}
+                onSave={(data) => {
+                  if (!canChangePromos) {
+                    refuseDecision("create_change_promo_codes");
+                    return;
+                  }
+                  updateCode(code.code, data);
+                }}
               />
               <CheckoutValidationCard code={code} />
             </div>
@@ -275,7 +304,13 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
 
           <ReasonNotesCard
             code={code}
-            onSave={(data) => updateCode(code.code, data)}
+            onSave={(data) => {
+              if (!canChangePromos) {
+                refuseDecision("create_change_promo_codes");
+                return;
+              }
+              updateCode(code.code, data);
+            }}
           />
 
           <div className="promotions-detail-view__rules-grid">
@@ -286,6 +321,7 @@ export const PromotionsDetailView: React.FC<PromotionsDetailViewProps> = ({
               onResume={handleResume}
               onDelete={handleDelete}
               redemptions={redemptions}
+              locked={!canChangePromos}
             />
           </div>
 

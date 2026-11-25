@@ -1,11 +1,12 @@
 import express from "express";
 import Message from "../models/Message.js";
+import { enforceSectionIfAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 const deliveries = [];
 
 // GET all messages with filtering
-router.get("/messages", async (req, res) => {
+router.get("/messages", enforceSectionIfAdmin("messaging", "View"), async (req, res) => {
   try {
     const { search, audience, type, status } = req.query;
     let filter = {};
@@ -33,7 +34,7 @@ router.get("/messages", async (req, res) => {
 });
 
 // GET single message by ID
-router.get("/messages/:id", async (req, res) => {
+router.get("/messages/:id", enforceSectionIfAdmin("messaging", "View"), async (req, res) => {
   try {
     const { id } = req.params;
     let message = await Message.findOne({
@@ -51,7 +52,7 @@ router.get("/messages/:id", async (req, res) => {
 });
 
 // POST create new message
-router.post("/messages", async (req, res) => {
+router.post("/messages", enforceSectionIfAdmin("messaging", "Edit"), async (req, res) => {
   try {
     const data = req.body;
     const messageId = `msg_${Date.now()}`;
@@ -91,7 +92,7 @@ router.post("/messages", async (req, res) => {
 });
 
 // PUT update message
-router.put("/messages/:id", async (req, res) => {
+router.put("/messages/:id", enforceSectionIfAdmin("messaging", "Edit"), async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -124,7 +125,7 @@ router.put("/messages/:id", async (req, res) => {
 });
 
 // DELETE message
-router.delete("/messages/:id", async (req, res) => {
+router.delete("/messages/:id", enforceSectionIfAdmin("messaging", "Edit"), async (req, res) => {
   try {
     const { id } = req.params;
     await Message.deleteOne({ $or: [{ messageId: id }, { _id: id }] });
@@ -135,7 +136,7 @@ router.delete("/messages/:id", async (req, res) => {
 });
 
 // POST send message delivery mock
-router.post("/messages/send", (req, res) => {
+router.post("/messages/send", enforceSectionIfAdmin("messaging", "Edit"), (req, res) => {
   const { channel = "whatsapp", to, body } = req.body || {};
   if (!to || !body)
     return res

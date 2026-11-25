@@ -15,9 +15,11 @@ import { LYPTableToolbar } from "./components/LYPTableToolbar";
 import { LYPTableFooter } from "./components/LYPTableFooter";
 import { IntakeCard } from "./intake/IntakeCard";
 import { calculateStats } from "./utils/derived";
+import { useTeamPermissions } from "../TeamPermissions";
 import "./LYPView.css";
 
 export const LYPView: React.FC = () => {
+  const { hasDecision, refuseDecision } = useTeamPermissions();
   const [filters, setFilters] = useState<SubmissionFilters>({
     search: "",
     status: "",
@@ -99,7 +101,12 @@ export const LYPView: React.FC = () => {
           onFilterChange={handleFilterChange}
           viewLabel={viewLabel}
           onClearView={handleClearView}
-          onExport={() => {}}
+          onExport={() => {
+            if (!hasDecision("download_lists")) {
+              refuseDecision("download_lists");
+              return;
+            }
+          }}
           onRecordSubmission={() => setShowIntake(!showIntake)}
         />
 

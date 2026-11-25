@@ -26,6 +26,7 @@ import { EnquiryHistoryTab } from "./tabs/EnquiryHistoryTab";
 import { ActivityLogTab } from "./tabs/ActivityLogTab";
 import { ProductSidebar } from "./ProductSidebar";
 import toast from "react-hot-toast";
+import { useTeamPermissions } from "../TeamPermissions";
 import {
   validateProductForm,
   ProductValidationIssue,
@@ -125,6 +126,8 @@ export default function ProductsView({
   customers = [],
   initialProductId,
 }: ProductsViewProps) {
+  const { hasDecision, refuseDecision, canEditSection, refuseDoor } =
+    useTeamPermissions();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [isSaving, setIsSaving] = useState(false);
@@ -525,6 +528,46 @@ export default function ProductsView({
     if (isSaving || isFinalSaving) {
       console.log("⏳ Save already in progress...");
       return false;
+    }
+
+    const prevStatus = state.editingProduct?.status || "Draft";
+    const nextStatus = formData.status || (state.isAdding ? "Draft" : prevStatus);
+    if (
+      nextStatus === "Live" &&
+      (state.isAdding || prevStatus !== "Live") &&
+      !hasDecision("put_piece_live")
+    ) {
+      refuseDecision("put_piece_live");
+      return false;
+    }
+
+    if (state.editingProduct) {
+      const priceFields: Array<keyof Product> = [
+        "rentalPrice",
+        "extendedWindowPrice",
+        "perDayRate",
+        "securityDeposit",
+        "listingPrice",
+        "minimumOffer",
+        "originalRetailPrice",
+        "commissionRate",
+      ];
+      const priceChanged = priceFields.some(
+        (k) => (formData as any)[k] !== (state.editingProduct as any)[k],
+      );
+      if (priceChanged && !hasDecision("set_or_change_prices")) {
+        refuseDecision("set_or_change_prices");
+        return false;
+      }
+
+      const shareChanged =
+        formData.payoutPercentage !== state.editingProduct.payoutPercentage ||
+        formData.resalePayoutPercentage !==
+          state.editingProduct.resalePayoutPercentage;
+      if (shareChanged && !hasDecision("set_lister_share")) {
+        refuseDecision("set_lister_share");
+        return false;
+      }
     }
 
     const validation = validateProductForm(formData, dbDesigners, products);
@@ -1277,6 +1320,10 @@ export default function ProductsView({
   };
 
   const handleDuplicate = async () => {
+    if (!canEditSection("products")) {
+      refuseDoor("products");
+      return;
+    }
     if (!formData.productId && !state.editingProduct) {
       toast.error("No product to duplicate!");
       return;

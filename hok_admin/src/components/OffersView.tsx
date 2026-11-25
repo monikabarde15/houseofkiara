@@ -15,6 +15,7 @@ import {
 import { Offer, OfferPiece, Product, Customer } from "../types";
 import * as offerApi from "../services/offerApi";
 import toast from "react-hot-toast";
+import { useTeamPermissions } from "./TeamPermissions";
 
 interface OffersViewProps {
   offers: Offer[];
@@ -773,7 +774,18 @@ export default function OffersView({
     }
   };
 
+  const { hasDecision, refuseDecision } = useTeamPermissions();
+  const canDecideOffer = hasDecision("accept_counter_decline_offer");
+  const canDownloadLists = hasDecision("download_lists");
+
   const updateStatus = (offer: Offer, status: Offer["status"]) => {
+    if (
+      (status === "Accepted" || status === "Declined" || status === "Countered") &&
+      !canDecideOffer
+    ) {
+      refuseDecision("accept_counter_decline_offer");
+      return;
+    }
     onUpdateOffer(offer.id, {
       status,
       ...(status === "Accepted" ? { createOrder: true } : {}),
@@ -784,6 +796,13 @@ export default function OffersView({
 
   const handleDirectStatusSelect = (offer: Offer, nextStatus: Offer["status"]) => {
     if (nextStatus === offer.status) return;
+    if (
+      (nextStatus === "Accepted" || nextStatus === "Declined" || nextStatus === "Countered") &&
+      !canDecideOffer
+    ) {
+      refuseDecision("accept_counter_decline_offer");
+      return;
+    }
     if (nextStatus === "Accepted" || nextStatus === "Declined") {
       setConfirmAction({ offer, status: nextStatus });
       return;
@@ -815,6 +834,10 @@ export default function OffersView({
   };
 
   const exportOffers = () => {
+    if (!canDownloadLists) {
+      refuseDecision("download_lists");
+      return;
+    }
     const quote = (value: string | number) =>
       `"${String(value).replaceAll('"', '""')}"`;
     const rows = [
@@ -1509,13 +1532,14 @@ function NewOfferForm({
   onSubmit: (event: React.FormEvent) => void;
   onCancel: () => void;
 }) {
+  const { getTeamNamesFor } = useTeamPermissions();
   const assignees = useMemo(() => {
-    const names = new Set<string>(["Admin", currentAdminName]);
-    listers.forEach((l) => {
-      if (l?.name) names.add(l.name);
-    });
-    return Array.from(names);
-  }, [listers, currentAdminName]);
+    const opts = getTeamNamesFor(
+      { kind: "section", sectionId: "offers" },
+      form.assignedTo || undefined,
+    );
+    return opts.length > 0 ? opts : [{ value: "Soumya", label: "Soumya" }];
+  }, [getTeamNamesFor, form.assignedTo]);
 
   const handleCustomerPick = (custId: string) => {
     if (!custId) {
@@ -1628,9 +1652,9 @@ function NewOfferForm({
             }
           >
             <option value="Unassigned">Unassigned</option>
-            {assignees.map((name) => (
-              <option key={name} value={name}>
-                {name}
+            {assignees.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
               </option>
             ))}
           </select>

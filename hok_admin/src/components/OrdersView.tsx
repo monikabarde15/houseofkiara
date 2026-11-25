@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Order, Customer } from "../types";
 import CreateOrderModal from "./CreateOrderModal";
+import { useTeamPermissions } from "./TeamPermissions";
 
 interface OrdersViewProps {
   orders: Order[];
@@ -107,6 +108,7 @@ export default function OrdersView({
   onCreateMockOrder,
   onOrderCreated,
 }: OrdersViewProps) {
+  const { hasDecision, refuseDecision } = useTeamPermissions();
   const [showCreate, setShowCreate] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
@@ -527,6 +529,10 @@ export default function OrdersView({
 
   // ── Export: full order data for every order in the current filtered list (all pages) ──
   const exportCsv = () => {
+    if (!hasDecision("download_lists")) {
+      refuseDecision("download_lists");
+      return;
+    }
     const esc = (v: any) => {
       const s = v === undefined || v === null ? "" : String(v).trim();
       return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;

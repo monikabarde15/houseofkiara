@@ -16,6 +16,7 @@ import {
 } from "../utils/derived";
 import { useJourneyStack } from "../hooks/useJourneyStack";
 import { submissionService } from "../services/submissionService";
+import { useTeamPermissions } from "../../TeamPermissions";
 import "./styles/RecordHeader.css";
 
 interface RecordHeaderProps {
@@ -46,8 +47,17 @@ export const RecordHeader: React.FC<RecordHeaderProps> = ({
   const { goBack, getBackDestination } = useJourneyStack();
   const backDest = getBackDestination();
 
+  const { getTeamNamesFor } = useTeamPermissions();
   const [localAssignedTo, setLocalAssignedTo] = useState(
     submission.assignedTo || "Unassigned",
+  );
+  const teamAssignees = React.useMemo(
+    () =>
+      getTeamNamesFor(
+        { kind: "section", sectionId: "lyp" },
+        localAssignedTo,
+      ),
+    [getTeamNamesFor, localAssignedTo],
   );
 
   useEffect(() => {
@@ -114,8 +124,11 @@ export const RecordHeader: React.FC<RecordHeaderProps> = ({
                 }}
               >
                 <option value="Unassigned">Unassigned</option>
-                <option value="Soumya">Soumya</option>
-                <option value="Operations Team">Operations Team</option>
+                {teamAssignees.map((a) => (
+                  <option key={a.value} value={a.value}>
+                    {a.label}
+                  </option>
+                ))}
               </select>
             </span>
           </div>

@@ -6,6 +6,8 @@ import {
   logoutAdmin,
   getMe,
   getAdmins,
+  getInviteInfo,
+  acceptInvite,
 } from "../controllers/authController.js";
 import { requireAuth } from "../middleware/authMiddleware.js";
 
@@ -17,5 +19,7 @@ router.post("/auth/login", loginAdmin);
 router.post("/auth/logout", logoutAdmin);
 router.get("/auth/me", requireAuth, getMe);
 router.get("/auth/admins", getAdmins);
+router.get("/auth/invite-info", getInviteInfo);
+router.post("/auth/accept-invite", acceptInvite);
 
 export default router;

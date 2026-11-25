@@ -5,6 +5,7 @@
    ======================================== */
 
 import React from "react";
+import { Lock } from "lucide-react";
 import "./styles/LifecycleCard.css";
 import { Card, Button } from "../../components/UI";
 import { PromoCode } from "../../types/promotions.types";
@@ -15,6 +16,7 @@ interface LifecycleCardProps {
   onResume: () => void;
   onDelete: () => void;
   redemptions: number;
+  locked?: boolean;
 }
 
 export const LifecycleCard: React.FC<LifecycleCardProps> = ({
@@ -23,6 +25,7 @@ export const LifecycleCard: React.FC<LifecycleCardProps> = ({
   onResume,
   onDelete,
   redemptions,
+  locked = false,
 }) => {
   const isPaused = code.status === "Paused";
   const isActive = code.status === "Active";
@@ -41,11 +44,23 @@ export const LifecycleCard: React.FC<LifecycleCardProps> = ({
 
       <div className="lifecycle-card__actions">
         {isPaused ? (
-          <Button variant="primary" size="small" onClick={onResume}>
+          <Button
+            variant="primary"
+            size="small"
+            onClick={onResume}
+            className={locked ? "opacity-50" : ""}
+          >
+            {locked && <Lock className="inline-block w-3 h-3 mr-1" />}
             Resume code
           </Button>
         ) : isActive ? (
-          <Button variant="secondary" size="small" onClick={onPause}>
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={onPause}
+            className={locked ? "opacity-50" : ""}
+          >
+            {locked && <Lock className="inline-block w-3 h-3 mr-1" />}
             Pause code
           </Button>
         ) : null}
@@ -54,9 +69,10 @@ export const LifecycleCard: React.FC<LifecycleCardProps> = ({
           <Button
             variant="secondary"
             size="small"
-            className="lifecycle-card__delete-btn"
+            className={`lifecycle-card__delete-btn ${locked ? "opacity-50" : ""}`}
             onClick={onDelete}
           >
+            {locked && <Lock className="inline-block w-3 h-3 mr-1" />}
             Delete Code
           </Button>
         ) : null}

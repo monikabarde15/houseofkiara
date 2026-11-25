@@ -1,7 +1,9 @@
 // src/components/LYP/record/ActionsRow.tsx
 
 import React from "react";
+import { Lock } from "lucide-react";
 import { Submission } from "../types/submission.types";
+import { useTeamPermissions } from "../../TeamPermissions";
 import { getLiveClockHours, getSubmissionStatus } from "../utils/derived";
 import {
   generateWhatsAppLink,
@@ -46,9 +48,23 @@ export const ActionsRow: React.FC<ActionsRowProps> = ({
     getDefaultWhatsAppMessage(getFirstName(submission.listerName || submission.listerID)),
   );
 
+  const { hasDecision, refuseDecision } = useTeamPermissions();
+  const canDecideSubmission = hasDecision("decide_lyp_submission");
+
   const handleApprove = () => {
-    // Show confirm modal first
+    if (!canDecideSubmission) {
+      refuseDecision("decide_lyp_submission");
+      return;
+    }
     onApprove();
+  };
+
+  const handleReject = () => {
+    if (!canDecideSubmission) {
+      refuseDecision("decide_lyp_submission");
+      return;
+    }
+    onReject();
   };
 
   const handleExpire = () => {
@@ -58,13 +74,21 @@ export const ActionsRow: React.FC<ActionsRowProps> = ({
 
   return (
     <div className="actions-row">
-      <button className="btn btn-gold btn-sm" onClick={handleApprove}>
+      <button
+        className={`btn btn-gold btn-sm ${!canDecideSubmission ? "opacity-50" : ""}`}
+        onClick={handleApprove}
+      >
+        {!canDecideSubmission && <Lock className="inline-block w-3 h-3 mr-1" />}
         Approve & Create Draft
       </button>
       <button className="btn btn-sec btn-sm" onClick={onMoreInfo}>
         Request More Info
       </button>
-      <button className="btn btn-danger btn-sm" onClick={onReject}>
+      <button
+        className={`btn btn-danger btn-sm ${!canDecideSubmission ? "opacity-50" : ""}`}
+        onClick={handleReject}
+      >
+        {!canDecideSubmission && <Lock className="inline-block w-3 h-3 mr-1" />}
         Reject...
       </button>
       <button

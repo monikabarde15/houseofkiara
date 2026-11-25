@@ -63,6 +63,16 @@ import * as taskApi from './services/taskApi';
 import AdminAuth from './components/AdminAuth';
 import { ArrowLeft, Bell, ExternalLink, Menu, Save, X } from 'lucide-react';
 import { parseAdminRoute, syncRoute } from './utils/adminRouter';
+import {
+  TeamPermissionsProvider,
+  TeamPermissionsView,
+  TpToastContainer,
+  NotPartOfRoleView,
+  PreviewBar,
+  ViewOnlyGuard,
+  useTeamPermissions,
+  resolveViewPermissionSection,
+} from './components/TeamPermissions';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<string>(() => parseAdminRoute().view);
@@ -87,13 +97,104 @@ export default function App() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  const [adminSession, setAdminSession] = useState<any>(() => authApi.getSession());
+
+  const handleLogout = () => {
+    authApi.logoutAdmin();
+    setAdminSession(null);
+    toast.success('Logged out successfully!');
+  };
+
+  const handleSessionRefresh = (updatedAdmin: any) => {
+    setAdminSession((prev: any) => {
+      if (!prev) return prev;
+      const next = { ...prev, admin: { ...prev.admin, ...updatedAdmin } };
+      try {
+        localStorage.setItem('hok_admin_session', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  if (!adminSession) {
+    return (
+      <AdminAuth
+        onLogin={(session) => {
+          setAdminSession(session);
+          toast.success('Logged in successfully!');
+        }}
+      />
+    );
+  }
+
+  return (
+    <TeamPermissionsProvider
+      adminSession={adminSession}
+      currentView={currentView}
+      onNavigateView={setView}
+      onSessionRefresh={handleSessionRefresh}
+    >
+      <AdminWorkspace
+        currentView={currentView}
+        setView={setView}
+        isSectionEditing={isSectionEditing}
+        setIsSectionEditing={setIsSectionEditing}
+        adminSession={adminSession}
+        handleLogout={handleLogout}
+      />
+    </TeamPermissionsProvider>
+  );
+}
+
+function AdminWorkspace({
+  currentView,
+  setView,
+  isSectionEditing,
+  setIsSectionEditing,
+  adminSession,
+  handleLogout,
+}: {
+  currentView: string;
+  setView: (view: string) => void;
+  isSectionEditing: boolean;
+  setIsSectionEditing: (val: boolean) => void;
+  adminSession: any;
+  handleLogout: () => void;
+}) {
+  const {
+    loading: tpLoading,
+    effectivePermissions,
+    canOpenSection,
+    canEditSection,
+    getFirstOpenSection,
+    hasUnsavedRoleChanges,
+    saveRoleDraft,
+    refuseViewOnlySave,
+    toast: panelToast,
+    dismissPanelToast,
+  } = useTeamPermissions();
+
+  // Spec 9.1: When the panel opens on a section the role cannot open, move to first open section
+  const initialRedirectDoneRef = React.useRef(false);
+  useEffect(() => {
+    if (tpLoading || initialRedirectDoneRef.current) return;
+    initialRedirectDoneRef.current = true;
+    const gov = resolveViewPermissionSection(currentView);
+    const allowed =
+      gov === 'roles_permissions'
+        ? effectivePermissions.isFounder
+        : canOpenSection(gov);
+    if (!allowed) {
+      setView(getFirstOpenSection());
+    }
+  }, [tpLoading, currentView, effectivePermissions.isFounder, canOpenSection, getFirstOpenSection]);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [enquiryNavIntent, setEnquiryNavIntent] = useState<{
     enquiryId?: string;
     addPieceId?: string;
   } | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const [adminSession, setAdminSession] = useState<any>(() => authApi.getSession());
   const [messagingActiveTab, setMessagingActiveTab] = useState('messages');
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>(mockMessages);
@@ -1027,6 +1128,17 @@ export default function App() {
       );
     }
 
+    if (currentView === 'roles_permissions') {
+      return (
+        <TeamPermissionsView
+          onNavigateView={(view, intent) => {
+            if (intent?.enquiryId) setEnquiryNavIntent({ enquiryId: intent.enquiryId });
+            setView(view);
+          }}
+        />
+      );
+    }
+
     if (currentView === 'pages' || currentView === 'platform_legal') {
       return (
         <PagesModule
@@ -1045,8 +1157,30 @@ export default function App() {
     );
   };
 
-  const handleLogout = () => { authApi.logoutAdmin(); setAdminSession(null); toast.success('Logged out successfully!'); };
-  if (!adminSession) return <AdminAuth onLogin={(session) => { setAdminSession(session); toast.success('Logged in successfully!'); }} />;
+  // Enforce Not Part of Your Role for hidden sections (Spec 9.2)
+  const renderProtectedContent = () => {
+    const govSection = resolveViewPermissionSection(currentView);
+    if (govSection === 'roles_permissions') {
+      if (!effectivePermissions.isFounder) {
+        return (
+          <NotPartOfRoleView
+            sectionId="roles_permissions"
+            onGoToFirstOpen={() => setView(getFirstOpenSection())}
+          />
+        );
+      }
+      return renderContent();
+    }
+    if (!canOpenSection(govSection)) {
+      return (
+        <NotPartOfRoleView
+          sectionId={govSection}
+          onGoToFirstOpen={() => setView(getFirstOpenSection())}
+        />
+      );
+    }
+    return renderContent();
+  };
 
   const pendingOffersBadge = offers.filter((o) => o.status === 'Pending').length;
   const openEnquiriesBadge = enquiries.filter((e) => {
@@ -1111,6 +1245,7 @@ export default function App() {
     reports: 'Reports & Analytics',
     promotions: 'Promotions',
     messaging: 'Messaging',
+    roles_permissions: 'Team & Permissions',
   };
 
   return (
@@ -1227,21 +1362,40 @@ export default function App() {
                 <span>View Live Site</span>
               </button>
 
-              <button
-                onClick={() => setView('notifications')}
-                className="relative inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E5DDD3] bg-white px-3.5 text-[12px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition cursor-pointer shadow-2xs"
-              >
-                <Bell className="h-3.5 w-3.5 text-[#6F675D]" />
-                <span>Notifications</span>
-                {totalNotifBadge > 0 && (
-                  <span className="ml-0.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#bf5b32] px-1 text-[10px] font-bold text-white">
-                    {totalNotifBadge}
-                  </span>
-                )}
-              </button>
+              {canOpenSection('notifications') && (
+                <button
+                  onClick={() => setView('notifications')}
+                  className="relative inline-flex h-8 items-center gap-1.5 rounded-md border border-[#E5DDD3] bg-white px-3.5 text-[12px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition cursor-pointer shadow-2xs"
+                >
+                  <Bell className="h-3.5 w-3.5 text-[#6F675D]" />
+                  <span>Notifications</span>
+                  {totalNotifBadge > 0 && (
+                    <span className="ml-0.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#bf5b32] px-1 text-[10px] font-bold text-white">
+                      {totalNotifBadge}
+                    </span>
+                  )}
+                </button>
+              )}
 
               <button
                 onClick={() => {
+                  const govSection = resolveViewPermissionSection(currentView);
+                  if (currentView === 'roles_permissions') {
+                    if (hasUnsavedRoleChanges) {
+                      saveRoleDraft();
+                    } else {
+                      toast.success("All changes are up to date!");
+                    }
+                    return;
+                  }
+                  if (
+                    govSection !== 'dashboard' &&
+                    govSection !== 'reports' &&
+                    !canEditSection(govSection)
+                  ) {
+                    refuseViewOnlySave(govSection);
+                    return;
+                  }
                   const saveBtn = document.querySelector(".btn-gold, .btn-save, button[type='submit']") as HTMLButtonElement | null;
                   if (saveBtn) {
                     saveBtn.click();
@@ -1257,6 +1411,9 @@ export default function App() {
           </header>
         )}
 
+        {/* Preview Bar (Spec 8) */}
+        <PreviewBar />
+
         {/* Content Box */}
         <main className="flex-1 overflow-y-auto bg-[#F8F6F2]">
       <div className={`w-full ${
@@ -1265,14 +1422,18 @@ export default function App() {
   currentView === 'pages' ||
   currentView === 'pages_editor' ||
   currentView === 'dispatch' ||
+  currentView === 'roles_permissions' ||
   isSectionEditing
     ? 'p-0'
     : 'p-4 sm:p-6'
 }`}>
-            {renderContent()}
+            <ViewOnlyGuard currentView={currentView}>
+              {renderProtectedContent()}
+            </ViewOnlyGuard>
           </div>
         </main>
       </div>
+      <TpToastContainer toast={panelToast} onDismiss={dismissPanelToast} />
     </div>
   );
 }

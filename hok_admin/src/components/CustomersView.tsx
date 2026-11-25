@@ -28,6 +28,7 @@ import * as customerApi from "../services/customerApi";
 import * as orderApi from "../services/orderApi";
 import * as offerApi from "../services/offerApi";
 import toast from "react-hot-toast";
+import { useTeamPermissions } from "./TeamPermissions";
 
 const parseOrderAmount = (val: any) => {
   if (typeof val === "number") return isNaN(val) ? 0 : val;
@@ -88,6 +89,7 @@ export default function CustomersView({
   onEditingChange,
   initialCustomerId,
 }: CustomersViewProps) {
+  const { hasDecision, refuseDecision } = useTeamPermissions();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
@@ -2770,7 +2772,16 @@ export default function CustomersView({
           >
             + Add Customer
           </button>
-          <button className="border border-stone-300 px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-50 cursor-pointer">
+          <button
+            type="button"
+            onClick={() => {
+              if (!hasDecision("download_lists")) {
+                refuseDecision("download_lists");
+                return;
+              }
+            }}
+            className="border border-stone-300 px-4 py-2 rounded-md text-sm font-medium hover:bg-stone-50 cursor-pointer"
+          >
             Export CSV
           </button>
         </div>

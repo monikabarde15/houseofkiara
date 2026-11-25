@@ -1,13 +1,36 @@
 import express from "express";
 import { pool } from "../config/db.js";
-import { requireAdminAuth } from "../middleware/authMiddleware.js";
+import {
+  requireAdminAuth,
+  requireSectionAccess,
+  requireDecision,
+} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Middleware to verify admin authentication
+// Middleware to verify admin authentication & settings access
 const protectAdmin = async (req, res, next) => {
   if (req.headers.authorization) {
-    return requireAdminAuth(req, res, next);
+    return requireAdminAuth(req, res, () =>
+      requireSectionAccess("settings", "Edit")(req, res, next),
+    );
+  }
+  if (process.env.NODE_ENV === "production") {
+    return res.status(401).json({
+      success: false,
+      message: "Authorization token required (Bearer format).",
+    });
+  }
+  next();
+};
+
+const protectSiteWide = async (req, res, next) => {
+  if (req.headers.authorization) {
+    return requireAdminAuth(req, res, () =>
+      requireSectionAccess("settings", "Edit")(req, res, () =>
+        requireDecision("change_site_wide_settings")(req, res, next),
+      ),
+    );
   }
   if (process.env.NODE_ENV === "production") {
     return res.status(401).json({
@@ -1410,7 +1433,7 @@ router.get("/brand", async (req, res) => {
  * PUT /api/site-settings/brand
  * Admin endpoint: update brand configuration
  */
-router.put("/brand", protectAdmin, async (req, res) => {
+router.put("/brand", protectSiteWide, async (req, res) => {
   try {
     const body = req.body || {};
     const inputBrand = body.brand || body;
@@ -1716,7 +1739,7 @@ router.get("/google", async (req, res) => {
  * PUT /api/site-settings/google
  * Admin endpoint: update Google & sharing configuration
  */
-router.put("/google", protectAdmin, async (req, res) => {
+router.put("/google", protectSiteWide, async (req, res) => {
   try {
     const body = req.body || {};
     const inputGoogle = body.google || body;
@@ -1955,7 +1978,7 @@ router.get("/legal", async (req, res) => {
  * PUT /api/site-settings/legal
  * Admin endpoint: update legal & consent configuration
  */
-router.put("/legal", protectAdmin, async (req, res) => {
+router.put("/legal", protectSiteWide, async (req, res) => {
   try {
     const body = req.body || {};
     const inputLegal = body.legal || body;
@@ -2099,7 +2122,7 @@ router.get("/regional", async (req, res) => {
  * PUT /api/site-settings/regional
  * Admin endpoint: update regional configuration
  */
-router.put("/regional", protectAdmin, async (req, res) => {
+router.put("/regional", protectSiteWide, async (req, res) => {
   try {
     const body = req.body || {};
     const inputRegional = body.regional || body;
@@ -2211,7 +2234,7 @@ router.get("/maintenance", async (req, res) => {
  * PUT /api/site-settings/maintenance
  * Admin endpoint: update maintenance mode and 404 settings
  */
-router.put("/maintenance", protectAdmin, async (req, res) => {
+router.put("/maintenance", protectSiteWide, async (req, res) => {
   try {
     const body = req.body || {};
     const inputData = body.maintenance && body.notFoundPage ? body : body.maintenance || body;

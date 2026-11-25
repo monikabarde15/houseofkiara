@@ -18,6 +18,7 @@ import { RejectPanel } from "./RejectPanel";
 import { WithdrawRow } from "./WithdrawRow";
 import { ExpireConfirmModal } from "./ExpireConfirmModal";
 import { getSubmissionStatus } from "../utils/derived";
+import { useTeamPermissions } from "../../TeamPermissions";
 import "./styles/SubmissionRecord.css";
 
 interface SubmissionRecordProps {
@@ -43,6 +44,8 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
   currentIndex,
   totalCount,
 }) => {
+  const { hasDecision, refuseDecision, getSignedByLabel } =
+    useTeamPermissions();
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const [showReject, setShowReject] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
@@ -121,13 +124,17 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
               <ActionsRow
                 submission={submission}
                 onApprove={async () => {
+                  if (!hasDecision("decide_lyp_submission")) {
+                    refuseDecision("decide_lyp_submission");
+                    return;
+                  }
                   try {
                     const { submissionService } =
                       await import("../services/submissionService");
                     const { toast } = await import("react-hot-toast");
                     await submissionService.approveSubmission(
                       submission.subid,
-                      "Admin",
+                      getSignedByLabel(),
                     );
                     toast.success("Submission approved successfully!");
                     handleActionSuccess();
@@ -137,7 +144,13 @@ export const SubmissionRecord: React.FC<SubmissionRecordProps> = ({
                   }
                 }}
                 onMoreInfo={() => setShowMoreInfo(!showMoreInfo)}
-                onReject={() => setShowReject(!showReject)}
+                onReject={() => {
+                  if (!hasDecision("decide_lyp_submission")) {
+                    refuseDecision("decide_lyp_submission");
+                    return;
+                  }
+                  setShowReject(!showReject);
+                }}
                 onWithdraw={() => setShowWithdraw(!showWithdraw)}
                 onExpire={() => setShowExpire(true)}
               />

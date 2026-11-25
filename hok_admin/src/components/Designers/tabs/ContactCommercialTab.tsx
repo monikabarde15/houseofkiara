@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./tabs.css";
+import { useTeamPermissions } from "../../TeamPermissions";
 import { Designer } from "../types/designer.types";
 
 export type PaymentTerms =
@@ -85,7 +86,9 @@ const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
   const [contactPhone, setContactPhone] = useState(initialData.contactPhone);
   const [internalNotes, setInternalNotes] = useState(initialData.internalNotes);
 
-  const fieldsLocked = !isSuperAdmin;
+  const { hasDecision, refuseDecision } = useTeamPermissions();
+  const canSetPrices = hasDecision("set_or_change_prices");
+  const fieldsLocked = !isSuperAdmin || !canSetPrices;
 
   const notifyChange = (fieldUpdates: any) => {
     onChange?.({
@@ -129,6 +132,10 @@ const ContactCommercialTab: React.FC<ContactCommercialTabProps> = ({
           <span
             className={`toggle ${isBuyNewPartner ? "on" : ""}`}
             onClick={() => {
+              if (!canSetPrices) {
+                refuseDecision("set_or_change_prices");
+                return;
+              }
               if (fieldsLocked) return;
               const val = !isBuyNewPartner;
               setIsBuyNewPartner(val);

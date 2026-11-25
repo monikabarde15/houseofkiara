@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { Lock } from "lucide-react";
 import { Payout } from "../../../services/payoutApi";
 import * as payoutApi from "../../../services/payoutApi";
 import { Order, Product } from "../../../types";
 import toast from "react-hot-toast";
+import { useTeamPermissions } from "../../TeamPermissions";
 
 const WhatsAppIcon = ({ onClick }: { onClick?: () => void }) => (
   <button
@@ -59,19 +61,23 @@ export default function PaymentQueueTab({
     [payouts],
   );
 
-  const [assignees, setAssignees] = useState<string[]>(["Priya (Ops)"]);
-
-  useEffect(() => {
-    payoutApi
-      .getAdmins()
-      .then((admins) => {
-        const uniqueNames = Array.from(
-          new Set(admins.map((a) => a.name).filter(Boolean)),
-        );
-        if (uniqueNames.length > 0) setAssignees(uniqueNames);
-      })
-      .catch(() => {});
-  }, []);
+  const { hasDecision, refuseDecision, getTeamNamesFor } = useTeamPermissions();
+  const canApprovePayout = hasDecision("approve_pay_lister_payouts");
+  const approverList = useMemo(
+    () =>
+      getTeamNamesFor({
+        kind: "decision",
+        decisionId: "approve_pay_lister_payouts",
+      }),
+    [getTeamNamesFor],
+  );
+  const assignees = useMemo(
+    () =>
+      approverList.length > 0
+        ? approverList.map((a) => a.value)
+        : ["Soumya"],
+    [approverList],
+  );
 
   // Compute chronological rental index per product across all rental payouts
   const rentalNumberById = useMemo(() => {
@@ -158,6 +164,10 @@ export default function PaymentQueueTab({
     reason: string,
     hokCommOverride?: number,
   ) => {
+    if (!canApprovePayout) {
+      refuseDecision("approve_pay_lister_payouts");
+      return;
+    }
     if (!setPayouts || !setPending || !setPaid) return;
     try {
       const parsedAmt = Number(String(amtStr).replace(/,/g, "")) || 0;
@@ -236,6 +246,8 @@ export default function PaymentQueueTab({
               }
               onSelectOrder={onSelectOrder}
               onSelectLister={onSelectLister}
+              canApprovePayout={canApprovePayout}
+              onRefuseApprove={() => refuseDecision("approve_pay_lister_payouts")}
             />
           );
         }
@@ -248,6 +260,8 @@ export default function PaymentQueueTab({
             rentalNumber={rentalNumberById[payout.id] || 1}
             matchedOrder={matchedOrder}
             matchedProduct={matchedProduct}
+            canApprovePayout={canApprovePayout}
+            onRefuseApprove={() => refuseDecision("approve_pay_lister_payouts")}
             assignees={assignees}
             onHold={handleHold}
             onApprove={handleApprove}
@@ -275,6 +289,8 @@ function StandardQueueCard({
   onWhatsApp,
   onSelectOrder,
   onSelectLister,
+  canApprovePayout = true,
+  onRefuseApprove,
 }: {
   payout: Payout;
   allPayouts: Payout[];
@@ -299,6 +315,8 @@ function StandardQueueCard({
   onWhatsApp: () => void;
   onSelectOrder?: (orderId: string) => void;
   onSelectLister?: (listerId: string) => void;
+  canApprovePayout?: boolean;
+  onRefuseApprove?: () => void;
 }) {
   const modeLower = String(payout.mode || "Rental").toLowerCase();
   const isPreloved = modeLower.includes("preloved") || modeLower.includes("buy") || modeLower.includes("sale");
@@ -608,9 +626,18 @@ function StandardQueueCard({
         </button>
         <button
           type="button"
-          onClick={() => onApprove(payout, amt, pct, approvedBy, reason)}
-          className="rounded-md bg-[#C39A38] px-4 py-1.5 text-sm font-semibold text-[#1E1412] shadow-sm transition-colors hover:bg-[#B38A28] cursor-pointer"
+          onClick={() => {
+            if (!canApprovePayout) {
+              onRefuseApprove?.();
+              return;
+            }
+            onApprove(payout, amt, pct, approvedBy, reason);
+          }}
+          className={`inline-flex items-center gap-1.5 rounded-md bg-[#C39A38] px-4 py-1.5 text-sm font-semibold text-[#1E1412] shadow-sm transition-colors hover:bg-[#B38A28] cursor-pointer ${
+            !canApprovePayout ? "tp-locked-btn" : ""
+          }`}
         >
+          {!canApprovePayout && <Lock className="h-3.5 w-3.5" />}
           Approve Payout
         </button>
       </div>
@@ -627,6 +654,8 @@ function DamageQueueCard({
   onWhatsApp,
   onSelectOrder,
   onSelectLister,
+  canApprovePayout = true,
+  onRefuseApprove,
 }: {
   payout: Payout;
   allPayouts: Payout[];
@@ -638,11 +667,13 @@ function DamageQueueCard({
     pct: string,
     approvedBy: string,
     reason: string,
-    hokCommOverride?: number,
+    hokRetainsOverride?: number,
   ) => void;
   onWhatsApp: () => void;
   onSelectOrder?: (orderId: string) => void;
   onSelectLister?: (listerId: string) => void;
+  canApprovePayout?: boolean;
+  onRefuseApprove?: () => void;
 }) {
   // Find companion rental payout for same order if present
   const companionRental = allPayouts.find(
@@ -937,11 +968,18 @@ function DamageQueueCard({
       <div className="flex justify-end border-t border-[#E7E0D6] bg-[#FAF8F5] px-6 py-3.5">
         <button
           type="button"
-          onClick={() =>
-            onApprove(payout, compAmt, compPct, approvedBy, reason, hokRetains)
-          }
-          className="rounded-md bg-[#C39A38] px-4 py-1.5 text-sm font-semibold text-[#1E1412] shadow-sm transition-colors hover:bg-[#B38A28] cursor-pointer"
+          onClick={() => {
+            if (!canApprovePayout) {
+              onRefuseApprove?.();
+              return;
+            }
+            onApprove(payout, compAmt, compPct, approvedBy, reason, hokRetains);
+          }}
+          className={`inline-flex items-center gap-1.5 rounded-md bg-[#C39A38] px-4 py-1.5 text-sm font-semibold text-[#1E1412] shadow-sm transition-colors hover:bg-[#B38A28] cursor-pointer ${
+            !canApprovePayout ? "tp-locked-btn" : ""
+          }`}
         >
+          {!canApprovePayout && <Lock className="h-3.5 w-3.5" />}
           Approve Compensation Payout
         </button>
       </div>

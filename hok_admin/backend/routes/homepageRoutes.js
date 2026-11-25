@@ -22,14 +22,19 @@ import {
   updateInstagramSection,
   updateHomepage,
 } from "../controllers/homepageController.js";
-import { requireAdminAuth } from "../middleware/authMiddleware.js";
+import {
+  requireAdminAuth,
+  requireSectionAccess,
+} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Middleware to verify admin authentication
+// Middleware to verify admin authentication and homepage edit access
 const protectAdmin = async (req, res, next) => {
   if (req.headers.authorization) {
-    return requireAdminAuth(req, res, next);
+    return requireAdminAuth(req, res, () =>
+      requireSectionAccess("homepage", "Edit")(req, res, next),
+    );
   }
   if (process.env.NODE_ENV === "production") {
     return res.status(401).json({

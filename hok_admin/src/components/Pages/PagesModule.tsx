@@ -20,6 +20,7 @@ import { PagesEditorTab } from './components/PagesEditorTab';
 import { ReviewPublishDrawer } from './components/ReviewPublishDrawer';
 import { ViewOnlyBanner } from './components/ViewOnlyBanner';
 import { OtherSectionsPointersModal } from './components/OtherSectionsPointersModal';
+import { useTeamPermissions } from '../TeamPermissions';
 
 interface PagesModuleProps {
   onBackToDashboard?: () => void;
@@ -79,9 +80,31 @@ export const PagesModule: React.FC<PagesModuleProps> = ({
     };
   }, []);
 
-  const [userRole, setUserRole] = useState<'Super Admin' | 'Operations Manager' | 'Content Manager' | 'Viewer'>('Super Admin');
+  const {
+    canEditSection,
+    hasDecision,
+    refuseDecision,
+    refuseViewOnlySave,
+    effectivePermissions,
+  } = useTeamPermissions();
+  const mappedPagesRole: 'Super Admin' | 'Operations Manager' | 'Content Manager' | 'Viewer' =
+    effectivePermissions.isFounder
+      ? 'Super Admin'
+      : !canEditSection('pages')
+        ? 'Viewer'
+        : hasDecision('publish_to_website')
+          ? 'Content Manager'
+          : 'Operations Manager';
+  const [userRole, setUserRole] = useState<'Super Admin' | 'Operations Manager' | 'Content Manager' | 'Viewer'>(mappedPagesRole);
+  React.useEffect(() => {
+    setUserRole(mappedPagesRole);
+  }, [mappedPagesRole]);
   const accessLevel: 'Full Access' | 'Edit' | 'View Only' =
-    userRole === 'Viewer' ? 'View Only' : userRole === 'Operations Manager' ? 'Edit' : 'Full Access';
+    userRole === 'Viewer'
+      ? 'View Only'
+      : userRole === 'Operations Manager'
+        ? 'Edit'
+        : 'Full Access';
 
   const [pendingChanges, setPendingChanges] = useState<Array<{
     id: string;
@@ -100,6 +123,14 @@ export const PagesModule: React.FC<PagesModuleProps> = ({
   ]);
 
   const handleConfirmPublish = async () => {
+    if (!canEditSection('pages')) {
+      refuseViewOnlySave('pages');
+      return;
+    }
+    if (!hasDecision('publish_to_website')) {
+      refuseDecision('publish_to_website');
+      return;
+    }
     try {
       await publishAllChanges(userRole);
     } catch (err) {

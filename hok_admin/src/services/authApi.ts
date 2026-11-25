@@ -1,14 +1,49 @@
 import { apiRequest } from "./apiClient";
+import { EffectivePermissions } from "../components/TeamPermissions/types";
 
 export interface AdminSession {
   token: string;
   admin: {
     name: string;
     email: string;
+    personId?: string | null;
+    shownOnRecordsAs?: string;
+    roleId?: string;
+    roleName?: string;
+    isFounder?: boolean;
+    permissions?: EffectivePermissions;
   };
 }
 
+export const getMe = async () => (await apiRequest("/auth/me")).data;
+
 export const authStatus = async () => (await apiRequest("/auth/status")).data;
+
+export interface InviteInfo {
+  fullName: string;
+  workEmail: string;
+  shownOnRecordsAs: string;
+  roleId: string;
+}
+
+export const getInviteInfo = async (token: string): Promise<InviteInfo> =>
+  (
+    await apiRequest<InviteInfo>(
+      `/auth/invite-info?token=${encodeURIComponent(token)}`,
+    )
+  ).data;
+
+export const acceptInvite = async (payload: {
+  token: string;
+  password: string;
+}): Promise<AdminSession> => {
+  const body = await apiRequest<AdminSession>("/auth/accept-invite", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  localStorage.setItem("hok_admin_session", JSON.stringify(body.data));
+  return body.data;
+};
 
 export const registerAdmin = async (payload: {
   name: string;

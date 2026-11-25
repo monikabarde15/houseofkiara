@@ -21,6 +21,7 @@ import { MaintenanceRegion } from './EditorPane/MaintenanceRegion/MaintenanceReg
 import { PreviewPane } from './PreviewPane/PreviewPane';
 import { SiteSettingsRegistry, RegionId, UserRole } from './types/siteSettings.types';
 import { initialSiteSettingsRegistry } from './data/seedRegistry';
+import { useTeamPermissions } from '../TeamPermissions';
 
 interface SiteSettingsProps {
   initialData?: any;
@@ -147,8 +148,33 @@ export const SiteSettings: React.FC<SiteSettingsProps> = ({
     }, 100);
   };
 
-  // Publish action (Spec 6.3)
+  const {
+    canEditSection,
+    hasDecision,
+    refuseDecision,
+    refuseViewOnlySave,
+    effectivePermissions,
+  } = useTeamPermissions();
+  const canEditSettings = canEditSection('settings');
+  const canPublishWebsite = hasDecision('publish_to_website');
+  const canChangeSiteWide = hasDecision('change_site_wide_settings');
+  const isSiteWideRegion = ['brand', 'contact', 'google', 'legal', 'regional', 'maintenance'].includes(activeRegion);
+  const regionReadOnly = !canEditSettings || (isSiteWideRegion && !canChangeSiteWide);
+
+  // Publish action (Spec 6.3 + RBAC 9.4 & 9.10)
   const handlePublish = async () => {
+    if (!canEditSettings) {
+      refuseViewOnlySave('settings');
+      return;
+    }
+    if (!canPublishWebsite) {
+      refuseDecision('publish_to_website');
+      return;
+    }
+    if (isSiteWideRegion && !canChangeSiteWide) {
+      refuseDecision('change_site_wide_settings');
+      return;
+    }
     try {
       const api = await import('../../services/siteSettingsApi');
       await api.updateSiteSettings(registry);
@@ -261,7 +287,30 @@ export const SiteSettings: React.FC<SiteSettingsProps> = ({
           </div>
 
           {/* Column 2: Editor Pane (Remaining space minmax(0, 1fr), scrolls) */}
-          <div className="hok-editor-col" id="hok-editor-pane">
+          <div
+            className="hok-editor-col"
+            id="hok-editor-pane"
+            data-tp-view-only={regionReadOnly ? 'true' : undefined}
+            onClickCapture={(e) => {
+              if (!regionReadOnly) return;
+              const target = e.target as HTMLElement | null;
+              if (target?.closest('button, input, select, textarea')) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!canEditSettings) refuseViewOnlySave('settings');
+                else refuseDecision('change_site_wide_settings');
+              }
+            }}
+          >
+            {regionReadOnly && (
+              <div className="tp-view-only-banner mb-4">
+                <span>
+                  {!canEditSettings
+                    ? `View only. Your role (${effectivePermissions.roleName}) can view Site Settings but not change it.`
+                    : `Read-only group. Your role (${effectivePermissions.roleName}) does not hold “Change site-wide settings”.`}
+                </span>
+              </div>
+            )}
             {activeRegion === 'announcement' && (
               <AnnouncementRegion
                 settings={registry.announcement}

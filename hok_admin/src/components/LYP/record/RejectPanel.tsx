@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Submission } from "../types/submission.types";
 import { REJECT_REASON_CODES } from "../utils/constants";
 import { getFirstName } from "../utils/formatter";
+import { useTeamPermissions } from "../../TeamPermissions";
 import "./styles/RejectPanel.css";
 
 interface RejectPanelProps {
@@ -17,6 +18,8 @@ export const RejectPanel: React.FC<RejectPanelProps> = ({
   onSuccess,
   onCancel,
 }) => {
+  const { hasDecision, refuseDecision, getSignedByLabel } =
+    useTeamPermissions();
   const [reasonCode, setReasonCode] = useState<string>("");
   const [optionalNote, setOptionalNote] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,6 +33,10 @@ export const RejectPanel: React.FC<RejectPanelProps> = ({
   };
 
   const handleConfirm = async () => {
+    if (!hasDecision("decide_lyp_submission")) {
+      refuseDecision("decide_lyp_submission");
+      return;
+    }
     if (!reasonCode) return;
     setLoading(true);
 
@@ -39,7 +46,7 @@ export const RejectPanel: React.FC<RejectPanelProps> = ({
       const { toast } = await import("react-hot-toast");
       await submissionService.rejectSubmission(
         submission.subid,
-        "Admin",
+        getSignedByLabel(),
         reasonCode,
         optionalNote,
       );

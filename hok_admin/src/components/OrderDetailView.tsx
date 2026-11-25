@@ -20,6 +20,7 @@ import * as orderApi from "../services/orderApi";
 import { uploadFile } from "../services/uploadApi";
 import { sendMockMessage } from "../services/messageApi";
 import toast from "react-hot-toast";
+import { useTeamPermissions } from "./TeamPermissions";
 
 interface OrderDetailViewProps {
   orderId?: string;
@@ -56,6 +57,7 @@ export default function OrderDetailView({
   onUpdateOrder,
   onNavigateDispatch,
 }: OrderDetailViewProps) {
+  const { hasDecision, refuseDecision, getTeamNamesFor } = useTeamPermissions();
   const [order, setOrder] = useState<Order | null>(initialOrder || null);
   const [loading, setLoading] = useState(!initialOrder && !!orderId);
   const [error, setError] = useState<string | null>(null);
@@ -159,6 +161,10 @@ export default function OrderDetailView({
   const [receivedBy, setReceivedBy] = useState(
     order?.conditionAssessment?.receivedBy || "Soumya",
   );
+  const receivedByOptions = getTeamNamesFor(
+    { kind: "section", sectionId: "returns" },
+    receivedBy || undefined,
+  );
   const [receivedDate, setReceivedDate] = useState(
     order?.conditionAssessment?.receivedDate || "",
   );
@@ -241,6 +247,30 @@ export default function OrderDetailView({
       (effectiveDepStatus !== "Pending" && status === "Returned"
         ? "Complete"
         : status);
+    if (
+      finalStatus === "Cancelled" &&
+      String(order.status || "") !== "Cancelled" &&
+      !hasDecision("cancel_paid_order")
+    ) {
+      refuseDecision("cancel_paid_order");
+      return;
+    }
+    if (
+      effectiveDepStatus === "Released" &&
+      String(order.depositDecision?.status || "Pending") !== "Released" &&
+      !hasDecision("refund_deposit_in_full")
+    ) {
+      refuseDecision("refund_deposit_in_full");
+      return;
+    }
+    if (
+      (effectiveDepStatus === "Partial" || effectiveDepStatus === "Forfeited") &&
+      String(order.depositDecision?.status || "Pending") !== effectiveDepStatus &&
+      !hasDecision("decide_deductions_late_fees_waivers")
+    ) {
+      refuseDecision("decide_deductions_late_fees_waivers");
+      return;
+    }
     if (overrideStatus || finalStatus !== status) setStatus(finalStatus as any);
     if (effectiveDepStatus !== depositStatus) setDepositStatus(effectiveDepStatus);
 
@@ -1164,13 +1194,22 @@ export default function OrderDetailView({
                   <label className="text-stone-500 font-medium">
                     Inspection Conducted By
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={receivedBy}
                     onChange={(e) => setReceivedBy(e.target.value)}
-                    placeholder="E.g. Soumya..."
                     className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                  />
+                  >
+                    <option value="">Select team member...</option>
+                    {receivedByOptions.map((opt) => (
+                      <option
+                        key={opt.value}
+                        value={opt.value}
+                        disabled={Boolean(opt.isHistorical)}
+                      >
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="space-y-1">
                   <label className="text-stone-500 font-medium">

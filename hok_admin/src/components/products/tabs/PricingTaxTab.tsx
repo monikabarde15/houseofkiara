@@ -1,7 +1,9 @@
 // src/components/products/tabs/PricingTaxTab.tsx
 
 import React from "react";
+import { Lock } from "lucide-react";
 import { Product } from "../../types/product";
+import { useTeamPermissions } from "../../TeamPermissions";
 
 interface PricingTaxTabProps {
   formData: Partial<Product>;
@@ -26,6 +28,10 @@ export function PricingTaxTab({
   isSaving = false,
   onNavigateToCore,
 }: PricingTaxTabProps) {
+  const { hasDecision } = useTeamPermissions();
+  const canSetPrices = hasDecision("set_or_change_prices");
+  const canSetShare = hasDecision("set_lister_share");
+
   const data = formData as Record<string, any>;
   const set = (field: string, value: any) =>
     (onFieldChange as any)(field, value);
@@ -82,12 +88,20 @@ export function PricingTaxTab({
   const baseInputClass =
     "block w-full p-2 rounded text-xs mt-1 focus:outline-none focus:ring-1 border";
   const inputClass = `${baseInputClass} bg-[#fcf9f5] border-stone-200 focus:ring-stone-400`;
-  const getInputClass = (field: string, extra = "") =>
+  const getInputClass = (field: string, extra = "", locked = false) =>
     `${baseInputClass} ${
-      errors[field]
-        ? "bg-red-50/40 border-red-400 focus:ring-red-300"
-        : "bg-[#fcf9f5] border-stone-200 focus:ring-stone-400"
+      locked
+        ? "tp-locked-field border-stone-200"
+        : errors[field]
+          ? "bg-red-50/40 border-red-400 focus:ring-red-300"
+          : "bg-[#fcf9f5] border-stone-200 focus:ring-stone-400"
     } ${extra}`.trim();
+  const LockedNotice = ({ text }: { text: string }) => (
+    <p className="mt-1 flex items-center gap-1 text-[11px] text-[#5C5248]">
+      <Lock className="h-3 w-3 text-[#6E6358] shrink-0" />
+      <span>{text}</span>
+    </p>
+  );
   const renderError = (field: string) =>
     errors[field] ? (
       <p className="text-[11px] text-red-600 mt-1">{errors[field]}</p>
@@ -241,20 +255,26 @@ export function PricingTaxTab({
               min="0"
               placeholder="Enter 4-day rental price (₹)"
               value={numVal(formData.rentalPrice)}
-              onChange={(e) =>
+              readOnly={!canSetPrices}
+              onChange={(e) => {
+                if (!canSetPrices) return;
                 onFieldChange(
                   "rentalPrice",
                   parseNumericInput(e.target.value),
-                )
-              }
-              className={getInputClass("rentalPrice")}
+                );
+              }}
+              className={getInputClass("rentalPrice", "", !canSetPrices)}
             />
             {renderError("rentalPrice")}
+            {!canSetPrices && (
+              <LockedNotice text="Not your role’s decision: set or change prices." />
+            )}
             <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
               <p className="text-[11px] text-stone-400">
                 Auto-calculated as 4 × Per-Day Rate (editable).
               </p>
-              {autoFourDayPrice !== null &&
+              {canSetPrices &&
+                autoFourDayPrice !== null &&
                 Number(formData.rentalPrice) !== autoFourDayPrice && (
                   <button
                     type="button"
@@ -275,17 +295,20 @@ export function PricingTaxTab({
               min="0"
               placeholder="Optional 7-day rental price (₹)"
               value={numVal(data.extendedWindowPrice)}
-              onChange={(e) =>
-                set("extendedWindowPrice", parseNumericInput(e.target.value))
-              }
-              className={getInputClass("extendedWindowPrice")}
+              readOnly={!canSetPrices}
+              onChange={(e) => {
+                if (!canSetPrices) return;
+                set("extendedWindowPrice", parseNumericInput(e.target.value));
+              }}
+              className={getInputClass("extendedWindowPrice", "", !canSetPrices)}
             />
             {renderError("extendedWindowPrice")}
             <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
               <p className="text-[11px] text-stone-400">
                 Auto-calculated as 7 × Per-Day Rate (editable).
               </p>
-              {autoSevenDayPrice !== null &&
+              {canSetPrices &&
+                autoSevenDayPrice !== null &&
                 Number(data.extendedWindowPrice) !== autoSevenDayPrice && (
                   <button
                     type="button"
@@ -312,8 +335,12 @@ export function PricingTaxTab({
               min="0"
               placeholder="Enter per-day rate (₹)"
               value={numVal(data.perDayRate)}
-              onChange={(e) => handlePerDayRateChange(e.target.value)}
-              className={getInputClass("perDayRate")}
+              readOnly={!canSetPrices}
+              onChange={(e) => {
+                if (!canSetPrices) return;
+                handlePerDayRateChange(e.target.value);
+              }}
+              className={getInputClass("perDayRate", "", !canSetPrices)}
             />
             {renderError("perDayRate")}
             <p className={helpClass}>
@@ -354,13 +381,15 @@ export function PricingTaxTab({
             max="100"
             placeholder="0 - 100"
             value={numVal(formData.payoutPercentage)}
-            onChange={(e) =>
+            readOnly={!canSetShare}
+            onChange={(e) => {
+              if (!canSetShare) return;
               onFieldChange(
                 "payoutPercentage",
                 parseNumericInput(e.target.value),
-              )
-            }
-            className={getInputClass("payoutPercentage", "max-w-sm")}
+              );
+            }}
+            className={getInputClass("payoutPercentage", "max-w-sm", !canSetShare)}
           />
           {renderError("payoutPercentage")}
           <p className={helpClass}>
@@ -370,6 +399,9 @@ export function PricingTaxTab({
             customer — carry a lower %, reflecting HOK's effort to keep them
             booked.
           </p>
+          {!canSetShare && (
+            <LockedNotice text="Not your role’s decision: set a lister’s share." />
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -383,13 +415,15 @@ export function PricingTaxTab({
               min="0"
               placeholder="Enter security deposit (₹)"
               value={numVal(formData.securityDeposit)}
-              onChange={(e) =>
+              readOnly={!canSetPrices}
+              onChange={(e) => {
+                if (!canSetPrices) return;
                 onFieldChange(
                   "securityDeposit",
                   parseNumericInput(e.target.value),
-                )
-              }
-              className={getInputClass("securityDeposit")}
+                );
+              }}
+              className={getInputClass("securityDeposit", "", !canSetPrices)}
             />
             {renderError("securityDeposit")}
             <p className={helpClass}>
@@ -485,13 +519,15 @@ export function PricingTaxTab({
               min="0"
               placeholder="Enter listing price (₹)"
               value={numVal(formData.listingPrice)}
-              onChange={(e) =>
+              readOnly={!canSetPrices}
+              onChange={(e) => {
+                if (!canSetPrices) return;
                 onFieldChange(
                   "listingPrice",
                   parseNumericInput(e.target.value),
-                )
-              }
-              className={getInputClass("listingPrice")}
+                );
+              }}
+              className={getInputClass("listingPrice", "", !canSetPrices)}
             />
             {renderError("listingPrice")}
           </div>
@@ -502,10 +538,12 @@ export function PricingTaxTab({
               min="0"
               placeholder="Optional original MRP (₹)"
               value={numVal(data.originalRetailPrice)}
-              onChange={(e) =>
-                set("originalRetailPrice", parseNumericInput(e.target.value))
-              }
-              className={getInputClass("originalRetailPrice")}
+              readOnly={!canSetPrices}
+              onChange={(e) => {
+                if (!canSetPrices) return;
+                set("originalRetailPrice", parseNumericInput(e.target.value));
+              }}
+              className={getInputClass("originalRetailPrice", "", !canSetPrices)}
             />
             {renderError("originalRetailPrice")}
           </div>
@@ -544,15 +582,20 @@ export function PricingTaxTab({
                   max="100"
                   placeholder="0 - 100"
                   value={numVal(data.resalePayoutPercentage)}
-                  onChange={(e) =>
+                  readOnly={!canSetShare}
+                  onChange={(e) => {
+                    if (!canSetShare) return;
                     set(
                       "resalePayoutPercentage",
                       parseNumericInput(e.target.value),
-                    )
-                  }
-                  className={getInputClass("resalePayoutPercentage")}
+                    );
+                  }}
+                  className={getInputClass("resalePayoutPercentage", "", !canSetShare)}
                 />
                 {renderError("resalePayoutPercentage")}
+                {!canSetShare && (
+                  <LockedNotice text="Not your role’s decision: set a lister’s share." />
+                )}
                 <p className={helpClass}>
                   Per-product; drives the auto-calculated payout below.
                 </p>
@@ -570,10 +613,12 @@ export function PricingTaxTab({
                   min="0"
                   placeholder="₹ — overrides sitewide floor"
                   value={numVal(data.minimumOffer)}
-                  onChange={(e) =>
-                    set("minimumOffer", parseNumericInput(e.target.value))
-                  }
-                  className={getInputClass("minimumOffer")}
+                  readOnly={!canSetPrices}
+                  onChange={(e) => {
+                    if (!canSetPrices) return;
+                    set("minimumOffer", parseNumericInput(e.target.value));
+                  }}
+                  className={getInputClass("minimumOffer", "", !canSetPrices)}
                 />
                 {renderError("minimumOffer")}
                 <p className={helpClass}>
