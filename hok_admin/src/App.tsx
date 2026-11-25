@@ -470,11 +470,14 @@ export default function App() {
     }
   };
 
-  const handleAddProduct = async (newProd: Product) => {
+  const handleAddProduct = async (
+    newProd: Product,
+    options?: { successMessage?: string },
+  ) => {
     try {
       const created = await productApi.createProduct(newProd);
       setProducts((current) => [created, ...current]);
-      toast.success('Product created successfully!');
+      toast.success(options?.successMessage || 'Product created successfully!');
       return created;
     } catch (error) {
       console.error('Unable to create product:', error);
@@ -483,22 +486,32 @@ export default function App() {
     }
   };
 
-  const handleUpdateProduct = async (updated: Product) => {
+  const handlePatchProductInState = (saved: Product) => {
+    setProducts((current) =>
+      current.map((p) => {
+        const same =
+          (p.productId && saved.productId && p.productId === saved.productId) ||
+          (p.id && saved.id && p.id === saved.id) ||
+          ((p as any)._id &&
+            (saved as any)._id &&
+            String((p as any)._id) === String((saved as any)._id));
+        return same ? { ...p, ...saved } : p;
+      }),
+    );
+  };
+
+  const handleUpdateProduct = async (
+    updated: Product,
+    options?: { successMessage?: string; silent?: boolean },
+  ) => {
     try {
       const saved = await productApi.updateProduct(updated);
-      setProducts((current) =>
-        current.map((p) => {
-          const same =
-            (p.productId && saved.productId && p.productId === saved.productId) ||
-            (p.id && saved.id && p.id === saved.id) ||
-            (p.id && updated.id && p.id === updated.id) ||
-            ((p as any)._id &&
-              (saved as any)._id &&
-              String((p as any)._id) === String((saved as any)._id));
-          return same ? saved : p;
-        }),
-      );
-      toast.success('Product updated successfully!');
+      handlePatchProductInState(saved);
+      if (!options?.silent) {
+        toast.success(
+          options?.successMessage || 'Product updated successfully!',
+        );
+      }
       return saved;
     } catch (error) {
       console.error('Unable to update product:', error);
@@ -843,6 +856,7 @@ export default function App() {
           loading={productsLoading}
           onAddProduct={handleAddProduct}
           onUpdateProduct={handleUpdateProduct}
+          onProductPatched={handlePatchProductInState}
           listers={listers}
           onEditingChange={setIsSectionEditing}
           onViewOrder={(orderId) => setView(`order_detail:${orderId}`)}

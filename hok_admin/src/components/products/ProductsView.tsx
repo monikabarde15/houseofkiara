@@ -2,8 +2,14 @@ import React, { useState, useEffect } from "react";
 import { ArrowLeft, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { Product, Lister } from "../types/product";
 import * as productApi from "../../services/productApi";
+import * as productSectionsApi from "../../services/productSectionsApi";
 import { getDesigners } from "../../services/designerApi";
 import { getCategories } from "../../services/categoryApi";
+import {
+  collectProductIds,
+  getCanonicalProductId,
+  isLiveProductStatus,
+} from "./utils/relatedProductsHelpers";
 import { useProductEditor } from "../hooks/useProductEditor";
 import { ProductHeader } from "./ProductHeader";
 import { ProductFilters } from "./ProductFilters";
@@ -44,8 +50,15 @@ interface ProductsViewProps {
   enquiries?: any[];
   promoCodes?: any[];
   loading?: boolean;
-  onAddProduct: (newProduct: Product) => Promise<any> | any;
-  onUpdateProduct: (updatedProduct: Product) => Promise<any> | any;
+  onAddProduct: (
+    newProduct: Product,
+    options?: { successMessage?: string },
+  ) => Promise<any> | any;
+  onUpdateProduct: (
+    updatedProduct: Product,
+    options?: { successMessage?: string; silent?: boolean },
+  ) => Promise<any> | any;
+  onProductPatched?: (updatedProduct: Product) => void;
   listers: any[];
   onEditingChange?: (isEditing: boolean) => void;
   onViewOrder?: (orderId: string) => void;
@@ -99,6 +112,7 @@ export default function ProductsView({
   loading = false,
   onAddProduct,
   onUpdateProduct,
+  onProductPatched,
   listers,
   onEditingChange,
   onViewOrder,
@@ -347,7 +361,10 @@ export default function ProductsView({
           p.productId === state.editingProduct?.productId,
       );
       if (updatedInList) {
-        startEditing(updatedInList);
+        startEditing(updatedInList, {
+          preserveTab: true,
+          skipSectionReload: true,
+        });
       }
     }
   }, [products]);
@@ -501,7 +518,10 @@ export default function ProductsView({
     });
   };
 
-  const handleSave = async (): Promise<boolean> => {
+  const executeSave = async (options?: {
+    preserveTab?: boolean;
+    successMessage?: string;
+  }): Promise<boolean> => {
     if (isSaving || isFinalSaving) {
       console.log("⏳ Save already in progress...");
       return false;
@@ -882,7 +902,9 @@ export default function ProductsView({
           reviewCount: Number(formData.reviewCount || 0),
         });
 
-        const result = await onAddProduct(newProduct);
+        const result = await onAddProduct(newProduct, {
+          successMessage: options?.successMessage,
+        });
         savedProduct = result as Product;
         console.log("✅ Product created:", savedProduct);
       } else if (state.editingProduct) {
@@ -1115,7 +1137,9 @@ export default function ProductsView({
           ),
         });
 
-        const result = await onUpdateProduct(updated);
+        const result = await onUpdateProduct(updated, {
+          successMessage: options?.successMessage,
+        });
         savedProduct = result as Product;
         console.log("✅ Product updated:", savedProduct);
       }
@@ -1127,7 +1151,10 @@ export default function ProductsView({
             savedProduct.productId || savedProduct._id || savedProduct.id,
           _id: savedProduct._id || savedProduct.id || savedProduct.productId,
         };
-        startEditing(productWithId);
+        startEditing(productWithId, {
+          preserveTab: options?.preserveTab ?? true,
+          skipSectionReload: true,
+        });
         setFormData(productWithId);
         updateFormField("productId", productWithId.productId);
         updateFormField("_id", productWithId._id);
@@ -1150,6 +1177,102 @@ export default function ProductsView({
       setIsFinalSaving(false);
       setIsSaving(false);
       return false;
+    }
+  };
+
+  const handleSave = async (): Promise<boolean> => {
+    return executeSave({ preserveTab: true });
+  };
+
+  const handleSaveRelatedProducts = async (): Promise<boolean> => {
+    if (isSaving || isFinalSaving) return false;
+
+    if (state.isAdding || !state.editingProduct) {
+      return executeSave({
+        preserveTab: true,
+        successMessage: "Related products saved successfully!",
+      });
+    }
+
+    const editing = state.editingProduct;
+    const targetId = getCanonicalProductId(editing);
+    if (!targetId) {
+      toast.error("Product ID is missing.");
+      return false;
+    }
+
+    const selfAliases = new Set(collectProductIds(editing));
+    const rawIds =
+      formData.relatedProductIds ?? editing.relatedProductIds ?? [];
+    const seen = new Set<string>();
+    const liveCanonicalIds: string[] = [];
+
+    for (const rawId of rawIds) {
+      const cleanId = String(rawId || "").trim();
+      if (!cleanId || selfAliases.has(cleanId)) continue;
+      const matchedProd = products.find((p) =>
+        collectProductIds(p).includes(cleanId),
+      );
+      if (matchedProd) {
+        if (!isLiveProductStatus(matchedProd.status)) continue;
+        const canonical = getCanonicalProductId(matchedProd);
+        if (canonical && !selfAliases.has(canonical) && !seen.has(canonical)) {
+          seen.add(canonical);
+          liveCanonicalIds.push(canonical);
+        }
+      } else if (!seen.has(cleanId)) {
+        seen.add(cleanId);
+        liveCanonicalIds.push(cleanId);
+      }
+    }
+
+    setIsSaving(true);
+    setIsFinalSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
+
+    try {
+      const savedResult = await productSectionsApi.updateRelatedProducts(
+        targetId,
+        liveCanonicalIds,
+      );
+      const savedIds = Array.isArray(savedResult?.relatedProductIds)
+        ? savedResult.relatedProductIds
+        : Array.isArray(savedResult)
+          ? savedResult
+          : liveCanonicalIds;
+
+      const updatedProduct: Product = {
+        ...editing,
+        ...formData,
+        ...(savedResult &&
+        typeof savedResult === "object" &&
+        !Array.isArray(savedResult)
+          ? savedResult
+          : {}),
+        relatedProductIds: savedIds,
+      };
+
+      startEditing(updatedProduct, {
+        preserveTab: true,
+        skipSectionReload: true,
+      });
+      setFormData(updatedProduct);
+      onProductPatched?.(updatedProduct);
+      setSaveSuccess(true);
+      toast.success("Related products saved successfully!");
+      return true;
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to save related products";
+      setSaveError(message);
+      toast.error(message);
+      return false;
+    } finally {
+      setIsSaving(false);
+      setIsFinalSaving(false);
     }
   };
 
@@ -1533,8 +1656,10 @@ export default function ProductsView({
                   formData={formData}
                   onFieldChange={handleFormFieldChange}
                   allProducts={products}
-                  currentProductId={state.editingProduct?._id}
-                  onSave={handleSave}
+                  currentProductId={getCanonicalProductId(
+                    state.editingProduct || formData,
+                  )}
+                  onSave={handleSaveRelatedProducts}
                   isSaving={isSaving || isFinalSaving}
                 />
               )}

@@ -15,17 +15,19 @@ const configDir = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(configDir, "../.env") });
 
 const connectionString =
-  process.env.DATABASE_URL ||
   process.env.DATABASE_URL_POOLER ||
-  "postgresql://postgres.qfwrxdgjywseodbtadnx:DpUpEOIutDJo6l41@aws-0-ap-south-1.pooler.supabase.com:5432/postgres";
+  process.env.DATABASE_URL ||
+  "postgresql://postgres.qfwrxdgjywseodbtadnx:DpUpEOIutDJo6l41@aws-0-ap-south-1.pooler.supabase.com:6543/postgres";
+
+const isTransactionPooler = /:6543(\/|\?|$)/.test(connectionString);
 
 export const pool = new pg.Pool({
   connectionString,
   ssl: { rejectUnauthorized: false },
-  max: 25,
+  max: isTransactionPooler ? 10 : 5,
   keepAlive: true,
   keepAliveInitialDelayMillis: 10000,
-  idleTimeoutMillis: 60000,
+  idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 30000,
   lookup: (hostname, options, callback) => {
     const cb = typeof options === "function" ? options : callback;

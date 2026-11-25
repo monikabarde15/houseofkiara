@@ -136,9 +136,12 @@ export function useProductEditor() {
     }
   }, []);
 
-  // ✅ FIXED: startEditing with cleaned data
+  // ✅ FIXED: startEditing with cleaned data and optional tab preservation
   const startEditing = useCallback(
-    (product: Product) => {
+    (
+      product: Product,
+      options?: { preserveTab?: boolean; skipSectionReload?: boolean },
+    ) => {
       // Clean the product data
       const cleanProduct = cleanProductData(product);
       const targetId =
@@ -151,12 +154,12 @@ export function useProductEditor() {
         ...prev,
         editingProduct: cleanProduct,
         isAdding: false,
-        activeTab: "Core",
+        activeTab: options?.preserveTab ? prev.activeTab : "Core",
       }));
       setFormData(cleanProduct);
 
       // ✅ Load additional sections (Calendar, Payout, Activity) from separate APIs
-      if (targetId) {
+      if (targetId && !options?.skipSectionReload) {
         loadProductSections(targetId);
       }
     },

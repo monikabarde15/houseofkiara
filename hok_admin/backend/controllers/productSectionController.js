@@ -363,20 +363,70 @@ export const updateRelatedProducts = async (req, res) => {
           success: false,
           message: "relatedProductIds must be an array",
         });
-    const ids = [
-      ...new Set(req.body.relatedProductIds.filter((id) => id !== p.productId)),
-    ];
-    const count = await Product.countDocuments({ productId: { $in: ids } });
-    if (count !== ids.length)
-      return res
-        .status(422)
-        .json({
-          success: false,
-          message: "One or more related products do not exist",
-        });
-    p.relatedProductIds = ids;
+
+    const selfIds = new Set(
+      [p.productId, p.id, p._id ? String(p._id) : ""]
+        .map((val) => String(val || "").trim())
+        .filter(Boolean),
+    );
+    const requestedIds = Array.from(
+      new Set(
+        req.body.relatedProductIds
+          .map((id) => String(id || "").trim())
+          .filter((id) => Boolean(id) && !selfIds.has(id)),
+      ),
+    );
+
+    let canonicalIds = [];
+    if (requestedIds.length > 0) {
+      const validObjectIds = requestedIds.filter((id) =>
+        /^[0-9a-fA-F]{24}$/.test(id),
+      );
+      const queryOr = [{ productId: { $in: requestedIds } }];
+      if (validObjectIds.length > 0) {
+        queryOr.push({ _id: { $in: validObjectIds } });
+      }
+      const matchedDocs = await Product.find({ $or: queryOr });
+
+      const seenCanonical = new Set();
+      for (const reqId of requestedIds) {
+        const matched = matchedDocs.find(
+          (doc) =>
+            String(doc.productId || "").trim() === reqId ||
+            String(doc._id || "").trim() === reqId,
+        );
+        if (!matched) {
+          return res.status(422).json({
+            success: false,
+            message: "One or more related products do not exist",
+          });
+        }
+        const canonical = String(matched.productId || matched._id || "").trim();
+        if (canonical && !selfIds.has(canonical) && !seenCanonical.has(canonical)) {
+          seenCanonical.add(canonical);
+          canonicalIds.push(canonical);
+        }
+      }
+    }
+
+    p.relatedProductIds = canonicalIds;
     await save(p, "Related products updated", req.body);
-    res.json({ success: true, data: ids });
+    global.__webProductsCache = null;
+    global.__webFiltersCache = null;
+
+    const obj = typeof p.toObject === "function" ? p.toObject() : { ...p };
+    delete obj._data;
+    delete obj._model;
+    delete obj._isNew;
+
+    res.json({
+      success: true,
+      data: {
+        ...obj,
+        id: p.productId || String(p._id),
+        relatedProductIds: canonicalIds,
+      },
+    });
   } catch (e) {
     res.status(400).json({ success: false, message: e.message });
   }

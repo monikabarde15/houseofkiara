@@ -9,6 +9,48 @@ import {
   normalizeHex,
   resolveFamily,
 } from "../utils/colorPalette.js";
+
+const DEFAULT_FALLBACK_WEB_IMAGE =
+  "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875344/houseofkaira/products/grid-1.jpg";
+
+const isLiveStatus = (status) =>
+  String(status || "").trim().toLowerCase() === "live";
+
+const normalizeWebImages = (imgs, fallback = [DEFAULT_FALLBACK_WEB_IMAGE]) => {
+  if (!imgs || !Array.isArray(imgs) || imgs.length === 0) {
+    return fallback;
+  }
+  return imgs
+    .filter((img) => typeof img === "string" && img.trim() !== "")
+    .map((img) => {
+      const trimmed = img.trim();
+      if (trimmed.startsWith("/uploads/")) {
+        const filename = trimmed.replace("/uploads/", "");
+        return `https://res.cloudinary.com/dv7jcu8ss/image/upload/houseofkaira/products/${filename}`;
+      }
+      return trimmed;
+    });
+};
+
+const computeListingFlags = (product) => {
+  const rawModes = Array.isArray(product?.listingModes)
+    ? product.listingModes
+    : typeof product?.listingModes === "string"
+      ? [product.listingModes]
+      : [];
+  const modesUpper = rawModes.map((m) => String(m).toUpperCase().trim()).filter(Boolean);
+  const preloved = modesUpper.some(
+    (m) => m.includes("PRELOVED") || m.includes("RE-SELL"),
+  );
+  const isNew = modesUpper.some(
+    (m) => m.includes("BUY") || m.includes("NEW"),
+  );
+  const rent =
+    modesUpper.some((m) => m.includes("RENT")) ||
+    Boolean(product?.rentalPrice) ||
+    (!preloved && !isNew);
+  return { modesUpper, rent, preloved, isNew };
+};
 // Comprehensive detection helpers
 const recognizedColorsList = [
   "red",
@@ -376,23 +418,7 @@ export const getWebProducts = async (req, res) => {
     const products = await findQuery;
 
     let formattedProducts = products.map((product) => {
-      const rawModes = Array.isArray(product.listingModes)
-        ? product.listingModes
-        : typeof product.listingModes === "string"
-          ? [product.listingModes]
-          : [];
-      const modesUpper = rawModes.map((m) => String(m).toUpperCase().trim());
-
-      const preloved = modesUpper.some(
-        (m) => m.includes("PRELOVED") || m.includes("RE-SELL"),
-      );
-      const isNew = modesUpper.some(
-        (m) => m.includes("BUY") || m.includes("NEW"),
-      );
-      const rent =
-        modesUpper.some((m) => m.includes("RENT")) ||
-        Boolean(product.rentalPrice) ||
-        (!preloved && !isNew);
+      const { rent, preloved, isNew } = computeListingFlags(product);
 
       const type = preloved
         ? "preloved"
@@ -409,30 +435,16 @@ export const getWebProducts = async (req, res) => {
 
       const primaryId = product.productId || product._id.toString();
 
-      const normalizeImages = (imgs) => {
-        if (!imgs || !Array.isArray(imgs) || imgs.length === 0) {
-          return [
-            "https://res.cloudinary.com/dv7jcu8ss/image/upload/v1791875344/houseofkaira/products/grid-1.jpg",
-          ];
-        }
-        return imgs.map((img) => {
-          if (typeof img === "string" && img.startsWith("/uploads/")) {
-            const filename = img.replace("/uploads/", "");
-            return `https://res.cloudinary.com/dv7jcu8ss/image/upload/houseofkaira/products/${filename}`;
-          }
-          return img;
-        });
-      };
-
       const colorInfo = getProductColorInfo(product);
 
       return {
         id: primaryId,
         productId: primaryId,
         _id: product._id.toString(),
+        status: product.status || "Live",
         name: product.name || "Untitled Product",
         designer: product.designer || "Unknown Designer",
-        image: normalizeImages(product.images),
+        image: normalizeWebImages(product.images),
         rent: rent,
         preloved: preloved,
         isNew: isNew,
@@ -737,29 +749,80 @@ export const getWebProductById = async (req, res) => {
     const preloved = modes.includes("PRELOVED") || modes.includes("RE-SELL");
     const buy = modes.includes("BUY NEW");
 
-    // Fetch related products
+    // Fetch related products (strictly Live-only, excluding self, preserving configured order)
+    const configuredRelatedIds = Array.isArray(product.relatedProductIds)
+      ? product.relatedProductIds
+          .map((relId) => String(relId || "").trim())
+          .filter(Boolean)
+      : [];
+    const hasCuratedRelated = configuredRelatedIds.length > 0;
     let relatedProducts = [];
-    if (product.relatedProductIds && product.relatedProductIds.length > 0) {
-      // Filter out invalid ObjectIds to prevent Mongoose cast errors
-      const validIds = product.relatedProductIds.filter(
-        (id) => id && id.length === 24,
+    if (hasCuratedRelated) {
+      const validIds = configuredRelatedIds.filter(
+        (relId) => /^[0-9a-fA-F]{24}$/.test(relId),
       );
 
-      const queryOr = [{ productId: { $in: product.relatedProductIds } }];
+      const queryOr = [{ productId: { $in: configuredRelatedIds } }];
       if (validIds.length > 0) {
         queryOr.push({ _id: { $in: validIds } });
       }
 
       const relProds = await Product.find({ $or: queryOr }).lean();
-      relatedProducts = relProds.map((p) => ({
-        id: p.productId || p._id.toString(),
-        name: p.name,
-        designer: p.designer || "Unknown",
-        image: p.images?.[0] || "",
-        rentalPrice: p.rentalPrice || p.perDayRate || 0,
-        retailPrice: p.originalRetailPrice || 0,
-        modes: p.listingModes || [],
-      }));
+      const liveRelProds = relProds.filter(
+        (rp) =>
+          isLiveStatus(rp?.status) &&
+          rp.productId !== product.productId &&
+          String(rp._id) !== String(product._id),
+      );
+
+      const seenRelKeys = new Set();
+      const orderedLiveRelProds = [];
+      for (const reqId of configuredRelatedIds) {
+        const match = liveRelProds.find(
+          (rp) => rp.productId === reqId || String(rp._id) === reqId,
+        );
+        if (!match) continue;
+        const canonical = match.productId || String(match._id);
+        if (seenRelKeys.has(canonical)) continue;
+        seenRelKeys.add(canonical);
+        orderedLiveRelProds.push(match);
+      }
+
+      relatedProducts = orderedLiveRelProds.map((rp) => {
+        const {
+          modesUpper: rpModes,
+          rent: rpRent,
+          preloved: rpPreloved,
+          isNew: rpNew,
+        } = computeListingFlags(rp);
+        const rpImages = normalizeWebImages(rp.images, []);
+        const rpPrimaryId = rp.productId || String(rp._id);
+        return {
+          id: rpPrimaryId,
+          _id: String(rp._id),
+          productId: rpPrimaryId,
+          name: rp.name || "Untitled Product",
+          designer: rp.designer || "House of Kaira",
+          status: rp.status || "Live",
+          image: rpImages[0] || "",
+          images: rpImages,
+          listingModes: rpModes,
+          modes: rpModes,
+          rent: rpRent,
+          preloved: rpPreloved,
+          isNew: rpNew,
+          badges: [
+            rpRent ? "RENT" : null,
+            rpPreloved ? "PRELOVED" : null,
+            rpNew ? "NEW" : null,
+          ].filter(Boolean),
+          rentPrice: rp.rentalPrice || rp.perDayRate || 0,
+          rentalPrice: rp.rentalPrice || rp.perDayRate || 0,
+          buyPrice: rp.listingPrice || 0,
+          retailPrice: rp.originalRetailPrice || 0,
+          originalPrice: rp.originalRetailPrice || 0,
+        };
+      });
     }
 
     // Build colors array (real hex codes from admin colour picker when available)
@@ -904,6 +967,7 @@ export const getWebProductById = async (req, res) => {
       packaging: Array.isArray(product.packaging) ? product.packaging : [],
       shipping: product.shipping || [],
       relatedProducts: relatedProducts,
+      hasCuratedRelated: hasCuratedRelated,
       modes: {
         rent: {
           enabled: rent,

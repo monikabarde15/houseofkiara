@@ -1,8 +1,14 @@
 // src/components/products/tabs/RelatedProductsTab.tsx
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { X, Search, Shirt } from "lucide-react";
 import { Product } from "../../types/product";
+import {
+  collectProductIds,
+  filterSelectableLiveProducts,
+  getCanonicalProductId,
+  resolveLiveRelatedProducts,
+} from "../utils/relatedProductsHelpers";
 
 interface RelatedProductsTabProps {
   formData: Partial<Product>;
@@ -22,45 +28,104 @@ export function RelatedProductsTab({
   isSaving = false,
 }: RelatedProductsTabProps) {
   const [query, setQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownContainerRef = useRef<HTMLDivElement>(null);
 
   const relatedIds = formData.relatedProductIds || [];
 
-  const availableProducts = useMemo(
-    () => allProducts.filter((p) => p.id !== currentProductId),
-    [allProducts, currentProductId],
+  const excludedCurrentIds = useMemo(
+    () =>
+      [
+        currentProductId,
+        formData.productId,
+        formData.id,
+        (formData as any)._id,
+      ]
+        .filter(Boolean)
+        .map((id) => String(id)),
+    [currentProductId, formData.productId, formData.id, (formData as any)._id],
+  );
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownContainerRef.current &&
+        !dropdownContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  const selectableLiveProducts = useMemo(
+    () =>
+      filterSelectableLiveProducts(
+        allProducts,
+        excludedCurrentIds,
+        relatedIds,
+        query,
+      ),
+    [allProducts, excludedCurrentIds, relatedIds, query],
   );
 
   const relatedProducts = useMemo(
     () =>
-      relatedIds
-        .map((id) => availableProducts.find((p) => p.id === id))
-        .filter((p): p is Product => Boolean(p)),
-    [relatedIds, availableProducts],
+      resolveLiveRelatedProducts(allProducts, excludedCurrentIds, relatedIds),
+    [allProducts, excludedCurrentIds, relatedIds],
   );
 
-  const searchResults = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    return availableProducts
-      .filter((p) => !relatedIds.includes(p.id))
-      .filter(
-        (p) =>
-          (p.name || "").toLowerCase().includes(q) ||
-          p.designer?.toLowerCase().includes(q) ||
-          p.sku?.toLowerCase().includes(q),
-      )
-      .slice(0, 8);
-  }, [query, availableProducts, relatedIds]);
+  const handleAddRelated = (product: Product) => {
+    const canonicalId = getCanonicalProductId(product);
+    if (!canonicalId) return;
 
-  const handleAddRelated = (productId: string) => {
-    onFieldChange("relatedProductIds", [...relatedIds, productId]);
+    const productAliases = new Set(collectProductIds(product));
+    const alreadyExists = relatedIds.some((id) =>
+      productAliases.has(String(id || "").trim()),
+    );
+    if (!alreadyExists) {
+      onFieldChange("relatedProductIds", [...relatedIds, canonicalId]);
+    }
     setQuery("");
+    setIsDropdownOpen(true);
   };
 
-  const handleRemoveRelated = (productId: string) => {
+  const handleRemoveRelated = (product: Product) => {
+    const productAliases = new Set(collectProductIds(product));
     onFieldChange(
       "relatedProductIds",
-      relatedIds.filter((id) => id !== productId),
+      relatedIds.filter((id) => !productAliases.has(String(id || "").trim())),
+    );
+  };
+
+  const renderThumb = (p: Product, boxClass: string, iconClass: string) => {
+    const imgUrl = Array.isArray(p.images) ? p.images[0] : "";
+    if (imgUrl) {
+      return (
+        <img
+          src={imgUrl}
+          alt={p.name}
+          className={`${boxClass} rounded object-cover object-top shrink-0 bg-stone-100 border border-stone-200`}
+        />
+      );
+    }
+    return (
+      <div
+        className={`${boxClass} rounded bg-stone-900 flex items-center justify-center shrink-0`}
+      >
+        <Shirt className={iconClass} />
+      </div>
     );
   };
 
@@ -70,13 +135,15 @@ export function RelatedProductsTab({
       <div className="rounded-md border border-amber-200/70 bg-amber-50/60 p-3">
         <p className="text-xs text-stone-600 leading-relaxed">
           Pieces added here appear in the &ldquo;You May Also Like&rdquo;
-          section on this product&apos;s PDP. Aim for 4-8 relevant pieces
-          &mdash; similar silhouette, same designer, or matching occasion.
+          section on this product&apos;s PDP. Only <strong>Live</strong>{" "}
+          products are shown here and on the storefront. Aim for 4-8 relevant
+          pieces &mdash; similar silhouette, same designer, or matching
+          occasion.
         </p>
       </div>
 
       {/* Search / add */}
-      <div className="space-y-2">
+      <div className="space-y-2" ref={dropdownContainerRef}>
         <h4 className="font-serif font-bold text-stone-900 text-xs uppercase tracking-wide">
           Add a Related Product
         </h4>
@@ -85,39 +152,68 @@ export function RelatedProductsTab({
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by name, SKU, or designer..."
+            onFocus={() => setIsDropdownOpen(true)}
+            onClick={() => setIsDropdownOpen(true)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setIsDropdownOpen(true);
+            }}
+            placeholder="Click to browse live products or search by name, SKU, or designer..."
             className="w-full rounded-md border border-stone-200 pl-9 pr-3 py-2.5 text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-300"
           />
 
-          {query.trim() && (
-            <div className="absolute z-10 mt-1 w-full rounded-md border border-stone-200 bg-white shadow-lg max-h-64 overflow-y-auto">
-              {searchResults.length === 0 ? (
+          {isDropdownOpen && (
+            <div className="absolute z-20 mt-1 w-full rounded-md border border-stone-200 bg-white shadow-lg max-h-72 overflow-y-auto">
+              <div className="sticky top-0 z-10 flex items-center justify-between px-3 py-1.5 bg-stone-50 border-b border-stone-100 text-[10px] font-semibold uppercase tracking-wide text-stone-500">
+                <span>
+                  {query.trim()
+                    ? `Matching Live Products (${selectableLiveProducts.length})`
+                    : `Live Products (${selectableLiveProducts.length})`}
+                </span>
+                <button
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => setIsDropdownOpen(false)}
+                  className="text-stone-400 hover:text-stone-700"
+                >
+                  Close
+                </button>
+              </div>
+              {selectableLiveProducts.length === 0 ? (
                 <p className="px-3 py-3 text-xs text-stone-400">
-                  No matching products found.
+                  {query.trim()
+                    ? "No matching live products found."
+                    : "No more live products available to add."}
                 </p>
               ) : (
-                searchResults.map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => handleAddRelated(p.id)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-stone-50 transition border-b border-stone-100 last:border-b-0"
-                  >
-                    <div className="w-8 h-8 rounded bg-stone-900 flex items-center justify-center shrink-0">
-                      <Shirt className="w-4 h-4 text-stone-400" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-medium text-stone-800 truncate">
-                        {p.name}
-                      </p>
-                      <p className="text-[10px] text-stone-400 truncate">
-                        {p.designer}
-                        {p.sku ? ` · ${p.sku}` : ""}
-                      </p>
-                    </div>
-                  </button>
-                ))
+                selectableLiveProducts.map((p) => {
+                  const key = getCanonicalProductId(p) || p.name;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => handleAddRelated(p)}
+                      className="w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left hover:bg-stone-50 transition border-b border-stone-100 last:border-b-0 cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        {renderThumb(p, "w-8 h-8", "w-4 h-4 text-stone-400")}
+                        <div className="min-w-0">
+                          <p className="text-xs font-medium text-stone-800 truncate">
+                            {p.name}
+                          </p>
+                          <p className="text-[10px] text-stone-400 truncate">
+                            {p.designer}
+                            {p.sku ? ` · ${p.sku}` : ""}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
+                        Live
+                      </span>
+                    </button>
+                  );
+                })
               )}
             </div>
           )}
@@ -136,33 +232,39 @@ export function RelatedProductsTab({
           </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {relatedProducts.map((p) => (
-              <div
-                key={p.id}
-                className="relative flex items-center gap-3 rounded-md border border-stone-200 p-3"
-              >
-                <button
-                  type="button"
-                  onClick={() => handleRemoveRelated(p.id)}
-                  aria-label={`Remove ${p.name}`}
-                  className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-400 hover:text-stone-600 hover:bg-stone-50 transition shadow-sm"
+            {relatedProducts.map((p) => {
+              const key = getCanonicalProductId(p) || p.name;
+              return (
+                <div
+                  key={key}
+                  className="relative flex items-center gap-3 rounded-md border border-stone-200 p-3"
                 >
-                  <X className="w-3 h-3" />
-                </button>
-                <div className="w-10 h-10 rounded bg-stone-900 flex items-center justify-center shrink-0">
-                  <Shirt className="w-5 h-5 text-stone-500" />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveRelated(p)}
+                    aria-label={`Remove ${p.name}`}
+                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-400 hover:text-stone-600 hover:bg-stone-50 transition shadow-sm cursor-pointer"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                  {renderThumb(p, "w-10 h-10", "w-5 h-5 text-stone-500")}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-xs font-medium text-stone-800 truncate">
+                        {p.name}
+                      </p>
+                      <span className="shrink-0 rounded-full bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 text-[9px] font-medium text-emerald-700">
+                        Live
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-stone-400 truncate">
+                      {p.designer}
+                      {p.sku ? ` · ${p.sku}` : ""}
+                    </p>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-xs font-medium text-stone-800 truncate">
-                    {p.name}
-                  </p>
-                  <p className="text-[10px] text-stone-400 truncate">
-                    {p.designer}
-                    {p.sku ? ` · ${p.sku}` : ""}
-                  </p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -173,7 +275,7 @@ export function RelatedProductsTab({
           type="button"
           onClick={() => onSave?.()}
           disabled={isSaving}
-          className={`rounded-md bg-amber-700/90 hover:bg-amber-700 text-white text-xs font-medium px-4 py-2 transition shadow-sm ${
+          className={`rounded-md bg-amber-700/90 hover:bg-amber-700 text-white text-xs font-medium px-4 py-2 transition shadow-sm cursor-pointer ${
             isSaving ? "opacity-60 cursor-not-allowed" : ""
           }`}
         >

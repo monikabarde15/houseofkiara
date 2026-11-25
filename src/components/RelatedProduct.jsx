@@ -4,6 +4,17 @@ import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import useWishlistStore from "../store/wishlistStore";
 
+const isLiveItem = (item) =>
+  !item?.status || String(item.status).trim().toLowerCase() === "live";
+
+const formatInrPrice = (value) => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value.toLocaleString("en-IN");
+  }
+  const num = Number(String(value ?? "").replace(/,/g, "").trim());
+  return Number.isFinite(num) ? num.toLocaleString("en-IN") : "0";
+};
+
 export default function RelatedProduct({
   product,
   currentProductId,
@@ -16,14 +27,28 @@ export default function RelatedProduct({
   const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
 
   const prodId = String(product?._id || product?.id || currentProductId || "");
+  const prodCanonicalId = String(product?.productId || prodId);
   const currentDesigner = product?.designer || "Designer";
   const currentCategory = product?.category || category || "Collection";
 
   useEffect(() => {
+    const isSameProduct = (item) =>
+      [item?._id, item?.id, item?.productId]
+        .filter(Boolean)
+        .map(String)
+        .some((candidate) => candidate === prodId || candidate === prodCanonicalId);
+
     const fetchRelated = async () => {
       try {
-        if (product?.relatedProducts && product.relatedProducts.length > 0) {
-          setRelatedProducts(product.relatedProducts);
+        if (Array.isArray(product?.relatedProducts) && product.relatedProducts.length > 0) {
+          const liveCurated = product.relatedProducts.filter(
+            (item) => isLiveItem(item) && !isSameProduct(item),
+          );
+          setRelatedProducts(liveCurated);
+          setLoading(false);
+        } else if (product?.hasCuratedRelated) {
+          // Curated items exist in admin, but none are currently Live — do not fall back to non-curated pieces.
+          setRelatedProducts([]);
           setLoading(false);
         } else {
           const backendUrl =
@@ -31,18 +56,16 @@ export default function RelatedProduct({
           const res = await fetch(`${backendUrl}/api/web-products`);
           const data = await res.json();
           if (data.success && data.data) {
-            const allProducts = data.data;
-            let filtered = allProducts.filter(
+            const liveProducts = (data.data || []).filter(
+              (p) => isLiveItem(p) && !isSameProduct(p),
+            );
+            let filtered = liveProducts.filter(
               (p) =>
-                (p.category === currentCategory ||
-                  p.designer === currentDesigner) &&
-                p._id !== prodId &&
-                p.id !== prodId,
+                p.category === currentCategory ||
+                p.designer === currentDesigner,
             );
             if (filtered.length === 0) {
-              filtered = allProducts
-                .filter((p) => p._id !== prodId && p.id !== prodId)
-                .slice(0, 8);
+              filtered = liveProducts.slice(0, 8);
             }
             setRelatedProducts(filtered);
           }
@@ -54,7 +77,7 @@ export default function RelatedProduct({
       }
     };
     fetchRelated();
-  }, [product, currentCategory, currentDesigner, prodId]);
+  }, [product, currentCategory, currentDesigner, prodId, prodCanonicalId]);
 
   if (loading || relatedProducts.length === 0) {
     return null;
@@ -158,14 +181,26 @@ export default function RelatedProduct({
           <div className="related-info">
             <p className="designer">{item.designer || "House of Kaira"}</p>
             <p className="name">{item.name || item.title}</p>
-            {item.rent || (item.modes && item.modes.includes("RENTAL")) ? (
+            {Boolean(
+              item.rent ||
+                (Array.isArray(item.listingModes) &&
+                  item.listingModes.includes("RENTAL")) ||
+                (Array.isArray(item.modes) && item.modes.includes("RENTAL")),
+            ) ? (
               <p className="price">
-                ₹{item.rentPrice || item.rentalPrice || 0}
+                ₹{formatInrPrice(item.rentPrice || item.rentalPrice || 0)}
                 <span className="rental"> / 4 days</span>
               </p>
             ) : (
               <p className="price">
-                ₹{item.buyPrice || item.retailPrice || item.originalPrice || 0}
+                ₹
+                {formatInrPrice(
+                  item.buyPrice ||
+                    item.listingPrice ||
+                    item.retailPrice ||
+                    item.originalPrice ||
+                    0,
+                )}
               </p>
             )}
           </div>
