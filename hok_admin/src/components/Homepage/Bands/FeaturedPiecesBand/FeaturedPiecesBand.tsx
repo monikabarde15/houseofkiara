@@ -582,7 +582,12 @@ export const FeaturedPiecesBand: React.FC<FeaturedPiecesBandProps> = ({
                 <select
                   className="hok-field-select"
                   value={settings.topUpBy}
-                  onChange={(e) => onChange({ ...settings, topUpBy: e.target.value })}
+                  onChange={(e) =>
+                    onChange({
+                      ...settings,
+                      topUpBy: e.target.value as FeaturedPiecesSettings['topUpBy'],
+                    })
+                  }
                 >
                   <option value="Newest live">Newest live</option>
                   <option value="Most rented">Most rented</option>
