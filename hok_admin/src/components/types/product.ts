@@ -8,6 +8,7 @@ export interface Product {
   description?: string;
   story?: string;
   category?: string;
+  gender?: string;
   occasion?: string;
   material?: string;
   color?: string;
@@ -39,6 +40,22 @@ export interface Product {
   };
   bestSuitedForHeight?: string;
   weight?: string;
+  set?: Array<{
+    uid?: string;
+    piece: string;
+    name: string;
+    m: Record<string, { v?: string; open?: string; take?: string }>;
+    d: { padded?: string; cancan?: string; closure?: string };
+  }>;
+  fitDesc?: string;
+  fitNote?: string;
+  fitNotes?: string;
+  measuredBy?: string;
+  measuredOn?: string;
+  designerLabel?: string;
+  ownerSize?: string;
+  heightFrom?: string;
+  heightTo?: string;
   listingModes?: string[];
   availability?: string;
   status?: string;

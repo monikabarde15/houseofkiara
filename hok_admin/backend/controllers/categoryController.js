@@ -73,18 +73,157 @@ const initialCategories = [
   },
 ];
 
+const DEFAULT_MAIN_CATEGORIES = [
+  { _id: "mc_women", mainCategoryId: "MC-WOMEN", name: "Women", slug: "women", sortOrder: 1 },
+  { _id: "mc_men", mainCategoryId: "MC-MEN", name: "Men", slug: "men", sortOrder: 2 },
+  { _id: "mc_unisex", mainCategoryId: "MC-UNISEX", name: "Unisex", slug: "unisex", sortOrder: 3 },
+];
+
+const inferMainCategoryForCategoryName = (name) => {
+  const lower = String(name || "").trim().toLowerCase();
+  if (
+    lower.includes("sherwani") ||
+    lower.includes("bandhgala") ||
+    lower.includes("nehru") ||
+    lower.includes("achkan") ||
+    lower.includes("jodhpuri") ||
+    lower.includes("waistcoat") ||
+    lower.includes("bundi") ||
+    /\b(shirt|shirts|pant|pants|trouser|trousers|blazer|suit|suits|men|mens)\b/.test(
+      lower,
+    )
+  ) {
+    return DEFAULT_MAIN_CATEGORIES[1]; // Men
+  }
+  if (
+    lower.includes("kurta") ||
+    lower.includes("indo-western") ||
+    lower.includes("indo western")
+  ) {
+    return DEFAULT_MAIN_CATEGORIES[2]; // Unisex
+  }
+  return DEFAULT_MAIN_CATEGORIES[0]; // Women
+};
+
+const resolveMainCategoryInput = async (inputVal, fallbackCategoryName = "") => {
+  const clean = String(inputVal || "").trim();
+  const rows = await pool
+    .query(
+      "SELECT _id, main_category_id, name, slug, sort_order FROM main_categories ORDER BY sort_order ASC, name ASC",
+    )
+    .then((r) => r.rows || [])
+    .catch(() => []);
+
+  const list =
+    rows.length > 0
+      ? rows.map((r) => ({
+          _id: r._id,
+          mainCategoryId: r.main_category_id,
+          name: r.name,
+          slug: r.slug,
+          sortOrder: r.sort_order ?? 1,
+        }))
+      : DEFAULT_MAIN_CATEGORIES;
+
+  if (clean) {
+    const lower = clean.toLowerCase();
+    const matched = list.find(
+      (mc) =>
+        mc.mainCategoryId.toLowerCase() === lower ||
+        mc.name.toLowerCase() === lower ||
+        mc.slug.toLowerCase() === lower,
+    );
+    if (matched) return matched;
+    if (["male", "man", "men", "mens"].includes(lower)) {
+      return list.find((m) => m.slug === "men") || DEFAULT_MAIN_CATEGORIES[1];
+    }
+    if (["female", "woman", "women", "womens"].includes(lower)) {
+      return list.find((m) => m.slug === "women") || DEFAULT_MAIN_CATEGORIES[0];
+    }
+    if (["unisex", "all", "both"].includes(lower)) {
+      return list.find((m) => m.slug === "unisex") || DEFAULT_MAIN_CATEGORIES[2];
+    }
+  }
+  return inferMainCategoryForCategoryName(fallbackCategoryName);
+};
+
+let mainCategoryBackfillPromise = null;
+const ensureMainCategoriesAndBackfill = async () => {
+  if (!mainCategoryBackfillPromise) {
+    mainCategoryBackfillPromise = (async () => {
+      try {
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS main_categories (
+            _id VARCHAR(64) PRIMARY KEY,
+            main_category_id VARCHAR(64) UNIQUE NOT NULL,
+            name VARCHAR(100) UNIQUE NOT NULL,
+            slug VARCHAR(100) UNIQUE NOT NULL,
+            sort_order INT DEFAULT 1,
+            data JSONB NOT NULL DEFAULT '{}'::jsonb,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+          );
+        `);
+        await pool.query(`
+          INSERT INTO main_categories (_id, main_category_id, name, slug, sort_order, data)
+          VALUES
+            ('mc_women', 'MC-WOMEN', 'Women', 'women', 1, '{"mainCategoryId":"MC-WOMEN","name":"Women","slug":"women","sortOrder":1}'::jsonb),
+            ('mc_men', 'MC-MEN', 'Men', 'men', 2, '{"mainCategoryId":"MC-MEN","name":"Men","slug":"men","sortOrder":2}'::jsonb),
+            ('mc_unisex', 'MC-UNISEX', 'Unisex', 'unisex', 3, '{"mainCategoryId":"MC-UNISEX","name":"Unisex","slug":"unisex","sortOrder":3}'::jsonb)
+          ON CONFLICT (slug) DO NOTHING;
+        `);
+        await pool.query(`ALTER TABLE categories ADD COLUMN IF NOT EXISTS main_category_id VARCHAR(64);`);
+        await pool.query(`ALTER TABLE categories ADD COLUMN IF NOT EXISTS main_category VARCHAR(100);`);
+
+        const docs = await Category.find({});
+        for (const doc of docs) {
+          if (!doc.mainCategoryId || !doc.mainCategory) {
+            const resolved = await resolveMainCategoryInput(
+              doc.mainCategoryId || doc.mainCategory,
+              doc.name,
+            );
+            doc.mainCategoryId = resolved.mainCategoryId;
+            doc.mainCategory = resolved.name;
+            await doc.save();
+          }
+        }
+      } catch (err) {
+        mainCategoryBackfillPromise = null;
+        console.error("Failed ensuring main_categories:", err.message);
+      }
+    })();
+  }
+  return mainCategoryBackfillPromise;
+};
+
+const formatCategoryDto = (doc) => ({
+  id: doc.categoryId || doc._id.toString(),
+  name: doc.name,
+  slug: doc.slug,
+  mainCategoryId: doc.mainCategoryId || "",
+  mainCategory: doc.mainCategory || "",
+  image: doc.image || "",
+  description: doc.description || "",
+});
+
 const ensureSeedData = async () => {
   try {
+    await ensureMainCategoriesAndBackfill();
     const count = await Category.countDocuments();
     if (count === 0) {
       console.log("🌱 Seeding initial categories into PostgreSQL (Supabase)...");
-      const docs = initialCategories.map((item, i) => ({
-        categoryId: `CAT-${1792000000000 + i}`,
-        name: item.name,
-        slug: item.slug,
-        image: item.image,
-        description: item.description,
-      }));
+      const docs = initialCategories.map((item, i) => {
+        const mc = inferMainCategoryForCategoryName(item.name);
+        return {
+          categoryId: `CAT-${1792000000000 + i}`,
+          name: item.name,
+          slug: item.slug,
+          mainCategoryId: mc.mainCategoryId,
+          mainCategory: mc.name,
+          image: item.image,
+          description: item.description,
+        };
+      });
       await Category.insertMany(docs);
     }
   } catch (err) {
@@ -94,19 +233,53 @@ const ensureSeedData = async () => {
 
 setTimeout(ensureSeedData, 2000);
 
+// GET /api/categories/main-categories
+export const getMainCategories = async (req, res) => {
+  try {
+    await ensureMainCategoriesAndBackfill();
+    const result = await pool.query(
+      "SELECT _id, main_category_id, name, slug, sort_order FROM main_categories ORDER BY sort_order ASC, name ASC",
+    );
+    const rows =
+      result?.rows?.length > 0
+        ? result.rows.map((r) => ({
+            id: r.main_category_id,
+            mainCategoryId: r.main_category_id,
+            name: r.name,
+            slug: r.slug,
+            sortOrder: r.sort_order ?? 1,
+          }))
+        : DEFAULT_MAIN_CATEGORIES.map((mc) => ({
+            id: mc.mainCategoryId,
+            mainCategoryId: mc.mainCategoryId,
+            name: mc.name,
+            slug: mc.slug,
+            sortOrder: mc.sortOrder,
+          }));
+    return res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error("🔥 Error in getMainCategories:", err);
+    return res.json({
+      success: true,
+      data: DEFAULT_MAIN_CATEGORIES.map((mc) => ({
+        id: mc.mainCategoryId,
+        mainCategoryId: mc.mainCategoryId,
+        name: mc.name,
+        slug: mc.slug,
+        sortOrder: mc.sortOrder,
+      })),
+    });
+  }
+};
+
 // GET /api/categories
 export const getCategories = async (req, res) => {
   try {
+    await ensureMainCategoriesAndBackfill();
     const docs = await Category.find({}).sort({ name: 1 });
     return res.json({
       success: true,
-      data: docs.map((doc) => ({
-        id: doc.categoryId || doc._id.toString(),
-        name: doc.name,
-        slug: doc.slug,
-        image: doc.image || "",
-        description: doc.description || "",
-      })),
+      data: docs.map(formatCategoryDto),
     });
   } catch (err) {
     console.error("🔥 Error in getCategories:", err);
@@ -117,7 +290,8 @@ export const getCategories = async (req, res) => {
 // POST /api/categories
 export const createCategory = async (req, res) => {
   try {
-    const { name } = req.body;
+    await ensureMainCategoriesAndBackfill();
+    const { name, mainCategoryId, mainCategory, gender } = req.body;
     if (!name)
       return res
         .status(400)
@@ -132,31 +306,28 @@ export const createCategory = async (req, res) => {
     if (existing) {
       return res.json({
         success: true,
-        data: {
-          id: existing.categoryId || existing._id.toString(),
-          name: existing.name,
-          slug: existing.slug,
-          image: existing.image || "",
-          description: existing.description || "",
-        },
+        data: formatCategoryDto(existing),
       });
     }
 
+    const mc = await resolveMainCategoryInput(
+      mainCategoryId || mainCategory || gender,
+      name,
+    );
     const doc = await Category.create({
       categoryId: `CAT-${Date.now()}`,
       name: name.trim(),
       slug,
+      mainCategoryId: mc.mainCategoryId,
+      mainCategory: mc.name,
     });
+
+    global.__webProductsCache = null;
+    global.__webFiltersCache = null;
 
     return res.status(201).json({
       success: true,
-      data: {
-        id: doc.categoryId || doc._id.toString(),
-        name: doc.name,
-        slug: doc.slug,
-        image: doc.image || "",
-        description: doc.description || "",
-      },
+      data: formatCategoryDto(doc),
     });
   } catch (err) {
     console.error("🔥 Error in createCategory:", err);
@@ -167,8 +338,10 @@ export const createCategory = async (req, res) => {
 // PUT /api/categories/:id
 export const updateCategory = async (req, res) => {
   try {
+    await ensureMainCategoriesAndBackfill();
     const { id } = req.params;
-    const { name, image, description } = req.body;
+    const { name, image, description, mainCategoryId, mainCategory, gender } =
+      req.body;
 
     const doc = await Category.findOne({
       $or: [{ categoryId: id }, { _id: id.length === 24 ? id : null }],
@@ -184,18 +357,26 @@ export const updateCategory = async (req, res) => {
     }
     if (image !== undefined) doc.image = image;
     if (description !== undefined) doc.description = description;
+    if (
+      mainCategoryId !== undefined ||
+      mainCategory !== undefined ||
+      gender !== undefined
+    ) {
+      const mc = await resolveMainCategoryInput(
+        mainCategoryId || mainCategory || gender,
+        doc.name,
+      );
+      doc.mainCategoryId = mc.mainCategoryId;
+      doc.mainCategory = mc.name;
+    }
 
     await doc.save();
+    global.__webProductsCache = null;
+    global.__webFiltersCache = null;
 
     return res.json({
       success: true,
-      data: {
-        id: doc.categoryId || doc._id.toString(),
-        name: doc.name,
-        slug: doc.slug,
-        image: doc.image || "",
-        description: doc.description || "",
-      },
+      data: formatCategoryDto(doc),
     });
   } catch (err) {
     console.error("🔥 Error in updateCategory:", err);
@@ -214,6 +395,9 @@ export const deleteCategory = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Category not found" });
+
+    global.__webProductsCache = null;
+    global.__webFiltersCache = null;
 
     return res.json({ success: true, message: "Category deleted" });
   } catch (err) {
@@ -636,6 +820,167 @@ export const createFabricCare = async (req, res) => {
     return res.status(201).json({ success: true, data: savedItem });
   } catch (err) {
     console.error("Error in createFabricCare:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+const MASTER_SIZES_KEY = "master_sizes";
+const DEFAULT_SIZES = [
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "XXL",
+  "XXXL",
+  "32",
+  "34",
+  "36",
+  "38",
+  "40",
+  "42",
+  "44",
+  "46",
+  "Free Size",
+  "Custom",
+];
+
+const dedupeSizeList = (arr = []) => {
+  const seen = new Set();
+  const out = [];
+  for (const item of arr) {
+    const clean = String(item || "").trim();
+    if (!clean) continue;
+    const key = clean.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(clean);
+  }
+  return out;
+};
+
+const formatSizeOption = (name) => ({
+  id:
+    String(name || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-") || String(name || "").trim().toLowerCase(),
+  name: String(name || "").trim(),
+});
+
+const persistMasterSizes = async (sizesList) => {
+  await pool.query(
+    `INSERT INTO site_settings (key, data, updated_at)
+     VALUES ($1, $2, NOW())
+     ON CONFLICT (key)
+     DO UPDATE SET data = $2, updated_at = NOW()`,
+    [MASTER_SIZES_KEY, JSON.stringify({ sizes: sizesList })],
+  );
+};
+
+const loadMasterSizes = async ({ includeProductSizes = false } = {}) => {
+  const dbRes = await pool.query(
+    `SELECT data FROM site_settings WHERE key = $1 LIMIT 1`,
+    [MASTER_SIZES_KEY],
+  );
+
+  if (dbRes?.rows?.length > 0) {
+    const rawData =
+      typeof dbRes.rows[0].data === "string"
+        ? JSON.parse(dbRes.rows[0].data)
+        : dbRes.rows[0].data || {};
+    if (Array.isArray(rawData.sizes)) {
+      return dedupeSizeList(rawData.sizes);
+    }
+  }
+
+  let productSizes = [];
+  if (includeProductSizes) {
+    const allProducts = await Product.find({}).catch(() => []);
+    (allProducts || []).forEach((p) => {
+      if (Array.isArray(p?.sizes)) {
+        p.sizes.forEach((s) => productSizes.push(s));
+      }
+    });
+  }
+
+  const seeded = dedupeSizeList([...DEFAULT_SIZES, ...productSizes]);
+  await persistMasterSizes(seeded);
+  return seeded;
+};
+
+// GET /api/categories/sizes
+export const getSizes = async (req, res) => {
+  try {
+    const list = await loadMasterSizes({ includeProductSizes: true });
+    return res.json({
+      success: true,
+      data: list.map(formatSizeOption),
+    });
+  } catch (err) {
+    console.error("Error in getSizes:", err);
+    return res.json({
+      success: true,
+      data: DEFAULT_SIZES.map(formatSizeOption),
+    });
+  }
+};
+
+// POST /api/categories/sizes
+export const createSize = async (req, res) => {
+  try {
+    const rawName = String(req.body?.name || "").trim();
+    if (!rawName) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Size name is required" });
+    }
+
+    const current = await loadMasterSizes();
+    const existing = current.find(
+      (s) => s.toLowerCase() === rawName.toLowerCase(),
+    );
+    const canonical = existing || rawName;
+    const updated = existing ? current : dedupeSizeList([...current, canonical]);
+
+    if (!existing) {
+      await persistMasterSizes(updated);
+    }
+
+    return res.status(201).json({
+      success: true,
+      data: formatSizeOption(canonical),
+      list: updated,
+    });
+  } catch (err) {
+    console.error("Error in createSize:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// DELETE /api/categories/sizes/:name
+export const deleteSize = async (req, res) => {
+  try {
+    const rawName = decodeURIComponent(String(req.params?.name || "")).trim();
+    if (!rawName) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Size name is required" });
+    }
+
+    const current = await loadMasterSizes();
+    const filtered = current.filter(
+      (s) => s.toLowerCase() !== rawName.toLowerCase(),
+    );
+    await persistMasterSizes(filtered);
+
+    return res.json({
+      success: true,
+      data: { removed: rawName },
+      list: filtered,
+    });
+  } catch (err) {
+    console.error("Error in deleteSize:", err);
     return res.status(500).json({ success: false, message: err.message });
   }
 };

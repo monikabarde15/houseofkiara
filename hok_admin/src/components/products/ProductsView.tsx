@@ -10,6 +10,14 @@ import {
   getCanonicalProductId,
   isLiveProductStatus,
 } from "./utils/relatedProductsHelpers";
+import {
+  adaptFitDescForGender,
+  computeSizeFitSummary,
+  deriveLegacyMeasurementsFromSet,
+  formatMeasuredDateToday,
+  hasAnyMeasurementValue,
+  hydrateSizeFitSetFromProduct,
+} from "./utils/sizeFitEngine";
 import { useProductEditor } from "../hooks/useProductEditor";
 import { ProductHeader } from "./ProductHeader";
 import { ProductFilters } from "./ProductFilters";
@@ -69,6 +77,7 @@ interface ProductsViewProps {
   onAddOrder?: (newOrder: any) => void;
   onListerCreated?: (newLister: any) => void;
   onDesignerCreated?: (newDesigner: any) => void;
+  onOpenGlobalCalendar?: () => void;
   customers?: any[];
   initialProductId?: string;
 }
@@ -104,6 +113,35 @@ const computeLocalNextSku = (list: Product[], afterSku?: string): string => {
   return candidate;
 };
 
+const buildLivePdpUrl = (prod: Partial<Product>): string => {
+  const targetId = String(
+    (prod as any)?._id ||
+      prod?.productId ||
+      prod?.id ||
+      prod?.sku ||
+      prod?.urlSlug ||
+      "",
+  ).trim();
+  if (!targetId) return "";
+
+  const modes = (Array.isArray(prod?.listingModes) ? prod.listingModes : []).map(
+    (m) => String(m || "").toUpperCase(),
+  );
+  const rent = modes.some((m) => m.includes("RENT"));
+  const preloved = modes.some(
+    (m) => m.includes("PRELOVED") || m.includes("RE-SELL"),
+  );
+  const buyNew = modes.some((m) => m.includes("NEW") || m.includes("BUY"));
+  const encodedId = encodeURIComponent(targetId);
+
+  if (rent && preloved) return `/rentalandpreloved/${encodedId}`;
+  if (rent && buyNew) return `/rentalandbuy/${encodedId}`;
+  if (rent) return `/onlyrental/${encodedId}`;
+  if (preloved) return `/preloved/${encodedId}`;
+  if (buyNew) return `/buynew/${encodedId}`;
+  return `/product/${encodedId}`;
+};
+
 export default function ProductsView({
   products,
   orders = [],
@@ -123,6 +161,7 @@ export default function ProductsView({
   onAddOrder,
   onListerCreated,
   onDesignerCreated,
+  onOpenGlobalCalendar,
   customers = [],
   initialProductId,
 }: ProductsViewProps) {
@@ -197,6 +236,7 @@ export default function ProductsView({
     updateFormField,
     cancelEditing,
     setUploadingImages,
+    patchEditingProduct,
   } = useProductEditor();
 
   const resetForm = () => {
@@ -642,6 +682,16 @@ export default function ProductsView({
           "measurementsCm",
           "bestSuitedForHeight",
           "weight",
+          "set",
+          "fitDesc",
+          "fitNote",
+          "fitNotes",
+          "measuredBy",
+          "measuredOn",
+          "designerLabel",
+          "ownerSize",
+          "heightFrom",
+          "heightTo",
           "listingModes",
           "availability",
           "status",
@@ -862,6 +912,55 @@ export default function ProductsView({
         return out as Product;
       };
 
+      const syncedSet = hydrateSizeFitSetFromProduct(formData);
+      const syncedDerived = deriveLegacyMeasurementsFromSet(
+        syncedSet,
+        formData.heightFrom,
+        formData.heightTo,
+        (formData as any).gender,
+        formData.category,
+      );
+      const syncedHasSetMeasures = hasAnyMeasurementValue(syncedSet);
+      const syncedFitDesc = adaptFitDescForGender(
+        formData.fitDesc,
+        (formData as any).gender,
+        formData.category,
+      );
+      const syncedFitSummary = computeSizeFitSummary(syncedSet, {
+        category: formData.category,
+        gender: (formData as any).gender,
+        ownerSize: formData.ownerSize,
+        designerLabel: formData.designerLabel,
+        fitDesc: syncedFitDesc,
+        fitNote: formData.fitNote,
+        measuredBy: formData.measuredBy,
+        measuredOn: formData.measuredOn,
+      });
+      const syncedModesUpper = normalizeProductListingModes(formData.listingModes || []);
+      const syncedIsBuyNew = syncedModesUpper.includes("BUY NEW");
+      const syncedMeasuredOn = syncedHasSetMeasures
+        ? formData.measuredOn || formatMeasuredDateToday()
+        : formData.measuredOn || "";
+      const syncedMeasurements = syncedHasSetMeasures
+        ? syncedDerived.measurements
+        : {
+            bust: formData.measurements?.bust || "",
+            waist: formData.measurements?.waist || "",
+            hips: formData.measurements?.hips || "",
+            length: formData.measurements?.length || "",
+          };
+      const syncedMeasurementsCm = syncedHasSetMeasures
+        ? syncedDerived.measurementsCm
+        : formData.measurementsCm || {};
+      const syncedBestHeight =
+        syncedDerived.bestSuitedForHeight || formData.bestSuitedForHeight || "";
+      const syncedSizes =
+        syncedIsBuyNew && Array.isArray(formData.sizes) && formData.sizes.length > 0
+          ? formData.sizes
+          : syncedFitSummary.filterSizes.length > 0
+            ? syncedFitSummary.filterSizes
+            : formData.sizes || [];
+
       if (state.isAdding) {
         const newProduct: Product = sanitizeOutgoingProduct({
           ...formData,
@@ -925,14 +1024,20 @@ export default function ProductsView({
           extensionPrice: formData.extensionPrice,
           payoutPercentage: formData.payoutPercentage,
           payoutTerms: formData.payoutTerms || "",
-          measurements: {
-            bust: formData.measurements?.bust || "",
-            waist: formData.measurements?.waist || "",
-            hips: formData.measurements?.hips || "",
-            length: formData.measurements?.length || "",
-          },
-          measurementsCm: formData.measurementsCm || {},
-          bestSuitedForHeight: formData.bestSuitedForHeight || "",
+          measurements: syncedMeasurements,
+          measurementsCm: syncedMeasurementsCm,
+          bestSuitedForHeight: syncedBestHeight,
+          sizes: syncedSizes,
+          set: syncedSet,
+          fitDesc: syncedFitDesc || "Not said",
+          fitNote: formData.fitNote || "",
+          fitNotes: formData.fitNotes || "",
+          measuredBy: formData.measuredBy || "The HOK team",
+          measuredOn: syncedMeasuredOn,
+          designerLabel: formData.designerLabel || "",
+          ownerSize: formData.ownerSize || "",
+          heightFrom: formData.heightFrom || "",
+          heightTo: formData.heightTo || "",
           subtitle: formData.subtitle || "",
           honestDisclosure: formData.honestDisclosure || "",
           relatedProductIds: formData.relatedProductIds || [],
@@ -1133,32 +1238,72 @@ export default function ProductsView({
             formData.payoutTerms !== undefined
               ? formData.payoutTerms
               : state.editingProduct.payoutTerms,
-          measurements: {
-            bust:
-              formData.measurements?.bust !== undefined
-                ? formData.measurements.bust
-                : state.editingProduct.measurements?.bust || "",
-            waist:
-              formData.measurements?.waist !== undefined
-                ? formData.measurements.waist
-                : state.editingProduct.measurements?.waist || "",
-            hips:
-              formData.measurements?.hips !== undefined
-                ? formData.measurements.hips
-                : state.editingProduct.measurements?.hips || "",
-            length:
-              formData.measurements?.length !== undefined
-                ? formData.measurements.length
-                : state.editingProduct.measurements?.length || "",
-          },
-          measurementsCm:
-            formData.measurementsCm ||
-            state.editingProduct.measurementsCm ||
-            {},
+          sizes: syncedSizes,
+          measurements: syncedHasSetMeasures
+            ? syncedMeasurements
+            : {
+                bust:
+                  formData.measurements?.bust !== undefined
+                    ? formData.measurements.bust
+                    : state.editingProduct.measurements?.bust || "",
+                waist:
+                  formData.measurements?.waist !== undefined
+                    ? formData.measurements.waist
+                    : state.editingProduct.measurements?.waist || "",
+                hips:
+                  formData.measurements?.hips !== undefined
+                    ? formData.measurements.hips
+                    : state.editingProduct.measurements?.hips || "",
+                length:
+                  formData.measurements?.length !== undefined
+                    ? formData.measurements.length
+                    : state.editingProduct.measurements?.length || "",
+              },
+          measurementsCm: syncedHasSetMeasures
+            ? syncedMeasurementsCm
+            : formData.measurementsCm ||
+              state.editingProduct.measurementsCm ||
+              {},
           bestSuitedForHeight:
-            formData.bestSuitedForHeight !== undefined
-              ? formData.bestSuitedForHeight
-              : state.editingProduct.bestSuitedForHeight || "",
+            syncedBestHeight || state.editingProduct.bestSuitedForHeight || "",
+          set: syncedSet,
+          fitDesc:
+            formData.fitDesc !== undefined
+              ? syncedFitDesc
+              : adaptFitDescForGender(
+                  state.editingProduct.fitDesc || "Not said",
+                  (formData as any).gender || (state.editingProduct as any).gender,
+                  formData.category || state.editingProduct.category,
+                ),
+          fitNote:
+            formData.fitNote !== undefined
+              ? formData.fitNote
+              : state.editingProduct.fitNote || "",
+          fitNotes:
+            formData.fitNotes !== undefined
+              ? formData.fitNotes
+              : state.editingProduct.fitNotes || "",
+          measuredBy:
+            formData.measuredBy !== undefined
+              ? formData.measuredBy
+              : state.editingProduct.measuredBy || "The HOK team",
+          measuredOn: syncedMeasuredOn || state.editingProduct.measuredOn || "",
+          designerLabel:
+            formData.designerLabel !== undefined
+              ? formData.designerLabel
+              : state.editingProduct.designerLabel || "",
+          ownerSize:
+            formData.ownerSize !== undefined
+              ? formData.ownerSize
+              : state.editingProduct.ownerSize || "",
+          heightFrom:
+            formData.heightFrom !== undefined
+              ? formData.heightFrom
+              : state.editingProduct.heightFrom || "",
+          heightTo:
+            formData.heightTo !== undefined
+              ? formData.heightTo
+              : state.editingProduct.heightTo || "",
           subtitle:
             formData.subtitle !== undefined
               ? formData.subtitle
@@ -1373,34 +1518,70 @@ export default function ProductsView({
   };
 
   const handleArchive = async () => {
-    if (!formData.productId && !state.editingProduct) {
-      toast.error("No product to archive!");
+    const productId = String(
+      state.editingProduct?.productId ||
+        (state.editingProduct as any)?._id ||
+        state.editingProduct?.id ||
+        formData.productId ||
+        "",
+    ).trim();
+    if (!productId) {
+      toast.error("Save this product first before archiving.");
       return;
     }
-    if (!window.confirm("Are you sure you want to archive this product?"))
+
+    const isCurrentlyArchived =
+      String(formData.status || state.editingProduct?.status || "")
+        .trim()
+        .toLowerCase() === "archived";
+
+    if (
+      !window.confirm(
+        isCurrentlyArchived
+          ? "Restore this product from Archived back to Review?"
+          : "Are you sure you want to archive this product?",
+      )
+    ) {
       return;
+    }
     if (isSaving || isFinalSaving) return;
 
     setIsSaving(true);
     setIsFinalSaving(true);
 
     try {
-      const updatedProduct = {
-        ...state.editingProduct,
-        status: "Archived",
-      } as Product;
+      const res = isCurrentlyArchived
+        ? await productApi.restoreProduct(productId)
+        : await productApi.archiveProduct(productId);
+      const saved = res?.data || {
+        ...(state.editingProduct || {}),
+        ...formData,
+        status: isCurrentlyArchived ? "Review" : "Archived",
+      };
 
-      const result = await onUpdateProduct(updatedProduct);
-      console.log("✅ Product archived:", result);
+      patchEditingProduct({
+        status: saved.status,
+        ...(Array.isArray(saved.activityLog)
+          ? { activityLog: saved.activityLog }
+          : {}),
+      });
+      onProductPatched?.(saved as Product);
 
-      toast.success("🗑️ Product archived successfully!");
-      setIsSaving(false);
-      setIsFinalSaving(false);
+      toast.success(
+        isCurrentlyArchived
+          ? "Product restored! Status updated to Review."
+          : "Product archived! Status updated to Archived.",
+      );
     } catch (error) {
       console.error("❌ Archive error:", error);
-      toast.error("❌ Failed to archive product!");
-      setIsFinalSaving(false);
+      toast.error(
+        isCurrentlyArchived
+          ? "❌ Failed to restore product!"
+          : "❌ Failed to archive product!",
+      );
+    } finally {
       setIsSaving(false);
+      setIsFinalSaving(false);
     }
   };
 
@@ -1674,6 +1855,20 @@ export default function ProductsView({
                   isSaving={isSaving || isFinalSaving}
                   onAutoGenerateSku={handleAutoGenerateSku}
                   generatingSku={generatingSku}
+                  onSizeFitSaved={(patch) => {
+                    if (!state.editingProduct) return;
+                    const merged: Product = {
+                      ...state.editingProduct,
+                      ...formData,
+                      ...patch,
+                    };
+                    startEditing(merged, {
+                      preserveTab: true,
+                      skipSectionReload: true,
+                    });
+                    setFormData(merged);
+                    onProductPatched?.(merged);
+                  }}
                 />
               )}
               {state.activeTab === "Pricing" && (
@@ -1798,18 +1993,29 @@ export default function ProductsView({
             {(state.editingProduct || state.isAdding) && (
               <div className="w-full xl:w-[300px] 2xl:w-[330px] xl:shrink-0">
                 <ProductSidebar
-                  product={(state.editingProduct || formData) as Product}
+                  product={{ ...(state.editingProduct || {}), ...formData } as Product}
                   isNew={state.isAdding}
-                  onViewLive={() =>
-                    state.editingProduct?.urlSlug &&
-                    window.open(
-                      `/product/${state.editingProduct.urlSlug}`,
-                      "_blank",
-                    )
-                  }
+                  archiving={isSaving || isFinalSaving}
+                  onViewLive={() => {
+                    const liveUrl = buildLivePdpUrl({
+                      ...(state.editingProduct || {}),
+                      ...formData,
+                    });
+                    if (!liveUrl) {
+                      toast.error(
+                        "Save this product first to open its live page.",
+                      );
+                      return;
+                    }
+                    window.open(liveUrl, "_blank", "noopener,noreferrer");
+                  }}
                   onArchive={handleArchive}
                   onOpenGlobalCalendar={() => {
-                    console.log("Open global rental calendar");
+                    if (onOpenGlobalCalendar) {
+                      onOpenGlobalCalendar();
+                    } else {
+                      window.location.href = "/hok_admin/rental-calendar";
+                    }
                   }}
                 />
               </div>

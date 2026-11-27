@@ -36,6 +36,7 @@ interface SidebarProps {
   currentView: string;
   setView: (view: string) => void;
   siteName: string;
+  adminName?: string;
   isMobile?: boolean;
   onLogout: () => void;
   badges?: Record<string, number>;
@@ -101,6 +102,7 @@ const groups = [
 export default function Sidebar({
   currentView,
   setView,
+  adminName,
   isMobile,
   onLogout,
   badges = {},
@@ -144,21 +146,24 @@ export default function Sidebar({
     (r) => r.roleId === effectivePermissions.roleId,
   );
   const avatarColour = activeRoleObj?.colour || "#C6A05C";
+  const fallbackDisplayName = adminName || "Admin";
   const footerDisplayName = preview.active
     ? preview.personFirstName
       ? `Previewing ${preview.personFirstName}`
       : "Previewing a role"
     : currentPerson?.shownOnRecordsAs ||
-      getFirstName(currentPerson?.fullName || "Soumya");
+      getFirstName(currentPerson?.fullName || fallbackDisplayName);
   const footerSubtitle = preview.active
     ? `${effectivePermissions.roleName} · click to stop`
-    : effectivePermissions.roleName || "Founder";
+    : effectivePermissions.roleName || "Team Member";
   const footerInitials = preview.active
     ? computeInitials(
         preview.personFirstName || effectivePermissions.roleName || "Role",
       )
     : computeInitials(
-        currentPerson?.fullName || currentPerson?.shownOnRecordsAs || "Soumya",
+        currentPerson?.fullName ||
+          currentPerson?.shownOnRecordsAs ||
+          fallbackDisplayName,
       );
 
   const handleUserCardClick = () => {

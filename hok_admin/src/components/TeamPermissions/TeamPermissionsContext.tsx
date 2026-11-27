@@ -75,6 +75,11 @@ interface TeamPermissionsContextValue {
     description: string,
   ) => void;
   addDraftRole: (name: string, copyFromRoleId: string | null) => RoleRecord;
+  createRoleNow: (
+    name: string,
+    copyFromRoleId: string | null,
+    description?: string,
+  ) => Promise<RoleRecord>;
   duplicateDraftRole: (sourceRoleId: string) => RoleRecord | null;
   archiveDraftRole: (roleId: string) => void;
   restoreArchivedDraftRole: (roleId: string) => void;
@@ -147,17 +152,28 @@ const DEFAULT_FOUNDER_PERMISSIONS: EffectivePermissions =
     isFixed: true,
   });
 
+const RESTRICTED_EMPTY_PERMISSIONS: EffectivePermissions = {
+  roleId: "",
+  roleName: "",
+  isFounder: false,
+  levels: {},
+  decisions: [],
+  openSectionsCount: 0,
+};
+
 export const TeamPermissionsProvider: React.FC<{
   adminSession: authApi.AdminSession | null;
   currentView: string;
   onNavigateView: (view: string) => void;
   onSessionRefresh?: (updatedAdmin: any) => void;
+  onForceLogout?: (reason?: string) => void;
   children: React.ReactNode;
 }> = ({
   adminSession,
   currentView,
   onNavigateView,
   onSessionRefresh,
+  onForceLogout,
   children,
 }) => {
   const [loading, setLoading] = useState(true);
@@ -272,10 +288,23 @@ export const TeamPermissionsProvider: React.FC<{
     const load = async () => {
       setLoading(true);
       try {
-        const me = await authApi.getMe().catch(() => null);
+        let me: any = null;
+        try {
+          me = await authApi.getMe();
+        } catch (err: any) {
+          if (!mounted) return;
+          if (onForceLogout) {
+            onForceLogout(
+              err?.message || "Your session has ended. Please sign in again.",
+            );
+          }
+          setLoading(false);
+          return;
+        }
         if (!mounted) return;
-        const isFounder =
-          me?.admin?.isFounder ?? adminSession?.admin?.isFounder ?? true;
+        const isFounder = Boolean(
+          me?.admin?.isFounder ?? adminSession?.admin?.isFounder ?? false,
+        );
         if (me?.admin && onSessionRefresh) {
           onSessionRefresh(me.admin);
         }
@@ -296,6 +325,37 @@ export const TeamPermissionsProvider: React.FC<{
       mounted = false;
     };
   }, [adminSession?.token]);
+
+  // Live permission/status sync when window regains focus (throttled 20s)
+  const lastFocusSyncRef = useRef<number>(0);
+  useEffect(() => {
+    if (!adminSession?.token) return;
+    const handleFocus = async () => {
+      const now = Date.now();
+      if (now - lastFocusSyncRef.current < 20000) return;
+      lastFocusSyncRef.current = now;
+      try {
+        const me = await authApi.getMe();
+        if (me?.admin && onSessionRefresh) {
+          onSessionRefresh(me.admin);
+        }
+        if (me?.person?.personId) {
+          setCurrentPersonId(me.person.personId);
+        }
+        if (me?.admin?.isFounder) {
+          await refreshBootstrap();
+        } else {
+          await refreshRoster();
+        }
+      } catch (err: any) {
+        onForceLogout?.(
+          err?.message || "Your session has ended. Please sign in again.",
+        );
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [adminSession?.token, refreshBootstrap, refreshRoster, onForceLogout]);
 
   // Spec 4.6: Leaving Team & Permissions closes the person panel
   useEffect(() => {
@@ -337,8 +397,11 @@ export const TeamPermissionsProvider: React.FC<{
     if (adminSession?.admin?.permissions) {
       return adminSession.admin.permissions;
     }
-    return DEFAULT_FOUNDER_PERMISSIONS;
-  }, [currentRole, adminSession?.admin?.permissions]);
+    if (adminSession?.admin?.isFounder === true) {
+      return DEFAULT_FOUNDER_PERMISSIONS;
+    }
+    return RESTRICTED_EMPTY_PERMISSIONS;
+  }, [currentRole, adminSession?.admin?.permissions, adminSession?.admin?.isFounder]);
 
   const effectivePermissions = useMemo<EffectivePermissions>(() => {
     if (preview.active && actualPermissions.isFounder) {
@@ -605,6 +668,36 @@ export const TeamPermissionsProvider: React.FC<{
       return newRole;
     },
     [draftRoles, updateDraft],
+  );
+
+  const createRoleNow = useCallback(
+    async (
+      name: string,
+      copyFromRoleId: string | null,
+      description?: string,
+    ): Promise<RoleRecord> => {
+      const res = await tpApi.createTeamRole({
+        name: name.trim(),
+        copyFromRoleId,
+        description: description?.trim() || "",
+      });
+      setRoles(res.roles || []);
+      if (res.historyEntry) {
+        setHistory((prev) => [res.historyEntry, ...prev]);
+      }
+      setDraftRolesState((prev) => {
+        if (!prev) return null;
+        return prev.some((r) => r.roleId === res.role.roleId)
+          ? prev
+          : [...prev, res.role];
+      });
+      showPanelToast({
+        boldPrefix: "Role added.",
+        message: `${res.role.name} is saved and ready to assign on the Team tab.`,
+      });
+      return res.role;
+    },
+    [showPanelToast],
   );
 
   const duplicateDraftRole = useCallback(
@@ -1044,8 +1137,8 @@ export const TeamPermissionsProvider: React.FC<{
   const getSignedByLabel = useCallback(() => {
     const name =
       currentPerson?.shownOnRecordsAs ||
-      getFirstName(currentPerson?.fullName || adminSession?.admin?.name || "Soumya") ||
-      "Soumya";
+      getFirstName(currentPerson?.fullName || adminSession?.admin?.name || "Admin") ||
+      "Admin";
     const roleName = actualPermissions.roleName || "Founder";
     return `${name} (${roleName})`;
   }, [
@@ -1084,6 +1177,7 @@ export const TeamPermissionsProvider: React.FC<{
     toggleDraftDecision,
     renameOrDescribeDraftRole,
     addDraftRole,
+    createRoleNow,
     duplicateDraftRole,
     archiveDraftRole,
     restoreArchivedDraftRole,

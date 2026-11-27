@@ -10,7 +10,6 @@ import {
   RenameDescribeRoleDialog,
 } from "./roles/RoleDialogs";
 import { RolesMatrixTable } from "./roles/RolesMatrixTable";
-import { RolesSaveBar } from "./roles/RolesSaveBar";
 import {
   computeCoverageCheck,
   computeRolesTableLayout,
@@ -28,7 +27,7 @@ export const RolesTab: React.FC = () => {
     setDraftRoleLevel,
     toggleDraftDecision,
     renameOrDescribeDraftRole,
-    addDraftRole,
+    createRoleNow,
     duplicateDraftRole,
     archiveDraftRole,
     restoreArchivedDraftRole,
@@ -311,8 +310,8 @@ export const RolesTab: React.FC = () => {
       <NewRoleDialog
         open={newRoleOpen}
         draftRoles={draftRoles}
-        onConfirm={(name, copyFromRoleId) => {
-          addDraftRole(name, copyFromRoleId);
+        onConfirm={async (name, copyFromRoleId, description) => {
+          await createRoleNow(name, copyFromRoleId, description);
           scrollToFarRight();
         }}
         onClose={() => setNewRoleOpen(false)}
@@ -324,8 +323,6 @@ export const RolesTab: React.FC = () => {
         onBringBack={(roleId) => restoreArchivedDraftRole(roleId)}
         onClose={() => setArchivedOpen(false)}
       />
-
-      <RolesSaveBar />
     </div>
   );
 };

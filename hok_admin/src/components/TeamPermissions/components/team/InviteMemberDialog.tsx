@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Check, Copy } from "lucide-react";
 import * as tpApi from "../../../../services/teamPermissionsApi";
 import { useTeamPermissions } from "../../TeamPermissionsContext";
-import { FOUNDER_ROLE_ID, getFirstName } from "../../constants";
+import { FOUNDER_ROLE_ID, buildInviteUrl, getFirstName } from "../../constants";
 import { TpDialog } from "../SharedPrimitives";
 import { isShownNameUsedInList, suggestShownOnRecordsAs } from "./TeamUtils";
 
@@ -30,6 +31,15 @@ export const InviteMemberDialog: React.FC<InviteMemberDialogProps> = ({
   const [workEmail, setWorkEmail] = useState("");
   const [roleId, setRoleId] = useState("");
   const [whatsapp, setWhatsapp] = useState("+91");
+  const [accessSetup, setAccessSetup] = useState<"invite" | "password">("password");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [createdInviteInfo, setCreatedInviteInfo] = useState<{
+    email: string;
+    name: string;
+    inviteUrl: string;
+  } | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -45,6 +55,11 @@ export const InviteMemberDialog: React.FC<InviteMemberDialogProps> = ({
     setWorkEmail("");
     setRoleId("");
     setWhatsapp("+91");
+    setAccessSetup("password");
+    setPassword("");
+    setConfirmPassword("");
+    setCreatedInviteInfo(null);
+    setCopiedLink(false);
     setErrors({});
     setSubmitting(false);
     const t = window.setTimeout(() => fullNameRef.current?.focus(), 20);
@@ -67,6 +82,16 @@ export const InviteMemberDialog: React.FC<InviteMemberDialogProps> = ({
     });
   };
 
+  const handleCopyInviteUrl = async (url: string) => {
+    try {
+      await navigator.clipboard?.writeText(url);
+      setCopiedLink(true);
+      window.setTimeout(() => setCopiedLink(false), 2500);
+    } catch {
+      // ignore clipboard errors
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
@@ -81,7 +106,7 @@ export const InviteMemberDialog: React.FC<InviteMemberDialogProps> = ({
       nextErrors.fullName = "Add their name.";
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-      nextErrors.workEmail = "Add a work email the invite can go to.";
+      nextErrors.workEmail = "Add a work email they can sign in with.";
     } else if (
       members.some(
         (m) =>
@@ -100,6 +125,14 @@ export const InviteMemberDialog: React.FC<InviteMemberDialogProps> = ({
       if (digits.length < 10) {
         nextErrors.whatsappNumber =
           "Add the full number, with the country code.";
+      }
+    }
+
+    if (accessSetup === "password") {
+      if (password.length < 8) {
+        nextErrors.password = "Password must be at least 8 characters.";
+      } else if (password !== confirmPassword) {
+        nextErrors.confirmPassword = "Passwords do not match.";
       }
     }
 
@@ -137,21 +170,37 @@ export const InviteMemberDialog: React.FC<InviteMemberDialogProps> = ({
         workEmail: cleanEmail,
         roleId,
         whatsappNumber: cleanWa === "+91" ? "" : cleanWa,
+        ...(accessSetup === "password" ? { password } : {}),
       });
       applyMemberUpdate(res.member, res.historyEntry);
       triggerRowFlash(res.member.personId);
-      if (res.inviteToken && typeof window !== "undefined") {
-        const inviteUrl = `${window.location.origin}/?invite=${encodeURIComponent(res.inviteToken)}`;
-        navigator.clipboard?.writeText(inviteUrl).catch(() => {});
+      if (res.directLoginReady) {
+        showPanelToast({
+          boldPrefix: `${res.member.fullName} added.`,
+          message: `They can sign in now with ${res.member.workEmail}.`,
+        });
+        onClose();
+        return;
       }
-      showPanelToast({
-        boldPrefix: `Invite sent to ${res.member.workEmail}.`,
-        message: "",
-      });
-      onClose();
+
+      if (res.inviteToken) {
+        const inviteUrl = buildInviteUrl(res.inviteToken);
+        navigator.clipboard?.writeText(inviteUrl).catch(() => {});
+        setCreatedInviteInfo({
+          email: res.member.workEmail,
+          name: res.member.fullName,
+          inviteUrl,
+        });
+        showPanelToast({
+          boldPrefix: `Invite link ready for ${res.member.workEmail}.`,
+          message: "Copied to clipboard.",
+        });
+      } else {
+        onClose();
+      }
     } catch (err: any) {
       showPanelToast({
-        boldPrefix: "Could not send invite.",
+        boldPrefix: "Could not add team member.",
         message: err?.message || "Please check the fields.",
       });
     } finally {
@@ -159,11 +208,64 @@ export const InviteMemberDialog: React.FC<InviteMemberDialogProps> = ({
     }
   };
 
+  if (createdInviteInfo) {
+    return (
+      <TpDialog open={open} onClose={onClose} title="Invite link ready">
+        <p className="tp-dialog-body mb-4">
+          Share this private sign-in link with{" "}
+          <strong className="font-semibold text-[#1A1612]">
+            {createdInviteInfo.name}
+          </strong>{" "}
+          ({createdInviteInfo.email}). They will use it to set their password
+          and sign in. It works for 7 days.
+        </p>
+
+        <div className="p-3 rounded-[6px] bg-[#FAF7F2] border border-[#E6DCCB]">
+          <div className="text-[11px] uppercase tracking-[0.06em] font-semibold text-[#8A7E72] mb-1.5">
+            Sign-in invite link
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              readOnly
+              value={createdInviteInfo.inviteUrl}
+              onClick={(e) => (e.target as HTMLInputElement).select()}
+              className="tp-input !h-8 text-[12px] font-mono bg-white"
+            />
+            <button
+              type="button"
+              onClick={() => handleCopyInviteUrl(createdInviteInfo.inviteUrl)}
+              className="tp-btn-outline shrink-0 !h-8"
+            >
+              {copiedLink ? (
+                <>
+                  <Check className="h-3.5 w-3.5 text-[#4F6142]" />
+                  <span>Copied</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-3.5 w-3.5" />
+                  <span>Copy</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end mt-5">
+          <button type="button" onClick={onClose} className="tp-btn-gold">
+            Done
+          </button>
+        </div>
+      </TpDialog>
+    );
+  }
+
   return (
     <TpDialog open={open} onClose={onClose} title="Invite someone">
       <p className="tp-dialog-body mb-5">
-        They get an email with a link to set a password. Until they accept,
-        nothing is open to them.
+        Give a team member their own sign-in and role permissions. Set a password
+        now for instant sign-in, or generate an invite link.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -286,6 +388,92 @@ export const InviteMemberDialog: React.FC<InviteMemberDialogProps> = ({
 
         <div>
           <label className="block text-[12.5px] font-medium text-[#1A1612] mb-1.5">
+            Sign-in setup
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setAccessSetup("password");
+                clearError("password");
+                clearError("confirmPassword");
+              }}
+              className={`px-3 py-2 rounded-[6px] border text-left text-[12px] cursor-pointer transition-colors ${
+                accessSetup === "password"
+                  ? "border-[#C9A96E] bg-[#FAF4E8] text-[#1A1612] font-semibold"
+                  : "border-[#E6DCCB] bg-white text-[#5C5248] hover:bg-[#FAF7F2]"
+              }`}
+            >
+              Set password now
+              <span className="block text-[11px] font-normal text-[#6E6358] mt-0.5">
+                Can log in immediately
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setAccessSetup("invite");
+                clearError("password");
+                clearError("confirmPassword");
+              }}
+              className={`px-3 py-2 rounded-[6px] border text-left text-[12px] cursor-pointer transition-colors ${
+                accessSetup === "invite"
+                  ? "border-[#C9A96E] bg-[#FAF4E8] text-[#1A1612] font-semibold"
+                  : "border-[#E6DCCB] bg-white text-[#5C5248] hover:bg-[#FAF7F2]"
+              }`}
+            >
+              Create invite link
+              <span className="block text-[11px] font-normal text-[#6E6358] mt-0.5">
+                They set password via link
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {accessSetup === "password" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[12.5px] font-medium text-[#1A1612] mb-1.5">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="Min 8 characters"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  clearError("password");
+                  clearError("confirmPassword");
+                }}
+                className={`tp-input ${errors.password ? "has-error" : ""}`}
+              />
+              {errors.password && (
+                <p className="tp-field-error">{errors.password}</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-[12.5px] font-medium text-[#1A1612] mb-1.5">
+                Confirm password
+              </label>
+              <input
+                type="password"
+                placeholder="Re-enter password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  clearError("confirmPassword");
+                }}
+                className={`tp-input ${errors.confirmPassword ? "has-error" : ""}`}
+              />
+              {errors.confirmPassword && (
+                <p className="tp-field-error">{errors.confirmPassword}</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div>
+          <label className="block text-[12.5px] font-medium text-[#1A1612] mb-1.5">
             WhatsApp number (optional)
           </label>
           <input
@@ -317,7 +505,13 @@ export const InviteMemberDialog: React.FC<InviteMemberDialogProps> = ({
             className="tp-btn-gold"
             disabled={submitting}
           >
-            {submitting ? "Sending..." : "Send invite"}
+            {submitting
+              ? accessSetup === "password"
+                ? "Adding..."
+                : "Creating..."
+              : accessSetup === "password"
+                ? "Add & enable login"
+                : "Create invite link"}
           </button>
         </div>
       </form>

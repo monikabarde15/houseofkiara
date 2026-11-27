@@ -99,11 +99,21 @@ export default function App() {
   }, []);
 
   const [adminSession, setAdminSession] = useState<any>(() => authApi.getSession());
+  const [inviteMode, setInviteMode] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return Boolean(new URLSearchParams(window.location.search).get("invite"));
+  });
 
   const handleLogout = () => {
     authApi.logoutAdmin();
     setAdminSession(null);
     toast.success('Logged out successfully!');
+  };
+
+  const handleForceLogout = (reason?: string) => {
+    authApi.logoutAdmin();
+    setAdminSession(null);
+    toast.error(reason || 'Your session has ended. Please sign in again.');
   };
 
   const handleSessionRefresh = (updatedAdmin: any) => {
@@ -117,10 +127,11 @@ export default function App() {
     });
   };
 
-  if (!adminSession) {
+  if (!adminSession || inviteMode) {
     return (
       <AdminAuth
         onLogin={(session) => {
+          setInviteMode(false);
           setAdminSession(session);
           toast.success('Logged in successfully!');
         }}
@@ -134,6 +145,7 @@ export default function App() {
       currentView={currentView}
       onNavigateView={setView}
       onSessionRefresh={handleSessionRefresh}
+      onForceLogout={handleForceLogout}
     >
       <AdminWorkspace
         currentView={currentView}
@@ -175,11 +187,9 @@ function AdminWorkspace({
     dismissPanelToast,
   } = useTeamPermissions();
 
-  // Spec 9.1: When the panel opens on a section the role cannot open, move to first open section
-  const initialRedirectDoneRef = React.useRef(false);
+  // Spec 9.1: When the panel opens or role changes onto a section the role cannot open, move to first open section
   useEffect(() => {
-    if (tpLoading || initialRedirectDoneRef.current) return;
-    initialRedirectDoneRef.current = true;
+    if (tpLoading) return;
     const gov = resolveViewPermissionSection(currentView);
     const allowed =
       gov === 'roles_permissions'
@@ -188,7 +198,7 @@ function AdminWorkspace({
     if (!allowed) {
       setView(getFirstOpenSection());
     }
-  }, [tpLoading, currentView, effectivePermissions.isFounder, canOpenSection, getFirstOpenSection]);
+  }, [tpLoading, currentView, effectivePermissions.roleId, effectivePermissions.isFounder, canOpenSection, getFirstOpenSection]);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [enquiryNavIntent, setEnquiryNavIntent] = useState<{
     enquiryId?: string;
@@ -199,65 +209,96 @@ function AdminWorkspace({
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>(mockMessages);
   useEffect(() => {
+    if (tpLoading || !canOpenSection('messaging')) return;
     messageService
       .getMessages()
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) setMessages(data);
       })
       .catch(() => {});
-  }, []);
+  }, [tpLoading, canOpenSection]);
   // const [productBackHandler, setProductBackHandler] = useState<(() => void) | null>(null);
 
   // Consolidated global state synced with real database API
   const [customers, setCustomers] = useState<Customer[]>([]);
   useEffect(() => {
+    if (tpLoading || !canOpenSection('customers')) return;
     customerApi.getCustomers()
       .then(data => {
         setCustomers(Array.isArray(data) ? data : []);
       })
       .catch(err => console.error("Unable to load customers from API:", err));
-  }, []);
+  }, [tpLoading, canOpenSection]);
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
-  useEffect(() => { 
+  useEffect(() => {
+    if (tpLoading) return;
+    const canFetchProducts =
+      canOpenSection('products') ||
+      canOpenSection('orders') ||
+      canOpenSection('calendar') ||
+      canOpenSection('dashboard') ||
+      canOpenSection('reports') ||
+      canOpenSection('promotions');
+    if (!canFetchProducts) {
+      setProductsLoading(false);
+      return;
+    }
     const fetchAllProducts = () => {
       productApi.getProducts().then(setProducts).catch((error) => console.error('Unable to load products:', error)).finally(() => setProductsLoading(false)); 
     };
     fetchAllProducts();
     window.addEventListener('refreshProducts', fetchAllProducts);
     return () => window.removeEventListener('refreshProducts', fetchAllProducts);
-  }, []);
+  }, [tpLoading, canOpenSection]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
   useEffect(() => {
+    if (tpLoading) return;
+    if (!canOpenSection('orders')) {
+      setOrdersLoading(false);
+      return;
+    }
     orderApi
       .getOrders()
       .then(setOrders)
       .catch((error) => console.error('Unable to load orders:', error))
       .finally(() => setOrdersLoading(false));
-  }, []);
+  }, [tpLoading, canOpenSection]);
 
   // Refresh orders & products when switching into operational/calendar views or when tab regains focus so newly placed web/admin orders appear immediately
   useEffect(() => {
+    if (tpLoading) return;
     const refreshLiveOperations = () => {
-      orderApi
-        .getOrders()
-        .then((list) => {
-          if (Array.isArray(list)) setOrders(list);
-        })
-        .catch(() => {});
-      productApi
-        .getProducts()
-        .then((list) => {
-          if (Array.isArray(list)) setProducts(list);
-        })
-        .catch(() => {});
-      customerApi
-        .getCustomers()
-        .then((list) => {
-          if (Array.isArray(list)) setCustomers(list);
-        })
-        .catch(() => {});
+      if (canOpenSection('orders')) {
+        orderApi
+          .getOrders()
+          .then((list) => {
+            if (Array.isArray(list)) setOrders(list);
+          })
+          .catch(() => {});
+      }
+      if (
+        canOpenSection('products') ||
+        canOpenSection('orders') ||
+        canOpenSection('calendar') ||
+        canOpenSection('dashboard')
+      ) {
+        productApi
+          .getProducts()
+          .then((list) => {
+            if (Array.isArray(list)) setProducts(list);
+          })
+          .catch(() => {});
+      }
+      if (canOpenSection('customers')) {
+        customerApi
+          .getCustomers()
+          .then((list) => {
+            if (Array.isArray(list)) setCustomers(list);
+          })
+          .catch(() => {});
+      }
     };
 
     if (
@@ -278,18 +319,28 @@ function AdminWorkspace({
 
     window.addEventListener('focus', refreshLiveOperations);
     return () => window.removeEventListener('focus', refreshLiveOperations);
-  }, [currentView]);
+  }, [currentView, tpLoading, canOpenSection]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [offersLoading, setOffersLoading] = useState(true);
   useEffect(() => {
+    if (tpLoading) return;
+    if (!canOpenSection('offers')) {
+      setOffersLoading(false);
+      return;
+    }
     offerApi.getOffers()
       .then(setOffers)
       .catch((error) => console.error('Unable to load offers:', error))
       .finally(() => setOffersLoading(false));
-  }, []);
+  }, [tpLoading, canOpenSection]);
   const [enquiries, setEnquiries] = useState<enquiryApi.Enquiry[]>([]);
   const [enquiriesLoading, setEnquiriesLoading] = useState(true);
   useEffect(() => {
+    if (tpLoading) return;
+    if (!canOpenSection('enquiries')) {
+      setEnquiriesLoading(false);
+      return;
+    }
     const loadEnqs = () => {
       enquiryApi
         .getEnquiries()
@@ -301,21 +352,26 @@ function AdminWorkspace({
     if (currentView === 'enquiries' || currentView === 'dashboard') {
       loadEnqs();
     }
-  }, [currentView]);
+  }, [currentView, tpLoading, canOpenSection]);
   const [designers, setDesigners] = useState<Designer[]>([]);
   const [listers, setListers] = useState<any[]>([]);
-  useEffect(() => { listerApi.getListers().then((data) => setListers(Array.isArray(data) ? data : [])).catch((error) => { console.error('Unable to load listers:', error); setListers([]); }); }, []);
+  useEffect(() => {
+    if (tpLoading || !canOpenSection('listers')) return;
+    listerApi.getListers().then((data) => setListers(Array.isArray(data) ? data : [])).catch((error) => { console.error('Unable to load listers:', error); setListers([]); });
+  }, [tpLoading, canOpenSection]);
   const [calendarTasks, setCalendarTasks] = useState<any[]>([]);
   useEffect(() => {
+    if (tpLoading || !canOpenSection('calendar')) return;
     taskApi.getTasks()
       .then(data => setCalendarTasks(Array.isArray(data) ? data : []))
       .catch((error) => {
         console.error('Unable to load tasks:', error);
         setCalendarTasks([]);
       });
-  }, []);
+  }, [tpLoading, canOpenSection]);
   const [submissions, setSubmissions] = useState<any[]>([]);
   useEffect(() => {
+    if (tpLoading || !canOpenSection('lyp')) return;
     const loadSubs = () => {
       submissionService
         .getSubmissions()
@@ -328,7 +384,7 @@ function AdminWorkspace({
     if (currentView === 'dashboard' || currentView === 'lyp') {
       loadSubs();
     }
-  }, [currentView]);
+  }, [currentView, tpLoading, canOpenSection]);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(initialSiteSettings);
@@ -978,6 +1034,7 @@ function AdminWorkspace({
           onDesignerCreated={(newDes) => {
             setDesigners((curr) => [newDes, ...curr]);
           }}
+          onOpenGlobalCalendar={() => setView('calendar')}
           onListerCreated={(newLis) => {
             setListers((curr) => {
               const uid = newLis?.listerId || newLis?.id || newLis?._id;
@@ -1278,6 +1335,7 @@ function AdminWorkspace({
                 setMobileMenuOpen(false);
               }} 
               siteName={siteSettings.siteName}
+              adminName={adminSession?.admin?.shownOnRecordsAs || adminSession?.admin?.name}
               onLogout={handleLogout}
               badges={sidebarBadges}
               isMobile
@@ -1292,6 +1350,7 @@ function AdminWorkspace({
           currentView={currentView} 
           setView={setView} 
           siteName={siteSettings.siteName} 
+          adminName={adminSession?.admin?.shownOnRecordsAs || adminSession?.admin?.name}
           onLogout={handleLogout}
           badges={sidebarBadges}
         />
@@ -1334,7 +1393,7 @@ function AdminWorkspace({
                 >
                   &lt; Back to Messages
                 </button>
-              ) : currentView !== 'dashboard' ? (
+              ) : currentView !== 'dashboard' && canOpenSection('dashboard') ? (
                 <button
                   onClick={() => setView('dashboard')}
                   className="inline-flex h-8 items-center gap-1 rounded-md border border-[#E5DDD3] bg-white px-3 text-[11.5px] font-medium text-[#38332D] hover:bg-[#FAF8F5] transition cursor-pointer shadow-2xs mr-1"

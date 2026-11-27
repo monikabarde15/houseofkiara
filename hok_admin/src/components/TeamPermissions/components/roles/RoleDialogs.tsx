@@ -83,13 +83,19 @@ export const RenameDescribeRoleDialog: React.FC<{
 export const NewRoleDialog: React.FC<{
   open: boolean;
   draftRoles: RoleRecord[];
-  onConfirm: (name: string, copyFromRoleId: string | null) => void;
+  onConfirm: (
+    name: string,
+    copyFromRoleId: string | null,
+    description: string,
+  ) => Promise<void> | void;
   onClose: () => void;
 }> = ({ open, draftRoles, onConfirm, onClose }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [startFrom, setStartFrom] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const copyableRoles = draftRoles.filter(
     (r) => !r.archived && !r.isFixed && r.roleId !== "founder",
@@ -98,21 +104,31 @@ export const NewRoleDialog: React.FC<{
   useEffect(() => {
     if (!open) return;
     setName("");
+    setDescription("");
     setStartFrom("");
     setError(null);
+    setSaving(false);
     const t = window.setTimeout(() => inputRef.current?.focus(), 20);
     return () => window.clearTimeout(t);
   }, [open]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (saving) return;
     const err = validateRoleNameUnique(name, draftRoles);
     if (err) {
       setError(err);
       return;
     }
-    onConfirm(name.trim(), startFrom || null);
-    onClose();
+    setSaving(true);
+    try {
+      await onConfirm(name.trim(), startFrom || null, description.trim());
+      onClose();
+    } catch (submitErr: any) {
+      setError(submitErr?.message || "Could not add role. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -127,6 +143,7 @@ export const NewRoleDialog: React.FC<{
             type="text"
             placeholder="For example, Social Media Executive"
             value={name}
+            disabled={saving}
             onChange={(e) => {
               setName(e.target.value);
               setError(null);
@@ -142,6 +159,7 @@ export const NewRoleDialog: React.FC<{
           </label>
           <select
             value={startFrom}
+            disabled={saving}
             onChange={(e) => setStartFrom(e.target.value)}
             className="tp-select"
           >
@@ -157,12 +175,31 @@ export const NewRoleDialog: React.FC<{
           </p>
         </div>
 
+        <div>
+          <label className="block text-[12.5px] font-medium text-[#1A1612] mb-1.5">
+            What this person does (optional)
+          </label>
+          <textarea
+            rows={2}
+            placeholder="Shown when you invite someone and choose this role"
+            value={description}
+            disabled={saving}
+            onChange={(e) => setDescription(e.target.value)}
+            className="tp-textarea"
+          />
+        </div>
+
         <div className="flex items-center justify-end gap-2.5 pt-1">
-          <button type="button" onClick={onClose} className="tp-btn-outline">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={saving}
+            className="tp-btn-outline"
+          >
             Cancel
           </button>
-          <button type="submit" className="tp-btn-gold">
-            Add role
+          <button type="submit" disabled={saving} className="tp-btn-gold">
+            {saving ? "Adding..." : "Add role"}
           </button>
         </div>
       </form>

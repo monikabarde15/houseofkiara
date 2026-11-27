@@ -137,7 +137,7 @@ export const initialHomepageRegistry: HomepageRegistry = {
   featured: {
     eyebrow: 'Handpicked for You',
     heading: 'Featured *Pieces*',
-    viewAll: { lbl: 'View All →', url: '/rent/all' },
+    viewAll: { lbl: 'View All →', url: '/main-page?section=rent&mode=rent' },
     slots: ['HOK-SAB-002', 'HOK-MM-001', 'HOK-TT-001', 'HOK-AD-001'],
     shots: { 'HOK-SAB-002': 'On model' },
     cap: 4,

@@ -50,6 +50,37 @@ export default function RelatedProduct({
           // Curated items exist in admin, but none are currently Live — do not fall back to non-curated pieces.
           setRelatedProducts([]);
           setLoading(false);
+        } else if (
+          Array.isArray(product?.relatedProductIds) &&
+          product.relatedProductIds.length > 0
+        ) {
+          const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
+          const res = await fetch(`${backendUrl}/api/web-products`);
+          const data = await res.json();
+          if (data.success && Array.isArray(data.data)) {
+            const liveProducts = data.data.filter(
+              (p) => isLiveItem(p) && !isSameProduct(p),
+            );
+            const orderedCurated = [];
+            const seenKeys = new Set();
+            for (const rawId of product.relatedProductIds) {
+              const target = String(rawId || "").trim();
+              if (!target) continue;
+              const match = liveProducts.find(
+                (p) =>
+                  String(p.productId || "").trim() === target ||
+                  String(p._id || "").trim() === target ||
+                  String(p.id || "").trim() === target,
+              );
+              if (!match) continue;
+              const key = String(match.productId || match._id || match.id);
+              if (seenKeys.has(key)) continue;
+              seenKeys.add(key);
+              orderedCurated.push(match);
+            }
+            setRelatedProducts(orderedCurated);
+          }
+          setLoading(false);
         } else {
           const backendUrl =
             import.meta.env.VITE_BACKEND_URL || "";
@@ -94,18 +125,16 @@ export default function RelatedProduct({
     let isNew = item.isNew;
 
     if (Array.isArray(item.listingModes)) {
+      const upperModes = item.listingModes.map((m) =>
+        String(m || "").toUpperCase(),
+      );
       rent =
-        rent ||
-        item.listingModes.includes("RENTAL") ||
-        item.listingModes.includes("RENT");
+        rent || upperModes.some((m) => m.includes("RENT"));
       preloved =
         preloved ||
-        item.listingModes.includes("PRELOVED") ||
-        item.listingModes.includes("RE-SELL");
+        upperModes.some((m) => m.includes("PRELOVED") || m.includes("RE-SELL"));
       isNew =
-        isNew ||
-        item.listingModes.includes("BUY NEW") ||
-        item.listingModes.includes("BUY");
+        isNew || upperModes.some((m) => m.includes("NEW") || m.includes("BUY"));
     } else if (item.modes && typeof item.modes === "object") {
       rent = rent || item.modes.rent?.enabled;
       preloved = preloved || item.modes.preloved?.enabled;
@@ -129,6 +158,7 @@ export default function RelatedProduct({
       <div className="related-card" key={id}>
         <Link
           to={getDetailLink(item)}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <div className="related-img">

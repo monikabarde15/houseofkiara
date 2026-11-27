@@ -45,6 +45,8 @@ export interface RoleRecord {
 export interface TeamMemberRecord {
   personId: string;
   adminId?: string | null;
+  hasLoginAccount?: boolean;
+  inviteToken?: string | null;
   fullName: string;
   shownOnRecordsAs: string;
   olderSpellings: string[];

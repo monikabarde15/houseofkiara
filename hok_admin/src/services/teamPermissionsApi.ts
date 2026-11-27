@@ -58,16 +58,36 @@ export const inviteTeamMember = async (payload: {
   workEmail: string;
   roleId: string;
   whatsappNumber?: string;
+  password?: string;
 }): Promise<{
   message?: string;
   member: TeamMemberRecord;
   historyEntry: HistoryEntryRecord;
   inviteToken?: string;
+  directLoginReady?: boolean;
 }> => {
   const res = await apiRequest("/team-permissions/members/invite", {
     method: "POST",
     body: JSON.stringify(payload),
   });
+  return { ...res.data, message: res.message };
+};
+
+export const setTeamMemberPassword = async (
+  personId: string,
+  password: string,
+): Promise<{
+  message?: string;
+  member: TeamMemberRecord;
+  historyEntry: HistoryEntryRecord;
+}> => {
+  const res = await apiRequest(
+    `/team-permissions/members/${encodeURIComponent(personId)}/set-password`,
+    {
+      method: "POST",
+      body: JSON.stringify({ password }),
+    },
+  );
   return { ...res.data, message: res.message };
 };
 
@@ -218,6 +238,24 @@ export const reinviteTeamMember = async (
     `/team-permissions/members/${encodeURIComponent(personId)}/reinvite`,
     { method: "POST" },
   );
+  return { ...res.data, message: res.message };
+};
+
+export const createTeamRole = async (payload: {
+  name: string;
+  description?: string;
+  copyFromRoleId?: string | null;
+  colour?: string;
+}): Promise<{
+  message?: string;
+  role: RoleRecord;
+  roles: RoleRecord[];
+  historyEntry: HistoryEntryRecord;
+}> => {
+  const res = await apiRequest("/team-permissions/roles", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
   return { ...res.data, message: res.message };
 };
 

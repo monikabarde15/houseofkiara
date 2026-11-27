@@ -283,6 +283,16 @@ const PRODUCT_ALLOWED_KEYS = [
   "measurements",
   "measurementsCm",
   "bestSuitedForHeight",
+  "set",
+  "fitDesc",
+  "fitNote",
+  "fitNotes",
+  "measuredBy",
+  "measuredOn",
+  "designerLabel",
+  "ownerSize",
+  "heightFrom",
+  "heightTo",
   "weight",
   "listingModes",
   "availability",
@@ -690,6 +700,9 @@ const CATEGORY_ALLOWED_KEYS = [
   "name",
   "label",
   "slug",
+  "mainCategoryId",
+  "mainCategory",
+  "gender",
   "image",
   "description",
   "instructions",
@@ -1016,6 +1029,31 @@ export const applyRouteWhitelist = (req) => {
 
   // 13. Categories (/categories*)
   if (url.startsWith("/categories")) {
+    if (url.startsWith("/categories/size-fit-options")) {
+      req.body = pickAllowedKeys(
+        req.body,
+        new Set([
+          "listType",
+          "value",
+          "category",
+          "name",
+          "templatePieceId",
+          "masterPieces",
+          "categoryPieces",
+          "categoryAllowedPieces",
+          "categoryAddOptions",
+          "sizeGuides",
+          "measuredByOptions",
+          "howItFitsOptions",
+          "closureOptions",
+          "paddedOptions",
+          "cancanOptions",
+          "heightOptions",
+          "designerLabels",
+        ])
+      );
+      return;
+    }
     req.body = pickAllowedKeys(req.body, categoryAllowedSet);
     return;
   }

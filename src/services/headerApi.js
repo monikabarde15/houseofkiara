@@ -66,6 +66,40 @@ export function resolveItemStyle(item) {
 }
 
 /**
+ * Cleans /main-page?... dropdown URLs so clicking a specific sub-option
+ * applies only that single clicked filter (no extra parent section/mode/gender).
+ */
+export function stripExtraParentParams(rawPath) {
+  const path = String(rawPath || "").trim();
+  if (!path.startsWith("/main-page?")) return path;
+  const qIdx = path.indexOf("?");
+  const params = new URLSearchParams(path.slice(qIdx + 1));
+
+  const hasSpecific =
+    Boolean(params.get("category")) ||
+    Boolean(params.get("designer")) ||
+    Boolean(params.get("occasion")) ||
+    Boolean(params.get("condition")) ||
+    Boolean(params.get("minPrice")) ||
+    Boolean(params.get("maxPrice"));
+
+  if (hasSpecific) {
+    params.delete("section");
+    params.delete("mode");
+    params.delete("gender");
+  } else {
+    const sec = String(params.get("section") || "").toLowerCase();
+    if (["rent", "preloved", "new"].includes(sec)) {
+      params.delete("mode");
+      params.delete("gender");
+    }
+  }
+
+  const qs = params.toString();
+  return qs ? `/main-page?${qs}` : "/main-page";
+}
+
+/**
  * Fetches the active header configuration from the public API.
  */
 export async function getHeaderSettings(forceRefresh = false) {

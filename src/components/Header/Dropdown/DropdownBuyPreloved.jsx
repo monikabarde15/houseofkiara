@@ -1,5 +1,6 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { stripExtraParentParams } from "../../../services/headerApi";
 import { useNavigate } from "react-router-dom";
 
 
@@ -31,8 +32,8 @@ const DropdownBuyPreloved = ({ columns }) => {
                   onClick={() =>
                     navigate(
                       cat.path?.startsWith('/main-page')
-                        ? cat.path
-                        : `/main-page?section=preloved&category=${encodeURIComponent(cat.label)}`
+                        ? stripExtraParentParams(cat.path)
+                        : `/main-page?category=${encodeURIComponent(cat.label)}`
                     )
                   }
                 >
@@ -46,7 +47,7 @@ const DropdownBuyPreloved = ({ columns }) => {
                   className="dd-cat"
                   onClick={() =>
                     navigate(
-                      `/main-page?section=preloved&category=${encodeURIComponent(category)}`
+                      `/main-page?category=${encodeURIComponent(category)}`
                     )
                   }
                 >
@@ -65,8 +66,8 @@ const DropdownBuyPreloved = ({ columns }) => {
                   onClick={() =>
                     navigate(
                       item.path?.startsWith('/main-page')
-                        ? item.path
-                        : `/main-page?section=preloved&condition=${encodeURIComponent(item.label)}`
+                        ? stripExtraParentParams(item.path)
+                        : `/main-page?condition=${encodeURIComponent(item.label)}`
                     )
                   }
                 >
@@ -80,7 +81,7 @@ const DropdownBuyPreloved = ({ columns }) => {
                   className="dd-link"
                   onClick={() =>
                     navigate(
-                      `/main-page?section=preloved&condition=${encodeURIComponent(item)}`
+                      `/main-page?condition=${encodeURIComponent(item)}`
                     )
                   }
                 >
@@ -109,7 +110,7 @@ const DropdownBuyPreloved = ({ columns }) => {
                 }`}
               onClick={() =>
                 navigate(
-                  `/main-page?section=preloved&designer=${encodeURIComponent(
+                  `/main-page?designer=${encodeURIComponent(
                     designer.label
                   )}`
                 )
@@ -128,10 +129,7 @@ const DropdownBuyPreloved = ({ columns }) => {
               key={price.label}
               className="dd-link"
               onClick={() => {
-                const params =
-                  new URLSearchParams({
-                    section: "preloved",
-                  });
+                const params = new URLSearchParams();
 
                 if (
                   price.min !== null

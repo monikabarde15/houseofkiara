@@ -307,6 +307,42 @@ export const enforceSectionIfAdmin = (sectionId, minLevel = "Edit") => {
   };
 };
 
+export const enforceAnySectionIfAdmin = (sectionIds = [], minLevel = "Edit") => {
+  return async (req, res, next) => {
+    try {
+      const admin = await resolveOptionalAdmin(req);
+      if (!admin) return next();
+      const check = await attachAdminPermissions(req, admin);
+      if (check.blockedStatus) {
+        return res.status(check.blockedStatus).json({
+          success: false,
+          message: check.message,
+        });
+      }
+      if (!req.effectivePermissions || req.effectivePermissions.isFounder) {
+        return next();
+      }
+      const allowed = (Array.isArray(sectionIds) ? sectionIds : []).some(
+        (secId) => {
+          const actual = req.effectivePermissions.levels?.[secId] || "Hidden";
+          return LEVEL_RANK[actual] >= LEVEL_RANK[minLevel];
+        },
+      );
+      if (allowed) return next();
+
+      const primarySecId = sectionIds[0] || "";
+      const secLabel = SECTION_BY_ID[primarySecId]?.label || primarySecId;
+      const roleName = req.effectivePermissions.roleName || "your role";
+      return res.status(403).json({
+        success: false,
+        message: `This needs ${minLevel} access on ${secLabel}. Your role (${roleName}) does not allow this.`,
+      });
+    } catch (error) {
+      return next();
+    }
+  };
+};
+
 export const enforceDecisionIfAdmin = (decisionId) => {
   return async (req, res, next) => {
     try {

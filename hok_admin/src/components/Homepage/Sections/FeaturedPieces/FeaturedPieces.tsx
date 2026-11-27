@@ -87,7 +87,7 @@ const FeaturedPieces: React.FC = () => {
   const [eyebrow, setEyebrow] = useState("Handpicked for You");
   const [heading, setHeading] = useState("Featured *Pieces*");
   const [viewAllLabel, setViewAllLabel] = useState("View All →");
-  const [viewAllLink, setViewAllLink] = useState("/rent/all");
+  const [viewAllLink, setViewAllLink] = useState("/main-page?section=rent&mode=rent");
 
   const [pieces, setPieces] = useState<Piece[]>(initialPieces);
   const [selectedSku, setSelectedSku] = useState(initialPieces[0].sku);

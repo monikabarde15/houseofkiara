@@ -126,7 +126,9 @@ let inMemoryHiw = {
 export const DEFAULT_FEATURED_SETTINGS = {
   eyebrow: "Handpicked for You",
   heading: "Featured *Pieces*",
-  viewAll: { lbl: "View All →", url: "/rent/all" },
+  // viewAll: { lbl: "View All →", url: "/rent/all" },
+  viewAll: { lbl: "View All →", url: "/main-page" },
+
   slots: ["HOK-SAB-002", "HOK-MM-001", "HOK-TT-001", "HOK-AD-001"],
   shots: { "HOK-SAB-002": "On model" },
   cap: 4,
@@ -1086,7 +1088,7 @@ export const getHomepageData = async (req, res) => {
 export const updateHeroSection = async (req, res) => {
   try {
     const body = req.body || {};
-    
+
     // Support either direct hero settings or wrapped object
     const heroSettings = body.hero || (body.heading || body.eyebrow ? body : body.settings) || {};
     const isVisible = typeof body.isVisible === "boolean" ? body.isVisible : typeof body.isShown === "boolean" ? body.isShown : inMemoryHero.isVisible;
@@ -1410,14 +1412,14 @@ export const updateDesignersSection = async (req, res) => {
       typeof body.isVisible === "boolean"
         ? body.isVisible
         : typeof body.isShown === "boolean"
-        ? body.isShown
-        : inMemoryDesigners.isVisible;
+          ? body.isShown
+          : inMemoryDesigners.isVisible;
     const orderIndex =
       typeof body.order === "number"
         ? body.order
         : typeof body.orderIndex === "number"
-        ? body.orderIndex
-        : inMemoryDesigners.orderIndex;
+          ? body.orderIndex
+          : inMemoryDesigners.orderIndex;
 
     const currentRecord = await getDesignersSectionFromDb();
     const updatedData = {
@@ -1474,14 +1476,14 @@ export const updateTestimonialsSection = async (req, res) => {
       typeof body.isVisible === "boolean"
         ? body.isVisible
         : typeof body.isShown === "boolean"
-        ? body.isShown
-        : inMemoryTestimonials.isVisible;
+          ? body.isShown
+          : inMemoryTestimonials.isVisible;
     const orderIndex =
       typeof body.order === "number"
         ? body.order
         : typeof body.orderIndex === "number"
-        ? body.orderIndex
-        : inMemoryTestimonials.orderIndex;
+          ? body.orderIndex
+          : inMemoryTestimonials.orderIndex;
 
     const currentRecord = await getTestimonialsSectionFromDb();
     const updatedData = {
@@ -1538,14 +1540,14 @@ export const updateInstagramSection = async (req, res) => {
       typeof body.isVisible === "boolean"
         ? body.isVisible
         : typeof body.isShown === "boolean"
-        ? body.isShown
-        : inMemoryInstagram.isVisible;
+          ? body.isShown
+          : inMemoryInstagram.isVisible;
     const orderIndex =
       typeof body.order === "number"
         ? body.order
         : typeof body.orderIndex === "number"
-        ? body.orderIndex
-        : inMemoryInstagram.orderIndex;
+          ? body.orderIndex
+          : inMemoryInstagram.orderIndex;
 
     const currentRecord = await getInstagramSectionFromDb();
     const updatedData = {

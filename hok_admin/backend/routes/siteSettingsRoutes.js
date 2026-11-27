@@ -145,7 +145,7 @@ export const DEFAULT_HEADER_SETTINGS = {
             { id: "l4", label: "Sharara Sets", path: "/rent/sharara" },
             { id: "l5", label: "Sherwanis", path: "/rent/sherwanis" },
             { id: "l6", label: "Kurta Sets", path: "/rent/kurta" },
-            { id: "l7", label: "See all categories", path: "/rent/all", position: "last" },
+            { id: "l7", label: "See all categories", path: "/main-page?section=rent&mode=rent", position: "last" },
           ],
         },
         {
@@ -237,7 +237,7 @@ export const DEFAULT_HEADER_SETTINGS = {
             { id: "bn3", label: "Anarkalis", path: "/new/anarkalis" },
             { id: "bn4", label: "Sharara Sets", path: "/new/sharara" },
             { id: "bn5", label: "Sherwanis", path: "/new/sherwanis" },
-            { id: "bn6", label: "See all categories", path: "/new/all", position: "last" },
+            { id: "bn6", label: "See all categories", path: "/main-page?section=new", position: "last" },
           ],
         },
         {
@@ -250,7 +250,7 @@ export const DEFAULT_HEADER_SETTINGS = {
             { id: "bn10", label: "Raw Mango", path: "/new/rawmango" },
             { id: "bn11", label: "Torani", path: "/new/torani" },
             { id: "bn12", label: "Ekaya", path: "/new/ekaya" },
-            { id: "bn13", label: "See all designers", path: "/new/all", position: "last" },
+            { id: "bn13", label: "See all designers", path: "/main-page?section=new", position: "last" },
           ],
         },
       ],
@@ -275,7 +275,7 @@ export const DEFAULT_HEADER_SETTINGS = {
             { id: "w4", label: "Sharara Sets", path: "/women/sharara" },
             { id: "w5", label: "Kurta Sets", path: "/women/kurta" },
             { id: "w6", label: "Gowns", path: "/women/gowns" },
-            { id: "w7", label: "See all", path: "/women/all", position: "last" },
+            { id: "w7", label: "See all", path: "/main-page?section=women&gender=Women", position: "last" },
           ],
         },
         {
@@ -319,7 +319,7 @@ export const DEFAULT_HEADER_SETTINGS = {
             { id: "m3", label: "Kurta Sets", path: "/men/kurta" },
             { id: "m4", label: "Indo-Western", path: "/men/indowestern" },
             { id: "m5", label: "Nehru Jackets", path: "/men/nehru" },
-            { id: "m6", label: "See all", path: "/men/all", position: "last" },
+            { id: "m6", label: "See all", path: "/main-page?section=men&gender=Men", position: "last" },
           ],
         },
         {
@@ -371,7 +371,7 @@ export const DEFAULT_HEADER_SETTINGS = {
           links: [
             { id: "o8", label: "Rent for the occasion", path: "/occ/rent" },
             { id: "o9", label: "Buy Preloved", path: "/preloved/all" },
-            { id: "o10", label: "Buy New", path: "/new/all" },
+            { id: "o10", label: "Buy New", path: "/main-page?section=new" },
           ],
         },
         {
@@ -406,7 +406,7 @@ export const DEFAULT_HEADER_SETTINGS = {
             { id: "d5", label: "Raw Mango", path: "/des/rawmango" },
             { id: "d6", label: "Abu Jani Sandeep", path: "/des/ajs" },
             { id: "d7", label: "Torani", path: "/des/torani" },
-            { id: "d8", label: "A–Z index", path: "/designers/index", position: "last" },
+            { id: "d8", label: "A–Z index", path: "/main-page?section=designers", position: "last" },
           ],
         },
         {
@@ -532,19 +532,19 @@ export function normalizeHeaderSettings(raw) {
       menuEnabled: typeof item.menuEnabled === "boolean" ? item.menuEnabled : false,
       menuColumns: Array.isArray(item.menuColumns)
         ? item.menuColumns.map((col, cIdx) => ({
-            id: col.id || `col-${cIdx + 1}`,
-            heading: col.heading || "",
-            hidden: !!col.hidden,
-            links: Array.isArray(col.links)
-              ? col.links.map((lnk, lIdx) => ({
-                  id: lnk.id || `l-${lIdx + 1}`,
-                  label: lnk.label || "",
-                  path: lnk.path || "",
-                  position: lnk.position || undefined,
-                  hidden: !!lnk.hidden,
-                }))
-              : [],
-          }))
+          id: col.id || `col-${cIdx + 1}`,
+          heading: col.heading || "",
+          hidden: !!col.hidden,
+          links: Array.isArray(col.links)
+            ? col.links.map((lnk, lIdx) => ({
+              id: lnk.id || `l-${lIdx + 1}`,
+              label: lnk.label || "",
+              path: lnk.path || "",
+              position: lnk.position || undefined,
+              hidden: !!lnk.hidden,
+            }))
+            : [],
+        }))
         : [],
       isExpanded: !!item.isExpanded,
     }));
@@ -689,10 +689,10 @@ export function normalizeFooterSettings(raw, context = {}) {
       heading: col.heading || "",
       links: Array.isArray(col.links)
         ? col.links.map((lnk, lIdx) => ({
-            id: lnk.id || `fl-${lIdx + 1}`,
-            label: lnk.label || "",
-            path: lnk.path || "",
-          }))
+          id: lnk.id || `fl-${lIdx + 1}`,
+          label: lnk.label || "",
+          path: lnk.path || "",
+        }))
         : [],
     }));
   } else {
@@ -813,8 +813,8 @@ export function normalizeAnnouncementSettings(raw) {
     typeof raw.showAcrossSite === "boolean"
       ? raw.showAcrossSite
       : typeof raw.enabled === "boolean"
-      ? raw.enabled
-      : DEFAULT_ANNOUNCEMENT_SETTINGS.showAcrossSite;
+        ? raw.enabled
+        : DEFAULT_ANNOUNCEMENT_SETTINGS.showAcrossSite;
 
   const howItMoves = raw.howItMoves || DEFAULT_ANNOUNCEMENT_SETTINGS.howItMoves;
   const loopTimeSeconds =
@@ -842,8 +842,8 @@ export function normalizeAnnouncementSettings(raw) {
         typeof m.italicSerif === "boolean"
           ? m.italicSerif
           : typeof m.printItalicSerif === "boolean"
-          ? m.printItalicSerif
-          : m.type === "italic",
+            ? m.printItalicSerif
+            : m.type === "italic",
       showsOn: m.showsOn || m.scope || "All pages",
       link: m.link || "",
       goLiveDate: m.goLiveDate || "",
@@ -2052,23 +2052,23 @@ export function normalizeRegionalSettings(raw) {
     timezone: validTimezones.includes(raw.timezone)
       ? raw.timezone
       : typeof raw.timezone === "string" && raw.timezone.trim()
-      ? raw.timezone.trim()
-      : DEFAULT_REGIONAL_SETTINGS.timezone,
+        ? raw.timezone.trim()
+        : DEFAULT_REGIONAL_SETTINGS.timezone,
     currency: validCurrencies.includes(raw.currency)
       ? raw.currency
       : typeof raw.currency === "string" && raw.currency.trim()
-      ? raw.currency.trim()
-      : DEFAULT_REGIONAL_SETTINGS.currency,
+        ? raw.currency.trim()
+        : DEFAULT_REGIONAL_SETTINGS.currency,
     dateFormat: validDateFormats.includes(raw.dateFormat)
       ? raw.dateFormat
       : typeof raw.dateFormat === "string" && raw.dateFormat.trim()
-      ? raw.dateFormat.trim()
-      : DEFAULT_REGIONAL_SETTINGS.dateFormat,
+        ? raw.dateFormat.trim()
+        : DEFAULT_REGIONAL_SETTINGS.dateFormat,
     numberFormat: validNumberFormats.includes(raw.numberFormat)
       ? raw.numberFormat
       : typeof raw.numberFormat === "string" && raw.numberFormat.trim()
-      ? raw.numberFormat.trim()
-      : DEFAULT_REGIONAL_SETTINGS.numberFormat,
+        ? raw.numberFormat.trim()
+        : DEFAULT_REGIONAL_SETTINGS.numberFormat,
   };
 }
 

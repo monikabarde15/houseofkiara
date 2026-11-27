@@ -274,6 +274,16 @@ export function useProductEditor() {
     console.log("🔄 Form reset for new product.");
   }, []);
 
+  const patchEditingProduct = useCallback((patch: Partial<Product>) => {
+    setState((prev) => ({
+      ...prev,
+      editingProduct: prev.editingProduct
+        ? { ...prev.editingProduct, ...patch }
+        : prev.editingProduct,
+    }));
+    setFormData((prev) => ({ ...prev, ...patch }));
+  }, []);
+
   return {
     state,
     formData,
@@ -287,6 +297,7 @@ export function useProductEditor() {
     setUploadingImages,
     getCleanFormData,
     normalizeListingModes,
+    patchEditingProduct,
     resetForm, // ✅ EXPORT KAR DIYA
   };
 }

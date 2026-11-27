@@ -1,5 +1,6 @@
 import Product from "../models/Product.js";
 import Designer from "../models/Designer.js";
+import Category from "../models/Category.js";
 import mongoose from "mongoose";
 import { pool } from "../config/db.js";
 import { validateProduct } from "../validations/productValidation.js";
@@ -8,6 +9,7 @@ import {
   resolveUniqueSku,
   withSkuLock,
 } from "../utils/skuGenerator.js";
+import { ensureDesignerEntry } from "./sizeFitOptionsController.js";
 
 // Ensure products.category supports long comma-separated multi-category strings
 pool
@@ -43,6 +45,26 @@ const assertDesignerExistsInRegistry = async (designerName) => {
   return { valid: true, canonicalName: String(matched.name).trim() };
 };
 
+const resolveGenderFromCategoryDb = async (categoryStr) => {
+  const tokens = String(categoryStr || "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  if (tokens.length === 0) return "";
+  const cats = await Category.find({}).catch(() => []);
+  for (const tok of tokens) {
+    const match = (cats || []).find((c) => {
+      const cn = String(c?.name || "").trim().toLowerCase();
+      return (
+        cn === tok ||
+        cn.replace(/s$/, "") === tok.replace(/s$/, "")
+      );
+    });
+    if (match?.mainCategory) return String(match.mainCategory).trim();
+  }
+  return "";
+};
+
 const normalize = (p) => {
   const obj = p.toObject();
   delete obj._data;
@@ -56,7 +78,7 @@ const productFilter = (id) => {
   if (mongoose.Types.ObjectId.isValid(id)) {
     return { _id: id };
   }
-  return { $or: [{ productId: id }, { sku: id }] };
+  return { $or: [{ productId: id }, { sku: id }, { urlSlug: id }] };
 };
 
 export const getNextSku = async (req, res) => {
@@ -78,6 +100,95 @@ export const getProducts = async (req, res) => {
   } catch (e) {
     res.status(500).json({ success: false, message: e.message });
   }
+};
+
+const isLiveProduct = (p) =>
+  !p?.status || String(p.status).trim().toLowerCase() === "live";
+
+const buildCuratedRelatedProducts = async (out, currentDoc) => {
+  const configuredIds = Array.isArray(out.relatedProductIds)
+    ? out.relatedProductIds
+        .map((relId) => String(relId || "").trim())
+        .filter(Boolean)
+    : [];
+  const hasCuratedRelated = configuredIds.length > 0;
+  let relatedProducts = [];
+
+  if (hasCuratedRelated) {
+    const validObjectIds = configuredIds.filter((relId) =>
+      /^[0-9a-fA-F]{24}$/.test(relId),
+    );
+    const queryOr = [{ productId: { $in: configuredIds } }];
+    if (validObjectIds.length > 0) {
+      queryOr.push({ _id: { $in: validObjectIds } });
+    }
+    const relDocs = await Product.find({ $or: queryOr }).catch(() => []);
+    const liveRelProds = (relDocs || []).filter(
+      (rp) =>
+        isLiveProduct(rp) &&
+        rp.productId !== currentDoc.productId &&
+        String(rp._id) !== String(currentDoc._id),
+    );
+
+    const seenKeys = new Set();
+    for (const reqId of configuredIds) {
+      const rp = liveRelProds.find(
+        (doc) =>
+          String(doc.productId || "").trim() === reqId ||
+          String(doc._id || "").trim() === reqId,
+      );
+      if (!rp) continue;
+      const canonical = rp.productId || String(rp._id);
+      if (seenKeys.has(canonical)) continue;
+      seenKeys.add(canonical);
+
+      const rpModes = (Array.isArray(rp.listingModes) ? rp.listingModes : [])
+        .map((m) => String(m || "").trim().toUpperCase())
+        .filter(Boolean);
+      const rpRent = rpModes.some((m) => m.includes("RENT"));
+      const rpPreloved = rpModes.some(
+        (m) => m.includes("PRELOVED") || m.includes("RE-SELL"),
+      );
+      const rpNew = rpModes.some(
+        (m) => m.includes("NEW") || m.includes("BUY"),
+      );
+      const rpImages = Array.isArray(rp.images)
+        ? rp.images.filter(Boolean)
+        : rp.image
+          ? [rp.image].filter(Boolean)
+          : [];
+
+      relatedProducts.push({
+        id: canonical,
+        _id: String(rp._id),
+        productId: canonical,
+        name: rp.name || rp.title || "Untitled Product",
+        designer: rp.designer || "House of Kaira",
+        status: rp.status || "Live",
+        category: rp.category || "",
+        image: rpImages[0] || "",
+        images: rpImages,
+        listingModes: rpModes,
+        modes: rpModes,
+        rent: rpRent,
+        preloved: rpPreloved,
+        isNew: rpNew,
+        badges: [
+          rpRent ? "RENT" : null,
+          rpPreloved ? "PRELOVED" : null,
+          rpNew ? "NEW" : null,
+        ].filter(Boolean),
+        rentPrice: rp.rentalPrice || rp.perDayRate || 0,
+        rentalPrice: rp.rentalPrice || rp.perDayRate || 0,
+        buyPrice: rp.listingPrice || 0,
+        listingPrice: rp.listingPrice || 0,
+        retailPrice: rp.originalRetailPrice || 0,
+        originalPrice: rp.originalRetailPrice || 0,
+      });
+    }
+  }
+
+  return { hasCuratedRelated, relatedProducts };
 };
 
 export const getProductById = async (req, res) => {
@@ -138,6 +249,18 @@ export const getProductById = async (req, res) => {
       out.overdueBlockedDates = overdue;
     } catch (err) {
       out.overdueBlockedDates = [];
+    }
+
+    try {
+      const { hasCuratedRelated, relatedProducts } =
+        await buildCuratedRelatedProducts(out, p);
+      out.hasCuratedRelated = hasCuratedRelated;
+      out.relatedProducts = relatedProducts;
+    } catch (err) {
+      out.hasCuratedRelated =
+        Array.isArray(out.relatedProductIds) &&
+        out.relatedProductIds.length > 0;
+      out.relatedProducts = [];
     }
 
     res.json({ success: true, data: out });
@@ -214,6 +337,10 @@ export const createProduct = async (req, res) => {
     if (!value.listerId || !String(value.listerId).trim()) {
       value.listerId = "LST-GENERAL";
     }
+    if ((!value.gender || !String(value.gender).trim()) && value.category) {
+      const resolvedGender = await resolveGenderFromCategoryDb(value.category);
+      if (resolvedGender) value.gender = resolvedGender;
+    }
 
     const created = await withSkuLock(async () => {
       const skuResolution = await resolveUniqueSku(Product, value.sku, {
@@ -235,6 +362,9 @@ export const createProduct = async (req, res) => {
     }
 
     const p = created.product;
+    if (p.designerLabel && String(p.designerLabel).trim()) {
+      await ensureDesignerEntry(p.designerLabel).catch(() => null);
+    }
     global.__webProductsCache = null; global.__webFiltersCache = null;
     res.status(201).json({ success: true, data: normalize(p) });
   } catch (e) {
@@ -281,6 +411,43 @@ export const updateProduct = async (req, res) => {
         cleanBody.measurementsCm !== undefined
           ? cleanBody.measurementsCm
           : existing.measurementsCm || {},
+      set: cleanBody.set !== undefined ? cleanBody.set : existing.set || [],
+      fitDesc:
+        cleanBody.fitDesc !== undefined
+          ? cleanBody.fitDesc
+          : existing.fitDesc || "",
+      fitNote:
+        cleanBody.fitNote !== undefined
+          ? cleanBody.fitNote
+          : existing.fitNote || "",
+      fitNotes:
+        cleanBody.fitNotes !== undefined
+          ? cleanBody.fitNotes
+          : existing.fitNotes || "",
+      measuredBy:
+        cleanBody.measuredBy !== undefined
+          ? cleanBody.measuredBy
+          : existing.measuredBy || "",
+      measuredOn:
+        cleanBody.measuredOn !== undefined
+          ? cleanBody.measuredOn
+          : existing.measuredOn || "",
+      designerLabel:
+        cleanBody.designerLabel !== undefined
+          ? cleanBody.designerLabel
+          : existing.designerLabel || "",
+      ownerSize:
+        cleanBody.ownerSize !== undefined
+          ? cleanBody.ownerSize
+          : existing.ownerSize || "",
+      heightFrom:
+        cleanBody.heightFrom !== undefined
+          ? cleanBody.heightFrom
+          : existing.heightFrom || "",
+      heightTo:
+        cleanBody.heightTo !== undefined
+          ? cleanBody.heightTo
+          : existing.heightTo || "",
       blockedDates:
         cleanBody.blockedDates !== undefined
           ? cleanBody.blockedDates
@@ -301,6 +468,10 @@ export const updateProduct = async (req, res) => {
         cleanBody.relatedProductIds !== undefined
           ? cleanBody.relatedProductIds
           : existing.relatedProductIds || [],
+      gender:
+        cleanBody.gender !== undefined
+          ? cleanBody.gender
+          : existing.gender || "",
       timesRented:
         cleanBody.timesRented !== undefined
           ? cleanBody.timesRented
@@ -312,6 +483,10 @@ export const updateProduct = async (req, res) => {
           ? cleanBody.reviewCount
           : existing.reviewCount || 0,
     };
+    if ((!updatedData.gender || !String(updatedData.gender).trim()) && updatedData.category) {
+      const resolvedGender = await resolveGenderFromCategoryDb(updatedData.category);
+      if (resolvedGender) updatedData.gender = resolvedGender;
+    }
 
     const coreOrPricingChanged = [
       "name",
@@ -392,6 +567,9 @@ export const updateProduct = async (req, res) => {
     }
 
     const p = updated.product;
+    if (p.designerLabel && String(p.designerLabel).trim()) {
+      await ensureDesignerEntry(p.designerLabel).catch(() => null);
+    }
     global.__webProductsCache = null; global.__webFiltersCache = null;
 
     res.json({ success: true, data: normalize(p) });
@@ -419,12 +597,13 @@ export const archiveProduct = async (req, res) => {
     const p = await Product.findOneAndUpdate(
       productFilter(req.params.id),
       {
-        status: "Archived",
+        $set: { status: "Archived" },
         $push: {
           activityLog: {
             action: "Product archived",
             user: req.body.user || "Admin",
             remarks: req.body.remarks || "",
+            date: new Date().toISOString().split("T")[0],
           },
         },
       },
@@ -446,12 +625,13 @@ export const restoreProduct = async (req, res) => {
     const p = await Product.findOneAndUpdate(
       productFilter(req.params.id),
       {
-        status: "Review",
+        $set: { status: "Review" },
         $push: {
           activityLog: {
             action: "Product restored for review",
             user: req.body.user || "Admin",
             remarks: req.body.remarks || "",
+            date: new Date().toISOString().split("T")[0],
           },
         },
       },
@@ -461,6 +641,7 @@ export const restoreProduct = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Product not found" });
+    global.__webProductsCache = null; global.__webFiltersCache = null;
     res.json({ success: true, data: normalize(p) });
   } catch (e) {
     res.status(422).json({ success: false, message: e.message });
@@ -567,13 +748,46 @@ export const updateListingModes = async (req, res) => {
 
 export const updateMeasurements = async (req, res) => {
   try {
-    const { measurements, measurementsCm, bestSuitedForHeight } = req.body;
-    const updateData = {}; // 👈 'any' HATAO
+    const {
+      measurements,
+      measurementsCm,
+      bestSuitedForHeight,
+      sizes,
+      set,
+      fitDesc,
+      fitNote,
+      fitNotes,
+      measuredBy,
+      measuredOn,
+      designerLabel,
+      ownerSize,
+      heightFrom,
+      heightTo,
+    } = req.body;
+    const updateData = {};
 
-    if (measurements) updateData.measurements = measurements;
-    if (measurementsCm) updateData.measurementsCm = measurementsCm;
+    if (measurements !== undefined) updateData.measurements = measurements;
+    if (measurementsCm !== undefined)
+      updateData.measurementsCm = measurementsCm;
     if (bestSuitedForHeight !== undefined)
       updateData.bestSuitedForHeight = bestSuitedForHeight;
+    if (Array.isArray(sizes)) updateData.sizes = sizes;
+    if (Array.isArray(set)) updateData.set = set;
+    if (fitDesc !== undefined) updateData.fitDesc = fitDesc;
+    if (fitNote !== undefined) updateData.fitNote = fitNote;
+    if (fitNotes !== undefined) updateData.fitNotes = fitNotes;
+    if (measuredBy !== undefined) updateData.measuredBy = measuredBy;
+    if (measuredOn !== undefined) updateData.measuredOn = measuredOn;
+    if (designerLabel !== undefined) updateData.designerLabel = designerLabel;
+    if (ownerSize !== undefined) updateData.ownerSize = ownerSize;
+    if (heightFrom !== undefined) updateData.heightFrom = heightFrom;
+    if (heightTo !== undefined) updateData.heightTo = heightTo;
+
+    const pieceCount = Array.isArray(set) ? set.length : 0;
+    const remarks =
+      pieceCount > 0
+        ? `Updated ${pieceCount} garment piece${pieceCount > 1 ? "s" : ""}`
+        : "";
 
     const p = await Product.findOneAndUpdate(
       productFilter(req.params.id),
@@ -581,8 +795,9 @@ export const updateMeasurements = async (req, res) => {
         ...updateData,
         $push: {
           activityLog: {
-            action: "Measurements updated",
+            action: "Size & Fit updated",
             user: req.body.user || "Admin",
+            remarks,
           },
         },
       },
@@ -593,12 +808,36 @@ export const updateMeasurements = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Product not found" });
+
+    let createdDesigner = null;
+    if (designerLabel !== undefined && String(designerLabel || "").trim()) {
+      const syncRes = await ensureDesignerEntry(designerLabel).catch(() => null);
+      if (syncRes?.created && syncRes?.designer) {
+        createdDesigner = syncRes.designer;
+      }
+    }
+
+    global.__webProductsCache = null;
+    global.__webFiltersCache = null;
+
     res.json({
       success: true,
       data: {
         measurements: p.measurements,
         measurementsCm: p.measurementsCm,
         bestSuitedForHeight: p.bestSuitedForHeight,
+        sizes: p.sizes,
+        set: p.set,
+        fitDesc: p.fitDesc,
+        fitNote: p.fitNote,
+        fitNotes: p.fitNotes,
+        measuredBy: p.measuredBy,
+        measuredOn: p.measuredOn,
+        designerLabel: p.designerLabel,
+        ownerSize: p.ownerSize,
+        heightFrom: p.heightFrom,
+        heightTo: p.heightTo,
+        ...(createdDesigner ? { createdDesigner } : {}),
       },
     });
   } catch (e) {

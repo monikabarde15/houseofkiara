@@ -97,7 +97,7 @@ const defaultNavigation: NavigationItem[] = [
           {
             id: "all",
             label: "See all categories",
-            link: "/rent/all",
+            link: "/main-page?section=rent&mode=rent",
             shown: true,
           },
         ],
@@ -277,12 +277,12 @@ export default function HeaderTab({
   const [navigation, setNavigation] = useState<NavigationItem[]>(
     navigationBlocks?.length
       ? navigationBlocks.map((item) => ({
-          ...item,
-          columns: (item.columns ?? []).map((column: any) => ({
-            ...column,
-            links: column.links ?? [],
-          })),
-        }))
+        ...item,
+        columns: (item.columns ?? []).map((column: any) => ({
+          ...column,
+          links: column.links ?? [],
+        })),
+      }))
       : defaultNavigation,
   );
 
@@ -557,9 +557,9 @@ export default function HeaderTab({
                     <span>
                       {item.columns.length
                         ? `${item.columns.length} columns · ${item.columns.reduce(
-                            (total, column) => total + column.links.length,
-                            0,
-                          )} links shown`
+                          (total, column) => total + column.links.length,
+                          0,
+                        )} links shown`
                         : `Goes straight to ${item.link}`}
                     </span>
 

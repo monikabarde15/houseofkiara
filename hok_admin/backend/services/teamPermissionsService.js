@@ -8,11 +8,9 @@ import Enquiry from "../models/Enquiry.js";
 import Offer from "../models/Offer.js";
 import Notification from "../models/Notification.js";
 import {
-  DEFAULT_HISTORY,
-  DEFAULT_MEMBERS,
-  DEFAULT_ROLES,
   DECISIONS,
   DECISION_BY_ID,
+  DEFAULT_ROLES,
   FOUNDER_ROLE_ID,
   SECTIONS,
   SECTION_BY_ID,
@@ -140,18 +138,20 @@ export function formatRoleForApi(roleDoc) {
   };
 }
 
-export function formatMemberForApi(memberDoc) {
+export function formatMemberForApi(memberDoc, options = {}) {
   const raw =
     typeof memberDoc?.toObject === "function" ? memberDoc.toObject() : memberDoc;
   if (!raw) return null;
-  return {
+  const status = normalizeMemberStatusForApi(raw.status);
+  const formatted = {
     personId: raw.personId,
     adminId: raw.adminId || null,
+    hasLoginAccount: Boolean(raw.adminId),
     fullName: raw.fullName,
     shownOnRecordsAs: raw.shownOnRecordsAs,
     olderSpellings: Array.isArray(raw.olderSpellings) ? raw.olderSpellings : [],
     roleId: raw.roleId,
-    status: normalizeMemberStatusForApi(raw.status),
+    status,
     workEmail: raw.workEmail,
     whatsappNumber: raw.whatsappNumber || "",
     addedAt: raw.addedAt || raw.createdAt || null,
@@ -164,6 +164,32 @@ export function formatMemberForApi(memberDoc) {
     leftOn: raw.leftOn || null,
     hasSignedInOnce: Boolean(raw.hasSignedInOnce),
   };
+  if (options.includeInviteToken && status === "Invited") {
+    formatted.inviteToken = raw.inviteToken || null;
+  }
+  return formatted;
+}
+
+export async function findLinkedAdminForMember(member) {
+  if (!member) return null;
+  if (member.adminId) {
+    const byId = await Admin.findById(member.adminId).catch(() => null);
+    if (byId) return byId;
+  }
+  if (member.personId) {
+    const byPerson = await Admin.findOne({ personId: member.personId }).catch(
+      () => null,
+    );
+    if (byPerson) return byPerson;
+  }
+  const emailLower = String(member.workEmail || "").toLowerCase().trim();
+  if (emailLower) {
+    const byEmail = await Admin.findOne({ email: emailLower }).catch(
+      () => null,
+    );
+    if (byEmail) return byEmail;
+  }
+  return null;
 }
 
 export function formatHistoryForApi(histDoc) {
@@ -199,17 +225,16 @@ export async function ensureTeamPermissionsSeeded() {
     try {
       await ensureTeamTables();
 
-      // 1. Ensure default roles exist
+      // 1. Ensure the system Founder role always exists (no sample roles auto-seeded)
       const existingRoles = await TeamRole.find({}).catch(() => []);
       const roleIds = new Set(existingRoles.map((r) => r.roleId));
-      for (const defRole of DEFAULT_ROLES) {
-        if (!roleIds.has(defRole.roleId)) {
-          await TeamRole.create({ ...defRole });
-        }
+      const founderDef = DEFAULT_ROLES.find((r) => r.roleId === FOUNDER_ROLE_ID);
+      if (founderDef && !roleIds.has(FOUNDER_ROLE_ID)) {
+        await TeamRole.create({ ...founderDef });
+        roleIds.add(FOUNDER_ROLE_ID);
       }
 
-      // 2. Seed only the two canonical doc/design users when team_members is empty,
-      //    and link matching Admin rows without auto-importing unrelated/test Admins.
+      // 2. Link existing Admin accounts and TeamMember rows (no sample users/history auto-seeded)
       const [admins, existingMembers] = await Promise.all([
         Admin.find({}).catch(() => []),
         TeamMember.find({}).catch(() => []),
@@ -219,49 +244,87 @@ export async function ensureTeamPermissionsSeeded() {
         admins.map((a) => [String(a.email || "").toLowerCase().trim(), a]),
       );
 
-      if (existingMembers.length === 0) {
-        for (const defMember of DEFAULT_MEMBERS) {
-          const emailLower = String(defMember.workEmail || "").toLowerCase().trim();
-          const matchedAdmin = adminByEmail.get(emailLower);
-          await TeamMember.create({
-            ...defMember,
-            adminId: matchedAdmin ? String(matchedAdmin._id) : null,
-            status: normalizeMemberStatusForDb(defMember.status),
-          });
-          if (matchedAdmin) {
-            matchedAdmin.personId = defMember.personId;
-            matchedAdmin.roleId = defMember.roleId;
-            matchedAdmin.status = normalizeMemberStatusForDb(defMember.status);
-            await matchedAdmin.save().catch(() => {});
+      const workingMembers = [...existingMembers];
+      for (const member of workingMembers) {
+        const emailLower = String(member.workEmail || "").toLowerCase().trim();
+        const matchedAdmin = adminByEmail.get(emailLower);
+        if (matchedAdmin) {
+          if (!member.adminId) {
+            member.adminId = String(matchedAdmin._id);
+            await member.save().catch(() => {});
           }
-        }
-      } else {
-        for (const member of existingMembers) {
-          const emailLower = String(member.workEmail || "").toLowerCase().trim();
-          const matchedAdmin = adminByEmail.get(emailLower);
-          if (matchedAdmin) {
-            if (!member.adminId) {
-              member.adminId = String(matchedAdmin._id);
-              await member.save().catch(() => {});
-            }
-            if (
-              matchedAdmin.personId !== member.personId ||
-              matchedAdmin.roleId !== member.roleId
-            ) {
-              matchedAdmin.personId = member.personId;
-              matchedAdmin.roleId = member.roleId;
-              await matchedAdmin.save().catch(() => {});
-            }
+          if (
+            matchedAdmin.personId !== member.personId ||
+            matchedAdmin.roleId !== member.roleId
+          ) {
+            matchedAdmin.personId = member.personId;
+            matchedAdmin.roleId = member.roleId;
+            await matchedAdmin.save().catch(() => {});
           }
         }
       }
 
-      // 3. Initial history lines from Fig 05 if history is empty
-      const historyCount = await TeamHistory.countDocuments({}).catch(() => 0);
-      if (historyCount === 0) {
-        for (const entry of DEFAULT_HISTORY) {
-          await TeamHistory.create({ ...entry }).catch(() => {});
+      // Sync any existing Admin accounts that are not yet linked to a TeamMember
+      for (const adm of admins) {
+        const admId = String(adm._id);
+        const admEmail = String(adm.email || "").toLowerCase().trim();
+        const linked = workingMembers.find(
+          (m) =>
+            m.adminId === admId ||
+            (adm.personId && m.personId === adm.personId) ||
+            (admEmail && String(m.workEmail || "").toLowerCase().trim() === admEmail),
+        );
+        if (linked) {
+          let dirtyMember = false;
+          if (!linked.adminId) {
+            linked.adminId = admId;
+            dirtyMember = true;
+          }
+          if (dirtyMember) await linked.save().catch(() => {});
+          if (adm.personId !== linked.personId || adm.roleId !== linked.roleId) {
+            adm.personId = linked.personId;
+            adm.roleId = linked.roleId;
+            await adm.save().catch(() => {});
+          }
+          continue;
         }
+        if (!admEmail) continue;
+
+        const baseName = String(adm.name || "").trim() || admEmail.split("@")[0];
+        const candidatePersonId = generateUniquePersonId(baseName, workingMembers);
+        let candidateShown = baseName;
+        if (isShownNameTaken(candidateShown, workingMembers)) {
+          candidateShown = `${baseName} (Admin)`;
+        }
+        if (isShownNameTaken(candidateShown, workingMembers)) {
+          candidateShown = `${baseName} (${candidatePersonId})`;
+        }
+
+        const roleId = roleIds.has(adm.roleId) ? adm.roleId : FOUNDER_ROLE_ID;
+        const ts = adm.createdAt || new Date().toISOString();
+        const createdMember = await TeamMember.create({
+          personId: candidatePersonId,
+          adminId: admId,
+          fullName: baseName,
+          shownOnRecordsAs: candidateShown,
+          olderSpellings: [],
+          roleId,
+          status: normalizeMemberStatusForDb(adm.status || "Active"),
+          workEmail: admEmail,
+          whatsappNumber: "",
+          addedAt: ts,
+          addedBy: candidateShown,
+          invitedAt: null,
+          inviteToken: null,
+          inviteExpiresAt: null,
+          joinedAt: ts,
+          lastActiveAt: ts,
+          hasSignedInOnce: true,
+        });
+        workingMembers.push(createdMember);
+        adm.personId = createdMember.personId;
+        adm.roleId = createdMember.roleId;
+        await adm.save().catch(() => {});
       }
     } finally {
       seedPromise = null;

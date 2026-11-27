@@ -136,6 +136,16 @@ export const validateProduct = (data, { strict = true } = {}) => {
       .default({}),
     bestSuitedForHeight: strOrNum,
     weight: strOrNum,
+    set: Joi.array().items(Joi.object().unknown(true)).default([]),
+    fitDesc: Joi.string().allow("", null),
+    fitNote: Joi.string().allow("", null),
+    fitNotes: Joi.string().allow("", null),
+    measuredBy: Joi.string().allow("", null),
+    measuredOn: Joi.string().allow("", null),
+    designerLabel: Joi.string().allow("", null),
+    ownerSize: Joi.string().allow("", null),
+    heightFrom: Joi.string().allow("", null),
+    heightTo: Joi.string().allow("", null),
 
     // ========== LISTING ==========
     listingModes: strict

@@ -84,12 +84,23 @@ function DesktopCategoryPage({ productsData }) {
       ? ""
       : occasion;
   const NON_MODE_SECTIONS = ["women", "men", "occasions", "designers"];
+  const hasSpecificFilter = Boolean(
+    category || designer || occasion || condition || minPrice || maxPrice,
+  );
+  const resolvedMode =
+    section === "rent" || section === "preloved" || section === "new"
+      ? section
+      : mode === "rent" || mode === "preloved" || mode === "new"
+        ? mode
+        : "";
   const activeSection =
     filters.rentType.length > 0
       ? filters.rentType[0]
-      : NON_MODE_SECTIONS.includes(section)
-      ? section
-      : "";
+      : filters.gender.length > 0
+        ? filters.gender[0].toLowerCase()
+        : !hasSpecificFilter && NON_MODE_SECTIONS.includes(section)
+          ? section
+          : "";
 
   const heading = buildHeading({
     section: activeSection,
@@ -113,27 +124,18 @@ function DesktopCategoryPage({ productsData }) {
       occasion: [],
       size: [],
       color: [],
+      condition: [],
       budget: {
         min: 0,
         max: Infinity,
       },
-
-      
     };
 
-    // if (mode) {
-    //   nextFilters.rentType = [mode];
-    // }
-
-    if (
-      section === "rent" ||
-      section === "preloved" ||
-      section === "new"
-    ) {
-      nextFilters.rentType = [section];
+    if (!hasSpecificFilter && resolvedMode) {
+      nextFilters.rentType = [resolvedMode];
     }
 
-    if (gender) {
+    if (!hasSpecificFilter && !resolvedMode && gender) {
       nextFilters.gender = [gender];
     }
 
@@ -156,23 +158,21 @@ function DesktopCategoryPage({ productsData }) {
     if (minPrice || maxPrice) {
       nextFilters.budget = {
         min: Number(minPrice) || 0,
-        max: maxPrice
-          ? Number(maxPrice)
-          : Infinity,
+        max: maxPrice ? Number(maxPrice) : Infinity,
       };
     }
 
     setFilters(nextFilters);
-
   }, [
     section,
+    mode,
     gender,
     category,
     designer,
     occasion,
     condition,
     minPrice,
-  maxPrice,
+    maxPrice,
   ]);
 
   const mainDesigners = [
@@ -200,18 +200,9 @@ function DesktopCategoryPage({ productsData }) {
 
   // FILTERING
 
-  const isRentActive =
-    filters.rentType.includes("rent") ||
-    (!filters.rentType.includes("preloved") &&
-      !filters.rentType.includes("new") &&
-      (section === "rent" || mode === "rent"));
+  const isRentActive = filters.rentType.includes("rent");
   const isBuyActive =
-    filters.rentType.includes("preloved") ||
-    filters.rentType.includes("new") ||
-    section === "preloved" ||
-    section === "new" ||
-    mode === "preloved" ||
-    mode === "new";
+    filters.rentType.includes("preloved") || filters.rentType.includes("new");
 
   const filteredProducts = products.filter((item) => {
     // DESIGNER

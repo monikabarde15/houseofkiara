@@ -256,6 +256,8 @@ const TABLE_CONFIGS = {
       categoryId: "category_id",
       name: "name",
       slug: "slug",
+      mainCategoryId: "main_category_id",
+      mainCategory: "main_category",
       image: "image",
       description: "description",
     },

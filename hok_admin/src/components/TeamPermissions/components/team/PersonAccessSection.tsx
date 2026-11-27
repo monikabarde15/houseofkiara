@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Check, Copy } from "lucide-react";
 import * as tpApi from "../../../../services/teamPermissionsApi";
 import { useTeamPermissions } from "../../TeamPermissionsContext";
 import {
   FOUNDER_ROLE_ID,
+  buildInviteUrl,
   formatFullDateTime,
   getFirstName,
 } from "../../constants";
@@ -52,6 +54,20 @@ export const PersonAccessSection: React.FC<PersonAccessSectionProps> = ({
     "pause" | "remove" | "cancel_invite" | null
   >(null);
   const [busy, setBusy] = useState(false);
+  const [copiedInvite, setCopiedInvite] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [passwordValue, setPasswordValue] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [savingPassword, setSavingPassword] = useState(false);
+
+  useEffect(() => {
+    setPasswordOpen(false);
+    setPasswordValue("");
+    setPasswordConfirm("");
+    setPasswordError(null);
+    setCopiedInvite(false);
+  }, [member.personId]);
 
   const openDialog = (kind: "pause" | "remove" | "cancel_invite") => {
     setActiveDialog(kind);
@@ -67,6 +83,53 @@ export const PersonAccessSection: React.FC<PersonAccessSectionProps> = ({
     member.roleId === FOUNDER_ROLE_ID || Boolean(role?.isFixed);
   const canPreview = !isFounder && role && !role.archived;
   const wasOnTeamBefore = Boolean(member.hasSignedInOnce || member.joinedAt);
+  const liveInviteUrl = member.inviteToken ? buildInviteUrl(member.inviteToken) : "";
+
+  const handleCopyInvite = async () => {
+    if (!liveInviteUrl) return;
+    try {
+      await navigator.clipboard?.writeText(liveInviteUrl);
+      setCopiedInvite(true);
+      window.setTimeout(() => setCopiedInvite(false), 2500);
+    } catch {
+      // ignore clipboard errors
+    }
+  };
+
+  const handleSavePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (savingPassword) return;
+    if (passwordValue.length < 8) {
+      setPasswordError("Password must be at least 8 characters.");
+      return;
+    }
+    if (passwordValue !== passwordConfirm) {
+      setPasswordError("Passwords do not match.");
+      return;
+    }
+    setSavingPassword(true);
+    setPasswordError(null);
+    try {
+      const res = await tpApi.setTeamMemberPassword(
+        member.personId,
+        passwordValue,
+      );
+      applyMemberUpdate(res.member, res.historyEntry);
+      setPasswordOpen(false);
+      setPasswordValue("");
+      setPasswordConfirm("");
+      showPanelToast({
+        boldPrefix: "Password saved.",
+        message:
+          res.message ||
+          `${firstName} can sign in with ${res.member.workEmail}.`,
+      });
+    } catch (err: any) {
+      setPasswordError(err?.message || "Could not set password.");
+    } finally {
+      setSavingPassword(false);
+    }
+  };
 
   const handleResendInvite = async () => {
     if (busy) return;
@@ -74,13 +137,13 @@ export const PersonAccessSection: React.FC<PersonAccessSectionProps> = ({
     try {
       const res = await tpApi.resendTeamInvite(member.personId);
       applyMemberUpdate(res.member, res.historyEntry);
-      if (res.inviteToken && typeof window !== "undefined") {
-        const inviteUrl = `${window.location.origin}/?invite=${encodeURIComponent(res.inviteToken)}`;
+      if (res.inviteToken) {
+        const inviteUrl = buildInviteUrl(res.inviteToken);
         navigator.clipboard?.writeText(inviteUrl).catch(() => {});
       }
       showPanelToast({
-        boldPrefix: "Invite resent",
-        message: `to ${res.member.workEmail}. The new link works for 7 days.`,
+        boldPrefix: "Invite link refreshed",
+        message: `for ${res.member.workEmail} and copied. Works for 7 days.`,
       });
     } catch (err: any) {
       showPanelToast({
@@ -187,13 +250,13 @@ export const PersonAccessSection: React.FC<PersonAccessSectionProps> = ({
     try {
       const res = await tpApi.reinviteTeamMember(member.personId);
       applyMemberUpdate(res.member, res.historyEntry);
-      if (res.inviteToken && typeof window !== "undefined") {
-        const inviteUrl = `${window.location.origin}/?invite=${encodeURIComponent(res.inviteToken)}`;
+      if (res.inviteToken) {
+        const inviteUrl = buildInviteUrl(res.inviteToken);
         navigator.clipboard?.writeText(inviteUrl).catch(() => {});
       }
       showPanelToast({
-        boldPrefix: `Invite sent to ${res.member.workEmail}.`,
-        message: "",
+        boldPrefix: `Invite link ready for ${res.member.workEmail}.`,
+        message: "Copied to clipboard.",
       });
     } catch (err: any) {
       showPanelToast({
@@ -265,24 +328,131 @@ export const PersonAccessSection: React.FC<PersonAccessSectionProps> = ({
 
           {member.status === "Invited" && (
             <>
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="text-[13.5px] font-semibold text-[#1A1612]">
-                    Invite
+              <div className="space-y-2.5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-[13.5px] font-semibold text-[#1A1612]">
+                      Invite link
+                    </div>
+                    <p className="text-[12.5px] text-[#5C5248] mt-0.5">
+                      Created {formatFullDateTime(member.invitedAt)} for{" "}
+                      {member.workEmail}. {getInviteExpiryText(member)}
+                    </p>
                   </div>
-                  <p className="text-[12.5px] text-[#5C5248] mt-0.5">
-                    Sent {formatFullDateTime(member.invitedAt)} to{" "}
-                    {member.workEmail}. {getInviteExpiryText(member)}
-                  </p>
+                  <button
+                    type="button"
+                    onClick={handleResendInvite}
+                    disabled={busy}
+                    className="tp-btn-outline shrink-0"
+                  >
+                    New link
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleResendInvite}
-                  disabled={busy}
-                  className="tp-btn-outline shrink-0"
-                >
-                  Resend
-                </button>
+
+                {liveInviteUrl && (
+                  <div className="flex items-center gap-2 p-2 rounded-[6px] bg-[#FAF7F2] border border-[#E6DCCB]">
+                    <input
+                      type="text"
+                      readOnly
+                      value={liveInviteUrl}
+                      onClick={(e) => (e.target as HTMLInputElement).select()}
+                      className="tp-input !h-8 text-[11.5px] font-mono bg-white"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCopyInvite}
+                      className="tp-btn-outline shrink-0 !h-8"
+                    >
+                      {copiedInvite ? (
+                        <>
+                          <Check className="h-3.5 w-3.5 text-[#4F6142]" />
+                          <span>Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3.5 w-3.5" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2.5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-[13.5px] font-semibold text-[#1A1612]">
+                      Or set password directly
+                    </div>
+                    <p className="text-[12.5px] text-[#5C5248] mt-0.5">
+                      Activates {firstName} immediately so they can sign in with{" "}
+                      {member.workEmail}.
+                    </p>
+                  </div>
+                  {!passwordOpen && (
+                    <button
+                      type="button"
+                      onClick={() => setPasswordOpen(true)}
+                      className="tp-btn-outline shrink-0"
+                    >
+                      Set password
+                    </button>
+                  )}
+                </div>
+
+                {passwordOpen && (
+                  <form
+                    onSubmit={handleSavePassword}
+                    className="p-3 rounded-[6px] bg-[#FAF7F2] border border-[#E6DCCB] space-y-2.5"
+                  >
+                    <input
+                      type="password"
+                      placeholder="New password (min 8 characters)"
+                      value={passwordValue}
+                      disabled={savingPassword}
+                      onChange={(e) => {
+                        setPasswordValue(e.target.value);
+                        setPasswordError(null);
+                      }}
+                      className="tp-input bg-white"
+                    />
+                    <input
+                      type="password"
+                      placeholder="Confirm password"
+                      value={passwordConfirm}
+                      disabled={savingPassword}
+                      onChange={(e) => {
+                        setPasswordConfirm(e.target.value);
+                        setPasswordError(null);
+                      }}
+                      className="tp-input bg-white"
+                    />
+                    {passwordError && (
+                      <p className="tp-field-error !mt-1">{passwordError}</p>
+                    )}
+                    <div className="flex items-center justify-end gap-2 pt-0.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPasswordOpen(false);
+                          setPasswordError(null);
+                        }}
+                        disabled={savingPassword}
+                        className="tp-btn-outline"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={savingPassword}
+                        className="tp-btn-gold"
+                      >
+                        {savingPassword ? "Saving..." : "Save & activate"}
+                      </button>
+                    </div>
+                  </form>
+                )}
               </div>
 
               <div className="flex items-start justify-between gap-4">
@@ -306,6 +476,85 @@ export const PersonAccessSection: React.FC<PersonAccessSectionProps> = ({
                 </button>
               </div>
             </>
+          )}
+
+          {(member.status === "Active" || member.status === "Paused") && (
+            <div className="space-y-2.5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-[13.5px] font-semibold text-[#1A1612]">
+                    Sign-in password
+                  </div>
+                  <p className="text-[12.5px] text-[#5C5248] mt-0.5">
+                    {member.hasLoginAccount
+                      ? `${firstName} signs in with ${member.workEmail} and a password.`
+                      : `No password is set yet. Set one so ${firstName} can sign in with ${member.workEmail}.`}
+                  </p>
+                </div>
+                {!passwordOpen && (
+                  <button
+                    type="button"
+                    onClick={() => setPasswordOpen(true)}
+                    className="tp-btn-outline shrink-0"
+                  >
+                    {member.hasLoginAccount ? "Reset password" : "Set password"}
+                  </button>
+                )}
+              </div>
+
+              {passwordOpen && (
+                <form
+                  onSubmit={handleSavePassword}
+                  className="p-3 rounded-[6px] bg-[#FAF7F2] border border-[#E6DCCB] space-y-2.5"
+                >
+                  <input
+                    type="password"
+                    placeholder="New password (min 8 characters)"
+                    value={passwordValue}
+                    disabled={savingPassword}
+                    onChange={(e) => {
+                      setPasswordValue(e.target.value);
+                      setPasswordError(null);
+                    }}
+                    className="tp-input bg-white"
+                  />
+                  <input
+                    type="password"
+                    placeholder="Confirm password"
+                    value={passwordConfirm}
+                    disabled={savingPassword}
+                    onChange={(e) => {
+                      setPasswordConfirm(e.target.value);
+                      setPasswordError(null);
+                    }}
+                    className="tp-input bg-white"
+                  />
+                  {passwordError && (
+                    <p className="tp-field-error !mt-1">{passwordError}</p>
+                  )}
+                  <div className="flex items-center justify-end gap-2 pt-0.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPasswordOpen(false);
+                        setPasswordError(null);
+                      }}
+                      disabled={savingPassword}
+                      className="tp-btn-outline"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={savingPassword}
+                      className="tp-btn-gold"
+                    >
+                      {savingPassword ? "Saving..." : "Save password"}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
           )}
 
           {member.status === "Active" && (

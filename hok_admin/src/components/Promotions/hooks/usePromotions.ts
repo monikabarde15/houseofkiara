@@ -50,7 +50,10 @@ export const usePromotions = (): UsePromotionsReturn => {
         promotionService.getPromoCodes(),
         orderApi.getOrders().catch(() => []),
       ]);
-      setCodes(data);
+      const validCodes = (Array.isArray(data) ? data : []).filter(
+        (c) => Boolean(c && String(c.code || "").trim()),
+      );
+      setCodes(validCodes);
       setPromotionOrders(orders || []);
       const counts = (orders || []).reduce(
         (result: Record<string, number>, order: any) => {
@@ -155,7 +158,7 @@ export const usePromotions = (): UsePromotionsReturn => {
       let comparison = 0;
       switch (field) {
         case "code":
-          comparison = a.code.localeCompare(b.code);
+          comparison = String(a?.code || "").localeCompare(String(b?.code || ""));
           break;
         case "used":
           comparison = (getRedemptions(a) || 0) - (getRedemptions(b) || 0);
@@ -173,7 +176,7 @@ export const usePromotions = (): UsePromotionsReturn => {
         case "status":
           const aState = getDerivedState(a);
           const bState = getDerivedState(b);
-          comparison = aState.localeCompare(bState);
+          comparison = String(aState || "").localeCompare(String(bState || ""));
           break;
         default:
           comparison = 0;

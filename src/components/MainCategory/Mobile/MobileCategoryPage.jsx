@@ -37,7 +37,7 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
   const [visibleItems, setVisibleItems] = useState(6);
   const [isLoading, setIsLoading] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
+
   // Filter state
   const [filters, setFilters] = useState({
     rentType: [],
@@ -59,6 +59,19 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
   const designer = searchParams.get("designer");
   const occasion = searchParams.get("occasion");
   const gender = searchParams.get("gender");
+  const condition = searchParams.get("condition");
+  const minPrice = searchParams.get("minPrice");
+  const maxPrice = searchParams.get("maxPrice");
+
+  const hasSpecificFilter = Boolean(
+    category || designer || occasion || condition || minPrice || maxPrice,
+  );
+  const resolvedMode =
+    section === "rent" || section === "preloved" || section === "new"
+      ? section
+      : mode === "rent" || mode === "preloved" || mode === "new"
+        ? mode
+        : "";
 
   // ===== PAGE ENTRY -  29.1 =====
   // Scroll to top on page load
@@ -78,30 +91,41 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
       availabilityFrom: "",
       availabilityTo: "",
       size: [],
-      colour: []
+      colour: [],
+      condition: [],
     };
 
-    // Set mode filter based on section
-    if (section === "rent" || mode === "rent") preAppliedFilters.rentType = ["rent"];
-    else if (section === "preloved" || mode === "preloved") preAppliedFilters.rentType = ["preloved"];
-    else if (section === "new" || mode === "new") preAppliedFilters.rentType = ["new"];
+    if (!hasSpecificFilter && resolvedMode) {
+      preAppliedFilters.rentType = [resolvedMode];
+    }
 
-    // Set category filter
-    if (category) preAppliedFilters.category = [category];
-
-    // Set designer filter
-    if (designer) preAppliedFilters.designer = [designer];
-
-    // Set occasion filter
-    if (occasion) preAppliedFilters.occasion = [occasion];
-
-    // Set gender filter
-    if (gender) {
+    if (!hasSpecificFilter && !resolvedMode && gender) {
       preAppliedFilters.gender = [gender];
     }
 
+    if (category) preAppliedFilters.category = [category];
+    if (designer) preAppliedFilters.designer = [designer];
+    if (occasion) preAppliedFilters.occasion = [occasion];
+    if (condition) preAppliedFilters.condition = [condition];
+    if (minPrice || maxPrice) {
+      preAppliedFilters.budget = {
+        min: Number(minPrice) || 0,
+        max: maxPrice ? Number(maxPrice) : Infinity,
+      };
+    }
+
     setFilters(preAppliedFilters);
-  }, [section, mode, category, designer, occasion, gender]);
+  }, [
+    section,
+    mode,
+    category,
+    designer,
+    occasion,
+    gender,
+    condition,
+    minPrice,
+    maxPrice,
+  ]);
 
   // Build heading and breadcrumb
   const NON_MODE_SECTIONS = ["women", "men", "occasions", "designers"];
@@ -109,26 +133,28 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
     filters.category.length > 0
       ? filters.category[0]
       : filters.category.length === 0 && category
-      ? ""
-      : category;
+        ? ""
+        : category;
   const activeDesigner =
     filters.designer.length > 0
       ? filters.designer[0]
       : filters.designer.length === 0 && designer
-      ? ""
-      : designer;
+        ? ""
+        : designer;
   const activeOccasion =
     filters.occasion.length > 0
       ? filters.occasion[0]
       : filters.occasion.length === 0 && occasion
-      ? ""
-      : occasion;
+        ? ""
+        : occasion;
   const activeSection =
     filters.rentType.length > 0
       ? filters.rentType[0]
-      : NON_MODE_SECTIONS.includes(section)
-      ? section
-      : "";
+      : filters.gender.length > 0
+        ? filters.gender[0].toLowerCase()
+        : !hasSpecificFilter && NON_MODE_SECTIONS.includes(section)
+          ? section
+          : "";
 
   const heading = buildHeading({
     section: activeSection,
@@ -144,18 +170,9 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
   });
 
   // ===== FILTERING LOGIC =====
-  const isRentActive =
-    filters.rentType.includes("rent") ||
-    (!filters.rentType.includes("preloved") &&
-      !filters.rentType.includes("new") &&
-      (section === "rent" || mode === "rent"));
+  const isRentActive = filters.rentType.includes("rent");
   const isBuyActive =
-    filters.rentType.includes("preloved") ||
-    filters.rentType.includes("new") ||
-    section === "preloved" ||
-    section === "new" ||
-    mode === "preloved" ||
-    mode === "new";
+    filters.rentType.includes("preloved") || filters.rentType.includes("new");
 
   const filteredProducts = products.filter((product) => {
     // Rent type filter
@@ -174,25 +191,25 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
       const match = filters.gender.some((g) => matchGender(product.gender, g));
       if (!match) return false;
     }
-    
+
     // Category filter
     if (filters.category.length > 0) {
       const match = filters.category.some((c) => matchCategory(product.category, c));
       if (!match) return false;
     }
-    
+
     // Occasion filter
     if (filters.occasion.length > 0) {
       const match = filters.occasion.some((o) => matchOccasion(product.occasion, o));
       if (!match) return false;
     }
-    
+
     // Designer filter
     if (filters.designer.length > 0) {
       const match = filters.designer.some((d) => matchDesigner(product.designer, d));
       if (!match) return false;
     }
-    
+
     // Budget filter
     if (!matchBudget(product, filters.budget, isRentActive, isBuyActive)) {
       return false;
@@ -212,7 +229,7 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
       const match = filters.colour.some((c) => matchColor(product.color, c));
       if (!match) return false;
     }
-    
+
     return true;
   });
 
@@ -224,7 +241,7 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
     const priceB = isRentActive
       ? getPriceNumber(b.rentPrice) || getPriceNumber(b.buyPrice)
       : getPriceNumber(b.buyPrice) || getPriceNumber(b.rentPrice);
-    
+
     switch (sortBy) {
       case "low":
         return priceA - priceB;
@@ -325,7 +342,7 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
 
   return (
     <div className="mob-category-page">
-      
+
       <MobileBreadcrumb parent={breadcrumb.parent} current={breadcrumb.current} />
 
       <div className="mob-heading-zone">
@@ -340,25 +357,25 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
       </div>
 
       <div className="mob-control-bar-wrapper">
-        <MobileControlBar 
+        <MobileControlBar
           onFilterClick={handleFilterClick}
           sortBy={sortBy}
           onSortChange={setSortBy}
         />
       </div>
 
-      <MobileActiveTagsRow 
+      <MobileActiveTagsRow
         activeTags={activeTags}
         onRemoveTag={handleRemoveTag}
         onClearAll={handleClearAll}
       />
 
-      <MobileProductGrid 
+      <MobileProductGrid
         products={visibleProducts}
         onWishlistToggle={handleWishlistToggle}
       />
 
-      <MobileContinueBrowsing 
+      <MobileContinueBrowsing
         onClick={handleLoadMore}
         isLoading={isLoading}
         hasMore={hasMore}
@@ -366,7 +383,7 @@ const MobileCategoryPage = ({ productsData: dynamicProducts }) => {
 
       {/* <MobileFooter /> */}
 
-      <MobileFilterSheet 
+      <MobileFilterSheet
         isOpen={isFilterOpen}
         onClose={handleFilterClose}
         onApply={handleFilterApply}

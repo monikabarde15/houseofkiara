@@ -7,6 +7,7 @@ import { Product } from "../types/product";
 interface ProductSidebarProps {
   product: Product;
   isNew?: boolean;
+  archiving?: boolean;
   onViewLive?: () => void;
   onArchive?: () => void;
   onOpenGlobalCalendar?: () => void;
@@ -68,11 +69,14 @@ function parseToStartOfDay(d: Date | string | number | null | undefined): Date {
 export function ProductSidebar({
   product,
   isNew = false,
+  archiving = false,
   onViewLive,
   onArchive,
   onOpenGlobalCalendar,
   onViewOrder,
 }: ProductSidebarProps) {
+  const isArchived =
+    String(product?.status || "").trim().toLowerCase() === "archived";
   // ── All hooks run unconditionally, on every render, regardless of `isNew`. ──
   const today = useMemo(() => parseToStartOfDay(new Date()), []);
 
@@ -257,8 +261,9 @@ export function ProductSidebar({
 
             <div className="space-y-3 p-4">
               <button
+                type="button"
                 onClick={onOpenGlobalCalendar}
-                className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5]"
+                className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5] cursor-pointer"
               >
                 <Calendar className="h-4 w-4" />
                 <span>Global Rental Calendar</span>
@@ -281,8 +286,9 @@ export function ProductSidebar({
               Availability
             </h3>
             <button
+              type="button"
               onClick={onOpenGlobalCalendar}
-              className="rounded-md border border-[#E7DED2] bg-white px-3 py-1.5 text-[11px] font-medium text-[#6B645C] transition hover:bg-[#FAF8F5]"
+              className="rounded-md border border-[#E7DED2] bg-white px-3 py-1.5 text-[11px] font-medium text-[#6B645C] transition hover:bg-[#FAF8F5] cursor-pointer"
             >
               Full Calendar →
             </button>
@@ -529,27 +535,41 @@ export function ProductSidebar({
 
           <div className="space-y-3 p-4">
             <button
+              type="button"
               onClick={onViewLive}
-              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5]"
+              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5] cursor-pointer"
             >
               <ExternalLink className="h-4 w-4" />
               <span>View Live PDP</span>
             </button>
 
             <button
+              type="button"
               onClick={onOpenGlobalCalendar}
-              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5]"
+              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#E7DED2] bg-white px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#2D2926] transition-colors hover:bg-[#FAF8F5] cursor-pointer"
             >
               <Calendar className="h-4 w-4" />
               <span>Global Rental Calendar</span>
             </button>
 
             <button
+              type="button"
+              disabled={archiving}
               onClick={onArchive}
-              className="flex h-11 w-full items-center gap-3 rounded-lg border border-[#F2B8A8] bg-[#FFF8F6] px-4 text-[13.5px] 2xl:text-[15px] font-medium text-[#C7683B] transition-colors hover:bg-[#FFF2EE]"
+              className={`flex h-11 w-full items-center gap-3 rounded-lg border px-4 text-[13.5px] 2xl:text-[15px] font-medium transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${
+                isArchived
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                  : "border-[#F2B8A8] bg-[#FFF8F6] text-[#C7683B] hover:bg-[#FFF2EE]"
+              }`}
             >
               <Archive className="h-4 w-4" />
-              <span>Archive Product</span>
+              <span>
+                {archiving
+                  ? "Updating..."
+                  : isArchived
+                    ? "Restore Product"
+                    : "Archive Product"}
+              </span>
             </button>
           </div>
         </div>

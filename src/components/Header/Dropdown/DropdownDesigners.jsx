@@ -1,5 +1,6 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { stripExtraParentParams } from "../../../services/headerApi";
 import { useNavigate } from "react-router-dom";
 
 const DropdownDesigners = ({ columns }) => {
@@ -28,8 +29,8 @@ const DropdownDesigners = ({ columns }) => {
                   onClick={() =>
                     navigate(
                       designer.path?.startsWith('/main-page')
-                        ? designer.path
-                        : `/main-page?section=designers&designer=${encodeURIComponent(designer.label)}`
+                        ? stripExtraParentParams(designer.path)
+                        : `/main-page?designer=${encodeURIComponent(designer.label)}`
                     )
                   }
                 >
@@ -43,7 +44,7 @@ const DropdownDesigners = ({ columns }) => {
                   className="dd-cat"
                   onClick={() =>
                     navigate(
-                      `/main-page?section=designers&designer=${encodeURIComponent(designer)}`
+                      `/main-page?designer=${encodeURIComponent(designer)}`
                     )
                   }
                 >
@@ -113,9 +114,7 @@ const DropdownDesigners = ({ columns }) => {
               className="dd-link bold"
               onClick={() =>
                 navigate(
-                  `/main-page?section=designers&designer=${encodeURIComponent(
-                    designer
-                  )}`
+                  `/main-page?designer=${encodeURIComponent(designer)}`
                 )
               }
             >

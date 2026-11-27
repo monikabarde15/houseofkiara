@@ -1,4 +1,4 @@
-import { resolveDropdownId } from '../../../services/headerApi';
+import { resolveDropdownId, stripExtraParentParams } from '../../../services/headerApi';
 // src/components/Header/mobile/SubPanelRenderer.jsx
 import React from 'react';
 import { SubLabel, LinkRow } from './MobileSubPanelContent';
@@ -42,43 +42,43 @@ const SubPanelRenderer = ({ panelId, navigateAndClose, navItems }) => {
     switch (panelId) {
       case 'sub-rent':
         if (type === 'category') {
-          return `/main-page?section=rent&category=${encodeURIComponent(linkText)}`;
+          return `/main-page?category=${encodeURIComponent(linkText)}`;
         }
         if (type === 'designer') {
-          return `/main-page?section=rent&designer=${encodeURIComponent(linkText)}`;
+          return `/main-page?designer=${encodeURIComponent(linkText)}`;
         }
         return `/main-page?section=rent`;
 
       case 'sub-preloved':
         if (type === 'category') {
-          return `/main-page?section=preloved&category=${encodeURIComponent(linkText)}`;
+          return `/main-page?category=${encodeURIComponent(linkText)}`;
         }
         if (type === 'condition') {
-          return `/main-page?section=preloved&condition=${encodeURIComponent(linkText)}`;
+          return `/main-page?condition=${encodeURIComponent(linkText)}`;
         }
         if (type === 'price') {
-          return `/main-page?section=preloved&minPrice=${linkText.min}&maxPrice=${linkText.max || ''}`;
+          return `/main-page?minPrice=${linkText.min}&maxPrice=${linkText.max || ''}`;
         }
         if (type === 'designer') {
-          return `/main-page?section=preloved&designer=${encodeURIComponent(linkText)}`;
+          return `/main-page?designer=${encodeURIComponent(linkText)}`;
         }
         return `/main-page?section=preloved`;
 
       case 'sub-new':
         if (type === 'category') {
-          return `/main-page?section=new&category=${encodeURIComponent(linkText)}`;
+          return `/main-page?category=${encodeURIComponent(linkText)}`;
         }
         if (type === 'designer') {
-          return `/main-page?section=new&designer=${encodeURIComponent(linkText)}`;
+          return `/main-page?designer=${encodeURIComponent(linkText)}`;
         }
         return `/main-page?section=new`;
 
       case 'sub-women':
         if (type === 'category') {
-          return `/main-page?section=women&category=${encodeURIComponent(linkText)}`;
+          return `/main-page?category=${encodeURIComponent(linkText)}`;
         }
         if (type === 'occasion') {
-          return `/main-page?section=women&occasion=${encodeURIComponent(linkText)}`;
+          return `/main-page?occasion=${encodeURIComponent(linkText)}`;
         }
         if (type === 'mode') {
           const modePath = linkText === 'Rent' ? '/main-page?section=rent' 
@@ -86,14 +86,14 @@ const SubPanelRenderer = ({ panelId, navigateAndClose, navItems }) => {
             : '/main-page?section=new';
           return modePath;
         }
-        return `/main-page?section=women`;
+        return `/main-page?section=women&gender=Women`;
 
       case 'sub-men':
         if (type === 'category') {
-          return `/main-page?section=men&category=${encodeURIComponent(linkText)}`;
+          return `/main-page?category=${encodeURIComponent(linkText)}`;
         }
         if (type === 'occasion') {
-          return `/main-page?section=men&occasion=${encodeURIComponent(linkText)}`;
+          return `/main-page?occasion=${encodeURIComponent(linkText)}`;
         }
         if (type === 'mode') {
           const modePath = linkText === 'Rent' ? '/main-page?section=rent' 
@@ -101,11 +101,11 @@ const SubPanelRenderer = ({ panelId, navigateAndClose, navItems }) => {
             : '/main-page?section=new';
           return modePath;
         }
-        return `/main-page?section=men`;
+        return `/main-page?section=men&gender=Men`;
 
       case 'sub-occasions':
         if (type === 'occasion') {
-          return `/main-page?section=occasions&occasion=${encodeURIComponent(linkText)}`;
+          return `/main-page?occasion=${encodeURIComponent(linkText)}`;
         }
         if (type === 'mode') {
           const modePath = linkText === 'Rent for the Occasion' ? '/main-page?section=rent' 
@@ -117,7 +117,7 @@ const SubPanelRenderer = ({ panelId, navigateAndClose, navItems }) => {
 
       case 'sub-designers':
         if (type === 'designer') {
-          return `/main-page?section=designers&designer=${encodeURIComponent(linkText)}`;
+          return `/main-page?designer=${encodeURIComponent(linkText)}`;
         }
         if (type === 'discover') {
           return `/main-page?section=designers&type=${encodeURIComponent(linkText)}`;
@@ -155,8 +155,8 @@ const SubPanelRenderer = ({ panelId, navigateAndClose, navItems }) => {
                       onClick={() =>
                         handleLinkClick(
                           link.path?.startsWith('/main-page')
-                            ? link.path
-                            : `/main-page?section=${panelId.replace('sub-', '')}&category=${encodeURIComponent(link.label)}`
+                            ? stripExtraParentParams(link.path)
+                            : `/main-page?category=${encodeURIComponent(link.label)}`
                         )
                       }
                     >

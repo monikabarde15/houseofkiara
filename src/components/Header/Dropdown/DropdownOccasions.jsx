@@ -1,5 +1,6 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { stripExtraParentParams } from "../../../services/headerApi";
 import { useNavigate } from "react-router-dom";
 
 
@@ -28,8 +29,8 @@ const DropdownOccasions = ({ columns }) => {
                   onClick={() =>
                     navigate(
                       occ.path?.startsWith('/main-page')
-                        ? occ.path
-                        : `/main-page?section=occasions&occasion=${encodeURIComponent(occ.label)}`
+                        ? stripExtraParentParams(occ.path)
+                        : `/main-page?occasion=${encodeURIComponent(occ.label)}`
                     )
                   }
                 >
@@ -43,7 +44,7 @@ const DropdownOccasions = ({ columns }) => {
                   className="dd-cat"
                   onClick={() =>
                     navigate(
-                      `/main-page?section=occasions&occasion=${encodeURIComponent(category)}`
+                      `/main-page?occasion=${encodeURIComponent(category)}`
                     )
                   }
                 >

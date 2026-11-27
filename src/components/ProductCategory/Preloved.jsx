@@ -132,6 +132,14 @@ export default function Preloved() {
     }
   }, [price]);
 
+  // FOR INPUT AND NOTES
+  const [note, setNote] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  // Offer submitted
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   if (loading) return <div style={{ padding: 60, textAlign: "center", fontFamily: "Cinzel, serif" }}>Loading piece details...</div>;
   if (!product) return <PageNotFound />;
 
@@ -141,15 +149,8 @@ export default function Preloved() {
   const savingsPercent = Math.round((savings / maxOffer) * 100);
 
   // Golden Progress Bar
-  const progress = ((offer - minOffer) / (maxOffer - minOffer)) * 100;
-
-  // FOR INPUT AND NOTES
-  const [note, setNote] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-
-  // Offer submitted 
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const progress =
+    maxOffer > minOffer ? ((offer - minOffer) / (maxOffer - minOffer)) * 100 : 0;
 
   const toggle = (key) => {
     setOpenSections((prev) =>

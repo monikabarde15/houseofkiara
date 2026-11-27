@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { promisify } from "util";
 import TeamRole from "../models/TeamRole.js";
 import TeamMember from "../models/TeamMember.js";
 import TeamHistory from "../models/TeamHistory.js";
@@ -17,6 +18,7 @@ import {
 import {
   countActiveFounders,
   ensureTeamPermissionsSeeded,
+  findLinkedAdminForMember,
   formatHistoryForApi,
   formatMemberForApi,
   formatRoleForApi,
@@ -34,13 +36,32 @@ import {
   validateWhatsApp,
 } from "../services/teamPermissionsService.js";
 
+const scrypt = promisify(crypto.scrypt);
+const hashPassword = async (
+  password,
+  salt = crypto.randomBytes(16).toString("hex"),
+) => ({
+  salt,
+  hash: (await scrypt(password, salt, 64)).toString("hex"),
+});
+
+const ROLE_COLOUR_PALETTE = [
+  "#8A7E72",
+  "#6B7E5A",
+  "#B85C38",
+  "#4B3F63",
+  "#5A738E",
+  "#9C6B4E",
+  "#4F6D6A",
+];
+
 const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 function getActorDisplayName(req) {
   return (
     req.teamMember?.shownOnRecordsAs ||
     req.admin?.name ||
-    "Soumya"
+    "Founder"
   );
 }
 
@@ -60,7 +81,9 @@ export const getBootstrap = async (req, res) => {
       success: true,
       data: {
         roles: roles.map(formatRoleForApi),
-        members: members.map(formatMemberForApi),
+        members: members.map((m) =>
+          formatMemberForApi(m, { includeInviteToken: true }),
+        ),
         history: history.map(formatHistoryForApi),
         currentPersonId: req.teamMember?.personId || null,
         sections: SECTIONS,
@@ -174,6 +197,7 @@ export const inviteMember = async (req, res) => {
       workEmail = "",
       roleId = "",
       whatsappNumber = "",
+      password = "",
     } = req.body || {};
 
     const [allMembers, allRoles] = await Promise.all([
@@ -202,6 +226,12 @@ export const inviteMember = async (req, res) => {
     const waCheck = validateWhatsApp(whatsappNumber);
     if (!waCheck.valid) {
       errors.whatsappNumber = waCheck.message;
+    }
+
+    const cleanPassword = String(password || "");
+    const hasPassword = cleanPassword.length > 0;
+    if (hasPassword && cleanPassword.length < 8) {
+      errors.password = "Password must be at least 8 characters.";
     }
 
     const cleanShown = String(shownOnRecordsAs || "").trim() || getFirstName(cleanName);
@@ -237,10 +267,78 @@ export const inviteMember = async (req, res) => {
     }
 
     const nowIso = new Date().toISOString();
-    const expiresIso = new Date(Date.now() + INVITE_TTL_MS).toISOString();
-    const inviteToken = crypto.randomBytes(32).toString("hex");
     const personId = generateUniquePersonId(cleanShown, allMembers);
     const actor = getActorDisplayName(req);
+
+    if (hasPassword) {
+      const credentials = await hashPassword(cleanPassword);
+      let admin = await Admin.findOne({ email: cleanEmail }).catch(() => null);
+      if (admin) {
+        admin.name = cleanName;
+        admin.email = cleanEmail;
+        admin.passwordHash = credentials.hash;
+        admin.passwordSalt = credentials.salt;
+        admin.roleId = selectedRole.roleId;
+        admin.personId = personId;
+        admin.status = "Active";
+        admin.sessionToken = null;
+        await admin.save();
+      } else {
+        admin = await Admin.create({
+          name: cleanName,
+          email: cleanEmail,
+          passwordHash: credentials.hash,
+          passwordSalt: credentials.salt,
+          sessionToken: null,
+          roleId: selectedRole.roleId,
+          personId,
+          status: "Active",
+        });
+      }
+
+      const created = await TeamMember.create({
+        personId,
+        adminId: String(admin._id),
+        fullName: cleanName,
+        shownOnRecordsAs: cleanShown,
+        olderSpellings: [],
+        roleId: selectedRole.roleId,
+        status: "Active",
+        workEmail: cleanEmail,
+        whatsappNumber: waCheck.normalized,
+        addedAt: nowIso,
+        addedBy: actor,
+        invitedAt: null,
+        inviteToken: null,
+        inviteExpiresAt: null,
+        joinedAt: nowIso,
+        lastActiveAt: null,
+        pausedSince: null,
+        leftOn: null,
+        hasSignedInOnce: false,
+      });
+
+      const hist = await recordHistory({
+        kind: "people",
+        who: actor,
+        target: personId,
+        message: `Added ${cleanName} as ${selectedRole.name} with sign-in access`,
+        occurredAt: nowIso,
+      });
+
+      return res.status(201).json({
+        success: true,
+        message: `${cleanName} can now sign in with ${cleanEmail}.`,
+        data: {
+          member: formatMemberForApi(created, { includeInviteToken: true }),
+          historyEntry: formatHistoryForApi(hist),
+          directLoginReady: true,
+        },
+      });
+    }
+
+    const expiresIso = new Date(Date.now() + INVITE_TTL_MS).toISOString();
+    const inviteToken = crypto.randomBytes(32).toString("hex");
 
     const created = await TeamMember.create({
       personId,
@@ -274,9 +372,9 @@ export const inviteMember = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: `Invite sent to ${cleanEmail}.`,
+      message: `Invite ready for ${cleanEmail}.`,
       data: {
-        member: formatMemberForApi(created),
+        member: formatMemberForApi(created, { includeInviteToken: true }),
         historyEntry: formatHistoryForApi(hist),
         inviteToken,
       },
@@ -323,7 +421,7 @@ export const resendInvite = async (req, res) => {
       success: true,
       message: `Invite resent to ${member.workEmail}. The new link works for 7 days.`,
       data: {
-        member: formatMemberForApi(member),
+        member: formatMemberForApi(member, { includeInviteToken: true }),
         historyEntry: formatHistoryForApi(hist),
         inviteToken: member.inviteToken,
       },
@@ -505,13 +603,16 @@ export const updateMemberDetails = async (req, res) => {
     await member.save();
 
     // Sync linked Admin record if present
-    if (member.adminId) {
-      const adm = await Admin.findById(member.adminId).catch(() => null);
-      if (adm) {
-        adm.name = nextName;
-        adm.email = nextEmail;
-        await adm.save().catch(() => {});
+    const linkedAdm = await findLinkedAdminForMember(member);
+    if (linkedAdm) {
+      if (!member.adminId) {
+        member.adminId = String(linkedAdm._id);
+        await member.save().catch(() => {});
       }
+      linkedAdm.name = nextName;
+      linkedAdm.email = nextEmail;
+      linkedAdm.personId = member.personId;
+      await linkedAdm.save().catch(() => {});
     }
 
     if (nextShown !== oldShown) {
@@ -561,7 +662,7 @@ export const updateMemberDetails = async (req, res) => {
       success: true,
       message: `Saved. ${getFirstName(nextName)}’s details are up to date.`,
       data: {
-        member: formatMemberForApi(member),
+        member: formatMemberForApi(member, { includeInviteToken: true }),
         historyEntries,
       },
     });
@@ -634,7 +735,10 @@ export const changeMemberRole = async (req, res) => {
     if (member.roleId === newRole.roleId) {
       return res.json({
         success: true,
-        data: { member: formatMemberForApi(member), historyEntry: null },
+        data: {
+          member: formatMemberForApi(member, { includeInviteToken: true }),
+          historyEntry: null,
+        },
       });
     }
 
@@ -642,12 +746,15 @@ export const changeMemberRole = async (req, res) => {
     member.roleId = newRole.roleId;
     await member.save();
 
-    if (member.adminId) {
-      const adm = await Admin.findById(member.adminId).catch(() => null);
-      if (adm) {
-        adm.roleId = newRole.roleId;
-        await adm.save().catch(() => {});
+    const linkedAdm = await findLinkedAdminForMember(member);
+    if (linkedAdm) {
+      if (!member.adminId) {
+        member.adminId = String(linkedAdm._id);
+        await member.save().catch(() => {});
       }
+      linkedAdm.roleId = newRole.roleId;
+      linkedAdm.personId = member.personId;
+      await linkedAdm.save().catch(() => {});
     }
 
     const nowIso = new Date().toISOString();
@@ -663,7 +770,7 @@ export const changeMemberRole = async (req, res) => {
       success: true,
       message: `${getFirstName(member.fullName)} is now ${newRole.name}.`,
       data: {
-        member: formatMemberForApi(member),
+        member: formatMemberForApi(member, { includeInviteToken: true }),
         historyEntry: formatHistoryForApi(hist),
       },
     });
@@ -781,13 +888,15 @@ export const pauseMember = async (req, res) => {
     member.pausedSince = nowIso;
     await member.save();
 
-    if (member.adminId) {
-      const adm = await Admin.findById(member.adminId).catch(() => null);
-      if (adm) {
-        adm.status = "Suspended";
-        adm.sessionToken = null;
-        await adm.save().catch(() => {});
+    const linkedAdm = await findLinkedAdminForMember(member);
+    if (linkedAdm) {
+      if (!member.adminId) {
+        member.adminId = String(linkedAdm._id);
+        await member.save().catch(() => {});
       }
+      linkedAdm.status = "Suspended";
+      linkedAdm.sessionToken = null;
+      await linkedAdm.save().catch(() => {});
     }
 
     const hist = await recordHistory({
@@ -801,7 +910,7 @@ export const pauseMember = async (req, res) => {
     return res.json({
       success: true,
       data: {
-        member: formatMemberForApi(member),
+        member: formatMemberForApi(member, { includeInviteToken: true }),
         historyEntry: formatHistoryForApi(hist),
       },
     });
@@ -837,12 +946,14 @@ export const restoreMember = async (req, res) => {
     member.pausedSince = null;
     await member.save();
 
-    if (member.adminId) {
-      const adm = await Admin.findById(member.adminId).catch(() => null);
-      if (adm) {
-        adm.status = "Active";
-        await adm.save().catch(() => {});
+    const linkedAdm = await findLinkedAdminForMember(member);
+    if (linkedAdm) {
+      if (!member.adminId) {
+        member.adminId = String(linkedAdm._id);
+        await member.save().catch(() => {});
       }
+      linkedAdm.status = "Active";
+      await linkedAdm.save().catch(() => {});
     }
 
     const hist = await recordHistory({
@@ -857,7 +968,7 @@ export const restoreMember = async (req, res) => {
       success: true,
       message: `Access restored. ${getFirstName(member.fullName)} can sign in again.`,
       data: {
-        member: formatMemberForApi(member),
+        member: formatMemberForApi(member, { includeInviteToken: true }),
         historyEntry: formatHistoryForApi(hist),
       },
     });
@@ -945,13 +1056,15 @@ export const removeMember = async (req, res) => {
     member.inviteExpiresAt = null;
     await member.save();
 
-    if (member.adminId) {
-      const adm = await Admin.findById(member.adminId).catch(() => null);
-      if (adm) {
-        adm.status = "Left";
-        adm.sessionToken = null;
-        await adm.save().catch(() => {});
+    const linkedAdm = await findLinkedAdminForMember(member);
+    if (linkedAdm) {
+      if (!member.adminId) {
+        member.adminId = String(linkedAdm._id);
+        await member.save().catch(() => {});
       }
+      linkedAdm.status = "Left";
+      linkedAdm.sessionToken = null;
+      await linkedAdm.save().catch(() => {});
     }
 
     const histMsg =
@@ -976,7 +1089,7 @@ export const removeMember = async (req, res) => {
       success: true,
       message: toastMsg,
       data: {
-        member: formatMemberForApi(member),
+        member: formatMemberForApi(member, { includeInviteToken: true }),
         movedCount,
         historyEntry: formatHistoryForApi(hist),
       },
@@ -1049,7 +1162,7 @@ export const reinviteMember = async (req, res) => {
       success: true,
       message: `Invite sent to ${member.workEmail}.`,
       data: {
-        member: formatMemberForApi(member),
+        member: formatMemberForApi(member, { includeInviteToken: true }),
         historyEntry: formatHistoryForApi(hist),
         inviteToken: member.inviteToken,
       },
@@ -1058,6 +1171,231 @@ export const reinviteMember = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Unable to re-invite team member.",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * POST /api/team-permissions/members/:personId/set-password (Founder only)
+ * Directly creates or resets the Admin login password for a TeamMember.
+ */
+export const setMemberPassword = async (req, res) => {
+  try {
+    await ensureTeamPermissionsSeeded();
+    const { personId } = req.params;
+    const { password = "" } = req.body || {};
+
+    if (String(password).length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters.",
+      });
+    }
+
+    const member = await TeamMember.findOne({ personId });
+    if (!member) {
+      return res.status(404).json({
+        success: false,
+        message: "Team member not found.",
+      });
+    }
+
+    const currentStatus = normalizeMemberStatusForApi(member.status);
+    if (currentStatus === "Left") {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot set a password for someone who has left.",
+      });
+    }
+
+    const credentials = await hashPassword(String(password));
+    const emailLower = String(member.workEmail || "").toLowerCase().trim();
+    const nowIso = new Date().toISOString();
+    const nextDbStatus =
+      currentStatus === "Invited"
+        ? "Active"
+        : normalizeMemberStatusForDb(currentStatus);
+
+    let admin = await findLinkedAdminForMember(member);
+    const hadAccount = Boolean(admin);
+
+    if (admin) {
+      admin.name = member.fullName;
+      admin.email = emailLower;
+      admin.passwordHash = credentials.hash;
+      admin.passwordSalt = credentials.salt;
+      admin.roleId = member.roleId;
+      admin.personId = member.personId;
+      admin.status = nextDbStatus;
+      if (String(admin._id) !== String(req.admin?._id || "")) {
+        admin.sessionToken = null;
+      }
+      await admin.save();
+    } else {
+      admin = await Admin.create({
+        name: member.fullName,
+        email: emailLower,
+        passwordHash: credentials.hash,
+        passwordSalt: credentials.salt,
+        sessionToken: null,
+        roleId: member.roleId,
+        personId: member.personId,
+        status: nextDbStatus,
+      });
+    }
+
+    member.adminId = String(admin._id);
+    if (currentStatus === "Invited") {
+      member.status = "Active";
+      member.inviteToken = null;
+      member.inviteExpiresAt = null;
+      if (!member.joinedAt) member.joinedAt = nowIso;
+    }
+    await member.save();
+
+    const hist = await recordHistory({
+      kind: "people",
+      who: getActorDisplayName(req),
+      target: member.personId,
+      message: hadAccount
+        ? `Reset login password for ${member.fullName}`
+        : `Set login password for ${member.fullName}`,
+      occurredAt: nowIso,
+    });
+
+    return res.json({
+      success: true,
+      message:
+        currentStatus === "Paused"
+          ? `Password saved for ${getFirstName(member.fullName)} (access remains paused).`
+          : `${getFirstName(member.fullName)} can now sign in with ${emailLower}.`,
+      data: {
+        member: formatMemberForApi(member, { includeInviteToken: true }),
+        historyEntry: formatHistoryForApi(hist),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Unable to set password.",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * POST /api/team-permissions/roles (Founder only)
+ * Immediately persists a new role into PostgreSQL and records it in History.
+ */
+export const createRole = async (req, res) => {
+  try {
+    await ensureTeamPermissionsSeeded();
+    const {
+      name = "",
+      description = "",
+      copyFromRoleId = null,
+      colour = null,
+    } = req.body || {};
+
+    const cleanName = String(name || "").trim();
+    if (!cleanName) {
+      return res.status(400).json({
+        success: false,
+        message: "A role needs a name.",
+      });
+    }
+
+    const existingRoles = await TeamRole.find({}).sort({
+      sortOrder: 1,
+      createdAt: 1,
+    });
+    const duplicate = existingRoles.find(
+      (r) =>
+        !r.archived &&
+        String(r.name || "").trim().toLowerCase() === cleanName.toLowerCase(),
+    );
+    if (duplicate) {
+      return res.status(400).json({
+        success: false,
+        message: `Two roles are called “${cleanName}”.`,
+      });
+    }
+
+    const source = copyFromRoleId
+      ? existingRoles.find(
+          (r) =>
+            r.roleId === copyFromRoleId &&
+            !r.isFixed &&
+            r.roleId !== FOUNDER_ROLE_ID,
+        )
+      : null;
+
+    const baseLevels = {};
+    for (const sec of SECTIONS) {
+      if (sec.founderOnly || sec.followsRole) continue;
+      baseLevels[sec.id] = source
+        ? source.levels?.[sec.id] || "Hidden"
+        : "Hidden";
+    }
+    const cleanLevels = sanitizeLevelsForStorage(baseLevels);
+    const eff = computeEffectivePermissions({
+      roleId: "temp",
+      name: cleanName,
+      levels: cleanLevels,
+      decisions: source?.decisions || [],
+    });
+    const cleanDecisions = sanitizeDecisionsForStorage(
+      source?.decisions || [],
+      eff.levels,
+    );
+
+    const cleanDesc = String(description || source?.description || "").trim();
+    const roleColour =
+      colour ||
+      source?.colour ||
+      ROLE_COLOUR_PALETTE[existingRoles.length % ROLE_COLOUR_PALETTE.length];
+    const newRoleId = generateUniqueRoleId(cleanName, existingRoles);
+
+    const created = await TeamRole.create({
+      roleId: newRoleId,
+      name: cleanName,
+      description: cleanDesc,
+      colour: roleColour,
+      isFixed: false,
+      archived: false,
+      sortOrder: existingRoles.length,
+      levels: cleanLevels,
+      decisions: cleanDecisions,
+    });
+
+    const nowIso = new Date().toISOString();
+    const hist = await recordHistory({
+      kind: "roles",
+      who: getActorDisplayName(req),
+      target: created.roleId,
+      message: `Added the role ${cleanName}`,
+      occurredAt: nowIso,
+    });
+
+    const allRoles = await TeamRole.find({}).sort({
+      sortOrder: 1,
+      createdAt: 1,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: `Added the role ${cleanName}.`,
+      data: {
+        role: formatRoleForApi(created),
+        roles: allRoles.map(formatRoleForApi),
+        historyEntry: formatHistoryForApi(hist),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Unable to add role.",
       error: error.message,
     });
   }

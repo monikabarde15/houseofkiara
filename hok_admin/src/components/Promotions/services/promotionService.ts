@@ -6,13 +6,21 @@
 
 import { PromoCode } from "../types/promotions.types";
 
-import { API_BASE_URL } from "../../../services/apiClient";
+import { API_BASE_URL, getAuthToken } from "../../../services/apiClient";
 const BASE = `${API_BASE_URL}/promotions`;
+
+const authHeaders = (withJson = false): Record<string, string> => {
+  const token = getAuthToken();
+  return {
+    ...(withJson ? { "Content-Type": "application/json" } : {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+};
 
 export const promotionService = {
   // GET all promo codes
   async getPromoCodes(): Promise<PromoCode[]> {
-    const res = await fetch(BASE);
+    const res = await fetch(BASE, { headers: authHeaders() });
     if (!res.ok) throw new Error("Failed to fetch promo codes");
     const json = await res.json();
     return json.data || [];
@@ -20,7 +28,7 @@ export const promotionService = {
 
   // GET single promo code by code string
   async getPromotion(code: string): Promise<PromoCode | null> {
-    const res = await fetch(`${BASE}/${code}`);
+    const res = await fetch(`${BASE}/${code}`, { headers: authHeaders() });
     if (res.status === 404) return null;
     if (!res.ok) throw new Error("Failed to fetch promo code");
     const json = await res.json();
@@ -31,7 +39,7 @@ export const promotionService = {
   async createPromotion(data: Partial<PromoCode>): Promise<PromoCode> {
     const res = await fetch(BASE, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(true),
       body: JSON.stringify(data),
     });
     if (!res.ok) {
@@ -49,7 +57,7 @@ export const promotionService = {
   ): Promise<PromoCode> {
     const res = await fetch(`${BASE}/${code}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(true),
       body: JSON.stringify(data),
     });
     if (!res.ok) {
@@ -64,7 +72,7 @@ export const promotionService = {
   async toggleStatus(code: string, by = "Admin"): Promise<PromoCode> {
     const res = await fetch(`${BASE}/${code}/toggle`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(true),
       body: JSON.stringify({ by }),
     });
     if (!res.ok) {
@@ -77,7 +85,10 @@ export const promotionService = {
 
   // DELETE promo code
   async deletePromotion(code: string): Promise<void> {
-    const res = await fetch(`${BASE}/${code}`, { method: "DELETE" });
+    const res = await fetch(`${BASE}/${code}`, {
+      method: "DELETE",
+      headers: authHeaders(),
+    });
     if (!res.ok) {
       const err = await res.json();
       throw new Error(err.message || "Failed to delete promo code");

@@ -1,7 +1,7 @@
 // src/components/products/tabs/RelatedProductsTab.tsx
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { X, Search, Shirt } from "lucide-react";
+import { X, Search, Shirt, ExternalLink } from "lucide-react";
 import { Product } from "../../types/product";
 import {
   collectProductIds,
@@ -18,6 +18,29 @@ interface RelatedProductsTabProps {
   onSave?: () => Promise<boolean> | boolean | void;
   isSaving?: boolean;
 }
+
+const getLivePdpPath = (p: Product): string => {
+  const targetId = String(
+    (p as any)?._id || p?.productId || p?.id || p?.sku || "",
+  ).trim();
+  if (!targetId) return "/products";
+  const modes = (Array.isArray(p?.listingModes) ? p.listingModes : []).map((m) =>
+    String(m || "").toUpperCase(),
+  );
+  const rent = modes.some((m) => m.includes("RENT"));
+  const preloved = modes.some(
+    (m) => m.includes("PRELOVED") || m.includes("RE-SELL"),
+  );
+  const buyNew = modes.some((m) => m.includes("NEW") || m.includes("BUY"));
+  const encoded = encodeURIComponent(targetId);
+
+  if (rent && preloved) return `/rentalandpreloved/${encoded}`;
+  if (rent && buyNew) return `/rentalandbuy/${encoded}`;
+  if (rent) return `/onlyrental/${encoded}`;
+  if (preloved) return `/preloved/${encoded}`;
+  if (buyNew) return `/buynew/${encoded}`;
+  return `/product/${encoded}`;
+};
 
 export function RelatedProductsTab({
   formData,
@@ -250,9 +273,16 @@ export function RelatedProductsTab({
                   {renderThumb(p, "w-10 h-10", "w-5 h-5 text-stone-500")}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <p className="text-xs font-medium text-stone-800 truncate">
-                        {p.name}
-                      </p>
+                      <a
+                        href={getLivePdpPath(p)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Open storefront PDP"
+                        className="text-xs font-medium text-stone-800 hover:text-[#A56728] hover:underline truncate inline-flex items-center gap-1"
+                      >
+                        <span className="truncate">{p.name}</span>
+                        <ExternalLink className="w-3 h-3 shrink-0 text-stone-400" />
+                      </a>
                       <span className="shrink-0 rounded-full bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 text-[9px] font-medium text-emerald-700">
                         Live
                       </span>

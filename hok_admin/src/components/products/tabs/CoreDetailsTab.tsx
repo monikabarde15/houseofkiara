@@ -9,8 +9,23 @@ import { apiRequest } from "../../../services/apiClient";
 import DynamicCategorySelect from "../../ui/DynamicCategorySelect";
 import DynamicOccasionSelect from "../../ui/DynamicOccasionSelect";
 import DynamicColorSelect from "../../ui/DynamicColorSelect";
+import DynamicSizeSelect from "../../ui/DynamicSizeSelect";
+import { SizeAndFitCard } from "./SizeAndFitCard";
 import {
+  adaptFitDescForGender,
+  adaptSetForGender,
+  computeSizeFitSummary,
+  deriveLegacyMeasurementsFromSet,
+  formatMeasuredDateToday,
+  getDefaultSetForCategory,
+  hasAnyMeasurementValue,
+  hydrateSizeFitSetFromProduct,
+  resolveSizeGuide,
+} from "../utils/sizeFitEngine";
+import {
+  Category,
   FabricCareOption,
+  getCategories,
   getFabricCareOptions,
   createFabricCareOption,
 } from "../../../services/categoryApi";
@@ -36,6 +51,7 @@ interface CoreDetailsTabProps {
   resetForm?: () => void;
   onAutoGenerateSku?: () => Promise<void> | void;
   generatingSku?: boolean;
+  onSizeFitSaved?: (patch: Partial<Product>) => void;
 }
 
 const STATUS_OPTIONS = [
@@ -62,6 +78,7 @@ export function CoreDetailsTab({
   isSaving: externalIsSaving = false,
   onAutoGenerateSku,
   generatingSku = false,
+  onSizeFitSaved,
 }: CoreDetailsTabProps) {
   const { hasDecision, refuseDecision, canEditSection, refuseDoor } =
     useTeamPermissions();
@@ -96,6 +113,94 @@ export function CoreDetailsTab({
   const [newFabricCareLabel, setNewFabricCareLabel] = useState("");
   const [newFabricCareNotes, setNewFabricCareNotes] = useState("");
   const [creatingFabricCare, setCreatingFabricCare] = useState(false);
+
+  // Categories (for automatically deriving Gender / Main Category from Category)
+  const [dbCategories, setDbCategories] = useState<Category[]>([]);
+
+  React.useEffect(() => {
+    const fetchCategoryMetadata = async () => {
+      try {
+        const cats = await getCategories();
+        if (Array.isArray(cats)) setDbCategories(cats);
+      } catch (e) {
+        console.warn("Failed to fetch category metadata:", e);
+      }
+    };
+    fetchCategoryMetadata();
+  }, []);
+
+  const resolveCategoryMainGender = React.useCallback(
+    (categoryStr?: string): string => {
+      const tokens = String(categoryStr || "")
+        .split(",")
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean);
+      if (tokens.length === 0) return "";
+
+      const resolved: string[] = [];
+      for (const tok of tokens) {
+        const matched = dbCategories.find((c) => {
+          const cn = String(c?.name || "").trim().toLowerCase();
+          return cn === tok || cn.replace(/s$/, "") === tok.replace(/s$/, "");
+        });
+        if (matched?.mainCategory) {
+          resolved.push(matched.mainCategory);
+          continue;
+        }
+        if (
+          tok.includes("sherwani") ||
+          tok.includes("bandhgala") ||
+          tok.includes("nehru") ||
+          tok.includes("achkan") ||
+          tok.includes("jodhpuri") ||
+          tok.includes("waistcoat") ||
+          tok.includes("bundi") ||
+          /\b(shirt|shirts|pant|pants|trouser|trousers|blazer|suit|suits|men|mens)\b/.test(
+            tok,
+          )
+        ) {
+          resolved.push("Men");
+        } else if (
+          tok.includes("lehenga") ||
+          tok.includes("saree") ||
+          tok.includes("sari") ||
+          tok.includes("anarkali") ||
+          tok.includes("gown") ||
+          tok.includes("sharara") ||
+          tok.includes("gharara")
+        ) {
+          resolved.push("Women");
+        } else if (
+          tok.includes("kurta") ||
+          tok.includes("indo-western") ||
+          tok.includes("indo western")
+        ) {
+          resolved.push("Unisex");
+        }
+      }
+
+      if (resolved.length === 0) return "";
+      const hasWomen = resolved.some((g) => g.toLowerCase() === "women");
+      const hasMen = resolved.some((g) => g.toLowerCase() === "men");
+      if (hasWomen && hasMen) return "Unisex";
+      if (hasMen) return "Men";
+      if (hasWomen) return "Women";
+      return resolved[0];
+    },
+    [dbCategories],
+  );
+
+  // Always keep product gender automatically synced from its connected Category Main Category
+  React.useEffect(() => {
+    const catGender = resolveCategoryMainGender(formData.category);
+    if (
+      catGender &&
+      String(formData.gender || "").trim().toLowerCase() !==
+        catGender.toLowerCase()
+    ) {
+      onFieldChange("gender", catGender);
+    }
+  }, [formData.gender, formData.category, resolveCategoryMainGender]);
 
   React.useEffect(() => {
     const fetchDesignersFromApi = async () => {
@@ -476,25 +581,81 @@ export function CoreDetailsTab({
     }
   };
 
-  const handleSaveMeasurements = async () => {
-    const hasInches = Boolean(
-      formData.measurements?.bust ||
-        formData.measurements?.waist ||
-        formData.measurements?.hips ||
-        formData.measurements?.length,
+  const handleSaveSizeAndFit = async () => {
+    if (isSaving || localSaving || externalIsSaving) return;
+
+    const currentSet = hydrateSizeFitSetFromProduct(formData);
+    const derived = deriveLegacyMeasurementsFromSet(
+      currentSet,
+      formData.heightFrom,
+      formData.heightTo,
+      (formData as any).gender,
+      formData.category,
     );
-    const hasCm = Boolean(
-      formData.measurementsCm?.bust ||
-        formData.measurementsCm?.waist ||
-        formData.measurementsCm?.hips ||
-        formData.measurementsCm?.length,
+    const resolvedOwner =
+      formData.ownerSize !== undefined
+        ? formData.ownerSize
+        : Array.isArray(formData.sizes) && formData.sizes.length === 1
+          ? String(formData.sizes[0] || "")
+          : "";
+    const resolvedFitDesc = adaptFitDescForGender(
+      formData.fitDesc,
+      (formData as any).gender,
+      formData.category,
     );
-    if (!hasInches && !hasCm && !formData.bestSuitedForHeight) return;
+    const fitSummary = computeSizeFitSummary(currentSet, {
+      category: formData.category,
+      gender: (formData as any).gender,
+      ownerSize: resolvedOwner,
+      designerLabel: formData.designerLabel,
+      fitDesc: resolvedFitDesc,
+      fitNote: formData.fitNote,
+      measuredBy: formData.measuredBy,
+      measuredOn: formData.measuredOn,
+    });
+    const nextMeasuredOn = fitSummary.isMeasured
+      ? formData.measuredOn || formatMeasuredDateToday()
+      : "";
+    const modes = Array.isArray(formData.listingModes)
+      ? formData.listingModes.map((m) => String(m || "").toUpperCase().trim())
+      : [];
+    const hasBuyNew = modes.includes("BUY NEW");
+    const syncedSizes =
+      !hasBuyNew && fitSummary.isMeasured && fitSummary.filterSizes.length > 0
+        ? fitSummary.filterSizes
+        : Array.isArray(formData.sizes) && formData.sizes.length > 0
+          ? formData.sizes
+          : fitSummary.filterSizes;
+
+    const sizeFitPatch: Partial<Product> = {
+      set: currentSet,
+      measurements: derived.measurements,
+      measurementsCm: derived.measurementsCm,
+      bestSuitedForHeight:
+        derived.bestSuitedForHeight || formData.bestSuitedForHeight || "",
+      sizes: syncedSizes,
+      fitDesc: resolvedFitDesc || "Not said",
+      fitNote: formData.fitNote || "",
+      fitNotes: formData.fitNotes || "",
+      measuredBy: formData.measuredBy || "The HOK team",
+      measuredOn: nextMeasuredOn,
+      designerLabel: formData.designerLabel || "",
+      ownerSize: resolvedOwner,
+      heightFrom: formData.heightFrom || "",
+      heightTo: formData.heightTo || "",
+    };
+
+    onFieldChange("set", sizeFitPatch.set as any);
+    onFieldChange("measurements", sizeFitPatch.measurements as any);
+    onFieldChange("measurementsCm", sizeFitPatch.measurementsCm as any);
+    onFieldChange("bestSuitedForHeight", sizeFitPatch.bestSuitedForHeight as any);
+    onFieldChange("sizes", sizeFitPatch.sizes as any);
+    onFieldChange("measuredOn", sizeFitPatch.measuredOn as any);
+
     if (!productId) {
-      toast.error("⚠️ Please save Core Details first!");
+      await handleSaveCoreDetails();
       return;
     }
-    if (isSaving || localSaving || externalIsSaving) return;
 
     setIsSaving(true);
     setLocalSaving(true);
@@ -502,25 +663,52 @@ export function CoreDetailsTab({
     setSaveSuccess(false);
 
     try {
-      const measurementsData = {
-        measurements: formData.measurements || {},
-        measurementsCm: data.measurementsCm || {},
-        bestSuitedForHeight: formData.bestSuitedForHeight || "",
+      const response = await apiRequest(
+        `/products/${encodeURIComponent(productId)}/measurements`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sizeFitPatch),
+        },
+      );
+      const persistedPatch = {
+        ...sizeFitPatch,
+        ...(response?.data && typeof response.data === "object"
+          ? response.data
+          : {}),
       };
-
-      await apiRequest(`/products/${productId}/measurements`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(measurementsData),
-      });
+      if (response?.data?.createdDesigner) {
+        const createdDes = response.data.createdDesigner;
+        setFetchedDesigners((prev) => {
+          const exists = prev.some(
+            (d) =>
+              d.name.toLowerCase() ===
+              String(createdDes.name || "").trim().toLowerCase(),
+          );
+          return exists
+            ? prev
+            : [
+                {
+                  id: String(
+                    createdDes.designerId || createdDes.id || createdDes._id,
+                  ),
+                  name: String(createdDes.name).trim(),
+                },
+                ...prev,
+              ];
+        });
+        onDesignerCreated?.(createdDes);
+      }
+      onSizeFitSaved?.(persistedPatch);
+      toast.success("Size & Fit saved successfully!");
       setSaveSuccess(true);
-      setLocalSaving(false);
-      setIsSaving(false);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
-      setSaveError(
-        error instanceof Error ? error.message : "An error occurred",
-      );
+      const msg =
+        error instanceof Error ? error.message : "Failed to save Size & Fit";
+      setSaveError(msg);
+      toast.error(msg);
+    } finally {
       setLocalSaving(false);
       setIsSaving(false);
     }
@@ -867,8 +1055,56 @@ export function CoreDetailsTab({
             <label className={labelClass}>Category</label>
             <DynamicCategorySelect
               value={formData.category || ""}
-              onChange={(value) => onFieldChange("category", value)}
-              onCategoryCreated={onCategoryCreated}
+              onChange={(value) => {
+                onFieldChange("category", value);
+                const catMainGender = resolveCategoryMainGender(value);
+                const nextGender =
+                  catMainGender || String(formData.gender || "").trim();
+                if (catMainGender) {
+                  onFieldChange("gender", catMainGender);
+                }
+                const hasLegacy = Boolean(
+                  formData.measurements?.bust ||
+                    formData.measurements?.waist ||
+                    formData.measurements?.hips ||
+                    formData.measurements?.length,
+                );
+                const hasMeasures =
+                  hasAnyMeasurementValue(formData.set) || hasLegacy;
+                onFieldChange(
+                  "set",
+                  (hasMeasures
+                    ? adaptSetForGender(
+                        hydrateSizeFitSetFromProduct(formData),
+                        nextGender,
+                        value,
+                      )
+                    : getDefaultSetForCategory(value, nextGender)) as any,
+                );
+                const nextFitDesc = adaptFitDescForGender(
+                  formData.fitDesc,
+                  nextGender,
+                  value,
+                );
+                if (formData.fitDesc && nextFitDesc !== formData.fitDesc) {
+                  onFieldChange("fitDesc", nextFitDesc as any);
+                }
+                if (formData.ownerSize) {
+                  const nextGuide = resolveSizeGuide(value, nextGender);
+                  const validSizes = new Set(
+                    nextGuide.rows.map((r) => r.size.toLowerCase()),
+                  );
+                  if (!validSizes.has(String(formData.ownerSize).toLowerCase())) {
+                    onFieldChange("ownerSize", "" as any);
+                  }
+                }
+              }}
+              onCategoryCreated={(newCat) => {
+                if (newCat?.name) {
+                  setDbCategories((prev) => [...prev, newCat]);
+                }
+                onCategoryCreated?.(newCat);
+              }}
               className="mt-1"
             />
           </div>
@@ -1086,23 +1322,15 @@ export function CoreDetailsTab({
                 one per listing, consignment model
               </span>
             </label>
-            <input
-              type="text"
-              value={formData.sizes?.join(", ") || ""}
-              onChange={(e) =>
-                onFieldChange(
-                  "sizes",
-                  e.target.value
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter(Boolean),
-                )
-              }
-              className={inputClass}
+            <DynamicSizeSelect
+              value={Array.isArray(formData.sizes) ? formData.sizes : []}
+              onChange={(nextSizes) => onFieldChange("sizes", nextSizes)}
+              placeholder="Select size(s)..."
+              className="mt-1"
             />
             <p className={helpClass}>
-              Each piece is a specific physical garment — enter the one size it
-              fits, not a range. General size guidance lives in Master Data.
+              Each piece is a specific physical garment — select or add/remove
+              sizes from the list. General size guidance lives in Master Data.
             </p>
           </div>
           <div>
@@ -1340,142 +1568,37 @@ export function CoreDetailsTab({
         </div>
       </div>
 
-      {/* ---------------- Size & Measurements Card ---------------- */}
-      <div className="bg-white p-5 rounded-lg border border-stone-200/80 shadow-sm">
-        <div className="flex items-baseline justify-between mb-4">
-          <h3 className="font-serif font-bold text-stone-900 text-sm">
-            Size &amp; Measurements — This Piece
-          </h3>
-          <span className="text-[11px] text-stone-400">
-            Shown as "Size &amp; Fit" on the PDP
-          </span>
-        </div>
-
-        <div className="border border-stone-200 rounded overflow-hidden">
-          <div className="grid grid-cols-3 bg-stone-100 text-[11px] font-semibold text-stone-500 uppercase tracking-wide">
-            <div className="p-2 px-3">Measurement</div>
-            <div className="p-2 px-3">Inches</div>
-            <div className="p-2 px-3">Centimetres</div>
-          </div>
-
-          {[
-            { key: "bust", label: "Bust (blouse)" },
-            { key: "waist", label: "Waist (skirt)" },
-            { key: "hips", label: "Hips (skirt fall)" },
-            { key: "length", label: "Length (skirt)" },
-          ].map((row, idx) => (
-            <div
-              key={row.key}
-              className={`grid grid-cols-3 items-center ${idx !== 0 ? "border-t border-stone-100" : ""}`}
-            >
-              <div className="p-3 text-xs text-stone-700">{row.label}</div>
-              <div className="p-2 px-3">
-                <input
-                  value={
-                    formData.measurements?.[
-                    row.key as keyof typeof formData.measurements
-                    ] || ""
-                  }
-                  onChange={(e) =>
-                    onFieldChange("measurements", {
-                      ...formData.measurements,
-                      [row.key]: e.target.value,
-                    } as Product["measurements"])
-                  }
-                  className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                />
-              </div>
-              <div className="p-2 px-3">
-                <input
-                  value={
-                    formData.measurementsCm?.[
-                    row.key as keyof typeof formData.measurementsCm
-                    ] || ""
-                  }
-                  onChange={(e) =>
-                    onFieldChange("measurementsCm", {
-                      ...formData.measurementsCm,
-                      [row.key]: e.target.value,
-                    } as Product["measurementsCm"])
-                  }
-                  className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-                />
-              </div>
-            </div>
-          ))}
-
-          <div className="grid grid-cols-3 items-center border-t border-stone-100 bg-[#f4ece0]">
-            <div className="p-3 text-xs font-semibold text-stone-800">
-              Best suited for height
-            </div>
-            <div className="p-2 px-3 col-span-2">
-              <input
-                value={formData.bestSuitedForHeight || ""}
-                onChange={(e) =>
-                  onFieldChange("bestSuitedForHeight", e.target.value)
-                }
-                className="w-full p-2 bg-[#fcf9f5] border border-stone-200 rounded text-xs"
-              />
-            </div>
-          </div>
-        </div>
-
-        <p className={`${helpClass} mt-3`}>
-          General size-to-measurement guidance is managed centrally in Master
-          Data → Occasions &amp; Sizes → Sizes &amp; Fit Guide. These fields are
-          this specific piece's actual measurements, since each listing is one
-          physical garment.
-        </p>
-
-        <div className="flex justify-end pt-4 mt-2 border-t border-stone-100">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (!isSaving && !localSaving && !externalIsSaving)
-                handleSaveMeasurements();
-            }}
-            disabled={
-              isSaving ||
-              localSaving ||
-              saveSuccess ||
-              externalIsSaving ||
-              (!formData.measurements?.bust &&
-                !formData.measurements?.waist &&
-                !formData.measurements?.hips &&
-                !formData.measurements?.length &&
-                !formData.measurementsCm?.bust &&
-                !formData.measurementsCm?.waist &&
-                !formData.measurementsCm?.hips &&
-                !formData.measurementsCm?.length &&
-                !formData.bestSuitedForHeight)
-            }
-            className={`px-4 py-2 text-xs font-semibold rounded transition ${isSaving ||
-                localSaving ||
-                saveSuccess ||
-                externalIsSaving ||
-                (!formData.measurements?.bust &&
-                  !formData.measurements?.waist &&
-                  !formData.measurements?.hips &&
-                  !formData.measurements?.length &&
-                  !formData.measurementsCm?.bust &&
-                  !formData.measurementsCm?.waist &&
-                  !formData.measurementsCm?.hips &&
-                  !formData.measurementsCm?.length &&
-                  !formData.bestSuitedForHeight)
-                ? "bg-gray-400 cursor-not-allowed opacity-70"
-                : "bg-amber-700 hover:bg-amber-800 text-white"
-              }`}
-          >
-            {isSaving || localSaving
-              ? "Saving..."
-              : saveSuccess
-                ? "✅ Saved!"
-                : "Save Measurements"}
-          </button>
-        </div>
-      </div>
+      {/* ---------------- Size & Fit · This Piece Card ---------------- */}
+      <SizeAndFitCard
+        formData={formData}
+        onFieldChange={onFieldChange}
+        onSaveSizeAndFit={handleSaveSizeAndFit}
+        designers={activeDesigners}
+        onDesignerCreated={(createdDes) => {
+          if (!createdDes?.name) return;
+          setFetchedDesigners((prev) => {
+            const exists = prev.some(
+              (d) =>
+                d.name.toLowerCase() ===
+                String(createdDes.name || "").trim().toLowerCase(),
+            );
+            return exists
+              ? prev
+              : [
+                  {
+                    id: String(
+                      createdDes.designerId || createdDes.id || createdDes._id,
+                    ),
+                    name: String(createdDes.name).trim(),
+                  },
+                  ...prev,
+                ];
+          });
+          onDesignerCreated?.(createdDes);
+        }}
+        isSaving={isSaving || localSaving || externalIsSaving}
+        saveSuccess={saveSuccess}
+      />
     </div>
   );
 }

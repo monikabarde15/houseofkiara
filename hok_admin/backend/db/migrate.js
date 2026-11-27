@@ -430,12 +430,41 @@ export const migrationQueries = [
   `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
   `ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();`,
 
+  // 14b. Main Categories Table (Women / Men / Unisex)
+  `CREATE TABLE IF NOT EXISTS main_categories (
+    _id VARCHAR(64) PRIMARY KEY,
+    main_category_id VARCHAR(64) UNIQUE NOT NULL,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    slug VARCHAR(100) UNIQUE NOT NULL,
+    sort_order INT DEFAULT 1,
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );`,
+  `ALTER TABLE main_categories ADD COLUMN IF NOT EXISTS _id VARCHAR(64);`,
+  `ALTER TABLE main_categories ADD COLUMN IF NOT EXISTS main_category_id VARCHAR(64);`,
+  `ALTER TABLE main_categories ADD COLUMN IF NOT EXISTS name VARCHAR(100);`,
+  `ALTER TABLE main_categories ADD COLUMN IF NOT EXISTS slug VARCHAR(100);`,
+  `ALTER TABLE main_categories ADD COLUMN IF NOT EXISTS sort_order INT DEFAULT 1;`,
+  `ALTER TABLE main_categories ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_main_categories__id ON main_categories(_id);`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_main_categories_id ON main_categories(main_category_id);`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_main_categories_slug ON main_categories(slug);`,
+  `INSERT INTO main_categories (_id, main_category_id, name, slug, sort_order, data)
+   VALUES
+     ('mc_women', 'MC-WOMEN', 'Women', 'women', 1, '{"mainCategoryId":"MC-WOMEN","name":"Women","slug":"women","sortOrder":1}'::jsonb),
+     ('mc_men', 'MC-MEN', 'Men', 'men', 2, '{"mainCategoryId":"MC-MEN","name":"Men","slug":"men","sortOrder":2}'::jsonb),
+     ('mc_unisex', 'MC-UNISEX', 'Unisex', 'unisex', 3, '{"mainCategoryId":"MC-UNISEX","name":"Unisex","slug":"unisex","sortOrder":3}'::jsonb)
+   ON CONFLICT (slug) DO NOTHING;`,
+
   // 15. Categories Table
   `CREATE TABLE IF NOT EXISTS categories (
     _id VARCHAR(64) PRIMARY KEY,
     category_id VARCHAR(255) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     slug VARCHAR(255) UNIQUE NOT NULL,
+    main_category_id VARCHAR(64),
+    main_category VARCHAR(100),
     image VARCHAR(255),
     description TEXT,
     data JSONB NOT NULL DEFAULT '{}'::jsonb,
@@ -446,6 +475,8 @@ export const migrationQueries = [
   `ALTER TABLE categories ADD COLUMN IF NOT EXISTS category_id VARCHAR(255);`,
   `ALTER TABLE categories ADD COLUMN IF NOT EXISTS name VARCHAR(255);`,
   `ALTER TABLE categories ADD COLUMN IF NOT EXISTS slug VARCHAR(255);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS main_category_id VARCHAR(64);`,
+  `ALTER TABLE categories ADD COLUMN IF NOT EXISTS main_category VARCHAR(100);`,
   `ALTER TABLE categories ADD COLUMN IF NOT EXISTS image VARCHAR(255);`,
   `ALTER TABLE categories ADD COLUMN IF NOT EXISTS description TEXT;`,
   `ALTER TABLE categories ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}'::jsonb;`,
@@ -454,6 +485,7 @@ export const migrationQueries = [
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories__id ON categories(_id);`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_category_id ON categories(category_id);`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);`,
+  `CREATE INDEX IF NOT EXISTS idx_categories_main_category_id ON categories(main_category_id);`,
   `CREATE INDEX IF NOT EXISTS idx_categories_data_gin ON categories USING GIN (data);`,
 
   // 16. Homepage Sections Table

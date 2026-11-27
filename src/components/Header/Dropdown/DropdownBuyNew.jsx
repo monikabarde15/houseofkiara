@@ -1,5 +1,6 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { stripExtraParentParams } from "../../../services/headerApi";
 import { useNavigate } from "react-router-dom";
 
 
@@ -29,8 +30,8 @@ const DropdownBuyNew = ({ columns }) => {
                   onClick={() =>
                     navigate(
                       cat.path?.startsWith('/main-page')
-                        ? cat.path
-                        : `/main-page?section=new&category=${encodeURIComponent(cat.label)}`
+                        ? stripExtraParentParams(cat.path)
+                        : `/main-page?category=${encodeURIComponent(cat.label)}`
                     )
                   }
                 >
@@ -44,7 +45,7 @@ const DropdownBuyNew = ({ columns }) => {
                   className="dd-cat"
                   onClick={() =>
                     navigate(
-                      `/main-page?section=new&category=${encodeURIComponent(category)}`
+                      `/main-page?category=${encodeURIComponent(category)}`
                     )
                   }
                 >
@@ -99,8 +100,8 @@ const DropdownBuyNew = ({ columns }) => {
                   onClick={() =>
                     navigate(
                       designer.path?.startsWith('/main-page')
-                        ? designer.path
-                        : `/main-page?section=new&designer=${encodeURIComponent(designer.label)}`
+                        ? stripExtraParentParams(designer.path)
+                        : `/main-page?designer=${encodeURIComponent(designer.label)}`
                     )
                   }
                 >
@@ -114,7 +115,7 @@ const DropdownBuyNew = ({ columns }) => {
                   className={`dd-link ${designer.featured ? "bold" : ""}`}
                   onClick={() =>
                     navigate(
-                      `/main-page?section=new&designer=${encodeURIComponent(designer.label)}`
+                      `/main-page?designer=${encodeURIComponent(designer.label)}`
                     )
                   }
                 >

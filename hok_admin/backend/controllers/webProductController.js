@@ -1,6 +1,7 @@
 import Product from "../models/Product.js";
 import Designer from "../models/Designer.js";
 import Category from "../models/Category.js";
+import { pool } from "../config/db.js";
 import mongoose from "mongoose";
 import {
   COLOR_FAMILIES,
@@ -127,17 +128,80 @@ const womenKeywordsList = [
   "womens",
 ];
 
-export const detectProductGender = (product) => {
+export const buildCategoryGenderMap = (categories = []) => {
+  const map = new Map();
+  (categories || []).forEach((cat) => {
+    const mc = String(cat?.mainCategory || "").trim();
+    if (!mc) return;
+    const canon =
+      mc.toLowerCase() === "men"
+        ? "Men"
+        : mc.toLowerCase() === "unisex"
+          ? "Unisex"
+          : "Women";
+    const rawName = String(cat?.name || "").trim().toLowerCase();
+    const rawSlug = String(cat?.slug || "").trim().toLowerCase();
+    if (rawName) {
+      map.set(rawName, canon);
+      map.set(rawName.replace(/s$/, ""), canon);
+    }
+    if (rawSlug) {
+      map.set(rawSlug, canon);
+    }
+  });
+  return map;
+};
+
+export const detectProductGender = (product, categoryGenderMap = null) => {
   if (!product) return "Women";
-  // Priority 1: Explicit database field (when admin provides it now or in future)
+  // Priority 1: Explicit Men / Women on product
   if (product.gender && typeof product.gender === "string" && product.gender.trim()) {
     const g = product.gender.trim().toLowerCase();
     if (["men", "man", "male"].includes(g)) return "Men";
     if (["women", "woman", "female"].includes(g)) return "Women";
+  }
+
+  // Priority 2: Connected DB Category -> Main Category (Women / Men / Unisex)
+  if (categoryGenderMap && product.category) {
+    const catTokens = String(product.category)
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean);
+    let matchedUnisex = false;
+    for (const token of catTokens) {
+      const tokenSlug = token.replace(/[^a-z0-9]+/g, "-");
+      const mapped =
+        categoryGenderMap.get(token) ||
+        categoryGenderMap.get(token.replace(/s$/, "")) ||
+        categoryGenderMap.get(tokenSlug);
+      if (mapped === "Men" || mapped === "Women") return mapped;
+      if (mapped === "Unisex") matchedUnisex = true;
+    }
+    if (matchedUnisex) {
+      if (
+        product.gender &&
+        typeof product.gender === "string" &&
+        ["unisex", "other", "all"].includes(product.gender.trim().toLowerCase())
+      ) {
+        return "Unisex";
+      }
+      const pieceWords = [product.name, product.subtitle, product.description]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .split(/[^a-z]+/);
+      if (pieceWords.some((w) => menKeywordsList.includes(w))) return "Men";
+      if (pieceWords.some((w) => womenKeywordsList.includes(w))) return "Women";
+      return "Unisex";
+    }
+  }
+
+  if (product.gender && typeof product.gender === "string" && product.gender.trim()) {
+    const g = product.gender.trim().toLowerCase();
     if (["unisex", "other", "all"].includes(g)) return "Unisex";
   }
 
-  // Priority 2: Text cues from name, category, subtitle, description
+  // Priority 3: Text cues from name, category, subtitle, description
   const words = [
     product.name,
     product.category,
@@ -413,9 +477,12 @@ export const getWebProducts = async (req, res) => {
       });
     }
 
-    // Fetch only officially valid products for the frontend
-    const findQuery = Product.find(query).sort({ createdAt: -1 });
-    const products = await findQuery;
+    // Fetch only officially valid products + DB categories for gender resolution
+    const [products, adminCategories] = await Promise.all([
+      Product.find(query).sort({ createdAt: -1 }),
+      Category.find({}).catch(() => []),
+    ]);
+    const categoryGenderMap = buildCategoryGenderMap(adminCategories);
 
     let formattedProducts = products.map((product) => {
       const { rent, preloved, isNew } = computeListingFlags(product);
@@ -451,7 +518,7 @@ export const getWebProducts = async (req, res) => {
         rentPrice: formatPrice(product.rentalPrice),
         buyPrice: formatPrice(product.listingPrice),
         originalPrice: formatPrice(product.originalRetailPrice),
-        gender: detectProductGender(product),
+        gender: detectProductGender(product, categoryGenderMap),
         category: product.category || "Uncategorized",
         occasion: product.occasion || "",
         size: detectProductSizes(product),
@@ -527,20 +594,35 @@ export const getFiltersData = async (req, res) => {
       });
     }
     const query = { status: { $in: ["Live", "Out of Stock", "Out Of Stock"] } };
-    const [products, adminDesigners, adminCategories] = await Promise.all([
-      Product.find(query),
-      Designer.find({ status: { $ne: "Inactive" } }).sort({ isFeatured: -1, sortOrder: 1, name: 1 }),
-      Category.find({}).sort({ sortOrder: 1, name: 1 }),
-    ]);
+    const [products, adminDesigners, adminCategories, mainCatRows] =
+      await Promise.all([
+        Product.find(query),
+        Designer.find({ status: { $ne: "Inactive" } }).sort({
+          isFeatured: -1,
+          sortOrder: 1,
+          name: 1,
+        }),
+        Category.find({}).sort({ sortOrder: 1, name: 1 }),
+        pool
+          .query(
+            "SELECT name FROM main_categories ORDER BY sort_order ASC, name ASC",
+          )
+          .then((r) => r.rows || [])
+          .catch(() => []),
+      ]);
 
+    const categoryGenderMap = buildCategoryGenderMap(adminCategories);
     const norm = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
-    // Template definitions matching Mohan's UI
-    const genderTemplates = [
-      ["Women", 0],
-      ["Men", 0],
-      ["Unisex", 0],
-    ];
+    // Gender templates strictly from main_categories DB table (fallback Women / Men / Unisex)
+    const genderTemplates =
+      mainCatRows.length > 0
+        ? mainCatRows.map((r) => [r.name, 0])
+        : [
+            ["Women", 0],
+            ["Men", 0],
+            ["Unisex", 0],
+          ];
 
     // Categories: from Admin Category collection if exists, else fallback
     const categoryTemplates =
@@ -594,11 +676,9 @@ export const getFiltersData = async (req, res) => {
     const familyShades = {};
 
     products.forEach((product) => {
-      // 1. Gender calculation using robust detection
-      const gen = detectProductGender(product);
-      if (gen === "Men") genderCounts.Men++;
-      else if (gen === "Unisex") genderCounts.Unisex++;
-      else genderCounts.Women++;
+      // 1. Gender calculation using DB category + explicit product gender
+      const gen = detectProductGender(product, categoryGenderMap);
+      genderCounts[gen] = (genderCounts[gen] || 0) + 1;
 
       // 2. Category calculation (supports single or comma-separated multiple categories)
       const rawCats = String(product.category || "")

@@ -5,6 +5,7 @@ import { TeamTab } from "./components/TeamTab";
 import { RolesTab } from "./components/RolesTab";
 import { HistoryTab } from "./components/HistoryTab";
 import { NotPartOfRoleView } from "./components/NotPartOfRoleView";
+import { RolesSaveBar } from "./components/roles/RolesSaveBar";
 import { TeamPermissionsTab } from "./types";
 
 interface TeamPermissionsViewProps {
@@ -87,6 +88,7 @@ export const TeamPermissionsView: React.FC<TeamPermissionsViewProps> = ({
           </>
         )}
       </div>
+      <RolesSaveBar />
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { requireAdminAuth, requireFounder } from "../middleware/authMiddleware.j
 import {
   cancelInvite,
   changeMemberRole,
+  createRole,
   getBootstrap,
   getMemberOpenWork,
   getRoster,
@@ -14,6 +15,7 @@ import {
   resendInvite,
   restoreMember,
   saveRolesBatch,
+  setMemberPassword,
   updateMemberDetails,
 } from "../controllers/teamPermissionsController.js";
 
@@ -92,8 +94,20 @@ router.post(
   requireFounder,
   reinviteMember,
 );
+router.post(
+  "/members/:personId/set-password",
+  requireAdminAuth,
+  requireFounder,
+  setMemberPassword,
+);
 
-// Roles batch save
+// Roles create & batch save
+router.post(
+  "/roles",
+  requireAdminAuth,
+  requireFounder,
+  createRole,
+);
 router.put(
   "/roles/save",
   requireAdminAuth,

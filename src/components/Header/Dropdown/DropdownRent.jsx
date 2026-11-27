@@ -1,6 +1,7 @@
 // src\components\Header\Dropdown\DropdownRent.jsx
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { stripExtraParentParams } from "../../../services/headerApi";
 import { useNavigate } from "react-router-dom";
 const DropdownRent = ({ columns }) => {
   const data = dropdownData.rent;
@@ -27,8 +28,8 @@ const navigate = useNavigate();
                   onClick={() =>
                     navigate(
                       cat.path?.startsWith('/main-page')
-                        ? cat.path
-                        : `/main-page?section=rent&mode=rent&category=${encodeURIComponent(cat.label)}`
+                        ? stripExtraParentParams(cat.path)
+                        : `/main-page?category=${encodeURIComponent(cat.label)}`
                     )
                   }
                 >
@@ -42,7 +43,7 @@ const navigate = useNavigate();
                   className="dd-cat"
                   onClick={() =>
                     navigate(
-                      `/main-page?section=rent&mode=rent&category=${encodeURIComponent(category)}`
+                      `/main-page?category=${encodeURIComponent(category)}`
                     )
                   }
                 >
@@ -58,7 +59,7 @@ const navigate = useNavigate();
                 <a
                   key={l.id || l.label}
                   className="dd-sub"
-                  onClick={() => navigate(l.path || "/main-page?section=rent&mode=rent")}
+                  onClick={() => navigate(l.path || "/main-page?section=rent")}
                 >
                   {l.label} →
                 </a>
@@ -67,7 +68,7 @@ const navigate = useNavigate();
               <a
                 className="dd-sub"
                 onClick={() =>
-                  navigate("/main-page?section=rent&mode=rent")
+                  navigate("/main-page?section=rent")
                 }
               >
                 {data.leftFooter}
@@ -98,8 +99,8 @@ const navigate = useNavigate();
                   onClick={() =>
                     navigate(
                       designer.path?.startsWith('/main-page')
-                        ? designer.path
-                        : `/main-page?section=rent&mode=rent&designer=${encodeURIComponent(designer.label)}`
+                        ? stripExtraParentParams(designer.path)
+                        : `/main-page?designer=${encodeURIComponent(designer.label)}`
                     )
                   }
                 >
@@ -113,7 +114,7 @@ const navigate = useNavigate();
                   className={`dd-link ${designer.featured ? "bold" : ""}`}
                   onClick={() =>
                     navigate(
-                      `/main-page?section=rent&mode=rent&designer=${encodeURIComponent(designer.label)}`
+                      `/main-page?designer=${encodeURIComponent(designer.label)}`
                     )
                   }
                 >

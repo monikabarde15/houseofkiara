@@ -85,6 +85,16 @@ const productSchema = new mongoose.Schema(
     },
     bestSuitedForHeight: String, // NEW: Height recommendation
     weight: String, // Already exists
+    set: { type: [mongoose.Schema.Types.Mixed], default: [] },
+    fitDesc: String,
+    fitNote: String,
+    fitNotes: String,
+    measuredBy: String,
+    measuredOn: String,
+    designerLabel: String,
+    ownerSize: String,
+    heightFrom: String,
+    heightTo: String,
 
     // ========== LISTING & AVAILABILITY ==========
     listingModes: { type: [String], default: [] },

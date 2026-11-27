@@ -214,7 +214,7 @@ export const initialSiteSettingsRegistry: SiteSettingsRegistry = {
               { id: 'l4', label: 'Sharara Sets', path: '/rent/sharara' },
               { id: 'l5', label: 'Sherwanis', path: '/rent/sherwanis' },
               { id: 'l6', label: 'Kurta Sets', path: '/rent/kurta' },
-              { id: 'l7', label: 'See all categories', path: '/rent/all', position: 'last' }
+              { id: 'l7', label: 'See all categories', path: '/main-page?section=rent&mode=rent', position: 'last' }
             ]
           },
           {
@@ -306,7 +306,7 @@ export const initialSiteSettingsRegistry: SiteSettingsRegistry = {
               { id: 'bn3', label: 'Anarkalis', path: '/new/anarkalis' },
               { id: 'bn4', label: 'Sharara Sets', path: '/new/sharara' },
               { id: 'bn5', label: 'Sherwanis', path: '/new/sherwanis' },
-              { id: 'bn6', label: 'See all categories', path: '/new/all', position: 'last' }
+              { id: 'bn6', label: 'See all categories', path: '/main-page?section=new', position: 'last' }
             ]
           },
           {
@@ -319,7 +319,7 @@ export const initialSiteSettingsRegistry: SiteSettingsRegistry = {
               { id: 'bn10', label: 'Raw Mango', path: '/new/rawmango' },
               { id: 'bn11', label: 'Torani', path: '/new/torani' },
               { id: 'bn12', label: 'Ekaya', path: '/new/ekaya' },
-              { id: 'bn13', label: 'See all designers', path: '/new/all', position: 'last' }
+              { id: 'bn13', label: 'See all designers', path: '/main-page?section=new', position: 'last' }
             ]
           }
         ]
@@ -344,7 +344,7 @@ export const initialSiteSettingsRegistry: SiteSettingsRegistry = {
               { id: 'w4', label: 'Sharara Sets', path: '/women/sharara' },
               { id: 'w5', label: 'Kurta Sets', path: '/women/kurta' },
               { id: 'w6', label: 'Gowns', path: '/women/gowns' },
-              { id: 'w7', label: 'See all', path: '/women/all', position: 'last' }
+              { id: 'w7', label: 'See all', path: '/main-page?section=women&gender=Women', position: 'last' }
             ]
           },
           {
@@ -388,7 +388,7 @@ export const initialSiteSettingsRegistry: SiteSettingsRegistry = {
               { id: 'm3', label: 'Kurta Sets', path: '/men/kurta' },
               { id: 'm4', label: 'Indo-Western', path: '/men/indowestern' },
               { id: 'm5', label: 'Nehru Jackets', path: '/men/nehru' },
-              { id: 'm6', label: 'See all', path: '/men/all', position: 'last' }
+              { id: 'm6', label: 'See all', path: '/main-page?section=men&gender=Men', position: 'last' }
             ]
           },
           {
@@ -440,7 +440,7 @@ export const initialSiteSettingsRegistry: SiteSettingsRegistry = {
             links: [
               { id: 'o8', label: 'Rent for the occasion', path: '/occ/rent' },
               { id: 'o9', label: 'Buy Preloved', path: '/preloved/all' },
-              { id: 'o10', label: 'Buy New', path: '/new/all' }
+              { id: 'o10', label: 'Buy New', path: '/main-page?section=new' }
             ]
           },
           {
@@ -475,7 +475,7 @@ export const initialSiteSettingsRegistry: SiteSettingsRegistry = {
               { id: 'd5', label: 'Raw Mango', path: '/des/rawmango' },
               { id: 'd6', label: 'Abu Jani Sandeep', path: '/des/ajs' },
               { id: 'd7', label: 'Torani', path: '/des/torani' },
-              { id: 'd8', label: 'A–Z index', path: '/designers/index', position: 'last' }
+              { id: 'd8', label: 'A–Z index', path: '/main-page?section=designers', position: 'last' }
             ]
           },
           {

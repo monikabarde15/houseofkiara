@@ -615,3 +615,10 @@ export function joinWithAnd(items: string[]): string {
   if (items.length === 2) return `${items[0]} and ${items[1]}`;
   return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }
+
+export function buildInviteUrl(inviteToken: string): string {
+  if (typeof window === "undefined") {
+    return `/hok_admin/?invite=${encodeURIComponent(inviteToken)}`;
+  }
+  return `${window.location.origin}/hok_admin/?invite=${encodeURIComponent(inviteToken)}`;
+}

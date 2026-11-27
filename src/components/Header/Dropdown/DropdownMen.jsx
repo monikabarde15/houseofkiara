@@ -1,5 +1,6 @@
 import DropdownCard from "./DropdownCard";
 import { dropdownData } from "../../../data/dropdownData";
+import { stripExtraParentParams } from "../../../services/headerApi";
 import { useNavigate } from "react-router-dom";
 
 const DropdownMen = ({ columns }) => {
@@ -28,8 +29,8 @@ const DropdownMen = ({ columns }) => {
                   onClick={() =>
                     navigate(
                       cat.path?.startsWith('/main-page')
-                        ? cat.path
-                        : `/main-page?section=men&gender=Men&category=${encodeURIComponent(cat.label)}`
+                        ? stripExtraParentParams(cat.path)
+                        : `/main-page?category=${encodeURIComponent(cat.label)}`
                     )
                   }
                 >
@@ -43,7 +44,7 @@ const DropdownMen = ({ columns }) => {
                   className="dd-cat"
                   onClick={() =>
                     navigate(
-                      `/main-page?section=men&gender=Men&category=${encodeURIComponent(category)}`
+                      `/main-page?category=${encodeURIComponent(category)}`
                     )
                   }
                 >
@@ -91,9 +92,7 @@ const DropdownMen = ({ columns }) => {
               className="dd-link"
               onClick={() =>
                 navigate(
-                  `/main-page?section=men&gender=Men&occasion=${encodeURIComponent(
-                    occasion
-                  )}`
+                  `/main-page?occasion=${encodeURIComponent(occasion)}`
                 )
               }
             >
@@ -116,23 +115,17 @@ const DropdownMen = ({ columns }) => {
               onClick={() => {
 
                 if (mode === "Rent") {
-                  navigate(
-                    "/main-page?section=rent&gender=Men"
-                  );
+                  navigate("/main-page?section=rent");
                   return;
                 }
 
                 if (mode === "Buy Preloved") {
-                  navigate(
-                    "/main-page?section=preloved&gender=Men"
-                  );
+                  navigate("/main-page?section=preloved");
                   return;
                 }
 
                 if (mode === "Buy New") {
-                  navigate(
-                    "/main-page?section=new&gender=Men"
-                  );
+                  navigate("/main-page?section=new");
                 }
 
               }}

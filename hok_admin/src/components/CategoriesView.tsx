@@ -12,7 +12,9 @@ import {
 import toast from "react-hot-toast";
 import {
   Category,
+  MainCategory,
   getCategories,
+  getMainCategories,
   createCategory,
   updateCategory,
   deleteCategory,
@@ -25,6 +27,7 @@ export default function CategoriesView({
   onEditingChange: (isEditing: boolean) => void;
 }) {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [mainCategories, setMainCategories] = useState<MainCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,6 +42,8 @@ export default function CategoriesView({
   // Form state
   const [formData, setFormData] = useState({
     name: "",
+    mainCategoryId: "MC-WOMEN",
+    mainCategory: "Women",
     description: "",
     image: "",
   });
@@ -47,8 +52,12 @@ export default function CategoriesView({
 
   const fetchCats = async () => {
     try {
-      const data = await getCategories();
+      const [data, mains] = await Promise.all([
+        getCategories(),
+        getMainCategories(),
+      ]);
       setCategories(data);
+      setMainCategories(mains);
     } catch (e) {
       toast.error("Failed to load categories");
     } finally {
@@ -65,11 +74,23 @@ export default function CategoriesView({
     if (category) {
       setFormData({
         name: category.name,
+        mainCategoryId: category.mainCategoryId || "MC-WOMEN",
+        mainCategory: category.mainCategory || "Women",
         description: category.description || "",
         image: category.image || "",
       });
     } else {
-      setFormData({ name: "", description: "", image: "" });
+      const defaultMain = mainCategories[0] || {
+        mainCategoryId: "MC-WOMEN",
+        name: "Women",
+      };
+      setFormData({
+        name: "",
+        mainCategoryId: defaultMain.mainCategoryId,
+        mainCategory: defaultMain.name,
+        description: "",
+        image: "",
+      });
     }
     setIsModalOpen(true);
     onEditingChange(true);
@@ -91,9 +112,14 @@ export default function CategoriesView({
         await updateCategory(selectedCategory.id, formData);
         toast.success("Category updated successfully");
       } else {
-        const created = await createCategory(formData.name);
+        const created = await createCategory(formData.name, {
+          mainCategoryId: formData.mainCategoryId,
+          mainCategory: formData.mainCategory,
+        });
         if (formData.description || formData.image) {
           await updateCategory(created.id, {
+            mainCategoryId: formData.mainCategoryId,
+            mainCategory: formData.mainCategory,
             description: formData.description,
             image: formData.image,
           });
@@ -240,9 +266,16 @@ export default function CategoriesView({
                   </div>
                 </div>
                 <div className="p-4 flex-1 flex flex-col">
-                  <h3 className="font-serif font-bold text-lg text-stone-900 mb-1">
-                    {cat.name}
-                  </h3>
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <h3 className="font-serif font-bold text-lg text-stone-900">
+                      {cat.name}
+                    </h3>
+                    {cat.mainCategory && (
+                      <span className="shrink-0 rounded-full border border-[#dfd5c5] bg-[#faf6ee] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#7D5B2B]">
+                        {cat.mainCategory}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-stone-500 line-clamp-2 flex-1">
                     {cat.description || "No description provided."}
                   </p>
@@ -337,6 +370,50 @@ export default function CategoriesView({
                   placeholder="e.g. Bridal Lehenga"
                   className="w-full p-2.5 bg-[#fcf9f5] border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#C7A55C]/50 focus:border-[#C7A55C]"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-stone-700 mb-1">
+                  Main Category (Gender) *
+                </label>
+                <select
+                  value={formData.mainCategory}
+                  onChange={(e) => {
+                    const chosenName = e.target.value;
+                    const matched = mainCategories.find(
+                      (mc) => mc.name === chosenName,
+                    );
+                    setFormData({
+                      ...formData,
+                      mainCategory: chosenName,
+                      mainCategoryId:
+                        matched?.mainCategoryId ||
+                        (chosenName === "Men"
+                          ? "MC-MEN"
+                          : chosenName === "Unisex"
+                            ? "MC-UNISEX"
+                            : "MC-WOMEN"),
+                    });
+                  }}
+                  className="w-full p-2.5 bg-[#fcf9f5] border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#C7A55C]/50 focus:border-[#C7A55C]"
+                >
+                  {(mainCategories.length > 0
+                    ? mainCategories
+                    : [
+                        { mainCategoryId: "MC-WOMEN", name: "Women" },
+                        { mainCategoryId: "MC-MEN", name: "Men" },
+                        { mainCategoryId: "MC-UNISEX", name: "Unisex" },
+                      ]
+                  ).map((mc) => (
+                    <option key={mc.mainCategoryId} value={mc.name}>
+                      {mc.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-stone-400 mt-1">
+                  Connects this category to Gender filtering on the storefront
+                  and default measurements in Admin.
+                </p>
               </div>
 
               <div>
